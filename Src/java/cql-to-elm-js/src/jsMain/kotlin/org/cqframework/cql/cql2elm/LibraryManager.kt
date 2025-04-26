@@ -13,7 +13,7 @@ import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader
 
 /**
  * A simple library manager factory suitable for JS environments. It accepts simple callbacks and
@@ -22,7 +22,6 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader
  *
  * @param getModelXml a callback that returns the model info XML given the model's id, system, and
  *   version
- * @param xmlModelInfoReader for reading model info XML
  * @param getLibraryCql a callback that returns the CQL content of a library given its id, system,
  *   and version
  * @param validateUnit a callback for validating a UCUM unit. If the unit is valid, it should return
@@ -35,7 +34,6 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader
 @Suppress("LongParameterList")
 fun getLibraryManager(
     getModelXml: (id: String, system: String?, version: String?) -> String,
-    xmlModelInfoReader: ModelInfoReader,
     getLibraryCql: (id: String, system: String?, version: String?) -> String? = { _, _, _ -> null },
     validateUnit: (unit: String) -> String? = { null },
     cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
@@ -76,7 +74,7 @@ fun getLibraryManager(
                 }
                 val modelXml =
                     getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
-                val modelInfo = xmlModelInfoReader.read(modelXml)
+                val modelInfo = XmlModelInfoReader().read(modelXml)
                 val model =
                     if (modelIdentifier.id == "System") {
                         SystemModel(modelInfo)
@@ -135,4 +133,28 @@ fun getLibraryManager(
         HashMap(),
         elmLibraryReaderProvider
     )
+}
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun BaseLibraryManager.enableAnnotations() {
+    this.cqlCompilerOptions.options.add(CqlCompilerOptions.Options.EnableAnnotations)
+}
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun BaseLibraryManager.disableAnnotations() {
+    this.cqlCompilerOptions.options.remove(CqlCompilerOptions.Options.EnableAnnotations)
+}
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun BaseLibraryManager.enableLocators() {
+    this.cqlCompilerOptions.options.add(CqlCompilerOptions.Options.EnableLocators)
+}
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun BaseLibraryManager.disableLocators() {
+    this.cqlCompilerOptions.options.remove(CqlCompilerOptions.Options.EnableLocators)
 }

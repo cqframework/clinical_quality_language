@@ -4,7 +4,6 @@ plugins {
     id("jacoco")
     id("signing")
     id("cql.sca-conventions")
-    id("com.diffplug.spotless")
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
 }
@@ -30,17 +29,6 @@ kotlin {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-spotless {
-    java {
-        targetExclude("**/generated/**")
-        palantirJavaFormat()
-    }
-    kotlin {
-        targetExclude("**/generated/**")
-        ktfmt().kotlinlangStyle()
     }
 }
 

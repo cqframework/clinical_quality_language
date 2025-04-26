@@ -1,0 +1,1324 @@
+import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.MemberName.Companion.member
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.sun.xml.xsom.XSAttributeUse
+import com.sun.xml.xsom.XSComplexType
+import com.sun.xml.xsom.XSElementDecl
+import com.sun.xml.xsom.XSParticle
+import com.sun.xml.xsom.XSType
+import com.sun.xml.xsom.parser.XSOMParser
+import java.io.File
+import javax.xml.XMLConstants
+import javax.xml.parsers.SAXParserFactory
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+data class Config(
+    val project: String,
+    val xsd: String,
+    val outputDir: String,
+    val outputDirSerialization: String,
+)
+
+val namespaceToPackageName =
+    mapOf(
+        "urn:hl7-org:elm-modelinfo:r1" to "org.hl7.elm_modelinfo.r1",
+        "urn:hl7-org:elm:r1" to "org.hl7.elm.r1",
+        "urn:hl7-org:cql-annotations:r1" to "org.hl7.cql_annotations.r1"
+    )
+
+val configs =
+    listOf(
+        Config(
+            project = "cql",
+            xsd = "../../cql-lm/schema/model/modelinfo.xsd",
+            outputDir = "../cql/build/generated/sources/cql/commonMain/kotlin",
+            outputDirSerialization =
+                "../serialization/build/generated/sources/cql/commonMain/kotlin",
+        ),
+        Config(
+            project = "elm",
+            xsd = "../../cql-lm/schema/elm/library.xsd",
+            outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
+            outputDirSerialization =
+                "../serialization/build/generated/sources/elm/commonMain/kotlin",
+        )
+    )
+
+fun getTypeName(type: XSType): ClassName {
+    return when (type.targetNamespace) {
+        XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+            when (type.name) {
+                "string" -> String::class.asClassName()
+                "int" -> Int::class.asClassName()
+                "anySimpleType" -> String::class.asClassName()
+                "boolean" -> Boolean::class.asClassName()
+                "integer" -> Int::class.asClassName()
+                "decimal" -> ClassName("org.cqframework.cql.elm.serializing", "BigDecimal")
+                "dateTime" -> String::class.asClassName()
+                "time" -> String::class.asClassName()
+                "date" -> String::class.asClassName()
+                "base64Binary" -> String::class.asClassName()
+                "anyURI" -> String::class.asClassName()
+                "QName" -> ClassName("org.cqframework.cql.elm.serializing", "QName")
+                "token" -> String::class.asClassName()
+                "NCName" -> String::class.asClassName()
+                "ID" -> String::class.asClassName()
+                else -> error("Unknown type: ${type.name}")
+            }
+        else -> ClassName(namespaceToPackageName[type.targetNamespace]!!, type.name)
+    }
+}
+
+fun getXmlAttributeParserCode(type: XSType): CodeBlock {
+    return when (type.targetNamespace) {
+        XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+            when (type.name) {
+                "string" -> CodeBlock.of("it")
+                "int" -> CodeBlock.of("it.toInt()")
+                "anySimpleType" -> CodeBlock.of("it")
+                "boolean" -> CodeBlock.of("it.toBoolean()")
+                "integer" -> CodeBlock.of("it.toInt()")
+                "decimal" -> CodeBlock.of("org.cqframework.cql.elm.serializing.BigDecimal(it)")
+                "dateTime" -> CodeBlock.of("it")
+                "time" -> CodeBlock.of("it")
+                "date" -> CodeBlock.of("it")
+                "base64Binary" -> CodeBlock.of("it")
+                "anyURI" -> CodeBlock.of("it")
+                "QName" ->
+                    CodeBlock.of(
+                        "org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it, namespaces)"
+                    )
+                "token" -> CodeBlock.of("it")
+                "NCName" -> CodeBlock.of("it")
+                "ID" -> CodeBlock.of("it")
+                else -> error("Unknown type: ${type.name}")
+            }
+        else -> CodeBlock.of("%T.fromValue(it)", getTypeName(type))
+    }
+}
+
+fun getXmlAttributeSerializerCode(type: XSType): CodeBlock {
+    return when (type.targetNamespace) {
+        XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+            when (type.name) {
+                "string" -> CodeBlock.of("it")
+                "int" -> CodeBlock.of("it.toString()")
+                "anySimpleType" -> CodeBlock.of("it")
+                "boolean" -> CodeBlock.of("it.toString()")
+                "integer" -> CodeBlock.of("it.toString()")
+                "decimal" -> CodeBlock.of("it.toString()")
+                "dateTime" -> CodeBlock.of("it")
+                "time" -> CodeBlock.of("it")
+                "date" -> CodeBlock.of("it")
+                "base64Binary" -> CodeBlock.of("it")
+                "anyURI" -> CodeBlock.of("it")
+                "QName" ->
+                    CodeBlock.of(
+                        "org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(it, namespaces, defaultNamespaces)"
+                    )
+                "token" -> CodeBlock.of("it")
+                "NCName" -> CodeBlock.of("it")
+                "ID" -> CodeBlock.of("it")
+                else -> error("Unknown type: ${type.name}")
+            }
+        else -> CodeBlock.of("it.value()")
+    }
+}
+
+fun getJsonPrimitiveParserCode(type: XSType): CodeBlock {
+    return when (type.targetNamespace) {
+        XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+            when (type.name) {
+                "string" -> CodeBlock.of("it.content")
+                "int" ->
+                    CodeBlock.of("it.%M", MemberName("kotlinx.serialization.json", "int", true))
+                "anySimpleType" -> CodeBlock.of("it.content")
+                "boolean" ->
+                    CodeBlock.of("it.%M", MemberName("kotlinx.serialization.json", "boolean", true))
+                "integer" ->
+                    CodeBlock.of("it.%M", MemberName("kotlinx.serialization.json", "int", true))
+                "decimal" ->
+                    CodeBlock.of("org.cqframework.cql.elm.serializing.BigDecimal(it.content)")
+                "dateTime" -> CodeBlock.of("it.content")
+                "time" -> CodeBlock.of("it.content")
+                "date" -> CodeBlock.of("it.content")
+                "base64Binary" -> CodeBlock.of("it.content")
+                "anyURI" -> CodeBlock.of("it.content")
+                "QName" ->
+                    CodeBlock.of(
+                        "org.hl7.elm_modelinfo.r1.serializing.jsonStringToQName(it.content)"
+                    )
+                "token" -> CodeBlock.of("it.content")
+                "NCName" -> CodeBlock.of("it.content")
+                "ID" -> CodeBlock.of("it.content")
+                else -> error("Unknown type: ${type.name}")
+            }
+        else -> CodeBlock.of("%T.fromValue(it.content)", getTypeName(type))
+    }
+}
+
+fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
+    return when (type.targetNamespace) {
+        XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+            when (type.name) {
+                "string" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "int" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "anySimpleType" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "boolean" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "integer" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "decimal" ->
+                    CodeBlock.of("kotlinx.serialization.json.JsonUnquotedLiteral(it.toString())")
+                "dateTime" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "time" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "date" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "base64Binary" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "anyURI" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "QName" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it.toString())")
+                "token" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "NCName" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "ID" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                else -> error("Unknown type: ${type.name}")
+            }
+        else -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it.value())")
+    }
+}
+
+fun TypeSpec.Builder.addElement(
+    elementDecl: XSElementDecl,
+    typeName: TypeName,
+    className: ClassName,
+    isRepeated: Boolean
+) {
+
+    if (isRepeated) {
+        val listType = ClassName("kotlin.collections", "MutableList").parameterizedBy(typeName)
+
+        addProperty(
+            PropertySpec.builder("_${elementDecl.name}", listType.copy(nullable = true))
+                .mutable()
+                .initializer("null")
+                .build()
+        )
+
+        val valueParameter = ParameterSpec.builder("value", listType).build()
+        addProperty(
+            PropertySpec.builder(elementDecl.name, listType)
+                .mutable()
+                .getter(
+                    FunSpec.getterBuilder()
+                        .addCode(
+                            """
+                                if (this.%N == null) {
+                                  this.%N = ArrayList();
+                                }
+                                return this.%N!!
+                            """
+                                .trimIndent(),
+                            className.member("_${elementDecl.name}"),
+                            className.member("_${elementDecl.name}"),
+                            className.member("_${elementDecl.name}")
+                        )
+                        .build()
+                )
+                .setter(
+                    FunSpec.setterBuilder()
+                        .addParameter(valueParameter)
+                        .addCode(
+                            """
+                                this.%N = %N
+                            """
+                                .trimIndent(),
+                            className.member("_${elementDecl.name}"),
+                            valueParameter
+                        )
+                        .build()
+                )
+                .build()
+        )
+        addWithList(elementDecl.name, typeName, className, false)
+    } else {
+        addProperty(
+            PropertySpec.builder(elementDecl.name, typeName.copy(nullable = true))
+                .mutable()
+                .initializer("null")
+                .build()
+        )
+        addWith(elementDecl.name, typeName, className, false)
+    }
+}
+
+fun TypeSpec.Builder.addWith(
+    fieldName: String,
+    fieldType: TypeName,
+    className: ClassName,
+    override: Boolean
+) {
+    val valueParameter = ParameterSpec.builder("value", fieldType.copy(nullable = true)).build()
+    addFunction(
+        FunSpec.builder("with${fieldName.replaceFirstChar { it.uppercase() }}")
+            .addModifiers(KModifier.OPEN)
+            .addParameter(valueParameter)
+            .returns(className)
+            .addStatement("this.%N = %N", className.member(fieldName), valueParameter)
+            .addStatement("return this")
+            .apply {
+                if (override) {
+                    addModifiers(KModifier.OVERRIDE)
+                }
+            }
+            .build()
+    )
+}
+
+fun TypeSpec.Builder.addWithList(
+    fieldName: String,
+    fieldType: TypeName,
+    className: ClassName,
+    override: Boolean
+) {
+    val valuesParameter =
+        ParameterSpec.builder("values", List::class.asClassName().parameterizedBy(fieldType))
+            .build()
+    addFunction(
+        FunSpec.builder("with${fieldName.replaceFirstChar { it.uppercase() }}")
+            .addModifiers(KModifier.OPEN)
+            .addParameter(valuesParameter)
+            .returns(className)
+            .addStatement(
+                "this.%N = %N.toMutableList()",
+                className.member(fieldName),
+                valuesParameter
+            )
+            .addStatement("return this")
+            .apply {
+                if (override) {
+                    addModifiers(KModifier.OVERRIDE)
+                }
+            }
+            .build()
+    )
+}
+
+fun getInheritedElements(complexType: XSComplexType): List<XSParticle> {
+    if (
+        complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+            complexType.baseType.name == "anyType"
+    ) {
+        return emptyList()
+    }
+    val baseType = complexType.baseType.asComplexType()
+    return getInheritedElements(baseType) + getOwnElements(baseType)
+}
+
+fun getOwnElements(complexType: XSComplexType): List<XSParticle> {
+    if (complexType.derivationMethod == XSType.EXTENSION) {
+        return complexType.explicitContent?.asParticle()?.term?.asModelGroup()?.toList()
+            ?: emptyList()
+    }
+    return complexType.contentType?.asParticle()?.term?.asModelGroup()?.toList() ?: emptyList()
+}
+
+fun getInheritedAttributes(complexType: XSComplexType): List<XSAttributeUse> {
+    if (
+        complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+            complexType.baseType.name == "anyType"
+    ) {
+        return emptyList()
+    }
+    val baseType = complexType.baseType.asComplexType()
+    return getInheritedAttributes(baseType) + getOwnAttributes(baseType)
+}
+
+fun getOwnAttributes(complexType: XSComplexType): List<XSAttributeUse> {
+    return complexType.declaredAttributeUses.toList()
+}
+
+fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
+    return TypeSpec.classBuilder(className)
+        .addModifiers(KModifier.OPEN)
+        .apply {
+            if (complexType.isAbstract) {
+                addModifiers(KModifier.ABSTRACT)
+            }
+
+            if (
+                !(complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+                    complexType.baseType.name == "anyType")
+            ) {
+                superclass(getTypeName(complexType.baseType))
+            }
+
+            if (complexType.isMixed) {
+                val listType =
+                    ClassName("kotlin.collections", "MutableList")
+                        .parameterizedBy(Any::class.asTypeName())
+
+                addProperty(
+                    PropertySpec.builder("_content", listType.copy(nullable = true))
+                        .mutable()
+                        .initializer("null")
+                        .build()
+                )
+
+                val valueParameter = ParameterSpec.builder("value", listType).build()
+                addProperty(
+                    PropertySpec.builder("content", listType)
+                        .mutable()
+                        .getter(
+                            FunSpec.getterBuilder()
+                                .addCode(
+                                    """
+                                if (this.%N == null) {
+                                  this.%N = ArrayList();
+                                }
+                                return this.%N!!
+                            """
+                                        .trimIndent(),
+                                    className.member("_content"),
+                                    className.member("_content"),
+                                    className.member("_content")
+                                )
+                                .build()
+                        )
+                        .setter(
+                            FunSpec.setterBuilder()
+                                .addParameter(valueParameter)
+                                .addCode(
+                                    """
+                                this.%N = %N
+                            """
+                                        .trimIndent(),
+                                    className.member("_content"),
+                                    valueParameter
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+            }
+
+            getOwnAttributes(complexType).forEach { attribute ->
+                val typeName = getTypeName(attribute.decl.type)
+                if (attribute.defaultValue == null) {
+                    addProperty(
+                        PropertySpec.builder(attribute.decl.name, typeName.copy(nullable = true))
+                            .mutable()
+                            .initializer("null")
+                            .build()
+                    )
+                } else {
+                    val defaultValue =
+                        when (attribute.decl.type.targetNamespace) {
+                            XMLConstants.W3C_XML_SCHEMA_NS_URI ->
+                                when (attribute.decl.type.name) {
+                                    "boolean" ->
+                                        CodeBlock.of("%L", attribute.defaultValue.value.toBoolean())
+                                    "anyURI" -> CodeBlock.of("%S", attribute.defaultValue.value)
+                                    else -> error("Unknown type: ${attribute.decl.type.name}")
+                                }
+                            else ->
+                                CodeBlock.of(
+                                    "%T.%N",
+                                    typeName,
+                                    attribute.defaultValue.value.uppercase()
+                                )
+                        }
+
+                    addProperty(
+                        PropertySpec.builder(
+                                "_${attribute.decl.name}",
+                                typeName.copy(nullable = true)
+                            )
+                            .mutable()
+                            .initializer("null")
+                            .build()
+                    )
+
+                    val valueParameter =
+                        ParameterSpec.builder("value", typeName.copy(nullable = true)).build()
+                    addProperty(
+                        PropertySpec.builder(attribute.decl.name, typeName.copy(nullable = true))
+                            .mutable()
+                            .getter(
+                                FunSpec.getterBuilder()
+                                    .addCode(
+                                        """
+                                return this.%N ?:
+                            """
+                                            .trimIndent(),
+                                        className.member("_${attribute.decl.name}")
+                                    )
+                                    .addCode(defaultValue)
+                                    .build()
+                            )
+                            .setter(
+                                FunSpec.setterBuilder()
+                                    .addParameter(valueParameter)
+                                    .addCode(
+                                        """
+                                this.%N = %N
+                            """
+                                            .trimIndent(),
+                                        className.member("_${attribute.decl.name}"),
+                                        valueParameter
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                }
+                if (
+                    attribute.decl.type.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+                        attribute.decl.type.name == "boolean"
+                ) {
+                    addFunction(
+                        FunSpec.builder(
+                                "is${attribute.decl.name.replaceFirstChar { it.uppercase() }}"
+                            )
+                            .returns(Boolean::class.asClassName().copy(nullable = true))
+                            .addStatement("return this.%N", className.member(attribute.decl.name))
+                            .build()
+                    )
+                }
+                addWith(attribute.decl.name, getTypeName(attribute.decl.type), className, false)
+            }
+
+            getInheritedAttributes(complexType).forEach { attribute ->
+                addWith(attribute.decl.name, getTypeName(attribute.decl.type), className, true)
+            }
+
+            getOwnElements(complexType).forEach { particle ->
+                val elementDecl = particle.term.asElementDecl()
+                if (elementDecl != null) {
+                    if (elementDecl.type.name == null) {
+                        val nestedClassName =
+                            className.nestedClass(
+                                elementDecl.name.replaceFirstChar { it.uppercase() }
+                            )
+                        addType(buildClass(elementDecl.type.asComplexType(), nestedClassName))
+                        addElement(elementDecl, nestedClassName, className, particle.isRepeated)
+                    } else {
+                        addElement(
+                            elementDecl,
+                            getTypeName(elementDecl.type),
+                            className,
+                            particle.isRepeated
+                        )
+                    }
+                }
+            }
+
+            getInheritedElements(complexType).forEach { particle ->
+                val elementDecl = particle.term.asElementDecl()
+                if (elementDecl != null) {
+                    if (particle.isRepeated) {
+                        addWithList(
+                            elementDecl.name,
+                            getTypeName(elementDecl.type),
+                            className,
+                            true
+                        )
+                    } else {
+                        addWith(elementDecl.name, getTypeName(elementDecl.type), className, true)
+                    }
+                }
+            }
+        }
+        .addFunction(
+            FunSpec.builder("equals")
+                .addModifiers(KModifier.OVERRIDE)
+                .returns(Boolean::class)
+                .apply {
+                    val thatParameter =
+                        ParameterSpec.builder(
+                                "that",
+                                Any::class.asClassName().copy(nullable = true)
+                            )
+                            .build()
+
+                    addParameter(thatParameter)
+
+                    beginControlFlow("if (%N is %T)", thatParameter, className)
+                    if (
+                        !(complexType.baseType.targetNamespace ==
+                            XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+                            complexType.baseType.name == "anyType")
+                    ) {
+                        beginControlFlow("if (!super.equals(%N))", thatParameter)
+                        addStatement("return false")
+                        endControlFlow()
+                    }
+
+                    getOwnAttributes(complexType).forEach { attribute ->
+                        beginControlFlow(
+                            "if (this.%N != %N.%N)",
+                            className.member(attribute.decl.name),
+                            thatParameter,
+                            className.member(attribute.decl.name)
+                        )
+                        addStatement("return false")
+                        endControlFlow()
+                    }
+
+                    getOwnElements(complexType).forEach { particle ->
+                        val elementDecl = particle.term.asElementDecl()
+                        if (elementDecl != null) {
+                            beginControlFlow(
+                                "if (this.%N != %N.%N)",
+                                className.member(elementDecl.name),
+                                thatParameter,
+                                className.member(elementDecl.name)
+                            )
+                            addStatement("return false")
+                            endControlFlow()
+                        }
+                    }
+
+                    addStatement("return true")
+                    endControlFlow()
+                    addStatement("return false")
+                }
+                .build()
+        )
+        .addFunction(
+            FunSpec.builder("hashCode")
+                .addModifiers(KModifier.OVERRIDE)
+                .returns(Int::class)
+                .addStatement("return 1")
+                .build()
+        )
+        .addType(TypeSpec.companionObjectBuilder().build())
+        .build()
+}
+
+fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
+    return complexType.subtypes.map { subtype -> getAllSubtypes(subtype) + subtype }.flatten()
+}
+
+fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: ClassName) {
+
+    addFunction(
+        FunSpec.builder("fromXmlElement")
+            .receiver(className.nestedClass("Companion"))
+            .addParameter(
+                "xmlElement",
+                ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element")
+            )
+            .addParameter(
+                "namespacesFromParent",
+                Map::class.asClassName()
+                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+            )
+            .returns(className)
+            .addStatement(
+                "val namespaceOverrides = xmlElement.attributes.filter { it.key == \"xmlns\" || it.key.startsWith(\"xmlns:\") }.map { it.key.substringAfter(\":\", \"\") to it.value }.toMap()"
+            )
+            .addStatement("val namespaces = namespacesFromParent + namespaceOverrides")
+            .apply {
+                beginControlFlow(
+                    "namespaces.entries.find { it.value == %S }?.key?.let",
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+                )
+                beginControlFlow("xmlElement.attributes[\"\$it:type\"]?.let")
+                beginControlFlow(
+                    "when (org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it, namespaces))"
+                )
+                getAllSubtypes(complexType).forEach { subtype ->
+                    addStatement(
+                        "org.cqframework.cql.elm.serializing.QName(%S, %S) -> return %T.%M(xmlElement, namespaces)",
+                        subtype.targetNamespace,
+                        subtype.name,
+                        getTypeName(subtype),
+                        MemberName(
+                            namespaceToPackageName[subtype.targetNamespace]!!,
+                            "fromXmlElement",
+                            true
+                        )
+                    )
+                }
+                endControlFlow()
+                endControlFlow()
+                endControlFlow()
+                if (complexType.isAbstract) {
+                    addStatement("error(\"Cannot deserialize abstract class\")")
+                } else {
+                    addStatement("val instance = %T()", className)
+                    (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
+                        attribute ->
+                        beginControlFlow("xmlElement.attributes[%S]?.let", attribute.decl.name)
+                        addStatement(
+                            "instance.%N = %L",
+                            attribute.decl.name,
+                            getXmlAttributeParserCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                    }
+                    if (complexType.isMixed) {
+                        addStatement(
+                            """
+                            xmlElement.children.forEach {
+                                when (it) {
+                                    is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element -> {
+                                        instance.content.add(org.hl7.cql_annotations.r1.Narrative.%M(it, namespaces))
+                                    }
+                                    is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Text -> {
+                                        instance.content.add(it.text)
+                                    }
+                                }
+                            }
+                        """
+                                .trimIndent(),
+                            MemberName("org.hl7.cql_annotations.r1", "fromXmlElement", true)
+                        )
+                    } else {
+                        (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
+                            particle ->
+                            val elementDecl = particle.term.asElementDecl()
+                            if (elementDecl != null) {
+
+                                val elementClassName =
+                                    if (elementDecl.type.name == null)
+                                        className.nestedClass(
+                                            elementDecl.name.replaceFirstChar { it.uppercase() }
+                                        )
+                                    else getTypeName(elementDecl.type)
+
+                                beginControlFlow("xmlElement.children.forEach")
+                                beginControlFlow(
+                                    "if (it is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element && org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it.tagName, namespaces) == org.cqframework.cql.elm.serializing.QName(%S, %S))",
+                                    elementDecl.targetNamespace,
+                                    elementDecl.name
+                                )
+
+                                if (particle.isRepeated) {
+                                    addStatement(
+                                        "instance.%N.add(%T.%M(it, namespaces))",
+                                        elementDecl.name,
+                                        elementClassName,
+                                        MemberName(
+                                            namespaceToPackageName[
+                                                elementDecl.type.targetNamespace]!!,
+                                            "fromXmlElement",
+                                            true
+                                        )
+                                    )
+                                } else {
+                                    addStatement(
+                                        "instance.%N = %T.%M(it, namespaces)",
+                                        elementDecl.name,
+                                        elementClassName,
+                                        MemberName(
+                                            namespaceToPackageName[
+                                                elementDecl.type.targetNamespace]!!,
+                                            "fromXmlElement",
+                                            true
+                                        )
+                                    )
+                                }
+
+                                endControlFlow()
+                                endControlFlow()
+                            }
+                        }
+                    }
+                    addStatement("return instance")
+                }
+            }
+            .build()
+    )
+
+    addFunction(
+        FunSpec.builder("toXmlElement")
+            .receiver(className)
+            .addParameter("tagName", ClassName("org.cqframework.cql.elm.serializing", "QName"))
+            .addParameter("withXsiType", Boolean::class)
+            .addParameter(
+                "namespaces",
+                ClassName("kotlin.collections", "MutableMap")
+                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+            )
+            .addParameter(
+                "defaultNamespaces",
+                Map::class.asClassName()
+                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+            )
+            .returns(ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element"))
+            .apply {
+                beginControlFlow("when (this)")
+                complexType.subtypes.forEach { subtype ->
+                    addStatement(
+                        "is %T -> return this.%M(tagName, true, namespaces, defaultNamespaces)",
+                        getTypeName(subtype),
+                        MemberName(
+                            namespaceToPackageName[subtype.targetNamespace]!!,
+                            "toXmlElement",
+                            true
+                        )
+                    )
+                }
+                endControlFlow()
+                addStatement("val attributes = mutableMapOf<String, String>()")
+                addStatement(
+                    """
+                    if (withXsiType) {
+                        attributes[
+                            org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(org.cqframework.cql.elm.serializing.QName(%S, "type"), namespaces, defaultNamespaces)
+                        ] = org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(org.cqframework.cql.elm.serializing.QName(%S, %S), namespaces, defaultNamespaces)
+                    }
+                """
+                        .trimIndent(),
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    complexType.targetNamespace,
+                    complexType.name ?: "null"
+                )
+
+                (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
+                    attribute ->
+                    if (attribute.defaultValue == null) {
+                        beginControlFlow("this.%N?.let", attribute.decl.name)
+                        addStatement(
+                            "attributes[%S] = %L",
+                            attribute.decl.name,
+                            getXmlAttributeSerializerCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                    } else {
+                        beginControlFlow("this.%N?.let", "_${attribute.decl.name}")
+                        addStatement(
+                            "attributes[%S] = %L",
+                            attribute.decl.name,
+                            getXmlAttributeSerializerCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                    }
+                }
+
+                addStatement(
+                    "val children = mutableListOf<org.hl7.elm_modelinfo.r1.serializing.XmlNode>()"
+                )
+
+                if (complexType.isMixed) {
+                    addStatement(
+                        """
+                        this.content.forEach {
+                            when (it) {
+                                is String -> children.add(org.hl7.elm_modelinfo.r1.serializing.XmlNode.Text(it))
+                                is org.hl7.cql_annotations.r1.Narrative -> children.add(it.%M(
+                                    org.cqframework.cql.elm.serializing.QName("urn:hl7-org:cql-annotations:r1", "s"),
+                                    false,
+                                    namespaces,
+                                    defaultNamespaces
+                                ))
+                            }
+                        }
+                    """
+                            .trimIndent(),
+                        MemberName("org.hl7.cql_annotations.r1", "toXmlElement", true)
+                    )
+                } else {
+                    (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
+                        particle ->
+                        val elementDecl = particle.term.asElementDecl()
+                        if (elementDecl != null) {
+
+                            if (particle.isRepeated) {
+                                beginControlFlow("this.%N?.let", "_${elementDecl.name}")
+                                addStatement(
+                                    """
+                                    it.forEach {
+                                        children.add(it.%M(
+                                            org.cqframework.cql.elm.serializing.QName(%S, %S),
+                                            false,
+                                            namespaces,
+                                            defaultNamespaces
+                                        ))
+                                    }
+                                """
+                                        .trimIndent(),
+                                    MemberName(
+                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        "toXmlElement",
+                                        true
+                                    ),
+                                    elementDecl.targetNamespace,
+                                    elementDecl.name
+                                )
+                                endControlFlow()
+                            } else {
+                                beginControlFlow("this.%N?.let", elementDecl.name)
+                                addStatement(
+                                    """
+                                    children.add(it.%M(
+                                        org.cqframework.cql.elm.serializing.QName(%S, %S),
+                                        false,
+                                        namespaces,
+                                        defaultNamespaces
+                                    ))
+                                """
+                                        .trimIndent(),
+                                    MemberName(
+                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        "toXmlElement",
+                                        true
+                                    ),
+                                    elementDecl.targetNamespace,
+                                    elementDecl.name
+                                )
+                                endControlFlow()
+                            }
+                        }
+                    }
+                }
+                addStatement(
+                    """
+                    return org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element(
+                        org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(tagName, namespaces, defaultNamespaces),
+                        attributes,
+                        children
+                    )
+                """
+                        .trimIndent()
+                )
+            }
+            .build()
+    )
+
+    addFunction(
+        FunSpec.builder("fromJsonObject")
+            .receiver(className.nestedClass("Companion"))
+            .addParameter("jsonObject", ClassName("kotlinx.serialization.json", "JsonObject"))
+            .returns(className)
+            .apply {
+                beginControlFlow("jsonObject[\"type\"]?.let")
+                beginControlFlow(
+                    "if (it is kotlinx.serialization.json.JsonPrimitive && it.isString)"
+                )
+                beginControlFlow("when (it.content)")
+                getAllSubtypes(complexType).forEach { subtype ->
+                    addStatement(
+                        "%S -> return %T.%M(jsonObject)",
+                        subtype.name,
+                        getTypeName(subtype),
+                        MemberName(
+                            namespaceToPackageName[subtype.targetNamespace]!!,
+                            "fromJsonObject",
+                            true
+                        )
+                    )
+                }
+                endControlFlow()
+                endControlFlow()
+                endControlFlow()
+                if (complexType.isAbstract) {
+                    addStatement("error(\"Cannot deserialize abstract class\")")
+                } else {
+                    addStatement("val instance = %T()", className)
+                    (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
+                        attribute ->
+                        beginControlFlow("jsonObject[%S]?.let", attribute.decl.name)
+                        beginControlFlow(
+                            "if (it is kotlinx.serialization.json.JsonPrimitive && it !is kotlinx.serialization.json.JsonNull)"
+                        )
+                        addStatement(
+                            "instance.%N = %L",
+                            attribute.decl.name,
+                            getJsonPrimitiveParserCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                        endControlFlow()
+                    }
+                    if (complexType.isMixed) {
+                        addStatement(
+                            """
+                            jsonObject["s"]?.let {
+                                if (it is kotlinx.serialization.json.JsonArray) {
+                                    it.forEach {
+                                        when (it) {
+                                            is kotlinx.serialization.json.JsonObject -> {
+                                                instance.content.add(org.hl7.cql_annotations.r1.Narrative.%M(it.get("value")!!.%M))
+                                            }
+                                            is kotlinx.serialization.json.JsonPrimitive -> {
+                                                instance.content.add(it.content)
+                                            }
+                                            else -> {}
+                                        }
+                                    }
+                                }
+                            }
+                        """
+                                .trimIndent(),
+                            MemberName("org.hl7.cql_annotations.r1", "fromJsonObject", true),
+                            MemberName("kotlinx.serialization.json", "jsonObject", true)
+                        )
+                    } else {
+                        (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
+                            particle ->
+                            val elementDecl = particle.term.asElementDecl()
+                            if (elementDecl != null) {
+
+                                val elementClassName =
+                                    if (elementDecl.type.name == null)
+                                        className.nestedClass(
+                                            elementDecl.name.replaceFirstChar { it.uppercase() }
+                                        )
+                                    else getTypeName(elementDecl.type)
+
+                                beginControlFlow("jsonObject[%S]?.let", elementDecl.name)
+
+                                if (particle.isRepeated) {
+                                    addStatement(
+                                        """
+                                            if (it is kotlinx.serialization.json.JsonArray) {
+                                                it.forEach {
+                                                    if (it is kotlinx.serialization.json.JsonObject) {
+                                                        instance.%N.add(%T.%M(it))
+                                                    }
+                                                }
+                                            }
+                                        """
+                                            .trimIndent(),
+                                        elementDecl.name,
+                                        elementClassName,
+                                        MemberName(
+                                            namespaceToPackageName[
+                                                elementDecl.type.targetNamespace]!!,
+                                            "fromJsonObject",
+                                            true
+                                        )
+                                    )
+                                } else {
+                                    addStatement(
+                                        """
+                                            if (it is kotlinx.serialization.json.JsonObject) {
+                                                instance.%N = %T.%M(it)
+                                            }
+                                        """
+                                            .trimIndent(),
+                                        elementDecl.name,
+                                        elementClassName,
+                                        MemberName(
+                                            namespaceToPackageName[
+                                                elementDecl.type.targetNamespace]!!,
+                                            "fromJsonObject",
+                                            true
+                                        )
+                                    )
+                                }
+
+                                endControlFlow()
+                            }
+                        }
+                    }
+                    addStatement("return instance")
+                }
+            }
+            .build()
+    )
+
+    addFunction(
+        FunSpec.builder("toJsonObject")
+            .receiver(className)
+            .addParameter("withType", Boolean::class)
+            .returns(ClassName("kotlinx.serialization.json", "JsonObject"))
+            .apply {
+                beginControlFlow("when (this)")
+                complexType.subtypes.forEach { subtype ->
+                    addStatement(
+                        "is %T -> return this.%M(true)",
+                        getTypeName(subtype),
+                        MemberName(
+                            namespaceToPackageName[subtype.targetNamespace]!!,
+                            "toJsonObject",
+                            true
+                        )
+                    )
+                }
+                endControlFlow()
+                addStatement(
+                    "val entries = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()"
+                )
+                addStatement(
+                    """
+                    if (withType) {
+                        entries["type"] = kotlinx.serialization.json.JsonPrimitive(%S)
+                    }
+                """
+                        .trimIndent(),
+                    complexType.name ?: "null"
+                )
+
+                (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
+                    attribute ->
+                    if (attribute.defaultValue == null) {
+                        beginControlFlow("this.%N?.let", attribute.decl.name)
+                        addStatement(
+                            "entries[%S] = %L",
+                            attribute.decl.name,
+                            getJsonPrimitiveSerializerCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                    } else {
+                        beginControlFlow("this.%N?.let", "_${attribute.decl.name}")
+                        addStatement(
+                            "entries[%S] = %L",
+                            attribute.decl.name,
+                            getJsonPrimitiveSerializerCode(attribute.decl.type)
+                        )
+                        endControlFlow()
+                    }
+                }
+
+                if (complexType.isMixed) {
+                    addStatement(
+                        """
+                        entries["s"] = kotlinx.serialization.json.JsonArray(
+                            this.content.map {
+                                when (it) {
+                                    is String -> kotlinx.serialization.json.JsonPrimitive(it)
+                                    is org.hl7.cql_annotations.r1.Narrative -> kotlinx.serialization.json.JsonObject(
+                                        mapOf(
+                                            "name" to kotlinx.serialization.json.JsonPrimitive("{urn:hl7-org:cql-annotations:r1}s"),
+                                            "declaredType" to kotlinx.serialization.json.JsonPrimitive("org.hl7.cql_annotations.r1.Narrative"),
+                                            "scope" to kotlinx.serialization.json.JsonPrimitive("javax.xml.bind.JAXBElement${"\\$"}GlobalScope"),
+                                            "value" to it.%M(false),
+                                            "globalScope" to kotlinx.serialization.json.JsonPrimitive(true)
+                                        )
+                                    )
+                                    else -> kotlinx.serialization.json.JsonNull
+                                }
+                            }
+                        )
+                    """
+                            .trimIndent(),
+                        MemberName("org.hl7.cql_annotations.r1", "toJsonObject", true)
+                    )
+                } else {
+                    (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
+                        particle ->
+                        val elementDecl = particle.term.asElementDecl()
+                        if (elementDecl != null) {
+
+                            if (particle.isRepeated) {
+                                addStatement(
+                                    "entries[%S] = kotlinx.serialization.json.JsonArray(this.%N?.map { it.%M(false) } ?: emptyList())",
+                                    elementDecl.name,
+                                    "_${elementDecl.name}",
+                                    MemberName(
+                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        "toJsonObject",
+                                        true
+                                    )
+                                )
+                            } else {
+                                addStatement(
+                                    "this.%N?.let { entries[%S] = it.%M(false) }",
+                                    elementDecl.name,
+                                    elementDecl.name,
+                                    MemberName(
+                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        "toJsonObject",
+                                        true
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+                addStatement("return kotlinx.serialization.json.JsonObject(entries)")
+            }
+            .build()
+    )
+
+    (getInheritedElements(complexType) + getOwnElements(complexType)).forEach { particle ->
+        val elementDecl = particle.term.asElementDecl()
+        if (elementDecl != null) {
+            if (elementDecl.type.name == null) {
+                val nestedClassName =
+                    className.nestedClass(elementDecl.name.replaceFirstChar { it.uppercase() })
+                addSerializers(elementDecl.type.asComplexType(), nestedClassName)
+            }
+        }
+    }
+}
+
+open class XsdKotlinGenTask : DefaultTask() {
+
+    @TaskAction
+    fun generate() {
+
+        for (config in configs) {
+
+            val saxParserFactory = SAXParserFactory.newInstance()
+            val xsomParser = XSOMParser(saxParserFactory)
+
+            val file = File(project.projectDir, config.xsd)
+            if (!file.exists()) {
+                error("XSD file not found: ${file.absolutePath}")
+            }
+
+            xsomParser.parse(file)
+
+            xsomParser.result.schemas.forEach { schema ->
+                schema.simpleTypes.values.forEach { simpleType ->
+                    if (simpleType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI) {
+                        return@forEach
+                    }
+
+                    val typeName = getTypeName(simpleType)
+
+                    val valueParameter = ParameterSpec.builder("value", String::class).build()
+
+                    FileSpec.builder(typeName)
+                        .addType(
+                            TypeSpec.enumBuilder(typeName)
+                                .primaryConstructor(
+                                    FunSpec.constructorBuilder()
+                                        .addParameter("value", String::class)
+                                        .build()
+                                )
+                                .addProperty(
+                                    PropertySpec.builder("value", String::class)
+                                        .initializer("value")
+                                        .addModifiers(KModifier.PRIVATE)
+                                        .build()
+                                )
+                                .addFunction(
+                                    FunSpec.builder("value")
+                                        .returns(String::class)
+                                        .addStatement("return this.value")
+                                        .build()
+                                )
+                                .addType(
+                                    TypeSpec.companionObjectBuilder()
+                                        .addFunction(
+                                            FunSpec.builder("fromValue")
+                                                .addParameter(valueParameter)
+                                                .returns(typeName)
+                                                .addCode(
+                                                    """
+                                                        for (c in entries) {
+                                                            if (c.value == %N) {
+                                                                return c
+                                                            }
+                                                        }
+                                                        throw IllegalArgumentException(%N)
+                                                    """
+                                                        .trimIndent(),
+                                                    valueParameter,
+                                                    valueParameter
+                                                )
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .apply {
+                                    simpleType.asRestriction().declaredFacets.forEach { facet ->
+                                        addEnumConstant(
+                                            facet.value.value.uppercase(),
+                                            TypeSpec.anonymousClassBuilder()
+                                                .addSuperclassConstructorParameter(
+                                                    "%S",
+                                                    facet.value.value
+                                                )
+                                                .build()
+                                        )
+                                    }
+                                }
+                                .build()
+                        )
+                        .build()
+                        .writeTo(File(project.projectDir, config.outputDir))
+                }
+
+                schema.complexTypes.values.forEach { complexType ->
+                    if (
+                        complexType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
+                            complexType.name == "anyType"
+                    ) {
+                        return@forEach
+                    }
+
+                    val className = getTypeName(complexType)
+
+                    FileSpec.builder(className)
+                        .addType(buildClass(complexType, className))
+                        .build()
+                        .writeTo(File(project.projectDir, config.outputDir))
+
+                    FileSpec.builder(className)
+                        .apply { addSerializers(complexType, className) }
+                        .build()
+                        .writeTo(File(project.projectDir, config.outputDirSerialization))
+                }
+
+                schema.complexTypes.values
+                    .map { it.targetNamespace }
+                    .distinct()
+                    .forEach { namespace ->
+                        if (namespaceToPackageName.containsKey(namespace)) {
+                            val objectFactoryClassName =
+                                ClassName(namespaceToPackageName[namespace]!!, "ObjectFactory")
+
+                            FileSpec.builder(objectFactoryClassName)
+                                .addType(
+                                    TypeSpec.classBuilder(objectFactoryClassName)
+                                        .addModifiers(KModifier.OPEN)
+                                        .apply {
+                                            schema.complexTypes.values.forEach { complexType ->
+                                                if (
+                                                    complexType.targetNamespace == namespace &&
+                                                        !complexType.isAbstract
+                                                ) {
+                                                    val className = getTypeName(complexType)
+                                                    addFunction(
+                                                        FunSpec.builder("create${complexType.name}")
+                                                            .addModifiers(KModifier.OPEN)
+                                                            .returns(className)
+                                                            .addStatement("return %T()", className)
+                                                            .build()
+                                                    )
+
+                                                    getOwnElements(complexType).forEach { particle
+                                                        ->
+                                                        val elementDecl =
+                                                            particle.term.asElementDecl()
+                                                        if (elementDecl != null) {
+                                                            if (elementDecl.type.name == null) {
+                                                                val nestedClassName =
+                                                                    className.nestedClass(
+                                                                        elementDecl.name
+                                                                            .replaceFirstChar {
+                                                                                it.uppercase()
+                                                                            }
+                                                                    )
+                                                                addFunction(
+                                                                    FunSpec.builder(
+                                                                            "create${complexType.name}${elementDecl.name.replaceFirstChar { it.uppercase() }}"
+                                                                        )
+                                                                        .addModifiers(
+                                                                            KModifier.OPEN
+                                                                        )
+                                                                        .returns(nestedClassName)
+                                                                        .addStatement(
+                                                                            "return %T()",
+                                                                            nestedClassName
+                                                                        )
+                                                                        .build()
+                                                                )
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .build()
+                                )
+                                .build()
+                                .writeTo(File(project.projectDir, config.outputDir))
+                        }
+                    }
+            }
+        }
+    }
+}

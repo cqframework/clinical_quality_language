@@ -3,13 +3,18 @@
 package org.hl7.elm_modelinfo.r1.serializing
 
 import kotlinx.io.Source
-import nl.adaptivity.xmlutil.serialization.XML
+import kotlinx.io.readString
 import org.hl7.elm_modelinfo.r1.ModelInfo
+import org.hl7.elm_modelinfo.r1.fromXmlElement
 
-internal val xml = XML(org.hl7.elm_modelinfo.r1.serializersModule)
+class XmlModelInfoReader : ModelInfoReader {
+    override fun read(string: String): ModelInfo {
+        val tree = parseXml(string)
 
-expect class XmlModelInfoReader() : ModelInfoReader {
-    override fun read(string: String): ModelInfo
+        return ModelInfo.fromXmlElement(tree, emptyMap())
+    }
 
-    override fun read(source: Source): ModelInfo
+    override fun read(source: Source): ModelInfo {
+        return read(source.readString())
+    }
 }

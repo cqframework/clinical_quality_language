@@ -1,7 +1,7 @@
 package org.cqframework.cql.elm.evaluating
 
-import nl.adaptivity.xmlutil.QName
 import org.cqframework.cql.elm.serializing.BigDecimal
+import org.cqframework.cql.elm.serializing.QName
 import org.hl7.elm.r1.Aggregate
 import org.hl7.elm.r1.AggregateExpression
 import org.hl7.elm.r1.AliasRef

@@ -1,10 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
     id("signing")
-    id("com.diffplug.spotless")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
@@ -15,14 +12,6 @@ repositories {
     mavenCentral()
     maven {
         url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
-}
-
-spotless {
-    kotlin {
-        target("**/*.kt")
-        targetExclude("**/generated/**/*.kt")
-        ktfmt().kotlinlangStyle()
     }
 }
 
@@ -46,8 +35,6 @@ detekt {
 
 kotlin {
     compilerOptions {
-        apiVersion.set(KotlinVersion.KOTLIN_2_1)
-        languageVersion.set(KotlinVersion.KOTLIN_2_1)
         // Expect/Actual classes are currently in Beta
         // This suppresses warning about that for now.
         // Assuming expect/actual classes are removed,
@@ -104,8 +91,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core:0.91.0-RC1")
-                implementation("io.github.pdvrieze.xmlutil:serialization:0.91.0-RC1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
                 implementation("io.github.oshai:kotlin-logging:7.0.3")
@@ -114,16 +99,12 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.91.0-RC1")
-                implementation("io.github.pdvrieze.xmlutil:core-jdk:0.91.0-RC1")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
             }
         }
 
         jsMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core-js:0.91.0-RC1")
-                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.91.0-RC1")
             }
         }
 

@@ -42,13 +42,7 @@ class CMS146JsonTest {
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String jsonWithVersion = translator.toJson();
         final String actualJson = jsonWithVersion
-                .replaceAll("\"translatorVersion\":\"[^\"]*\",", "")
-                // The original JSON marshaller (JAXB + MOXy) does not output
-                // type for the base class in polymorphic hierarchies.
-                .replace(
-                        "\"type\":\"ExpressionDef\",",
-                        "")
-                .replace("\"type\":\"AliasedQuerySource\",", "");
+                .replaceAll("\"translatorVersion\":\"[^\"]*\",", "");
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 

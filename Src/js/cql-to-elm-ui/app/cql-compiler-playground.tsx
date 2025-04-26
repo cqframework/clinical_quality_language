@@ -4,10 +4,13 @@ import { useState, useRef, useLayoutEffect } from "react";
 // @ts-expect-error No type definitions available
 import * as ucum from "@lhncbc/ucum-lhc";
 import {
-  getSimpleLibraryManager,
-  CommonCqlTranslator,
-  CqlCompilerOptions,
-} from "cql-all-cql-to-elm";
+  getLibraryManager,
+  getCqlTranslator,
+  enableLocators,
+  enableAnnotations,
+  disableLocators,
+  disableAnnotations,
+} from "cql-all-cql-to-elm-js";
 import { supportedModels } from "@/app/supported-models";
 
 const ucumUtils = ucum.UcumLhcUtils.getInstance();
@@ -50,7 +53,7 @@ define x: [Observation]
   // stateRef.current = state;
 
   const libraryManager = useRef(
-    getSimpleLibraryManager(
+    getLibraryManager(
       (id: string, system: string | null, version: string | null) => {
         console.log("Kotlin looking for model", id, system, version);
         const fetchedModel = stateRef.current.fetchedModels.find(
@@ -114,11 +117,7 @@ define x: [Observation]
 
   const parseResult = (() => {
     try {
-      // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-      const translator = CommonCqlTranslator.Companion.fromText(
-        content,
-        libraryManager.current,
-      );
+      const translator = getCqlTranslator(content, libraryManager.current);
       return {
         ok: true,
         tree:
@@ -263,15 +262,9 @@ define x: [Observation]
                         enableAnnotations: nextEnableAnnotations,
                       }));
                       if (nextEnableAnnotations) {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .add(CqlCompilerOptions.Options.EnableAnnotations);
+                        enableAnnotations(libraryManager.current);
                       } else {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .delete(CqlCompilerOptions.Options.EnableAnnotations);
+                        disableAnnotations(libraryManager.current);
                       }
                     }}
                   />
@@ -289,15 +282,9 @@ define x: [Observation]
                         enableLocators: nextEnableLocators,
                       }));
                       if (nextEnableLocators) {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .add(CqlCompilerOptions.Options.EnableLocators);
+                        enableLocators(libraryManager.current);
                       } else {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .delete(CqlCompilerOptions.Options.EnableLocators);
+                        disableLocators(libraryManager.current);
                       }
                     }}
                   />
