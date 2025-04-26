@@ -20,13 +20,7 @@ data class Config(
     val outputDirSerialization: String,
 )
 
-val namespaceToPackageName =
-    mapOf(
-        "urn:hl7-org:elm-modelinfo:r1" to "org.hl7.elm_modelinfo.r1",
-        "urn:hl7-org:elm:r1" to "org.hl7.elm.r1",
-        "urn:hl7-org:cql-annotations:r1" to "org.hl7.cql_annotations.r1"
-    )
-
+// Entry points for schema parsing and code generation
 val configs =
     listOf(
         Config(
@@ -44,6 +38,17 @@ val configs =
                 "../serialization/build/generated/sources/elm/commonMain/kotlin",
         )
     )
+
+val namespaceToPackageName =
+    mapOf(
+        "urn:hl7-org:elm-modelinfo:r1" to "org.hl7.elm_modelinfo.r1",
+        "urn:hl7-org:elm:r1" to "org.hl7.elm.r1",
+        "urn:hl7-org:cql-annotations:r1" to "org.hl7.cql_annotations.r1"
+    )
+
+fun getPackageName(namespace: String): String {
+    return namespaceToPackageName[namespace] ?: error("Unknown namespace: $namespace")
+}
 
 fun getTypeName(type: XSType): ClassName {
     return when (type.targetNamespace) {
@@ -66,7 +71,7 @@ fun getTypeName(type: XSType): ClassName {
                 "ID" -> String::class.asClassName()
                 else -> error("Unknown type: ${type.name}")
             }
-        else -> ClassName(namespaceToPackageName[type.targetNamespace]!!, type.name)
+        else -> ClassName(getPackageName(type.targetNamespace), type.name)
     }
 }
 
@@ -184,13 +189,14 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
     }
 }
 
+// Adds a class property and `with` method for an element
 fun TypeSpec.Builder.addElement(
     elementDecl: XSElementDecl,
     typeName: TypeName,
     className: ClassName,
     isRepeated: Boolean
 ) {
-
+    // Create a list property if the element's `maxOccurs` isn't 0 or 1
     if (isRepeated) {
         val listType = ClassName("kotlin.collections", "MutableList").parameterizedBy(typeName)
 
@@ -248,6 +254,7 @@ fun TypeSpec.Builder.addElement(
     }
 }
 
+// Adds a `with` method for a non-repeated element or attribute
 fun TypeSpec.Builder.addWith(
     fieldName: String,
     fieldType: TypeName,
@@ -271,6 +278,7 @@ fun TypeSpec.Builder.addWith(
     )
 }
 
+// Adds a `with` method for a repeated element
 fun TypeSpec.Builder.addWithList(
     fieldName: String,
     fieldType: TypeName,
@@ -300,6 +308,7 @@ fun TypeSpec.Builder.addWithList(
     )
 }
 
+// Returns the elements declared in the base type and its ancestors
 fun getInheritedElements(complexType: XSComplexType): List<XSParticle> {
     if (
         complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
@@ -311,6 +320,7 @@ fun getInheritedElements(complexType: XSComplexType): List<XSParticle> {
     return getInheritedElements(baseType) + getOwnElements(baseType)
 }
 
+// Returns the elements declared in the current type
 fun getOwnElements(complexType: XSComplexType): List<XSParticle> {
     if (complexType.derivationMethod == XSType.EXTENSION) {
         return complexType.explicitContent?.asParticle()?.term?.asModelGroup()?.toList()
@@ -319,6 +329,7 @@ fun getOwnElements(complexType: XSComplexType): List<XSParticle> {
     return complexType.contentType?.asParticle()?.term?.asModelGroup()?.toList() ?: emptyList()
 }
 
+// Returns the attributes declared in the base type and its ancestors
 fun getInheritedAttributes(complexType: XSComplexType): List<XSAttributeUse> {
     if (
         complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
@@ -330,10 +341,12 @@ fun getInheritedAttributes(complexType: XSComplexType): List<XSAttributeUse> {
     return getInheritedAttributes(baseType) + getOwnAttributes(baseType)
 }
 
+// Returns the attributes declared in the current type
 fun getOwnAttributes(complexType: XSComplexType): List<XSAttributeUse> {
     return complexType.declaredAttributeUses.toList()
 }
 
+// Creates a class for a complex type with nested classes for nested anonymous complex types
 fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
     return TypeSpec.classBuilder(className)
         .addModifiers(KModifier.OPEN)
@@ -342,6 +355,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 addModifiers(KModifier.ABSTRACT)
             }
 
+            // Add superclass if the class has a base type
             if (
                 !(complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
                     complexType.baseType.name == "anyType")
@@ -349,6 +363,8 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 superclass(getTypeName(complexType.baseType))
             }
 
+            // Add the `content` property and `_content` backing property if the complex type is
+            // mixed (`Narrative` class)
             if (complexType.isMixed) {
                 val listType =
                     ClassName("kotlin.collections", "MutableList")
@@ -398,6 +414,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 )
             }
 
+            // Add properties and `with` methods for own attributes
             getOwnAttributes(complexType).forEach { attribute ->
                 val typeName = getTypeName(attribute.decl.type)
                 if (attribute.defaultValue == null) {
@@ -484,10 +501,12 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 addWith(attribute.decl.name, getTypeName(attribute.decl.type), className, false)
             }
 
+            // Add `with` methods for inherited attributes
             getInheritedAttributes(complexType).forEach { attribute ->
                 addWith(attribute.decl.name, getTypeName(attribute.decl.type), className, true)
             }
 
+            // Add properties and `with` methods for own elements
             getOwnElements(complexType).forEach { particle ->
                 val elementDecl = particle.term.asElementDecl()
                 if (elementDecl != null) {
@@ -509,6 +528,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 }
             }
 
+            // Add `with` methods for inherited elements
             getInheritedElements(complexType).forEach { particle ->
                 val elementDecl = particle.term.asElementDecl()
                 if (elementDecl != null) {
@@ -540,6 +560,8 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                     addParameter(thatParameter)
 
                     beginControlFlow("if (%N is %T)", thatParameter, className)
+
+                    // Check the equality of inherited attributes and elements
                     if (
                         !(complexType.baseType.targetNamespace ==
                             XMLConstants.W3C_XML_SCHEMA_NS_URI &&
@@ -550,6 +572,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                         endControlFlow()
                     }
 
+                    // Check the equality of own attributes
                     getOwnAttributes(complexType).forEach { attribute ->
                         beginControlFlow(
                             "if (this.%N != %N.%N)",
@@ -561,6 +584,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                         endControlFlow()
                     }
 
+                    // Check the equality of own elements
                     getOwnElements(complexType).forEach { particle ->
                         val elementDecl = particle.term.asElementDecl()
                         if (elementDecl != null) {
@@ -592,12 +616,17 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
         .build()
 }
 
+// Returns all subtypes of a complex type (including indirect subtypes)
 fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
     return complexType.subtypes.map { subtype -> getAllSubtypes(subtype) + subtype }.flatten()
 }
 
+// Adds the `fromXmlElement`, `toXmlElement`, `fromJsonElement`, and `toJsonElement` extension
+// functions
+// for the class and nested classes
 fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: ClassName) {
 
+    // Add `fromJsonElement` static function
     addFunction(
         FunSpec.builder("fromXmlElement")
             .receiver(className.nestedClass("Companion"))
@@ -611,11 +640,15 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     .parameterizedBy(String::class.asClassName(), String::class.asClassName())
             )
             .returns(className)
-            .addStatement(
-                "val namespaceOverrides = xmlElement.attributes.filter { it.key == \"xmlns\" || it.key.startsWith(\"xmlns:\") }.map { it.key.substringAfter(\":\", \"\") to it.value }.toMap()"
-            )
-            .addStatement("val namespaces = namespacesFromParent + namespaceOverrides")
             .apply {
+
+                // Build the namespaces map from the inherited and own declarations
+                addStatement(
+                    "val namespaceOverrides = xmlElement.attributes.filter { it.key == \"xmlns\" || it.key.startsWith(\"xmlns:\") }.map { it.key.substringAfter(\":\", \"\") to it.value }.toMap()"
+                )
+                addStatement("val namespaces = namespacesFromParent + namespaceOverrides")
+
+                // If the element has an `xsi:type` attribute, use the subtype's `fromXmlElement`
                 beginControlFlow(
                     "namespaces.entries.find { it.value == %S }?.key?.let",
                     XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
@@ -630,20 +663,22 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                         subtype.targetNamespace,
                         subtype.name,
                         getTypeName(subtype),
-                        MemberName(
-                            namespaceToPackageName[subtype.targetNamespace]!!,
-                            "fromXmlElement",
-                            true
-                        )
+                        MemberName(getPackageName(subtype.targetNamespace), "fromXmlElement", true)
                     )
                 }
                 endControlFlow()
                 endControlFlow()
                 endControlFlow()
+
+                // If the class is abstract and `xsi:type` didn't match any of the subtypes, throw a
+                // runtime error
                 if (complexType.isAbstract) {
                     addStatement("error(\"Cannot deserialize abstract class\")")
                 } else {
+                    // Build the instance from attributes and child elements
                     addStatement("val instance = %T()", className)
+
+                    // Read properties from attributes
                     (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
                         attribute ->
                         beginControlFlow("xmlElement.attributes[%S]?.let", attribute.decl.name)
@@ -654,6 +689,8 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                         )
                         endControlFlow()
                     }
+
+                    // Read properties from child elements
                     if (complexType.isMixed) {
                         addStatement(
                             """
@@ -697,8 +734,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
-                                            namespaceToPackageName[
-                                                elementDecl.type.targetNamespace]!!,
+                                            getPackageName(elementDecl.type.targetNamespace),
                                             "fromXmlElement",
                                             true
                                         )
@@ -709,8 +745,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
-                                            namespaceToPackageName[
-                                                elementDecl.type.targetNamespace]!!,
+                                            getPackageName(elementDecl.type.targetNamespace),
                                             "fromXmlElement",
                                             true
                                         )
@@ -728,6 +763,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             .build()
     )
 
+    // Add `toXmlElement` function
     addFunction(
         FunSpec.builder("toXmlElement")
             .receiver(className)
@@ -745,20 +781,22 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             )
             .returns(ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element"))
             .apply {
+                // If this is an instance of a subclass, use the `toXmlElement` method of the
+                // subclass
                 beginControlFlow("when (this)")
                 complexType.subtypes.forEach { subtype ->
                     addStatement(
                         "is %T -> return this.%M(tagName, true, namespaces, defaultNamespaces)",
                         getTypeName(subtype),
-                        MemberName(
-                            namespaceToPackageName[subtype.targetNamespace]!!,
-                            "toXmlElement",
-                            true
-                        )
+                        MemberName(getPackageName(subtype.targetNamespace), "toXmlElement", true)
                     )
                 }
                 endControlFlow()
+
+                // Write attributes
                 addStatement("val attributes = mutableMapOf<String, String>()")
+
+                // Write the `xsi:type` attribute if required
                 addStatement(
                     """
                     if (withXsiType) {
@@ -794,10 +832,10 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     }
                 }
 
+                // Write child elements
                 addStatement(
                     "val children = mutableListOf<org.hl7.elm_modelinfo.r1.serializing.XmlNode>()"
                 )
-
                 if (complexType.isMixed) {
                     addStatement(
                         """
@@ -837,7 +875,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 """
                                         .trimIndent(),
                                     MemberName(
-                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        getPackageName(elementDecl.type.targetNamespace),
                                         "toXmlElement",
                                         true
                                     ),
@@ -858,7 +896,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 """
                                         .trimIndent(),
                                     MemberName(
-                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        getPackageName(elementDecl.type.targetNamespace),
                                         "toXmlElement",
                                         true
                                     ),
@@ -884,12 +922,14 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             .build()
     )
 
+    // Add `fromJsonObject` static function
     addFunction(
         FunSpec.builder("fromJsonObject")
             .receiver(className.nestedClass("Companion"))
             .addParameter("jsonObject", ClassName("kotlinx.serialization.json", "JsonObject"))
             .returns(className)
             .apply {
+                // If the object has a `type` field, use the subtype's `fromJsonObject`
                 beginControlFlow("jsonObject[\"type\"]?.let")
                 beginControlFlow(
                     "if (it is kotlinx.serialization.json.JsonPrimitive && it.isString)"
@@ -900,20 +940,21 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                         "%S -> return %T.%M(jsonObject)",
                         subtype.name,
                         getTypeName(subtype),
-                        MemberName(
-                            namespaceToPackageName[subtype.targetNamespace]!!,
-                            "fromJsonObject",
-                            true
-                        )
+                        MemberName(getPackageName(subtype.targetNamespace), "fromJsonObject", true)
                     )
                 }
                 endControlFlow()
                 endControlFlow()
                 endControlFlow()
+
+                // If the class is abstract and `type` didn't match any of the subtypes, throw a
+                // runtime error
                 if (complexType.isAbstract) {
                     addStatement("error(\"Cannot deserialize abstract class\")")
                 } else {
+                    // Build the instance from JSON object fields
                     addStatement("val instance = %T()", className)
+
                     (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
                         attribute ->
                         beginControlFlow("jsonObject[%S]?.let", attribute.decl.name)
@@ -981,8 +1022,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
-                                            namespaceToPackageName[
-                                                elementDecl.type.targetNamespace]!!,
+                                            getPackageName(elementDecl.type.targetNamespace),
                                             "fromJsonObject",
                                             true
                                         )
@@ -998,8 +1038,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
-                                            namespaceToPackageName[
-                                                elementDecl.type.targetNamespace]!!,
+                                            getPackageName(elementDecl.type.targetNamespace),
                                             "fromJsonObject",
                                             true
                                         )
@@ -1016,28 +1055,31 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             .build()
     )
 
+    // Add `toJsonElement` function
     addFunction(
         FunSpec.builder("toJsonObject")
             .receiver(className)
             .addParameter("withType", Boolean::class)
             .returns(ClassName("kotlinx.serialization.json", "JsonObject"))
             .apply {
+                // If this is an instance of a subclass, use the `toJsonObject` method of the
+                // subclass
                 beginControlFlow("when (this)")
                 complexType.subtypes.forEach { subtype ->
                     addStatement(
                         "is %T -> return this.%M(true)",
                         getTypeName(subtype),
-                        MemberName(
-                            namespaceToPackageName[subtype.targetNamespace]!!,
-                            "toJsonObject",
-                            true
-                        )
+                        MemberName(getPackageName(subtype.targetNamespace), "toJsonObject", true)
                     )
                 }
                 endControlFlow()
+
+                // Write the object fields
                 addStatement(
                     "val entries = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()"
                 )
+
+                // Write the `type` field if required
                 addStatement(
                     """
                     if (withType) {
@@ -1105,7 +1147,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                     elementDecl.name,
                                     "_${elementDecl.name}",
                                     MemberName(
-                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        getPackageName(elementDecl.type.targetNamespace),
                                         "toJsonObject",
                                         true
                                     )
@@ -1116,7 +1158,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                     elementDecl.name,
                                     elementDecl.name,
                                     MemberName(
-                                        namespaceToPackageName[elementDecl.type.targetNamespace]!!,
+                                        getPackageName(elementDecl.type.targetNamespace),
                                         "toJsonObject",
                                         true
                                     )
@@ -1130,6 +1172,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             .build()
     )
 
+    // Handle nested classes (nested anonymous complex types)
     (getInheritedElements(complexType) + getOwnElements(complexType)).forEach { particle ->
         val elementDecl = particle.term.asElementDecl()
         if (elementDecl != null) {
@@ -1160,6 +1203,8 @@ open class XsdKotlinGenTask : DefaultTask() {
             xsomParser.parse(file)
 
             xsomParser.result.schemas.forEach { schema ->
+
+                // Generate classes for simple types (enums like `AccessModifier`)
                 schema.simpleTypes.values.forEach { simpleType ->
                     if (simpleType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI) {
                         return@forEach
@@ -1231,7 +1276,9 @@ open class XsdKotlinGenTask : DefaultTask() {
                         .writeTo(File(project.projectDir, config.outputDir))
                 }
 
+                // Generate classes and parsers/serializers for complex types
                 schema.complexTypes.values.forEach { complexType ->
+                    // Skip http://www.w3.org/2001/XMLSchema/anyType
                     if (
                         complexType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
                             complexType.name == "anyType"
@@ -1241,30 +1288,35 @@ open class XsdKotlinGenTask : DefaultTask() {
 
                     val className = getTypeName(complexType)
 
+                    // Generate the class
                     FileSpec.builder(className)
                         .addType(buildClass(complexType, className))
                         .build()
                         .writeTo(File(project.projectDir, config.outputDir))
 
+                    // Generate XML and JSON parsers and serializers
                     FileSpec.builder(className)
                         .apply { addSerializers(complexType, className) }
                         .build()
                         .writeTo(File(project.projectDir, config.outputDirSerialization))
                 }
 
+                // Generate ObjectFactory.kt for each namespace
                 schema.complexTypes.values
                     .map { it.targetNamespace }
                     .distinct()
                     .forEach { namespace ->
                         if (namespaceToPackageName.containsKey(namespace)) {
                             val objectFactoryClassName =
-                                ClassName(namespaceToPackageName[namespace]!!, "ObjectFactory")
+                                ClassName(getPackageName(namespace), "ObjectFactory")
 
                             FileSpec.builder(objectFactoryClassName)
                                 .addType(
                                     TypeSpec.classBuilder(objectFactoryClassName)
                                         .addModifiers(KModifier.OPEN)
                                         .apply {
+                                            // Object factories have `create` methods for each
+                                            // non-abstract complex type
                                             schema.complexTypes.values.forEach { complexType ->
                                                 if (
                                                     complexType.targetNamespace == namespace &&
@@ -1279,6 +1331,8 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                             .build()
                                                     )
 
+                                                    // Add `create` methods for nested anonymous
+                                                    // complex types
                                                     getOwnElements(complexType).forEach { particle
                                                         ->
                                                         val elementDecl =
