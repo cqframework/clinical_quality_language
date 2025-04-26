@@ -515,7 +515,10 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             className.nestedClass(
                                 elementDecl.name.replaceFirstChar { it.uppercase() }
                             )
+
+                        // Add a nested class for the anonymous complex type
                         addType(buildClass(elementDecl.type.asComplexType(), nestedClassName))
+
                         addElement(elementDecl, nestedClassName, className, particle.isRepeated)
                     } else {
                         addElement(
@@ -622,8 +625,7 @@ fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
 }
 
 // Adds the `fromXmlElement`, `toXmlElement`, `fromJsonElement`, and `toJsonElement` extension
-// functions
-// for the class and nested classes
+// functions for the class and nested classes
 fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: ClassName) {
 
     // Add `fromJsonElement` static function
