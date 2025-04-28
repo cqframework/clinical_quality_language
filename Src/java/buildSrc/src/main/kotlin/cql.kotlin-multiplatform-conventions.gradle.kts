@@ -42,9 +42,7 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
     jvmToolchain(17)
-    jvm {
-        withJava()
-    }
+    jvm()
 
     // This adds JavaScript as build target.
     // Running the build outputs packages in the build/js/packages directory.
