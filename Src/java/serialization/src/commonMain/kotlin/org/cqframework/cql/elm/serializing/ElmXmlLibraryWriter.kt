@@ -20,10 +20,13 @@ class ElmXmlLibraryWriter : ElmLibraryWriter {
                 namespaces,
                 mapOf(
                     "" to "urn:hl7-org:elm:r1",
-                    "xsi" to "http://www.w3.org/2001/XMLSchema-instance",
-                    "a" to "urn:hl7-org:cql-annotations:r1",
                     "t" to "urn:hl7-org:elm-types:r1",
+                    "xsi" to "http://www.w3.org/2001/XMLSchema-instance",
+                    "xsd" to "http://www.w3.org/2001/XMLSchema",
                     "fhir" to "http://hl7.org/fhir",
+                    "qdm43" to "urn:healthit-gov:qdm:v4_3",
+                    "qdm53" to "urn:healthit-gov:qdm:v5_3",
+                    "a" to "urn:hl7-org:cql-annotations:r1",
                 )
             )
         return toXmlString(element, namespaces)
