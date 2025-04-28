@@ -78,9 +78,9 @@ data class TypeParameter(
         return identifier.hashCode()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is TypeParameter) {
-            val (identifier1) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is TypeParameter) {
+            val (identifier1) = other
             return identifier == identifier1
         }
         return false

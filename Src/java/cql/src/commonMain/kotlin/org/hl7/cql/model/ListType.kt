@@ -49,9 +49,9 @@ data class ListType(val elementType: DataType) : BaseDataType() {
         return 67 * elementType.hashCode()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is ListType) {
-            val (elementType1) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is ListType) {
+            val (elementType1) = other
             return elementType == elementType1
         }
         return false
