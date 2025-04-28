@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import org.opencds.cqf.cql.engine.model.BaseModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
@@ -55,26 +57,66 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         }
     }
 
+    static class AccessorKey {
+        private final String path;
+        private final Class<?> type;
+
+        AccessorKey(String name, Class<?> type) {
+            this.path = name;
+            this.type = type;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof AccessorKey) {
+                AccessorKey other = (AccessorKey) obj;
+                return path.equals(other.path) && type.equals(other.type);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return path.hashCode() + 31 * type.hashCode();
+        }
+    }
+
+    private static final Map<AccessorKey, Method> readAccessorCache = new HashMap<>();
+
     private Method getReadAccessor(Class<?> clazz, String path) {
         // Field field = getProperty(clazz, path);
+        var accessorKey = new AccessorKey(path, clazz);
+        if (readAccessorCache.containsKey(accessorKey)) {
+            return readAccessorCache.get(accessorKey);
+        }
+
         String accessorMethodName =
                 String.format("%s%s%s", "get", path.substring(0, 1).toUpperCase(), path.substring(1));
         Method accessor = null;
         try {
             accessor = clazz.getMethod(accessorMethodName);
+            readAccessorCache.put(accessorKey, accessor);
         } catch (NoSuchMethodException e) {
             return null;
         }
         return accessor;
     }
 
+    private static final Map<AccessorKey, Method> writeAccessorCache = new HashMap<>();
+
     private Method getWriteAccessor(Class<?> clazz, String path) {
+        var accessorKey = new AccessorKey(path, clazz);
+        if (writeAccessorCache.containsKey(accessorKey)) {
+            return writeAccessorCache.get(accessorKey);
+        }
+
         Field field = getProperty(clazz, path);
         String accessorMethodName =
                 String.format("%s%s%s", "set", path.substring(0, 1).toUpperCase(), path.substring(1));
         Method accessor = null;
         try {
             accessor = clazz.getMethod(accessorMethodName, field.getType());
+            writeAccessorCache.put(accessorKey, accessor);
             return accessor;
         } catch (NoSuchMethodException e) {
             // If there is no setMethod with the exact signature, look for a signature that would accept a value of the
