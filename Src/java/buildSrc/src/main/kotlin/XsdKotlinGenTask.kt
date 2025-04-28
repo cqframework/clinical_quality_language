@@ -349,10 +349,11 @@ fun getOwnAttributes(complexType: XSComplexType): List<XSAttributeUse> {
 // Creates a class for a complex type with nested classes for nested anonymous complex types
 fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
     return TypeSpec.classBuilder(className)
-        .addModifiers(KModifier.OPEN)
         .apply {
             if (complexType.isAbstract) {
                 addModifiers(KModifier.ABSTRACT)
+            } else {
+                addModifiers(KModifier.OPEN)
             }
 
             // Add superclass if the class has a base type
@@ -553,16 +554,9 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 .addModifiers(KModifier.OVERRIDE)
                 .returns(Boolean::class)
                 .apply {
-                    val thatParameter =
-                        ParameterSpec.builder(
-                                "that",
-                                Any::class.asClassName().copy(nullable = true)
-                            )
-                            .build()
+                    addParameter("other", Any::class.asClassName().copy(nullable = true))
 
-                    addParameter(thatParameter)
-
-                    beginControlFlow("if (%N is %T)", thatParameter, className)
+                    beginControlFlow("if (other is %T)", className)
 
                     // Check the equality of inherited attributes and elements
                     if (
@@ -570,35 +564,27 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             XMLConstants.W3C_XML_SCHEMA_NS_URI &&
                             complexType.baseType.name == "anyType")
                     ) {
-                        beginControlFlow("if (!super.equals(%N))", thatParameter)
-                        addStatement("return false")
-                        endControlFlow()
+                        addStatement("if (!super.equals(other)) return false")
                     }
 
                     // Check the equality of own attributes
                     getOwnAttributes(complexType).forEach { attribute ->
-                        beginControlFlow(
-                            "if (this.%N != %N.%N)",
+                        addStatement(
+                            "if (this.%N != other.%N) return false",
                             className.member(attribute.decl.name),
-                            thatParameter,
                             className.member(attribute.decl.name)
                         )
-                        addStatement("return false")
-                        endControlFlow()
                     }
 
                     // Check the equality of own elements
                     getOwnElements(complexType).forEach { particle ->
                         val elementDecl = particle.term.asElementDecl()
                         if (elementDecl != null) {
-                            beginControlFlow(
-                                "if (this.%N != %N.%N)",
+                            addStatement(
+                                "if (this.%N != other.%N) return false",
                                 className.member(elementDecl.name),
-                                thatParameter,
                                 className.member(elementDecl.name)
                             )
-                            addStatement("return false")
-                            endControlFlow()
                         }
                     }
 
@@ -1207,9 +1193,9 @@ open class XsdKotlinGenTask : DefaultTask() {
             xsomParser.result.schemas.forEach { schema ->
 
                 // Generate classes for simple types (enums like `AccessModifier`)
-                schema.simpleTypes.values.forEach { simpleType ->
+                schema.simpleTypes.values.forEach simpleTypesLoop@{ simpleType ->
                     if (simpleType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI) {
-                        return@forEach
+                        return@simpleTypesLoop
                     }
 
                     val typeName = getTypeName(simpleType)
@@ -1279,13 +1265,13 @@ open class XsdKotlinGenTask : DefaultTask() {
                 }
 
                 // Generate classes and parsers/serializers for complex types
-                schema.complexTypes.values.forEach { complexType ->
+                schema.complexTypes.values.forEach complexTypesLoop@{ complexType ->
                     // Skip http://www.w3.org/2001/XMLSchema/anyType
                     if (
                         complexType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
                             complexType.name == "anyType"
                     ) {
-                        return@forEach
+                        return@complexTypesLoop
                     }
 
                     val className = getTypeName(complexType)
