@@ -21,7 +21,7 @@ import org.hl7.elm.r1.*
  */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-@Suppress("TooManyFunctions", "LongParameterList")
+@Suppress("TooManyFunctions", "LongParameterList", "NON_EXPORTABLE_TYPE")
 open class BaseLibraryManager(
     val modelManager: IModelManager,
     val namespaceManager: NamespaceManager,
