@@ -173,7 +173,15 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
                 "boolean" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
                 "integer" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
                 "decimal" ->
-                    CodeBlock.of("kotlinx.serialization.json.JsonUnquotedLiteral(it.toString())")
+                    CodeBlock.of(
+                        "%L kotlinx.serialization.json.JsonUnquotedLiteral(it.toString())",
+                        AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+                            .addMember(
+                                "%T::class",
+                                ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
+                            )
+                            .build()
+                    )
                 "dateTime" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
                 "time" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
                 "date" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
