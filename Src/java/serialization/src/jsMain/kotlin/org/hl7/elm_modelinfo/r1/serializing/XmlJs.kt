@@ -9,7 +9,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.parsing.DOMParser
 import org.w3c.dom.parsing.XMLSerializer
 
-actual fun parseXml(xml: String): XmlNode.Element {
+internal actual fun parseXml(xml: String): XmlNode.Element {
     val root = DOMParser().parseFromString(xml, "text/xml").documentElement!!
     return parseElement(root)
 }
@@ -33,7 +33,7 @@ private fun parseElement(element: Element): XmlNode.Element {
     return XmlNode.Element(tagName = element.tagName, attributes = attributes, children = children)
 }
 
-actual fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String {
+internal actual fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String {
     val doc =
         document.implementation.createDocument(
             namespaces[element.tagName.substringBefore(":", "")],

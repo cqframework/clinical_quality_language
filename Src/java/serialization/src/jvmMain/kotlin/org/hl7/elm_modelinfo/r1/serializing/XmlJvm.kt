@@ -12,7 +12,7 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 
-actual fun parseXml(xml: String): XmlNode.Element {
+internal actual fun parseXml(xml: String): XmlNode.Element {
     val factory = DocumentBuilderFactory.newInstance()
     val builder = factory.newDocumentBuilder()
     val root = builder.parse(ByteArrayInputStream(xml.toByteArray())).getDocumentElement()
@@ -39,7 +39,7 @@ private fun parseElement(element: Element): XmlNode.Element {
     return XmlNode.Element(tagName = element.tagName, attributes = attributes, children = children)
 }
 
-actual fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String {
+internal actual fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String {
     val factory = DocumentBuilderFactory.newInstance()
     val builder = factory.newDocumentBuilder()
     val doc = builder.newDocument()

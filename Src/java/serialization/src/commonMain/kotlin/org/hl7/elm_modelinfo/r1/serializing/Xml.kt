@@ -4,7 +4,8 @@ package org.hl7.elm_modelinfo.r1.serializing
 
 import org.cqframework.cql.elm.serializing.QName
 
-sealed class XmlNode {
+/** Used as an intermediate, cross-platform representation of an XML element or text node. */
+internal sealed class XmlNode {
     data class Text(val text: String) : XmlNode()
 
     data class Element(
@@ -14,11 +15,32 @@ sealed class XmlNode {
     ) : XmlNode()
 }
 
-expect fun parseXml(xml: String): XmlNode.Element
+/**
+ * Parses the given XML string into a tree of `XmlNode` objects.
+ *
+ * @param xml The XML string to parse.
+ * @return The root element of the parsed XML as an `XmlNode.Element`.
+ */
+internal expect fun parseXml(xml: String): XmlNode.Element
 
-expect fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String
+/**
+ * Serializes the given `XmlNode.Element` to an XML document string.
+ *
+ * @param element The `XmlNode.Element` to convert.
+ * @param namespaces A map of namespace prefixes to URIs.
+ * @return The XML document string.
+ */
+internal expect fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>): String
 
-fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QName {
+/**
+ * Parses the qualified name from an XML attribute value or tag name.
+ *
+ * @param value The qualified name string, which may include a prefix, e.g. "library",
+ *   "fhir:Patient".
+ * @param namespaces A map of namespace prefixes to URIs used in the current context.
+ * @return The corresponding `QName` object.
+ */
+internal fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QName {
     val parts = value.split(":")
     return if (parts.size == 2) {
         val prefix = parts[0]
@@ -28,7 +50,13 @@ fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QN
     }
 }
 
-fun getNewKey(namespaces: Map<String, String>): String {
+/**
+ * Generates a new namespace prefix that isn't yet used in the current XML document.
+ *
+ * @param namespaces The map of existing namespace prefixes to URIs.
+ * @return A new unique namespace prefix.
+ */
+private fun getNewKey(namespaces: Map<String, String>): String {
     val prefix = "ns"
     var i = 0
     while (namespaces.containsKey("$prefix$i")) {
@@ -37,7 +65,16 @@ fun getNewKey(namespaces: Map<String, String>): String {
     return "$prefix$i"
 }
 
-fun qNameToXmlAttributeValue(
+/**
+ * Converts a `QName` to a string for use in an XML attribute or tag name.
+ *
+ * @param qname The `QName` to convert.
+ * @param namespaces A map of namespace prefixes to URIs assigned in the current XML document.
+ * @param defaultNamespaces Prefixes to used for well-known namespaces, e.g. "a" for
+ *   "urn:hl7-org:cql-annotations:r1".
+ * @return The qualified name string, e.g. "a:CqlToElmInfo".
+ */
+internal fun qNameToXmlAttributeValue(
     qname: QName,
     namespaces: MutableMap<String, String>,
     defaultNamespaces: Map<String, String>

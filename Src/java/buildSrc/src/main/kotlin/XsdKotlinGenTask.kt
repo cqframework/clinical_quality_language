@@ -626,6 +626,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
     addFunction(
         FunSpec.builder("fromXmlElement")
             .receiver(className.nestedClass("Companion"))
+            .addModifiers(KModifier.INTERNAL)
             .addParameter(
                 "xmlElement",
                 ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element")
@@ -763,6 +764,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
     addFunction(
         FunSpec.builder("toXmlElement")
             .receiver(className)
+            .addModifiers(KModifier.INTERNAL)
             .addParameter("tagName", ClassName("org.cqframework.cql.elm.serializing", "QName"))
             .addParameter("withXsiType", Boolean::class)
             .addParameter(
@@ -922,6 +924,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
     addFunction(
         FunSpec.builder("fromJsonObject")
             .receiver(className.nestedClass("Companion"))
+            .addModifiers(KModifier.INTERNAL)
             .addParameter("jsonObject", ClassName("kotlinx.serialization.json", "JsonObject"))
             .returns(className)
             .apply {
@@ -1055,6 +1058,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
     addFunction(
         FunSpec.builder("toJsonObject")
             .receiver(className)
+            .addModifiers(KModifier.INTERNAL)
             .addParameter("withType", Boolean::class)
             .returns(ClassName("kotlinx.serialization.json", "JsonObject"))
             .apply {
