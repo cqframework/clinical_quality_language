@@ -70,7 +70,7 @@ private fun getNewKey(namespaces: Map<String, String>): String {
  *
  * @param qname The `QName` to convert.
  * @param namespaces A map of namespace prefixes to URIs assigned in the current XML document.
- * @param defaultNamespaces Prefixes to used for well-known namespaces, e.g. "a" for
+ * @param defaultNamespaces Prefixes to use for well-known namespaces, e.g. "a" for
  *   "urn:hl7-org:cql-annotations:r1".
  * @return The qualified name string, e.g. "a:CqlToElmInfo".
  */
