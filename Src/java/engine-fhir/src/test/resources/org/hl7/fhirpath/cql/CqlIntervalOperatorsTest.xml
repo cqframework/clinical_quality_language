@@ -1016,6 +1016,14 @@
 			<expression>Interval[1, 10] overlaps Interval[4, 10]</expression>
 			<output>true</output>
 		</test>
+		<test name="IntegerIntervalOverlapsTrue2">
+			<expression>Interval[4, 10] overlaps Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalOverlapsTrue3">
+			<expression>Interval[10, 15] overlaps Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
 		<test name="IntegerIntervalOverlapsFalse">
 			<expression>Interval[1, 10] overlaps Interval[11, 20]</expression>
 			<output>false</output>
@@ -1066,6 +1074,10 @@
 			<expression>Interval[4, 10] overlaps before Interval[1, 10]</expression>
 			<output>false</output>
 		</test>
+		<test name="IntegerIntervalOverlapsBeforeFalse2">
+			<expression>Interval[4, 10] overlaps before Interval[4, 10]</expression>
+			<output>false</output>
+		</test>
 		<test name="DecimalIntervalOverlapsBeforeTrue">
 			<expression>Interval[1.0, 10.0] overlaps before Interval[4.0, 10.0]</expression>
 			<output>true</output>
@@ -1110,6 +1122,10 @@
 		</test>
 		<test name="IntegerIntervalOverlapsAfterFalse">
 			<expression>Interval[4, 10] overlaps after Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalOverlapsAfterFalse2">
+			<expression>Interval[4, 10] overlaps after Interval[4, 10]</expression>
 			<output>false</output>
 		</test>
 		<test name="DecimalIntervalOverlapsAfterTrue">
