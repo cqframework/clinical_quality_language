@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.ZonedDateTime;
 import java.util.*;
 import org.hl7.elm.r1.*;
@@ -17,22 +19,28 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
 public class State {
 
     public State(Environment environment) {
-        this.environment = environment;
+        this(environment, new HashSet<>());
+    }
+
+    public State(Environment environment, Set<CqlEngine.Options> engineOptions) {
+        this.environment = requireNonNull(environment);
+        this.engineOptions = requireNonNull(engineOptions);
         this.setEvaluationDateTime(ZonedDateTime.now());
     }
 
     private final Cache cache = new Cache();
+    private final Set<CqlEngine.Options> engineOptions;
 
     private final Environment environment;
 
-    private Deque<String> currentContext = new ArrayDeque<>();
+    private final Deque<String> currentContext = new ArrayDeque<>();
 
     private Deque<Deque<Variable>> windows = new ArrayDeque<>();
-    private Deque<Library> currentLibrary = new ArrayDeque<>();
+    private final Deque<Library> currentLibrary = new ArrayDeque<>();
 
-    private Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
+    private final Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
 
-    private Map<String, Object> parameters = new HashMap<>();
+    private final Map<String, Object> parameters = new HashMap<>();
     private Map<String, Object> contextValues = new HashMap<>();
 
     private ZonedDateTime evaluationZonedDateTime;
@@ -54,6 +62,10 @@ public class State {
 
     public Map<String, Object> getParameters() {
         return parameters;
+    }
+
+    public Set<CqlEngine.Options> getEngineOptions() {
+        return engineOptions;
     }
 
     public void setParameters(Library library, Map<String, Object> parameters) {
