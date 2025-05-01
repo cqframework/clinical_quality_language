@@ -94,11 +94,9 @@ public class Main {
                 NamespaceInfo newNamespace = new NamespaceInfo(npm.id(), npm.canonical());
                 if (namespaceManager.resolveNamespaceUri(newNamespace.getName()) != null) {
                     // TODO: Logger.skip loading
-                }
-                else if (namespaceManager.getNamespaceInfoFromUri(newNamespace.getUri()) != null) {
+                } else if (namespaceManager.getNamespaceInfoFromUri(newNamespace.getUri()) != null) {
                     // TODO: Logger.skip loading
-                }
-                else {
+                } else {
                     namespaceManager.ensureNamespaceRegistered(newNamespace);
                 }
             });
