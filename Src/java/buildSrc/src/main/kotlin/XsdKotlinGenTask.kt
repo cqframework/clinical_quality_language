@@ -50,6 +50,24 @@ fun getPackageName(namespace: String): String {
     return namespaceToPackageName[namespace] ?: error("Unknown namespace: $namespace")
 }
 
+// Reusable class names for KotlinPoet
+val mutableListClassName = ClassName("kotlin.collections", "MutableList")
+val mutableMapClassName = ClassName("kotlin.collections", "MutableMap")
+val qNameClassName = ClassName("org.cqframework.cql.elm.serializing", "QName")
+val bigDecimalClassName = ClassName("org.cqframework.cql.elm.serializing", "BigDecimal")
+val jsonObjectClassName = ClassName("kotlinx.serialization.json", "JsonObject")
+val jsonArrayClassName = ClassName("kotlinx.serialization.json", "JsonArray")
+val jsonPrimitiveClassName = ClassName("kotlinx.serialization.json", "JsonPrimitive")
+val jsonElementClassName = ClassName("kotlinx.serialization.json", "JsonElement")
+val jsonNullClassName = ClassName("kotlinx.serialization.json", "JsonNull")
+val xmlStringToQName =
+    MemberName("org.hl7.elm_modelinfo.r1.serializing", "xmlAttributeValueToQName")
+val qNameToXmlString =
+    MemberName("org.hl7.elm_modelinfo.r1.serializing", "qNameToXmlAttributeValue")
+val jsonStringToQName = MemberName("org.hl7.elm_modelinfo.r1.serializing", "jsonStringToQName")
+val xmlNodeClassName = ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode")
+val xmlElementClassName = ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element")
+
 fun getTypeName(type: XSType): ClassName {
     return when (type.targetNamespace) {
         XMLConstants.W3C_XML_SCHEMA_NS_URI ->
@@ -59,13 +77,13 @@ fun getTypeName(type: XSType): ClassName {
                 "anySimpleType" -> String::class.asClassName()
                 "boolean" -> Boolean::class.asClassName()
                 "integer" -> Int::class.asClassName()
-                "decimal" -> ClassName("org.cqframework.cql.elm.serializing", "BigDecimal")
+                "decimal" -> bigDecimalClassName
                 "dateTime" -> String::class.asClassName()
                 "time" -> String::class.asClassName()
                 "date" -> String::class.asClassName()
                 "base64Binary" -> String::class.asClassName()
                 "anyURI" -> String::class.asClassName()
-                "QName" -> ClassName("org.cqframework.cql.elm.serializing", "QName")
+                "QName" -> qNameClassName
                 "token" -> String::class.asClassName()
                 "NCName" -> String::class.asClassName()
                 "ID" -> String::class.asClassName()
@@ -84,16 +102,13 @@ fun getXmlAttributeParserCode(type: XSType): CodeBlock {
                 "anySimpleType" -> CodeBlock.of("it")
                 "boolean" -> CodeBlock.of("it.toBoolean()")
                 "integer" -> CodeBlock.of("it.toInt()")
-                "decimal" -> CodeBlock.of("org.cqframework.cql.elm.serializing.BigDecimal(it)")
+                "decimal" -> CodeBlock.of("%T(it)", bigDecimalClassName)
                 "dateTime" -> CodeBlock.of("it")
                 "time" -> CodeBlock.of("it")
                 "date" -> CodeBlock.of("it")
                 "base64Binary" -> CodeBlock.of("it")
                 "anyURI" -> CodeBlock.of("it")
-                "QName" ->
-                    CodeBlock.of(
-                        "org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it, namespaces)"
-                    )
+                "QName" -> CodeBlock.of("%M(it, namespaces)", xmlStringToQName)
                 "token" -> CodeBlock.of("it")
                 "NCName" -> CodeBlock.of("it")
                 "ID" -> CodeBlock.of("it")
@@ -118,10 +133,7 @@ fun getXmlAttributeSerializerCode(type: XSType): CodeBlock {
                 "date" -> CodeBlock.of("it")
                 "base64Binary" -> CodeBlock.of("it")
                 "anyURI" -> CodeBlock.of("it")
-                "QName" ->
-                    CodeBlock.of(
-                        "org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(it, namespaces, defaultNamespaces)"
-                    )
+                "QName" -> CodeBlock.of("%M(it, namespaces, defaultNamespaces)", qNameToXmlString)
                 "token" -> CodeBlock.of("it")
                 "NCName" -> CodeBlock.of("it")
                 "ID" -> CodeBlock.of("it")
@@ -143,17 +155,13 @@ fun getJsonPrimitiveParserCode(type: XSType): CodeBlock {
                     CodeBlock.of("it.%M", MemberName("kotlinx.serialization.json", "boolean", true))
                 "integer" ->
                     CodeBlock.of("it.%M", MemberName("kotlinx.serialization.json", "int", true))
-                "decimal" ->
-                    CodeBlock.of("org.cqframework.cql.elm.serializing.BigDecimal(it.content)")
+                "decimal" -> CodeBlock.of("%T(it.content)", bigDecimalClassName)
                 "dateTime" -> CodeBlock.of("it.content")
                 "time" -> CodeBlock.of("it.content")
                 "date" -> CodeBlock.of("it.content")
                 "base64Binary" -> CodeBlock.of("it.content")
                 "anyURI" -> CodeBlock.of("it.content")
-                "QName" ->
-                    CodeBlock.of(
-                        "org.hl7.elm_modelinfo.r1.serializing.jsonStringToQName(it.content)"
-                    )
+                "QName" -> CodeBlock.of("%M(it.content)", jsonStringToQName)
                 "token" -> CodeBlock.of("it.content")
                 "NCName" -> CodeBlock.of("it.content")
                 "ID" -> CodeBlock.of("it.content")
@@ -167,11 +175,11 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
     return when (type.targetNamespace) {
         XMLConstants.W3C_XML_SCHEMA_NS_URI ->
             when (type.name) {
-                "string" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "int" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "anySimpleType" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "boolean" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "integer" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "string" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "int" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "anySimpleType" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "boolean" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "integer" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
                 "decimal" ->
                     CodeBlock.of(
                         "%L kotlinx.serialization.json.JsonUnquotedLiteral(it.toString())",
@@ -182,18 +190,18 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
                             )
                             .build()
                     )
-                "dateTime" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "time" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "date" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "base64Binary" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "anyURI" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "QName" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it.toString())")
-                "token" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "NCName" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
-                "ID" -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it)")
+                "dateTime" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "time" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "date" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "base64Binary" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "anyURI" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "QName" -> CodeBlock.of("%T(it.toString())", jsonPrimitiveClassName)
+                "token" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "NCName" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
+                "ID" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
                 else -> error("Unknown type: ${type.name}")
             }
-        else -> CodeBlock.of("kotlinx.serialization.json.JsonPrimitive(it.value())")
+        else -> CodeBlock.of("%T(it.value())", jsonPrimitiveClassName)
     }
 }
 
@@ -206,7 +214,7 @@ fun TypeSpec.Builder.addElement(
 ) {
     // Create a list property if the element's `maxOccurs` isn't 0 or 1
     if (isRepeated) {
-        val listType = ClassName("kotlin.collections", "MutableList").parameterizedBy(typeName)
+        val listType = mutableListClassName.parameterizedBy(typeName)
 
         addProperty(
             PropertySpec.builder("_${elementDecl.name}", listType.copy(nullable = true))
@@ -375,9 +383,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
             // Add the `content` property and `_content` backing property if the complex type is
             // mixed (`Narrative` class)
             if (complexType.isMixed) {
-                val listType =
-                    ClassName("kotlin.collections", "MutableList")
-                        .parameterizedBy(Any::class.asTypeName())
+                val listType = mutableListClassName.parameterizedBy(Any::class.asTypeName())
 
                 addProperty(
                     PropertySpec.builder("_content", listType.copy(nullable = true))
@@ -627,10 +633,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
         FunSpec.builder("fromXmlElement")
             .receiver(className.nestedClass("Companion"))
             .addModifiers(KModifier.INTERNAL)
-            .addParameter(
-                "xmlElement",
-                ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element")
-            )
+            .addParameter("xmlElement", xmlElementClassName)
             .addParameter(
                 "namespacesFromParent",
                 Map::class.asClassName()
@@ -651,12 +654,11 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
                 )
                 beginControlFlow("xmlElement.attributes[\"\$it:type\"]?.let")
-                beginControlFlow(
-                    "when (org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it, namespaces))"
-                )
+                beginControlFlow("when (%M(it, namespaces))", xmlStringToQName)
                 getAllSubtypes(complexType).forEach { subtype ->
                     addStatement(
-                        "org.cqframework.cql.elm.serializing.QName(%S, %S) -> return %T.%M(xmlElement, namespaces)",
+                        "%T(%S, %S) -> return %T.%M(xmlElement, namespaces)",
+                        qNameClassName,
                         subtype.targetNamespace,
                         subtype.name,
                         getTypeName(subtype),
@@ -670,7 +672,10 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                 // If the class is abstract and `xsi:type` didn't match any of the subtypes, throw a
                 // runtime error
                 if (complexType.isAbstract) {
-                    addStatement("error(\"Cannot deserialize abstract class\")")
+                    addStatement(
+                        "error(%S)",
+                        "Cannot deserialize abstract class ${className.canonicalName}"
+                    )
                 } else {
                     // Build the instance from attributes and child elements
                     addStatement("val instance = %T()", className)
@@ -690,22 +695,12 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     // Read properties from child elements
                     if (complexType.isMixed) {
                         addStatement(
-                            """
-                            xmlElement.children.forEach {
-                                when (it) {
-                                    is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element -> {
-                                        instance.content.add(org.hl7.cql_annotations.r1.Narrative.%M(it, namespaces))
-                                    }
-                                    is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Text -> {
-                                        instance.content.add(it.text)
-                                    }
-                                }
-                            }
-                        """
-                                .trimIndent(),
-                            MemberName("org.hl7.cql_annotations.r1", "fromXmlElement", true)
+                            "org.cqframework.cql.elm.serializing.getNarrativeContentFromXml(xmlElement, instance, namespaces)"
                         )
                     } else {
+                        beginControlFlow("xmlElement.children.forEach")
+                        beginControlFlow("if (it is %T)", xmlElementClassName)
+                        beginControlFlow("when (%M(it.tagName, namespaces))", xmlStringToQName)
                         (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
                             particle ->
                             val elementDecl = particle.term.asElementDecl()
@@ -718,9 +713,9 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         )
                                     else getTypeName(elementDecl.type)
 
-                                beginControlFlow("xmlElement.children.forEach")
                                 beginControlFlow(
-                                    "if (it is org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element && org.hl7.elm_modelinfo.r1.serializing.xmlAttributeValueToQName(it.tagName, namespaces) == org.cqframework.cql.elm.serializing.QName(%S, %S))",
+                                    "%T(%S, %S) ->",
+                                    qNameClassName,
                                     elementDecl.targetNamespace,
                                     elementDecl.name
                                 )
@@ -750,9 +745,11 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 }
 
                                 endControlFlow()
-                                endControlFlow()
                             }
                         }
+                        endControlFlow()
+                        endControlFlow()
+                        endControlFlow()
                     }
                     addStatement("return instance")
                 }
@@ -765,19 +762,21 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
         FunSpec.builder("toXmlElement")
             .receiver(className)
             .addModifiers(KModifier.INTERNAL)
-            .addParameter("tagName", ClassName("org.cqframework.cql.elm.serializing", "QName"))
+            .addParameter("tagName", qNameClassName)
             .addParameter("withXsiType", Boolean::class)
             .addParameter(
                 "namespaces",
-                ClassName("kotlin.collections", "MutableMap")
-                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+                mutableMapClassName.parameterizedBy(
+                    String::class.asClassName(),
+                    String::class.asClassName()
+                )
             )
             .addParameter(
                 "defaultNamespaces",
                 Map::class.asClassName()
                     .parameterizedBy(String::class.asClassName(), String::class.asClassName())
             )
-            .returns(ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element"))
+            .returns(xmlElementClassName)
             .apply {
                 // If this is an instance of a subclass, use the `toXmlElement` method of the
                 // subclass
@@ -798,13 +797,15 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                 addStatement(
                     """
                     if (withXsiType) {
-                        attributes[
-                            org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(org.cqframework.cql.elm.serializing.QName(%S, "type"), namespaces, defaultNamespaces)
-                        ] = org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(org.cqframework.cql.elm.serializing.QName(%S, %S), namespaces, defaultNamespaces)
+                      attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
                     }
                 """
                         .trimIndent(),
+                    qNameToXmlString,
+                    qNameClassName,
                     XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    qNameToXmlString,
+                    qNameClassName,
                     complexType.targetNamespace,
                     complexType.name ?: "null"
                 )
@@ -831,26 +832,10 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                 }
 
                 // Write child elements
-                addStatement(
-                    "val children = mutableListOf<org.hl7.elm_modelinfo.r1.serializing.XmlNode>()"
-                )
+                addStatement("val children = mutableListOf<%T>()", xmlNodeClassName)
                 if (complexType.isMixed) {
                     addStatement(
-                        """
-                        this.content.forEach {
-                            when (it) {
-                                is String -> children.add(org.hl7.elm_modelinfo.r1.serializing.XmlNode.Text(it))
-                                is org.hl7.cql_annotations.r1.Narrative -> children.add(it.%M(
-                                    org.cqframework.cql.elm.serializing.QName("urn:hl7-org:cql-annotations:r1", "s"),
-                                    false,
-                                    namespaces,
-                                    defaultNamespaces
-                                ))
-                            }
-                        }
-                    """
-                            .trimIndent(),
-                        MemberName("org.hl7.cql_annotations.r1", "toXmlElement", true)
+                        "org.cqframework.cql.elm.serializing.addNarrativeContentToXml(this, children, namespaces, defaultNamespaces)"
                     )
                 } else {
                     (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
@@ -863,12 +848,12 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 addStatement(
                                     """
                                     it.forEach {
-                                        children.add(it.%M(
-                                            org.cqframework.cql.elm.serializing.QName(%S, %S),
-                                            false,
-                                            namespaces,
-                                            defaultNamespaces
-                                        ))
+                                      children.add(it.%M(
+                                        %T(%S, %S),
+                                        false,
+                                        namespaces,
+                                        defaultNamespaces
+                                      ))
                                     }
                                 """
                                         .trimIndent(),
@@ -877,6 +862,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         "toXmlElement",
                                         true
                                     ),
+                                    qNameClassName,
                                     elementDecl.targetNamespace,
                                     elementDecl.name
                                 )
@@ -886,10 +872,10 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 addStatement(
                                     """
                                     children.add(it.%M(
-                                        org.cqframework.cql.elm.serializing.QName(%S, %S),
-                                        false,
-                                        namespaces,
-                                        defaultNamespaces
+                                      %T(%S, %S),
+                                      false,
+                                      namespaces,
+                                      defaultNamespaces
                                     ))
                                 """
                                         .trimIndent(),
@@ -898,6 +884,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                         "toXmlElement",
                                         true
                                     ),
+                                    qNameClassName,
                                     elementDecl.targetNamespace,
                                     elementDecl.name
                                 )
@@ -907,14 +894,9 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     }
                 }
                 addStatement(
-                    """
-                    return org.hl7.elm_modelinfo.r1.serializing.XmlNode.Element(
-                        org.hl7.elm_modelinfo.r1.serializing.qNameToXmlAttributeValue(tagName, namespaces, defaultNamespaces),
-                        attributes,
-                        children
-                    )
-                """
-                        .trimIndent()
+                    "return %T(%M(tagName, namespaces, defaultNamespaces), attributes, children)",
+                    xmlElementClassName,
+                    qNameToXmlString
                 )
             }
             .build()
@@ -925,14 +907,12 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
         FunSpec.builder("fromJsonObject")
             .receiver(className.nestedClass("Companion"))
             .addModifiers(KModifier.INTERNAL)
-            .addParameter("jsonObject", ClassName("kotlinx.serialization.json", "JsonObject"))
+            .addParameter("jsonObject", jsonObjectClassName)
             .returns(className)
             .apply {
                 // If the object has a `type` field, use the subtype's `fromJsonObject`
                 beginControlFlow("jsonObject[\"type\"]?.let")
-                beginControlFlow(
-                    "if (it is kotlinx.serialization.json.JsonPrimitive && it.isString)"
-                )
+                beginControlFlow("if (it is %T && it.isString)", jsonPrimitiveClassName)
                 beginControlFlow("when (it.content)")
                 getAllSubtypes(complexType).forEach { subtype ->
                     addStatement(
@@ -949,7 +929,10 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                 // If the class is abstract and `type` didn't match any of the subtypes, throw a
                 // runtime error
                 if (complexType.isAbstract) {
-                    addStatement("error(\"Cannot deserialize abstract class\")")
+                    addStatement(
+                        "error(%S)",
+                        "Cannot deserialize abstract class ${className.canonicalName}"
+                    )
                 } else {
                     // Build the instance from JSON object fields
                     addStatement("val instance = %T()", className)
@@ -958,7 +941,9 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                         attribute ->
                         beginControlFlow("jsonObject[%S]?.let", attribute.decl.name)
                         beginControlFlow(
-                            "if (it is kotlinx.serialization.json.JsonPrimitive && it !is kotlinx.serialization.json.JsonNull)"
+                            "if (it is %T && it !is %T)",
+                            jsonPrimitiveClassName,
+                            jsonNullClassName,
                         )
                         addStatement(
                             "instance.%N = %L",
@@ -970,26 +955,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                     }
                     if (complexType.isMixed) {
                         addStatement(
-                            """
-                            jsonObject["s"]?.let {
-                                if (it is kotlinx.serialization.json.JsonArray) {
-                                    it.forEach {
-                                        when (it) {
-                                            is kotlinx.serialization.json.JsonObject -> {
-                                                instance.content.add(org.hl7.cql_annotations.r1.Narrative.%M(it.get("value")!!.%M))
-                                            }
-                                            is kotlinx.serialization.json.JsonPrimitive -> {
-                                                instance.content.add(it.content)
-                                            }
-                                            else -> {}
-                                        }
-                                    }
-                                }
-                            }
-                        """
-                                .trimIndent(),
-                            MemberName("org.hl7.cql_annotations.r1", "fromJsonObject", true),
-                            MemberName("kotlinx.serialization.json", "jsonObject", true)
+                            "org.cqframework.cql.elm.serializing.getNarrativeContentFromJson(jsonObject, instance)"
                         )
                     } else {
                         (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
@@ -1009,15 +975,17 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 if (particle.isRepeated) {
                                     addStatement(
                                         """
-                                            if (it is kotlinx.serialization.json.JsonArray) {
-                                                it.forEach {
-                                                    if (it is kotlinx.serialization.json.JsonObject) {
-                                                        instance.%N.add(%T.%M(it))
-                                                    }
+                                            if (it is %T) {
+                                              it.forEach {
+                                                if (it is %T) {
+                                                  instance.%N.add(%T.%M(it))
                                                 }
+                                              }
                                             }
                                         """
                                             .trimIndent(),
+                                        jsonArrayClassName,
+                                        jsonObjectClassName,
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
@@ -1029,11 +997,12 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                                 } else {
                                     addStatement(
                                         """
-                                            if (it is kotlinx.serialization.json.JsonObject) {
-                                                instance.%N = %T.%M(it)
+                                            if (it is %T) {
+                                              instance.%N = %T.%M(it)
                                             }
                                         """
                                             .trimIndent(),
+                                        jsonObjectClassName,
                                         elementDecl.name,
                                         elementClassName,
                                         MemberName(
@@ -1060,7 +1029,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             .receiver(className)
             .addModifiers(KModifier.INTERNAL)
             .addParameter("withType", Boolean::class)
-            .returns(ClassName("kotlinx.serialization.json", "JsonObject"))
+            .returns(jsonObjectClassName)
             .apply {
                 // If this is an instance of a subclass, use the `toJsonObject` method of the
                 // subclass
@@ -1075,18 +1044,17 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                 endControlFlow()
 
                 // Write the object fields
-                addStatement(
-                    "val entries = mutableMapOf<String, kotlinx.serialization.json.JsonElement>()"
-                )
+                addStatement("val entries = mutableMapOf<String, %T>()", jsonElementClassName)
 
                 // Write the `type` field if required
                 addStatement(
                     """
                     if (withType) {
-                        entries["type"] = kotlinx.serialization.json.JsonPrimitive(%S)
+                      entries["type"] = %T(%S)
                     }
                 """
                         .trimIndent(),
+                    jsonPrimitiveClassName,
                     complexType.name ?: "null"
                 )
 
@@ -1113,27 +1081,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
 
                 if (complexType.isMixed) {
                     addStatement(
-                        """
-                        entries["s"] = kotlinx.serialization.json.JsonArray(
-                            this.content.map {
-                                when (it) {
-                                    is String -> kotlinx.serialization.json.JsonPrimitive(it)
-                                    is org.hl7.cql_annotations.r1.Narrative -> kotlinx.serialization.json.JsonObject(
-                                        mapOf(
-                                            "name" to kotlinx.serialization.json.JsonPrimitive("{urn:hl7-org:cql-annotations:r1}s"),
-                                            "declaredType" to kotlinx.serialization.json.JsonPrimitive("org.hl7.cql_annotations.r1.Narrative"),
-                                            "scope" to kotlinx.serialization.json.JsonPrimitive("javax.xml.bind.JAXBElement${"\\$"}GlobalScope"),
-                                            "value" to it.%M(false),
-                                            "globalScope" to kotlinx.serialization.json.JsonPrimitive(true)
-                                        )
-                                    )
-                                    else -> kotlinx.serialization.json.JsonNull
-                                }
-                            }
-                        )
-                    """
-                            .trimIndent(),
-                        MemberName("org.hl7.cql_annotations.r1", "toJsonObject", true)
+                        "org.cqframework.cql.elm.serializing.addNarrativeContentToJson(this, entries)"
                     )
                 } else {
                     (getInheritedElements(complexType) + getOwnElements(complexType)).forEach {
@@ -1143,8 +1091,9 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
 
                             if (particle.isRepeated) {
                                 addStatement(
-                                    "entries[%S] = kotlinx.serialization.json.JsonArray(this.%N?.map { it.%M(false) } ?: emptyList())",
+                                    "entries[%S] = %T(this.%N?.map { it.%M(false) } ?: emptyList())",
                                     elementDecl.name,
+                                    jsonArrayClassName,
                                     "_${elementDecl.name}",
                                     MemberName(
                                         getPackageName(elementDecl.type.targetNamespace),
@@ -1167,7 +1116,7 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
                         }
                     }
                 }
-                addStatement("return kotlinx.serialization.json.JsonObject(entries)")
+                addStatement("return %T(entries)", jsonObjectClassName)
             }
             .build()
     )
@@ -1243,9 +1192,9 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                 .addCode(
                                                     """
                                                         for (c in entries) {
-                                                            if (c.value == %N) {
-                                                                return c
-                                                            }
+                                                          if (c.value == %N) {
+                                                            return c
+                                                          }
                                                         }
                                                         throw IllegalArgumentException(%N)
                                                     """
