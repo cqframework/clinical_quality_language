@@ -211,8 +211,8 @@ public class LibraryManager {
             if (cqlSource == null) {
                 throw new CqlIncludeException(
                         String.format(
-                                "Could not load source for library %s, version %s.",
-                                libraryIdentifier.getId(), libraryIdentifier.getVersion()),
+                                "Could not load source for library %s, version %s, namespace uri %s.",
+                                libraryIdentifier.getId(), libraryIdentifier.getVersion(), libraryIdentifier.getSystem()),
                         libraryIdentifier.getSystem(),
                         libraryIdentifier.getId(),
                         libraryIdentifier.getVersion());
