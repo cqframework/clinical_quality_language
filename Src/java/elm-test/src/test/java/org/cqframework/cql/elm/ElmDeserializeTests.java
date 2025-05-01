@@ -73,6 +73,8 @@ class ElmDeserializeTests {
             var nestedNarrative = (Narrative) narrative.getContent().get(1);
             assertTrue(nestedNarrative.getContent().get(0) instanceof Narrative);
             nestedNarrative = (Narrative) nestedNarrative.getContent().get(0);
+            assertTrue(nestedNarrative.getContent().get(0) instanceof Narrative);
+            nestedNarrative = (Narrative) nestedNarrative.getContent().get(0);
             assertEquals("[", nestedNarrative.getContent().get(0));
 
             verifySigLevels(library, LibraryBuilder.SignatureLevel.All);

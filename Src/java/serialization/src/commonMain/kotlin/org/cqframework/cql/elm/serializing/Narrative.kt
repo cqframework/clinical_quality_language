@@ -65,6 +65,16 @@ internal fun addNarrativeContentToXml(
 }
 
 /**
+ * Unwraps the inner value from a JSON object, if it exists and is a JSON object itself.
+ *
+ * @param jsonObject The JSON object to unwrap.
+ * @return The unwrapped inner value or the original JSON object.
+ */
+private fun getInnerValueIfObject(jsonObject: JsonObject): JsonObject {
+    return jsonObject["value"] as? JsonObject ?: jsonObject
+}
+
+/**
  * Extracts the content of a `Narrative` instance from a JSON object.
  *
  * @param jsonObject The JSON object representing the `Narrative`.
@@ -76,7 +86,7 @@ internal fun getNarrativeContentFromJson(jsonObject: JsonObject, narrative: Narr
             narrative.content.addAll(
                 it.map {
                     when (it) {
-                        is JsonObject -> Narrative.fromJsonObject(it)
+                        is JsonObject -> Narrative.fromJsonObject(getInnerValueIfObject(it))
                         is JsonPrimitive -> it.content
                         else -> error("Bad Narrative content")
                     }
@@ -88,8 +98,15 @@ internal fun getNarrativeContentFromJson(jsonObject: JsonObject, narrative: Narr
             (it as? JsonArray)?.let {
                 narrative.content.addAll(
                     it.map {
-                        (it as? JsonObject)?.let { Narrative.fromJsonObject(it) }
-                            ?: error("Bad Narrative content")
+                        when (it) {
+                            is JsonObject -> Narrative.fromJsonObject(getInnerValueIfObject(it))
+                            is JsonPrimitive -> {
+                                val innerNarrative = Narrative()
+                                innerNarrative.content.add(it.content)
+                                innerNarrative
+                            }
+                            else -> error("Bad Narrative content")
+                        }
                     }
                 )
             } ?: error("Bad Narrative content")
