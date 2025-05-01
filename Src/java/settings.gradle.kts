@@ -1,6 +1,6 @@
 pluginManagement {
     plugins {
-        kotlin("jvm") version "2.1.0"
+        kotlin("jvm") version "2.1.20"
     }
 }
 
@@ -22,6 +22,7 @@ include(
     "qdm",
     "quick",
     "cql-to-elm",
+    "cql-to-elm-js",
     "cql-to-elm-cli",
     "elm-fhir",
     "ucum",

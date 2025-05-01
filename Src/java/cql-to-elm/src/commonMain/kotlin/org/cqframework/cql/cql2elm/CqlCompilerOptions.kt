@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 
 /** translation options for Cql source files */
+@Suppress("NON_EXPORTABLE_TYPE")
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 @Serializable

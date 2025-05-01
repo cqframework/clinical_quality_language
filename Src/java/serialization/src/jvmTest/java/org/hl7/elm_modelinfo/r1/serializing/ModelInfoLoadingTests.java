@@ -12,7 +12,7 @@ import org.hl7.cql.model.SystemModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.junit.jupiter.api.Test;
 
-class XmlutilModelInfoLoadingTests {
+class ModelInfoLoadingTests {
     static XmlModelInfoReader reader = new XmlModelInfoReader();
 
     private ModelInfo read(Class<?> clazz, String resource) {

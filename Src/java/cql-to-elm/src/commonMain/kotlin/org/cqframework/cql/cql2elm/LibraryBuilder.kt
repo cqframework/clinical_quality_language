@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
-import nl.adaptivity.xmlutil.QName
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -14,6 +13,7 @@ import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.getTranslatorVersion
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.elm.serializing.BigDecimal
+import org.cqframework.cql.elm.serializing.QName
 import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory

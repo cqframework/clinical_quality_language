@@ -34,14 +34,14 @@ data class ClassTypeElement(
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
     // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
     // the choice options in a different order.
-    override fun equals(o: Any?): Boolean {
-        if (this === o) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
-        if (o !is ClassTypeElement) {
+        if (other !is ClassTypeElement) {
             return false
         }
-        val (name1, type1, prohibited1, oneBased1, target1) = o
+        val (name1, type1, prohibited1, oneBased1, target1) = other
         if (target != null && target != target1) {
             return false
         }

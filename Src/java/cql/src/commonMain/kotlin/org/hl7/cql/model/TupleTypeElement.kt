@@ -27,9 +27,9 @@ data class TupleTypeElement(
         return 17 * name.hashCode() + 33 * type.hashCode() + 31 * if (oneBased) 1 else 0
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is TupleTypeElement) {
-            val (name1, type1, oneBased1) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is TupleTypeElement) {
+            val (name1, type1, oneBased1) = other
             return name == name1 && type == type1 && oneBased == oneBased1
         }
         return false

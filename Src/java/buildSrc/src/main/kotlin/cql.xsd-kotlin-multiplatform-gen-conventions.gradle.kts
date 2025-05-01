@@ -1,9 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
-import com.github.gradle.node.task.NodeTask
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
-    id("com.github.node-gradle.node")
 }
 
 val buildDir = project.layout.buildDirectory.get().toString()
@@ -19,23 +17,14 @@ kotlin {
     }
 }
 
-node {
-    download = true
-    nodeProjectDir.set(file("../../js/xsd-kotlin-gen"))
-}
-
-val runXsdKotlinGenTask = tasks.register<NodeTask>("runXsdKotlinGen") {
-    dependsOn(tasks.npmInstall)
-    script.set(file("../../js/xsd-kotlin-gen/generate.js"))
-    args.set(listOf("--project=${project.name}"))
-}
+val xsdKotlinGenTask = tasks.register<XsdKotlinGenTask>("runXsdKotlinGen")
 
 tasks.withType<KotlinCompileTool>().configureEach {
-    dependsOn(runXsdKotlinGenTask)
+    dependsOn(xsdKotlinGenTask)
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    dependsOn(runXsdKotlinGenTask)
+    dependsOn(xsdKotlinGenTask)
 }
 
 tasks.withType<Delete>().configureEach {

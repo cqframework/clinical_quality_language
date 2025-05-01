@@ -21,10 +21,10 @@ constructor( // A unique code identifying the capability
     var upToVersion: String? = null
 ) {
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || this::class != o::class) return false
-        val that = o as CqlCapability
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        val that = other as CqlCapability
         return code == that.code
     }
 

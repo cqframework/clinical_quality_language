@@ -49,20 +49,7 @@ class CMS146XmlTest {
         // so we strip it out of the XML before comparison
         final String xmlWithVersion = translator.toXml().trim();
         String actualXml = xmlWithVersion
-                .replaceAll("translatorVersion=\"[^\"]*\"", "")
-                // temporary fix for namespace prefix differences
-                //                .replaceAll("xmlns:n1=\"urn:hl7-org:elm:r1\"", "")
-                //                .replaceAll("n1:", "")
-
-                // The original XML marshaller (JAXB) does not output
-                // accessLevel if it is null. (It always emits it otherwise,
-                // even when it's set to the default value.) The new XML
-                // serializer (XmlUtil) always emits accessLevel.
-                // We do not set accessLevel in the translator on the
-                // model/context def node, thus the difference in XML output.
-                .replace(
-                        "name=\"Patient\" context=\"Patient\" accessLevel=\"Public\"",
-                        "name=\"Patient\" context=\"Patient\"");
+                .replaceAll("translatorVersion=\"[^\"]*\"", "");
 
         XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areIdentical();
     }

@@ -61,9 +61,9 @@ data class SimpleType(
         return name.hashCode()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is SimpleType) {
-            val (name1) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is SimpleType) {
+            val (name1) = other
             return name == name1
         }
         return false

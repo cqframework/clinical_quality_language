@@ -51,9 +51,9 @@ data class IntervalType(val pointType: DataType) : BaseDataType() {
         return 53 * pointType.hashCode()
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is IntervalType) {
-            val (pointType1) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is IntervalType) {
+            val (pointType1) = other
             return pointType == pointType1
         }
         return false

@@ -72,9 +72,9 @@ private constructor(
     }
 
     @Suppress("NestedBlockDepth")
-    override fun equals(o: Any?): Boolean {
-        if (o is ChoiceType) {
-            val (thoseTypes) = o
+    override fun equals(other: Any?): Boolean {
+        if (other is ChoiceType) {
+            val (thoseTypes) = other
             if (types.size == thoseTypes.size) {
                 val theseTypes = types
                 for (i in theseTypes.indices) {

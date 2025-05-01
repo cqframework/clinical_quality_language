@@ -5,6 +5,10 @@ plugins {
 kotlin {
     sourceSets {
         commonMain {
+            kotlin {
+                srcDir("build/generated/sources/cql/commonMain/kotlin")
+                srcDir("build/generated/sources/elm/commonMain/kotlin")
+            }
             dependencies {
                 api(project(":elm"))
                 api(project(":cql"))
