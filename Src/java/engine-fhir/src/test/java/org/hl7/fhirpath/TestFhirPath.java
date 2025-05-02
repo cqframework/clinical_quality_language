@@ -128,9 +128,20 @@ public abstract class TestFhirPath {
         if (test.getInputfile() != null) {
             String resourceFilePath = basePathInput + test.getInputfile();
             resource = loadResourceFile(resourceFilePath, fhirContext);
+
+            // TODO: Set up context based on the value of the context path in the test case
+            // For now, assume %context = %resource = %rootResource and we will skip all the context and contained tests
+            // Note also that tests that are hitting this type of functionality are testing how the FHIRPath engine is
+            // being set up, and so are probably better tested in component or even integration tests of FHIRPath,
+            // rather than as part of FHIRPath unit tests
             cql = String.format(
-                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s context %s define Test:",
-                    resource.fhirType(), resource.fhirType(), resource.fhirType());
+                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s parameter \"%%context\" %s parameter \"%%resource\" %s parameter \"%%rootResource\" %s context %s define Test:",
+                    resource.fhirType(),
+                    resource.fhirType(),
+                    resource.fhirType(),
+                    resource.fhirType(),
+                    resource.fhirType(),
+                    resource.fhirType());
         } else {
             cql =
                     "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers define Test:";
@@ -192,6 +203,9 @@ public abstract class TestFhirPath {
             engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
                 engine.getState().setParameter(null, resource.fhirType(), resource);
+                engine.getState().setParameter(null, "%context", resource);
+                engine.getState().setParameter(null, "%resource", resource);
+                engine.getState().setParameter(null, "%rootResource", resource);
             }
 
             Object value = null;
