@@ -8,6 +8,7 @@ import java.util.List;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
@@ -215,7 +216,9 @@ public class QueryEvaluator {
             }
         }
 
-        if (elm.getReturn() != null && elm.getReturn().isDistinct()) {
+        if (elm.getReturn() != null
+                && elm.getReturn().isDistinct()
+                && !state.getEngineOptions().contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
             result = DistinctEvaluator.distinct(result, state);
         }
 
