@@ -5,7 +5,6 @@ import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 import kotlinx.serialization.Serializable
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 
 /** translation options for Cql source files */
 @Suppress("NON_EXPORTABLE_TYPE")
@@ -30,93 +29,13 @@ class CqlCompilerOptions {
     }
 
     val options = mutableSetOf<Options>()
-    /**
-     * Return instance of CqlTranslatorOptions validateUnits boolean
-     *
-     * @return
-     */
-    /**
-     * Set new validateUnits boolean
-     *
-     * @param validateUnits
-     */
     var validateUnits: Boolean = true
-    /**
-     * Return instance of CqlTranslatorOptions verifyOnly boolean
-     *
-     * @return
-     */
-    /**
-     * Set new verifyOnly boolean
-     *
-     * @param verifyOnly
-     */
     var verifyOnly: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions enableCqlOnly boolean
-     *
-     * @return
-     */
-    /**
-     * Set new enableCqlOnly boolean
-     *
-     * @param enableCqlOnly
-     */
     var enableCqlOnly: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions compatibilityLevel
-     *
-     * @return
-     */
-    /**
-     * Set new compatibilityLevel
-     *
-     * @param compatibilityLevel
-     */
     var compatibilityLevel: String = "1.5"
-    /**
-     * Return instance of CqlTranslatorOptions errorLevel (CqlTranslatorException.ErrorSeverity)
-     *
-     * @return
-     */
-    /**
-     * Set new errorLevel (CqlTranslatorException.ErrorSeverity)
-     *
-     * @param errorLevel
-     */
-    var errorLevel: CqlCompilerException.ErrorSeverity? = CqlCompilerException.ErrorSeverity.Info
-    /**
-     * Return instance of CqlTranslatorOptions signatureLevel (LibraryBuilder.SignatureLevel)
-     *
-     * @return
-     */
-    /**
-     * Set new signatureLevel (LibraryBuilder.SignatureLevel)
-     *
-     * @param signatureLevel
-     */
+    var errorLevel: ErrorSeverity? = ErrorSeverity.Info
     var signatureLevel: SignatureLevel = SignatureLevel.Overloads
-    /**
-     * Return instance of CqlTranslatorOptions analyzeDataRequirements boolean
-     *
-     * @return
-     */
-    /**
-     * Set new analyzeDataRequirements boolean
-     *
-     * @param analyzeDataRequirements
-     */
     var analyzeDataRequirements: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions collapseDataRequirements boolean
-     *
-     * @return
-     */
-    /**
-     * Set new collapseDataRequirements boolean
-     *
-     * @param collapseDataRequirements
-     */
     var collapseDataRequirements: Boolean = false
 
     @JsName("constructor2") constructor()
@@ -129,14 +48,12 @@ class CqlCompilerOptions {
      */
     @Suppress("SpreadOperator")
     @JsName("constructor3")
-    constructor(
-        vararg options: Options
-    ) : this(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.None, *options)
+    constructor(vararg options: Options) : this(ErrorSeverity.Info, SignatureLevel.None, *options)
 
     @Suppress("SpreadOperator")
     @JsName("constructor4")
     constructor(
-        errorLevel: CqlCompilerException.ErrorSeverity?,
+        errorLevel: ErrorSeverity?,
         vararg options: Options
     ) : this(errorLevel, SignatureLevel.None, *options)
 
@@ -150,7 +67,7 @@ class CqlCompilerOptions {
     @Suppress("SpreadOperator")
     @JsName("constructor5")
     constructor(
-        errorLevel: CqlCompilerException.ErrorSeverity?,
+        errorLevel: ErrorSeverity?,
         signatureLevel: SignatureLevel,
         vararg options: Options
     ) {
@@ -180,7 +97,7 @@ class CqlCompilerOptions {
      * @param disableMethodInvocation boolean
      * @param requireFromKeyword boolean
      * @param validateUnits boolean
-     * @param signatureLevel LibraryBuilder.SignatureLevel
+     * @param signatureLevel SignatureLevel
      * @param compatibilityLevel String
      */
     constructor(
@@ -190,7 +107,7 @@ class CqlCompilerOptions {
         resultTypes: Boolean,
         verifyOnly: Boolean,
         detailedErrors: Boolean,
-        errorLevel: CqlCompilerException.ErrorSeverity?,
+        errorLevel: ErrorSeverity?,
         disableListTraversal: Boolean,
         disableListDemotion: Boolean,
         disableListPromotion: Boolean,
@@ -310,19 +227,19 @@ class CqlCompilerOptions {
 
     /**
      * Return this instance of CqlTranslatorOptions with addition of newly assigned errorLevel
-     * (CqlTranslatorException.ErrorSeverity)
+     * (ErrorSeverity)
      *
      * @param errorLevel
      * @return
      */
-    fun withErrorLevel(errorLevel: CqlCompilerException.ErrorSeverity?): CqlCompilerOptions {
+    fun withErrorLevel(errorLevel: ErrorSeverity?): CqlCompilerOptions {
         this.errorLevel = errorLevel
         return this
     }
 
     /**
      * Return this instance of CqlTranslatorOptions with addition of newly assigned signatureLevel
-     * (LibraryBuilder.SignatureLevel)
+     * (SignatureLevel)
      *
      * @param signatureLevel
      * @return

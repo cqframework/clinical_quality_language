@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
@@ -865,7 +865,7 @@ class BaseTest {
     @Test
     void overloadOutput() throws IOException {
         CqlTranslator translator =
-                TestUtils.runSemanticTest("fhir/r401/TestOverload.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+                TestUtils.runSemanticTest("fhir/r401/TestOverload.cql", 0, SignatureLevel.Overloads);
         assertThat(translator.getWarnings().size(), is(1));
 
         final List<String> warningMessages =
@@ -898,7 +898,7 @@ class BaseTest {
     @Test
     void overloadForwardOutput() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(
-                "fhir/r401/TestOverloadForward.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+                "fhir/r401/TestOverloadForward.cql", 0, SignatureLevel.Overloads);
         assertThat(translator.getWarnings().size(), is(1));
 
         final List<String> warningMessages =

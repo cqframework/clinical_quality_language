@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.junit.jupiter.api.Test;
 
 class CqlMainSuiteTest extends CqlTestBase {
@@ -73,7 +73,7 @@ class CqlMainSuiteTest extends CqlTestBase {
         // When called with the null argument, the toString function in the CqlTestSuite
         // library can only be unambiguously resolved at runtime if the library is
         // compiled with signature level set to Overloads or All.
-        options.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads);
+        options.withSignatureLevel(SignatureLevel.Overloads);
 
         return options;
     }

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.CompilerOptions;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryReader;
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter;
 import org.cqframework.cql.elm.serializing.ElmXmlLibraryReader;
@@ -77,7 +77,7 @@ class ElmDeserializeTests {
             nestedNarrative = (Narrative) nestedNarrative.getContent().get(0);
             assertEquals("[", nestedNarrative.getContent().get(0));
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.All);
+            verifySigLevels(library, SignatureLevel.All);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -112,7 +112,7 @@ class ElmDeserializeTests {
             assertNotNull(library.getStatements().getDef().get(1));
             assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.Differing);
+            verifySigLevels(library, SignatureLevel.Differing);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -163,7 +163,7 @@ class ElmDeserializeTests {
             assertEquals("\n                  ", nestedNarrative.getContent().get(0));
             assertTrue(nestedNarrative.getContent().get(1) instanceof Narrative);
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.Overloads);
+            verifySigLevels(library, SignatureLevel.Overloads);
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
@@ -176,7 +176,7 @@ class ElmDeserializeTests {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json");
             assertNotNull(library);
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.None);
+            verifySigLevels(library, SignatureLevel.None);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -368,7 +368,7 @@ class ElmDeserializeTests {
         return new ElmXmlLibraryReader().read(buffered(asSource(resourceAsStream)));
     }
 
-    private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {
+    private static void verifySigLevels(Library library, SignatureLevel expectedSignatureLevel) {
         final List<String> sigLevels = library.getAnnotation().stream()
                 .filter(CqlToElmInfo.class::isInstance)
                 .map(CqlToElmInfo.class::cast)

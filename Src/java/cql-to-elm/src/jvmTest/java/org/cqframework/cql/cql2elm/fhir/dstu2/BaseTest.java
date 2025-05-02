@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.NamespaceInfo;
@@ -280,7 +280,7 @@ class BaseTest {
                 new NamespaceInfo("Public", "http://cql.hl7.org/public"),
                 "fhir/dstu2/TestFHIRNamespaces.cql",
                 0,
-                LibraryBuilder.SignatureLevel.None);
+                SignatureLevel.None);
     }
 
     @Test

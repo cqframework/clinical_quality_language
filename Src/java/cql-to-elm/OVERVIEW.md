@@ -123,26 +123,37 @@ An instance of the class with default options can be accessed through defaultOpt
 - SignatureLevel.None
 - Format.XML
 
-Several constructors exist allowing user control of specified options, such as:
+Several constructors exist allowing user control of specified compiler options, such as:
 
 ```java
-CqlTranslatorOptions(CqlTranslator.Options... options)
+CqlCompilerOptions(CqlCompilerOptions.Options... options)
 ```
 
 ```java
-CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel,
-                     LibraryBuilder.SignatureLevel signatureLevel,
-                     CqlTranslator.Options... options)
+CqlCompilerOptions(ErrorSeverity errorLevel,
+                   SignatureLevel signatureLevel,
+                   CqlCompilerOptions.Options... options)
 ```
 
 ```java
-CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
-                     boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                     boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                     boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                     boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                     boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                     LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel)
+CqlCompilerOptions(boolean dateRangeOptimizations,
+                   boolean annotations,
+                   boolean locators,
+                   boolean resultTypes,
+                   boolean verifyOnly,
+                   boolean detailedErrors,
+                   ErrorSeverity errorLevel,
+                   boolean disableListTraversal,
+                   boolean disableListDemotion,
+                   boolean disableListPromotion,
+                   boolean enableIntervalDemotion,
+                   boolean enableIntervalPromotion,
+                   boolean disableMethodInvocation,
+                   boolean requireFromKeyword,
+                   boolean validateUnits,
+                   boolean disableDefaultModelInfoLoad,
+                   SignatureLevel signatureLevel,
+                   String compatibilityLevel)
 ```
 
 `toString()` has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.

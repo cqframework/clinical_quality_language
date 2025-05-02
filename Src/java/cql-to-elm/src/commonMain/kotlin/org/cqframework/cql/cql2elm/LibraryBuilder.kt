@@ -29,27 +29,6 @@ class LibraryBuilder(
     val libraryManager: BaseLibraryManager,
     val objectFactory: IdObjectFactory
 ) {
-    enum class SignatureLevel {
-        /*
-        Indicates signatures will never be included in operator invocations
-         */
-        None,
-
-        /*
-        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different from the invocation signature
-         */
-        Differing,
-
-        /*
-        Indicates signatures will only be included in invocations if the function has multiple overloads with the same number of arguments as the invocation
-         */
-        Overloads,
-
-        /*
-        Indicates signatures will always be included in invocations
-         */
-        All
-    }
 
     constructor(
         libraryManager: BaseLibraryManager,
@@ -478,16 +457,16 @@ class LibraryBuilder(
         return namespaceUri
     }
 
-    private fun toErrorSeverity(severity: CqlCompilerException.ErrorSeverity): ErrorSeverity {
+    private fun toErrorSeverity(severity: ErrorSeverity): org.hl7.cql_annotations.r1.ErrorSeverity {
         return when (severity) {
-            CqlCompilerException.ErrorSeverity.Info -> {
-                ErrorSeverity.INFO
+            ErrorSeverity.Info -> {
+                org.hl7.cql_annotations.r1.ErrorSeverity.INFO
             }
-            CqlCompilerException.ErrorSeverity.Warning -> {
-                ErrorSeverity.WARNING
+            ErrorSeverity.Warning -> {
+                org.hl7.cql_annotations.r1.ErrorSeverity.WARNING
             }
-            CqlCompilerException.ErrorSeverity.Error -> {
-                ErrorSeverity.ERROR
+            ErrorSeverity.Error -> {
+                org.hl7.cql_annotations.r1.ErrorSeverity.ERROR
             }
         }
     }
@@ -496,29 +475,27 @@ class LibraryBuilder(
         // Always add to the list of all exceptions
         exceptions.add(e)
         when (e.severity) {
-            CqlCompilerException.ErrorSeverity.Error -> {
+            ErrorSeverity.Error -> {
                 errors.add(e)
             }
-            CqlCompilerException.ErrorSeverity.Warning -> {
+            ErrorSeverity.Warning -> {
                 warnings.add(e)
             }
-            CqlCompilerException.ErrorSeverity.Info -> {
+            ErrorSeverity.Info -> {
                 messages.add(e)
             }
         }
     }
 
-    private fun shouldReport(errorSeverity: CqlCompilerException.ErrorSeverity): Boolean {
+    private fun shouldReport(errorSeverity: ErrorSeverity): Boolean {
         return when (options.errorLevel) {
-            CqlCompilerException.ErrorSeverity.Info ->
-                errorSeverity == CqlCompilerException.ErrorSeverity.Info ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Warning ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Error
-            CqlCompilerException.ErrorSeverity.Warning ->
-                (errorSeverity == CqlCompilerException.ErrorSeverity.Warning ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Error)
-            CqlCompilerException.ErrorSeverity.Error ->
-                errorSeverity == CqlCompilerException.ErrorSeverity.Error
+            ErrorSeverity.Info ->
+                errorSeverity == ErrorSeverity.Info ||
+                    errorSeverity == ErrorSeverity.Warning ||
+                    errorSeverity == ErrorSeverity.Error
+            ErrorSeverity.Warning ->
+                (errorSeverity == ErrorSeverity.Warning || errorSeverity == ErrorSeverity.Error)
+            ErrorSeverity.Error -> errorSeverity == ErrorSeverity.Error
             else -> throw IllegalArgumentException("Unknown error severity $errorSeverity")
         }
     }
@@ -1764,8 +1741,7 @@ class LibraryBuilder(
         val trackback =
             if (expression != null && expression.trackbacks.isNotEmpty()) expression.trackbacks[0]
             else null
-        val warning =
-            CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback)
+        val warning = CqlSemanticException(message, ErrorSeverity.Warning, trackback)
         recordParsingException(warning)
     }
 

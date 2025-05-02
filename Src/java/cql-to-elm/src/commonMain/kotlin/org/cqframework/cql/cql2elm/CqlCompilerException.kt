@@ -13,12 +13,6 @@ constructor(
     @field:Transient val locator: TrackBack? = null,
     cause: Throwable? = null
 ) : RuntimeException(message, cause) {
-    enum class ErrorSeverity {
-        Info,
-        Warning,
-        Error
-    }
-
     constructor(
         message: String?,
         cause: Throwable?

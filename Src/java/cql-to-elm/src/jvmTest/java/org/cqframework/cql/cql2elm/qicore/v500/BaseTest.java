@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class BaseTest {
     @Test
     void authoringPatterns() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest(
-                "qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+                "qicore/v500/AuthoringPatterns.cql", 0, SignatureLevel.Overloads);
 
         assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(1));
 

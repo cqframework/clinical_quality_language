@@ -55,8 +55,8 @@ class TranslationTests {
         ModelManager modelManager = new ModelManager();
 
         var compilerOptions = new CqlCompilerOptions(
-                CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                ErrorSeverity.Info,
+                SignatureLevel.All,
                 CqlCompilerOptions.Options.EnableDateRangeOptimization,
                 CqlCompilerOptions.Options.EnableAnnotations,
                 CqlCompilerOptions.Options.EnableLocators,
@@ -482,7 +482,7 @@ class TranslationTests {
     void mappingExpansionsRespectSignatureLevel() throws IOException {
         // See: https://github.com/cqframework/clinical_quality_language/issues/1475
         final CqlTranslator translator = TestUtils.runSemanticTest(
-                "MappingExpansionsRespectSignatureLevel.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+                "MappingExpansionsRespectSignatureLevel.cql", 0, SignatureLevel.Overloads);
         /*
         ExpressionDef: EncounterPeriod
           expression is Query

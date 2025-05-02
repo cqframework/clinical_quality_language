@@ -14,8 +14,6 @@ import org.antlr.v4.kotlinruntime.CharStreams;
 import org.antlr.v4.kotlinruntime.CommonTokenStream;
 import org.antlr.v4.kotlinruntime.TokenStream;
 import org.antlr.v4.kotlinruntime.tree.ParseTree;
-import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
@@ -251,13 +249,13 @@ public class TestUtils {
     }
 
     public static CqlTranslator getTranslator(
-            String cqlTestFile, String nullableLibrarySourceProvider, LibraryBuilder.SignatureLevel signatureLevel)
+            String cqlTestFile, String nullableLibrarySourceProvider, SignatureLevel signatureLevel)
             throws IOException {
         final File testFile = getFileOrThrow(cqlTestFile);
         final ModelManager modelManager = new ModelManager();
 
         final CqlCompilerOptions compilerOptions =
-                new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+                new CqlCompilerOptions(ErrorSeverity.Info, signatureLevel);
 
         final LibraryManager libraryManager =
                 getLibraryManager(compilerOptions, modelManager, nullableLibrarySourceProvider);

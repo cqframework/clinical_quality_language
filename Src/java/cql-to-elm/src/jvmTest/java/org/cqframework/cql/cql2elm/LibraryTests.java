@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
@@ -68,7 +67,7 @@ class LibraryTests {
 
     @Test
     void includedLibraryWithSignatures() {
-        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
+        var compilerOptions = new CqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
@@ -105,7 +104,7 @@ class LibraryTests {
         // creating a fresh set below
         ModelManager modelManager = new ModelManager();
 
-        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
+        var compilerOptions = new CqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.All);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
 
         InputStream translationTestFile = LibraryTests.class.getResourceAsStream("LibraryTests/Issue641.cql");
@@ -287,7 +286,7 @@ class LibraryTests {
         try {
             // Test Annotations are created for both libraries
             var options = new CqlCompilerOptions(
-                    CqlCompilerException.ErrorSeverity.Info,
+                    ErrorSeverity.Info,
                     SignatureLevel.All,
                     CqlCompilerOptions.Options.EnableAnnotations);
             libraryManager = new LibraryManager(modelManager, options);

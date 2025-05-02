@@ -180,8 +180,8 @@ public class Main {
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
         OptionSpec errorLevel = parser.accepts("error-level")
                 .withRequiredArg()
-                .ofType(CqlCompilerException.ErrorSeverity.class)
-                .defaultsTo(CqlCompilerException.ErrorSeverity.Info)
+                .ofType(ErrorSeverity.class)
+                .defaultsTo(ErrorSeverity.Info)
                 .describedAs(
                         "Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output");
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
@@ -194,10 +194,10 @@ public class Main {
         OptionSpec strict = parser.accepts("strict");
         OptionSpec debug = parser.accepts("debug");
         OptionSpec validateUnits = parser.accepts("validate-units");
-        OptionSpec<LibraryBuilder.SignatureLevel> signatures = parser.accepts("signatures")
+        OptionSpec<SignatureLevel> signatures = parser.accepts("signatures")
                 .withRequiredArg()
-                .ofType(LibraryBuilder.SignatureLevel.class)
-                .defaultsTo(LibraryBuilder.SignatureLevel.None)
+                .ofType(SignatureLevel.class)
+                .defaultsTo(SignatureLevel.None)
                 .describedAs(
                         "Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation");
         OptionSpec<String> compatibilityLevel = parser.accepts("compatibility-level")
@@ -212,7 +212,7 @@ public class Main {
                 ? output.value(options).toPath()
                 : source.toFile().isDirectory() ? source : source.getParent();
         final org.cqframework.cql.cql2elm.CqlTranslator.Format outputFormat = format.value(options);
-        final LibraryBuilder.SignatureLevel signatureLevel = signatures.value(options);
+        final SignatureLevel signatureLevel = signatures.value(options);
 
         Map<Path, Path> inOutMap = new HashMap<>();
         if (source.toFile().isDirectory()) {
@@ -296,8 +296,8 @@ public class Main {
                             options.has(verify),
                             options.has(detailedErrors), // Didn't include in debug, maybe should...
                             options.has(errorLevel)
-                                    ? (CqlCompilerException.ErrorSeverity) options.valueOf(errorLevel)
-                                    : CqlCompilerException.ErrorSeverity.Info,
+                                    ? (ErrorSeverity) options.valueOf(errorLevel)
+                                    : ErrorSeverity.Info,
                             options.has(strict) || options.has(disableListTraversal),
                             options.has(strict) || options.has(disableListDemotion),
                             options.has(strict) || options.has(disableListPromotion),

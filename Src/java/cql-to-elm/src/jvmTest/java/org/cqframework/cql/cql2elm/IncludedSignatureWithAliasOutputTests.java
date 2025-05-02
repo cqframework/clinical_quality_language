@@ -15,7 +15,7 @@ class IncludedSignatureWithAliasOutputTests {
     private static final String LIBRARY_SOURCE_PROVIDER = "SignatureTests";
     private static Map<String, ExpressionDef> defs;
 
-    private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+    private Library getLibrary(SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = getTranslator(signatureLevel);
         assertThat(translator.getErrors().size(), is(0));
         defs = new HashMap<>();
@@ -28,13 +28,13 @@ class IncludedSignatureWithAliasOutputTests {
         return library;
     }
 
-    private static CqlTranslator getTranslator(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+    private static CqlTranslator getTranslator(SignatureLevel signatureLevel) throws IOException {
         return TestUtils.getTranslator(CQL_TEST_FILE, LIBRARY_SOURCE_PROVIDER, signatureLevel);
     }
 
     @Test
     void none() throws IOException {
-        final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
+        final CqlTranslator translator = getTranslator(SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
         assertThat(
                 translator.getWarnings().get(0).getMessage(),
@@ -44,7 +44,7 @@ class IncludedSignatureWithAliasOutputTests {
 
     @Test
     void differing() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.Differing);
+        Library library = getLibrary(SignatureLevel.Differing);
 
         ExpressionDef def = defs.get("TestOverload");
         assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
@@ -70,7 +70,7 @@ class IncludedSignatureWithAliasOutputTests {
 
     @Test
     void overloads() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.Overloads);
+        Library library = getLibrary(SignatureLevel.Overloads);
 
         ExpressionDef def = defs.get("TestOverload");
         assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
@@ -96,7 +96,7 @@ class IncludedSignatureWithAliasOutputTests {
 
     @Test
     void all() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.All);
+        Library library = getLibrary(SignatureLevel.All);
 
         ExpressionDef def = defs.get("TestOverload");
         assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));

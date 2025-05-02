@@ -17,7 +17,7 @@ class SignatureOutputTests {
     private static final String CQL_TEST_FILE = "SignatureTests/SignatureOutputTests.cql";
     private static Map<String, ExpressionDef> defs;
 
-    private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+    private Library getLibrary(SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = getTranslator(signatureLevel);
         assertThat(translator.getErrors().size(), is(0));
         defs = new HashMap<>();
@@ -30,13 +30,13 @@ class SignatureOutputTests {
         return library;
     }
 
-    private static CqlTranslator getTranslator(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+    private static CqlTranslator getTranslator(SignatureLevel signatureLevel) throws IOException {
         return TestUtils.getTranslator(CQL_TEST_FILE, null, signatureLevel);
     }
 
     @Test
     void none() throws IOException {
-        final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
+        final CqlTranslator translator = getTranslator(SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
         assertThat(
                 translator.getWarnings().get(0).getMessage(),
@@ -46,7 +46,7 @@ class SignatureOutputTests {
 
     @Test
     void differing() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.Differing);
+        Library library = getLibrary(SignatureLevel.Differing);
         // TestAvg->Avg->signature(1)
         // TestDivide->Divide->signature(2)
         // TestIntegerOverload->OverloadTest->signature(1)
@@ -86,7 +86,7 @@ class SignatureOutputTests {
 
     @Test
     void overloads() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.Overloads);
+        Library library = getLibrary(SignatureLevel.Overloads);
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)
         // TestAvg->Avg->signature(1)
@@ -129,7 +129,7 @@ class SignatureOutputTests {
 
     @Test
     void all() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.All);
+        Library library = getLibrary(SignatureLevel.All);
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)
         // TestDateTime->DateTime->signature(3)

@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
@@ -26,7 +26,7 @@ class TestFHIRHelpers extends FhirExecutionTestBase {
         // If we update the FHIRHelpers content to not have ambiguous overloads
         // the results of this test will change
         var compilerOptions = CqlCompilerOptions.defaultOptions();
-        compilerOptions.setSignatureLevel(LibraryBuilder.SignatureLevel.None);
+        compilerOptions.setSignatureLevel(SignatureLevel.None);
         var modelManager = new ModelManager();
         var libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().clearProviders();

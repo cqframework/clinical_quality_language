@@ -10,14 +10,13 @@ private val cqlTranslatorOptionsJson = Json {
     ignoreUnknownKeys = true
 }
 
-/*
- * Parses the content of cql-options.json into an instance of CqlTranslatorOptions.
- * The structure of the JSON object matches that of the CqlTranslatorOptions class
- * except that the cqlCompilerOptions field is unwrapped so all the fields from the
- * CqlCompilerOptions class are stored directly in the root JSON object. We therefore
- * parse the same JSON object twice, once as a CqlCompilerOptions and once as a
- * CqlTranslatorOptions, and then merge the two.
- * */
+/**
+ * Parses the content of cql-options.json into an instance of CqlTranslatorOptions. The structure of
+ * the JSON object matches that of the CqlTranslatorOptions class except that the cqlCompilerOptions
+ * field is unwrapped so all the fields from the CqlCompilerOptions class are stored directly in the
+ * root JSON object. We therefore parse the same JSON object twice, once as a CqlCompilerOptions and
+ * once as a CqlTranslatorOptions, and then merge the two.
+ */
 internal fun readTranslatorOptionsFromJsonString(jsonString: String): CqlTranslatorOptions {
     val compilerOptions = cqlTranslatorOptionsJson.decodeFromString<CqlCompilerOptions>(jsonString)
     val translatorOptions =
@@ -26,10 +25,10 @@ internal fun readTranslatorOptionsFromJsonString(jsonString: String): CqlTransla
     return translatorOptions.withCqlCompilerOptions(compilerOptions)
 }
 
-/*
- * Serializes the given CqlTranslatorOptions instance into a JSON object with the
- * cqlCompilerOptions field unwrapped.
- * */
+/**
+ * Serializes the given CqlTranslatorOptions instance into a JSON object with the cqlCompilerOptions
+ * field unwrapped.
+ */
 internal fun writeTranslatorOptionsToJsonString(options: CqlTranslatorOptions): String {
     val jsonElement =
         cqlTranslatorOptionsJson.encodeToJsonElement(CqlTranslatorOptions.serializer(), options)

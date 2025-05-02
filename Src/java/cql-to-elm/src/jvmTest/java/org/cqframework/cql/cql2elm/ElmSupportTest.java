@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class ElmSupportTest {
     @Test
     void includedLibraryWithJsonElm() {
         CqlCompilerOptions options =
-                new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
+                new CqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);
 
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
@@ -48,7 +47,7 @@ class ElmSupportTest {
     @Test
     void includedLibraryWithXmlElm() {
         CqlCompilerOptions options =
-                new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
+                new CqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
@@ -67,7 +66,7 @@ class ElmSupportTest {
     @Test
     void includedLibraryWithJsonWithNullTypeSpecifierElm() {
         CqlCompilerOptions options =
-                new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
+                new CqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {

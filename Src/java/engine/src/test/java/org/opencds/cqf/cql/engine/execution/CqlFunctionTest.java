@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.SignatureLevel;
 import org.junit.jupiter.api.Test;
 
 class CqlFunctionTest extends CqlTestBase {
@@ -13,7 +13,7 @@ class CqlFunctionTest extends CqlTestBase {
     @Test
     void all_function_tests() {
         var compilerOptions =
-                CqlCompilerOptions.defaultOptions().withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads);
+                CqlCompilerOptions.defaultOptions().withSignatureLevel(SignatureLevel.Overloads);
         var engine = getEngine(compilerOptions);
 
         var results = engine.evaluate(toElmIdentifier("CqlFunctionTests"));

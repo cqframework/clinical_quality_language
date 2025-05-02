@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.*;
-import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

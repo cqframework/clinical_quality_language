@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.OperatorExpression;
