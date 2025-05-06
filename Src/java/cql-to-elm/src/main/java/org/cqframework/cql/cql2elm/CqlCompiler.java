@@ -143,7 +143,8 @@ public class CqlCompiler {
                                     ldc.qualifiedIdentifier().identifier().getText()));
 
                     if (ldc.versionSpecifier() != null) {
-                        var version = StringEscapeUtils.unescapeCql(ldc.versionSpecifier().getText());
+                        var version = StringEscapeUtils.unescapeCql(
+                                ldc.versionSpecifier().getText());
                         version = version.substring(1, version.length() - 1);
                         vi.setVersion(version);
                     }
