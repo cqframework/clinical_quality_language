@@ -17,7 +17,6 @@ data class Config(
     val project: String,
     val xsd: String,
     val outputDir: String,
-    val outputDirSerialization: String,
 )
 
 // Entry points for schema parsing and code generation
@@ -27,15 +26,11 @@ val configs =
             project = "cql",
             xsd = "../../cql-lm/schema/model/modelinfo.xsd",
             outputDir = "../cql/build/generated/sources/cql/commonMain/kotlin",
-            outputDirSerialization =
-                "../serialization/build/generated/sources/cql/commonMain/kotlin",
         ),
         Config(
             project = "elm",
             xsd = "../../cql-lm/schema/elm/library.xsd",
             outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
-            outputDirSerialization =
-                "../serialization/build/generated/sources/elm/commonMain/kotlin",
         )
     )
 
@@ -53,20 +48,20 @@ fun getPackageName(namespace: String): String {
 // Reusable class names for KotlinPoet
 val mutableListClassName = ClassName("kotlin.collections", "MutableList")
 val mutableMapClassName = ClassName("kotlin.collections", "MutableMap")
-val qNameClassName = ClassName("org.cqframework.cql.elm.serializing", "QName")
-val bigDecimalClassName = ClassName("org.cqframework.cql.elm.serializing", "BigDecimal")
+val qNameClassName = ClassName("org.cqframework.cql.shared", "QName")
+val bigDecimalClassName = ClassName("org.cqframework.cql.shared", "BigDecimal")
 val jsonObjectClassName = ClassName("kotlinx.serialization.json", "JsonObject")
 val jsonArrayClassName = ClassName("kotlinx.serialization.json", "JsonArray")
 val jsonPrimitiveClassName = ClassName("kotlinx.serialization.json", "JsonPrimitive")
 val jsonElementClassName = ClassName("kotlinx.serialization.json", "JsonElement")
 val jsonNullClassName = ClassName("kotlinx.serialization.json", "JsonNull")
 val xmlStringToQName =
-    MemberName("org.hl7.elm_modelinfo.r1.serializing", "xmlAttributeValueToQName")
+    MemberName("org.cqframework.cql.shared.serializing", "xmlAttributeValueToQName")
 val qNameToXmlString =
-    MemberName("org.hl7.elm_modelinfo.r1.serializing", "qNameToXmlAttributeValue")
-val jsonStringToQName = MemberName("org.hl7.elm_modelinfo.r1.serializing", "jsonStringToQName")
-val xmlNodeClassName = ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode")
-val xmlElementClassName = ClassName("org.hl7.elm_modelinfo.r1.serializing", "XmlNode", "Element")
+    MemberName("org.cqframework.cql.shared.serializing", "qNameToXmlAttributeValue")
+val jsonStringToQName = MemberName("org.cqframework.cql.shared.serializing", "jsonStringToQName")
+val xmlNodeClassName = ClassName("org.cqframework.cql.shared.serializing", "XmlNode")
+val xmlElementClassName = ClassName("org.cqframework.cql.shared.serializing", "XmlNode", "Element")
 
 fun getTypeName(type: XSType): ClassName {
     return when (type.targetNamespace) {
@@ -626,7 +621,10 @@ fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
 
 // Adds the `fromXmlElement`, `toXmlElement`, `fromJsonElement`, and `toJsonElement` extension
 // functions for the class and nested classes
-fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: ClassName) {
+fun FileSpec.Builder.addSerializers(
+    complexType: XSComplexType,
+    className: ClassName
+): FileSpec.Builder {
 
     // Add `fromJsonElement` static function
     addFunction(
@@ -1132,6 +1130,8 @@ fun FileSpec.Builder.addSerializers(complexType: XSComplexType, className: Class
             }
         }
     }
+
+    return this
 }
 
 open class XsdKotlinGenTask : DefaultTask() {
@@ -1237,17 +1237,12 @@ open class XsdKotlinGenTask : DefaultTask() {
 
                     val className = getTypeName(complexType)
 
-                    // Generate the class
+                    // Generate the class and XML and JSON parsers and serializers
                     FileSpec.builder(className)
                         .addType(buildClass(complexType, className))
+                        .addSerializers(complexType, className)
                         .build()
                         .writeTo(File(project.projectDir, config.outputDir))
-
-                    // Generate XML and JSON parsers and serializers
-                    FileSpec.builder(className)
-                        .apply { addSerializers(complexType, className) }
-                        .build()
-                        .writeTo(File(project.projectDir, config.outputDirSerialization))
                 }
 
                 // Generate ObjectFactory.kt for each namespace

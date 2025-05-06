@@ -1,7 +1,7 @@
 package org.cqframework.cql.elm.evaluating
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.elm.serializing.QName
+import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.TypeSpecifier
 

@@ -11,17 +11,16 @@ kotlin {
         commonMain {
             kotlin {
                 srcDir("build/generated/sources/antlr/commonMain/kotlin")
-                srcDir("build/generated/sources/cql/commonMain/kotlin")
             }
             dependencies {
+                api(project(":shared"))
                 api("com.strumenta:antlr-kotlin-runtime:1.0.1")
-                api("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
             }
         }
-
         jvmTest {
             dependencies {
-                implementation(project(":serialization"))
+                implementation(project(":quick"))
+                implementation(project(":qdm"))
             }
         }
     }

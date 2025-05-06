@@ -4,19 +4,18 @@ import static kotlinx.io.JvmCoreKt.asSource;
 import static kotlinx.io.CoreKt.buffered;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReaderKt.parseModelInfoXml;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
-import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 import org.junit.jupiter.api.Test;
 
 public class ModelInfoComparerTest {
 
     private ModelInfo readModelInfo(String resourceName) {
-        var reader = new XmlModelInfoReader();
         var stream = ModelInfoComparerTest.class.getResourceAsStream(resourceName);
-        return reader.read(buffered(asSource(stream)));
+        return parseModelInfoXml(buffered(asSource(stream)));
     }
 
     @Test

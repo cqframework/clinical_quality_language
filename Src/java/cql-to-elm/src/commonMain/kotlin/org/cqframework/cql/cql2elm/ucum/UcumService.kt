@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.ucum
 
-import org.cqframework.cql.elm.serializing.BigDecimal
+import org.cqframework.cql.shared.BigDecimal
 
 interface UcumService {
     /**

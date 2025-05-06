@@ -7,7 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ class TranslationTests {
     // verify the actual XML.
     @Test
     @Disabled
-    void patientPropertyAccess() throws IOException, JAXBException {
+    void patientPropertyAccess() throws IOException {
         File expectedXmlFile = new File(
                 Cql2ElmVisitorTest.class.getResource("PropertyTest_ELM.xml").getFile());
         String expectedXml = null;
@@ -48,7 +47,7 @@ class TranslationTests {
 
     @Test
     @Disabled
-    void forPrintElm() throws IOException, JAXBException {
+    void forPrintElm() throws IOException {
         File propertyTestFile = new File(TranslationTests.class
                 .getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql")
                 .getFile());

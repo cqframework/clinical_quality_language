@@ -2,6 +2,7 @@ package org.cqframework.cql.tools.xsd2modelinfo;
 
 import static kotlinx.io.CoreKt.buffered;
 import static kotlinx.io.JvmCoreKt.asSource;
+import static org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReaderKt.parseModelInfoXml;
 
 import java.io.*;
 import javax.xml.transform.stream.StreamSource;
@@ -11,7 +12,6 @@ import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 /**
  * Generates a ModelInfo.xml for the input xsd.
@@ -82,9 +82,7 @@ public class Main {
             if (configFile != null) {
                 var stream = new FileInputStream(configFile);
                 var source = buffered(asSource(stream));
-                config = ModelInfoReaderFactory.INSTANCE
-                        .getReader("application/xml")
-                        .read(source);
+                config = parseModelInfoXml(source);
             }
         }
 

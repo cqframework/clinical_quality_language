@@ -12,8 +12,8 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.getTranslatorVersion
 import org.cqframework.cql.elm.IdObjectFactory
-import org.cqframework.cql.elm.serializing.BigDecimal
-import org.cqframework.cql.elm.serializing.QName
+import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.QName
 import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
