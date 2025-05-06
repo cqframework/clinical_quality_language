@@ -246,14 +246,14 @@ public class ElmRequirements extends ElmRequirement {
         Map<String, ElmRequirement> functions = new LinkedHashMap<String, ElmRequirement>();
         for (ElmRequirement r : getFunctionDefs()) {
             FunctionDef fd = (FunctionDef) r.getElement();
-            // TODO: Include overloads...
             String uri = String.format(
-                    "%s%s.%s()",
+                    "%s%s.%s(%s)",
                     r.getLibraryIdentifier().getSystem() != null
                             ? r.getLibraryIdentifier().getSystem() + "."
                             : "",
                     r.getLibraryIdentifier().getId(),
-                    fd.getName());
+                    fd.getName(),
+                    getSignature(fd));
 
             if (!functions.containsKey(uri)) {
                 functions.put(uri, r);
@@ -364,5 +364,28 @@ public class ElmRequirements extends ElmRequirement {
         }
 
         return result;
+    }
+
+    private String getSignature(FunctionDef fd) {
+        StringBuilder sb = new StringBuilder();
+        for (OperandDef od : fd.getOperand()) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(getTypeName(od));
+        }
+        return sb.toString();
+    }
+
+    private String getTypeName(OperandDef od) {
+        if (od.getOperandType() != null) {
+            return od.toString();
+        }
+        else if (od.getOperandTypeSpecifier() != null) {
+            return od.getOperandTypeSpecifier().toString();
+        }
+        else {
+            return "";
+        }
     }
 }

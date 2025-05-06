@@ -2293,6 +2293,39 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
+    void cms135() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        var manager = setupDataRequirementsGather(
+                "CMS135/cql/CMS135FHIR-0.0.000.cql", compilerOptions);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("Initial Population");
+        expressions.add("Denominator");
+        expressions.add("Denominator Exclusions");
+        expressions.add("Numerator");
+        expressions.add("Denominator Exceptions");
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                expressions,
+                true,
+                true);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS135/resources/Library-EffectiveDataRequirements.json");
+
+        List<Extension> overloadDefinitions = new ArrayList<>();
+        for (Extension e : moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition")) {
+            if (e.getExtensionByUrl("name").getValueStringType().getValue().equals("overlapsAfterHeartFailureOutpatientEncounter")) {
+                overloadDefinitions.add(e);
+            }
+        }
+
+        assertEquals(3, overloadDefinitions.size());
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
     void cms149() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis(
