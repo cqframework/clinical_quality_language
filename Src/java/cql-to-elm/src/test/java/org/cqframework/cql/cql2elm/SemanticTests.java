@@ -797,6 +797,17 @@ public class SemanticTests {
         return ((ValueSetRef) testExpression).isPreserve();
     }
 
+    @Test
+    void issue1504() throws IOException {
+        CqlTranslator translator = runSemanticTest("LibraryTests/Issue1504.cql", 1);
+        for (var error : translator.getErrors()) {
+            assertNotNull(error.getLocator());
+            assertNotNull(error.getLocator().getLibrary());
+            assertEquals("Issue1504", error.getLocator().getLibrary().getId());
+            assertEquals("2.0.000", error.getLocator().getLibrary().getVersion());
+        }
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }

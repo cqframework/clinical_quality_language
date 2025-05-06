@@ -138,9 +138,17 @@ public class CqlCompiler {
                 if (ldc != null
                         && ldc.qualifiedIdentifier() != null
                         && ldc.qualifiedIdentifier().identifier() != null) {
-                    return new VersionedIdentifier()
+                    VersionedIdentifier vi = new VersionedIdentifier()
                             .withId(StringEscapeUtils.unescapeCql(
                                     ldc.qualifiedIdentifier().identifier().getText()));
+
+                    if (ldc.versionSpecifier() != null) {
+                        var version = StringEscapeUtils.unescapeCql(ldc.versionSpecifier().getText());
+                        version = version.substring(1, version.length() - 1);
+                        vi.setVersion(version);
+                    }
+
+                    return vi;
                 }
             }
 
