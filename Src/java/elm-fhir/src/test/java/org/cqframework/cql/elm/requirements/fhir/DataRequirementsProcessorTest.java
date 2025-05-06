@@ -847,7 +847,12 @@ public class DataRequirementsProcessorTest {
             boolean recursive) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
-                setup.manager(), setup.library(), cqlTranslatorOptions, expressions, includeLogicDefinitions, recursive);
+                setup.manager(),
+                setup.library(),
+                cqlTranslatorOptions,
+                expressions,
+                includeLogicDefinitions,
+                recursive);
         assertTrue(moduleDefinitionLibrary
                 .getType()
                 .getCode("http://terminology.hl7.org/CodeSystem/library-type")
@@ -898,7 +903,12 @@ public class DataRequirementsProcessorTest {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         dqReqTrans.setSpecificationLevel(specificationLevel);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
-                setup.manager(), setup.library(), cqlTranslatorOptions, expressions, includeLogicDefinitions, recursive);
+                setup.manager(),
+                setup.library(),
+                cqlTranslatorOptions,
+                expressions,
+                includeLogicDefinitions,
+                recursive);
         assertTrue(moduleDefinitionLibrary
                 .getType()
                 .getCode("http://terminology.hl7.org/CodeSystem/library-type")
@@ -2101,7 +2111,7 @@ public class DataRequirementsProcessorTest {
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
                 moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -2135,7 +2145,7 @@ public class DataRequirementsProcessorTest {
         assertEqualToExpectedModuleDefinitionLibrary(
                 moduleDefinitionLibrary, "PCSBMI/PCSBMI-ModuleDefinitionLibrary.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -2295,34 +2305,33 @@ public class DataRequirementsProcessorTest {
     @Test
     void cms135() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
-        var manager = setupDataRequirementsGather(
-                "CMS135/cql/CMS135FHIR-0.0.000.cql", compilerOptions);
+        var manager = setupDataRequirementsGather("CMS135/cql/CMS135FHIR-0.0.000.cql", compilerOptions);
         Set<String> expressions = new HashSet<>();
         expressions.add("Initial Population");
         expressions.add("Denominator");
         expressions.add("Denominator Exclusions");
         expressions.add("Numerator");
         expressions.add("Denominator Exceptions");
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
-                manager,
-                compilerOptions,
-                expressions,
-                true,
-                true);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions, true, true);
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
                 moduleDefinitionLibrary, "CMS135/resources/Library-EffectiveDataRequirements.json");
 
         List<Extension> overloadDefinitions = new ArrayList<>();
-        for (Extension e : moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition")) {
-            if (e.getExtensionByUrl("name").getValueStringType().getValue().equals("overlapsAfterHeartFailureOutpatientEncounter")) {
+        for (Extension e : moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition")) {
+            if (e.getExtensionByUrl("name")
+                    .getValueStringType()
+                    .getValue()
+                    .equals("overlapsAfterHeartFailureOutpatientEncounter")) {
                 overloadDefinitions.add(e);
             }
         }
 
         assertEquals(3, overloadDefinitions.size());
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -2341,7 +2350,7 @@ public class DataRequirementsProcessorTest {
         assertEqualToExpectedModuleDefinitionLibrary(
                 moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -2395,7 +2404,7 @@ public class DataRequirementsProcessorTest {
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
                 moduleDefinitionLibrary, "DeviceOrder/Library-TestDeviceOrder-EffectiveDataRequirements.json");
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
 
         List<Extension> logicDefinitions = moduleDefinitionLibrary.getExtensionsByUrl(
                 "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");

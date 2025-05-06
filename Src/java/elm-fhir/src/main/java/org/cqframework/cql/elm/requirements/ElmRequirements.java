@@ -380,11 +380,9 @@ public class ElmRequirements extends ElmRequirement {
     private String getTypeName(OperandDef od) {
         if (od.getOperandType() != null) {
             return od.toString();
-        }
-        else if (od.getOperandTypeSpecifier() != null) {
+        } else if (od.getOperandTypeSpecifier() != null) {
             return od.getOperandTypeSpecifier().toString();
-        }
-        else {
+        } else {
             return "";
         }
     }

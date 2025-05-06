@@ -193,7 +193,8 @@ public class DataRequirementsProcessor {
                 requirements.reportRequirement(inferredRequirement);
             }
         } else {
-            gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), context.getRequirements());
+            gatherLibrarySpecificRequirements(
+                    requirements, translatedLibrary.getIdentifier(), context.getRequirements());
             for (ExpressionDef ed : expressionDefs) {
                 // Just being defensive here, can happen when there are errors deserializing the measure
                 if (ed != null) {
@@ -201,10 +202,12 @@ public class DataRequirementsProcessor {
                     // include
                     // directly inferred requirements
                     ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
-                    gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), reportedRequirements);
+                    gatherLibrarySpecificRequirements(
+                            requirements, translatedLibrary.getIdentifier(), reportedRequirements);
 
                     ElmRequirement inferredRequirement = context.getInferredRequirements(ed);
-                    gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), inferredRequirement);
+                    gatherLibrarySpecificRequirements(
+                            requirements, translatedLibrary.getIdentifier(), inferredRequirement);
                 }
             }
         }
@@ -227,12 +230,15 @@ public class DataRequirementsProcessor {
                 includeLogicDefinitions);
     }
 
-    private void gatherLibrarySpecificRequirements(ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirements sourceRequirements) {
+    private void gatherLibrarySpecificRequirements(
+            ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirements sourceRequirements) {
         for (ElmRequirement requirement : sourceRequirements.getRequirements()) {
             gatherLibrarySpecificRequirements(requirements, libraryIdentifier, requirement);
         }
     }
-    private void gatherLibrarySpecificRequirements(ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirement requirement) {
+
+    private void gatherLibrarySpecificRequirements(
+            ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirement requirement) {
         if (requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
             requirements.reportRequirement(requirement);
         }
