@@ -193,10 +193,7 @@ public class DataRequirementsProcessor {
                 requirements.reportRequirement(inferredRequirement);
             }
         } else {
-            for (ElmRequirement requirement : context.getRequirements().getRequirements()) {
-                if (requirement.getLibraryIdentifier().equals(translatedLibrary.getIdentifier()))
-                    requirements.reportRequirement(requirement);
-            }
+            gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), context.getRequirements());
             for (ExpressionDef ed : expressionDefs) {
                 // Just being defensive here, can happen when there are errors deserializing the measure
                 if (ed != null) {
@@ -204,10 +201,10 @@ public class DataRequirementsProcessor {
                     // include
                     // directly inferred requirements
                     ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
-                    requirements.reportRequirement(reportedRequirements);
+                    gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), reportedRequirements);
 
                     ElmRequirement inferredRequirement = context.getInferredRequirements(ed);
-                    requirements.reportRequirement(inferredRequirement);
+                    gatherLibrarySpecificRequirements(requirements, translatedLibrary.getIdentifier(), inferredRequirement);
                 }
             }
         }
@@ -228,6 +225,17 @@ public class DataRequirementsProcessor {
                 parameters,
                 evaluationDateTime,
                 includeLogicDefinitions);
+    }
+
+    private void gatherLibrarySpecificRequirements(ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirements sourceRequirements) {
+        for (ElmRequirement requirement : sourceRequirements.getRequirements()) {
+            gatherLibrarySpecificRequirements(requirements, libraryIdentifier, requirement);
+        }
+    }
+    private void gatherLibrarySpecificRequirements(ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirement requirement) {
+        if (requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
+            requirements.reportRequirement(requirement);
+        }
     }
 
     /**
