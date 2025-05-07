@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
     id("cql.xsd-kotlin-multiplatform-gen-conventions")
-    id("com.strumenta.antlr-kotlin") version "1.0.1"
+    id("com.strumenta.antlr-kotlin") version "1.0.3"
 }
 
 kotlin {
@@ -14,7 +14,7 @@ kotlin {
             }
             dependencies {
                 api(project(":shared"))
-                api("com.strumenta:antlr-kotlin-runtime:1.0.1")
+                api("com.strumenta:antlr-kotlin-runtime:1.0.3")
             }
         }
         jvmTest {
