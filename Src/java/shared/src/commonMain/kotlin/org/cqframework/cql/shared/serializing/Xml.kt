@@ -42,11 +42,22 @@ expect fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>
  */
 fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QName {
     val parts = value.split(":")
-    return if (parts.size == 2) {
-        val prefix = parts[0]
-        QName(namespaces[prefix] ?: "", parts[1], prefix)
-    } else {
-        QName(namespaces[""] ?: "", parts[0])
+    return when (parts.size) {
+        1 ->
+            QName(
+                namespaces[""] ?: throw IllegalArgumentException("No default namespace found"),
+                parts[0]
+            )
+        2 -> {
+            val prefix = parts[0]
+            QName(
+                namespaces[prefix]
+                    ?: throw IllegalArgumentException("No namespace found for prefix: $prefix"),
+                parts[1],
+                prefix
+            )
+        }
+        else -> throw IllegalArgumentException("Invalid QName format: $value")
     }
 }
 
