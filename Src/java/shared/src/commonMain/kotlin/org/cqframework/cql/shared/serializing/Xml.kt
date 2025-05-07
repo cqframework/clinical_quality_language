@@ -40,6 +40,7 @@ expect fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>
  * @param namespaces A map of namespace prefixes to URIs used in the current context.
  * @return The corresponding `QName` object.
  */
+@Suppress("ThrowsCount")
 fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QName {
     val parts = value.split(":")
     return when (parts.size) {

@@ -15,9 +15,7 @@ import org.cqframework.cql.shared.QName
 fun jsonStringToQName(value: String): QName {
     if (value.startsWith("{")) {
         val endIndex = value.indexOf("}")
-        if (endIndex == -1) {
-            throw IllegalArgumentException("Invalid QName format: $value")
-        }
+        require(endIndex != -1) { "Invalid QName format: $value" }
         val namespaceURI = value.substring(1, endIndex)
         val localPart = value.substring(endIndex + 1)
         return QName(namespaceURI, localPart)

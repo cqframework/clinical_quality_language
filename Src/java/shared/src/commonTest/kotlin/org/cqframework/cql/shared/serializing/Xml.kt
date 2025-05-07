@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package org.cqframework.cql.shared.serializing
 
 import kotlin.test.Test
