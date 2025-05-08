@@ -2,10 +2,11 @@ package org.cqframework.cql.elm.visiting
 
 import java.lang.reflect.Field
 import java.nio.charset.StandardCharsets
+import java.util.*
 import javax.xml.namespace.QName
+import org.cqframework.cql.cql2elm.model.LibraryRef
 import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.elm.r1.AccessModifier
-import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.TypeSpecifier
@@ -15,12 +16,10 @@ import org.jeasy.random.ObjenesisObjectFactory
 import org.jeasy.random.api.ExclusionPolicy
 import org.jeasy.random.api.RandomizerContext
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 @Suppress("detekt:all")
-@Disabled("Fails because of the LibraryRef class from cql-to-elm")
 class RandomElmGraphTest {
     @ParameterizedTest
     @MethodSource("seeds")
@@ -30,8 +29,11 @@ class RandomElmGraphTest {
         val elementsGenerated = HashMap<Int, Element>()
         val countingObjectFactory: ObjenesisObjectFactory =
             object : ObjenesisObjectFactory() {
-                override fun <T> createInstance(type: Class<T>, context: RandomizerContext): T {
-                    val t = super.createInstance(type, context)
+                override fun <T> createInstance(type: Class<T>, context: RandomizerContext): T? {
+                    var t = super.createInstance(type, context)
+                    while (t is LibraryRef) {
+                        t = super.createInstance(type, context)
+                    }
                     if (t is Element) {
                         val hash = System.identityHashCode(t)
                         elementsGenerated[hash] = t
@@ -39,9 +41,9 @@ class RandomElmGraphTest {
 
                     // Debugging for specific types and paths
                     // that aren't being visited.
-                    if (t is Date) {
-                        printContext(t, context)
-                    }
+                    // if (t is Date) {
+                    //   printContext(t, context)
+                    // }
                     return t
                 }
 
@@ -67,11 +69,11 @@ class RandomElmGraphTest {
                 .stringLengthRange(5, 50)
                 .collectionSizeRange(1, 3)
                 .exclusionPolicy(NoTypeSpecifierRecursionPolicy())
+                .excludeType { it == LibraryRef::class.java }
                 .scanClasspathForConcreteTypes(true)
 
         val randomElmGenerator = EasyRandom(randomParams)
         val randomElm = randomElmGenerator.nextObject(Library::class.java)
-
         val elementsGeneratedCount = elementsGenerated.size
 
         val elementsVisited = HashMap<Int, Element>()
