@@ -770,7 +770,7 @@ public class SemanticTests {
                 errorMessages,
                 contains(
                         "Could not resolve identifier NonExistent in the current library.",
-                        "Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
+                        "Could not resolve identifier IaMaDiFeReNtCaSe. Consider whether the identifier iAmAdIfErEnTcAsE (differing only in case) was intended."));
 
         final List<String> warnings =
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
