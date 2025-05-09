@@ -116,7 +116,7 @@ public class InEvaluator {
                 return true;
             }
 
-            if (state.getEngineOptions().contains(CqlEngine.Options.DisableEquivalentIn)) {
+            if (state.getEngineOptions().contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
                 isEqual = EqualEvaluator.equal(left, element, state);
             } else {
                 isEqual = EquivalentEvaluator.equivalent(left, element, state);

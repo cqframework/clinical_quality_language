@@ -24,7 +24,16 @@ public class CqlEngine {
     public enum Options {
         EnableExpressionCaching,
         EnableValidation,
-        DisableEquivalentIn
+        // HEDIS Compatibility Mode changes the behavior of the CQL
+        // engine to match some expected behavior of the HEDIS
+        // content that is not standards-complaint.
+        // Currently, this includes:
+        //  1. Making the default comparison semantics for lists to be "equivalent"
+        //      (the standard behavior is to use "equal" semantics - note that this is
+        //      expected to be the standard behavior in a future version of the CQL spec)
+        //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always return all elements
+        //      (the standard behavior is to return distinct elements)
+        EnableHedisCompatibilityMode
     }
 
     private final Environment environment;
