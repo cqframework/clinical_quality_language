@@ -126,7 +126,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // The model was already calculated by CqlPreprocessorVisitor
         final UsingDef usingDef = libraryBuilder.resolveUsingRef(localIdentifier);
-        libraryBuilder.pushIdentifier(localIdentifier, usingDef, IdentifierScope.GLOBAL);
+        IdentifierRef ir = of.createIdentifierRef().withName(localIdentifier);
+        track(ir, ctx.localIdentifier() == null ? ctx.qualifiedIdentifier() : ctx.localIdentifier());
+        libraryBuilder.pushIdentifier(ir, usingDef, IdentifierScope.GLOBAL);
         return usingDef;
     }
 
@@ -202,7 +204,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addInclude(library);
-        libraryBuilder.pushIdentifier(library.getLocalIdentifier(), library, IdentifierScope.GLOBAL);
+
+        IdentifierRef ir = of.createIdentifierRef().withName(library.getLocalIdentifier());
+        track(ir, ctx.localIdentifier() == null ? ctx.qualifiedIdentifier() : ctx.localIdentifier());
+        libraryBuilder.pushIdentifier(ir, library, IdentifierScope.GLOBAL);
 
         return library;
     }
@@ -239,7 +244,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addParameter(param);
-        libraryBuilder.pushIdentifier(param.getName(), param, IdentifierScope.GLOBAL);
+
+        IdentifierRef ir = of.createIdentifierRef().withName(param.getName());
+        track(ir, ctx.identifier());
+        libraryBuilder.pushIdentifier(ir, param, IdentifierScope.GLOBAL);
 
         return param;
     }
@@ -281,7 +289,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addCodeSystem(cs);
-        libraryBuilder.pushIdentifier(cs.getName(), cs, IdentifierScope.GLOBAL);
+
+        IdentifierRef ir = of.createIdentifierRef().withName(cs.getName());
+        track(ir, ctx.identifier());
+        libraryBuilder.pushIdentifier(ir, cs, IdentifierScope.GLOBAL);
+
         return cs;
     }
 
@@ -355,7 +367,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
-        libraryBuilder.pushIdentifier(vs.getName(), vs, IdentifierScope.GLOBAL);
+
+        IdentifierRef ir = of.createIdentifierRef().withName(vs.getName());
+        track(ir, ctx.identifier());
+        libraryBuilder.pushIdentifier(ir, vs, IdentifierScope.GLOBAL);
 
         return vs;
     }
@@ -377,7 +392,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         cd.setResultType(libraryBuilder.resolveTypeName("Code"));
         libraryBuilder.addCode(cd);
-        libraryBuilder.pushIdentifier(cd.getName(), cd, IdentifierScope.GLOBAL);
+
+        IdentifierRef ir = of.createIdentifierRef().withName(cd.getName());
+        track(ir, ctx.identifier());
+        libraryBuilder.pushIdentifier(ir, cd, IdentifierScope.GLOBAL);
 
         return cd;
     }
@@ -545,7 +563,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (def == null) {
             final ExpressionDef hollowExpressionDef =
                     of.createExpressionDef().withName(identifier).withContext(getCurrentContext());
-            libraryBuilder.pushIdentifier(identifier, hollowExpressionDef, IdentifierScope.GLOBAL);
+            IdentifierRef ir = of.createIdentifierRef().withName(identifier);
+            track(ir, ctx.identifier());
+
+            libraryBuilder.pushIdentifier(ir, hollowExpressionDef, IdentifierScope.GLOBAL);
         }
 
         if (def == null || isImplicitContextExpressionDef(def)) {
@@ -608,7 +629,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         final Literal stringLiteral = libraryBuilder.createLiteral(parseString(ctx.STRING()));
         // Literals are never actually pushed to the stack. This just emits a warning if
         // the literal is hiding something
-        libraryBuilder.pushIdentifier(stringLiteral.getValue(), stringLiteral);
+        IdentifierRef ir = of.createIdentifierRef().withName(stringLiteral.getValue());
+        track(ir, ctx.STRING());
+        libraryBuilder.pushIdentifier(ir, stringLiteral);
         return stringLiteral;
     }
 
@@ -3331,7 +3354,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             queryContext.addPrimaryQuerySources(sources);
 
             for (AliasedQuerySource source : sources) {
-                libraryBuilder.pushIdentifier(source.getAlias(), source);
+                IdentifierRef ir = of.createIdentifierRef().withName(source.getAlias());
+                track(ir, source);
+                libraryBuilder.pushIdentifier(ir, source);
             }
 
             // If we are evaluating a population-level query whose source ranges over any
@@ -3355,7 +3380,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), letClause);
+                        IdentifierRef ir = of.createIdentifierRef().withName(letClause.getIdentifier());
+                        track(ir, letClause);
+                        libraryBuilder.pushIdentifier(ir, letClause);
                     }
                 }
 
@@ -4409,10 +4436,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     "Internal error: Could not resolve operator map entry for function header %s",
                     fh.getMangledName()));
         }
-        libraryBuilder.pushIdentifier(fun.getName(), fun, IdentifierScope.GLOBAL);
+        IdentifierRef ir = of.createIdentifierRef().withName(fun.getName());
+        track(ir, ctx.identifierOrFunctionIdentifier());
+        libraryBuilder.pushIdentifier(ir, fun, IdentifierScope.GLOBAL);
         final List<OperandDef> operand = op.getFunctionDef().getOperand();
         for (OperandDef operandDef : operand) {
-            libraryBuilder.pushIdentifier(operandDef.getName(), operandDef);
+            IdentifierRef oir = of.createIdentifierRef().withName(operandDef.getName());
+            track(oir, operandDef);
+            libraryBuilder.pushIdentifier(oir, operandDef);
         }
 
         try {

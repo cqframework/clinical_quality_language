@@ -850,7 +850,7 @@ class BaseTest {
         assertThat(warningMessages.toString(), translator.getWarnings().size(), is(2));
 
         final String first = String.format(
-                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead?");
+                "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead.");
         final String second =
                 "The function TestOverload.Stringify has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.";
 
@@ -870,7 +870,7 @@ class BaseTest {
                 warningMessages,
                 contains(
                         String.format(
-                                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead?")));
+                                "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead.")));
     }
 
     @Test
@@ -883,7 +883,7 @@ class BaseTest {
         assertThat(warningMessages.toString(), translator.getWarnings().size(), is(2));
 
         final String first = String.format(
-                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead?");
+                "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead.");
         final String second =
                 "The function TestOverloadForward.Stringify has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.";
 
@@ -903,7 +903,7 @@ class BaseTest {
                 warningMessages,
                 contains(
                         String.format(
-                                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead?")));
+                                "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead.")));
     }
 
     @Test
