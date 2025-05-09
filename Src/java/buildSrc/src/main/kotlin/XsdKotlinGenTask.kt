@@ -213,6 +213,7 @@ fun TypeSpec.Builder.addElement(
 
         addProperty(
             PropertySpec.builder("_${elementDecl.name}", listType.copy(nullable = true))
+                .addModifiers(KModifier.INTERNAL)
                 .mutable()
                 .initializer("null")
                 .build()
@@ -224,28 +225,19 @@ fun TypeSpec.Builder.addElement(
                 .mutable()
                 .getter(
                     FunSpec.getterBuilder()
-                        .addCode(
-                            """
-                                if (this.%N == null) {
-                                  this.%N = ArrayList();
-                                }
-                                return this.%N!!
-                            """
-                                .trimIndent(),
+                        .addStatement(
+                            "if (this.%N == null) { this.%N = ArrayList() }",
                             className.member("_${elementDecl.name}"),
                             className.member("_${elementDecl.name}"),
-                            className.member("_${elementDecl.name}")
                         )
+                        .addStatement("return this.%N!!", className.member("_${elementDecl.name}"))
                         .build()
                 )
                 .setter(
                     FunSpec.setterBuilder()
                         .addParameter(valueParameter)
-                        .addCode(
-                            """
-                                this.%N = %N
-                            """
-                                .trimIndent(),
+                        .addStatement(
+                            "this.%N = %N",
                             className.member("_${elementDecl.name}"),
                             valueParameter
                         )
@@ -319,16 +311,23 @@ fun TypeSpec.Builder.addWithList(
     )
 }
 
+// Returns true if the type is XML's anyType
+fun typeIsAnyType(type: XSType): Boolean {
+    return type.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI && type.name == "anyType"
+}
+
+// Returns true if the type is derived from a non-any type
+fun typeHasParent(type: XSType): Boolean {
+    return !typeIsAnyType(type.baseType)
+}
+
 // Returns the elements declared in the base type and its ancestors
 fun getInheritedElements(complexType: XSComplexType): List<XSParticle> {
-    if (
-        complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
-            complexType.baseType.name == "anyType"
-    ) {
-        return emptyList()
+    if (typeHasParent(complexType)) {
+        val baseType = complexType.baseType.asComplexType()
+        return getInheritedElements(baseType) + getOwnElements(baseType)
     }
-    val baseType = complexType.baseType.asComplexType()
-    return getInheritedElements(baseType) + getOwnElements(baseType)
+    return emptyList()
 }
 
 // Returns the elements declared in the current type
@@ -342,14 +341,11 @@ fun getOwnElements(complexType: XSComplexType): List<XSParticle> {
 
 // Returns the attributes declared in the base type and its ancestors
 fun getInheritedAttributes(complexType: XSComplexType): List<XSAttributeUse> {
-    if (
-        complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
-            complexType.baseType.name == "anyType"
-    ) {
-        return emptyList()
+    if (typeHasParent(complexType)) {
+        val baseType = complexType.baseType.asComplexType()
+        return getInheritedAttributes(baseType) + getOwnAttributes(baseType)
     }
-    val baseType = complexType.baseType.asComplexType()
-    return getInheritedAttributes(baseType) + getOwnAttributes(baseType)
+    return emptyList()
 }
 
 // Returns the attributes declared in the current type
@@ -368,10 +364,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
             }
 
             // Add superclass if the class has a base type
-            if (
-                !(complexType.baseType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
-                    complexType.baseType.name == "anyType")
-            ) {
+            if (typeHasParent(complexType)) {
                 superclass(getTypeName(complexType.baseType))
             }
 
@@ -382,6 +375,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
 
                 addProperty(
                     PropertySpec.builder("_content", listType.copy(nullable = true))
+                        .addModifiers(KModifier.INTERNAL)
                         .mutable()
                         .initializer("null")
                         .build()
@@ -393,28 +387,19 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                         .mutable()
                         .getter(
                             FunSpec.getterBuilder()
-                                .addCode(
-                                    """
-                                if (this.%N == null) {
-                                  this.%N = ArrayList();
-                                }
-                                return this.%N!!
-                            """
-                                        .trimIndent(),
-                                    className.member("_content"),
+                                .addStatement(
+                                    "if (this.%N == null) { this.%N = ArrayList() }",
                                     className.member("_content"),
                                     className.member("_content")
                                 )
+                                .addStatement("return this.%N!!", className.member("_content"))
                                 .build()
                         )
                         .setter(
                             FunSpec.setterBuilder()
                                 .addParameter(valueParameter)
-                                .addCode(
-                                    """
-                                this.%N = %N
-                            """
-                                        .trimIndent(),
+                                .addStatement(
+                                    "this.%N = %N",
                                     className.member("_content"),
                                     valueParameter
                                 )
@@ -457,6 +442,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                 "_${attribute.decl.name}",
                                 typeName.copy(nullable = true)
                             )
+                            .addModifiers(KModifier.INTERNAL)
                             .mutable()
                             .initializer("null")
                             .build()
@@ -469,24 +455,18 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             .mutable()
                             .getter(
                                 FunSpec.getterBuilder()
-                                    .addCode(
-                                        """
-                                return this.%N ?:
-                            """
-                                            .trimIndent(),
-                                        className.member("_${attribute.decl.name}")
+                                    .addStatement(
+                                        "return this.%N ?: %L",
+                                        className.member("_${attribute.decl.name}"),
+                                        defaultValue
                                     )
-                                    .addCode(defaultValue)
                                     .build()
                             )
                             .setter(
                                 FunSpec.setterBuilder()
                                     .addParameter(valueParameter)
-                                    .addCode(
-                                        """
-                                this.%N = %N
-                            """
-                                            .trimIndent(),
+                                    .addStatement(
+                                        "this.%N = %N",
                                         className.member("_${attribute.decl.name}"),
                                         valueParameter
                                     )
@@ -568,11 +548,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                     beginControlFlow("if (other is %T)", className)
 
                     // Check the equality of inherited attributes and elements
-                    if (
-                        !(complexType.baseType.targetNamespace ==
-                            XMLConstants.W3C_XML_SCHEMA_NS_URI &&
-                            complexType.baseType.name == "anyType")
-                    ) {
+                    if (typeHasParent(complexType)) {
                         addStatement("if (!super.equals(other)) return false")
                     }
 
@@ -619,14 +595,14 @@ fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
     return complexType.subtypes.map { subtype -> getAllSubtypes(subtype) + subtype }.flatten()
 }
 
-// Adds the `fromXmlElement`, `toXmlElement`, `fromJsonElement`, and `toJsonElement` extension
+// Adds the `fromXmlElement`, `toXmlElement`, `fromJsonObject`, and `toJsonObject` extension
 // functions for the class and nested classes
 fun FileSpec.Builder.addSerializers(
     complexType: XSComplexType,
     className: ClassName
 ): FileSpec.Builder {
 
-    // Add `fromJsonElement` static function
+    // Add `froXmlElement` static function
     addFunction(
         FunSpec.builder("fromXmlElement")
             .receiver(className.nestedClass("Companion"))
@@ -1021,7 +997,7 @@ fun FileSpec.Builder.addSerializers(
             .build()
     )
 
-    // Add `toJsonElement` function
+    // Add `toJsonObject` function
     addFunction(
         FunSpec.builder("toJsonObject")
             .receiver(className)
@@ -1227,11 +1203,8 @@ open class XsdKotlinGenTask : DefaultTask() {
 
                 // Generate classes and parsers/serializers for complex types
                 schema.complexTypes.values.forEach complexTypesLoop@{ complexType ->
-                    // Skip http://www.w3.org/2001/XMLSchema/anyType
-                    if (
-                        complexType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI &&
-                            complexType.name == "anyType"
-                    ) {
+                    // Skip XML's anyType
+                    if (typeIsAnyType(complexType)) {
                         return@complexTypesLoop
                     }
 
