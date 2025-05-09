@@ -39,14 +39,14 @@ public class CqlList {
         public int compare(Object left, Object right) {
 
             try {
-                state.push(new Variable().withName(alias).withValue(left));
+                state.push(new Variable(alias).withValue(left));
                 left = visitor.visitExpression(expression, state);
             } finally {
                 state.pop();
             }
 
             try {
-                state.push(new Variable().withName(alias).withValue(right));
+                state.push(new Variable(alias).withValue(right));
                 right = visitor.visitExpression(expression, state);
             } finally {
                 state.pop();

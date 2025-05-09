@@ -18,3 +18,11 @@ define "ReturnAll":
 // standard behavior is "distinct", HEDIS behavior is "all", even if "distinct" is specified
 define "ReturnDistinct":
     ({1, 1, 1, 2, 2 }) X return distinct X
+
+
+define "Null Tuple":
+   if false then Tuple { x : 5 }
+   else null
+
+define "Test Null Tuple":
+   ("Null Tuple") T where T.x > 4

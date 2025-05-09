@@ -46,7 +46,7 @@ public class QueryEvaluator {
             Iterable<Object> relatedSourceData =
                     ensureIterable(visitor.visitExpression(relationship.getExpression(), state));
             for (Object relatedElement : relatedSourceData) {
-                state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
+                state.push(new Variable(relationship.getAlias()).withValue(relatedElement));
                 try {
                     Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(), state);
                     if ((relationship instanceof org.hl7.elm.r1.With || relationship instanceof org.hl7.elm.r1.Without)
@@ -165,14 +165,14 @@ public class QueryEvaluator {
                 if (querySource.getIsList()) {
                     sourceIsList = true;
                 }
-                Variable variable = new Variable().withName(source.getAlias());
+                Variable variable = new Variable(source.getAlias());
                 variables.add(variable);
                 state.push(variable);
                 pushCount++;
             }
 
             for (LetClause let : elm.getLet()) {
-                Variable letVariable = new Variable().withName(let.getIdentifier());
+                Variable letVariable = new Variable(let.getIdentifier());
                 letVariables.add(letVariable);
                 state.push(letVariable);
                 pushCount++;

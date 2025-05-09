@@ -37,9 +37,7 @@ public class FunctionRefEvaluator {
                 state.pushWindow();
                 try {
                     for (int i = 0; i < arguments.size(); i++) {
-                        state.push(new Variable()
-                                .withName(functionDef.getOperand().get(i).getName())
-                                .withValue(arguments.get(i)));
+                        state.push(new Variable(functionDef.getOperand().get(i).getName()).withValue(arguments.get(i)));
                     }
                     return visitor.visitExpression(functionDef.getExpression(), state);
                 } finally {

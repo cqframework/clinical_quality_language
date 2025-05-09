@@ -23,7 +23,7 @@ public class FilterEvaluator {
                     // Hmmm... This is hard without the alias.
                     // TODO: verify this works for all cases -> will scope always be present?
                     if (elm.getScope() != null) {
-                        state.push(new Variable().withName(elm.getScope()).withValue(obj));
+                        state.push(new Variable(elm.getScope()).withValue(obj));
                     }
 
                     if (condition instanceof Boolean && (Boolean) condition) {
