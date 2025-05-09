@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -57,6 +58,9 @@ class CqlEngineTest extends CqlTestBase {
         assertInstanceOf(List.class, result);
         assertEquals(2, ((List<?>) result).size());
 
+        result = libraryResult.expressionResults.get("Test Null Tuple").value();
+        assertNull(result);
+
         engine.getState().getEngineOptions().add(CqlEngine.Options.EnableHedisCompatibilityMode);
         libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         // equivalent semantics for lists
@@ -75,5 +79,8 @@ class CqlEngineTest extends CqlTestBase {
         result = libraryResult.expressionResults.get("ReturnDistinct").value();
         assertInstanceOf(List.class, result);
         assertEquals(5, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("Test Null Tuple").value();
+        assertNull(result);
     }
 }
