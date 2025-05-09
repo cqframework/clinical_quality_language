@@ -3,8 +3,8 @@ package org.cqframework.cql.cql2elm
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.ucum.lazyUcumService
+import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
-import org.cqframework.cql.elm.serializing.ElmLibraryReaderProviderFactory
 import org.hl7.elm.r1.VersionedIdentifier
 
 class LibraryManager
@@ -13,8 +13,7 @@ constructor(
     modelManager: ModelManager,
     cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
     libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
-    elmLibraryReaderProvider: ElmLibraryReaderProvider =
-        ElmLibraryReaderProviderFactory.getProvider(),
+    elmLibraryReaderProvider: ElmLibraryReaderProvider = DefaultElmLibraryReaderProvider,
 ) :
     BaseLibraryManager(
         modelManager,

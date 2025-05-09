@@ -3,7 +3,7 @@ package org.hl7.cql.model
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.hl7.elm_modelinfo.r1.ModelInfo
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory.getReader
+import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 
 class SystemModelInfoProvider : ModelInfoProvider {
     private var namespaceManager: NamespaceManager? = null
@@ -23,11 +23,10 @@ class SystemModelInfoProvider : ModelInfoProvider {
 
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         return if (modelIdentifier.isSystemModelIdentifier()) {
-            val reader = getReader("application/xml")
             val stream =
                 this::class.java.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")
             checkNotNull(stream) { "Could not find system model info" }
-            reader.read(stream.asSource().buffered())
+            parseModelInfoXml(stream.asSource().buffered())
         } else null
     }
 }

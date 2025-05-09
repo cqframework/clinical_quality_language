@@ -4,7 +4,7 @@ import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory
-import org.cqframework.cql.elm.serializing.QName
+import org.cqframework.cql.shared.QName
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.ParameterTypeSpecifier
 import org.hl7.elm.r1.TupleElementDefinition

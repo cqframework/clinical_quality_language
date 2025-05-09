@@ -8,7 +8,6 @@ dependencies {
     api(project(":ucum"))
     api("org.apache.commons:commons-text:1.10.0")
 
-    testImplementation(project(":serialization"))
     testImplementation("org.mockito:mockito-core:5.4.0")
 }
 

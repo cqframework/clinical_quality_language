@@ -23,10 +23,10 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.isLeapYear
 import org.cqframework.cql.cql2elm.utils.logger
-import org.cqframework.cql.elm.serializing.BigDecimal
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.*
+import org.cqframework.cql.shared.BigDecimal
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 import org.hl7.elm_modelinfo.r1.ModelInfo

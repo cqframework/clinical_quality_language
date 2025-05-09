@@ -13,7 +13,6 @@ dependencies {
     implementation(project(":cqf-fhir-npm"))
     implementation(project(":quick"))
     implementation(project(":qdm"))
-    implementation(project(":serialization"))
     implementation(project(":ucum"))
     implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
     implementation("net.sf.jopt-simple:jopt-simple:4.7")

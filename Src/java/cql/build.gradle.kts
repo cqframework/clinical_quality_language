@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
     id("cql.xsd-kotlin-multiplatform-gen-conventions")
-    id("com.strumenta.antlr-kotlin") version "1.0.1"
+    id("com.strumenta.antlr-kotlin") version "1.0.3"
 }
 
 kotlin {
@@ -11,17 +11,16 @@ kotlin {
         commonMain {
             kotlin {
                 srcDir("build/generated/sources/antlr/commonMain/kotlin")
-                srcDir("build/generated/sources/cql/commonMain/kotlin")
             }
             dependencies {
-                api("com.strumenta:antlr-kotlin-runtime:1.0.1")
-                api("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+                api(project(":shared"))
+                api("com.strumenta:antlr-kotlin-runtime:1.0.3")
             }
         }
-
         jvmTest {
             dependencies {
-                implementation(project(":serialization"))
+                implementation(project(":quick"))
+                implementation(project(":qdm"))
             }
         }
     }

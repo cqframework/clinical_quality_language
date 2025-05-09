@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -91,7 +90,7 @@ public abstract class FhirExecutionTestBase {
     }
 
     @BeforeEach
-    public void beforeEachTestMethod() throws JAXBException, IOException, UcumException {
+    public void beforeEachTestMethod() throws IOException, UcumException {
         String fileName = this.getClass().getSimpleName();
         if (library == null) {
             try {
