@@ -32,16 +32,15 @@ public class DebugLibraryResultEntry {
         debugResults.add(new DebugResultEntry(result));
     }
 
-    public void logDebugResultEntry(Element node, Object result) {
-        if (node instanceof Element) {
-            Element element = (Element) node;
-            if (element.getLocalId() != null) {
-                DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_ID, element.getLocalId());
+    public void logDebugResultEntry(final Element node, final Object result) {
+        if (node != null) {
+            if (node.getLocalId() != null) {
+                DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_ID, node.getLocalId());
                 logDebugResult(locator, result);
             }
 
-            if (element.getLocator() != null) {
-                DebugLocator locator = new DebugLocator(Location.fromLocator(element.getLocator()));
+            if (node.getLocator() != null) {
+                DebugLocator locator = new DebugLocator(Location.fromLocator(node.getLocator()));
                 logDebugResult(locator, result);
             }
         } else {
