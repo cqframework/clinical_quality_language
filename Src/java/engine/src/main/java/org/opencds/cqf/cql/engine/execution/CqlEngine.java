@@ -232,31 +232,36 @@ public class CqlEngine {
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
         EvaluationResult result = new EvaluationResult();
 
-        for (String expression : expressions) {
-            ExpressionDef def = Libraries.resolveExpressionRef(expression, state.getCurrentLibrary());
+        this.state.beginEvaluation();
+        try {
+            for (String expression : expressions) {
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, this.state.getCurrentLibrary());
 
-            if (def == null) {
-                throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
+                if (def == null) {
+                    throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
+                }
+
+                if (def instanceof FunctionDef) {
+                    continue;
+                }
+
+                try {
+                    var action = getState().shouldDebug(def);
+
+                    Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
+                    result.expressionResults.put(
+                            expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+
+                    getState().logDebugResult(def, object, action);
+                } catch (CqlException ce) {
+                    processException(ce, def);
+                } catch (Exception e) {
+                    processException(
+                            e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
+                }
             }
-
-            if (def instanceof FunctionDef) {
-                continue;
-            }
-
-            try {
-                var action = getState().shouldDebug(def);
-
-                Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
-                result.expressionResults.put(
-                        expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-
-                getState().logDebugResult(def, object, action);
-            } catch (CqlException ce) {
-                processException(ce, def);
-            } catch (Exception e) {
-                processException(
-                        e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
-            }
+        } finally {
+            this.state.endEvaluation();
         }
 
         result.setDebugResult(this.state.getDebugResult());

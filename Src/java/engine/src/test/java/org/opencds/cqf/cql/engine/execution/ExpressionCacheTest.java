@@ -27,12 +27,16 @@ class ExpressionCacheTest extends CqlTestBase {
         // the expressions were cached only by name. This is the behavior that was broken.
         Boolean enteredLibrary = engine.getState().enterLibrary("Common");
         VersionedIdentifier commonId = engine.getState().getCurrentLibrary().getIdentifier();
-
-        value = engine.getEvaluationVisitor()
-                .visitExpressionDef(
-                        Libraries.resolveExpressionRef(
-                                "Expression", engine.getState().getCurrentLibrary()),
-                        engine.getState());
+        engine.getState().beginEvaluation();
+        try {
+            value = engine.getEvaluationVisitor()
+                    .visitExpressionDef(
+                            Libraries.resolveExpressionRef(
+                                    "Expression", engine.getState().getCurrentLibrary()),
+                            engine.getState());
+        } finally {
+            engine.getState().endEvaluation();
+        }
         assertNotNull(value);
         assertThat(value, is(3));
 

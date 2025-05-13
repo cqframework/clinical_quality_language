@@ -177,7 +177,7 @@ public class State {
     }
 
     public void init(Library library) {
-        pushWindow();
+        assert this.windows.isEmpty();
 
         currentLibrary.push(library);
 
@@ -190,6 +190,16 @@ public class State {
 
     public void push(Variable variable) {
         getStack().push(variable);
+    }
+
+    public void beginEvaluation() {
+        assert this.windows.isEmpty();
+        pushWindow();
+    }
+
+    public void endEvaluation() {
+        assert this.windows.size() == 1;
+        popWindow();
     }
 
     public Variable resolveVariable(String name) {
