@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
@@ -53,5 +54,21 @@ class CqlQueryTest extends CqlTestBase {
         list = (List<?>) value;
         assertEquals(1, list.size());
         assertTrue(EquivalentEvaluator.equivalent(list.get(0), 3));
+    }
+
+    @Test
+    void sort_by_fluent_function() {
+        var results = engine.evaluate(toElmIdentifier("CqlQueryTests"));
+        var value = results.forExpression("Sorted Tuples").value();
+        assertInstanceOf(List.class, value);
+        var list = (List<?>) value;
+        assertEquals(3, list.size());
+        assertTrue(list.get(0) instanceof Tuple);
+        var tuple = (Tuple) list.get(0);
+        assertTrue(tuple.getElement("x").equals(3));
+        tuple = (Tuple) list.get(1);
+        assertTrue(tuple.getElement("x").equals(2));
+        tuple = (Tuple) list.get(2);
+        assertTrue(tuple.getElement("x").equals(1));
     }
 }

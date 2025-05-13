@@ -119,3 +119,14 @@ define "Accessing Third Element of Triple Source Query":
     from "A" A, "B" B, "C" C
     return C
 
+
+// These functions test sorting with a fluent function
+define "Tuples":
+  { Tuple { x: 1 }, Tuple { x: 2 }, Tuple { x: 3 }}
+
+define fluent function "GetValue"(t Tuple {x Integer }):
+  t.x
+
+define "Sorted Tuples":
+  "Tuples" t sort by "GetValue"() desc
+
