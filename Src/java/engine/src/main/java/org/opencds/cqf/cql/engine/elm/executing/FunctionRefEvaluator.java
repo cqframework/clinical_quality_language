@@ -34,14 +34,22 @@ public class FunctionRefEvaluator {
                         .getExternalFunctionProvider(state.getCurrentLibrary().getIdentifier())
                         .evaluate(functionDef.getName(), arguments);
             } else {
-                state.pushWindow();
+                // Establish activation frame with the function
+                // definition being evaluated but without the start
+                // time since the argument expressions will be
+                // evaluated first.
+                state.pushActivationFrame(functionDef, 0);
                 try {
                     for (int i = 0; i < arguments.size(); i++) {
                         state.push(new Variable(functionDef.getOperand().get(i).getName()).withValue(arguments.get(i)));
                     }
+                    // Set start time for the evaluation of the
+                    // function body expression after the argument
+                    // expressions have been evaluated.
+                    state.getTopActivationFrame().setStartTime();
                     return visitor.visitExpression(functionDef.getExpression(), state);
                 } finally {
-                    state.popWindow();
+                    state.popActivationFrame();
                 }
             }
         } finally {

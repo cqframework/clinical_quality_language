@@ -18,6 +18,65 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
  */
 public class State {
 
+    public static class ActivationFrame {
+
+        // Arguments and/or local variables of the active function
+        // call or expression definition evaluation. This is the only
+        // field that is strictly required for evaluation. The other
+        // fields are for pragmatic purposes like friendly backtraces
+        // and profiling.
+        public Deque<Variable> variables = new ArrayDeque<>(4);
+
+        // The expression that is being evaluated in this activation
+        // frame. Either null for the "root" activation frame, an ExpressionDef (which can be a FunctionDef)
+        // or a Retrieve.
+        public Element element;
+
+        // The times at which the evaluation to which this activation
+        // frame belongs started and ended.
+        public long startTime;
+        public long endTime = 0;
+
+        // If the activation frame belongs to an ExpressionDef that is
+        // not a FunctionDef, this field Indicates whether the
+        // evaluation result was computed for this activation frame or
+        // taken from the cache.
+        public boolean isCached = false;
+
+        public ActivationFrame(Element element, long startTime) {
+            this.element = element;
+            this.startTime = startTime;
+        }
+
+        public void setStartTime() {
+            this.startTime = System.nanoTime();
+        }
+
+        @Override
+        public String toString() {
+            final var result = new StringBuilder().append("Frame{element=");
+            if (this.element == null) {
+                result.append("«root»");
+            } else if (this.element instanceof ExpressionDef) {
+                result.append(((ExpressionDef) this.element).getName());
+            } else if (this.element instanceof Retrieve) {
+                result.append(String.format(
+                        "[%s]", ((Retrieve) this.element).getDataType().getLocalPart()));
+            } else {
+                result.append(this.element.getClass().getSimpleName());
+            }
+            if (this.endTime == 0) {
+                result.append(", active");
+            } else {
+                result.append(String.format(", %,d ms", (this.endTime - this.startTime) / 1_000_000));
+            }
+            if (this.isCached) {
+                result.append(", cached");
+            }
+            return result.append("}").toString();
+        }
+    }
+
     public State(Environment environment) {
         this(environment, new HashSet<>());
     }
@@ -35,8 +94,9 @@ public class State {
 
     private final Deque<String> currentContext = new ArrayDeque<>();
 
-    private Deque<Deque<Variable>> windows = new ArrayDeque<>();
     private final Deque<Library> currentLibrary = new ArrayDeque<>();
+
+    private final Deque<ActivationFrame> stack = new ArrayDeque<>();
 
     private final Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
 
@@ -119,12 +179,16 @@ public class State {
         this.contextValues = contextValues;
     }
 
+    @Deprecated
     public Deque<Deque<Variable>> getWindows() {
-        return windows;
+        final var result = new ArrayDeque<Deque<Variable>>();
+        this.stack.forEach(frame -> result.push(frame.variables));
+        return result;
     }
 
+    @Deprecated
     public void setWindows(Deque<Deque<Variable>> windows) {
-        this.windows = windows;
+        throw new RuntimeException("Not supported");
     }
 
     public DebugMap getDebugMap() {
@@ -177,34 +241,48 @@ public class State {
     }
 
     public void init(Library library) {
-        assert this.windows.isEmpty();
+        assert this.stack.isEmpty();
 
         currentLibrary.push(library);
 
         this.pushEvaluatedResourceStack();
     }
 
+    public Deque<ActivationFrame> getStack() {
+        return this.stack;
+    }
+
     public void pop() {
-        if (!windows.peek().isEmpty()) getStack().pop();
+        final var topActivationFrame = this.stack.peek();
+        assert topActivationFrame != null; // stack underflow
+        topActivationFrame.variables.pop();
     }
 
     public void push(Variable variable) {
-        getStack().push(variable);
+        final var topActivationFrame = this.stack.peek();
+        assert topActivationFrame != null; // stack underflow
+        topActivationFrame.variables.push(variable);
     }
 
     public void beginEvaluation() {
-        assert this.windows.isEmpty();
-        pushWindow();
+        // This method must be called on an initialized but inactivate
+        // state: there must be no activation frames besides the dummy
+        // "root" activation frame. This method simply resets the
+        // start time of the root activation frame.
+        assert this.stack.isEmpty();
+        pushActivationFrame(null);
     }
 
     public void endEvaluation() {
-        assert this.windows.size() == 1;
-        popWindow();
+        assert this.stack.size() == 1;
+        // TODO(jmoringe): maybe assert this.stack.getLast().variables.isEmpty();
+        // Pop (and possibly process) the root activation frame.
+        popActivationFrame();
     }
 
     public Variable resolveVariable(String name) {
-        for (var window : windows) {
-            for (var v : window) {
+        for (var frame : this.stack) {
+            for (var v : frame.variables) {
                 if (v.getName().equals(name)) {
                     return v;
                 }
@@ -223,16 +301,29 @@ public class State {
         return result;
     }
 
-    public void pushWindow() {
-        windows.push(new ArrayDeque<>());
+    public void pushActivationFrame(Element element, long startTime) {
+        this.stack.push(new ActivationFrame(element, startTime));
     }
 
-    public void popWindow() {
-        windows.pop();
+    public void pushActivationFrame(Element element) {
+        pushActivationFrame(element, System.nanoTime());
     }
 
-    private Deque<Variable> getStack() {
-        return windows.peek();
+    public void popActivationFrame() {
+        final var topActivationFrame = this.stack.peek();
+        if (topActivationFrame == null) {
+            throw new RuntimeException("Stack underflow");
+        }
+        assert topActivationFrame.endTime == 0;
+        this.stack.pop();
+    }
+
+    public ActivationFrame getTopActivationFrame() {
+        final var topActivationFrame = this.stack.peek();
+        if (topActivationFrame == null) {
+            throw new RuntimeException("Stack underflow");
+        }
+        return topActivationFrame;
     }
 
     public void setContextValue(String context, Object contextValue) {
@@ -310,7 +401,7 @@ public class State {
         // This method needs to account for multiple variables on the stack with the same name
         ArrayList<Object> ret = new ArrayList<>();
         boolean isList = false;
-        for (Variable v : getStack()) {
+        for (Variable v : getTopActivationFrame().variables) {
             if (v.getName().equals(name)) {
                 if (v.isList()) isList = true;
                 ret.add(v.getValue());
@@ -320,8 +411,8 @@ public class State {
     }
 
     public Object resolveIdentifierRef(String name) {
-        for (var window : windows) {
-            for (var v : window) {
+        for (var frame : this.stack) {
+            for (var v : frame.variables) {
                 var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
                     for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value)
