@@ -63,12 +63,12 @@ class CqlQueryTest extends CqlTestBase {
         assertInstanceOf(List.class, value);
         var list = (List<?>) value;
         assertEquals(3, list.size());
-        assertTrue(list.get(0) instanceof Tuple);
+        assertInstanceOf(Tuple.class, list.get(0));
         var tuple = (Tuple) list.get(0);
-        assertTrue(tuple.getElement("x").equals(3));
+        assertEquals(3, tuple.getElement("x"));
         tuple = (Tuple) list.get(1);
-        assertTrue(tuple.getElement("x").equals(2));
+        assertEquals(2, tuple.getElement("x"));
         tuple = (Tuple) list.get(2);
-        assertTrue(tuple.getElement("x").equals(1));
+        assertEquals(1, tuple.getElement("x"));
     }
 }
