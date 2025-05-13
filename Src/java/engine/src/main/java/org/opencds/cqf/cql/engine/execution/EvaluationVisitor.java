@@ -8,10 +8,40 @@ import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
+import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.elm.executing.*;
+import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.exception.Severity;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
 public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
+
+    @Override
+    public Object visitExpression(Expression expression, State state) {
+        try {
+            return super.visitExpression(expression, state);
+        } catch (CqlException e) {
+            maybeExtendBacktrace(e, state, expression);
+            throw e;
+        } catch (Exception e) {
+            final var exception = new CqlException(
+                    e.getMessage(), e, SourceLocator.fromNode(expression, state.getCurrentLibrary()), Severity.ERROR);
+            maybeExtendBacktrace(exception, state, expression);
+            throw exception;
+        }
+    }
+
+    private void maybeExtendBacktrace(final CqlException exception, final State state, final Expression expression) {
+        // If the top of the stack in state is call-like
+        // ActivationFrame (that is an ActivationFrame for an
+        // expression definition or a function definition), try to
+        // extend the backtrace object of exception to include that
+        // call.
+        final var frame = state.getTopActivationFrame();
+        if (frame.element instanceof ExpressionDef) {
+            exception.getBacktrace().maybeAddFrame((ExpressionDef) frame.element, frame, state.getStack(), expression);
+        }
+    }
 
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
