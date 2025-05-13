@@ -205,6 +205,13 @@ public class State {
         return this.debugResult;
     }
 
+    public DebugResult ensureDebugResult() {
+        if (this.debugResult == null) {
+            debugResult = new DebugResult();
+        }
+        return debugResult;
+    }
+
     public DebugAction shouldDebug(Exception e) {
         if (this.debugMap == null) {
             return DebugAction.NONE;
@@ -219,12 +226,6 @@ public class State {
         }
 
         return debugMap.shouldDebug(node, this.getCurrentLibrary());
-    }
-
-    private void ensureDebugResult() {
-        if (this.debugResult == null) {
-            debugResult = new DebugResult();
-        }
     }
 
     public void setEvaluationDateTime(ZonedDateTime evaluationZonedDateTime) {
@@ -315,6 +316,16 @@ public class State {
             throw new RuntimeException("Stack underflow");
         }
         assert topActivationFrame.endTime == 0;
+        // If a profile is being built (controlled via an engine
+        // option), register the invocation chain that terminates at
+        // topActivationFrame.
+        if (this.debugResult != null) {
+            final var profile = this.debugResult.getProfile();
+            if (profile != null) {
+                topActivationFrame.endTime = System.nanoTime();
+                profile.register(stack);
+            }
+        }
         this.stack.pop();
     }
 

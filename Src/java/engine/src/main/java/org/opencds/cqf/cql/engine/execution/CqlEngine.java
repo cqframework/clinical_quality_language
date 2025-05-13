@@ -33,7 +33,11 @@ public class CqlEngine {
         //      expected to be the standard behavior in a future version of the CQL spec)
         //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always return all elements
         //      (the standard behavior is to return distinct elements)
-        EnableHedisCompatibilityMode
+        EnableHedisCompatibilityMode,
+        // Collect data on evaluation counts, timing and cache hit
+        // ratio for certain elements such as expression and function
+        // definitions and retrieves.
+        EnableProfiling,
     }
 
     private final Environment environment;
@@ -54,6 +58,9 @@ public class CqlEngine {
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
+        }
+        if (this.engineOptions.contains(Options.EnableProfiling)) {
+            this.state.ensureDebugResult().ensureProfile();
         }
     }
 
