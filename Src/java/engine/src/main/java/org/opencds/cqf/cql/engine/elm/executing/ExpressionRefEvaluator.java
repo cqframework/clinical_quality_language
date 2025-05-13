@@ -11,7 +11,12 @@ public class ExpressionRefEvaluator {
         boolean enteredLibrary = state.enterLibrary(expressionRef.getLibraryName());
         try {
             var def = Libraries.resolveExpressionRef(expressionRef.getName(), state.getCurrentLibrary());
-            return visitor.visitExpressionDef(def, state);
+            state.pushWindow();
+            try {
+                return visitor.visitExpressionDef(def, state);
+            } finally {
+                state.popWindow();
+            }
         } finally {
             state.exitLibrary(enteredLibrary);
         }
