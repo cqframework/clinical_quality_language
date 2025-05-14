@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +23,17 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
 public class CqlEngine {
     public enum Options {
         EnableExpressionCaching,
-        EnableValidation
+        EnableValidation,
+        // HEDIS Compatibility Mode changes the behavior of the CQL
+        // engine to match some expected behavior of the HEDIS
+        // content that is not standards-complaint.
+        // Currently, this includes:
+        //  1. Making the default comparison semantics for lists to be "equivalent"
+        //      (the standard behavior is to use "equal" semantics - note that this is
+        //      expected to be the standard behavior in a future version of the CQL spec)
+        //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always return all elements
+        //      (the standard behavior is to return distinct elements)
+        EnableHedisCompatibilityMode
     }
 
     private final Environment environment;
@@ -30,22 +42,15 @@ public class CqlEngine {
     private final EvaluationVisitor evaluationVisitor = new EvaluationVisitor();
 
     public CqlEngine(Environment environment) {
-        this(environment, null);
+        this(environment, new HashSet<>());
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        if (environment.getLibraryManager() == null) {
-            throw new IllegalArgumentException("Environment LibraryManager can not be null.");
-        }
-
+        requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
-        this.state = new State(environment);
 
-        if (engineOptions == null) {
-            this.engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
-        } else {
-            this.engineOptions = engineOptions;
-        }
+        this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
+        this.state = new State(environment, engineOptions);
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
@@ -288,7 +293,7 @@ public class CqlEngine {
                     "library %s loaded, but had errors: %s",
                     libraryIdentifier.getId()
                             + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
-                    String.join(", ", errors.stream().map(e -> e.getMessage()).collect(Collectors.toList()))));
+                    errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {

@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.util.Arrays;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
@@ -115,8 +116,13 @@ public class InEvaluator {
                 return true;
             }
 
-            isEqual = EqualEvaluator.equal(left, element, state);
-            if ((isEqual != null && isEqual)) {
+            if (state.getEngineOptions().contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
+                isEqual = EqualEvaluator.equal(left, element, state);
+            } else {
+                isEqual = EquivalentEvaluator.equivalent(left, element, state);
+            }
+
+            if (Boolean.TRUE.equals(isEqual)) {
                 return true;
             }
         }

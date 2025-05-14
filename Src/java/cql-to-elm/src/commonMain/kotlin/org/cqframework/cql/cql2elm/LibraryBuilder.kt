@@ -2941,36 +2941,34 @@ class LibraryBuilder(
                 else applyTargetMap(source, functionArgument)
 
             // NOTE: This is needed to work around the mapping for ToInterval
-            // FHIRHelpers defines multiple overloads of ToInterval, but the type mapping
-            // does not have the type of the source data type.
+            // FHIRHelpers defines multiple overloads of ToInterval, but the type mapping does not
+            // have the type of the source data type.
             // All the mappings for ToInterval use FHIR.Period, so this is safe to assume
             // In addition, no other FHIRHelpers functions use overloads (except ToString and
-            // ToDateTime,
-            // but those mappings expand the value element directly, rather than invoking the
-            // FHIRHelpers function)
+            // ToDateTime, but those mappings expand the value element directly, rather than
+            // invoking the FHIRHelpers function)
             var argumentSignature: TypeSpecifier? = null
-            if (
-                options.signatureLevel != SignatureLevel.None &&
-                    qualifiedFunctionName == "FHIRHelpers.ToInterval"
-            ) {
-                // Force loading of the FHIR model, as it's an implicit
-                // dependency of the target mapping here.
-                var fhirVersion = "4.0.1"
-                val qiCoreModel = this.getModel("QICore")
-                val version = qiCoreModel.modelInfo.version
-                if (version == "3.3.0") {
-                    fhirVersion = "4.0.0"
-                } else if (version!!.startsWith("3")) {
-                    fhirVersion = "3.0.1"
+            if (this.options.signatureLevel != SignatureLevel.None) {
+                if (qualifiedFunctionName == "FHIRHelpers.ToInterval") {
+                    // Force loading of the FHIR model, as it's an implicit dependency of the target
+                    // mapping here.
+                    var fhirVersion = "4.0.1"
+                    val qiCoreModel = this.getModel("QICore")
+                    val version = qiCoreModel.modelInfo.version
+                    if (version == "3.3.0") {
+                        fhirVersion = "4.0.0"
+                    } else if (version!!.startsWith("3")) {
+                        fhirVersion = "3.0.1"
+                    }
+
+                    // Force the FHIR model to be loaded.
+                    this.modelManager.resolveModel("FHIR", fhirVersion)
+
+                    val namedTypeSpecifier =
+                        NamedTypeSpecifier()
+                            .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
+                    argumentSignature = namedTypeSpecifier
                 }
-
-                // Force the FHIR model to be loaded.
-                modelManager.resolveModel("FHIR", fhirVersion)
-
-                val namedTypeSpecifier =
-                    NamedTypeSpecifier()
-                        .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
-                argumentSignature = namedTypeSpecifier
             }
             if (argumentSource!!.resultType is ListType) {
                 val query: Query =
@@ -3531,16 +3529,18 @@ class LibraryBuilder(
      *
      * Default scope is [IdentifierScope.LOCAL]
      *
-     * @param identifier The identifier belonging to the parameter, expression, function, alias,
-     *   etc., to be evaluated.
-     * @param element The construct trackable, for example [ExpressionRef].
+     * @param identifierRef An identifierRef representing the identifier and a trackback to its
+     *   definition
+     * @param element The element identified by the identifier, for example [ExpressionRef].
+     * @param scope The scope of the current identifier
      */
     @JvmOverloads
     fun pushIdentifier(
-        identifier: String,
+        identifierRef: IdentifierRef,
         element: Element?,
         scope: IdentifierScope = IdentifierScope.LOCAL
     ) {
+        val identifier = identifierRef.name!!
         val localMatch =
             if (localIdentifierStack.isNotEmpty())
                 findMatchingIdentifierContext(localIdentifierStack.peek(), identifier)
@@ -3553,7 +3553,7 @@ class LibraryBuilder(
             if (!matchedOnFunctionOverloads) {
                 reportWarning(
                     resolveWarningMessage(matchedContext.identifier, identifier, element),
-                    element
+                    identifierRef
                 )
             }
         }
@@ -3562,9 +3562,9 @@ class LibraryBuilder(
                 if (element == null) null else element::class
             // Sometimes the underlying Trackable doesn't resolve in the calling code
             if (scope == IdentifierScope.GLOBAL) {
-                globalIdentifiers.add(IdentifierContext(identifier, trackableOrNull))
+                globalIdentifiers.add(IdentifierContext(identifierRef, trackableOrNull))
             } else {
-                localIdentifierStack.peek().add(IdentifierContext(identifier, trackableOrNull))
+                localIdentifierStack.peek().add(IdentifierContext(identifierRef, trackableOrNull))
             }
         }
     }
@@ -3611,9 +3611,9 @@ class LibraryBuilder(
     ): String {
         val elementString = lookupElementWarning(element)
         return if (element is Literal) {
-            "You used a string literal: [$identifierParam] here that matches an identifier in scope: [$matchedIdentifier]. Did you mean to use the identifier instead?"
+            "String literal '$identifierParam' matches the identifier $matchedIdentifier. Consider whether the identifier was intended instead."
         } else
-            "$elementString identifier [$identifierParam] is hiding another identifier of the same name."
+            "$elementString identifier $identifierParam is hiding another identifier of the same name."
     }
 
     private inner class Scope {

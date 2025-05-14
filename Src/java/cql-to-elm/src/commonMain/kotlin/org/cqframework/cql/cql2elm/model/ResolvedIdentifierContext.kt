@@ -41,7 +41,8 @@ private constructor(
     fun warnCaseInsensitiveIfApplicable(): String? {
         if (element != null && !isExactMatch) {
             return getName(element)?.let {
-                "Could not find identifier: [$identifier].  Did you mean [$it]?"
+                @Suppress("MaxLineLength")
+                "Could not resolve identifier $identifier. Consider whether the identifier $it (differing only in case) was intended."
             }
         }
 

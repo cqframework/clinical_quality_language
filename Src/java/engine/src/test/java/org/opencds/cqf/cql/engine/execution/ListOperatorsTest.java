@@ -170,7 +170,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("EqualEmptyListAndEmptyList").value();
-        assertThat(value, is(true));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("Equal12And123").value();
         assertThat(value, is(false));
@@ -509,7 +509,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(false));
 
         value = results.forExpression("NotEqualEmptyAndEmpty").value();
-        assertThat(value, is(false));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("NotEqualABCAndABC").value();
         assertThat(value, is(false));

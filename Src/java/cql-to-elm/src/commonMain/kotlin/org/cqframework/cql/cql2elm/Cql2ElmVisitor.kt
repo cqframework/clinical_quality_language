@@ -139,7 +139,15 @@ class Cql2ElmVisitor(
 
         // The model was already calculated by CqlPreprocessorVisitor
         val usingDef = libraryBuilder.resolveUsingRef(localIdentifier)
-        libraryBuilder.pushIdentifier(localIdentifier, usingDef, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(localIdentifier)
+        track(
+            ir,
+            (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
+            else ctx.localIdentifier())!!
+        )
+        libraryBuilder.pushIdentifier(ir, usingDef, IdentifierScope.GLOBAL)
+
         return usingDef
     }
 
@@ -209,7 +217,15 @@ class Cql2ElmVisitor(
                     .withVersion(parseString(ctx.versionSpecifier()))
         }
         libraryBuilder.addInclude(library)
-        libraryBuilder.pushIdentifier(library.localIdentifier!!, library, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(library.localIdentifier)
+        track(
+            ir,
+            (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
+            else ctx.localIdentifier())!!
+        )
+        libraryBuilder.pushIdentifier(ir, library, IdentifierScope.GLOBAL)
+
         return library
     }
 
@@ -239,7 +255,11 @@ class Cql2ElmVisitor(
             param.default = libraryBuilder.ensureCompatible(param.default, paramType)
         }
         libraryBuilder.addParameter(param)
-        libraryBuilder.pushIdentifier(param.name!!, param, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(param.name)
+        track(ir, ctx.identifier())
+        libraryBuilder.pushIdentifier(ir, param, IdentifierScope.GLOBAL)
+
         return param
     }
 
@@ -275,7 +295,11 @@ class Cql2ElmVisitor(
             cs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
         }
         libraryBuilder.addCodeSystem(cs)
-        libraryBuilder.pushIdentifier(cs.name!!, cs, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(cs.name)
+        track(ir, ctx.identifier())
+        libraryBuilder.pushIdentifier(ir, cs, IdentifierScope.GLOBAL)
+
         return cs
     }
 
@@ -339,7 +363,11 @@ class Cql2ElmVisitor(
             vs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
         }
         libraryBuilder.addValueSet(vs)
-        libraryBuilder.pushIdentifier(vs.name!!, vs, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(vs.name)
+        track(ir, ctx.identifier())
+        libraryBuilder.pushIdentifier(ir, vs, IdentifierScope.GLOBAL)
+
         return vs
     }
 
@@ -355,7 +383,11 @@ class Cql2ElmVisitor(
         }
         cd.resultType = libraryBuilder.resolveTypeName("Code")
         libraryBuilder.addCode(cd)
-        libraryBuilder.pushIdentifier(cd.name!!, cd, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(cd.name)
+        track(ir, ctx.identifier())
+        libraryBuilder.pushIdentifier(ir, cd, IdentifierScope.GLOBAL)
+
         return cd
     }
 
@@ -512,7 +544,11 @@ class Cql2ElmVisitor(
         if (def == null) {
             val hollowExpressionDef =
                 of.createExpressionDef().withName(identifier).withContext(this.currentContext)
-            libraryBuilder.pushIdentifier(identifier, hollowExpressionDef, IdentifierScope.GLOBAL)
+
+            val ir = of.createIdentifierRef().withName(identifier)
+            track(ir, ctx.identifier())
+
+            libraryBuilder.pushIdentifier(ir, hollowExpressionDef, IdentifierScope.GLOBAL)
         }
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
@@ -568,7 +604,11 @@ class Cql2ElmVisitor(
         val stringLiteral = libraryBuilder.createLiteral(parseString(ctx.STRING()))
         // Literals are never actually pushed to the stack. This just emits a warning if the literal
         // is hiding something
-        libraryBuilder.pushIdentifier(stringLiteral.value!!, stringLiteral)
+
+        val ir = of.createIdentifierRef().withName(stringLiteral.value)
+        track(ir, ctx.STRING())
+        libraryBuilder.pushIdentifier(ir, stringLiteral)
+
         return stringLiteral
     }
 
@@ -3364,7 +3404,9 @@ class Cql2ElmVisitor(
             }
             queryContext.addPrimaryQuerySources(sources!!)
             for (source: AliasedQuerySource in sources) {
-                libraryBuilder.pushIdentifier(source.alias!!, source)
+                val ir = of.createIdentifierRef().withName(source.alias)
+                track(ir, source)
+                libraryBuilder.pushIdentifier(ir, source)
             }
 
             // If we are evaluating a population-level query whose source ranges over any
@@ -3385,7 +3427,9 @@ class Cql2ElmVisitor(
             try {
                 dfcx = if (ctx.letClause() != null) visit(ctx.letClause()!!).cast() else dfcx
                 for (letClause: LetClause in dfcx) {
-                    libraryBuilder.pushIdentifier(letClause.identifier!!, letClause)
+                    val ir = of.createIdentifierRef().withName(letClause.identifier)
+                    track(ir, letClause)
+                    libraryBuilder.pushIdentifier(ir, letClause)
                 }
                 val qicx: MutableList<RelationshipClause> = ArrayList()
                 for (queryInclusionClauseContext in ctx.queryInclusionClause()) {
@@ -4343,10 +4387,16 @@ class Cql2ElmVisitor(
                 ?: throw IllegalArgumentException(
                     "Internal error: Could not resolve operator map entry for function header ${fh.mangledName}"
                 )
-        libraryBuilder.pushIdentifier(functionDef.name!!, functionDef, IdentifierScope.GLOBAL)
+
+        val ir = of.createIdentifierRef().withName(functionDef.name)
+        track(ir, ctx.identifierOrFunctionIdentifier())
+        libraryBuilder.pushIdentifier(ir, functionDef, IdentifierScope.GLOBAL)
+
         val operand = op.functionDef!!.operand as kotlin.collections.List<OperandDef>
         for (operandDef: OperandDef in operand) {
-            libraryBuilder.pushIdentifier(operandDef.name!!, operandDef)
+            val oir = of.createIdentifierRef().withName(operandDef.name)
+            track(oir, operandDef)
+            libraryBuilder.pushIdentifier(oir, operandDef)
         }
         try {
             if (ctx.functionBody() != null) {

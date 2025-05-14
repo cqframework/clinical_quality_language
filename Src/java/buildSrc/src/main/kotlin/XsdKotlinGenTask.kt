@@ -583,7 +583,32 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
             FunSpec.builder("hashCode")
                 .addModifiers(KModifier.OVERRIDE)
                 .returns(Int::class)
-                .addStatement("return 1")
+                .apply {
+                    addStatement("var result = 0")
+
+                    if (typeHasParent(complexType)) {
+                        addStatement("result = super.hashCode()")
+                    }
+
+                    getOwnAttributes(complexType).forEach { attribute ->
+                        addStatement(
+                            "result = 31 * result + (%N?.hashCode() ?: 0)",
+                            className.member(attribute.decl.name)
+                        )
+                    }
+
+                    getOwnElements(complexType).forEach { particle ->
+                        val elementDecl = particle.term.asElementDecl()
+                        if (elementDecl != null) {
+                            addStatement(
+                                "result = 31 * result + (%N?.hashCode() ?: 0)",
+                                className.member(elementDecl.name)
+                            )
+                        }
+                    }
+
+                    addStatement("return result")
+                }
                 .build()
         )
         .addType(TypeSpec.companionObjectBuilder().build())

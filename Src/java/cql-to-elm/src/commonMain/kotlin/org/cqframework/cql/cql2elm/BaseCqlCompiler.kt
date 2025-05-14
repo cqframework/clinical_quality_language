@@ -90,12 +90,21 @@ open class BaseCqlCompiler(
             if (context is LibraryContext) {
                 val ldc = context.libraryDefinition()
                 if (ldc?.qualifiedIdentifier() != null) {
-                    return VersionedIdentifier()
-                        .withId(
-                            StringEscapeUtils.unescapeCql(
-                                ldc.qualifiedIdentifier().identifier().text
+                    val vi =
+                        VersionedIdentifier()
+                            .withId(
+                                StringEscapeUtils.unescapeCql(
+                                    ldc.qualifiedIdentifier().identifier().text
+                                )
                             )
-                        )
+
+                    if (ldc.versionSpecifier() != null) {
+                        var version = StringEscapeUtils.unescapeCql(ldc.versionSpecifier()!!.text)
+                        version = version.substring(1, version.length - 1)
+                        vi.version = version
+                    }
+
+                    return vi
                 }
             }
             return null

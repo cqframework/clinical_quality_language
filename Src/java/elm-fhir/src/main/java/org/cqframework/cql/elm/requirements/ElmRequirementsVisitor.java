@@ -139,17 +139,10 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
         // If the result is a data requirement and the function is cardinality-reducing,
         // Return as an operator requirement, rather than returning the result
-
-        var elmResultType = Trackable.INSTANCE.getResultType(elm);
-        DataType operandResultType = null;
-        if (!elm.getOperand().isEmpty()) {
-            operandResultType =
-                    Trackable.INSTANCE.getResultType(elm.getOperand().get(0));
-        }
-
         if (result instanceof ElmDataRequirement) {
             if (elm.getOperand().size() != 1
-                    || (operandResultType instanceof ListType && !(elmResultType instanceof ListType))) {
+                    || (Trackable.INSTANCE.getResultType(elm.getOperand().get(0)) instanceof ListType
+                            && !(Trackable.INSTANCE.getResultType(elm) instanceof ListType))) {
                 // Note that the assumption here is that the data requirement has already been
                 // reported to the context
                 return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
@@ -472,7 +465,31 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
     @Override
     public ElmRequirement visitIf(If elm, ElmRequirementsContext context) {
         // TODO: Rewrite the if as equivalent logic
-        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmRequirement childResult = null;
+
+        if (elm.getCondition() != null) {
+            childResult = this.visitElement(elm.getCondition(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        if (elm.getThen() != null) {
+            childResult = this.visitElement(elm.getThen(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        if (elm.getElse() != null) {
+            childResult = this.visitElement(elm.getElse(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        return result;
     }
 
     @Override

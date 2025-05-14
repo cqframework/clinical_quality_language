@@ -25,6 +25,7 @@ import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.cql2elm.tracking.TrackBack;
 import org.cqframework.fhir.npm.LibraryLoader;
 import org.cqframework.fhir.npm.NpmLibrarySourceProvider;
+import org.cqframework.fhir.npm.NpmModelInfoProvider;
 import org.cqframework.fhir.npm.NpmPackageManager;
 import org.cqframework.fhir.utilities.IGContext;
 import org.hl7.cql.model.ModelIdentifier;
@@ -94,11 +95,20 @@ public class Main {
             NpmPackageManager pm = new NpmPackageManager(igContext.getSourceIg());
             pm.getNpmList().forEach(npm -> {
                 NamespaceInfo newNamespace = new NamespaceInfo(npm.id(), npm.canonical());
-                namespaceManager.ensureNamespaceRegistered(newNamespace);
+                if (namespaceManager.resolveNamespaceUri(newNamespace.getName()) != null) {
+                    // TODO: Logger.skip loading
+                } else if (namespaceManager.getNamespaceInfoFromUri(newNamespace.getUri()) != null) {
+                    // TODO: Logger.skip loading
+                } else {
+                    namespaceManager.ensureNamespaceRegistered(newNamespace);
+                }
             });
             LibraryLoader reader = new LibraryLoader(igContext.getFhirVersion());
             NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, pm);
             libraryManager.getLibrarySourceLoader().registerProvider(sp);
+
+            NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, pm);
+            modelManager.getModelInfoLoader().registerModelInfoProvider(mp);
 
             String packageId = igContext.getPackageId();
             String canonicalBase = igContext.getCanonicalBase();

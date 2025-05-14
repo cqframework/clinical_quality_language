@@ -1,9 +1,13 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 
@@ -34,5 +38,49 @@ class CqlEngineTest extends CqlTestBase {
 
         var debugResult = libraryDebug.get(result.get());
         assertEquals(1, debugResult.size());
+    }
+
+    @Test
+    public void hedisCompatibility() {
+        var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
+        var result = libraryResult.expressionResults.get("QuantityListIncludes").value();
+        assertTrue((Boolean) result);
+
+        result = libraryResult.expressionResults.get("ReturnUnspecified").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(2, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("ReturnAll").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(5, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("ReturnDistinct").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(2, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("Test Null Tuple").value();
+        assertNull(result);
+
+        engine.getState().getEngineOptions().add(CqlEngine.Options.EnableHedisCompatibilityMode);
+        libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
+        // equivalent semantics for lists
+        result = libraryResult.expressionResults.get("QuantityListIncludes").value();
+        assertFalse((Boolean) result);
+
+        // no "distinct" behavior for lists
+        result = libraryResult.expressionResults.get("ReturnUnspecified").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(5, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("ReturnAll").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(5, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("ReturnDistinct").value();
+        assertInstanceOf(List.class, result);
+        assertEquals(5, ((List<?>) result).size());
+
+        result = libraryResult.expressionResults.get("Test Null Tuple").value();
+        assertNull(result);
     }
 }

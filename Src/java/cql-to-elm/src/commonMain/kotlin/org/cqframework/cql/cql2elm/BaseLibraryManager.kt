@@ -104,8 +104,8 @@ open class BaseLibraryManager(
         val cqlSource =
             librarySourceLoader.getLibrarySource(libraryIdentifier)
                 ?: throw CqlIncludeException(
-                    """Could not load source for library ${libraryIdentifier.id},
-                                 version ${libraryIdentifier.version}.""",
+                    @Suppress("MaxLineLength")
+                    "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
                     libraryIdentifier.system,
                     libraryIdentifier.id!!,
                     libraryIdentifier.version

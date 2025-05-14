@@ -785,7 +785,7 @@ public class SemanticTests {
                 errorMessages,
                 contains(
                         "Could not resolve identifier NonExistent in the current library.",
-                        "Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
+                        "Could not resolve identifier IaMaDiFeReNtCaSe. Consider whether the identifier iAmAdIfErEnTcAsE (differing only in case) was intended."));
 
         final List<String> warnings =
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
@@ -810,6 +810,17 @@ public class SemanticTests {
 
         assertThat(testExpression, instanceOf(ValueSetRef.class));
         return ((ValueSetRef) testExpression).isPreserve();
+    }
+
+    @Test
+    void issue1504() throws IOException {
+        CqlTranslator translator = runSemanticTest("LibraryTests/Issue1504.cql", 1);
+        for (var error : translator.getErrors()) {
+            assertNotNull(error.getLocator());
+            assertNotNull(error.getLocator().getLibrary());
+            assertEquals("Issue1504", error.getLocator().getLibrary().getId());
+            assertEquals("2.0.000", error.getLocator().getLibrary().getVersion());
+        }
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
