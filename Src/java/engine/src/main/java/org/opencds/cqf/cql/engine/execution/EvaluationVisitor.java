@@ -39,7 +39,15 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         // call.
         final var frame = state.getTopActivationFrame();
         if (frame.element instanceof ExpressionDef) {
-            exception.getBacktrace().maybeAddFrame((ExpressionDef) frame.element, frame, state.getStack(), expression);
+            exception
+                    .getBacktrace()
+                    .maybeAddFrame(
+                            (ExpressionDef) frame.element,
+                            frame,
+                            state.getStack(),
+                            state.getCurrentContext(),
+                            state.getCurrentContextValue(),
+                            expression);
         }
     }
 

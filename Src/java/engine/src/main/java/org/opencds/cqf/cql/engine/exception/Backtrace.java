@@ -43,15 +43,23 @@ public class Backtrace {
 
         private final List<Variable> localVariables;
 
+        private final String contextName;
+
+        private final Object contextValue;
+
         public FunctionoidFrame(
                 final Expression expression,
                 final ExpressionDef definition,
                 final List<Variable> arguments,
-                final List<Variable> localVariables) {
+                final List<Variable> localVariables,
+                final String contextName,
+                final Object contextValue) {
             super(expression);
             this.definition = definition;
             this.arguments = arguments;
             this.localVariables = localVariables;
+            this.contextName = contextName;
+            this.contextValue = contextValue;
         }
 
         /**
@@ -88,6 +96,14 @@ public class Backtrace {
         public List<Variable> getLocalVariables() {
             return this.localVariables;
         }
+
+        public String getContextName() {
+            return this.contextName;
+        }
+
+        public Object getContextValue() {
+            return this.contextValue;
+        }
     }
 
     private final List<Frame> frames = new LinkedList<>();
@@ -104,6 +120,8 @@ public class Backtrace {
             final ExpressionDef containingDefinition,
             final State.ActivationFrame definitionFrame,
             final Deque<State.ActivationFrame> stack,
+            final String contextName,
+            final Object contextValue,
             final Expression expression) {
         // When the EvaluationVisitor unwinds through
         // EvaluationVisitor.visitExpression calls, every call has a
@@ -163,6 +181,7 @@ public class Backtrace {
                 localVariables.addAll(frame.variables);
             }
         }
-        addFrame(new FunctionoidFrame(expression, containingDefinition, arguments, localVariables));
+        addFrame(new FunctionoidFrame(
+                expression, containingDefinition, arguments, localVariables, contextName, contextValue));
     }
 }
