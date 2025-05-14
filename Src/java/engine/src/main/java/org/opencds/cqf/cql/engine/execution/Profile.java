@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.Retrieve;
 
 /**
@@ -114,17 +115,20 @@ public class Profile {
             final var maxDepth = 10; // FIXME(jmoringe): compute
             final var scaleX = 4000.0 / duration;
             final var scaleY = (10.0 * 80.0) / maxDepth;
-            renderStep(writer, 0, 0, scaleX, scaleY);
+            renderStep(writer, 0, 0, 0, scaleX, scaleY);
         }
 
-        public double renderStep(final Writer writer, double x, int depth, double scaleX, double scaleY)
+        public double renderStep(final Writer writer, int i, double x, int depth, double scaleX, double scaleY)
                 throws IOException {
             final var timeInSeconds = this.time / 1_000_000_000.0;
             final var x1 = scaleX * x;
             final var x2 = scaleX * (x + timeInSeconds);
             final var y1 = scaleY * depth;
             final var y2 = scaleY * (depth + 1);
-            final var color = String.format("#%02x%02x00", ((50 * depth) % 256), Math.round(50 * x) % 256);
+            final var red = (50 * depth) % 256;
+            final var green = (50 * i) % 256;
+            final var blue = this.expression instanceof FunctionDef ? 128 : 0;
+            final var color = String.format("#%02x%02x%02x", red, green, blue);
             final var idString = String.format("%d-%f", depth, x);
             final var rectString = String.format(
                     "  <rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" style=\"fill:%s;stroke:%s;fill-opacity:0.5;\"/>\n",
@@ -148,9 +152,10 @@ public class Profile {
             final var sorted = this.children.values().stream()
                     .sorted(Comparator.comparing(node -> -node.time))
                     .collect(Collectors.toList());
+            var ic = i;
             var xc = x;
             for (var child : sorted) {
-                xc = child.renderStep(writer, xc, depth + 1, scaleX, scaleY);
+                xc = child.renderStep(writer, i++, xc, depth + 1, scaleX, scaleY);
             }
             return x + timeInSeconds;
         }
