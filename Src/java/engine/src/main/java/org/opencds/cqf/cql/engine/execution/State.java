@@ -32,6 +32,8 @@ public class State {
         // or a Retrieve.
         public Element element;
 
+        public String contextName;
+
         // The times at which the evaluation to which this activation
         // frame belongs started and ended.
         public long startTime;
@@ -43,8 +45,9 @@ public class State {
         // taken from the cache.
         public boolean isCached = false;
 
-        public ActivationFrame(Element element, long startTime) {
+        public ActivationFrame(Element element, String contextName, long startTime) {
             this.element = element;
+            this.contextName = contextName;
             this.startTime = startTime;
         }
 
@@ -302,12 +305,17 @@ public class State {
         return result;
     }
 
-    public void pushActivationFrame(Element element, long startTime) {
-        this.stack.push(new ActivationFrame(element, startTime));
+    public void pushActivationFrame(Element element, String contextName, long startTime) {
+        this.stack.push(new ActivationFrame(element, contextName, startTime));
+    }
+
+    public void pushActivationFrame(Element element, String contextName) {
+        pushActivationFrame(element, contextName, System.nanoTime());
     }
 
     public void pushActivationFrame(Element element) {
-        pushActivationFrame(element, System.nanoTime());
+        final var contextName = this.currentContext.peekFirst();
+        pushActivationFrame(element, contextName);
     }
 
     public void popActivationFrame() {

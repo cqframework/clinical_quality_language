@@ -254,7 +254,7 @@ public class CqlEngine {
 
                 try {
                     var action = getState().shouldDebug(def);
-                    state.pushActivationFrame(def);
+                    state.pushActivationFrame(def, def.getContext());
                     try {
                         final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                         result.expressionResults.put(

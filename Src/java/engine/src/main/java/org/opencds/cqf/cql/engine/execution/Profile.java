@@ -31,16 +31,39 @@ import org.hl7.elm.r1.Retrieve;
  * <a href="https://en.wiktionary.org/wiki/flamegraph">flamegraph</a>.
  */
 public class Profile {
+    public static class Key {
+        public final Element element;
+        public final String context;
+
+        public Key(final Element element, final String context) {
+            this.element = element;
+            this.context = context;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            Key key = (Key) o;
+            return Objects.equals(element, key.element) && Objects.equals(context, key.context);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(element, context);
+        }
+    }
 
     public static class Node {
-        public Map<Element, Node> children = new HashMap<>();
+        public Map<Key, Node> children = new HashMap<>();
         public Element expression;
+        public String context;
         public long count = 0;
         public long time = 0;
         private long misses = 0;
 
-        public Node(final Element expression) {
+        public Node(final Element expression, final String context) {
             this.expression = expression;
+            this.context = context;
         }
 
         public void addInvocation(long startTime, long endTime, boolean isHit) {
@@ -51,8 +74,9 @@ public class Profile {
             this.misses += isHit ? 0 : 1;
         }
 
-        public Node ensureChild(final Element expression) {
-            return this.children.computeIfAbsent(expression, Node::new);
+        public Node ensureChild(final Element expression, final String context) {
+            final var key = new Key(expression, context);
+            return this.children.computeIfAbsent(key, (key2) -> new Node(key2.element, key2.context));
         }
 
         public Node register(final Collection<State.ActivationFrame> stack) {
@@ -68,7 +92,8 @@ public class Profile {
             } else {
                 final var frame = stack.get(index);
                 final var expression = frame.element;
-                final var child = expression != null ? ensureChild(expression) : this;
+                final var contextName = frame.contextName;
+                final var child = expression != null ? ensureChild(expression, contextName) : this;
                 return child.registerStep(stack, index - 1);
             }
         }
@@ -77,8 +102,8 @@ public class Profile {
             this.count += other.count;
             this.time += other.time;
             this.misses += other.misses;
-            other.children.forEach((_element, otherChild) -> {
-                final var child = ensureChild(otherChild.expression);
+            other.children.forEach((key, otherChild) -> {
+                final var child = ensureChild(key.element, key.context);
                 child.merge(otherChild);
             });
             return this;
@@ -131,20 +156,30 @@ public class Profile {
         }
 
         private String expressionLabel(final Element expression) {
+            final var result = new StringBuilder();
             if (expression == null) {
-                return "«root»";
+                result.append("«root»");
             } else if (expression instanceof Retrieve) {
-                return String.format(
-                        "[%s]", ((Retrieve) expression).getDataType().getLocalPart());
+                result.append(String.format(
+                        "[%s]", ((Retrieve) expression).getDataType().getLocalPart()));
             } else if (expression instanceof ExpressionDef) {
-                return ((ExpressionDef) expression).getName();
+                result.append(((ExpressionDef) expression).getName());
+                if (expression instanceof FunctionDef) {
+                    result.append("()");
+                }
             } else {
-                return "unknown expression type";
+                result.append("unknown expression type");
             }
+            if (this.context != null) {
+                result.append(" (");
+                result.append(this.context);
+                result.append(")");
+            }
+            return result.toString();
         }
     }
 
-    private final Node tree = new Node(null);
+    private final Node tree = new Node(null, null);
 
     public Profile() {}
 

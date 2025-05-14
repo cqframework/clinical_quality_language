@@ -38,7 +38,7 @@ public class FunctionRefEvaluator {
                 // definition being evaluated but without the start
                 // time since the argument expressions will be
                 // evaluated first.
-                state.pushActivationFrame(functionDef, 0);
+                state.pushActivationFrame(functionDef, functionDef.getContext(), 0);
                 try {
                     for (int i = 0; i < arguments.size(); i++) {
                         state.push(new Variable(functionDef.getOperand().get(i).getName()).withValue(arguments.get(i)));
