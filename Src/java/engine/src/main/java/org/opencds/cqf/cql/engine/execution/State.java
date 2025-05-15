@@ -306,7 +306,14 @@ public class State {
     }
 
     public void pushActivationFrame(Element element, String contextName, long startTime) {
-        this.stack.push(new ActivationFrame(element, contextName, startTime));
+        final var newActivationFrame = new ActivationFrame(element, contextName, startTime);
+        this.stack.push(newActivationFrame);
+        if (this.debugResult != null) {
+            final var profile = this.debugResult.getProfile();
+            if (profile != null) {
+                profile.enter(newActivationFrame);
+            }
+        }
     }
 
     public void pushActivationFrame(Element element, String contextName) {
@@ -331,7 +338,7 @@ public class State {
             final var profile = this.debugResult.getProfile();
             if (profile != null) {
                 topActivationFrame.endTime = System.nanoTime();
-                profile.register(stack);
+                profile.leave(topActivationFrame);
             }
         }
         this.stack.pop();
