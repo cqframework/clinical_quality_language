@@ -32,30 +32,9 @@ import org.hl7.elm.r1.Retrieve;
  * <a href="https://en.wiktionary.org/wiki/flamegraph">flamegraph</a>.
  */
 public class Profile {
-    public static class Key {
-        public final Element element;
-        public final String context;
-
-        public Key(final Element element, final String context) {
-            this.element = element;
-            this.context = context;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-            Key key = (Key) o;
-            return Objects.equals(element, key.element) && Objects.equals(context, key.context);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(element, context);
-        }
-    }
 
     public static class Node {
-        public Map<Key, Node> children = new HashMap<>();
+        public Map<String, IdentityHashMap<Element, Node>> children = new HashMap<>();
         public Element expression;
         public String context;
         public long count = 0;
@@ -76,8 +55,8 @@ public class Profile {
         }
 
         public Node ensureChild(final Element expression, final String context) {
-            final var key = new Key(expression, context);
-            return this.children.computeIfAbsent(key, (key2) -> new Node(key2.element, key2.context));
+            final var mapForContext = this.children.computeIfAbsent(context, context2 -> new IdentityHashMap<>());
+            return mapForContext.computeIfAbsent(expression, expression2 -> new Node(expression, context));
         }
 
         public Node register(final Collection<State.ActivationFrame> stack) {
@@ -103,10 +82,11 @@ public class Profile {
             this.count += other.count;
             this.time += other.time;
             this.misses += other.misses;
-            other.children.forEach((key, otherChild) -> {
-                final var child = ensureChild(key.element, key.context);
-                child.merge(otherChild);
-            });
+            other.children.forEach((context, mapForContext) ->
+                    mapForContext.forEach((element, otherChild) -> {
+                        final var child = ensureChild(element, context);
+                        child.merge(otherChild);
+                    }));
             return this;
         }
 
@@ -150,6 +130,7 @@ public class Profile {
                     x1, y1 + (y2 - y1) * .75, idString, this.misses));
 
             final var sorted = this.children.values().stream()
+                    .flatMap(contextMap -> contextMap.values().stream())
                     .sorted(Comparator.comparing(node -> -node.time))
                     .collect(Collectors.toList());
             var ic = i;
@@ -186,13 +167,43 @@ public class Profile {
 
     private final Node tree = new Node(null, null);
 
+    // Tracks the stack of nodes which correspond to currently active
+    // ActivationFrames for incremental profile construction.
+    private final Deque<Node> stack = new ArrayDeque<Node>();
+
     public Profile() {}
 
+    public void enter(final State.ActivationFrame frame) {
+        final var topNode = this.stack.peek();
+        final Node newNode;
+        if (topNode == null) {
+            assert frame.element == null;
+            assert frame.contextName == null;
+            newNode = this.tree;
+        } else {
+            newNode = topNode.ensureChild(frame.element, frame.contextName);
+        }
+        this.stack.push(newNode);
+    }
+
+    public void leave(final State.ActivationFrame frame) {
+        final var topNode = this.stack.peek();
+        assert topNode != null;
+        assert topNode.expression == frame.element;
+        assert topNode.context.equals(frame.contextName);
+        topNode.addInvocation(frame.startTime, frame.endTime, frame.isCached);
+        this.stack.pop();
+    }
+
+    /**
+     * Integrate a complete stack trace into the profile.
+     *
+     * @see #enter for incrementally adding information from
+     *             individual activation frames.
+     * @see #leave for incrementally adding information from
+     *             individual activation frames.
+     */
     public void register(final Collection<State.ActivationFrame> stack) {
-        // TODO(jmoringe): we could be smarter about this: since the
-        // evaluator pushes and pop activation frames one at a time,
-        // we could remember the current profile node and only go up
-        // or down one node at a time like the evaluator.
         this.tree.register(stack);
     }
 
