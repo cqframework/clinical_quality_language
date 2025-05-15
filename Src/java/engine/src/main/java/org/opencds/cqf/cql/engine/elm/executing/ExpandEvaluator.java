@@ -12,6 +12,7 @@ import org.opencds.cqf.cql.engine.runtime.*;
 /*
 
 expand(argument List<Interval<T>>, per Quantity) List<Interval<T>>
+expand(argument Interval<T>, per Quantity) List<T>
 
 The expand operator returns the set of intervals of width per for all the intervals in the input.
 
@@ -40,13 +41,26 @@ public class ExpandEvaluator {
             return AddEvaluator.add(addTo, per.getValue());
         } else if (addTo instanceof Quantity) {
             return AddEvaluator.add(addTo, per);
+        } else if (addTo instanceof BaseTemporal) {
+            return AddEvaluator.add((BaseTemporal) addTo, per);
         }
 
         throw new InvalidOperatorArgument(
-                "Expand(List<Interval<T>>, Quantity)",
+                "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
                 String.format(
                         "Expand(%s, %s)",
                         addTo.getClass().getName(), per.getClass().getName()));
+    }
+
+    // TODO: fill this out
+    private static List<Object> getExpandedValues(Object start, Object end, Quantity per, State state) {
+        List<Object> expansion = new ArrayList<>();
+        Object current = start;
+        while (LessOrEqualEvaluator.lessOrEqual(current, end, state)) {
+            expansion.add(current);
+            current = addPer(current, per);
+        }
+        return expansion;
     }
 
     public static List<Interval> getExpandedInterval(Interval interval, Quantity per, State state) {
@@ -123,11 +137,40 @@ public class ExpandEvaluator {
         return null;
     }
 
-    public static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
-        if (list == null) {
+    private static boolean isTemporal(Interval interval) {
+        return interval.getStart() instanceof BaseTemporal || interval.getEnd() instanceof BaseTemporal;
+    }
+
+    private static Quantity perOrDefault(Quantity per, Interval interval) {
+        if (per == null) {
+            if (isTemporal(interval)) {
+                return new Quantity()
+                        .withValue(new BigDecimal("1.0"))
+                        .withUnit(BaseTemporal.getLowestPrecision(
+                                (BaseTemporal) interval.getStart(), (BaseTemporal) interval.getEnd()));
+            } else {
+                return new Quantity().withValue(new BigDecimal("1.0")).withDefaultUnit();
+            }
+        }
+        return per;
+    }
+
+    private static List<Object> expand(Interval interval, Quantity per, State state) {
+        if (interval == null) {
             return null;
         }
 
+        per = perOrDefault(per, interval);
+        String precision = per.getUnit().equals("1") ? null : per.getUnit();
+        List<Object> values = getExpandedValues(interval.getStart(), interval.getEnd(), per, state);
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+
+        return values;
+    }
+
+    private static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
         List<Interval> intervals = CqlList.toList(list, false);
 
         if (intervals.isEmpty()) {
@@ -140,23 +183,8 @@ public class ExpandEvaluator {
                 new Quantity().withValue(BigDecimal.ZERO).withUnit(per == null ? "1" : per.getUnit()),
                 state);
 
-        boolean isTemporal = intervals.get(0).getStart() instanceof BaseTemporal
-                || intervals.get(0).getEnd() instanceof BaseTemporal;
-
         intervals.sort(new CqlList().valueSort);
-
-        if (per == null) {
-            if (isTemporal) {
-                per = new Quantity()
-                        .withValue(new BigDecimal("1.0"))
-                        .withUnit(BaseTemporal.getLowestPrecision(
-                                (BaseTemporal) intervals.get(0).getStart(),
-                                (BaseTemporal) intervals.get(0).getEnd()));
-            } else {
-                per = new Quantity().withValue(new BigDecimal("1.0")).withDefaultUnit();
-            }
-        }
-
+        per = perOrDefault(per, intervals.get(0));
         String precision = per.getUnit().equals("1") ? null : per.getUnit();
 
         // prevent duplicates
@@ -166,7 +194,7 @@ public class ExpandEvaluator {
                 continue;
             }
 
-            List<Interval> temp = isTemporal
+            List<Interval> temp = isTemporal(interval)
                     ? getExpandedInterval(interval, per, precision)
                     : getExpandedInterval(interval, per, state);
             if (temp == null) {
@@ -179,5 +207,25 @@ public class ExpandEvaluator {
         }
 
         return set.isEmpty() ? new ArrayList<>() : new ArrayList<>(set);
+    }
+
+    public static Object expand(Object listOrInterval, Quantity per, State state) {
+        if (listOrInterval == null) {
+            return null;
+        }
+
+        if (listOrInterval instanceof Interval) {
+            return expand((Interval) listOrInterval, per, state);
+        } else if (listOrInterval instanceof Iterable) {
+            @SuppressWarnings("unchecked")
+            var list = (Iterable<Interval>) listOrInterval;
+            return expand(list, per, state);
+        }
+
+        throw new InvalidOperatorArgument(
+                "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                String.format(
+                        "Expand(%s, %s)",
+                        listOrInterval.getClass().getName(), per.getClass().getName()));
     }
 }

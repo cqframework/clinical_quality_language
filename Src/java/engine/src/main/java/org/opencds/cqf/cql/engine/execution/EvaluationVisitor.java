@@ -869,14 +869,11 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object visitExpand(Expand elm, State state) {
-        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list =
-                (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>)
-                        visitExpression(elm.getOperand().get(0), state);
+        var listOrInterval = visitExpression(elm.getOperand().get(0), state);
         org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity)
                 visitExpression(elm.getOperand().get(1), state);
-        return ExpandEvaluator.expand(list, per, state);
+        return ExpandEvaluator.expand(listOrInterval, per, state);
     }
 
     @Override
