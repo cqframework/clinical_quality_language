@@ -3,6 +3,7 @@ package org.cqframework.cql.elm.requirements;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 
 public class ElmRequirements extends ElmRequirement {
@@ -299,8 +300,8 @@ public class ElmRequirements extends ElmRequirement {
             if (requirement instanceof ElmDataRequirement) {
                 ElmDataRequirement dataRequirement = (ElmDataRequirement) requirement;
                 if (dataRequirement.hasProperties()) {
-                    String typeUri = context.getTypeResolver()
-                            .getTypeUri(dataRequirement.getRetrieve().getResultType());
+                    var retrieveType = Trackable.INSTANCE.getResultType(dataRequirement.getRetrieve());
+                    String typeUri = context.getTypeResolver().getTypeUri(retrieveType);
                     if (typeUri != null) {
                         List<ElmRequirement> typeRequirements = retrievesByType.get(typeUri);
                         if (typeRequirements != null) {

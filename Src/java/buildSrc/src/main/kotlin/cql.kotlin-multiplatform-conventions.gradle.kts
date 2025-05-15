@@ -1,0 +1,140 @@
+plugins {
+    kotlin("multiplatform")
+    id("maven-publish")
+    id("signing")
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
+    kotlin("plugin.serialization")
+}
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
+
+detekt {
+    // Applies the config files on top of detekt's default config.
+    buildUponDefaultConfig = true
+
+    // The directories where detekt looks for source files.
+    source.setFrom(
+        "src/commonMain/kotlin",
+        "src/jvmMain/kotlin",
+        "src/jsMain/kotlin",
+        "src/commonTest/kotlin",
+        "src/jvmTest/kotlin",
+        "src/jsTest/kotlin"
+    )
+
+    // Custom config with overrides.
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+}
+
+kotlin {
+    compilerOptions {
+        // Expect/Actual classes are currently in Beta
+        // This suppresses warning about that for now.
+        // Assuming expect/actual classes are removed,
+        // we'll need to refactor the code to use interfaces.
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+    jvmToolchain(17)
+    jvm()
+
+    // This adds JavaScript as build target.
+    // Running the build outputs packages in the build/js/packages directory.
+    // These packages can e.g. be required or imported in JS or TS projects.
+    // If you get `Task :kotlinStoreYarnLock FAILED` during the build,
+    // run the `:kotlinUpgradeYarnLock` task and build again.
+    // Run `jsRun --continuous` to start a local development server with
+    // live reloading (automatic re-build on file changes). The local server serves
+    // <module>/src/jsMain/resources/index.html from the root.
+    js(IR) {
+
+        // Output ES2015 modules (.mjs files) to build/js/packages/<package>/kotlin
+        // instead of default UMD (.js) modules.
+        useEsModules()
+
+        // Set web browser environment as the target execution environment.
+        // This also runs webpack which bundles everything into a single
+        // <module>/build/dist/js/productionExecutable/<module>.js file.
+        // This file can be e.g. included in an HTML file and distributed
+        // via a CDN.
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+
+        // `nodejs {}` can be added here to set Node.js as the target execution
+        // environment. If no browser APIs are used, having just `browser {}`
+        // creates an isomorphic library.
+
+        // Explicitly instruct the Kotlin compiler to emit executable JS code.
+        // If `binaries.library()` is used instead, the
+        // <module>/build/dist/js/productionExecutable directory has
+        // un-webpacked JS.
+        binaries.executable()
+
+        // Generate TypeScript definitions (.d.ts files) from Kotlin code. The files are
+        // finally saved to build/js/packages/<package>/kotlin.
+        generateTypeScriptDefinitions()
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+                implementation("io.github.oshai:kotlin-logging:7.0.3")
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
+            }
+        }
+
+        jsMain {
+            dependencies {
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+                implementation("org.junit.jupiter:junit-jupiter")
+                implementation("org.slf4j:slf4j-simple:2.0.13")
+                implementation("org.hamcrest:hamcrest-all:1.3")
+            }
+        }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.register<Jar>("dokkaHtmlJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    archiveClassifier.set("html-docs")
+}
+
+tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}

@@ -67,7 +67,7 @@ public class TestDstu2ModelResolver {
     void resolveModelInfoTests() {
         ModelResolver resolver = new Dstu2FhirModelResolver();
         ModelManager mm = new ModelManager();
-        Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("1.0.2"));
+        Model m = mm.resolveModel(new ModelIdentifier("FHIR", null, "1.0.2"));
 
         List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
 
