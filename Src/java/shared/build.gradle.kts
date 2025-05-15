@@ -4,9 +4,9 @@ plugins {
 
 kotlin {
     sourceSets {
-        jsMain {
+        commonMain {
             dependencies {
-                implementation("io.github.gciatto:kt-math-js:0.10.0")
+                implementation("com.ionspin.kotlin:bignum:0.3.10")
             }
         }
     }
