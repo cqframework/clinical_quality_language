@@ -42,14 +42,16 @@ public class Interval implements CqlType, Comparable<Interval> {
         // Special case for measure processing - MeasurementPeriod is a java date
         if (low instanceof Date && high instanceof Date) {
             if (((Date) low).after((Date) high)) {
-                throw new InvalidInterval(
-                        "Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
+                throw new InvalidInterval(String.format(
+                        "Invalid Interval - the ending boundary (%s) must be greater than or equal to the starting boundary (%s).",
+                        high, low));
             }
         } else if (low != null && high != null) {
             Boolean isStartGreater = GreaterEvaluator.greater(getStart(), getEnd(), this.getState());
             if (isStartGreater == null || isStartGreater.equals(Boolean.TRUE)) {
-                throw new InvalidInterval(
-                        "Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
+                throw new InvalidInterval(String.format(
+                        "Invalid Interval - the ending boundary (%s) must be greater than or equal to the starting boundary (%s).",
+                        high, low));
             }
         }
     }

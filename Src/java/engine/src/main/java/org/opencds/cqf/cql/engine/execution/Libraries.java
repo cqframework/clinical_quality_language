@@ -41,7 +41,7 @@ public class Libraries {
         int index = Collections.binarySearch(
                 defs, name, (x, k) -> ((ExpressionDef) x).getName().compareTo((String) k));
 
-        if (index == -1) {
+        if (index < 0) {
             return Collections.emptyList();
         }
 

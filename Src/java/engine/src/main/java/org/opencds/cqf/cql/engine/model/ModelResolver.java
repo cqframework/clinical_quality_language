@@ -51,7 +51,7 @@ public interface ModelResolver {
      * Resolve the provided path expression for the provided target. Paths
      * can be things like simple dotted property notation (e.g. Patient.id)
      * or more complex things like list indexed property expressions
-     * (e.g. Patient.name[0].given). The exact details are configued in the
+     * (e.g. Patient.name[0].given). The exact details are configured in the
      * model definition and passed to the ELM file during CQL to ELM
      * translation.
      *
