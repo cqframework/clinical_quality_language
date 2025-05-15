@@ -44,7 +44,7 @@ class CqlEngineTest extends CqlTestBase {
     public void hedisCompatibility() {
         var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         var result = libraryResult.expressionResults.get("QuantityListIncludes").value();
-        assertTrue((Boolean) result);
+        assertFalse((Boolean) result);
 
         result = libraryResult.expressionResults.get("ReturnUnspecified").value();
         assertInstanceOf(List.class, result);
@@ -65,7 +65,7 @@ class CqlEngineTest extends CqlTestBase {
         libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         // equivalent semantics for lists
         result = libraryResult.expressionResults.get("QuantityListIncludes").value();
-        assertFalse((Boolean) result);
+        assertTrue((Boolean) result);
 
         // no "distinct" behavior for lists
         result = libraryResult.expressionResults.get("ReturnUnspecified").value();

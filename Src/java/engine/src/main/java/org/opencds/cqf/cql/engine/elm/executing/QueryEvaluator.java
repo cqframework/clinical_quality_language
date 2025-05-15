@@ -96,7 +96,7 @@ public class QueryEvaluator {
     }
 
     public static void sortResult(
-            Query elm, List<Object> result, State state, String alias, ElmLibraryVisitor<Object, State> visitor) {
+            Query elm, List<Object> result, State state, ElmLibraryVisitor<Object, State> visitor) {
 
         SortClause sortClause = elm.getSort();
 
@@ -105,8 +105,8 @@ public class QueryEvaluator {
             for (SortByItem byItem : sortClause.getBy()) {
 
                 if (byItem instanceof ByExpression) {
-                    result.sort(
-                            new CqlList(state, visitor, alias, ((ByExpression) byItem).getExpression()).expressionSort);
+                    result.sort(new CqlList(state, visitor, "$this", ((ByExpression) byItem).getExpression())
+                            .expressionSort);
                 } else if (byItem instanceof ByColumn) {
                     result.sort(new CqlList(state, ((ByColumn) byItem).getPath()).columnSort);
                 } else {
@@ -226,7 +226,7 @@ public class QueryEvaluator {
             result = evaluateAggregate(elm.getAggregate(), state, visitor, result);
         }
 
-        sortResult(elm, result, state, null, visitor);
+        sortResult(elm, result, state, visitor);
 
         if ((result == null || result.isEmpty()) && !sourceIsList) {
             return null;
