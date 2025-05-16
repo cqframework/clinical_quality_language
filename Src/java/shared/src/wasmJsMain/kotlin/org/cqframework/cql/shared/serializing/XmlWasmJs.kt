@@ -1,6 +1,7 @@
 /*
  * This file contains the implementation of XML parsing and serialization
- * for the browser/JS target.
+ * for the WASM/JS target. It is almost identical to the equivalent
+ * jsMain code except for the `DOMParser.parseFromString()` call.
  */
 
 package org.cqframework.cql.shared.serializing
@@ -14,7 +15,7 @@ import org.w3c.dom.parsing.DOMParser
 import org.w3c.dom.parsing.XMLSerializer
 
 actual fun parseXml(xml: String): XmlNode.Element {
-    val root = DOMParser().parseFromString(xml, "text/xml").documentElement!!
+    val root = DOMParser().parseFromString(xml, "text/xml".toJsString()).documentElement!!
     return parseElement(root)
 }
 

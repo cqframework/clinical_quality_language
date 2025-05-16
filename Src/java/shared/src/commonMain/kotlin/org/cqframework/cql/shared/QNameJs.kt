@@ -1,22 +1,21 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.shared
 
-actual class QName
-actual constructor(
+/** A minimal pure-Kotlin implementation of QName for non-Java environments. */
+class QNameJs
+constructor(
     private val namespaceURI: String,
     private val localPart: String,
     private val prefix: String
 ) {
-    actual constructor(namespaceURI: String, localPart: String) : this(namespaceURI, localPart, "")
+    constructor(namespaceURI: String, localPart: String) : this(namespaceURI, localPart, "")
 
-    actual constructor(localPart: String) : this("", localPart, "")
+    constructor(localPart: String) : this("", localPart, "")
 
-    actual fun getPrefix(): String = prefix
+    fun getPrefix(): String = prefix
 
-    actual fun getLocalPart(): String = localPart
+    fun getLocalPart(): String = localPart
 
-    actual fun getNamespaceURI(): String = namespaceURI
+    fun getNamespaceURI(): String = namespaceURI
 
     override fun toString(): String {
         if (namespaceURI == "") return localPart
@@ -26,7 +25,7 @@ actual constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
 
-        if (other is QName) {
+        if (other is QNameJs) {
             if (namespaceURI != other.namespaceURI) return false
             if (localPart != other.localPart) return false
 

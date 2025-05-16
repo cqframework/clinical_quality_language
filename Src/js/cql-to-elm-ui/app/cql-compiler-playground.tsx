@@ -1,16 +1,22 @@
 "use client";
 
 import { useState, useRef, useLayoutEffect } from "react";
-// @ts-expect-error No type definitions available
+// @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
-import {
-  getLibraryManager,
-  BaseCqlTranslator,
-  CqlCompilerOptions,
-} from "cql-all-cql-to-elm";
+import * as cqlToElmJs from "cql-all-cql-to-elm";
+import * as cqlToElmWasmJs from "cql-all-cql-to-elm-wasm-js";
 import { supportedModels } from "@/app/supported-models";
 
 const ucumUtils = ucum.UcumLhcUtils.getInstance();
+const validateUnit = (unit: string) => {
+  const result = ucumUtils.validateUnitString(unit);
+
+  if (result.status === "valid") {
+    return null;
+  } else {
+    return result.msg[0];
+  }
+};
 
 export function CqlCompilerPlayground() {
   const [state, setState] = useState({
@@ -23,6 +29,7 @@ context Patient
 define x: [Observation]
 
 `,
+    useWasm: false,
     enableAnnotations: true,
     enableLocators: true,
     outputContentType: "json" as "json" | "xml",
@@ -47,63 +54,71 @@ define x: [Observation]
   useLayoutEffect(() => {
     stateRef.current = state;
   }, [state]);
-  // stateRef.current = state;
 
-  const libraryManager = useRef(
-    getLibraryManager(
-      (id: string, system: string | null, version: string | null) => {
-        console.log("Kotlin looking for model", id, system, version);
-        const fetchedModel = stateRef.current.fetchedModels.find(
-          (_) => _.id === id && _.system === system && _.version === version,
-        );
-        if (fetchedModel) {
-          return fetchedModel.xml;
-        }
-        const supportedModel = supportedModels.find(
-          (_) => _.id === id && _.system === system && _.version === version,
-        );
-        if (supportedModel) {
-          (async () => {
-            const response = await fetch(supportedModel.url);
-            const xml = await response.text();
-            setState((prevState) => ({
-              ...prevState,
-              fetchedModels: [
-                ...prevState.fetchedModels,
-                {
-                  id: supportedModel.id,
-                  system: supportedModel.system,
-                  version: supportedModel.version,
-                  xml,
-                },
-              ],
-            }));
-          })();
-          throw `Busy loading model: id=${id} system=${system} version=${version} from ${supportedModel.url}`;
-        }
-        throw `Error: Requested unknown model: id=${id} system=${system} version=${version}`;
-      },
-      (id: string, system: string | null, version: string | null) => {
-        console.log("Kotlin looking for library", id, system, version);
-        const repo = stateRef.current.repos.find(
-          (_) => _.url === stateRef.current.repoUrl,
-        );
-        const libraryFile =
-          repo && repo.files.find((_) => _.path.endsWith(`/${id}.cql`));
-        if (libraryFile) {
-          return libraryFile.content;
-        }
-        throw `Error: Requested unknown library: id=${id} system=${system} version=${version}`;
-      },
-      (unit: string) => {
-        const result = ucumUtils.validateUnitString(unit);
+  const getModelXml = (
+    id: string,
+    system: string | null,
+    version: string | null,
+  ) => {
+    console.log("Kotlin looking for model", id, system, version);
+    const fetchedModel = stateRef.current.fetchedModels.find(
+      (_) => _.id === id && _.system === system && _.version === version,
+    );
+    if (fetchedModel) {
+      return fetchedModel.xml;
+    }
+    const supportedModel = supportedModels.find(
+      (_) => _.id === id && _.system === system && _.version === version,
+    );
+    if (supportedModel) {
+      (async () => {
+        const response = await fetch(supportedModel.url);
+        const xml = await response.text();
+        setState((prevState) => ({
+          ...prevState,
+          fetchedModels: [
+            ...prevState.fetchedModels,
+            {
+              id: supportedModel.id,
+              system: supportedModel.system,
+              version: supportedModel.version,
+              xml,
+            },
+          ],
+        }));
+      })();
+      throw `Busy loading model: id=${id} system=${system} version=${version} from ${supportedModel.url}`;
+    }
+    throw `Error: Requested unknown model: id=${id} system=${system} version=${version}`;
+  };
 
-        if (result.status === "valid") {
-          return null;
-        } else {
-          return result.msg[0];
-        }
-      },
+  const getLibraryCql = (
+    id: string,
+    system: string | null,
+    version: string | null,
+  ) => {
+    console.log("Kotlin looking for library", id, system, version);
+    const repo = stateRef.current.repos.find(
+      (_) => _.url === stateRef.current.repoUrl,
+    );
+    const libraryFile =
+      repo && repo.files.find((_) => _.path.endsWith(`/${id}.cql`));
+    if (libraryFile) {
+      return libraryFile.content;
+    }
+    throw `Error: Requested unknown library: id=${id} system=${system} version=${version}`;
+  };
+
+  const libraryManagerJsRef = useRef(
+    new cqlToElmJs.LibraryManager(getModelXml, getLibraryCql, validateUnit),
+  );
+
+  const libraryManagerWasmJsRef = useRef(
+    // @ts-expect-error TypeScript error
+    cqlToElmWasmJs.createLibraryManager(
+      getModelXml,
+      getLibraryCql,
+      validateUnit,
     ),
   );
 
@@ -114,16 +129,35 @@ define x: [Observation]
 
   const parseResult = (() => {
     try {
-      const translator = BaseCqlTranslator.fromText(
+      if (state.useWasm) {
+        // @ts-expect-error TypeScript error
+        const translator = cqlToElmWasmJs.createCqlTranslator(
+          content,
+          libraryManagerWasmJsRef.current,
+        );
+        return {
+          ok: true,
+          tree:
+            state.outputContentType === "json"
+              ? // @ts-expect-error TypeScript error
+                cqlToElmWasmJs.cqlTranslatorToJson(translator)
+              : // @ts-expect-error TypeScript error
+                cqlToElmWasmJs.cqlTranslatorToXml(translator),
+        } as const;
+      }
+
+      const translator = new cqlToElmJs.CqlTranslator(
         content,
-        libraryManager.current,
+        libraryManagerJsRef.current,
       );
       return {
         ok: true,
         tree:
           state.outputContentType === "json"
-            ? translator.toJson()
-            : translator.toXml(),
+            ? // @ts-expect-error TypeScript error
+              translator.toJson()
+            : // @ts-expect-error TypeScript error
+              translator.toXml(),
       } as const;
     } catch (e) {
       return {
@@ -248,7 +282,7 @@ define x: [Observation]
               gap: 8,
             }}
           >
-            <div style={{}}>
+            <div>
               <div style={{ display: "flex", gap: 5 }}>
                 <div style={{ fontWeight: 700 }}>Compiler options:</div>
                 <label style={{ display: "block" }}>
@@ -262,15 +296,25 @@ define x: [Observation]
                         enableAnnotations: nextEnableAnnotations,
                       }));
                       if (nextEnableAnnotations) {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .add(CqlCompilerOptions.Options.EnableAnnotations());
+                        // @ts-expect-error TypeScript error
+                        libraryManagerJsRef.current.addCompilerOption(
+                          "EnableAnnotations",
+                        );
+                        // @ts-expect-error TypeScript error
+                        cqlToElmWasmJs.libraryManagerAddCompilerOption(
+                          libraryManagerWasmJsRef.current,
+                          "EnableAnnotations",
+                        );
                       } else {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .delete(CqlCompilerOptions.Options.EnableAnnotations);
+                        // @ts-expect-error TypeScript error
+                        libraryManagerJsRef.current.removeCompilerOption(
+                          "EnableAnnotations",
+                        );
+                        // @ts-expect-error TypeScript error
+                        cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
+                          libraryManagerWasmJsRef.current,
+                          "EnableAnnotations",
+                        );
                       }
                     }}
                   />
@@ -288,15 +332,25 @@ define x: [Observation]
                         enableLocators: nextEnableLocators,
                       }));
                       if (nextEnableLocators) {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .add(CqlCompilerOptions.Options.EnableLocators);
+                        // @ts-expect-error TypeScript error
+                        libraryManagerJsRef.current.addCompilerOption(
+                          "EnableLocators",
+                        );
+                        // @ts-expect-error TypeScript error
+                        cqlToElmWasmJs.libraryManagerAddCompilerOption(
+                          libraryManagerWasmJsRef.current,
+                          "EnableLocators",
+                        );
                       } else {
-                        libraryManager.current.cqlCompilerOptions.options
-                          .asJsSetView()
-                          // @ts-expect-error TS likely struggles to pick up the type definitions for a module from the local file system outside the project
-                          .delete(CqlCompilerOptions.Options.EnableLocators);
+                        // @ts-expect-error TypeScript error
+                        libraryManagerJsRef.current.removeCompilerOption(
+                          "EnableLocators",
+                        );
+                        // @ts-expect-error TypeScript error
+                        cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
+                          libraryManagerWasmJsRef.current,
+                          "EnableLocators",
+                        );
                       }
                     }}
                   />
@@ -305,7 +359,12 @@ define x: [Observation]
               </div>
             </div>
 
-            <div style={{}}>
+            <div
+              style={{
+                display: "grid",
+                gap: 5,
+              }}
+            >
               <div style={{ display: "flex", gap: 5 }}>
                 <div style={{ fontWeight: 700 }}>Output content type:</div>
                 {(["json", "xml"] as const).map((outputContentType) => (
@@ -323,6 +382,22 @@ define x: [Observation]
                     {outputContentType.toUpperCase()}
                   </label>
                 ))}
+              </div>
+              <div>
+                <label style={{ display: "block" }}>
+                  <input
+                    type={"checkbox"}
+                    checked={state.useWasm}
+                    onChange={(event) => {
+                      const nextUseWasm = event.target.checked;
+                      setState((prevState) => ({
+                        ...prevState,
+                        useWasm: nextUseWasm,
+                      }));
+                    }}
+                  />
+                  Use WASM
+                </label>
               </div>
             </div>
           </div>

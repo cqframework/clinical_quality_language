@@ -1,4 +1,7 @@
-@file:Suppress("PackageNaming")
+/*
+ * This file contains the implementation of XML parsing and serialization
+ * for the JVM target.
+ */
 
 package org.cqframework.cql.shared.serializing
 

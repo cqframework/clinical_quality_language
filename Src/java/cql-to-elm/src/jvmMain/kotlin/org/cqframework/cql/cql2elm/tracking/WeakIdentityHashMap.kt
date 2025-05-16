@@ -2,13 +2,7 @@ package org.cqframework.cql.cql2elm.tracking
 
 import java.lang.ref.WeakReference
 
-/**
- * This is a map that uses weak references for keys. This means that if the key is no longer
- * strongly referenced anywhere in the program, it will be garbage collected and the entry will be
- * removed from the map. This is useful for extension properties. The lifetime of the property is
- * tied to the lifetime of the object
- */
-actual open class WeakIdentityHashMap<K : Any, V> {
+actual open class WeakIdentityHashMap<K, V> {
     companion object {
         const val OPERATION_CLEANUP_INTERVAL = 5000
     }
@@ -24,17 +18,12 @@ actual open class WeakIdentityHashMap<K : Any, V> {
         return backingMap[WeakKey(key)]
     }
 
-    actual operator fun set(key: K, value: V) {
-        incrementAndCleanUp()
-        backingMap[WeakKey(key)] = value
-    }
-
     actual fun remove(key: K): V? {
         incrementAndCleanUp()
         return backingMap.remove(WeakKey(key))
     }
 
-    actual fun getOrPut(key: K, defaultValue: () -> V): V {
+    fun getOrPut(key: K, defaultValue: () -> V): V {
         incrementAndCleanUp()
         return backingMap.getOrPut(WeakKey(key), defaultValue)
     }
@@ -52,7 +41,7 @@ actual open class WeakIdentityHashMap<K : Any, V> {
         keys.forEach { backingMap.remove(it) }
     }
 
-    private class WeakKey<K : Any>(key: K) {
+    private class WeakKey<K>(key: K) {
         private val ref = WeakReference(key)
         private val hashCode = System.identityHashCode(key)
 
@@ -68,4 +57,8 @@ actual open class WeakIdentityHashMap<K : Any, V> {
 
         override fun hashCode(): Int = hashCode
     }
+}
+
+actual fun <K, V> WeakIdentityHashMap<K, V>.getOrPut(key: K, defaultValue: () -> V): V {
+    return getOrPut(key, defaultValue)
 }

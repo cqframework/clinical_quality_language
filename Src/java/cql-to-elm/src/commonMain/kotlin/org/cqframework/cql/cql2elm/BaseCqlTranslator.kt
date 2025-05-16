@@ -1,10 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.ExperimentalJsStatic
-import kotlin.js.JsExport
-import kotlin.js.JsStatic
-import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
@@ -13,9 +8,6 @@ import org.cqframework.cql.elm.serializing.ElmLibraryWriterProvider
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 
-@Suppress("NON_EXPORTABLE_TYPE")
-@OptIn(ExperimentalJsExport::class)
-@JsExport
 open class BaseCqlTranslator(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
@@ -95,10 +87,6 @@ open class BaseCqlTranslator(
     }
 
     companion object {
-
-        @OptIn(ExperimentalJsStatic::class)
-        @JvmStatic
-        @JsStatic
         fun fromText(
             cqlText: String,
             libraryManager: BaseLibraryManager,
