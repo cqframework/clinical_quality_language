@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.*;
@@ -50,17 +51,6 @@ public class ExpandEvaluator {
                 String.format(
                         "Expand(%s, %s)",
                         addTo.getClass().getName(), per.getClass().getName()));
-    }
-
-    // TODO: fill this out
-    private static List<Object> getExpandedValues(Object start, Object end, Quantity per, State state) {
-        List<Object> expansion = new ArrayList<>();
-        Object current = start;
-        while (LessOrEqualEvaluator.lessOrEqual(current, end, state)) {
-            expansion.add(current);
-            current = addPer(current, per);
-        }
-        return expansion;
     }
 
     public static List<Interval> getExpandedInterval(Interval interval, Quantity per, State state) {
@@ -156,18 +146,14 @@ public class ExpandEvaluator {
     }
 
     private static List<Object> expand(Interval interval, Quantity per, State state) {
-        if (interval == null) {
+        // The calculation is performed the same way, but the starting point of each resulting interval is returned, rather than the interval
+        var resultingIntervals = expand(List.of(interval), per, state);
+
+        if (resultingIntervals == null) {
             return null;
         }
 
-        per = perOrDefault(per, interval);
-        String precision = per.getUnit().equals("1") ? null : per.getUnit();
-        List<Object> values = getExpandedValues(interval.getStart(), interval.getEnd(), per, state);
-        if (values == null || values.isEmpty()) {
-            return null;
-        }
-
-        return values;
+        return resultingIntervals.stream().map(Interval::getStart).collect(Collectors.toList());
     }
 
     private static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
