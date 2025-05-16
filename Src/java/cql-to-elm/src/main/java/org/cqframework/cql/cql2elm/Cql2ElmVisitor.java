@@ -2786,7 +2786,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (ctx.dateTimePrecision() != null) {
             per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
         } else if (ctx.expression().size() > 1) {
-            per = parseExpression(ctx.expression(1));
+            var perExpression = parseExpression(ctx.expression(1));
+            // Hack to get the per value from a literal
+            if (perExpression instanceof Literal) {
+                per = libraryBuilder.createQuantity(new BigDecimal(((Literal) perExpression).getValue()), "1");
+            } else {
+                per = perExpression;
+            }
+
         } else {
             // Determine per quantity based on point type of the intervals involved
             if (source.getResultType() instanceof ListType) {
