@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:modelInfo name="System" version="1.0.0" url="urn:hl7-org:elm-types:r1" targetQualifier="system"
+               xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Boolean" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Integer" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Long" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Decimal" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.String" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.DateTime" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Date" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Time" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Quantity" baseType="System.Any">
+        <ns4:element name="value" type="System.Decimal"/>
+        <ns4:element name="unit" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Ratio" baseType="System.Any">
+        <ns4:element name="numerator" type="System.Quantity"/>
+        <ns4:element name="denominator" type="System.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Code" baseType="System.Any">
+        <ns4:element name="code" type="System.String"/>
+        <ns4:element name="system" type="System.String"/>
+        <ns4:element name="version" type="System.String"/>
+        <ns4:element name="display" type="System.String"/>
+        <!--ns4:element name="primary" type="System.Boolean"/-->
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Concept" baseType="System.Any">
+        <ns4:element name="codes">
+            <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
+        </ns4:element>
+        <ns4:element name="display" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Vocabulary" baseType="System.Any">
+        <ns4:element name="id" type="System.String"/>
+        <ns4:element name="version" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.ValueSet" baseType="System.Vocabulary"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.CodeSystem" baseType="System.Vocabulary"/>
+</ns4:modelInfo>
