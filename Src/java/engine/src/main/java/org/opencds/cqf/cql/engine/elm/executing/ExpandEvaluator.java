@@ -1,10 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -146,8 +143,9 @@ public class ExpandEvaluator {
     }
 
     private static List<Object> expand(Interval interval, Quantity per, State state) {
-        // The calculation is performed the same way, but the starting point of each resulting interval is returned, rather than the interval
-        var resultingIntervals = expand(List.of(interval), per, state);
+        // The calculation is performed the same way, but the starting point of each resulting interval is returned,
+        // rather than the interval
+        var resultingIntervals = expand(Collections.singletonList(interval), per, state);
 
         if (resultingIntervals == null) {
             return null;
