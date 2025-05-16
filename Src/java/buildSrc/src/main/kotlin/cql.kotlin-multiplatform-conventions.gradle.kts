@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
@@ -83,6 +85,15 @@ kotlin {
 
         // Generate TypeScript definitions (.d.ts files) from Kotlin code. The files are
         // finally saved to build/js/packages/<package>/kotlin.
+        generateTypeScriptDefinitions()
+    }
+
+    // Add Kotlin/WASM compilation target.
+    // The output is in the JS packages directory.
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
         generateTypeScriptDefinitions()
     }
 

@@ -3,9 +3,6 @@ package org.cqframework.cql.cql2elm
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
-import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import kotlinx.io.Source
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
@@ -19,8 +16,6 @@ import org.hl7.elm.r1.*
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
  * corresponding source is obtained via librarySourceLoader, compiled and cached for later use.
  */
-@OptIn(ExperimentalJsExport::class)
-@JsExport
 @Suppress("TooManyFunctions", "LongParameterList", "NON_EXPORTABLE_TYPE")
 open class BaseLibraryManager(
     val modelManager: IModelManager,
@@ -50,7 +45,6 @@ open class BaseLibraryManager(
         }
     }
 
-    @JsName("resolveLibrary1")
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         cacheMode: CacheMode
@@ -65,7 +59,6 @@ open class BaseLibraryManager(
     }
 
     @JvmOverloads
-    @JsName("resolveLibrary2")
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException> = ArrayList(),
