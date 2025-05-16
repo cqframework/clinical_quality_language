@@ -47,6 +47,67 @@
 			<output type="string">James</output>
 		</test>
 
+		<test name="testContext" inputfile="patient-example.xml">
+			<expression>%context.name.given</expression>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+			<output type="string">Jim</output>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+		</test>
+
+		<test name="testNamedContext" inputfile="patient-example.xml">
+			<expression>Patient.name.given</expression>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+			<output type="string">Jim</output>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+		</test>
+
+		<test name="testResourceContext" inputfile="patient-example.xml">
+			<expression>%resource.name.given</expression>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+			<output type="string">Jim</output>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+		</test>
+
+		<test name="testRootResourceContext" inputfile="patient-example.xml">
+			<expression>%rootResource.name.given</expression>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+			<output type="string">Jim</output>
+			<output type="string">Peter</output>
+			<output type="string">James</output>
+		</test>
+
+		<test name="testIdentifierContext" inputfile="patient-example.xml" context="identifier">
+			<expression>use.value = 'usual'</expression>
+			<output type="boolean">true</output>
+		</test>
+
+		<test name="testIdentifierContextIsNotResource" inputfile="patient-example.xml" context="identifier">
+			<expression>%context.id != %resource.id</expression>
+			<output type="boolean">true</output>
+		</test>
+
+		<test name="testIdentifierContextResourceAccess" inputfile="patient-example.xml" context="identifier">
+			<expression>%resource.id = 'example'</expression>
+			<output type="boolean">true</output>
+		</test>
+
+		<test name="testContainerAccess" inputfile="measure-example.xml" context="contained.first()">
+			<expression>%resource.id = 'effective-data-requirements'</expression>
+			<output type="boolean">true</output>
+		</test>
+
+		<test name="testContainerRootAccess" inputfile="measure-example.xml" context="contained.first()">
+			<expression>%rootResource.id = 'example'</expression>
+			<output type="boolean">true</output>
+		</test>
+
 		<!-- test(patient(), "name.period", 0); -->
 		<test name="testSimpleNone" inputfile="patient-example.xml">
 			<expression>name.suffix</expression>
