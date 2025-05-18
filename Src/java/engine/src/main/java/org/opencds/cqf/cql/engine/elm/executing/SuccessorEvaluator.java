@@ -106,4 +106,25 @@ public class SuccessorEvaluator {
                 "The Successor operation is not implemented for type %s",
                 value.getClass().getName()));
     }
+
+    /**
+     * Returns the successor of the given value, taking into account the precision of the given quantity.
+     * This is a convenience method and not an overload of the successor operator.
+     *
+     * @param value the value to get the successor of
+     * @param precision the quantity specifying the precision
+     * @return the successor of the value
+     */
+    public static Object successor(Object value, Quantity precision) {
+        if (value instanceof BigDecimal) {
+            if (precision.getValue().scale() > 0) {
+                return ((BigDecimal) value)
+                        .add(BigDecimal.ONE.scaleByPowerOfTen(
+                                -precision.getValue().scale()));
+            }
+            return ((BigDecimal) value).add(BigDecimal.ONE);
+        }
+
+        return successor(value);
+    }
 }

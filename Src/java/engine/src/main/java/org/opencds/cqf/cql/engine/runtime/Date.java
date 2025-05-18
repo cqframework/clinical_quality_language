@@ -203,4 +203,9 @@ public class Date extends BaseTemporal {
                         calendar.toInstant(), calendar.getTimeZone().toZoneId()),
                 Precision.MILLISECOND);
     }
+
+    @Override
+    public BaseTemporal copy() {
+        return new Date(this.getDate(), this.getPrecision());
+    }
 }

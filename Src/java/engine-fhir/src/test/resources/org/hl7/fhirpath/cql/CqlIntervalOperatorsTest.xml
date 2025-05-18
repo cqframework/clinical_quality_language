@@ -266,19 +266,19 @@
 		</test>
 		<test name="ExpandPerHour">
 			<expression>expand { Interval[@T10:00, @T12:30] } per hour</expression>
-			<output>{ Interval[@T10:00, @T11:00), Interval[@T11:00, @T12:00) }</output>
+			<output>{ Interval[@T10, @T10], Interval[@T11, @T11], Interval[@T12, @T12] }</output>
 		</test>
 		<test name="ExpandPerHourIntervalOverload">
 			<expression>expand Interval[@T10:00, @T12:30] per hour</expression>
-			<output>{ @T10:00, @T11:00 }</output>
+			<output>{ @T10, @T11, @T12 }</output>
 		</test>
 		<test name="ExpandPerHourOpen">
 			<expression>expand { Interval[@T10:00, @T12:30) } per hour</expression>
-			<output>{ Interval[@T10:00, @T11:00), Interval[@T11:00, @T12:00) }</output>
+			<output>{ Interval[@T10, @T10], Interval[@T11, @T11], Interval[@T12, @T12] }</output>
 		</test>
 		<test name="ExpandPerHourOpenIntervalOverload">
 			<expression>expand Interval[@T10:00, @T12:30) per hour</expression>
-			<output>{ @T10:00, @T11:00 }</output>
+			<output>{ @T10, @T11, @T12 }</output>
 		</test>
 		<test name="ExpandPer1">
 			<expression>expand { Interval[10.0, 12.5] } per 1</expression>
@@ -307,6 +307,7 @@
 		<test name="ExpandPer0D1">
 			<expression>expand { Interval[10, 10] } per 0.1</expression>
 			<output>{ Interval[10.0, 10.0], Interval[10.1, 10.1], Interval[10.2, 10.2], Interval[10.3, 10.3], Interval[10.4, 10.4], Interval[10.5, 10.5], Interval[10.6, 10.6], Interval[10.7, 10.7], Interval[10.8, 10.8], Interval[10.9, 10.9] }</output>
+			<!--  Actual: { Interval[10, 10] }. Currently, the compiler sets the result type of the expression to List<Interval<Integer>>, so the engine can only return integer intervals. -->
 		</test>
 		<test name="ExpandPer0D1IntervalOverload">
 			<expression>expand Interval[10, 10] per 0.1</expression>
