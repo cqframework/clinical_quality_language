@@ -190,4 +190,9 @@ public class Time extends BaseTemporal {
                         time.getHour(), time.getMinute(), time.getSecond(), time.get(precision.toChronoField()));
         }
     }
+
+    @Override
+    public BaseTemporal copy() {
+        return new Time(this.time, this.precision);
+    }
 }

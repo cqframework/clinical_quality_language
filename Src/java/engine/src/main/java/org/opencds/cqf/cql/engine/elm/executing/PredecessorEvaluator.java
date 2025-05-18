@@ -106,4 +106,25 @@ public class PredecessorEvaluator {
                 "The Predecessor operation is not implemented for type %s",
                 value.getClass().getName()));
     }
+
+    /**
+     * Returns the predecessor of the given value, taking into account the precision of the per quantity.
+     * This is a convenience method and not an overload of the predecessor operator.
+     *
+     * @param value the value to get the predecessor of
+     * @param precision the quantity specifying the precision
+     * @return the predecessor of the value
+     */
+    public static Object predecessor(Object value, Quantity precision) {
+        if (value instanceof BigDecimal) {
+            if (precision.getValue().scale() > 0) {
+                return ((BigDecimal) value)
+                        .subtract(BigDecimal.ONE.scaleByPowerOfTen(
+                                -precision.getValue().scale()));
+            }
+            return ((BigDecimal) value).subtract(BigDecimal.ONE);
+        }
+
+        return predecessor(value);
+    }
 }

@@ -143,6 +143,9 @@ public abstract class TestFhirPath {
             String outputExpression = test.getOutput().get(0).getValue();
             if ("null".equals(outputExpression)) {
                 cql = String.format("%s (%s) is %s", cql, testExpression, outputExpression);
+            } else if ("{ }".equals(outputExpression)) {
+                // {} = {} returns null, so empty lists as expected outputs need to be handled differently
+                cql = String.format("%s not exists (%s)", cql, testExpression);
             } else if ("null".equals(testExpression)) {
                 cql = String.format("%s (%s) is %s", cql, outputExpression, testExpression);
             } else {

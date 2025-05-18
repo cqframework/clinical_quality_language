@@ -341,4 +341,11 @@ public class DateTime extends BaseTemporal {
                         .multiply(offsetAsBigDecimal.remainder(BigDecimal.ONE))
                         .intValue());
     }
+
+    @Override
+    public BaseTemporal copy() {
+        DateTime copy = new DateTime(this.dateTime, this.precision);
+        copy.zoneOffset = this.zoneOffset;
+        return copy;
+    }
 }

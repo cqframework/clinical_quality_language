@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
@@ -34,7 +35,11 @@ If the per argument is null, the default unit interval for the point type of the
 public class ExpandEvaluator {
     private static Object addPer(Object addTo, Quantity per) {
         if (addTo instanceof Integer) {
-            return AddEvaluator.add(addTo, per.getValue().intValue());
+            return AddEvaluator.add(
+                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).intValue());
+        } else if (addTo instanceof Long) {
+            return AddEvaluator.add(
+                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).longValue());
         } else if (addTo instanceof BigDecimal) {
             return AddEvaluator.add(addTo, per.getValue());
         } else if (addTo instanceof Quantity) {
@@ -50,78 +55,131 @@ public class ExpandEvaluator {
                         addTo.getClass().getName(), per.getClass().getName()));
     }
 
+    /**
+     * Truncates the decimal value to the specified scale if the value has a greater scale.
+     *
+     * @param value the value to truncate
+     * @param scale the scale to truncate to
+     * @param roundToCeiling whether to round towards the ceiling or floor value
+     * @return the truncated value
+     */
+    private static BigDecimal truncateDecimalIfNecessary(BigDecimal value, int scale, boolean roundToCeiling) {
+        if (scale < value.scale()) {
+            return value.setScale(scale, roundToCeiling ? RoundingMode.CEILING : RoundingMode.FLOOR);
+        }
+        return value;
+    }
+
+    /**
+     * Truncates the temporal value to the specified precision if the value has a greater precision.
+     *
+     * @param value the value to truncate
+     * @param precision the precision to truncate to
+     * @param roundToCeiling whether to round towards the ceiling or floor value
+     * @return the truncated value
+     */
+    private static BaseTemporal truncateTemporalIfNecessary(
+            BaseTemporal value, Precision precision, boolean roundToCeiling) {
+        if (value.getPrecision() == precision || value.isUncertain(precision)) {
+            return value;
+        }
+
+        var roundedToFloor = value.copy().setPrecision(precision);
+        if (roundToCeiling) {
+            return (BaseTemporal)
+                    roundedToFloor.getUncertaintyInterval(precision).getEnd();
+        }
+
+        return roundedToFloor;
+    }
+
+    /**
+     * Handles the case of the interval boundaries being more precise than the per quantity. When the boundaries
+     * are truncated, the truncated start is rounded to the ceiling value and the truncated end is rounded to
+     * the floor value so that the truncated interval is fully contained within the original interval. If the
+     * truncated start becomes greater than the truncated end (e.g. for interval = Interval[0.3, 0.5] and per = 1),
+     * this method returns null.
+     *
+     * @param interval the interval with the boundaries to truncate
+     * @param per the quantity specifying the precision to truncate to
+     * @param state the engine state
+     * @return the interval with the truncated boundaries
+     */
+    private static Interval truncateIntervalBoundariesIfNecessary(Interval interval, Quantity per, State state) {
+        var start = interval.getStart();
+        var end = interval.getEnd();
+
+        if (start instanceof BigDecimal) {
+            var perScale = per.getValue().scale();
+            var truncatedStart = truncateDecimalIfNecessary((BigDecimal) start, perScale, true);
+            var truncatedEnd = truncateDecimalIfNecessary((BigDecimal) end, perScale, false);
+
+            if (truncatedStart.compareTo(truncatedEnd) <= 0) {
+                return new Interval(truncatedStart, true, truncatedEnd, true);
+            }
+
+            return null;
+        } else if (start instanceof BaseTemporal) {
+            var precision = Precision.fromString(per.getUnit());
+            var truncatedStart = truncateTemporalIfNecessary((BaseTemporal) start, precision, true);
+            var truncatedEnd = truncateTemporalIfNecessary((BaseTemporal) end, precision, false);
+
+            if (LessOrEqualEvaluator.lessOrEqual(truncatedStart, truncatedEnd, state)) {
+                return new Interval(truncatedStart, true, truncatedEnd, true);
+            }
+
+            return null;
+        }
+
+        return interval;
+    }
+
+    /**
+     * Performs interval expansion for the given interval and per quantity.
+     *
+     * @param interval the interval to expand
+     * @param per the size of the intervals to return
+     * @param state the engine state
+     * @return the list of smaller intervals of size per
+     */
     public static List<Interval> getExpandedInterval(Interval interval, Quantity per, State state) {
         if (interval.getLow() == null || interval.getHigh() == null) {
             return null;
         }
 
-        List<Interval> expansion = new ArrayList<>();
-        Object start = interval.getStart();
-        Object end = addPer(start, per);
+        Object intervalStart = interval.getStart();
+        Object intervalEnd = interval.getEnd();
 
-        if ((start instanceof Integer || start instanceof BigDecimal)
-                && !per.getUnit().equals("1")) {
+        // Make sure that the interval point type is compatible with the per quantity
+        if ((intervalStart instanceof Integer || intervalStart instanceof Long || intervalStart instanceof BigDecimal)
+                != per.getUnit().equals("1")) {
             return null;
         }
 
-        if (EqualEvaluator.equal(start, interval.getEnd(), state)) {
-            expansion.add(new Interval(start, true, start, true));
-            return expansion;
+        // If the interval boundaries are more precise than the per quantity, the more precise values are truncated to
+        // the precision specified by the per quantity.
+        Interval truncatedInterval = truncateIntervalBoundariesIfNecessary(interval, per, state);
+        if (truncatedInterval == null) {
+            return null;
         }
 
-        while (LessOrEqualEvaluator.lessOrEqual(PredecessorEvaluator.predecessor(end), interval.getEnd(), state)) {
-            expansion.add(new Interval(start, true, end, false));
-            start = end;
-            end = addPer(start, per);
+        Object start = truncatedInterval.getStart();
+        Object nextStart = addPer(start, per);
+
+        // per may be too small to keep adding it to the start value
+        if (!LessEvaluator.less(start, nextStart, state)) {
+            return null;
+        }
+
+        List<Interval> expansion = new ArrayList<>();
+        Object endSuccessor = SuccessorEvaluator.successor(truncatedInterval.getEnd(), per);
+        while (LessOrEqualEvaluator.lessOrEqual(nextStart, endSuccessor, state)) {
+            expansion.add(new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
+            start = nextStart;
+            nextStart = addPer(start, per);
         }
 
         return expansion;
-    }
-
-    public static List<Interval> getExpandedInterval(Interval interval, Quantity per, String precision) {
-        if (interval.getLow() == null || interval.getHigh() == null) {
-            return null;
-        }
-
-        Object i;
-        try {
-            i = DurationBetweenEvaluator.duration(
-                    interval.getStart(), interval.getEnd(), Precision.fromString(precision));
-        } catch (Exception e) {
-            return null;
-        }
-        if (i instanceof Integer) {
-            List<Interval> expansion = new ArrayList<>();
-            Interval unit = null;
-            Object start = interval.getStart();
-            Object end = AddEvaluator.add(start, per);
-            for (int j = 0; j < (Integer) i; ++j) {
-                unit = new Interval(start, true, end, false);
-                expansion.add(unit);
-                start = end;
-                end = AddEvaluator.add(start, per);
-            }
-
-            if (unit != null) {
-                i = DurationBetweenEvaluator.duration(
-                        unit.getEnd(), interval.getEnd(), Precision.fromString(precision));
-                if (i instanceof Integer && (Integer) i == 1) {
-                    expansion.add(new Interval(start, true, end, false));
-                }
-            } else {
-                // special case - although the width of Interval[@2018-01-01, @2018-01-01] is 0, expansion result is not
-                // empty
-                if (((BaseTemporal) start).getPrecision() == Precision.fromString(precision)
-                        && ((BaseTemporal) end).getPrecision() == Precision.fromString(precision)) {
-                    expansion.add(new Interval(start, true, end, false));
-                }
-            }
-
-            return expansion;
-        }
-
-        // uncertainty
-        return null;
     }
 
     private static boolean isTemporal(Interval interval) {
@@ -142,18 +200,30 @@ public class ExpandEvaluator {
         return per;
     }
 
+    /**
+     * Implements the interval overload of the expand operator. The calculation is performed the same
+     * way as with the list overload, but the starting point of each resulting interval is returned,
+     * rather than the interval.
+     *
+     * @param interval the interval to expand
+     * @param per the distance between the points to return
+     * @param state the engine state
+     * @return the list of points from the interval
+     */
     private static List<Object> expand(Interval interval, Quantity per, State state) {
-        // The calculation is performed the same way, but the starting point of each resulting interval is returned,
-        // rather than the interval
         var resultingIntervals = expand(Collections.singletonList(interval), per, state);
-
-        if (resultingIntervals == null) {
-            return null;
-        }
 
         return resultingIntervals.stream().map(Interval::getStart).collect(Collectors.toList());
     }
 
+    /**
+     * Implements the list overload of the expand operator.
+     *
+     * @param list the list of intervals to expand
+     * @param per the size of the intervals to return
+     * @param state the engine state
+     * @return the list of smaller intervals of size per
+     */
     private static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
         List<Interval> intervals = CqlList.toList(list, false);
 
@@ -169,7 +239,6 @@ public class ExpandEvaluator {
 
         intervals.sort(new CqlList().valueSort);
         per = perOrDefault(per, intervals.get(0));
-        String precision = per.getUnit().equals("1") ? null : per.getUnit();
 
         // prevent duplicates
         Set<Interval> set = new TreeSet<>();
@@ -178,11 +247,9 @@ public class ExpandEvaluator {
                 continue;
             }
 
-            List<Interval> temp = isTemporal(interval)
-                    ? getExpandedInterval(interval, per, precision)
-                    : getExpandedInterval(interval, per, state);
+            List<Interval> temp = getExpandedInterval(interval, per, state);
             if (temp == null) {
-                return null;
+                continue;
             }
 
             if (!temp.isEmpty()) {

@@ -88,4 +88,11 @@ public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> 
     public abstract boolean isUncertain(Precision p);
 
     public abstract Interval getUncertaintyInterval(Precision p);
+
+    /**
+     * Returns a copy of the current BaseTemporal object.
+     *
+     * @return a new instance of BaseTemporal
+     */
+    public abstract BaseTemporal copy();
 }
