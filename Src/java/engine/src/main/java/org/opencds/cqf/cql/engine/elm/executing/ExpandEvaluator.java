@@ -83,20 +83,31 @@ public class ExpandEvaluator {
             end = new BigDecimal(((Integer) end).longValue()).setScale(scale, RoundingMode.DOWN);
         }
 
-        end = addPer(start, per);
-        List<Interval> expansion = new ArrayList<>();
-        if (EqualEvaluator.equal(start, interval.getEnd(), state)) {
-            expansion.add(new Interval(start, true, start, true));
-            return expansion;
+        var i = SubtractEvaluator.subtract(end, start);
+
+        var iterations = TruncatedDivideEvaluator.div(i, per.getValue(), null);
+
+        if (iterations == null) {
+            return emptyList();
         }
 
-        while (LessOrEqualEvaluator.lessOrEqual(PredecessorEvaluator.predecessor(end), interval.getEnd(), state)) {
-            expansion.add(new Interval(start, true, end, false));
-            start = end;
+        var finalIterations = iterations instanceof Integer
+                ? (Integer) iterations + 1
+                : ((BigDecimal) iterations).setScale(0, RoundingMode.DOWN).intValue() + 1;
+
+        List<Interval> expansions = new ArrayList<>();
+
+        if (finalIterations == 1) {
+            expansions.add(new Interval(start, true, end, true));
+        }
+
+        for (int j = 0; j < finalIterations; j++) {
             end = addPer(start, per);
+            expansions.add(new Interval(start, true, end, false));
+            start = end;
         }
 
-        return expansion;
+        return expansions;
     }
 
     public static List<Interval> getExpandedInterval(Interval interval, Quantity per) {
@@ -110,6 +121,11 @@ public class ExpandEvaluator {
 
         var iterations = TruncatedDivideEvaluator.div(
                 i, per.getValue().setScale(0, RoundingMode.DOWN).intValue(), null);
+
+        if (iterations == null) {
+            return emptyList();
+        }
+
         var finalIterations = iterations instanceof Integer
                 ? (Integer) iterations + 1
                 : ((BigDecimal) iterations).setScale(0, RoundingMode.DOWN).intValue() + 1;
@@ -121,12 +137,12 @@ public class ExpandEvaluator {
         if (finalIterations == 1) {
             if (((BaseTemporal) start).getPrecision() == Precision.fromString(precision)
                     && ((BaseTemporal) end).getPrecision() == Precision.fromString(precision)) {
-                expansions.add(new Interval(start, true, end, false));
+                expansions.add(new Interval(start, true, end, true));
             }
         }
 
         for (int j = 0; j < finalIterations; j++) {
-            end = AddEvaluator.add(start, per);
+            end = addPer(start, per);
             expansions.add(new Interval(start, true, end, false));
             start = end;
         }

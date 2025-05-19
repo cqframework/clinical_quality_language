@@ -24,7 +24,7 @@ public class TruncatedDivideEvaluator {
             return null;
         }
 
-        if (left instanceof Integer) {
+        if (left instanceof Integer && right instanceof Integer) {
             if ((Integer) right == 0) {
                 return null;
             }
@@ -41,7 +41,13 @@ public class TruncatedDivideEvaluator {
                 return null;
             }
 
-            return ((BigDecimal) left).divideAndRemainder((BigDecimal) right)[0];
+            if (right instanceof Integer) {
+                return ((BigDecimal) left).divideAndRemainder(new BigDecimal((Integer) right))[0];
+            } else if (right instanceof Long) {
+                return ((BigDecimal) left).divideAndRemainder(new BigDecimal((Long) right))[0];
+            } else {
+                return ((BigDecimal) left).divideAndRemainder((BigDecimal) right)[0];
+            }
         } else if (left instanceof Quantity) {
             if (EqualEvaluator.equal(((Quantity) right).getValue(), new BigDecimal("0.0"), state)) {
                 return null;
