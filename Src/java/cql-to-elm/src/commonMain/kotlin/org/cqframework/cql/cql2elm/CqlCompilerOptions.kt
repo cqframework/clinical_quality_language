@@ -1,16 +1,10 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
-import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 import kotlinx.serialization.Serializable
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 
 /** translation options for Cql source files */
-@Suppress("NON_EXPORTABLE_TYPE")
-@OptIn(ExperimentalJsExport::class)
-@JsExport
 @Serializable
 class CqlCompilerOptions {
     enum class Options {
@@ -119,7 +113,7 @@ class CqlCompilerOptions {
      */
     var collapseDataRequirements: Boolean = false
 
-    @JsName("constructor2") constructor()
+    constructor()
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and
@@ -128,13 +122,11 @@ class CqlCompilerOptions {
      * @param options
      */
     @Suppress("SpreadOperator")
-    @JsName("constructor3")
     constructor(
         vararg options: Options
     ) : this(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.None, *options)
 
     @Suppress("SpreadOperator")
-    @JsName("constructor4")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         vararg options: Options
@@ -148,7 +140,6 @@ class CqlCompilerOptions {
      * @param options
      */
     @Suppress("SpreadOperator")
-    @JsName("constructor5")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         signatureLevel: SignatureLevel,
@@ -160,7 +151,6 @@ class CqlCompilerOptions {
     }
 
     @Suppress("LongParameterList")
-    @JsName("constructor6")
     /**
      * Constructor using defined SignatureLevel, and Compatibility Level, boolean set to true
      * denotes addition of predefined option
