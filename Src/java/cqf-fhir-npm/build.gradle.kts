@@ -1,0 +1,10 @@
+plugins {
+    id("cql.fhir-conventions")
+}
+
+dependencies {
+    implementation(project(":cql-to-elm"))
+    implementation(project(":cqf-fhir"))
+    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("org.apache.commons:commons-compress:1.24.0")
+}
