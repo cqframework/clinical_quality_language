@@ -168,6 +168,19 @@ public class Date extends BaseTemporal {
     }
 
     @Override
+    public boolean equals(Object other) {
+        return this.equal(other);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        hash = 31 * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = 31 * hash + (this.precision != null ? this.precision.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
     public String toString() {
         switch (precision) {
             case YEAR:

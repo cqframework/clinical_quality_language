@@ -212,4 +212,20 @@ public class Interval implements CqlType, Comparable<Interval> {
                 getHigh() == null ? "null" : getHigh().toString(),
                 getHighClosed() ? "]" : ")");
     }
+
+    public static Interval closed(Object low, Object high) {
+        return new Interval(low, true, high, true);
+    }
+
+    public static Interval open(Object low, Object high) {
+        return new Interval(low, false, high, false);
+    }
+
+    public static Interval closedOpen(Object low, Object high) {
+        return new Interval(low, true, high, false);
+    }
+
+    public static Interval openClosed(Object low, Object high) {
+        return new Interval(low, false, high, true);
+    }
 }

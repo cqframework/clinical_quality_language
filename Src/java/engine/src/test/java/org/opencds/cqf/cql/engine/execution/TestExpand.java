@@ -1,15 +1,13 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
-
-import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.Date;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.opencds.cqf.cql.engine.runtime.Interval;
 
 class TestExpand extends CqlTestBase {
 
@@ -18,20 +16,19 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer2Days"));
         Object value = results.forExpression("ExpandPer2Days").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(2, intervals.size());
-        assertTrue(((Interval) intervals.get(0)).equal(
-                new Interval(new Date(2018, 1, 1), true, new Date(2018, 1, 2), true)));
-        assertTrue(((Interval) intervals.get(1)).equal(
-                new Interval(new Date(2018, 1, 3), true, new Date(2018, 1, 4), true)));
+        assertIterableEquals(
+                List.of(
+                        closed(new Date(2018, 1, 1), new Date(2018, 1, 2)),
+                        closed(new Date(2018, 1, 3), new Date(2018, 1, 4))),
+                intervals);
     }
 
     @Test
     void expandPer2DaysIntervalOverload() {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer2DaysIntervalOverload"));
         Object value = results.forExpression("ExpandPer2DaysIntervalOverload").value();
-        assertEquals(2, ((List<?>) value).size());
-        assertTrue(new Date(2018, 1, 1).equal((Date) ((List<?>) value).get(0)));
-        assertTrue(new Date(2018, 1, 3).equal((Date) ((List<?>) value).get(1)));
+        var dates = (List<?>) value;
+        assertIterableEquals(List.of(new Date(2018, 1, 1), new Date(2018, 1, 3)), dates);
     }
 
     @Test
@@ -39,20 +36,16 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer1"));
         Object value = results.forExpression("ExpandPer1").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(3, intervals.size());
-        assertTrue(((Interval) intervals.get(0)).equal(
-                new Interval(new BigDecimal("10.0"), true, new BigDecimal("10.0"), true)));
-        assertTrue(((Interval) intervals.get(1)).equal(
-                new Interval(new BigDecimal("11.0"), true, new BigDecimal("11.0"), true)));
-        assertTrue(((Interval) intervals.get(2)).equal(
-                new Interval(new BigDecimal("12.0"), true, new BigDecimal("12.0"), true)));
+        assertIterableEquals(
+                List.of(closedDecimal("10", "10"), closedDecimal("11", "11"), closedDecimal("12", "12")), intervals);
     }
 
     @Test
     void expandPer1IntervalOverload() {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer1IntervalOverload"));
         Object value = results.forExpression("ExpandPer1IntervalOverload").value();
-        assertEquals(List.of(new BigDecimal("10.0"), new BigDecimal("11.0"), new BigDecimal("12.0")), value);
+        assertIterableEquals(
+                List.of(new BigDecimal("10"), new BigDecimal("11"), new BigDecimal("12")), (List<?>) value);
     }
 
     @Test
@@ -60,20 +53,16 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer1Open"));
         Object value = results.forExpression("ExpandPer1Open").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(3, intervals.size());
-        assertTrue(((Interval) intervals.get(0)).equal(
-                new Interval(new BigDecimal("10.0"), true, new BigDecimal("10.0"), true)));
-        assertTrue(((Interval) intervals.get(1)).equal(
-                new Interval(new BigDecimal("11.0"), true, new BigDecimal("11.0"), true)));
-        assertTrue(((Interval) intervals.get(2)).equal(
-                new Interval(new BigDecimal("12.0"), true, new BigDecimal("12.0"), true)));
+        assertIterableEquals(
+                List.of(closedDecimal("10", "10"), closedDecimal("11", "11"), closedDecimal("12", "12")), intervals);
     }
 
     @Test
     void expandPer1OpenIntervalOverload() {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer1OpenIntervalOverload"));
         Object value = results.forExpression("ExpandPer1OpenIntervalOverload").value();
-        assertEquals(List.of(new BigDecimal("10.0"), new BigDecimal("11.0"), new BigDecimal("12.0")), value);
+        assertIterableEquals(
+                List.of(new BigDecimal("10"), new BigDecimal("11"), new BigDecimal("12")), (List<?>) value);
     }
 
     @Test
@@ -81,7 +70,7 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPerMinute"));
         Object value = results.forExpression("ExpandPerMinute").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(0, intervals.size());
+        assertIterableEquals(List.of(), intervals);
     }
 
     @Test
@@ -89,7 +78,7 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPerMinuteIntervalOverload"));
         Object value = results.forExpression("ExpandPerMinuteIntervalOverload").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(0, intervals.size());
+        assertIterableEquals(List.of(), intervals);
     }
 
     @Test
@@ -97,12 +86,19 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer0D1"));
         Object value = results.forExpression("ExpandPer0D1").value();
         List<?> intervals = (List<?>) value;
-        assertEquals(10, intervals.size());
-        for (int i = 0; i < 10; i++) {
-            BigDecimal v = new BigDecimal("10." + i);
-            assertTrue(((Interval) intervals.get(i)).equal(
-                    new Interval(v, true, v, true)));
-        }
+        assertIterableEquals(
+                List.of(
+                        closedDecimal("10.0", "10.0"),
+                        closedDecimal("10.1", "10.1"),
+                        closedDecimal("10.2", "10.2"),
+                        closedDecimal("10.3", "10.3"),
+                        closedDecimal("10.4", "10.4"),
+                        closedDecimal("10.5", "10.5"),
+                        closedDecimal("10.6", "10.6"),
+                        closedDecimal("10.7", "10.7"),
+                        closedDecimal("10.8", "10.8"),
+                        closedDecimal("10.9", "10.9")),
+                intervals);
     }
 
     @Test
@@ -110,10 +106,26 @@ class TestExpand extends CqlTestBase {
         var results = engine.evaluate(toElmIdentifier("TestExpand"), Set.of("ExpandPer0D1IntervalOverload"));
         Object value = results.forExpression("ExpandPer0D1IntervalOverload").value();
         List<?> points = (List<?>) value;
-        assertEquals(10, points.size());
-        for (int i = 0; i < 10; i++) {
-            BigDecimal v = new BigDecimal("10." + i);
-            assertEquals(v, points.get(i));
-        }
+        assertIterableEquals(
+                List.of(
+                        new BigDecimal("10.0"),
+                        new BigDecimal("10.1"),
+                        new BigDecimal("10.2"),
+                        new BigDecimal("10.3"),
+                        new BigDecimal("10.4"),
+                        new BigDecimal("10.5"),
+                        new BigDecimal("10.6"),
+                        new BigDecimal("10.7"),
+                        new BigDecimal("10.8"),
+                        new BigDecimal("10.9")),
+                points);
+    }
+
+    private static Interval closed(Object start, Object end) {
+        return new Interval(start, true, end, true);
+    }
+
+    private static Interval closedDecimal(String start, String end) {
+        return new Interval(new BigDecimal(start), true, new BigDecimal(end), true);
     }
 }
