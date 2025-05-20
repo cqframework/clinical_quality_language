@@ -56,14 +56,21 @@ public class ExpandEvaluator {
 
         var scale = Math.max(0, per.scale());
         start = start.setScale(scale, RoundingMode.DOWN);
-        end = end.setScale(scale, RoundingMode.DOWN);
+        // If the per is more precise than the end, we'll use the
+        // successor of the end to ensure we don't miss
+        // the last interval.
+        boolean isPerMorePrecise = per.scale() > end.scale();
+        if (isPerMorePrecise) {
+            end = successor(end);
+        }
 
+        end = end.setScale(scale, RoundingMode.DOWN);
         if (start.compareTo(end) == 0) {
             expansions.add(new Interval(start, true, end, true));
             return expansions;
         }
 
-        for (BigDecimal i = start; i.compareTo(end) <= 0; i = i.add(per)) {
+        for (BigDecimal i = start; isPerMorePrecise ? i.compareTo(end) < 0 : i.compareTo(end) <= 0; i = i.add(per)) {
             expansions.add(new Interval(i, true, i, true));
         }
 
@@ -139,8 +146,7 @@ public class ExpandEvaluator {
         intervals.sort(new CqlList().valueSort);
 
         // At this point, we have a list of intervals that are all the same type, no
-        // nulls,
-        // no overlaps, sorted by start, and no null endpoints.
+        // nulls, no overlaps, sorted by start, and no null endpoints.
         return intervals.stream()
                 .map(i -> expandInterval(i, localPer, state))
                 .flatMap(List::stream)
@@ -154,6 +160,33 @@ public class ExpandEvaluator {
         // rather than the interval
         var resultingIntervals = expand(Collections.singletonList(interval), per, state);
         return resultingIntervals.stream().map(Interval::getStart).collect(toList());
+    }
+
+    private static List<Interval> expandDecimalInterval(Interval interval, Quantity per) {
+        Objects.requireNonNull(interval, "start cannot be null");
+        Objects.requireNonNull(interval.getStart(), "start cannont be null");
+        Objects.requireNonNull(interval.getEnd(), "end cannot be null");
+        Objects.requireNonNull(per, "per can not be null");
+        if (!(interval.getStart() instanceof BigDecimal) || !(interval.getEnd() instanceof BigDecimal)) {
+            throw new IllegalArgumentException("non-integer interval");
+        }
+
+        var start =
+                interval.getLowClosed() ? (BigDecimal) interval.getLow() : predeccesor((BigDecimal) interval.getLow());
+        var end =
+                interval.getHighClosed() ? (BigDecimal) interval.getHigh() : successor((BigDecimal) interval.getHigh());
+
+        return expandClosedDecimalRange(start, end, per.getValue());
+    }
+
+    private static BigDecimal successor(BigDecimal decimal) {
+        var value = Math.max(0, decimal.scale());
+        return decimal.add(new BigDecimal("1").divide(new BigDecimal(10).pow(value)));
+    }
+
+    private static BigDecimal predeccesor(BigDecimal decimal) {
+        var value = Math.max(0, decimal.scale());
+        return decimal.add(new BigDecimal("1").divide(new BigDecimal(10).pow(value)));
     }
 
     private static List<Interval> expandIntegerInterval(Interval interval, Quantity per) {
@@ -189,8 +222,7 @@ public class ExpandEvaluator {
         if (interval.getStart() instanceof Integer && interval.getEnd() instanceof Integer) {
             return expandIntegerInterval(interval, per);
         } else if (interval.getStart() instanceof BigDecimal && interval.getEnd() instanceof BigDecimal) {
-            return expandClosedDecimalRange(
-                    ((BigDecimal) interval.getStart()), ((BigDecimal) interval.getEnd()), per.getValue());
+            return expandDecimalInterval(interval, per);
         } else if (interval.getStart() instanceof BaseTemporal && interval.getEnd() instanceof BaseTemporal) {
             return expandClosedTemporalRange((BaseTemporal) interval.getStart(), (BaseTemporal) interval.getEnd(), per);
         }
