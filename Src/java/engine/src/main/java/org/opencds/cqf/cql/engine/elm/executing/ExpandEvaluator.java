@@ -1,7 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import static java.util.stream.Collectors.toList;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -12,6 +15,7 @@ import org.opencds.cqf.cql.engine.runtime.*;
 /*
 
 expand(argument List<Interval<T>>, per Quantity) List<Interval<T>>
+expand(argument Interval<T>, per Quantity) List<T>
 
 The expand operator returns the set of intervals of width per for all the intervals in the input.
 
@@ -30,6 +34,7 @@ If the list argument is null, the result is null.
 If the per argument is null, the default unit interval for the point type of the intervals involved will be used
     (i.e. the interval that has a width equal to the result of the successor function for the point type).
 
+The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 
 public class ExpandEvaluator {
@@ -123,7 +128,7 @@ public class ExpandEvaluator {
         return null;
     }
 
-    public static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
+    private static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
         if (list == null) {
             return null;
         }
@@ -179,5 +184,31 @@ public class ExpandEvaluator {
         }
 
         return set.isEmpty() ? new ArrayList<>() : new ArrayList<>(set);
+    }
+
+    private static Object expand(Interval interval, Quantity per, State state) {
+        return expand(Collections.singletonList(interval), per, state).stream()
+                .map(x -> x.getStart())
+                .collect(toList());
+    }
+
+    public static Object expand(Object listOrInterval, Quantity per, State state) {
+        if (listOrInterval == null) {
+            return null;
+        }
+
+        if (listOrInterval instanceof Interval) {
+            return expand((Interval) listOrInterval, per, state);
+        } else if (listOrInterval instanceof List) {
+            @SuppressWarnings("unchecked")
+            var list = (List<Interval>) listOrInterval;
+            return expand(list, per, state);
+        }
+
+        throw new InvalidOperatorArgument(
+                "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                String.format(
+                        "Expand(%s, %s)",
+                        listOrInterval.getClass().getName(), per.getClass().getName()));
     }
 }
