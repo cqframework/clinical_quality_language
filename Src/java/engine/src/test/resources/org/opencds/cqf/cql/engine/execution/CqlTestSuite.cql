@@ -1107,7 +1107,7 @@ define FromDateTime_dateTimeToStr: convert @2015-01-02T12:01:02.321-06:00 to Str
 define FromDateTime_dateTimeToDate: convert @2015-01-02T12:01:02.321-06:00 to Date
 define FromDateTime_dateTimeToDateTime: convert @2015-01-02T12:01:02.321-06:00 to DateTime
 
-define test_FromDateTime_dateTimeToStr: TestMessage(FromDateTime_dateTimeToStr = '2015-01-02T12:01:02.321', 'FromDateTime_dateTimeToStr', '2015-01-02T12:01:02.321', FromDateTime_dateTimeToStr)
+define test_FromDateTime_dateTimeToStr: TestMessage(FromDateTime_dateTimeToStr = '2015-01-02T12:01:02.321-06:00', 'FromDateTime_dateTimeToStr', '2015-01-02T12:01:02.321', FromDateTime_dateTimeToStr)
 define test_FromDateTime_dateTimeToDate: TestMessage(FromDateTime_dateTimeToDate = Date(2015, 1, 2), 'FromDateTime_dateTimeToDate', toString(Date(2015, 1, 2)), toString(FromDateTime_dateTimeToDate))
 define test_FromDateTime_dateTimeToDateTime: TestMessage(FromDateTime_dateTimeToDateTime = @2015-01-02T12:01:02.321-06:00, 'FromDateTime_dateTimeToDateTime', toString(@2015-01-02T12:01:02.321-06:00), toString(FromDateTime_dateTimeToDateTime))
 

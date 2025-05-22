@@ -270,10 +270,12 @@ class CqlStringOperatorsTest extends CqlTestBase {
         assertThat(value, is("2000-01-01"));
 
         value = results.forExpression("DateTimeToString2").value();
-        assertThat(value, is("2000-01-01T15:25:25.300"));
+        // The DateTime uses the local timezone. Strip that for the assertion.
+        final var withoutTimezone = ((String) value).replaceAll("[+-][0-9]{2}:[0-9]{2}$", "");
+        assertThat(withoutTimezone, is("2000-01-01T15:25:25.300"));
 
         value = results.forExpression("DateTimeToString3").value();
-        assertThat(value, is("2000-01-01T08:25:25.300"));
+        assertThat(value, is("2000-01-01T08:25:25.300-07:00"));
 
         value = results.forExpression("TimeToString1").value();
         assertThat(value, is("09:30:01.003"));
