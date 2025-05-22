@@ -43,7 +43,9 @@ public class PrecisionEvaluator {
         } else if (argument instanceof Date) {
             return argument.toString().replaceAll("-", "").length();
         } else if (argument instanceof DateTime) {
-            return argument.toString().replaceAll("[T.:-]", "").length();
+            return argument.toString()
+                    .replaceAll("(:?[T.:-]|[+-][0-9]{2}:[0-9]{2}$)", "")
+                    .length();
         } else if (argument instanceof Time) {
             return argument.toString().replaceAll("[T.:]", "").length();
         }
