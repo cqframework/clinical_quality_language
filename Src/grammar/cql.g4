@@ -467,6 +467,10 @@ literal
     | ratio                                                 #ratioLiteral
     ;
 
+externalConstant
+        : '%' ( keywordIdentifier | identifier | STRING )
+        ;
+
 intervalSelector
     : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
     //expression ( '..' | '*.' | '.*' | '**' ) expression;
