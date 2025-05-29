@@ -59,16 +59,13 @@ public class ToDateTimeEvaluator {
         }
 
         if (operand instanceof Date) {
+            Date date = (Date) operand;
             return new DateTime(
                     TemporalHelper.zoneToOffset(
                             state.getEvaluationZonedDateTime().getOffset()),
-                    ((Date) operand).getDate().getYear(),
-                    ((Date) operand).getDate().getMonthValue(),
-                    ((Date) operand).getDate().getDayOfMonth(),
-                    0,
-                    0,
-                    0,
-                    0);
+                    date.getDate().getYear(),
+                    date.getDate().getMonthValue(),
+                    date.getDate().getDayOfMonth());
         }
 
         throw new InvalidOperatorArgument(
