@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.fhir.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -426,6 +428,25 @@ class TestR4ModelResolver {
         patient.setId(expectedId);
 
         assertEquals(resolver.resolveId(patient), expectedId);
+    }
+
+    @Test
+    void resolveBirthDateExtensionPatient() throws ParseException {
+        final var resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
+
+        final var patient = new Patient();
+        var birthDate = org.apache.commons.lang3.time.DateUtils.parseDate("1974-12-25", "yyyy-dd-MM");
+        patient.setBirthDate(birthDate);
+        patient.getBirthDateElement()
+                .addExtension(
+                        "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+                        new DateTimeType("1974-12-25T14:35:45-05:00"));
+        var result = resolver.resolvePath(patient, "birthDate");
+        assertInstanceOf(DateType.class, result);
+        result = resolver.resolvePath(patient, "birthDate.extension");
+        assertInstanceOf(List.class, result);
+        assertEquals(1, ((List<?>) result).size());
+        assertInstanceOf(Extension.class, ((List<?>) result).get(0));
     }
 
     @Test
