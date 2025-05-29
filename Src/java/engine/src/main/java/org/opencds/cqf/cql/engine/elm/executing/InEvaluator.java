@@ -116,10 +116,11 @@ public class InEvaluator {
                 return true;
             }
 
-            if (state.getEngineOptions().contains(CqlEngine.Options.DisableEquivalentIn)) {
-                isEqual = EqualEvaluator.equal(left, element, state);
-            } else {
+            if (state.getEngineOptions().contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
                 isEqual = EquivalentEvaluator.equivalent(left, element, state);
+
+            } else {
+                isEqual = EqualEvaluator.equal(left, element, state);
             }
 
             if (Boolean.TRUE.equals(isEqual)) {

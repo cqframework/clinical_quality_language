@@ -10,7 +10,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 /**
  * There are at least two types of data that need to be cached, some that is context dependent, like expression results
  * (and thus can be invalidated during the course of evaluation) and some that is not, like Function resolutions (and thus
- * can be cache for the entire duration of the evaluation).
+ * can be cached for the entire duration of the evaluation).
  */
 public class Cache {
 

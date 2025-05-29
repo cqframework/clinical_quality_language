@@ -3249,11 +3249,11 @@ public class LibraryBuilder {
      *
      * Default scope is {@link IdentifierScope#LOCAL}
      *
-     * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
-     * @param trackable  The construct trackable, for example {@link ExpressionRef}.
+     * @param identifierRef An identifierRef representing the identifier and a trackback to its definition
+     * @param trackable  The element identified by the identifier, for example {@link ExpressionRef}.
      */
-    void pushIdentifier(String identifier, Trackable trackable) {
-        pushIdentifier(identifier, trackable, IdentifierScope.LOCAL);
+    void pushIdentifier(IdentifierRef identifierRef, Trackable trackable) {
+        pushIdentifier(identifierRef, trackable, IdentifierScope.LOCAL);
     }
 
     /**
@@ -3269,11 +3269,12 @@ public class LibraryBuilder {
      * <p/>
      * Also, special case function overloads so that only a single overloaded function name is taken into account.
      *
-     * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
-     * @param trackable  The construct trackable, for example {@link ExpressionRef}.
+     * @param identifierRef An identifierRef representing the identifier and a trackback to its definition
+     * @param trackable  The element identified by the identifier, for example {@link ExpressionRef}.
      * @param scope the scope of the current identifier
      */
-    void pushIdentifier(String identifier, Trackable trackable, IdentifierScope scope) {
+    void pushIdentifier(IdentifierRef identifierRef, Trackable trackable, IdentifierScope scope) {
+        String identifier = identifierRef.getName();
         var localMatch = !localIdentifierStack.isEmpty()
                 ? findMatchingIdentifierContext(localIdentifierStack.peek(), identifier)
                 : Optional.<IdentifierContext>empty();
@@ -3286,7 +3287,8 @@ public class LibraryBuilder {
                     matchedContext.getTrackableSubclass().equals(FunctionDef.class) && trackable instanceof FunctionDef;
 
             if (!matchedOnFunctionOverloads) {
-                reportWarning(resolveWarningMessage(matchedContext.getIdentifier(), identifier, trackable), trackable);
+                reportWarning(
+                        resolveWarningMessage(matchedContext.getIdentifier(), identifier, trackable), identifierRef);
             }
         }
 
@@ -3294,9 +3296,9 @@ public class LibraryBuilder {
             final Class<? extends Trackable> trackableOrNull = trackable != null ? trackable.getClass() : null;
             // Sometimes the underlying Trackable doesn't resolve in the calling code
             if (scope == IdentifierScope.GLOBAL) {
-                globalIdentifiers.push(new IdentifierContext(identifier, trackableOrNull));
+                globalIdentifiers.push(new IdentifierContext(identifierRef, trackableOrNull));
             } else {
-                localIdentifierStack.peek().push(new IdentifierContext(identifier, trackableOrNull));
+                localIdentifierStack.peek().push(new IdentifierContext(identifierRef, trackableOrNull));
             }
         }
     }
@@ -3342,12 +3344,12 @@ public class LibraryBuilder {
 
         if (trackable instanceof Literal) {
             return String.format(
-                    "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead?",
+                    "String literal '%s' matches the identifier %s. Consider whether the identifier was intended instead.",
                     identifierParam, matchedIdentifier);
         }
 
         return String.format(
-                "%s identifier [%s] is hiding another identifier of the same name.", elementString, identifierParam);
+                "%s identifier %s is hiding another identifier of the same name.", elementString, identifierParam);
     }
 
     private class Scope {

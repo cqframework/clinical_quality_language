@@ -1,10 +1,16 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.Objects;
+
 public class Variable {
     private String name;
     private Object value;
     // for AliasEvaluator
     private boolean isList;
+
+    public Variable(String name) {
+        this.name = Objects.requireNonNull(name, "name can not be null");
+    }
 
     public void setIsList(boolean isList) {
         this.isList = isList;
@@ -16,15 +22,6 @@ public class Variable {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Variable withName(String name) {
-        setName(name);
-        return this;
     }
 
     public Object getValue() {
