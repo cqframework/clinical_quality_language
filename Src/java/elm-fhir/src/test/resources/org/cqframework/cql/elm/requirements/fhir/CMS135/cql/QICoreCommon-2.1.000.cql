@@ -1,16 +1,16 @@
 /*
-@update: JKR 2023-10-20 ->
-Added display names for DRCs that were missing them
-Updates to ToInterval and toInterval functions to add QICore.Timing to work with Observation.effective
-Updates to PrevalenceInterval and prevalenceInterval functions where the else clause open boundary ')' is changed to a closed boundary ']' so as to recognize condition abatement at the same point in time as the start of encounter as meeting 'overlap' criteria
+@update: JKR 2024-04-02 ->
+Check display code accuracy against source system
+Ensure all fluent functions are not referencing any deprecated functions.
+https://oncprojectracking.healthit.gov/support/browse/CQLIT-414
 */
 
 
-library QICoreCommon version '2.0.000'
+library QICoreCommon version '2.1.000'
 
 using QICore version '4.1.1'
 
-include FHIRHelpers version '4.3.000'
+include FHIRHelpers version '4.4.000'
 
 codesystem "LOINC": 'http://loinc.org'
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
@@ -24,7 +24,7 @@ codesystem "ConditionVerificationStatusCodes": 'http://terminology.hl7.org/CodeS
 codesystem "AllergyIntoleranceClinicalStatusCodes": 'http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical'
 codesystem "AllergyIntoleranceVerificationStatusCodes": 'http://terminology.hl7.org/CodeSystem/allergyintolerance-verification'
 codesystem "ObservationCategoryCodes": 'http://terminology.hl7.org/CodeSystem/observation-category'
-codesystem "USCoreObservationCategoryExtensionCodes": 'http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category'  
+codesystem "USCoreObservationCategoryExtensionCodes": 'http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category'
 codesystem "ConditionCategory": 'http://terminology.hl7.org/CodeSystem/condition-category'
 codesystem "USCoreConditionCategoryExtensionCodes": 'http://hl7.org/fhir/us/core/CodeSystem/condition-category'
 
@@ -45,7 +45,7 @@ code "inpatient non-acute": 'NONAC' from ActCode display 'inpatient non-acute'
 code "observation encounter": 'OBSENC' from ActCode display 'observation encounter'
 code "pre-admission": 'PRENC' from ActCode display 'pre-admission'
 code "short stay": 'SS' from ActCode display 'short stay'
-code "virtual": 'VR' from ActCode display 'VR'
+code "virtual": 'VR' from ActCode display 'Virtual'
 
 // Condition Category Codes
 code "problem-list-item": 'problem-list-item' from "ConditionCategory" display 'Problem List Item'
@@ -68,14 +68,14 @@ code "confirmed": 'confirmed' from ConditionVerificationStatusCodes display 'Con
 code "refuted": 'refuted' from ConditionVerificationStatusCodes display 'Refuted'
 code "entered-in-error": 'entered-in-error' from ConditionVerificationStatusCodes display 'Entered in Error'
 
-code "allergy-active": 'active' from "AllergyIntoleranceClinicalStatusCodes" display 'Allergy Active'
-code "allergy-inactive": 'inactive' from "AllergyIntoleranceClinicalStatusCodes" display 'Allergy Inactive'
-code "allergy-resolved": 'resolved' from "AllergyIntoleranceClinicalStatusCodes" display 'Allergy Resolved'
+code "allergy-active": 'active' from "AllergyIntoleranceClinicalStatusCodes" display 'Active'
+code "allergy-inactive": 'inactive' from "AllergyIntoleranceClinicalStatusCodes" display 'Inactive'
+code "allergy-resolved": 'resolved' from "AllergyIntoleranceClinicalStatusCodes" display 'Resolved'
 
 // Allergy/Intolerance Verification Status Codes - Consider value sets for these
-code "allergy-unconfirmed": 'unconfirmed' from AllergyIntoleranceVerificationStatusCodes display 'Allergy Unconfirmed'
-code "allergy-confirmed": 'confirmed' from AllergyIntoleranceVerificationStatusCodes display 'Allergy Confirmed'
-code "allergy-refuted": 'refuted' from AllergyIntoleranceVerificationStatusCodes display 'Allergy Refuted'
+code "allergy-unconfirmed": 'unconfirmed' from AllergyIntoleranceVerificationStatusCodes display 'Unconfirmed'
+code "allergy-confirmed": 'confirmed' from AllergyIntoleranceVerificationStatusCodes display 'Confirmed'
+code "allergy-refuted": 'refuted' from AllergyIntoleranceVerificationStatusCodes display 'Refuted'
 
 // MedicationRequest Category Codes
 code "Inpatient": 'inpatient' from "MedicationRequestCategory" display 'Inpatient'
@@ -90,7 +90,7 @@ code "CC": 'CC' from "Diagnosis Role" display 'Chief complaint'
 code "CM": 'CM' from "Diagnosis Role" display 'Comorbidity diagnosis'
 code "pre-op": 'pre-op' from "Diagnosis Role" display 'pre-op diagnosis'
 code "post-op": 'post-op' from "Diagnosis Role" display 'post-op diagnosis'
-code "billing": 'billing' from "Diagnosis Role" display 'billing diagnosis'
+code "billing": 'billing' from "Diagnosis Role" display 'Billing'
 
 // Observation Category Codes
 code "social-history": 'social-history' from "ObservationCategoryCodes" display 'Social History'
@@ -102,7 +102,7 @@ code "survey": 'survey' from "ObservationCategoryCodes" display 'Survey'
 code "exam": 'exam' from "ObservationCategoryCodes" display 'Exam'
 code "therapy": 'therapy' from "ObservationCategoryCodes" display 'Therapy'
 code "activity": 'activity' from "ObservationCategoryCodes" display 'Activity'
-code "clinical-test": 'clinical-test' from "USCoreObservationCategoryExtensionCodes" display 'Clinical Test'
+
 
 context Patient
 
@@ -228,13 +228,7 @@ define fluent function isActivity(observation Observation):
     where C ~ "activity"
   )
 
-/*
-@description: Returns true if the given observation is a clinical test result
-*/
-define fluent function isClinicalTest(observation Observation):
-  exists (observation.category C
-    where C ~ "clinical-test"
-  )
+
 
 /*
 @description: Returns true if the given MedicationRequest has a category of Community
@@ -405,7 +399,7 @@ define fluent function abatementInterval(condition Condition):
 /*
 @description: Returns an interval representing the normalized prevalence period of a given Condition.
 @comment: Uses the ToInterval and ToAbatementInterval functions to determine the widest potential interval from
-onset to abatement as specified in the given Condition. If the condition is active, or has an abatement date the resulting 
+onset to abatement as specified in the given Condition. If the condition is active, or has an abatement date the resulting
 interval will have a closed ending boundary. Otherwise, the resulting interval will have an open ending boundary.
 @deprecated: This function is deprecated. Use the `prevalenceInterval()` fluent function instead
 */
@@ -424,7 +418,7 @@ else
 /*
 @description: Returns an interval representing the normalized prevalence period of a given Condition.
 @comment: Uses the ToInterval and ToAbatementInterval functions to determine the widest potential interval from
-onset to abatement as specified in the given Condition. If the condition is active, or has an abatement date the resulting 
+onset to abatement as specified in the given Condition. If the condition is active, or has an abatement date the resulting
 interval will have a closed ending boundary. Otherwise, the resulting interval will have an open ending boundary.
 */
 define fluent function prevalenceInterval(condition Condition):
@@ -433,11 +427,11 @@ if condition.clinicalStatus ~ "active"
   or condition.clinicalStatus ~ "relapse" then
   Interval[start of condition.onset.toInterval(), end of condition.abatementInterval()]
 else
-    (end of ToAbatementInterval(condition)) abatementDate
+    (end of condition.abatementInterval()) abatementDate
     return if abatementDate is null then
-      Interval[start of ToInterval(condition.onset), abatementDate)
+      Interval[start of condition.onset.toInterval(), abatementDate)
     else
-      Interval[start of ToInterval(condition.onset), abatementDate]
+      Interval[start of condition.onset.toInterval(), abatementDate]
 
 /*
 @description: Returns the tail of the given uri (i.e. everything after the last slash in the URI).

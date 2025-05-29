@@ -1,6 +1,5 @@
 {
   "resourceType": "Library",
-  "name": "EffectiveDataRequirements",
   "extension": [ {
     "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
     "valueCoding": {
@@ -16,6 +15,7 @@
       "display": "Ambulatory"
     }
   } ],
+  "name": "EffectiveDataRequirements",
   "status": "active",
   "type": {
     "coding": [ {
@@ -24,6 +24,10 @@
     } ]
   },
   "relatedArtifact": [ {
+    "type": "depends-on",
+    "display": "QICore model information",
+    "resource": "http://hl7.org/fhir/Library/QICore-ModelInfo"
+  }, {
     "type": "depends-on",
     "display": "Library FHIRHelpers",
     "resource": "http://ecqi.healthit.gov/ecqms/Library/FHIRHelpers|4.1.000"

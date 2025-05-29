@@ -10,6 +10,10 @@
   },
   "relatedArtifact": [ {
     "type": "depends-on",
+    "display": "QICore model information",
+    "resource": "http://hl7.org/fhir/Library/QICore-ModelInfo"
+  }, {
+    "type": "depends-on",
     "display": "Library SDE",
     "resource": "http://ecqi.healthit.gov/ecqms/Library/SupplementalDataElements|3.1.000"
   }, {

@@ -1,9 +1,9 @@
-library AHAOverall version '2.9.000'
+library AHAOverall version '2.8.000'
 
 using QICore version '4.1.1'
 
-include FHIRHelpers version '4.3.000' called FHIRHelpers
-include QICoreCommon version '2.0.000' called QICoreCommon
+include FHIRHelpers version '4.4.000' called FHIRHelpers
+include QICoreCommon version '2.1.000' called QICoreCommon
 
 codesystem "SNOMEDCT": 'http://snomed.info/sct' 
 

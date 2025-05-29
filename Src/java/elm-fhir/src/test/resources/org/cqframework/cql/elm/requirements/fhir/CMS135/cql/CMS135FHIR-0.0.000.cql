@@ -1,11 +1,11 @@
-library CMS135FHIR version '0.0.000'
+library DupCMS135FHIRLib version '0.0.000'
 
 using QICore version '4.1.1'
 
-include FHIRHelpers version '4.3.000' called FHIRHelpers
-include SupplementalDataElements version '3.4.000' called SDE
-include QICoreCommon version '2.0.000' called QICoreCommon
-include AHAOverall version '2.9.000' called AHA
+include FHIRHelpers version '4.4.000' called FHIRHelpers
+include SupplementalDataElements version '3.5.000' called SDE
+include QICoreCommon version '2.1.000' called QICoreCommon
+include AHAOverall version '2.8.000' called AHA
 
 codesystem "SNOMEDCT": 'http://snomed.info/sct'
 
@@ -29,91 +29,92 @@ parameter "Measurement Period" Interval<DateTime>
 context Patient
 
 define "Initial Population":
-  AHA."Is Adults With Two Qualifying Outpatient Encounters and One Heart Failure Outpatient Encounter During the Measurement Period"
+    AHA."Is Adults With Two Qualifying Outpatient Encounters and One Heart Failure Outpatient Encounter During the Measurement Period"
 
 define "Denominator":
-  "Initial Population"
-    and exists AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD"
+    "Initial Population"
+      and exists AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD"
 
 define "Denominator Exclusions":
-  AHA."Has Heart Transplant"
-    or AHA."Has Heart Transplant Complications"
-    or AHA."Has Left Ventricular Assist Device"
-    or AHA."Has Left Ventricular Assist Device Complications"
+    AHA."Has Heart Transplant"
+      or AHA."Has Heart Transplant Complications"
+      or AHA."Has Left Ventricular Assist Device"
+      or AHA."Has Left Ventricular Assist Device Complications"
 
 define "Numerator":
-  "Has ACEI or ARB or ARNI Ordered"
-    or "Is Currently Taking ACEI or ARB or ARNI"
-
-/*
-@commentedOut: "Has Medical or Patient Reason for Not Ordering ACEI or ARB or ARNI"
-@commentedOutReason: Negation issue noted in https://github.com/cqframework/cql-execution/issues/296, which is tied to https://oncprojectracking.healthit.gov/support/browse/BONNIEMAT-1455
-*/
-
+    "Has ACEI or ARB or ARNI Ordered"
+      or "Is Currently Taking ACEI or ARB or ARNI"
 
 define "Denominator Exceptions":
+    //Issue https://github.com/cqframework/cql-execution/issues/296 tied to https://oncprojectracking.healthit.gov/support/browse/BONNIEMAT-1455
     //"Has Medical or Patient Reason for Not Ordering ACEI or ARB or ARNI" or
-  
-  "Has Allergy or Intolerance to ACEI or ARB or ARNI Ingredient"
-    or "Has Diagnosis of Allergy or Intolerance to ACEI or ARB"
-    or "Has Diagnosis of Pregnancy"
-    or "Has Diagnosis of Renal Failure Due to ACEI"
+    "Has Allergy or Intolerance to ACEI or ARB or ARNI Ingredient"
+      or "Has Diagnosis of Allergy or Intolerance to ACEI or ARB"
+      or "Has Diagnosis of Pregnancy"
+      or "Has Diagnosis of Renal Failure Due to ACEI"
 
 define "SDE Ethnicity":
-  SDE."SDE Ethnicity"
+    SDE."SDE Ethnicity"
 
 define "SDE Payer":
-  SDE."SDE Payer"
+    SDE."SDE Payer"
 
 define "SDE Race":
-  SDE."SDE Race"
+    SDE."SDE Race"
 
 define "SDE Sex":
-  SDE."SDE Sex"
+    SDE."SDE Sex"
 
 define "Has ACEI or ARB or ARNI Ordered":
-  exists ( [MedicationRequest: medication in "ACE Inhibitor or ARB or ARNI"] ACEIOrARBOrARNIOrdered
-      where ACEIOrARBOrARNIOrdered.isOrderedDuringHeartFailureOutpatientEncounter ( )
-  )
+  exists (
+            [MedicationRequest: medication in "ACE Inhibitor or ARB or ARNI"] ACEIOrARBOrARNIOrdered
+              where ACEIOrARBOrARNIOrdered.isOrderedDuringHeartFailureOutpatientEncounter()
+           )
 
 define "Has Allergy or Intolerance to ACEI or ARB or ARNI Ingredient":
-  exists ( ( [AllergyIntolerance: "ACE Inhibitor or ARB or ARNI Ingredient"]
-      union [AllergyIntolerance: "Substance with angiotensin-converting enzyme inhibitor mechanism of action (substance)"]
-      union [AllergyIntolerance: "Substance with angiotensin II receptor antagonist mechanism of action (substance)"]
-      union [AllergyIntolerance: "Substance with neprilysin inhibitor mechanism of action (substance)"] ) ACEIOrARBOrARNIAllergyIntolerance
-      where ACEIOrARBOrARNIAllergyIntolerance.overlapsAfterHeartFailureOutpatientEncounter ( )
-  )
+  exists (
+          ( [AllergyIntolerance: "ACE Inhibitor or ARB or ARNI Ingredient"]
+             union [AllergyIntolerance: "Substance with angiotensin-converting enzyme inhibitor mechanism of action (substance)"]
+             union [AllergyIntolerance: "Substance with angiotensin II receptor antagonist mechanism of action (substance)"]
+             union [AllergyIntolerance: "Substance with neprilysin inhibitor mechanism of action (substance)"] ) ACEIOrARBOrARNIAllergyIntolerance
+              where ACEIOrARBOrARNIAllergyIntolerance.overlapsAfterHeartFailureOutpatientEncounter()
+            )
 
 define "Has Diagnosis of Allergy or Intolerance to ACEI or ARB":
-  exists ( ( ["Condition": "Allergy to ACE Inhibitor or ARB"]
-      union ["Condition": "Intolerance to ACE Inhibitor or ARB"] ) ACEIOrARBAllergyOrIntoleranceDiagnosis
-      where ACEIOrARBAllergyOrIntoleranceDiagnosis.overlapsAfterHeartFailureOutpatientEncounter ( )
-  )
+    exists (
+            ( ["Condition": "Allergy to ACE Inhibitor or ARB"]
+               union ["Condition": "Intolerance to ACE Inhibitor or ARB"] ) ACEIOrARBAllergyOrIntoleranceDiagnosis
+                where ACEIOrARBAllergyOrIntoleranceDiagnosis.overlapsAfterHeartFailureOutpatientEncounter()
+           )
 
 define "Has Diagnosis of Pregnancy":
-  exists ( [Condition: "Pregnancy"] PregnancyDiagnosis
-      with AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-        such that PregnancyDiagnosis.prevalenceInterval ( ) starts 9 months or less before or on start of ModerateOrSevereLVSDHFOutpatientEncounter.period
-  )
+    exists (
+            [Condition: "Pregnancy"] PregnancyDiagnosis
+              with AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
+                such that PregnancyDiagnosis.prevalenceInterval() starts 9 months or less before or on start of ModerateOrSevereLVSDHFOutpatientEncounter.period
+           )
 
 define "Has Diagnosis of Renal Failure Due to ACEI":
-  exists ( [Condition: "Acute renal failure caused by angiotensin-converting-enzyme inhibitor (disorder)"] RenalFailureDueToACEI
-      where RenalFailureDueToACEI.overlapsHeartFailureOutpatientEncounter ( )
-  )
+    exists (
+            [Condition: "Acute renal failure caused by angiotensin-converting-enzyme inhibitor (disorder)"] RenalFailureDueToACEI
+              where RenalFailureDueToACEI.overlapsHeartFailureOutpatientEncounter()
+           )
 
 define "Has Medical or Patient Reason for Not Ordering ACEI or ARB or ARNI":
-  exists ( [MedicationNotRequested: medication in "ACE Inhibitor or ARB or ARNI"] NoACEIOrARBOrARNIOrdered
-      with AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
-        such that NoACEIOrARBOrARNIOrdered.authoredOn during day of ModerateOrSevereLVSDHFOutpatientEncounter.period
-      where NoACEIOrARBOrARNIOrdered.status = 'completed'
-        and NoACEIOrARBOrARNIOrdered.intent in { 'order', 'original-order', 'reflex-order', 'filler-order', 'instance-order' }
-        and ( NoACEIOrARBOrARNIOrdered.reasonCode in "Medical Reason"
-            or NoACEIOrARBOrARNIOrdered.reasonCode in "Patient Reason"
-            or NoACEIOrARBOrARNIOrdered.reasonCode in "Patient Reason for ACE Inhibitor or ARB Decline"
-        )
-  )
+  exists (
+          [MedicationNotRequested: medication in "ACE Inhibitor or ARB or ARNI"] NoACEIOrARBOrARNIOrdered
+            with AHA."Heart Failure Outpatient Encounter with History of Moderate or Severe LVSD" ModerateOrSevereLVSDHFOutpatientEncounter
+              such that NoACEIOrARBOrARNIOrdered.authoredOn during day of ModerateOrSevereLVSDHFOutpatientEncounter.period
+            where NoACEIOrARBOrARNIOrdered.status = 'completed'
+              and NoACEIOrARBOrARNIOrdered.intent in { 'order', 'original-order', 'reflex-order', 'filler-order', 'instance-order' }
+              and ( NoACEIOrARBOrARNIOrdered.reasonCode in "Medical Reason"
+                     or NoACEIOrARBOrARNIOrdered.reasonCode in "Patient Reason"
+                     or NoACEIOrARBOrARNIOrdered.reasonCode in "Patient Reason for ACE Inhibitor or ARB Decline"
+                   )
+            )
 
 define "Is Currently Taking ACEI or ARB or ARNI":
-  exists ( [MedicationRequest: medication in "ACE Inhibitor or ARB or ARNI"] ActiveACEIOrARBOrARNI
-      where ActiveACEIOrARBOrARNI.overlapsAfterHeartFailureOutpatientEncounter ( )
-  )
+  exists (
+          [MedicationRequest: medication in "ACE Inhibitor or ARB or ARNI"] ActiveACEIOrARBOrARNI
+            where ActiveACEIOrARBOrARNI.overlapsAfterHeartFailureOutpatientEncounter()
+          )
