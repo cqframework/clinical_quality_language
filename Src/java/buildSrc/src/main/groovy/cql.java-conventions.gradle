@@ -13,7 +13,7 @@ java {
 }
 
 compileJava {
-    options.release = 11
+    options.release = 17
 }
 
 repositories {
