@@ -108,6 +108,11 @@
 				<xs:documentation>If present, the name of an input file containing input data for the test.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="context" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>If present, a FHIRPath expression specifying the context within the input data for the test (i.e. the starting node for the test expression)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="predicate" type="xs:boolean">
 			<xs:annotation>
 				<xs:documentation>True if this test represents a predicate.</xs:documentation>
