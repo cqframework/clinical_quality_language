@@ -28,6 +28,7 @@ import org.hl7.fhir.r5.model.MarkdownType;
 import org.hl7.fhir.r5.model.MoneyQuantity;
 import org.hl7.fhir.r5.model.OidType;
 import org.hl7.fhir.r5.model.PositiveIntType;
+import org.hl7.fhir.r5.model.PrimitiveType;
 import org.hl7.fhir.r5.model.Quantity;
 import org.hl7.fhir.r5.model.Resource;
 import org.hl7.fhir.r5.model.SimpleQuantity;
@@ -101,9 +102,14 @@ public class R5FhirModelResolver
     @Override
     protected Object resolveProperty(Object target, String path) {
         // This is kind of a hack to get around contained resources - HAPI doesn't have
-        // ResourceContainer type for STU3
+        // ResourceContainer type for R5
         if (target instanceof Resource && ((Resource) target).fhirType().equals(path)) {
             return target;
+        }
+
+        // Account for extensions on primitives
+        if (target instanceof PrimitiveType && path.equals("extension")) {
+            return ((PrimitiveType<?>) target).getExtension();
         }
 
         return super.resolveProperty(target, path);
