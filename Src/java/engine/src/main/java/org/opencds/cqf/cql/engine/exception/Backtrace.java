@@ -162,12 +162,12 @@ public class Backtrace {
         final List<Variable> localVariables = new LinkedList<>();
         for (State.ActivationFrame frame : stack) {
             if (frame == definitionFrame) {
-                final Set<String> parameterNames;
+                final List<String> parameterNames;
                 if (containingDefinition instanceof FunctionDef) {
                     parameterNames = ((FunctionDef) containingDefinition)
-                            .getOperand().stream().map(OperandDef::getName).collect(Collectors.toSet());
+                            .getOperand().stream().map(OperandDef::getName).collect(Collectors.toList());
                 } else {
-                    parameterNames = new HashSet<>();
+                    parameterNames = List.of();
                 }
                 frame.variables.forEach(variable -> {
                     if (parameterNames.contains(variable.getName())) {
@@ -176,6 +176,7 @@ public class Backtrace {
                         localVariables.add(variable);
                     }
                 });
+                arguments.sort(Comparator.comparing(argument -> parameterNames.indexOf(argument.getName())));
                 break;
             } else {
                 localVariables.addAll(frame.variables);
