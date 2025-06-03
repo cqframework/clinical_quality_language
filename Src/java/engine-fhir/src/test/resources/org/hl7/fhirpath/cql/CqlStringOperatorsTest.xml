@@ -346,7 +346,8 @@
 			<output>'2000-01-01'</output>
 		</test>
 		<test name="DateTimeToString2">
-			<expression>ToString(DateTime(2000, 1, 1, 15, 25, 25, 300))</expression>
+			<!-- Must string timezone offset indicator from the result since the DateTime value uses the local timezone -->
+			<expression>ToString(DateTime(2000, 1, 1, 15, 25, 25, 300)).substring(0,23)</expression>
 			<output>'2000-01-01T15:25:25.300'</output>
 		</test>
 		<test name="DateTimeToString3">

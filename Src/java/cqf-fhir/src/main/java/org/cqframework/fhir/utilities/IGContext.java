@@ -12,8 +12,8 @@ import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.model.ImplementationGuide;
+import org.hl7.fhir.utilities.FileUtilities;
 import org.hl7.fhir.utilities.IniFile;
-import org.hl7.fhir.utilities.TextFile;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
 import org.slf4j.LoggerFactory;
@@ -135,7 +135,7 @@ public class IGContext {
     public void initializeFromIni(String iniFile) {
         try {
             IniFile ini = new IniFile(new File(iniFile).getAbsolutePath());
-            String iniDir = Utilities.getDirectoryForFile(ini.getFileName());
+            String iniDir = FileUtilities.getDirectoryForFile(ini.getFileName());
             String igPath = ini.getStringProperty("IG", "ig");
             String specifiedFhirVersion = ini.getStringProperty("IG", "fhir-version");
             if (specifiedFhirVersion == null || specifiedFhirVersion == "") {
@@ -162,7 +162,7 @@ public class IGContext {
                     sourceIg = (ImplementationGuide) versionConvertor_40_50.convertResource(
                             org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath));
                 } catch (IOException | FHIRException ex) {
-                    byte[] src = TextFile.fileToBytes(igPath);
+                    byte[] src = FileUtilities.fileToBytes(igPath);
                     Manager.FhirFormat fmt = org.hl7.fhir.r5.formats.FormatUtilities.determineFormat(src);
 
                     org.hl7.fhir.dstu3.formats.ParserBase parser =
@@ -181,7 +181,7 @@ public class IGContext {
     private ImplementationGuide loadSourceIG(String igPath, String specifiedFhirVersion) {
         try {
             if (VersionUtilities.isR3Ver(specifiedFhirVersion)) {
-                byte[] src = TextFile.fileToBytes(igPath);
+                byte[] src = FileUtilities.fileToBytes(igPath);
                 Manager.FhirFormat fmt = org.hl7.fhir.r5.formats.FormatUtilities.determineFormat(src);
                 org.hl7.fhir.dstu3.formats.ParserBase parser =
                         org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString());

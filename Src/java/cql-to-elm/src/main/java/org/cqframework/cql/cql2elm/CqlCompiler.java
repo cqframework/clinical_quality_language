@@ -134,14 +134,20 @@ public class CqlCompiler {
             }
 
             if (context instanceof cqlParser.LibraryContext) {
-                cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext) context).libraryDefinition();
+                final var ldc = ((cqlParser.LibraryContext) context).libraryDefinition();
                 if (ldc != null
                         && ldc.qualifiedIdentifier() != null
                         && ldc.qualifiedIdentifier().identifier() != null) {
-                    VersionedIdentifier vi = new VersionedIdentifier()
-                            .withId(StringEscapeUtils.unescapeCql(
-                                    ldc.qualifiedIdentifier().identifier().getText()));
-
+                    var identifierText = ldc.qualifiedIdentifier().identifier().getText();
+                    // The identifier may or may not be surrounded by double quotes. If it is, "unescape" and strip the
+                    // delimiting double quotes.
+                    if (identifierText.startsWith("\"")) {
+                        final var unescaped = StringEscapeUtils.unescapeCql(identifierText);
+                        assert unescaped.startsWith("\"");
+                        assert unescaped.endsWith("\"");
+                        identifierText = unescaped.substring(1, unescaped.length() - 1);
+                    }
+                    VersionedIdentifier vi = new VersionedIdentifier().withId(identifierText);
                     if (ldc.versionSpecifier() != null) {
                         var version = StringEscapeUtils.unescapeCql(
                                 ldc.versionSpecifier().getText());

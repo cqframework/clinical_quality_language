@@ -304,15 +304,19 @@ public class DateTime extends BaseTemporal {
                         dateTime.getMinute(),
                         dateTime.getSecond());
             default:
+                final int offsetSeconds = this.zoneOffset.getTotalSeconds();
                 return String.format(
-                        "%04d-%02d-%02dT%02d:%02d:%02d.%03d",
+                        "%04d-%02d-%02dT%02d:%02d:%02d.%03d%s%02d:%02d",
                         dateTime.getYear(),
                         dateTime.getMonthValue(),
                         dateTime.getDayOfMonth(),
                         dateTime.getHour(),
                         dateTime.getMinute(),
                         dateTime.getSecond(),
-                        dateTime.get(precision.toChronoField()));
+                        dateTime.get(precision.toChronoField()),
+                        (offsetSeconds >= 0) ? "+" : "-",
+                        Math.abs(offsetSeconds) / 3600,
+                        (Math.abs(offsetSeconds) % 3600) / 60);
         }
     }
 

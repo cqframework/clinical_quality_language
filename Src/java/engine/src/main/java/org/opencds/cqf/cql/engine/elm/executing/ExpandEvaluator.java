@@ -2,7 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -30,6 +34,7 @@ If the list argument is null, the result is null.
 If the per argument is null, the default unit interval for the point type of the intervals involved will be used
     (i.e. the interval that has a width equal to the result of the successor function for the point type).
 
+The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 
 public class ExpandEvaluator {

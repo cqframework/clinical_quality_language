@@ -8,11 +8,7 @@ public abstract class BaseModelResolver implements ModelResolver {
             return null;
         }
 
-        if (type.isAssignableFrom(value.getClass())) {
-            return true;
-        }
-
-        return false;
+        return type.isAssignableFrom(value.getClass());
     }
 
     public Object as(Object value, Class<?> type, boolean isStrict) {
