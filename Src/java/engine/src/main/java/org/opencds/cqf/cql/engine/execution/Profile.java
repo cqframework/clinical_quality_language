@@ -162,6 +162,13 @@ public class Profile {
             }
             return result.toString();
         }
+
+        @Override
+        public String toString() {
+            return String.format(
+                    "Node{expression=%s, context=%s, count=%d, time=%s ms, misses=%d}",
+                    expressionLabel(this.expression), this.context, this.count, this.time, this.misses);
+        }
     }
 
     private final Node tree = new Node(null, null);
