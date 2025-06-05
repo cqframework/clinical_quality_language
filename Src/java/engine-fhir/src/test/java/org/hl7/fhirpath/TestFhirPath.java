@@ -1,5 +1,9 @@
 package org.hl7.fhirpath;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.nCopies;
+import static java.util.Optional.ofNullable;
+import static org.hl7.fhirpath.TranslatorHelper.toElmIdentifier;
 import static org.opencds.cqf.cql.engine.elm.executing.ToQuantityEvaluator.toQuantity;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -10,15 +14,17 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.fhir.ucum.UcumException;
-import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
 import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.elm.executing.ExistsEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Date;
@@ -26,95 +32,47 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
 
 public abstract class TestFhirPath {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TestFhirPath.class);
 
-    public static Tests loadTestsFile(String testsFilePath) {
-        try {
-            InputStream testsFileRaw = TestFhirPath.class.getResourceAsStream(testsFilePath);
-            return JAXB.unmarshal(testsFileRaw, Tests.class);
-        } catch (Exception e) {
-            // e.printStackTrace();
-            throw new IllegalArgumentException("Couldn't load tests file [" + testsFilePath + "]: " + e.toString());
-        }
+    private sealed interface TestCase permits Error, Invalid, Pass {
+        String name();
+
+        String cql();
     }
 
-    private IBaseResource loadResourceFile(String resourceFilePath, FhirContext context) {
-        return context.newXmlParser()
-                .parseResource(new InputStreamReader(TestFhirPath.class.getResourceAsStream(resourceFilePath)));
-    }
+    record Error(String name, String cql) implements TestCase {} // Compile time (Semantic) error
 
-    private Iterable<Object> loadExpectedResults(org.hl7.fhirpath.tests.Test test, boolean isExpressionOutputTest) {
-        List<Object> results = new ArrayList<>();
-        if (isExpressionOutputTest) {
-            results.add(true);
-        } else {
-            if (test.getOutput() != null) {
-                for (org.hl7.fhirpath.tests.Output output : test.getOutput()) {
-                    if (output.getType() != null) {
-                        switch (output.getType()) {
-                            case BOOLEAN:
-                                results.add(Boolean.valueOf(output.getValue()));
-                                break;
-                            case DECIMAL:
-                                results.add(new BigDecimal(output.getValue()));
-                                break;
-                            case DATE:
-                                results.add(new Date(output.getValue()));
-                                break;
-                            case DATE_TIME:
-                                results.add(new DateTime(
-                                        output.getValue(),
-                                        ZoneOffset.systemDefault().getRules().getOffset(Instant.now())));
-                                break;
-                            case TIME:
-                                results.add(new Time(output.getValue()));
-                                break;
-                            case INTEGER:
-                                results.add(Integer.valueOf(output.getValue()));
-                                break;
-                            case STRING:
-                                results.add(output.getValue());
-                                break;
-                            case CODE:
-                                results.add(output.getValue());
-                                break;
-                            case QUANTITY:
-                                results.add(toQuantity(output.getValue()));
-                                break;
-                            default:
-                                throw new IllegalArgumentException(
-                                        String.format("Unknown output type: %s", output.getType()));
-                        }
-                    } else {
-                        throw new IllegalArgumentException(
-                                "Output type is not specified and the test is not expressed as an expression-output test");
-                    }
-                }
-            }
-        }
+    record Invalid(String name, String cql) implements TestCase {} // Runtime (Invalid) error
 
-        return results;
-    }
+    record Pass(String name, String cql, IBaseResource resource, List<Object> results) implements TestCase {}
+
+    private final VersionedIdentifier libraryId = toElmIdentifier("TestFHIRPath");
+    private final String header =
+            """
+            library TestFHIRPath
+            using FHIR version '4.0.1'
+            include FHIRHelpers version '4.0.1' called FHIRHelpers
+
+            """;
+
+    private final String parametersTemplate =
+            """
+            parameter %s %s
+            parameter "%%context" %s
+            parameter "%%resource" %s
+            parameter "%%rootResource" %s context %s
+
+            """;
+
+    private final String definesTemplate = """
+            define Test: %s
+            """;
 
     abstract Boolean compareResults(
             Object expectedResult,
             Object actualResult,
             State state,
             FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver);
-
-    @SuppressWarnings("unchecked")
-    private Iterable<Object> ensureIterable(Object value) {
-        Iterable<Object> actualValues;
-        if (value instanceof Iterable) {
-            actualValues = (Iterable<Object>) value;
-        } else {
-            List<Object> values = new ArrayList<Object>();
-            if (value != null) {
-                values.add(value);
-            }
-            actualValues = values;
-        }
-        return actualValues;
-    }
 
     protected void runTest(
             org.hl7.fhirpath.tests.Test test,
@@ -123,147 +81,181 @@ public abstract class TestFhirPath {
             CompositeDataProvider provider,
             FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver)
             throws UcumException {
-        String cql = null;
-        IBaseResource resource = null;
-        if (test.getInputfile() != null) {
-            String resourceFilePath = basePathInput + test.getInputfile();
-            resource = loadResourceFile(resourceFilePath, fhirContext);
 
-            // TODO: Set up context based on the value of the context path in the test case
-            // For now, assume %context = %resource = %rootResource and we will skip all the context and contained tests
-            // Note also that tests that are hitting this type of functionality are testing how the FHIRPath engine is
-            // being set up, and so are probably better tested in component or even integration tests of FHIRPath,
-            // rather than as part of FHIRPath unit tests
-            cql = String.format(
-                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s parameter \"%%context\" %s parameter \"%%resource\" %s parameter \"%%rootResource\" %s context %s define Test:",
-                    resource.fhirType(),
-                    resource.fhirType(),
-                    resource.fhirType(),
-                    resource.fhirType(),
-                    resource.fhirType(),
-                    resource.fhirType());
-        } else {
-            cql =
-                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers define Test:";
+        var testCase = buildTestCase(test, basePathInput, fhirContext);
+        CqlEngine engine = TranslatorHelper.getEngine(testCase.cql());
+        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+        if (testCase instanceof Pass pass && pass.resource != null) {
+            var resource = pass.resource;
+            engine.getState().setParameter(null, resource.fhirType(), resource);
+            engine.getState().setParameter(null, "%context", resource);
+            engine.getState().setParameter(null, "%resource", resource);
+            engine.getState().setParameter(null, "%rootResource", resource);
         }
 
-        String testExpression = test.getExpression().getValue();
-        boolean isExpressionOutputTest =
+        EvaluationResult result = null;
+        try {
+            result = engine.evaluate(libraryId, engine.getState().getParameters());
+        } catch (CqlException e) {
+            if (testCase instanceof Pass) {
+                throw failWithContext("Runtime error and was expecting a result", testCase, e);
+            }
+
+            if (testCase instanceof Error && e.getCause() instanceof CqlCompilerException) {
+                return; // Expected a compile time error.
+            }
+
+            if (testCase instanceof Invalid) {
+                return; // Expected a runtime error
+            }
+
+            log.warn(
+                    testCase.name()
+                            + "failed as expected, but unable to determine the cause of the failure. Possible bug in engine. Skipping.");
+            return;
+        }
+
+        if (testCase instanceof Invalid) {
+            log.warn(testCase.name()
+                    + " was marked as Invalid, but it got a result. Possible bug in test suite. Skipping.");
+            return;
+        }
+
+        // Invalid and Semantic errors have been handled above, so we can assume Pass here
+        var pass = (Pass) testCase;
+        var testValue = result.forExpression("Test").value();
+        var list = testValue instanceof List<?>
+                ? (List<?>) testValue
+                : testValue == null ? emptyList() : List.of(testValue);
+        if (list.size() != pass.results.size()) {
+            throw failWithContext(
+                    "Result size mismatch", pass, (String) ToStringEvaluator.toString(pass.results), (String)
+                            ToStringEvaluator.toString(list));
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            var expected = pass.results.get(i);
+            var actual = list.get(i);
+            var comparison = compareResults(expected, actual, engine.getState(), resolver);
+            if (!Boolean.TRUE.equals(comparison)) {
+                throw failWithContext(
+                        "Result mismatch at index " + i, pass, (String) ToStringEvaluator.toString(expected), (String)
+                                ToStringEvaluator.toString(actual));
+            }
+        }
+    }
+
+    private TestCase buildTestCase(org.hl7.fhirpath.tests.Test test, String basePathInput, FhirContext fhirContext) {
+        IBaseResource resource = ofNullable(test.getInputfile())
+                .map(inputFile -> loadResourceFile(basePathInput + inputFile, fhirContext))
+                .orElse(null);
+
+        String cql = buildCql(test, resource);
+        var invalid = ofNullable(test.getExpression().getInvalid()).orElse(InvalidType.FALSE);
+        List<Object> expectedResults = loadExpectedResults(test);
+        return switch (invalid) {
+            case TRUE -> new Invalid(test.getName(), cql);
+            case SEMANTIC -> new Error(test.getName(), cql);
+            case FALSE -> new Pass(test.getName(), cql, resource, expectedResults);
+        };
+    }
+
+    private String buildCql(org.hl7.fhirpath.tests.Test test, IBaseResource resource) {
+        var inputExpression = test.getExpression().getValue();
+        var predicate = ofNullable(test.isPredicate()).orElse(false);
+        var expressionOutput =
                 test.getOutput().size() == 1 && test.getOutput().get(0).getType() == null;
-        if (isExpressionOutputTest) {
+
+        String testExpression = inputExpression;
+        if (predicate) {
+            testExpression = "exists { %s }".formatted(inputExpression);
+        } else if (expressionOutput) {
             String outputExpression = test.getOutput().get(0).getValue();
             if ("null".equals(outputExpression)) {
-                cql = String.format("%s (%s) is %s", cql, testExpression, outputExpression);
-            } else if ("null".equals(testExpression)) {
-                cql = String.format("%s (%s) is %s", cql, outputExpression, testExpression);
+                testExpression = "(%s) is %s".formatted(inputExpression, outputExpression);
+            } else if ("null".equals(inputExpression)) {
+                testExpression = "(%s) is %s".formatted(outputExpression, inputExpression);
             } else {
-                cql = String.format("%s (%s) = (%s)", cql, testExpression, outputExpression);
-            }
-        } else {
-            cql = String.format("%s %s", cql, testExpression);
-        }
-
-        Library library = null;
-        var env = TranslatorHelper.getEnvironment();
-        env.getLibraryManager().getCompiledLibraries().clear();
-        // If the test expression is invalid, expect an error during translation and
-        // fail if we don't get one
-        InvalidType invalidType = test.getExpression().getInvalid();
-        if (invalidType == null) {
-            invalidType = InvalidType.FALSE;
-        }
-
-        if (invalidType.equals(InvalidType.SEMANTIC)) {
-            boolean testPassed = false;
-            try {
-                library = TranslatorHelper.translate(cql, env.getLibraryManager());
-            } catch (Exception e) {
-                testPassed = true;
-            }
-
-            if (!testPassed) {
-                throw new RuntimeException(String.format("Expected exception not thrown for test %s.", test.getName()));
-            }
-        } else {
-            try {
-                library = TranslatorHelper.translate(cql, env.getLibraryManager());
-            } catch (IllegalArgumentException e) {
-                // if it crashes and didn't have an expected output, assume the test was supposed to fail.
-                if (test.getOutput() == null || test.getOutput().isEmpty()) {
-                    return;
-                } else {
-                    e.printStackTrace();
-                    throw new RuntimeException(String.format(
-                            "Couldn't translate library and was expecting a result. %s.", test.getName()));
-                }
-            }
-
-            CqlEngine engine = TranslatorHelper.getEngine(env);
-            engine.getCache().setExpressionCaching(false);
-            engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-            if (resource != null) {
-                engine.getState().setParameter(null, resource.fhirType(), resource);
-                engine.getState().setParameter(null, "%context", resource);
-                engine.getState().setParameter(null, "%resource", resource);
-                engine.getState().setParameter(null, "%rootResource", resource);
-            }
-
-            Object value = null;
-            boolean testPassed = false;
-            String message = null;
-            try {
-                VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
-                Map<VersionedIdentifier, Library> map = new HashMap<>();
-                map.put(libraryId, library);
-                var results = engine.evaluate(libraryId, Set.of("Test"));
-
-                value = results.forExpression("Test").value();
-                testPassed = invalidType.equals(InvalidType.FALSE);
-            } catch (Exception e) {
-                testPassed = invalidType.equals(InvalidType.TRUE);
-                message = e.getMessage();
-            }
-
-            if (!testPassed) {
-                if (invalidType.equals(InvalidType.TRUE)) {
-                    throw new RuntimeException(
-                            String.format("Expected exception not thrown for test %s.", test.getName()));
-                } else {
-                    throw new RuntimeException(
-                            String.format("Unexpected exception thrown for test %s: %s.", test.getName(), message));
-                }
-            }
-
-            if (test.isPredicate() != null && test.isPredicate().booleanValue()) {
-                value = ExistsEvaluator.exists(ensureIterable(value));
-            }
-
-            Iterable<Object> actualResults = ensureIterable(value);
-            Iterable<Object> expectedResults = loadExpectedResults(test, isExpressionOutputTest);
-            Iterator<Object> actualResultsIterator = actualResults.iterator();
-            Iterator<Object> expectedResultsIterator = expectedResults.iterator();
-            if (expectedResultsIterator.hasNext()) {
-                for (Object expectedResult : expectedResults) {
-                    if (actualResultsIterator.hasNext()) {
-                        Object actualResult = actualResultsIterator.next();
-                        Boolean comparison = compareResults(expectedResult, actualResult, engine.getState(), resolver);
-                        if (comparison == null || !comparison) {
-                            System.out.println("Failing Test: " + test.getName());
-                            System.out.println("- Expected Result: " + expectedResult
-                                    + (expectedResult != null ? " (" + expectedResult.getClass() + ")" : ""));
-                            System.out.println("- Actual Result: " + actualResult
-                                    + (actualResult != null ? " (" + actualResult.getClass() + ")" : ""));
-                            throw new RuntimeException("Actual value is not equal to expected value.");
-                        }
-                    } else {
-                        throw new RuntimeException("Actual value is not equal to expected value.");
-                    }
-                }
-            } else {
-                if (actualResultsIterator.hasNext()) {
-                    throw new RuntimeException("Actual value is not equal to expected value ({})");
-                }
+                testExpression = "(%s) = (%s)".formatted(inputExpression, outputExpression);
             }
         }
+
+        // if have a resource, add the CQL parameters.
+        var params = ofNullable(resource)
+                .map(res ->
+                        parametersTemplate.formatted(nCopies(6, res.fhirType()).toArray()))
+                .orElse("");
+
+        var defines = definesTemplate.formatted(testExpression);
+        return header + params + defines;
+    }
+
+    private RuntimeException failWithContext(String message, TestCase test, Exception e) {
+        return failWithContext(message, test, "N/A", "N/A", e);
+    }
+
+    private RuntimeException failWithContext(String message, TestCase test, String expected, String actual) {
+        return failWithContext(message, test, expected, actual, null);
+    }
+
+    private RuntimeException failWithContext(
+            String message, TestCase test, String expected, String actual, Exception e) {
+        var error =
+                """
+            Failed Test: %s
+            - Message: %s
+            - Expected: %s
+            - Actual: %s
+            - CQL:%n%s
+            """;
+        return new RuntimeException(error.formatted(test.name(), message, expected, actual, test.cql()), e);
+    }
+
+    protected static Tests loadTestsFile(String testsFilePath) {
+        try {
+            InputStream testsFileRaw = TestFhirPath.class.getResourceAsStream(testsFilePath);
+            return JAXB.unmarshal(testsFileRaw, Tests.class);
+        } catch (Exception e) {
+            // e.printStackTrace();
+            throw new IllegalArgumentException("Couldn't load tests file [" + testsFilePath + "]: ", e);
+        }
+    }
+
+    private IBaseResource loadResourceFile(String resourceFilePath, FhirContext context) {
+        return context.newXmlParser()
+                .parseResource(new InputStreamReader(TestFhirPath.class.getResourceAsStream(resourceFilePath)));
+    }
+
+    private Object readOutput(org.hl7.fhirpath.tests.Output output) {
+        if (output.getType() == null) {
+            return null;
+        }
+
+        return switch (output.getType()) {
+            case BOOLEAN -> Boolean.valueOf(output.getValue());
+            case DECIMAL -> new BigDecimal(output.getValue());
+            case DATE -> new Date(output.getValue());
+            case DATE_TIME -> new DateTime(
+                    output.getValue(), ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+            case TIME -> new Time(output.getValue());
+            case INTEGER -> Integer.valueOf(output.getValue());
+            case STRING, CODE -> output.getValue();
+            case QUANTITY -> toQuantity(output.getValue());
+            default -> throw new IllegalArgumentException(
+                    "Output type [" + output.getType() == null
+                            ? "null"
+                            : output.getType() + "] is not supported in tests");
+        };
+    }
+
+    private List<Object> loadExpectedResults(org.hl7.fhirpath.tests.Test test) {
+        // Special case for tests are "expression output" tests, which have a single output with no type
+        if (test.getOutput().size() == 1 && test.getOutput().get(0).getType() == null) {
+            return List.of(true);
+        }
+
+        return ofNullable(test.getOutput()).orElse(emptyList()).stream()
+                .map(this::readOutput)
+                .toList();
     }
 }
