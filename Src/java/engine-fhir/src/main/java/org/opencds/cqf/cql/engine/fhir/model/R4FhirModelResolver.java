@@ -26,6 +26,7 @@ import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.MoneyQuantity;
 import org.hl7.fhir.r4.model.OidType;
 import org.hl7.fhir.r4.model.PositiveIntType;
+import org.hl7.fhir.r4.model.PrimitiveType;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.SimpleQuantity;
@@ -99,9 +100,14 @@ public class R4FhirModelResolver
 
     @Override
     protected Object resolveProperty(Object target, String path) {
-        // This is kind of a hack to get around contained resources - HAPI doesn't have ResourceContainer type for STU3
+        // This is kind of a hack to get around contained resources - HAPI doesn't have ResourceContainer type for R4
         if (target instanceof Resource && ((Resource) target).fhirType().equals(path)) {
             return target;
+        }
+
+        // Account for extensions on primitives
+        if (target instanceof PrimitiveType && path.equals("extension")) {
+            return ((PrimitiveType<?>) target).getExtension();
         }
 
         return super.resolveProperty(target, path);
