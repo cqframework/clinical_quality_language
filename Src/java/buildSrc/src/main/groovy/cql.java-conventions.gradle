@@ -12,8 +12,10 @@ java {
     withSourcesJar()
 }
 
-compileJava {
-    options.release = 11
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
