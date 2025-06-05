@@ -96,7 +96,7 @@ public abstract class TestFhirPath {
             result = engine.evaluate(libraryId, engine.getState().getParameters());
         } catch (CqlException e) {
             if (testCase instanceof Pass) {
-                throw failWithContext("Runtime error and was expecting a result", testCase, e);
+                throw failWithContext("Runtime error and was expecting a result", testCase, "N/A", e);
             }
 
             if (testCase instanceof Error && e.getCause() instanceof CqlCompilerException) {
@@ -122,27 +122,24 @@ public abstract class TestFhirPath {
         // Invalid and Semantic errors have been handled above, so we can assume Pass here
         var pass = (Pass) testCase;
         var testValue = result.forExpression("Test").value();
-        var list = testValue instanceof List<?>
+        var actualList = testValue instanceof List<?>
                 ? (List<?>) testValue
                 : testValue == null ? emptyList() : List.of(testValue);
-        if (list.size() != pass.results.size()) {
+        if (actualList.size() != pass.results.size()) {
             throw failWithContext(
-                    "Incorrect number of results. Expected %d, Actual %d".formatted(pass.results.size(), list.size()),
+                    "Incorrect number of results. Expected %d, Actual %d"
+                            .formatted(pass.results.size(), actualList.size()),
                     pass,
-                    (String) ToStringEvaluator.toString(pass.results),
-                    (String) ToStringEvaluator.toString(list));
+                    actualList,
+                    null);
         }
 
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < actualList.size(); i++) {
             var expected = pass.results.get(i);
-            var actual = list.get(i);
+            var actual = actualList.get(i);
             var comparison = compareResults(expected, actual, engine.getState(), resolver);
             if (!Boolean.TRUE.equals(comparison)) {
-                throw failWithContext(
-                        "Result mismatch at index %d".formatted(i),
-                        pass,
-                        (String) ToStringEvaluator.toString(pass.results),
-                        (String) ToStringEvaluator.toString(list));
+                throw failWithContext("Result mismatch at index %d".formatted(i), pass, actual, null);
             }
         }
     }
@@ -192,25 +189,18 @@ public abstract class TestFhirPath {
         return header + params + defines;
     }
 
-    private RuntimeException failWithContext(String message, TestCase test, Exception e) {
-        return failWithContext(message, test, "N/A", "N/A", e);
-    }
-
-    private RuntimeException failWithContext(String message, TestCase test, String expected, String actual) {
-        return failWithContext(message, test, expected, actual, null);
-    }
-
-    private RuntimeException failWithContext(
-            String message, TestCase test, String expected, String actual, Exception e) {
+    private RuntimeException failWithContext(String message, TestCase test, Object actual, Exception e) {
+        var expectedString = test instanceof Pass pass ? ToStringEvaluator.toString(pass.results) : "N/A";
+        var actualString = ToStringEvaluator.toString(actual);
         var error =
                 """
             Failed Test: %s
             - Message: %s
             - Expected: %s
             - Actual: %s
-            - CQL:%n%s
+            - CQL:%n%n%s
             """;
-        return new RuntimeException(error.formatted(test.name(), message, expected, actual, test.cql()), e);
+        return new RuntimeException(error.formatted(test.name(), message, expectedString, actualString, test.cql()), e);
     }
 
     protected static Tests loadTestsFile(String testsFilePath) {
