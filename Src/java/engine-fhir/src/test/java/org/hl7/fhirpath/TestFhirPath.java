@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
-import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
@@ -79,8 +78,7 @@ public abstract class TestFhirPath {
             String basePathInput,
             FhirContext fhirContext,
             CompositeDataProvider provider,
-            FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver)
-            throws UcumException {
+            FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver) {
 
         var testCase = buildTestCase(test, basePathInput, fhirContext);
         CqlEngine engine = TranslatorHelper.getEngine(testCase.cql());
@@ -110,14 +108,14 @@ public abstract class TestFhirPath {
             }
 
             log.warn(
-                    testCase.name()
-                            + "failed as expected, but unable to determine the cause of the failure. Possible bug in engine. Skipping.");
+                    "%s failed as expected, but unable to determine the cause of the failure. Possible bug in engine. Skipping."
+                            .formatted(testCase.name()));
             return;
         }
 
         if (testCase instanceof Invalid) {
-            log.warn(testCase.name()
-                    + " was marked as Invalid, but it got a result. Possible bug in test suite. Skipping.");
+            log.warn("%s was marked as Invalid, but it got a result. Possible bug in test suite. Skipping."
+                    .formatted(testCase.name()));
             return;
         }
 
@@ -129,8 +127,10 @@ public abstract class TestFhirPath {
                 : testValue == null ? emptyList() : List.of(testValue);
         if (list.size() != pass.results.size()) {
             throw failWithContext(
-                    "Result size mismatch", pass, (String) ToStringEvaluator.toString(pass.results), (String)
-                            ToStringEvaluator.toString(list));
+                    "Incorrect number of results. Expected %d, Actual %d".formatted(pass.results.size(), list.size()),
+                    pass,
+                    (String) ToStringEvaluator.toString(pass.results),
+                    (String) ToStringEvaluator.toString(list));
         }
 
         for (int i = 0; i < list.size(); i++) {
@@ -139,8 +139,10 @@ public abstract class TestFhirPath {
             var comparison = compareResults(expected, actual, engine.getState(), resolver);
             if (!Boolean.TRUE.equals(comparison)) {
                 throw failWithContext(
-                        "Result mismatch at index " + i, pass, (String) ToStringEvaluator.toString(expected), (String)
-                                ToStringEvaluator.toString(actual));
+                        "Result mismatch at index %d".formatted(i),
+                        pass,
+                        (String) ToStringEvaluator.toString(pass.results),
+                        (String) ToStringEvaluator.toString(list));
             }
         }
     }
@@ -217,7 +219,7 @@ public abstract class TestFhirPath {
             return JAXB.unmarshal(testsFileRaw, Tests.class);
         } catch (Exception e) {
             // e.printStackTrace();
-            throw new IllegalArgumentException("Couldn't load tests file [" + testsFilePath + "]: ", e);
+            throw new IllegalArgumentException("Couldn't load tests file [ %s ]".formatted(testsFilePath), e);
         }
     }
 
@@ -241,10 +243,8 @@ public abstract class TestFhirPath {
             case INTEGER -> Integer.valueOf(output.getValue());
             case STRING, CODE -> output.getValue();
             case QUANTITY -> toQuantity(output.getValue());
-            default -> throw new IllegalArgumentException(
-                    "Output type [" + output.getType() == null
-                            ? "null"
-                            : output.getType() + "] is not supported in tests");
+            default -> throw new IllegalArgumentException("Output type [ %s ] is not supported in tests"
+                    .formatted(output.getType() == null ? "null" : output.getType()));
         };
     }
 
