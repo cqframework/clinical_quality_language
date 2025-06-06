@@ -3112,7 +3112,7 @@ public class LibraryBuilder {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
                 if (identifier.equals("$this")) {
-                    AliasRef result = of.createAliasRef().withName(identifier);
+                    IdentifierRef result = of.createIdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
                     return result;
                 }

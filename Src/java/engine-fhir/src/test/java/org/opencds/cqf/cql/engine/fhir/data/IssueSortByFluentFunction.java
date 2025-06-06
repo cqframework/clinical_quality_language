@@ -15,8 +15,10 @@ import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 
-// Fluent functions not sorting correcty
-class IssueObservationSort extends FhirExecutionTestBase {
+// Fluent functions were not sorting correctly due
+// to the engine not looking in the variable stack
+// when evaluating the IdentifierRef for "$this"
+class IssueSortByFluentFunction extends FhirExecutionTestBase {
 
     @Test
     void obserationsSortedByFluentFunctionAreSorted() {
@@ -66,7 +68,7 @@ class IssueObservationSort extends FhirExecutionTestBase {
         engine.getState()
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, r));
-        var result = engine.evaluate("IssueObservationSort")
+        var result = engine.evaluate("IssueSortByFluentFunction")
                 .forExpression("Ordered Observations")
                 .value();
 
