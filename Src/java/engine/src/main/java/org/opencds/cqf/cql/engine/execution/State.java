@@ -309,6 +309,10 @@ public class State {
     public Object resolveIdentifierRef(String name) {
         for (var window : windows) {
             for (var v : window) {
+                if (v.getName().equals(name)) {
+                    return v.getValue();
+                }
+
                 var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
                     for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value)
