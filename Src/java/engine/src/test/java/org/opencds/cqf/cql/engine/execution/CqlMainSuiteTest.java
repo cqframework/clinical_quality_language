@@ -35,8 +35,9 @@ class CqlMainSuiteTest extends CqlTestBase {
         for (var entry : result.expressionResults.entrySet()) {
             if (entry.getKey().toString().startsWith("test")) {
                 if (((ExpressionResult) entry.getValue()).value() != null) {
-                    assertEquals(entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED", (String)
-                            ((ExpressionResult) entry.getValue()).value());
+                    assertEquals(
+                            (String) ((ExpressionResult) entry.getValue()).value(),
+                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED");
                 }
             }
         }
