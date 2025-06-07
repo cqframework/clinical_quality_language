@@ -92,7 +92,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysA",
             "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysAA",
             "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull",
-            "cql/CqlIntervalOperatorsTest/Expand/ExpandIntervalPer2",
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1",
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1IntervalOverload",
             "cql/CqlListOperatorsTest/Equal/EqualABCAnd123",
