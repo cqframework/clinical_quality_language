@@ -48,11 +48,11 @@ public class Quantity implements CqlType, Comparable<Quantity> {
         return this;
     }
 
-    public boolean isDefaultUnit(String unit) {
+    public static boolean isDefaultUnit(String unit) {
         return unit == null || unit.equals("") || unit.equals(DEFAULT_UNIT);
     }
 
-    public boolean unitsEqual(String leftUnit, String rightUnit) {
+    public static boolean unitsEqual(String leftUnit, String rightUnit) {
         if (isDefaultUnit(leftUnit) && isDefaultUnit(rightUnit)) {
             return true;
         }
@@ -97,7 +97,7 @@ public class Quantity implements CqlType, Comparable<Quantity> {
         }
     }
 
-    public boolean unitsEquivalent(String leftUnit, String rightUnit) {
+    public static boolean unitsEquivalent(String leftUnit, String rightUnit) {
         if (isDefaultUnit(leftUnit) && isDefaultUnit(rightUnit)) {
             return true;
         }

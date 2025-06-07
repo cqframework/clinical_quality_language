@@ -59,7 +59,7 @@ public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> 
             } else if (baseTemporal instanceof Date) {
                 isDateTime = false;
                 isDate = true;
-                if (baseTemporal.precision.toTimeIndex() < min) {
+                if (baseTemporal.precision.toDateIndex() < min) {
                     min = ((Date) baseTemporal).precision.toDateIndex();
                 }
             } else if (baseTemporal instanceof Time) {
@@ -88,4 +88,13 @@ public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> 
     public abstract boolean isUncertain(Precision p);
 
     public abstract Interval getUncertaintyInterval(Precision p);
+
+    /**
+     * Returns a copy of this temporal value rounded to the specified precision if the value has a greater precision.
+     *
+     * @param precision the precision to round to
+     * @param useCeiling whether to return the ceiling or floor value when rounding
+     * @return the rounded copy
+     */
+    public abstract BaseTemporal roundToPrecision(Precision precision, boolean useCeiling);
 }

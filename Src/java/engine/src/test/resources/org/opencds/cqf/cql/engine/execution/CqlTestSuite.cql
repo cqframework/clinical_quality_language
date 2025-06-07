@@ -3856,10 +3856,13 @@ define test_NullIvlCollapse_CollapseQuantityIntervalListWithNullLowNoOverlap: Te
 define test_NullIvlCollapse_CollapseQuantityIntervalListWithNullHighNoOverlap: TestMessage(NullIvlCollapse_CollapseQuantityIntervalListWithNullHighNoOverlap = CollapseQuantityIntervalListWithNullHighNoOverlapExpected, 'NullIvlCollapse_CollapseQuantityIntervalListWithNullHighNoOverlap', toString(CollapseQuantityIntervalListWithNullHighNoOverlapExpected), toString(NullIvlCollapse_CollapseQuantityIntervalListWithNullHighNoOverlap))
 
 // DateIntervalExpand
+define DateEmptyIntervalList: List<Interval<Date>>{}
 define ClosedSinglePerDayExpected: { Interval[@2018-01-01, @2018-01-01], Interval[@2018-01-02, @2018-01-02], Interval[@2018-01-03, @2018-01-03] }
 define ClosedSinglePerWeekExpected: { Interval[@2018-01-01, @2018-01-07], Interval[@2018-01-08, @2018-01-14], Interval[@2018-01-15, @2018-01-21] }
-define ClosedSinglePerMonthExpected: { Interval[@2018-01-01, @2018-01-31], Interval[@2018-02-01, @2018-02-28], Interval[@2018-03-01, @2018-03-31] }
-define ClosedSinglePerYearExpected: { Interval[@2016-01-01, @2016-12-31], Interval[@2017-01-01, @2017-12-31], Interval[@2018-01-01, @2018-12-31] }
+define ClosedSinglePerMonthExpected: { Interval[@2018-01, @2018-01], Interval[@2018-02, @2018-02], Interval[@2018-03, @2018-03] }
+define ClosedSinglePerMonthTruncExpected: { Interval[@2018-01, @2018-01], Interval[@2018-02, @2018-02], Interval[@2018-03, @2018-03], Interval[@2018-04, @2018-04] }
+define ClosedSinglePerYearExpected: { Interval[@2016, @2016], Interval[@2017, @2017], Interval[@2018, @2018] }
+define ClosedSinglePerYearTruncExpected: { Interval[@2016, @2016], Interval[@2017, @2017], Interval[@2018, @2018], Interval[@2019, @2019] }
 define DateIvlExpand_ClosedSinglePerDay: expand { Interval[@2018-01-01, @2018-01-03] } per day
 define DateIvlExpand_ClosedSinglePerWeek: expand { Interval[@2018-01-01, @2018-01-21] } per week
 define DateIvlExpand_ClosedSinglePerMonth: expand { Interval[@2018-01-01, @2018-03-31] } per month
@@ -3870,13 +3873,13 @@ define DateIvlExpand_ClosedSinglePerYearTrunc: expand { Interval[@2016-01-01, @2
 define test_DateIvlExpand_ClosedSinglePerDay: TestMessage(DateIvlExpand_ClosedSinglePerDay = ClosedSinglePerDayExpected, 'DateIvlExpand_ClosedSinglePerDay', toString(ClosedSinglePerDayExpected), toString(DateIvlExpand_ClosedSinglePerDay))
 define test_DateIvlExpand_ClosedSinglePerWeek: TestMessage(DateIvlExpand_ClosedSinglePerWeek = ClosedSinglePerWeekExpected, 'DateIvlExpand_ClosedSinglePerWeek', toString(ClosedSinglePerWeekExpected), toString(DateIvlExpand_ClosedSinglePerWeek))
 define test_DateIvlExpand_ClosedSinglePerMonth: TestMessage(DateIvlExpand_ClosedSinglePerMonth = ClosedSinglePerMonthExpected, 'DateIvlExpand_ClosedSinglePerMonth', toString(ClosedSinglePerMonthExpected), toString(DateIvlExpand_ClosedSinglePerMonth))
-define test_DateIvlExpand_ClosedSinglePerMonthTrunc: TestMessage(DateIvlExpand_ClosedSinglePerMonthTrunc = ClosedSinglePerMonthExpected, 'DateIvlExpand_ClosedSinglePerMonthTrunc', toString(ClosedSinglePerMonthExpected), toString(DateIvlExpand_ClosedSinglePerMonthTrunc))
+define test_DateIvlExpand_ClosedSinglePerMonthTrunc: TestMessage(DateIvlExpand_ClosedSinglePerMonthTrunc = ClosedSinglePerMonthTruncExpected, 'DateIvlExpand_ClosedSinglePerMonthTrunc', toString(ClosedSinglePerMonthExpected), toString(DateIvlExpand_ClosedSinglePerMonthTrunc))
 define test_DateIvlExpand_ClosedSinglePerYear: TestMessage(DateIvlExpand_ClosedSinglePerYear = ClosedSinglePerYearExpected, 'DateIvlExpand_ClosedSinglePerYear', toString(ClosedSinglePerYearExpected), toString(DateIvlExpand_ClosedSinglePerYear))
-define test_DateIvlExpand_ClosedSinglePerYearTrunc: TestMessage(DateIvlExpand_ClosedSinglePerYearTrunc = ClosedSinglePerYearExpected, 'DateIvlExpand_ClosedSinglePerYearTrunc', toString(ClosedSinglePerYearExpected), toString(DateIvlExpand_ClosedSinglePerYearTrunc))
+define test_DateIvlExpand_ClosedSinglePerYearTrunc: TestMessage(DateIvlExpand_ClosedSinglePerYearTrunc = ClosedSinglePerYearTruncExpected, 'DateIvlExpand_ClosedSinglePerYearTrunc', toString(ClosedSinglePerYearExpected), toString(DateIvlExpand_ClosedSinglePerYearTrunc))
 
 define MidBoundariesPerDayExpected: { Interval[@2017-12-30, @2017-12-30], Interval[@2017-12-31, @2017-12-31], Interval[@2018-01-01, @2018-01-01] }
-define MidBoundariesPerMonthExpected: { Interval[@2017-11-14, @2017-12-13], Interval[@2017-12-14, @2018-01-13] }
-define MidBoundariesPerYearExpected: { Interval[@2016-04-06, @2017-04-05], Interval[@2017-04-06, @2018-04-05] }
+define MidBoundariesPerMonthExpected: { Interval[@2017-12, @2017-12], Interval[@2018-01, @2018-01] }
+define MidBoundariesPerYearExpected: { Interval[@2017, @2017], Interval[@2018, @2018] }
 define DateIvlExpand_MidBoundariesPerDay: expand { Interval[@2017-12-30, @2018-01-01] } per day
 define DateIvlExpand_MidBoundariesPerMonth: expand { Interval[@2017-11-14, @2018-01-18] } per month
 define DateIvlExpand_MidBoundariesPerYear: expand { Interval[@2016-04-06, @2018-04-06] } per year
@@ -3918,7 +3921,7 @@ define test_DateIvlExpand_OpenStart: TestMessage(DateIvlExpand_OpenStart = OpenS
 define test_DateIvlExpand_OpenEnd: TestMessage(DateIvlExpand_OpenEnd = OpenEndExpected, 'DateIvlExpand_OpenEnd', toString(OpenEndExpected), toString(DateIvlExpand_OpenEnd))
 define test_DateIvlExpand_OpenBoth: TestMessage(DateIvlExpand_OpenBoth = OpenBothExpected, 'DateIvlExpand_OpenBoth', toString(OpenBothExpected), toString(DateIvlExpand_OpenBoth))
 
-define MismatchPrecisionExpected: { Interval[@2018-01-01, @2018-01-31], Interval[@2018-02-01, @2018-02-28] }
+define MismatchPrecisionExpected: { Interval[@2018-01, @2018-01], Interval[@2018-02, @2018-02], Interval[@2018-03, @2018-03] }
 define MismatchPrecisionEmptyExpected: { Interval[@2018-01, @2018-01], Interval[@2018-02, @2018-02] }
 define DateIvlExpand_MismatchPrecision: expand { Interval[@2018-01-01, @2018-03] } per month
 define DateIvlExpand_MismatchPrecisionEmpty: expand { Interval[@2018-01, @2018-02-28] } per month
@@ -3936,23 +3939,23 @@ define DateIvlExpand_YearDayPer: expand { Interval[@2016, @2018] } per day
 define DateIvlExpand_BadPerMinute: expand { Interval[@2018-01-01, @2018-01-04] } per minute
 define DateIvlExpand_BadPerGram: expand { Interval[@2018-01-01, @2018-01-04] } per 1 'g'
 
-define test_DateIvlExpand_NullOpen: TestMessage(DateIvlExpand_NullOpen is null, 'DateIvlExpand_NullOpen', 'null', toString(DateIvlExpand_NullOpen))
-define test_DateIvlExpand_NullClose: TestMessage(DateIvlExpand_NullClose is null, 'DateIvlExpand_NullClose', 'null', toString(DateIvlExpand_NullClose))
+define test_DateIvlExpand_NullOpen: TestMessage(not exists DateIvlExpand_NullOpen, 'DateIvlExpand_NullOpen', toString(DateEmptyIntervalList), toString(DateIvlExpand_NullOpen))
+define test_DateIvlExpand_NullClose: TestMessage(not exists DateIvlExpand_NullClose, 'DateIvlExpand_NullClose', toString(DateEmptyIntervalList), toString(DateIvlExpand_NullClose))
 //define test_DateIvlExpand_NullBoth: TestMessage(DateIvlExpand_NullBoth is null, 'DateIvlExpand_NullBoth', 'null', toString(DateIvlExpand_NullBoth))
-define test_DateIvlExpand_MonthDayPer: TestMessage(DateIvlExpand_MonthDayPer is null, 'DateIvlExpand_MonthDayPer', 'null', toString(DateIvlExpand_MonthDayPer))
-define test_DateIvlExpand_YearMonthPer: TestMessage(DateIvlExpand_YearMonthPer is null, 'DateIvlExpand_YearMonthPer', 'null', toString(DateIvlExpand_YearMonthPer))
-define test_DateIvlExpand_YearDayPer: TestMessage(DateIvlExpand_YearDayPer is null, 'DateIvlExpand_YearDayPer', 'null', toString(DateIvlExpand_YearDayPer))
-define test_DateIvlExpand_BadPerMinute: TestMessage(DateIvlExpand_BadPerMinute is null, 'DateIvlExpand_BadPerMinute', 'null', toString(DateIvlExpand_BadPerMinute))
+define test_DateIvlExpand_MonthDayPer: TestMessage(not exists DateIvlExpand_MonthDayPer, 'DateIvlExpand_MonthDayPer', toString(DateEmptyIntervalList), toString(DateIvlExpand_MonthDayPer))
+define test_DateIvlExpand_YearMonthPer: TestMessage(not exists DateIvlExpand_YearMonthPer, 'DateIvlExpand_YearMonthPer', toString(DateEmptyIntervalList), toString(DateIvlExpand_YearMonthPer))
+define test_DateIvlExpand_YearDayPer: TestMessage(not exists DateIvlExpand_YearDayPer, 'DateIvlExpand_YearDayPer', toString(DateEmptyIntervalList), toString(DateIvlExpand_YearDayPer))
+define test_DateIvlExpand_BadPerMinute: TestMessage(not exists DateIvlExpand_BadPerMinute, 'DateIvlExpand_BadPerMinute', toString(DateEmptyIntervalList), toString(DateIvlExpand_BadPerMinute))
 define test_DateIvlExpand_BadPerGram: TestMessage(DateIvlExpand_BadPerGram is null, 'DateIvlExpand_BadPerGram', 'null', toString(DateIvlExpand_BadPerGram))
 
 // DateTimeIntervalExpand
-define MsPrecPerYearExpected: { Interval[@2016-01-01T00:00:00.000+00:00, @2016-12-31T23:59:59.999+00:00], Interval[@2017-01-01T00:00:00.000+00:00, @2017-12-31T23:59:59.999+00:00] }
-define MsPrecPerMonthExpected: { Interval[@2018-01-01T00:00:00.000+00:00, @2018-01-31T23:59:59.999+00:00], Interval[@2018-02-01T00:00:00.000+00:00, @2018-02-28T23:59:59.999+00:00] }
-define MsPrecPerWeekExpected: { Interval[@2018-01-01T00:00:00.000+00:00, @2018-01-07T23:59:59.999+00:00], Interval[@2018-01-08T00:00:00.000+00:00, @2018-01-14T23:59:59.999+00:00] }
-define MsPrecPerDayExpected: { Interval[@2018-01-01T00:00:00.000+00:00, @2018-01-01T23:59:59.999+00:00], Interval[@2018-01-02T00:00:00.000+00:00, @2018-01-02T23:59:59.999+00:00] }
-define MsPrecPerHourExpected: { Interval[@2018-01-01T01:00:00.000+00:00, @2018-01-01T01:59:59.999+00:00], Interval[@2018-01-01T02:00:00.000+00:00, @2018-01-01T02:59:59.999+00:00] }
-define MsPrecPerMinuteExpected: { Interval[@2018-01-01T01:00:00.000+00:00, @2018-01-01T01:00:59.999+00:00], Interval[@2018-01-01T01:01:00.000+00:00, @2018-01-01T01:01:59.999+00:00] }
-define MsPrecPerSecondExpected: { Interval[@2018-01-01T01:00:00.000+00:00, @2018-01-01T01:00:00.999+00:00], Interval[@2018-01-01T01:00:01.000+00:00, @2018-01-01T01:00:01.999+00:00] }
+define MsPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
+define MsPrecPerMonthExpected: { Interval[DateTime(2018, 1), DateTime(2018, 1)], Interval[DateTime(2018, 2), DateTime(2018, 2)], Interval[DateTime(2018, 3), DateTime(2018, 3)] }
+define MsPrecPerWeekExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 7)], Interval[DateTime(2018, 1, 8), DateTime(2018, 1, 14)], Interval[DateTime(2018, 1, 15), DateTime(2018, 1, 21)] }
+define MsPrecPerDayExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 1)], Interval[DateTime(2018, 1, 2), DateTime(2018, 1, 2)], Interval[DateTime(2018, 1, 3), DateTime(2018, 1, 3)] }
+define MsPrecPerHourExpected: { Interval[DateTime(2018, 1, 1, 1, null, null, null, 0), DateTime(2018, 1, 1, 1, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 2, null, null, null, 0), DateTime(2018, 1, 1, 2, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 3, null, null, null, 0), DateTime(2018, 1, 1, 3, null, null, null, 0)] }
+define MsPrecPerMinuteExpected: { Interval[DateTime(2018, 1, 1, 1, 0, null, null, 0), DateTime(2018, 1, 1, 1, 0, null, null, 0)], Interval[DateTime(2018, 1, 1, 1, 1, null, null, 0), DateTime(2018, 1, 1, 1, 1, null, null, 0)], Interval[DateTime(2018, 1, 1, 1, 2, null, null, 0), DateTime(2018, 1, 1, 1, 2, null, null, 0)] }
+define MsPrecPerSecondExpected: { Interval[DateTime(2018, 1, 1, 1, 0, 0, null, 0), DateTime(2018, 1, 1, 1, 0, 0, null, 0)], Interval[DateTime(2018, 1, 1, 1, 0, 1, null, 0), DateTime(2018, 1, 1, 1, 0, 1, null, 0)], Interval[DateTime(2018, 1, 1, 1, 0, 2, null, 0), DateTime(2018, 1, 1, 1, 0, 2, null, 0)] }
 define MsPrecPerMillisecondExpected: { Interval[@2018-01-01T01:00:00.000+00:00, @2018-01-01T01:00:00.000+00:00], Interval[@2018-01-01T01:00:00.001+00:00, @2018-01-01T01:00:00.001+00:00] }
 define DateTimeIvlExpand_MsPrecPerYear: expand { Interval[@2016-01-01T00:00:00.000+00:00, @2018-01-01T00:00:00.000+00:00] } per year
 define DateTimeIvlExpand_MsPrecPerMonth: expand { Interval[@2018-01-01T00:00:00.000+00:00, @2018-03-01T00:00:00.000+00:00] } per month
@@ -3972,12 +3975,12 @@ define test_DateTimeIvlExpand_MsPrecPerMinute: TestMessage(DateTimeIvlExpand_MsP
 define test_DateTimeIvlExpand_MsPrecPerSecond: TestMessage(DateTimeIvlExpand_MsPrecPerSecond = MsPrecPerSecondExpected, 'DateTimeIvlExpand_MsPrecPerSecond', toString(MsPrecPerSecondExpected), toString(DateTimeIvlExpand_MsPrecPerSecond))
 define test_DateTimeIvlExpand_MsPrecPerMillisecond: TestMessage(DateTimeIvlExpand_MsPrecPerMillisecond = MsPrecPerMillisecondExpected, 'DateTimeIvlExpand_MsPrecPerMillisecond', toString(MsPrecPerMillisecondExpected), toString(DateTimeIvlExpand_MsPrecPerMillisecond))
 
-define SecPrecPerYearExpected: { Interval[@2016-01-01T00:00:00+00:00, @2016-12-31T23:59:59+00:00], Interval[@2017-01-01T00:00:00+00:00, @2017-12-31T23:59:59+00:00] }
-define SecPrecPerMonthExpected: { Interval[@2018-01-01T00:00:00+00:00, @2018-01-31T23:59:59+00:00], Interval[@2018-02-01T00:00:00+00:00, @2018-02-28T23:59:59+00:00] }
-define SecPrecPerWeekExpected: { Interval[@2018-01-01T00:00:00+00:00, @2018-01-07T23:59:59+00:00], Interval[@2018-01-08T00:00:00+00:00, @2018-01-14T23:59:59+00:00] }
-define SecPrecPerDayExpected: { Interval[@2018-01-01T00:00:00+00:00, @2018-01-01T23:59:59+00:00], Interval[@2018-01-02T00:00:00+00:00, @2018-01-02T23:59:59+00:00] }
-define SecPrecPerHourExpected: { Interval[@2018-01-01T01:00:00+00:00, @2018-01-01T01:59:59+00:00], Interval[@2018-01-01T02:00:00+00:00, @2018-01-01T02:59:59+00:00] }
-define SecPrecPerMinuteExpected: { Interval[@2018-01-01T01:00:00+00:00, @2018-01-01T01:00:59+00:00], Interval[@2018-01-01T01:01:00+00:00, @2018-01-01T01:01:59+00:00] }
+define SecPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
+define SecPrecPerMonthExpected: { Interval[DateTime(2018, 1), DateTime(2018, 1)], Interval[DateTime(2018, 2), DateTime(2018, 2)], Interval[DateTime(2018, 3), DateTime(2018, 3)] }
+define SecPrecPerWeekExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 7)], Interval[DateTime(2018, 1, 8), DateTime(2018, 1, 14)], Interval[DateTime(2018, 1, 15), DateTime(2018, 1, 21)] }
+define SecPrecPerDayExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 1)], Interval[DateTime(2018, 1, 2), DateTime(2018, 1, 2)], Interval[DateTime(2018, 1, 3), DateTime(2018, 1, 3)] }
+define SecPrecPerHourExpected: { Interval[DateTime(2018, 1, 1, 1, null, null, null, 0), DateTime(2018, 1, 1, 1, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 2, null, null, null, 0), DateTime(2018, 1, 1, 2, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 3, null, null, null, 0), DateTime(2018, 1, 1, 3, null, null, null, 0)] }
+define SecPrecPerMinuteExpected: { Interval[DateTime(2018, 1, 1, 1, 0, null, null, 0), DateTime(2018, 1, 1, 1, 0, null, null, 0)], Interval[DateTime(2018, 1, 1, 1, 1, null, null, 0), DateTime(2018, 1, 1, 1, 1, null, null, 0)], Interval[DateTime(2018, 1, 1, 1, 2, null, null, 0), DateTime(2018, 1, 1, 1, 2, null, null, 0)] }
 define SecPrecPerSecondExpected: { Interval[@2018-01-01T01:00:00+00:00, @2018-01-01T01:00:00+00:00], Interval[@2018-01-01T01:00:01+00:00, @2018-01-01T01:00:01+00:00] }
 define DateTimeIvlExpand_SecPrecPerYear: expand { Interval[@2016-01-01T00:00:00+00:00, @2018-01-01T00:00:00+00:00] } per year
 define DateTimeIvlExpand_SecPrecPerMonth: expand { Interval[@2018-01-01T00:00:00+00:00, @2018-03-01T00:00:00+00:00] } per month
@@ -3995,13 +3998,13 @@ define test_DateTimeIvlExpand_SecPrecPerDay: TestMessage(DateTimeIvlExpand_SecPr
 define test_DateTimeIvlExpand_SecPrecPerHour: TestMessage(DateTimeIvlExpand_SecPrecPerHour = SecPrecPerHourExpected, 'DateTimeIvlExpand_SecPrecPerHour', toString(SecPrecPerHourExpected), toString(DateTimeIvlExpand_SecPrecPerHour))
 define test_DateTimeIvlExpand_SecPrecPerMinute: TestMessage(DateTimeIvlExpand_SecPrecPerMinute = SecPrecPerMinuteExpected, 'DateTimeIvlExpand_SecPrecPerMinute', toString(SecPrecPerMinuteExpected), toString(DateTimeIvlExpand_SecPrecPerMinute))
 define test_DateTimeIvlExpand_SecPrecPerSecond: TestMessage(DateTimeIvlExpand_SecPrecPerSecond = SecPrecPerSecondExpected, 'DateTimeIvlExpand_SecPrecPerSecond', toString(SecPrecPerSecondExpected), toString(DateTimeIvlExpand_SecPrecPerSecond))
-define test_DateTimeIvlExpand_SecPrecPerMillisecond: TestMessage(DateTimeIvlExpand_SecPrecPerMillisecond is null, 'DateTimeIvlExpand_SecPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_SecPrecPerMillisecond))
+define test_DateTimeIvlExpand_SecPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_SecPrecPerMillisecond, 'DateTimeIvlExpand_SecPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_SecPrecPerMillisecond))
 
-define MinPrecPerYearExpected: { Interval[@2016-01-01T00:00+00:00, @2016-12-31T23:59+00:00], Interval[@2017-01-01T00:00+00:00, @2017-12-31T23:59+00:00] }
-define MinPrecPerMonthExpected: { Interval[@2018-01-01T00:00+00:00, @2018-01-31T23:59+00:00], Interval[@2018-02-01T00:00+00:00, @2018-02-28T23:59+00:00] }
-define MinPrecPerWeekExpected: { Interval[@2018-01-01T00:00+00:00, @2018-01-07T23:59+00:00], Interval[@2018-01-08T00:00+00:00, @2018-01-14T23:59+00:00] }
-define MinPrecPerDayExpected: { Interval[@2018-01-01T00:00+00:00, @2018-01-01T23:59+00:00], Interval[@2018-01-02T00:00+00:00, @2018-01-02T23:59+00:00] }
-define MinPrecPerHourExpected: { Interval[@2018-01-01T01:00+00:00, @2018-01-01T01:59+00:00], Interval[@2018-01-01T02:00+00:00, @2018-01-01T02:59+00:00] }
+define MinPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
+define MinPrecPerMonthExpected: { Interval[DateTime(2018, 1), DateTime(2018, 1)], Interval[DateTime(2018, 2), DateTime(2018, 2)], Interval[DateTime(2018, 3), DateTime(2018, 3)] }
+define MinPrecPerWeekExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 7)], Interval[DateTime(2018, 1, 8), DateTime(2018, 1, 14)], Interval[DateTime(2018, 1, 15), DateTime(2018, 1, 21)] }
+define MinPrecPerDayExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 1)], Interval[DateTime(2018, 1, 2), DateTime(2018, 1, 2)], Interval[DateTime(2018, 1, 3), DateTime(2018, 1, 3)] }
+define MinPrecPerHourExpected: { Interval[DateTime(2018, 1, 1, 1, null, null, null, 0), DateTime(2018, 1, 1, 1, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 2, null, null, null, 0), DateTime(2018, 1, 1, 2, null, null, null, 0)], Interval[DateTime(2018, 1, 1, 3, null, null, null, 0), DateTime(2018, 1, 1, 3, null, null, null, 0)] }
 define MinPrecPerMinuteExpected: { Interval[@2018-01-01T01:00+00:00, @2018-01-01T01:00+00:00], Interval[@2018-01-01T01:01+00:00, @2018-01-01T01:01+00:00] }
 define DateTimeIvlExpand_MinPrecPerYear: expand { Interval[@2016-01-01T00:00+00:00, @2018-01-01T00:00+00:00] } per year
 define DateTimeIvlExpand_MinPrecPerMonth: expand { Interval[@2018-01-01T00:00+00:00, @2018-03-01T00:00+00:00] } per month
@@ -4018,13 +4021,13 @@ define test_DateTimeIvlExpand_MinPrecPerWeek: TestMessage(DateTimeIvlExpand_MinP
 define test_DateTimeIvlExpand_MinPrecPerDay: TestMessage(DateTimeIvlExpand_MinPrecPerDay = MinPrecPerDayExpected, 'DateTimeIvlExpand_MinPrecPerDay', toString(MinPrecPerDayExpected), toString(DateTimeIvlExpand_MinPrecPerDay))
 define test_DateTimeIvlExpand_MinPrecPerHour: TestMessage(DateTimeIvlExpand_MinPrecPerHour = MinPrecPerHourExpected, 'DateTimeIvlExpand_MinPrecPerHour', toString(MinPrecPerHourExpected), toString(DateTimeIvlExpand_MinPrecPerHour))
 define test_DateTimeIvlExpand_MinPrecPerMinute: TestMessage(DateTimeIvlExpand_MinPrecPerMinute = MinPrecPerMinuteExpected, 'DateTimeIvlExpand_MinPrecPerMinute', toString(MinPrecPerMinuteExpected), toString(DateTimeIvlExpand_MinPrecPerMinute))
-define test_DateTimeIvlExpand_MinPrecPerSecond: TestMessage(DateTimeIvlExpand_MinPrecPerSecond is null, 'DateTimeIvlExpand_MinPrecPerSecond', 'null', toString(DateTimeIvlExpand_MinPrecPerSecond))
-define test_DateTimeIvlExpand_MinPrecPerMillisecond: TestMessage(DateTimeIvlExpand_MinPrecPerMillisecond is null, 'DateTimeIvlExpand_MinPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_MinPrecPerMillisecond))
+define test_DateTimeIvlExpand_MinPrecPerSecond: TestMessage(not exists DateTimeIvlExpand_MinPrecPerSecond, 'DateTimeIvlExpand_MinPrecPerSecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MinPrecPerSecond))
+define test_DateTimeIvlExpand_MinPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_MinPrecPerMillisecond, 'DateTimeIvlExpand_MinPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MinPrecPerMillisecond))
 
-define HourPrecPerYearExpected: { Interval[@2016-01-01T00+00:00, @2016-12-31T23+00:00], Interval[@2017-01-01T00+00:00, @2017-12-31T23+00:00] }
-define HourPrecPerMonthExpected: { Interval[@2018-01-01T00+00:00, @2018-01-31T23+00:00], Interval[@2018-02-01T00+00:00, @2018-02-28T23+00:00] }
-define HourPrecPerWeekExpected: { Interval[@2018-01-01T00+00:00, @2018-01-07T23+00:00], Interval[@2018-01-08T00+00:00, @2018-01-14T23+00:00] }
-define HourPrecPerDayExpected: { Interval[@2018-01-01T00+00:00, @2018-01-01T23+00:00], Interval[@2018-01-02T00+00:00, @2018-01-02T23+00:00] }
+define HourPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
+define HourPrecPerMonthExpected: { Interval[DateTime(2018, 1), DateTime(2018, 1)], Interval[DateTime(2018, 2), DateTime(2018, 2)], Interval[DateTime(2018, 3), DateTime(2018, 3)] }
+define HourPrecPerWeekExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 7)], Interval[DateTime(2018, 1, 8), DateTime(2018, 1, 14)], Interval[DateTime(2018, 1, 15), DateTime(2018, 1, 21)] }
+define HourPrecPerDayExpected: { Interval[DateTime(2018, 1, 1), DateTime(2018, 1, 1)], Interval[DateTime(2018, 1, 2), DateTime(2018, 1, 2)], Interval[DateTime(2018, 1, 3), DateTime(2018, 1, 3)] }
 define HourPrecPerHourExpected: { Interval[@2018-01-01T01+00:00, @2018-01-01T01+00:00], Interval[@2018-01-01T02+00:00, @2018-01-01T02+00:00] }
 define DateTimeIvlExpand_HourPrecPerYear: expand { Interval[@2016-01-01T00+00:00, @2018-01-01T00+00:00] } per year
 define DateTimeIvlExpand_HourPrecPerMonth: expand { Interval[@2018-01-01T00+00:00, @2018-03-01T00+00:00] } per month
@@ -4040,12 +4043,12 @@ define test_DateTimeIvlExpand_HourPrecPerMonth: TestMessage(DateTimeIvlExpand_Ho
 define test_DateTimeIvlExpand_HourPrecPerWeek: TestMessage(DateTimeIvlExpand_HourPrecPerWeek = HourPrecPerWeekExpected, 'DateTimeIvlExpand_HourPrecPerWeek', toString(HourPrecPerWeekExpected), toString(DateTimeIvlExpand_HourPrecPerWeek))
 define test_DateTimeIvlExpand_HourPrecPerDay: TestMessage(DateTimeIvlExpand_HourPrecPerDay = HourPrecPerDayExpected, 'DateTimeIvlExpand_HourPrecPerDay', toString(HourPrecPerDayExpected), toString(DateTimeIvlExpand_HourPrecPerDay))
 define test_DateTimeIvlExpand_HourPrecPerHour: TestMessage(DateTimeIvlExpand_HourPrecPerHour = HourPrecPerHourExpected, 'DateTimeIvlExpand_HourPrecPerHour', toString(HourPrecPerHourExpected), toString(DateTimeIvlExpand_HourPrecPerHour))
-define test_DateTimeIvlExpand_HourPrecPerMinute: TestMessage(DateTimeIvlExpand_HourPrecPerMinute is null, 'DateTimeIvlExpand_HourPrecPerMinute', 'null', toString(DateTimeIvlExpand_HourPrecPerMinute))
-define test_DateTimeIvlExpand_HourPrecPerSecond: TestMessage(DateTimeIvlExpand_HourPrecPerSecond is null, 'DateTimeIvlExpand_HourPrecPerSecond', 'null', toString(DateTimeIvlExpand_HourPrecPerSecond))
-define test_DateTimeIvlExpand_HourPrecPerMillisecond: TestMessage(DateTimeIvlExpand_HourPrecPerMillisecond is null, 'DateTimeIvlExpand_HourPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_HourPrecPerMillisecond))
+define test_DateTimeIvlExpand_HourPrecPerMinute: TestMessage(not exists DateTimeIvlExpand_HourPrecPerMinute, 'DateTimeIvlExpand_HourPrecPerMinute', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_HourPrecPerMinute))
+define test_DateTimeIvlExpand_HourPrecPerSecond: TestMessage(not exists DateTimeIvlExpand_HourPrecPerSecond, 'DateTimeIvlExpand_HourPrecPerSecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_HourPrecPerSecond))
+define test_DateTimeIvlExpand_HourPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_HourPrecPerMillisecond, 'DateTimeIvlExpand_HourPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_HourPrecPerMillisecond))
 
-define DayPrecPerYearExpected: { Interval[DateTime(2016,01,01), DateTime(2016,12,31)], Interval[DateTime(2017,01,01), DateTime(2017,12,31)] }
-define DayPrecPerMonthExpected: { Interval[DateTime(2018,01,01), DateTime(2018,01,31)], Interval[DateTime(2018,02,01), DateTime(2018,02,28)] }
+define DayPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
+define DayPrecPerMonthExpected: { Interval[DateTime(2018, 1), DateTime(2018, 1)], Interval[DateTime(2018, 2), DateTime(2018, 2)], Interval[DateTime(2018, 3), DateTime(2018, 3)] }
 define DayPrecPerWeekExpected: { Interval[DateTime(2018,01,01), DateTime(2018,01,07)], Interval[DateTime(2018,01,08), DateTime(2018,01,14)] }
 define DayPrecPerDayExpected: { Interval[DateTime(2018,01,01), DateTime(2018,01,01)], Interval[DateTime(2018,01,02), DateTime(2018,01,02)] }
 define DateTimeIvlExpand_DayPrecPerYear: expand { Interval[DateTime(2016,01,01), DateTime(2018,01,01)] } per year
@@ -4061,12 +4064,12 @@ define test_DateTimeIvlExpand_DayPrecPerYear: TestMessage(DateTimeIvlExpand_DayP
 define test_DateTimeIvlExpand_DayPrecPerMonth: TestMessage(DateTimeIvlExpand_DayPrecPerMonth = DayPrecPerMonthExpected, 'DateTimeIvlExpand_DayPrecPerMonth', toString(DayPrecPerMonthExpected), toString(DateTimeIvlExpand_DayPrecPerMonth))
 define test_DateTimeIvlExpand_DayPrecPerWeek: TestMessage(DateTimeIvlExpand_DayPrecPerWeek = DayPrecPerWeekExpected, 'DateTimeIvlExpand_DayPrecPerWeek', toString(DayPrecPerWeekExpected), toString(DateTimeIvlExpand_DayPrecPerWeek))
 define test_DateTimeIvlExpand_DayPrecPerDay: TestMessage(DateTimeIvlExpand_DayPrecPerDay = DayPrecPerDayExpected, 'DateTimeIvlExpand_DayPrecPerDay', toString(DayPrecPerDayExpected), toString(DateTimeIvlExpand_DayPrecPerDay))
-define test_DateTimeIvlExpand_DayPrecPerHour: TestMessage(DateTimeIvlExpand_DayPrecPerHour is null, 'DateTimeIvlExpand_DayPrecPerHour', 'null', toString(DateTimeIvlExpand_DayPrecPerHour))
-define test_DateTimeIvlExpand_DayPrecPerMinute: TestMessage(DateTimeIvlExpand_DayPrecPerMinute is null, 'DateTimeIvlExpand_DayPrecPerMinute', 'null', toString(DateTimeIvlExpand_DayPrecPerMinute))
-define test_DateTimeIvlExpand_DayPrecPerSecond: TestMessage(DateTimeIvlExpand_DayPrecPerSecond is null, 'DateTimeIvlExpand_DayPrecPerSecond', 'null', toString(DateTimeIvlExpand_DayPrecPerSecond))
-define test_DateTimeIvlExpand_DayPrecPerMillisecond: TestMessage(DateTimeIvlExpand_DayPrecPerMillisecond is null, 'DateTimeIvlExpand_DayPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_DayPrecPerMillisecond))
+define test_DateTimeIvlExpand_DayPrecPerHour: TestMessage(not exists DateTimeIvlExpand_DayPrecPerHour, 'DateTimeIvlExpand_DayPrecPerHour', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_DayPrecPerHour))
+define test_DateTimeIvlExpand_DayPrecPerMinute: TestMessage(not exists DateTimeIvlExpand_DayPrecPerMinute, 'DateTimeIvlExpand_DayPrecPerMinute', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_DayPrecPerMinute))
+define test_DateTimeIvlExpand_DayPrecPerSecond: TestMessage(not exists DateTimeIvlExpand_DayPrecPerSecond, 'DateTimeIvlExpand_DayPrecPerSecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_DayPrecPerSecond))
+define test_DateTimeIvlExpand_DayPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_DayPrecPerMillisecond, 'DateTimeIvlExpand_DayPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_DayPrecPerMillisecond))
 
-define MonthPrecPerYearExpected: { Interval[DateTime(2016,01), DateTime(2016,12)], Interval[DateTime(2017,01), DateTime(2017,12)] }
+define MonthPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
 define MonthPrecPerMonthExpected: { Interval[DateTime(2018,01), DateTime(2018,01)], Interval[DateTime(2018,02), DateTime(2018,02)] }
 define DateTimeIvlExpand_MonthPrecPerYear: expand { Interval[DateTime(2016,01), DateTime(2018,01)] } per year
 define DateTimeIvlExpand_MonthPrecPerMonth: expand { Interval[DateTime(2018,01), DateTime(2018,02)] } per month
@@ -4079,12 +4082,12 @@ define DateTimeIvlExpand_MonthPrecPerMillisecond: expand { Interval[DateTime(201
 
 define test_DateTimeIvlExpand_MonthPrecPerYear: TestMessage(DateTimeIvlExpand_MonthPrecPerYear = MonthPrecPerYearExpected, 'DateTimeIvlExpand_MonthPrecPerYear', toString(MonthPrecPerYearExpected), toString(DateTimeIvlExpand_MonthPrecPerYear))
 define test_DateTimeIvlExpand_MonthPrecPerMonth: TestMessage(DateTimeIvlExpand_MonthPrecPerMonth = MonthPrecPerMonthExpected, 'DateTimeIvlExpand_MonthPrecPerMonth', toString(MonthPrecPerMonthExpected), toString(DateTimeIvlExpand_MonthPrecPerMonth))
-define test_DateTimeIvlExpand_MonthPrecPerWeek: TestMessage(DateTimeIvlExpand_MonthPrecPerWeek is null, 'DateTimeIvlExpand_MonthPrecPerWeek', 'null', toString(DateTimeIvlExpand_MonthPrecPerWeek))
-define test_DateTimeIvlExpand_MonthPrecPerDay: TestMessage(DateTimeIvlExpand_MonthPrecPerDay is null, 'DateTimeIvlExpand_MonthPrecPerDay', 'null', toString(DateTimeIvlExpand_MonthPrecPerDay))
-define test_DateTimeIvlExpand_MonthPrecPerHour: TestMessage(DateTimeIvlExpand_MonthPrecPerHour is null, 'DateTimeIvlExpand_MonthPrecPerHour', 'null', toString(DateTimeIvlExpand_MonthPrecPerHour))
-define test_DateTimeIvlExpand_MonthPrecPerMinute: TestMessage(DateTimeIvlExpand_MonthPrecPerMinute is null, 'DateTimeIvlExpand_MonthPrecPerMinute', 'null', toString(DateTimeIvlExpand_MonthPrecPerMinute))
-define test_DateTimeIvlExpand_MonthPrecPerSecond: TestMessage(DateTimeIvlExpand_MonthPrecPerSecond is null, 'DateTimeIvlExpand_MonthPrecPerSecond', 'null', toString(DateTimeIvlExpand_MonthPrecPerSecond))
-define test_DateTimeIvlExpand_MonthPrecPerMillisecond: TestMessage(DateTimeIvlExpand_MonthPrecPerMillisecond is null, 'DateTimeIvlExpand_MonthPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_MonthPrecPerMillisecond))
+define test_DateTimeIvlExpand_MonthPrecPerWeek: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerWeek, 'DateTimeIvlExpand_MonthPrecPerWeek', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerWeek))
+define test_DateTimeIvlExpand_MonthPrecPerDay: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerDay, 'DateTimeIvlExpand_MonthPrecPerDay', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerDay))
+define test_DateTimeIvlExpand_MonthPrecPerHour: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerHour, 'DateTimeIvlExpand_MonthPrecPerHour', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerHour))
+define test_DateTimeIvlExpand_MonthPrecPerMinute: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerMinute, 'DateTimeIvlExpand_MonthPrecPerMinute', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerMinute))
+define test_DateTimeIvlExpand_MonthPrecPerSecond: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerSecond, 'DateTimeIvlExpand_MonthPrecPerSecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerSecond))
+define test_DateTimeIvlExpand_MonthPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_MonthPrecPerMillisecond, 'DateTimeIvlExpand_MonthPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_MonthPrecPerMillisecond))
 
 define YearPrecPerYearExpected: { Interval[DateTime(2016), DateTime(2016)], Interval[DateTime(2017), DateTime(2017)], Interval[DateTime(2018), DateTime(2018)] }
 define DateTimeIvlExpand_YearPrecPerYear: expand { Interval[DateTime(2016), DateTime(2018)] } per year
@@ -4097,13 +4100,13 @@ define DateTimeIvlExpand_YearPrecPerSecond: expand { Interval[DateTime(2018), Da
 define DateTimeIvlExpand_YearPrecPerMillisecond: expand { Interval[DateTime(2018), DateTime(2018)] } per millisecond
 
 define test_DateTimeIvlExpand_YearPrecPerYear: TestMessage(DateTimeIvlExpand_YearPrecPerYear = YearPrecPerYearExpected, 'DateTimeIvlExpand_YearPrecPerYear', toString(YearPrecPerYearExpected), toString(DateTimeIvlExpand_YearPrecPerYear))
-define test_DateTimeIvlExpand_YearPrecPerMonth: TestMessage(DateTimeIvlExpand_YearPrecPerMonth is null, 'DateTimeIvlExpand_YearPrecPerMonth', 'null', toString(DateTimeIvlExpand_YearPrecPerMonth))
-define test_DateTimeIvlExpand_YearPrecPerWeek: TestMessage(DateTimeIvlExpand_YearPrecPerWeek is null, 'DateTimeIvlExpand_YearPrecPerWeek', 'null', toString(DateTimeIvlExpand_YearPrecPerWeek))
-define test_DateTimeIvlExpand_YearPrecPerDay: TestMessage(DateTimeIvlExpand_YearPrecPerDay is null, 'DateTimeIvlExpand_YearPrecPerDay', 'null', toString(DateTimeIvlExpand_YearPrecPerDay))
-define test_DateTimeIvlExpand_YearPrecPerHour: TestMessage(DateTimeIvlExpand_YearPrecPerHour is null, 'DateTimeIvlExpand_YearPrecPerHour', 'null', toString(DateTimeIvlExpand_YearPrecPerHour))
-define test_DateTimeIvlExpand_YearPrecPerMinute: TestMessage(DateTimeIvlExpand_YearPrecPerMinute is null, 'DateTimeIvlExpand_YearPrecPerMinute', 'null', toString(DateTimeIvlExpand_YearPrecPerMinute))
-define test_DateTimeIvlExpand_YearPrecPerSecond: TestMessage(DateTimeIvlExpand_YearPrecPerSecond is null, 'DateTimeIvlExpand_YearPrecPerSecond', 'null', toString(DateTimeIvlExpand_YearPrecPerSecond))
-define test_DateTimeIvlExpand_YearPrecPerMillisecond: TestMessage(DateTimeIvlExpand_YearPrecPerMillisecond is null, 'DateTimeIvlExpand_YearPrecPerMillisecond', 'null', toString(DateTimeIvlExpand_YearPrecPerMillisecond))
+define test_DateTimeIvlExpand_YearPrecPerMonth: TestMessage(not exists DateTimeIvlExpand_YearPrecPerMonth, 'DateTimeIvlExpand_YearPrecPerMonth', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerMonth))
+define test_DateTimeIvlExpand_YearPrecPerWeek: TestMessage(not exists DateTimeIvlExpand_YearPrecPerWeek, 'DateTimeIvlExpand_YearPrecPerWeek', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerWeek))
+define test_DateTimeIvlExpand_YearPrecPerDay: TestMessage(not exists DateTimeIvlExpand_YearPrecPerDay, 'DateTimeIvlExpand_YearPrecPerDay', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerDay))
+define test_DateTimeIvlExpand_YearPrecPerHour: TestMessage(not exists DateTimeIvlExpand_YearPrecPerHour, 'DateTimeIvlExpand_YearPrecPerHour', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerHour))
+define test_DateTimeIvlExpand_YearPrecPerMinute: TestMessage(not exists DateTimeIvlExpand_YearPrecPerMinute, 'DateTimeIvlExpand_YearPrecPerMinute', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerMinute))
+define test_DateTimeIvlExpand_YearPrecPerSecond: TestMessage(not exists DateTimeIvlExpand_YearPrecPerSecond, 'DateTimeIvlExpand_YearPrecPerSecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerSecond))
+define test_DateTimeIvlExpand_YearPrecPerMillisecond: TestMessage(not exists DateTimeIvlExpand_YearPrecPerMillisecond, 'DateTimeIvlExpand_YearPrecPerMillisecond', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_YearPrecPerMillisecond))
 
 define NullInListExpected: { Interval[@2018-01-01T01+00:00, @2018-01-01T01+00:00] }
 define DateTimeOverlappingExpected: { Interval[@2018-01-01T01+00:00, @2018-01-01T01+00:00], Interval[@2018-01-01T02+00:00, @2018-01-01T02+00:00], Interval[@2018-01-01T03+00:00, @2018-01-01T03+00:00], Interval[@2018-01-01T04+00:00, @2018-01-01T04+00:00] }
@@ -4136,23 +4139,21 @@ define test_DateTimeIvlExpand_NoPerDefaultDay: TestMessage(DateTimeIvlExpand_NoP
 define test_DateTimeIvlExpand_NoPerDefaultMonth: TestMessage(DateTimeIvlExpand_NoPerDefaultMonth = DateTimeNoPerDefaultMonthExpected, 'DateTimeIvlExpand_NoPerDefaultMonth', toString(DateTimeNoPerDefaultMonthExpected), toString(DateTimeIvlExpand_NoPerDefaultMonth))
 define test_DateTimeIvlExpand_NoPerDefaultYear: TestMessage(DateTimeIvlExpand_NoPerDefaultYear = DateTimeNoPerDefaultYearExpected, 'DateTimeIvlExpand_NoPerDefaultYear', toString(DateTimeNoPerDefaultYearExpected), toString(DateTimeIvlExpand_NoPerDefaultYear))
 
-define DateTimeOpenStartExpected: { Interval[@2018-01-01T02+00:00, @2018-01-02T01+00:00], Interval[@2018-01-02T02+00:00, @2018-01-03T01+00:00] }
-define DateTimeOpenEndExpected: { Interval[@2018-01-01T01+00:00, @2018-01-02T00+00:00], Interval[@2018-01-02T01+00:00, @2018-01-03T00+00:00] }
-define DateTimeOpenBothExpected: { Interval[@2018-01-01T02+00:00, @2018-01-02T01+00:00] }
+define DateTimeOpenExpected: { Interval[DateTime(2018, 1, 2), DateTime(2018, 1, 2)], Interval[DateTime(2018, 1, 3), DateTime(2018, 1, 3)] }
 define DateTimeIvlExpand_OpenStart: expand { Interval(@2018-01-01T01+00:00, @2018-01-03T01+00:00] } per day
 define DateTimeIvlExpand_OpenEnd: expand { Interval[@2018-01-01T01+00:00, @2018-01-03T01+00:00) } per day
 define DateTimeIvlExpand_OpenBoth: expand { Interval(@2018-01-01T01+00:00, @2018-01-03T01+00:00) } per day
 
-define test_DateTimeIvlExpand_OpenStart: TestMessage(DateTimeIvlExpand_OpenStart = DateTimeOpenStartExpected, 'DateTimeIvlExpand_OpenStart', toString(DateTimeOpenStartExpected), toString(DateTimeIvlExpand_OpenStart))
-define test_DateTimeIvlExpand_OpenEnd: TestMessage(DateTimeIvlExpand_OpenEnd = DateTimeOpenEndExpected, 'DateTimeIvlExpand_OpenEnd', toString(DateTimeOpenEndExpected), toString(DateTimeIvlExpand_OpenEnd))
-define test_DateTimeIvlExpand_OpenBoth: TestMessage(DateTimeIvlExpand_OpenBoth = DateTimeOpenBothExpected, 'DateTimeIvlExpand_OpenBoth', toString(DateTimeOpenBothExpected), toString(DateTimeIvlExpand_OpenBoth))
+define test_DateTimeIvlExpand_OpenStart: TestMessage(DateTimeIvlExpand_OpenStart = DateTimeOpenExpected, 'DateTimeIvlExpand_OpenStart', toString(DateTimeOpenExpected), toString(DateTimeIvlExpand_OpenStart))
+define test_DateTimeIvlExpand_OpenEnd: TestMessage(DateTimeIvlExpand_OpenEnd = DateTimeOpenExpected, 'DateTimeIvlExpand_OpenEnd', toString(DateTimeOpenExpected), toString(DateTimeIvlExpand_OpenEnd))
+define test_DateTimeIvlExpand_OpenBoth: TestMessage(DateTimeIvlExpand_OpenBoth = DateTimeOpenExpected, 'DateTimeIvlExpand_OpenBoth', toString(DateTimeOpenExpected), toString(DateTimeIvlExpand_OpenBoth))
 
-define DateTimeMismatchPrecisionExpected: { Interval[@2012-01-01T12:00+00:00, @2012-01-02T11:59+00:00] }
+define DateTimeMismatchPrecisionExpected: { Interval[DateTime(2012, 1, 2), DateTime(2012, 1, 2)] }
 define DateTimeIvlExpand_MismatchPrecision: expand { Interval[@2012-01-01T12:00+00:00, @2012-01-02T12:00:00+00:00] } per day
 define DateTimeIvlExpand_MismatchPrecisionEmpty: expand { Interval[@2012-01-01T13:00:00+00:00, @2012-01-02T12:59+00:00] } per day
 
 define test_DateTimeIvlExpand_MismatchPrecision: TestMessage(DateTimeIvlExpand_MismatchPrecision = DateTimeMismatchPrecisionExpected, 'DateTimeIvlExpand_MismatchPrecision', toString(DateTimeMismatchPrecisionExpected), toString(DateTimeIvlExpand_MismatchPrecision))
-define test_DateTimeIvlExpand_MismatchPrecisionEmpty: TestMessage(not exists DateTimeIvlExpand_MismatchPrecisionEmpty, 'DateTimeIvlExpand_MismatchPrecisionEmpty', toString(List<Interval<Date>>{}), toString(DateTimeIvlExpand_MismatchPrecisionEmpty))
+define test_DateTimeIvlExpand_MismatchPrecisionEmpty: TestMessage(DateTimeIvlExpand_MismatchPrecisionEmpty = DateTimeMismatchPrecisionExpected, 'DateTimeIvlExpand_MismatchPrecisionEmpty', toString(DateTimeMismatchPrecisionExpected), toString(DateTimeIvlExpand_MismatchPrecisionEmpty))
 
 define DateTimeIvlExpand_NullOpen: expand { Interval[null, @2018-01-03T01+00:00] } per day
 define DateTimeIvlExpand_NullClose: expand { Interval[@2018-01-01T01+00:00, null] } per day
@@ -4160,15 +4161,16 @@ define DateTimeIvlExpand_NullClose: expand { Interval[@2018-01-01T01+00:00, null
 //define DateTimeIvlExpand_NullBoth: expand { Interval[null, null] } per day
 define DateTimeIvlExpand_BadPerGram: expand { Interval[@2018-01-01T01+00:00, @2018-01-04T01+00:00] } per 1 'g'
 
-define test_DateTimeIvlExpand_NullOpen: TestMessage(DateTimeIvlExpand_NullOpen is null, 'DateTimeIvlExpand_NullOpen', 'null', toString(DateTimeIvlExpand_NullOpen))
-define test_DateTimeIvlExpand_NullClose: TestMessage(DateTimeIvlExpand_NullClose is null, 'DateTimeIvlExpand_NullClose', 'null', toString(DateTimeIvlExpand_NullClose))
+define test_DateTimeIvlExpand_NullOpen: TestMessage(not exists DateTimeIvlExpand_NullOpen, 'DateTimeIvlExpand_NullOpen', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_NullOpen))
+define test_DateTimeIvlExpand_NullClose: TestMessage(not exists DateTimeIvlExpand_NullClose, 'DateTimeIvlExpand_NullClose', toString(DateTimeEmptyIntervalList), toString(DateTimeIvlExpand_NullClose))
 //define test_DateTimeIvlExpand_NullBoth: TestMessage(DateTimeIvlExpand_NullBoth is null, 'DateTimeIvlExpand_NullBoth', 'null', toString(DateTimeIvlExpand_NullBoth))
 define test_DateTimeIvlExpand_BadPerGram: TestMessage(DateTimeIvlExpand_BadPerGram is null, 'DateTimeIvlExpand_BadPerGram', 'null', toString(DateTimeIvlExpand_BadPerGram))
 
 // TimeIntervalExpand
-define TimeMsPrecPerHourExpected: { Interval[@T01:00:00.000, @T01:59:59.999], Interval[@T02:00:00.000, @T02:59:59.999] }
-define TimeMsPrecPerMinuteExpected: { Interval[@T01:00:00.000, @T01:00:59.999], Interval[@T01:01:00.000, @T01:01:59.999] }
-define TimeMsPrecPerSecondExpected: { Interval[@T01:00:00.000, @T01:00:00.999], Interval[@T01:00:01.000, @T01:00:01.999] }
+define TimeEmptyIntervalList: List<Interval<Time>>{}
+define TimeMsPrecPerHourExpected: { Interval[@T01, @T01], Interval[@T02, @T02], Interval[@T03, @T03] }
+define TimeMsPrecPerMinuteExpected: { Interval[@T01:00, @T01:00], Interval[@T01:01, @T01:01], Interval[@T01:02, @T01:02] }
+define TimeMsPrecPerSecondExpected: { Interval[@T01:00:00, @T01:00:00], Interval[@T01:00:01, @T01:00:01], Interval[@T01:00:02, @T01:00:02] }
 define TimeMsPrecPerMillisecondExpected: { Interval[@T01:00:00.000, @T01:00:00.000], Interval[@T01:00:00.001, @T01:00:00.001] }
 define TimeIvlExpand_MsPrecPerHour: expand { Interval[@T01:00:00.000, @T03:00:00.000] } per hour
 define TimeIvlExpand_MsPrecPerMinute: expand { Interval[@T01:00:00.000, @T01:02:00.000] } per minute
@@ -4180,8 +4182,8 @@ define test_TimeIvlExpand_MsPrecPerMinute: TestMessage(TimeIvlExpand_MsPrecPerMi
 define test_TimeIvlExpand_MsPrecPerSecond: TestMessage(TimeIvlExpand_MsPrecPerSecond = TimeMsPrecPerSecondExpected, 'TimeIvlExpand_MsPrecPerSecond', toString(TimeMsPrecPerSecondExpected), toString(TimeIvlExpand_MsPrecPerSecond))
 define test_TimeIvlExpand_MsPrecPerMillisecond: TestMessage(TimeIvlExpand_MsPrecPerMillisecond = TimeMsPrecPerMillisecondExpected, 'TimeIvlExpand_MsPrecPerMillisecond', toString(TimeMsPrecPerMillisecondExpected), toString(TimeIvlExpand_MsPrecPerMillisecond))
 
-define TimeSecPrecPerHourExpected: { Interval[@T01:00:00, @T01:59:59], Interval[@T02:00:00, @T02:59:59] }
-define TimeSecPrecPerMinuteExpected: { Interval[@T01:00:00, @T01:00:59], Interval[@T01:01:00, @T01:01:59] }
+define TimeSecPrecPerHourExpected: { Interval[@T01, @T01], Interval[@T02, @T02], Interval[@T03, @T03] }
+define TimeSecPrecPerMinuteExpected: { Interval[@T01:00, @T01:00], Interval[@T01:01, @T01:01], Interval[@T01:02, @T01:02] }
 define TimeSecPrecPerSecondExpected: { Interval[@T01:00:00, @T01:00:00], Interval[@T01:00:01, @T01:00:01] }
 define TimeIvlExpand_SecPrecPerHour: expand { Interval[@T01:00:00, @T03:00:00] } per hour
 define TimeIvlExpand_SecPrecPerMinute: expand { Interval[@T01:00:00, @T01:02:00] } per minute
@@ -4191,9 +4193,9 @@ define TimeIvlExpand_SecPrecPerMillisecond: expand { Interval[@T01:00:00, @T01:0
 define test_TimeIvlExpand_SecPrecPerHour: TestMessage(TimeIvlExpand_SecPrecPerHour = TimeSecPrecPerHourExpected, 'TimeIvlExpand_SecPrecPerHour', toString(TimeSecPrecPerHourExpected), toString(TimeIvlExpand_SecPrecPerHour))
 define test_TimeIvlExpand_SecPrecPerMinute: TestMessage(TimeIvlExpand_SecPrecPerMinute = TimeSecPrecPerMinuteExpected, 'TimeIvlExpand_SecPrecPerMinute', toString(TimeSecPrecPerMinuteExpected), toString(TimeIvlExpand_SecPrecPerMinute))
 define test_TimeIvlExpand_SecPrecPerSecond: TestMessage(TimeIvlExpand_SecPrecPerSecond = TimeSecPrecPerSecondExpected, 'TimeIvlExpand_SecPrecPerSecond', toString(TimeSecPrecPerSecondExpected), toString(TimeIvlExpand_SecPrecPerSecond))
-define test_TimeIvlExpand_SecPrecPerMillisecond: TestMessage(TimeIvlExpand_SecPrecPerMillisecond is null, 'TimeIvlExpand_SecPrecPerMillisecond', 'null', toString(TimeIvlExpand_SecPrecPerMillisecond))
+define test_TimeIvlExpand_SecPrecPerMillisecond: TestMessage(not exists TimeIvlExpand_SecPrecPerMillisecond, 'TimeIvlExpand_SecPrecPerMillisecond', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_SecPrecPerMillisecond))
 
-define TimeMinPrecPerHourExpected: { Interval[@T01:00, @T01:59], Interval[@T02:00, @T02:59] }
+define TimeMinPrecPerHourExpected: { Interval[@T01, @T01], Interval[@T02, @T02], Interval[@T03, @T03] }
 define TimeMinPrecPerMinuteExpected: { Interval[@T01:00, @T01:00], Interval[@T01:01, @T01:01] }
 define TimeIvlExpand_MinPrecPerHour: expand { Interval[@T01:00, @T03:00] } per hour
 define TimeIvlExpand_MinPrecPerMinute: expand { Interval[@T01:00, @T01:01] } per minute
@@ -4202,8 +4204,8 @@ define TimeIvlExpand_MinPrecPerMillisecond: expand { Interval[@T01:00, @T01:00] 
 
 define test_TimeIvlExpand_MinPrecPerHour: TestMessage(TimeIvlExpand_MinPrecPerHour = TimeMinPrecPerHourExpected, 'TimeIvlExpand_MinPrecPerHour', toString(TimeMinPrecPerHourExpected), toString(TimeIvlExpand_MinPrecPerHour))
 define test_TimeIvlExpand_MinPrecPerMinute: TestMessage(TimeIvlExpand_MinPrecPerMinute = TimeMinPrecPerMinuteExpected, 'TimeIvlExpand_MinPrecPerMinute', toString(TimeMinPrecPerMinuteExpected), toString(TimeIvlExpand_MinPrecPerMinute))
-define test_TimeIvlExpand_MinPrecPerSecond: TestMessage(TimeIvlExpand_MinPrecPerSecond is null, 'TimeIvlExpand_MinPrecPerSecond', 'null', toString(TimeIvlExpand_MinPrecPerSecond))
-define test_TimeIvlExpand_MinPrecPerMillisecond: TestMessage(TimeIvlExpand_MinPrecPerMillisecond is null, 'TimeIvlExpand_MinPrecPerMillisecond', 'null', toString(TimeIvlExpand_MinPrecPerMillisecond))
+define test_TimeIvlExpand_MinPrecPerSecond: TestMessage(not exists TimeIvlExpand_MinPrecPerSecond, 'TimeIvlExpand_MinPrecPerSecond', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_MinPrecPerSecond))
+define test_TimeIvlExpand_MinPrecPerMillisecond: TestMessage(not exists TimeIvlExpand_MinPrecPerMillisecond, 'TimeIvlExpand_MinPrecPerMillisecond', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_MinPrecPerMillisecond))
 
 define TimeHourPrecPerHourExpected: { Interval[@T01, @T01], Interval[@T02, @T02] }
 define TimeIvlExpand_HourPrecPerHour: expand { Interval[@T01, @T02] } per hour
@@ -4212,18 +4214,16 @@ define TimeIvlExpand_HourPrecPerSecond: expand { Interval[@T01, @T01] } per seco
 define TimeIvlExpand_HourPrecPerMillisecond: expand { Interval[@T01, @T01] } per millisecond
 
 define test_TimeIvlExpand_HourPrecPerHour: TestMessage(TimeIvlExpand_HourPrecPerHour = TimeHourPrecPerHourExpected, 'TimeIvlExpand_HourPrecPerHour', toString(TimeHourPrecPerHourExpected), toString(TimeIvlExpand_HourPrecPerHour))
-define test_TimeIvlExpand_HourPrecPerMinute: TestMessage(TimeIvlExpand_HourPrecPerMinute is null, 'TimeIvlExpand_HourPrecPerMinute', 'null', toString(TimeIvlExpand_HourPrecPerMinute))
-define test_TimeIvlExpand_HourPrecPerSecond: TestMessage(TimeIvlExpand_HourPrecPerSecond is null, 'TimeIvlExpand_HourPrecPerSecond', 'null', toString(TimeIvlExpand_HourPrecPerSecond))
-define test_TimeIvlExpand_HourPrecPerMillisecond: TestMessage(TimeIvlExpand_HourPrecPerMillisecond is null, 'TimeIvlExpand_HourPrecPerMillisecond', 'null', toString(TimeIvlExpand_HourPrecPerMillisecond))
+define test_TimeIvlExpand_HourPrecPerMinute: TestMessage(not exists TimeIvlExpand_HourPrecPerMinute, 'TimeIvlExpand_HourPrecPerMinute', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_HourPrecPerMinute))
+define test_TimeIvlExpand_HourPrecPerSecond: TestMessage(not exists TimeIvlExpand_HourPrecPerSecond, 'TimeIvlExpand_HourPrecPerSecond', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_HourPrecPerSecond))
+define test_TimeIvlExpand_HourPrecPerMillisecond: TestMessage(not exists TimeIvlExpand_HourPrecPerMillisecond, 'TimeIvlExpand_HourPrecPerMillisecond', toString(TimeEmptyIntervalList), toString(TimeIvlExpand_HourPrecPerMillisecond))
 
 // QuantityIntervalExpand
-// TODO: Bonnie expects this:
-//define ClosedSingleGPerGExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
-// This seems like the expected behavior and is more in line with how the date expand works
-define ClosedSingleGPerGExpected: { Interval[2 'g', 2.99999999 'g'], Interval[3 'g', 3.99999999 'g'] }
-define ClosedSingleGPerGDecimalExpected: { Interval[2.1 'g', 3.09999999 'g'], Interval[3.1 'g', 4.09999999 'g'] }
-define ClosedSingleMGPerMGTruncExpected: { Interval[2000 'mg', 2799.99999999 'mg'], Interval[2800 'mg', 3599.99999999 'mg'], Interval[3600 'mg', 4399.99999999 'mg'] }
-define ClosedSingleMGPerMGDecimalExpected: { Interval[2000.01 'mg', 2800.00999999 'mg'], Interval[2800.01 'mg', 3600.00999999 'mg'], Interval[3600.01 'mg', 4400.00999999 'mg'] }
+define QuantityEmptyIntervalList: List<Interval<Time>>{}
+define ClosedSingleGPerGExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
+define ClosedSingleGPerGDecimalExpected: { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
+define ClosedSingleMGPerMGTruncExpected: { Interval[2000 'mg', 2799 'mg'], Interval[2800 'mg', 3599 'mg'], Interval[3600 'mg', 4399 'mg'] }
+define ClosedSingleMGPerMGDecimalExpected: { Interval[2001 'mg', 2800 'mg'], Interval[2801 'mg', 3600 'mg'], Interval[3601 'mg', 4400 'mg'] }
 define QtyIvlExpand_ClosedSingleGPerG: expand { Interval[2 'g', 4 'g'] } per 1 'g'
 define QtyIvlExpand_ClosedSingleGPerGDecimal: expand { Interval[2.1 'g', 4.1 'g'] } per 1 'g'
 // TODO: uncomment once UCUM service is implemented
@@ -4237,8 +4237,8 @@ define test_QtyIvlExpand_ClosedSingleGPerGDecimal: TestMessage(QtyIvlExpand_Clos
 define test_QtyIvlExpand_ClosedSingleMGPerMGTrunc: TestMessage(QtyIvlExpand_ClosedSingleMGPerMGTrunc = ClosedSingleMGPerMGTruncExpected, 'QtyIvlExpand_ClosedSingleMGPerMGTrunc', toString(ClosedSingleMGPerMGTruncExpected), toString(QtyIvlExpand_ClosedSingleMGPerMGTrunc))
 define test_QtyIvlExpand_ClosedSingleMGPerMGDecimal: TestMessage(QtyIvlExpand_ClosedSingleMGPerMGDecimal = ClosedSingleMGPerMGDecimalExpected, 'QtyIvlExpand_ClosedSingleMGPerMGDecimal', toString(ClosedSingleMGPerMGDecimalExpected), toString(QtyIvlExpand_ClosedSingleMGPerMGDecimal))
 
-define QtyIvlOverlappingExpected: { Interval[2 'g', 2.99999999 'g'], Interval[3 'g', 3.99999999 'g'], Interval[4 'g', 4.99999999 'g'] }
-define QtyIvlNonOverlappingExpected: { Interval[2 'g', 2.99999999 'g'], Interval[3 'g', 3.99999999 'g'], Interval[6 'g', 6 'g'] }
+define QtyIvlOverlappingExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'], Interval[5 'g', 5 'g'] }
+define QtyIvlNonOverlappingExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'], Interval[6 'g', 6 'g'] }
 define QtyIvlExpand_NullInList: expand { Interval[2 'g', 4 'g'], null } per 1 'g'
 define QtyIvlExpand_Overlapping: expand { Interval[2 'g', 4 'g'], Interval[3 'g', 5 'g'] } per 1 'g'
 define QtyIvlExpand_NonOverlapping: expand { Interval[2 'g', 4 'g'], Interval[6 'g', 6 'g'] } per 1 'g'
@@ -4253,12 +4253,11 @@ define QtyIvlExpand_NoPerDefaultG: expand { Interval[2 'g', 4 'g'] }
 
 define test_QtyIvlExpand_NoPerDefaultG: TestMessage(QtyIvlExpand_NoPerDefaultG = ClosedSingleGPerGExpected, 'QtyIvlExpand_NoPerDefaultG', toString(ClosedSingleGPerGExpected), toString(QtyIvlExpand_NoPerDefaultG))
 
-// NOTE: Bonnie expects { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
-define QtyIvlOpenStartExpected: { Interval[2.00000001 'g', 3 'g'], Interval[3.00000001 'g', 4 'g'] }
-define QtyIvlOpenEndExpected: { Interval[2 'g', 2.99999999 'g'], Interval[3 'g', 3.99999999 'g'] }
-define QtyIvlOpenBothExpected: { Interval[2.00000001 'g', 3 'g'] }
-define QtyIvlOpenBothDecimalExpected: { Interval[2.10000001 'g', 3.1 'g'] }
-define QtyIvlOpenBothDecimalTruncExpected: { Interval[2.10000001 'g', 3.1 'g'], Interval[3.10000001 'g', 4.1 'g'] }
+define QtyIvlOpenStartExpected: { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
+define QtyIvlOpenEndExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'] }
+define QtyIvlOpenBothExpected: { Interval[3 'g', 3 'g'] }
+define QtyIvlOpenBothDecimalExpected: { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
+define QtyIvlOpenBothDecimalTruncExpected: { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
 define QtyIvlExpand_OpenStart: expand { Interval(2 'g', 4 'g'] } per 1 'g'
 define QtyIvlExpand_OpenEnd: expand { Interval[2 'g', 4 'g') } per 1 'g'
 define QtyIvlExpand_OpenBoth: expand { Interval(2 'g', 4 'g') } per 1 'g'
@@ -4280,9 +4279,9 @@ define QtyIvlExpand_NullClose: expand { Interval[2 'g', null] } per 1 'g'
 //define QtyIvlExpand_BadPerMinute: expand { Interval(2 'g', 4 'g'] } per 1 minute
 //define QtyIvlExpand_BadPerGram: expand { Interval(2 'km', 4 'km'] }  per 1 'g'
 
-define test_QtyIvlExpand_PerTooBig: TestMessage(not exists QtyIvlExpand_PerTooBig, 'QtyIvlExpand_PerTooBig', toString(List<Interval<Quantity>>{}), toString(QtyIvlExpand_PerTooBig))
-define test_QtyIvlExpand_NullOpen: TestMessage(QtyIvlExpand_NullOpen is null, 'QtyIvlExpand_NullOpen', 'null', toString(QtyIvlExpand_NullOpen))
-define test_QtyIvlExpand_NullClose: TestMessage(QtyIvlExpand_NullClose is null, 'QtyIvlExpand_NullClose', 'null', toString(QtyIvlExpand_NullClose))
+define test_QtyIvlExpand_PerTooBig: TestMessage(not exists QtyIvlExpand_PerTooBig, 'QtyIvlExpand_PerTooBig', toString(QuantityEmptyIntervalList), toString(QtyIvlExpand_PerTooBig))
+define test_QtyIvlExpand_NullOpen: TestMessage(not exists QtyIvlExpand_NullOpen, 'QtyIvlExpand_NullOpen', toString(QuantityEmptyIntervalList), toString(QtyIvlExpand_NullOpen))
+define test_QtyIvlExpand_NullClose: TestMessage(not exists QtyIvlExpand_NullClose, 'QtyIvlExpand_NullClose', toString(QuantityEmptyIntervalList), toString(QtyIvlExpand_NullClose))
 //define test_QtyIvlExpand_NullBoth: TestMessage(QtyIvlExpand_NullBoth is null, 'QtyIvlExpand_NullBoth', 'null', toString(QtyIvlExpand_NullBoth))
 
 // IntegerIntervalExpand
@@ -4329,15 +4328,16 @@ define IntIvlExpand_NullClose: expand { Interval[2, null] } per 1 '1'
 //define IntIvlExpand_NullBoth: expand { Interval[null, null] } per 1 '1'
 define IntIvlExpand_BadPerMinute: expand { Interval(2, 4] } per 1 minute
 
-define test_IntIvlExpand_PerTooBig: TestMessage(not exists IntIvlExpand_PerTooBig, 'IntIvlExpand_PerTooBig', toString(List<Interval<Integer>>{}), toString(IntIvlExpand_PerTooBig))
-define test_IntIvlExpand_NullOpen: TestMessage(IntIvlExpand_NullOpen is null, 'IntIvlExpand_NullOpen', 'null', toString(IntIvlExpand_NullOpen))
-define test_IntIvlExpand_NullClose: TestMessage(IntIvlExpand_NullClose is null, 'IntIvlExpand_NullClose', 'null', toString(IntIvlExpand_NullClose))
+define test_IntIvlExpand_PerTooBig: TestMessage(not exists IntIvlExpand_PerTooBig, 'IntIvlExpand_PerTooBig', toString(IntEmptyIntervalList), toString(IntIvlExpand_PerTooBig))
+define test_IntIvlExpand_NullOpen: TestMessage(not exists IntIvlExpand_NullOpen, 'IntIvlExpand_NullOpen', toString(IntEmptyIntervalList), toString(IntIvlExpand_NullOpen))
+define test_IntIvlExpand_NullClose: TestMessage(not exists IntIvlExpand_NullClose, 'IntIvlExpand_NullClose', toString(IntEmptyIntervalList), toString(IntIvlExpand_NullClose))
 define test_IntIvlExpand_BadPerMinute: TestMessage(IntIvlExpand_BadPerMinute is null, 'IntIvlExpand_BadPerMinute', 'null', toString(IntIvlExpand_BadPerMinute))
 
 // DecimalIntervalExpand
-define DecIvlClosedSingleExpected: { Interval[2, 3.49999999], Interval[3.5, 4.99999999] }
-define DecIvlClosedSingle1Expected: { Interval[2.5, 4.49999999], Interval[4.5, 6.49999999], Interval[6.5, 8.49999999] }
-define DecIvlClosedSingle2Expected: { Interval[2, 2.49999999], Interval[2.5, 2.99999999], Interval[3, 3.49999999], Interval[3.5, 3.99999999], Interval[4, 4.49999999] }
+define DecEmptyIntervalList: List<Interval<Decimal>>{}
+define DecIvlClosedSingleExpected: { Interval[2.0, 3.4], Interval[3.5, 4.9] }
+define DecIvlClosedSingle1Expected: { Interval[3, 4], Interval[5, 6], Interval[7, 8], Interval[9, 10] }
+define DecIvlClosedSingle2Expected: { Interval[2, 2.4], Interval[2.5, 2.9], Interval[3.0, 3.4], Interval[3.5, 3.9], Interval[4.0, 4.4] }
 // NOTE: Bonnie has Interval[2, 5], but that results in an integer interval with a 1 '1' per
 define DecIvlExpand_ClosedSingle: expand { Interval[2.0, 5] } per 1.5 '1'
 define DecIvlExpand_ClosedSingle1: expand { Interval[2.5, 10] } per 2 '1'
@@ -4348,8 +4348,8 @@ define test_DecIvlExpand_ClosedSingle1: TestMessage(DecIvlExpand_ClosedSingle1 =
 define test_DecIvlExpand_ClosedSingle2: TestMessage(DecIvlExpand_ClosedSingle2 = DecIvlClosedSingle2Expected, 'DecIvlExpand_ClosedSingle2', toString(DecIvlClosedSingle2Expected), toString(DecIvlExpand_ClosedSingle2))
 
 // NOTE: Bonnie has Interval[2, 5], but that results in an integer interval with a 1 '1' per
-define DecIvlOverlappingExpected: { Interval[2, 3.49999999], Interval[3.5, 4.99999999], Interval[5, 6.49999999] }
-define DecIvlNonOverlappingExpected: { Interval[2, 3.49999999], Interval[6, 7.49999999] }
+define DecIvlOverlappingExpected: { Interval[2.0, 3.4], Interval[3.5, 4.9], Interval[5.0, 6.4] }
+define DecIvlNonOverlappingExpected: { Interval[2.0, 3.4], Interval[6.0, 7.4] }
 define DecIvlExpand_NullInList: expand { Interval[2.0, 5], null } per 1.5 '1'
 define DecIvlExpand_Overlapping: expand { Interval[2.0, 5], Interval[4.0, 7] } per 1.5 '1'
 define DecIvlExpand_NonOverlapping: expand { Interval[2.0, 4], Interval[6.0, 8] } per 1.5 '1'
@@ -4358,14 +4358,14 @@ define test_DecIvlExpand_NullInList: TestMessage(DecIvlExpand_NullInList = DecIv
 define test_DecIvlExpand_Overlapping: TestMessage(DecIvlExpand_Overlapping = DecIvlOverlappingExpected, 'DecIvlExpand_Overlapping', toString(DecIvlOverlappingExpected), toString(DecIvlExpand_Overlapping))
 define test_DecIvlExpand_NonOverlapping: TestMessage(DecIvlExpand_NonOverlapping = DecIvlNonOverlappingExpected, 'DecIvlExpand_NonOverlapping', toString(DecIvlNonOverlappingExpected), toString(DecIvlExpand_NonOverlapping))
 
-define DecIvlNoPerExpected: { Interval[2.5, 3.49999999], Interval[3.5, 4.49999999] }
+define DecIvlNoPerExpected: { Interval[2.5, 3.4], Interval[3.5, 4.4] }
 define DecIvlExpand_NoPer: expand { Interval[2.5, 4.5] }
 
 define test_DecIvlExpand_NoPer: TestMessage(DecIvlExpand_NoPer = DecIvlNoPerExpected, 'DecIvlExpand_NoPer', toString(DecIvlNoPerExpected), toString(DecIvlExpand_NoPer))
 
-define DecIvlOpenStartExpected: { Interval[2.00000001, 3.5], Interval[3.50000001, 5] }
-define DecIvlOpenEndExpected: { Interval[2, 3.49999999], Interval[3.5, 4.99999999] }
-define DecIvlOpenBothExpected: { Interval[2.00000001, 3.5] }
+define DecIvlOpenStartExpected: { Interval[2.1, 3.5], Interval[3.6, 5.0] }
+define DecIvlOpenEndExpected: { Interval[2.0, 3.4], Interval[3.5, 4.9] }
+define DecIvlOpenBothExpected: { Interval[2.1, 3.5] }
 define DecIvlExpand_OpenStart: expand { Interval(2.0, 5] } per 1.5 '1'
 define DecIvlExpand_OpenEnd: expand { Interval[2.0, 5) } per 1.5 '1'
 define DecIvlExpand_OpenBoth: expand { Interval(2.0, 5) } per 1.5 '1'
@@ -4381,9 +4381,9 @@ define DecIvlExpand_NullClose: expand { Interval[2, null] } per 1.5 '1'
 //define DecIvlExpand_NullBoth: expand { Interval[null, null] } per 1.5 '1'
 define DecIvlExpand_BadPerMinute: expand { Interval(2.1, 4.1] } per 0.5 minute
 
-define test_DecIvlExpand_PerTooBig: TestMessage(not exists DecIvlExpand_PerTooBig, 'DecIvlExpand_PerTooBig', toString(List<Interval<Decimal>>{}), toString(DecIvlExpand_PerTooBig))
-define test_DecIvlExpand_NullOpen: TestMessage(DecIvlExpand_NullOpen is null, 'DecIvlExpand_NullOpen', 'null', toString(DecIvlExpand_NullOpen))
-define test_DecIvlExpand_NullClose: TestMessage(DecIvlExpand_NullClose is null, 'DecIvlExpand_NullClose', 'null', toString(DecIvlExpand_NullClose))
+define test_DecIvlExpand_PerTooBig: TestMessage(not exists DecIvlExpand_PerTooBig, 'DecIvlExpand_PerTooBig', toString(DecEmptyIntervalList), toString(DecIvlExpand_PerTooBig))
+define test_DecIvlExpand_NullOpen: TestMessage(not exists DecIvlExpand_NullOpen, 'DecIvlExpand_NullOpen', toString(DecEmptyIntervalList), toString(DecIvlExpand_NullOpen))
+define test_DecIvlExpand_NullClose: TestMessage(not exists DecIvlExpand_NullClose, 'DecIvlExpand_NullClose', toString(DecEmptyIntervalList), toString(DecIvlExpand_NullClose))
 define test_DecIvlExpand_BadPerMinute: TestMessage(DecIvlExpand_BadPerMinute is null, 'DecIvlExpand_BadPerMinute', 'null', toString(DecIvlExpand_BadPerMinute))
 
 // Interval SameAs
