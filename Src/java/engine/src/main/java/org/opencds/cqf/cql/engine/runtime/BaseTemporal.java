@@ -90,11 +90,11 @@ public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> 
     public abstract Interval getUncertaintyInterval(Precision p);
 
     /**
-     * Returns a copy of this temporal value truncated to the specified precision if the value has a greater precision.
+     * Returns a copy of this temporal value rounded to the specified precision if the value has a greater precision.
      *
-     * @param precision the precision to truncate to
+     * @param precision the precision to round to
      * @param useCeiling whether to return the ceiling or floor value when rounding
-     * @return the truncated copy
+     * @return the rounded copy
      */
     public abstract BaseTemporal roundToPrecision(Precision precision, boolean useCeiling);
 }
