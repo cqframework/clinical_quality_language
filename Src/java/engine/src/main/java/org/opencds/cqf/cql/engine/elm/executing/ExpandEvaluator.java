@@ -5,8 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -50,7 +49,7 @@ public class ExpandEvaluator {
         } else if (addTo instanceof Quantity) {
             return AddEvaluator.add(addTo, per);
         } else if (addTo instanceof BaseTemporal) {
-            return AddEvaluator.add((BaseTemporal) addTo, per);
+            return AddEvaluator.add(addTo, per);
         }
 
         throw new InvalidOperatorArgument(
@@ -61,85 +60,6 @@ public class ExpandEvaluator {
     }
 
     /**
-     * Truncates the decimal value to the specified scale if the value has a greater scale.
-     *
-     * @param value the value to truncate
-     * @param scale the scale to truncate to
-     * @param roundToCeiling whether to round towards the ceiling or floor value
-     * @return the truncated value
-     */
-    private static BigDecimal truncateDecimalIfNecessary(BigDecimal value, int scale, boolean roundToCeiling) {
-        if (scale < value.scale()) {
-            return value.setScale(scale, roundToCeiling ? RoundingMode.CEILING : RoundingMode.FLOOR);
-        }
-        return value;
-    }
-
-    /**
-     * Truncates the temporal value to the specified precision if the value has a greater precision.
-     *
-     * @param value the value to truncate
-     * @param precision the precision to truncate to
-     * @param roundToCeiling whether to round towards the ceiling or floor value
-     * @return the truncated value
-     */
-    private static BaseTemporal truncateTemporalIfNecessary(
-            BaseTemporal value, Precision precision, boolean roundToCeiling) {
-        if (value.getPrecision() == precision || value.isUncertain(precision)) {
-            return value;
-        }
-
-        var roundedToFloor = value.copy().setPrecision(precision);
-        if (roundToCeiling) {
-            return (BaseTemporal)
-                    roundedToFloor.getUncertaintyInterval(precision).getEnd();
-        }
-
-        return roundedToFloor;
-    }
-
-    /**
-     * Handles the case of the interval boundaries being more precise than the per quantity. When the boundaries
-     * are truncated, the truncated start is rounded to the ceiling value and the truncated end is rounded to
-     * the floor value so that the truncated interval is fully contained within the original interval. If the
-     * truncated start becomes greater than the truncated end (e.g. for interval = Interval[0.3, 0.5] and per = 1),
-     * this method returns null.
-     *
-     * @param interval the interval with the boundaries to truncate
-     * @param per the quantity specifying the precision to truncate to
-     * @param state the engine state
-     * @return the interval with the truncated boundaries
-     */
-    private static Interval truncateIntervalBoundariesIfNecessary(Interval interval, Quantity per, State state) {
-        var start = interval.getStart();
-        var end = interval.getEnd();
-
-        if (start instanceof BigDecimal) {
-            var perScale = per.getValue().scale();
-            var truncatedStart = truncateDecimalIfNecessary((BigDecimal) start, perScale, true);
-            var truncatedEnd = truncateDecimalIfNecessary((BigDecimal) end, perScale, false);
-
-            if (truncatedStart.compareTo(truncatedEnd) <= 0) {
-                return new Interval(truncatedStart, true, truncatedEnd, true);
-            }
-
-            return null;
-        } else if (start instanceof BaseTemporal) {
-            var precision = Precision.fromString(per.getUnit());
-            var truncatedStart = truncateTemporalIfNecessary((BaseTemporal) start, precision, true);
-            var truncatedEnd = truncateTemporalIfNecessary((BaseTemporal) end, precision, false);
-
-            if (LessOrEqualEvaluator.lessOrEqual(truncatedStart, truncatedEnd, state)) {
-                return new Interval(truncatedStart, true, truncatedEnd, true);
-            }
-
-            return null;
-        }
-
-        return interval;
-    }
-
-    /**
      * Performs interval expansion for the given interval and per quantity.
      *
      * @param interval the interval to expand
@@ -147,62 +67,32 @@ public class ExpandEvaluator {
      * @param state the engine state
      * @return the list of smaller intervals of size per
      */
-    public static List<Interval> getExpandedInterval(Interval interval, Quantity per, State state) {
-        if (interval.getLow() == null || interval.getHigh() == null) {
-            return null;
-        }
-
-        Object intervalStart = interval.getStart();
-        Object intervalEnd = interval.getEnd();
-
-        // Make sure that the interval point type is compatible with the per quantity
-        if ((intervalStart instanceof Integer || intervalStart instanceof Long || intervalStart instanceof BigDecimal)
-                != per.getUnit().equals("1")) {
-            return null;
-        }
-
-        // If the interval boundaries are more precise than the per quantity, the more precise values are truncated to
-        // the precision specified by the per quantity.
-        Interval truncatedInterval = truncateIntervalBoundariesIfNecessary(interval, per, state);
-        if (truncatedInterval == null) {
-            return null;
-        }
-
-        Object start = truncatedInterval.getStart();
+    private static List<Interval> expandIntervalIntoIntervals(Interval interval, Quantity per, State state) {
+        Object start = interval.getStart();
         Object nextStart = addPer(start, per);
 
-        // per may be too small to keep adding it to the start value
-        if (!LessEvaluator.less(start, nextStart, state)) {
+        // per may be too small
+        if (!Boolean.TRUE.equals(LessEvaluator.less(start, nextStart, state))) {
             return null;
         }
 
         List<Interval> expansion = new ArrayList<>();
-        Object endSuccessor = SuccessorEvaluator.successor(truncatedInterval.getEnd(), per);
-        while (LessOrEqualEvaluator.lessOrEqual(nextStart, endSuccessor, state)) {
-            expansion.add(new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
-            start = nextStart;
-            nextStart = addPer(start, per);
+        Object endSuccessor = SuccessorEvaluator.successor(interval.getEnd(), per);
+        while (true) {
+            var lessOrEqual = LessOrEqualEvaluator.lessOrEqual(nextStart, endSuccessor, state);
+            if (lessOrEqual == null) {
+                return null;
+            }
+            if (lessOrEqual) {
+                expansion.add(new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
+                start = nextStart;
+                nextStart = addPer(start, per);
+            } else {
+                break;
+            }
         }
 
         return expansion;
-    }
-
-    private static boolean isTemporal(Interval interval) {
-        return interval.getStart() instanceof BaseTemporal || interval.getEnd() instanceof BaseTemporal;
-    }
-
-    private static Quantity perOrDefault(Quantity per, Interval interval) {
-        if (per == null) {
-            if (isTemporal(interval)) {
-                return new Quantity()
-                        .withValue(new BigDecimal("1.0"))
-                        .withUnit(BaseTemporal.getLowestPrecision(
-                                (BaseTemporal) interval.getStart(), (BaseTemporal) interval.getEnd()));
-            } else {
-                return new Quantity().withValue(new BigDecimal("1.0")).withDefaultUnit();
-            }
-        }
-        return per;
     }
 
     /**
@@ -215,10 +105,44 @@ public class ExpandEvaluator {
      * @param state the engine state
      * @return the list of points from the interval
      */
-    private static List<Object> expand(Interval interval, Quantity per, State state) {
-        var resultingIntervals = expand(Collections.singletonList(interval), per, state);
+    private static List<Object> expandIntervalIntoPoints(Interval interval, Quantity per, State state) {
+        var returnedIntervals = expandIntervalsIntoIntervals(Collections.singletonList(interval), per, state);
 
-        return resultingIntervals.stream().map(Interval::getStart).collect(Collectors.toList());
+        if (returnedIntervals == null) {
+            return null;
+        }
+
+        return returnedIntervals.stream().map(Interval::getStart).collect(Collectors.toList());
+    }
+
+    /**
+     * Prepares the intervals for expansion.
+     *
+     * @param intervals the list of intervals to prepare
+     * @param per the per quantity for expansion
+     * @param state the engine state
+     * @return the prepared list of intervals
+     */
+    private static List<Interval> prepareIntervals(List<Interval> intervals, Quantity per, State state) {
+        // Ignore intervals with null boundaries and truncate the boundaries.
+        intervals = intervals.stream()
+                .filter(interval -> interval.getLow() != null && interval.getHigh() != null)
+                .map(interval -> IntervalHelper.truncateIntervalBoundaries(interval, per, state))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // Collapse overlapping intervals to avoid returning duplicate intervals
+        intervals = CollapseEvaluator.collapse(
+                intervals, new Quantity().withValue(BigDecimal.ZERO).withUnit(per.getUnit()), state);
+
+        if (intervals == null) {
+            return null;
+        }
+
+        // Sort the intervals so that the expansion results are returned in order
+        intervals.sort(new CqlList().valueSort);
+
+        return intervals;
     }
 
     /**
@@ -229,40 +153,41 @@ public class ExpandEvaluator {
      * @param state the engine state
      * @return the list of smaller intervals of size per
      */
-    private static List<Interval> expand(Iterable<Interval> list, Quantity per, State state) {
-        List<Interval> intervals = CqlList.toList(list, false);
+    private static List<Interval> expandIntervalsIntoIntervals(Iterable<Interval> list, Quantity per, State state) {
+        var intervals = CqlList.toList(list, false);
 
         if (intervals.isEmpty()) {
             return intervals;
         }
 
-        // collapses overlapping intervals
-        intervals = CollapseEvaluator.collapse(
-                intervals,
-                new Quantity().withValue(BigDecimal.ZERO).withUnit(per == null ? "1" : per.getUnit()),
-                state);
+        // Infer the per quantity from the intervals if it is not provided
+        per = per == null ? IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals) : per;
 
-        intervals.sort(new CqlList().valueSort);
-        per = perOrDefault(per, intervals.get(0));
+        // Make sure the per quantity is compatible with the boundaries of the intervals
+        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(per, intervals)) {
+            return null;
+        }
 
-        // prevent duplicates
-        Set<Interval> set = new TreeSet<>();
+        intervals = prepareIntervals(intervals, per, state);
+        if (intervals == null) {
+            return null;
+        }
+
+        var allReturnedIntervals = new ArrayList<Interval>();
         for (Interval interval : intervals) {
             if (interval == null) {
                 continue;
             }
 
-            List<Interval> temp = getExpandedInterval(interval, per, state);
-            if (temp == null) {
+            List<Interval> returnedIntervals = expandIntervalIntoIntervals(interval, per, state);
+            if (returnedIntervals == null) {
                 continue;
             }
 
-            if (!temp.isEmpty()) {
-                set.addAll(temp);
-            }
+            allReturnedIntervals.addAll(returnedIntervals);
         }
 
-        return set.isEmpty() ? new ArrayList<>() : new ArrayList<>(set);
+        return allReturnedIntervals;
     }
 
     public static Object expand(Object listOrInterval, Quantity per, State state) {
@@ -271,11 +196,11 @@ public class ExpandEvaluator {
         }
 
         if (listOrInterval instanceof Interval) {
-            return expand((Interval) listOrInterval, per, state);
+            return expandIntervalIntoPoints((Interval) listOrInterval, per, state);
         } else if (listOrInterval instanceof Iterable) {
             @SuppressWarnings("unchecked")
             var list = (Iterable<Interval>) listOrInterval;
-            return expand(list, per, state);
+            return expandIntervalsIntoIntervals(list, per, state);
         }
 
         throw new InvalidOperatorArgument(

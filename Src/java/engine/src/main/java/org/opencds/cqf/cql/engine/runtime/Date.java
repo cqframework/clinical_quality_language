@@ -151,6 +151,35 @@ public class Date extends BaseTemporal {
     }
 
     @Override
+    public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
+        var originalPrecision = this.precision;
+        var originalLocalDate = TemporalHelper.truncateToPrecision(this.date, originalPrecision);
+        switch (precision) {
+            case YEAR:
+            case MONTH:
+            case WEEK:
+            case DAY:
+                if (precision.toDateIndex() < originalPrecision.toDateIndex()) {
+                    var floorLocalDate = TemporalHelper.truncateToPrecision(originalLocalDate, precision);
+                    if (useCeiling && !floorLocalDate.equals(originalLocalDate)) {
+                        return switch (precision) {
+                            case YEAR -> new Date(floorLocalDate.plusYears(1), precision);
+                            case MONTH -> new Date(floorLocalDate.plusMonths(1), precision);
+                            case WEEK, DAY -> new Date(floorLocalDate.plusDays(1), precision);
+                            default -> new Date(floorLocalDate).setPrecision(precision);
+                        };
+                    } else {
+                        return new Date(floorLocalDate).setPrecision(precision);
+                    }
+                } else {
+                    return new Date(originalLocalDate).setPrecision(originalPrecision);
+                }
+            default:
+                return new Date(originalLocalDate).setPrecision(originalPrecision);
+        }
+    }
+
+    @Override
     public int compareTo(BaseTemporal other) {
         return this.compare(other, true);
     }
@@ -202,10 +231,5 @@ public class Date extends BaseTemporal {
                 OffsetDateTime.ofInstant(
                         calendar.toInstant(), calendar.getTimeZone().toZoneId()),
                 Precision.MILLISECOND);
-    }
-
-    @Override
-    public BaseTemporal copy() {
-        return new Date(this.getDate(), this.getPrecision());
     }
 }

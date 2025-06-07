@@ -113,6 +113,30 @@ public class Time extends BaseTemporal {
     }
 
     @Override
+    public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
+        var originalPrecision = this.precision;
+        var originalLocalTime = this.time.truncatedTo(originalPrecision.toChronoUnit());
+        switch (precision) {
+            case HOUR:
+            case MINUTE:
+            case SECOND:
+            case MILLISECOND:
+                if (precision.toTimeIndex() < originalPrecision.toTimeIndex()) {
+                    var floorLocalTime = originalLocalTime.truncatedTo(precision.toChronoUnit());
+                    if (useCeiling && !floorLocalTime.equals(originalLocalTime)) {
+                        return new Time(floorLocalTime.plus(1, precision.toChronoUnit()), precision);
+                    } else {
+                        return new Time(floorLocalTime, precision);
+                    }
+                } else {
+                    return new Time(originalLocalTime, originalPrecision);
+                }
+            default:
+                return null;
+        }
+    }
+
+    @Override
     public Integer compare(BaseTemporal other, boolean forSort) {
         boolean differentPrecisions = this.getPrecision() != other.getPrecision();
 
@@ -189,10 +213,5 @@ public class Time extends BaseTemporal {
                         "%02d:%02d:%02d.%03d",
                         time.getHour(), time.getMinute(), time.getSecond(), time.get(precision.toChronoField()));
         }
-    }
-
-    @Override
-    public BaseTemporal copy() {
-        return new Time(this.time, this.precision);
     }
 }

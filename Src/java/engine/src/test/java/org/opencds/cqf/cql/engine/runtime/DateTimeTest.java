@@ -368,4 +368,30 @@ class DateTimeTest {
 
         // TODO: It'd be good to extend these across different types of constructors, for example, from a string
     }
+
+    @Test
+    void roundToPrecision() {
+        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45+11:00");
+        var dateTime = new DateTime(offsetDateTime, Precision.MINUTE);
+
+        var truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MILLISECOND, false);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MINUTE, false);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MINUTE, true);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, false);
+        assertEquals("2025-07-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MONTH, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, true);
+        assertEquals("2025-08-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MONTH, truncatedDateTime.getPrecision());
+    }
 }

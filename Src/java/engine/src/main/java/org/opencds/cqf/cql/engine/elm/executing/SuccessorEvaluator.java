@@ -112,17 +112,21 @@ public class SuccessorEvaluator {
      * This is a convenience method and not an overload of the successor operator.
      *
      * @param value the value to get the successor of
-     * @param precision the quantity specifying the precision
+     * @param quantity the quantity specifying the precision
      * @return the successor of the value
      */
-    public static Object successor(Object value, Quantity precision) {
+    public static Object successor(Object value, Quantity quantity) {
         if (value instanceof BigDecimal) {
-            if (precision.getValue().scale() > 0) {
+            if (quantity.getValue().scale() > 0) {
                 return ((BigDecimal) value)
                         .add(BigDecimal.ONE.scaleByPowerOfTen(
-                                -precision.getValue().scale()));
+                                -quantity.getValue().scale()));
             }
             return ((BigDecimal) value).add(BigDecimal.ONE);
+        } else if (value instanceof Quantity) {
+            return new Quantity()
+                    .withValue((BigDecimal) successor(((Quantity) value).getValue(), quantity))
+                    .withUnit(((Quantity) value).getUnit());
         }
 
         return successor(value);
