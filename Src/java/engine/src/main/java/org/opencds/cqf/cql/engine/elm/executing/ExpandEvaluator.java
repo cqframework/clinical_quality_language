@@ -38,6 +38,7 @@ The interval overload of the expand operator will return a list of the start val
 
 public class ExpandEvaluator {
     private static Object addPer(Object addTo, Quantity per) {
+        // Point types must stay the same, so for Integer and Long intervals, the per quantity is rounded up.
         if (addTo instanceof Integer) {
             return AddEvaluator.add(
                     addTo, per.getValue().setScale(0, RoundingMode.CEILING).intValue());
@@ -68,23 +69,24 @@ public class ExpandEvaluator {
      * @return the list of smaller intervals of size per
      */
     private static List<Interval> expandIntervalIntoIntervals(Interval interval, Quantity per, State state) {
-        Object start = interval.getStart();
-        Object nextStart = addPer(start, per);
+        var start = interval.getStart();
+        var nextStart = addPer(start, per);
 
         // per may be too small
         if (!Boolean.TRUE.equals(LessEvaluator.less(start, nextStart, state))) {
             return null;
         }
 
-        List<Interval> expansion = new ArrayList<>();
-        Object endSuccessor = SuccessorEvaluator.successor(interval.getEnd(), per);
+        var returnedIntervals = new ArrayList<Interval>();
+        var endSuccessor = SuccessorEvaluator.successor(interval.getEnd(), per);
         while (true) {
             var lessOrEqual = LessOrEqualEvaluator.lessOrEqual(nextStart, endSuccessor, state);
             if (lessOrEqual == null) {
                 return null;
             }
             if (lessOrEqual) {
-                expansion.add(new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
+                returnedIntervals.add(
+                        new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
                 start = nextStart;
                 nextStart = addPer(start, per);
             } else {
@@ -92,7 +94,7 @@ public class ExpandEvaluator {
             }
         }
 
-        return expansion;
+        return returnedIntervals;
     }
 
     /**
@@ -174,7 +176,7 @@ public class ExpandEvaluator {
         }
 
         var allReturnedIntervals = new ArrayList<Interval>();
-        for (Interval interval : intervals) {
+        for (var interval : intervals) {
             if (interval == null) {
                 continue;
             }
