@@ -172,7 +172,7 @@ public abstract class TestFhirPath {
             String outputExpression = test.getOutput().get(0).getValue();
             if ("null".equals(outputExpression)) {
                 testExpression = "(%s) is %s".formatted(inputExpression, outputExpression);
-            } if ("{ }".equals(outputExpression)) {
+            } else if ("{ }".equals(outputExpression)) {
                 testExpression = "not exists (%s)".formatted(inputExpression);
             } else if ("null".equals(inputExpression)) {
                 testExpression = "(%s) is %s".formatted(outputExpression, inputExpression);
