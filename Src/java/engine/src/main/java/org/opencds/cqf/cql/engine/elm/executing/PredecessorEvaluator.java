@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.exception.TypeOverflow;
 import org.opencds.cqf.cql.engine.exception.TypeUnderflow;
 import org.opencds.cqf.cql.engine.runtime.*;
 
@@ -21,6 +22,21 @@ If the argument is null, the result is null.
 
 public class PredecessorEvaluator {
 
+    /**
+     * Checks if the given BigDecimal value is less than the minimum allowed value for Decimal type.
+     *
+     * @param value the value to check
+     * @return the value if it is not less than the minimum allowed value
+     * @throws TypeOverflow if the value is less than the minimum allowed for Decimal type
+     */
+    private static BigDecimal checkMinDecimal(BigDecimal value) {
+        if (value.compareTo(Value.MIN_DECIMAL) < 0) {
+            throw new TypeUnderflow(
+                    "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
+        }
+        return value;
+    }
+
     public static Object predecessor(Object value) {
         if (value == null) {
             return null;
@@ -39,11 +55,7 @@ public class PredecessorEvaluator {
             }
             return ((Long) value) - 1;
         } else if (value instanceof BigDecimal) {
-            if (((BigDecimal) value).compareTo(Value.MIN_DECIMAL) <= 0) {
-                throw new TypeUnderflow(
-                        "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
-            }
-            return ((BigDecimal) value).subtract(new BigDecimal("0.00000001"));
+            return checkMinDecimal(((BigDecimal) value).subtract(new BigDecimal("0.00000001")));
         }
         // NOTE: Quantity successor is not standard - including it for simplicity
         else if (value instanceof Quantity) {
@@ -118,11 +130,11 @@ public class PredecessorEvaluator {
     public static Object predecessor(Object value, Quantity quantity) {
         if (value instanceof BigDecimal) {
             if (quantity.getValue().scale() > 0) {
-                return ((BigDecimal) value)
+                return checkMinDecimal(((BigDecimal) value)
                         .subtract(BigDecimal.ONE.scaleByPowerOfTen(
-                                -quantity.getValue().scale()));
+                                -quantity.getValue().scale())));
             }
-            return ((BigDecimal) value).subtract(BigDecimal.ONE);
+            return checkMinDecimal(((BigDecimal) value).subtract(BigDecimal.ONE));
         } else if (value instanceof Quantity) {
             return new Quantity()
                     .withValue((BigDecimal) predecessor(((Quantity) value).getValue(), quantity))

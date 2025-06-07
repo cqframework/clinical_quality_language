@@ -21,6 +21,21 @@ If the argument is null, the result is null.
 
 public class SuccessorEvaluator {
 
+    /**
+     * Checks if the given BigDecimal value exceeds the maximum allowed value for Decimal type.
+     *
+     * @param value the value to check
+     * @return the value if it does not exceed the maximum allowed value
+     * @throws TypeOverflow if the value exceeds the maximum allowed for Decimal type
+     */
+    private static BigDecimal checkMaxDecimal(BigDecimal value) {
+        if (value.compareTo(Value.MAX_DECIMAL) > 0) {
+            throw new TypeOverflow(
+                    "The result of the successor operation exceeds the maximum value allowed for the Decimal type");
+        }
+        return value;
+    }
+
     public static Object successor(Object value) {
         if (value == null) {
             return null;
@@ -39,11 +54,7 @@ public class SuccessorEvaluator {
             }
             return ((Long) value) + 1;
         } else if (value instanceof BigDecimal) {
-            if (((BigDecimal) value).compareTo(Value.MAX_DECIMAL) >= 0) {
-                throw new TypeOverflow(
-                        "The result of the successor operation exceeds the maximum value allowed for the Decimal type");
-            }
-            return ((BigDecimal) value).add(new BigDecimal("0.00000001"));
+            return checkMaxDecimal(((BigDecimal) value).add(new BigDecimal("0.00000001")));
         }
         // NOTE: Quantity successor is not standard - including it for simplicity
         else if (value instanceof Quantity) {
@@ -118,11 +129,11 @@ public class SuccessorEvaluator {
     public static Object successor(Object value, Quantity quantity) {
         if (value instanceof BigDecimal) {
             if (quantity.getValue().scale() > 0) {
-                return ((BigDecimal) value)
+                return checkMaxDecimal(((BigDecimal) value)
                         .add(BigDecimal.ONE.scaleByPowerOfTen(
-                                -quantity.getValue().scale()));
+                                -quantity.getValue().scale())));
             }
-            return ((BigDecimal) value).add(BigDecimal.ONE);
+            return checkMaxDecimal(((BigDecimal) value).add(BigDecimal.ONE));
         } else if (value instanceof Quantity) {
             return new Quantity()
                     .withValue((BigDecimal) successor(((Quantity) value).getValue(), quantity))
