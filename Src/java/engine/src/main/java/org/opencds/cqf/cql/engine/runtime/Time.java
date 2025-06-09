@@ -117,10 +117,7 @@ public class Time extends BaseTemporal {
         var originalPrecision = this.precision;
         var originalLocalTime = this.time.truncatedTo(originalPrecision.toChronoUnit());
         switch (precision) {
-            case HOUR:
-            case MINUTE:
-            case SECOND:
-            case MILLISECOND:
+            case HOUR, MINUTE, SECOND, MILLISECOND:
                 if (precision.toTimeIndex() < originalPrecision.toTimeIndex()) {
                     var floorLocalTime = originalLocalTime.truncatedTo(precision.toChronoUnit());
                     if (useCeiling && !floorLocalTime.equals(originalLocalTime)) {

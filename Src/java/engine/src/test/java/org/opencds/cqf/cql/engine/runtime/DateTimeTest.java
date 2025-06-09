@@ -378,6 +378,18 @@ class DateTimeTest {
         assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
         assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
 
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MILLISECOND, true);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.SECOND, false);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.SECOND, true);
+        assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
+
         truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MINUTE, false);
         assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
         assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
@@ -386,6 +398,30 @@ class DateTimeTest {
         assertEquals("2025-07-15T10:30+11:00", truncatedDateTime.getDateTime().toString());
         assertEquals(Precision.MINUTE, truncatedDateTime.getPrecision());
 
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.HOUR, false);
+        assertEquals("2025-07-15T10:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.HOUR, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.HOUR, true);
+        assertEquals("2025-07-15T11:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.HOUR, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.DAY, false);
+        assertEquals("2025-07-15T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.DAY, true);
+        assertEquals("2025-07-16T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.WEEK, false);
+        assertEquals("2025-07-15T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.WEEK, true);
+        assertEquals("2025-07-16T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, truncatedDateTime.getPrecision());
+
         truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, false);
         assertEquals("2025-07-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
         assertEquals(Precision.MONTH, truncatedDateTime.getPrecision());
@@ -393,5 +429,13 @@ class DateTimeTest {
         truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, true);
         assertEquals("2025-08-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
         assertEquals(Precision.MONTH, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.YEAR, false);
+        assertEquals("2025-01-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.YEAR, truncatedDateTime.getPrecision());
+
+        truncatedDateTime = (DateTime) dateTime.roundToPrecision(Precision.YEAR, true);
+        assertEquals("2026-01-01T00:00+11:00", truncatedDateTime.getDateTime().toString());
+        assertEquals(Precision.YEAR, truncatedDateTime.getPrecision());
     }
 }

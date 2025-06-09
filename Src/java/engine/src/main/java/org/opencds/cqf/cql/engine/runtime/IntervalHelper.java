@@ -11,6 +11,10 @@ import org.opencds.cqf.cql.engine.execution.State;
 
 public class IntervalHelper {
 
+    private IntervalHelper() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Returns the first non-null boundary from the list of intervals.
      *
@@ -42,7 +46,7 @@ public class IntervalHelper {
             return new Quantity()
                     .withValue(BigDecimal.ONE.setScale(scale, RoundingMode.UNNECESSARY))
                     .withDefaultUnit();
-        } else if (nonNullBoundary instanceof Quantity) {
+        } else if (nonNullBoundary instanceof Quantity quantity) {
             var scale = Value.getCoarsestScale(intervals.stream()
                     .filter(Objects::nonNull)
                     .flatMap(interval -> Stream.of(((Quantity) interval.getStart()), ((Quantity) interval.getEnd())))
@@ -50,7 +54,7 @@ public class IntervalHelper {
                     .map(Quantity::getValue));
             return new Quantity()
                     .withValue(BigDecimal.ONE.setScale(scale, RoundingMode.UNNECESSARY))
-                    .withUnit(((Quantity) nonNullBoundary).getUnit());
+                    .withUnit(quantity.getUnit());
         } else if (nonNullBoundary instanceof BaseTemporal) {
             var precision = BaseTemporal.getLowestPrecision(intervals.stream()
                     .filter(Objects::nonNull)
@@ -106,37 +110,34 @@ public class IntervalHelper {
         var start = interval.getStart();
         var end = interval.getEnd();
 
-        if (start instanceof BigDecimal) {
+        if (start instanceof BigDecimal startBigDecimal && end instanceof BigDecimal endBigDecimal) {
             var quantityScale = quantity.getValue().scale();
-            var truncatedStart = Value.roundToScale((BigDecimal) start, quantityScale, true);
-            var truncatedEnd = Value.roundToScale((BigDecimal) end, quantityScale, false);
+            var truncatedStart = Value.roundToScale(startBigDecimal, quantityScale, true);
+            var truncatedEnd = Value.roundToScale(endBigDecimal, quantityScale, false);
 
             if (truncatedStart.compareTo(truncatedEnd) <= 0) {
                 return new Interval(truncatedStart, true, truncatedEnd, true);
             }
 
             return null;
-        } else if (start instanceof Quantity) {
+        } else if (start instanceof Quantity startQuantity && end instanceof Quantity endQuantity) {
             var quantityScale = quantity.getValue().scale();
             var truncatedStart = new Quantity()
-                    .withValue(Value.roundToScale(((Quantity) start).getValue(), quantityScale, true))
-                    .withUnit(((Quantity) start).getUnit());
+                    .withValue(Value.roundToScale(startQuantity.getValue(), quantityScale, true))
+                    .withUnit(startQuantity.getUnit());
             var truncatedEnd = new Quantity()
-                    .withValue(Value.roundToScale(((Quantity) end).getValue(), quantityScale, false))
-                    .withUnit(((Quantity) end).getUnit());
+                    .withValue(Value.roundToScale(endQuantity.getValue(), quantityScale, false))
+                    .withUnit(endQuantity.getUnit());
 
             if (truncatedStart.compareTo(truncatedEnd) <= 0) {
                 return new Interval(truncatedStart, true, truncatedEnd, true);
             }
 
             return null;
-        } else if (start instanceof BaseTemporal) {
+        } else if (start instanceof BaseTemporal startBaseTemporal && end instanceof BaseTemporal endBaseTemporal) {
             var precision = Precision.fromString(quantity.getUnit());
-            if (precision == Precision.WEEK) {
-                precision = Precision.DAY;
-            }
-            var truncatedStart = ((BaseTemporal) start).roundToPrecision(precision, true);
-            var truncatedEnd = ((BaseTemporal) end).roundToPrecision(precision, false);
+            var truncatedStart = startBaseTemporal.roundToPrecision(precision, true);
+            var truncatedEnd = endBaseTemporal.roundToPrecision(precision, false);
 
             if (Boolean.TRUE.equals(LessOrEqualEvaluator.lessOrEqual(truncatedStart, truncatedEnd, state))) {
                 return new Interval(truncatedStart, true, truncatedEnd, true);

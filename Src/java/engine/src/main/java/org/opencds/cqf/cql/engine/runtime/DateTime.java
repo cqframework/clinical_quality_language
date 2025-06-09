@@ -176,18 +176,12 @@ public class DateTime extends BaseTemporal {
     public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
         var originalPrecision = this.precision;
         var originalOffsetDateTime = TemporalHelper.truncateToPrecision(this.dateTime, originalPrecision);
+        precision = precision.weekAsDay(); // Precision.WEEK is treated as Precision.DAY for the purposes of rounding
         if (precision.toDateTimeIndex() < originalPrecision.toDateTimeIndex()) {
             var floorOffsetDateTime = TemporalHelper.truncateToPrecision(originalOffsetDateTime, precision);
             if (useCeiling && !floorOffsetDateTime.equals(originalOffsetDateTime)) {
-                return switch (precision) {
-                    case YEAR -> new DateTime(floorOffsetDateTime.plusYears(1), precision);
-                    case MONTH -> new DateTime(floorOffsetDateTime.plusMonths(1), precision);
-                    case WEEK, DAY -> new DateTime(floorOffsetDateTime.plusDays(1), precision);
-                    case HOUR -> new DateTime(floorOffsetDateTime.plusHours(1), precision);
-                    case MINUTE -> new DateTime(floorOffsetDateTime.plusMinutes(1), precision);
-                    case SECOND -> new DateTime(floorOffsetDateTime.plusSeconds(1), precision);
-                    case MILLISECOND -> new DateTime(floorOffsetDateTime.plusNanos(1_000_000), precision);
-                };
+                var ceilingOffsetDateTime = floorOffsetDateTime.plus(1, precision.toChronoUnit());
+                return new DateTime(ceilingOffsetDateTime, precision);
             } else {
                 return new DateTime(floorOffsetDateTime, precision);
             }

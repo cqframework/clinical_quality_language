@@ -154,28 +154,22 @@ public class Date extends BaseTemporal {
     public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
         var originalPrecision = this.precision;
         var originalLocalDate = TemporalHelper.truncateToPrecision(this.date, originalPrecision);
+        precision = precision.weekAsDay(); // Precision.WEEK is treated as Precision.DAY for the purposes of rounding
         switch (precision) {
-            case YEAR:
-            case MONTH:
-            case WEEK:
-            case DAY:
+            case YEAR, MONTH, DAY:
                 if (precision.toDateIndex() < originalPrecision.toDateIndex()) {
                     var floorLocalDate = TemporalHelper.truncateToPrecision(originalLocalDate, precision);
                     if (useCeiling && !floorLocalDate.equals(originalLocalDate)) {
-                        return switch (precision) {
-                            case YEAR -> new Date(floorLocalDate.plusYears(1), precision);
-                            case MONTH -> new Date(floorLocalDate.plusMonths(1), precision);
-                            case WEEK, DAY -> new Date(floorLocalDate.plusDays(1), precision);
-                            default -> new Date(floorLocalDate).setPrecision(precision);
-                        };
+                        var ceilingLocalDate = floorLocalDate.plus(1, precision.toChronoUnit());
+                        return new Date(ceilingLocalDate, precision);
                     } else {
-                        return new Date(floorLocalDate).setPrecision(precision);
+                        return new Date(floorLocalDate, precision);
                     }
                 } else {
-                    return new Date(originalLocalDate).setPrecision(originalPrecision);
+                    return new Date(originalLocalDate, originalPrecision);
                 }
             default:
-                return new Date(originalLocalDate).setPrecision(originalPrecision);
+                return new Date(originalLocalDate, originalPrecision);
         }
     }
 

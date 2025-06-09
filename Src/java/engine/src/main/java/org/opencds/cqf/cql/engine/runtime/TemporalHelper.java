@@ -248,15 +248,12 @@ public class TemporalHelper {
      * @return the truncated OffsetDateTime
      */
     public static OffsetDateTime truncateToPrecision(OffsetDateTime dateTime, Precision precision) {
-        if (precision == Precision.YEAR) {
-            return dateTime.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
-        } else if (precision == Precision.MONTH) {
-            return dateTime.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-        } else if (precision == Precision.WEEK) {
-            return dateTime.truncatedTo(ChronoUnit.DAYS);
-        } else {
-            return dateTime.truncatedTo(precision.toChronoUnit());
-        }
+        return switch (precision) {
+            case YEAR -> dateTime.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+            case MONTH -> dateTime.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+            case WEEK -> dateTime.truncatedTo(ChronoUnit.DAYS);
+            default -> dateTime.truncatedTo(precision.toChronoUnit());
+        };
     }
 
     /**
@@ -267,12 +264,10 @@ public class TemporalHelper {
      * @return the truncated LocalDate
      */
     public static LocalDate truncateToPrecision(LocalDate date, Precision precision) {
-        if (precision == Precision.YEAR) {
-            return date.withDayOfYear(1);
-        } else if (precision == Precision.MONTH) {
-            return date.withDayOfMonth(1);
-        } else {
-            return date;
-        }
+        return switch (precision) {
+            case YEAR -> date.withDayOfYear(1);
+            case MONTH -> date.withDayOfMonth(1);
+            default -> date;
+        };
     }
 }

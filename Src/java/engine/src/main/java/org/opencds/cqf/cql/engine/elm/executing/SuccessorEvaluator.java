@@ -127,17 +127,16 @@ public class SuccessorEvaluator {
      * @return the successor of the value
      */
     public static Object successor(Object value, Quantity quantity) {
-        if (value instanceof BigDecimal) {
+        if (value instanceof BigDecimal valueBigDecimal) {
             if (quantity.getValue().scale() > 0) {
-                return checkMaxDecimal(((BigDecimal) value)
-                        .add(BigDecimal.ONE.scaleByPowerOfTen(
-                                -quantity.getValue().scale())));
+                return checkMaxDecimal(valueBigDecimal.add(
+                        BigDecimal.ONE.scaleByPowerOfTen(-quantity.getValue().scale())));
             }
-            return checkMaxDecimal(((BigDecimal) value).add(BigDecimal.ONE));
-        } else if (value instanceof Quantity) {
+            return checkMaxDecimal(valueBigDecimal.add(BigDecimal.ONE));
+        } else if (value instanceof Quantity valueQuantity) {
             return new Quantity()
-                    .withValue((BigDecimal) successor(((Quantity) value).getValue(), quantity))
-                    .withUnit(((Quantity) value).getUnit());
+                    .withValue((BigDecimal) successor(valueQuantity.getValue(), quantity))
+                    .withUnit(valueQuantity.getUnit());
         }
 
         return successor(value);

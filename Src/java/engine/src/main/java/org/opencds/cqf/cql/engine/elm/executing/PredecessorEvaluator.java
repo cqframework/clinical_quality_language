@@ -128,17 +128,16 @@ public class PredecessorEvaluator {
      * @return the predecessor of the value
      */
     public static Object predecessor(Object value, Quantity quantity) {
-        if (value instanceof BigDecimal) {
+        if (value instanceof BigDecimal valueBigDecimal) {
             if (quantity.getValue().scale() > 0) {
-                return checkMinDecimal(((BigDecimal) value)
-                        .subtract(BigDecimal.ONE.scaleByPowerOfTen(
-                                -quantity.getValue().scale())));
+                return checkMinDecimal(valueBigDecimal.subtract(
+                        BigDecimal.ONE.scaleByPowerOfTen(-quantity.getValue().scale())));
             }
-            return checkMinDecimal(((BigDecimal) value).subtract(BigDecimal.ONE));
-        } else if (value instanceof Quantity) {
+            return checkMinDecimal(valueBigDecimal.subtract(BigDecimal.ONE));
+        } else if (value instanceof Quantity valueQuantity) {
             return new Quantity()
-                    .withValue((BigDecimal) predecessor(((Quantity) value).getValue(), quantity))
-                    .withUnit(((Quantity) value).getUnit());
+                    .withValue((BigDecimal) predecessor(valueQuantity.getValue(), quantity))
+                    .withUnit(valueQuantity.getUnit());
         }
 
         return predecessor(value);

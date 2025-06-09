@@ -2791,8 +2791,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             // Note that although this is declared as a conversion, the translator doesn't pick it up because it
             // won't instantiate the generic signature because generic signature instantiation logic is not considering
             // implicit conversions to class types.
-            if (perExpression instanceof Literal) {
-                per = libraryBuilder.createQuantity(new BigDecimal(((Literal) perExpression).getValue()), "1");
+            if (perExpression instanceof Literal literal) {
+                per = libraryBuilder.createQuantity(new BigDecimal(literal.getValue()), "1");
             } else {
                 per = perExpression;
             }
