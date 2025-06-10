@@ -38,7 +38,7 @@ class DateTimeTest {
     private static final List<Integer> NON_DST_2024_02_27_07_28_0_INTS = toList(NON_DST_2024_02_27_07_28_0);
     private static final List<Integer> DST_2024_06_15_23_32_0_INTS = toList(DST_2024_06_15_23_32_0);
 
-    private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-04:00");
+    private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-04:30");
     private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-05:00");
     private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-06:00");
     private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-07:00");
@@ -367,5 +367,87 @@ class DateTimeTest {
         assertNotEquals(dateTime, dateTime2);
 
         // TODO: It'd be good to extend these across different types of constructors, for example, from a string
+    }
+
+    @Test
+    void roundToHigherPrecision() {
+        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45+11:00");
+        var dateTime = new DateTime(offsetDateTime, Precision.MINUTE);
+
+        var roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MILLISECOND, false);
+        assertEquals("2025-07-15T10:30+11:00", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MILLISECOND, true);
+        assertEquals("2025-07-15T10:30+11:00", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.SECOND, false);
+        assertEquals("2025-07-15T10:30+11:00", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.SECOND, true);
+        assertEquals("2025-07-15T10:30+11:00", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+    }
+
+    @Test
+    void roundToSamePrecision() {
+        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45+12:45");
+        var dateTime = new DateTime(offsetDateTime, Precision.MINUTE);
+
+        var roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MINUTE, false);
+        assertEquals("2025-07-15T10:30+12:45", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MINUTE, true);
+        assertEquals("2025-07-15T10:30+12:45", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MINUTE, roundedDateTime.getPrecision());
+    }
+
+    @Test
+    void roundToLowerPrecision() {
+        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45-04:30");
+        var dateTime = new DateTime(offsetDateTime, Precision.MINUTE);
+
+        var roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.HOUR, false);
+        assertEquals("2025-07-15T10:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.HOUR, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.HOUR, true);
+        assertEquals("2025-07-15T11:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.HOUR, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.DAY, false);
+        assertEquals("2025-07-15T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.DAY, true);
+        assertEquals("2025-07-16T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.WEEK, false);
+        assertEquals("2025-07-15T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.WEEK, true);
+        assertEquals("2025-07-16T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.DAY, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, false);
+        assertEquals("2025-07-01T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MONTH, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.MONTH, true);
+        assertEquals("2025-08-01T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.MONTH, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.YEAR, false);
+        assertEquals("2025-01-01T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.YEAR, roundedDateTime.getPrecision());
+
+        roundedDateTime = (DateTime) dateTime.roundToPrecision(Precision.YEAR, true);
+        assertEquals("2026-01-01T00:00-04:30", roundedDateTime.getDateTime().toString());
+        assertEquals(Precision.YEAR, roundedDateTime.getPrecision());
     }
 }
