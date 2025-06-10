@@ -151,6 +151,29 @@ public class Date extends BaseTemporal {
     }
 
     @Override
+    public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
+        var originalPrecision = this.precision;
+        var originalLocalDate = TemporalHelper.truncateToPrecision(this.date, originalPrecision);
+        precision = precision.weekAsDay(); // Precision.WEEK is treated as Precision.DAY for the purposes of rounding
+        switch (precision) {
+            case YEAR, MONTH, DAY:
+                if (precision.toDateIndex() < originalPrecision.toDateIndex()) {
+                    var floorLocalDate = TemporalHelper.truncateToPrecision(originalLocalDate, precision);
+                    if (useCeiling && !floorLocalDate.equals(originalLocalDate)) {
+                        var ceilingLocalDate = floorLocalDate.plus(1, precision.toChronoUnit());
+                        return new Date(ceilingLocalDate, precision);
+                    } else {
+                        return new Date(floorLocalDate, precision);
+                    }
+                } else {
+                    return new Date(originalLocalDate, originalPrecision);
+                }
+            default:
+                return new Date(originalLocalDate, originalPrecision);
+        }
+    }
+
+    @Override
     public int compareTo(BaseTemporal other) {
         return this.compare(other, true);
     }

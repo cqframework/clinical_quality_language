@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.fhir.ucum.UcumException;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhirpath.tests.Group;
 import org.junit.jupiter.api.Assumptions;
@@ -156,7 +155,7 @@ public class CQLOperationsDstu3Test extends TestFhirPath {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("dataMethod")
-    void test(String name, org.hl7.fhirpath.tests.Test test) throws UcumException {
+    void test(String name, org.hl7.fhirpath.tests.Test test) {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping " + name);
         runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver);
     }

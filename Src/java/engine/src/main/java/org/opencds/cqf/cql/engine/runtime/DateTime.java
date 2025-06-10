@@ -173,6 +173,24 @@ public class DateTime extends BaseTemporal {
     }
 
     @Override
+    public BaseTemporal roundToPrecision(Precision precision, boolean useCeiling) {
+        var originalPrecision = this.precision;
+        var originalOffsetDateTime = TemporalHelper.truncateToPrecision(this.dateTime, originalPrecision);
+        precision = precision.weekAsDay(); // Precision.WEEK is treated as Precision.DAY for the purposes of rounding
+        if (precision.toDateTimeIndex() < originalPrecision.toDateTimeIndex()) {
+            var floorOffsetDateTime = TemporalHelper.truncateToPrecision(originalOffsetDateTime, precision);
+            if (useCeiling && !floorOffsetDateTime.equals(originalOffsetDateTime)) {
+                var ceilingOffsetDateTime = floorOffsetDateTime.plus(1, precision.toChronoUnit());
+                return new DateTime(ceilingOffsetDateTime, precision);
+            } else {
+                return new DateTime(floorOffsetDateTime, precision);
+            }
+        } else {
+            return new DateTime(originalOffsetDateTime, originalPrecision);
+        }
+    }
+
+    @Override
     public Integer compare(BaseTemporal other, boolean forSort) {
         boolean differentPrecisions = this.getPrecision() != other.getPrecision();
 

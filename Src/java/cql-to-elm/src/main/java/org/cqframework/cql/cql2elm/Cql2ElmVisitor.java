@@ -2786,7 +2786,17 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (ctx.dateTimePrecision() != null) {
             per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
         } else if (ctx.expression().size() > 1) {
-            per = parseExpression(ctx.expression(1));
+            var perExpression = parseExpression(ctx.expression(1));
+            // Implicitly convert a literal to a quantity here
+            // Note that although this is declared as a conversion, the translator doesn't pick it up because it
+            // won't instantiate the generic signature because generic signature instantiation logic is not considering
+            // implicit conversions to class types.
+            if (perExpression instanceof Literal literal) {
+                per = libraryBuilder.createQuantity(new BigDecimal(literal.getValue()), "1");
+            } else {
+                per = perExpression;
+            }
+
         } else {
             // Determine per quantity based on point type of the intervals involved
             if (source.getResultType() instanceof ListType) {

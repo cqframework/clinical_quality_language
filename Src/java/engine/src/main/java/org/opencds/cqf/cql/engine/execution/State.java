@@ -429,16 +429,20 @@ public class State {
         boolean isList = false;
         for (Variable v : getTopActivationFrame().variables) {
             if (v.getName().equals(name)) {
-                if (v.isList()) isList = true;
-                ret.add(v.getValue());
+                return v.getValue();
             }
         }
-        return isList ? ret : ret.get(ret.size() - 1);
+
+        throw new IllegalStateException("Could not resolve alias reference %s in the current context".formatted(name));
     }
 
     public Object resolveIdentifierRef(String name) {
         for (var frame : this.stack) {
             for (var v : frame.variables) {
+                if (v.getName().equals(name)) {
+                    return v.getValue();
+                }
+
                 var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
                     for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value)
