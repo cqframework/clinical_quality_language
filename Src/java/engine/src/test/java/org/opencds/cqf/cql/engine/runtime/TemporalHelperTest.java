@@ -10,37 +10,37 @@ class TemporalHelperTest {
 
     @Test
     void truncateOffsetDateTimeToPrecision() {
-        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45.123+11:00");
+        var offsetDateTime = OffsetDateTime.parse("2025-07-15T10:30:45.123-04:30");
         assertEquals(
-                "2025-07-15T10:30:45.123+11:00",
+                "2025-07-15T10:30:45.123-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.MILLISECOND)
                         .toString());
         assertEquals(
-                "2025-07-15T10:30:45+11:00",
+                "2025-07-15T10:30:45-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.SECOND)
                         .toString());
         assertEquals(
-                "2025-07-15T10:30+11:00",
+                "2025-07-15T10:30-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.MINUTE)
                         .toString());
         assertEquals(
-                "2025-07-15T10:00+11:00",
+                "2025-07-15T10:00-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.HOUR)
                         .toString());
         assertEquals(
-                "2025-07-15T00:00+11:00",
+                "2025-07-15T00:00-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.DAY)
                         .toString());
         assertEquals(
-                "2025-07-15T00:00+11:00",
+                "2025-07-15T00:00-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.WEEK)
                         .toString());
         assertEquals(
-                "2025-07-01T00:00+11:00",
+                "2025-07-01T00:00-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.MONTH)
                         .toString());
         assertEquals(
-                "2025-01-01T00:00+11:00",
+                "2025-01-01T00:00-04:30",
                 TemporalHelper.truncateToPrecision(offsetDateTime, Precision.YEAR)
                         .toString());
     }
