@@ -1,8 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
@@ -235,5 +238,36 @@ public class TemporalHelper {
             }
         }
         return 0;
+    }
+
+    /**
+     * Truncates the OffsetDateTime to the specified precision.
+     *
+     * @param dateTime the OffsetDateTime to truncate
+     * @param precision the precision to truncate to
+     * @return the truncated OffsetDateTime
+     */
+    public static OffsetDateTime truncateToPrecision(OffsetDateTime dateTime, Precision precision) {
+        return switch (precision) {
+            case YEAR -> dateTime.withDayOfYear(1).truncatedTo(ChronoUnit.DAYS);
+            case MONTH -> dateTime.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+            case WEEK -> dateTime.truncatedTo(ChronoUnit.DAYS);
+            default -> dateTime.truncatedTo(precision.toChronoUnit());
+        };
+    }
+
+    /**
+     * Truncates the LocalDate to the specified precision.
+     *
+     * @param date the LocalDate to truncate
+     * @param precision the precision to truncate to
+     * @return the truncated LocalDate
+     */
+    public static LocalDate truncateToPrecision(LocalDate date, Precision precision) {
+        return switch (precision) {
+            case YEAR -> date.withDayOfYear(1);
+            case MONTH -> date.withDayOfMonth(1);
+            default -> date;
+        };
     }
 }
