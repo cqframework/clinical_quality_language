@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.*;
@@ -163,33 +164,25 @@ public class ExpandEvaluator {
         }
 
         // Infer the per quantity from the intervals if it is not provided
-        per = per == null ? IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals) : per;
+        var perOrDefault = per == null ? IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals) : per;
 
         // Make sure the per quantity is compatible with the boundaries of the intervals
-        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(per, intervals)) {
+        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
             return null;
         }
 
-        intervals = prepareIntervals(intervals, per, state);
+        intervals = prepareIntervals(intervals, perOrDefault, state);
         if (intervals == null) {
             return null;
         }
 
-        var allReturnedIntervals = new ArrayList<Interval>();
-        for (var interval : intervals) {
-            if (interval == null) {
-                continue;
-            }
-
-            List<Interval> returnedIntervals = expandIntervalIntoIntervals(interval, per, state);
-            if (returnedIntervals == null) {
-                continue;
-            }
-
-            allReturnedIntervals.addAll(returnedIntervals);
-        }
-
-        return allReturnedIntervals;
+        return intervals.stream()
+                .filter(Objects::nonNull)
+                .flatMap(interval -> {
+                    var returnedIntervals = expandIntervalIntoIntervals(interval, perOrDefault, state);
+                    return returnedIntervals == null ? Stream.empty() : returnedIntervals.stream();
+                })
+                .collect(Collectors.toList());
     }
 
     public static Object expand(Object listOrInterval, Quantity per, State state) {

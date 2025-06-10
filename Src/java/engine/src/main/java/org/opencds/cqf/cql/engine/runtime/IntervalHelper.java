@@ -81,8 +81,8 @@ public class IntervalHelper {
                 || nonNullBoundary instanceof Long
                 || nonNullBoundary instanceof BigDecimal) {
             return Quantity.isDefaultUnit(quantity.getUnit());
-        } else if (nonNullBoundary instanceof Quantity) {
-            return Quantity.unitsEqual(quantity.getUnit(), ((Quantity) nonNullBoundary).getUnit());
+        } else if (nonNullBoundary instanceof Quantity nonNullBoundaryQuantity) {
+            return Quantity.unitsEqual(quantity.getUnit(), nonNullBoundaryQuantity.getUnit());
         } else if (nonNullBoundary instanceof BaseTemporal) {
             try {
                 Precision.fromString(quantity.getUnit());
