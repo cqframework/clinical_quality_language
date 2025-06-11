@@ -76,7 +76,7 @@ public interface FhirTypeConverter {
      * types that do not have well-defined FHIR mappings, such as CQL Intervals.
      *
      * The default implementation should use the CQL ToString operator and
-     * embedd the result in a FHIR OperationOutcome with a single issue.
+     * embed the result in a FHIR OperationOutcome with a single issue.
      *
      * @param value the value to convert
      * @return a FHIR OperationOutcome
