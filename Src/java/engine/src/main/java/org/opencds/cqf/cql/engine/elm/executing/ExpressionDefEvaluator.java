@@ -20,6 +20,12 @@ public class ExpressionDefEvaluator {
                     && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
                 var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
+
+                // TODO(jmoringe): make public interface
+                final var frame = state.getTopActivationFrame();
+                assert frame.element == expressionDef;
+                frame.isCached = true;
+
                 return er.value();
             }
 
