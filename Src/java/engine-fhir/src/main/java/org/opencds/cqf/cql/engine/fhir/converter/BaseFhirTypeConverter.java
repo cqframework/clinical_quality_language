@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 
 abstract class BaseFhirTypeConverter implements FhirTypeConverter {
-
     @Override
     public boolean isFhirType(Object value) {
         Objects.requireNonNull(value, "value can not be null");
@@ -54,9 +55,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             } else if (isCqlType(value)) {
                 converted.add(toFhirType(value));
             } else {
-                throw new IllegalArgumentException(String.format(
-                        "Unknown type encountered during conversion %s",
-                        value.getClass().getName()));
+                converted.add(toFhirOperationOutcome(value));
             }
         }
 
@@ -71,6 +70,10 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
 
         if (value instanceof Iterable<?>) {
             throw new IllegalArgumentException("use toFhirTypes(Iterable<Object>) for iterables");
+        }
+
+        if (value instanceof Throwable t) {
+            return toFhirOperationOutcome(t);
         }
 
         if (isFhirType(value)) {
@@ -114,8 +117,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             case "Tuple":
                 return toFhirTuple((Tuple) value);
             default:
-                throw new IllegalArgumentException(String.format(
-                        "missing case statement for: %s", value.getClass().getName()));
+                return toFhirOperationOutcome(value);
         }
     }
 
@@ -228,7 +230,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
     }
 
     @Override
-    public ICompositeType toFhirInterval(Interval value) {
+    public IBase toFhirInterval(Interval value) {
         if (value == null) {
             return null;
         }
@@ -240,9 +242,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             case "Quantity":
                 return toFhirRange(value);
             default:
-                throw new IllegalArgumentException(String.format(
-                        "Unsupported interval point type for FHIR conversion %s",
-                        value.getPointType().getTypeName()));
+                return toFhirOperationOutcome(value);
         }
     }
 
@@ -531,5 +531,13 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
                 break;
         }
         return TemporalPrecisionEnum.valueOf(name);
+    }
+
+    protected String getStackTraceAsString(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            throwable.printStackTrace(pw);
+        }
+        return sw.toString();
     }
 }

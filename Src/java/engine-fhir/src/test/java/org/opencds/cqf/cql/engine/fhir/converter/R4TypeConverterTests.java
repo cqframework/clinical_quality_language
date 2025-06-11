@@ -22,7 +22,6 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.Attachment;
@@ -504,7 +503,7 @@ class R4TypeConverterTests {
                 true));
         assertTrue(expectedRange.equalsDeep(actualRange));
 
-        ICompositeType expected = typeConverter.toFhirInterval(null);
+        var expected = typeConverter.toFhirInterval(null);
         assertNull(expected);
     }
 

@@ -7,9 +7,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
+import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
@@ -472,5 +474,36 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
         } else {
             throw new IllegalArgumentException("value is not a FHIR Instant or DateTime");
         }
+    }
+
+    @Override
+    public IBaseOperationOutcome toFhirOperationOutcome(Throwable value) {
+        if (value == null) {
+            return null;
+        }
+
+        OperationOutcome outcome = new OperationOutcome();
+        outcome.addIssue()
+                .setSeverity(OperationOutcome.IssueSeverity.ERROR)
+                .setCode(OperationOutcome.IssueType.EXCEPTION)
+                .setDiagnostics(value.getMessage())
+                .addExtension(NATIVE_STACK_TRACE_EXT_URL, new StringType(getStackTraceAsString(value)));
+
+        return outcome;
+    }
+
+    @Override
+    public IBaseOperationOutcome toFhirOperationOutcome(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        var s = (String) ToStringEvaluator.toString(value);
+        var outcome = new OperationOutcome();
+        outcome.addIssue()
+                .setSeverity(OperationOutcome.IssueSeverity.INFORMATION)
+                .setCode(OperationOutcome.IssueType.INFORMATIONAL)
+                .addExtension(CQL_TEXT_EXT_URL, new StringType(s));
+        return outcome;
     }
 }

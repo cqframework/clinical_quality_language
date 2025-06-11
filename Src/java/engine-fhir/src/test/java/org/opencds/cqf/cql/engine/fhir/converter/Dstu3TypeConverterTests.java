@@ -42,7 +42,6 @@ import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.TimeType;
 import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.junit.jupiter.api.BeforeAll;
@@ -504,7 +503,7 @@ class Dstu3TypeConverterTests {
                 true));
         assertTrue(expectedRange.equalsDeep(actualRange));
 
-        ICompositeType expected = typeConverter.toFhirInterval(null);
+        var expected = typeConverter.toFhirInterval(null);
         assertNull(expected);
     }
 
