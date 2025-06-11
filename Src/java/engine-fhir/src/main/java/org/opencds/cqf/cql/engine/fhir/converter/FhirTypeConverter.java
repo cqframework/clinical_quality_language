@@ -36,7 +36,7 @@ public interface FhirTypeConverter {
     static final String DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown";
     static final String CQL_TYPE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType";
 
-    // Stacktrace of an exception that occurred during CQL evaluation, as the native platform rerpesents it (e.g. Java)
+    // Stacktrace of an exception that occurred during CQL evaluation, as the native platform represents it (e.g. Java)
     static final String NATIVE_STACK_TRACE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-nativeStackTrace";
 
     // The CQL representation of a FHIR structure.
