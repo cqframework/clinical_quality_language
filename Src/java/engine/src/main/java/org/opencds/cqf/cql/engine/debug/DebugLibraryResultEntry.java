@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.debug;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,19 +35,14 @@ public class DebugLibraryResultEntry {
     }
 
     public void logDebugResultEntry(final Element node, final Object result) {
-        if (node != null) {
-            if (node.getLocalId() != null) {
-                DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_ID, node.getLocalId());
-                logDebugResult(locator, result);
-            }
+        requireNonNull(node, "node cannot be null");
+        if (node.getLocalId() != null) {
+            DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_ID, node.getLocalId());
+            logDebugResult(locator, result);
+        }
 
-            if (node.getLocator() != null) {
-                DebugLocator locator = new DebugLocator(Location.fromLocator(node.getLocator()));
-                logDebugResult(locator, result);
-            }
-        } else {
-            DebugLocator locator = new DebugLocator(
-                    DebugLocator.DebugLocatorType.NODE_TYPE, node.getClass().getSimpleName());
+        if (node.getLocator() != null) {
+            DebugLocator locator = new DebugLocator(Location.fromLocator(node.getLocator()));
             logDebugResult(locator, result);
         }
     }
