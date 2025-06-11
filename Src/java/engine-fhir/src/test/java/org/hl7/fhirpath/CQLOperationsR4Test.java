@@ -109,8 +109,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlStringOperatorsTest/toString tests/DateTimeToString3",
             "cql/CqlTypeOperatorsTest/As/AsQuantity",
             "cql/CqlTypeOperatorsTest/As/CastAsQuantity",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeDate",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeTimeUnspecified",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime2",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime3",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime4",
