@@ -473,8 +473,8 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
     }
 
     @Override
-    public IBaseOperationOutcome toFhirOperationOutcome(Throwable value) {
-        if (value == null) {
+    public IBaseOperationOutcome toFhirOperationOutcome(Exception exception) {
+        if (exception == null) {
             return null;
         }
 
@@ -482,8 +482,8 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         outcome.addIssue()
                 .setSeverity(OperationOutcome.IssueSeverity.ERROR)
                 .setCode(OperationOutcome.IssueType.EXCEPTION)
-                .setDiagnostics(value.getMessage())
-                .addExtension(NATIVE_STACK_TRACE_EXT_URL, new StringType(getStackTraceAsString(value)));
+                .setDiagnostics(exception.getMessage())
+                .addExtension(NATIVE_STACK_TRACE_EXT_URL, new StringType(getStackTraceAsString(exception)));
 
         return outcome;
     }

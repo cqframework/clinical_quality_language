@@ -85,7 +85,7 @@ public interface FhirTypeConverter {
      */
     public IBaseOperationOutcome toFhirOperationOutcome(Object value);
 
-    public IBaseOperationOutcome toFhirOperationOutcome(Throwable t);
+    public IBaseOperationOutcome toFhirOperationOutcome(Exception exception);
 
     /**
      * Converts a String to a FHIR Id

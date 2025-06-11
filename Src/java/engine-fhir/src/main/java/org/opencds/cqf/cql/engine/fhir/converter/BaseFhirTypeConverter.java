@@ -72,8 +72,8 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             throw new IllegalArgumentException("use toFhirTypes(Iterable<Object>) for iterables");
         }
 
-        if (value instanceof Throwable t) {
-            return toFhirOperationOutcome(t);
+        if (value instanceof Exception e) {
+            return toFhirOperationOutcome(e);
         }
 
         if (isFhirType(value)) {
@@ -533,10 +533,10 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
         return TemporalPrecisionEnum.valueOf(name);
     }
 
-    protected String getStackTraceAsString(Throwable throwable) {
+    protected String getStackTraceAsString(Exception exception) {
         StringWriter sw = new StringWriter();
         try (PrintWriter pw = new PrintWriter(sw)) {
-            throwable.printStackTrace(pw);
+            exception.printStackTrace(pw);
         }
         return sw.toString();
     }
