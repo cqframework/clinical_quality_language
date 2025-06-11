@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,6 +37,7 @@ import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.r4.model.Patient;
@@ -441,12 +443,6 @@ class R4TypeConverterTests {
     }
 
     @Test
-    void invalidIntervalToFhirPeriod() {
-        var interval = new Interval(5, true, 6, true);
-        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirPeriod(interval));
-    }
-
-    @Test
     void intervalToFhirRange() {
         Range expected = new Range()
                 .setLow(new org.hl7.fhir.r4.model.Quantity()
@@ -508,10 +504,42 @@ class R4TypeConverterTests {
     }
 
     @Test
-    void invalidIntervalToFhirInterval() {
+    // Integer intervals are not supported in FHIR, so we produce the raw
+    // CQL text in an OperationOutcome instead
+    void integerIntervalToFhirOperationOutcome() {
         var interval = new Interval(5, true, 6, true);
+        var result = typeConverter.toFhirInterval(interval);
+        assertNotNull(result);
+        var outcome = assertInstanceOf(OperationOutcome.class, result);
+        assertEquals(1, outcome.getIssue().size());
+        var issue = outcome.getIssue().get(0);
+        assertEquals(OperationOutcome.IssueType.INFORMATIONAL, issue.getCode());
+        assertEquals(OperationOutcome.IssueSeverity.INFORMATION, issue.getSeverity());
+        var extension = issue.getExtension().stream()
+                .filter(e -> e.getUrl().equals(FhirTypeConverter.CQL_TEXT_EXT_URL))
+                .findFirst();
+        assertTrue(extension.isPresent());
+        assertEquals("Interval[5, 6]", extension.get().getValue().toString());
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirInterval(interval));
+    @Test
+    void exceptionToFhirOperationOutcome() {
+        var exception = new IllegalArgumentException("Test exception");
+        exception.fillInStackTrace();
+        var result = typeConverter.toFhirOperationOutcome(exception);
+        assertNotNull(result);
+        var outcome = assertInstanceOf(OperationOutcome.class, result);
+        assertEquals(1, outcome.getIssue().size());
+        var issue = outcome.getIssue().get(0);
+        assertEquals(OperationOutcome.IssueType.EXCEPTION, issue.getCode());
+        assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity());
+        assertEquals("Test exception", issue.getDiagnostics());
+
+        var stackTrace = issue.getExtension().stream()
+                .filter(e -> e.getUrl().equals(FhirTypeConverter.NATIVE_STACK_TRACE_EXT_URL))
+                .findFirst();
+        assertTrue(stackTrace.isPresent());
+        assertNotNull(stackTrace.get().getValue().toString());
     }
 
     private static List<ParametersParameterComponent> getPartsByName(ParametersParameterComponent ppc, String name) {
