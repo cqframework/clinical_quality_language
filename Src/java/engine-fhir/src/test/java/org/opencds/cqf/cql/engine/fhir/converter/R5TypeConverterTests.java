@@ -512,21 +512,17 @@ class R5TypeConverterTests {
 
     @Test
     // Integer intervals are not supported in FHIR, so we produce the raw
-    // CQL text in an OperationOutcome instead
-    void integerIntervalToFhirOperationOutcome() {
+    // CQL text instead with an extension.
+    void integerIntervalToFhirString() {
         var interval = new Interval(5, true, 6, true);
         var result = typeConverter.toFhirInterval(interval);
         assertNotNull(result);
-        var outcome = assertInstanceOf(OperationOutcome.class, result);
-        assertEquals(1, outcome.getIssue().size());
-        var issue = outcome.getIssue().get(0);
-        assertEquals(OperationOutcome.IssueType.INFORMATIONAL, issue.getCode());
-        assertEquals(OperationOutcome.IssueSeverity.INFORMATION, issue.getSeverity());
-        var extension = issue.getExtension().stream()
+        var stringType = assertInstanceOf(StringType.class, result);
+        assertEquals("Interval[5, 6]", stringType.getValue());
+        var extension = stringType.getExtension().stream()
                 .filter(e -> e.getUrl().equals(FhirTypeConverter.CQL_TEXT_EXT_URL))
                 .findFirst();
         assertTrue(extension.isPresent());
-        assertEquals("Interval[5, 6]", extension.get().getValue().toString());
     }
 
     @Test
