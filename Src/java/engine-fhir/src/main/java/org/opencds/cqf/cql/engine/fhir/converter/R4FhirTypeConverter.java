@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
+import org.hl7.fhir.instance.model.api.IBaseDatatype;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -486,17 +487,14 @@ class R4FhirTypeConverter extends BaseFhirTypeConverter {
     }
 
     @Override
-    public IBaseOperationOutcome toFhirOperationOutcome(Object value) {
+    public IBaseDatatype toCqlText(Object value) {
         if (value == null) {
             return null;
         }
 
         var s = (String) ToStringEvaluator.toString(value);
-        var outcome = new OperationOutcome();
-        outcome.addIssue()
-                .setSeverity(OperationOutcome.IssueSeverity.INFORMATION)
-                .setCode(OperationOutcome.IssueType.INFORMATIONAL)
-                .addExtension(CQL_TEXT_EXT_URL, new StringType(s));
-        return outcome;
+        var text = new StringType(s);
+        text.addExtension(CQL_TEXT_EXT_URL, new BooleanType(true));
+        return text;
     }
 }
