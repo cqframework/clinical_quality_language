@@ -52,12 +52,8 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
                 converted.add(toFhirTypes((Iterable<?>) value));
             } else if (isFhirType(value)) {
                 converted.add(value);
-            } else if (isCqlType(value)) {
-                converted.add(toFhirType(value));
             } else {
-                throw new IllegalArgumentException(String.format(
-                        "Unknown type encountered during conversion %s",
-                        value.getClass().getName()));
+                converted.add(toFhirType(value));
             }
         }
 
@@ -274,12 +270,8 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
                 converted.add(toCqlTypes((Iterable<?>) value));
             } else if (isCqlType(value)) {
                 converted.add(value);
-            } else if (isFhirType(value)) {
-                converted.add(toCqlType(value));
             } else {
-                throw new IllegalArgumentException(String.format(
-                        "Unknown type encountered during conversion %s",
-                        value.getClass().getName()));
+                converted.add(toCqlType(value));
             }
         }
 
