@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
+import org.hl7.fhir.instance.model.api.IBaseDatatype;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -72,19 +73,29 @@ public interface FhirTypeConverter {
     public List<Object> toFhirTypes(Iterable<?> values);
 
     /**
-     * Converts an Object to a FHIR OperationOutcome. This is used for arbitrary
-     * types that do not have well-defined FHIR mappings, such as CQL Intervals.
+     * Converts an Object to the equivalent CQL representation. This is used for arbitrary
+     * types that do not have well-defined FHIR mappings, such as CQL Integer Intervals.
      *
      * The default implementation should use the CQL ToString operator and
-     * embed the result in a FHIR OperationOutcome with a single issue.
+     * embed add the cqf-cqlText extension to the FHIR structure.
      *
      * @param value the value to convert
-     * @return a FHIR OperationOutcome
+     * @return a FHIR String
      *
      * @return
      */
-    public IBaseOperationOutcome toFhirOperationOutcome(Object value);
+    public IBaseDatatype toCqlText(Object value);
 
+    /**
+     * Converts an Exception to a FHIR OperationOutcome.
+     *
+     * The default implementation should create an OperationOutcome
+     * with an issue of type "exception" and severity "error", and
+     * include the exception message and stack trace in the details.
+     *
+     * @param exception
+     * @return a FHIR OperationOutcome
+     */
     public IBaseOperationOutcome toFhirOperationOutcome(Exception exception);
 
     /**

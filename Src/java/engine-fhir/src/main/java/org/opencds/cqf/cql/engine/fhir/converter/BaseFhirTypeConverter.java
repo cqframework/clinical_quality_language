@@ -55,7 +55,9 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             } else if (isCqlType(value)) {
                 converted.add(toFhirType(value));
             } else {
-                converted.add(toFhirOperationOutcome(value));
+                throw new IllegalArgumentException(String.format(
+                        "Unknown type encountered during conversion %s",
+                        value.getClass().getName()));
             }
         }
 
@@ -117,7 +119,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             case "Tuple":
                 return toFhirTuple((Tuple) value);
             default:
-                return toFhirOperationOutcome(value);
+                return toCqlText(value);
         }
     }
 
@@ -242,7 +244,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             case "Quantity":
                 return toFhirRange(value);
             default:
-                return toFhirOperationOutcome(value);
+                return toCqlText(value);
         }
     }
 
