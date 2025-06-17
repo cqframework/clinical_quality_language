@@ -58,8 +58,7 @@ public class ToDateTimeEvaluator {
             }
         }
 
-        if (operand instanceof Date) {
-            Date date = (Date) operand;
+        if (operand instanceof Date date) {
             return new DateTime(
                     TemporalHelper.zoneToOffset(
                             state.getEvaluationZonedDateTime().getOffset()),

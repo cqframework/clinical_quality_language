@@ -1437,9 +1437,10 @@ public class DataRequirementsProcessorTest {
                             if (dfc.getValue() instanceof Period) {
                                 String expectedPeriodStartString = expectedPeriodStart
                                         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                                        .replace(":00Z", ":00.000Z"); // "2022-10-02T00:00:00.000-07:00"
-                                String expectedPeriodEndString = expectedPeriodEnd.format(
-                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-12-30T23:59:59.999-07:00"
+                                        .replace("T00:00:00Z", ""); // "2022-10-02"
+                                String expectedPeriodEndString = expectedPeriodEnd
+                                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                        .replace("T23:59:59.999Z", ""); // "2022-12-30"
                                 if (((Period) dfc.getValue()).hasStart()
                                         && ((Period) dfc.getValue())
                                                 .getStartElement()
@@ -2153,11 +2154,32 @@ public class DataRequirementsProcessorTest {
 
     private void assertEqualToExpectedModuleDefinitionLibrary(
             org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary, String pathToExpectedModuleDefinitionLibrary) {
+        assertEqualToExpectedModuleDefinitionLibrary(
+                actualModuleDefinitionLibrary, pathToExpectedModuleDefinitionLibrary, null);
+    }
+
+    /**
+     * Asserts that the actual module definition library is equal to the expected module definition library. The
+     * expected library is loaded from the JSON file, and the given timezone (if specified) is used at the default
+     * timezone when parsing FHIR JSON. (When JSON files are parsed, date strings like "2022-12-17" inside FHIR periods
+     * are parsed as FHIR dateTime values with the timezone set to the default timezone.)
+     */
+    private void assertEqualToExpectedModuleDefinitionLibrary(
+            org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary,
+            String pathToExpectedModuleDefinitionLibrary,
+            ZoneId zoneId) {
         FhirContext context = getFhirContext();
         IParser parser = context.newJsonParser();
-        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary =
-                (org.hl7.fhir.r5.model.Library) parser.parseResource(
-                        DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary;
+        if (zoneId != null) {
+            TimeZone.setDefault(TimeZone.getTimeZone(zoneId));
+        }
+        try {
+            expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library) parser.parseResource(
+                    DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        } finally {
+            TimeZone.setDefault(null);
+        }
         assertNotNull(expectedModuleDefinitionLibrary);
         // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
@@ -2190,7 +2212,9 @@ public class DataRequirementsProcessorTest {
                 true);
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
-                moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
+                moduleDefinitionLibrary,
+                "WithDependencies/Library-BSElements-data-requirements.json",
+                ZoneId.of("UTC"));
         // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
