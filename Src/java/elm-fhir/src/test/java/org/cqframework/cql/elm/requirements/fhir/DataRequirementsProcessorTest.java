@@ -2160,7 +2160,7 @@ public class DataRequirementsProcessorTest {
 
     /**
      * Asserts that the actual module definition library is equal to the expected module definition library. The
-     * expected library is loaded from the JSON file, and the given timezone (if specified) is used at the default
+     * expected library is loaded from the JSON file, and the given timezone (if specified) is used as the default
      * timezone when parsing FHIR JSON. (When JSON files are parsed, date strings like "2022-12-17" inside FHIR periods
      * are parsed as FHIR dateTime values with the timezone set to the default timezone.)
      */
