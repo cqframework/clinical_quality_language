@@ -60,11 +60,12 @@ public class ToDateTimeEvaluator {
 
         if (operand instanceof Date date) {
             return new DateTime(
-                    TemporalHelper.zoneToOffset(
-                            state.getEvaluationZonedDateTime().getOffset()),
-                    date.getDate().getYear(),
-                    date.getDate().getMonthValue(),
-                    date.getDate().getDayOfMonth());
+                            TemporalHelper.zoneToOffset(
+                                    state.getEvaluationZonedDateTime().getOffset()),
+                            date.getDate().getYear(),
+                            date.getDate().getMonthValue(),
+                            date.getDate().getDayOfMonth())
+                    .setPrecision(date.getPrecision());
         }
 
         throw new InvalidOperatorArgument(

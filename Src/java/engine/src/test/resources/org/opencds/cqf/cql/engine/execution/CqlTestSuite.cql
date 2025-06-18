@@ -1119,8 +1119,8 @@ define FromDate_dateToDate: convert @2015-01-01 to Date
 define FromDate_dateToStr: convert @2015-01-01 to String
 
 define test_FromDate_dateYMDToDateTime: TestMessage(FromDate_dateYMDToDateTime ~ DateTime(2015, 1, 1), 'FromDate_dateYMDToDateTime', toString(DateTime(2015, 1, 1)), toString(FromDate_dateYMDToDateTime))
-define test_FromDate_dateYMToDateTime: TestMessage(FromDate_dateYMToDateTime ~ DateTime(2015, 1, 1), 'FromDate_dateYMToDateTime', toString(DateTime(2015, 1, 1)), toString(FromDate_dateYMToDateTime))
-define test_FromDate_dateYToDateTime: TestMessage(FromDate_dateYToDateTime ~ DateTime(2015, 1, 1), 'FromDate_dateYToDateTime', toString(DateTime(2015, 1, 1)), toString(FromDate_dateYToDateTime))
+define test_FromDate_dateYMToDateTime: TestMessage(FromDate_dateYMToDateTime ~ DateTime(2015, 1), 'FromDate_dateYMToDateTime', toString(DateTime(2015, 1)), toString(FromDate_dateYMToDateTime))
+define test_FromDate_dateYToDateTime: TestMessage(FromDate_dateYToDateTime ~ DateTime(2015), 'FromDate_dateYToDateTime', toString(DateTime(2015)), toString(FromDate_dateYToDateTime))
 define test_FromDate_dateToDate: TestMessage(FromDate_dateToDate ~ Date(2015, 1, 1), 'FromDate_dateToDate', toString(Date(2015, 1, 1)), toString(FromDate_dateToDate))
 define test_FromDate_dateToStr: TestMessage(FromDate_dateToStr = '2015-01-01', 'FromDate_dateToStr', '2015-01-01', FromDate_dateToStr)
 
