@@ -30,7 +30,7 @@ If the input string is not formatted correctly, or does not represent a valid Da
 As with Date and Time literals, DateTime values may be specified to any precision. If no timezone offset is supplied,
     the timezone offset of the evaluation request timestamp is assumed.
 
-For the Date overload, the result will be a DateTime with the time components set to zero, except for the timezone
+For the Date overload, the result will be a DateTime with the time components unspecified, except for the timezone
     offset, which will be set to the timezone offset of the evaluation request timestamp.
 
 If the argument is null, the result is null.
