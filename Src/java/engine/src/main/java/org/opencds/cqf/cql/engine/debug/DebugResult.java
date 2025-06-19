@@ -7,10 +7,12 @@ import java.util.Map;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.execution.Profile;
 
 public class DebugResult {
     private final Map<String, DebugLibraryResultEntry> libraryResults;
     private final ArrayList<CqlException> messages;
+    private Profile profile = null;
 
     public DebugResult() {
         libraryResults = new HashMap<>();
@@ -50,5 +52,16 @@ public class DebugResult {
 
     public Map<String, DebugLibraryResultEntry> getLibraryResults() {
         return libraryResults;
+    }
+
+    public Profile getProfile() {
+        return this.profile;
+    }
+
+    public Profile ensureProfile() {
+        if (this.profile == null) {
+            this.profile = new Profile();
+        }
+        return this.profile;
     }
 }
