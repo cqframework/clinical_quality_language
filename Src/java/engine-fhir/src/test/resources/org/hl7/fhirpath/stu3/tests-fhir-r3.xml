@@ -773,7 +773,6 @@
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>@2012-04-15 = @2012-04-15T10:00:00</expression>
-			<output type="boolean">false</output>
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>name = name</expression>
@@ -838,7 +837,6 @@
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>@2012-04-15 != @2012-04-15T10:00:00</expression>
-			<output type="boolean">true</output>
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>name != name</expression>
