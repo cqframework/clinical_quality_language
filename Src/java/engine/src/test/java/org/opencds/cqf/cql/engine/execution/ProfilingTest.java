@@ -44,14 +44,6 @@ public class ProfilingTest extends CqlTestBase {
                 final Matcher<String> contextMatcher,
                 final Matcher<Long> countMatcher,
                 final Matcher<Long> timeMatcher,
-                final Map<String, Map<String, Matcher<Profile.Node>>> childMatchers) {
-            this(contextMatcher, countMatcher, timeMatcher, any(Long.class), childMatchers);
-        }
-
-        public NodeMatcher(
-                final Matcher<String> contextMatcher,
-                final Matcher<Long> countMatcher,
-                final Matcher<Long> timeMatcher,
                 final Matcher<Long> missesMatcher) {
             this(contextMatcher, countMatcher, timeMatcher, missesMatcher, Map.of());
         }
