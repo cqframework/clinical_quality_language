@@ -40,7 +40,7 @@ public class State {
         public long endTime = 0;
 
         // If the activation frame belongs to an ExpressionDef that is
-        // not a FunctionDef, this field Indicates whether the
+        // not a FunctionDef, this field indicates whether the
         // evaluation result was computed for this activation frame or
         // taken from the cache.
         public boolean isCached = false;

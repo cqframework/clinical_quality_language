@@ -82,7 +82,7 @@ public class Backtrace {
 
         /**
          * Returns the definition in which the current expression was
-         * being evaluated when the backtrace frame was capture.
+         * being evaluated when the backtrace frame was captured.
          * <p>
          * Definitions are either direct instances of ExpressionDef
          * which correspond to define foo: ... in CQL libraries or
@@ -184,7 +184,7 @@ public class Backtrace {
             }
         }
         // Walk the ActivationFrames from the top of the stack to the
-        // innermost ActivationFrame which corresponds to and
+        // innermost ActivationFrame which corresponds to an
         // expression or function definition which is definitionFrame.
         // Variable bindings in frames closer to the top of the stack
         // than definitionFrame correspond to local variables which
@@ -192,7 +192,7 @@ public class Backtrace {
         // or function.  Each variable binding in definitionFrame
         // itself corresponds to either an invocation argument, if the
         // frame represents a function invocation, or more local
-        // variables.  Classify all relevant binding into those two
+        // variables.  Classify all relevant bindings into those two
         // categories, mainly for more informative presentation in
         // backtraces.
         final List<Variable> arguments = new LinkedList<>();
