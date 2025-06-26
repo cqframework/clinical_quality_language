@@ -429,8 +429,6 @@ public class State {
 
     public Object resolveAlias(String name) {
         // This method needs to account for multiple variables on the stack with the same name
-        ArrayList<Object> ret = new ArrayList<>();
-        boolean isList = false;
         for (Variable v : getTopActivationFrame().variables) {
             if (v.getName().equals(name)) {
                 return v.getValue();
