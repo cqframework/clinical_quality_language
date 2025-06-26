@@ -51,10 +51,6 @@ public class State {
             this.startTime = startTime;
         }
 
-        public void setStartTime() {
-            this.startTime = System.nanoTime();
-        }
-
         @Override
         public String toString() {
             final var result = new StringBuilder().append("Frame{element=");
