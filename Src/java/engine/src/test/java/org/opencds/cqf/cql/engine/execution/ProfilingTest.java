@@ -69,10 +69,8 @@ public class ProfilingTest extends CqlTestBase {
                     final var matcher = e.getValue();
                     final var childElement = contextChildren.keySet().stream()
                             .filter(expression -> {
-                                if (expression instanceof ExpressionDef) {
-                                    return ((ExpressionDef) expression)
-                                            .getName()
-                                            .equals(expressionName);
+                                if (expression instanceof ExpressionDef expressionDef) {
+                                    return expressionDef.getName().equals(expressionName);
                                 } else {
                                     return false;
                                 }

@@ -177,8 +177,8 @@ public class Backtrace {
         // arguments.
         if (!frames.isEmpty()) {
             final var currentFrame = this.frames.get(frames.size() - 1);
-            if (currentFrame instanceof FunctionoidFrame) {
-                if (((FunctionoidFrame) currentFrame).getDefinition() == containingDefinition) {
+            if (currentFrame instanceof FunctionoidFrame functionoidFrame) {
+                if (functionoidFrame.getDefinition() == containingDefinition) {
                     return;
                 }
             }
@@ -200,9 +200,10 @@ public class Backtrace {
         for (State.ActivationFrame frame : stack) {
             if (frame == definitionFrame) {
                 final List<String> parameterNames;
-                if (containingDefinition instanceof FunctionDef) {
-                    parameterNames = ((FunctionDef) containingDefinition)
-                            .getOperand().stream().map(OperandDef::getName).collect(Collectors.toList());
+                if (containingDefinition instanceof FunctionDef functionDef) {
+                    parameterNames = functionDef.getOperand().stream()
+                            .map(OperandDef::getName)
+                            .collect(Collectors.toList());
                 } else {
                     parameterNames = List.of();
                 }

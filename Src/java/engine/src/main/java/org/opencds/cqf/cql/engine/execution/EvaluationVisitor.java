@@ -38,11 +38,11 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         // extend the backtrace object of exception to include that
         // call.
         final var frame = state.getTopActivationFrame();
-        if (frame.element instanceof ExpressionDef) {
+        if (frame.element instanceof ExpressionDef expressionDef) {
             exception
                     .getBacktrace()
                     .maybeAddFrame(
-                            (ExpressionDef) frame.element,
+                            expressionDef,
                             frame,
                             state.getStack(),
                             state.getCurrentContext(),

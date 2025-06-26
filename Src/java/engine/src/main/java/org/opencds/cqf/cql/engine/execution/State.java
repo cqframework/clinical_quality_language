@@ -56,11 +56,10 @@ public class State {
             final var result = new StringBuilder().append("Frame{element=");
             if (this.element == null) {
                 result.append("«root»");
-            } else if (this.element instanceof ExpressionDef) {
-                result.append(((ExpressionDef) this.element).getName());
-            } else if (this.element instanceof Retrieve) {
-                result.append(String.format(
-                        "[%s]", ((Retrieve) this.element).getDataType().getLocalPart()));
+            } else if (this.element instanceof ExpressionDef expressionDef) {
+                result.append(expressionDef.getName());
+            } else if (this.element instanceof Retrieve retrieve) {
+                result.append(String.format("[%s]", retrieve.getDataType().getLocalPart()));
             } else {
                 result.append(this.element.getClass().getSimpleName());
             }

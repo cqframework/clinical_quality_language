@@ -173,11 +173,10 @@ public class Profile {
             final var result = new StringBuilder();
             if (expression == null) {
                 result.append("«root»");
-            } else if (expression instanceof Retrieve) {
-                result.append(String.format(
-                        "[%s]", ((Retrieve) expression).getDataType().getLocalPart()));
-            } else if (expression instanceof ExpressionDef) {
-                result.append(((ExpressionDef) expression).getName());
+            } else if (expression instanceof Retrieve retrieve) {
+                result.append(String.format("[%s]", retrieve.getDataType().getLocalPart()));
+            } else if (expression instanceof ExpressionDef expressionDef) {
+                result.append(expressionDef.getName());
                 if (expression instanceof FunctionDef) {
                     result.append("()");
                 }
