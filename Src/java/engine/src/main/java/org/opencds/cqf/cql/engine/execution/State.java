@@ -258,13 +258,17 @@ public class State {
 
     public void pop() {
         final var topActivationFrame = this.stack.peek();
-        assert topActivationFrame != null; // stack underflow
+        if (topActivationFrame == null) {
+            throw new IllegalStateException("Stack underflow");
+        }
         topActivationFrame.variables.pop();
     }
 
     public void push(Variable variable) {
         final var topActivationFrame = this.stack.peek();
-        assert topActivationFrame != null; // stack underflow
+        if (topActivationFrame == null) {
+            throw new IllegalStateException("Stack underflow: No activation frame available.");
+        }
         topActivationFrame.variables.push(variable);
     }
 
