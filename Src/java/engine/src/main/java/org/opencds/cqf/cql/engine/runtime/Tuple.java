@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator;
@@ -35,6 +36,9 @@ public class Tuple implements CqlType {
     }
 
     public void setElements(LinkedHashMap<String, Object> elements) {
+        for (var entry : elements.keySet()) {
+            Objects.requireNonNull(entry, "Tuple keys cannot be null");
+        }
         this.elements = elements;
     }
 

@@ -60,8 +60,9 @@ public class ResolvedIdentifierContext {
     public Optional<String> warnCaseInsensitiveIfApplicable() {
         if (nullableElement != null && !isExactMatch()) {
             return getName(nullableElement)
-                    .map(name ->
-                            String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, name));
+                    .map(name -> String.format(
+                            "Could not resolve identifier %s. Consider whether the identifier %s (differing only in case) was intended.",
+                            identifier, name));
         }
 
         return Optional.empty();

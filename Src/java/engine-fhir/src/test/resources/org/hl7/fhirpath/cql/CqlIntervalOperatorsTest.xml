@@ -236,39 +236,114 @@
 		</test>
 	</group>
 	<group name="Expand">
+		<test name="ExpandNull">
+			<expression>expand null</expression>
+			<output>null</output>
+		</test>
+		<test name="ExpandEmptyList">
+			<expression>expand { }</expression>
+			<output>{ }</output>
+		</test>
+		<test name="ExpandListWithNull">
+			<expression>expand { null }</expression>
+			<output>{ }</output>
+		</test>
 		<test name="ExpandPerDay">
 			<expression>expand { Interval[@2018-01-01, @2018-01-04] } per day</expression>
 			<output>{ Interval[@2018-01-01, @2018-01-01], Interval[@2018-01-02, @2018-01-02], Interval[@2018-01-03, @2018-01-03], Interval[@2018-01-04, @2018-01-04] }</output>
+		</test>
+		<test name="ExpandPerDayIntervalOverload">
+			<expression>expand Interval[@2018-01-01, @2018-01-04] per day</expression>
+			<output>{ @2018-01-01, @2018-01-02, @2018-01-03, @2018-01-04 }</output>
 		</test>
 		<test name="ExpandPer2Days">
 			<expression>expand { Interval[@2018-01-01, @2018-01-04] } per 2 days</expression>
 			<output>{ Interval[@2018-01-01, @2018-01-02], Interval[@2018-01-03, @2018-01-04] }</output>
 		</test>
+		<test name="ExpandPer2DaysIntervalOverload">
+			<expression>expand Interval[@2018-01-01, @2018-01-04] per 2 days</expression>
+			<output>{ @2018-01-01, @2018-01-03 }</output>
+		</test>
 		<test name="ExpandPerHour">
 			<expression>expand { Interval[@T10:00, @T12:30] } per hour</expression>
-			<output>{ Interval[@T10:00, @T11:00), Interval[@T11:00, @T12:00) }</output>
+			<output>{ Interval[@T10, @T10], Interval[@T11, @T11], Interval[@T12, @T12] }</output>
+		</test>
+		<test name="ExpandPerHourIntervalOverload">
+			<expression>expand Interval[@T10:00, @T12:30] per hour</expression>
+			<output>{ @T10, @T11, @T12 }</output>
+		</test>
+		<test name="ExpandPerHourOpen">
+			<expression>expand { Interval[@T10:00, @T12:30) } per hour</expression>
+			<output>{ Interval[@T10, @T10], Interval[@T11, @T11], Interval[@T12, @T12] }</output>
+		</test>
+		<test name="ExpandPerHourOpenIntervalOverload">
+			<expression>expand Interval[@T10:00, @T12:30) per hour</expression>
+			<output>{ @T10, @T11, @T12 }</output>
 		</test>
 		<test name="ExpandPer1">
 			<expression>expand { Interval[10.0, 12.5] } per 1</expression>
 			<output>{ Interval[10, 10], Interval[11, 11], Interval[12, 12] }</output>
-			<!-- Translation Error: Could not resolve call to operator Expand with signature (list<interval<System.Decimal>>,System.Integer). -->
+		</test>
+		<test name="ExpandPer1IntervalOverload">
+			<expression>expand Interval[10.0, 12.5] per 1</expression>
+			<output>{ 10, 11, 12 }</output>
+		</test>
+		<test name="ExpandPer1Open">
+			<expression>expand { Interval[10.0, 12.5) } per 1</expression>
+			<output>{ Interval[10, 10], Interval[11, 11], Interval[12, 12] }</output>
+		</test>
+		<test name="ExpandPer1OpenIntervalOverload">
+			<expression>expand Interval[10.0, 12.5) per 1</expression>
+			<output>{ 10, 11, 12 }</output>
 		</test>
 		<test name="ExpandPerMinute">
 			<expression>expand { Interval[@T10, @T10] } per minute</expression>
 			<output>{ }</output>
 		</test>
+		<test name="ExpandPerMinuteIntervalOverload">
+			<expression>expand Interval[@T10, @T10] per minute</expression>
+			<output>{ }</output>
+		</test>
 		<test name="ExpandPer0D1">
 			<expression>expand { Interval[10, 10] } per 0.1</expression>
 			<output>{ Interval[10.0, 10.0], Interval[10.1, 10.1], Interval[10.2, 10.2], Interval[10.3, 10.3], Interval[10.4, 10.4], Interval[10.5, 10.5], Interval[10.6, 10.6], Interval[10.7, 10.7], Interval[10.8, 10.8], Interval[10.9, 10.9] }</output>
-			<!-- Translation Error: Could not resolve call to operator Expand with signature (list<interval<System.Integer>>,System.Decimal). -->
+			<!--  Actual: { Interval[10, 10] }. Currently, the compiler sets the result type of the expression to List<Interval<Integer>>, so the engine can only return integer intervals. -->
+		</test>
+		<test name="ExpandPer0D1IntervalOverload">
+			<expression>expand Interval[10, 10] per 0.1</expression>
+			<output>{ 10.0, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9 }</output>
 		</test>
 		<test name="ExpandInterval">
 			<expression>expand { Interval[1, 10] }</expression>
 			<output>{ Interval[1, 1], Interval[2, 2], Interval[3, 3], Interval[4, 4], Interval[5, 5], Interval[6, 6], Interval[7, 7], Interval[8, 8], Interval[9, 9], Interval[10, 10] }</output>
 		</test>
+		<test name="ExpandIntegerIntervalOverload">
+			<expression>expand Interval[1, 10]</expression>
+			<output>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }</output>
+		</test>
+		<test name="ExpandIntervalOpen">
+			<expression>expand { Interval[1, 10) }</expression>
+			<output>{ Interval[1, 1], Interval[2, 2], Interval[3, 3], Interval[4, 4], Interval[5, 5], Interval[6, 6], Interval[7, 7], Interval[8, 8], Interval[9, 9] }</output>
+		</test>
+		<test name="ExpandIntegerOpenIntervalOverload">
+			<expression>expand Interval[1, 10)</expression>
+			<output>{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }</output>
+		</test>
 		<test name="ExpandIntervalPer2">
 			<expression>expand { Interval[1, 10] } per 2</expression>
 			<output>{ Interval[1, 2], Interval[3, 4], Interval[5, 6], Interval[7, 8], Interval[9, 10] }</output>
+		</test>
+		<test name="ExpandIntervalPer2IntervalOverload">
+			<expression>expand Interval[1, 10] per 2</expression>
+			<output>{ 1, 3, 5, 7, 9 }</output>
+		</test>
+		<test name="ExpandIntervalOpenPer2">
+			<expression>expand { Interval[1, 10) } per 2</expression>
+			<output>{ Interval[1, 2], Interval[3, 4], Interval[5, 6], Interval[7, 8] }</output>
+		</test>
+		<test name="ExpandIntervalOpenPer2IntervalOverload">
+			<expression>expand Interval[1, 10) per 2</expression>
+			<output>{ 1, 3, 5, 7 }</output>
 		</test>
 	</group>
 	<group name="Contains">

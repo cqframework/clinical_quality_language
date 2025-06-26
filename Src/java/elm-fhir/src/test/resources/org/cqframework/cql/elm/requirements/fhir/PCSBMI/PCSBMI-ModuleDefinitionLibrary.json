@@ -28,6 +28,87 @@
       "code": "VR",
       "display": "virtual"
     }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "recurrence"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "relapse"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://snomed.info/sct",
+      "code": "428361000124107",
+      "display": "Discharge to home for hospice care (procedure)"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://snomed.info/sct",
+      "code": "428371000124100",
+      "display": "Discharge to healthcare facility for hospice care (procedure)"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "survey",
+      "display": "survey"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://loinc.org",
+      "code": "45755-6",
+      "display": "Hospice care [Minimum Data Set]"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://snomed.info/sct",
+      "code": "373066001",
+      "display": "Yes (qualifier value)"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+      "code": "problem-list-item",
+      "display": "Problem List Item"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://hl7.org/fhir/us/core/CodeSystem/condition-category",
+      "code": "health-concern",
+      "display": "Health Concern"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://hl7.org/fhir/v3/AdministrativeGender",
+      "code": "M",
+      "display": "Male"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://hl7.org/fhir/v3/AdministrativeGender",
+      "code": "F",
+      "display": "Female"
+    }
   } ],
   "name": "EffectiveDataRequirements",
   "status": "active",
@@ -63,6 +144,10 @@
     "resource": "Library/SupplementalDataElements|3.4.000"
   }, {
     "type": "depends-on",
+    "display": "Library Status",
+    "resource": "Library/Status|1.6.000"
+  }, {
+    "type": "depends-on",
     "display": "Code system ActCode",
     "resource": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
   }, {
@@ -77,6 +162,26 @@
     "type": "depends-on",
     "display": "Code system ObservationCategoryCodes",
     "resource": "http://terminology.hl7.org/CodeSystem/observation-category"
+  }, {
+    "type": "depends-on",
+    "display": "Code system ConditionClinicalStatusCodes",
+    "resource": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+  }, {
+    "type": "depends-on",
+    "display": "Code system SNOMEDCT",
+    "resource": "http://snomed.info/sct"
+  }, {
+    "type": "depends-on",
+    "display": "Code system ConditionCategory",
+    "resource": "http://terminology.hl7.org/CodeSystem/condition-category"
+  }, {
+    "type": "depends-on",
+    "display": "Code system USCoreConditionCategoryExtensionCodes",
+    "resource": "http://hl7.org/fhir/us/core/CodeSystem/condition-category"
+  }, {
+    "type": "depends-on",
+    "display": "Code system AdministrativeGender",
+    "resource": "http://hl7.org/fhir/v3/AdministrativeGender"
   }, {
     "type": "depends-on",
     "display": "Value set Encounter to Evaluate BMI",
@@ -121,6 +226,38 @@
     "type": "depends-on",
     "display": "Value set Underweight",
     "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1563"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Encounter Inpatient",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Hospice Encounter",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.1003"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Hospice Care Ambulatory",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1584"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Hospice Diagnosis",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.1165"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Palliative Care Diagnosis",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.1167"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Palliative Care Encounter",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1090"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Palliative Care Intervention",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1135"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Payer Type",
+    "resource": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591"
   } ],
   "parameter": [ {
     "name": "Measurement Period",
@@ -280,7 +417,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type", "hospitalization", "hospitalization.dischargeDisposition", "period" ],
+    "mustSupport": [ "type", "hospitalization", "hospitalization.dischargeDisposition", "period", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307"
@@ -288,7 +425,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type", "period" ],
+    "mustSupport": [ "type", "period", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.1003"
@@ -296,7 +433,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type", "period" ],
+    "mustSupport": [ "type", "period", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1090"
@@ -361,7 +498,7 @@
   }, {
     "type": "Observation",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" ],
-    "mustSupport": [ "code", "value", "effective" ],
+    "mustSupport": [ "code", "value", "effective", "status", "status.value", "category" ],
     "codeFilter": [ {
       "path": "code",
       "code": [ {
@@ -375,7 +512,7 @@
   }, {
     "type": "Observation",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" ],
-    "mustSupport": [ "code", "effective" ],
+    "mustSupport": [ "code", "effective", "status", "status.value", "category" ],
     "codeFilter": [ {
       "path": "code",
       "code": [ {
@@ -387,7 +524,7 @@
   }, {
     "type": "ServiceRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" ],
-    "mustSupport": [ "code", "authoredOn", "authoredOn.value" ],
+    "mustSupport": [ "code", "authoredOn", "authoredOn.value", "status", "status.value", "intent", "intent.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1584"
@@ -395,7 +532,7 @@
   }, {
     "type": "ServiceRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" ],
-    "mustSupport": [ "code" ],
+    "mustSupport": [ "code", "status", "status.value", "intent", "intent.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1525"
@@ -403,7 +540,7 @@
   }, {
     "type": "ServiceRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" ],
-    "mustSupport": [ "code" ],
+    "mustSupport": [ "code", "status", "status.value", "intent", "intent.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1528"
@@ -411,7 +548,7 @@
   }, {
     "type": "ServiceRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" ],
-    "mustSupport": [ "code" ],
+    "mustSupport": [ "code", "status", "status.value", "intent", "intent.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1527"
@@ -419,7 +556,7 @@
   }, {
     "type": "Procedure",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure" ],
-    "mustSupport": [ "code", "performed" ],
+    "mustSupport": [ "code", "performed", "status", "status.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1584"
@@ -427,7 +564,7 @@
   }, {
     "type": "Procedure",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure" ],
-    "mustSupport": [ "code", "performed" ],
+    "mustSupport": [ "code", "performed", "status", "status.value" ],
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1135"

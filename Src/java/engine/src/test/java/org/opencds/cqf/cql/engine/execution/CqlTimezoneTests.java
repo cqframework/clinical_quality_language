@@ -23,10 +23,10 @@ class CqlTimezoneTests extends CqlTestBase {
 
         try {
 
-            evaluateExpression("in interval 1", true);
+            evaluateExpression("in interval 1", null);
             evaluateExpression("in interval 2", true);
             evaluateExpression("in interval 3", true);
-            evaluateExpression("in interval 4", true);
+            evaluateExpression("in interval 4", null);
             // This is a DateTime compared to an Interval<DateTime>
             evaluateExpression("in interval 5", true);
             evaluateExpression("in interval 6", true);
@@ -40,8 +40,8 @@ class CqlTimezoneTests extends CqlTestBase {
         }
     }
 
-    private void evaluateExpression(String functionName, boolean expectedResult) {
+    private void evaluateExpression(String functionName, Boolean expectedResult) {
         var value = engine.expression(library, functionName).value();
-        assertEquals(value, expectedResult, functionName);
+        assertEquals(expectedResult, value, functionName);
     }
 }

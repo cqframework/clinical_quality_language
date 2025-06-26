@@ -297,21 +297,22 @@ public class State {
     }
 
     public Object resolveAlias(String name) {
-        // This method needs to account for multiple variables on the stack with the same name
-        ArrayList<Object> ret = new ArrayList<>();
-        boolean isList = false;
         for (Variable v : getStack()) {
             if (v.getName().equals(name)) {
-                if (v.isList()) isList = true;
-                ret.add(v.getValue());
+                return v.getValue();
             }
         }
-        return isList ? ret : ret.get(ret.size() - 1);
+
+        throw new IllegalStateException("Could not resolve alias reference %s in the current context".formatted(name));
     }
 
     public Object resolveIdentifierRef(String name) {
         for (var window : windows) {
             for (var v : window) {
+                if (v.getName().equals(name)) {
+                    return v.getValue();
+                }
+
                 var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
                     for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value)

@@ -30,6 +30,6 @@ public class ValueSet {
 
     @Override
     public String toString() {
-        return "ValueSet{id='" + id + "\'}";
+        return "ValueSet{id='" + id + "'}";
     }
 }

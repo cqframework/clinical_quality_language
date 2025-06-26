@@ -457,7 +457,31 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
     @Override
     public ElmRequirement visitIf(If elm, ElmRequirementsContext context) {
         // TODO: Rewrite the if as equivalent logic
-        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmRequirement childResult = null;
+
+        if (elm.getCondition() != null) {
+            childResult = this.visitElement(elm.getCondition(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        if (elm.getThen() != null) {
+            childResult = this.visitElement(elm.getThen(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        if (elm.getElse() != null) {
+            childResult = this.visitElement(elm.getElse(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement) childResult);
+            }
+        }
+
+        return result;
     }
 
     @Override

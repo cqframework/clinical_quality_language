@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.exception.TypeOverflow;
 import org.opencds.cqf.cql.engine.exception.TypeUnderflow;
 import org.opencds.cqf.cql.engine.runtime.*;
 
@@ -21,6 +22,21 @@ If the argument is null, the result is null.
 
 public class PredecessorEvaluator {
 
+    /**
+     * Checks if the given BigDecimal value is less than the minimum allowed value for Decimal type.
+     *
+     * @param value the value to check
+     * @return the value if it is not less than the minimum allowed value
+     * @throws TypeOverflow if the value is less than the minimum allowed for Decimal type
+     */
+    private static BigDecimal checkMinDecimal(BigDecimal value) {
+        if (value.compareTo(Value.MIN_DECIMAL) < 0) {
+            throw new TypeUnderflow(
+                    "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
+        }
+        return value;
+    }
+
     public static Object predecessor(Object value) {
         if (value == null) {
             return null;
@@ -39,11 +55,7 @@ public class PredecessorEvaluator {
             }
             return ((Long) value) - 1;
         } else if (value instanceof BigDecimal) {
-            if (((BigDecimal) value).compareTo(Value.MIN_DECIMAL) <= 0) {
-                throw new TypeUnderflow(
-                        "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
-            }
-            return ((BigDecimal) value).subtract(new BigDecimal("0.00000001"));
+            return checkMinDecimal(((BigDecimal) value).subtract(new BigDecimal("0.00000001")));
         }
         // NOTE: Quantity successor is not standard - including it for simplicity
         else if (value instanceof Quantity) {
@@ -105,5 +117,29 @@ public class PredecessorEvaluator {
         throw new InvalidOperatorArgument(String.format(
                 "The Predecessor operation is not implemented for type %s",
                 value.getClass().getName()));
+    }
+
+    /**
+     * Returns the predecessor of the given value, taking into account the precision of the given quantity.
+     * This is a convenience method and not an overload of the predecessor operator.
+     *
+     * @param value the value to get the predecessor of
+     * @param quantity the quantity specifying the precision
+     * @return the predecessor of the value
+     */
+    public static Object predecessor(Object value, Quantity quantity) {
+        if (value instanceof BigDecimal valueBigDecimal) {
+            if (quantity.getValue().scale() > 0) {
+                return checkMinDecimal(valueBigDecimal.subtract(
+                        BigDecimal.ONE.scaleByPowerOfTen(-quantity.getValue().scale())));
+            }
+            return checkMinDecimal(valueBigDecimal.subtract(BigDecimal.ONE));
+        } else if (value instanceof Quantity valueQuantity) {
+            return new Quantity()
+                    .withValue((BigDecimal) predecessor(valueQuantity.getValue(), quantity))
+                    .withUnit(valueQuantity.getUnit());
+        }
+
+        return predecessor(value);
     }
 }

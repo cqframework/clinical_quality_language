@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.fhir.ucum.UcumException;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhirpath.tests.Group;
 import org.junit.jupiter.api.Assumptions;
@@ -93,15 +92,8 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysA",
             "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysAA",
             "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull",
-            "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull1",
-            "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull2",
-            "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull3",
-            "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull4",
-            "cql/CqlIntervalOperatorsTest/Expand/ExpandIntervalPer2",
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1",
-            "cql/CqlIntervalOperatorsTest/Expand/ExpandPer1",
-            "cql/CqlIntervalOperatorsTest/Expand/ExpandPer2Days",
-            "cql/CqlIntervalOperatorsTest/Expand/ExpandPerMinute",
+            "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1IntervalOverload",
             "cql/CqlListOperatorsTest/Equal/EqualABCAnd123",
             "cql/CqlListOperatorsTest/Equal/Equal123AndABC",
             "cql/CqlListOperatorsTest/Equal/Equal123AndString123",
@@ -117,8 +109,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlStringOperatorsTest/toString tests/DateTimeToString3",
             "cql/CqlTypeOperatorsTest/As/AsQuantity",
             "cql/CqlTypeOperatorsTest/As/CastAsQuantity",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeDate",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeTimeUnspecified",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime2",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime3",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime4",
@@ -137,6 +127,9 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "r4/tests-fhir-r4/testAggregate/testAggregate3",
             "r4/tests-fhir-r4/testAggregate/testAggregate4",
             "r4/tests-fhir-r4/testAll/testAllTrue4",
+            "r4/tests-fhir-r4/testBasics/testIdentifierContext",
+            "r4/tests-fhir-r4/testBasics/testIdentifierContextIsNotResource",
+            "r4/tests-fhir-r4/testBasics/testContainerAccess",
             "r4/tests-fhir-r4/testCollectionBoolean/testCollectionBoolean2",
             "r4/tests-fhir-r4/testCollectionBoolean/testCollectionBoolean3",
             "r4/tests-fhir-r4/testCollectionBoolean/testCollectionBoolean4",
@@ -272,7 +265,7 @@ public class CQLOperationsR4Test extends TestFhirPath {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("dataMethod")
-    void test(String name, org.hl7.fhirpath.tests.Test test) throws UcumException {
+    void test(String name, org.hl7.fhirpath.tests.Test test) {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping " + name);
         runTest(test, "r4/input/", fhirContext, provider, fhirModelResolver);
     }

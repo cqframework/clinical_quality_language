@@ -38,21 +38,23 @@ public class CqlList {
     public Comparator<Object> expressionSort = new Comparator<Object>() {
         public int compare(Object left, Object right) {
 
+            Object leftResult = null;
             try {
-                state.push(new Variable().withName(alias).withValue(left));
-                left = visitor.visitExpression(expression, state);
+                state.push(new Variable(alias).withValue(left));
+                leftResult = visitor.visitExpression(expression, state);
             } finally {
                 state.pop();
             }
 
+            Object rightResult = null;
             try {
-                state.push(new Variable().withName(alias).withValue(right));
-                right = visitor.visitExpression(expression, state);
+                state.push(new Variable(alias).withValue(right));
+                rightResult = visitor.visitExpression(expression, state);
             } finally {
                 state.pop();
             }
 
-            return compareTo(left, right);
+            return compareTo(leftResult, rightResult);
         }
     };
 
