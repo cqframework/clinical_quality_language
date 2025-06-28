@@ -54,4 +54,10 @@ public class CqlException extends RuntimeException {
     public void setSourceLocator(SourceLocator sourceLocator) {
         this.sourceLocator = sourceLocator;
     }
+
+    private final Backtrace backtrace = new Backtrace();
+
+    public Backtrace getBacktrace() {
+        return this.backtrace;
+    }
 }
