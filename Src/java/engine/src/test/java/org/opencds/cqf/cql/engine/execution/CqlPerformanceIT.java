@@ -6,12 +6,16 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Stream;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,16 +30,17 @@ public class CqlPerformanceIT extends CqlTestBase {
     @Test
     void engineInit() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("Test");
-        runPerformanceTest(libraryId, 1.0, null);
+        runPerformanceTest(libraryId, 1.0, null, defaultCompilerOptions(), defaultEngineOptions());
     }
 
     // This test is for the various CQL operators
-    @Test
-    void mainSuite() throws IOException, UcumException {
+    @ParameterizedTest
+    @MethodSource("engineOptionCombinations")
+    void mainSuite(Set<CqlEngine.Options> engineOptions) throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date =
                 ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
-        runPerformanceTest(libraryId, 1000.0, date);
+        runPerformanceTest(libraryId, 1000.0, date, defaultCompilerOptions(), engineOptions);
     }
 
     // This test is for the runtime errors
@@ -53,25 +58,29 @@ public class CqlPerformanceIT extends CqlTestBase {
     @Test
     void internalTypeRepresentationSuite() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite", "1");
-        runPerformanceTest(libraryId, 10.0, null);
+        runPerformanceTest(libraryId, 10.0, null, defaultCompilerOptions(), defaultEngineOptions());
     }
 
     private void runPerformanceTest(
-            VersionedIdentifier libraryId, Double maxPerIterationMs, ZonedDateTime evaluationZonedDateTime) {
+            VersionedIdentifier libraryId,
+            Double maxPerIterationMs,
+            ZonedDateTime evaluationZonedDateTime,
+            CqlCompilerOptions compilerOptions,
+            Set<CqlEngine.Options> engineOptions) {
         // A new CqlEngine is created for each loop because it resets and rebuilds the
         // context completely.
 
-        Environment environment = new Environment(getLibraryManager(testCompilerOptions()));
+        Environment environment = new Environment(getLibraryManager(compilerOptions));
 
         // Warm up the JVM
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engine = new CqlEngine(environment);
+            CqlEngine engine = new CqlEngine(environment, engineOptions);
             var results = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
 
         Instant start = Instant.now();
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engine = new CqlEngine(environment);
+            CqlEngine engine = new CqlEngine(environment, engineOptions);
             var results = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
         Instant finish = Instant.now();
@@ -92,7 +101,7 @@ public class CqlPerformanceIT extends CqlTestBase {
                         libraryId.getId(), maxPerIterationMs, perIteration));
     }
 
-    protected CqlCompilerOptions testCompilerOptions() {
+    protected CqlCompilerOptions defaultCompilerOptions() {
         var options = CqlCompilerOptions.defaultOptions();
         // This test suite contains some definitions that use features that are usually
         // turned off for CQL.
@@ -104,5 +113,13 @@ public class CqlPerformanceIT extends CqlTestBase {
         // compiled with signature level set to Overloads or All.
         options.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads);
         return options;
+    }
+
+    protected static Set<CqlEngine.Options> defaultEngineOptions() {
+        return Set.of();
+    }
+
+    private static Stream<Set<CqlEngine.Options>> engineOptionCombinations() {
+        return Stream.of(defaultEngineOptions(), Set.of(CqlEngine.Options.EnableProfiling));
     }
 }

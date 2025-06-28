@@ -36,4 +36,9 @@ public class Variable {
         setValue(value);
         return this;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Variable{name=%s, value=%s, isList=%s}", name, value, isList);
+    }
 }

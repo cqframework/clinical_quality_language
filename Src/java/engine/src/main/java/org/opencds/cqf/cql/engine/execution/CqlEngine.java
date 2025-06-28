@@ -33,7 +33,11 @@ public class CqlEngine {
         //      expected to be the standard behavior in a future version of the CQL spec)
         //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always return all elements
         //      (the standard behavior is to return distinct elements)
-        EnableHedisCompatibilityMode
+        EnableHedisCompatibilityMode,
+        // Collect data on evaluation counts, timing and cache hit
+        // ratio for certain elements such as expression and function
+        // definitions and retrieves.
+        EnableProfiling,
     }
 
     private final Environment environment;
@@ -54,6 +58,9 @@ public class CqlEngine {
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
+        }
+        if (this.engineOptions.contains(Options.EnableProfiling)) {
+            this.state.ensureDebugResult().ensureProfile();
         }
     }
 
@@ -232,31 +239,39 @@ public class CqlEngine {
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
         EvaluationResult result = new EvaluationResult();
 
-        for (String expression : expressions) {
-            ExpressionDef def = Libraries.resolveExpressionRef(expression, state.getCurrentLibrary());
+        this.state.beginEvaluation();
+        try {
+            for (String expression : expressions) {
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, this.state.getCurrentLibrary());
 
-            if (def == null) {
-                throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
+                if (def == null) {
+                    throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
+                }
+
+                if (def instanceof FunctionDef) {
+                    continue;
+                }
+
+                try {
+                    var action = getState().shouldDebug(def);
+                    state.pushActivationFrame(def, def.getContext());
+                    try {
+                        final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
+                        result.expressionResults.put(
+                                expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+                        this.state.logDebugResult(def, object, action);
+                    } finally {
+                        this.state.popActivationFrame();
+                    }
+                } catch (CqlException ce) {
+                    processException(ce, def);
+                } catch (Exception e) {
+                    processException(
+                            e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
+                }
             }
-
-            if (def instanceof FunctionDef) {
-                continue;
-            }
-
-            try {
-                var action = getState().shouldDebug(def);
-
-                Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
-                result.expressionResults.put(
-                        expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-
-                getState().logDebugResult(def, object, action);
-            } catch (CqlException ce) {
-                processException(ce, def);
-            } catch (Exception e) {
-                processException(
-                        e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
-            }
+        } finally {
+            this.state.endEvaluation();
         }
 
         result.setDebugResult(this.state.getDebugResult());
