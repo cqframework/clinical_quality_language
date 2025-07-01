@@ -101,8 +101,7 @@ public class ToQuantityEvaluator {
             }
             return new Quantity().withValue((BigDecimal) operand).withDefaultUnit();
         } else if (operand instanceof Ratio) {
-            return (Quantity)
-                    DivideEvaluator.divide(((Ratio) operand).getNumerator(), ((Ratio) operand).getDenominator(), state);
+            return ((Ratio) operand).divide();
         }
 
         throw new IllegalArgumentException(String.format(
