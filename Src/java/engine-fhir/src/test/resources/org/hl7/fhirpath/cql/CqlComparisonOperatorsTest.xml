@@ -730,6 +730,10 @@
 			<expression>1'cm':2'cm' ~ 2'cm':4'cm'</expression>
 			<output>true</output>
 		</test>
+		<test name="RatioEquivalent3">
+			<expression>1'cm':0'cm' ~ 2'cm':0'cm'</expression>
+			<output>true</output>
+		</test>
 		<test name="RatioNotEquivalent">
 			<expression>1'cm':2'cm' ~ 1'cm':3'cm'</expression>
 			<output>false</output>
