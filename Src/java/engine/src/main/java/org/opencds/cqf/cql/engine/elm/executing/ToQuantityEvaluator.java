@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
-import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Value;
@@ -77,7 +76,7 @@ public class ToQuantityEvaluator {
         return quantity;
     }
 
-    public static Quantity toQuantity(Object operand, State state) {
+    public static Quantity toQuantity(Object operand) {
         if (operand == null) {
             return null;
         }

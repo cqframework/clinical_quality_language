@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 
@@ -24,7 +23,7 @@ import org.opencds.cqf.cql.engine.runtime.Ratio;
 
 public class ConvertsToQuantityEvaluator {
 
-    public static Boolean convertsToQuantity(Object argument, State state) {
+    public static Boolean convertsToQuantity(Object argument) {
         if (argument == null) {
             return null;
         }
@@ -38,7 +37,7 @@ public class ConvertsToQuantityEvaluator {
                 || argument instanceof BigDecimal
                 || argument instanceof Integer) {
             try {
-                Object response = ToQuantityEvaluator.toQuantity(argument, state);
+                Object response = ToQuantityEvaluator.toQuantity(argument);
                 if (response == null) {
                     return false;
                 }

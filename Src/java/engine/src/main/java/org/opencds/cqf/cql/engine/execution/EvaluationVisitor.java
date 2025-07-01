@@ -508,7 +508,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitToQuantity(ToQuantity elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ToQuantityEvaluator.toQuantity(operand, state);
+        return ToQuantityEvaluator.toQuantity(operand);
     }
 
     @Override
@@ -768,7 +768,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitConvertsToQuantity(ConvertsToQuantity elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ConvertsToQuantityEvaluator.convertsToQuantity(operand, state);
+        return ConvertsToQuantityEvaluator.convertsToQuantity(operand);
     }
 
     @Override
