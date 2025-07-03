@@ -370,16 +370,20 @@ public class Dstu3FhirModelResolver
             return null;
         }
 
-        if (contextType.equals("Patient") && targetType.equals("MedicationStatement")) {
-            return "subject";
-        }
-
-        if (contextType.equals("Patient") && targetType.equals("Task")) {
-            return "for";
-        }
-
-        if (contextType.equals("Patient") && targetType.equals("Coverage")) {
-            return "beneficiary";
+        switch (contextType) {
+            case "Patient":
+                switch (targetType) {
+                    case "MedicationStatement", "QuestionnaireResponse":
+                        return "subject";
+                    case "Task":
+                        return "for";
+                    case "Coverage":
+                        return "beneficiary";
+                    default:
+                        break;
+                }
+            default:
+                break;
         }
 
         return super.getContextPath(contextType, targetType);
