@@ -440,20 +440,17 @@ public class R4FhirModelResolver
             return null;
         }
 
-        switch (contextType) {
-            case "Patient":
-                switch (targetType) {
-                    case "MedicationStatement", "QuestionnaireResponse":
-                        return "subject";
-                    case "Task":
-                        return "for";
-                    case "Coverage":
-                        return "beneficiary";
-                    default:
-                        break;
-                }
-            default:
-                break;
+        if ("Patient".equals(contextType)) {
+            switch (targetType) {
+                case "MedicationStatement", "QuestionnaireResponse":
+                    return "subject";
+                case "Task":
+                    return "for";
+                case "Coverage":
+                    return "beneficiary";
+                default:
+                    break;
+            }
         }
 
         return super.getContextPath(contextType, targetType);
