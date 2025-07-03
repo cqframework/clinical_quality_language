@@ -459,8 +459,7 @@ public class R5FhirModelResolver
 
         if ("Patient".equals(contextType)) {
             switch (targetType) {
-                case "MedicationStatement":
-                case "QuestionnaireResponse":
+                case "MedicationStatement", "QuestionnaireResponse":
                     return "subject";
                 case "Task":
                     return "for";
