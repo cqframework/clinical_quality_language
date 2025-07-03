@@ -258,6 +258,9 @@ class TestR5ModelResolver {
         path = (String) resolver.getContextPath("Patient", "Coverage");
         assertEquals("beneficiary", path);
 
+        path = (String) resolver.getContextPath("Patient", "QuestionnaireResponse");
+        assertEquals("subject", path);
+
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = (String) resolver.getContextPath("Unfiltered", "MedicationStatement");
         assertNull(path);
