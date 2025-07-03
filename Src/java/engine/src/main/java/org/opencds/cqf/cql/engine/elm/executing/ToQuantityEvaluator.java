@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Value;
@@ -76,7 +77,7 @@ public class ToQuantityEvaluator {
         return quantity;
     }
 
-    public static Quantity toQuantity(Object operand) {
+    public static Quantity toQuantity(Object operand, State state) {
         if (operand == null) {
             return null;
         }
@@ -99,8 +100,9 @@ public class ToQuantityEvaluator {
                 return null;
             }
             return new Quantity().withValue((BigDecimal) operand).withDefaultUnit();
-        } else if (operand instanceof Ratio ratio) {
-            return ratio.divide();
+        } else if (operand instanceof Ratio) {
+            return (Quantity)
+                    DivideEvaluator.divide(((Ratio) operand).getNumerator(), ((Ratio) operand).getDenominator(), state);
         }
 
         throw new IllegalArgumentException(String.format(
