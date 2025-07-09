@@ -46,7 +46,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                                 .read(QICoreModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/qicore-modelinfo-5.0.0.xml"));
                     case "6.0.0":
-                    default:
+                    case "":
                         return ModelInfoReaderFactory.getReader("application/xml")
                                 .read(QICoreModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/qicore-modelinfo-6.0.0.xml"));
