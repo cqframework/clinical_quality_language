@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -264,20 +263,15 @@ public class CqlEngine {
             var library = libraries.get(libraryIdentifier);
             var expressionSet = this.getExpressionSet(library);
 
-            this.initializeState(library, debugMap, nullableEvaluationDateTime);
-            this.setParametersForContext(library, contextParameter, parameters);
-
-            final EvaluationResult evaluationResult = this.evaluateExpressions(expressionSet);
-            evalResults.put(library.getIdentifier(), evaluationResult);
+            final EvaluationResult evaluationResult = this.evaluateExpressions2(expressionSet);
+            evalResults.put(libraryIdentifier, evaluationResult);
         }
 
         return evalResults;
     }
 
     private void initializeEvalTime(ZonedDateTime nullableEvaluationDateTime) {
-        this.state.setEvaluationDateTime(Objects.requireNonNullElseGet(
-                nullableEvaluationDateTime,
-                ZonedDateTime::now));
+        this.state.setEvaluationDateTime(Objects.requireNonNullElseGet(nullableEvaluationDateTime, ZonedDateTime::now));
     }
 
     private void initializeDebugMap(DebugMap debugMap) {
@@ -304,7 +298,8 @@ public class CqlEngine {
         this.state.beginEvaluation();
         try {
             for (String expression : expressions) {
-                ExpressionDef def = Libraries.resolveExpressionRef(expression, this.state.getCurrentLibrary());
+                var currentLibrary = this.state.getCurrentLibrary();
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, currentLibrary);
 
                 if (def == null) {
                     throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
@@ -336,6 +331,55 @@ public class CqlEngine {
             this.state.endEvaluation();
         }
 
+        result.setDebugResult(this.state.getDebugResult());
+
+        return result;
+    }
+
+    // LUKETODO:  this is not working and we need to meet the following requirements:
+    // 1) get the current library, evaluate its expressions, and then make sure it gets popped off the stack
+    // 2)
+    private EvaluationResult evaluateExpressions2(Set<String> expressions) {
+        EvaluationResult result = new EvaluationResult();
+
+        this.state.beginEvaluation();
+        try {
+            for (String expression : expressions) {
+                var currentLibrary = this.state.getCurrentLibrary();
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, currentLibrary);
+
+                if (def == null) {
+                    throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
+                }
+
+                if (def instanceof FunctionDef) {
+                    continue;
+                }
+
+                try {
+                    var action = getState().shouldDebug(def);
+                    state.pushActivationFrame(def, def.getContext());
+                    try {
+                        final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
+                        result.expressionResults.put(
+                                expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+                        this.state.logDebugResult(def, object, action);
+                    } finally {
+                        this.state.popActivationFrame();
+                    }
+                } catch (CqlException ce) {
+                    processException(ce, def);
+                } catch (Exception e) {
+                    processException(
+                            e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
+                }
+            }
+        } finally {
+            this.state.endEvaluation();
+            this.state.exitLibrary(true);
+        }
+
+        // LUKETODO:  break this out of the loop?
         result.setDebugResult(this.state.getDebugResult());
 
         return result;
@@ -400,40 +444,35 @@ public class CqlEngine {
                 .collect(Collectors.joining(", "));
     }
 
-    private LinkedHashMap<VersionedIdentifier,Library> loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
+    private LinkedHashMap<VersionedIdentifier, Library> loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
 
         var errors = new ArrayList<CqlCompilerException>();
 
-        var idsToLibraries = this.environment
-                .getLibraryManager()
-                .resolveLibraries(libraryIdentifiers, errors)
-                .stream()
+        var idsToLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errors).stream()
                 .map(CompiledLibrary::getLibrary)
                 .collect(Collectors.toMap(
                         Library::getIdentifier,
                         Function.identity(),
                         (existing, replacement) -> {
-                            throw new CqlException(
-                                    "Duplicate library identifier found: %s".formatted(
-                                    existing));
+                            throw new CqlException("Duplicate library identifier found: %s".formatted(existing));
                         },
                         LinkedHashMap::new));
 
         if (idsToLibraries.isEmpty()) {
-            throw new CqlException(
-                    "Unable to load libraries: %s".formatted( showLibs(libraryIdentifiers)));
+            throw new CqlException("Unable to load libraries: %s".formatted(showLibs(libraryIdentifiers)));
         }
 
         if (CqlCompilerException.hasErrors(errors)) {
-            throw new CqlException(String.format(
-                    "library %s loaded, but had errors: %s".formatted(showLibs(libraryIdentifiers), errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")))));
+            throw new CqlException(String.format("library %s loaded, but had errors: %s"
+                    .formatted(
+                            showLibs(libraryIdentifiers),
+                            errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")))));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {
-            idsToLibraries.values()
-                    .forEach(library -> {
-                        this.validateDataRequirements(library);
-                        this.validateDataRequirements(library);
+            idsToLibraries.values().forEach(library -> {
+                this.validateDataRequirements(library);
+                this.validateDataRequirements(library);
             });
             // TODO: Validate Expressions as well?
         }

@@ -11,7 +11,6 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -109,41 +108,15 @@ class CqlEngineTest extends CqlTestBase {
     void multipleLibrariesSimple() {
         var debugMap = new DebugMap();
         var myEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
-        var libraryResults =
-                myEngine.evaluate(
-                        List.of(toElmIdentifier("MultiLibrary1"), toElmIdentifier("MultiLibrary2"), toElmIdentifier("MultiLibrary3")),
-                        null,
-                        null,
-                        debugMap,
-                        null);
-
-        assertNotNull(libraryResults);
-        assertEquals(3, libraryResults.size());
-
-        var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
-        var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
-        var evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults);
-
-        assertEquals(1, evaluationResult1.expressionResults.get("Number").value());
-        assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
-        assertEquals(1, evaluationResult1.expressionResults.get("Number").value());
-
-        assertEquals(_2021_01_01_TO_2022_01_01, evaluationResult1.expressionResults.get("Period").value());
-        assertEquals(_2022_01_01_TO_2023_01_01, evaluationResult2.expressionResults.get("Period").value());
-        assertEquals(_2023_01_01_TO_2024_01_01, evaluationResult3.expressionResults.get("Period").value());
-    }
-
-    @Test
-    void multipleLibrariesWithParameters() {
-        var debugMap = new DebugMap();
-        var myEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
-        var libraryResults =
-                myEngine.evaluate(
-                        List.of(toElmIdentifier("MultiLibrary1"), toElmIdentifier("MultiLibrary2"), toElmIdentifier("MultiLibrary3")),
-                        null,
-                        Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
-                        debugMap,
-                        null);
+        var libraryResults = myEngine.evaluate(
+                List.of(
+                        toElmIdentifier("MultiLibrary1"),
+                        toElmIdentifier("MultiLibrary2"),
+                        toElmIdentifier("MultiLibrary3")),
+                null,
+                null,
+                debugMap,
+                null);
 
         assertNotNull(libraryResults);
         assertEquals(3, libraryResults.size());
@@ -156,14 +129,59 @@ class CqlEngineTest extends CqlTestBase {
         assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
         assertEquals(3, evaluationResult3.expressionResults.get("Number").value());
 
-        assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1.expressionResults.get("Period").value());
-        assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2.expressionResults.get("Period").value());
-        assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3.expressionResults.get("Period").value());
+        assertEquals(
+                _2021_01_01_TO_2022_01_01,
+                evaluationResult1.expressionResults.get("Period").value());
+        assertEquals(
+                _2022_01_01_TO_2023_01_01,
+                evaluationResult2.expressionResults.get("Period").value());
+        assertEquals(
+                _2023_01_01_TO_2024_01_01,
+                evaluationResult3.expressionResults.get("Period").value());
+    }
+
+    // LUKETODO:  add another test with multiple expressions in the Set
+
+    // LUKETODO:  add another test with different expressions in the Set,  unique to that library, such as "Number1", "Number2", "Number3"
+
+    @Test
+    void multipleLibrariesWithParameters() {
+        var debugMap = new DebugMap();
+        var myEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
+        var libraryResults = myEngine.evaluate(
+                List.of(
+                        toElmIdentifier("MultiLibrary1"),
+                        toElmIdentifier("MultiLibrary2"),
+                        toElmIdentifier("MultiLibrary3")),
+                null,
+                Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
+                debugMap,
+                null);
+
+        assertNotNull(libraryResults);
+        assertEquals(3, libraryResults.size());
+
+        var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
+        var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
+        var evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults);
+
+        assertEquals(1, evaluationResult1.expressionResults.get("Number").value());
+        assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
+        assertEquals(3, evaluationResult3.expressionResults.get("Number").value());
+
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult1.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult2.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult3.expressionResults.get("Period").value());
     }
 
     private EvaluationResult findResultsByLibId(String libId, Map<VersionedIdentifier, EvaluationResult> results) {
-        return results.entrySet()
-                .stream()
+        return results.entrySet().stream()
                 .filter(x -> x.getKey().getId().equals(libId))
                 .map(Map.Entry::getValue)
                 .findFirst()

@@ -206,13 +206,13 @@ public class LibraryManager {
         }
 
         if (libraryIdentifiers.stream()
-                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null || libraryIdentifier.getId().isEmpty())) {
+                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null
+                        || libraryIdentifier.getId().isEmpty())) {
             throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
         }
 
         if (cacheMode != CacheMode.NONE) {
-            var libraries = compiledLibraries.entrySet()
-                    .stream()
+            var libraries = compiledLibraries.entrySet().stream()
                     .filter(entry -> libraryIdentifiers.contains(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .toList();
@@ -278,8 +278,8 @@ public class LibraryManager {
 
             if (libraryIdentifier.getVersion() != null
                     && !libraryIdentifier
-                    .getVersion()
-                    .equals(compiledLibrary.getIdentifier().getVersion())) {
+                            .getVersion()
+                            .equals(compiledLibrary.getIdentifier().getVersion())) {
                 throw new CqlIncludeException(
                         String.format(
                                 "Library %s was included as version %s, but version %s of the library was found.",
@@ -311,7 +311,7 @@ public class LibraryManager {
                     libraryIdentifier.getId(),
                     libraryIdentifier.getVersion());
         } else {
-            sortStatements(compiledLibrary );
+            sortStatements(compiledLibrary);
             return new CompiledlibraryResult(compiledLibrary, errors);
         }
     }

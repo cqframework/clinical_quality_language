@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -163,6 +164,13 @@ public class State {
         }
 
         return false;
+    }
+
+    public Library popLibrary() {
+        if (currentLibrary.isEmpty()) {
+            throw new IllegalStateException("No library to pop from the stack");
+        }
+        return currentLibrary.pop();
     }
 
     public void exitLibrary(boolean enteredLibrary) {
