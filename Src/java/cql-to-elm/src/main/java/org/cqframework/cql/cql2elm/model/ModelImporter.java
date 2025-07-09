@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm.model;
 import java.util.*;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.cql.model.*;
-import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.*;
 
 public class ModelImporter {
@@ -36,7 +35,7 @@ public class ModelImporter {
             // Import required models
             for (ModelSpecifier requiredModel : modelInfo.getRequiredModelInfo()) {
                 Model model = modelManager.resolveModel(new ModelIdentifier()
-                        .withSystem(NamespaceManager.getUriPart(requiredModel.getUrl()))
+                        .withSystem(requiredModel.getUrl())
                         .withId(requiredModel.getName())
                         .withVersion(requiredModel.getVersion()));
                 if (model != null) {
