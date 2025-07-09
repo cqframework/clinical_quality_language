@@ -1,6 +1,7 @@
 package org.hl7.fhirpath;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
@@ -36,8 +37,21 @@ public class TranslatorHelper {
         return libraryManager;
     }
 
+    public static CqlEngine getEngine(String cql) {
+        return getEngine(getEnvironment(cql));
+    }
+
+    public static Environment getEnvironment(String cql) {
+        var env = getEnvironment((TerminologyProvider) null);
+        env.getLibraryManager().getCompiledLibraries().clear();
+        env.getLibraryManager()
+                .getLibrarySourceLoader()
+                .registerProvider(new StringLibrarySourceProvider(List.of(cql)));
+        return env;
+    }
+
     public static Environment getEnvironment() {
-        return getEnvironment(null);
+        return getEnvironment((TerminologyProvider) null);
     }
 
     public static Environment getEnvironment(TerminologyProvider terminologyProvider) {

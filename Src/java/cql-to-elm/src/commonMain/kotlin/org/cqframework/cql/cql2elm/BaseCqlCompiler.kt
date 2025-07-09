@@ -90,14 +90,20 @@ open class BaseCqlCompiler(
             if (context is LibraryContext) {
                 val ldc = context.libraryDefinition()
                 if (ldc?.qualifiedIdentifier() != null) {
-                    val vi =
-                        VersionedIdentifier()
-                            .withId(
-                                StringEscapeUtils.unescapeCql(
-                                    ldc.qualifiedIdentifier().identifier().text
-                                )
-                            )
-
+                    var identifierText = ldc.qualifiedIdentifier().identifier().text
+                    // The identifier may or may not be surrounded by double quotes. If it is,
+                    // "unescape" and strip the delimiting double quotes.
+                    if (identifierText.startsWith("\"")) {
+                        val unescaped = StringEscapeUtils.unescapeCql(identifierText)
+                        require(unescaped.startsWith("\"")) {
+                            "Expected string to start with double quotes"
+                        }
+                        require(unescaped.endsWith("\"")) {
+                            "Expected string to end with double quotes"
+                        }
+                        identifierText = unescaped.substring(1, unescaped.length - 1)
+                    }
+                    val vi = VersionedIdentifier().withId(identifierText)
                     if (ldc.versionSpecifier() != null) {
                         var version = StringEscapeUtils.unescapeCql(ldc.versionSpecifier()!!.text)
                         version = version.substring(1, version.length - 1)

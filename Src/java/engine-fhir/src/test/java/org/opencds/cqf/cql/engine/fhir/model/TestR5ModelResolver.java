@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.fhir.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,6 +19,7 @@ import java.util.List;
 import org.hl7.fhir.r5.model.Base;
 import org.hl7.fhir.r5.model.BaseDateTimeType;
 import org.hl7.fhir.r5.model.DateTimeType;
+import org.hl7.fhir.r5.model.DateType;
 import org.hl7.fhir.r5.model.Enumeration;
 import org.hl7.fhir.r5.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r5.model.Enumerations.BindingStrength;
@@ -24,6 +27,7 @@ import org.hl7.fhir.r5.model.Enumerations.FHIRTypes;
 import org.hl7.fhir.r5.model.Enumerations.FHIRVersion;
 import org.hl7.fhir.r5.model.Enumerations.PublicationStatus;
 import org.hl7.fhir.r5.model.Enumerations.SearchParamType;
+import org.hl7.fhir.r5.model.Extension;
 import org.hl7.fhir.r5.model.IdType;
 import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Quantity;
@@ -254,6 +258,9 @@ class TestR5ModelResolver {
         path = (String) resolver.getContextPath("Patient", "Coverage");
         assertEquals("beneficiary", path);
 
+        path = (String) resolver.getContextPath("Patient", "QuestionnaireResponse");
+        assertEquals("subject", path);
+
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = (String) resolver.getContextPath("Unfiltered", "MedicationStatement");
         assertNull(path);
@@ -328,5 +335,24 @@ class TestR5ModelResolver {
 
         var value = resolver.resolvePath(dt, "value");
         assertNull(value);
+    }
+
+    @Test
+    void resolveBirthDateExtensionPatient() throws ParseException {
+        final var resolver = new R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5));
+
+        final var patient = new Patient();
+        var birthDate = org.apache.commons.lang3.time.DateUtils.parseDate("1974-12-25", "yyyy-dd-MM");
+        patient.setBirthDate(birthDate);
+        patient.getBirthDateElement()
+                .addExtension(
+                        "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+                        new DateTimeType("1974-12-25T14:35:45-05:00"));
+        var result = resolver.resolvePath(patient, "birthDate");
+        assertInstanceOf(DateType.class, result);
+        result = resolver.resolvePath(patient, "birthDate.extension");
+        assertInstanceOf(List.class, result);
+        assertEquals(1, ((List<?>) result).size());
+        assertInstanceOf(Extension.class, ((List<?>) result).get(0));
     }
 }

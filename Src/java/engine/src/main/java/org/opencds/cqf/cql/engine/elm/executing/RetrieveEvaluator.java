@@ -37,6 +37,11 @@ public class RetrieveEvaluator {
         }
 
         try {
+            // Push an activation frame so that the execution of the
+            // retrieve can be tracked. Mainly in terms of start and
+            // end time for integration into a profile.
+            state.pushActivationFrame(elm);
+
             QName dataType = state.getEnvironment().fixupQName(elm.getDataType());
             DataProvider dataProvider = state.getEnvironment().resolveDataProvider(dataType);
             Iterable<Code> codes = null;
@@ -100,6 +105,10 @@ public class RetrieveEvaluator {
         } finally {
             // Need to effectively reverse the context change we did at the beginning of this method
             state.exitContext(isEnteredContext);
+
+            // The activation frame was pushed for tracking execution
+            // time and should not have any local variables in it.
+            state.popActivationFrame();
         }
 
         return result;

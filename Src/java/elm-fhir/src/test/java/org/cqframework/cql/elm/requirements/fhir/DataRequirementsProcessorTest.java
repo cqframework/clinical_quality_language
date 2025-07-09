@@ -449,7 +449,7 @@ public class DataRequirementsProcessorTest {
             assertEquals("encounter-diagnosis", coding.getCode());
             assertEquals("Encounter Diagnosis", coding.getDisplay());
 
-            assertEquals(6, moduleDefinitionLibrary.getRelatedArtifact().size());
+            assertEquals(7, moduleDefinitionLibrary.getRelatedArtifact().size());
             RelatedArtifact conditionCategoryCodes = null;
             for (RelatedArtifact relatedArtifact : moduleDefinitionLibrary.getRelatedArtifact()) {
                 if (relatedArtifact.getType() == RelatedArtifact.RelatedArtifactType.DEPENDSON
@@ -607,8 +607,88 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    void libraryDataRequirementsNonRecursive() {
+    void fhirHelpersDataRequirementsNonRecursiveWithWorkaround() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        try {
+            var setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", cqlTranslatorOptions);
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            Set<String> expressions = new HashSet<>();
+            Set<String> externalFunctionDefs = new HashSet<>();
+            for (ExpressionDef ed : setup.library().getLibrary().getStatements().getDef()) {
+                if (ed instanceof FunctionDef) {
+                    var fd = (FunctionDef) ed;
+                    if (fd.isExternal() != null && fd.isExternal()) {
+                        externalFunctionDefs.add(fd.getName());
+                    }
+                }
+                expressions.add(ed.getName());
+            }
+
+            for (String efd : externalFunctionDefs) {
+                expressions.remove(efd);
+            }
+
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, expressions, true, false);
+
+            // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+            assertEqualToExpectedModuleDefinitionLibrary(
+                    moduleDefinitionLibrary,
+                    "CMS135/resources/Library-FHIRHelpersWorkAround-EffectiveDataRequirements.json");
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    @Test
+    void fhirHelpersDataRequirementsNonRecursive() {
+        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        try {
+            var setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", cqlTranslatorOptions);
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            Set<String> expressions = new HashSet<>();
+            for (ExpressionDef ed : setup.library().getLibrary().getStatements().getDef()) {
+                expressions.add(ed.getName());
+            }
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, expressions, true, false);
+
+            // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+            assertEqualToExpectedModuleDefinitionLibrary(
+                    moduleDefinitionLibrary, "CMS135/resources/Library-FHIRHelpers-EffectiveDataRequirements.json");
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    @Test
+    void cms135DataRequirementsNonRecursive() {
+        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        try {
+            var setup = setup("CMS135/cql/CMS135FHIR-0.0.000.cql", cqlTranslatorOptions);
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, true, false);
+
+            // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+            assertEqualToExpectedModuleDefinitionLibrary(
+                    moduleDefinitionLibrary, "CMS135/resources/Library-EffectiveDataRequirements.json");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    @Test
+    void libraryDataRequirementsNonRecursive() {
+        CqlCompilerOptions cqlTranslatorOptions = CqlCompilerOptions.defaultOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         try {
             var setup = setup("DataRequirements/DataRequirementsLibraryTest.cql", cqlTranslatorOptions);
@@ -1358,9 +1438,10 @@ public class DataRequirementsProcessorTest {
                             if (dfc.getValue() instanceof Period) {
                                 String expectedPeriodStartString = expectedPeriodStart
                                         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                                        .replace(":00Z", ":00.000Z"); // "2022-10-02T00:00:00.000-07:00"
-                                String expectedPeriodEndString = expectedPeriodEnd.format(
-                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-12-30T23:59:59.999-07:00"
+                                        .replace("T00:00:00Z", ""); // "2022-10-02"
+                                String expectedPeriodEndString = expectedPeriodEnd
+                                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                        .replace("T23:59:59.999Z", ""); // "2022-12-30"
                                 if (((Period) dfc.getValue()).hasStart()
                                         && ((Period) dfc.getValue())
                                                 .getStartElement()
@@ -2074,11 +2155,32 @@ public class DataRequirementsProcessorTest {
 
     private void assertEqualToExpectedModuleDefinitionLibrary(
             org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary, String pathToExpectedModuleDefinitionLibrary) {
+        assertEqualToExpectedModuleDefinitionLibrary(
+                actualModuleDefinitionLibrary, pathToExpectedModuleDefinitionLibrary, null);
+    }
+
+    /**
+     * Asserts that the actual module definition library is equal to the expected module definition library. The
+     * expected library is loaded from the JSON file, and the given timezone (if specified) is used as the default
+     * timezone when parsing FHIR JSON. (When JSON files are parsed, date strings like "2022-12-17" inside FHIR periods
+     * are parsed as FHIR dateTime values with the timezone set to the default timezone.)
+     */
+    private void assertEqualToExpectedModuleDefinitionLibrary(
+            org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary,
+            String pathToExpectedModuleDefinitionLibrary,
+            ZoneId zoneId) {
         FhirContext context = getFhirContext();
         IParser parser = context.newJsonParser();
-        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary =
-                (org.hl7.fhir.r5.model.Library) parser.parseResource(
-                        DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary;
+        if (zoneId != null) {
+            TimeZone.setDefault(TimeZone.getTimeZone(zoneId));
+        }
+        try {
+            expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library) parser.parseResource(
+                    DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        } finally {
+            TimeZone.setDefault(null);
+        }
         assertNotNull(expectedModuleDefinitionLibrary);
         // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
@@ -2116,7 +2218,9 @@ public class DataRequirementsProcessorTest {
                 true);
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
-                moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
+                moduleDefinitionLibrary,
+                "WithDependencies/Library-BSElements-data-requirements.json",
+                ZoneId.of("UTC"));
         // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
@@ -2312,7 +2416,10 @@ public class DataRequirementsProcessorTest {
     @Disabled("Extra extensions in the actual library: QICoreCommon.toInterval and QICoreCommon.ToInterval?")
     void cms135() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
-        var manager = setupDataRequirementsGather("CMS135/cql/CMS135FHIR-0.0.000.cql", compilerOptions);
+        compilerOptions.setCollapseDataRequirements(true);
+        compilerOptions.setAnalyzeDataRequirements(false);
+        var manager = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", compilerOptions);
+        manager = nextSetup(manager.manager(), "CMS135/cql/CMS135FHIR-0.0.000.cql");
         Set<String> expressions = new HashSet<>();
         expressions.add("Initial Population");
         expressions.add("Denominator");
@@ -2322,8 +2429,9 @@ public class DataRequirementsProcessorTest {
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
                 getModuleDefinitionLibrary(manager, compilerOptions, expressions, true, true);
         assertNotNull(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(
-                moduleDefinitionLibrary, "CMS135/resources/Library-EffectiveDataRequirements.json");
+                moduleDefinitionLibrary, "CMS135/resources/Library-Measure-EffectiveDataRequirements.json");
 
         List<Extension> overloadDefinitions = new ArrayList<>();
         for (Extension e : moduleDefinitionLibrary.getExtensionsByUrl(
@@ -2337,8 +2445,6 @@ public class DataRequirementsProcessorTest {
         }
 
         assertEquals(3, overloadDefinitions.size());
-
-        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -2541,6 +2647,22 @@ public class DataRequirementsProcessorTest {
         }
 
         var compiler = new CqlCompiler(namespaceInfo, manager);
+
+        var lib = compiler.run(translationTestFile);
+
+        assertTrue(compiler.getErrors().isEmpty());
+
+        manager.getCompiledLibraries().put(lib.getIdentifier(), compiler.getCompiledLibrary());
+
+        return new Setup(manager, compiler.getCompiledLibrary());
+    }
+
+    public static Setup nextSetup(LibraryManager manager, String testFileName) throws IOException {
+
+        File translationTestFile = new File(
+                DataRequirementsProcessorTest.class.getResource(testFileName).getFile());
+
+        var compiler = new CqlCompiler(null, manager);
 
         var lib = compiler.run(translationTestFile);
 

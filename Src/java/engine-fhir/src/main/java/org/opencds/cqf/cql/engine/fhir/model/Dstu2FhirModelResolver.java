@@ -351,6 +351,15 @@ public class Dstu2FhirModelResolver
             return null;
         }
 
+        if ("Patient".equals(contextType)) {
+            switch (targetType) {
+                case "QuestionnaireResponse":
+                    return "subject";
+                default:
+                    break;
+            }
+        }
+
         return super.getContextPath(contextType, targetType);
     }
 }

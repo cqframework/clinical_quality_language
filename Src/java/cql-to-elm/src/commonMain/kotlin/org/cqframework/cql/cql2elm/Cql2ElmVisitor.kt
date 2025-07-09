@@ -2804,7 +2804,16 @@ class Cql2ElmVisitor(
                     (parseString(ctx.dateTimePrecision()))!!
                 )
         } else if (ctx.expression().size > 1) {
-            per = parseExpression(ctx.expression(1))
+            val perExpression = parseExpression(ctx.expression(1))
+            // Implicitly convert a literal to a quantity here
+            // Note that although this is declared as a conversion, the translator doesn't pick it
+            // up because it won't instantiate the generic signature because generic signature
+            // instantiation logic is not considering implicit conversions to class types.
+            if (perExpression is Literal) {
+                per = libraryBuilder.createQuantity(BigDecimal(perExpression.value!!), "1")
+            } else {
+                per = perExpression
+            }
         } else {
             // Determine per quantity based on point type of the intervals involved
             if (source.resultType is ListType) {

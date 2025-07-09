@@ -14,6 +14,15 @@ public enum Precision {
     SECOND,
     MILLISECOND;
 
+    /**
+     * If this precision is WEEK, returns DAY. Otherwise, returns the same precision.
+     *
+     * @return the remapped precision
+     */
+    public Precision weekAsDay() {
+        return this == WEEK ? DAY : this;
+    }
+
     public ChronoField toChronoField() {
         switch (this) {
             case YEAR:

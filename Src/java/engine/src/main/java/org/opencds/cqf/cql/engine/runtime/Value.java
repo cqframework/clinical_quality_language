@@ -2,6 +2,8 @@ package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.MinValueEvaluator;
 
@@ -84,5 +86,30 @@ public class Value {
             return null;
         }
         return ret.longValue();
+    }
+
+    /**
+     * Returns the coarsest scale of the given decimal values. If no values are provided, returns 0.
+     *
+     * @param values the stream of decimal values
+     * @return the coarsest scale
+     */
+    public static int getCoarsestScale(Stream<BigDecimal> values) {
+        return values.filter(Objects::nonNull).mapToInt(BigDecimal::scale).min().orElse(0);
+    }
+
+    /**
+     * Rounds the decimal value to the specified scale.
+     *
+     * @param value the value to round
+     * @param scale the scale to round to
+     * @param useCeiling whether to return the ceiling or floor value
+     * @return the rounded value
+     */
+    public static BigDecimal roundToScale(BigDecimal value, int scale, boolean useCeiling) {
+        if (scale < value.scale()) {
+            return value.setScale(scale, useCeiling ? RoundingMode.CEILING : RoundingMode.FLOOR);
+        }
+        return value;
     }
 }

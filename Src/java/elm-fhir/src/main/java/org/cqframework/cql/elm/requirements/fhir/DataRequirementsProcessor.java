@@ -151,6 +151,11 @@ public class DataRequirementsProcessor {
 
             context.enterLibrary(translatedLibrary.getIdentifier());
             try {
+                // Always visit using definitions
+                for (var usingDef : translatedLibrary.getLibrary().getUsings().getDef()) {
+                    visitor.visitUsingDef(usingDef, context);
+                }
+
                 for (String expression : expressions) {
                     ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
                     if (ed != null) {
@@ -237,7 +242,7 @@ public class DataRequirementsProcessor {
 
     private void gatherLibrarySpecificRequirements(
             ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirement requirement) {
-        if (requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
+        if (requirement != null && requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
             requirements.reportRequirement(requirement);
         }
     }
