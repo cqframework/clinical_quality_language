@@ -173,7 +173,7 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
 
-        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
+        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().isEmpty()) {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
@@ -191,6 +191,129 @@ public class LibraryManager {
         }
 
         return library;
+    }
+
+    public List<CompiledLibrary> resolveLibraries(
+            List<VersionedIdentifier> libraryIdentifiers, List<CqlCompilerException> errors) {
+
+        return resolveLibraries(libraryIdentifiers, errors, CacheMode.READ_WRITE);
+    }
+
+    public List<CompiledLibrary> resolveLibraries(
+            List<VersionedIdentifier> libraryIdentifiers, List<CqlCompilerException> errors, CacheMode cacheMode) {
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
+            throw new IllegalArgumentException("libraryIdentifier is null or empty.");
+        }
+
+        if (libraryIdentifiers.stream()
+                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null || libraryIdentifier.getId().isEmpty())) {
+            throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
+        }
+
+        if (cacheMode != CacheMode.NONE) {
+            var libraries = compiledLibraries.entrySet()
+                    .stream()
+                    .filter(entry -> libraryIdentifiers.contains(entry.getKey()))
+                    .map(Map.Entry::getValue)
+                    .toList();
+
+            if (!libraries.isEmpty()) {
+                return libraries;
+            }
+        }
+
+        // LUKETODO:  do we need to order these?
+        var libs = new ArrayList<CompiledLibrary>();
+        for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
+            var compiledlibraryResult = compileLibrary(libraryIdentifier);
+            libs.add(compiledlibraryResult.compiledLibrary());
+
+            if (!hasErrors(compiledlibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
+                compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
+                errors.addAll(compiledlibraryResult.errors());
+            }
+        }
+
+        return List.copyOf(libs);
+    }
+
+    // LUKETODO: put this in a separate file
+    record CompiledlibraryResult(CompiledLibrary compiledLibrary, List<CqlCompilerException> errors) {}
+
+    private CompiledlibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
+
+        if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
+            var compiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
+            if (compiledLibrary != null) {
+                sortStatements(compiledLibrary);
+                return new CompiledlibraryResult(compiledLibrary, List.of());
+            }
+        }
+
+        CompiledLibrary compiledLibrary;
+        List<CqlCompilerException> errors;
+
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+
+        try {
+            InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            if (cqlSource == null) {
+                throw new CqlIncludeException(
+                        String.format(
+                                "Could not load source for library %s, version %s, namespace uri %s.",
+                                libraryIdentifier.getId(),
+                                libraryIdentifier.getVersion(),
+                                libraryIdentifier.getSystem()),
+                        libraryIdentifier.getSystem(),
+                        libraryIdentifier.getId(),
+                        libraryIdentifier.getVersion());
+            }
+
+            CqlCompiler compiler = new CqlCompiler(
+                    namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()), libraryIdentifier, this);
+            compiler.run(cqlSource);
+
+            errors = List.copyOf(compiler.getExceptions());
+            compiledLibrary = compiler.getCompiledLibrary();
+
+            if (libraryIdentifier.getVersion() != null
+                    && !libraryIdentifier
+                    .getVersion()
+                    .equals(compiledLibrary.getIdentifier().getVersion())) {
+                throw new CqlIncludeException(
+                        String.format(
+                                "Library %s was included as version %s, but version %s of the library was found.",
+                                libraryPath,
+                                libraryIdentifier.getVersion(),
+                                compiledLibrary.getIdentifier().getVersion()),
+                        libraryIdentifier.getSystem(),
+                        libraryIdentifier.getId(),
+                        libraryIdentifier.getVersion());
+            }
+
+        } catch (IOException e) {
+            throw new CqlIncludeException(
+                    String.format(
+                            "Errors occurred translating library %s, version %s.",
+                            libraryPath, libraryIdentifier.getVersion()),
+                    libraryIdentifier.getSystem(),
+                    libraryIdentifier.getId(),
+                    libraryIdentifier.getVersion(),
+                    e);
+        }
+
+        if (compiledLibrary == null) {
+            throw new CqlIncludeException(
+                    String.format(
+                            "Could not load source for library %s, version %s.",
+                            libraryPath, libraryIdentifier.getVersion()),
+                    libraryIdentifier.getSystem(),
+                    libraryIdentifier.getId(),
+                    libraryIdentifier.getVersion());
+        } else {
+            sortStatements(compiledLibrary );
+            return new CompiledlibraryResult(compiledLibrary, errors);
+        }
     }
 
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {

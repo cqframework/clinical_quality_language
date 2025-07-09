@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
+
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -245,6 +247,17 @@ public class State {
         currentLibrary.push(library);
 
         this.pushEvaluatedResourceStack();
+    }
+
+    // LUKETODO:  javadoc
+    public void init(List<Library> libraries) {
+        assert this.stack.isEmpty();
+        // LUKETODO:  look at the state.cache which may be the "cache" we're talking about
+
+        for (Library library : libraries) {
+            currentLibrary.push(library);
+            this.pushEvaluatedResourceStack();
+        }
     }
 
     public Deque<ActivationFrame> getStack() {

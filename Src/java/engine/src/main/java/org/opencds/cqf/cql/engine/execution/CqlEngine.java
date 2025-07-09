@@ -4,9 +4,14 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
@@ -224,6 +229,63 @@ public class CqlEngine {
         return this.evaluateExpressions(expressions);
     }
 
+    // LUKETODO:  figure out how to pass expressions later
+    // Map<VersionedIdentifier, List<ExpressionResult>>
+    public Map<VersionedIdentifier, EvaluationResult> evaluate(
+            List<VersionedIdentifier> libraryIdentifiers,
+            Pair<String, Object> contextParameter,
+            Map<String, Object> parameters,
+            DebugMap debugMap,
+            ZonedDateTime nullableEvaluationDateTime) {
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
+        }
+
+        var libraries = this.loadAndValidate(libraryIdentifiers);
+
+        initializeEvalTime(nullableEvaluationDateTime);
+
+        // here we initialize all libraries without emptying the cache for each library
+        this.state.init(List.copyOf(libraries.values()));
+        // LUKETODO:  deal with this: since we need to deal with the use case of parameters
+        libraries.values().forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
+
+        initializeDebugMap(debugMap);
+
+        // We need to reverse the order of Libraries since the CQL engine state has the last library first
+        var reversedOrderLibraryIdentifiers = IntStream.range(0, libraries.size())
+                .map(index -> libraryIdentifiers.size() - 1 - index)
+                .mapToObj(libraryIdentifiers::get)
+                .toList();
+
+        var evalResults = new HashMap<VersionedIdentifier, EvaluationResult>();
+
+        for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
+            var library = libraries.get(libraryIdentifier);
+            var expressionSet = this.getExpressionSet(library);
+
+            this.initializeState(library, debugMap, nullableEvaluationDateTime);
+            this.setParametersForContext(library, contextParameter, parameters);
+
+            final EvaluationResult evaluationResult = this.evaluateExpressions(expressionSet);
+            evalResults.put(library.getIdentifier(), evaluationResult);
+        }
+
+        return evalResults;
+    }
+
+    private void initializeEvalTime(ZonedDateTime nullableEvaluationDateTime) {
+        this.state.setEvaluationDateTime(Objects.requireNonNullElseGet(
+                nullableEvaluationDateTime,
+                ZonedDateTime::now));
+    }
+
+    private void initializeDebugMap(DebugMap debugMap) {
+        if (debugMap != null) {
+            this.state.setDebugMap(debugMap);
+        }
+    }
+
     private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
         if (evaluationDateTime == null) {
             evaluationDateTime = ZonedDateTime.now();
@@ -330,6 +392,67 @@ public class CqlEngine {
         }
 
         return library;
+    }
+
+    private String showLibs(Collection<VersionedIdentifier> libraryIdentifiers) {
+        return libraryIdentifiers.stream()
+                .map(lib -> lib.getId() + (lib.getVersion() != null ? "-" + lib.getVersion() : ""))
+                .collect(Collectors.joining(", "));
+    }
+
+    private LinkedHashMap<VersionedIdentifier,Library> loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
+
+        var errors = new ArrayList<CqlCompilerException>();
+
+        var idsToLibraries = this.environment
+                .getLibraryManager()
+                .resolveLibraries(libraryIdentifiers, errors)
+                .stream()
+                .map(CompiledLibrary::getLibrary)
+                .collect(Collectors.toMap(
+                        Library::getIdentifier,
+                        Function.identity(),
+                        (existing, replacement) -> {
+                            throw new CqlException(
+                                    "Duplicate library identifier found: %s".formatted(
+                                    existing));
+                        },
+                        LinkedHashMap::new));
+
+        if (idsToLibraries.isEmpty()) {
+            throw new CqlException(
+                    "Unable to load libraries: %s".formatted( showLibs(libraryIdentifiers)));
+        }
+
+        if (CqlCompilerException.hasErrors(errors)) {
+            throw new CqlException(String.format(
+                    "library %s loaded, but had errors: %s".formatted(showLibs(libraryIdentifiers), errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")))));
+        }
+
+        if (this.engineOptions.contains(Options.EnableValidation)) {
+            idsToLibraries.values()
+                    .forEach(library -> {
+                        this.validateDataRequirements(library);
+                        this.validateDataRequirements(library);
+            });
+            // TODO: Validate Expressions as well?
+        }
+
+        // We probably want to just load all relevant libraries into
+        // memory before we start evaluation. This will further separate
+        // environment from state.
+        for (Library library : idsToLibraries.values()) {
+            if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
+                for (IncludeDef include : library.getIncludes().getDef()) {
+                    this.loadAndValidate(new VersionedIdentifier()
+                            .withSystem(NamespaceManager.getUriPart(include.getPath()))
+                            .withId(NamespaceManager.getNamePart(include.getPath()))
+                            .withVersion(include.getVersion()));
+                }
+            }
+        }
+
+        return idsToLibraries;
     }
 
     private void validateDataRequirements(Library library) {
