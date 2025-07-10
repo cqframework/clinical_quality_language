@@ -50,7 +50,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
             case "5.0.0":
                 return QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-5.0.0.xml");
             case "6.0.0":
-            default:
+            case "":
                 return QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-6.0.0.xml");
         }
     }

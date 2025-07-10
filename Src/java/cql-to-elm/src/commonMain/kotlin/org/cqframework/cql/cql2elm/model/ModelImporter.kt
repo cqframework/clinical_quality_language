@@ -12,7 +12,6 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.ModelContext
 import org.hl7.cql.model.ModelIdentifier
-import org.hl7.cql.model.NamespaceManager
 import org.hl7.cql.model.ProfileType
 import org.hl7.cql.model.Relationship
 import org.hl7.cql.model.SearchType
@@ -67,7 +66,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: IModelManager?) 
                 val model =
                     modelManager.resolveModel(
                         ModelIdentifier(
-                            system = NamespaceManager.getUriPart(requiredModel.url),
+                            system = requiredModel.url,
                             id = requiredModel.name!!,
                             version = requiredModel.version,
                         )
