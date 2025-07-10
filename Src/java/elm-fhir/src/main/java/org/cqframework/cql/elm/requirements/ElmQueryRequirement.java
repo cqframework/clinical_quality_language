@@ -2,6 +2,7 @@ package org.cqframework.cql.elm.requirements;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 
 public class ElmQueryRequirement extends ElmExpressionRequirement {
@@ -99,9 +100,9 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
         Property nestedProperty = requirement.getProperty().getProperty();
         qualifiedProperty.setPath(String.format("%s.%s", path, nestedProperty.getPath()));
         qualifiedProperty.setScope(dataRequirement.getAlias());
-        qualifiedProperty.setResultType(nestedProperty.getResultType());
         qualifiedProperty.setResultTypeName(nestedProperty.getResultTypeName());
         qualifiedProperty.setResultTypeSpecifier(nestedProperty.getResultTypeSpecifier());
+        Trackable.INSTANCE.setResultType(qualifiedProperty, Trackable.INSTANCE.getResultType(nestedProperty));
         ElmPropertyRequirement qualifiedPropertyRequirement = new ElmPropertyRequirement(
                 libraryIdentifier, qualifiedProperty, dataRequirement.getQuerySource(), true);
         // TODO: Validate that the comparand is context literal and scope stable
