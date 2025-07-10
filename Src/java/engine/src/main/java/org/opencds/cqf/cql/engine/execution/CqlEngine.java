@@ -216,22 +216,37 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
 
-        Library library = this.loadAndValidate(libraryIdentifier);
+        ////        // LUKETODO: check for key not found in map
+        final EvaluationResult evaluationResult = this.evaluate(
+                        List.of(libraryIdentifier),
+                        expressions,
+                        contextParameter,
+                        parameters,
+                        debugMap,
+                        evaluationDateTime)
+                .get(libraryIdentifier);
+        return evaluationResult;
+        //        return this.evaluate(List.of(libraryIdentifier), expressions, contextParameter, parameters, debugMap,
+        // evaluationDateTime)
+        //                .get(libraryIdentifier);
 
-        if (expressions == null) {
-            expressions = this.getExpressionSet(library);
-        }
-
-        this.initializeState(library, debugMap, evaluationDateTime);
-        this.setParametersForContext(library, contextParameter, parameters);
-
-        return this.evaluateExpressions(expressions);
+        //        Library library = this.loadAndValidate(libraryIdentifier);
+        //
+        //        if (expressions == null) {
+        //            expressions = this.getExpressionSet(library);
+        //        }
+        //
+        //        this.initializeState(library, debugMap, evaluationDateTime);
+        //        this.setParametersForContext(library, contextParameter, parameters);
+        //
+        //        return this.evaluateExpressions(expressions);
     }
 
-    // LUKETODO:  figure out how to pass expressions later
-    // Map<VersionedIdentifier, List<ExpressionResult>>
+    // LUKETODO:  Map<VersionedIdentifier, List<ExpressionResult>>???
     public Map<VersionedIdentifier, EvaluationResult> evaluate(
             List<VersionedIdentifier> libraryIdentifiers,
+            // LUKETODO:  figure out how to pass expressions later
+            Set<String> expressions,
             Pair<String, Object> contextParameter,
             Map<String, Object> parameters,
             DebugMap debugMap,
@@ -261,7 +276,7 @@ public class CqlEngine {
 
         for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
             var library = libraries.get(libraryIdentifier);
-            var expressionSet = this.getExpressionSet(library);
+            var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
             final EvaluationResult evaluationResult = this.evaluateExpressions2(expressionSet);
             evalResults.put(libraryIdentifier, evaluationResult);
@@ -448,7 +463,9 @@ public class CqlEngine {
 
         var errors = new ArrayList<CqlCompilerException>();
 
-        var idsToLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errors).stream()
+        var resolvedLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errors);
+
+        var idsToLibraries = resolvedLibraries.stream()
                 .map(CompiledLibrary::getLibrary)
                 .collect(Collectors.toMap(
                         Library::getIdentifier,

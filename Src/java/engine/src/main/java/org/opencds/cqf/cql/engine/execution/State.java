@@ -5,8 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
-
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;

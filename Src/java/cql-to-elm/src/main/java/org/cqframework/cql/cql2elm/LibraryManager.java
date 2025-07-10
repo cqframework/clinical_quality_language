@@ -230,6 +230,10 @@ public class LibraryManager {
 
             if (!hasErrors(compiledlibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
                 compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
+            }
+
+            // We can have both successfully compiled libraries and errors, especially among multiple libraries
+            if (hasErrors(compiledlibraryResult.errors())) {
                 errors.addAll(compiledlibraryResult.errors());
             }
         }
