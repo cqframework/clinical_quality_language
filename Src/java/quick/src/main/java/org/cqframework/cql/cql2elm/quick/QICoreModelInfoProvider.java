@@ -53,5 +53,6 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
             case "":
                 return QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-6.0.0.xml");
         }
+        return null;
     }
 }

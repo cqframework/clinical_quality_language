@@ -49,5 +49,6 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
             case "":
                 return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-6.1.0.xml");
         }
+        return null;
     }
 }
