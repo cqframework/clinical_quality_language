@@ -196,15 +196,17 @@ public class LibraryManager {
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
             result = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (result != null) {
+                validateIdentifiers(libraryIdentifier, result, libraryPath);
+
                 sortStatements(result);
                 return result;
             }
         }
-
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
