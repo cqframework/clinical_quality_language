@@ -22,7 +22,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
+        url "https://central.sonatype.com/repository/maven-snapshots/"
     }
 }
 
@@ -98,10 +98,8 @@ A few things:
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
-   - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snapshots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
-   - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
-   - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
+   - Repo for snapshots for the translator modules: https://central.sonatype.com/repository/maven-snapshots/info/cqframework/
+   - Repo for releases for the translator modules: https://central.sonatype.com/repository/maven-releases/info/cqframework/
  */
 publishing {
     publications {
@@ -146,6 +144,12 @@ publishing {
                     developer {
                         name = 'Jonathan Percival'
                     }
+                    developer {
+                        name = 'Anton Vasetenkov'
+                    }
+                    developer {
+                        name = 'Luke deGruchy'
+                    }
                 }
             }
         }
@@ -163,8 +167,8 @@ publishing {
             */
 
             // change URLs to point to your repos, e.g. http://my.org/repo
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://central.sonatype.com"
+            def snapshotsRepoUrl = "https://central.sonatype.com/repository/maven-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
