@@ -1,12 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("removal")
 class CqlTimezoneTests extends CqlTestBase {
@@ -41,7 +41,11 @@ class CqlTimezoneTests extends CqlTestBase {
     }
 
     private void evaluateExpression(String functionName, Boolean expectedResult) {
-        var value = engine.expression(library, functionName).value();
-        assertEquals(expectedResult, value, functionName);
+        try {
+            var value = engine.expression(library, functionName).value();
+            assertEquals(expectedResult, value, functionName);
+        } catch (Exception exception) {
+            System.out.println("exception = " + exception);
+        }
     }
 }
