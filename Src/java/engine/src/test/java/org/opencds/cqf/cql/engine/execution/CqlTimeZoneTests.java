@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("removal")
-class CqlTimezoneTests extends CqlTestBase {
+class CqlTimeZoneTests extends CqlTestBase {
     private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimeZoneTests");
 
     @MethodSource("timezones")
@@ -42,11 +42,7 @@ class CqlTimezoneTests extends CqlTestBase {
     }
 
     private void evaluateExpression(String functionName, Boolean expectedResult) {
-        try {
-            var value = engine.expression(library, functionName).value();
-            assertEquals(expectedResult, value, functionName);
-        } catch (Exception exception) {
-            fail("Exception thrown for " + functionName + " with timezone " + System.getProperty("user.timezone") + ": " + exception.getMessage(), exception);
-        }
+        var value = engine.expression(library, functionName).value();
+        assertEquals(expectedResult, value, functionName);
     }
 }
