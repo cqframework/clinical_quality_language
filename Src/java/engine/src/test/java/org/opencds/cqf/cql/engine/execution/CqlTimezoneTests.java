@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("removal")
 class CqlTimezoneTests extends CqlTestBase {
@@ -45,7 +46,7 @@ class CqlTimezoneTests extends CqlTestBase {
             var value = engine.expression(library, functionName).value();
             assertEquals(expectedResult, value, functionName);
         } catch (Exception exception) {
-            System.out.println("exception = " + exception);
+            fail("Exception thrown for " + functionName + " with timezone " + System.getProperty("user.timezone") + ": " + exception.getMessage(), exception);
         }
     }
 }
