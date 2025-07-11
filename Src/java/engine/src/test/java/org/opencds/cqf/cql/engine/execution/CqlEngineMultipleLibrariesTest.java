@@ -2,11 +2,14 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.cqframework.cql.cql2elm.CqlIncludeException;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -31,6 +34,44 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     protected String getCqlSubdirectory() {
         return "multilib";
     }
+
+    @Test
+    void nonexistentLibrary() {
+        var exceptionMessage = assertThrows(CqlIncludeException.class, () ->
+                new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching))
+                        .evaluate(
+                            List.of(toElmIdentifier("OtherName")),
+                            null,
+                            null,
+                            null,
+                            new DebugMap(),
+                            null))
+                .getMessage();
+
+        assertEquals("Could not load source for library OtherName, version null, namespace uri null.", exceptionMessage);
+    }
+
+    @Test
+    void libraryAndCqlMismatchedNames() {
+        // The existing single library evaluation will tolerate name mismatches, however, this violates the CQL standard
+        // Fixing that bug is out of scope for this work, but we definitely want to do the right thing going forward
+        // with the new multiple library evaluation.
+        var exceptionMessage = assertThrows(CqlIncludeException.class, () ->
+                new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching))
+                        .evaluate(
+                            List.of(toElmIdentifier("NameMismatch")),
+                            null,
+                            null,
+                            null,
+                            new DebugMap(),
+                            null))
+                .getMessage();
+
+        assertEquals("Library identifiers are mismatched: query id: NameMismatch vs compiled library id: MismatchName", exceptionMessage);
+    }
+
+    // LUKETODO: test with mismatched versions but not names
+    // LUKETODO:
 
     // LUKETODO:  test expressions
     // LUKETODO:  set up more complex libraries

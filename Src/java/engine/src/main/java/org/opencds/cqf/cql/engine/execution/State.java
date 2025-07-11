@@ -259,6 +259,8 @@ public class State {
     public void init(List<Library> libraries) {
         assert this.stack.isEmpty();
         // LUKETODO:  look at the state.cache which may be the "cache" we're talking about
+        // LUKETODO: we're predefining an order on the stack here, which may not be the structure we want
+        // library1,library2,library3, etc
 
         for (Library library : libraries) {
             currentLibrary.push(library);

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.CqlIncludeException;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
@@ -216,36 +217,27 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
 
-        ////        // LUKETODO: check for key not found in map
-        final EvaluationResult evaluationResult = this.evaluate(
-                        List.of(libraryIdentifier),
-                        expressions,
-                        contextParameter,
-                        parameters,
-                        debugMap,
-                        evaluationDateTime)
-                .get(libraryIdentifier);
-        return evaluationResult;
-        //        return this.evaluate(List.of(libraryIdentifier), expressions, contextParameter, parameters, debugMap,
-        // evaluationDateTime)
-        //                .get(libraryIdentifier);
+        // Note:  we're maintaining the old logic for single versioned identifiers, and this is why:
+        // There is a bug where if there's a mismatch between the library ID and the CQL library ID, there is no
+        // error thrown.  Fixing this will break too many tests, so leave this for now, but do the right thing
+        // for multiple libraries.
+        Library library = this.loadAndValidate(libraryIdentifier);
 
-        //        Library library = this.loadAndValidate(libraryIdentifier);
-        //
-        //        if (expressions == null) {
-        //            expressions = this.getExpressionSet(library);
-        //        }
-        //
-        //        this.initializeState(library, debugMap, evaluationDateTime);
-        //        this.setParametersForContext(library, contextParameter, parameters);
-        //
-        //        return this.evaluateExpressions(expressions);
+        if (expressions == null) {
+            expressions = this.getExpressionSet(library);
+        }
+
+        this.initializeState(library, debugMap, evaluationDateTime);
+        this.setParametersForContext(library, contextParameter, parameters);
+
+        return this.evaluateExpressions(expressions);
     }
 
     // LUKETODO:  Map<VersionedIdentifier, List<ExpressionResult>>???
     public Map<VersionedIdentifier, EvaluationResult> evaluate(
             List<VersionedIdentifier> libraryIdentifiers,
             // LUKETODO:  figure out how to pass expressions later
+            // LUKETODO:  need to consider scoping expresions by versioned identifier or something else
             Set<String> expressions,
             Pair<String, Object> contextParameter,
             Map<String, Object> parameters,
@@ -465,15 +457,7 @@ public class CqlEngine {
 
         var resolvedLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errors);
 
-        var idsToLibraries = resolvedLibraries.stream()
-                .map(CompiledLibrary::getLibrary)
-                .collect(Collectors.toMap(
-                        Library::getIdentifier,
-                        Function.identity(),
-                        (existing, replacement) -> {
-                            throw new CqlException("Duplicate library identifier found: %s".formatted(existing));
-                        },
-                        LinkedHashMap::new));
+        var idsToLibraries = getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries);
 
         if (idsToLibraries.isEmpty()) {
             throw new CqlException("Unable to load libraries: %s".formatted(showLibs(libraryIdentifiers)));
@@ -509,6 +493,44 @@ public class CqlEngine {
         }
 
         return idsToLibraries;
+    }
+
+    private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
+            List<VersionedIdentifier> libraryIdentifiersUsedToQuery,
+            List<CompiledLibrary> resolvedLibraries) {
+
+        if (libraryIdentifiersUsedToQuery.size() != resolvedLibraries.size()) {
+            throw new CqlException("Something went wrong with resolving libraries: expected %d libraries, but got %d."
+                    .formatted( libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
+        }
+
+        for (int index = 0; index < libraryIdentifiersUsedToQuery.size(); index++) {
+            var versionedIdentifierFromQuery = libraryIdentifiersUsedToQuery.get(index);
+            var compiledLibrary = resolvedLibraries.get(index);
+
+            // LUKETODO:  handle version comparisons later:  only check if the QUERYING id contains a version
+            // LUKETODO:  add testing for version mistmatches
+            if (! versionedIdentifierFromQuery.getId().equals(compiledLibrary.getIdentifier().getId())) {
+
+                throw new CqlIncludeException(
+                        "Library identifiers are mismatched: query id: %s vs compiled library id: %s"
+                                .formatted(versionedIdentifierFromQuery.getId(), compiledLibrary.getIdentifier().getId()),
+                        versionedIdentifierFromQuery.getSystem(),
+                        versionedIdentifierFromQuery.getId(),
+                        versionedIdentifierFromQuery.getVersion());
+            }
+
+        }
+
+        return resolvedLibraries.stream()
+                .map(CompiledLibrary::getLibrary)
+                .collect(Collectors.toMap(
+                        Library::getIdentifier,
+                        Function.identity(),
+                        (existing, replacement) -> {
+                            throw new CqlException("Duplicate library identifier found: %s".formatted(existing));
+                        },
+                        LinkedHashMap::new));
     }
 
     private void validateDataRequirements(Library library) {
