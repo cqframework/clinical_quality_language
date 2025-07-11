@@ -1,4 +1,4 @@
-library ValueLiteralsAndSelectors version '1'
+library CqlValueLiteralsAndSelectorsTest version '1'
 
 context Unfiltered
 

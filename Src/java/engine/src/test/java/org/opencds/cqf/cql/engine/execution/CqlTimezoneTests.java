@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @SuppressWarnings("removal")
 class CqlTimezoneTests extends CqlTestBase {
-    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimezoneTests");
+    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimeZoneTests");
 
     @MethodSource("timezones")
     @ParameterizedTest
