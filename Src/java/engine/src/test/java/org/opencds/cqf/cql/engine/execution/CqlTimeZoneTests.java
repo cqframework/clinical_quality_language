@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("removal")
 class CqlTimeZoneTests extends CqlTestBase {
