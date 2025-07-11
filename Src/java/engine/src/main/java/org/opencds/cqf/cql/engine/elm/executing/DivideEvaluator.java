@@ -46,10 +46,16 @@ public class DivideEvaluator {
             return divideHelper((BigDecimal) left, (BigDecimal) right, state);
         } else if (left instanceof Quantity && right instanceof Quantity) {
             BigDecimal value = divideHelper(((Quantity) left).getValue(), ((Quantity) right).getValue(), state);
-            return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity) left).getUnit());
+            if (value == null) {
+                return null;
+            }
+            return new Quantity().withValue(value).withUnit(((Quantity) left).getUnit());
         } else if (left instanceof Quantity && right instanceof BigDecimal) {
             BigDecimal value = divideHelper(((Quantity) left).getValue(), (BigDecimal) right, state);
-            return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity) left).getUnit());
+            if (value == null) {
+                return null;
+            }
+            return new Quantity().withValue(value).withUnit(((Quantity) left).getUnit());
         } else if (left instanceof Interval && right instanceof Interval) {
             Interval leftInterval = (Interval) left;
             Interval rightInterval = (Interval) right;
