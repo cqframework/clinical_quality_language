@@ -1,4 +1,4 @@
-library ListOperator
+library CqlListOperatorsTest
 
 //Sort
 define simpleList: {4, 5, 1, 6, 2, 1}

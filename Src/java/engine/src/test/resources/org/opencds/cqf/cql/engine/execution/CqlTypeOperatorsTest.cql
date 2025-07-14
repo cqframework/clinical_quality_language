@@ -1,4 +1,4 @@
-library TypeOperator version '1'
+library CqlTypeOperatorsTest version '1'
 
 //As
 define AsQuantity: 45.5 'g' as Quantity

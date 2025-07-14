@@ -1,4 +1,4 @@
-library FunctionOverload version '1.0.000'
+library FunctionOverloadTest version '1.0.000'
 
 define function TestAny(a Integer):
   a

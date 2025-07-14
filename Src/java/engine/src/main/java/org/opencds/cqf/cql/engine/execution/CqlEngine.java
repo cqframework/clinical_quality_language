@@ -496,12 +496,11 @@ public class CqlEngine {
     }
 
     private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
-            List<VersionedIdentifier> libraryIdentifiersUsedToQuery,
-            List<CompiledLibrary> resolvedLibraries) {
+            List<VersionedIdentifier> libraryIdentifiersUsedToQuery, List<CompiledLibrary> resolvedLibraries) {
 
         if (libraryIdentifiersUsedToQuery.size() != resolvedLibraries.size()) {
             throw new CqlException("Something went wrong with resolving libraries: expected %d libraries, but got %d."
-                    .formatted( libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
+                    .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
         }
 
         for (int index = 0; index < libraryIdentifiersUsedToQuery.size(); index++) {
@@ -510,16 +509,19 @@ public class CqlEngine {
 
             // LUKETODO:  handle version comparisons later:  only check if the QUERYING id contains a version
             // LUKETODO:  add testing for version mistmatches
-            if (! versionedIdentifierFromQuery.getId().equals(compiledLibrary.getIdentifier().getId())) {
+            if (!versionedIdentifierFromQuery
+                    .getId()
+                    .equals(compiledLibrary.getIdentifier().getId())) {
 
                 throw new CqlIncludeException(
                         "Library identifiers are mismatched: query id: %s vs compiled library id: %s"
-                                .formatted(versionedIdentifierFromQuery.getId(), compiledLibrary.getIdentifier().getId()),
+                                .formatted(
+                                        versionedIdentifierFromQuery.getId(),
+                                        compiledLibrary.getIdentifier().getId()),
                         versionedIdentifierFromQuery.getSystem(),
                         versionedIdentifierFromQuery.getId(),
                         versionedIdentifierFromQuery.getVersion());
             }
-
         }
 
         return resolvedLibraries.stream()
