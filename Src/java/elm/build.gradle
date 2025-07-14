@@ -22,3 +22,7 @@ generateSources {
         }
     }
 }
+
+sourcesJar {
+    dependsOn generateSources
+}

@@ -12,4 +12,5 @@ dependencies {
     implementation 'ru.vyarus:gradle-animalsniffer-plugin:2.0.1'
     implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14'
     implementation 'com.diffplug.spotless:spotless-plugin-gradle:6.23.3'
+    implementation 'com.vanniktech:gradle-maven-publish-plugin:0.33.0'
 }

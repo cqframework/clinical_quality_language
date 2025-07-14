@@ -25,6 +25,10 @@ generateSources {
     }
 }
 
+sourcesJar {
+    dependsOn generateSources
+}
+
 jacocoTestReport {
     sourceDirectories.setFrom(files(
         "${projectDir}/../elm/src/main/java",

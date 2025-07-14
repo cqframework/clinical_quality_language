@@ -52,10 +52,6 @@ compileJava {
     dependsOn generateSources
 }
 
-sourcesJar {
-    dependsOn generateSources
-}
-
 sourceSets {
     main {
         java {
