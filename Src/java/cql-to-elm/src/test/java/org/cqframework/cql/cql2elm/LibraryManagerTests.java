@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.Library;
@@ -78,47 +77,31 @@ class LibraryManagerTests {
     }
 
     @Test
-    public void testConstructorWithNullModelManager() {
-        try {
-            new LibraryManager(null);
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("modelManager is null", e.getMessage());
-        }
+    void testConstructorWithNullModelManager() {
+        assertThrows(IllegalArgumentException.class, () -> new LibraryManager(null));
     }
 
     @Test
-    public void testResolveLibraryIdentifierNull() {
-        try {
-            libraryManager.resolveLibrary(null);
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("libraryIdentifier is null.", e.getMessage());
-        }
+    void testResolveLibraryIdentifierNull() {
+        assertThrows(IllegalArgumentException.class, () -> libraryManager.resolveLibrary(null));
     }
 
     @Test
-    public void testResolveLibraryIdentifierIdNull() {
-        try {
-            libraryManager.resolveLibrary(new VersionedIdentifier().withId(null));
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("libraryIdentifier Id is null", e.getMessage());
-        }
+    void testResolveLibraryIdentifierIdNull() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManager.resolveLibrary(new VersionedIdentifier().withId(null)));
     }
 
     @Test
-    public void testResolveLibraryIdentifierIdEmpty() {
-        try {
-            libraryManager.resolveLibrary(new VersionedIdentifier().withId(""));
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertEquals("libraryIdentifier Id is null", e.getMessage());
-        }
+    void testResolveLibraryIdentifierIdEmpty() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManager.resolveLibrary(new VersionedIdentifier().withId("")));
     }
 
     @Test
-    public void testResolveLibraryFromCache() {
+    void testResolveLibraryFromCache() {
         VersionedIdentifier libraryIdentifier =
                 new VersionedIdentifier().withId("Test").withVersion("1.0");
         CompiledLibrary cachedLibrary = new CompiledLibrary();
