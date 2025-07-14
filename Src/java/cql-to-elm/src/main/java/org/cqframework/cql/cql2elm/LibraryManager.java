@@ -185,9 +185,13 @@ public class LibraryManager {
             }
         }
 
-        library = compileLibrary(libraryIdentifier, errors);
-        if (!hasErrors(errors) && cacheMode == CacheMode.READ_WRITE) {
+        var compileLibraryResult = compileLibrary(libraryIdentifier);
+        library = compileLibraryResult.compiledLibrary();
+        if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
             compiledLibraries.put(libraryIdentifier, library);
+        } else {
+            // LUKETODO: can we just return the result record instead ?
+            errors.addAll(compileLibraryResult.errors());
         }
 
         return library;
@@ -246,18 +250,19 @@ public class LibraryManager {
 
     private CompiledlibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
 
+        var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
-            var compiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
-            if (compiledLibrary != null) {
-                sortStatements(compiledLibrary);
-                return new CompiledlibraryResult(compiledLibrary, List.of());
+            var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
+            if (elmCompiledLibrary != null) {
+                validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
+                sortStatements(elmCompiledLibrary);
+                return new CompiledlibraryResult(elmCompiledLibrary, List.of());
             }
         }
 
         CompiledLibrary compiledLibrary;
         List<CqlCompilerException> errors;
-
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -280,20 +285,17 @@ public class LibraryManager {
             errors = List.copyOf(compiler.getExceptions());
             compiledLibrary = compiler.getCompiledLibrary();
 
-            if (libraryIdentifier.getVersion() != null
-                    && !libraryIdentifier
-                            .getVersion()
-                            .equals(compiledLibrary.getIdentifier().getVersion())) {
+            if (compiledLibrary == null) {
                 throw new CqlIncludeException(
                         String.format(
-                                "Library %s was included as version %s, but version %s of the library was found.",
-                                libraryPath,
-                                libraryIdentifier.getVersion(),
-                                compiledLibrary.getIdentifier().getVersion()),
+                                "Could not load source for library %s, version %s.",
+                                libraryPath, libraryIdentifier.getVersion()),
                         libraryIdentifier.getSystem(),
                         libraryIdentifier.getId(),
                         libraryIdentifier.getVersion());
             }
+
+            validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath);
 
         } catch (IOException e) {
             throw new CqlIncludeException(
@@ -306,20 +308,11 @@ public class LibraryManager {
                     e);
         }
 
-        if (compiledLibrary == null) {
-            throw new CqlIncludeException(
-                    String.format(
-                            "Could not load source for library %s, version %s.",
-                            libraryPath, libraryIdentifier.getVersion()),
-                    libraryIdentifier.getSystem(),
-                    libraryIdentifier.getId(),
-                    libraryIdentifier.getVersion());
-        } else {
-            sortStatements(compiledLibrary);
-            return new CompiledlibraryResult(compiledLibrary, errors);
-        }
+        sortStatements(compiledLibrary);
+        return new CompiledlibraryResult(compiledLibrary, errors);
     }
 
+    // LUKETODO:  look at newly unused private methods and get rid of them
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;

@@ -56,7 +56,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 .getMessage();
 
         assertEquals(
-                "Library identifiers are mismatched: query id: NameMismatch vs compiled library id: MismatchName",
+                "Library NameMismatch was included with version null, but id: MismatchName and version null of the library was found.",
                 exceptionMessage);
     }
 
