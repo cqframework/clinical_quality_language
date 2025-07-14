@@ -3,8 +3,14 @@ package org.cqframework.cql.cql2elm;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,19 +18,116 @@ import org.junit.jupiter.api.Test;
 
 class LibraryManagerTests {
 
-    private static ModelManager modelManager;
     private static LibraryManager libraryManager;
+    private static LibraryManager libraryManagerVersionAgnostic;
 
     @BeforeAll
     static void setup() {
-        modelManager = new ModelManager();
+        var modelManager = new ModelManager();
+
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider("LibraryManagerTests"));
+
+        // Used if we want to load a library with a mismatch in the version and want to test the subsequent version
+        // validation
+        libraryManagerVersionAgnostic = new LibraryManager(modelManager);
+        libraryManagerVersionAgnostic
+                .getLibrarySourceLoader()
+                .registerProvider(new TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"));
     }
 
     @AfterAll
     static void tearDown() {
         libraryManager.getLibrarySourceLoader().clearProviders();
+    }
+
+    @Test
+    void basicElmTest() {
+        var versionIdentifier = new VersionedIdentifier().withId("BaseLibraryElm");
+
+        var lib = libraryManager.resolveLibrary(versionIdentifier).getLibrary();
+
+        assertNotNull(lib);
+        assertNotNull(lib.getStatements().getDef());
+    }
+
+    @Test
+    void basicElmTestIdMismatch() {
+        var versionIdentifier = new VersionedIdentifier().withId("BaseLibraryElmMismatchId");
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManager.resolveLibrary(versionIdentifier);
+        });
+
+        assertEquals(
+                "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
+                cqlIncludeException.getMessage());
+    }
+
+    @Test
+    void basicElmTestVersionMismatch() {
+        var versionIdentifier =
+                new VersionedIdentifier().withId("BaseLibraryElmMismatchId").withVersion("1.0.1");
+
+        var cqlIncludeException = assertThrows(
+                CqlIncludeException.class, () -> libraryManagerVersionAgnostic.resolveLibrary(versionIdentifier));
+
+        assertEquals(
+                "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
+                cqlIncludeException.getMessage());
+    }
+
+    @Test
+    public void testConstructorWithNullModelManager() {
+        try {
+            new LibraryManager(null);
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("modelManager is null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testResolveLibraryIdentifierNull() {
+        try {
+            libraryManager.resolveLibrary(null);
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("libraryIdentifier is null.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testResolveLibraryIdentifierIdNull() {
+        try {
+            libraryManager.resolveLibrary(new VersionedIdentifier().withId(null));
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("libraryIdentifier Id is null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testResolveLibraryIdentifierIdEmpty() {
+        try {
+            libraryManager.resolveLibrary(new VersionedIdentifier().withId(""));
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("libraryIdentifier Id is null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testResolveLibraryFromCache() {
+        VersionedIdentifier libraryIdentifier =
+                new VersionedIdentifier().withId("Test").withVersion("1.0");
+        CompiledLibrary cachedLibrary = new CompiledLibrary();
+        cachedLibrary.setIdentifier(libraryIdentifier);
+        cachedLibrary.setLibrary(new Library().withIdentifier(libraryIdentifier));
+        libraryManager.getCompiledLibraries().put(libraryIdentifier, cachedLibrary);
+
+        CompiledLibrary resolvedLibrary = libraryManager.resolveLibrary(libraryIdentifier);
+        assertSame(cachedLibrary, resolvedLibrary);
     }
 
     @Test
