@@ -282,8 +282,8 @@ public class LibraryManager {
 
             if (libraryIdentifier.getVersion() != null
                     && !libraryIdentifier
-                    .getVersion()
-                    .equals(compiledLibrary.getIdentifier().getVersion())) {
+                            .getVersion()
+                            .equals(compiledLibrary.getIdentifier().getVersion())) {
                 throw new CqlIncludeException(
                         String.format(
                                 "Library %s was included as version %s, but version %s of the library was found.",
