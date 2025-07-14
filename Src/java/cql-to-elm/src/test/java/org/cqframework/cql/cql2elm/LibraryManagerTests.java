@@ -88,16 +88,18 @@ class LibraryManagerTests {
 
     @Test
     void testResolveLibraryIdentifierIdNull() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> libraryManager.resolveLibrary(new VersionedIdentifier().withId(null)));
+        var versionedIdentifier = new VersionedIdentifier().withId(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            libraryManager.resolveLibrary(versionedIdentifier);
+        });
     }
 
     @Test
     void testResolveLibraryIdentifierIdEmpty() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> libraryManager.resolveLibrary(new VersionedIdentifier().withId("")));
+        var versionedIdentifier = new VersionedIdentifier().withId("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            libraryManager.resolveLibrary(versionedIdentifier);
+        });
     }
 
     @Test
