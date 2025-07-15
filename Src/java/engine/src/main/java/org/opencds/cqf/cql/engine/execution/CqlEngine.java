@@ -18,6 +18,8 @@ import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NOTE: We have updated CqlEngine to adopt a visitor pattern approach to traversing the ELM tree for execution:
@@ -26,6 +28,8 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
  *
  */
 public class CqlEngine {
+    private static final Logger log = LoggerFactory.getLogger(CqlEngine.class);
+
     public enum Options {
         EnableExpressionCaching,
         EnableValidation,
@@ -243,13 +247,24 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
+        log.info(
+                "1234: Evaluating libraries: {} with contextParameter: {} and expressions: [{}]",
+                libraryIdentifiers.stream().map(VersionedIdentifier::getId).toList(),
+                contextParameter,
+                Optional.ofNullable(expressions)
+                        .map(nonNull -> String.join(", ", nonNull))
+                        .orElse(""));
+
         var librariesByIdentifier = this.loadAndValidate(libraryIdentifiers);
 
         initializeEvalTime(nullableEvaluationDateTime);
 
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(List.copyOf(librariesByIdentifier.values()));
+
         // LUKETODO:  deal with this: since we need to deal with the use case of parameters
+        // LUKETODO:  I think this may possibly be related to the unit test failures?
+        // LUKETODO:  what does setParametersForContext() actually do, and why does it take a library that's not read?
         librariesByIdentifier
                 .values()
                 .forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
@@ -268,7 +283,11 @@ public class CqlEngine {
             var library = retrieveLibraryFromMap(librariesByIdentifier, libraryIdentifier);
             var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
-            final EvaluationResult evaluationResult = this.evaluateExpressions2(expressionSet);
+            log.info(
+                    "1234: Evaluating library: {} with expressions: [{}]",
+                    libraryIdentifier.getId(),
+                    String.join(", ", expressionSet));
+            var evaluationResult = this.evaluateExpressions2(expressionSet);
             evalResults.put(SearchableLibraryIdentifier.fromIdentifier(libraryIdentifier), evaluationResult);
         }
 
@@ -340,6 +359,10 @@ public class CqlEngine {
                     var action = getState().shouldDebug(def);
                     state.pushActivationFrame(def, def.getContext());
                     try {
+                        log.info(
+                                "1234: OLD visit lib: {} expression: {}",
+                                currentLibrary.getIdentifier().getId(),
+                                expression);
                         final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                         result.expressionResults.put(
                                 expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
@@ -387,6 +410,10 @@ public class CqlEngine {
                     var action = getState().shouldDebug(def);
                     state.pushActivationFrame(def, def.getContext());
                     try {
+                        log.info(
+                                "1234: NEW visit lib: {} expression: {}",
+                                currentLibrary.getIdentifier().getId(),
+                                expression);
                         final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                         result.expressionResults.put(
                                 expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
