@@ -106,7 +106,7 @@ mavenPublishing {
     if (!version.endsWith('SNAPSHOT')) {
         signAllPublications()
     }
-    coordinates("info.cqframework", project.name, project.version) 
+    coordinates(project.group, project.name, project.version) 
     pom {
         name = project.name
         description = "The ${project.name} library for the Clinical Quality Language Java reference implementation"
