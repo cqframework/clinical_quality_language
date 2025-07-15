@@ -8,9 +8,14 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.cqframework.cql.cql2elm.CqlIncludeException;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
@@ -23,22 +28,35 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final DateTime _2022_01_01 = new DateTime("2022-01-01", ZoneOffset.UTC);
     private static final DateTime _2023_01_01 = new DateTime("2023-01-01", ZoneOffset.UTC);
     private static final DateTime _2024_01_01 = new DateTime("2024-01-01", ZoneOffset.UTC);
+    private static final DateTime _2031_01_01 = new DateTime("2031-01-01", ZoneOffset.UTC);
+    private static final DateTime _2032_01_01 = new DateTime("2032-01-01", ZoneOffset.UTC);
 
     private static final Interval _1900_01_01_TO_1901_01_01 = new Interval(_1900_01_01, true, _1901_01_01, false);
     private static final Interval _2021_01_01_TO_2022_01_01 = new Interval(_2021_01_01, true, _2022_01_01, false);
     private static final Interval _2022_01_01_TO_2023_01_01 = new Interval(_2022_01_01, true, _2023_01_01, false);
     private static final Interval _2023_01_01_TO_2024_01_01 = new Interval(_2023_01_01, true, _2024_01_01, false);
+    private static final Interval _2031_01_01_TO_2032_01_01 = new Interval(_2031_01_01, true, _2032_01_01, false);
 
     @Override
     protected String getCqlSubdirectory() {
         return "multilib";
     }
 
+    private DebugMap debugMap;
+    private CqlEngine cqlEngine;
+
+    @BeforeEach
+    void setup() {
+        debugMap = new DebugMap();
+        cqlEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
+    }
+
     @Test
     void nonexistentLibrary() {
-        var exceptionMessage = assertThrows(CqlIncludeException.class, () -> new CqlEngine(
-                                environment, Set.of(CqlEngine.Options.EnableExpressionCaching))
-                        .evaluate(List.of(toElmIdentifier("OtherName")), null, null, null, new DebugMap(), null))
+        var exceptionMessage = assertThrows(
+                        CqlIncludeException.class,
+                        () -> cqlEngine.evaluate(
+                                List.of(toElmIdentifier("OtherName")), null, null, null, new DebugMap(), null))
                 .getMessage();
 
         assertEquals(
@@ -50,14 +68,36 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         // The existing single library evaluation will tolerate name mismatches, however, this violates the CQL standard
         // Fixing that bug is out of scope for this work, but we definitely want to do the right thing going forward
         // with the new multiple library evaluation.
-        var exceptionMessage = assertThrows(CqlIncludeException.class, () -> new CqlEngine(
-                                environment, Set.of(CqlEngine.Options.EnableExpressionCaching))
-                        .evaluate(List.of(toElmIdentifier("NameMismatch")), null, null, null, new DebugMap(), null))
+        var exceptionMessage = assertThrows(
+                        CqlIncludeException.class,
+                        () -> cqlEngine.evaluate(
+                                List.of(toElmIdentifier("NameMismatch")), null, null, null, new DebugMap(), null))
                 .getMessage();
 
         assertEquals(
                 "Library NameMismatch was included with version null, but id: MismatchName and version null of the library was found.",
                 exceptionMessage);
+    }
+
+    private static Stream<Arguments> libraryWithVersionQueriesParams() {
+        return Stream.of(
+                Arguments.of(toElmIdentifier("LibraryWithVersion")),
+                Arguments.of(toElmIdentifier("LibraryWithVersion", "1.0.0")));
+    }
+
+    @ParameterizedTest
+    @MethodSource("libraryWithVersionQueriesParams")
+    void libraryWithVersionQueries(VersionedIdentifier libraryIdentifier) {
+        var libraryResults = cqlEngine.evaluate(List.of(libraryIdentifier), null, null, null, debugMap, null);
+
+        assertNotNull(libraryResults);
+        assertEquals(1, libraryResults.size());
+
+        var evaluationResult = findResultsByLibId("LibraryWithVersion", libraryResults);
+        assertEquals(5, evaluationResult.expressionResults.get("Number").value());
+        assertEquals(
+                _2031_01_01_TO_2032_01_01,
+                evaluationResult.expressionResults.get("Period").value());
     }
 
     // LUKETODO: test with mismatched versions but not names
@@ -68,9 +108,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     // LUKETODO:  cache is by expression name, so 2 identical expresions will be essentially duplicated
     @Test
     void multipleLibrariesSimple() {
-        var debugMap = new DebugMap();
-        var myEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
-        var libraryResults = myEngine.evaluate(
+        var libraryResults = cqlEngine.evaluate(
                 List.of(
                         toElmIdentifier("MultiLibrary1"),
                         toElmIdentifier("MultiLibrary2"),
@@ -110,9 +148,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesWithParameters() {
-        var debugMap = new DebugMap();
-        var myEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
-        var libraryResults = myEngine.evaluate(
+        var libraryResults = cqlEngine.evaluate(
                 List.of(
                         toElmIdentifier("MultiLibrary1"),
                         toElmIdentifier("MultiLibrary2"),
@@ -149,9 +185,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @Test
     void simpleCqlLibraryNameMismatch() {}
 
-    private EvaluationResult findResultsByLibId(String libId, Map<VersionedIdentifier, EvaluationResult> results) {
+    private EvaluationResult findResultsByLibId(
+            String libId, Map<SearchableLibraryIdentifier, EvaluationResult> results) {
         return results.entrySet().stream()
-                .filter(x -> x.getKey().getId().equals(libId))
+                .filter(x -> x.getKey().matches(libId))
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .orElseThrow();

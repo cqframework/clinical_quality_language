@@ -217,10 +217,6 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
 
-        // Note:  we're maintaining the old logic for single versioned identifiers, and this is why:
-        // There is a bug where if there's a mismatch between the library ID and the CQL library ID, there is no
-        // error thrown.  Fixing this will break too many tests, so leave this for now, but do the right thing
-        // for multiple libraries.
         Library library = this.loadAndValidate(libraryIdentifier);
 
         if (expressions == null) {
@@ -234,7 +230,7 @@ public class CqlEngine {
     }
 
     // LUKETODO:  Map<VersionedIdentifier, List<ExpressionResult>>???
-    public Map<VersionedIdentifier, EvaluationResult> evaluate(
+    public Map<SearchableLibraryIdentifier, EvaluationResult> evaluate(
             List<VersionedIdentifier> libraryIdentifiers,
             // LUKETODO:  figure out how to pass expressions later
             // LUKETODO:  need to consider scoping expresions by versioned identifier or something else
@@ -247,34 +243,58 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
-        var libraries = this.loadAndValidate(libraryIdentifiers);
+        var librariesByIdentifier = this.loadAndValidate(libraryIdentifiers);
 
         initializeEvalTime(nullableEvaluationDateTime);
 
         // here we initialize all libraries without emptying the cache for each library
-        this.state.init(List.copyOf(libraries.values()));
+        this.state.init(List.copyOf(librariesByIdentifier.values()));
         // LUKETODO:  deal with this: since we need to deal with the use case of parameters
-        libraries.values().forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
+        librariesByIdentifier
+                .values()
+                .forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
 
         initializeDebugMap(debugMap);
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library first
-        var reversedOrderLibraryIdentifiers = IntStream.range(0, libraries.size())
+        var reversedOrderLibraryIdentifiers = IntStream.range(0, librariesByIdentifier.size())
                 .map(index -> libraryIdentifiers.size() - 1 - index)
                 .mapToObj(libraryIdentifiers::get)
                 .toList();
 
-        var evalResults = new HashMap<VersionedIdentifier, EvaluationResult>();
+        var evalResults = new HashMap<SearchableLibraryIdentifier, EvaluationResult>();
 
         for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
-            var library = libraries.get(libraryIdentifier);
+            var library = retrieveLibraryFromMap(librariesByIdentifier, libraryIdentifier);
             var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
             final EvaluationResult evaluationResult = this.evaluateExpressions2(expressionSet);
-            evalResults.put(libraryIdentifier, evaluationResult);
+            evalResults.put(SearchableLibraryIdentifier.fromIdentifier(libraryIdentifier), evaluationResult);
         }
 
         return evalResults;
+    }
+
+    private Library retrieveLibraryFromMap(
+            Map<VersionedIdentifier, Library> librariesByIdentifier, VersionedIdentifier libraryIdentifier) {
+        if (librariesByIdentifier == null || librariesByIdentifier.isEmpty()) {
+            throw new IllegalArgumentException("librariesByIdentifier can not be null or empty.");
+        }
+        if (libraryIdentifier.getVersion() != null) {
+            if (!librariesByIdentifier.containsKey(libraryIdentifier)) {
+                throw new IllegalArgumentException(
+                        String.format("libraryIdentifier '%s' does not exist.", libraryIdentifier));
+            }
+
+            return librariesByIdentifier.get(libraryIdentifier);
+        }
+
+        return librariesByIdentifier.entrySet().stream()
+                .filter(entry -> entry.getKey().getId().equals(libraryIdentifier.getId()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("library id %s not found.", libraryIdentifier.getId())));
     }
 
     private void initializeEvalTime(ZonedDateTime nullableEvaluationDateTime) {
