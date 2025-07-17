@@ -110,7 +110,7 @@ public class QueryEvaluator {
                 } else if (byItem instanceof ByColumn) {
                     result.sort(new CqlList(state, ((ByColumn) byItem).getPath()).columnSort);
                 } else {
-                    result.sort(new CqlList().valueSort);
+                    result.sort(new CqlList(state).valueSort);
                 }
 
                 String direction = byItem.getDirection().value();

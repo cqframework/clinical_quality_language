@@ -2,34 +2,36 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.*;
 
 public class AddEvaluator {
-    public static Object add(Object left, Object right) {
+    public static Object add(final Object left, final Object right, final State state) {
 
         if (left == null || right == null) {
             return null;
         }
 
-        if (left instanceof Integer && right instanceof Integer) {
-            return (Integer) left + (Integer) right;
-        }
-
-        if (left instanceof Long && right instanceof Long) {
-            return (Long) left + (Long) right;
-        } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
-            return Value.verifyPrecision(((BigDecimal) left).add((BigDecimal) right), null);
-        } else if (left instanceof Quantity && right instanceof Quantity) {
-            return new Quantity()
-                    .withValue((((Quantity) left).getValue()).add(((Quantity) right).getValue()))
-                    .withUnit(((Quantity) left).getUnit());
+        if (left instanceof Integer leftInteger && right instanceof Integer rightInteger) {
+            return leftInteger + rightInteger;
+        } else if (left instanceof Long leftLong && right instanceof Long rightLong) {
+            return leftLong + rightLong;
+        } else if (left instanceof BigDecimal leftBigDecimal && right instanceof BigDecimal rightBigDecimal) {
+            return Value.verifyPrecision(leftBigDecimal.add(rightBigDecimal), null);
+        } else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            return UnitConversionHelper.computeWithConvertedUnits(
+                    leftQuantity,
+                    rightQuantity,
+                    (commonUnit, leftValue, rightValue) ->
+                            new Quantity().withUnit(commonUnit).withValue(leftValue.add(rightValue)),
+                    state);
         }
 
         // +(DateTime, Quantity), +(Date, Quantity), +(Time, Quantity)
-        else if (left instanceof BaseTemporal && right instanceof Quantity) {
-            Precision valueToAddPrecision = Precision.fromString(((Quantity) right).getUnit());
+        else if (left instanceof BaseTemporal && right instanceof Quantity rightQuantity) {
+            Precision valueToAddPrecision = Precision.fromString(rightQuantity.getUnit());
             Precision precision = Precision.fromString(BaseTemporal.getLowestPrecision((BaseTemporal) left));
-            int valueToAdd = ((Quantity) right).getValue().intValue();
+            int valueToAdd = rightQuantity.getValue().intValue();
 
             if (left instanceof DateTime || left instanceof Date) {
                 if (valueToAddPrecision == Precision.WEEK) {
@@ -51,12 +53,12 @@ public class AddEvaluator {
                 valueToAddPrecision = precision;
             }
 
-            if (left instanceof DateTime) {
+            if (left instanceof DateTime leftDateTime) {
                 return new DateTime(
-                        ((DateTime) left).getDateTime().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
+                        leftDateTime.getDateTime().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
                         precision);
-            } else if (left instanceof Date) {
-                return new Date(((Date) left).getDate().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()))
+            } else if (left instanceof Date leftDate) {
+                return new Date(leftDate.getDate().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()))
                         .setPrecision(precision);
             } else {
                 return new Time(
@@ -66,13 +68,11 @@ public class AddEvaluator {
         }
 
         // +(Uncertainty, Uncertainty)
-        else if (left instanceof Interval && right instanceof Interval) {
-            Interval leftInterval = (Interval) left;
-            Interval rightInterval = (Interval) right;
+        else if (left instanceof Interval leftInterval && right instanceof Interval rightInterval) {
             return new Interval(
-                    add(leftInterval.getStart(), rightInterval.getStart()),
+                    add(leftInterval.getStart(), rightInterval.getStart(), state),
                     true,
-                    add(leftInterval.getEnd(), rightInterval.getEnd()),
+                    add(leftInterval.getEnd(), rightInterval.getEnd(), state),
                     true);
         } else if (left instanceof String && right instanceof String) {
             return ((String) left).concat((String) right);

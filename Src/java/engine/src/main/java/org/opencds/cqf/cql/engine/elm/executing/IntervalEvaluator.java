@@ -36,6 +36,6 @@ public class IntervalEvaluator {
         }
 
         return new org.opencds.cqf.cql.engine.runtime.Interval(
-                low, lowClosed == null ? true : lowClosed, high, highClosed == null ? true : highClosed);
+                low, lowClosed == null ? true : lowClosed, high, highClosed == null ? true : highClosed, state);
     }
 }
