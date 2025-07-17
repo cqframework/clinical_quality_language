@@ -152,34 +152,4 @@ mavenPublishing {
             }
         }
     }
-    repositories {
-        maven {
-            credentials {
-                username project.hasProperty("ossrhUsername") ? ossrhUsername : System.getenv("OSSRH_USERNAME") != null ? System.getenv("OSSRH_USERNAME") : ""
-                password project.hasProperty("ossrhPassword") ? ossrhPassword : System.getenv("OSSRH_TOKEN") != null ? System.getenv("OSSRH_TOKEN") : ""
-            }
-
-            /* Use these to test locally (but don't forget to comment out others!)
-            def releasesRepoUrl = "file://${buildDir}/repo"
-            def snapshotsRepoUrl = "file://${buildDir}/ssRepo"
-            */
-
-            // change URLs to point to your repos, e.g. http://my.org/repo
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
-}
-
-signing {
-    if (!version.endsWith('SNAPSHOT')){
-        sign publishing.publications.mavenDeployer
-    }
-}
-
-javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
 }
