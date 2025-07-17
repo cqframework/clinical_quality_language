@@ -1,4 +1,4 @@
-library LogicalOperator
+library CqlLogicalOperatorsTest
 
 //And
 define TrueAndTrue : true and true

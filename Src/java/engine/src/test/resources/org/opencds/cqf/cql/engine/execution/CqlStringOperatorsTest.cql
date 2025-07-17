@@ -1,4 +1,4 @@
-library StringOperator version '1'
+library CqlStringOperatorsTest version '1'
 
 codesystem "LOINC": 'http://loinc.org'
 

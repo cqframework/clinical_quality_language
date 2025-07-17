@@ -1,4 +1,4 @@
-library ProfileTest
+library ProfilingTest
 
 define function F(X Integer): X + 1
 

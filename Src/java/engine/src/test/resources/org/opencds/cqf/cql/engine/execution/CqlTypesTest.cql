@@ -1,4 +1,4 @@
-library Types version '1'
+library CqlTypesTest version '1'
 
 codesystem "LOINC": 'http://loinc.org'
 
