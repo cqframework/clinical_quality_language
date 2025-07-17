@@ -198,13 +198,17 @@ public class LibraryManager {
     }
 
     public List<CompiledLibrary> resolveLibraries(
-            List<VersionedIdentifier> libraryIdentifiers, List<CqlCompilerException> errors) {
+            List<VersionedIdentifier> libraryIdentifiers,
+            Map<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
-        return resolveLibraries(libraryIdentifiers, errors, CacheMode.READ_WRITE);
+        return resolveLibraries(libraryIdentifiers, errorsById, CacheMode.READ_WRITE);
     }
 
+    // LUKETODO: rethink this to allow partial errors and let the other libraries through?
     public List<CompiledLibrary> resolveLibraries(
-            List<VersionedIdentifier> libraryIdentifiers, List<CqlCompilerException> errors, CacheMode cacheMode) {
+            List<VersionedIdentifier> libraryIdentifiers,
+            Map<VersionedIdentifier, List<CqlCompilerException>> errorsById,
+            CacheMode cacheMode) {
         if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("libraryIdentifier is null or empty.");
         }
@@ -238,7 +242,7 @@ public class LibraryManager {
 
             // We can have both successfully compiled libraries and errors, especially among multiple libraries
             if (hasErrors(compiledlibraryResult.errors())) {
-                errors.addAll(compiledlibraryResult.errors());
+                errorsById.put(libraryIdentifier, compiledlibraryResult.errors());
             }
         }
 

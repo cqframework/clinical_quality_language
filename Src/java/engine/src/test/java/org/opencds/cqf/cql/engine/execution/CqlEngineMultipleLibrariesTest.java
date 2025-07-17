@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.ZoneOffset;
 import java.util.List;
@@ -36,6 +37,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final Interval _2022_01_01_TO_2023_01_01 = new Interval(_2022_01_01, true, _2023_01_01, false);
     private static final Interval _2023_01_01_TO_2024_01_01 = new Interval(_2023_01_01, true, _2024_01_01, false);
     private static final Interval _2031_01_01_TO_2032_01_01 = new Interval(_2031_01_01, true, _2032_01_01, false);
+
+    // LUKETODO:  errors for all libraries
+    // LUKETODO:  errors for one of several libraries
 
     @Override
     protected String getCqlSubdirectory() {
@@ -88,10 +92,12 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @ParameterizedTest
     @MethodSource("libraryWithVersionQueriesParams")
     void libraryWithVersionQueries(VersionedIdentifier libraryIdentifier) {
-        var libraryResults = cqlEngine.evaluate(List.of(libraryIdentifier), null, null, null, debugMap, null);
+        var evalResultsForMultiLib = cqlEngine.evaluate(List.of(libraryIdentifier), null, null, null, debugMap, null);
 
-        assertNotNull(libraryResults);
+        assertNotNull(evalResultsForMultiLib);
+        var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(1, libraryResults.size());
+        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
 
         var evaluationResult = findResultsByLibId("LibraryWithVersion", libraryResults);
         assertEquals(5, evaluationResult.expressionResults.get("Number").value());
@@ -108,7 +114,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     // LUKETODO:  cache is by expression name, so 2 identical expresions will be essentially duplicated
     @Test
     void multipleLibrariesSimple() {
-        var libraryResults = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngine.evaluate(
                 List.of(
                         toElmIdentifier("MultiLibrary1"),
                         toElmIdentifier("MultiLibrary2"),
@@ -119,8 +125,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 debugMap,
                 null);
 
-        assertNotNull(libraryResults);
+        assertNotNull(evalResultsForMultiLib);
+        var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
+        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
@@ -148,7 +156,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesWithParameters() {
-        var libraryResults = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngine.evaluate(
                 List.of(
                         toElmIdentifier("MultiLibrary1"),
                         toElmIdentifier("MultiLibrary2"),
@@ -159,8 +167,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 debugMap,
                 null);
 
-        assertNotNull(libraryResults);
+        assertNotNull(evalResultsForMultiLib);
+        var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
+        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
