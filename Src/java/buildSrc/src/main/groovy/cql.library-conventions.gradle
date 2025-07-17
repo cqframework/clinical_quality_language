@@ -8,7 +8,6 @@ ext {
     androidApiLevel = project['android.api.level']
 }
 
-
 dependencies {
     // Various libraries for Android signatures are available, Jackson uses this one
     signature "com.toasttab.android:gummy-bears-api-${androidApiLevel}:0.12.0@signature"

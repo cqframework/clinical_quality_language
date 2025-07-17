@@ -3,11 +3,21 @@ plugins {
     id "application"
 }
 
+ext {
+    hapiVersion = project['hapi.version']
+}
+
 application {
     mainClass = 'org.cqframework.cql.cql2elm.cli.Main'
 }
 
 dependencies {
+    implementation platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${hapiVersion}") {
+        exclude group: 'org.eclipse.jetty'
+        exclude group: 'xpp3'
+        exclude group: 'org.junit'
+    }
+
     implementation project(':cql-to-elm')
     implementation project(':cqf-fhir')
     implementation project(':cqf-fhir-npm')
