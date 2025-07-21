@@ -12,6 +12,11 @@ public class SearchableLibraryIdentifier {
         return new SearchableLibraryIdentifier(identifier.getId());
     }
 
+    // Visible for testing
+    public static SearchableLibraryIdentifier fromId(String id) {
+        return new SearchableLibraryIdentifier(id);
+    }
+
     private SearchableLibraryIdentifier(String identifierId) {
         this.identifierId = identifierId;
     }

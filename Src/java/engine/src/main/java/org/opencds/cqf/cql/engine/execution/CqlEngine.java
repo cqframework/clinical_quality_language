@@ -269,11 +269,11 @@ public class CqlEngine {
             this.errors = errors;
         }
 
-        public Map<VersionedIdentifier, Library> getResults() {
+        public LinkedHashMap<VersionedIdentifier, Library> getResults() {
             return results;
         }
 
-        public Map<VersionedIdentifier, String> getErrors() {
+        public LinkedHashMap<VersionedIdentifier, String> getErrors() {
             return errors;
         }
     }
@@ -289,6 +289,7 @@ public class CqlEngine {
             Map<String, Object> parameters,
             DebugMap debugMap,
             ZonedDateTime nullableEvaluationDateTime) {
+
         if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
@@ -321,13 +322,17 @@ public class CqlEngine {
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library first
         var reversedOrderLibraryIdentifiers = IntStream.range(0, successfullyLoadedLibraries.size())
-                .map(index -> libraryIdentifiers.size() - 1 - index)
-                .mapToObj(libraryIdentifiers::get)
+                .map(index -> successfullyLoadedLibraries.size() - 1 - index)
+                .mapToObj(index -> List.copyOf(successfullyLoadedLibraries.keySet()).get(index))
                 .toList();
 
         var evalResults = new LinkedHashMap<SearchableLibraryIdentifier, EvaluationResult>();
 
+        // LUKETODO:  better algorithm to capture compile errors
         var errors = new LinkedHashMap<SearchableLibraryIdentifier, String>();
+        for (var error : librariesByIdentifier.getErrors().entrySet()) {
+            errors.put(SearchableLibraryIdentifier.fromIdentifier(error.getKey()), error.getValue());
+        }
 
         for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
             var library = retrieveLibraryFromMap(successfullyLoadedLibraries, libraryIdentifier);
@@ -493,6 +498,7 @@ public class CqlEngine {
             }
         } finally {
             this.state.endEvaluation();
+            // We are popping the library so we can work on the next one on the stack
             this.state.exitLibrary(true);
         }
 
@@ -586,7 +592,8 @@ public class CqlEngine {
 
         var resolvedLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errorsById);
 
-        var idsToLibraries = getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries);
+        var idsToLibraries =
+                getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries, errorsById);
 
         // We couldn't load any libraries:  instead of throwing just collect the errors now
         if (idsToLibraries.isEmpty()) {
@@ -611,7 +618,7 @@ public class CqlEngine {
 
                 var joinedErrorMessages = "library %s loaded, but had errors: %s"
                         .formatted(
-                                showLibs(libraryIdentifiers),
+                                libraryIdentifier.getId(),
                                 exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")));
 
                 errorsForLibs.put(libraryIdentifier, joinedErrorMessages);
@@ -661,15 +668,19 @@ public class CqlEngine {
     //    }
 
     private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
-            List<VersionedIdentifier> libraryIdentifiersUsedToQuery, List<CompiledLibrary> resolvedLibraries) {
+            List<VersionedIdentifier> libraryIdentifiersUsedToQuery, List<CompiledLibrary> resolvedLibraries, LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
-        if (libraryIdentifiersUsedToQuery.size() != resolvedLibraries.size()) {
-            throw new CqlException("Something went wrong with resolving libraries: expected %d libraries, but got %d."
+        var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
+                .filter(ident -> !errorsById.containsKey(ident))
+                .toList();
+
+        if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
+            throw new CqlException("Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
                     .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
         }
 
-        for (int index = 0; index < libraryIdentifiersUsedToQuery.size(); index++) {
-            var versionedIdentifierFromQuery = libraryIdentifiersUsedToQuery.get(index);
+        for (int index = 0; index < nonErroredIdentifiers.size(); index++) {
+            var versionedIdentifierFromQuery = nonErroredIdentifiers.get(index);
             var compiledLibrary = resolvedLibraries.get(index);
 
             // LUKETODO:  handle version comparisons later:  only check if the QUERYING id contains a version

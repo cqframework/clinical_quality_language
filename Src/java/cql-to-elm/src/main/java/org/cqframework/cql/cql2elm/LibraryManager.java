@@ -234,10 +234,11 @@ public class LibraryManager {
         var libs = new ArrayList<CompiledLibrary>();
         for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
             var compiledlibraryResult = compileLibrary(libraryIdentifier);
-            libs.add(compiledlibraryResult.compiledLibrary());
 
+            // If we have any errors, ignore the compiled library altogether just like in the single lib case
             if (!hasErrors(compiledlibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
                 compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
+                libs.add(compiledlibraryResult.compiledLibrary());
             }
 
             // We can have both successfully compiled libraries and errors, especially among multiple libraries

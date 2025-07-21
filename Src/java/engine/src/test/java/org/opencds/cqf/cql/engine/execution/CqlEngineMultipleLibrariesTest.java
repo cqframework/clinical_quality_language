@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,6 +41,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     // LUKETODO:  errors for all libraries
     // LUKETODO:  errors for one of several libraries
+    // LUKETODO:  assert evaluated resources
 
     @Override
     protected String getCqlSubdirectory() {
@@ -191,9 +193,54 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 evaluationResult3.expressionResults.get("Period").value());
     }
 
-    // LUKETODO:  simple case where the library name does not match the CQL library name
     @Test
-    void simpleCqlLibraryNameMismatch() {}
+    void multipleLibrariesOneInvalid() {
+        // LUKETODO:  this throws an exception and ends execution immediately, so skip evaluating any libraries in the multilib scenario that have errors
+//        var multiLibraryBad = cqlEngine.evaluate(toElmIdentifier("MultiLibraryBad"), null, null, null, debugMap, null);
+
+
+        var evalResultsForMultiLib = cqlEngine.evaluate(
+                List.of(
+                        toElmIdentifier("MultiLibrary1"),
+                        toElmIdentifier("MultiLibrary2"),
+                        toElmIdentifier("MultiLibrary3"),
+                        toElmIdentifier("MultiLibraryBad")),
+                null,
+                null,
+                Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
+                debugMap,
+                null);
+
+        assertNotNull(evalResultsForMultiLib);
+
+        assertFalse(evalResultsForMultiLib.getErrors().isEmpty());
+        var errors = evalResultsForMultiLib.getErrors();
+        assertEquals(1, errors.size());
+        var errorEntry = errors.entrySet().iterator().next();
+        assertEquals(SearchableLibraryIdentifier.fromId("MultiLibraryBad"), errorEntry.getKey());
+        assertEquals("library MultiLibraryBad loaded, but had errors: Syntax error at define", errorEntry.getValue());
+
+        var libraryResults = evalResultsForMultiLib.getResults();
+        assertEquals(3, libraryResults.size());  // there is no eval result for MultiLibraryBad
+
+        var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
+        var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
+        var evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults);
+
+        assertEquals(1, evaluationResult1.expressionResults.get("Number").value());
+        assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
+        assertEquals(3, evaluationResult3.expressionResults.get("Number").value());
+
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult1.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult2.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult3.expressionResults.get("Period").value());
+    }
 
     private EvaluationResult findResultsByLibId(
             String libId, Map<SearchableLibraryIdentifier, EvaluationResult> results) {
