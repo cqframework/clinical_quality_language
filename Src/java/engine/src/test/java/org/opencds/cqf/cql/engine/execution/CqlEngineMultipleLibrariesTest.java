@@ -195,11 +195,6 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesOneInvalid() {
-        // LUKETODO:  this throws an exception and ends execution immediately, so skip evaluating any libraries in the
-        // multilib scenario that have errors
-        //        var multiLibraryBad = cqlEngine.evaluate(toElmIdentifier("MultiLibraryBad"), null, null, null,
-        // debugMap, null);
-
         var evalResultsForMultiLib = cqlEngine.evaluate(
                 List.of(
                         toElmIdentifier("MultiLibrary1"),

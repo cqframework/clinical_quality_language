@@ -176,6 +176,11 @@ public class CqlEngine {
         return this.evaluate(libraryIdentifier, expressions, null, null, null);
     }
 
+    public EvaluationResultsForMultiLib evaluate(
+            List<VersionedIdentifier> libraryIdentifiers, Set<String> expressions) {
+        return this.evaluate(libraryIdentifiers, expressions, null, null, null);
+    }
+
     public EvaluationResult evaluate(
             VersionedIdentifier libraryIdentifier, Set<String> expressions, Pair<String, Object> contextParameter) {
         return this.evaluate(libraryIdentifier, expressions, contextParameter, null, null);
@@ -208,6 +213,15 @@ public class CqlEngine {
             Map<String, Object> parameters,
             DebugMap debugMap) {
         return this.evaluate(libraryIdentifier, expressions, contextParameter, parameters, debugMap, null);
+    }
+
+    public EvaluationResultsForMultiLib evaluate(
+            List<VersionedIdentifier> libraryIdentifiers,
+            Set<String> expressions,
+            Pair<String, Object> contextParameter,
+            Map<String, Object> parameters,
+            DebugMap debugMap) {
+        return this.evaluate(libraryIdentifiers, expressions, contextParameter, parameters, debugMap, null);
     }
 
     public EvaluationResult evaluate(
@@ -247,10 +261,16 @@ public class CqlEngine {
             this.errors = errors;
         }
 
+        public int getSuccessesCount() {
+            return results.size();
+        }
+
+        // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
         public Map<SearchableLibraryIdentifier, EvaluationResult> getResults() {
             return results;
         }
 
+        // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
         public Map<SearchableLibraryIdentifier, String> getErrors() {
             return errors;
         }
@@ -499,7 +519,10 @@ public class CqlEngine {
             }
         } finally {
             this.state.endEvaluation();
-            // We are popping the library so we can work on the next one on the stack
+            // LUKETODO:  do we need to clear out the values() as well?
+            // We are moving the evaluated resources off the stack so we can work on the next ones
+            this.state.clearEvaluatedResources();
+            // We are moving the library off the stack so we can work on the next one
             this.state.exitLibrary(true);
         }
 
@@ -677,6 +700,7 @@ public class CqlEngine {
                 .toList();
 
         if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
+            // LUKETODO:  why are we getting this from the FHIR multi-lib tests?
             throw new CqlException(
                     "Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
                             .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
