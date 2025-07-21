@@ -196,15 +196,17 @@ public class LibraryManager {
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
             result = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (result != null) {
+                validateIdentifiers(libraryIdentifier, result, libraryPath);
+
                 sortStatements(result);
                 return result;
             }
         }
-
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -228,20 +230,18 @@ public class LibraryManager {
             }
 
             result = compiler.getCompiledLibrary();
-            if (libraryIdentifier.getVersion() != null
-                    && !libraryIdentifier
-                            .getVersion()
-                            .equals(result.getIdentifier().getVersion())) {
+
+            if (result == null) {
                 throw new CqlIncludeException(
                         String.format(
-                                "Library %s was included as version %s, but version %s of the library was found.",
-                                libraryPath,
-                                libraryIdentifier.getVersion(),
-                                result.getIdentifier().getVersion()),
+                                "Could not load source for library %s, version %s.",
+                                libraryPath, libraryIdentifier.getVersion()),
                         libraryIdentifier.getSystem(),
                         libraryIdentifier.getId(),
                         libraryIdentifier.getVersion());
             }
+
+            validateIdentifiers(libraryIdentifier, result, libraryPath);
 
         } catch (IOException e) {
             throw new CqlIncludeException(
@@ -254,17 +254,37 @@ public class LibraryManager {
                     e);
         }
 
-        if (result == null) {
+        sortStatements(result);
+        return result;
+    }
+
+    private void validateIdentifiers(
+            VersionedIdentifier libraryIdentifier, CompiledLibrary result, String libraryPath) {
+
+        var resultIdentifier = result.getIdentifier();
+
+        var areIdsEqual = libraryIdentifier.getId().equals(resultIdentifier.getId());
+        var libraryIdentifierVersion = libraryIdentifier.getVersion();
+        var resultIdentifierVersion = resultIdentifier.getVersion();
+
+        // If the library VersionedIdentifier used to query is null, then don't compare to the result library version,
+        // since we're doing a broader search
+        final boolean areIdentifiersValid;
+        if (libraryIdentifierVersion == null) {
+            areIdentifiersValid = areIdsEqual;
+        } else {
+            var areVersionsEqual = libraryIdentifierVersion.equals(resultIdentifier.getVersion());
+            areIdentifiersValid = areIdsEqual && areVersionsEqual;
+        }
+
+        if (!areIdentifiersValid) {
             throw new CqlIncludeException(
                     String.format(
-                            "Could not load source for library %s, version %s.",
-                            libraryPath, libraryIdentifier.getVersion()),
+                            "Library %s was included with version %s, but id: %s and version %s of the library was found.",
+                            libraryPath, libraryIdentifierVersion, resultIdentifier.getId(), resultIdentifierVersion),
                     libraryIdentifier.getSystem(),
                     libraryIdentifier.getId(),
-                    libraryIdentifier.getVersion());
-        } else {
-            sortStatements(result);
-            return result;
+                    libraryIdentifierVersion == null ? "null" : libraryIdentifierVersion);
         }
     }
 
