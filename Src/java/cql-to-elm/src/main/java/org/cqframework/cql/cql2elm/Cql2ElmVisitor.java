@@ -304,9 +304,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         CodeSystemDef def;
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name);
-            if (def != null) {
-                libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
-            }
+            libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
         } else {
             def = libraryBuilder.resolveCodeSystemRef(name);
         }
@@ -329,9 +327,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         CodeDef def;
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name);
-            if (def != null) {
-                libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
-            }
+            libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
         } else {
             def = libraryBuilder.resolveCodeRef(name);
         }
@@ -387,7 +383,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withId(parseString(ctx.codeId()));
 
         if (ctx.codesystemIdentifier() != null) {
-            cd.setCodeSystem((CodeSystemRef) visit(ctx.codesystemIdentifier()));
+            var cs = visit(ctx.codesystemIdentifier());
+            if (cs == null || cs instanceof Null) {
+                throw new IllegalArgumentException(String.format(
+                        "Could not resolve reference to code system %s.",
+                        ctx.codesystemIdentifier().getText()));
+            }
+            cd.setCodeSystem((CodeSystemRef) cs);
         }
 
         if (ctx.displayClause() != null) {
