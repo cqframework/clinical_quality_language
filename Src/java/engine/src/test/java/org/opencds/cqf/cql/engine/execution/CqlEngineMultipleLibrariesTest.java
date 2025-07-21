@@ -195,9 +195,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesOneInvalid() {
-        // LUKETODO:  this throws an exception and ends execution immediately, so skip evaluating any libraries in the multilib scenario that have errors
-//        var multiLibraryBad = cqlEngine.evaluate(toElmIdentifier("MultiLibraryBad"), null, null, null, debugMap, null);
-
+        // LUKETODO:  this throws an exception and ends execution immediately, so skip evaluating any libraries in the
+        // multilib scenario that have errors
+        //        var multiLibraryBad = cqlEngine.evaluate(toElmIdentifier("MultiLibraryBad"), null, null, null,
+        // debugMap, null);
 
         var evalResultsForMultiLib = cqlEngine.evaluate(
                 List.of(
@@ -221,7 +222,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals("library MultiLibraryBad loaded, but had errors: Syntax error at define", errorEntry.getValue());
 
         var libraryResults = evalResultsForMultiLib.getResults();
-        assertEquals(3, libraryResults.size());  // there is no eval result for MultiLibraryBad
+        assertEquals(3, libraryResults.size()); // there is no eval result for MultiLibraryBad
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);

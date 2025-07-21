@@ -323,7 +323,8 @@ public class CqlEngine {
         // We need to reverse the order of Libraries since the CQL engine state has the last library first
         var reversedOrderLibraryIdentifiers = IntStream.range(0, successfullyLoadedLibraries.size())
                 .map(index -> successfullyLoadedLibraries.size() - 1 - index)
-                .mapToObj(index -> List.copyOf(successfullyLoadedLibraries.keySet()).get(index))
+                .mapToObj(index ->
+                        List.copyOf(successfullyLoadedLibraries.keySet()).get(index))
                 .toList();
 
         var evalResults = new LinkedHashMap<SearchableLibraryIdentifier, EvaluationResult>();
@@ -592,8 +593,7 @@ public class CqlEngine {
 
         var resolvedLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errorsById);
 
-        var idsToLibraries =
-                getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries, errorsById);
+        var idsToLibraries = getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries, errorsById);
 
         // We couldn't load any libraries:  instead of throwing just collect the errors now
         if (idsToLibraries.isEmpty()) {
@@ -668,15 +668,18 @@ public class CqlEngine {
     //    }
 
     private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
-            List<VersionedIdentifier> libraryIdentifiersUsedToQuery, List<CompiledLibrary> resolvedLibraries, LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
+            List<VersionedIdentifier> libraryIdentifiersUsedToQuery,
+            List<CompiledLibrary> resolvedLibraries,
+            LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
         var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
                 .filter(ident -> !errorsById.containsKey(ident))
                 .toList();
 
         if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
-            throw new CqlException("Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
-                    .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
+            throw new CqlException(
+                    "Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
+                            .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
         }
 
         for (int index = 0; index < nonErroredIdentifiers.size(); index++) {
