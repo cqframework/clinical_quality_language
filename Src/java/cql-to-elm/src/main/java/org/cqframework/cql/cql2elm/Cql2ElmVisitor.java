@@ -383,7 +383,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withId(parseString(ctx.codeId()));
 
         if (ctx.codesystemIdentifier() != null) {
-            cd.setCodeSystem((CodeSystemRef) visit(ctx.codesystemIdentifier()));
+            var cs = visit(ctx.codesystemIdentifier());
+            if (cs == null || cs instanceof Null) {
+                throw new IllegalArgumentException(String.format(
+                        "Could not resolve reference to code system %s.",
+                        ctx.codesystemIdentifier().getText()));
+            }
+            cd.setCodeSystem((CodeSystemRef) cs);
         }
 
         if (ctx.displayClause() != null) {
