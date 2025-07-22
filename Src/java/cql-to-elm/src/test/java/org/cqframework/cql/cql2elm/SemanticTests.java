@@ -808,6 +808,22 @@ public class SemanticTests {
         }
     }
 
+    @Test
+    void issue1587_castErrorForUnresolvedCodeSystemRef() throws IOException {
+        CqlTranslator translator = runSemanticTest("Issue1587.cql", 3);
+        var errors = translator.getErrors();
+
+        // No cast error should be thrown
+        var sourceLoadError = errors.get(0);
+        assertThat(sourceLoadError.getMessage(), containsString("Could not load source for library DummyLibrary"));
+        var libraryResolutionError = errors.get(1);
+        assertThat(libraryResolutionError.getMessage(), containsString("Could not resolve library name DummyLibrary"));
+        var codeSystemRefError = errors.get(2);
+        assertThat(
+                codeSystemRefError.getMessage(),
+                containsString("Could not resolve reference to code system DummyLibrary.Codes"));
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
