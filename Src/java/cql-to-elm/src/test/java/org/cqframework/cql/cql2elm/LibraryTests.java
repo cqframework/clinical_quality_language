@@ -698,6 +698,26 @@ class LibraryTests {
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
     }
 
+    @Test
+    void issue1587_castErrorForUnresolvedCodeSystemRef() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/Issue1587.cql");
+        var errors = translator.getErrors();
+
+        // No cast error should be thrown
+
+        assertEquals(2, errors.size());
+        var codeSystemRefError = errors.get(0);
+        assertThat(
+                codeSystemRefError.getMessage(),
+                containsString("Could not resolve reference to code system DoesNotExist"));
+
+        var privateCodeSystemError = errors.get(1);
+        assertThat(
+                privateCodeSystemError.getMessage(),
+                containsString(
+                        "Identifier PrivateCodes in library Issue1587Include is marked private and cannot be referenced from another library."));
+    }
+
     private static final String FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE =
             "LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
     private static final String NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE =
