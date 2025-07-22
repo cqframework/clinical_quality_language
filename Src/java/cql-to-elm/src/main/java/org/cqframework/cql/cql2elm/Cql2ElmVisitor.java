@@ -388,8 +388,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         if (ctx.codesystemIdentifier() != null) {
             var cs = visit(ctx.codesystemIdentifier());
-            if (cs instanceof CodeSystemRef) {
-                cd.setCodeSystem((CodeSystemRef) cs);
+            if (cs instanceof CodeSystemRef csr) {
+                cd.setCodeSystem(csr);
             }
         }
 
