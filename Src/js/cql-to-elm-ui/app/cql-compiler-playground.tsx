@@ -374,25 +374,6 @@ export function CqlCompilerPlayground() {
             editable={true}
             extensions={[cqlLanguage]}
           />
-
-          {/*<textarea*/}
-          {/*  style={{*/}
-          {/*    gridArea: "body-left-editor-textarea",*/}
-          {/*    display: "block",*/}
-          {/*    width: "100%",*/}
-          {/*    height: "100%",*/}
-          {/*    padding: "8px 10px",*/}
-          {/*  }}*/}
-          {/*  spellCheck={false}*/}
-          {/*  value={state.cql}*/}
-          {/*  onChange={(event) => {*/}
-          {/*    const nextContent = event.target.value;*/}
-          {/*    setState((prevState) => ({*/}
-          {/*      ...prevState,*/}
-          {/*      cql: nextContent,*/}
-          {/*    }));*/}
-          {/*  }}*/}
-          {/*/>*/}
         </div>
 
         <div
@@ -452,32 +433,6 @@ export function CqlCompilerPlayground() {
               return [xml()];
             })()}
           />
-
-          {/*<textarea*/}
-          {/*  style={{*/}
-          {/*    gridArea: "body-right-editor-textarea",*/}
-          {/*    display: "block",*/}
-          {/*    width: "100%",*/}
-          {/*    height: "100%",*/}
-          {/*    padding: "8px 10px",*/}
-          {/*  }}*/}
-          {/*  readOnly={true}*/}
-          {/*  spellCheck={false}*/}
-          {/*  value={(() => {*/}
-          {/*    if (state.output.type === "log") {*/}
-          {/*      return state.output.log;*/}
-          {/*    }*/}
-          {/*    if (state.output.contentType === "json") {*/}
-          {/*      try {*/}
-          {/*        return JSON.stringify(JSON.parse(state.output.elm), null, 2);*/}
-          {/*      } catch (e) {*/}
-          {/*        console.error(e);*/}
-          {/*      }*/}
-          {/*      return state.output.elm;*/}
-          {/*    }*/}
-          {/*    return state.output.elm;*/}
-          {/*  })()}*/}
-          {/*/>*/}
         </div>
       </div>
     </div>
