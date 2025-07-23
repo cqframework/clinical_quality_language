@@ -222,6 +222,69 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         List.of(ENCOUNTER),
                         CONDITION_EXPRESSION,
                         List.of()));
+
+        // Now use the same engine, but pass the identifiers in a different order
+        var resultsMultiLibDifferentOrder =
+                engine.evaluate(
+                        Stream.of(LIB_3, LIB_2, LIB_1)
+                                .map(SearchableLibraryIdentifier::toIdentifier)
+                                .map(ident -> ident.withVersion("1.0"))
+                                .toList(),
+                        ALL_EXPRESSIONS);
+
+        var resultsMultiLibDifferentOrderLib1 = resultsMultiLibDifferentOrder.getResults().get(LIB_1);
+        assertEntireEvaluationResult(
+                resultsMultiLibDifferentOrderLib1,
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(CONDITION, ENCOUNTER),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(CONDITION, ENCOUNTER),
+                        CONDITION_EXPRESSION,
+                        List.of(CONDITION, ENCOUNTER)),
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(CONDITION, ENCOUNTER),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(ENCOUNTER),
+                        CONDITION_EXPRESSION,
+                        List.of(CONDITION)));
+
+        var resultsMultiLibDifferentOrderLib2 = resultsMultiLib.getResults().get(LIB_2);
+        assertEntireEvaluationResult(
+                resultsMultiLibDifferentOrderLib2,
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(PROCEDURE, CONDITION, ENCOUNTER),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(PROCEDURE, CONDITION, ENCOUNTER),
+                        CONDITION_EXPRESSION,
+                        List.of(PROCEDURE, CONDITION, ENCOUNTER)),
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(PROCEDURE, CONDITION),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(),
+                        CONDITION_EXPRESSION,
+                        List.of(CONDITION)));
+
+        var resultsMultiLibDifferentOrderLib3 = resultsMultiLib.getResults().get(LIB_3);
+        assertEntireEvaluationResult(
+                resultsMultiLibDifferentOrderLib3,
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(ENCOUNTER, PROCEDURE, CONDITION),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(ENCOUNTER, PROCEDURE, CONDITION),
+                        CONDITION_EXPRESSION,
+                        List.of(ENCOUNTER, PROCEDURE, CONDITION)),
+                Map.of(
+                        UNION_EXPRESSION,
+                        List.of(ENCOUNTER, PROCEDURE),
+                        ENCOUNTER_EXPRESSION,
+                        List.of(ENCOUNTER),
+                        CONDITION_EXPRESSION,
+                        List.of()));
     }
 
     @Nonnull

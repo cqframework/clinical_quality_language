@@ -228,7 +228,7 @@ public class LibraryManager {
 
         // LUKETODO:  this is WRONG:  if we find only 1-3 libraries in the cache, we should not return the whole thing,
         // we should compile the others
-        // LUKETODO:  test the partially cached library scenario
+        // LUKETODO:  we don't pull from the cache because the versions don't match
         if (cacheMode != CacheMode.NONE) {
             var libraries = compiledLibraries.entrySet().stream()
                     .filter(entry -> libraryIdentifiers.contains(entry.getKey()))
