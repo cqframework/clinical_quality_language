@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
@@ -236,9 +235,14 @@ public class LibraryManager {
                     .map(Map.Entry::getValue)
                     .toList();
 
-            logger.info("1234: libraries found in cache: {}", libraries.stream().map(CompiledLibrary::getIdentifier).map(VersionedIdentifier::getId).toList());
+            logger.info(
+                    "1234: libraries found in cache: {}",
+                    libraries.stream()
+                            .map(CompiledLibrary::getIdentifier)
+                            .map(VersionedIdentifier::getId)
+                            .toList());
 
-//            if (!libraries.isEmpty()) {
+            //            if (!libraries.isEmpty()) {
             // LUKETODO:  simple check:  should we match the identifiers as well?
             if (libraries.size() == libraryIdentifiers.size()) {
                 return libraries;

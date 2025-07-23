@@ -17,7 +17,6 @@ import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
-import org.opencds.cqf.cql.engine.elm.executing.SingletonFromEvaluator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

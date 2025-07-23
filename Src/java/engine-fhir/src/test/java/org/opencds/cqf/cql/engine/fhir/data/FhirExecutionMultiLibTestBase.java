@@ -1,7 +1,17 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.cqframework.cql.cql2elm.CqlCompiler;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
@@ -24,17 +34,6 @@ import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class FhirExecutionMultiLibTestBase {
     public LibraryManager getLibraryManager() {
@@ -132,8 +131,8 @@ public abstract class FhirExecutionMultiLibTestBase {
                                 String lines = tb == null
                                         ? "[n/a]"
                                         : String.format(
-                                        "[%d:%d, %d:%d]",
-                                        tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+                                                "[%d:%d, %d:%d]",
+                                                tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
                                 System.err.printf("%s %s%n", lines, error.getMessage());
                                 errors.add(lines + error.getMessage());
                             }
@@ -172,7 +171,8 @@ public abstract class FhirExecutionMultiLibTestBase {
         return foundResources;
     }
 
-    private void findResourcesInDirectory(Path directory, String packagePath, String pattern, List<String> foundResources) throws IOException {
+    private void findResourcesInDirectory(
+            Path directory, String packagePath, String pattern, List<String> foundResources) throws IOException {
         if (!Files.isDirectory(directory)) {
             return;
         }
@@ -186,7 +186,8 @@ public abstract class FhirExecutionMultiLibTestBase {
                     .forEach(path -> {
                         String resourceName = path.getFileName().toString();
                         // Construct the full resource path for the classloader
-                        String fullResourcePath = packagePath.isEmpty() ? resourceName : packagePath + "/" + resourceName;
+                        String fullResourcePath =
+                                packagePath.isEmpty() ? resourceName : packagePath + "/" + resourceName;
                         foundResources.add(fullResourcePath);
                     });
         }
@@ -201,9 +202,7 @@ public abstract class FhirExecutionMultiLibTestBase {
     }
 
     protected List<VersionedIdentifier> getAllLibraryIdentifiers() {
-        return libraries.stream()
-                .map(Library::getIdentifier)
-                .toList();
+        return libraries.stream().map(Library::getIdentifier).toList();
     }
 
     protected List<Library> getLibraries() {
