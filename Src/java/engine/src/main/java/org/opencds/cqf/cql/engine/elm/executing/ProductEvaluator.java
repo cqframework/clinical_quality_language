@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 
 /*
@@ -21,7 +22,7 @@ If the source is null, the result is null.
 
 public class ProductEvaluator {
 
-    public static Object product(Object source) {
+    public static Object product(Object source, final State state) {
         if (source == null) {
             return null;
         }
@@ -37,7 +38,7 @@ public class ProductEvaluator {
                 if ((element instanceof Integer && result instanceof Integer)
                         || (element instanceof Long && result instanceof Long)
                         || (element instanceof BigDecimal && result instanceof BigDecimal)) {
-                    result = MultiplyEvaluator.multiply(result, element);
+                    result = MultiplyEvaluator.multiply(result, element, state);
                 } else if (element instanceof Quantity && result instanceof Quantity) {
                     if (!((Quantity) element).getUnit().equals(((Quantity) result).getUnit())) {
                         // TODO: try to normalize units?
@@ -46,7 +47,7 @@ public class ProductEvaluator {
                                 ((Quantity) element).getUnit(), ((Quantity) result).getUnit()));
                     }
                     ((Quantity) result).setValue((BigDecimal) MultiplyEvaluator.multiply(
-                            ((Quantity) result).getValue(), ((Quantity) element).getValue()));
+                            ((Quantity) result).getValue(), ((Quantity) element).getValue(), state));
                 } else {
                     throw new InvalidOperatorArgument(
                             "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
