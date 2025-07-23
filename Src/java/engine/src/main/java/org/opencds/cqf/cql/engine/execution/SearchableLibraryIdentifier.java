@@ -29,6 +29,10 @@ public class SearchableLibraryIdentifier {
         return identifierId.equals(id);
     }
 
+    public VersionedIdentifier toIdentifier() {
+        return new VersionedIdentifier().withId(identifierId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

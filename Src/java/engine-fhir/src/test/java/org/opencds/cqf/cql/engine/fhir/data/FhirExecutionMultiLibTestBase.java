@@ -45,12 +45,20 @@ public abstract class FhirExecutionMultiLibTestBase {
         return modelManager;
     }
 
-    public Environment getEnvironment() {
+    public Environment getEnvironmentWithExistingLibraryManager() {
         return new Environment(getLibraryManager());
     }
 
-    public CqlEngine getEngine() {
-        return new CqlEngine(getEnvironment());
+    public Environment getEnvironmentWithNewLibraryManager() {
+        return new Environment(buildNewLibraryManager());
+    }
+
+    public CqlEngine getEngineWithExistingLibraryManager() {
+        return new CqlEngine(getEnvironmentWithExistingLibraryManager());
+    }
+
+    public CqlEngine getEngineWithNewLibraryManager() {
+        return new CqlEngine(getEnvironmentWithNewLibraryManager());
     }
 
     private static LibraryManager libraryManager;
@@ -208,5 +216,15 @@ public abstract class FhirExecutionMultiLibTestBase {
 
     public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
+    }
+
+    private LibraryManager buildNewLibraryManager() {
+        var libraryManagerInner = new LibraryManager(new ModelManager(), CqlCompilerOptions.defaultOptions());
+
+        libraryManagerInner.getLibrarySourceLoader().clearProviders();
+        libraryManagerInner.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        libraryManagerInner.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+
+        return libraryManagerInner;
     }
 }

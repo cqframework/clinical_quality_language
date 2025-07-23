@@ -17,6 +17,7 @@ import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
+import org.opencds.cqf.cql.engine.elm.executing.SingletonFromEvaluator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class CqlEngine {
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
+        log.info("1234: Initializing CQL Engine.");
         requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
 
@@ -261,18 +263,27 @@ public class CqlEngine {
             this.errors = errors;
         }
 
-        public int getSuccessesCount() {
-            return results.size();
-        }
-
         // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
         public Map<SearchableLibraryIdentifier, EvaluationResult> getResults() {
             return results;
         }
 
+        // LUKETODO:  validate this isn't empty or Optional or something
+        public EvaluationResult getFirstResult() {
+            return results.entrySet().iterator().next().getValue();
+        }
+
         // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
         public Map<SearchableLibraryIdentifier, String> getErrors() {
             return errors;
+        }
+
+        public EvaluationResult getResultFor(VersionedIdentifier libraryIdentifier) {
+            return results.get(SearchableLibraryIdentifier.fromIdentifier(libraryIdentifier));
+        }
+
+        public EvaluationResult getResultFor(SearchableLibraryIdentifier libraryIdentifier) {
+            return results.get(libraryIdentifier);
         }
     }
 
@@ -695,12 +706,21 @@ public class CqlEngine {
             List<CompiledLibrary> resolvedLibraries,
             LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
+        // LUKETODO:  why do I get duped IDs in resolvedLibraries?
+        log.info(
+                "1234: Getting libraries by versioned identifier: {} and resolved: {}",
+                libraryIdentifiersUsedToQuery.stream()
+                        .map(VersionedIdentifier::getId)
+                        .toList(),
+                resolvedLibraries.stream().map(x -> x.getIdentifier().getId()).toList());
+
         var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
                 .filter(ident -> !errorsById.containsKey(ident))
                 .toList();
 
         if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
             // LUKETODO:  why are we getting this from the FHIR multi-lib tests?
+            // LUKETODO:  we get this because we're testing the cached and it only has a single library
             throw new CqlException(
                     "Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
                             .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));

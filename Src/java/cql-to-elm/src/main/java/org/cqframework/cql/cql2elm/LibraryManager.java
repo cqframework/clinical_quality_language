@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
@@ -188,6 +190,7 @@ public class LibraryManager {
         var compileLibraryResult = compileLibrary(libraryIdentifier);
         library = compileLibraryResult.compiledLibrary();
         if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
+            logger.info("1234: adding library to cache: {}", libraryIdentifier.getId());
             compiledLibraries.put(libraryIdentifier, library);
         } else {
             // LUKETODO: can we just return the result record instead ?
@@ -219,26 +222,51 @@ public class LibraryManager {
             throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
         }
 
+        logger.info("1234: resolveLibraries called with {} libraries", libraryIdentifiers.size());
+
+        // LUKETODO:  do we need to order these?
+        var libs = new ArrayList<CompiledLibrary>();
+
+        // LUKETODO:  this is WRONG:  if we find only 1-3 libraries in the cache, we should not return the whole thing,
+        // we should compile the others
+        // LUKETODO:  test the partially cached library scenario
         if (cacheMode != CacheMode.NONE) {
             var libraries = compiledLibraries.entrySet().stream()
                     .filter(entry -> libraryIdentifiers.contains(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .toList();
 
-            if (!libraries.isEmpty()) {
+            logger.info("1234: libraries found in cache: {}", libraries.stream().map(CompiledLibrary::getIdentifier).map(VersionedIdentifier::getId).toList());
+
+//            if (!libraries.isEmpty()) {
+            // LUKETODO:  simple check:  should we match the identifiers as well?
+            if (libraries.size() == libraryIdentifiers.size()) {
                 return libraries;
             }
+
+            libs.addAll(libraries);
         }
 
-        // LUKETODO:  do we need to order these?
-        var libs = new ArrayList<CompiledLibrary>();
         for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
+            // LUKETODO: check if the library is already in the cache, if so, skip it
+            if (libs.stream().map(CompiledLibrary::getIdentifier).toList().contains(libraryIdentifier)) {
+                logger.info("1234: library {} already in cache, skipping compilation", libraryIdentifier.getId());
+                continue;
+            }
+
             var compiledlibraryResult = compileLibrary(libraryIdentifier);
 
+            logger.info("1234: compile library result: {}", compiledlibraryResult);
+
+            // LUKETODO:  we need to add to libs irrespective of CacheMode.READ_WRITE:  is there a way to test
             // If we have any errors, ignore the compiled library altogether just like in the single lib case
-            if (!hasErrors(compiledlibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
-                compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
+            if (!hasErrors(compiledlibraryResult.errors())) {
+                // add to returned libs regardless of cache mode
                 libs.add(compiledlibraryResult.compiledLibrary());
+                if (cacheMode == CacheMode.READ_WRITE) {
+                    logger.info("1234: adding library to cache: {}", libraryIdentifier.getId());
+                    compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
+                }
             }
 
             // We can have both successfully compiled libraries and errors, especially among multiple libraries
@@ -251,9 +279,17 @@ public class LibraryManager {
     }
 
     // LUKETODO: put this in a separate file
-    record CompiledlibraryResult(CompiledLibrary compiledLibrary, List<CqlCompilerException> errors) {}
+    record CompiledLibraryResult(CompiledLibrary compiledLibrary, List<CqlCompilerException> errors) {
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", CompiledLibraryResult.class.getSimpleName() + "[", "]")
+                    .add("compiledLibrary=" + compiledLibrary.getIdentifier())
+                    .add("errors=" + errors)
+                    .toString();
+        }
+    }
 
-    private CompiledlibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
+    private CompiledLibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
 
         var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
@@ -262,7 +298,7 @@ public class LibraryManager {
             if (elmCompiledLibrary != null) {
                 validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
                 sortStatements(elmCompiledLibrary);
-                return new CompiledlibraryResult(elmCompiledLibrary, List.of());
+                return new CompiledLibraryResult(elmCompiledLibrary, List.of());
             }
         }
 
@@ -314,7 +350,7 @@ public class LibraryManager {
         }
 
         sortStatements(compiledLibrary);
-        return new CompiledlibraryResult(compiledLibrary, errors);
+        return new CompiledLibraryResult(compiledLibrary, errors);
     }
 
     // LUKETODO:  look at newly unused private methods and get rid of them
