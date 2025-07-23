@@ -57,7 +57,8 @@ class Cql2ElmVisitor(
     private val forwards = Stack<ExpressionDefinitionInfo>()
     private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
 
-    // IdentityHashMaps are used here instead of HashMaps because the keys are mutated after insertion
+    // IdentityHashMaps are used here instead of HashMaps because the keys are mutated after
+    // insertion
     private val functionHeadersByDef = IdentityHashMap<FunctionDef, FunctionHeader>()
     private val functionDefinitions = IdentityHashMap<FunctionHeader, FunctionDefinitionContext>()
 
