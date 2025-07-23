@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -126,6 +127,7 @@ public class State {
         return engineOptions;
     }
 
+    // LUKETODO:  why don't we pass this and how do we get the name from the Library?
     public void setParameters(Library library, Map<String, Object> parameters) {
         if (parameters != null) {
             for (Map.Entry<String, Object> parameterValue : parameters.entrySet()) {
@@ -161,6 +163,13 @@ public class State {
         }
 
         return false;
+    }
+
+    public Library popLibrary() {
+        if (currentLibrary.isEmpty()) {
+            throw new IllegalStateException("No library to pop from the stack");
+        }
+        return currentLibrary.pop();
     }
 
     public void exitLibrary(boolean enteredLibrary) {
@@ -245,6 +254,19 @@ public class State {
         currentLibrary.push(library);
 
         this.pushEvaluatedResourceStack();
+    }
+
+    // LUKETODO:  javadoc
+    public void init(List<Library> libraries) {
+        assert this.stack.isEmpty();
+        // LUKETODO:  look at the state.cache which may be the "cache" we're talking about
+        // LUKETODO: we're predefining an order on the stack here, which may not be the structure we want
+        // library1,library2,library3, etc
+
+        for (Library library : libraries) {
+            currentLibrary.push(library);
+            this.pushEvaluatedResourceStack();
+        }
     }
 
     public Deque<ActivationFrame> getStack() {

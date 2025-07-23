@@ -38,6 +38,11 @@ public class CqlTestBase {
         };
     }
 
+    // This can either be null for the root directory, or non-null for a subdirectory
+    protected String getCqlSubdirectory() {
+        return null;
+    }
+
     private static ModelManager modelManager;
 
     protected static ModelManager getModelManager() {
@@ -48,13 +53,13 @@ public class CqlTestBase {
         return modelManager;
     }
 
-    protected static LibraryManager getLibraryManager() {
+    protected LibraryManager getLibraryManager() {
         return getLibraryManager(createOptionsMin());
     }
 
-    protected static LibraryManager getLibraryManager(CqlCompilerOptions compilerOptions) {
+    protected LibraryManager getLibraryManager(CqlCompilerOptions compilerOptions) {
         var manager = new LibraryManager(getModelManager(), compilerOptions);
-        manager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        manager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider(getCqlSubdirectory()));
 
         return manager;
     }
@@ -91,7 +96,7 @@ public class CqlTestBase {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
-    public static CqlEngine getEngine(CqlCompilerOptions cqlCompilerOptions) {
+    public CqlEngine getEngine(CqlCompilerOptions cqlCompilerOptions) {
         var env = new Environment(getLibraryManager(cqlCompilerOptions));
         return new CqlEngine(env);
     }
