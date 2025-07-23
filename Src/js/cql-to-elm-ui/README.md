@@ -8,7 +8,9 @@ Build the CQL compiler locally by running the `:cql-to-elm:build` task in the `.
 This will output the cql-all-cql-to-elm and cql-all-cql-to-elm-wasm-js packages to the
 `../../java/build/js/packages` directory.
 
-To then run this project locally:
+Run:
 
     npm install
     npm run dev
+
+And open `http://localhost:3000/cql-to-elm-ui` in your browser.

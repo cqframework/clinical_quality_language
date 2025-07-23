@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.tracking
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.Uuid.Companion.random
+import org.cqframework.cql.cql2elm.utils.WeakIdentityHashMap
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Element
 

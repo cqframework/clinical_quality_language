@@ -1,8 +1,8 @@
-package org.cqframework.cql.cql2elm.tracking
+package org.cqframework.cql.cql2elm.utils
 
 import java.lang.ref.WeakReference
 
-actual open class WeakIdentityHashMap<K, V> {
+internal actual class WeakIdentityHashMap<K : Any, V : Any> {
     companion object {
         const val OPERATION_CLEANUP_INTERVAL = 5000
     }
@@ -10,20 +10,7 @@ actual open class WeakIdentityHashMap<K, V> {
     private val backingMap = HashMap<WeakKey<K>, V>()
     private var operationCount = 0
 
-    actual val size: Int
-        get() = backingMap.size
-
-    actual operator fun get(key: K): V? {
-        incrementAndCleanUp()
-        return backingMap[WeakKey(key)]
-    }
-
-    actual fun remove(key: K): V? {
-        incrementAndCleanUp()
-        return backingMap.remove(WeakKey(key))
-    }
-
-    fun getOrPut(key: K, defaultValue: () -> V): V {
+    actual fun getOrPut(key: K, defaultValue: () -> V): V {
         incrementAndCleanUp()
         return backingMap.getOrPut(WeakKey(key), defaultValue)
     }
@@ -57,8 +44,4 @@ actual open class WeakIdentityHashMap<K, V> {
 
         override fun hashCode(): Int = hashCode
     }
-}
-
-actual fun <K, V> WeakIdentityHashMap<K, V>.getOrPut(key: K, defaultValue: () -> V): V {
-    return getOrPut(key, defaultValue)
 }

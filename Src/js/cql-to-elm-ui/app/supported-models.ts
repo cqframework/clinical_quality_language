@@ -1,4 +1,9 @@
-export const supportedModels = [
+export const supportedModels: {
+  id: string;
+  system: string | null;
+  version: string | null;
+  url: string;
+}[] = [
   {
     id: "System",
     system: null,
@@ -23,9 +28,4 @@ export const supportedModels = [
     version: null,
     url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/quick/src/main/resources/org/hl7/fhir/fhir-modelinfo-4.0.1.xml",
   },
-] as {
-  id: string;
-  system: string | null;
-  version: string | null;
-  url: string;
-}[];
+];

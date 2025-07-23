@@ -15,6 +15,27 @@ sealed class XmlNode {
     ) : XmlNode()
 }
 
+/** A mutable version of [XmlNode] used during parsing. */
+internal sealed class MutableXmlNode {
+    data class Text(val text: String) : MutableXmlNode() {
+        override fun toImmutable(): XmlNode.Text {
+            return XmlNode.Text(text)
+        }
+    }
+
+    data class Element(
+        val tagName: String,
+        val attributes: Map<String, String>,
+        val children: MutableList<MutableXmlNode>
+    ) : MutableXmlNode() {
+        override fun toImmutable(): XmlNode.Element {
+            return XmlNode.Element(tagName, attributes, children.map { it.toImmutable() })
+        }
+    }
+
+    abstract fun toImmutable(): XmlNode
+}
+
 /**
  * Parses the given XML string into a tree of `XmlNode` objects.
  *
