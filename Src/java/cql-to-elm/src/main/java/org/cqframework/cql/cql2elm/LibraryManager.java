@@ -230,9 +230,12 @@ public class LibraryManager {
         // we should compile the others
         // LUKETODO:  we don't pull from the cache because the versions don't match
         if (cacheMode != CacheMode.NONE) {
-            var libraries = compiledLibraries.entrySet().stream()
-                    .filter(entry -> libraryIdentifiers.contains(entry.getKey()))
-                    .map(Map.Entry::getValue)
+
+            // Ensure that cache retrieved libraries are in the same order as the input identifiers so we
+            // don't get a mismatch later
+            var libraries = libraryIdentifiers.stream()
+                    .filter(compiledLibraries::containsKey)
+                    .map(compiledLibraries::get)
                     .toList();
 
             logger.info(

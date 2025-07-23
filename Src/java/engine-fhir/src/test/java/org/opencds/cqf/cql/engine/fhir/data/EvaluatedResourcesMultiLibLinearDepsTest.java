@@ -224,15 +224,15 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         List.of()));
 
         // Now use the same engine, but pass the identifiers in a different order
-        var resultsMultiLibDifferentOrder =
-                engine.evaluate(
-                        Stream.of(LIB_3, LIB_2, LIB_1)
-                                .map(SearchableLibraryIdentifier::toIdentifier)
-                                .map(ident -> ident.withVersion("1.0"))
-                                .toList(),
-                        ALL_EXPRESSIONS);
+        var resultsMultiLibDifferentOrder = engine.evaluate(
+                Stream.of(LIB_3, LIB_2, LIB_1)
+                        .map(SearchableLibraryIdentifier::toIdentifier)
+                        .map(ident -> ident.withVersion("1.0"))
+                        .toList(),
+                ALL_EXPRESSIONS);
 
-        var resultsMultiLibDifferentOrderLib1 = resultsMultiLibDifferentOrder.getResults().get(LIB_1);
+        var resultsMultiLibDifferentOrderLib1 =
+                resultsMultiLibDifferentOrder.getResults().get(LIB_1);
         assertEntireEvaluationResult(
                 resultsMultiLibDifferentOrderLib1,
                 Map.of(
