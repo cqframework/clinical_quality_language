@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.collections.MutableMap
 import kotlinx.io.Source
+import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.cql2elm.model.SystemModel
 import org.cqframework.cql.cql2elm.ucum.UcumService
@@ -25,14 +27,18 @@ import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
  * @param validateUnit a callback for validating a UCUM unit. If the unit is valid, it should return
  *   null, otherwise it should return an error message.
  * @param cqlCompilerOptions the options to use when compiling CQL
+ * @param modelCache caches models by their identifiers
+ * @param libraryCache caches compiled libraries by their identifiers
  * @return an instance of BaseLibraryManager
  */
 @Suppress("LongParameterList")
 fun BaseLibraryManager.Companion.forJs(
-    getModelXml: (id: String, system: String?, version: String?) -> String,
+    getModelXml: (id: String, system: String?, version: String?) -> String?,
     getLibraryCql: (id: String, system: String?, version: String?) -> String? = { _, _, _ -> null },
     validateUnit: (unit: String) -> String? = { null },
     cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
+    modelCache: MutableMap<ModelIdentifier, Model> = HashMap(),
+    libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
 ): BaseLibraryManager {
     val namespaceManager = NamespaceManager()
 
@@ -61,15 +67,18 @@ fun BaseLibraryManager.Companion.forJs(
 
     val modelManager =
         object : IModelManager {
-            private val globalCache: MutableMap<ModelIdentifier, Model> = HashMap()
-            private val modelsByUri: MutableMap<String, Model> = HashMap()
-
             override fun resolveModel(modelIdentifier: ModelIdentifier): Model {
-                if (globalCache.containsKey(modelIdentifier)) {
-                    return globalCache[modelIdentifier]!!
+                if (modelCache.containsKey(modelIdentifier)) {
+                    return modelCache[modelIdentifier]!!
                 }
                 val modelXml =
                     getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
+                requireNotNull(modelXml) {
+                    "Could not get model info XML for model ${
+                        if (modelIdentifier.system == null) modelIdentifier.id
+                        else NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id)
+                    }, version ${modelIdentifier.version}."
+                }
                 val modelInfo = parseModelInfoXml(modelXml)
                 val model =
                     if (modelIdentifier.id == "System") {
@@ -77,8 +86,7 @@ fun BaseLibraryManager.Companion.forJs(
                     } else {
                         Model(modelInfo, this)
                     }
-                modelsByUri[model.modelInfo.url!!] = model
-                globalCache[modelIdentifier] = model
+                modelCache[modelIdentifier] = model
                 return model
             }
 
@@ -91,7 +99,12 @@ fun BaseLibraryManager.Companion.forJs(
             }
 
             override fun resolveModelByUri(namespaceUri: String): Model {
-                return modelsByUri[namespaceUri]!!
+                for ((_, model) in modelCache) {
+                    if (model.modelInfo.url == namespaceUri) {
+                        return model
+                    }
+                }
+                error("Model with URI '$namespaceUri' not found.")
             }
         }
 
@@ -126,7 +139,7 @@ fun BaseLibraryManager.Companion.forJs(
         librarySourceLoader,
         lazy { ucumService },
         cqlCompilerOptions,
-        HashMap(),
+        libraryCache,
         elmLibraryReaderProvider
     )
 }

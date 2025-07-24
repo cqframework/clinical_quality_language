@@ -20,6 +20,7 @@ import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
+import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.isLeapYear
 import org.cqframework.cql.cql2elm.utils.logger
@@ -54,10 +55,13 @@ class Cql2ElmVisitor(
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
-    private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader?> = HashMap()
-    private val functionHeadersByDef: MutableMap<FunctionDef, FunctionHeader?> = HashMap()
-    private val functionDefinitions: MutableMap<FunctionHeader?, FunctionDefinitionContext> =
-        HashMap()
+    private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
+
+    // IdentityHashMaps are used here instead of HashMaps because the keys are mutated after
+    // insertion
+    private val functionHeadersByDef = IdentityHashMap<FunctionDef, FunctionHeader>()
+    private val functionDefinitions = IdentityHashMap<FunctionHeader, FunctionDefinitionContext>()
+
     private val timingOperators = Stack<TimingOperatorContext>()
     val retrieves: MutableList<Retrieve> = ArrayList()
     val expressions: kotlin.collections.List<Expression> = ArrayList()
@@ -4316,7 +4320,7 @@ class Cql2ElmVisitor(
                 }
             this.functionHeaders[ctx] = fh
             this.functionDefinitions[fh] = ctx
-            this.functionHeadersByDef[fh!!.functionDef] = fh
+            this.functionHeadersByDef[fh.functionDef] = fh
         }
         return fh
     }
@@ -4349,16 +4353,7 @@ class Cql2ElmVisitor(
     }
 
     private fun getFunctionHeaderByDef(fd: FunctionDef): FunctionHeader? {
-        // Shouldn't need to do this, something about the hashCode implementation of FunctionDef is
-        // throwing this off,
-        // Don't have time to investigate right now, this should work fine, could potentially be
-        // improved
-        for ((key, value) in this.functionHeadersByDef) {
-            if (key === fd) {
-                return value
-            }
-        }
-        return null
+        return this.functionHeadersByDef[fd]
     }
 
     private fun getFunctionHeader(op: Operator): FunctionHeader {

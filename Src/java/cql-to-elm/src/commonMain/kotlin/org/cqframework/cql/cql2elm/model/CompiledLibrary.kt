@@ -104,12 +104,12 @@ class CompiledLibrary {
         functionDefs[operator] = functionDef
     }
 
-    fun contains(functionDef: FunctionDef?): Boolean {
-        return contains(Operator(functionDef!!))
+    fun contains(functionDef: FunctionDef): Boolean {
+        return contains(Operator(functionDef))
     }
 
-    fun contains(operator: Operator?): Boolean {
-        return operatorMap.containsOperator(operator!!)
+    fun contains(operator: Operator): Boolean {
+        return operatorMap.containsOperator(operator)
     }
 
     fun add(conversion: Conversion) {

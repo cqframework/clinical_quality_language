@@ -1,171 +1,166 @@
 "use client";
 
-import { useState, useRef, useLayoutEffect } from "react";
-// @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
-import * as ucum from "@lhncbc/ucum-lhc";
-import * as cqlToElmJs from "cql-all-cql-to-elm";
-import * as cqlToElmWasmJs from "cql-all-cql-to-elm-wasm-js";
-import { supportedModels } from "@/app/supported-models";
+import { useState, useRef, useEffect } from "react";
+import { json } from "@codemirror/lang-json";
+import { xml } from "@codemirror/lang-xml";
+import { TCompileCqlArgs, TOutput } from "@/app/cql-compiler-playground-shared";
+import { createStatefulCompiler } from "@/app/cql-compiler-playground-compile-cql";
+import { cqlLanguage } from "@/app/cql-language";
+import { Editor } from "@/app/cql-compiler-playground-editor";
 
-const ucumUtils = ucum.UcumLhcUtils.getInstance();
-const validateUnit = (unit: string) => {
-  const result = ucumUtils.validateUnitString(unit);
+const initialCompileCqlArgs: TCompileCqlArgs = {
+  cql: `library Test version '0.1.0'
 
-  if (result.status === "valid") {
-    return null;
-  } else {
-    return result.msg[0];
-  }
+using FHIR version '4.0.1'
+
+include FHIRHelpers version '4.0.1'
+
+valueset "Encounter Inpatient": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307'
+
+parameter "Measurement Period" Interval<DateTime>
+
+context Patient
+
+define "Inpatient Encounter":
+  [Encounter: "Encounter Inpatient"] EncounterInpatient
+    where EncounterInpatient.status = 'finished'
+      and EncounterInpatient.period ends during day of "Measurement Period"
+`,
+  useWasm: false,
+  enableAnnotations: false,
+  enableLocators: false,
+  outputContentType: "json",
+  baseUrl:
+    "https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/",
 };
 
 export function CqlCompilerPlayground() {
   const [state, setState] = useState({
-    cql: `library Test
+    ...initialCompileCqlArgs,
 
-using FHIR version '4.0.1'
+    isBusy: true,
+    output: {
+      type: "log",
+      log: "Getting ready...",
+    } as TOutput,
 
-context Patient
-
-define x: [Observation]
-
-`,
-    useWasm: false,
-    enableAnnotations: true,
-    enableLocators: true,
-    outputContentType: "json" as "json" | "xml",
-    repoUrl: "",
-    filePath: "",
-    repos: [] as {
-      url: string;
-      files: {
-        path: string;
-        content: string;
-      }[];
-    }[],
-    fetchedModels: [] as {
-      id: string;
-      system: string | null;
-      version: string | null;
-      xml: string;
-    }[],
+    useWorker: true,
   });
 
-  const stateRef = useRef(state);
-  useLayoutEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  const statefulCompilerRef = useRef<ReturnType<
+    typeof createStatefulCompiler
+  > | null>(null);
 
-  const getModelXml = (
-    id: string,
-    system: string | null,
-    version: string | null,
-  ) => {
-    console.log("Kotlin looking for model", id, system, version);
-    const fetchedModel = stateRef.current.fetchedModels.find(
-      (_) => _.id === id && _.system === system && _.version === version,
-    );
-    if (fetchedModel) {
-      return fetchedModel.xml;
-    }
-    const supportedModel = supportedModels.find(
-      (_) => _.id === id && _.system === system && _.version === version,
-    );
-    if (supportedModel) {
-      (async () => {
-        const response = await fetch(supportedModel.url);
-        const xml = await response.text();
-        setState((prevState) => ({
-          ...prevState,
-          fetchedModels: [
-            ...prevState.fetchedModels,
-            {
-              id: supportedModel.id,
-              system: supportedModel.system,
-              version: supportedModel.version,
-              xml,
-            },
-          ],
-        }));
-      })();
-      throw `Busy loading model: id=${id} system=${system} version=${version} from ${supportedModel.url}`;
-    }
-    throw `Error: Requested unknown model: id=${id} system=${system} version=${version}`;
-  };
+  const workerPromiseRef = useRef<Promise<Worker> | null>(null);
 
-  const getLibraryCql = (
-    id: string,
-    system: string | null,
-    version: string | null,
-  ) => {
-    console.log("Kotlin looking for library", id, system, version);
-    const repo = stateRef.current.repos.find(
-      (_) => _.url === stateRef.current.repoUrl,
-    );
-    const libraryFile =
-      repo && repo.files.find((_) => _.path.endsWith(`/${id}.cql`));
-    if (libraryFile) {
-      return libraryFile.content;
-    }
-    throw `Error: Requested unknown library: id=${id} system=${system} version=${version}`;
-  };
+  const currentRunIdRef = useRef(0);
 
-  const libraryManagerJsRef = useRef(
-    new cqlToElmJs.LibraryManager(getModelXml, getLibraryCql, validateUnit),
-  );
+  useEffect(() => {
+    (async () => {
+      setState((prevState) => ({
+        ...prevState,
+        isBusy: true,
+      }));
 
-  const libraryManagerWasmJsRef = useRef(
-    // @ts-expect-error TypeScript error
-    cqlToElmWasmJs.createLibraryManager(
-      getModelXml,
-      getLibraryCql,
-      validateUnit,
-    ),
-  );
+      const runId = ++currentRunIdRef.current;
 
-  const repo =
-    state.repoUrl && state.repos.find((_) => _.url === state.repoUrl);
-  const file = repo && repo.files.find((_) => _.path === state.filePath);
-  const content = file ? file.content : state.cql;
+      if (state.useWorker) {
+        const workerPromise = (() => {
+          if (workerPromiseRef.current) {
+            return workerPromiseRef.current;
+          }
 
-  const parseResult = (() => {
-    try {
-      if (state.useWasm) {
-        // @ts-expect-error TypeScript error
-        const translator = cqlToElmWasmJs.createCqlTranslator(
-          content,
-          libraryManagerWasmJsRef.current,
+          const workerPromise = (async () => {
+            const worker = new Worker(
+              new URL("./cql-compiler-playground-worker.ts", import.meta.url),
+            );
+
+            await new Promise<void>((resolve) => {
+              worker.onmessage = (event) => {
+                if (event.data.type === "ready") {
+                  resolve();
+                }
+              };
+            });
+
+            worker.onmessage = (event) => {
+              const { type, data } = event.data;
+
+              if (type === "output") {
+                if (data.runId === currentRunIdRef.current) {
+                  setState((prevState) => ({
+                    ...prevState,
+                    isBusy: data.output.type === "log",
+                    output: data.output,
+                  }));
+                }
+              }
+            };
+
+            return worker;
+          })();
+
+          workerPromiseRef.current = workerPromise;
+          return workerPromise;
+        })();
+
+        const worker = await workerPromise;
+
+        worker.postMessage({
+          type: "compileCql",
+          data: {
+            args: {
+              cql: state.cql,
+              useWasm: state.useWasm,
+              enableAnnotations: state.enableAnnotations,
+              enableLocators: state.enableLocators,
+              outputContentType: state.outputContentType,
+              baseUrl: state.baseUrl,
+            } satisfies TCompileCqlArgs,
+            runId: runId,
+          },
+        });
+      } else {
+        const { compileCql } = (() => {
+          if (statefulCompilerRef.current) {
+            return statefulCompilerRef.current;
+          }
+
+          const statefulCompiler = createStatefulCompiler();
+          statefulCompilerRef.current = statefulCompiler;
+          return statefulCompiler;
+        })();
+
+        compileCql(
+          {
+            cql: state.cql,
+            useWasm: state.useWasm,
+            enableAnnotations: state.enableAnnotations,
+            enableLocators: state.enableLocators,
+            outputContentType: state.outputContentType,
+            baseUrl: state.baseUrl,
+          },
+          (output) => {
+            if (runId === currentRunIdRef.current) {
+              setState((prevState) => ({
+                ...prevState,
+                isBusy: output.type === "log",
+                output: output,
+              }));
+            }
+          },
         );
-        return {
-          ok: true,
-          tree:
-            state.outputContentType === "json"
-              ? // @ts-expect-error TypeScript error
-                cqlToElmWasmJs.cqlTranslatorToJson(translator)
-              : // @ts-expect-error TypeScript error
-                cqlToElmWasmJs.cqlTranslatorToXml(translator),
-        } as const;
       }
-
-      const translator = new cqlToElmJs.CqlTranslator(
-        content,
-        libraryManagerJsRef.current,
-      );
-      return {
-        ok: true,
-        tree:
-          state.outputContentType === "json"
-            ? // @ts-expect-error TypeScript error
-              translator.toJson()
-            : // @ts-expect-error TypeScript error
-              translator.toXml(),
-      } as const;
-    } catch (e) {
-      return {
-        ok: false,
-        message: String(e),
-      } as const;
-    }
-  })();
+    })();
+  }, [
+    state.cql,
+    state.useWasm,
+    state.enableAnnotations,
+    state.enableLocators,
+    state.outputContentType,
+    state.baseUrl,
+    state.useWorker,
+  ]);
 
   return (
     <div
@@ -177,18 +172,32 @@ define x: [Observation]
         gridTemplateColumns: "1fr",
         gridTemplateRows: "auto 1fr",
         gridTemplateAreas: '"header" "body"',
-        gap: 20,
+        gap: 10,
+        minHeight: 0,
       }}
     >
-      <h1
-        style={{
-          gridArea: "header",
-          margin: 0,
-          fontSize: 24,
-        }}
-      >
-        CQL Compiler in Kotlin/JS &mdash; Demo
-      </h1>
+      <div style={{ display: "flex", gap: 20 }}>
+        <h1
+          style={{
+            gridArea: "header",
+            margin: 0,
+            fontSize: 24,
+            flex: "1 0 auto",
+          }}
+        >
+          CQL Compiler in Kotlin/JS &mdash; Demo
+        </h1>
+        <a
+          style={{
+            flex: "0 0 auto",
+          }}
+          href={
+            "https://github.com/cqframework/clinical_quality_language/tree/feature-kotlin/Src/js/cql-to-elm-ui"
+          }
+        >
+          View source
+        </a>
+      </div>
       <div
         style={{
           gridArea: "body",
@@ -197,7 +206,8 @@ define x: [Observation]
           gridTemplateRows: "auto 1fr",
           gridTemplateAreas:
             '"body-config body-config" "body-left-editor body-right-editor"',
-          gap: 20,
+          gap: "15px 20px",
+          minHeight: 0,
         }}
       >
         <div
@@ -209,39 +219,20 @@ define x: [Observation]
             alignItems: "center",
           }}
         >
-          <label style={{ display: "block" }}>
+          <label style={{ display: "block", gridColumn: "1 / span 2" }}>
             <div style={{ fontWeight: 700, margin: "0 0 5px 0" }}>
-              IG
-              {state.repoUrl && repo && " (loaded)"}
-              {state.repoUrl && !repo && " (loading...)"}
+              Library base URL
             </div>
             <input
               placeholder={
-                "E.g. https://github.com/cqframework/ecqm-content-r4"
+                "E.g. https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/"
               }
-              value={state.repoUrl}
+              value={state.baseUrl}
               onChange={async (event) => {
-                const nextRepoUrl = event.target.value;
+                const nextBaseUrl = event.target.value;
                 setState((prevState) => ({
                   ...prevState,
-                  repoUrl: nextRepoUrl,
-                  filePath: "",
-                }));
-
-                const response = await fetch(
-                  `/api/fetch-github-repo?repoUrl=${encodeURIComponent("https://github.com/cqframework/ecqm-content-r4")}`,
-                );
-                const json = await response.json();
-
-                setState((prevState) => ({
-                  ...prevState,
-                  repos: [
-                    ...prevState.repos,
-                    {
-                      url: nextRepoUrl,
-                      files: json,
-                    },
-                  ],
+                  baseUrl: nextBaseUrl,
                 }));
               }}
               style={{
@@ -249,30 +240,6 @@ define x: [Observation]
                 padding: "8px 10px",
               }}
             />
-          </label>
-          <label style={{ display: "block" }}>
-            <div style={{ fontWeight: 700, margin: "0 0 5px 0" }}>Library</div>
-            <select
-              value={state.filePath}
-              onChange={(event) => {
-                const nextFilePath = event.target.value;
-                setState((prevState) => ({
-                  ...prevState,
-                  filePath: nextFilePath,
-                }));
-              }}
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-              }}
-            >
-              <option value={""}>(Inline)</option>
-              {((repo && repo.files) || []).map((file) => (
-                <option key={file.path} value={file.path}>
-                  {file.path.split("/input/cql/")[1]}
-                </option>
-              ))}
-            </select>
           </label>
 
           <div
@@ -295,27 +262,6 @@ define x: [Observation]
                         ...prevState,
                         enableAnnotations: nextEnableAnnotations,
                       }));
-                      if (nextEnableAnnotations) {
-                        // @ts-expect-error TypeScript error
-                        libraryManagerJsRef.current.addCompilerOption(
-                          "EnableAnnotations",
-                        );
-                        // @ts-expect-error TypeScript error
-                        cqlToElmWasmJs.libraryManagerAddCompilerOption(
-                          libraryManagerWasmJsRef.current,
-                          "EnableAnnotations",
-                        );
-                      } else {
-                        // @ts-expect-error TypeScript error
-                        libraryManagerJsRef.current.removeCompilerOption(
-                          "EnableAnnotations",
-                        );
-                        // @ts-expect-error TypeScript error
-                        cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
-                          libraryManagerWasmJsRef.current,
-                          "EnableAnnotations",
-                        );
-                      }
                     }}
                   />
                   Enable annotations
@@ -331,27 +277,6 @@ define x: [Observation]
                         ...prevState,
                         enableLocators: nextEnableLocators,
                       }));
-                      if (nextEnableLocators) {
-                        // @ts-expect-error TypeScript error
-                        libraryManagerJsRef.current.addCompilerOption(
-                          "EnableLocators",
-                        );
-                        // @ts-expect-error TypeScript error
-                        cqlToElmWasmJs.libraryManagerAddCompilerOption(
-                          libraryManagerWasmJsRef.current,
-                          "EnableLocators",
-                        );
-                      } else {
-                        // @ts-expect-error TypeScript error
-                        libraryManagerJsRef.current.removeCompilerOption(
-                          "EnableLocators",
-                        );
-                        // @ts-expect-error TypeScript error
-                        cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
-                          libraryManagerWasmJsRef.current,
-                          "EnableLocators",
-                        );
-                      }
                     }}
                   />
                   Enable locators
@@ -365,7 +290,7 @@ define x: [Observation]
                 gap: 5,
               }}
             >
-              <div style={{ display: "flex", gap: 5 }}>
+              <div style={{ display: "flex", gap: 5, margin: "0 0 2px 0" }}>
                 <div style={{ fontWeight: 700 }}>Output content type:</div>
                 {(["json", "xml"] as const).map((outputContentType) => (
                   <label key={outputContentType} style={{ display: "block" }}>
@@ -383,7 +308,21 @@ define x: [Observation]
                   </label>
                 ))}
               </div>
-              <div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <label style={{ display: "block" }}>
+                  <input
+                    type={"checkbox"}
+                    checked={state.useWorker}
+                    onChange={(event) => {
+                      const nextUseWorker = event.target.checked;
+                      setState((prevState) => ({
+                        ...prevState,
+                        useWorker: nextUseWorker,
+                      }));
+                    }}
+                  />
+                  Use worker
+                </label>
                 <label style={{ display: "block" }}>
                   <input
                     type={"checkbox"}
@@ -423,54 +362,17 @@ define x: [Observation]
             </div>
           </div>
 
-          <textarea
-            style={{
-              gridArea: "body-left-editor-textarea",
-              display: "block",
-              width: "100%",
-              height: "100%",
-              padding: "8px 10px",
+          <Editor
+            gridArea={"body-left-editor-textarea"}
+            value={state.cql}
+            onChange={(nextCql) => {
+              setState((prevState) => ({
+                ...prevState,
+                cql: nextCql,
+              }));
             }}
-            spellCheck={false}
-            value={file ? file.content : state.cql}
-            onChange={(event) => {
-              const nextContent = event.target.value;
-              setState((prevState) => {
-                const repo = prevState.repos.find(
-                  (_) => _.url === prevState.repoUrl,
-                );
-                if (repo) {
-                  const file = repo.files.find(
-                    (_) => _.path === prevState.filePath,
-                  );
-                  if (file) {
-                    return {
-                      ...prevState,
-                      repos: prevState.repos.map((_) =>
-                        _.url === prevState.repoUrl
-                          ? {
-                              ..._,
-                              files: _.files.map((_) =>
-                                _.path === prevState.filePath
-                                  ? {
-                                      ..._,
-                                      content: nextContent,
-                                    }
-                                  : _,
-                              ),
-                            }
-                          : _,
-                      ),
-                    };
-                  }
-                }
-
-                return {
-                  ...prevState,
-                  cql: nextContent,
-                };
-              });
-            }}
+            editable={true}
+            extensions={[cqlLanguage]}
           />
         </div>
 
@@ -482,6 +384,7 @@ define x: [Observation]
             gridTemplateRows: "auto 1fr",
             gridTemplateAreas:
               '"body-right-editor-label" "body-right-editor-textarea"',
+            minHeight: 0,
           }}
         >
           <div
@@ -489,33 +392,45 @@ define x: [Observation]
               gridArea: "body-right-editor-label",
             }}
           >
-            <div style={{ fontWeight: 700, margin: "0 0 5px 0" }}>
+            <div
+              style={{
+                fontWeight: 700,
+                margin: "0 0 5px 0",
+                background: state.isBusy
+                  ? "url(https://upload.wikimedia.org/wikipedia/en/6/6f/Windows_hourglass_cursor.png) right center/auto no-repeat"
+                  : "none",
+              }}
+            >
               Library ELM
             </div>
           </div>
 
-          <textarea
-            style={{
-              gridArea: "body-right-editor-textarea",
-              display: "block",
-              width: "100%",
-              height: "100%",
-              padding: "8px 10px",
-            }}
-            readOnly={true}
-            spellCheck={false}
+          <Editor
+            gridArea={"body-right-editor-textarea"}
             value={(() => {
-              if (parseResult.ok) {
-                if (state.outputContentType === "json") {
-                  return JSON.stringify(JSON.parse(parseResult.tree), null, 2);
-                }
-                if (state.outputContentType === "xml") {
-                  return parseResult.tree;
-                }
-                return "";
+              if (state.output.type === "log") {
+                return state.output.log;
               }
-
-              return parseResult.message;
+              if (state.output.contentType === "json") {
+                try {
+                  return JSON.stringify(JSON.parse(state.output.elm), null, 2);
+                } catch (e) {
+                  console.error(e);
+                }
+                return state.output.elm;
+              }
+              return state.output.elm;
+            })()}
+            onChange={() => {}}
+            editable={false}
+            extensions={(() => {
+              if (state.output.type === "log") {
+                return [];
+              }
+              if (state.output.contentType === "json") {
+                return [json()];
+              }
+              return [xml()];
             })()}
           />
         </div>

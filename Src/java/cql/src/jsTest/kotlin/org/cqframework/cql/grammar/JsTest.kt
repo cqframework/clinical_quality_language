@@ -15,7 +15,7 @@ import org.cqframework.cql.gen.cqlParser.*
  * changes are made to the grammar, these tests should fail. If the change is intentional, modify
  * the tests to pass-- otherwise, fix the grammar.
  */
-internal class JsTest {
+class JsTest {
     @Test
     fun ageAt() {
         val tree: ParseTree = parseToTree("define inIPP : AgeAt(start of MeasurementPeriod) < 18")
