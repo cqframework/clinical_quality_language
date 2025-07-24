@@ -384,7 +384,7 @@ public class CqlEngine {
                 log.error(
                         "1234: Failed to evaluate library: {} with expressions: {}", libraryIdentifier, expressionSet);
                 var error = EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE.formatted(
-                        searchableIdentifier, exception.getMessage());
+                        searchableIdentifier.getIdentifierId(), exception.getMessage());
 
                 errors.put(searchableIdentifier, error);
             }

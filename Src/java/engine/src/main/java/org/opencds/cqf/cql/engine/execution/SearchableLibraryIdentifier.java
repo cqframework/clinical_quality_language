@@ -33,6 +33,10 @@ public class SearchableLibraryIdentifier {
         return new VersionedIdentifier().withId(identifierId);
     }
 
+    public String getIdentifierId() {
+        return identifierId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
