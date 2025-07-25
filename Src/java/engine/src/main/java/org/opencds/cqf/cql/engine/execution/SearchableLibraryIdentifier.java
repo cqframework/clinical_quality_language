@@ -5,6 +5,7 @@ import java.util.StringJoiner;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 // LUKETODO: javadoc
+// LUKETODO: consider getting rid of this class and using VersionedIdentifier directly
 public class SearchableLibraryIdentifier {
     private final String identifierId;
 

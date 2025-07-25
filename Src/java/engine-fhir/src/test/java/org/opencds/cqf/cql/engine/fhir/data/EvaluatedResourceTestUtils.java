@@ -6,15 +6,12 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.notNullValue;
 
 import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.hamcrest.Matchers;
-import org.hl7.elm.r1.Matches;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
@@ -26,6 +23,7 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.SearchableLibraryIdentifier;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -134,9 +132,13 @@ class EvaluatedResourceTestUtils {
     }
 
     static void assertEntireEvaluationResult(
-            EvaluationResult evaluationResult,
+            CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib,
+            SearchableLibraryIdentifier libraryIdentifier,
             Map<String, Collection<? extends IBaseResource>> expectedEvaluatedResources,
             Map<String, Collection<? extends IBaseResource>> expectedValues) {
+
+        assertThat(evaluationResultsForMultiLib, is(notNullValue()));
+        var evaluationResult = evaluationResultsForMultiLib.getResultFor(libraryIdentifier);
 
         if (evaluationResult == null) {
             assertThat(expectedValues.values(), empty());
@@ -174,11 +176,29 @@ class EvaluatedResourceTestUtils {
     }
 
     static void assertEvaluationResult(
+            CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib,
+            SearchableLibraryIdentifier libraryIdentifier,
+            String expressionName,
+            Collection<? extends IBaseResource> expectedEvaluatedResources,
+            Collection<? extends IBaseResource> expectedValue) {
+
+        assertThat(evaluationResultsForMultiLib, is(notNullValue()));
+        var evaluationResult = evaluationResultsForMultiLib.getResultFor(libraryIdentifier);
+        var expressionResult = evaluationResult.forExpression(expressionName);
+        var actualEvaluatedResources = expressionResult.evaluatedResources();
+        var actualValue = expressionResult.value();
+
+        assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources);
+        assertValuesEqual(expectedValue, actualValue);
+    }
+
+    static void assertEvaluationResult(
             EvaluationResult evaluationResult,
             String expressionName,
             Collection<? extends IBaseResource> expectedEvaluatedResources,
             Collection<? extends IBaseResource> expectedValue) {
 
+        assertThat(evaluationResult, is(notNullValue()));
         var expressionResult = evaluationResult.forExpression(expressionName);
         var actualEvaluatedResources = expressionResult.evaluatedResources();
         var actualValue = expressionResult.value();

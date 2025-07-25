@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
@@ -10,12 +15,6 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
 
 enum EvaluatedResourcesMultiLibComplexDepsRetrieveProvider implements RetrieveProvider {
     INSTANCE;
@@ -88,23 +87,19 @@ enum EvaluatedResourcesMultiLibComplexDepsRetrieveProvider implements RetrievePr
 
     private Iterable<Object> getEncounters() {
         return List.of(
-                ENCOUNTER_ARRIVED,
-                ENCOUNTER_CANCELLED,
-                ENCOUNTER_FINISHED,
-                ENCOUNTER_PLANNED,
-                ENCOUNTER_TRIAGED
-        );
+                ENCOUNTER_ARRIVED, ENCOUNTER_CANCELLED, ENCOUNTER_FINISHED, ENCOUNTER_PLANNED, ENCOUNTER_TRIAGED);
     }
 
     private Patient buildPatient(String id) {
-        return (Patient)new Patient()
+        return (Patient) new Patient()
                 .setActive(true)
                 .addIdentifier(new Identifier().setValue(id).setSystem("urn:system"))
                 .setId(new IdType(ResourceType.Patient.name(), id));
     }
 
-    private static Encounter buildEncounter(String id, Encounter.EncounterStatus status, LocalDate periodStart, LocalDate periodEnd, String subject) {
-        return (Encounter)new Encounter()
+    private static Encounter buildEncounter(
+            String id, Encounter.EncounterStatus status, LocalDate periodStart, LocalDate periodEnd, String subject) {
+        return (Encounter) new Encounter()
                 .setStatus(status)
                 .setPeriod(new Period().setStart(toDate(periodStart)).setEnd(toDate(periodEnd)))
                 .setSubject(new Reference().setReference(subject))
@@ -112,8 +107,6 @@ enum EvaluatedResourcesMultiLibComplexDepsRetrieveProvider implements RetrievePr
     }
 
     private static Date toDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

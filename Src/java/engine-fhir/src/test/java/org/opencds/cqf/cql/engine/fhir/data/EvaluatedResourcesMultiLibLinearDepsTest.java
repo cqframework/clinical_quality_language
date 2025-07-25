@@ -149,7 +149,8 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         var resultsSingleLib = engine.evaluate(List.of(LIB_1.toIdentifier()), ALL_EXPRESSIONS);
 
         assertEntireEvaluationResult(
-                resultsSingleLib.getResults().get(LIB_1),
+                resultsSingleLib,
+                LIB_1,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(CONDITION, ENCOUNTER),
@@ -169,9 +170,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         // Using the same engine, evaluate three libraries, two of which are not cached
         var resultsMultiLib = engine.evaluate(getAllLibraryIdentifiers(), ALL_EXPRESSIONS);
 
-        var evaluatedResourcesMultiLibTest1 = resultsMultiLib.getResults().get(LIB_1);
         assertEntireEvaluationResult(
-                evaluatedResourcesMultiLibTest1,
+                resultsMultiLib,
+                LIB_1,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(CONDITION, ENCOUNTER),
@@ -187,9 +188,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         CONDITION_EXPRESSION,
                         List.of(CONDITION)));
 
-        var evaluatedResourcesMultiLibTest2 = resultsMultiLib.getResults().get(LIB_2);
         assertEntireEvaluationResult(
-                evaluatedResourcesMultiLibTest2,
+                resultsMultiLib,
+                LIB_2,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(PROCEDURE, CONDITION, ENCOUNTER),
@@ -205,9 +206,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         CONDITION_EXPRESSION,
                         List.of(CONDITION)));
 
-        var evaluatedResourcesMultiLibTest3 = resultsMultiLib.getResults().get(LIB_3);
         assertEntireEvaluationResult(
-                evaluatedResourcesMultiLibTest3,
+                resultsMultiLib,
+                LIB_3,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(ENCOUNTER, PROCEDURE, CONDITION),
@@ -231,10 +232,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         .toList(),
                 ALL_EXPRESSIONS);
 
-        var resultsMultiLibDifferentOrderLib1 =
-                resultsMultiLibDifferentOrder.getResults().get(LIB_1);
         assertEntireEvaluationResult(
-                resultsMultiLibDifferentOrderLib1,
+                resultsMultiLibDifferentOrder,
+                LIB_1,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(CONDITION, ENCOUNTER),
@@ -250,9 +250,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         CONDITION_EXPRESSION,
                         List.of(CONDITION)));
 
-        var resultsMultiLibDifferentOrderLib2 = resultsMultiLib.getResults().get(LIB_2);
         assertEntireEvaluationResult(
-                resultsMultiLibDifferentOrderLib2,
+                resultsMultiLibDifferentOrder,
+                LIB_2,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(PROCEDURE, CONDITION, ENCOUNTER),
@@ -268,9 +268,9 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         CONDITION_EXPRESSION,
                         List.of(CONDITION)));
 
-        var resultsMultiLibDifferentOrderLib3 = resultsMultiLib.getResults().get(LIB_3);
         assertEntireEvaluationResult(
-                resultsMultiLibDifferentOrderLib3,
+                resultsMultiLibDifferentOrder,
+                LIB_3,
                 Map.of(
                         UNION_EXPRESSION,
                         List.of(ENCOUNTER, PROCEDURE, CONDITION),

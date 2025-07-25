@@ -15,7 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
 import org.cqframework.cql.cql2elm.CqlCompiler;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
@@ -198,6 +197,8 @@ public abstract class FhirExecutionMultiLibTestBase {
         try (Stream<Path> stream = Files.list(directory)) {
             stream.filter(path -> !Files.isDirectory(path))
                     .filter(path -> pathMatcher.matches(path.getFileName()))
+                    // In the complex deps case, we want to load the "top" level libraries first, so Level5 is the
+                    // furthest upstream
                     .sorted(Comparator.reverseOrder())
                     .forEach(path -> {
                         String resourceName = path.getFileName().toString();
@@ -237,9 +238,9 @@ public abstract class FhirExecutionMultiLibTestBase {
         }
         return "\nEvaluationResultsForMultiLib{" + "evaluationResults=\n"
                 + evaluationResultsForMultiLib.getResults().entrySet().stream()
-                .map(entry -> new DefaultMapEntry<>(entry.getKey(), printEvaluationResult(entry.getValue())))
-                .map(entry -> entry.getKey() + ": " + entry.getValue())
-                .collect(Collectors.joining("\n"))
+                        .map(entry -> new DefaultMapEntry<>(entry.getKey(), printEvaluationResult(entry.getValue())))
+                        .map(entry -> entry.getKey() + ": " + entry.getValue())
+                        .collect(Collectors.joining("\n"))
                 + "}\n";
     }
 
@@ -249,9 +250,9 @@ public abstract class FhirExecutionMultiLibTestBase {
         }
         return "\nEvaluationResult{" + "expressionResults=\n"
                 + evaluationResult.expressionResults.entrySet().stream()
-                .map(entry -> new DefaultMapEntry<>(entry.getKey(), printExpressionResult(entry.getValue())))
-                .map(entry -> entry.getKey() + ": " + entry.getValue())
-                .collect(Collectors.joining("\n"))
+                        .map(entry -> new DefaultMapEntry<>(entry.getKey(), printExpressionResult(entry.getValue())))
+                        .map(entry -> entry.getKey() + ": " + entry.getValue())
+                        .collect(Collectors.joining("\n"))
                 + "}\n";
     }
 
