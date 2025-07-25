@@ -10,8 +10,8 @@ parameter "Measurement Period" Interval<DateTime> default Interval[@2021-01-01T0
 
 define "Encounters A":
     Level2."Encounters" E
-        where E.status = 'finished'
+        where E.status.value = 'arrived'
 
 define "Encounters B":
     Level2."Encounters" E
-        where E.status = 'planned'
+        where E.status.value = 'planned'

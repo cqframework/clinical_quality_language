@@ -5,11 +5,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.nullValue;
 
 import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.hamcrest.Matchers;
+import org.hl7.elm.r1.Matches;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
@@ -132,6 +137,11 @@ class EvaluatedResourceTestUtils {
             EvaluationResult evaluationResult,
             Map<String, Collection<? extends IBaseResource>> expectedEvaluatedResources,
             Map<String, Collection<? extends IBaseResource>> expectedValues) {
+
+        if (evaluationResult == null) {
+            assertThat(expectedValues.values(), empty());
+            return;
+        }
 
         var expressionResults = evaluationResult.expressionResults;
 

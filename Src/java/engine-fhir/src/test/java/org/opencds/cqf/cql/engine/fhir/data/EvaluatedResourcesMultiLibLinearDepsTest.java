@@ -146,7 +146,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         var engine = getCqlEngineForFhirNewLibMgr(expressionCaching);
 
         // Compile only one library:  it will be cached
-        var resultsSingleLib = engine.evaluate(getFirstLibraryIdentifierAsList(), ALL_EXPRESSIONS);
+        var resultsSingleLib = engine.evaluate(List.of(LIB_1.toIdentifier()), ALL_EXPRESSIONS);
 
         assertEntireEvaluationResult(
                 resultsSingleLib.getResults().get(LIB_1),

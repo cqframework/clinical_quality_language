@@ -10,8 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
 import org.cqframework.cql.cql2elm.CqlCompiler;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
@@ -21,11 +26,14 @@ import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu2FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver;
@@ -34,8 +42,12 @@ import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class FhirExecutionMultiLibTestBase {
+    private static final Logger log = LoggerFactory.getLogger(FhirExecutionMultiLibTestBase.class);
+
     public LibraryManager getLibraryManager() {
         return libraryManager;
     }
@@ -121,6 +133,9 @@ public abstract class FhirExecutionMultiLibTestBase {
                 for (var resourcePath : resourcePaths) {
                     try (var inputStream = this.getClass().getClassLoader().getResourceAsStream(resourcePath)) {
                         var compiler = new CqlCompiler(getLibraryManager());
+
+                        log.info("compiling CQL file: {}", resourcePath);
+
                         var library = compiler.run(inputStream);
 
                         if (!compiler.getErrors().isEmpty()) {
@@ -183,6 +198,7 @@ public abstract class FhirExecutionMultiLibTestBase {
         try (Stream<Path> stream = Files.list(directory)) {
             stream.filter(path -> !Files.isDirectory(path))
                     .filter(path -> pathMatcher.matches(path.getFileName()))
+                    .sorted(Comparator.reverseOrder())
                     .forEach(path -> {
                         String resourceName = path.getFileName().toString();
                         // Construct the full resource path for the classloader
@@ -193,20 +209,8 @@ public abstract class FhirExecutionMultiLibTestBase {
         }
     }
 
-    protected Library getFirstLibrary() {
-        return libraries.get(0);
-    }
-
-    protected List<VersionedIdentifier> getFirstLibraryIdentifierAsList() {
-        return List.of(getFirstLibrary().getIdentifier());
-    }
-
     protected List<VersionedIdentifier> getAllLibraryIdentifiers() {
         return libraries.stream().map(Library::getIdentifier).toList();
-    }
-
-    protected List<Library> getLibraries() {
-        return libraries;
     }
 
     public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
@@ -225,5 +229,64 @@ public abstract class FhirExecutionMultiLibTestBase {
         libraryManagerInner.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
         return libraryManagerInner;
+    }
+
+    protected static String printEvaluationResult(CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib) {
+        if (evaluationResultsForMultiLib == null) {
+            return "null";
+        }
+        return "\nEvaluationResultsForMultiLib{" + "evaluationResults=\n"
+                + evaluationResultsForMultiLib.getResults().entrySet().stream()
+                .map(entry -> new DefaultMapEntry<>(entry.getKey(), printEvaluationResult(entry.getValue())))
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining("\n"))
+                + "}\n";
+    }
+
+    protected static String printEvaluationResult(EvaluationResult evaluationResult) {
+        if (evaluationResult == null) {
+            return "null";
+        }
+        return "\nEvaluationResult{" + "expressionResults=\n"
+                + evaluationResult.expressionResults.entrySet().stream()
+                .map(entry -> new DefaultMapEntry<>(entry.getKey(), printExpressionResult(entry.getValue())))
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining("\n"))
+                + "}\n";
+    }
+
+    protected static String printExpressionResult(ExpressionResult expressionResult) {
+        if (expressionResult == null) {
+            return "\nnull";
+        }
+
+        return "\nExpressionResult{value=" + showValue(expressionResult.value()) + ", type="
+                + showEvaluatedResources(expressionResult.evaluatedResources()) + '}';
+    }
+
+    protected static String showValue(Object valueOrCollection) {
+        if (valueOrCollection == null) {
+            return "null";
+        }
+        if (valueOrCollection instanceof Collection<?> collection) {
+            return showEvaluatedResources(collection);
+        }
+        return showEvaluatedResource(valueOrCollection);
+    }
+
+    protected static String showEvaluatedResources(Collection<?> evaluatedResourcesOrSomethings) {
+        return evaluatedResourcesOrSomethings.stream()
+                .map(FhirExecutionMultiLibTestBase::showEvaluatedResource)
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    protected static String showEvaluatedResource(Object evaluatedResourceOrSomething) {
+        if (evaluatedResourceOrSomething instanceof IBaseResource resource) {
+            return resource.getIdElement().getValueAsString();
+        } else if (evaluatedResourceOrSomething != null) {
+            return evaluatedResourceOrSomething.toString();
+        } else {
+            return "null";
+        }
     }
 }
