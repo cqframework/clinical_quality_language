@@ -9,10 +9,25 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.notNullValue;
 
 import jakarta.annotation.Nonnull;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cqframework.cql.cql2elm.CqlCompiler;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hl7.elm.r1.Library;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.IdType;
@@ -33,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 class EvaluatedResourceTestUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(EvaluatedResourceTestUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(EvaluatedResourceTestUtils.class);
 
     static final Encounter ENCOUNTER =
             (Encounter) new Encounter().setId(new IdType(ResourceType.Encounter.name(), "Encounter1"));
@@ -60,7 +75,7 @@ class EvaluatedResourceTestUtils {
                     dateLowPath,
                     dateHighPath,
                     dateRange) -> {
-                logger.info(
+                log.info(
                         "1234: RetrieveProvider: context: {}, contextPath: {}, contextValue: {}, dataType: {}, templateId: {}, codePath: {}, codes: {}, valueSet: {}, datePath: {}, dateLowPath: {}, dateHighPath: {}, dateRange: {}",
                         context,
                         contextPath,
@@ -82,6 +97,96 @@ class EvaluatedResourceTestUtils {
                     default -> List.of();
                 };
             };
+
+    static void setupCql(Class<?> classToUse, List<Library> librariesToPopulate, LibraryManager libraryManagerToUse) {
+        if (librariesToPopulate.isEmpty()) {
+            try {
+                var resourcePaths = getResources(classToUse);
+
+                for (var resourcePath : resourcePaths) {
+                    try (var inputStream = classToUse.getClassLoader().getResourceAsStream(resourcePath)) {
+                        var compiler = new CqlCompiler(libraryManagerToUse);
+
+                        log.info("compiling CQL file: {}", resourcePath);
+
+                        var library = compiler.run(inputStream);
+
+                        if (!compiler.getErrors().isEmpty()) {
+                            System.err.println("Translation failed due to errors:");
+                            ArrayList<String> errors = new ArrayList<>();
+                            for (CqlCompilerException error : compiler.getErrors()) {
+                                TrackBack tb = error.getLocator();
+                                String lines = tb == null
+                                        ? "[n/a]"
+                                        : String.format(
+                                                "[%d:%d, %d:%d]",
+                                                tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+                                System.err.printf("%s %s%n", lines, error.getMessage());
+                                errors.add(lines + error.getMessage());
+                            }
+                            throw new IllegalArgumentException(errors.toString());
+                        }
+
+                        librariesToPopulate.add(library);
+                    } catch (Exception exception) {
+                        final String cqlFileName = resourcePath.split("/")[7];
+                        final String error = "Could not retrieve CQL files on %s due to :%s"
+                                .formatted(cqlFileName, exception.getMessage());
+                        throw new RuntimeException(error, exception);
+                    }
+                }
+            } catch (IOException | URISyntaxException exception) {
+                final String error = "Could not retrieve CQL files due to :%s".formatted(exception.getMessage());
+                throw new RuntimeException(error, exception);
+            }
+        }
+    }
+
+    private static List<String> getResources(Class<?> classToUse) throws IOException, URISyntaxException {
+        var foundResources = new ArrayList<String>();
+        var pattern = classToUse.getSimpleName() + "*.cql";
+
+        var classLoader = classToUse.getClassLoader();
+        var packagePath = classToUse.getPackage().getName().replace('.', '/');
+
+        var urlsWithinPackage = classLoader.getResources(packagePath);
+
+        while (urlsWithinPackage.hasMoreElements()) {
+            var subPathUrl = urlsWithinPackage.nextElement();
+
+            // Resource is on the file system.
+            var dirPath = Paths.get(subPathUrl.toURI());
+
+            findResourcesInDirectory(dirPath, packagePath, pattern, foundResources);
+        }
+
+        return foundResources;
+    }
+
+    private static void findResourcesInDirectory(
+            Path directory, String packagePath, String pattern, List<String> foundResources) throws IOException {
+        if (!Files.isDirectory(directory)) {
+            return;
+        }
+
+        // Use a PathMatcher for the glob pattern
+        var pathMatcher = directory.getFileSystem().getPathMatcher("glob:" + pattern);
+
+        try (Stream<Path> stream = Files.list(directory)) {
+            stream.filter(path -> !Files.isDirectory(path))
+                    .filter(path -> pathMatcher.matches(path.getFileName()))
+                    // In the complex deps case, we want to load the "top" level libraries first, so Level5 is the
+                    // furthest upstream
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        String resourceName = path.getFileName().toString();
+                        // Construct the full resource path for the classloader
+                        String fullResourcePath =
+                                packagePath.isEmpty() ? resourceName : packagePath + "/" + resourceName;
+                        foundResources.add(fullResourcePath);
+                    });
+        }
+    }
 
     private static class TestRetrieveProvider implements RetrieveProvider {
 
@@ -225,7 +330,10 @@ class EvaluatedResourceTestUtils {
     }
 
     private static void assertResourcesEqual(Collection<?> expectedResources, Collection<?> actualResources) {
-        assertThat(actualResources.size(), is(expectedResources.size()));
+        assertThat(
+                showMismatchError(expectedResources, actualResources),
+                actualResources.size(),
+                is(expectedResources.size()));
 
         var expectedResourcesList = extractResourcesInOrder(expectedResources);
         var actualResourcesList = extractResourcesInOrder(actualResources);
@@ -238,9 +346,22 @@ class EvaluatedResourceTestUtils {
         }
     }
 
+    @Nonnull
+    private static String showMismatchError(Collection<?> expectedResources, Collection<?> actualResources) {
+        return "Expected: %s, actual: %s".formatted(showResources(expectedResources), showResources(actualResources));
+    }
+
+    private static String showResources(Collection<?> resources) {
+        return resources.stream()
+                .filter(IBaseResource.class::isInstance)
+                .map(IBaseResource.class::cast)
+                .map(IBaseResource::getIdElement)
+                .map(IPrimitiveType::getValueAsString)
+                .collect(Collectors.joining(","));
+    }
+
     private static void assertResourcesEqual(IBaseResource expectedResource, IBaseResource actualResource) {
         assertThat(actualResource.getClass(), equalTo(expectedResource.getClass()));
-
         assertThat(actualResource.getIdElement(), equalTo(expectedResource.getIdElement()));
     }
 }

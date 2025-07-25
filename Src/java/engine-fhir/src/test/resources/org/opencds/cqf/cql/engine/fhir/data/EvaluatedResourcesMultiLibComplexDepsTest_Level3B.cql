@@ -4,7 +4,8 @@ using FHIR version '4.0.1'
 
 include FHIRHelpers version '4.0.1'
 
-include EvaluatedResourcesMultiLibComplexDepsTest_Level5 called Level5
+include EvaluatedResourcesMultiLibComplexDepsTest_Level4 called Level4
 
-define "Encounters":
-    Level5."Encounters"
+define "Encounter Subjects":
+    Level4."Encounter Subjects" S
+        where S != 'Patient/pat2'

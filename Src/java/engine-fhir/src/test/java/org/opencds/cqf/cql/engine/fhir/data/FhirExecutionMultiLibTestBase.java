@@ -1,28 +1,18 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.setupCql;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
-import org.cqframework.cql.cql2elm.CqlCompiler;
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -88,6 +78,7 @@ public abstract class FhirExecutionMultiLibTestBase {
 
     private final List<Library> libraries = new ArrayList<>();
 
+    // LUKETODO:  figure out how to compile the CQLs only once for the whole test class
     @BeforeAll
     public static void setup() {
         FhirContext dstu2Context = FhirContext.forCached(FhirVersionEnum.DSTU2);
@@ -124,90 +115,7 @@ public abstract class FhirExecutionMultiLibTestBase {
 
     @BeforeEach
     public void beforeEachTestMethod() {
-        String filePrefix = this.getClass().getSimpleName();
-        if (libraries.isEmpty()) {
-            try {
-                var resourcePaths = getResources(filePrefix);
-
-                for (var resourcePath : resourcePaths) {
-                    try (var inputStream = this.getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-                        var compiler = new CqlCompiler(getLibraryManager());
-
-                        log.info("compiling CQL file: {}", resourcePath);
-
-                        var library = compiler.run(inputStream);
-
-                        if (!compiler.getErrors().isEmpty()) {
-                            System.err.println("Translation failed due to errors:");
-                            ArrayList<String> errors = new ArrayList<>();
-                            for (CqlCompilerException error : compiler.getErrors()) {
-                                TrackBack tb = error.getLocator();
-                                String lines = tb == null
-                                        ? "[n/a]"
-                                        : String.format(
-                                                "[%d:%d, %d:%d]",
-                                                tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
-                                System.err.printf("%s %s%n", lines, error.getMessage());
-                                errors.add(lines + error.getMessage());
-                            }
-                            throw new IllegalArgumentException(errors.toString());
-                        }
-
-                        libraries.add(library);
-                    }
-                }
-
-            } catch (Exception exception) {
-                fail("Could not retrieve CQL files due to :" + exception.getMessage());
-            }
-        }
-    }
-
-    private List<String> getResources(String fileNamePrefix) throws IOException, URISyntaxException {
-        var foundResources = new ArrayList<String>();
-        var thisClass = this.getClass();
-        var pattern = fileNamePrefix + "*.cql";
-
-        var classLoader = thisClass.getClassLoader();
-        var packagePath = thisClass.getPackage().getName().replace('.', '/');
-
-        var urlsWithinPackage = classLoader.getResources(packagePath);
-
-        while (urlsWithinPackage.hasMoreElements()) {
-            var subPathUrl = urlsWithinPackage.nextElement();
-
-            // Resource is on the file system.
-            var dirPath = Paths.get(subPathUrl.toURI());
-
-            findResourcesInDirectory(dirPath, packagePath, pattern, foundResources);
-        }
-
-        return foundResources;
-    }
-
-    private void findResourcesInDirectory(
-            Path directory, String packagePath, String pattern, List<String> foundResources) throws IOException {
-        if (!Files.isDirectory(directory)) {
-            return;
-        }
-
-        // Use a PathMatcher for the glob pattern
-        var pathMatcher = directory.getFileSystem().getPathMatcher("glob:" + pattern);
-
-        try (Stream<Path> stream = Files.list(directory)) {
-            stream.filter(path -> !Files.isDirectory(path))
-                    .filter(path -> pathMatcher.matches(path.getFileName()))
-                    // In the complex deps case, we want to load the "top" level libraries first, so Level5 is the
-                    // furthest upstream
-                    .sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        String resourceName = path.getFileName().toString();
-                        // Construct the full resource path for the classloader
-                        String fullResourcePath =
-                                packagePath.isEmpty() ? resourceName : packagePath + "/" + resourceName;
-                        foundResources.add(fullResourcePath);
-                    });
-        }
+        setupCql(this.getClass(), libraries, libraryManager);
     }
 
     protected List<VersionedIdentifier> getAllLibraryIdentifiers() {
