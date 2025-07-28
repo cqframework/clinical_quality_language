@@ -330,6 +330,9 @@ public class LibraryManager {
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()), libraryIdentifier, this);
             compiler.run(cqlSource);
 
+            // LUKETODO:  ensure these errors get passed all the way up to the measure report
+            // LUKETODO:  errors on one of the using'd libraries are not obviously related to that library, as opposed to the
+            // downstream library
             errors = List.copyOf(compiler.getExceptions());
             compiledLibrary = compiler.getCompiledLibrary();
 
