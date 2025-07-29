@@ -284,6 +284,20 @@ public class CqlEngine {
         public EvaluationResult getResultFor(SearchableLibraryIdentifier libraryIdentifier) {
             return results.get(libraryIdentifier);
         }
+
+        public EvaluationResult getSingleResultOrThrow() {
+            if (results.size() > 1 || errors.size() > 1) {
+                throw new IllegalStateException(
+                        "Expected exactly one result or error, but found results: %s errors: %s: "
+                                .formatted(results.size(), errors.size()));
+            }
+
+            if (!errors.isEmpty()) {
+                throw new CqlException(this.errors.values().iterator().next());
+            }
+
+            return this.getFirstResult();
+        }
     }
 
     // LUKETODO: builder, immutability, immutable copies of collections, etc
@@ -385,6 +399,7 @@ public class CqlEngine {
                         "1234: Failed to evaluate library: {} with expressions: {}", libraryIdentifier, expressionSet);
                 var error = EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE.formatted(
                         searchableIdentifier.getIdentifierId(), exception.getMessage());
+                log.error(error);
 
                 errors.put(searchableIdentifier, error);
             }
