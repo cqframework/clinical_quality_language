@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { json } from "@codemirror/lang-json";
 import { xml } from "@codemirror/lang-xml";
-import { TCompileCqlArgs, TOutput } from "@/app/cql-compiler-playground-shared";
-import { createStatefulCompiler } from "@/app/cql-compiler-playground-compile-cql";
+import { TCompileCqlArgs, TOutput } from "@/app/shared";
+import { createStatefulCompiler } from "@/app/compiler";
 import { cqlLanguage } from "@/app/cql-language";
-import { Editor } from "@/app/cql-compiler-playground-editor";
+import { Editor } from "@/app/editor";
 
 const initialCompileCqlArgs: TCompileCqlArgs = {
   cql: `library Test version '0.1.0'
@@ -71,9 +71,7 @@ export function CqlCompilerPlayground() {
           }
 
           const workerPromise = (async () => {
-            const worker = new Worker(
-              new URL("./cql-compiler-playground-worker.ts", import.meta.url),
-            );
+            const worker = new Worker(new URL("./worker.ts", import.meta.url));
 
             await new Promise<void>((resolve) => {
               worker.onmessage = (event) => {
@@ -126,7 +124,7 @@ export function CqlCompilerPlayground() {
             return statefulCompilerRef.current;
           }
 
-          const statefulCompiler = createStatefulCompiler();
+          const statefulCompiler = createStatefulCompiler(false);
           statefulCompilerRef.current = statefulCompiler;
           return statefulCompiler;
         })();
@@ -350,6 +348,7 @@ export function CqlCompilerPlayground() {
             gridTemplateRows: "auto 1fr",
             gridTemplateAreas:
               '"body-left-editor-label" "body-left-editor-textarea"',
+            minHeight: 0,
           }}
         >
           <div
