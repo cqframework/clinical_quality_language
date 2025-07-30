@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 public class CqlEngine {
     private static final Logger log = LoggerFactory.getLogger(CqlEngine.class);
 
+    private static final String EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE = "Exception for Library: %s, Message: %s";
+
     public enum Options {
         EnableExpressionCaching,
         EnableValidation,
@@ -250,58 +252,6 @@ public class CqlEngine {
 
     // LUKETODO: builder, immutability, immutable copies of collections, etc
     // LUKETODO: record?
-    public static class EvaluationResultsForMultiLib {
-        private final Map<SearchableLibraryIdentifier, EvaluationResult> results;
-        // LUKETODO:  single or multiple errors per library??
-        private final Map<SearchableLibraryIdentifier, String> errors;
-
-        public EvaluationResultsForMultiLib(
-                Map<SearchableLibraryIdentifier, EvaluationResult> results,
-                Map<SearchableLibraryIdentifier, String> errors) {
-            this.results = results;
-            this.errors = errors;
-        }
-
-        // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
-        public Map<SearchableLibraryIdentifier, EvaluationResult> getResults() {
-            return results;
-        }
-
-        // LUKETODO:  validate this isn't empty or Optional or something
-        public EvaluationResult getFirstResult() {
-            return results.entrySet().iterator().next().getValue();
-        }
-
-        // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
-        public Map<SearchableLibraryIdentifier, String> getErrors() {
-            return errors;
-        }
-
-        public EvaluationResult getResultFor(VersionedIdentifier libraryIdentifier) {
-            return results.get(SearchableLibraryIdentifier.fromIdentifier(libraryIdentifier));
-        }
-
-        public EvaluationResult getResultFor(SearchableLibraryIdentifier libraryIdentifier) {
-            return results.get(libraryIdentifier);
-        }
-
-        public EvaluationResult getSingleResultOrThrow() {
-            if (results.size() > 1 || errors.size() > 1) {
-                throw new IllegalStateException(
-                        "Expected exactly one result or error, but found results: %s errors: %s: "
-                                .formatted(results.size(), errors.size()));
-            }
-
-            if (!errors.isEmpty()) {
-                throw new CqlException(this.errors.values().iterator().next());
-            }
-
-            return this.getFirstResult();
-        }
-    }
-
-    // LUKETODO: builder, immutability, immutable copies of collections, etc
-    // LUKETODO: record?
     public static class LoadedLibrariesForMultiLib {
         private final LinkedHashMap<VersionedIdentifier, Library> results;
         private final LinkedHashMap<VersionedIdentifier, String> errors;
@@ -322,12 +272,8 @@ public class CqlEngine {
         }
     }
 
-    private static final String EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE = "Exception for Library: %s, Message: %s";
-    // LUKETODO:  Map<VersionedIdentifier, List<ExpressionResult>>???
     public EvaluationResultsForMultiLib evaluate(
             List<VersionedIdentifier> libraryIdentifiers,
-            // LUKETODO:  figure out how to pass expressions later
-            // LUKETODO:  need to consider scoping expresions by versioned identifier or something else
             Set<String> expressions,
             Pair<String, Object> contextParameter,
             Map<String, Object> parameters,

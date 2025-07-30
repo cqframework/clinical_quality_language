@@ -127,7 +127,6 @@ public class State {
         return engineOptions;
     }
 
-    // LUKETODO:  why don't we pass this and how do we get the name from the Library?
     public void setParameters(Library library, Map<String, Object> parameters) {
         if (parameters != null) {
             for (Map.Entry<String, Object> parameterValue : parameters.entrySet()) {
@@ -256,14 +255,18 @@ public class State {
         this.pushEvaluatedResourceStack();
     }
 
-    // LUKETODO:  javadoc
+    /**
+     * Sets up a list of libraries on the currentLibrary stack and sets up the evaluated resource stack at the same
+     * position.
+     *
+     * @param libraries the list of libraries to initialize
+     */
     public void init(List<Library> libraries) {
         assert this.stack.isEmpty();
-        // LUKETODO:  look at the state.cache which may be the "cache" we're talking about
-        // LUKETODO: we're predefining an order on the stack here, which may not be the structure we want
-        // library1,library2,library3, etc
 
         for (Library library : libraries) {
+            // Ensure the current libraries and evaluated resources are at the same positions in the stack,
+            // so that we can exit each together to evaluate the next library
             currentLibrary.push(library);
             this.pushEvaluatedResourceStack();
         }

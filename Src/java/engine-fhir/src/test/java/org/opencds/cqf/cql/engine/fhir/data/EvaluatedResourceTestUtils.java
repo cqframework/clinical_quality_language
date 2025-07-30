@@ -38,6 +38,7 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib;
 import org.opencds.cqf.cql.engine.execution.SearchableLibraryIdentifier;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
@@ -61,7 +62,6 @@ class EvaluatedResourceTestUtils {
     static final Procedure PROCEDURE =
             (Procedure) new Procedure().setId(new IdType(ResourceType.Procedure.name(), "Procedure1"));
 
-    // LUKETODO: if I make this more sophisticated, I can probably change the evaluated resources per library
     static final RetrieveProvider RETRIEVE_PROVIDER =
             (context,
                     contextPath,
@@ -74,28 +74,12 @@ class EvaluatedResourceTestUtils {
                     datePath,
                     dateLowPath,
                     dateHighPath,
-                    dateRange) -> {
-                log.info(
-                        "1234: RetrieveProvider: context: {}, contextPath: {}, contextValue: {}, dataType: {}, templateId: {}, codePath: {}, codes: {}, valueSet: {}, datePath: {}, dateLowPath: {}, dateHighPath: {}, dateRange: {}",
-                        context,
-                        contextPath,
-                        contextValue,
-                        dataType,
-                        templateId,
-                        codePath,
-                        codes,
-                        valueSet,
-                        datePath,
-                        dateLowPath,
-                        dateHighPath,
-                        dateRange);
-                return switch (dataType) {
-                    case "Encounter" -> singletonList(ENCOUNTER);
-                    case "Condition" -> singletonList(CONDITION);
-                    case "Patient" -> singletonList(PATIENT);
-                    case "Procedure" -> singletonList(PROCEDURE);
-                    default -> List.of();
-                };
+                    dateRange) -> switch (dataType) {
+                case "Encounter" -> singletonList(ENCOUNTER);
+                case "Condition" -> singletonList(CONDITION);
+                case "Patient" -> singletonList(PATIENT);
+                case "Procedure" -> singletonList(PROCEDURE);
+                default -> List.of();
             };
 
     static void setupCql(Class<?> classToUse, List<Library> librariesToPopulate, LibraryManager libraryManagerToUse) {
@@ -237,7 +221,7 @@ class EvaluatedResourceTestUtils {
     }
 
     static void assertEntireEvaluationResult(
-            CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib,
+            EvaluationResultsForMultiLib evaluationResultsForMultiLib,
             SearchableLibraryIdentifier libraryIdentifier,
             Map<String, Collection<? extends IBaseResource>> expectedEvaluatedResources,
             Map<String, Collection<? extends IBaseResource>> expectedValues) {
@@ -281,7 +265,7 @@ class EvaluatedResourceTestUtils {
     }
 
     static void assertEvaluationResult(
-            CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib,
+            EvaluationResultsForMultiLib evaluationResultsForMultiLib,
             SearchableLibraryIdentifier libraryIdentifier,
             String expressionName,
             Collection<? extends IBaseResource> expectedEvaluatedResources,

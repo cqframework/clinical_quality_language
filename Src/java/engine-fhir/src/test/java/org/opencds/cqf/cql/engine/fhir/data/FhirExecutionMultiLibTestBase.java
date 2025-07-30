@@ -22,6 +22,7 @@ import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib;
 import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu2FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
@@ -140,7 +141,7 @@ public abstract class FhirExecutionMultiLibTestBase {
         return libraryManagerInner;
     }
 
-    protected static String printEvaluationResult(CqlEngine.EvaluationResultsForMultiLib evaluationResultsForMultiLib) {
+    protected static String printEvaluationResult(EvaluationResultsForMultiLib evaluationResultsForMultiLib) {
         if (evaluationResultsForMultiLib == null) {
             return "null";
         }
