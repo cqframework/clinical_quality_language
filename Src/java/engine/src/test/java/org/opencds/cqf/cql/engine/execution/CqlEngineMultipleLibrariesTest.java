@@ -208,13 +208,17 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 null);
 
         assertNotNull(evalResultsForMultiLib);
-
-        assertFalse(evalResultsForMultiLib.getErrors().isEmpty());
-        var errors = evalResultsForMultiLib.getErrors();
-        assertEquals(1, errors.size());
-        var errorEntry = errors.entrySet().iterator().next();
-        assertEquals(SearchableLibraryIdentifier.fromId("MultiLibraryBad"), errorEntry.getKey());
-        assertEquals("library MultiLibraryBad loaded, but had errors: Syntax error at define", errorEntry.getValue());
+        assertFalse(evalResultsForMultiLib.getExceptions().isEmpty());
+        var exceptions = evalResultsForMultiLib.getExceptions();
+        assertEquals(1, exceptions.size());
+        var exceptionEntry = exceptions.entrySet().iterator().next();
+        assertEquals(SearchableLibraryIdentifier.fromId("MultiLibraryBad"), exceptionEntry.getKey());
+        var exceptionsList = exceptionEntry.getValue();
+        assertEquals(1, exceptionsList.size());
+        // LUKETODO:  how to ultimately handle the message for these Exceptions?
+        //        assertEquals("library MultiLibraryBad loaded, but had errors: Syntax error at define",
+        // exceptionsList.get(0).getMessage());
+        assertEquals("Syntax error at define", exceptionsList.get(0).getMessage());
 
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size()); // there is no eval result for MultiLibraryBad

@@ -250,28 +250,6 @@ public class CqlEngine {
         return this.evaluateExpressions(expressions);
     }
 
-    // LUKETODO: builder, immutability, immutable copies of collections, etc
-    // LUKETODO: record?
-    public static class LoadedLibrariesForMultiLib {
-        private final LinkedHashMap<VersionedIdentifier, Library> results;
-        private final LinkedHashMap<VersionedIdentifier, String> errors;
-
-        public LoadedLibrariesForMultiLib(
-                LinkedHashMap<VersionedIdentifier, Library> results,
-                LinkedHashMap<VersionedIdentifier, String> errors) {
-            this.results = results;
-            this.errors = errors;
-        }
-
-        public LinkedHashMap<VersionedIdentifier, Library> getResults() {
-            return results;
-        }
-
-        public LinkedHashMap<VersionedIdentifier, String> getErrors() {
-            return errors;
-        }
-    }
-
     public EvaluationResultsForMultiLib evaluate(
             List<VersionedIdentifier> libraryIdentifiers,
             Set<String> expressions,
@@ -284,49 +262,42 @@ public class CqlEngine {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
-        log.info(
-                "1234: Evaluating libraries: {} with contextParameter: {} and expressions: [{}]",
-                libraryIdentifiers.stream().map(VersionedIdentifier::getId).toList(),
-                contextParameter,
-                Optional.ofNullable(expressions)
-                        .map(nonNull -> String.join(", ", nonNull))
-                        .orElse(""));
-
-        var librariesByIdentifier = this.loadAndValidate(libraryIdentifiers);
+        var loadMultiLibResult = this.loadAndValidate(libraryIdentifiers);
 
         initializeEvalTime(nullableEvaluationDateTime);
 
-        var successfullyLoadedLibraries = librariesByIdentifier.getResults();
-
         // here we initialize all libraries without emptying the cache for each library
-        this.state.init(List.copyOf(successfullyLoadedLibraries.values()));
+        this.state.init(loadMultiLibResult.getAllLibraries());
 
         // LUKETODO:  deal with this: since we need to deal with the use case of parameters
         // LUKETODO:  I think this may possibly be related to the unit test failures?
         // LUKETODO:  what does setParametersForContext() actually do, and why does it take a library that's not read?
-        successfullyLoadedLibraries
-                .values()
+        loadMultiLibResult
+                .getAllLibraries()
                 .forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
 
         initializeDebugMap(debugMap);
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library first
-        var reversedOrderLibraryIdentifiers = IntStream.range(0, successfullyLoadedLibraries.size())
-                .map(index -> successfullyLoadedLibraries.size() - 1 - index)
-                .mapToObj(index ->
-                        List.copyOf(successfullyLoadedLibraries.keySet()).get(index))
+        var reversedOrderLibraryIdentifiers = IntStream.range(0, loadMultiLibResult.libraryCount())
+                .map(index -> loadMultiLibResult.getAllLibraryIds().size() - 1 - index)
+                .mapToObj(loadMultiLibResult::getLibraryIdentifierAtIndex)
                 .toList();
 
         var evalResults = new LinkedHashMap<SearchableLibraryIdentifier, EvaluationResult>();
 
         // LUKETODO:  better algorithm to capture compile errors
         var errors = new LinkedHashMap<SearchableLibraryIdentifier, String>();
-        for (var error : librariesByIdentifier.getErrors().entrySet()) {
+        var exceptions = new LinkedHashMap<SearchableLibraryIdentifier, List<Exception>>();
+        for (var error : loadMultiLibResult.getErrors().entrySet()) {
             errors.put(SearchableLibraryIdentifier.fromIdentifier(error.getKey()), error.getValue());
+        }
+        for (var exception : loadMultiLibResult.getExceptions().entrySet()) {
+            exceptions.put(SearchableLibraryIdentifier.fromIdentifier(exception.getKey()), exception.getValue());
         }
 
         for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
-            var library = retrieveLibraryFromMap(successfullyLoadedLibraries, libraryIdentifier);
+            var library = loadMultiLibResult.retrieveLibrary(libraryIdentifier);
             var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
             log.info(
@@ -351,7 +322,7 @@ public class CqlEngine {
             }
         }
 
-        return new EvaluationResultsForMultiLib(evalResults, errors);
+        return new EvaluationResultsForMultiLib(evalResults, exceptions, errors);
     }
 
     private Library retrieveLibraryFromMap(
@@ -581,7 +552,7 @@ public class CqlEngine {
     }
 
     // LUKETODO: document error handling
-    private LoadedLibrariesForMultiLib loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
+    private LoadMultiLibResult loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
 
         var errorsById = new LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>>();
 
@@ -598,12 +569,13 @@ public class CqlEngine {
                         libraryIdentifier, "Unable to load libraries: %s".formatted(showLibs(libraryIdentifiers)));
             }
 
-            return new LoadedLibrariesForMultiLib(
-                    new LinkedHashMap<>(), // empty
-                    errorsForLibs);
+            return LoadMultiLibResult.errorsOnly(errorsForLibs);
         }
 
+        var resultBuilder = LoadMultiLibResult.builder();
+
         var errorsForLibs = new LinkedHashMap<VersionedIdentifier, String>();
+
         if (CqlCompilerException.hasErrors(
                 errorsById.values().stream().flatMap(Collection::stream).toList())) {
             for (Map.Entry<VersionedIdentifier, List<CqlCompilerException>> entry : errorsById.entrySet()) {
@@ -616,6 +588,7 @@ public class CqlEngine {
                                 exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")));
 
                 errorsForLibs.put(libraryIdentifier, joinedErrorMessages);
+                resultBuilder.addExceptions(libraryIdentifier, exceptions);
             }
         }
 
@@ -641,6 +614,7 @@ public class CqlEngine {
                                 .withVersion(include.getVersion()));
                     }
                 }
+                resultBuilder.addResult(library.getIdentifier(), library);
             } catch (CqlException | CqlCompilerException exception) {
                 // As with previous code, per searched library identifier, this is an all or nothing operation:
                 // stop at the first Exception and don't capture subsequent errors for subsequent included libraries.
@@ -648,18 +622,13 @@ public class CqlEngine {
                 // LUKETODO:  this is gross:  we're effectively removing the library from the results if we get an error
                 // consider a more immutable approach
                 idsToLibraries.remove(library.getIdentifier());
+                resultBuilder.addException(library.getIdentifier(), exception);
             }
         }
 
-        return new LoadedLibrariesForMultiLib(idsToLibraries, errorsForLibs);
+        //        return LoadMultiLibResult.resultsAndErrors(idsToLibraries, errorsForLibs);
+        return resultBuilder.build();
     }
-
-    //    private String formatCqlCompilerExceptionMessage(
-    //            VersionedIdentifier libraryIdentifier, CqlCompilerException exception) {
-    //        return "library %s loaded, but had errors: %s".formatted(libraryIdentifier.getId()
-    //                + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
-    //                errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", "));
-    //    }
 
     private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
             List<VersionedIdentifier> libraryIdentifiersUsedToQuery,
