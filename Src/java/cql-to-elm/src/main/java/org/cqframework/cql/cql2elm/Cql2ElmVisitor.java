@@ -33,7 +33,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     // IdentityHashMaps are used here instead of HashMaps because the keys are mutated after insertion
     private final Map<FunctionDef, FunctionHeader> functionHeadersByDef = new IdentityHashMap<>();
-    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions = new IdentityHashMap<>();
+    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions =
+            new IdentityHashMap<>();
 
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final List<Retrieve> retrieves = new ArrayList<>();
