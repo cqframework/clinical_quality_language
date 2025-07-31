@@ -16,6 +16,7 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
+import org.hl7.elm_modelinfo.r1.ModelSpecifier;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -305,9 +306,21 @@ public class LibraryBuilder {
     }
 
     private void loadConversionMap(Model model) {
-        for (Conversion conversion : model.getConversions()) {
-            conversionMap.add(conversion);
+        // Load conversions of required model infos
+        if (model.getModelInfo() != null && model.getModelInfo().getRequiredModelInfo() != null) {
+            for (ModelSpecifier requiredModel : model.getModelInfo().getRequiredModelInfo()) {
+                var resolvedModel = modelManager.resolveModel(new ModelIdentifier()
+                        .withSystem(requiredModel.getUrl())
+                        .withId(requiredModel.getName())
+                        .withVersion(requiredModel.getVersion()));
+
+                if (resolvedModel != null) {
+                    loadConversionMap(resolvedModel);
+                }
+            }
         }
+
+        conversionMap.loadModel(model);
     }
 
     private UsingDef buildUsingDef(ModelIdentifier modelIdentifier, Model model, String localIdentifier) {
