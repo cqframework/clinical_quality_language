@@ -221,7 +221,7 @@ public class LibraryManager {
         }
 
         // LUKETODO:  do we need to order these?
-        var libs = new ArrayList<CompiledLibrary>();
+        var compiledLibrariesToReturn = new ArrayList<CompiledLibrary>();
 
         if (cacheMode != CacheMode.NONE) {
 
@@ -236,11 +236,11 @@ public class LibraryManager {
                 return libraries;
             }
 
-            libs.addAll(libraries);
+            compiledLibrariesToReturn.addAll(libraries);
         }
 
         for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
-            if (libs.stream().map(CompiledLibrary::getIdentifier).toList().contains(libraryIdentifier)) {
+            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibrariesToReturn)) {
                 logger.debug("library {} already in cache, skipping compilation", libraryIdentifier.getId());
                 continue;
             }
@@ -249,8 +249,8 @@ public class LibraryManager {
 
             // If we have any errors, ignore the compiled library altogether just like in the single lib case
             if (!hasErrors(compiledlibraryResult.errors())) {
-                // add to returned libs regardless of cache mode
-                libs.add(compiledlibraryResult.compiledLibrary());
+                // add to returned compiledLibrariesToReturn regardless of cache mode
+                compiledLibrariesToReturn.add(compiledlibraryResult.compiledLibrary());
                 if (cacheMode == CacheMode.READ_WRITE) {
                     logger.debug("adding library to cache: {}", libraryIdentifier.getId());
                     compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
@@ -263,7 +263,25 @@ public class LibraryManager {
             }
         }
 
-        return List.copyOf(libs);
+        return List.copyOf(compiledLibrariesToReturn);
+    }
+
+    private boolean isLibraryAlreadyRetrievedFromCache(
+            VersionedIdentifier searchedForLibraryIdentifier, List<CompiledLibrary> compiledLibrariesFromCache) {
+        return compiledLibrariesFromCache.stream()
+                .map(CompiledLibrary::getIdentifier)
+                .map(compiledLibraryIdentifier ->
+                        stripVersionIfNeeded(compiledLibraryIdentifier, searchedForLibraryIdentifier))
+                .toList()
+                .contains(searchedForLibraryIdentifier);
+    }
+
+    private VersionedIdentifier stripVersionIfNeeded(
+            VersionedIdentifier compiledLibraryIdentifier, VersionedIdentifier searchedForLibraryIdentifier) {
+        if (searchedForLibraryIdentifier.getVersion() == null) {
+            return new VersionedIdentifier().withId(compiledLibraryIdentifier.getId());
+        }
+        return compiledLibraryIdentifier;
     }
 
     private CompiledLibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
