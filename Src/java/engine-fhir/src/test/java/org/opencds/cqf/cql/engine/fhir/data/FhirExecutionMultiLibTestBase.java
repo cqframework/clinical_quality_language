@@ -5,25 +5,18 @@ import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.se
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
-import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib;
-import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu2FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver;
@@ -139,64 +132,5 @@ public abstract class FhirExecutionMultiLibTestBase {
         libraryManagerInner.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
         return libraryManagerInner;
-    }
-
-    protected static String printEvaluationResult(EvaluationResultsForMultiLib evaluationResultsForMultiLib) {
-        if (evaluationResultsForMultiLib == null) {
-            return "null";
-        }
-        return "\nEvaluationResultsForMultiLib{" + "evaluationResults=\n"
-                + evaluationResultsForMultiLib.getResults().entrySet().stream()
-                        .map(entry -> new DefaultMapEntry<>(entry.getKey(), printEvaluationResult(entry.getValue())))
-                        .map(entry -> entry.getKey() + ": " + entry.getValue())
-                        .collect(Collectors.joining("\n"))
-                + "}\n";
-    }
-
-    protected static String printEvaluationResult(EvaluationResult evaluationResult) {
-        if (evaluationResult == null) {
-            return "null";
-        }
-        return "\nEvaluationResult{" + "expressionResults=\n"
-                + evaluationResult.expressionResults.entrySet().stream()
-                        .map(entry -> new DefaultMapEntry<>(entry.getKey(), printExpressionResult(entry.getValue())))
-                        .map(entry -> entry.getKey() + ": " + entry.getValue())
-                        .collect(Collectors.joining("\n"))
-                + "}\n";
-    }
-
-    protected static String printExpressionResult(ExpressionResult expressionResult) {
-        if (expressionResult == null) {
-            return "\nnull";
-        }
-
-        return "\nExpressionResult{value=" + showValue(expressionResult.value()) + ", type="
-                + showEvaluatedResources(expressionResult.evaluatedResources()) + '}';
-    }
-
-    protected static String showValue(Object valueOrCollection) {
-        if (valueOrCollection == null) {
-            return "null";
-        }
-        if (valueOrCollection instanceof Collection<?> collection) {
-            return showEvaluatedResources(collection);
-        }
-        return showEvaluatedResource(valueOrCollection);
-    }
-
-    protected static String showEvaluatedResources(Collection<?> evaluatedResourcesOrSomethings) {
-        return evaluatedResourcesOrSomethings.stream()
-                .map(FhirExecutionMultiLibTestBase::showEvaluatedResource)
-                .collect(Collectors.joining(", ", "[", "]"));
-    }
-
-    protected static String showEvaluatedResource(Object evaluatedResourceOrSomething) {
-        if (evaluatedResourceOrSomething instanceof IBaseResource resource) {
-            return resource.getIdElement().getValueAsString();
-        } else if (evaluatedResourceOrSomething != null) {
-            return evaluatedResourceOrSomething.toString();
-        } else {
-            return "null";
-        }
     }
 }
