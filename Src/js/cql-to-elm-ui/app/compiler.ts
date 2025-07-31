@@ -2,10 +2,11 @@
 import * as ucum from "@lhncbc/ucum-lhc";
 import * as cqlToElmJs from "../../../java/build/js/packages/cql-all-cql-to-elm";
 import * as cqlToElmWasmJs from "../../../java/build/js/packages/cql-all-cql-to-elm-wasm-js";
-import { TCompileCqlArgs, TOutput } from "@/app/cql-compiler-playground-shared";
+import { TCompileCqlArgs, TOutput } from "@/app/shared";
 import { supportedModels } from "@/app/supported-models";
+import { fetchSync } from "@/app/utils";
 
-export function createStatefulCompiler() {
+export function createStatefulCompiler(sync: boolean) {
   const ucumUtils = ucum.UcumLhcUtils.getInstance();
   const validateUnit = (unit: string) => {
     const result = ucumUtils.validateUnitString(unit);
@@ -58,19 +59,35 @@ export function createStatefulCompiler() {
         (_) => _.id === id && _.system === system && _.version === version,
       );
       if (supportedModel) {
-        (async () => {
-          const response = await fetch(supportedModel.url);
-          const xml = response.ok ? await response.text() : null;
+        const log = `Busy loading model: id=${id} system=${system} version=${version} from ${supportedModel.url}`;
+        if (sync) {
+          onOutput({
+            type: "log",
+            log: log,
+          });
+          const xml = fetchSync(supportedModel.url);
           fetchedModels.push({
             id: supportedModel.id,
             system: supportedModel.system,
             version: supportedModel.version,
             xml,
           });
-          // Compile again with the model fetched
-          compileCql(args, onOutput);
-        })();
-        throw `Busy loading model: id=${id} system=${system} version=${version} from ${supportedModel.url}`;
+          return xml;
+        } else {
+          (async () => {
+            const response = await fetch(supportedModel.url);
+            const xml = response.ok ? await response.text() : null;
+            fetchedModels.push({
+              id: supportedModel.id,
+              system: supportedModel.system,
+              version: supportedModel.version,
+              xml,
+            });
+            // Compile again with the model fetched
+            compileCql(args, onOutput);
+          })();
+          throw log;
+        }
       }
       return null;
     };
@@ -87,19 +104,35 @@ export function createStatefulCompiler() {
         return fetchedLibrary.cql;
       }
       const url = `${args.baseUrl}${id}.cql`;
-      (async () => {
-        const response = await fetch(url);
-        const cql = response.ok ? await response.text() : null;
+      const log = `Busy loading library: id=${id} system=${system} version=${version} from ${url}`;
+      if (sync) {
+        onOutput({
+          type: "log",
+          log: log,
+        });
+        const cql = fetchSync(url);
         fetchedLibraries.push({
           id,
           system,
           version,
           cql,
         });
-        // Compile again with the library fetched
-        compileCql(args, onOutput);
-      })();
-      throw `Busy loading library: id=${id} system=${system} version=${version} from ${url}`;
+        return cql;
+      } else {
+        (async () => {
+          const response = await fetch(url);
+          const cql = response.ok ? await response.text() : null;
+          fetchedLibraries.push({
+            id,
+            system,
+            version,
+            cql,
+          });
+          // Compile again with the library fetched
+          compileCql(args, onOutput);
+        })();
+        throw log;
+      }
     };
 
     const libraryManagerJs = new cqlToElmJs.LibraryManager(

@@ -30,6 +30,11 @@ private fun serializeXmlElement(element: XmlNode.Element, out: StringBuilder) {
         out.append(" ").append(name).append("=\"").append(escapeXml(value)).append("\"")
     }
 
+    if (element.children.isEmpty()) {
+        out.append("/>")
+        return
+    }
+
     out.append(">")
 
     for (child in element.children) {

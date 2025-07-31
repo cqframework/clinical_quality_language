@@ -1,6 +1,6 @@
-import { createStatefulCompiler } from "@/app/cql-compiler-playground-compile-cql";
+import { createStatefulCompiler } from "@/app/compiler";
 
-const { compileCql } = createStatefulCompiler();
+const { compileCql } = createStatefulCompiler(true);
 
 onmessage = async (event) => {
   const { type, data } = event.data;

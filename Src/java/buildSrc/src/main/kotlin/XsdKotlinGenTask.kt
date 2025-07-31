@@ -122,7 +122,7 @@ fun getXmlAttributeSerializerCode(type: XSType): CodeBlock {
                 "anySimpleType" -> CodeBlock.of("it")
                 "boolean" -> CodeBlock.of("it.toString()")
                 "integer" -> CodeBlock.of("it.toString()")
-                "decimal" -> CodeBlock.of("it.toString()")
+                "decimal" -> CodeBlock.of("it.toPlainString()")
                 "dateTime" -> CodeBlock.of("it")
                 "time" -> CodeBlock.of("it")
                 "date" -> CodeBlock.of("it")
@@ -177,7 +177,7 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
                 "integer" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
                 "decimal" ->
                     CodeBlock.of(
-                        "%L kotlinx.serialization.json.JsonUnquotedLiteral(it.toString())",
+                        "%L kotlinx.serialization.json.JsonUnquotedLiteral(it.toPlainString())",
                         AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
                             .addMember(
                                 "%T::class",
