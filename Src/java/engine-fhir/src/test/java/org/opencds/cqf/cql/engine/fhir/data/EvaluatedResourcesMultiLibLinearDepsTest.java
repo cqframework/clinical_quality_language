@@ -12,22 +12,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.SearchableLibraryIdentifier;
 
 class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTestBase {
 
-    private static final SearchableLibraryIdentifier LIB_1 =
-            SearchableLibraryIdentifier.fromId("EvaluatedResourcesMultiLibLinearDepsTest1");
-    private static final SearchableLibraryIdentifier LIB_2 =
-            SearchableLibraryIdentifier.fromId("EvaluatedResourcesMultiLibLinearDepsTest2");
-    private static final SearchableLibraryIdentifier LIB_3 =
-            SearchableLibraryIdentifier.fromId("EvaluatedResourcesMultiLibLinearDepsTest3");
+    private static final VersionedIdentifier LIB_1 =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest1");
+    private static final VersionedIdentifier LIB_2 =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest2");
+    private static final VersionedIdentifier LIB_3 =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest3");
+    private static final List<VersionedIdentifier> ALL_LIB_IDS = List.of(LIB_1, LIB_2, LIB_3);
 
     private static final String UNION_EXPRESSION = "Union";
     private static final String ENCOUNTER_EXPRESSION = ResourceType.Encounter.name();
@@ -67,7 +68,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
     @ParameterizedTest
     @MethodSource("singleLibParams")
     void singleLib(
-            SearchableLibraryIdentifier libId,
+            VersionedIdentifier libId,
             String expressionName,
             List<? extends IBaseResource> expectedResources,
             List<? extends IBaseResource> expectedValues,
@@ -75,13 +76,13 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         var engine = getCqlEngineForFhirNewLibMgr(expressionCaching);
 
         // Old single-lib API
-        var singleResult = engine.evaluate(libId.toIdentifier(), Set.of(expressionName));
+        var singleResult = engine.evaluate(libId, Set.of(expressionName));
 
         assertEvaluationResult(singleResult, expressionName, expectedResources, expectedValues);
 
         // Old multi-lib API passing a single lib
-        var multiResult = engine.evaluate(List.of(libId.toIdentifier()), Set.of(expressionName))
-                .getFirstResult();
+        var multiResult =
+                engine.evaluate(List.of(libId), Set.of(expressionName)).getOnlyResultOrThrow();
 
         assertEvaluationResult(multiResult, expressionName, expectedResources, expectedValues);
     }
@@ -121,7 +122,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
     @ParameterizedTest
     @MethodSource("multiLibParams")
     void multiLib(
-            SearchableLibraryIdentifier libId,
+            VersionedIdentifier libId,
             String expressionName,
             List<? extends IBaseResource> expectedResources,
             List<? extends IBaseResource> expectedValues,
@@ -146,7 +147,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         var engine = getCqlEngineForFhirNewLibMgr(expressionCaching);
 
         // Compile only one library:  it will be cached
-        var resultsSingleLib = engine.evaluate(List.of(LIB_1.toIdentifier()), ALL_EXPRESSIONS);
+        var resultsSingleLib = engine.evaluate(List.of(LIB_1), ALL_EXPRESSIONS);
 
         assertEntireEvaluationResult(
                 resultsSingleLib,
@@ -168,7 +169,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         engine.getState().clearEvaluatedResources();
 
         // Using the same engine, evaluate three libraries, two of which are not cached
-        var resultsMultiLib = engine.evaluate(getAllLibraryIdentifiers(), ALL_EXPRESSIONS);
+        var resultsMultiLib = engine.evaluate(ALL_LIB_IDS, ALL_EXPRESSIONS);
 
         assertEntireEvaluationResult(
                 resultsMultiLib,
@@ -225,12 +226,8 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
                         List.of()));
 
         // Now use the same engine, but pass the identifiers in a different order
-        var resultsMultiLibDifferentOrder = engine.evaluate(
-                Stream.of(LIB_3, LIB_2, LIB_1)
-                        .map(SearchableLibraryIdentifier::toIdentifier)
-                        .map(ident -> ident.withVersion("1.0"))
-                        .toList(),
-                ALL_EXPRESSIONS);
+        var resultsMultiLibDifferentOrder =
+                engine.evaluate(Stream.of(LIB_3, LIB_2, LIB_1).toList(), ALL_EXPRESSIONS);
 
         assertEntireEvaluationResult(
                 resultsMultiLibDifferentOrder,

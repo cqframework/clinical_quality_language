@@ -26,6 +26,7 @@ import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.Condition;
@@ -39,7 +40,6 @@ import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib;
-import org.opencds.cqf.cql.engine.execution.SearchableLibraryIdentifier;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -222,7 +222,7 @@ class EvaluatedResourceTestUtils {
 
     static void assertEntireEvaluationResult(
             EvaluationResultsForMultiLib evaluationResultsForMultiLib,
-            SearchableLibraryIdentifier libraryIdentifier,
+            VersionedIdentifier libraryIdentifier,
             Map<String, Collection<? extends IBaseResource>> expectedEvaluatedResources,
             Map<String, Collection<? extends IBaseResource>> expectedValues) {
 
@@ -230,7 +230,10 @@ class EvaluatedResourceTestUtils {
         var evaluationResult = evaluationResultsForMultiLib.getResultFor(libraryIdentifier);
 
         if (evaluationResult == null) {
-            assertThat(expectedValues.values(), empty());
+            assertThat(
+                    "If the actual evaluationResults are null, we should be expecting an empty collection.",
+                    expectedValues.values(),
+                    empty());
             return;
         }
 
@@ -266,7 +269,7 @@ class EvaluatedResourceTestUtils {
 
     static void assertEvaluationResult(
             EvaluationResultsForMultiLib evaluationResultsForMultiLib,
-            SearchableLibraryIdentifier libraryIdentifier,
+            VersionedIdentifier libraryIdentifier,
             String expressionName,
             Collection<? extends IBaseResource> expectedEvaluatedResources,
             Collection<? extends IBaseResource> expectedValue) {
@@ -294,6 +297,10 @@ class EvaluatedResourceTestUtils {
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources);
         assertValuesEqual(expectedValue, actualValue);
+    }
+
+    static VersionedIdentifier forId(String id) {
+        return new VersionedIdentifier().withId(id);
     }
 
     private static List<IBaseResource> extractResourcesInOrder(Collection<?> resourceCandidates) {

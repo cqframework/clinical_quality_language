@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.SearchableLibraryIdentifier;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +33,10 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
     private static final RetrieveProvider RETRIEVE_PROVIDER_COMPLEX =
             EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.INSTANCE;
 
-    private static final SearchableLibraryIdentifier LIB_1A =
-            SearchableLibraryIdentifier.fromId("EvaluatedResourcesMultiLibComplexDepsTest_Level1A");
-    private static final SearchableLibraryIdentifier LIB_1B =
-            SearchableLibraryIdentifier.fromId("EvaluatedResourcesMultiLibComplexDepsTest_Level1B");
+    private static final VersionedIdentifier LIB_1A =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibComplexDepsTest_Level1A");
+    private static final VersionedIdentifier LIB_1B =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibComplexDepsTest_Level1B");
 
     private static final String EXPRESSION_ENCOUNTERS_A = "Encounters A";
     private static final String EXPRESSION_ENCOUNTERS_B = "Encounters B";
@@ -102,14 +102,14 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
     @MethodSource("singleLibraryEvaluationParams")
     void singleLibraryEvaluation(
             boolean expressionCaching,
-            SearchableLibraryIdentifier libraryIdentifier,
+            VersionedIdentifier libraryIdentifier,
             String expressionName,
             List<IBaseResource> expectedEvaluatedResources,
             List<IBaseResource> expectedValues) {
 
         var engine = getCqlEngineForFhirExistingLibMgr(expressionCaching);
 
-        var resultsSingleLib = engine.evaluate(libraryIdentifier.toIdentifier(), ALL_EXPRESSIONS);
+        var resultsSingleLib = engine.evaluate(libraryIdentifier, ALL_EXPRESSIONS);
 
         assertEvaluationResult(resultsSingleLib, expressionName, expectedEvaluatedResources, expectedValues);
     }
@@ -174,14 +174,14 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
     @MethodSource("multiLibrarySingleEvaluationAtATimeParams")
     void multiLibrarySingleEvaluationAtATime(
             boolean expressionCaching,
-            SearchableLibraryIdentifier libraryIdentifier,
+            VersionedIdentifier libraryIdentifier,
             String expressionName,
             List<IBaseResource> expectedEvaluatedResources,
             List<IBaseResource> expectedValues) {
 
         var engine = getCqlEngineForFhirExistingLibMgr(expressionCaching);
 
-        var resultsSingleLib = engine.evaluate(List.of(libraryIdentifier.toIdentifier()), ALL_EXPRESSIONS);
+        var resultsSingleLib = engine.evaluate(List.of(libraryIdentifier), ALL_EXPRESSIONS);
 
         assertEvaluationResult(
                 resultsSingleLib, libraryIdentifier, expressionName, expectedEvaluatedResources, expectedValues);
@@ -247,14 +247,14 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
     @MethodSource("multiLibraryEvaluationParams")
     void multiLibraryEvaluation(
             boolean expressionCaching,
-            SearchableLibraryIdentifier libraryIdentifier,
+            VersionedIdentifier libraryIdentifier,
             String expressionName,
             List<IBaseResource> expectedEvaluatedResources,
             List<IBaseResource> expectedValues) {
 
         var engine = getCqlEngineForFhirExistingLibMgr(expressionCaching);
 
-        var allLibs = List.of(LIB_1A.toIdentifier(), LIB_1B.toIdentifier());
+        var allLibs = List.of(LIB_1A, LIB_1B);
 
         var resultsSingleLib = engine.evaluate(allLibs, ALL_EXPRESSIONS);
 

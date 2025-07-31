@@ -212,7 +212,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var exceptions = evalResultsForMultiLib.getExceptions();
         assertEquals(1, exceptions.size());
         var exceptionEntry = exceptions.entrySet().iterator().next();
-        assertEquals(SearchableLibraryIdentifier.fromId("MultiLibraryBad"), exceptionEntry.getKey());
+        assertEquals(new VersionedIdentifier().withId("MultiLibraryBad"), exceptionEntry.getKey());
         var exceptionsList = exceptionEntry.getValue();
         assertEquals(1, exceptionsList.size());
         // LUKETODO:  how to ultimately handle the message for these Exceptions?
@@ -242,10 +242,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 evaluationResult3.expressionResults.get("Period").value());
     }
 
-    private EvaluationResult findResultsByLibId(
-            String libId, Map<SearchableLibraryIdentifier, EvaluationResult> results) {
+    private EvaluationResult findResultsByLibId(String libId, Map<VersionedIdentifier, EvaluationResult> results) {
         return results.entrySet().stream()
-                .filter(x -> x.getKey().matches(libId))
+                .filter(x -> x.getKey().getId().equals(libId))
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .orElseThrow();

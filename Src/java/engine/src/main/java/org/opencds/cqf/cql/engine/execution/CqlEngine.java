@@ -61,7 +61,7 @@ public class CqlEngine {
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        log.info("1234: Initializing CQL Engine.");
+        //        log.info("1234: Initializing CQL Engine.");
         requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
 
@@ -284,45 +284,29 @@ public class CqlEngine {
                 .mapToObj(loadMultiLibResult::getLibraryIdentifierAtIndex)
                 .toList();
 
-        var evalResults = new LinkedHashMap<SearchableLibraryIdentifier, EvaluationResult>();
-
-        // LUKETODO:  better algorithm to capture compile errors
-        var errors = new LinkedHashMap<SearchableLibraryIdentifier, String>();
-        var exceptions = new LinkedHashMap<SearchableLibraryIdentifier, List<Exception>>();
-        for (var error : loadMultiLibResult.getErrors().entrySet()) {
-            errors.put(SearchableLibraryIdentifier.fromIdentifier(error.getKey()), error.getValue());
-        }
-        for (var exception : loadMultiLibResult.getExceptions().entrySet()) {
-            exceptions.put(SearchableLibraryIdentifier.fromIdentifier(exception.getKey()), exception.getValue());
-        }
+        var resultBuilder = EvaluationResultsForMultiLib.builder(loadMultiLibResult);
 
         for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
             var library = loadMultiLibResult.retrieveLibrary(libraryIdentifier);
             var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
-            log.info(
-                    "1234: Evaluating library: {} with expressions: [{}]",
+            log.debug(
+                    "Evaluating library: {} with expressions: [{}]",
                     libraryIdentifier.getId(),
                     String.join(", ", expressionSet));
-            // LUKETODO:  I think the error handling is broken here:  we need to capture the error here and keep going
-            var searchableIdentifier = SearchableLibraryIdentifier.fromIdentifier(libraryIdentifier);
             try {
-                var evaluationResult = this.evaluateExpressions2(expressionSet);
-                evalResults.put(searchableIdentifier, evaluationResult);
+                var evaluationResult = this.evaluateExpressions(expressionSet);
+                resultBuilder.addResult(libraryIdentifier, evaluationResult);
             } catch (Exception exception) {
-                // LUKETODO: test this scenario, if possible
-                // LUKETODO:  for now, just log and ignore this, but we need an "errors" construct
-                log.error(
-                        "1234: Failed to evaluate library: {} with expressions: {}", libraryIdentifier, expressionSet);
                 var error = EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE.formatted(
-                        searchableIdentifier.getIdentifierId(), exception.getMessage());
+                        libraryIdentifier.getId(), exception.getMessage());
                 log.error(error);
 
-                errors.put(searchableIdentifier, error);
+                resultBuilder.addException(libraryIdentifier, exception);
             }
         }
 
-        return new EvaluationResultsForMultiLib(evalResults, exceptions, errors);
+        return resultBuilder.build();
     }
 
     private Library retrieveLibraryFromMap(
@@ -369,6 +353,9 @@ public class CqlEngine {
         }
     }
 
+    // LUKETODO:  this is not working and we need to meet the following requirements:
+    // 1) get the current library, evaluate its expressions, and then make sure it gets popped off the stack
+    // 2)
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
         EvaluationResult result = new EvaluationResult();
 
@@ -390,61 +377,10 @@ public class CqlEngine {
                     var action = getState().shouldDebug(def);
                     state.pushActivationFrame(def, def.getContext());
                     try {
-                        log.info(
-                                "1234: OLD visit lib: {} expression: {}",
-                                currentLibrary.getIdentifier().getId(),
-                                expression);
-                        final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
-                        result.expressionResults.put(
-                                expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-                        this.state.logDebugResult(def, object, action);
-                    } finally {
-                        this.state.popActivationFrame();
-                    }
-                } catch (CqlException ce) {
-                    processException(ce, def);
-                } catch (Exception e) {
-                    processException(
-                            e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
-                }
-            }
-        } finally {
-            this.state.endEvaluation();
-        }
-
-        result.setDebugResult(this.state.getDebugResult());
-
-        return result;
-    }
-
-    // LUKETODO:  this is not working and we need to meet the following requirements:
-    // 1) get the current library, evaluate its expressions, and then make sure it gets popped off the stack
-    // 2)
-    private EvaluationResult evaluateExpressions2(Set<String> expressions) {
-        EvaluationResult result = new EvaluationResult();
-
-        this.state.beginEvaluation();
-        try {
-            for (String expression : expressions) {
-                var currentLibrary = this.state.getCurrentLibrary();
-                ExpressionDef def = Libraries.resolveExpressionRef(expression, currentLibrary);
-
-                if (def == null) {
-                    throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
-                }
-
-                if (def instanceof FunctionDef) {
-                    continue;
-                }
-
-                try {
-                    var action = getState().shouldDebug(def);
-                    state.pushActivationFrame(def, def.getContext());
-                    try {
-                        log.info(
-                                "1234: NEW visit lib: {} expression: {}",
-                                currentLibrary.getIdentifier().getId(),
-                                expression);
+                        //                        log.info(
+                        //                                "1234: NEW visit lib: {} expression: {}",
+                        //                                currentLibrary.getIdentifier().getId(),
+                        //                                expression);
                         final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                         result.expressionResults.put(
                                 expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
@@ -465,6 +401,7 @@ public class CqlEngine {
             // We are moving the evaluated resources off the stack so we can work on the next ones
             this.state.clearEvaluatedResources();
             // We are moving the library off the stack so we can work on the next one
+            // LUKETODO:  this causes ExpressionCacheTest to fail
             this.state.exitLibrary(true);
         }
 
@@ -533,24 +470,6 @@ public class CqlEngine {
                 .collect(Collectors.joining(", "));
     }
 
-    private static class LibraryValidationResult {
-        private final Library library;
-        private final List<CqlCompilerException> errors;
-
-        public LibraryValidationResult(Library library, List<CqlCompilerException> errors) {
-            this.library = library;
-            this.errors = errors;
-        }
-
-        public Library getLibrary() {
-            return library;
-        }
-
-        public List<CqlCompilerException> getErrors() {
-            return errors;
-        }
-    }
-
     // LUKETODO: document error handling
     private LoadMultiLibResult loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
 
@@ -574,20 +493,12 @@ public class CqlEngine {
 
         var resultBuilder = LoadMultiLibResult.builder();
 
-        var errorsForLibs = new LinkedHashMap<VersionedIdentifier, String>();
-
         if (CqlCompilerException.hasErrors(
                 errorsById.values().stream().flatMap(Collection::stream).toList())) {
             for (Map.Entry<VersionedIdentifier, List<CqlCompilerException>> entry : errorsById.entrySet()) {
                 var libraryIdentifier = entry.getKey();
                 var exceptions = entry.getValue();
 
-                var joinedErrorMessages = "library %s loaded, but had errors: %s"
-                        .formatted(
-                                libraryIdentifier.getId(),
-                                exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", ")));
-
-                errorsForLibs.put(libraryIdentifier, joinedErrorMessages);
                 resultBuilder.addExceptions(libraryIdentifier, exceptions);
             }
         }
@@ -618,15 +529,10 @@ public class CqlEngine {
             } catch (CqlException | CqlCompilerException exception) {
                 // As with previous code, per searched library identifier, this is an all or nothing operation:
                 // stop at the first Exception and don't capture subsequent errors for subsequent included libraries.
-                errorsForLibs.put(library.getIdentifier(), exception.getMessage());
-                // LUKETODO:  this is gross:  we're effectively removing the library from the results if we get an error
-                // consider a more immutable approach
-                idsToLibraries.remove(library.getIdentifier());
                 resultBuilder.addException(library.getIdentifier(), exception);
             }
         }
 
-        //        return LoadMultiLibResult.resultsAndErrors(idsToLibraries, errorsForLibs);
         return resultBuilder.build();
     }
 
@@ -635,13 +541,12 @@ public class CqlEngine {
             List<CompiledLibrary> resolvedLibraries,
             LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
-        // LUKETODO:  why do I get duped IDs in resolvedLibraries?
-        log.info(
-                "1234: Getting libraries by versioned identifier: {} and resolved: {}",
-                libraryIdentifiersUsedToQuery.stream()
-                        .map(VersionedIdentifier::getId)
-                        .toList(),
-                resolvedLibraries.stream().map(x -> x.getIdentifier().getId()).toList());
+        //        log.info(
+        //                "1234: Getting libraries by versioned identifier: {} and resolved: {}",
+        //                libraryIdentifiersUsedToQuery.stream()
+        //                        .map(VersionedIdentifier::getId)
+        //                        .toList(),
+        //                resolvedLibraries.stream().map(x -> x.getIdentifier().getId()).toList());
 
         var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
                 .filter(ident -> !errorsById.containsKey(ident))
