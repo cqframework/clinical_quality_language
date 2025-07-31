@@ -234,20 +234,15 @@ public class CqlEngine {
             Map<String, Object> parameters,
             DebugMap debugMap,
             ZonedDateTime evaluationDateTime) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier can not be null.");
-        }
 
-        Library library = this.loadAndValidate(libraryIdentifier);
-
-        if (expressions == null) {
-            expressions = this.getExpressionSet(library);
-        }
-
-        this.initializeState(library, debugMap, evaluationDateTime);
-        this.setParametersForContext(library, contextParameter, parameters);
-
-        return this.evaluateExpressions(expressions);
+        return evaluate(
+                        Collections.singletonList(libraryIdentifier),
+                        expressions,
+                        contextParameter,
+                        parameters,
+                        debugMap,
+                        evaluationDateTime)
+                .getOnlyResultOrThrow();
     }
 
     public EvaluationResultsForMultiLib evaluate(
@@ -258,7 +253,7 @@ public class CqlEngine {
             DebugMap debugMap,
             ZonedDateTime nullableEvaluationDateTime) {
 
-        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() | libraryIdentifiers.get(0) == null) {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
@@ -297,7 +292,7 @@ public class CqlEngine {
             try {
                 var evaluationResult = this.evaluateExpressions(expressionSet);
                 resultBuilder.addResult(libraryIdentifier, evaluationResult);
-            } catch (Exception exception) {
+            } catch (RuntimeException exception) {
                 var error = EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE.formatted(
                         libraryIdentifier.getId(), exception.getMessage());
                 log.error(error);
@@ -307,28 +302,6 @@ public class CqlEngine {
         }
 
         return resultBuilder.build();
-    }
-
-    private Library retrieveLibraryFromMap(
-            Map<VersionedIdentifier, Library> librariesByIdentifier, VersionedIdentifier libraryIdentifier) {
-        if (librariesByIdentifier == null || librariesByIdentifier.isEmpty()) {
-            throw new IllegalArgumentException("librariesByIdentifier can not be null or empty.");
-        }
-        if (libraryIdentifier.getVersion() != null) {
-            if (!librariesByIdentifier.containsKey(libraryIdentifier)) {
-                throw new IllegalArgumentException(
-                        String.format("libraryIdentifier '%s' does not exist.", libraryIdentifier));
-            }
-
-            return librariesByIdentifier.get(libraryIdentifier);
-        }
-
-        return librariesByIdentifier.entrySet().stream()
-                .filter(entry -> entry.getKey().getId().equals(libraryIdentifier.getId()))
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("library id %s not found.", libraryIdentifier.getId())));
     }
 
     private void initializeEvalTime(ZonedDateTime nullableEvaluationDateTime) {
@@ -479,18 +452,6 @@ public class CqlEngine {
 
         var idsToLibraries = getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries, errorsById);
 
-        // We couldn't load any libraries:  instead of throwing just collect the errors now
-        if (idsToLibraries.isEmpty()) {
-            var errorsForLibs = new LinkedHashMap<VersionedIdentifier, String>();
-
-            for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
-                errorsForLibs.put(
-                        libraryIdentifier, "Unable to load libraries: %s".formatted(showLibs(libraryIdentifiers)));
-            }
-
-            return LoadMultiLibResult.errorsOnly(errorsForLibs);
-        }
-
         var resultBuilder = LoadMultiLibResult.builder();
 
         if (CqlCompilerException.hasErrors(
@@ -499,7 +460,7 @@ public class CqlEngine {
                 var libraryIdentifier = entry.getKey();
                 var exceptions = entry.getValue();
 
-                resultBuilder.addExceptions(libraryIdentifier, exceptions);
+                resultBuilder.addException(libraryIdentifier, wrapException(libraryIdentifier, exceptions));
             }
         }
 
@@ -534,6 +495,14 @@ public class CqlEngine {
         }
 
         return resultBuilder.build();
+    }
+
+    private CqlException wrapException(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> exceptions) {
+        return new CqlException("Library %s loaded, but had errors: %s"
+                .formatted(
+                        libraryIdentifier.getId()
+                                + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
+                        exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
     }
 
     private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(

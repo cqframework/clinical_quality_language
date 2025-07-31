@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.ZoneOffset;
 import java.util.List;
@@ -99,7 +98,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(1, libraryResults.size());
-        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
+        assertFalse(evalResultsForMultiLib.hasExceptions());
 
         var evaluationResult = findResultsByLibId("LibraryWithVersion", libraryResults);
         assertEquals(5, evaluationResult.expressionResults.get("Number").value());
@@ -130,7 +129,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
-        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
+        assertFalse(evalResultsForMultiLib.hasExceptions());
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
@@ -172,7 +171,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
-        assertTrue(evalResultsForMultiLib.getErrors().isEmpty());
+        assertFalse(evalResultsForMultiLib.hasExceptions());
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
@@ -213,12 +212,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(1, exceptions.size());
         var exceptionEntry = exceptions.entrySet().iterator().next();
         assertEquals(new VersionedIdentifier().withId("MultiLibraryBad"), exceptionEntry.getKey());
-        var exceptionsList = exceptionEntry.getValue();
-        assertEquals(1, exceptionsList.size());
-        // LUKETODO:  how to ultimately handle the message for these Exceptions?
-        //        assertEquals("library MultiLibraryBad loaded, but had errors: Syntax error at define",
-        // exceptionsList.get(0).getMessage());
-        assertEquals("Syntax error at define", exceptionsList.get(0).getMessage());
+        var exception = exceptionEntry.getValue();
+        assertNotNull(exception);
+        assertEquals("Library MultiLibraryBad loaded, but had errors: Syntax error at define", exception.getMessage());
 
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size()); // there is no eval result for MultiLibraryBad

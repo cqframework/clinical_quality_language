@@ -210,8 +210,8 @@ public class LibraryManager {
             Map<VersionedIdentifier, List<CqlCompilerException>> errorsById,
             CacheMode cacheMode) {
 
-        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty()) {
-            throw new IllegalArgumentException("libraryIdentifier is null or empty.");
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null");
         }
 
         if (libraryIdentifiers.stream()

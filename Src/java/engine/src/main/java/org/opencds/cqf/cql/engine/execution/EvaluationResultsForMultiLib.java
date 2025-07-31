@@ -1,25 +1,19 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.opencds.cqf.cql.engine.exception.CqlException;
 
 // LUKETODO: builder, immutability, immutable copies of collections, etc
 // LUKETODO: record?
 // LUKETODO: javadoc
 public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, EvaluationResult> results;
-    private final Map<VersionedIdentifier, List<Exception>> exceptions;
-    // LUKETODO:  single or multiple errors per library??
-    private final Map<VersionedIdentifier, String> errors;
+    private final Map<VersionedIdentifier, RuntimeException> exceptions;
 
     private EvaluationResultsForMultiLib(Builder builder) {
         this.results = builder.results;
         this.exceptions = builder.exceptions;
-        this.errors = builder.errors;
     }
 
     // Visible for testing
@@ -30,13 +24,7 @@ public class EvaluationResultsForMultiLib {
 
     // Visible for testing
     // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
-    Map<VersionedIdentifier, String> getErrors() {
-        return errors;
-    }
-
-    // Visible for testing
-    // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
-    Map<VersionedIdentifier, List<Exception>> getExceptions() {
+    Map<VersionedIdentifier, RuntimeException> getExceptions() {
         return exceptions;
     }
 
@@ -44,8 +32,8 @@ public class EvaluationResultsForMultiLib {
         return results.containsKey(libraryIdentifier);
     }
 
-    public boolean containsErrorsOrExceptionsFor(VersionedIdentifier libraryIdentifier) {
-        return errors.containsKey(libraryIdentifier) || exceptions.containsKey(libraryIdentifier);
+    public boolean containsExceptionsFor(VersionedIdentifier libraryIdentifier) {
+        return exceptions.containsKey(libraryIdentifier);
     }
 
     // LUKETODO:  do we keep this?
@@ -68,13 +56,13 @@ public class EvaluationResultsForMultiLib {
     }
 
     public EvaluationResult getSingleResultOrThrow() {
-        if (results.size() > 1 || errors.size() > 1) {
+        if (results.size() > 1 || exceptions.size() > 1) {
             throw new IllegalStateException("Expected exactly one result or error, but found results: %s errors: %s: "
-                    .formatted(results.size(), errors.size()));
+                    .formatted(results.size(), exceptions.size()));
         }
 
-        if (!errors.isEmpty()) {
-            throw new CqlException(this.errors.values().iterator().next());
+        if (!exceptions.isEmpty()) {
+            throw this.exceptions.values().iterator().next();
         }
 
         return this.getFirstResult();
@@ -82,47 +70,22 @@ public class EvaluationResultsForMultiLib {
 
     // LUKETODO:  test all scenarios here
     public EvaluationResult getOnlyResultOrThrow() {
-        if (results.size() > 1 || errors.size() > 1 || exceptions.size() > 1) {
+        if (results.size() > 1 || exceptions.size() > 1) {
             throw new IllegalStateException("Expected exactly one result or error, but found results: %s errors: %s: "
-                    .formatted(results.size(), errors.size()));
+                    .formatted(results.size(), exceptions.size()));
         }
 
-        var firstError = getFirstError();
-        var firstListOfExceptions = getFirstListOfExceptions();
+        var firstException = getFirstException();
 
-        if (firstError != null && firstListOfExceptions.isEmpty()) {
-            // LUKETODO: prepend the error message?
-            throw new CqlException(firstError);
-        }
-
-        if (firstError == null && !firstListOfExceptions.isEmpty()) {
-            if (firstListOfExceptions.size() == 1) {
-                var firstException = firstListOfExceptions.get(0);
-                throw new CqlException(firstException.getMessage(), firstException);
-            }
-
-            var exceptionMessages =
-                    firstListOfExceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "));
-
-            throw new CqlException(exceptionMessages);
-        }
-
-        if (firstError != null) {
-            var exceptionMessages =
-                    firstListOfExceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "));
-
-            throw new CqlException(firstError + ", " + exceptionMessages);
+        if (firstException != null) {
+            throw firstException;
         }
 
         return this.getFirstResult();
     }
 
-    public String getErrorFor(VersionedIdentifier libraryIdentifier) {
-        return errors.getOrDefault(libraryIdentifier, null);
-    }
-
-    public List<Exception> getExceptionsFor(VersionedIdentifier libraryIdentifier) {
-        return exceptions.getOrDefault(libraryIdentifier, List.of());
+    public RuntimeException getExceptionFor(VersionedIdentifier libraryIdentifier) {
+        return exceptions.getOrDefault(libraryIdentifier, null);
     }
 
     private boolean matchIdentifiers(
@@ -135,18 +98,16 @@ public class EvaluationResultsForMultiLib {
         return results.entrySet().iterator().next().getValue();
     }
 
-    private String getFirstError() {
-        if (errors.isEmpty()) {
+    private RuntimeException getFirstException() {
+        if (exceptions.isEmpty()) {
             return null;
         }
-        return errors.values().iterator().next();
+
+        return exceptions.values().iterator().next();
     }
 
-    private List<Exception> getFirstListOfExceptions() {
-        if (exceptions.isEmpty()) {
-            return List.of();
-        }
-        return exceptions.values().iterator().next();
+    public boolean hasExceptions() {
+        return !exceptions.isEmpty();
     }
 
     static Builder builder(LoadMultiLibResult loadMultiLibResult) {
@@ -155,12 +116,10 @@ public class EvaluationResultsForMultiLib {
 
     static class Builder {
         private final LinkedHashMap<VersionedIdentifier, EvaluationResult> results = new LinkedHashMap<>();
-        private final LinkedHashMap<VersionedIdentifier, List<Exception>> exceptions = new LinkedHashMap<>();
-        private final LinkedHashMap<VersionedIdentifier, String> errors = new LinkedHashMap<>();
+        private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions = new LinkedHashMap<>();
 
         Builder(LoadMultiLibResult loadMultiLibResult) {
             exceptions.putAll(loadMultiLibResult.getExceptions());
-            errors.putAll(loadMultiLibResult.getErrors());
         }
 
         Builder addResult(VersionedIdentifier libraryId, EvaluationResult evaluationResult) {
@@ -168,10 +127,8 @@ public class EvaluationResultsForMultiLib {
             return this;
         }
 
-        Builder addException(VersionedIdentifier libraryId, Exception exception) {
-            exceptions
-                    .computeIfAbsent(withIdOnly(libraryId), k -> new java.util.ArrayList<>())
-                    .add(exception);
+        Builder addException(VersionedIdentifier libraryId, RuntimeException exception) {
+            exceptions.put(withIdOnly(libraryId), exception);
             return this;
         }
 
