@@ -85,15 +85,16 @@ open class BaseLibraryManager(
         errors: MutableList<CqlCompilerException>?
     ): CompiledLibrary {
         var result: CompiledLibrary?
+        val libraryPath = NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
+
         if (!cqlCompilerOptions.enableCqlOnly) {
             result = tryCompiledLibraryElm(libraryIdentifier, cqlCompilerOptions)
             if (result != null) {
+                validateIdentifiers(libraryIdentifier, result, libraryPath)
                 sortStatements(result)
                 return result
             }
         }
-        val libraryPath: String =
-            NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
         val cqlSource =
             librarySourceLoader.getLibrarySource(libraryIdentifier)
                 ?: throw CqlIncludeException(
@@ -107,29 +108,20 @@ open class BaseLibraryManager(
         compiler.run(cqlSource)
         errors?.addAll((compiler.exceptions)!!)
         result = compiler.compiledLibrary
-        if (
-            (libraryIdentifier.version != null &&
-                libraryIdentifier.version != result!!.identifier!!.version)
-        ) {
+
+        if (result == null) {
             throw CqlIncludeException(
-                """Library $libraryPath was included as version ${libraryIdentifier.version}, 
-                        but version ${result.identifier!!.version} of the library was found.""",
+                "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system,
                 libraryIdentifier.id!!,
                 libraryIdentifier.version
             )
         }
-        if (result == null) {
-            throw CqlIncludeException(
-                "Could not load source for library $libraryPath.",
-                libraryIdentifier.system,
-                libraryIdentifier.id!!,
-                null
-            )
-        } else {
-            sortStatements(result)
-            return result
-        }
+
+        validateIdentifiers(libraryIdentifier, result, libraryPath)
+
+        sortStatements(result)
+        return result
     }
 
     protected open fun getCompilerForLibrary(
@@ -140,6 +132,39 @@ open class BaseLibraryManager(
             libraryIdentifier,
             this
         )
+    }
+
+    private fun validateIdentifiers(
+        libraryIdentifier: VersionedIdentifier,
+        result: CompiledLibrary,
+        libraryPath: String
+    ) {
+
+        val resultIdentifier = result.identifier!!
+
+        val areIdsEqual = libraryIdentifier.id.equals(resultIdentifier.id)
+        val libraryIdentifierVersion = libraryIdentifier.version
+        val resultIdentifierVersion = resultIdentifier.version
+
+        // If the library VersionedIdentifier used to query is null, then don't compare to the
+        // result library version, since we're doing a broader search
+        val areIdentifiersValid: Boolean
+        if (libraryIdentifierVersion == null) {
+            areIdentifiersValid = areIdsEqual
+        } else {
+            val areVersionsEqual = libraryIdentifierVersion.equals(resultIdentifier.version)
+            areIdentifiersValid = areIdsEqual && areVersionsEqual
+        }
+
+        if (!areIdentifiersValid) {
+            throw CqlIncludeException(
+                @Suppress("MaxLineLength")
+                "Library $libraryPath was included with version $libraryIdentifierVersion, but id: ${resultIdentifier.id} and version $resultIdentifierVersion of the library was found.",
+                libraryIdentifier.system,
+                libraryIdentifier.id!!,
+                libraryIdentifierVersion ?: "null"
+            )
+        }
     }
 
     private fun sortStatements(compiledLibrary: CompiledLibrary) {

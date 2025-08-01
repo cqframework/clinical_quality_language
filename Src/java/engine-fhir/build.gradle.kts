@@ -12,9 +12,13 @@ dependencies {
     testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
 }
 
-tasks.register<XjcTask>("generateFhirPathTests") {
+val generateFhirPathTests = tasks.register<XjcTask>("generateFhirPathTests") {
     schema = "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema"
     extraArgs = listOf("-npa", "-p", "org.hl7.fhirpath.tests")
+}
+
+tasks.named("sourcesJar") {
+    dependsOn(generateFhirPathTests)
 }
 
 tasks.jacocoTestReport {

@@ -1,4 +1,4 @@
-library NullologicalOperator version '1'
+library CqlNullologicalOperatorsTest version '1'
 
 //Coalesce
 define CoalesceANull : Coalesce('a', null)

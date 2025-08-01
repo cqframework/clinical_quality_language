@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     id("org.sonarqube") version "4.4.1.3373"
+    id("com.dorongold.task-tree") version "2.1.1"
     id("com.diffplug.spotless") version "6.25.0"
 }
 

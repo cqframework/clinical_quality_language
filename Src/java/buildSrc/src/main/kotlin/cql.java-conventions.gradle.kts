@@ -1,8 +1,10 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
 plugins {
     kotlin("jvm")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish")
     id("jacoco")
-    id("signing")
     id("cql.sca-conventions")
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
@@ -12,13 +14,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-    maven {
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 
@@ -63,12 +59,6 @@ tasks.register<Jar>("dokkaHtmlJar") {
     archiveClassifier.set("html-docs")
 }
 
-tasks.register<Jar>("dokkaJavadocJar") {
-    dependsOn(tasks.dokkaJavadoc)
-    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
 jacoco {
     toolVersion = "0.8.11"
 
@@ -97,6 +87,7 @@ tasks.javadoc {
     options {
         val standardOptions = this as StandardJavadocDocletOptions
         standardOptions.addStringOption("Xdoclint:none", "-quiet")
+        standardOptions.addBooleanOption("html5", true)
     }
 }
 
@@ -108,96 +99,71 @@ tasks.withType<JavaCompile> {
 
 /*
 A few things:
-   - You must have an OSSRH Jira account (https://issues.sonatype.org/secure/Signup!valault.jspa)
-   - Your account must have privileges to upload info.cqframework artifacts (https://issues.sonatype.org/browse/OSSRH-15514)
+   - You must have a Maven Central account (https://central.sonatype.org/register/central-portal/)
+   - Your account must have privileges to upload info.cqframework artifacts
    - You must have a gpg key (http://central.sonatype.org/pages/working-with-pgp-signatures.html)
-   - You must set your account info and GPG key in your user"s gradle.properties file.  For example:
-       ossrhUsername=foo
-       ossrhPassword=b@r
+   - You must set your account info and GPG key in your user's gradle.properties file.  For example:
+       mavenCentralUsername=foo
+       mavenCentralPassword=b@r
        signing.keyId=24875D73
        signing.password=secret
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
-   - If the library version ends with "-SNAPSHOT", it will be deployed to the snapshot repository, else it will be
+   - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
-   - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snapshots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
-   - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
-   - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
+   - Repo for snapshots for the translator modules: https://central.sonatype.com/repository/maven-snapshots/info/cqframework/
+   - Repo for releases for the translator modules: https://central.sonatype.com/repository/maven-releases/info/cqframework/
  */
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
+mavenPublishing {
+    configure(JavaLibrary(JavadocJar.Javadoc(), true))
 
-            pom {
-                name = project.name
-                packaging = "jar"
-                description =
-                    "The ${project.name} library for the Clinical Quality Language Java reference implementation"
-                url = "http://cqframework.info"
+    publishToMavenCentral(true)
+    if (!version.toString().endsWith("SNAPSHOT")) {
+        signAllPublications()
+    }
+    coordinates("info.cqframework", project.name, project.version.toString())
+    pom {
+        name = project.name
+        description = "The ${project.name} library for the Clinical Quality Language Java reference implementation"
+        url = "http://cqframework.org"
 
-                scm {
-                    connection = "scm:git:git@github.com:cqframework/clinical_quality_language.git"
-                    developerConnection = "scm:git:git@github.com:cqframework/clinical_quality_language.git"
-                    url = "git@github.com:cqframework/clinical_quality_language.git"
-                }
-
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    }
-                }
-
-                developers {
-                    developer {
-                        name = "Bryn Rhodes"
-                    }
-                    developer {
-                        name = "Chris Moesel"
-                    }
-                    developer {
-                        name = "Rob Dingwell"
-                    }
-                    developer {
-                        name = "Jason Walonoski"
-                    }
-                    developer {
-                        name = "Marc Hadley"
-                    }
-                    developer {
-                        name = "Jonathan Percival"
-                    }
-                }
+        licenses {
+            license {
+                name ="The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
-    }
-    repositories {
-        maven {
-            credentials {
-                username = project.findProperty("ossrhUsername") as String? ?: System.getenv("OSSRH_USERNAME") ?: ""
-                password = project.findProperty("ossrhPassword") as String? ?: System.getenv("OSSRH_TOKEN") ?: ""
+
+        scm {
+            connection = "scm:git:git@github.com:cqframework/clinical_quality_language.git"
+            developerConnection = "scm:git:git@github.com:cqframework/clinical_quality_language.git"
+            url = "git@github.com:cqframework/clinical_quality_language.git"
+        }
+
+        developers {
+            developer {
+                name = "Bryn Rhodes"
             }
-
-            /* Use these to test locally (but don"t forget to comment out others!)
-            val releasesRepoUrl = "file://${buildDir}/repo"
-            val snapshotsRepoUrl = "file://${buildDir}/ssRepo"
-            */
-
-            // change URLs to point to your repos, e.g. http://my.org/repo
-            val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            if ((project.version as String).endsWith("SNAPSHOT")) {
-                url = uri(snapshotsRepoUrl)
-            } else {
-                url = uri(releasesRepoUrl)
+            developer {
+                name = "Chris Moesel"
+            }
+            developer {
+                name = "Rob Dingwell"
+            }
+            developer {
+                name = "Jason Walonoski"
+            }
+            developer {
+                name = "Marc Hadley"
+            }
+            developer {
+                name = "Jonathan Percival"
+            }
+            developer {
+                name = "Anton Vasetenkov"
+            }
+            developer {
+                name = "Luke deGruchy"
             }
         }
-    }
-}
-
-signing {
-    if (!(version as String).endsWith("SNAPSHOT")) {
-        sign(publishing.publications["mavenJava"])
     }
 }

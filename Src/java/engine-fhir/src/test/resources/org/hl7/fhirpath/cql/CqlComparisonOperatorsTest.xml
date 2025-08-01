@@ -100,6 +100,10 @@
 			<expression>1'cm':2'cm' = 1.1'cm':2'cm'</expression>
 			<output>false</output>
 		</test>
+		<test name="RatioNotEqual2">
+			<expression>1'cm':2'cm' = 2'cm':4'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="TupleEqJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>
@@ -720,6 +724,14 @@
 		</test>
 		<test name="RatioEquivalent">
 			<expression>1'cm':2'cm' ~ 1'cm':2'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioEquivalent2">
+			<expression>1'cm':2'cm' ~ 2'cm':4'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioEquivalent3">
+			<expression>1'cm':0'cm' ~ 2'cm':0'cm'</expression>
 			<output>true</output>
 		</test>
 		<test name="RatioNotEquivalent">

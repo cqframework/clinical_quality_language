@@ -14,6 +14,7 @@ dependencies {
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:3.1.0")
     implementation("ru.vyarus:gradle-animalsniffer-plugin:1.7.2")
     implementation("com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14")
+    implementation("com.vanniktech:gradle-maven-publish-plugin:0.33.0")
     implementation("org.jetbrains.kotlin:kotlin-serialization:2.1.20")
     implementation("org.glassfish.jaxb:xsom:4.0.5")
     implementation("com.squareup:kotlinpoet:2.1.0")

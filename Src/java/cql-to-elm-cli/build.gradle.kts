@@ -8,6 +8,14 @@ application {
 }
 
 dependencies {
+    implementation(platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${project.findProperty("hapi.version")}"))
+
+    implementation("ca.uhn.hapi.fhir:hapi-fhir-base") {
+        exclude(group = "org.eclipse.jetty")
+        exclude(group = "xpp3")
+        exclude(group = "org.junit")
+    }
+
     implementation(project(":cql-to-elm"))
     implementation(project(":cqf-fhir"))
     implementation(project(":cqf-fhir-npm"))

@@ -9,8 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @SuppressWarnings("removal")
-class CqlTimezoneTests extends CqlTestBase {
-    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimezoneTests");
+class CqlTimeZoneTests extends CqlTestBase {
+    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimeZoneTests");
 
     @MethodSource("timezones")
     @ParameterizedTest

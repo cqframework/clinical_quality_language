@@ -313,7 +313,9 @@ class Cql2ElmVisitor(
         val def: CodeSystemDef?
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name)
-            libraryBuilder.checkAccessLevel(libraryName, name, def!!.accessLevel!!)
+            if (def != null) {
+                libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel!!)
+            }
         } else {
             def = libraryBuilder.resolveCodeSystemRef(name)
         }
@@ -330,7 +332,9 @@ class Cql2ElmVisitor(
         val def: CodeDef?
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name)
-            libraryBuilder.checkAccessLevel(libraryName, name, def!!.accessLevel!!)
+            if (def != null) {
+                libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel!!)
+            }
         } else {
             def = libraryBuilder.resolveCodeRef(name)
         }
@@ -381,7 +385,12 @@ class Cql2ElmVisitor(
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codeId()))
-        cd.codeSystem = visit(ctx.codesystemIdentifier()) as CodeSystemRef?
+
+        val cs = visit(ctx.codesystemIdentifier())
+        if (cs is CodeSystemRef) {
+            cd.codeSystem = cs
+        }
+
         if (ctx.displayClause() != null) {
             cd.display = parseString(ctx.displayClause()!!.STRING())
         }
