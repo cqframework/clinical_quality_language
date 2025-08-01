@@ -13,11 +13,11 @@ If the run-time type of the argument is of the type being tested, the result of 
 
 public class IsEvaluator {
     private static Class<?> resolveType(Is is, State state) {
-        if (is.getIsTypeSpecifier() != null) {
-            return state.getEnvironment().resolveType(is.getIsTypeSpecifier());
+        if (is.isTypeSpecifier() != null) {
+            return state.getEnvironment().resolveType(is.isTypeSpecifier());
         }
 
-        return state.getEnvironment().resolveType(is.getIsType());
+        return state.getEnvironment().resolveType(is.isType());
     }
 
     public static Object internalEvaluate(Is is, Object operand, State state) {
