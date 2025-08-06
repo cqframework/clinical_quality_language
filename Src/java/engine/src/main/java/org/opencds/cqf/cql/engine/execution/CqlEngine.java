@@ -68,6 +68,10 @@ public class CqlEngine {
         this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
         this.state = new State(environment, engineOptions);
 
+        log.info(
+                "1234: is ExpressionCachingEnabled: {}",
+                this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching));
+
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
         }
@@ -261,15 +265,27 @@ public class CqlEngine {
 
         initializeEvalTime(nullableEvaluationDateTime);
 
+        final List<String> libraryIdsIds =
+                libraryIdentifiers.stream().map(VersionedIdentifier::getId).toList();
+        log.info("1234:  CQL:  state.init(): {}", libraryIdsIds);
+
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(loadMultiLibResult.getAllLibraries());
 
-        // LUKETODO:  deal with this: since we need to deal with the use case of parameters
-        // LUKETODO:  I think this may possibly be related to the unit test failures?
-        // LUKETODO:  what does setParametersForContext() actually do, and why does it take a library that's not read?
+        //        // LUKETODO:  deal with this: since we need to deal with the use case of parameters
+        //        // LUKETODO:  I think this may possibly be related to the unit test failures?
+        //        // LUKETODO:  what does setParametersForContext() actually do, and why does it take a library that's
+        // not read?
+
+        // We must do this only once per library evaluation otherwise, we may clear the cache prematurely
+        if (contextParameter != null) {
+            state.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
+        }
+
         loadMultiLibResult
                 .getAllLibraries()
-                .forEach(library -> this.setParametersForContext(library, contextParameter, parameters));
+                // LUKETODO:  this is probably where we're clearing the cache and we shouldn't
+                .forEach(library -> state.setParameters(library, parameters));
 
         initializeDebugMap(debugMap);
 
@@ -382,15 +398,6 @@ public class CqlEngine {
         result.setDebugResult(this.state.getDebugResult());
 
         return result;
-    }
-
-    private void setParametersForContext(
-            Library library, Pair<String, Object> contextParameter, Map<String, Object> parameters) {
-        if (contextParameter != null) {
-            state.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
-        }
-
-        state.setParameters(library, parameters);
     }
 
     private Library loadAndValidate(VersionedIdentifier libraryIdentifier) {

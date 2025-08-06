@@ -5,8 +5,11 @@ import java.util.Map;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 // LUKETODO: builder, immutability, immutable copies of collections, etc
-// LUKETODO: record?
-// LUKETODO: javadoc
+
+/**
+ * Track evaluation results and exceptions for multiple libraries in a single evaluation, to support partial
+ * successes and partial failures across libraries.
+ */
 public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, EvaluationResult> results;
     private final Map<VersionedIdentifier, RuntimeException> exceptions;

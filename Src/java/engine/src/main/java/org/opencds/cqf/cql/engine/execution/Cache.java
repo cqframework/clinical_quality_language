@@ -6,6 +6,8 @@ import java.util.Map;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * There are at least two types of data that need to be cached, some that is context dependent, like expression results
@@ -14,6 +16,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
  */
 public class Cache {
 
+    private static final Logger log = LoggerFactory.getLogger(Cache.class);
     private boolean enableExpressionCache = false;
 
     private final Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
@@ -61,7 +64,29 @@ public class Cache {
     }
 
     public ExpressionResult getCachedExpression(VersionedIdentifier libraryId, String name) {
-        return getExpressionCache(libraryId).get(name);
+        final Map<String, ExpressionResult> expressionCache = getExpressionCache(libraryId);
+        final ExpressionResult expressionResult = expressionCache.get(name);
+        log.info(
+                "1234: getCachedExpression(): library: [{}], name: [{}], expressionResult: {}",
+                rightPad(libraryId.getId(), 10),
+                rightPad(name, 20),
+                expressionResult);
+        return expressionResult;
+    }
+
+    private static String rightPad(Object o, int length) {
+        if (o == null) {
+            return null;
+        }
+        String s = o.toString();
+        if (s.length() >= length) {
+            return s;
+        }
+        StringBuilder sb = new StringBuilder(s);
+        while (sb.length() < length) {
+            sb.append(' ');
+        }
+        return sb.toString();
     }
 
     public Map<FunctionRef, FunctionDef> getFunctionCache() {

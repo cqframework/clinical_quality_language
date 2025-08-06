@@ -63,7 +63,6 @@ class LoadMultiLibResult {
 
     public static class Builder {
         private final LinkedHashMap<VersionedIdentifier, Library> results = new LinkedHashMap<>();
-        private final LinkedHashMap<VersionedIdentifier, String> errors = new LinkedHashMap<>();
         private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions = new LinkedHashMap<>();
 
         void addResult(VersionedIdentifier libraryId, Library library) {

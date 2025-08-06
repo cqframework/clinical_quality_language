@@ -13,11 +13,14 @@ import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.Severity;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * State represents the internal state of the CqlEngine.
  */
 public class State {
+    private static final Logger log = LoggerFactory.getLogger(State.class);
 
     public static class ActivationFrame {
 
@@ -262,6 +265,13 @@ public class State {
      * @param libraries the list of libraries to initialize
      */
     public void init(List<Library> libraries) {
+        log.info(
+                "1234: getLibraryEngine() for ids: {}",
+                libraries.stream()
+                        .map(Library::getIdentifier)
+                        .map(VersionedIdentifier::getId)
+                        .toList());
+
         assert this.stack.isEmpty();
 
         for (Library library : libraries) {
@@ -377,10 +387,19 @@ public class State {
     }
 
     public void setContextValue(String context, Object contextValue) {
-        if (!contextValues.containsKey(context) || !contextValues.get(context).equals(contextValue)) {
+        final boolean containsKey = contextValues.containsKey(context);
+        final Object valueFromContextValues = contextValues.get(context);
+        final boolean valuesAreEqual = contextValue.equals(valueFromContextValues);
+
+        if (!containsKey || !valuesAreEqual) {
             contextValues.put(context, contextValue);
-            cache.getExpressions().clear();
+            clearCacheExpressions();
         }
+    }
+
+    private void clearCacheExpressions() {
+        log.info("1234 CLEARING CACHE");
+        cache.getExpressions().clear();
     }
 
     public boolean enterContext(String context) {

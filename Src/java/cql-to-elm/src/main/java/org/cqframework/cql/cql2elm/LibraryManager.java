@@ -289,6 +289,7 @@ public class LibraryManager {
         var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
+            logger.info("5656: Trying to compile ELM for library: {}", libraryIdentifier.getId());
             var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (elmCompiledLibrary != null) {
                 validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
@@ -301,6 +302,7 @@ public class LibraryManager {
         List<CqlCompilerException> errors;
 
         try {
+            logger.info("6767: Trying to compile CQL for library: {}", libraryIdentifier.getId());
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
             if (cqlSource == null) {
                 throw new CqlIncludeException(
