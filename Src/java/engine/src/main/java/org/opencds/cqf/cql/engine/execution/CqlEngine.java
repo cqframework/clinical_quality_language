@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * NOTE: We have updated CqlEngine to adopt a visitor pattern approach to traversing the ELM tree for execution:
- *
+ * <p/>
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a potential maintenance issue.
  *
  */
@@ -272,20 +272,12 @@ public class CqlEngine {
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(loadMultiLibResult.getAllLibraries());
 
-        //        // LUKETODO:  deal with this: since we need to deal with the use case of parameters
-        //        // LUKETODO:  I think this may possibly be related to the unit test failures?
-        //        // LUKETODO:  what does setParametersForContext() actually do, and why does it take a library that's
-        // not read?
-
         // We must do this only once per library evaluation otherwise, we may clear the cache prematurely
         if (contextParameter != null) {
             state.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
         }
 
-        loadMultiLibResult
-                .getAllLibraries()
-                // LUKETODO:  this is probably where we're clearing the cache and we shouldn't
-                .forEach(library -> state.setParameters(library, parameters));
+        loadMultiLibResult.getAllLibraries().forEach(library -> state.setParameters(library, parameters));
 
         initializeDebugMap(debugMap);
 
@@ -325,18 +317,6 @@ public class CqlEngine {
     }
 
     private void initializeDebugMap(DebugMap debugMap) {
-        if (debugMap != null) {
-            this.state.setDebugMap(debugMap);
-        }
-    }
-
-    private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (evaluationDateTime == null) {
-            evaluationDateTime = ZonedDateTime.now();
-        }
-
-        this.state.setEvaluationDateTime(evaluationDateTime);
-        this.state.init(library);
         if (debugMap != null) {
             this.state.setDebugMap(debugMap);
         }
@@ -394,13 +374,13 @@ public class CqlEngine {
             this.state.exitLibrary(true);
         }
 
-        // LUKETODO:  break this out of the loop?
         result.setDebugResult(this.state.getDebugResult());
+        // LUKETODO:  do we need a new DebugMap/DebugResult for each library?
 
         return result;
     }
 
-    private Library loadAndValidate(VersionedIdentifier libraryIdentifier) {
+    private void loadAndValidate(VersionedIdentifier libraryIdentifier) {
 
         var errors = new ArrayList<CqlCompilerException>();
         var library = this.environment
@@ -440,14 +420,6 @@ public class CqlEngine {
                         .withVersion(include.getVersion()));
             }
         }
-
-        return library;
-    }
-
-    private String showLibs(Collection<VersionedIdentifier> libraryIdentifiers) {
-        return libraryIdentifiers.stream()
-                .map(lib -> lib.getId() + (lib.getVersion() != null ? "-" + lib.getVersion() : ""))
-                .collect(Collectors.joining(", "));
     }
 
     // LUKETODO: document error handling
@@ -517,23 +489,14 @@ public class CqlEngine {
             List<CompiledLibrary> resolvedLibraries,
             LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
 
-        //        log.info(
-        //                "1234: Getting libraries by versioned identifier: {} and resolved: {}",
-        //                libraryIdentifiersUsedToQuery.stream()
-        //                        .map(VersionedIdentifier::getId)
-        //                        .toList(),
-        //                resolvedLibraries.stream().map(x -> x.getIdentifier().getId()).toList());
-
         var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
                 .filter(ident -> !errorsById.containsKey(ident))
                 .toList();
 
         if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
-            // LUKETODO:  why are we getting this from the FHIR multi-lib tests?
-            // LUKETODO:  we get this because we're testing the cached and it only has a single library
             throw new CqlException(
                     "Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
-                            .formatted(libraryIdentifiersUsedToQuery.size(), resolvedLibraries.size()));
+                            .formatted(nonErroredIdentifiers.size(), resolvedLibraries.size()));
         }
 
         for (int index = 0; index < nonErroredIdentifiers.size(); index++) {
