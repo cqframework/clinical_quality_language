@@ -322,9 +322,14 @@ public class CqlEngine {
         }
     }
 
-    // LUKETODO:  this is not working and we need to meet the following requirements:
-    // 1) get the current library, evaluate its expressions, and then make sure it gets popped off the stack
-    // 2)
+    /**
+     * Evaluate one library within either a single library or multiple library context.
+     * Once evaluation is done, ensure the stack for the library and evaluated resources is popped, so as to
+     * permit evaluation of the next library, if applicable.
+     * <p/>
+     * @param expressions Expressions to evaluate
+     * @return The EvaluationResult containing the results of the evaluated expressions for the current library.
+     */
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
         EvaluationResult result = new EvaluationResult();
 
@@ -366,11 +371,9 @@ public class CqlEngine {
             }
         } finally {
             this.state.endEvaluation();
-            // LUKETODO:  do we need to clear out the values() as well?
             // We are moving the evaluated resources off the stack so we can work on the next ones
             this.state.clearEvaluatedResources();
             // We are moving the library off the stack so we can work on the next one
-            // LUKETODO:  this causes ExpressionCacheTest to fail
             this.state.exitLibrary(true);
         }
 
@@ -422,7 +425,16 @@ public class CqlEngine {
         }
     }
 
-    // LUKETODO: document error handling
+    /**
+     * Evaluate multiple libraries, loading and validating them as needed.
+     * <p/>
+     * In most cases, errors in one Library will not halt the evaluation of other libraries, but will merely be
+     * captured in the result object.  However, in some cases, such as when a library cannot be loaded at all, this
+     * method will throw an exception.
+     * <p/>
+     * @param libraryIdentifiers The list of library identifiers to load and evaluate.
+     * @return A result object containing the evaluation results and any exceptions encountered during the process.
+     */
     private LoadMultiLibResult loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
 
         var errorsById = new LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>>();
@@ -503,8 +515,6 @@ public class CqlEngine {
             var versionedIdentifierFromQuery = nonErroredIdentifiers.get(index);
             var compiledLibrary = resolvedLibraries.get(index);
 
-            // LUKETODO:  handle version comparisons later:  only check if the QUERYING id contains a version
-            // LUKETODO:  add testing for version mistmatches
             if (!versionedIdentifierFromQuery
                     .getId()
                     .equals(compiledLibrary.getIdentifier().getId())) {

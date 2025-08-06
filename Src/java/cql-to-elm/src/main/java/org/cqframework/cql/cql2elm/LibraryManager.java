@@ -167,7 +167,6 @@ public class LibraryManager {
         return this.resolveLibrary(libraryIdentifier, errors, CacheMode.READ_WRITE);
     }
 
-    // LUKETODO:  call the multilib method here
     public CompiledLibrary resolveLibrary(
             VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors, CacheMode cacheMode) {
         if (libraryIdentifier == null) {
@@ -220,7 +219,6 @@ public class LibraryManager {
             throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
         }
 
-        // LUKETODO:  do we need to order these?
         var compiledLibrariesToReturn = new ArrayList<CompiledLibrary>();
 
         if (cacheMode != CacheMode.NONE) {
@@ -320,10 +318,6 @@ public class LibraryManager {
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()), libraryIdentifier, this);
             compiler.run(cqlSource);
 
-            // LUKETODO:  ensure these errors get passed all the way up to the measure report
-            // LUKETODO:  errors on one of the using'd libraries are not obviously related to that library, as opposed
-            // to the
-            // downstream library
             errors = List.copyOf(compiler.getExceptions());
             compiledLibrary = compiler.getCompiledLibrary();
 
