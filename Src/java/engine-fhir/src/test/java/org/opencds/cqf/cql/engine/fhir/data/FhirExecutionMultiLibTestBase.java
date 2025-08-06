@@ -72,7 +72,7 @@ public abstract class FhirExecutionMultiLibTestBase {
 
     private final List<Library> libraries = new ArrayList<>();
 
-    // LUKETODO:  figure out how to compile the CQLs only once for the whole test class
+    // TODO: LD: figure out how to compile the CQLs only once for the whole test class
     @BeforeAll
     public static void setup() {
         FhirContext dstu2Context = FhirContext.forCached(FhirVersionEnum.DSTU2);

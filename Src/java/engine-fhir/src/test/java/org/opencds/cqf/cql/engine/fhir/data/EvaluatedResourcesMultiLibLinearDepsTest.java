@@ -132,6 +132,8 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
 
         var results = engine.evaluate(getAllLibraryIdentifiers(), Set.of(expressionName));
 
+        // LUKETODO:
+        //        var evaluationResultForIdentifier = results.getOnlyResultOrThrow();
         var evaluationResultForIdentifier = results.getResultFor(libId);
 
         assertEvaluationResult(evaluationResultForIdentifier, expressionName, expectedResources, expectedValues);

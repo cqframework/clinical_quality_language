@@ -1,19 +1,23 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 
-// LUKETODO: immutability, immutable copies of collections, etc
+/**
+ * Track results and exceptions for multiple libraries in a single load operation, to support partial
+ * successes and partial failures across libraries.
+ */
 class LoadMultiLibResult {
-    private final LinkedHashMap<VersionedIdentifier, Library> results;
-    private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions;
+    private final Map<VersionedIdentifier, Library> results;
+    private final Map<VersionedIdentifier, RuntimeException> exceptions;
 
     private LoadMultiLibResult(Builder builder) {
-        this.results = builder.results;
-        this.exceptions = builder.exceptions;
+        this.results = Collections.unmodifiableMap(builder.results);
+        this.exceptions = Collections.unmodifiableMap(builder.exceptions);
     }
 
     int libraryCount() {
@@ -53,7 +57,7 @@ class LoadMultiLibResult {
                         String.format("library id %s not found.", libraryIdentifier.getId())));
     }
 
-    LinkedHashMap<VersionedIdentifier, RuntimeException> getExceptions() {
+    Map<VersionedIdentifier, RuntimeException> getExceptions() {
         return exceptions;
     }
 
@@ -70,7 +74,6 @@ class LoadMultiLibResult {
         }
 
         void addException(VersionedIdentifier libraryId, RuntimeException exception) {
-            // LUKETODO: mutable list?
             this.exceptions.put(libraryId, exception);
         }
 

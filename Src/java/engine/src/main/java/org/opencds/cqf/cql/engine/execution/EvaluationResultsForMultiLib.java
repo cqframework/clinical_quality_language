@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.hl7.elm.r1.VersionedIdentifier;
-
-// LUKETODO: builder, immutability, immutable copies of collections, etc
 
 /**
  * Track evaluation results and exceptions for multiple libraries in a single evaluation, to support partial
@@ -15,8 +14,8 @@ public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, RuntimeException> exceptions;
 
     private EvaluationResultsForMultiLib(Builder builder) {
-        this.results = builder.results;
-        this.exceptions = builder.exceptions;
+        this.results = Collections.unmodifiableMap(builder.results);
+        this.exceptions = Collections.unmodifiableMap(builder.exceptions);
     }
 
     // Visible for testing
@@ -39,7 +38,6 @@ public class EvaluationResultsForMultiLib {
         return exceptions.containsKey(libraryIdentifier);
     }
 
-    // LUKETODO:  do we keep this?
     public EvaluationResult getResultFor(VersionedIdentifier libraryIdentifier) {
         if (results.containsKey(libraryIdentifier)) {
             return results.get(libraryIdentifier);
@@ -56,19 +54,6 @@ public class EvaluationResultsForMultiLib {
         }
 
         return null;
-    }
-
-    public EvaluationResult getSingleResultOrThrow() {
-        if (results.size() > 1 || exceptions.size() > 1) {
-            throw new IllegalStateException("Expected exactly one result or error, but found results: %s errors: %s: "
-                    .formatted(results.size(), exceptions.size()));
-        }
-
-        if (!exceptions.isEmpty()) {
-            throw this.exceptions.values().iterator().next();
-        }
-
-        return this.getFirstResult();
     }
 
     // LUKETODO:  test all scenarios here
