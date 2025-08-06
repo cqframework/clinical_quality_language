@@ -19,13 +19,11 @@ public class EvaluationResultsForMultiLib {
     }
 
     // Visible for testing
-    // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
     Map<VersionedIdentifier, EvaluationResult> getResults() {
         return results;
     }
 
     // Visible for testing
-    // LUKETODO:  don't expose the maps directly, but rather provide methods to access the results
     Map<VersionedIdentifier, RuntimeException> getExceptions() {
         return exceptions;
     }
@@ -56,11 +54,11 @@ public class EvaluationResultsForMultiLib {
         return null;
     }
 
-    // LUKETODO:  test all scenarios here
     public EvaluationResult getOnlyResultOrThrow() {
         if (results.size() > 1 || exceptions.size() > 1) {
-            throw new IllegalStateException("Expected exactly one result or error, but found results: %s errors: %s: "
-                    .formatted(results.size(), exceptions.size()));
+            throw new IllegalStateException(
+                    "Did you run an evaluation for multiple libraries?  Expected exactly one result or error, but found results: %s errors: %s: "
+                            .formatted(results.size(), exceptions.size()));
         }
 
         var firstException = getFirstException();
@@ -81,9 +79,16 @@ public class EvaluationResultsForMultiLib {
         return entry.getKey().getId().equals(libraryIdentifier.getId());
     }
 
-    // LUKETODO:  validate this isn't empty or Optional or something
     private EvaluationResult getFirstResult() {
-        return results.entrySet().iterator().next().getValue();
+        var allEvaluationResults = results.values();
+
+        if (allEvaluationResults.size() > 1) {
+            throw new IllegalStateException(
+                    "Did you run an evaluation for multiple libraries?  Expected 0-1 results, but found: %s"
+                            .formatted(results.size()));
+        }
+
+        return allEvaluationResults.stream().findFirst().orElse(null);
     }
 
     private RuntimeException getFirstException() {
@@ -110,14 +115,12 @@ public class EvaluationResultsForMultiLib {
             exceptions.putAll(loadMultiLibResult.getExceptions());
         }
 
-        Builder addResult(VersionedIdentifier libraryId, EvaluationResult evaluationResult) {
+        void addResult(VersionedIdentifier libraryId, EvaluationResult evaluationResult) {
             results.put(withIdOnly(libraryId), evaluationResult);
-            return this;
         }
 
-        Builder addException(VersionedIdentifier libraryId, RuntimeException exception) {
+        void addException(VersionedIdentifier libraryId, RuntimeException exception) {
             exceptions.put(withIdOnly(libraryId), exception);
-            return this;
         }
 
         EvaluationResultsForMultiLib build() {

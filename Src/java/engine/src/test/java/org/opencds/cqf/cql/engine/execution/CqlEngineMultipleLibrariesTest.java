@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,8 +20,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
@@ -37,10 +42,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final Interval _2022_01_01_TO_2023_01_01 = new Interval(_2022_01_01, true, _2023_01_01, false);
     private static final Interval _2023_01_01_TO_2024_01_01 = new Interval(_2023_01_01, true, _2024_01_01, false);
     private static final Interval _2031_01_01_TO_2032_01_01 = new Interval(_2031_01_01, true, _2032_01_01, false);
-
-    // LUKETODO:  errors for all libraries
-    // LUKETODO:  errors for one of several libraries
-    // LUKETODO:  assert evaluated resources
+    private static final Logger log = LoggerFactory.getLogger(CqlEngineMultipleLibrariesTest.class);
 
     @Override
     protected String getCqlSubdirectory() {
@@ -107,7 +109,6 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 evaluationResult.expressionResults.get("Period").value());
     }
 
-    // LUKETODO: test with mismatched versions but not names
     @Test
     void multipleLibrariesSimple() {
         var evalResultsForMultiLib = cqlEngine.evaluate(
@@ -145,8 +146,28 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 evaluationResult3.expressionResults.get("Period").value());
     }
 
-    // LUKETODO:  add another test with multiple expressions in the Set
+    @Test
+    void multipleLibrariesMismatchedVersions() {
+        var exception = assertThrows(
+                CqlIncludeException.class,
+                () -> cqlEngine.evaluate(
+                        List.of(
+                                toElmIdentifier("MultiLibrary1", "bad"),
+                                toElmIdentifier("MultiLibrary2", "bad"),
+                                toElmIdentifier("MultiLibrary3", "bad")),
+                        null,
+                        null,
+                        null,
+                        debugMap,
+                        null));
 
+        assertThat(
+                exception.getMessage(),
+                containsString(
+                        "Library MultiLibrary1 was included with version bad, but id: MultiLibrary1 and version 1.0.0 of the library was found."));
+    }
+
+    // LUKETODO:  add another test with multiple expressions in the Set
     // LUKETODO:  add another test with different expressions in the Set,  unique to that library, such as "Number1",
     // "Number2", "Number3"
 
@@ -185,6 +206,59 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(
                 _1900_01_01_TO_1901_01_01,
                 evaluationResult3.expressionResults.get("Period").value());
+    }
+
+    @Test
+    void multipleLibrariesWithExpressions() {
+        var evalResultsForMultiLib = cqlEngine.evaluate(
+                List.of(
+                        toElmIdentifier("MultiLibrary1"),
+                        toElmIdentifier("MultiLibrary2"),
+                        toElmIdentifier("MultiLibrary3")),
+                null,
+                null,
+                Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
+                debugMap,
+                null);
+
+        assertNotNull(evalResultsForMultiLib);
+        var libraryResults = evalResultsForMultiLib.getResults();
+        assertEquals(3, libraryResults.size());
+        assertFalse(evalResultsForMultiLib.hasExceptions());
+
+        var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
+        var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
+        var evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults);
+
+        assertEquals(1, evaluationResult1.expressionResults.get("Number").value());
+        assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
+        assertEquals(3, evaluationResult3.expressionResults.get("Number").value());
+
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult1.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult2.expressionResults.get("Period").value());
+        assertEquals(
+                _1900_01_01_TO_1901_01_01,
+                evaluationResult3.expressionResults.get("Period").value());
+    }
+
+    @Test
+    void singleLibraryInvalid() {
+        var evalResultsForMultiLib = cqlEngine.evaluate(
+                List.of(toElmIdentifier("MultiLibraryBad")),
+                null,
+                null,
+                Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
+                debugMap,
+                null);
+
+        var exception = assertThrows(CqlException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
+        assertThat(
+                exception.getMessage(),
+                containsString("Library MultiLibraryBad loaded, but had errors: Syntax error at define"));
     }
 
     @Test

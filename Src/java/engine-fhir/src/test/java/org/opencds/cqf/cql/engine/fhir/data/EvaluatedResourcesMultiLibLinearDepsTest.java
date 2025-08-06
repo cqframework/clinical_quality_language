@@ -1,5 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.CONDITION;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.ENCOUNTER;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.PROCEDURE;
@@ -12,9 +15,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import org.cqframework.cql.cql2elm.CqlIncludeException;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -87,6 +92,24 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         assertEvaluationResult(multiResult, expressionName, expectedResources, expectedValues);
     }
 
+    @Test
+    void singleLibNonexistentLib() {
+        var engine = getCqlEngineForFhirNewLibMgr(false);
+
+        // Old single-lib API
+        var singleLibException = assertThrows(
+                CqlIncludeException.class, () -> engine.evaluate(new VersionedIdentifier().withId("bad"), Set.of()));
+
+        assertThat(singleLibException.getMessage(), startsWith("Could not load source for library bad"));
+
+        // Old multi-lib API passing a single lib
+        var multiLibException = assertThrows(
+                CqlIncludeException.class,
+                () -> engine.evaluate(List.of(new VersionedIdentifier().withId("bad")), Set.of()));
+
+        assertThat(multiLibException.getMessage(), startsWith("Could not load source for library bad"));
+    }
+
     private static Stream<Arguments> multiLibParams() {
         return Stream.of(
                 Arguments.of(
@@ -132,8 +155,6 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
 
         var results = engine.evaluate(getAllLibraryIdentifiers(), Set.of(expressionName));
 
-        // LUKETODO:
-        //        var evaluationResultForIdentifier = results.getOnlyResultOrThrow();
         var evaluationResultForIdentifier = results.getResultFor(libId);
 
         assertEvaluationResult(evaluationResultForIdentifier, expressionName, expectedResources, expectedValues);

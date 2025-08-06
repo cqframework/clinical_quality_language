@@ -1,4 +1,4 @@
-library MultiLibrary2
+library MultiLibrary2 version '1.0.0'
 
 parameter "Measurement Period" Interval<DateTime> default Interval[@2022-01-01, @2023-01-01)
 
