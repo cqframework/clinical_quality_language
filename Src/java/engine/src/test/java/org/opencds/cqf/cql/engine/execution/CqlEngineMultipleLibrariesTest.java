@@ -108,11 +108,6 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     }
 
     // LUKETODO: test with mismatched versions but not names
-    // LUKETODO:
-
-    // LUKETODO:  test expressions
-    // LUKETODO:  set up more complex libraries
-    // LUKETODO:  cache is by expression name, so 2 identical expresions will be essentially duplicated
     @Test
     void multipleLibrariesSimple() {
         var evalResultsForMultiLib = cqlEngine.evaluate(

@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.StringJoiner;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 
-// LUKETODO: javadoc
+/**
+ * Represents the result of compiling a CQL library, including the compiled library and any compilation errors, in
+ * order to support a partially successful compile with errors
+ */
 record CompiledLibraryResult(CompiledLibrary compiledLibrary, List<CqlCompilerException> errors) {
     @Override
     public String toString() {
