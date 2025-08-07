@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -165,7 +166,7 @@ public class LibraryManager {
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
         var compiledLibraryResult = this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE);
-        errors.addAll(compiledLibraryResult.errors());
+        Optional.ofNullable(compiledLibraryResult.errors()).ifPresent(errors::addAll);
         return compiledLibraryResult.compiledLibrary();
     }
 
@@ -180,21 +181,27 @@ public class LibraryManager {
 
         // LUKETODO:  consider calling the multi-lib method instead
 
-        CompiledLibrary library = null;
-        if (cacheMode != CacheMode.NONE) {
-            library = compiledLibraries.get(libraryIdentifier);
-            if (library != null) {
-                return new CompiledLibraryResult(library, List.of());
-            }
-        }
+        var errorsById = new HashMap<VersionedIdentifier, List<CqlCompilerException>>();
+        //        var compiledLibraries1 = resolveLibraries(List.of(libraryIdentifier), errorsById, cacheMode);
+        var compiledLibraryResults = resolveLibraries2(List.of(libraryIdentifier), cacheMode);
 
-        var compileLibraryResult = compileLibrary(libraryIdentifier);
-        library = compileLibraryResult.compiledLibrary();
-        if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
-            compiledLibraries.put(libraryIdentifier, library);
-        }
+        return compiledLibraryResults.get(0);
 
-        return new CompiledLibraryResult(library, compileLibraryResult.errors());
+        //        CompiledLibrary library = null;
+        //        if (cacheMode != CacheMode.NONE) {
+        //            library = compiledLibraries.get(libraryIdentifier);
+        //            if (library != null) {
+        //                return new CompiledLibraryResult(library, List.of());
+        //            }
+        //        }
+        //
+        //        var compileLibraryResult = compileLibrary(libraryIdentifier);
+        //        library = compileLibraryResult.compiledLibrary();
+        //        if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
+        //            compiledLibraries.put(libraryIdentifier, library);
+        //        }
+        //
+        //        return new CompiledLibraryResult(library, compileLibraryResult.errors());
     }
 
     public List<CompiledLibrary> resolveLibraries(
@@ -204,6 +211,7 @@ public class LibraryManager {
         return resolveLibraries(libraryIdentifiers, errorsById, CacheMode.READ_WRITE);
     }
 
+    // LUKETODO:  return CompiledLibraryResult instead of List<CompiledLibrary>?
     public List<CompiledLibrary> resolveLibraries(
             List<VersionedIdentifier> libraryIdentifiers,
             Map<VersionedIdentifier, List<CqlCompilerException>> errorsById,
@@ -262,6 +270,63 @@ public class LibraryManager {
         }
 
         return List.copyOf(compiledLibrariesToReturn);
+    }
+
+    private List<CompiledLibraryResult> resolveLibraries2(
+            List<VersionedIdentifier> libraryIdentifiers, CacheMode cacheMode) {
+
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null");
+        }
+
+        if (libraryIdentifiers.stream()
+                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null
+                        || libraryIdentifier.getId().isEmpty())) {
+            throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
+        }
+
+        var compiledLibrariesToReturn = new ArrayList<CompiledLibrary>();
+
+        if (cacheMode != CacheMode.NONE) {
+
+            // Ensure that cache retrieved libraries are in the same order as the input identifiers so we
+            // don't get a mismatch later
+            var libraries = libraryIdentifiers.stream()
+                    .filter(compiledLibraries::containsKey)
+                    .map(compiledLibraries::get)
+                    .toList();
+
+            if (libraries.size() == libraryIdentifiers.size()) {
+                return libraries.stream()
+                        .map(lib -> new CompiledLibraryResult(lib, List.of()))
+                        .toList();
+            }
+
+            compiledLibrariesToReturn.addAll(libraries);
+        }
+
+        var compiledLibraryResults = new ArrayList<CompiledLibraryResult>();
+
+        for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
+            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibrariesToReturn)) {
+                logger.debug("library {} already in cache, skipping compilation", libraryIdentifier.getId());
+                continue;
+            }
+
+            var compiledLibraryResult = compileLibrary(libraryIdentifier);
+
+            // If we have any errors, ignore the compiled library altogether just like in the single lib case
+            if (!hasErrors(compiledLibraryResult.errors())) {
+                if (cacheMode == CacheMode.READ_WRITE) {
+                    logger.debug("adding library to cache: {}", libraryIdentifier.getId());
+                    compiledLibraries.put(libraryIdentifier, compiledLibraryResult.compiledLibrary());
+                }
+            }
+
+            compiledLibraryResults.add(compiledLibraryResult);
+        }
+
+        return compiledLibraryResults;
     }
 
     private boolean isLibraryAlreadyRetrievedFromCache(
