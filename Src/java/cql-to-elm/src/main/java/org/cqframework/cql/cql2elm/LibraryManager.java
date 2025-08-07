@@ -151,11 +151,11 @@ public class LibraryManager {
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CacheMode cacheMode) {
-        return this.resolveLibrary(libraryIdentifier, new ArrayList<>(), cacheMode);
+        return this.resolveLibraryInner(libraryIdentifier, cacheMode).compiledLibrary();
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
-        return this.resolveLibrary(libraryIdentifier, new ArrayList<>(), CacheMode.READ_WRITE);
+        return this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE).compiledLibrary();
     }
 
     public boolean canResolveLibrary(VersionedIdentifier libraryIdentifier) {
@@ -164,11 +164,12 @@ public class LibraryManager {
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
-        return this.resolveLibrary(libraryIdentifier, errors, CacheMode.READ_WRITE);
+        var compiledLibraryResult = this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE);
+        errors.addAll(compiledLibraryResult.errors());
+        return compiledLibraryResult.compiledLibrary();
     }
 
-    public CompiledLibrary resolveLibrary(
-            VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors, CacheMode cacheMode) {
+    private CompiledLibraryResult resolveLibraryInner(VersionedIdentifier libraryIdentifier, CacheMode cacheMode) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -177,11 +178,13 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
+        // LUKETODO:  consider calling the multi-lib method instead
+
         CompiledLibrary library = null;
         if (cacheMode != CacheMode.NONE) {
             library = compiledLibraries.get(libraryIdentifier);
             if (library != null) {
-                return library;
+                return new CompiledLibraryResult(library, List.of());
             }
         }
 
@@ -189,12 +192,9 @@ public class LibraryManager {
         library = compileLibraryResult.compiledLibrary();
         if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
             compiledLibraries.put(libraryIdentifier, library);
-        } else {
-            // LUKETODO: can we just return the result record instead ?
-            errors.addAll(compileLibraryResult.errors());
         }
 
-        return library;
+        return new CompiledLibraryResult(library, compileLibraryResult.errors());
     }
 
     public List<CompiledLibrary> resolveLibraries(
@@ -347,8 +347,6 @@ public class LibraryManager {
         sortStatements(compiledLibrary);
         return new CompiledLibraryResult(compiledLibrary, errors);
     }
-
-    // LUKETODO:  look at newly unused private methods and get rid of them
 
     private void validateIdentifiers(
             VersionedIdentifier libraryIdentifier, CompiledLibrary result, String libraryPath) {

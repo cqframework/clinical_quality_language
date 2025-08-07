@@ -374,7 +374,6 @@ public class CqlEngine {
         }
 
         result.setDebugResult(this.state.getDebugResult());
-        // LUKETODO:  do we need a new DebugMap/DebugResult for each library?
 
         return result;
     }
@@ -466,7 +465,6 @@ public class CqlEngine {
             try {
                 if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
                     for (IncludeDef include : library.getIncludes().getDef()) {
-                        // LUKETODO: consider tweaking the error message to include the library containing the include
                         this.loadAndValidate(new VersionedIdentifier()
                                 .withSystem(NamespaceManager.getUriPart(include.getPath()))
                                 .withId(NamespaceManager.getNamePart(include.getPath()))
