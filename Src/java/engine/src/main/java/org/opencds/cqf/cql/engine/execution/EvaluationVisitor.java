@@ -71,7 +71,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object left = visitExpression(add.getOperand().get(0), state);
         Object right = visitExpression(add.getOperand().get(1), state);
 
-        return AddEvaluator.add(left, right);
+        return AddEvaluator.add(left, right, state);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitWidth(Width elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return WidthEvaluator.width(operand);
+        return WidthEvaluator.width(operand, state);
     }
 
     @Override
@@ -322,7 +322,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitSize(Size elm, State state) {
         Object argument = visitExpression(elm.getOperand(), state);
-        return SizeEvaluator.size(argument);
+        return SizeEvaluator.size(argument, state);
     }
 
     @Override
@@ -393,7 +393,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     public Object visitSubtract(Subtract elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        return SubtractEvaluator.subtract(left, right);
+        return SubtractEvaluator.subtract(left, right, state);
     }
 
     @Override
@@ -405,7 +405,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitSum(Sum elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
-        return SumEvaluator.sum(source);
+        return SumEvaluator.sum(source, state);
     }
 
     @Override
@@ -1189,7 +1189,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
 
-        return MultiplyEvaluator.multiply(left, right);
+        return MultiplyEvaluator.multiply(left, right, state);
     }
 
     @Override
@@ -1311,7 +1311,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitProduct(Product elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
-        return ProductEvaluator.product(source);
+        return ProductEvaluator.product(source, state);
     }
 
     @Override
