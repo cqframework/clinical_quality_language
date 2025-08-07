@@ -351,10 +351,6 @@ public class CqlEngine {
                     var action = getState().shouldDebug(def);
                     state.pushActivationFrame(def, def.getContext());
                     try {
-                        //                        log.info(
-                        //                                "1234: NEW visit lib: {} expression: {}",
-                        //                                currentLibrary.getIdentifier().getId(),
-                        //                                expression);
                         final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                         result.expressionResults.put(
                                 expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
