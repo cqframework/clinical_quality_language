@@ -328,7 +328,7 @@ Note that the expression specified in the default element must be able to be eva
 	</xs:complexType>
 	<xs:complexType name="IdentifierRef">
 		<xs:annotation>
-			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration scope such as a sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration scope such as Sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -403,11 +403,11 @@ The low and high elements are both optional. If the low element is not specified
 
 The static type of the low bound determines the type of the interval, and the high bound must be of the same type.
 
-If the low bound of the interval is null and open, the low bound of the interval is interpreted as unknown, and computations involving the low boundary will result in null.
+If the low bound of the interval is null and open, the low bound of the interval is interpreted as unknown and represented as an uncertainty from the minimum value of the point type of the interval to the high boundary (inclusive); computations involving the low boundary may result in null.
 
 If the low bound of the interval is null and closed, the interval is interpreted to start at the minimum value of the point type, and computations involving the low boundary will be performed with that value.
 
-If the high bound of the interval is null and open, the high bound of the interval is unknown, and computations involving the high boundary will result in null.
+If the high bound of the interval is null and open, the high bound of the interval is unknown and represented as an uncertainty from the low boundary (inclusive) to the maximum value of the point type of the interval; computations involving the high boundary may result in null.
 
 If the high bound of the interval is null and closed, the interval is interpreted to end at the maximum value of the point type, and computations involving the high boundary will be performed with that interpretation.</xs:documentation>
 		</xs:annotation>
@@ -1567,7 +1567,7 @@ If the result of the operation cannot be represented, the result is null.</xs:do
 		<xs:annotation>
 			<xs:documentation>The Successor operator returns the successor of the argument. For example, the successor of 1 is 2. If the argument is already the maximum value for the type, a run-time error is thrown.
 
-The Successor operator is defined for the Integer, Long, Decimal, Date, DateTime, and Time types.
+The Successor operator is defined for the Integer, Long, Decimal, Quantity, Date, DateTime, and Time types.
 
 For Integer, Successor is equivalent to adding 1.
 
@@ -1576,6 +1576,8 @@ For Long, Successor is equivalent to adding 1L.
 For Decimal, Successor is equivalent to adding the minimum precision value for the Decimal type, or 10^-08.
 
 For Date, DateTime, and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
+
+For Quantity values, Successor is equivalent to adding 1 if the quantity is an integer, and the minimum precision value for the Decimal type if the quantity is a decimal. The units are unchanged.
 
 If the argument is null, the result is null.
 
@@ -1589,7 +1591,7 @@ If the result of the operation cannot be represented, the result is null.</xs:do
 		<xs:annotation>
 			<xs:documentation>The Predecessor operator returns the predecessor of the argument. For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type, a run-time error is thrown.
 
-The Predecessor operator is defined for the Integer, Long, Decimal, Date, DateTime, and Time types.
+The Predecessor operator is defined for the Integer, Long, Decimal, Quantity, Date, DateTime, and Time types.
 
 For Integer, Predecessor is equivalent to subtracting 1.
 
@@ -1598,6 +1600,8 @@ For Long, Predecessor is equivalent to subtracting 1L.
 For Decimal, Predecessor is equivalent to subtracting the minimum precision value for the Decimal type, or 10^-08.
 
 For Date, DateTime, and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
+
+For Quantity values, the Predecessor is equivalent to subtracting 1 if the quantity is an integer, and the minimum precision value for Decimal if the quantity is a decimal. The units are unchanged.
 
 If the argument is null, the result is null.
 
@@ -1611,13 +1615,15 @@ If the result of the operation cannot be represented, the result is null.</xs:do
 		<xs:annotation>
 			<xs:documentation>The MinValue operator returns the minimum representable value for the given type.
 
-The MinValue operator is defined for the Integer, Long, Decimal, Date, DateTime, and Time types.
+The MinValue operator is defined for the Integer, Long, Decimal, Quantity, Date, DateTime, and Time types.
 
 For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
 
 For Long, MinValue returns the minimum signed 64-bit integer, -(2^63).
 
 For Decimal, MinValue returns the minimum representable Decimal value, (-10^28 + 1) / 10^8 (-99999999999999999999.99999999).
+
+For Quantity, MinValue returns the minimum representable quantity, i.e. the minimum representable decimal value with a default unit (1).
 
 For Date, MinValue returns the minimum representable Date value, Date(1, 1, 1).
 
@@ -1639,13 +1645,15 @@ Note that implementations may choose to represent the minimum DateTime value usi
 		<xs:annotation>
 			<xs:documentation>The MaxValue operator returns the maximum representable value for the given type.
 
-The MaxValue operator is defined for the Integer, Long, Decimal, Date, DateTime, and Time types.
+The MaxValue operator is defined for the Integer, Long, Decimal, Quantity, Date, DateTime, and Time types.
 
 For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
 
 For Long, MaxValue returns the maximum signed 64-bit integer, 2^63 - 1.
 
 For Decimal, MaxValue returns the maximum representable Decimal value, (10^28 - 1) / 10^8 (99999999999999999999.99999999).
+
+For Quantity, MaxValue returns the maximum representable quantity, i.e. the maximum representable decimal value with a default unit (1).
 
 For Date, MaxValue returns the maximum representable Date value, Date(9999, 12, 31).
 
@@ -2112,6 +2120,8 @@ At least one component must be specified, and no component may be specified at a
 
 At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, hour may be null, but if it is, minute, second, and millisecond must all be null as well.
 
+If all the arguments are null, the result is null, as opposed to a DateTime with no components specified.
+
 Although the milliseconds are specified with a separate component, seconds and milliseconds are combined and represented as a Decimal for the purposes of comparison.
 
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
@@ -2311,11 +2321,9 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 
-For the List, T overload, this operator returns true if the given element is in the list, using equality semantics.
+For the List, T overload, this operator returns true if the given element is in the list, using equality semantics, with the exception that null elements are considered equal. If the first argument is null, the result is false. If the second argument is null, the result is true if the list contains any null elements, and false otherwise.
 
-For the Interval, T overload, this operator returns true if the given point is equal to the starting or ending point of the interval, or greater than the starting point and less than the ending point. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
-
-If the first argument is null, the result is false. If the second argument is null, the result is null.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is equal to the starting or ending point of the interval, or greater than the starting point and less than the ending point. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision. If the first argument is null, the result is false. If the second argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2332,11 +2340,9 @@ There are two overloads of this operator:
 	List, T: The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 
-For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equality semantics.
+For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equality semantics, with the exception that null elements are considered equal. If the first argument is null, the result is false. If the second argument is null, the result is true if the list contains any null elements and at least one other element, and false otherwise.
 
-For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
-
-If the first argument is null, the result is false. If the second argument is null, the result is null.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision. If the first argument is null, the result is false. If the second argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2353,11 +2359,9 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 
-For the T, List overload, this operator returns true if the given element is in the given list, using equality semantics.
+For the T, List overload, this operator returns true if the given element is in the given list, using equality semantics, with the exception that null elements are considered equal. If the first argument is null, the result is true if the list contains any null elements, and false otherwise. If the second argument is null the result is false.
 
-For the T, Interval overload, this operator returns true if the given point is equal to the starting or ending point of the interval, or greater than the starting point and less than the ending point. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
-
-If the first argument is null, the result is null. If the second argument is null the result is false.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is equal to the starting or ending point of the interval, or greater than the starting point and less than the ending point. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision. If the first argument is null, the result is null. If the second argument is null, the result is false.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2374,11 +2378,9 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 
-For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equality semantics.
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equality semantics, with the exception that null elements are considered equal. If the first argument is null, the result is true if the list contains any null elements, and at least one other element, and false otherwise. If the second argument is null, the result is false.
 
-For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
-
-If the first argument is null, the result is null. If the second argument is null the result is false.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision. If the first argument is null, the result is null. If the second argument is null the result is false.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2395,7 +2397,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equality semantics.
+For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equality semantics, with the exception that null elements are considered equal.
 
 For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
@@ -2418,7 +2420,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equality semantics.
+For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equality semantics, with the exception that null elements are considered equal.
 
 For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
@@ -2441,7 +2443,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first list includes every element of the second list, using equality semantics, and the first list is strictly larger.
+For the List, List overload, this operator returns true if the first list is strictly larger, and the first list includes every element of the second list, using equality semantics, with the exception that null elements are considered equal.
 
 For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
@@ -2464,7 +2466,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equality semantics, and the first list is strictly smaller.
+For the List, List overload, this operator returns true if the first list is strictly smaller, and every element of the first list is included in the second list, using equality semantics, with the exception that null elements are considered equal.
 
 For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
@@ -2750,6 +2752,8 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:complexContent>
 			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
+		<!-- Overlaps(i1, i2) = End(i1) >= Start(i2) and Start(i1) <= End(i2) -->
+		<!-- Intersect(i1, i2) = Overlaps(i1, i2) ? [MAX(Start(i1), Start(i2)), Min(End(i1), End(i2))] : null -->
 	</xs:complexType>
 	<xs:complexType name="Except">
 		<xs:annotation>
@@ -2868,7 +2872,7 @@ If the startIndex or endIndex is less than 0, or if the endIndex is less than th
 		<xs:annotation>
 			<xs:documentation>The IndexOf operator returns the 0-based index of the given element in the given source list.
 
-The operator uses equality semantics as defined in the Equal operator to determine the index. The search is linear, and returns the index of the first element for which the equality comparison returns true.
+The operator uses equality semantics as defined in the Equal operator to determine the index, with the exception that nulls are considered equal. The search is linear, and returns the index of the first element for which the equality comparison returns true.
 
 If the list is empty, or no element is found, the result is -1.
 
@@ -2970,6 +2974,8 @@ If the source argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Current expression returns the value of the object currently in scope. For example, within a ForEach expression, this returns the current element being considered in the iteration.
 
+Scopes are introduced by the named scoping operators (Filter, ForEach, and Repeat), the implicit scoping operators (Sort and Aggregate) as well as introduced within Queries by the AliasedQuerySource, LetClause, AggregateClause, and SortClause elements.
+
 It is an error to invoke the Current operator outside of a scoped operation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -2980,7 +2986,11 @@ It is an error to invoke the Current operator outside of a scoped operation.</xs
 	</xs:complexType>
 	<xs:complexType name="Iteration">
 		<xs:annotation>
-			<xs:documentation>The Iteration expression returns the current iteration number of a scoped operation.</xs:documentation>
+			<xs:documentation>The Iteration expression returns the current iteration number of a scoped operation. For example, within a ForEach expression, this returns the 0-based index of the current iteration.
+			
+Scopes are introduced by the named scoping operators (Filter, ForEach, and Repeat), the implicit scoping operators (Sort and Aggregate) as well as introduced within Queries by the AliasedQuerySource, LetClause, AggregateClause, and SortClause elements.
+
+It is an error to invoke the Iteration operator outside of a scoped operation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -2990,7 +3000,9 @@ It is an error to invoke the Current operator outside of a scoped operation.</xs
 	</xs:complexType>
 	<xs:complexType name="Total">
 		<xs:annotation>
-			<xs:documentation>The Total expression returns the current value of the total aggregation accumulator in an aggregate operation.</xs:documentation>
+			<xs:documentation>The Total expression returns the current value of the total aggregation accumulator in an aggregate operation.
+			
+It is an error to invoke the Total operator outside of an aggregate operation (Aggregate or within the AggregateClause of a query).</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -3262,15 +3274,15 @@ If the source is null, the result is false.</xs:documentation>
 	<!-- Data Operators -->
 	<xs:complexType name="Property">
 		<xs:annotation>
-			<xs:documentation>The Property operator returns the value of the property on source specified by the path attribute.
+			<xs:documentation>The Property operator returns the value of the property on the source (or named scope) specified by the path attribute.
 
-If the result of evaluating source is null, the result is null.
+If the result of evaluating source (or the named scope) is null, the result is null.
 
 The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer values.
 
 If the path attribute contains qualifiers or indexers, each qualifier or indexer is traversed to obtain the actual value. If the object of the property access at any point in traversing the path is null, the result is null.
 
-If a scope is specified, the name is used to resolve the scope in which the path will be resolved. Scopes can be named by operators such as Filter and ForEach.
+If a scope is specified, the name is used to resolve the scope in which the path will be resolved. Scopes can be named by the scoping operators (Filter, ForEach, Repeat, and Sort) as well as introduced within a Query through the AliasedQuerySource, LetClause, AggregateClause, and SortClause.
 
 Property expressions can also be used to access the individual points and closed indicators for interval types using the property names low, high, lowClosed, and highClosed.</xs:documentation>
 		</xs:annotation>
@@ -3374,7 +3386,9 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<xs:complexType name="ByExpression">
 		<xs:annotation>
-			<xs:documentation>The ByExpression element specifies that the sort should be performed using the given expression and direction. This approach is used to specify the sort order as a calculated expression.</xs:documentation>
+			<xs:documentation>The ByExpression element specifies that the sort should be performed using the given expression and direction. This approach is used to specify the sort order as a calculated expression.
+
+Within the expression, the iteration accessor $this can be used to access the current iteration value, and $index can be used to access the 0-based index of the current iteration.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="SortByItem">
@@ -3478,9 +3492,25 @@ If the source is null, the result is null.</xs:documentation>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Descendants">
+		<xs:annotation>
+			<xs:documentation>For structured types, the Descendants operator returns a list of all the values of the elements of the type, recursively. List-valued elements are expanded and added to the result individually, rather than as a single list.
+
+For list types, the result is the same as invoking Descendants on each element in the list and flattening the resulting lists into a single result.
+
+If the source is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Descendents">
 		<xs:annotation>
-			<xs:documentation>For structured types, the Descendents operator returns a list of all the values of the elements of the type, recursively. List-valued elements are expanded and added to the result individually, rather than as a single list.
+			<xs:documentation>DEPRECATED: Use Descendants. For structured types, the Descendents operator returns a list of all the values of the elements of the type, recursively. List-valued elements are expanded and added to the result individually, rather than as a single list.
 
 For list types, the result is the same as invoking Descendents on each element in the list and flattening the resulting lists into a single result.
 
