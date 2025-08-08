@@ -25,15 +25,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * See EvaluatedResourcesMultiLibComplexDepsTest.md for a mermaid diagram of the library dependencies
  */
 class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTestBase {
-
-    private static final Logger log = LoggerFactory.getLogger(EvaluatedResourcesMultiLibComplexDepsTest.class);
 
     private static final RetrieveProvider RETRIEVE_PROVIDER_COMPLEX =
             EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.INSTANCE;

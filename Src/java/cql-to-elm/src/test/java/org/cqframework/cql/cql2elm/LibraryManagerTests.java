@@ -120,10 +120,11 @@ class LibraryManagerTests {
 
     @Test
     void basicElmTestMultiLibOneGoodOneMismatchedLibs() {
-        var cqlIncludeException = assertThrows(
-                CqlIncludeException.class,
-                () -> libraryManager.resolveLibraries(
-                        List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT)));
+        var versionedIdentifier = List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT);
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManager.resolveLibraries(versionedIdentifier);
+        });
 
         assertEquals(
                 "Could not load source for library BaseLibraryElmMismatchId, version 1.0.1, namespace uri null.",
@@ -134,7 +135,8 @@ class LibraryManagerTests {
 
     @Test
     void basicElmTestMultiLibOneGoodOneInvalidLibs() {
-        var results = libraryManager.resolveLibraries(List.of(BASE_LIBRARY_ELM_IDENT, INVALID_IDENT));
+        var versionedIdentifier = List.of(BASE_LIBRARY_ELM_IDENT, INVALID_IDENT);
+        var results = libraryManager.resolveLibraries(versionedIdentifier);
         assertNotNull(results);
 
         var compiledLibraries = results.allCompiledLibraries();
@@ -172,9 +174,11 @@ class LibraryManagerTests {
 
     @Test
     void basicElmTestIdMismatchMultiLib() {
-        var cqlIncludeException = assertThrows(
-                CqlIncludeException.class,
-                () -> libraryManager.resolveLibraries(List.of(BASE_LIBRARY_ELM_MISMATCH_ID_IDENT)));
+        var versionedIdentifiers = List.of(BASE_LIBRARY_ELM_MISMATCH_ID_IDENT);
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManager.resolveLibraries(versionedIdentifiers);
+        });
 
         assertEquals(
                 "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
@@ -196,10 +200,11 @@ class LibraryManagerTests {
     @Test
     void basicElmTestVersionMismatchMultiLib() {
         var versionIdentifier = BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1");
+        var versionIdentifiers = List.of(versionIdentifier);
 
-        var cqlIncludeException = assertThrows(
-                CqlIncludeException.class,
-                () -> libraryManagerVersionAgnostic.resolveLibraries(List.of(versionIdentifier)));
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManagerVersionAgnostic.resolveLibraries(versionIdentifiers);
+        });
 
         assertEquals(
                 "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",

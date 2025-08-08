@@ -52,19 +52,24 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     }
 
     private DebugMap debugMap;
-    private CqlEngine cqlEngine;
+    private CqlEngine cqlEngineWithNoOptions;
+    private CqlEngine cqlEngineWithOptions;
 
     @BeforeEach
     void setup() {
         debugMap = new DebugMap();
-        cqlEngine = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
+        cqlEngineWithNoOptions = new CqlEngine(environment, null);
+        cqlEngineWithOptions = new CqlEngine(environment, Set.of(CqlEngine.Options.EnableExpressionCaching));
     }
 
     @Test
     void nonexistentLibrary() {
         var versionedIdentifier = toElmIdentifier("OtherName");
+        var versionedIdentifiers = List.of(versionedIdentifier);
+        var newDebugMap = new DebugMap();
+
         var exceptionMessage = assertThrows(CqlIncludeException.class, () -> {
-                    cqlEngine.evaluate(List.of(versionedIdentifier), null, null, null, new DebugMap(), null);
+                    cqlEngineWithNoOptions.evaluate(versionedIdentifiers, null, null, null, newDebugMap, null);
                 })
                 .getMessage();
 
@@ -76,11 +81,13 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     void libraryAndCqlMismatchedNames() {
         var versionedIdentifier = toElmIdentifier("NameMismatch");
         var versionedIdentifiers = List.of(versionedIdentifier);
+        var newDebugMap = new DebugMap();
+
         // The existing single library evaluation will tolerate name mismatches, however, this violates the CQL standard
         // Fixing that bug is out of scope for this work, but we definitely want to do the right thing going forward
         // with the new multiple library evaluation.
         var exceptionMessage = assertThrows(CqlIncludeException.class, () -> {
-                    cqlEngine.evaluate(versionedIdentifiers, null, null, null, new DebugMap(), null);
+                    cqlEngineWithOptions.evaluate(versionedIdentifiers, null, null, null, newDebugMap, null);
                 })
                 .getMessage();
 
@@ -98,7 +105,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @ParameterizedTest
     @MethodSource("libraryWithVersionQueriesParams")
     void libraryWithVersionQueries(VersionedIdentifier libraryIdentifier) {
-        var evalResultsForMultiLib = cqlEngine.evaluate(List.of(libraryIdentifier), null, null, null, debugMap, null);
+        var evalResultsForMultiLib =
+                cqlEngineWithOptions.evaluate(List.of(libraryIdentifier), null, null, null, debugMap, null);
 
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
@@ -114,7 +122,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesSimple() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3), null, null, null, debugMap, null);
 
         assertNotNull(evalResultsForMultiLib);
@@ -149,7 +157,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var versionedIdentifiers = List.of(versionedIdentifierBad1, versionedIdentifierBad2, versionedIdentifierBad3);
 
         var exception = assertThrows(CqlIncludeException.class, () -> {
-            cqlEngine.evaluate(versionedIdentifiers, null, null, null, debugMap, null);
+            cqlEngineWithOptions.evaluate(versionedIdentifiers, null, null, null, debugMap, null);
         });
 
         assertThat(
@@ -160,7 +168,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesWithParameters() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
                 null,
                 null,
@@ -234,7 +242,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesWithExpressionUniqueToASingleLib() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
                 // One expression common to all libraries, one each unique to a different single library
                 Set.of("Number", "MultiLibraryIdent1", "MultiLibraryValue2"),
@@ -265,7 +273,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesWithSubsetOfAllCommonExpressions() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
                 // We're leaving out "Name" here
                 Set.of("Number", "Period"),
@@ -304,7 +312,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void singleLibraryInvalid() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(toElmIdentifier("MultiLibraryBad")),
                 null,
                 null,
@@ -320,7 +328,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesOneInvalid() {
-        var evalResultsForMultiLib = cqlEngine.evaluate(
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, toElmIdentifier("MultiLibraryBad")),
                 null,
                 null,

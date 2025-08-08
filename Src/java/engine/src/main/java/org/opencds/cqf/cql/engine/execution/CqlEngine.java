@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a potential maintenance issue.
  *
  */
+@SuppressWarnings("squid:S115")
 public class CqlEngine {
     private static final Logger log = LoggerFactory.getLogger(CqlEngine.class);
 
@@ -63,7 +64,7 @@ public class CqlEngine {
         this.environment = environment;
 
         this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
-        this.state = new State(environment, engineOptions);
+        this.state = new State(environment, this.engineOptions);
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
@@ -250,7 +251,7 @@ public class CqlEngine {
             DebugMap debugMap,
             ZonedDateTime nullableEvaluationDateTime) {
 
-        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() | libraryIdentifiers.get(0) == null) {
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
             throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
@@ -282,10 +283,8 @@ public class CqlEngine {
             var library = loadMultiLibResult.retrieveLibrary(libraryIdentifier);
             var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
 
-            log.debug(
-                    "Evaluating library: {} with expressions: [{}]",
-                    libraryIdentifier.getId(),
-                    String.join(", ", expressionSet));
+            var joinedExpressions = String.join(", ", expressionSet);
+            log.debug("Evaluating library: {} with expressions: [{}]", libraryIdentifier.getId(), joinedExpressions);
             try {
                 var evaluationResult = this.evaluateExpressions(expressionSet);
                 resultBuilder.addResult(libraryIdentifier, evaluationResult);
@@ -436,13 +435,7 @@ public class CqlEngine {
 
         var libraries = resolvedLibraryResults.allLibrariesWithoutErrorSeverity();
 
-        if (this.engineOptions.contains(Options.EnableValidation)) {
-            libraries.forEach(library -> {
-                this.validateDataRequirements(library);
-                this.validateDataRequirements(library);
-            });
-            // TODO: Validate Expressions as well?
-        }
+        validateLibrariesIfNeeded(libraries);
 
         // We probably want to just load all relevant libraries into
         // memory before we start evaluation. This will further separate
@@ -466,6 +459,16 @@ public class CqlEngine {
         }
 
         return resultBuilder.build();
+    }
+
+    private void validateLibrariesIfNeeded(List<Library> libraries) {
+        if (this.engineOptions.contains(Options.EnableValidation)) {
+            libraries.forEach(library -> {
+                this.validateTerminologyRequirements(library);
+                this.validateDataRequirements(library);
+            });
+            // TODO: Validate Expressions as well?
+        }
     }
 
     private CqlException wrapException(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> exceptions) {
@@ -507,13 +510,12 @@ public class CqlEngine {
                         && library.getCodes().getDef() != null
                         && !library.getCodes().getDef().isEmpty())
                 || (library.getValueSets() != null
-                        && library.getValueSets().getDef() != null
-                        && !library.getValueSets().getDef().isEmpty())) {
-            if (this.environment.getTerminologyProvider() == null) {
-                throw new IllegalArgumentException(String.format(
-                        "Library %s has terminology requirements and no terminology provider is registered.",
-                        this.getLibraryDescription(library.getIdentifier())));
-            }
+                                && library.getValueSets().getDef() != null
+                                && !library.getValueSets().getDef().isEmpty())
+                        && this.environment.getTerminologyProvider() == null) {
+            throw new IllegalArgumentException(String.format(
+                    "Library %s has terminology requirements and no terminology provider is registered.",
+                    this.getLibraryDescription(library.getIdentifier())));
         }
     }
 
