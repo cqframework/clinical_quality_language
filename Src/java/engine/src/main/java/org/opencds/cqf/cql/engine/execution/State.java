@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -247,6 +248,23 @@ public class State {
         this.pushEvaluatedResourceStack();
     }
 
+    /**
+     * Sets up a list of libraries on the currentLibrary stack and sets up the evaluated resource stack at the same
+     * position.
+     *
+     * @param libraries the list of libraries to initialize
+     */
+    public void init(List<Library> libraries) {
+        assert this.stack.isEmpty();
+
+        for (Library library : libraries) {
+            // Ensure the current libraries and evaluated resources are at the same positions in the stack,
+            // so that we can exit each together to evaluate the next library
+            currentLibrary.push(library);
+            this.pushEvaluatedResourceStack();
+        }
+    }
+
     public Deque<ActivationFrame> getStack() {
         return this.stack;
     }
@@ -352,10 +370,18 @@ public class State {
     }
 
     public void setContextValue(String context, Object contextValue) {
-        if (!contextValues.containsKey(context) || !contextValues.get(context).equals(contextValue)) {
+        final boolean containsKey = contextValues.containsKey(context);
+        final Object valueFromContextValues = contextValues.get(context);
+        final boolean valuesAreEqual = contextValue.equals(valueFromContextValues);
+
+        if (!containsKey || !valuesAreEqual) {
             contextValues.put(context, contextValue);
-            cache.getExpressions().clear();
+            clearCacheExpressions();
         }
+    }
+
+    private void clearCacheExpressions() {
+        cache.getExpressions().clear();
     }
 
     public boolean enterContext(String context) {

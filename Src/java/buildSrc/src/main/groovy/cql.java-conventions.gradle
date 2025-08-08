@@ -86,7 +86,7 @@ spotless {
 /*
 A few things:
    - You must have a Maven Central account (https://central.sonatype.org/register/central-portal/)
-   - Your account must have privileges to upload info.cqframework artifacts 
+   - Your account must have privileges to upload info.cqframework artifacts
    - You must have a gpg key (http://central.sonatype.org/pages/working-with-pgp-signatures.html)
    - You must set your account info and GPG key in your user's gradle.properties file.  For example:
        mavenCentralUsername=foo
@@ -106,7 +106,7 @@ mavenPublishing {
     if (!version.endsWith('SNAPSHOT')) {
         signAllPublications()
     }
-    coordinates(project.group, project.name, project.version) 
+    coordinates(project.group, project.name, project.version)
     pom {
         name = project.name
         description = "The ${project.name} library for the Clinical Quality Language Java reference implementation"
@@ -118,7 +118,7 @@ mavenPublishing {
                 url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
             }
         }
-        
+
         scm {
             connection = 'scm:git:git@github.com:cqframework/clinical_quality_language.git'
             developerConnection = 'scm:git:git@github.com:cqframework/clinical_quality_language.git'

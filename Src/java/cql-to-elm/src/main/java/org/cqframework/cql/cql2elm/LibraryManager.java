@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -142,20 +144,15 @@ public class LibraryManager {
             return false;
         }
 
-        switch (unqualifiedIdentifier) {
-            case "FHIRHelpers":
-                return true;
-            default:
-                return false;
-        }
+        return unqualifiedIdentifier.equals("FHIRHelpers");
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CacheMode cacheMode) {
-        return this.resolveLibrary(libraryIdentifier, new ArrayList<>(), cacheMode);
+        return this.resolveLibraryInner(libraryIdentifier, cacheMode).compiledLibrary();
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
-        return this.resolveLibrary(libraryIdentifier, new ArrayList<>(), CacheMode.READ_WRITE);
+        return this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE).compiledLibrary();
     }
 
     public boolean canResolveLibrary(VersionedIdentifier libraryIdentifier) {
@@ -164,49 +161,118 @@ public class LibraryManager {
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
-        return this.resolveLibrary(libraryIdentifier, errors, CacheMode.READ_WRITE);
+        var compiledLibraryResult = this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE);
+        Optional.ofNullable(compiledLibraryResult.errors()).ifPresent(errors::addAll);
+        return compiledLibraryResult.compiledLibrary();
     }
 
-    public CompiledLibrary resolveLibrary(
-            VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors, CacheMode cacheMode) {
+    private CompiledLibraryResult resolveLibraryInner(VersionedIdentifier libraryIdentifier, CacheMode cacheMode) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
 
-        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
+        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().isEmpty()) {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        CompiledLibrary library = null;
-        if (cacheMode != CacheMode.NONE) {
-            library = compiledLibraries.get(libraryIdentifier);
-            if (library != null) {
-                return library;
-            }
-        }
+        var compiledLibraryResults = resolveLibraries(List.of(libraryIdentifier), cacheMode);
 
-        library = compileLibrary(libraryIdentifier, errors);
-        if (!hasErrors(errors) && cacheMode == CacheMode.READ_WRITE) {
-            compiledLibraries.put(libraryIdentifier, library);
-        }
-
-        return library;
+        return compiledLibraryResults.getOnlyResult();
     }
 
-    private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
+    public CompiledLibraryMultiResults resolveLibraries(List<VersionedIdentifier> libraryIdentifiers) {
+        return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE);
+    }
 
-        CompiledLibrary result = null;
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+    private CompiledLibraryMultiResults resolveLibraries(
+            List<VersionedIdentifier> libraryIdentifiers, CacheMode cacheMode) {
+
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null");
+        }
+
+        if (libraryIdentifiers.stream()
+                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null
+                        || libraryIdentifier.getId().isEmpty())) {
+            throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
+        }
+
+        var compiledLibraryResults = new ArrayList<CompiledLibraryResult>();
+
+        if (cacheMode != CacheMode.NONE) {
+
+            // Ensure that cache retrieved librariesFromCache are in the same order as the input identifiers so we
+            // don't get a mismatch later
+            var librariesFromCache = libraryIdentifiers.stream()
+                    .filter(compiledLibraries::containsKey)
+                    .map(compiledLibraries::get)
+                    .toList();
+
+            if (librariesFromCache.size() == libraryIdentifiers.size()) {
+                return CompiledLibraryMultiResults.from(librariesFromCache.stream()
+                        .map(lib -> new CompiledLibraryResult(lib, List.of()))
+                        .toList());
+            }
+
+            librariesFromCache.stream()
+                    .map(libraryFromCache -> new CompiledLibraryResult(libraryFromCache, List.of()))
+                    .forEach(compiledLibraryResults::add);
+        }
+
+        for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
+            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibraryResults)) {
+                logger.debug("library {} already in cache, skipping compilation", libraryIdentifier.getId());
+                continue;
+            }
+
+            var compiledLibraryResult = compileLibrary(libraryIdentifier);
+
+            // If we have any errors, ignore the compiled library altogether just like in the single lib case
+            if (!hasErrors(compiledLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
+                logger.debug("adding library to cache: {}", libraryIdentifier.getId());
+                compiledLibraries.put(libraryIdentifier, compiledLibraryResult.compiledLibrary());
+            }
+
+            compiledLibraryResults.add(compiledLibraryResult);
+        }
+
+        return CompiledLibraryMultiResults.from(compiledLibraryResults);
+    }
+
+    private boolean isLibraryAlreadyRetrievedFromCache(
+            VersionedIdentifier searchedForLibraryIdentifier, List<CompiledLibraryResult> compiledLibrariesFromCache) {
+        return compiledLibrariesFromCache.stream()
+                .map(CompiledLibraryResult::compiledLibrary)
+                .map(CompiledLibrary::getIdentifier)
+                .map(compiledLibraryIdentifier ->
+                        stripVersionIfNeeded(compiledLibraryIdentifier, searchedForLibraryIdentifier))
+                .toList()
+                .contains(searchedForLibraryIdentifier);
+    }
+
+    private VersionedIdentifier stripVersionIfNeeded(
+            VersionedIdentifier compiledLibraryIdentifier, VersionedIdentifier searchedForLibraryIdentifier) {
+        if (searchedForLibraryIdentifier.getVersion() == null) {
+            return new VersionedIdentifier().withId(compiledLibraryIdentifier.getId());
+        }
+        return compiledLibraryIdentifier;
+    }
+
+    private CompiledLibraryResult compileLibrary(VersionedIdentifier libraryIdentifier) {
+
+        var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
-            result = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
-            if (result != null) {
-                validateIdentifiers(libraryIdentifier, result, libraryPath);
-
-                sortStatements(result);
-                return result;
+            var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier);
+            if (elmCompiledLibrary != null) {
+                validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
+                sortStatements(elmCompiledLibrary);
+                return new CompiledLibraryResult(elmCompiledLibrary, List.of());
             }
         }
+
+        CompiledLibrary compiledLibrary;
+        List<CqlCompilerException> errors;
 
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -225,13 +291,11 @@ public class LibraryManager {
             CqlCompiler compiler = new CqlCompiler(
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()), libraryIdentifier, this);
             compiler.run(cqlSource);
-            if (errors != null) {
-                errors.addAll(compiler.getExceptions());
-            }
 
-            result = compiler.getCompiledLibrary();
+            errors = Collections.unmodifiableList(compiler.getExceptions());
+            compiledLibrary = compiler.getCompiledLibrary();
 
-            if (result == null) {
+            if (compiledLibrary == null) {
                 throw new CqlIncludeException(
                         String.format(
                                 "Could not load source for library %s, version %s.",
@@ -241,7 +305,7 @@ public class LibraryManager {
                         libraryIdentifier.getVersion());
             }
 
-            validateIdentifiers(libraryIdentifier, result, libraryPath);
+            validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath);
 
         } catch (IOException e) {
             throw new CqlIncludeException(
@@ -254,8 +318,8 @@ public class LibraryManager {
                     e);
         }
 
-        sortStatements(result);
-        return result;
+        sortStatements(compiledLibrary);
+        return new CompiledLibraryResult(compiledLibrary, errors);
     }
 
     private void validateIdentifiers(
@@ -297,7 +361,7 @@ public class LibraryManager {
                 .compareTo(b.getName()));
     }
 
-    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
+    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier) {
         InputStream elm = null;
         for (LibraryContentType type : supportedContentTypes) {
             if (LibraryContentType.CQL == type) {
@@ -309,17 +373,13 @@ public class LibraryManager {
                 continue;
             }
 
-            return generateCompiledLibraryFromElm(libraryIdentifier, elm, type, options);
+            return generateCompiledLibraryFromElm(elm, type);
         }
 
         return null;
     }
 
-    private CompiledLibrary generateCompiledLibraryFromElm(
-            VersionedIdentifier libraryIdentifier,
-            InputStream librarySource,
-            LibraryContentType type,
-            CqlCompilerOptions options) {
+    private CompiledLibrary generateCompiledLibraryFromElm(InputStream librarySource, LibraryContentType type) {
 
         Library library = null;
         CompiledLibrary compiledLibrary = null;
@@ -438,8 +498,7 @@ public class LibraryManager {
 
         Set<FunctionSig> functionNames = new HashSet<>();
         for (ExpressionDef ed : library.getStatements().getDef()) {
-            if (ed instanceof FunctionDef) {
-                FunctionDef fd = (FunctionDef) ed;
+            if (ed instanceof FunctionDef fd) {
                 var sig = new FunctionSig(
                         fd.getName(),
                         fd.getOperand() == null ? 0 : fd.getOperand().size());
@@ -459,11 +518,11 @@ public class LibraryManager {
             // recurse all
             // the way down. At that point, let's just translate.
             for (ExpressionDef ed : library.getStatements().getDef()) {
-                if (ed.getExpression() instanceof FunctionRef) {
-                    FunctionRef fr = (FunctionRef) ed.getExpression();
-                    if (fr.getSignature() != null && !fr.getSignature().isEmpty()) {
-                        return true;
-                    }
+                var expression = ed.getExpression();
+                if (expression instanceof FunctionRef fr
+                        && fr.getSignature() != null
+                        && !fr.getSignature().isEmpty()) {
+                    return true;
                 }
             }
         }
@@ -471,12 +530,10 @@ public class LibraryManager {
     }
 
     private boolean isVersionCompatible(Library library) {
-        if (!StringUtils.isEmpty(this.cqlCompilerOptions.getCompatibilityLevel())) {
-            if (library.getAnnotation() != null) {
-                String version = CompilerOptions.getCompilerVersion(library);
-                if (version != null) {
-                    return version.equals(this.cqlCompilerOptions.getCompatibilityLevel());
-                }
+        if (!StringUtils.isEmpty(this.cqlCompilerOptions.getCompatibilityLevel()) && library.getAnnotation() != null) {
+            String version = CompilerOptions.getCompilerVersion(library);
+            if (version != null) {
+                return version.equals(this.cqlCompilerOptions.getCompatibilityLevel());
             }
         }
 

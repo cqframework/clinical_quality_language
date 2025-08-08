@@ -119,12 +119,22 @@ public abstract class TestFhirPath {
             return;
         }
 
-        // Invalid and Semantic errors have been handled above, so we can assume Pass here
-        var pass = (Pass) testCase;
         var testValue = result.forExpression("Test").value();
         var actualList = testValue instanceof List<?>
                 ? (List<?>) testValue
                 : testValue == null ? emptyList() : List.of(testValue);
+
+        // Catch-all to prevent ClassCastException
+        if (!(testCase instanceof Pass pass)) {
+            throw failWithContext(
+                    "expected a non-Pass test case for %s, but got %s"
+                            .formatted(testCase.name(), testCase.getClass().getSimpleName()),
+                    testCase,
+                    actualList,
+                    null);
+        }
+
+        // Invalid and Semantic errors have been handled above, so we can assume Pass here
         if (actualList.size() != pass.results.size()) {
             throw failWithContext(
                     "Incorrect number of results. Expected %d, Actual %d"
