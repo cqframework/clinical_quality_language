@@ -6,18 +6,18 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 class LibraryManagerTests {
 
@@ -76,9 +76,16 @@ class LibraryManagerTests {
         var compiledLibraries = results.allCompiledLibraries();
         assertNotNull(compiledLibraries);
         assertThat(compiledLibraries.size(), equalTo(1));
+        assertThat(results.allErrors(), empty());
+        assertFalse(results.hasErrors());
 
-        var compiledLibrary = compiledLibraries.get(0);
-        var library = compiledLibrary.getLibrary();
+        var compiledLibraryFirst = compiledLibraries.get(0);
+        var compiledLibraryOnlyResult = results.getOnlyResult();
+        assertThat(
+                compiledLibraryOnlyResult.compiledLibrary().getIdentifier(),
+                equalTo(compiledLibraryFirst.getIdentifier()));
+
+        var library = compiledLibraryOnlyResult.compiledLibrary().getLibrary();
 
         assertNotNull(library);
         assertNotNull(library.getStatements().getDef());
