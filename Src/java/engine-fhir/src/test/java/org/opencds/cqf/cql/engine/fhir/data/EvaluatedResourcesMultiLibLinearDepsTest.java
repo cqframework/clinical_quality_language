@@ -106,17 +106,20 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
     @Test
     void singleLibNonexistentLib() {
         var engine = getCqlEngineForFhirNewLibMgr(false);
+        var versionedIdentifier = new VersionedIdentifier().withId("bad");
 
         // Old single-lib API
-        var singleLibException = assertThrows(
-                CqlIncludeException.class, () -> engine.evaluate(new VersionedIdentifier().withId("bad"), Set.of()));
+        var singleLibException = assertThrows(CqlIncludeException.class, () -> {
+            engine.evaluate(versionedIdentifier);
+        });
 
         assertThat(singleLibException.getMessage(), startsWith("Could not load source for library bad"));
 
+        var versionedIdentifiers = List.of(versionedIdentifier);
         // Old multi-lib API passing a single lib
-        var multiLibException = assertThrows(
-                CqlIncludeException.class,
-                () -> engine.evaluate(List.of(new VersionedIdentifier().withId("bad")), Set.of()));
+        var multiLibException = assertThrows(CqlIncludeException.class, () -> {
+            engine.evaluate(versionedIdentifiers, null);
+        });
 
         assertThat(multiLibException.getMessage(), startsWith("Could not load source for library bad"));
     }
