@@ -59,16 +59,11 @@ public class CqlEngine {
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        //        log.info("1234: Initializing CQL Engine.");
         requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
 
         this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
         this.state = new State(environment, engineOptions);
-
-        log.info(
-                "1234: is ExpressionCachingEnabled: {}",
-                this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching));
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
@@ -262,10 +257,6 @@ public class CqlEngine {
         var loadMultiLibResult = this.loadAndValidate(libraryIdentifiers);
 
         initializeEvalTime(nullableEvaluationDateTime);
-
-        final List<String> libraryIdsIds =
-                libraryIdentifiers.stream().map(VersionedIdentifier::getId).toList();
-        log.info("1234:  CQL:  state.init(): {}", libraryIdsIds);
 
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(loadMultiLibResult.getAllLibraries());

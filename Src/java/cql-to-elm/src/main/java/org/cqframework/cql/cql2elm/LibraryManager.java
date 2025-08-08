@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -269,7 +270,6 @@ public class LibraryManager {
         var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
-            logger.info("5656: Trying to compile ELM for library: {}", libraryIdentifier.getId());
             var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (elmCompiledLibrary != null) {
                 validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
@@ -282,7 +282,6 @@ public class LibraryManager {
         List<CqlCompilerException> errors;
 
         try {
-            logger.info("6767: Trying to compile CQL for library: {}", libraryIdentifier.getId());
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
             if (cqlSource == null) {
                 throw new CqlIncludeException(
@@ -300,7 +299,7 @@ public class LibraryManager {
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()), libraryIdentifier, this);
             compiler.run(cqlSource);
 
-            errors = List.copyOf(compiler.getExceptions());
+            errors = Collections.unmodifiableList(compiler.getExceptions());
             compiledLibrary = compiler.getCompiledLibrary();
 
             if (compiledLibrary == null) {

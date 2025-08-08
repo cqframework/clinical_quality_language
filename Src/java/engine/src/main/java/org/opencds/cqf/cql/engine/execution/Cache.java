@@ -83,13 +83,7 @@ public class Cache {
 
     public ExpressionResult getCachedExpression(VersionedIdentifier libraryId, String name) {
         final Map<String, ExpressionResult> expressionCache = getExpressionCache(libraryId);
-        final ExpressionResult expressionResult = expressionCache.get(name);
-        log.info(
-                "1234: getCachedExpression(): library: [{}], name: [{}], expressionResult: {}",
-                rightPad(libraryId.getId(), 10),
-                rightPad(name, 20),
-                expressionResult);
-        return expressionResult;
+        return expressionCache.get(name);
     }
 
     private static String rightPad(Object o, int length) {

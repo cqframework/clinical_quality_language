@@ -4,3 +4,6 @@ parameter "Measurement Period" Interval<DateTime> default Interval[@2023-01-01, 
 
 define "Number": 3
 define "Period": "Measurement Period"
+define "Name": 'Tres'
+define "MultiLibraryIdent3": 'MultiLibrary3'
+define "MultiLibraryValue3": 'Three'

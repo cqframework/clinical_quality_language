@@ -5,7 +5,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.ZoneOffset;
 import java.util.List;
@@ -43,6 +45,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final Interval _2023_01_01_TO_2024_01_01 = new Interval(_2023_01_01, true, _2024_01_01, false);
     private static final Interval _2031_01_01_TO_2032_01_01 = new Interval(_2031_01_01, true, _2032_01_01, false);
     private static final Logger log = LoggerFactory.getLogger(CqlEngineMultipleLibrariesTest.class);
+    private static final VersionedIdentifier MULTI_LIBRARY_1 = toElmIdentifier("MultiLibrary1");
+    private static final VersionedIdentifier MULTI_LIBRARY_2 = toElmIdentifier("MultiLibrary2");
+    private static final VersionedIdentifier MULTI_LIBRARY_3 = toElmIdentifier("MultiLibrary3");
 
     @Override
     protected String getCqlSubdirectory() {
@@ -112,15 +117,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @Test
     void multipleLibrariesSimple() {
         var evalResultsForMultiLib = cqlEngine.evaluate(
-                List.of(
-                        toElmIdentifier("MultiLibrary1"),
-                        toElmIdentifier("MultiLibrary2"),
-                        toElmIdentifier("MultiLibrary3")),
-                null,
-                null,
-                null,
-                debugMap,
-                null);
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3), null, null, null, debugMap, null);
 
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
@@ -167,17 +164,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                         "Library MultiLibrary1 was included with version bad, but id: MultiLibrary1 and version 1.0.0 of the library was found."));
     }
 
-    // LUKETODO:  add another test with multiple expressions in the Set
-    // LUKETODO:  add another test with different expressions in the Set,  unique to that library, such as "Number1",
-    // "Number2", "Number3"
-
     @Test
     void multipleLibrariesWithParameters() {
         var evalResultsForMultiLib = cqlEngine.evaluate(
-                List.of(
-                        toElmIdentifier("MultiLibrary1"),
-                        toElmIdentifier("MultiLibrary2"),
-                        toElmIdentifier("MultiLibrary3")),
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
                 null,
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
@@ -197,6 +187,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(2, evaluationResult2.expressionResults.get("Number").value());
         assertEquals(3, evaluationResult3.expressionResults.get("Number").value());
 
+        assertEquals("Uno", evaluationResult1.expressionResults.get("Name").value());
+        assertEquals("Dos", evaluationResult2.expressionResults.get("Name").value());
+        assertEquals("Tres", evaluationResult3.expressionResults.get("Name").value());
+
         assertEquals(
                 _1900_01_01_TO_1901_01_01,
                 evaluationResult1.expressionResults.get("Period").value());
@@ -206,16 +200,67 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(
                 _1900_01_01_TO_1901_01_01,
                 evaluationResult3.expressionResults.get("Period").value());
+
+        // Expressions unique to the libraries in question
+        assertEquals(
+                "MultiLibrary1",
+                evaluationResult1.expressionResults.get("MultiLibraryIdent1").value());
+        assertEquals(
+                "One",
+                evaluationResult1.expressionResults.get("MultiLibraryValue1").value());
+
+        assertEquals(
+                "MultiLibrary2",
+                evaluationResult2.expressionResults.get("MultiLibraryIdent2").value());
+        assertEquals(
+                "Two",
+                evaluationResult2.expressionResults.get("MultiLibraryValue2").value());
+
+        assertEquals(
+                "MultiLibrary3",
+                evaluationResult3.expressionResults.get("MultiLibraryIdent3").value());
+        assertEquals(
+                "Three",
+                evaluationResult3.expressionResults.get("MultiLibraryValue3").value());
     }
 
     @Test
-    void multipleLibrariesWithExpressions() {
+    void multipleLibrariesWithExpressionUniqueToASingleLib() {
         var evalResultsForMultiLib = cqlEngine.evaluate(
-                List.of(
-                        toElmIdentifier("MultiLibrary1"),
-                        toElmIdentifier("MultiLibrary2"),
-                        toElmIdentifier("MultiLibrary3")),
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
+                // One expression common to all libraries, one each unique to a different single library
+                Set.of("Number", "MultiLibraryIdent1", "MultiLibraryValue2"),
                 null,
+                null,
+                debugMap,
+                null);
+
+        assertNotNull(evalResultsForMultiLib);
+        var libraryResults = evalResultsForMultiLib.getResults();
+        assertEquals(0, libraryResults.size());
+        assertTrue(evalResultsForMultiLib.hasExceptions());
+        var exceptions = evalResultsForMultiLib.getExceptions();
+        assertEquals(3, exceptions.size());
+
+        assertThat(
+                exceptions.get(MULTI_LIBRARY_1).getMessage(),
+                containsString(
+                        "Could not resolve expression reference 'MultiLibraryValue2' in library 'MultiLibrary1'."));
+        assertThat(
+                exceptions.get(MULTI_LIBRARY_2).getMessage(),
+                containsString(
+                        "Could not resolve expression reference 'MultiLibraryIdent1' in library 'MultiLibrary2'."));
+        // We may get either one of two exceptions here, depending on the order of evaluation
+        assertThat(
+                exceptions.get(MULTI_LIBRARY_3).getMessage(), containsString("Could not resolve expression reference"));
+    }
+
+    @Test
+    void multipleLibrariesWithSubsetOfAllCommonExpressions() {
+        var evalResultsForMultiLib = cqlEngine.evaluate(
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
+                // We're leaving out "Name" here
+                Set.of("Number", "Period"),
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
                 debugMap,
@@ -243,6 +288,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(
                 _1900_01_01_TO_1901_01_01,
                 evaluationResult3.expressionResults.get("Period").value());
+
+        assertNull(evaluationResult1.expressionResults.get("Name"));
+        assertNull(evaluationResult2.expressionResults.get("Name"));
+        assertNull(evaluationResult3.expressionResults.get("Name"));
     }
 
     @Test
@@ -264,11 +313,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @Test
     void multipleLibrariesOneInvalid() {
         var evalResultsForMultiLib = cqlEngine.evaluate(
-                List.of(
-                        toElmIdentifier("MultiLibrary1"),
-                        toElmIdentifier("MultiLibrary2"),
-                        toElmIdentifier("MultiLibrary3"),
-                        toElmIdentifier("MultiLibraryBad")),
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, toElmIdentifier("MultiLibraryBad")),
                 null,
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),

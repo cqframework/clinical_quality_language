@@ -11,15 +11,12 @@ import org.hl7.elm.r1.VersionedIdentifier;
  * Represents the result of compiling a CQL library, including the compiled library and any compilation errors, in
  * order to support a partially successful compile with errors
  */
-// LUKETODO:  record?
-public class CompiledLibraryMultiResults {
-    private final List<CompiledLibraryResult> results;
-
+public record CompiledLibraryMultiResults(List<CompiledLibraryResult> results) {
     public static CompiledLibraryMultiResults from(List<CompiledLibraryResult> results) {
         return new CompiledLibraryMultiResults(results);
     }
 
-    private CompiledLibraryMultiResults(List<CompiledLibraryResult> results) {
+    public CompiledLibraryMultiResults(List<CompiledLibraryResult> results) {
         this.results = Collections.unmodifiableList(results);
     }
 

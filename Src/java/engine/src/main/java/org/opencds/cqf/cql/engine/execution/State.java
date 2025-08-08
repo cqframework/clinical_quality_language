@@ -265,13 +265,6 @@ public class State {
      * @param libraries the list of libraries to initialize
      */
     public void init(List<Library> libraries) {
-        log.info(
-                "1234: getLibraryEngine() for ids: {}",
-                libraries.stream()
-                        .map(Library::getIdentifier)
-                        .map(VersionedIdentifier::getId)
-                        .toList());
-
         assert this.stack.isEmpty();
 
         for (Library library : libraries) {
