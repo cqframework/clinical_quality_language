@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.Library;
@@ -32,6 +33,7 @@ class LibraryManagerTests {
     private static final VersionedIdentifier INVALID_IDENT = new VersionedIdentifier().withId("Invalid");
     private static LibraryManager libraryManager;
     private static LibraryManager libraryManagerVersionAgnostic;
+    private static LibraryManager libraryManagerOwnCache;
 
     @BeforeAll
     static void setup() {
@@ -46,6 +48,11 @@ class LibraryManagerTests {
         libraryManagerVersionAgnostic
                 .getLibrarySourceLoader()
                 .registerProvider(new TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"));
+
+        libraryManagerOwnCache = new LibraryManager(modelManager, CqlCompilerOptions.defaultOptions(), new HashMap<>());
+        libraryManagerOwnCache
+                .getLibrarySourceLoader()
+                .registerProvider(new TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"));
     }
 
     @AfterAll
@@ -55,11 +62,26 @@ class LibraryManagerTests {
 
     @Test
     void invalidCql() {
-        var lib = libraryManager.resolveLibrary(INVALID_IDENT).getLibrary();
+        var lib = libraryManagerOwnCache.resolveLibrary(INVALID_IDENT).getLibrary();
 
         assertNotNull(lib);
 
-        assertThat(libraryManager.getCompiledLibraries().values(), empty());
+        assertThat(libraryManagerOwnCache.getCompiledLibraries().values(), empty());
+    }
+
+    @Test
+    void resolveLibrariesErrors() {
+        assertThrows(IllegalArgumentException.class, () -> libraryManagerOwnCache.resolveLibraries(null));
+        assertThrows(IllegalArgumentException.class, () -> libraryManagerOwnCache.resolveLibraries(List.of()));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier())));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier().withId(null))));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier().withId(""))));
     }
 
     @Test

@@ -319,8 +319,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesOneInvalid() {
+        var versionedIdentifierBad = toElmIdentifier("MultiLibraryBad");
         var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
-                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, toElmIdentifier("MultiLibraryBad")),
+                List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, versionedIdentifierBad),
                 null,
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
@@ -336,6 +337,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var exception = exceptionEntry.getValue();
         assertNotNull(exception);
         assertEquals("Library MultiLibraryBad loaded, but had errors: Syntax error at define", exception.getMessage());
+        assertNull(evalResultsForMultiLib.getResultFor(versionedIdentifierBad));
 
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size()); // there is no eval result for MultiLibraryBad
