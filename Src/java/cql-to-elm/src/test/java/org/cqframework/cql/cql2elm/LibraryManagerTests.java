@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,6 +16,8 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 class LibraryManagerTests {
 
@@ -60,6 +63,25 @@ class LibraryManagerTests {
 
         assertNotNull(lib);
         assertNotNull(lib.getStatements().getDef());
+    }
+
+    @Test
+    void basicElmTestMultiLib() {
+        var versionIdentifier = new VersionedIdentifier().withId("BaseLibraryElm");
+
+        var results = libraryManager.resolveLibraries(List.of(versionIdentifier));
+
+        assertNotNull(results);
+
+        var compiledLibraries = results.allCompiledLibraries();
+        assertNotNull(compiledLibraries);
+        assertThat(compiledLibraries.size(), equalTo(1));
+
+        var compiledLibrary = compiledLibraries.get(0);
+        var library = compiledLibrary.getLibrary();
+
+        assertNotNull(library);
+        assertNotNull(library.getStatements().getDef());
     }
 
     @Test

@@ -2,6 +2,9 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.CONDITION;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.ENCOUNTER;
@@ -24,6 +27,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib;
 
 class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTestBase {
 
@@ -86,8 +91,14 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         assertEvaluationResult(singleResult, expressionName, expectedResources, expectedValues);
 
         // Old multi-lib API passing a single lib
-        var multiResult =
-                engine.evaluate(List.of(libId), Set.of(expressionName)).getOnlyResultOrThrow();
+        var multiResults = engine.evaluate(List.of(libId), Set.of(expressionName));
+        assertTrue(multiResults.containsResultsFor(libId));
+        assertFalse(multiResults.containsExceptionsFor(libId));
+        var multiResultFor = multiResults.getResultFor(libId);
+        var multiResult = multiResults.getOnlyResultOrThrow();
+
+        // Sanity check:  the single result and the multi-lib result should be the same
+        assertEquals(multiResultFor.expressionResults.size(), multiResult.expressionResults .size());
 
         assertEvaluationResult(multiResult, expressionName, expectedResources, expectedValues);
     }
