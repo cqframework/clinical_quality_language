@@ -177,6 +177,10 @@ public class CqlEngine {
         return this.evaluate(libraryIdentifier, expressions, null, null, null);
     }
 
+    public EvaluationResultsForMultiLib evaluate(List<VersionedIdentifier> libraryIdentifiers) {
+        return this.evaluate(libraryIdentifiers, null, null, null, null);
+    }
+
     public EvaluationResultsForMultiLib evaluate(
             List<VersionedIdentifier> libraryIdentifiers, Set<String> expressions) {
         return this.evaluate(libraryIdentifiers, expressions, null, null, null);

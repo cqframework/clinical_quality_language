@@ -52,6 +52,20 @@ class CqlEngineTest extends CqlTestBase {
     }
 
     @Test
+    void withVersion() {
+        var versionedIdentifierWithVersion =
+                toElmIdentifier("LibraryWithVersion").withVersion("1.0.0");
+        var versionedIdentifierNoVersion = toElmIdentifier("LibraryWithVersion");
+
+        var singleLibResult = engine.evaluate(versionedIdentifierWithVersion);
+        assertNotNull(singleLibResult);
+
+        var multiLibResults = engine.evaluate(List.of(versionedIdentifierWithVersion));
+        assertNotNull(multiLibResults);
+        assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion));
+    }
+
+    @Test
     void hedisCompatibility() {
         var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         var result = libraryResult.expressionResults.get("QuantityListIncludes").value();

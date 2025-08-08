@@ -176,9 +176,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 debugMap,
                 null);
 
-        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_1);
-        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_2);
-        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_3);
+        sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_1);
+        sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_2);
+        sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_3);
 
         assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertNotNull(evalResultsForMultiLib);
@@ -367,9 +367,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 .orElseThrow();
     }
 
-    private static void sanityCheck(
+    private static void sanityCheckForMultiLib(
             EvaluationResultsForMultiLib evalResultsForMultiLib, VersionedIdentifier libraryIdentifier) {
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier));
+        assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
         assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
         assertNull(evalResultsForMultiLib.getExceptionFor(libraryIdentifier));

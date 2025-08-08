@@ -29,7 +29,7 @@ public class EvaluationResultsForMultiLib {
     }
 
     public boolean containsResultsFor(VersionedIdentifier libraryIdentifier) {
-        return results.containsKey(libraryIdentifier);
+        return getResultFor(libraryIdentifier) != null;
     }
 
     public boolean containsExceptionsFor(VersionedIdentifier libraryIdentifier) {
@@ -116,7 +116,7 @@ public class EvaluationResultsForMultiLib {
         }
 
         void addResult(VersionedIdentifier libraryId, EvaluationResult evaluationResult) {
-            results.put(withIdOnly(libraryId), evaluationResult);
+            results.put(libraryId, evaluationResult);
         }
 
         void addException(VersionedIdentifier libraryId, RuntimeException exception) {
