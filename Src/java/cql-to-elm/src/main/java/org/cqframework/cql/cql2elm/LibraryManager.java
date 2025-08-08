@@ -179,100 +179,16 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        // LUKETODO:  consider calling the multi-lib method instead
+        var compiledLibraryResults = resolveLibraries(List.of(libraryIdentifier), cacheMode);
 
-        var errorsById = new HashMap<VersionedIdentifier, List<CqlCompilerException>>();
-        //        var compiledLibraries1 = resolveLibraries(List.of(libraryIdentifier), errorsById, cacheMode);
-        var compiledLibraryResults = resolveLibraries2(List.of(libraryIdentifier), cacheMode);
-
-        return compiledLibraryResults.get(0);
-
-        //        CompiledLibrary library = null;
-        //        if (cacheMode != CacheMode.NONE) {
-        //            library = compiledLibraries.get(libraryIdentifier);
-        //            if (library != null) {
-        //                return new CompiledLibraryResult(library, List.of());
-        //            }
-        //        }
-        //
-        //        var compileLibraryResult = compileLibrary(libraryIdentifier);
-        //        library = compileLibraryResult.compiledLibrary();
-        //        if (!hasErrors(compileLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
-        //            compiledLibraries.put(libraryIdentifier, library);
-        //        }
-        //
-        //        return new CompiledLibraryResult(library, compileLibraryResult.errors());
+        return compiledLibraryResults.getOnlyResult();
     }
 
-    public List<CompiledLibrary> resolveLibraries(
-            List<VersionedIdentifier> libraryIdentifiers,
-            Map<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
-
-        return resolveLibraries(libraryIdentifiers, errorsById, CacheMode.READ_WRITE);
+    public CompiledLibraryMultiResults resolveLibraries(List<VersionedIdentifier> libraryIdentifiers) {
+        return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE);
     }
 
-    // LUKETODO:  return CompiledLibraryResult instead of List<CompiledLibrary>?
-    public List<CompiledLibrary> resolveLibraries(
-            List<VersionedIdentifier> libraryIdentifiers,
-            Map<VersionedIdentifier, List<CqlCompilerException>> errorsById,
-            CacheMode cacheMode) {
-
-        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
-            throw new IllegalArgumentException("libraryIdentifier can not be null");
-        }
-
-        if (libraryIdentifiers.stream()
-                .anyMatch(libraryIdentifier -> libraryIdentifier.getId() == null
-                        || libraryIdentifier.getId().isEmpty())) {
-            throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
-        }
-
-        var compiledLibrariesToReturn = new ArrayList<CompiledLibrary>();
-
-        if (cacheMode != CacheMode.NONE) {
-
-            // Ensure that cache retrieved libraries are in the same order as the input identifiers so we
-            // don't get a mismatch later
-            var libraries = libraryIdentifiers.stream()
-                    .filter(compiledLibraries::containsKey)
-                    .map(compiledLibraries::get)
-                    .toList();
-
-            if (libraries.size() == libraryIdentifiers.size()) {
-                return libraries;
-            }
-
-            compiledLibrariesToReturn.addAll(libraries);
-        }
-
-        for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
-            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibrariesToReturn)) {
-                logger.debug("library {} already in cache, skipping compilation", libraryIdentifier.getId());
-                continue;
-            }
-
-            var compiledlibraryResult = compileLibrary(libraryIdentifier);
-
-            // If we have any errors, ignore the compiled library altogether just like in the single lib case
-            if (!hasErrors(compiledlibraryResult.errors())) {
-                // add to returned compiledLibrariesToReturn regardless of cache mode
-                compiledLibrariesToReturn.add(compiledlibraryResult.compiledLibrary());
-                if (cacheMode == CacheMode.READ_WRITE) {
-                    logger.debug("adding library to cache: {}", libraryIdentifier.getId());
-                    compiledLibraries.put(libraryIdentifier, compiledlibraryResult.compiledLibrary());
-                }
-            }
-
-            // We can have both successfully compiled libraries and errors, especially among multiple libraries
-            if (hasErrors(compiledlibraryResult.errors())) {
-                errorsById.put(libraryIdentifier, compiledlibraryResult.errors());
-            }
-        }
-
-        return List.copyOf(compiledLibrariesToReturn);
-    }
-
-    private List<CompiledLibraryResult> resolveLibraries2(
+    private CompiledLibraryMultiResults resolveLibraries(
             List<VersionedIdentifier> libraryIdentifiers, CacheMode cacheMode) {
 
         if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
@@ -285,30 +201,30 @@ public class LibraryManager {
             throw new IllegalArgumentException("at least one libraryIdentifier Id is null");
         }
 
-        var compiledLibrariesToReturn = new ArrayList<CompiledLibrary>();
+        var compiledLibraryResults = new ArrayList<CompiledLibraryResult>();
 
         if (cacheMode != CacheMode.NONE) {
 
-            // Ensure that cache retrieved libraries are in the same order as the input identifiers so we
+            // Ensure that cache retrieved librariesFromCache are in the same order as the input identifiers so we
             // don't get a mismatch later
-            var libraries = libraryIdentifiers.stream()
+            var librariesFromCache = libraryIdentifiers.stream()
                     .filter(compiledLibraries::containsKey)
                     .map(compiledLibraries::get)
                     .toList();
 
-            if (libraries.size() == libraryIdentifiers.size()) {
-                return libraries.stream()
+            if (librariesFromCache.size() == libraryIdentifiers.size()) {
+                return CompiledLibraryMultiResults.from(librariesFromCache.stream()
                         .map(lib -> new CompiledLibraryResult(lib, List.of()))
-                        .toList();
+                        .toList());
             }
 
-            compiledLibrariesToReturn.addAll(libraries);
+            librariesFromCache.stream()
+                    .map(libraryFromCache -> new CompiledLibraryResult(libraryFromCache, List.of()))
+                    .forEach(compiledLibraryResults::add);
         }
 
-        var compiledLibraryResults = new ArrayList<CompiledLibraryResult>();
-
         for (VersionedIdentifier libraryIdentifier : libraryIdentifiers) {
-            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibrariesToReturn)) {
+            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibraryResults)) {
                 logger.debug("library {} already in cache, skipping compilation", libraryIdentifier.getId());
                 continue;
             }
@@ -326,12 +242,13 @@ public class LibraryManager {
             compiledLibraryResults.add(compiledLibraryResult);
         }
 
-        return compiledLibraryResults;
+        return CompiledLibraryMultiResults.from(compiledLibraryResults);
     }
 
     private boolean isLibraryAlreadyRetrievedFromCache(
-            VersionedIdentifier searchedForLibraryIdentifier, List<CompiledLibrary> compiledLibrariesFromCache) {
+            VersionedIdentifier searchedForLibraryIdentifier, List<CompiledLibraryResult> compiledLibrariesFromCache) {
         return compiledLibrariesFromCache.stream()
+                .map(CompiledLibraryResult::compiledLibrary)
                 .map(CompiledLibrary::getIdentifier)
                 .map(compiledLibraryIdentifier ->
                         stripVersionIfNeeded(compiledLibraryIdentifier, searchedForLibraryIdentifier))

@@ -5,13 +5,11 @@ import static java.util.Objects.requireNonNull;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cqframework.cql.cql2elm.CompiledLibraryResult;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
-import org.cqframework.cql.cql2elm.CqlIncludeException;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
@@ -432,26 +430,23 @@ public class CqlEngine {
      */
     private LoadMultiLibResult loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
 
-        var errorsById = new LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>>();
-
-        var resolvedLibraries = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers, errorsById);
-
-        var idsToLibraries = getLibrariesByVersionedIdentifier(libraryIdentifiers, resolvedLibraries, errorsById);
+        var resolvedLibraryResults = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers);
 
         var resultBuilder = LoadMultiLibResult.builder();
 
-        if (CqlCompilerException.hasErrors(
-                errorsById.values().stream().flatMap(Collection::stream).toList())) {
-            for (Map.Entry<VersionedIdentifier, List<CqlCompilerException>> entry : errorsById.entrySet()) {
-                var libraryIdentifier = entry.getKey();
-                var exceptions = entry.getValue();
-
-                resultBuilder.addException(libraryIdentifier, wrapException(libraryIdentifier, exceptions));
+        if (CqlCompilerException.hasErrors(resolvedLibraryResults.allErrors())) {
+            for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
+                if (!libraryResult.errors().isEmpty()) {
+                    var identifier = libraryResult.compiledLibrary().getIdentifier();
+                    resultBuilder.addException(identifier, wrapException(identifier, libraryResult.errors()));
+                }
             }
         }
 
+        var libraries = resolvedLibraryResults.allLibrariesWithoutErrorSeverity();
+
         if (this.engineOptions.contains(Options.EnableValidation)) {
-            idsToLibraries.values().forEach(library -> {
+            libraries.forEach(library -> {
                 this.validateDataRequirements(library);
                 this.validateDataRequirements(library);
             });
@@ -461,7 +456,7 @@ public class CqlEngine {
         // We probably want to just load all relevant libraries into
         // memory before we start evaluation. This will further separate
         // environment from state.
-        for (Library library : idsToLibraries.values()) {
+        for (Library library : libraries) {
             try {
                 if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
                     for (IncludeDef include : library.getIncludes().getDef()) {
@@ -488,51 +483,6 @@ public class CqlEngine {
                         libraryIdentifier.getId()
                                 + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
                         exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
-    }
-
-    private LinkedHashMap<VersionedIdentifier, Library> getLibrariesByVersionedIdentifier(
-            List<VersionedIdentifier> libraryIdentifiersUsedToQuery,
-            List<CompiledLibrary> resolvedLibraries,
-            LinkedHashMap<VersionedIdentifier, List<CqlCompilerException>> errorsById) {
-
-        var nonErroredIdentifiers = libraryIdentifiersUsedToQuery.stream()
-                .filter(ident -> !errorsById.containsKey(ident))
-                .toList();
-
-        if (nonErroredIdentifiers.size() != resolvedLibraries.size()) {
-            throw new CqlException(
-                    "Something went wrong with resolving libraries: expected %d non-errored libraries, but got %d."
-                            .formatted(nonErroredIdentifiers.size(), resolvedLibraries.size()));
-        }
-
-        for (int index = 0; index < nonErroredIdentifiers.size(); index++) {
-            var versionedIdentifierFromQuery = nonErroredIdentifiers.get(index);
-            var compiledLibrary = resolvedLibraries.get(index);
-
-            if (!versionedIdentifierFromQuery
-                    .getId()
-                    .equals(compiledLibrary.getIdentifier().getId())) {
-
-                throw new CqlIncludeException(
-                        "Library identifiers are mismatched: query id: %s vs compiled library id: %s"
-                                .formatted(
-                                        versionedIdentifierFromQuery.getId(),
-                                        compiledLibrary.getIdentifier().getId()),
-                        versionedIdentifierFromQuery.getSystem(),
-                        versionedIdentifierFromQuery.getId(),
-                        versionedIdentifierFromQuery.getVersion());
-            }
-        }
-
-        return resolvedLibraries.stream()
-                .map(CompiledLibrary::getLibrary)
-                .collect(Collectors.toMap(
-                        Library::getIdentifier,
-                        Function.identity(),
-                        (existing, replacement) -> {
-                            throw new CqlException("Duplicate library identifier found: %s".formatted(existing));
-                        },
-                        LinkedHashMap::new));
     }
 
     private void validateDataRequirements(Library library) {

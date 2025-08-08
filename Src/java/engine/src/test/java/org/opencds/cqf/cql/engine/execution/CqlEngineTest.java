@@ -1,15 +1,19 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 
 class CqlEngineTest extends CqlTestBase {
 
@@ -38,6 +42,12 @@ class CqlEngineTest extends CqlTestBase {
 
         var debugResult = libraryDebug.get(result.get());
         assertEquals(1, debugResult.size());
+    }
+
+    @Test
+    public void invalidCql() {
+        var exception = assertThrows(CqlException.class, () -> engine.evaluate(toElmIdentifier("Invalid")));
+        assertThat(exception.getMessage(), containsString("Library Invalid loaded, but had errors:"));
     }
 
     @Test

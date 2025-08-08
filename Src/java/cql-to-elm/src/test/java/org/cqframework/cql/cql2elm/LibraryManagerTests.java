@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +39,17 @@ class LibraryManagerTests {
     @AfterAll
     static void tearDown() {
         libraryManager.getLibrarySourceLoader().clearProviders();
+    }
+
+    @Test
+    public void invalidCql() {
+        var versionIdentifier = new VersionedIdentifier().withId("Invalid");
+
+        var lib = libraryManager.resolveLibrary(versionIdentifier).getLibrary();
+
+        assertNotNull(lib);
+
+        assertThat(libraryManager.getCompiledLibraries().values(), empty());
     }
 
     @Test
