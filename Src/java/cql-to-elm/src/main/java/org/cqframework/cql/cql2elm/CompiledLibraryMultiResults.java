@@ -28,6 +28,16 @@ public record CompiledLibraryMultiResults(List<CompiledLibraryResult> results) {
         return results;
     }
 
+    public CompiledLibrary getCompiledLibraryFor(VersionedIdentifier libraryIdentifier) {
+        return results.stream()
+                .filter(res -> libraryIdentifier
+                        .getId()
+                        .equals(res.compiledLibrary().getIdentifier().getId()))
+                .findFirst()
+                .map(CompiledLibraryResult::compiledLibrary)
+                .orElse(null);
+    }
+
     public List<CompiledLibrary> allCompiledLibraries() {
         return results.stream().map(CompiledLibraryResult::compiledLibrary).toList();
     }
