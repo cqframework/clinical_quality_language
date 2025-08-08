@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.assertEvaluationResult;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.ENCOUNTER_ARRIVED_PAT1;
 import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.ENCOUNTER_ARRIVED_PAT2;
@@ -183,6 +188,14 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
 
         var resultsSingleLib = engine.evaluate(List.of(libraryIdentifier), ALL_EXPRESSIONS);
 
+        assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier));
+        assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier));
+        assertFalse(resultsSingleLib.containsExceptionsFor(libraryIdentifier));
+        assertFalse(resultsSingleLib.containsExceptionsFor(libraryIdentifier));
+        assertNotNull(resultsSingleLib.getResultFor(libraryIdentifier));
+        assertNotNull(resultsSingleLib.getOnlyResultOrThrow());
+        assertNull(resultsSingleLib.getExceptionFor(libraryIdentifier));
+
         assertEvaluationResult(
                 resultsSingleLib, libraryIdentifier, expressionName, expectedEvaluatedResources, expectedValues);
     }
@@ -256,10 +269,17 @@ class EvaluatedResourcesMultiLibComplexDepsTest extends FhirExecutionMultiLibTes
 
         var allLibs = List.of(LIB_1A, LIB_1B);
 
-        var resultsSingleLib = engine.evaluate(allLibs, ALL_EXPRESSIONS);
+        var results = engine.evaluate(allLibs, ALL_EXPRESSIONS);
 
-        assertEvaluationResult(
-                resultsSingleLib, libraryIdentifier, expressionName, expectedEvaluatedResources, expectedValues);
+        assertTrue(results.containsResultsFor(LIB_1A));
+        assertTrue(results.containsResultsFor(LIB_1B));
+        assertFalse(results.containsExceptionsFor(LIB_1A));
+        assertFalse(results.containsExceptionsFor(LIB_1B));
+        assertNotNull(results.getResultFor(LIB_1A));
+        assertThrows(IllegalStateException.class, results::getOnlyResultOrThrow);
+        assertNull(results.getExceptionFor(LIB_1A));
+
+        assertEvaluationResult(results, libraryIdentifier, expressionName, expectedEvaluatedResources, expectedValues);
     }
 
     @Nonnull
