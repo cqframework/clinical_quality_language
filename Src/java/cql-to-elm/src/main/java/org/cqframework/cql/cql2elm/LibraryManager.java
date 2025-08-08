@@ -144,12 +144,7 @@ public class LibraryManager {
             return false;
         }
 
-        switch (unqualifiedIdentifier) {
-            case "FHIRHelpers":
-                return true;
-            default:
-                return false;
-        }
+        return unqualifiedIdentifier.equals("FHIRHelpers");
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CacheMode cacheMode) {
@@ -233,11 +228,9 @@ public class LibraryManager {
             var compiledLibraryResult = compileLibrary(libraryIdentifier);
 
             // If we have any errors, ignore the compiled library altogether just like in the single lib case
-            if (!hasErrors(compiledLibraryResult.errors())) {
-                if (cacheMode == CacheMode.READ_WRITE) {
-                    logger.debug("adding library to cache: {}", libraryIdentifier.getId());
-                    compiledLibraries.put(libraryIdentifier, compiledLibraryResult.compiledLibrary());
-                }
+            if (!hasErrors(compiledLibraryResult.errors()) && cacheMode == CacheMode.READ_WRITE) {
+                logger.debug("adding library to cache: {}", libraryIdentifier.getId());
+                compiledLibraries.put(libraryIdentifier, compiledLibraryResult.compiledLibrary());
             }
 
             compiledLibraryResults.add(compiledLibraryResult);
@@ -270,7 +263,7 @@ public class LibraryManager {
         var libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
-            var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
+            var elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier);
             if (elmCompiledLibrary != null) {
                 validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath);
                 sortStatements(elmCompiledLibrary);
@@ -368,7 +361,7 @@ public class LibraryManager {
                 .compareTo(b.getName()));
     }
 
-    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
+    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier) {
         InputStream elm = null;
         for (LibraryContentType type : supportedContentTypes) {
             if (LibraryContentType.CQL == type) {
@@ -380,17 +373,13 @@ public class LibraryManager {
                 continue;
             }
 
-            return generateCompiledLibraryFromElm(libraryIdentifier, elm, type, options);
+            return generateCompiledLibraryFromElm(elm, type);
         }
 
         return null;
     }
 
-    private CompiledLibrary generateCompiledLibraryFromElm(
-            VersionedIdentifier libraryIdentifier,
-            InputStream librarySource,
-            LibraryContentType type,
-            CqlCompilerOptions options) {
+    private CompiledLibrary generateCompiledLibraryFromElm(InputStream librarySource, LibraryContentType type) {
 
         Library library = null;
         CompiledLibrary compiledLibrary = null;
@@ -509,8 +498,7 @@ public class LibraryManager {
 
         Set<FunctionSig> functionNames = new HashSet<>();
         for (ExpressionDef ed : library.getStatements().getDef()) {
-            if (ed instanceof FunctionDef) {
-                FunctionDef fd = (FunctionDef) ed;
+            if (ed instanceof FunctionDef fd) {
                 var sig = new FunctionSig(
                         fd.getName(),
                         fd.getOperand() == null ? 0 : fd.getOperand().size());
@@ -530,11 +518,11 @@ public class LibraryManager {
             // recurse all
             // the way down. At that point, let's just translate.
             for (ExpressionDef ed : library.getStatements().getDef()) {
-                if (ed.getExpression() instanceof FunctionRef) {
-                    FunctionRef fr = (FunctionRef) ed.getExpression();
-                    if (fr.getSignature() != null && !fr.getSignature().isEmpty()) {
-                        return true;
-                    }
+                var expression = ed.getExpression();
+                if (expression instanceof FunctionRef fr
+                        && fr.getSignature() != null
+                        && !fr.getSignature().isEmpty()) {
+                    return true;
                 }
             }
         }
@@ -542,12 +530,10 @@ public class LibraryManager {
     }
 
     private boolean isVersionCompatible(Library library) {
-        if (!StringUtils.isEmpty(this.cqlCompilerOptions.getCompatibilityLevel())) {
-            if (library.getAnnotation() != null) {
-                String version = CompilerOptions.getCompilerVersion(library);
-                if (version != null) {
-                    return version.equals(this.cqlCompilerOptions.getCompatibilityLevel());
-                }
+        if (!StringUtils.isEmpty(this.cqlCompilerOptions.getCompatibilityLevel()) && library.getAnnotation() != null) {
+            String version = CompilerOptions.getCompilerVersion(library);
+            if (version != null) {
+                return version.equals(this.cqlCompilerOptions.getCompatibilityLevel());
             }
         }
 

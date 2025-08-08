@@ -25,8 +25,6 @@ import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
@@ -44,7 +42,6 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final Interval _2022_01_01_TO_2023_01_01 = new Interval(_2022_01_01, true, _2023_01_01, false);
     private static final Interval _2023_01_01_TO_2024_01_01 = new Interval(_2023_01_01, true, _2024_01_01, false);
     private static final Interval _2031_01_01_TO_2032_01_01 = new Interval(_2031_01_01, true, _2032_01_01, false);
-    private static final Logger log = LoggerFactory.getLogger(CqlEngineMultipleLibrariesTest.class);
     private static final VersionedIdentifier MULTI_LIBRARY_1 = toElmIdentifier("MultiLibrary1");
     private static final VersionedIdentifier MULTI_LIBRARY_2 = toElmIdentifier("MultiLibrary2");
     private static final VersionedIdentifier MULTI_LIBRARY_3 = toElmIdentifier("MultiLibrary3");
@@ -65,10 +62,10 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void nonexistentLibrary() {
-        var exceptionMessage = assertThrows(
-                        CqlIncludeException.class,
-                        () -> cqlEngine.evaluate(
-                                List.of(toElmIdentifier("OtherName")), null, null, null, new DebugMap(), null))
+        var versionedIdentifier = toElmIdentifier("OtherName");
+        var exceptionMessage = assertThrows(CqlIncludeException.class, () -> {
+                    cqlEngine.evaluate(List.of(versionedIdentifier), null, null, null, new DebugMap(), null);
+                })
                 .getMessage();
 
         assertEquals(
@@ -77,13 +74,14 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void libraryAndCqlMismatchedNames() {
+        var versionedIdentifier = toElmIdentifier("NameMismatch");
+        var versionedIdentifiers = List.of(versionedIdentifier);
         // The existing single library evaluation will tolerate name mismatches, however, this violates the CQL standard
         // Fixing that bug is out of scope for this work, but we definitely want to do the right thing going forward
         // with the new multiple library evaluation.
-        var exceptionMessage = assertThrows(
-                        CqlIncludeException.class,
-                        () -> cqlEngine.evaluate(
-                                List.of(toElmIdentifier("NameMismatch")), null, null, null, new DebugMap(), null))
+        var exceptionMessage = assertThrows(CqlIncludeException.class, () -> {
+                    cqlEngine.evaluate(versionedIdentifiers, null, null, null, new DebugMap(), null);
+                })
                 .getMessage();
 
         assertEquals(
@@ -145,18 +143,14 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     @Test
     void multipleLibrariesMismatchedVersions() {
-        var exception = assertThrows(
-                CqlIncludeException.class,
-                () -> cqlEngine.evaluate(
-                        List.of(
-                                toElmIdentifier("MultiLibrary1", "bad"),
-                                toElmIdentifier("MultiLibrary2", "bad"),
-                                toElmIdentifier("MultiLibrary3", "bad")),
-                        null,
-                        null,
-                        null,
-                        debugMap,
-                        null));
+        var versionedIdentifierBad1 = toElmIdentifier("MultiLibrary1", "bad");
+        var versionedIdentifierBad2 = toElmIdentifier("MultiLibrary2", "bad");
+        var versionedIdentifierBad3 = toElmIdentifier("MultiLibrary3", "bad");
+        var versionedIdentifiers = List.of(versionedIdentifierBad1, versionedIdentifierBad2, versionedIdentifierBad3);
+
+        var exception = assertThrows(CqlIncludeException.class, () -> {
+            cqlEngine.evaluate(versionedIdentifiers, null, null, null, debugMap, null);
+        });
 
         assertThat(
                 exception.getMessage(),

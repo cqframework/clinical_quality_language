@@ -45,13 +45,14 @@ class CqlEngineTest extends CqlTestBase {
     }
 
     @Test
-    public void invalidCql() {
-        var exception = assertThrows(CqlException.class, () -> engine.evaluate(toElmIdentifier("Invalid")));
+    void invalidCql() {
+        var versionedIdentifier = toElmIdentifier("Invalid");
+        var exception = assertThrows(CqlException.class, () -> engine.evaluate(versionedIdentifier));
         assertThat(exception.getMessage(), containsString("Library Invalid loaded, but had errors:"));
     }
 
     @Test
-    public void hedisCompatibility() {
+    void hedisCompatibility() {
         var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         var result = libraryResult.expressionResults.get("QuantityListIncludes").value();
         assertFalse((Boolean) result);

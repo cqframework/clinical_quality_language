@@ -54,7 +54,7 @@ class LibraryManagerTests {
     }
 
     @Test
-    public void invalidCql() {
+    void invalidCql() {
         var lib = libraryManager.resolveLibrary(INVALID_IDENT).getLibrary();
 
         assertNotNull(lib);
@@ -120,9 +120,10 @@ class LibraryManagerTests {
 
     @Test
     void basicElmTestMultiLibOneGoodOneMismatchedLibs() {
-        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
-            libraryManager.resolveLibraries(List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT));
-        });
+        var cqlIncludeException = assertThrows(
+                CqlIncludeException.class,
+                () -> libraryManager.resolveLibraries(
+                        List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT)));
 
         assertEquals(
                 "Could not load source for library BaseLibraryElmMismatchId, version 1.0.1, namespace uri null.",
