@@ -3,12 +3,9 @@ package org.opencds.cqf.cql.engine.execution;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * There are at least two types of data that need to be cached, some that is context dependent, like expression results
@@ -17,11 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Cache {
 
-    private static final Logger log = LoggerFactory.getLogger(Cache.class);
     private boolean enableExpressionCache = false;
-
-    private static final AtomicLong cacheExpressionRemovalCounter = new AtomicLong(0);
-    private static final AtomicLong cacheLibraryExpressionHashMapRemovalCounter = new AtomicLong(0);
 
     private final Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
 
@@ -30,13 +23,7 @@ public class Cache {
                 @Override
                 protected boolean removeEldestEntry(
                         Map.Entry<VersionedIdentifier, Map<String, ExpressionResult>> eldestEntry) {
-                    final boolean shouldRemoveOldestEntry = size() > 50;
-
-                    if (shouldRemoveOldestEntry) {
-                        final long cacheExpressionRemovalCount = cacheExpressionRemovalCounter.incrementAndGet();
-                        log.info("Removing expressions cache entry for the {} th time", cacheExpressionRemovalCount);
-                    }
-                    return shouldRemoveOldestEntry;
+                    return size() > 50;
                 }
             };
 
@@ -44,15 +31,7 @@ public class Cache {
         return new LinkedHashMap<String, ExpressionResult>(15, 0.9f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, ExpressionResult> eldestEntry) {
-                final boolean shouldRemoveOldestEntry = size() > 300;
-                if (shouldRemoveOldestEntry) {
-                    final long cacheLibraryExpressionHashMapRemovalCount =
-                            cacheLibraryExpressionHashMapRemovalCounter.incrementAndGet();
-                    log.info(
-                            "Removing constructLibraryExpressionHashMap entry for the {} th time",
-                            cacheLibraryExpressionHashMapRemovalCount);
-                }
-                return shouldRemoveOldestEntry;
+                return size() > 300;
             }
         };
     }
@@ -82,23 +61,7 @@ public class Cache {
     }
 
     public ExpressionResult getCachedExpression(VersionedIdentifier libraryId, String name) {
-        final Map<String, ExpressionResult> expressionCache = getExpressionCache(libraryId);
-        return expressionCache.get(name);
-    }
-
-    private static String rightPad(Object o, int length) {
-        if (o == null) {
-            return null;
-        }
-        String s = o.toString();
-        if (s.length() >= length) {
-            return s;
-        }
-        StringBuilder sb = new StringBuilder(s);
-        while (sb.length() < length) {
-            sb.append(' ');
-        }
-        return sb.toString();
+        return getExpressionCache(libraryId).get(name);
     }
 
     public Map<FunctionRef, FunctionDef> getFunctionCache() {

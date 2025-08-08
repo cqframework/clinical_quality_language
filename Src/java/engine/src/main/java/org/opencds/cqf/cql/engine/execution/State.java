@@ -13,14 +13,11 @@ import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.Severity;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * State represents the internal state of the CqlEngine.
  */
 public class State {
-    private static final Logger log = LoggerFactory.getLogger(State.class);
 
     public static class ActivationFrame {
 
@@ -165,13 +162,6 @@ public class State {
         }
 
         return false;
-    }
-
-    public Library popLibrary() {
-        if (currentLibrary.isEmpty()) {
-            throw new IllegalStateException("No library to pop from the stack");
-        }
-        return currentLibrary.pop();
     }
 
     public void exitLibrary(boolean enteredLibrary) {
@@ -391,7 +381,6 @@ public class State {
     }
 
     private void clearCacheExpressions() {
-        log.info("1234 CLEARING CACHE");
         cache.getExpressions().clear();
     }
 
