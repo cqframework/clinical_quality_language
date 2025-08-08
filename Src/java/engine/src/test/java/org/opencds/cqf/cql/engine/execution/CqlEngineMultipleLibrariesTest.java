@@ -176,20 +176,11 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 debugMap,
                 null);
 
-        assertTrue(evalResultsForMultiLib.containsResultsFor(MULTI_LIBRARY_1));
-        assertTrue(evalResultsForMultiLib.containsResultsFor(MULTI_LIBRARY_2));
-        assertTrue(evalResultsForMultiLib.containsResultsFor(MULTI_LIBRARY_3));
-        assertFalse(evalResultsForMultiLib.containsExceptionsFor(MULTI_LIBRARY_1));
-        assertFalse(evalResultsForMultiLib.containsExceptionsFor(MULTI_LIBRARY_2));
-        assertFalse(evalResultsForMultiLib.containsExceptionsFor(MULTI_LIBRARY_3));
-        assertNotNull(evalResultsForMultiLib.getResultFor(MULTI_LIBRARY_1));
-        assertNotNull(evalResultsForMultiLib.getResultFor(MULTI_LIBRARY_2));
-        assertNotNull(evalResultsForMultiLib.getResultFor(MULTI_LIBRARY_3));
-        assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
-        assertNull(evalResultsForMultiLib.getExceptionFor(MULTI_LIBRARY_1));
-        assertNull(evalResultsForMultiLib.getExceptionFor(MULTI_LIBRARY_2));
-        assertNull(evalResultsForMultiLib.getExceptionFor(MULTI_LIBRARY_3));
+        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_1);
+        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_2);
+        sanityCheck(evalResultsForMultiLib, MULTI_LIBRARY_3);
 
+        assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertNotNull(evalResultsForMultiLib);
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
@@ -374,5 +365,13 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .orElseThrow();
+    }
+
+    private static void sanityCheck(
+            EvaluationResultsForMultiLib evalResultsForMultiLib, VersionedIdentifier libraryIdentifier) {
+        assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier));
+        assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
+        assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
+        assertNull(evalResultsForMultiLib.getExceptionFor(libraryIdentifier));
     }
 }

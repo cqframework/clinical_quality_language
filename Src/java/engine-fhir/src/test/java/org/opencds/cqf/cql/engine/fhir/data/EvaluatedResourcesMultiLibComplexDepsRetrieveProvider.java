@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.ResourceType;
@@ -173,13 +171,6 @@ enum EvaluatedResourcesMultiLibComplexDepsRetrieveProvider implements RetrievePr
                 ENCOUNTER_FINISHED_PAT3,
                 ENCOUNTER_PLANNED_PAT3,
                 ENCOUNTER_TRIAGED_PAT3);
-    }
-
-    private Patient buildPatient(String id) {
-        return (Patient) new Patient()
-                .setActive(true)
-                .addIdentifier(new Identifier().setValue(id).setSystem("urn:system"))
-                .setId(new IdType(ResourceType.Patient.name(), id));
     }
 
     private static Encounter buildEncounter(

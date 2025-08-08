@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a potential maintenance issue.
  *
  */
-@SuppressWarnings("squid:S115")
+@SuppressWarnings("squid:S1135")
 public class CqlEngine {
     private static final Logger log = LoggerFactory.getLogger(CqlEngine.class);
 

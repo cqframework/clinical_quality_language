@@ -25,11 +25,9 @@ import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("squid:S1135")
 public abstract class FhirExecutionMultiLibTestBase {
-    private static final Logger log = LoggerFactory.getLogger(FhirExecutionMultiLibTestBase.class);
 
     public LibraryManager getLibraryManager() {
         return libraryManager;
