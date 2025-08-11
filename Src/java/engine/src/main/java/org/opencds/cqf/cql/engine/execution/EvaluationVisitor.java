@@ -828,8 +828,18 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
     }
 
+    /*
+     * Deprecated, use Descendants
+     */
     @Override
+    @Deprecated
     public Object visitDescendents(Descendents elm, State state) {
+        Object source = visitExpression(elm.getSource(), state);
+        return DescendentsEvaluator.descendents(source);
+    }
+
+    @Override
+    public Object visitDescendants(Descendants elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
         return DescendentsEvaluator.descendents(source);
     }

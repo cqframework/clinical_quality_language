@@ -324,9 +324,18 @@ public class IdObjectFactory extends ObjectFactory {
         return super.createDateTimeComponentFrom().withLocalId(nextId());
     }
 
+    /*
+     * Deprecated, use Descendants
+     */
     @Override
+    @Deprecated
     public Descendents createDescendents() {
         return super.createDescendents().withLocalId(nextId());
+    }
+
+    @Override
+    public Descendants createDescendants() {
+        return super.createDescendants().withLocalId(nextId());
     }
 
     @Override
