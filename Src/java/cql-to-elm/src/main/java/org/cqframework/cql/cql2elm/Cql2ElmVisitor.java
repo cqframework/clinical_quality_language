@@ -31,8 +31,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
     private final Map<cqlParser.FunctionDefinitionContext, FunctionHeader> functionHeaders = new HashMap<>();
 
-    private final Map<FunctionDef, FunctionHeader> functionHeadersByDef = new HashMap<>();
-    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions = new HashMap<>();
+    // IdentityHashMaps are used here instead of HashMaps because the keys are mutated after insertion
+    private final Map<FunctionDef, FunctionHeader> functionHeadersByDef = new IdentityHashMap<>();
+    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions =
+            new IdentityHashMap<>();
+
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
@@ -304,7 +307,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         CodeSystemDef def;
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name);
-            libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
+            if (def != null) {
+                libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
+            }
         } else {
             def = libraryBuilder.resolveCodeSystemRef(name);
         }
@@ -327,7 +332,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         CodeDef def;
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name);
-            libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
+            if (def != null) {
+                libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
+            }
         } else {
             def = libraryBuilder.resolveCodeRef(name);
         }
@@ -384,12 +391,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         if (ctx.codesystemIdentifier() != null) {
             var cs = visit(ctx.codesystemIdentifier());
-            if (cs == null || cs instanceof Null) {
-                throw new IllegalArgumentException(String.format(
-                        "Could not resolve reference to code system %s.",
-                        ctx.codesystemIdentifier().getText()));
+            if (cs instanceof CodeSystemRef csr) {
+                cd.setCodeSystem(csr);
             }
-            cd.setCodeSystem((CodeSystemRef) cs);
         }
 
         if (ctx.displayClause() != null) {
@@ -4396,17 +4400,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private FunctionHeader getFunctionHeaderByDef(FunctionDef fd) {
-        // Shouldn't need to do this, something about the hashCode implementation of
-        // FunctionDef is throwing this off,
-        // Don't have time to investigate right now, this should work fine, could
-        // potentially be improved
-        for (Map.Entry<FunctionDef, FunctionHeader> entry : functionHeadersByDef.entrySet()) {
-            if (entry.getKey() == fd) {
-                return entry.getValue();
-            }
-        }
-
-        return null;
+        return functionHeadersByDef.get(fd);
     }
 
     private FunctionHeader getFunctionHeader(Operator op) {

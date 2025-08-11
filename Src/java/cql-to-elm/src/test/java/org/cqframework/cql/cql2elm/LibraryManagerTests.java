@@ -1,13 +1,20 @@
 package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
+import java.util.List;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -17,8 +24,16 @@ import org.junit.jupiter.api.Test;
 
 class LibraryManagerTests {
 
+    private static final VersionedIdentifier BASE_LIBRARY_ELM_IDENT =
+            new VersionedIdentifier().withId("BaseLibraryElm");
+    private static final VersionedIdentifier BASE_LIBRARY_ELM_OTHER_IDENT =
+            new VersionedIdentifier().withId("BaseLibraryElmOther");
+    private static final VersionedIdentifier BASE_LIBRARY_ELM_MISMATCH_ID_IDENT =
+            new VersionedIdentifier().withId("BaseLibraryElmMismatchId");
+    private static final VersionedIdentifier INVALID_IDENT = new VersionedIdentifier().withId("Invalid");
     private static LibraryManager libraryManager;
     private static LibraryManager libraryManagerVersionAgnostic;
+    private static LibraryManager libraryManagerOwnCache;
 
     @BeforeAll
     static void setup() {
@@ -33,6 +48,11 @@ class LibraryManagerTests {
         libraryManagerVersionAgnostic
                 .getLibrarySourceLoader()
                 .registerProvider(new TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"));
+
+        libraryManagerOwnCache = new LibraryManager(modelManager, CqlCompilerOptions.defaultOptions(), new HashMap<>());
+        libraryManagerOwnCache
+                .getLibrarySourceLoader()
+                .registerProvider(new TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"));
     }
 
     @AfterAll
@@ -41,13 +61,124 @@ class LibraryManagerTests {
     }
 
     @Test
-    void basicElmTest() {
-        var versionIdentifier = new VersionedIdentifier().withId("BaseLibraryElm");
+    void invalidCql() {
+        var lib = libraryManagerOwnCache.resolveLibrary(INVALID_IDENT).getLibrary();
 
-        var lib = libraryManager.resolveLibrary(versionIdentifier).getLibrary();
+        assertNotNull(lib);
+
+        assertThat(libraryManagerOwnCache.getCompiledLibraries().values(), empty());
+    }
+
+    @Test
+    void resolveLibrariesErrors() {
+        assertThrows(IllegalArgumentException.class, () -> libraryManagerOwnCache.resolveLibraries(null));
+        assertThrows(IllegalArgumentException.class, () -> libraryManagerOwnCache.resolveLibraries(List.of()));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier())));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier().withId(null))));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> libraryManagerOwnCache.resolveLibraries(List.of(new VersionedIdentifier().withId(""))));
+    }
+
+    @Test
+    void basicElmTest() {
+        var lib = libraryManager.resolveLibrary(BASE_LIBRARY_ELM_IDENT).getLibrary();
 
         assertNotNull(lib);
         assertNotNull(lib.getStatements().getDef());
+    }
+
+    @Test
+    void basicElmTestMultiLib() {
+        var results = libraryManager.resolveLibraries(List.of(BASE_LIBRARY_ELM_IDENT));
+
+        assertNotNull(results);
+
+        var compiledLibraries = results.allCompiledLibraries();
+        assertNotNull(compiledLibraries);
+        assertThat(compiledLibraries.size(), equalTo(1));
+        assertThat(results.allErrors(), empty());
+        assertFalse(results.hasErrors());
+        assertThat(results.allLibrariesWithoutErrorSeverity().size(), equalTo(1));
+        assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), empty());
+
+        var compiledLibraryFirst = compiledLibraries.get(0);
+        var compiledLibraryOnlyResult = results.getOnlyResult();
+        assertThat(
+                compiledLibraryOnlyResult.compiledLibrary().getIdentifier(),
+                equalTo(compiledLibraryFirst.getIdentifier()));
+
+        var library = compiledLibraryOnlyResult.compiledLibrary().getLibrary();
+
+        assertNotNull(library);
+        assertNotNull(library.getStatements().getDef());
+    }
+
+    @Test
+    void basicElmTestMultiLibTwoGoodLibs() {
+        var results = libraryManager.resolveLibraries(List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_OTHER_IDENT));
+
+        assertNotNull(results);
+
+        var compiledLibraries = results.allCompiledLibraries();
+        assertNotNull(compiledLibraries);
+        assertThat(compiledLibraries.size(), equalTo(2));
+        assertThat(results.allErrors(), empty());
+        assertFalse(results.hasErrors());
+        assertThat(results.allLibrariesWithoutErrorSeverity().size(), equalTo(2));
+        assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), empty());
+
+        for (CompiledLibrary compiledLibrary : compiledLibraries) {
+            var library = compiledLibrary.getLibrary();
+
+            assertNotNull(library);
+            assertNotNull(library.getStatements().getDef());
+        }
+    }
+
+    @Test
+    void basicElmTestMultiLibOneGoodOneMismatchedLibs() {
+        var versionedIdentifier = List.of(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT);
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManager.resolveLibraries(versionedIdentifier);
+        });
+
+        assertEquals(
+                "Could not load source for library BaseLibraryElmMismatchId, version 1.0.1, namespace uri null.",
+                //                "Library BaseLibraryElmMismatchId was included with version null, but id:
+                // BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
+                cqlIncludeException.getMessage());
+    }
+
+    @Test
+    void basicElmTestMultiLibOneGoodOneInvalidLibs() {
+        var versionedIdentifier = List.of(BASE_LIBRARY_ELM_IDENT, INVALID_IDENT);
+        var results = libraryManager.resolveLibraries(versionedIdentifier);
+        assertNotNull(results);
+
+        var compiledLibraries = results.allCompiledLibraries();
+        assertNotNull(compiledLibraries);
+        assertThat(compiledLibraries.size(), equalTo(2));
+        assertThat(results.allErrors(), not(empty()));
+        assertTrue(results.hasErrors());
+        assertThat(results.allLibrariesWithoutErrorSeverity().size(), equalTo(1));
+        assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), empty());
+
+        var library = results.getCompiledLibraryFor(BASE_LIBRARY_ELM_IDENT);
+
+        assertNotNull(library);
+        assertNotNull(library.getLibrary().getStatements().getDef());
+
+        var invalidIdentErrors = results.getErrorsFor(INVALID_IDENT);
+        assertThat(invalidIdentErrors.size(), equalTo(1));
+        var cqlCompilerException = invalidIdentErrors.get(0);
+
+        assertThat(cqlCompilerException.getMessage(), equalTo("Syntax error at define"));
     }
 
     @Test
@@ -64,12 +195,38 @@ class LibraryManagerTests {
     }
 
     @Test
+    void basicElmTestIdMismatchMultiLib() {
+        var versionedIdentifiers = List.of(BASE_LIBRARY_ELM_MISMATCH_ID_IDENT);
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManager.resolveLibraries(versionedIdentifiers);
+        });
+
+        assertEquals(
+                "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
+                cqlIncludeException.getMessage());
+    }
+
+    @Test
     void basicElmTestVersionMismatch() {
-        var versionIdentifier =
-                new VersionedIdentifier().withId("BaseLibraryElmMismatchId").withVersion("1.0.1");
+        var versionIdentifier = BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1");
 
         var cqlIncludeException = assertThrows(
                 CqlIncludeException.class, () -> libraryManagerVersionAgnostic.resolveLibrary(versionIdentifier));
+
+        assertEquals(
+                "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
+                cqlIncludeException.getMessage());
+    }
+
+    @Test
+    void basicElmTestVersionMismatchMultiLib() {
+        var versionIdentifier = BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1");
+        var versionIdentifiers = List.of(versionIdentifier);
+
+        var cqlIncludeException = assertThrows(CqlIncludeException.class, () -> {
+            libraryManagerVersionAgnostic.resolveLibraries(versionIdentifiers);
+        });
 
         assertEquals(
                 "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
@@ -112,6 +269,31 @@ class LibraryManagerTests {
         libraryManager.getCompiledLibraries().put(libraryIdentifier, cachedLibrary);
 
         CompiledLibrary resolvedLibrary = libraryManager.resolveLibrary(libraryIdentifier);
+        assertSame(cachedLibrary, resolvedLibrary);
+    }
+
+    @Test
+    void testResolveLibraryFromCacheMultiLib() {
+        VersionedIdentifier libraryIdentifier =
+                new VersionedIdentifier().withId("Test").withVersion("1.0");
+        CompiledLibrary cachedLibrary = new CompiledLibrary();
+        cachedLibrary.setIdentifier(libraryIdentifier);
+        cachedLibrary.setLibrary(new Library().withIdentifier(libraryIdentifier));
+        libraryManager.getCompiledLibraries().put(libraryIdentifier, cachedLibrary);
+
+        var results = libraryManager.resolveLibraries(List.of(libraryIdentifier));
+
+        var compiledLibraries = results.allCompiledLibraries();
+        assertNotNull(compiledLibraries);
+        assertThat(compiledLibraries.size(), equalTo(1));
+        assertThat(results.allErrors(), empty());
+        assertFalse(results.hasErrors());
+        assertThat(results.allLibrariesWithoutErrorSeverity().size(), equalTo(1));
+        assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), empty());
+
+        var resolvedLibrary = results.getOnlyResult().compiledLibrary();
+
+        assertNotNull(resolvedLibrary);
         assertSame(cachedLibrary, resolvedLibrary);
     }
 

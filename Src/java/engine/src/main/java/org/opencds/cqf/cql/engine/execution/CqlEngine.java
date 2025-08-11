@@ -4,8 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cqframework.cql.cql2elm.CompiledLibraryResult;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
@@ -13,14 +16,21 @@ import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NOTE: We have updated CqlEngine to adopt a visitor pattern approach to traversing the ELM tree for execution:
- *
+ * <p/>
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a potential maintenance issue.
  *
  */
+@SuppressWarnings("squid:S1135")
 public class CqlEngine {
+    private static final Logger log = LoggerFactory.getLogger(CqlEngine.class);
+
+    private static final String EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE = "Exception for Library: %s, Message: %s";
+
     public enum Options {
         EnableExpressionCaching,
         EnableValidation,
@@ -54,7 +64,7 @@ public class CqlEngine {
         this.environment = environment;
 
         this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
-        this.state = new State(environment, engineOptions);
+        this.state = new State(environment, this.engineOptions);
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
@@ -167,6 +177,15 @@ public class CqlEngine {
         return this.evaluate(libraryIdentifier, expressions, null, null, null);
     }
 
+    public EvaluationResultsForMultiLib evaluate(List<VersionedIdentifier> libraryIdentifiers) {
+        return this.evaluate(libraryIdentifiers, null, null, null, null);
+    }
+
+    public EvaluationResultsForMultiLib evaluate(
+            List<VersionedIdentifier> libraryIdentifiers, Set<String> expressions) {
+        return this.evaluate(libraryIdentifiers, expressions, null, null, null);
+    }
+
     public EvaluationResult evaluate(
             VersionedIdentifier libraryIdentifier, Set<String> expressions, Pair<String, Object> contextParameter) {
         return this.evaluate(libraryIdentifier, expressions, contextParameter, null, null);
@@ -201,6 +220,15 @@ public class CqlEngine {
         return this.evaluate(libraryIdentifier, expressions, contextParameter, parameters, debugMap, null);
     }
 
+    public EvaluationResultsForMultiLib evaluate(
+            List<VersionedIdentifier> libraryIdentifiers,
+            Set<String> expressions,
+            Pair<String, Object> contextParameter,
+            Map<String, Object> parameters,
+            DebugMap debugMap) {
+        return this.evaluate(libraryIdentifiers, expressions, contextParameter, parameters, debugMap, null);
+    }
+
     public EvaluationResult evaluate(
             VersionedIdentifier libraryIdentifier,
             Set<String> expressions,
@@ -208,41 +236,100 @@ public class CqlEngine {
             Map<String, Object> parameters,
             DebugMap debugMap,
             ZonedDateTime evaluationDateTime) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier can not be null.");
-        }
 
-        Library library = this.loadAndValidate(libraryIdentifier);
-
-        if (expressions == null) {
-            expressions = this.getExpressionSet(library);
-        }
-
-        this.initializeState(library, debugMap, evaluationDateTime);
-        this.setParametersForContext(library, contextParameter, parameters);
-
-        return this.evaluateExpressions(expressions);
+        return evaluate(
+                        Collections.singletonList(libraryIdentifier),
+                        expressions,
+                        contextParameter,
+                        parameters,
+                        debugMap,
+                        evaluationDateTime)
+                .getOnlyResultOrThrow();
     }
 
-    private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (evaluationDateTime == null) {
-            evaluationDateTime = ZonedDateTime.now();
+    public EvaluationResultsForMultiLib evaluate(
+            List<VersionedIdentifier> libraryIdentifiers,
+            Set<String> expressions,
+            Pair<String, Object> contextParameter,
+            Map<String, Object> parameters,
+            DebugMap debugMap,
+            ZonedDateTime nullableEvaluationDateTime) {
+
+        if (libraryIdentifiers == null || libraryIdentifiers.isEmpty() || libraryIdentifiers.get(0) == null) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null or empty.");
         }
 
-        this.state.setEvaluationDateTime(evaluationDateTime);
-        this.state.init(library);
+        var loadMultiLibResult = this.loadAndValidate(libraryIdentifiers);
+
+        initializeEvalTime(nullableEvaluationDateTime);
+
+        // here we initialize all libraries without emptying the cache for each library
+        this.state.init(loadMultiLibResult.getAllLibraries());
+
+        // We must do this only once per library evaluation otherwise, we may clear the cache prematurely
+        if (contextParameter != null) {
+            state.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
+        }
+
+        loadMultiLibResult.getAllLibraries().forEach(library -> state.setParameters(library, parameters));
+
+        initializeDebugMap(debugMap);
+
+        // We need to reverse the order of Libraries since the CQL engine state has the last library first
+        var reversedOrderLibraryIdentifiers = IntStream.range(0, loadMultiLibResult.libraryCount())
+                .map(index -> loadMultiLibResult.getAllLibraryIds().size() - 1 - index)
+                .mapToObj(loadMultiLibResult::getLibraryIdentifierAtIndex)
+                .toList();
+
+        var resultBuilder = EvaluationResultsForMultiLib.builder(loadMultiLibResult);
+
+        for (var libraryIdentifier : reversedOrderLibraryIdentifiers) {
+            var library = loadMultiLibResult.retrieveLibrary(libraryIdentifier);
+            var expressionSet = expressions == null ? this.getExpressionSet(library) : expressions;
+
+            var joinedExpressions = String.join(", ", expressionSet);
+            log.debug("Evaluating library: {} with expressions: [{}]", libraryIdentifier.getId(), joinedExpressions);
+            try {
+                var evaluationResult = this.evaluateExpressions(expressionSet);
+                resultBuilder.addResult(libraryIdentifier, evaluationResult);
+            } catch (RuntimeException exception) {
+                var error = EXCEPTION_FOR_SUBJECT_ID_MESSAGE_TEMPLATE.formatted(
+                        libraryIdentifier.getId(), exception.getMessage());
+                log.error(error);
+
+                resultBuilder.addException(libraryIdentifier, exception);
+            }
+        }
+
+        return resultBuilder.build();
+    }
+
+    private void initializeEvalTime(ZonedDateTime nullableEvaluationDateTime) {
+        this.state.setEvaluationDateTime(Objects.requireNonNullElseGet(nullableEvaluationDateTime, ZonedDateTime::now));
+    }
+
+    private void initializeDebugMap(DebugMap debugMap) {
         if (debugMap != null) {
             this.state.setDebugMap(debugMap);
         }
     }
 
+    /**
+     * Evaluate one library within either a single library or multiple library context.
+     * Once evaluation is done, ensure the stack for the library and evaluated resources is popped, so as to
+     * permit evaluation of the next library, if applicable.
+     * <p/>
+     * @param expressions Expressions to evaluate
+     * @return The EvaluationResult containing the results of the evaluated expressions for the current library.
+     */
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
         EvaluationResult result = new EvaluationResult();
 
         this.state.beginEvaluation();
         try {
             for (String expression : expressions) {
-                ExpressionDef def = Libraries.resolveExpressionRef(expression, this.state.getCurrentLibrary());
+                var currentLibrary = this.state.getCurrentLibrary();
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, currentLibrary);
 
                 if (def == null) {
                     throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
@@ -272,6 +359,10 @@ public class CqlEngine {
             }
         } finally {
             this.state.endEvaluation();
+            // We are moving the evaluated resources off the stack so we can work on the next ones
+            this.state.clearEvaluatedResources();
+            // We are moving the library off the stack so we can work on the next one
+            this.state.exitLibrary(true);
         }
 
         result.setDebugResult(this.state.getDebugResult());
@@ -279,16 +370,7 @@ public class CqlEngine {
         return result;
     }
 
-    private void setParametersForContext(
-            Library library, Pair<String, Object> contextParameter, Map<String, Object> parameters) {
-        if (contextParameter != null) {
-            state.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
-        }
-
-        state.setParameters(library, parameters);
-    }
-
-    private Library loadAndValidate(VersionedIdentifier libraryIdentifier) {
+    private void loadAndValidate(VersionedIdentifier libraryIdentifier) {
 
         var errors = new ArrayList<CqlCompilerException>();
         var library = this.environment
@@ -328,8 +410,77 @@ public class CqlEngine {
                         .withVersion(include.getVersion()));
             }
         }
+    }
 
-        return library;
+    /**
+     * Evaluate multiple libraries, loading and validating them as needed.
+     * <p/>
+     * In most cases, errors in one Library will not halt the evaluation of other libraries, but will merely be
+     * captured in the result object.  However, in some cases, such as when a library cannot be loaded at all, this
+     * method will throw an exception.
+     * <p/>
+     * @param libraryIdentifiers The list of library identifiers to load and evaluate.
+     * @return A result object containing the evaluation results and any exceptions encountered during the process.
+     */
+    private LoadMultiLibResult loadAndValidate(List<VersionedIdentifier> libraryIdentifiers) {
+
+        var resolvedLibraryResults = this.environment.getLibraryManager().resolveLibraries(libraryIdentifiers);
+
+        var resultBuilder = LoadMultiLibResult.builder();
+
+        if (CqlCompilerException.hasErrors(resolvedLibraryResults.allErrors())) {
+            for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
+                if (!libraryResult.errors().isEmpty()) {
+                    var identifier = libraryResult.compiledLibrary().getIdentifier();
+                    resultBuilder.addException(identifier, wrapException(identifier, libraryResult.errors()));
+                }
+            }
+        }
+
+        var libraries = resolvedLibraryResults.allLibrariesWithoutErrorSeverity();
+
+        validateLibrariesIfNeeded(libraries);
+
+        // We probably want to just load all relevant libraries into
+        // memory before we start evaluation. This will further separate
+        // environment from state.
+        for (Library library : libraries) {
+            try {
+                if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
+                    for (IncludeDef include : library.getIncludes().getDef()) {
+                        this.loadAndValidate(new VersionedIdentifier()
+                                .withSystem(NamespaceManager.getUriPart(include.getPath()))
+                                .withId(NamespaceManager.getNamePart(include.getPath()))
+                                .withVersion(include.getVersion()));
+                    }
+                }
+                resultBuilder.addResult(library.getIdentifier(), library);
+            } catch (CqlException | CqlCompilerException exception) {
+                // As with previous code, per searched library identifier, this is an all or nothing operation:
+                // stop at the first Exception and don't capture subsequent errors for subsequent included libraries.
+                resultBuilder.addException(library.getIdentifier(), exception);
+            }
+        }
+
+        return resultBuilder.build();
+    }
+
+    private void validateLibrariesIfNeeded(List<Library> libraries) {
+        if (this.engineOptions.contains(Options.EnableValidation)) {
+            libraries.forEach(library -> {
+                this.validateTerminologyRequirements(library);
+                this.validateDataRequirements(library);
+            });
+            // TODO: Validate Expressions as well?
+        }
+    }
+
+    private CqlException wrapException(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> exceptions) {
+        return new CqlException("Library %s loaded, but had errors: %s"
+                .formatted(
+                        libraryIdentifier.getId()
+                                + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
+                        exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
     }
 
     private void validateDataRequirements(Library library) {
@@ -363,13 +514,12 @@ public class CqlEngine {
                         && library.getCodes().getDef() != null
                         && !library.getCodes().getDef().isEmpty())
                 || (library.getValueSets() != null
-                        && library.getValueSets().getDef() != null
-                        && !library.getValueSets().getDef().isEmpty())) {
-            if (this.environment.getTerminologyProvider() == null) {
-                throw new IllegalArgumentException(String.format(
-                        "Library %s has terminology requirements and no terminology provider is registered.",
-                        this.getLibraryDescription(library.getIdentifier())));
-            }
+                                && library.getValueSets().getDef() != null
+                                && !library.getValueSets().getDef().isEmpty())
+                        && this.environment.getTerminologyProvider() == null) {
+            throw new IllegalArgumentException(String.format(
+                    "Library %s has terminology requirements and no terminology provider is registered.",
+                    this.getLibraryDescription(library.getIdentifier())));
         }
     }
 

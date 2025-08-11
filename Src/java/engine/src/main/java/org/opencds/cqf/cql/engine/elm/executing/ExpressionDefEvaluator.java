@@ -16,8 +16,11 @@ public class ExpressionDefEvaluator {
         try {
             state.pushEvaluatedResourceStack();
             VersionedIdentifier libraryId = state.getCurrentLibrary().getIdentifier();
-            if (state.getCache().isExpressionCachingEnabled()
-                    && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
+            final boolean isExpressionCachingEnabled = state.getCache().isExpressionCachingEnabled();
+            final boolean isExpressionCached = state.getCache().isExpressionCached(libraryId, expressionDef.getName());
+
+            if (isExpressionCachingEnabled && isExpressionCached) {
+
                 var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
 
