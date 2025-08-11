@@ -324,9 +324,22 @@ public class IdObjectFactory extends ObjectFactory {
         return super.createDateTimeComponentFrom().withLocalId(nextId());
     }
 
+    /*
+     * Deprecated, use Descendants
+     *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
+     * @deprecated since 3.28.0
+     */
     @Override
+    @Deprecated(since = "3.28.0")
     public Descendents createDescendents() {
         return super.createDescendents().withLocalId(nextId());
+    }
+
+    @Override
+    public Descendants createDescendants() {
+        return super.createDescendants().withLocalId(nextId());
     }
 
     @Override
