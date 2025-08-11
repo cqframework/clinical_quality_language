@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -343,11 +344,12 @@ public class SystemMethodResolver {
                 return builder.resolveFunction(null, "ConvertsToTime", getParams(target, ctx));
             case "count":
                 return builder.resolveFunction(null, "Count", getParams(target, ctx));
+                // CQL 1.5.3 corrected the spelling to "descendants"
             case "descendents": {
                 checkArgumentCount(ctx, functionName, 0);
                 Descendents descendents = of.createDescendents();
                 descendents.setSource(target);
-                Set<DataType> dataTypes = new java.util.HashSet<DataType>();
+                var dataTypes = new HashSet<DataType>();
                 gatherChildTypes(target.getResultType(), true, dataTypes);
                 if (dataTypes.size() == 1) {
                     descendents.setResultType(new ListType((DataType) dataTypes.toArray()[0]));
@@ -355,6 +357,19 @@ public class SystemMethodResolver {
                     descendents.setResultType(new ListType(new ChoiceType(dataTypes)));
                 }
                 return descendents;
+            }
+            case "descendants": {
+                checkArgumentCount(ctx, functionName, 0);
+                Descendants descendants = of.createDescendants();
+                descendants.setSource(target);
+                var dataTypes = new HashSet<DataType>();
+                gatherChildTypes(target.getResultType(), true, dataTypes);
+                if (dataTypes.size() == 1) {
+                    descendants.setResultType(new ListType((DataType) dataTypes.toArray()[0]));
+                } else {
+                    descendants.setResultType(new ListType(new ChoiceType(dataTypes)));
+                }
+                return descendants;
             }
             case "distinct":
                 return builder.resolveFunction(null, "Distinct", getParams(target, ctx));
