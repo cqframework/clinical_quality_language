@@ -1,15 +1,19 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 
 class CqlEngineTest extends CqlTestBase {
 
@@ -41,7 +45,28 @@ class CqlEngineTest extends CqlTestBase {
     }
 
     @Test
-    public void hedisCompatibility() {
+    void invalidCql() {
+        var versionedIdentifier = toElmIdentifier("Invalid");
+        var exception = assertThrows(CqlException.class, () -> engine.evaluate(versionedIdentifier));
+        assertThat(exception.getMessage(), containsString("Library Invalid loaded, but had errors:"));
+    }
+
+    @Test
+    void withVersion() {
+        var versionedIdentifierWithVersion =
+                toElmIdentifier("LibraryWithVersion").withVersion("1.0.0");
+        var versionedIdentifierNoVersion = toElmIdentifier("LibraryWithVersion");
+
+        var singleLibResult = engine.evaluate(versionedIdentifierWithVersion);
+        assertNotNull(singleLibResult);
+
+        var multiLibResults = engine.evaluate(List.of(versionedIdentifierWithVersion));
+        assertNotNull(multiLibResults);
+        assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion));
+    }
+
+    @Test
+    void hedisCompatibility() {
         var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"));
         var result = libraryResult.expressionResults.get("QuantityListIncludes").value();
         assertFalse((Boolean) result);
