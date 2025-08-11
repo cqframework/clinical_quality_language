@@ -294,7 +294,6 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression) elm, context);
         else if (elm instanceof TernaryExpression) return visitTernaryExpression((TernaryExpression) elm, context);
         else if (elm instanceof NaryExpression) return visitNaryExpression((NaryExpression) elm, context);
-        else if (elm instanceof OperatorExpression) return visitOperatorExpression((OperatorExpression) elm, context);
         else
             throw new IllegalArgumentException(
                     "Unknown OperatorExpression type: " + elm.getClass().getName());
