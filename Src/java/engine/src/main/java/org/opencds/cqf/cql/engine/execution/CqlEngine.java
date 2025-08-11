@@ -349,6 +349,8 @@ public class CqlEngine {
                         this.state.logDebugResult(def, object, action);
                     } finally {
                         this.state.popActivationFrame();
+                        // this avoids spill over of evaluatedResources from previous/next expression evaluations
+                        this.state.clearEvaluatedResources();
                     }
                 } catch (CqlException ce) {
                     processException(ce, def);

@@ -21,11 +21,9 @@ class EvaluatedResourcesTest extends FhirExecutionTestBase {
         var results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         assertEvaluationResult(results, "Union", List.of(CONDITION, ENCOUNTER));
-        engine.getState().clearEvaluatedResources();
 
         results = engine.evaluate(library.getIdentifier(), Set.of("Encounter"));
         assertEvaluationResult(results, "Encounter", List.of(ENCOUNTER));
-        engine.getState().clearEvaluatedResources();
 
         results = engine.evaluate(library.getIdentifier(), Set.of("Condition"));
         assertEvaluationResult(results, "Condition", List.of(CONDITION));
@@ -38,18 +36,15 @@ class EvaluatedResourcesTest extends FhirExecutionTestBase {
         var results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         assertEvaluationResult(results, "Union", List.of(CONDITION, ENCOUNTER));
-        engine.getState().clearEvaluatedResources();
 
         results = engine.evaluate(library.getIdentifier(), Set.of("Encounter"));
         assertEvaluationResult(results, "Encounter", List.of(ENCOUNTER));
-        engine.getState().clearEvaluatedResources();
 
         results = engine.evaluate(library.getIdentifier(), Set.of("Condition"));
         assertEvaluationResult(results, "Condition", List.of(CONDITION));
 
         results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
         assertEvaluationResult(results, "Union", List.of(CONDITION, ENCOUNTER));
-        engine.getState().clearEvaluatedResources();
     }
 
     @Nonnull
