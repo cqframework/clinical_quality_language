@@ -287,8 +287,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof IndexOf) return visitIndexOf((IndexOf) elm, context);
         else if (elm instanceof Slice) return visitSlice((Slice) elm, context);
         else if (elm instanceof Children) return visitChildren((Children) elm, context);
-        else if (elm instanceof Descendents) return visitDescendents((Descendents) elm, context);
-        else if (elm instanceof Descendants) return visitDescendants((Descendants) elm, context);
+        else if (elm instanceof Descendents d) return visitDescendents(d, context);
+        else if (elm instanceof Descendants d) return visitDescendants(d, context);
         else if (elm instanceof Message) return visitMessage((Message) elm, context);
         else if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression) elm, context);
         else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression) elm, context);
@@ -2713,11 +2713,13 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
      *
      * Deprecated, use Descendants
      *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    @Deprecated
+    @Deprecated(since = "3.28.0")
     public T visitDescendents(Descendents elm, C context) {
         T result = visitFields(elm, context);
 
