@@ -349,6 +349,7 @@ public class CqlEngine {
                         this.state.logDebugResult(def, object, action);
                     } finally {
                         this.state.popActivationFrame();
+                        this.state.clearEvaluatedResources();
                     }
                 } catch (CqlException ce) {
                     processException(ce, def);
