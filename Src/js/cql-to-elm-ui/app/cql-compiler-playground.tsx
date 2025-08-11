@@ -6,7 +6,10 @@ import { xml } from "@codemirror/lang-xml";
 import { TCompileCqlArgs, TOutput } from "@/app/shared";
 import { createStatefulCompiler } from "@/app/compiler";
 import { cqlLanguage } from "@/app/cql-language";
-import { Editor } from "@/app/editor";
+import { Editor, getCursorLineAndCol } from "@/app/editor";
+import { EditorSelection, ReactCodeMirrorRef } from "@uiw/react-codemirror";
+import { EditorView } from "@codemirror/view";
+import { findElmRangesForCqlPos } from "@/app/elm";
 
 const initialCompileCqlArgs: TCompileCqlArgs = {
   cql: `library Test version '0.1.0'
@@ -28,7 +31,7 @@ define "Inpatient Encounter":
 `,
   useWasm: false,
   enableAnnotations: false,
-  enableLocators: false,
+  enableLocators: true,
   outputContentType: "json",
   baseUrl:
     "https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/",
@@ -159,6 +162,59 @@ export function CqlCompilerPlayground() {
     state.baseUrl,
     state.useWorker,
   ]);
+
+  const resultContent = (() => {
+    if (state.output.type === "log") {
+      return state.output.log;
+    }
+    if (state.output.contentType === "json") {
+      try {
+        return JSON.stringify(JSON.parse(state.output.elm), null, 2);
+      } catch (e) {
+        console.error(e);
+      }
+      return state.output.elm;
+    }
+    return state.output.elm;
+  })();
+
+  const leftEditorRef = useRef<ReactCodeMirrorRef>(null);
+  const rightEditorRef = useRef<ReactCodeMirrorRef>(null);
+
+  useEffect(() => {
+    try {
+      const { line, col } = getCursorLineAndCol(
+        leftEditorRef.current!.view!.state,
+      );
+      const elmRanges = findElmRangesForCqlPos(
+        state.output,
+        rightEditorRef.current!.view!.state.doc.toString(),
+        line,
+        col,
+      );
+      if (elmRanges.length) {
+        rightEditorRef.current!.view!.dispatch({
+          selection: EditorSelection.create(
+            elmRanges.map((range) => {
+              return EditorSelection.range(range.start, range.end);
+            }),
+          ),
+          effects: EditorView.scrollIntoView(elmRanges[0].start, {
+            y: "nearest",
+          }),
+        });
+      } else {
+        rightEditorRef.current!.view!.dispatch({
+          selection: {
+            anchor: 0,
+            head: 0,
+          },
+        });
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {}
+  }, [state.output]);
 
   return (
     <div
@@ -362,6 +418,7 @@ export function CqlCompilerPlayground() {
           </div>
 
           <Editor
+            ref={leftEditorRef}
             gridArea={"body-left-editor-textarea"}
             value={state.cql}
             onChange={(nextCql) => {
@@ -371,7 +428,41 @@ export function CqlCompilerPlayground() {
               }));
             }}
             editable={true}
-            extensions={[cqlLanguage]}
+            extensions={[
+              cqlLanguage,
+              EditorView.updateListener.of((update) => {
+                if (update.docChanged || update.selectionSet) {
+                  const { line, col } = getCursorLineAndCol(
+                    leftEditorRef.current!.view!.state,
+                  );
+                  const elmRanges = findElmRangesForCqlPos(
+                    state.output,
+                    rightEditorRef.current!.view!.state.doc.toString(),
+                    line,
+                    col,
+                  );
+                  if (elmRanges.length) {
+                    rightEditorRef.current!.view!.dispatch({
+                      selection: EditorSelection.create(
+                        elmRanges.map((range) => {
+                          return EditorSelection.range(range.start, range.end);
+                        }),
+                      ),
+                      effects: EditorView.scrollIntoView(elmRanges[0].start, {
+                        y: "nearest",
+                      }),
+                    });
+                  } else {
+                    rightEditorRef.current!.view!.dispatch({
+                      selection: {
+                        anchor: 0,
+                        head: 0,
+                      },
+                    });
+                  }
+                }
+              }),
+            ]}
           />
         </div>
 
@@ -405,21 +496,9 @@ export function CqlCompilerPlayground() {
           </div>
 
           <Editor
+            ref={rightEditorRef}
             gridArea={"body-right-editor-textarea"}
-            value={(() => {
-              if (state.output.type === "log") {
-                return state.output.log;
-              }
-              if (state.output.contentType === "json") {
-                try {
-                  return JSON.stringify(JSON.parse(state.output.elm), null, 2);
-                } catch (e) {
-                  console.error(e);
-                }
-                return state.output.elm;
-              }
-              return state.output.elm;
-            })()}
+            value={resultContent}
             onChange={() => {}}
             editable={false}
             extensions={(() => {

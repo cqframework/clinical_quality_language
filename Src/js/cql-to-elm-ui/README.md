@@ -10,7 +10,7 @@ This will output the cql-all-cql-to-elm and cql-all-cql-to-elm-wasm-js packages 
 
 Run:
 
-    npm install
+    npm install -f
     npm run dev
 
 And open `http://localhost:3000/cql-to-elm-ui` in your browser.

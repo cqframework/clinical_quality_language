@@ -1,21 +1,25 @@
-import CodeMirror, { Extension } from "@uiw/react-codemirror";
+import React, { forwardRef } from "react";
+import CodeMirror, {
+  EditorState,
+  Extension,
+  ReactCodeMirrorRef,
+} from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
 
-export function Editor({
-  gridArea,
-  value,
-  onChange,
-  editable,
-  extensions,
-}: {
-  gridArea: string;
-  value: string;
-  onChange: (nextValue: string) => void;
-  editable: boolean;
-  extensions: Extension[];
-}) {
+// eslint-disable-next-line react/display-name
+export const Editor = forwardRef<
+  ReactCodeMirrorRef,
+  {
+    gridArea: string;
+    value: string;
+    onChange: (nextValue: string) => void;
+    editable: boolean;
+    extensions: Extension[];
+  }
+>(({ gridArea, value, onChange, editable, extensions }, ref) => {
   return (
     <CodeMirror
+      ref={ref}
       style={{
         gridArea: gridArea,
         minWidth: 0,
@@ -36,9 +40,12 @@ export function Editor({
         },
       })}
       basicSetup={{
+        allowMultipleSelections: true,
         foldGutter: false,
         highlightActiveLine: false,
-        lineNumbers: false,
+        highlightActiveLineGutter: false,
+        highlightSelectionMatches: false,
+        lineNumbers: true,
         searchKeymap: false,
       }}
       value={value}
@@ -46,4 +53,13 @@ export function Editor({
       onChange={onChange}
     />
   );
+});
+
+export function getCursorLineAndCol(editorState: EditorState): {
+  line: number;
+  col: number;
+} {
+  const pos = editorState.selection.main.head;
+  const line = editorState.doc.lineAt(pos);
+  return { line: line.number, col: pos - line.from + 1 };
 }
