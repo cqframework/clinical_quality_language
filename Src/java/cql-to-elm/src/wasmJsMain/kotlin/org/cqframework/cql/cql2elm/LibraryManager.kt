@@ -43,6 +43,15 @@ fun libraryManagerRemoveCompilerOption(
 }
 
 @JsExport
+fun libraryManagerSetSignatureLevel(
+    libraryManager: JsReference<BaseLibraryManager>,
+    signatureLevel: String
+) {
+    libraryManager.get().cqlCompilerOptions.signatureLevel =
+        LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
+}
+
+@JsExport
 fun createModelCache(): JsReference<MutableMap<ModelIdentifier, Model>> {
     return HashMap<ModelIdentifier, Model>().toJsReference()
 }

@@ -13,6 +13,7 @@
     "@codemirror/lang-xml": "^6.1.0",
     "@codemirror/legacy-modes": "^6.5.1",
     "@lhncbc/ucum-lhc": "^7.1.2",
+    "@uiw/codemirror-theme-xcode": "^4.24.2",
     "@uiw/react-codemirror": "^4.24.1",
     "cql-all-cql-to-elm": "file:../../java/build/js/packages/cql-all-cql-to-elm",
     "cql-all-cql-to-elm-wasm-js": "file:../../java/build/js/packages/cql-all-cql-to-elm-wasm-js",

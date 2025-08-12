@@ -34,6 +34,12 @@ class LibraryManager(
         _libraryManager.removeCompilerOption(option)
     }
 
+    fun setSignatureLevel(signatureLevel: String) {
+        _libraryManager.cqlCompilerOptions.signatureLevel =
+            LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
+        _libraryManager.cqlCompilerOptions.compatibilityLevel
+    }
+
     companion object {
         @OptIn(ExperimentalJsStatic::class)
         @JsStatic

@@ -14,7 +14,7 @@ export const cqlLanguage = StreamLanguage.define(
       { regex: /'(?:[^\\]|\\.)*?(?:'|$)/, token: "string-2" },
 
       { regex: /[\{\[\(]/, indent: true },
-      { regex: /[\}\]\)]/, dedentIfLineStart: true },
+      { regex: /[\}\]\)]/, dedent: true },
 
       {
         regex: /\b(context +)(Patient|Population)\b/,
