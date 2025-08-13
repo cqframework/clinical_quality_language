@@ -56,7 +56,7 @@ export const compilerOptions = [
         Require{" "}
         <span
           style={{
-            fontFamily: "monospace",
+            fontFamily: "var(--monospace-font-family)",
             fontSize: "90%",
             color: "#aa0d91",
             fontWeight: 700,
@@ -84,7 +84,12 @@ export type TCompileCqlArgs = {
   outputContentType: TElmContentType;
   librarySource: TLibrarySource;
   baseUrl: string;
-  dirHandle: FileSystemDirectoryHandle | null;
+  mountedDir: {
+    handle: FileSystemDirectoryHandle;
+    files: {
+      handle: FileSystemFileHandle;
+    }[];
+  } | null;
   useWorker: boolean;
 };
 

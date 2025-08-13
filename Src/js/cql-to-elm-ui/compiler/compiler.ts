@@ -136,40 +136,51 @@ export function createStatefulCompiler(sync: boolean) {
         return fetchedLibrary.cql;
       }
       if (args.librarySource === "local") {
-        if (args.dirHandle) {
-          const dirHandle = args.dirHandle;
+        if (args.mountedDir) {
+          const dirHandle = args.mountedDir.handle;
           const fileName = `${id}.cql`;
-          onOutput({
-            type: "log",
-            log: `INFO Reading library with id=${id}, system=${system}, version=${version} asynchronously from local file=${dirHandle.name}/${fileName}...`,
-          });
-          (async () => {
-            const cql = await readFile(dirHandle, fileName);
-            if (cql === null) {
-              onOutput({
-                type: "log",
-                log: `WARN Couldn't read library from local file=${dirHandle.name}/${fileName}.`,
-              });
-              return;
-            } else {
-              onOutput({
-                type: "log",
-                log: `INFO Read library with id=${id}, system=${system}, version=${version} successfully.`,
-              });
-            }
-            fetchedLibraries.push({
-              id,
-              system,
-              version,
-              cql,
-            });
+          const file = args.mountedDir.files.find(
+            (_) => _.handle.name === fileName,
+          );
+          if (file) {
             onOutput({
               type: "log",
-              log: "INFO Rerunning compilation...",
+              log: `INFO Reading library with id=${id}, system=${system}, version=${version} asynchronously from local file=${dirHandle.name}/${fileName}...`,
             });
-            compileCql(args, onOutput);
-          })();
-          throw "INFO Library is being read asynchronously from local file system. Will rerun when reading completes.";
+            (async () => {
+              const cql = await readFile(file.handle);
+              if (cql === null) {
+                onOutput({
+                  type: "log",
+                  log: `WARN Couldn't read library from local file=${dirHandle.name}/${fileName}.`,
+                });
+                return;
+              } else {
+                onOutput({
+                  type: "log",
+                  log: `INFO Read library with id=${id}, system=${system}, version=${version} successfully.`,
+                });
+              }
+              fetchedLibraries.push({
+                id,
+                system,
+                version,
+                cql,
+              });
+              onOutput({
+                type: "log",
+                log: "INFO Rerunning compilation...",
+              });
+              compileCql(args, onOutput);
+            })();
+            throw "INFO Library is being read asynchronously from local file system. Will rerun when reading completes.";
+          }
+
+          onOutput({
+            type: "log",
+            log: `WARN Library with id=${id}, system=${system}, version=${version} not found in mounted directory=${dirHandle.name}.`,
+          });
+          return null;
         }
         onOutput({
           type: "log",

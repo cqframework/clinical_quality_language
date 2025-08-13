@@ -9,13 +9,9 @@ export function fetchSync(url: string): string | null {
   }
 }
 
-export async function readFile(
-  dirHandle: FileSystemDirectoryHandle,
-  fileName: string,
-) {
+export async function readFile(handle: FileSystemFileHandle) {
   try {
-    const fileHandle = await dirHandle.getFileHandle(fileName);
-    const file = await fileHandle.getFile();
+    const file = await handle.getFile();
     return file.text();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {

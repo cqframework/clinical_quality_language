@@ -6,4 +6,5 @@ export const buttonStyle = {
   borderRadius: "var(--border-radius)",
   padding: "6px 12px",
   fontSize: "inherit",
+  cursor: "pointer",
 };

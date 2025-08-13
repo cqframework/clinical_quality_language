@@ -2,6 +2,7 @@
     --border: 1px solid #ccc;
     --border-radius: 4px;
     --primary-color: #aa0d91;
+    --monospace-font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }
 
 * {

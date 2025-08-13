@@ -42,6 +42,7 @@ export const Editor = forwardRef<
           },
           ".cm-content": {
             padding: "8px 0",
+            fontFamily: "var(--monospace-font-family)",
           },
           ".cm-gutterElement": {
             padding: "0 7px 0 12px !important",

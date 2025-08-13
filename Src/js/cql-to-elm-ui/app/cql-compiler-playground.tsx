@@ -26,6 +26,7 @@ import { Label } from "@/ui/label";
 import { Caption } from "@/ui/caption";
 import { buttonStyle } from "@/ui/button";
 import { supportedModels } from "@/compiler/supported-models";
+import { readFile } from "@/compiler/utils";
 
 const initialCompileCqlArgs: TCompileCqlArgs = {
   cql: `library Test version '0.1.0'
@@ -56,7 +57,7 @@ define "Inpatient Encounter":
   librarySource: "remote",
   baseUrl:
     "https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/",
-  dirHandle: null,
+  mountedDir: null,
   useWorker: true,
 };
 
@@ -142,7 +143,7 @@ export function CqlCompilerPlayground() {
     }));
   }, [
     state.compileCqlArgs.librarySource,
-    state.compileCqlArgs.dirHandle,
+    state.compileCqlArgs.mountedDir,
     state.compileCqlArgs.baseUrl,
     state.compileCqlArgs.compilerOptions,
     state.compileCqlArgs.signatureLevel,
@@ -267,14 +268,17 @@ export function CqlCompilerPlayground() {
         <div
           style={{
             display: "flex",
+            minHeight: 40,
+            padding: "0 4px 0 0",
+            gap: 10,
           }}
         >
           <h1
             style={{
               flex: "0 0 auto",
-              padding: "0 16px",
+              padding: "0 15px",
               margin: 0,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 400,
               color: "white",
               background: "var(--primary-color)",
@@ -284,9 +288,106 @@ export function CqlCompilerPlayground() {
           >
             CQL Compiler in Kotlin/JS &mdash; Demo
           </h1>
+
+          <button
+            type={"button"}
+            style={{
+              ...buttonStyle,
+              flex: "0 0 auto",
+              padding: "4px 12px",
+              alignSelf: "center",
+            }}
+            onClick={async () => {
+              const dirHandle: FileSystemDirectoryHandle =
+                await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window as any).showDirectoryPicker({
+                  mode: "read",
+                });
+              const dirScan: FileSystemHandle[] = await Array.fromAsync(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (dirHandle as any).values(),
+              );
+              const files = dirScan
+                .filter(
+                  (handle): handle is FileSystemFileHandle =>
+                    handle.kind === "file",
+                )
+                .map((handle) => ({
+                  handle: handle,
+                }));
+
+              setState((prevState) => ({
+                ...prevState,
+                compileCqlArgs: {
+                  ...prevState.compileCqlArgs,
+                  mountedDir: {
+                    handle: dirHandle,
+                    files: files,
+                  },
+                },
+              }));
+            }}
+          >
+            {state.compileCqlArgs.mountedDir ? (
+              <Fragment>
+                <b>{state.compileCqlArgs.mountedDir.handle.name}</b> folder
+                selected
+              </Fragment>
+            ) : (
+              "Mount directory..."
+            )}
+          </button>
+
+          <select
+            disabled={!state.compileCqlArgs.mountedDir}
+            style={{
+              flex: "0 0 auto",
+              alignSelf: "center",
+              width: 250,
+              padding: "4px 12px 4px 8px",
+              border: "var(--border)",
+              borderRadius: "var(--border-radius)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            defaultValue={""}
+            onChange={async (event) => {
+              const fileName = event.target.value;
+
+              if (state.compileCqlArgs.mountedDir) {
+                const content = await readFile(
+                  state.compileCqlArgs.mountedDir.files.find(
+                    (_) => _.handle.name === fileName,
+                  )!.handle,
+                );
+                if (content !== null) {
+                  setState((prevState) => ({
+                    ...prevState,
+                    compileCqlArgs: {
+                      ...prevState.compileCqlArgs,
+                      cql: content,
+                    },
+                  }));
+                }
+              }
+            }}
+          >
+            <option value={""}>Import CQL from file...</option>
+            {state.compileCqlArgs.mountedDir &&
+              state.compileCqlArgs.mountedDir.files.map((file, fileIndex) => (
+                <option key={fileIndex} value={file.handle.name}>
+                  {file.handle.name}
+                </option>
+              ))}
+          </select>
+
+          <div style={{ flex: "1 1 auto" }} />
+
           <a
             style={{
               flex: "0 0 auto",
+              alignSelf: "center",
               width: 32,
               height: 32,
               background:
@@ -487,59 +588,11 @@ export function CqlCompilerPlayground() {
                 {[
                   {
                     value: "local" as TLibrarySource,
-                    label: "Local directory",
+                    label: "Mounted directory",
                     content: (
                       <Fragment>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: 8,
-                            alignItems: "center",
-                            border: "var(--border)",
-                            borderRadius: "var(--border-radius)",
-                            padding: 8,
-                          }}
-                        >
-                          <button
-                            type={"button"}
-                            style={{
-                              ...buttonStyle,
-                              flex: "0 0 auto",
-                            }}
-                            onClick={async () => {
-                              const dirHandle =
-                                await // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                (window as any).showDirectoryPicker({
-                                  mode: "read",
-                                });
-                              setState((prevState) => ({
-                                ...prevState,
-                                compileCqlArgs: {
-                                  ...prevState.compileCqlArgs,
-                                  dirHandle: dirHandle,
-                                },
-                              }));
-                            }}
-                          >
-                            Mount...
-                          </button>
-                          <div
-                            style={{
-                              flex: "1 1 auto",
-                            }}
-                          >
-                            {state.compileCqlArgs.dirHandle ? (
-                              <Fragment>
-                                <b>{state.compileCqlArgs.dirHandle.name}</b>{" "}
-                                mounted.
-                              </Fragment>
-                            ) : (
-                              "No directory mounted."
-                            )}
-                          </div>
-                        </div>
                         <Caption>
-                          Included libraries are loaded from files in this
+                          Included libraries are loaded from files in the local
                           directory (library ID + .cql).
                         </Caption>
                       </Fragment>
@@ -822,7 +875,7 @@ export function CqlCompilerPlayground() {
                 borderRadius: "var(--border-radius)",
                 background: "white",
                 padding: "4px 12px",
-                fontFamily: "monospace",
+                fontFamily: "var(--monospace-font-family)",
                 fontSize: 12,
               }}
             >
