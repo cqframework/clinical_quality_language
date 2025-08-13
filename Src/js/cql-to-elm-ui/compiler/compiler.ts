@@ -154,7 +154,6 @@ export function createStatefulCompiler(sync: boolean) {
                   type: "log",
                   log: `WARN Couldn't read library from local file=${dirHandle.name}/${fileName}.`,
                 });
-                return;
               } else {
                 onOutput({
                   type: "log",
@@ -228,7 +227,6 @@ export function createStatefulCompiler(sync: boolean) {
               type: "log",
               log: `WARN Couldn't fetch library from url=${url}.`,
             });
-            return;
           } else {
             onOutput({
               type: "log",
