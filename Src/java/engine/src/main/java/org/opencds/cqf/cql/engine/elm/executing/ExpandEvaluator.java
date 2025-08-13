@@ -38,20 +38,20 @@ The interval overload of the expand operator will return a list of the start val
 */
 
 public class ExpandEvaluator {
-    private static Object addPer(Object addTo, Quantity per) {
+    private static Object addPer(Object addTo, Quantity per, State state) {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is rounded up.
         if (addTo instanceof Integer) {
             return AddEvaluator.add(
-                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).intValue());
+                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).intValue(), state);
         } else if (addTo instanceof Long) {
             return AddEvaluator.add(
-                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).longValue());
+                    addTo, per.getValue().setScale(0, RoundingMode.CEILING).longValue(), state);
         } else if (addTo instanceof BigDecimal) {
-            return AddEvaluator.add(addTo, per.getValue());
+            return AddEvaluator.add(addTo, per.getValue(), state);
         } else if (addTo instanceof Quantity) {
-            return AddEvaluator.add(addTo, per);
+            return AddEvaluator.add(addTo, per, state);
         } else if (addTo instanceof BaseTemporal) {
-            return AddEvaluator.add(addTo, per);
+            return AddEvaluator.add(addTo, per, state);
         }
 
         throw new InvalidOperatorArgument(
@@ -71,7 +71,7 @@ public class ExpandEvaluator {
      */
     private static List<Interval> expandIntervalIntoIntervals(Interval interval, Quantity per, State state) {
         var start = interval.getStart();
-        var nextStart = addPer(start, per);
+        var nextStart = addPer(start, per, state);
 
         // per may be too small
         if (!Boolean.TRUE.equals(LessEvaluator.less(start, nextStart, state))) {
@@ -87,9 +87,9 @@ public class ExpandEvaluator {
             }
             if (lessOrEqual) {
                 returnedIntervals.add(
-                        new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
+                        new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true, state));
                 start = nextStart;
-                nextStart = addPer(start, per);
+                nextStart = addPer(start, per, state);
             } else {
                 break;
             }
@@ -143,7 +143,7 @@ public class ExpandEvaluator {
         }
 
         // Sort the intervals so that the expansion results are returned in order
-        intervals.sort(new CqlList().valueSort);
+        intervals.sort(new CqlList(state).valueSort);
 
         return intervals;
     }

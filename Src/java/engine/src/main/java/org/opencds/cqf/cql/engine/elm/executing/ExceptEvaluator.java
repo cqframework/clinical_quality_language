@@ -92,7 +92,7 @@ public class ExceptEvaluator {
                 Object min = LessEvaluator.less(PredecessorEvaluator.predecessor(rightStart), leftEnd, state)
                         ? PredecessorEvaluator.predecessor(rightStart)
                         : leftEnd;
-                return new Interval(leftStart, true, min, true);
+                return new Interval(leftStart, true, min, true, state);
             }
 
             // right interval starts before left interval
@@ -102,7 +102,7 @@ public class ExceptEvaluator {
                 Object max = GreaterEvaluator.greater(SuccessorEvaluator.successor(rightEnd), leftStart, state)
                         ? SuccessorEvaluator.successor(rightEnd)
                         : leftStart;
-                return new Interval(max, true, leftEnd, true);
+                return new Interval(max, true, leftEnd, true, state);
             }
 
             throw new UndefinedResult(String.format(
