@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
+import org.jetbrains.annotations.NotNull;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
@@ -211,15 +213,22 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object leftResult = visitExpression(left, state);
         Object rightResult = visitExpression(right, state);
 
-        // This will attempt to use the declared result types from the ELM to determine which type of Union
-        // to perform. If the types are not declared, it will fall back to checking the values of the result.
-        if (left.getResultType() instanceof ListType
-                || right.getResultType() instanceof ListType
-                || elm.getResultType() instanceof ListType) {
+        // Attempt to use resultTypes if present. This is needed because
+        // null as List union null as List returns an empty list, but
+        // null as Interval union null as Interval returns null.
+        // Fixing solely in the engine requires type metadata for
+        // the results to be available at runtime
+        // (e.g. stored in a header, table, wrapper class, etc.)
+        var leftResultType = Trackable.INSTANCE.getResultType(left);
+        var rightResultType = Trackable.INSTANCE.getResultType(right);
+        var elmResultType = Trackable.INSTANCE.getResultType(elm);
+        if (leftResultType instanceof ListType
+                || rightResultType instanceof ListType
+                || elmResultType instanceof ListType) {
             return UnionEvaluator.unionIterable((Iterable<?>) leftResult, (Iterable<?>) rightResult, state);
-        } else if (left.getResultType() instanceof IntervalType
-                || right.getResultType() instanceof IntervalType
-                || elm.getResultType() instanceof IntervalType) {
+        } else if (leftResultType instanceof IntervalType
+                || rightResultType instanceof IntervalType
+                || elmResultType instanceof IntervalType) {
             return UnionEvaluator.unionInterval(
                     (org.opencds.cqf.cql.engine.runtime.Interval) leftResult,
                     (org.opencds.cqf.cql.engine.runtime.Interval) rightResult,
@@ -1411,5 +1420,10 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitQuery(Query elm, State state) {
         return QueryEvaluator.internalEvaluate(elm, state, this);
+    }
+
+    @Override
+    protected Object defaultResult(@NotNull Element elm, State context) {
+        return null;
     }
 }
