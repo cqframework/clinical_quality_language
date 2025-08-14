@@ -48,6 +48,7 @@ import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateFrom
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.DateTimeComponentFrom
+import org.hl7.elm.r1.Descendants
 import org.hl7.elm.r1.Descendents
 import org.hl7.elm.r1.DifferenceBetween
 import org.hl7.elm.r1.Distinct
@@ -497,6 +498,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             is Slice -> visitSlice(elm, context)
             is Children -> visitChildren(elm, context)
             is Descendents -> visitDescendents(elm, context)
+            is Descendants -> visitDescendants(elm, context)
             is Message -> visitMessage(elm, context)
             is UnaryExpression -> visitUnaryExpression(elm, context)
             is BinaryExpression -> visitBinaryExpression(elm, context)
@@ -2815,11 +2817,35 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * Visit a Descendents. This method will be called for every node in the tree that is a
      * Descendents.
      *
+     * Deprecated, use Descendants
+     *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
+    @Deprecated("Use visitDescendants instead", replaceWith = ReplaceWith("visitDescendants"))
     override fun visitDescendents(elm: Descendents, context: C): T {
+        var result = visitFields(elm, context)
+
+        if (elm.source != null) {
+            val childResult = visitExpression(elm.source!!, context)
+            result = aggregateResult(result, childResult)
+        }
+
+        return result
+    }
+
+    /**
+     * Visit a Descendants. This method will be called for every node in the tree that is a
+     * Descendants.
+     *
+     * @param elm the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    override fun visitDescendants(elm: Descendants, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {

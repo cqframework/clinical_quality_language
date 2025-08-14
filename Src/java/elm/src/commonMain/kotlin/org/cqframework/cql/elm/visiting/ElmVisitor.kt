@@ -48,6 +48,7 @@ import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateFrom
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.DateTimeComponentFrom
+import org.hl7.elm.r1.Descendants
 import org.hl7.elm.r1.Descendents
 import org.hl7.elm.r1.DifferenceBetween
 import org.hl7.elm.r1.Distinct
@@ -1819,11 +1820,26 @@ interface ElmVisitor<T, C> {
      * Visit a Descendents. This method will be called for every node in the tree that is a
      * Descendents.
      *
+     * Deprecated, use Descendants
+     *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
+    @Deprecated("Use visitDescendants instead", replaceWith = ReplaceWith("visitDescendants"))
     fun visitDescendents(elm: Descendents, context: C): T
+
+    /**
+     * Visit a Descendants. This method will be called for every node in the tree that is a
+     * Descendants.
+     *
+     * @param elm the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    fun visitDescendants(elm: Descendants, context: C): T
 
     /**
      * Visit a Message. This method will be called for every node in the tree that is a Message.

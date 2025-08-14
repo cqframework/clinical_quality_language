@@ -61,6 +61,7 @@ import org.hl7.elm.r1.DateFilterElement
 import org.hl7.elm.r1.DateFrom
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.DateTimeComponentFrom
+import org.hl7.elm.r1.Descendants
 import org.hl7.elm.r1.Descendents
 import org.hl7.elm.r1.DifferenceBetween
 import org.hl7.elm.r1.Distinct
@@ -493,8 +494,20 @@ open class IdObjectFactory : ObjectFactory() {
         return super.createDateTimeComponentFrom().withLocalId(nextId())
     }
 
+    /**
+     * Deprecated, use Descendants
+     *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
+     * @deprecated since 3.28.0
+     */
+    @Deprecated("Use createDescendants instead", replaceWith = ReplaceWith("createDescendants"))
     override fun createDescendents(): Descendents {
         return super.createDescendents().withLocalId(nextId())
+    }
+
+    override fun createDescendants(): Descendants {
+        return super.createDescendants().withLocalId(nextId())
     }
 
     override fun createDifferenceBetween(): DifferenceBetween {

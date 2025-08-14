@@ -837,8 +837,22 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
     }
 
+    /*
+     * Deprecated, use Descendants
+     *
+     * CQL 1.5.3 corrected the spelling to Descendants
+     *
+     * @deprecated since 3.28.0
+     */
     @Override
+    @Deprecated(since = "3.28.0")
     public Object visitDescendents(Descendents elm, State state) {
+        Object source = visitExpression(elm.getSource(), state);
+        return DescendentsEvaluator.descendents(source);
+    }
+
+    @Override
+    public Object visitDescendants(Descendants elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
         return DescendentsEvaluator.descendents(source);
     }

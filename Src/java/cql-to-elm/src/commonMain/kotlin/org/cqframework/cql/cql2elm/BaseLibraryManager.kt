@@ -3,11 +3,11 @@ package org.cqframework.cql.cql2elm
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import kotlin.jvm.JvmOverloads
 import kotlinx.io.Source
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
+import org.cqframework.cql.cql2elm.utils.logger
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
@@ -34,22 +34,27 @@ open class BaseLibraryManager(
 
     val ucumService by lazyUcumService
 
-    /*
-     * A "well-known" library name is one that is allowed to resolve without a
-     * namespace in a namespace-aware context
+    /**
+     * A "well-known" library name is one that is allowed to resolve without a namespace in a
+     * namespace-aware context
      */
     fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean {
-        return when (unqualifiedIdentifier) {
-            "FHIRHelpers" -> true
-            else -> false
+        if (unqualifiedIdentifier == null) {
+            return false
         }
+
+        return unqualifiedIdentifier == "FHIRHelpers"
     }
 
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         cacheMode: CacheMode
     ): CompiledLibrary {
-        return this.resolveLibrary(libraryIdentifier, ArrayList(), cacheMode)
+        return this.resolveLibraryInner(libraryIdentifier, cacheMode).compiledLibrary
+    }
+
+    fun resolveLibrary(libraryIdentifier: VersionedIdentifier): CompiledLibrary {
+        return this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE).compiledLibrary
     }
 
     fun canResolveLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
@@ -58,58 +63,148 @@ open class BaseLibraryManager(
         return true
     }
 
-    @JvmOverloads
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
-        errors: MutableList<CqlCompilerException> = ArrayList(),
-        cacheMode: CacheMode = CacheMode.READ_WRITE
+        errors: MutableList<CqlCompilerException>
     ): CompiledLibrary {
-        require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
-        var library: CompiledLibrary?
-        if (cacheMode != CacheMode.NONE) {
-            library = compiledLibraries[libraryIdentifier]
-            if (library != null) {
-                return library
-            }
-        }
-        library = compileLibrary(libraryIdentifier, errors)
-        if (!CqlCompilerException.hasErrors(errors) && cacheMode == CacheMode.READ_WRITE) {
-            compiledLibraries[libraryIdentifier] = library
-        }
-        return library
+        val compiledLibraryResult =
+            this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE)
+        errors.addAll(compiledLibraryResult.errors)
+        return compiledLibraryResult.compiledLibrary
     }
 
-    @Suppress("LongMethod", "ThrowsCount")
-    private fun compileLibrary(
+    private fun resolveLibraryInner(
         libraryIdentifier: VersionedIdentifier,
-        errors: MutableList<CqlCompilerException>?
-    ): CompiledLibrary {
-        var result: CompiledLibrary?
+        cacheMode: CacheMode
+    ): CompiledLibraryResult {
+        require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
+
+        val compiledLibraryResults = resolveLibraries(mutableListOf(libraryIdentifier), cacheMode)
+
+        return compiledLibraryResults.onlyResult
+    }
+
+    fun resolveLibraries(
+        libraryIdentifiers: MutableList<VersionedIdentifier>
+    ): CompiledLibraryMultiResults {
+        return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE)
+    }
+
+    private fun resolveLibraries(
+        libraryIdentifiers: MutableList<VersionedIdentifier>,
+        cacheMode: CacheMode
+    ): CompiledLibraryMultiResults {
+        require(libraryIdentifiers.isNotEmpty()) { "libraryIdentifier can not be null" }
+
+        require(
+            libraryIdentifiers.all { libraryIdentifier -> !libraryIdentifier.id.isNullOrEmpty() }
+        ) {
+            "at least one libraryIdentifier Id is null"
+        }
+
+        val compiledLibraryResults = ArrayList<CompiledLibraryResult>()
+
+        if (cacheMode != CacheMode.NONE) {
+            // Ensure that cache retrieved librariesFromCache are in the same order as the input
+            // identifiers so we don't get a mismatch later
+
+            val librariesFromCache =
+                libraryIdentifiers
+                    .filter { o -> compiledLibraries.containsKey(o) }
+                    .map { o -> compiledLibraries.get(o)!! }
+
+            if (librariesFromCache.size == libraryIdentifiers.size) {
+                return CompiledLibraryMultiResults.from(
+                    librariesFromCache.map { lib -> CompiledLibraryResult(lib, mutableListOf()) }
+                )
+            }
+
+            librariesFromCache
+                .map { libraryFromCache ->
+                    CompiledLibraryResult(libraryFromCache, mutableListOf())
+                }
+                .forEach { e -> compiledLibraryResults.add(e) }
+        }
+
+        for (libraryIdentifier in libraryIdentifiers) {
+            if (isLibraryAlreadyRetrievedFromCache(libraryIdentifier, compiledLibraryResults)) {
+                logger.debug {
+                    "library ${libraryIdentifier.id} already in cache, skipping compilation"
+                }
+                continue
+            }
+
+            val compiledLibraryResult = compileLibrary(libraryIdentifier)
+
+            // If we have any errors, ignore the compiled library altogether just like in the single
+            // lib case
+            if (
+                !CqlCompilerException.hasErrors(compiledLibraryResult.errors) &&
+                    cacheMode == CacheMode.READ_WRITE
+            ) {
+                logger.debug { "adding library to cache: ${libraryIdentifier.id}" }
+                compiledLibraries[libraryIdentifier] = compiledLibraryResult.compiledLibrary
+            }
+
+            compiledLibraryResults.add(compiledLibraryResult)
+        }
+
+        return CompiledLibraryMultiResults.from(compiledLibraryResults)
+    }
+
+    private fun isLibraryAlreadyRetrievedFromCache(
+        searchedForLibraryIdentifier: VersionedIdentifier,
+        compiledLibrariesFromCache: MutableList<CompiledLibraryResult>
+    ): Boolean {
+        return compiledLibrariesFromCache
+            .map { it.compiledLibrary.identifier }
+            .map { compiledLibraryIdentifier ->
+                stripVersionIfNeeded(compiledLibraryIdentifier!!, searchedForLibraryIdentifier)
+            }
+            .toList()
+            .contains(searchedForLibraryIdentifier)
+    }
+
+    private fun stripVersionIfNeeded(
+        compiledLibraryIdentifier: VersionedIdentifier,
+        searchedForLibraryIdentifier: VersionedIdentifier
+    ): VersionedIdentifier {
+        if (searchedForLibraryIdentifier.version == null) {
+            return VersionedIdentifier().withId(compiledLibraryIdentifier.id)
+        }
+        return compiledLibraryIdentifier
+    }
+
+    @Suppress("ThrowsCount")
+    private fun compileLibrary(libraryIdentifier: VersionedIdentifier): CompiledLibraryResult {
         val libraryPath = NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
 
-        if (!cqlCompilerOptions.enableCqlOnly) {
-            result = tryCompiledLibraryElm(libraryIdentifier, cqlCompilerOptions)
-            if (result != null) {
-                validateIdentifiers(libraryIdentifier, result, libraryPath)
-                sortStatements(result)
-                return result
+        if (!this.cqlCompilerOptions.enableCqlOnly) {
+            val elmCompiledLibrary = tryCompiledLibraryElm(libraryIdentifier, cqlCompilerOptions)
+            if (elmCompiledLibrary != null) {
+                validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath)
+                sortStatements(elmCompiledLibrary)
+                return CompiledLibraryResult(elmCompiledLibrary, mutableListOf())
             }
         }
-        val cqlSource =
-            librarySourceLoader.getLibrarySource(libraryIdentifier)
-                ?: throw CqlIncludeException(
-                    @Suppress("MaxLineLength")
-                    "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
-                    libraryIdentifier.system,
-                    libraryIdentifier.id!!,
-                    libraryIdentifier.version
-                )
+
+        val cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier)
+        if (cqlSource == null) {
+            throw CqlIncludeException(
+                @Suppress("MaxLineLength")
+                "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
+                libraryIdentifier.system,
+                libraryIdentifier.id!!,
+                libraryIdentifier.version
+            )
+        }
+
         val compiler = getCompilerForLibrary(libraryIdentifier)
         compiler.run(cqlSource)
-        errors?.addAll((compiler.exceptions)!!)
-        result = compiler.compiledLibrary
 
-        if (result == null) {
+        val compiledLibrary = compiler.compiledLibrary
+
+        if (compiledLibrary == null) {
             throw CqlIncludeException(
                 "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system,
@@ -118,10 +213,10 @@ open class BaseLibraryManager(
             )
         }
 
-        validateIdentifiers(libraryIdentifier, result, libraryPath)
+        validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath)
 
-        sortStatements(result)
-        return result
+        sortStatements(compiledLibrary)
+        return CompiledLibraryResult(compiledLibrary, compiler.exceptions ?: mutableListOf())
     }
 
     protected open fun getCompilerForLibrary(
@@ -316,8 +411,7 @@ open class BaseLibraryManager(
     @Suppress("NestedBlockDepth")
     private fun hasSignature(library: Library): Boolean {
         if (library.statements != null) {
-            // Just a quick top-level scan for signatures. To fully verify we'd have to
-            // recurse all
+            // Just a quick top-level scan for signatures. To fully verify we'd have to recurse all
             // the way down. At that point, let's just translate.
             for (ed in library.statements!!.def) {
                 if (ed.expression is FunctionRef) {
@@ -332,10 +426,10 @@ open class BaseLibraryManager(
     }
 
     private fun isVersionCompatible(library: Library): Boolean {
-        if (cqlCompilerOptions.compatibilityLevel.isNotBlank()) {
-            val version: String? = CompilerOptions.getCompilerVersion(library)
+        if (this.cqlCompilerOptions.compatibilityLevel.isNotEmpty()) {
+            val version = CompilerOptions.getCompilerVersion(library)
             if (version != null) {
-                return (version == cqlCompilerOptions.compatibilityLevel)
+                return version == this.cqlCompilerOptions.compatibilityLevel
             }
         }
         return false

@@ -351,6 +351,7 @@ class SystemMethodResolver(
             "convertsToTime" ->
                 builder.resolveFunction(null, "ConvertsToTime", getParams(target, ctx))
             "count" -> builder.resolveFunction(null, "Count", getParams(target, ctx))
+            // CQL 1.5.3 corrected the spelling to "descendants"
             "descendents" -> {
                 checkArgumentCount(ctx, functionName, 0)
                 val descendents = of.createDescendents()
@@ -363,6 +364,19 @@ class SystemMethodResolver(
                     descendents.resultType = ListType(ChoiceType(dataTypes))
                 }
                 descendents
+            }
+            "descendants" -> {
+                checkArgumentCount(ctx, functionName, 0)
+                val descendants = of.createDescendants()
+                descendants.source = target
+                val dataTypes: MutableSet<DataType> = HashSet()
+                gatherChildTypes(target.resultType!!, true, dataTypes)
+                if (dataTypes.size == 1) {
+                    descendants.resultType = ListType(dataTypes.toTypedArray()[0])
+                } else {
+                    descendants.resultType = ListType(ChoiceType(dataTypes))
+                }
+                descendants
             }
             "distinct" -> builder.resolveFunction(null, "Distinct", getParams(target, ctx))
             "empty" -> {
