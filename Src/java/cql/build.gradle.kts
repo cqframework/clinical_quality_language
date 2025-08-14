@@ -43,6 +43,10 @@ tasks.named("jsSourcesJar") {
     dependsOn(generateKotlinGrammarSource)
 }
 
+tasks.named("wasmJsSourcesJar") {
+    dependsOn(generateKotlinGrammarSource)
+}
+
 tasks.named("sourcesJar") {
     dependsOn(generateKotlinGrammarSource)
 }
