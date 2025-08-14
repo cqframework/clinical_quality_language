@@ -157,17 +157,19 @@ public class DataRequirementsProcessor {
                 }
 
                 for (String expression : expressions) {
-                    ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
-                    if (ed != null) {
-                        expressionDefs.add(ed);
-                        visitor.visitElement(ed, context);
-                    } else {
-                        // If the expression is the name of any functions, include those in the gather
-                        // TODO: Provide a mechanism to specify a function def (need signature)
-                        Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
-                        for (FunctionDef fd : fds) {
-                            expressionDefs.add(fd);
-                            visitor.visitElement(fd, context);
+                    if (expression != null) {
+                        ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
+                        if (ed != null) {
+                            expressionDefs.add(ed);
+                            visitor.visitElement(ed, context);
+                        } else {
+                            // If the expression is the name of any functions, include those in the gather
+                            // TODO: Provide a mechanism to specify a function def (need signature)
+                            Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
+                            for (FunctionDef fd : fds) {
+                                expressionDefs.add(fd);
+                                visitor.visitElement(fd, context);
+                            }
                         }
                     }
                 }

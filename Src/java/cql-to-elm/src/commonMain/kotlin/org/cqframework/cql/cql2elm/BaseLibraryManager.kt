@@ -294,7 +294,13 @@ open class BaseLibraryManager(
         type: LibraryContentType,
         @Suppress("UnusedParameter") options: CqlCompilerOptions
     ): CompiledLibrary? {
-        val library = this.elmLibraryReaderProvider.create(type.mimeType()).read(librarySource)
+        val library =
+            try {
+                this.elmLibraryReaderProvider.create(type.mimeType()).read(librarySource)
+            } catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") e: Exception) {
+                // intentionally ignored
+                return null
+            }
         var compiledLibrary: CompiledLibrary? = null
         if (checkBinaryCompatibility(library)) {
             compiledLibrary = generateCompiledLibrary(library)
@@ -303,10 +309,7 @@ open class BaseLibraryManager(
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")
-    private fun generateCompiledLibrary(library: Library?): CompiledLibrary? {
-        if (library == null) {
-            return null
-        }
+    private fun generateCompiledLibrary(library: Library): CompiledLibrary? {
         var compilationSuccess = true
         val compiledLibrary = CompiledLibrary()
         try {
