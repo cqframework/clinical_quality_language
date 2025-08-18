@@ -23,17 +23,17 @@ class CqlCompiler(
         libraryManager: LibraryManager
     ) : this(namespaceInfo, null, libraryManager)
 
-    override fun run(source: Source): Library? {
+    override fun run(source: Source): Library {
         return run(CharStreams.fromStream(source.asInputStream()))
     }
 
     @Throws(IOException::class)
-    fun run(cqlFile: File): Library? {
+    fun run(cqlFile: File): Library {
         return run(CharStreams.fromStream(FileInputStream(cqlFile)))
     }
 
     @Throws(IOException::class)
-    fun run(inputStream: InputStream): Library? {
+    fun run(inputStream: InputStream): Library {
         return run(CharStreams.fromStream(inputStream))
     }
 }

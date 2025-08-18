@@ -151,15 +151,15 @@ open class BaseCqlCompiler(
         }
     }
 
-    fun run(cqlText: String): Library? {
+    fun run(cqlText: String): Library {
         return run(CharStreams.fromString(cqlText))
     }
 
-    open fun run(source: Source): Library? {
+    open fun run(source: Source): Library {
         return run(CharStreams.fromString(source.readString()))
     }
 
-    fun run(charStream: CharStream): Library? {
+    fun run(charStream: CharStream): Library {
         exceptions = ArrayList()
         errors = ArrayList()
         warnings = ArrayList()
@@ -219,7 +219,7 @@ open class BaseCqlCompiler(
         errors?.addAll(builder.errors)
         warnings?.addAll(builder.warnings)
         messages?.addAll(builder.messages)
-        return library
+        return library!!
     }
 
     private fun allNonNull(vararg ts: IElmEdit?): kotlin.collections.List<IElmEdit> {
