@@ -6,6 +6,7 @@ plugins {
     id("signing")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
+    id("com.github.gmazzo.buildconfig")
     kotlin("plugin.serialization")
 }
 
@@ -148,4 +149,9 @@ tasks.register<Jar>("dokkaJavadocJar") {
     dependsOn(tasks.dokkaJavadoc)
     from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
+}
+
+// JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build config is needed.
+buildConfig {
+    buildConfigField("IMPLEMENTATION_VERSION", project.version.toString())
 }
