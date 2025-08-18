@@ -29,7 +29,7 @@ class CompiledLibraryMultiResults(val results: List<CompiledLibraryResult>) {
 
     val onlyResult: CompiledLibraryResult
         get() {
-            check(results.size === 1) { "Expected exactly one result, but found " + results.size }
+            check(results.size == 1) { "Expected exactly one result, but found " + results.size }
             return results.get(0)
         }
 
