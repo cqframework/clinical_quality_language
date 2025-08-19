@@ -433,7 +433,10 @@ public class State {
         evaluatedResourceStack.push(new HashSet<>());
     }
 
-    // serves pop and merge to the down
+    /**
+     * Ensure that as we recurse more deeply into nested expressions and recursive calls to expression def evaluation,
+     * we carry over the evaluated resources from the current layer to the previous layer.
+     */
     public void popEvaluatedResourceStack() {
         if (evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when it's empty");
@@ -443,9 +446,18 @@ public class State {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
         }
 
-        Set<Object> objects = evaluatedResourceStack.pop();
-        var set = evaluatedResourceStack.peek();
-        set.addAll(objects);
+        carryOverEvaluatedResourcesUpCallStack();
+    }
+
+    private void carryOverEvaluatedResourcesUpCallStack() {
+        final Set<Object> previousStackEvaluatedResources = evaluatedResourceStack.pop();
+        final Set<Object> currentStackEvaluatedResources = evaluatedResourceStack.peek();
+
+        if (currentStackEvaluatedResources == null) {
+            throw new IllegalStateException(
+                    "Attempted to carry over evaluated resources when the current stack is empty");
+        }
+        currentStackEvaluatedResources.addAll(previousStackEvaluatedResources);
     }
 
     public Object resolveAlias(String name) {
