@@ -304,7 +304,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @Test
     void singleLibraryInvalid() {
         var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
-                List.of(toElmIdentifier("MultiLibraryBad")),
+                List.of(toElmIdentifier("MultiLibraryBad", "0.1")),
                 null,
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
@@ -314,12 +314,12 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var exception = assertThrows(CqlException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertThat(
                 exception.getMessage(),
-                containsString("Library MultiLibraryBad loaded, but had errors: Syntax error at define"));
+                containsString("Library MultiLibraryBad-0.1 loaded, but had errors: Syntax error at define"));
     }
 
     @Test
     void multipleLibrariesOneInvalid() {
-        var versionedIdentifierBad = toElmIdentifier("MultiLibraryBad");
+        var versionedIdentifierBad = toElmIdentifier("MultiLibraryBad", "0.1");
         var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, versionedIdentifierBad),
                 null,
@@ -332,11 +332,15 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertFalse(evalResultsForMultiLib.getExceptions().isEmpty());
         var exceptions = evalResultsForMultiLib.getExceptions();
         assertEquals(1, exceptions.size());
+        assertTrue(evalResultsForMultiLib.containsExceptionsFor(versionedIdentifierBad));
+        // Search for the exception with a versioned identifier:  This should also work
+        assertTrue(evalResultsForMultiLib.containsExceptionsFor(new VersionedIdentifier().withId("MultiLibraryBad")));
         var exceptionEntry = exceptions.entrySet().iterator().next();
-        assertEquals(new VersionedIdentifier().withId("MultiLibraryBad"), exceptionEntry.getKey());
+        assertEquals(new VersionedIdentifier().withId("MultiLibraryBad").withVersion("0.1"), exceptionEntry.getKey());
         var exception = exceptionEntry.getValue();
         assertNotNull(exception);
-        assertEquals("Library MultiLibraryBad loaded, but had errors: Syntax error at define", exception.getMessage());
+        assertEquals(
+                "Library MultiLibraryBad-0.1 loaded, but had errors: Syntax error at define", exception.getMessage());
         assertNull(evalResultsForMultiLib.getResultFor(versionedIdentifierBad));
 
         var libraryResults = evalResultsForMultiLib.getResults();
@@ -372,6 +376,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static void sanityCheckForMultiLib(
             EvaluationResultsForMultiLib evalResultsForMultiLib, VersionedIdentifier libraryIdentifier) {
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier));
+        // versionless identifier searches should work as well
+        assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier.withVersion(null)));
         assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
         assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
