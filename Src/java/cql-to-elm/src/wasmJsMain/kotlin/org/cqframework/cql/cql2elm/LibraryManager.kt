@@ -4,7 +4,10 @@ package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.cql2elm.ucum.createUcumService
+import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.hl7.cql.model.ModelIdentifier
+import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
 
 @JsExport
@@ -15,13 +18,14 @@ fun createLibraryManager(
     modelCache: JsReference<MutableMap<ModelIdentifier, Model>>,
     libraryCache: JsReference<MutableMap<VersionedIdentifier, CompiledLibrary>>,
 ): JsReference<BaseLibraryManager> {
-    return BaseLibraryManager.forJs(
-            getModelXml,
-            getLibraryCql,
-            validateUnit,
+    return BaseLibraryManager(
+            createModelManager(getModelXml, modelCache.get()),
+            NamespaceManager(),
+            createLibrarySourceLoader(getLibraryCql),
+            lazy { createUcumService(validateUnit) },
             CqlCompilerOptions.defaultOptions(),
-            modelCache.get(),
             libraryCache.get(),
+            DefaultElmLibraryReaderProvider
         )
         .toJsReference()
 }
@@ -31,7 +35,7 @@ fun libraryManagerAddCompilerOption(
     libraryManager: JsReference<BaseLibraryManager>,
     option: String
 ) {
-    libraryManager.get().addCompilerOption(option)
+    libraryManager.get().addCompilerOptionInner(option)
 }
 
 @JsExport
@@ -39,7 +43,7 @@ fun libraryManagerRemoveCompilerOption(
     libraryManager: JsReference<BaseLibraryManager>,
     option: String
 ) {
-    libraryManager.get().removeCompilerOption(option)
+    libraryManager.get().removeCompilerOptionInner(option)
 }
 
 @JsExport

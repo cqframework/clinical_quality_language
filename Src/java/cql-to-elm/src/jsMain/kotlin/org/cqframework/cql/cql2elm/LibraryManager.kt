@@ -2,7 +2,10 @@ package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.cql2elm.ucum.createUcumService
+import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.hl7.cql.model.ModelIdentifier
+import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
 
 @OptIn(ExperimentalJsExport::class)
@@ -14,30 +17,27 @@ class LibraryManager(
     validateUnit: (unit: String) -> String? = { null },
     modelCache: MutableMap<ModelIdentifier, Model> = HashMap(),
     libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
-) {
-    @Suppress("VariableNaming")
-    internal val _libraryManager =
-        BaseLibraryManager.forJs(
-            getModelXml,
-            getLibraryCql,
-            validateUnit,
-            CqlCompilerOptions.defaultOptions(),
-            modelCache,
-            libraryCache,
-        )
+) :
+    BaseLibraryManager(
+        createModelManager(getModelXml, modelCache),
+        NamespaceManager(),
+        createLibrarySourceLoader(getLibraryCql),
+        lazy { createUcumService(validateUnit) },
+        CqlCompilerOptions.defaultOptions(),
+        libraryCache,
+        DefaultElmLibraryReaderProvider
+    ) {
 
     fun addCompilerOption(option: String) {
-        _libraryManager.addCompilerOption(option)
+        addCompilerOptionInner(option)
     }
 
     fun removeCompilerOption(option: String) {
-        _libraryManager.removeCompilerOption(option)
+        removeCompilerOptionInner(option)
     }
 
     fun setSignatureLevel(signatureLevel: String) {
-        _libraryManager.cqlCompilerOptions.signatureLevel =
-            LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
-        _libraryManager.cqlCompilerOptions.compatibilityLevel
+        cqlCompilerOptions.signatureLevel = LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
     }
 
     companion object {

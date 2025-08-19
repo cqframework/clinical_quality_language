@@ -114,7 +114,10 @@ export function CqlCompilerPlayground() {
                 contentType: output.contentType,
                 content: output.elm,
               },
-              log: [...prevState.log, "INFO Compilation finished."],
+              log: [
+                ...prevState.log,
+                `INFO Compilation finished in ${(Date.now() - data.startTime) / 1000}s.`,
+              ],
             };
           });
         }
@@ -158,6 +161,7 @@ export function CqlCompilerPlayground() {
       }));
 
       const runId = ++currentRunIdRef.current;
+      const startTime = Date.now();
 
       if (state.compileCqlArgs.useWorker) {
         const worker = await workerPromiseRef.current!;
@@ -167,29 +171,37 @@ export function CqlCompilerPlayground() {
           data: {
             args: state.compileCqlArgs,
             runId: runId,
+            startTime: startTime,
           },
         });
       } else {
         const { compileCql } = statefulCompilerRef.current!;
 
         compileCql(state.compileCqlArgs, (output) => {
-          setState((prevState) => {
-            if (output.type === "log") {
+          if (runId === currentRunIdRef.current) {
+            setState((prevState) => {
+              if (output.type === "log") {
+                return {
+                  ...prevState,
+                  log: [...prevState.log, output.log],
+                };
+              }
               return {
                 ...prevState,
-                log: [...prevState.log, output.log],
+                isBusy: false,
+                elm: {
+                  contentType: output.contentType,
+                  content: output.elm,
+                },
+                log: [
+                  ...prevState.log,
+                  `INFO Compilation finished in ${
+                    (Date.now() - startTime) / 1000
+                  }s.`,
+                ],
               };
-            }
-            return {
-              ...prevState,
-              isBusy: false,
-              elm: {
-                contentType: output.contentType,
-                content: output.elm,
-              },
-              log: [...prevState.log, "INFO Compilation finished."],
-            };
-          });
+            });
+          }
         });
       }
     })();

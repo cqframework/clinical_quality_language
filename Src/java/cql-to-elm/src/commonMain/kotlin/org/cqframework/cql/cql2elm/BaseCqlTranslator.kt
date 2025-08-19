@@ -1,9 +1,7 @@
 package org.cqframework.cql.cql2elm
 
 import org.antlr.v4.kotlinruntime.CharStream
-import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.elm.serializing.DefaultElmLibraryWriterProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterProvider
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
@@ -84,21 +82,5 @@ open class BaseCqlTranslator(
         return this.elmLibraryWriterProvider
             .create(LibraryContentType.JSON.mimeType())
             .writeAsString(library)
-    }
-
-    companion object {
-        fun fromText(
-            cqlText: String,
-            libraryManager: BaseLibraryManager,
-            elmLibraryWriterProvider: ElmLibraryWriterProvider = DefaultElmLibraryWriterProvider
-        ): BaseCqlTranslator {
-            return BaseCqlTranslator(
-                null,
-                null,
-                CharStreams.fromString(cqlText),
-                libraryManager,
-                elmLibraryWriterProvider
-            )
-        }
     }
 }

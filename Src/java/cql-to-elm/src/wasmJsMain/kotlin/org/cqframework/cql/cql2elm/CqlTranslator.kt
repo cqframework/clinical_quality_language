@@ -2,12 +2,22 @@
 
 package org.cqframework.cql.cql2elm
 
+import org.antlr.v4.kotlinruntime.CharStreams
+import org.cqframework.cql.elm.serializing.DefaultElmLibraryWriterProvider
+
 @JsExport
 fun createCqlTranslator(
     cqlText: String,
     libraryManager: JsReference<BaseLibraryManager>
 ): JsReference<BaseCqlTranslator> {
-    return BaseCqlTranslator.fromText(cqlText, libraryManager.get()).toJsReference()
+    return BaseCqlTranslator(
+            null,
+            null,
+            CharStreams.fromString(cqlText),
+            libraryManager.get(),
+            DefaultElmLibraryWriterProvider
+        )
+        .toJsReference()
 }
 
 @JsExport

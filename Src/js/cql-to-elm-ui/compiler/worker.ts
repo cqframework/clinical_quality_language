@@ -12,6 +12,7 @@ onmessage = async (event) => {
         data: {
           output,
           runId: data.runId,
+          startTime: data.startTime,
         },
       });
     });
