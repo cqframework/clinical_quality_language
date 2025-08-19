@@ -249,6 +249,7 @@ export function createStatefulCompiler(sync: boolean) {
       }
     };
 
+    // @ts-expect-error TypeScript error
     const libraryManagerJs = new cqlToElmJs.LibraryManager(
       getModelXml,
       getLibraryCql,
@@ -268,7 +269,6 @@ export function createStatefulCompiler(sync: boolean) {
 
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
-        // @ts-expect-error TypeScript error
         libraryManagerJs.addCompilerOption(compilerOption.value);
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerAddCompilerOption(
@@ -276,7 +276,6 @@ export function createStatefulCompiler(sync: boolean) {
           compilerOption.value,
         );
       } else {
-        // @ts-expect-error TypeScript error
         libraryManagerJs.removeCompilerOption(compilerOption.value);
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
@@ -286,7 +285,6 @@ export function createStatefulCompiler(sync: boolean) {
       }
     }
 
-    // @ts-expect-error TypeScript error
     libraryManagerJs.setSignatureLevel(args.signatureLevel);
     // @ts-expect-error TypeScript error
     cqlToElmWasmJs.libraryManagerSetSignatureLevel(
