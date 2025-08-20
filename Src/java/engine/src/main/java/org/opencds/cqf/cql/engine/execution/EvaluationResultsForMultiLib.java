@@ -18,13 +18,11 @@ public class EvaluationResultsForMultiLib {
         this.exceptions = Collections.unmodifiableMap(builder.exceptions);
     }
 
-    // Visible for testing
-    Map<VersionedIdentifier, EvaluationResult> getResults() {
+    public Map<VersionedIdentifier, EvaluationResult> getResults() {
         return results;
     }
 
-    // Visible for testing
-    Map<VersionedIdentifier, RuntimeException> getExceptions() {
+    public Map<VersionedIdentifier, RuntimeException> getExceptions() {
         return exceptions;
     }
 
