@@ -58,3 +58,7 @@ tasks.withType<AbstractKotlinCompile<*>> {
 tasks.named("dokkaJavadocJar") {
     dependsOn(generateKotlinGrammarSource)
 }
+
+tasks.named("dokkaHtml") {
+    dependsOn(generateKotlinGrammarSource)
+}
