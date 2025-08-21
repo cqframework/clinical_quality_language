@@ -45,6 +45,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final VersionedIdentifier MULTI_LIBRARY_1 = toElmIdentifier("MultiLibrary1");
     private static final VersionedIdentifier MULTI_LIBRARY_2 = toElmIdentifier("MultiLibrary2");
     private static final VersionedIdentifier MULTI_LIBRARY_3 = toElmIdentifier("MultiLibrary3");
+    private static final String LIBRARY_WITH_VERSION = "LibraryWithVersion";
+    private static final String VERSION_1_0_0 = "1.0.0";
 
     @Override
     protected String getCqlSubdirectory() {
@@ -98,8 +100,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     private static Stream<Arguments> libraryWithVersionQueriesParams() {
         return Stream.of(
-                Arguments.of(toElmIdentifier("LibraryWithVersion")),
-                Arguments.of(toElmIdentifier("LibraryWithVersion", "1.0.0")));
+                Arguments.of(toElmIdentifier(LIBRARY_WITH_VERSION)),
+                Arguments.of(toElmIdentifier(LIBRARY_WITH_VERSION, VERSION_1_0_0)));
     }
 
     @ParameterizedTest
@@ -113,11 +115,30 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(1, libraryResults.size());
         assertFalse(evalResultsForMultiLib.hasExceptions());
 
-        var evaluationResult = findResultsByLibId("LibraryWithVersion", libraryResults);
+        var evaluationResult = findResultsByLibId(LIBRARY_WITH_VERSION, libraryResults);
         assertEquals(5, evaluationResult.expressionResults.get("Number").value());
         assertEquals(
                 _2031_01_01_TO_2032_01_01,
                 evaluationResult.expressionResults.get("Period").value());
+    }
+
+    // Various bespoke assertions to increase test coverage
+    @Test
+    void extraTestCoverage() {
+        var versionedIdent =
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion(VERSION_1_0_0);
+        var versionedIdents = List.of(versionedIdent);
+
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(versionedIdents, null, null, null, debugMap, null);
+
+        assertNotNull(evalResultsForMultiLib);
+        assertNull(evalResultsForMultiLib.getExceptionFor(versionedIdent));
+        assertNull(evalResultsForMultiLib.getExceptionFor(versionedIdent));
+        assertNull(evalResultsForMultiLib.getExceptionFor(new VersionedIdentifier().withId("fake")));
+        assertNull(evalResultsForMultiLib.getExceptionFor(
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion(null)));
+        assertNull(evalResultsForMultiLib.getExceptionFor(
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion("fake")));
     }
 
     @Test
