@@ -18,13 +18,11 @@ public class EvaluationResultsForMultiLib {
         this.exceptions = Collections.unmodifiableMap(builder.exceptions);
     }
 
-    // Visible for testing
-    Map<VersionedIdentifier, EvaluationResult> getResults() {
+    public Map<VersionedIdentifier, EvaluationResult> getResults() {
         return results;
     }
 
-    // Visible for testing
-    Map<VersionedIdentifier, RuntimeException> getExceptions() {
+    public Map<VersionedIdentifier, RuntimeException> getExceptions() {
         return exceptions;
     }
 
@@ -33,7 +31,7 @@ public class EvaluationResultsForMultiLib {
     }
 
     public boolean containsExceptionsFor(VersionedIdentifier libraryIdentifier) {
-        return exceptions.containsKey(libraryIdentifier);
+        return getExceptionFor(libraryIdentifier) != null;
     }
 
     public EvaluationResult getResultFor(VersionedIdentifier libraryIdentifier) {
@@ -45,7 +43,7 @@ public class EvaluationResultsForMultiLib {
                 || libraryIdentifier.getVersion().isEmpty()) {
             // If the version is not specified, try to match by ID only
             return results.entrySet().stream()
-                    .filter(entry -> matchIdentifiers(libraryIdentifier, entry))
+                    .filter(entry -> matchIdentifiersForResults(libraryIdentifier, entry))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(null);
@@ -71,24 +69,35 @@ public class EvaluationResultsForMultiLib {
     }
 
     public RuntimeException getExceptionFor(VersionedIdentifier libraryIdentifier) {
-        return exceptions.getOrDefault(libraryIdentifier, null);
+        if (exceptions.containsKey(libraryIdentifier)) {
+            return exceptions.get(libraryIdentifier);
+        }
+
+        if (libraryIdentifier.getVersion() == null
+                || libraryIdentifier.getVersion().isEmpty()) {
+            // If the version is not specified, try to match by ID only
+            return exceptions.entrySet().stream()
+                    .filter(entry -> matchIdentifiersForExceptions(libraryIdentifier, entry))
+                    .findFirst()
+                    .map(Map.Entry::getValue)
+                    .orElse(null);
+        }
+
+        return null;
     }
 
-    private boolean matchIdentifiers(
+    private boolean matchIdentifiersForResults(
             VersionedIdentifier libraryIdentifier, Map.Entry<VersionedIdentifier, EvaluationResult> entry) {
         return entry.getKey().getId().equals(libraryIdentifier.getId());
     }
 
+    private boolean matchIdentifiersForExceptions(
+            VersionedIdentifier libraryIdentifier, Map.Entry<VersionedIdentifier, RuntimeException> entry) {
+        return entry.getKey().getId().equals(libraryIdentifier.getId());
+    }
+
     private EvaluationResult getFirstResult() {
-        var allEvaluationResults = results.values();
-
-        if (allEvaluationResults.size() > 1) {
-            throw new IllegalStateException(
-                    "Did you run an evaluation for multiple libraries?  Expected 0-1 results, but found: %s"
-                            .formatted(results.size()));
-        }
-
-        return allEvaluationResults.stream().findFirst().orElse(null);
+        return results.values().stream().findFirst().orElse(null);
     }
 
     private RuntimeException getFirstException() {

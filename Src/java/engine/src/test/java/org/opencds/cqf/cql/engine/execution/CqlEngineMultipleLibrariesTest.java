@@ -45,6 +45,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static final VersionedIdentifier MULTI_LIBRARY_1 = toElmIdentifier("MultiLibrary1");
     private static final VersionedIdentifier MULTI_LIBRARY_2 = toElmIdentifier("MultiLibrary2");
     private static final VersionedIdentifier MULTI_LIBRARY_3 = toElmIdentifier("MultiLibrary3");
+    private static final String LIBRARY_WITH_VERSION = "LibraryWithVersion";
+    private static final String VERSION_1_0_0 = "1.0.0";
 
     @Override
     protected String getCqlSubdirectory() {
@@ -98,8 +100,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
 
     private static Stream<Arguments> libraryWithVersionQueriesParams() {
         return Stream.of(
-                Arguments.of(toElmIdentifier("LibraryWithVersion")),
-                Arguments.of(toElmIdentifier("LibraryWithVersion", "1.0.0")));
+                Arguments.of(toElmIdentifier(LIBRARY_WITH_VERSION)),
+                Arguments.of(toElmIdentifier(LIBRARY_WITH_VERSION, VERSION_1_0_0)));
     }
 
     @ParameterizedTest
@@ -113,11 +115,30 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertEquals(1, libraryResults.size());
         assertFalse(evalResultsForMultiLib.hasExceptions());
 
-        var evaluationResult = findResultsByLibId("LibraryWithVersion", libraryResults);
+        var evaluationResult = findResultsByLibId(LIBRARY_WITH_VERSION, libraryResults);
         assertEquals(5, evaluationResult.expressionResults.get("Number").value());
         assertEquals(
                 _2031_01_01_TO_2032_01_01,
                 evaluationResult.expressionResults.get("Period").value());
+    }
+
+    // Various bespoke assertions to increase test coverage
+    @Test
+    void extraTestCoverage() {
+        var versionedIdent =
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion(VERSION_1_0_0);
+        var versionedIdents = List.of(versionedIdent);
+
+        var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(versionedIdents, null, null, null, debugMap, null);
+
+        assertNotNull(evalResultsForMultiLib);
+        assertNull(evalResultsForMultiLib.getExceptionFor(versionedIdent));
+        assertNull(evalResultsForMultiLib.getExceptionFor(versionedIdent));
+        assertNull(evalResultsForMultiLib.getExceptionFor(new VersionedIdentifier().withId("fake")));
+        assertNull(evalResultsForMultiLib.getExceptionFor(
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion(null)));
+        assertNull(evalResultsForMultiLib.getExceptionFor(
+                new VersionedIdentifier().withId(LIBRARY_WITH_VERSION).withVersion("fake")));
     }
 
     @Test
@@ -304,7 +325,7 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     @Test
     void singleLibraryInvalid() {
         var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
-                List.of(toElmIdentifier("MultiLibraryBad")),
+                List.of(toElmIdentifier("MultiLibraryBad", "0.1")),
                 null,
                 null,
                 Map.of("Measurement Period", _1900_01_01_TO_1901_01_01),
@@ -314,12 +335,12 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var exception = assertThrows(CqlException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertThat(
                 exception.getMessage(),
-                containsString("Library MultiLibraryBad loaded, but had errors: Syntax error at define"));
+                containsString("Library MultiLibraryBad-0.1 loaded, but had errors: Syntax error at define"));
     }
 
     @Test
     void multipleLibrariesOneInvalid() {
-        var versionedIdentifierBad = toElmIdentifier("MultiLibraryBad");
+        var versionedIdentifierBad = toElmIdentifier("MultiLibraryBad", "0.1");
         var evalResultsForMultiLib = cqlEngineWithOptions.evaluate(
                 List.of(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, versionedIdentifierBad),
                 null,
@@ -332,11 +353,15 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertFalse(evalResultsForMultiLib.getExceptions().isEmpty());
         var exceptions = evalResultsForMultiLib.getExceptions();
         assertEquals(1, exceptions.size());
+        assertTrue(evalResultsForMultiLib.containsExceptionsFor(versionedIdentifierBad));
+        // Search for the exception with a versioned identifier:  This should also work
+        assertTrue(evalResultsForMultiLib.containsExceptionsFor(new VersionedIdentifier().withId("MultiLibraryBad")));
         var exceptionEntry = exceptions.entrySet().iterator().next();
-        assertEquals(new VersionedIdentifier().withId("MultiLibraryBad"), exceptionEntry.getKey());
+        assertEquals(new VersionedIdentifier().withId("MultiLibraryBad").withVersion("0.1"), exceptionEntry.getKey());
         var exception = exceptionEntry.getValue();
         assertNotNull(exception);
-        assertEquals("Library MultiLibraryBad loaded, but had errors: Syntax error at define", exception.getMessage());
+        assertEquals(
+                "Library MultiLibraryBad-0.1 loaded, but had errors: Syntax error at define", exception.getMessage());
         assertNull(evalResultsForMultiLib.getResultFor(versionedIdentifierBad));
 
         var libraryResults = evalResultsForMultiLib.getResults();
@@ -372,6 +397,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static void sanityCheckForMultiLib(
             EvaluationResultsForMultiLib evalResultsForMultiLib, VersionedIdentifier libraryIdentifier) {
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier));
+        // versionless identifier searches should work as well
+        assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier.withVersion(null)));
         assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
         assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
