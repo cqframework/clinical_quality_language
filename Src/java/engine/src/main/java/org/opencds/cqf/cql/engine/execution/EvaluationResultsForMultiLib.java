@@ -97,15 +97,7 @@ public class EvaluationResultsForMultiLib {
     }
 
     private EvaluationResult getFirstResult() {
-        var allEvaluationResults = results.values();
-
-        if (allEvaluationResults.size() > 1) {
-            throw new IllegalStateException(
-                    "Did you run an evaluation for multiple libraries?  Expected 0-1 results, but found: %s"
-                            .formatted(results.size()));
-        }
-
-        return allEvaluationResults.stream().findFirst().orElse(null);
+        return results.values().stream().findFirst().orElse(null);
     }
 
     private RuntimeException getFirstException() {
