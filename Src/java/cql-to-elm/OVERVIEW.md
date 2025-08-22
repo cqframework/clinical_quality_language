@@ -64,20 +64,13 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 ## Current Status
 
-The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.3)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
+The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.3)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the [Issues](https://github.com/cqframework/clinical_quality_language/issues) tracker in the Github repository.
 
-The current release of the translator is version [2.8.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v2.8.0), which includes support for QDM 5.6, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring, as well as a new DataRequirementsProcessor to support data requirements inference and analysis and the 5.0.0 model info for QICore (also included in the QICore-ModelInfo library published as part of QICore).
+The current release of the translator is version [3.28.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v3.28.0), which includes full support for library and model information sharing through NPM packages, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring and derived model info, as well as a new DataRequirementsProcessor to support data requirements inference and analysis.
 
 ## Roadmap
 
-There is a significant backlog of issues currently being worked. The backlog is organized into a Maintenance milestone which has all planned maintenance updates. As new versions are released, items are worked from that maintenance list first. A high level summary of the current maintenance list is:
-
-* Choice function invocation (if multiple overloads of a method support the different types of a choice, the return value is a choice of the results of the function invocation)
-* Inferred expression support for case features.
-* Multi-filter data-requirements
-* Improved errors and warnings (case-mismatch warning, identifier hiding, soundex mismatch)
-
-See the [Maintenance](https://github.com/cqframework/clinical_quality_language/milestone/14) milestone for details.
+There is a significant backlog of issues currently being worked, in addition to long term plans, including support for CQL R2, as well as Kotlin Multi-platform capability. The roadmap is managed and maintained here: [Roadmap](https://github.com/cqframework/clinical_quality_language/wiki/Roadmap)
 
 ## Usage
 
@@ -111,8 +104,7 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 
 ## CqlTranslatorOptions
 
-The class CqlTranslatorOptions provides use of cql-options files in directories with the translator.  A JSON schema file that documents the class' structure can be found
-at clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json.
+The class [CqlTranslatorOptions](https://github.com/cqframework/clinical_quality_language/blob/master/Src/java/cql-to-elm/src/main/java/org/cqframework/cql/cql2elm/CqlTranslatorOptions.java) represents all the options that can be provided to the translator. The class is serializable and can be directly read from and written to a file to provide persistence of these options alongside CQL source content. Where that source content is provided as text files in a file system, the file name is expected to be `cql-options.json`, and should be in the same directory as the source files.  A JSON schema file that documents the class' structure can be found here[clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json]. In addition, downstream consumers of the translator provide their own mechanisms for persisting these options as part of CQL source content.
 
 An instance of the class with default options can be accessed through defaultOptions(), and returns the following translator options:
 - EnableAnnotations
