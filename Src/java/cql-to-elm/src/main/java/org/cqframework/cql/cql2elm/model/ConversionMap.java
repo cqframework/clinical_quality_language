@@ -83,6 +83,7 @@ public class ConversionMap {
         throw new IllegalArgumentException("Could not determine conversion score for conversion");
     }
 
+    private List<Model> loadedModels = new ArrayList<Model>();
     private Map<DataType, List<Conversion>> map = new HashMap<>();
     private List<Conversion> genericConversions = new ArrayList<>();
     private boolean listDemotion = true;
@@ -156,6 +157,19 @@ public class ConversionMap {
         }
 
         return null;
+    }
+
+    private boolean isLoaded(Model model) {
+        return loadedModels.contains(model);
+    }
+
+    public void loadModel(Model model) {
+        if (!isLoaded(model)) {
+            loadedModels.add(model);
+            for (Conversion conversion : model.getConversions()) {
+                this.add(conversion);
+            }
+        }
     }
 
     public void add(Conversion conversion) {
