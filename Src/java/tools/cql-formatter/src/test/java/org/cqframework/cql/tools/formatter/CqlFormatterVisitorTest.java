@@ -4,9 +4,10 @@ import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -165,15 +166,14 @@ class CqlFormatterVisitorTest {
     }
 
     private InputStream getInput(String fileName) {
-        InputStream is = Cql2ElmVisitor.class.getResourceAsStream(fileName);
-
-        if (is == null) {
+        InputStream is;
+        try {
+            is = new FileInputStream("../../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/" + fileName);
+        } catch (FileNotFoundException e) {
             is = CqlFormatterVisitorTest.class.getResourceAsStream(fileName);
 
             if (is == null) {
-                throw new IllegalArgumentException(String.format(
-                        "Invalid test resource: %s not in %s or %s",
-                        fileName, Cql2ElmVisitor.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
+                throw new IllegalArgumentException(String.format("Invalid test resource: %s", fileName));
             }
         }
 

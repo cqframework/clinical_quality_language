@@ -3,11 +3,10 @@ package org.cqframework.cql.tools.parsetree;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.antlr.v4.gui.Trees;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.kotlinruntime.CharStream;
+import org.antlr.v4.kotlinruntime.CharStreams;
+import org.antlr.v4.kotlinruntime.CommonTokenStream;
+import org.antlr.v4.kotlinruntime.ParserRuleContext;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 
@@ -24,13 +23,13 @@ public class Main {
         if (inputFile != null) {
             is = new FileInputStream(inputFile);
         }
-        CharStream input = CharStreams.fromStream(is);
+        CharStream input = CharStreams.INSTANCE.fromStream(is);
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
-        Trees.inspect(tree, parser);
+        // Trees.inspect(tree, parser);
     }
 }

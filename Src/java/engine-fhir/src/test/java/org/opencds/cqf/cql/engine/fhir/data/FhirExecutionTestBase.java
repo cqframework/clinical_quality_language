@@ -2,14 +2,13 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
 import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.Library;
 import org.junit.jupiter.api.BeforeAll;
@@ -91,7 +90,7 @@ public abstract class FhirExecutionTestBase {
     }
 
     @BeforeEach
-    public void beforeEachTestMethod() throws JAXBException, IOException, UcumException {
+    public void beforeEachTestMethod() throws IOException, UcumException {
         String fileName = this.getClass().getSimpleName();
         if (library == null) {
             try {
