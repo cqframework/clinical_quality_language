@@ -38,7 +38,7 @@ public class AvgEvaluator {
                         avg = element;
                     } else {
                         ++size;
-                        avg = AddEvaluator.add(avg, element);
+                        avg = AddEvaluator.add(avg, element, state);
                     }
                 } else {
                     throw new InvalidOperatorArgument(

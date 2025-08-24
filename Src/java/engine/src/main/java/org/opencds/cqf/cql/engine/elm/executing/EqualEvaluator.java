@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.opencds.cqf.cql.engine.runtime.Quantity;
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -59,8 +60,24 @@ public class EqualEvaluator {
             return left.equals(right);
         } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
-        } else if (left instanceof CqlType && right instanceof CqlType) {
-            return ((CqlType) left).equal(right);
+        } else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            // Try the Quantity.equal method which implements "simple" rules such as the equality of alternate
+            // spellings for "week" or "month".
+            final var simpleResult = leftQuantity.equal(rightQuantity);
+            if (simpleResult != null) {
+                return simpleResult; // true or false
+            } else {
+                // The simple method indicated that the units are not comparable, try to convert the value of
+                // rightQuantity to the unit of leftQuantity and check for equality again if the conversion is
+                // possible.
+                return UnitConversionHelper.computeWithConvertedUnits(
+                        leftQuantity,
+                        rightQuantity,
+                        (commonUnit, leftValue, rightValue) -> EqualEvaluator.equal(leftValue, rightValue),
+                        state);
+            }
+        } else if (left instanceof CqlType leftCqlType && right instanceof CqlType) {
+            return leftCqlType.equal(right);
         }
 
         if (state != null) {

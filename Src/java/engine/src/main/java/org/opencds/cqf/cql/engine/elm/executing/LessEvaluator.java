@@ -49,12 +49,9 @@ public class LessEvaluator {
             return ((Long) left).compareTo((Long) right) < 0;
         } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return ((BigDecimal) left).compareTo((BigDecimal) right) < 0;
-        } else if (left instanceof Quantity && right instanceof Quantity) {
-            if (((Quantity) left).getValue() == null || ((Quantity) right).getValue() == null) {
-                return null;
-            }
-            Integer nullableCompareTo = ((Quantity) left).nullableCompareTo((Quantity) right);
-            return nullableCompareTo == null ? null : nullableCompareTo < 0;
+        } else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            var nullableCompareTo = UnitConversionHelper.compareQuantities(leftQuantity, rightQuantity, state);
+            return nullableCompareTo != null ? nullableCompareTo < 0 : null;
         } else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
             Integer i = ((BaseTemporal) left).compare((BaseTemporal) right, false);
             return i == null ? null : i < 0;
