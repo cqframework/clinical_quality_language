@@ -61,7 +61,7 @@ public class UnionEvaluator {
         Object min = LessEvaluator.less(leftStart, rightStart, state) ? leftStart : rightStart;
         Object max = GreaterEvaluator.greater(leftEnd, rightEnd, state) ? leftEnd : rightEnd;
 
-        return new Interval(min, true, max, true);
+        return new Interval(min, true, max, true, state);
     }
 
     public static Iterable<?> unionIterable(Iterable<?> left, Iterable<?> right, State state) {

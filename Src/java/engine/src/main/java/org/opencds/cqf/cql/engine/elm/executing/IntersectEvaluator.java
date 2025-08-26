@@ -80,7 +80,7 @@ public class IntersectEvaluator {
                 min = leftEndLtRightEnd == null ? null : leftEndLtRightEnd ? leftEnd : rightEnd;
             }
 
-            return new Interval(max, max != null, min, min != null);
+            return new Interval(max, max != null, min, min != null, state);
         } else if (left instanceof Iterable) {
             Iterable<?> leftArr = (Iterable<?>) left;
             Iterable<?> rightArr = (Iterable<?>) right;

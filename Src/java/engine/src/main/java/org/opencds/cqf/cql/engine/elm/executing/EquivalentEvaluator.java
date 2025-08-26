@@ -2,12 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
-import org.opencds.cqf.cql.engine.runtime.CqlList;
-import org.opencds.cqf.cql.engine.runtime.CqlType;
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.opencds.cqf.cql.engine.runtime.Value;
+import org.opencds.cqf.cql.engine.runtime.*;
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -77,12 +75,29 @@ public class EquivalentEvaluator {
                         == 0;
             }
             return leftDecimal.compareTo(rightDecimal) == 0;
-        }
-
-        if (left instanceof Iterable) {
-            return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, state);
-        } else if (left instanceof CqlType) {
-            return ((CqlType) left).equivalent(right);
+        } else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            // Try the Quantity.equivalent method which implements "simple" rules such as the equality of alternate
+            // spellings for "week" or "month".
+            final var simpleResult = leftQuantity.equivalent(rightQuantity);
+            if (!Objects.equals(simpleResult, false)) {
+                return simpleResult; // true or null
+            } else {
+                // The simple method indicated that the units are not comparable, try to convert the value of
+                // rightQuantity to the unit of leftQuantity and check for equivalence again if the conversion is
+                // possible.
+                final var fullResult = UnitConversionHelper.computeWithConvertedUnits(
+                        leftQuantity,
+                        rightQuantity,
+                        (commonUnit, leftValue, rightValue) -> EquivalentEvaluator.equivalent(leftValue, rightValue),
+                        state);
+                return fullResult != null ? fullResult : false;
+            }
+        } else if (left instanceof Ratio leftRatio && right instanceof Ratio rightRatio) {
+            return leftRatio.fullEquivalent(rightRatio, state);
+        } else if (left instanceof Iterable<?> leftIterable) {
+            return CqlList.equivalent(leftIterable, (Iterable<?>) right, state);
+        } else if (left instanceof CqlType leftCqlType) {
+            return leftCqlType.equivalent(right);
         } else if (left instanceof String) {
             return ((String) left).equalsIgnoreCase((String) right);
         }

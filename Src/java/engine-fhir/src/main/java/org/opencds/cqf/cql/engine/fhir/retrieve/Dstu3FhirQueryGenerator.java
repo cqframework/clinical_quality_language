@@ -162,8 +162,11 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
                                         .withValue(dateFilterAsDuration.getValue())
                                         .withUnit(dateFilterAsDuration.getUnit());
 
+                        // Passing null as the state argument to the subtract method is fine here since that method
+                        // only uses the state when it has to convert Quantities with different units which cannot
+                        // happen here.
                         DateTime diff = ((DateTime)
-                                SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity));
+                                SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity, null));
 
                         dateRange = new Interval(diff, true, evaluationDateTime, true);
                     } else if (dateFilterValue instanceof Period

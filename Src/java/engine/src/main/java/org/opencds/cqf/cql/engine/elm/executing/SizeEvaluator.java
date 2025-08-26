@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 
 /*
@@ -23,14 +24,14 @@ import org.opencds.cqf.cql.engine.runtime.Interval;
 
 public class SizeEvaluator {
 
-    public static Object size(Object argument) {
+    public static Object size(Object argument, final State state) {
         if (argument == null) {
             return null;
         }
 
-        if (argument instanceof Interval) {
+        if (argument instanceof Interval interval) {
             return SubtractEvaluator.subtract(
-                    SuccessorEvaluator.successor(((Interval) argument).getEnd()), ((Interval) argument).getStart());
+                    SuccessorEvaluator.successor(interval.getEnd()), interval.getStart(), state);
         }
 
         throw new InvalidOperatorArgument(
