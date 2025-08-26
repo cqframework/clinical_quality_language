@@ -2,6 +2,7 @@ package org.cqframework.cql.elm.requirements;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
@@ -119,12 +120,14 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     // This is an "inferred" retrieve but from an expression context and so can't be unambiguously tied to the
     // data layer, and is thus not subject to include optimizations
     private static Retrieve getRetrieve(Expression expression) {
-        return (Retrieve) new Retrieve()
+        var retrieve = new Retrieve()
                 .withLocalId(expression.getLocalId())
                 .withLocator(expression.getLocator())
                 .withResultTypeName(expression.getResultTypeName())
-                .withResultTypeSpecifier(expression.getResultTypeSpecifier())
-                .withResultType(expression.getResultType());
+                .withResultTypeSpecifier(expression.getResultTypeSpecifier());
+        Trackable.INSTANCE.setResultType(retrieve, Trackable.INSTANCE.getResultType(expression));
+
+        return retrieve;
     }
 
     private List<Property> propertySet;
@@ -244,8 +247,8 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         Property property = conditionRequirement.getProperty().getProperty();
         // DataType propertyType = property.getResultType();
         // Use the comparison type due to the likelihood of conversion operators along the property
-        DataType comparisonType =
-                conditionRequirement.getComparand().getExpression().getResultType();
+        DataType comparisonType = Trackable.INSTANCE.getResultType(
+                conditionRequirement.getComparand().getExpression());
         if (comparisonType != null) {
             if (context.getTypeResolver().isTerminologyType(comparisonType)) {
                 CodeFilterElement codeFilter = new CodeFilterElement();
@@ -386,9 +389,10 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private ClassType getRetrieveType(ElmRequirementsContext context, Retrieve retrieve) {
-        DataType elementType = retrieve.getResultType() instanceof ListType
-                ? ((ListType) retrieve.getResultType()).getElementType()
-                : retrieve.getResultType();
+        var retrieveType = Trackable.INSTANCE.getResultType(retrieve);
+
+        DataType elementType =
+                retrieveType instanceof ListType ? ((ListType) retrieveType).getElementType() : retrieveType;
         if (elementType instanceof ClassType) {
             return (ClassType) elementType;
         }

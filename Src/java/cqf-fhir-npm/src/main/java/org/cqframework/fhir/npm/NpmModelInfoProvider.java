@@ -1,6 +1,9 @@
 package org.cqframework.fhir.npm;
 
-import jakarta.xml.bind.JAXB;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+import static org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReaderKt.parseModelInfoXml;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,10 +36,8 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
         // VersionedIdentifier.version: Version of the model
         for (NpmPackage p : packages) {
             try {
-                var identifier = new ModelIdentifier()
-                        .withId(modelIdentifier.getId())
-                        .withVersion(modelIdentifier.getVersion())
-                        .withSystem(modelIdentifier.getSystem());
+                var identifier = new ModelIdentifier(
+                        modelIdentifier.getId(), modelIdentifier.getSystem(), modelIdentifier.getVersion());
 
                 if (identifier.getSystem() == null) {
                     identifier.setSystem(p.canonical());
@@ -53,7 +54,8 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                                 modelIdentifier.setSystem(identifier.getSystem());
                             }
                             InputStream is = new ByteArrayInputStream(a.getData());
-                            return JAXB.unmarshal(is, ModelInfo.class);
+                            var source = buffered(asSource(is));
+                            return parseModelInfoXml(source);
                         }
                     }
                 }
@@ -61,8 +63,7 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                 logger.logDebugMessage(
                         ILoggingService.LogCategory.PROGRESS,
                         String.format(
-                                "Exceptions occurred attempting to load npm library for model %s",
-                                modelIdentifier.toString()));
+                                "Exceptions occurred attempting to load npm library for model %s", modelIdentifier));
             }
         }
 

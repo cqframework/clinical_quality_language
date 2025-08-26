@@ -407,8 +407,8 @@ public class CqlEngine {
         if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
             for (IncludeDef include : library.getIncludes().getDef()) {
                 this.loadAndValidate(new VersionedIdentifier()
-                        .withSystem(NamespaceManager.getUriPart(include.getPath()))
-                        .withId(NamespaceManager.getNamePart(include.getPath()))
+                        .withSystem(NamespaceManager.Companion.getUriPart(include.getPath()))
+                        .withId(NamespaceManager.Companion.getNamePart(include.getPath()))
                         .withVersion(include.getVersion()));
             }
         }
@@ -432,9 +432,9 @@ public class CqlEngine {
 
         if (CqlCompilerException.hasErrors(resolvedLibraryResults.allErrors())) {
             for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
-                if (!libraryResult.errors().isEmpty()) {
-                    var identifier = libraryResult.compiledLibrary().getIdentifier();
-                    resultBuilder.addException(identifier, wrapException(identifier, libraryResult.errors()));
+                if (!libraryResult.getErrors().isEmpty()) {
+                    var identifier = libraryResult.getCompiledLibrary().getIdentifier();
+                    resultBuilder.addException(identifier, wrapException(identifier, libraryResult.getErrors()));
                 }
             }
         }
@@ -451,8 +451,8 @@ public class CqlEngine {
                 if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
                     for (IncludeDef include : library.getIncludes().getDef()) {
                         this.loadAndValidate(new VersionedIdentifier()
-                                .withSystem(NamespaceManager.getUriPart(include.getPath()))
-                                .withId(NamespaceManager.getNamePart(include.getPath()))
+                                .withSystem(NamespaceManager.Companion.getUriPart(include.getPath()))
+                                .withId(NamespaceManager.Companion.getNamePart(include.getPath()))
                                 .withVersion(include.getVersion()));
                     }
                 }
