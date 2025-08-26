@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 
@@ -14,10 +15,12 @@ import org.hl7.elm.r1.VersionedIdentifier;
 class LoadMultiLibResult {
     private final Map<VersionedIdentifier, Library> results;
     private final Map<VersionedIdentifier, RuntimeException> exceptions;
+    private final Map<VersionedIdentifier, CqlCompilerException> warnings;
 
     private LoadMultiLibResult(Builder builder) {
         this.results = Collections.unmodifiableMap(builder.results);
         this.exceptions = Collections.unmodifiableMap(builder.exceptions);
+        this.warnings = Collections.unmodifiableMap(builder.warnings);
     }
 
     int libraryCount() {
@@ -61,6 +64,10 @@ class LoadMultiLibResult {
         return exceptions;
     }
 
+    Map<VersionedIdentifier, CqlCompilerException> getWarnings() {
+        return warnings;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -68,13 +75,20 @@ class LoadMultiLibResult {
     public static class Builder {
         private final LinkedHashMap<VersionedIdentifier, Library> results = new LinkedHashMap<>();
         private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions = new LinkedHashMap<>();
+        private final LinkedHashMap<VersionedIdentifier, CqlCompilerException> warnings = new LinkedHashMap<>();
 
         void addResult(VersionedIdentifier libraryId, Library library) {
             this.results.put(libraryId, library);
         }
 
         void addException(VersionedIdentifier libraryId, RuntimeException exception) {
-            this.exceptions.put(libraryId, exception);
+
+            if (exception instanceof CqlCompilerException cqlCompilerException
+                    && CqlCompilerException.ErrorSeverity.Error != cqlCompilerException.getSeverity()) {
+                this.warnings.put(libraryId, cqlCompilerException);
+            } else {
+                this.exceptions.put(libraryId, exception);
+            }
         }
 
         LoadMultiLibResult build() {

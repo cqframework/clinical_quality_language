@@ -401,7 +401,9 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier.withVersion(null)));
         assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
+        assertFalse(evalResultsForMultiLib.containsWarningsFor(libraryIdentifier));
         assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
         assertNull(evalResultsForMultiLib.getExceptionFor(libraryIdentifier));
+        assertNull(evalResultsForMultiLib.getWarningFor(libraryIdentifier));
     }
 }
