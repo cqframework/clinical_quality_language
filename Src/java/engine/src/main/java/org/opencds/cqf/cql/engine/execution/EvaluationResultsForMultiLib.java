@@ -13,6 +13,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, EvaluationResult> results;
     private final Map<VersionedIdentifier, RuntimeException> exceptions;
+    // LUKETODO:  add a test for identifier hiding and assert it's part of the warnings
     private final Map<VersionedIdentifier, CqlCompilerException> warnings;
 
     private EvaluationResultsForMultiLib(Builder builder) {
