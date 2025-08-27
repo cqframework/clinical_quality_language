@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
@@ -13,8 +12,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, EvaluationResult> results;
     private final Map<VersionedIdentifier, RuntimeException> exceptions;
-    // LUKETODO:  add a test for identifier hiding and assert it's part of the warnings
-    private final Map<VersionedIdentifier, CqlCompilerException> warnings;
+    private final Map<VersionedIdentifier, RuntimeException> warnings;
 
     private EvaluationResultsForMultiLib(Builder builder) {
         this.results = Collections.unmodifiableMap(builder.results);
@@ -30,7 +28,7 @@ public class EvaluationResultsForMultiLib {
         return exceptions;
     }
 
-    public Map<VersionedIdentifier, CqlCompilerException> getWarnings() {
+    public Map<VersionedIdentifier, RuntimeException> getWarnings() {
         return warnings;
     }
 
@@ -149,7 +147,7 @@ public class EvaluationResultsForMultiLib {
     static class Builder {
         private final LinkedHashMap<VersionedIdentifier, EvaluationResult> results = new LinkedHashMap<>();
         private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions = new LinkedHashMap<>();
-        private final LinkedHashMap<VersionedIdentifier, CqlCompilerException> warnings = new LinkedHashMap<>();
+        private final LinkedHashMap<VersionedIdentifier, RuntimeException> warnings = new LinkedHashMap<>();
 
         Builder(LoadMultiLibResult loadMultiLibResult) {
             exceptions.putAll(loadMultiLibResult.getExceptions());

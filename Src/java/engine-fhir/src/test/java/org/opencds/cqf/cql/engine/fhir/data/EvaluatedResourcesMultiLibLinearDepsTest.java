@@ -37,6 +37,8 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
             EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest2");
     private static final VersionedIdentifier LIB_3 =
             EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest3");
+    private static final VersionedIdentifier LIB_WARNING_HIDING =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTestWarningHiding");
     private static final List<VersionedIdentifier> ALL_LIB_IDS = List.of(LIB_1, LIB_2, LIB_3);
 
     private static final String UNION_EXPRESSION = "Union";
@@ -124,6 +126,20 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         assertThat(multiLibException.getMessage(), startsWith("Could not load source for library bad"));
     }
 
+    @Test
+    void hiding() {
+        var engine = getCqlEngineForFhirNewLibMgr(true);
+
+        var multiLibResults = engine.evaluate(List.of(LIB_1, LIB_WARNING_HIDING), null);
+
+        assertTrue(multiLibResults.containsResultsFor(LIB_1));
+        assertFalse(multiLibResults.containsWarningsFor(LIB_1));
+        assertFalse(multiLibResults.containsExceptionsFor(LIB_1));
+        assertTrue(multiLibResults.containsResultsFor(LIB_WARNING_HIDING));
+        assertTrue(multiLibResults.containsWarningsFor(LIB_WARNING_HIDING));
+        assertFalse(multiLibResults.containsExceptionsFor(LIB_WARNING_HIDING));
+    }
+
     private static Stream<Arguments> multiLibParams() {
         return Stream.of(
                 Arguments.of(
@@ -167,7 +183,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
 
         var engine = getCqlEngineForFhirNewLibMgr(expressionCaching);
 
-        var results = engine.evaluate(getAllLibraryIdentifiers(), Set.of(expressionName));
+        var results = engine.evaluate(ALL_LIB_IDS, Set.of(expressionName));
 
         var evaluationResultForIdentifier = results.getResultFor(libId);
 
