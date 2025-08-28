@@ -12,10 +12,12 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class EvaluationResultsForMultiLib {
     private final Map<VersionedIdentifier, EvaluationResult> results;
     private final Map<VersionedIdentifier, RuntimeException> exceptions;
+    private final Map<VersionedIdentifier, RuntimeException> warnings;
 
     private EvaluationResultsForMultiLib(Builder builder) {
         this.results = Collections.unmodifiableMap(builder.results);
         this.exceptions = Collections.unmodifiableMap(builder.exceptions);
+        this.warnings = Collections.unmodifiableMap(builder.warnings);
     }
 
     public Map<VersionedIdentifier, EvaluationResult> getResults() {
@@ -26,12 +28,20 @@ public class EvaluationResultsForMultiLib {
         return exceptions;
     }
 
+    public Map<VersionedIdentifier, RuntimeException> getWarnings() {
+        return warnings;
+    }
+
     public boolean containsResultsFor(VersionedIdentifier libraryIdentifier) {
         return getResultFor(libraryIdentifier) != null;
     }
 
     public boolean containsExceptionsFor(VersionedIdentifier libraryIdentifier) {
         return getExceptionFor(libraryIdentifier) != null;
+    }
+
+    public boolean containsWarningsFor(VersionedIdentifier libraryIdentifier) {
+        return getWarningFor(libraryIdentifier) != null;
     }
 
     public EvaluationResult getResultFor(VersionedIdentifier libraryIdentifier) {
@@ -86,13 +96,31 @@ public class EvaluationResultsForMultiLib {
         return null;
     }
 
+    public RuntimeException getWarningFor(VersionedIdentifier libraryIdentifier) {
+        if (warnings.containsKey(libraryIdentifier)) {
+            return warnings.get(libraryIdentifier);
+        }
+
+        if (libraryIdentifier.getVersion() == null
+                || libraryIdentifier.getVersion().isEmpty()) {
+            // If the version is not specified, try to match by ID only
+            return warnings.entrySet().stream()
+                    .filter(entry -> matchIdentifiersForExceptions(libraryIdentifier, entry))
+                    .findFirst()
+                    .map(Map.Entry::getValue)
+                    .orElse(null);
+        }
+
+        return null;
+    }
+
     private boolean matchIdentifiersForResults(
             VersionedIdentifier libraryIdentifier, Map.Entry<VersionedIdentifier, EvaluationResult> entry) {
         return entry.getKey().getId().equals(libraryIdentifier.getId());
     }
 
     private boolean matchIdentifiersForExceptions(
-            VersionedIdentifier libraryIdentifier, Map.Entry<VersionedIdentifier, RuntimeException> entry) {
+            VersionedIdentifier libraryIdentifier, Map.Entry<VersionedIdentifier, ? extends RuntimeException> entry) {
         return entry.getKey().getId().equals(libraryIdentifier.getId());
     }
 
@@ -112,6 +140,10 @@ public class EvaluationResultsForMultiLib {
         return !exceptions.isEmpty();
     }
 
+    public boolean hasWarnings() {
+        return !warnings.isEmpty();
+    }
+
     static Builder builder(LoadMultiLibResult loadMultiLibResult) {
         return new Builder(loadMultiLibResult);
     }
@@ -119,9 +151,11 @@ public class EvaluationResultsForMultiLib {
     static class Builder {
         private final LinkedHashMap<VersionedIdentifier, EvaluationResult> results = new LinkedHashMap<>();
         private final LinkedHashMap<VersionedIdentifier, RuntimeException> exceptions = new LinkedHashMap<>();
+        private final LinkedHashMap<VersionedIdentifier, RuntimeException> warnings = new LinkedHashMap<>();
 
         Builder(LoadMultiLibResult loadMultiLibResult) {
             exceptions.putAll(loadMultiLibResult.getExceptions());
+            warnings.putAll(loadMultiLibResult.getWarnings());
         }
 
         void addResult(VersionedIdentifier libraryId, EvaluationResult evaluationResult) {

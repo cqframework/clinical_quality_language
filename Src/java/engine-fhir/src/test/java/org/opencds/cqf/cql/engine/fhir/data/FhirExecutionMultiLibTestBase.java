@@ -1,19 +1,12 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourceTestUtils.setupCql;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import java.util.ArrayList;
-import java.util.List;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
@@ -68,8 +61,6 @@ public abstract class FhirExecutionMultiLibTestBase {
     protected static RestFhirRetrieveProvider r4RetrieveProvider;
     protected static CompositeDataProvider r4Provider;
 
-    private final List<Library> libraries = new ArrayList<>();
-
     // TODO: LD: figure out how to compile the CQLs only once for the whole test class
     @BeforeAll
     public static void setup() {
@@ -103,23 +94,6 @@ public abstract class FhirExecutionMultiLibTestBase {
         libraryManager.getLibrarySourceLoader().clearProviders();
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-    }
-
-    @BeforeEach
-    public void beforeEachTestMethod() {
-        setupCql(this.getClass(), libraries, libraryManager);
-    }
-
-    protected List<VersionedIdentifier> getAllLibraryIdentifiers() {
-        return libraries.stream().map(Library::getIdentifier).toList();
-    }
-
-    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
-        return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
-    }
-
-    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
-        return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
     private LibraryManager buildNewLibraryManager() {
