@@ -140,6 +140,10 @@ public class EvaluationResultsForMultiLib {
         return !exceptions.isEmpty();
     }
 
+    public boolean hasWarnings() {
+        return !warnings.isEmpty();
+    }
+
     static Builder builder(LoadMultiLibResult loadMultiLibResult) {
         return new Builder(loadMultiLibResult);
     }
