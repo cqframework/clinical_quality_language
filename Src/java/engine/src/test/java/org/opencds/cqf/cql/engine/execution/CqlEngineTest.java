@@ -44,7 +44,6 @@ class CqlEngineTest extends CqlTestBase {
         assertEquals(1, debugResult.size());
     }
 
-    // LUKETODO: fix actual behaviour or assertion
     @Test
     void invalidCql() {
         var versionedIdentifier = toElmIdentifier("Invalid");
