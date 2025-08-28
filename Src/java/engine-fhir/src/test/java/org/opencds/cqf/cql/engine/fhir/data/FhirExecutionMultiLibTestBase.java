@@ -2,13 +2,10 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import java.util.ArrayList;
-import java.util.List;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.hl7.elm.r1.Library;
 import org.junit.jupiter.api.BeforeAll;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
@@ -63,8 +60,6 @@ public abstract class FhirExecutionMultiLibTestBase {
     protected static R4FhirModelResolver r4ModelResolver;
     protected static RestFhirRetrieveProvider r4RetrieveProvider;
     protected static CompositeDataProvider r4Provider;
-
-    private final List<Library> libraries = new ArrayList<>();
 
     // TODO: LD: figure out how to compile the CQLs only once for the whole test class
     @BeforeAll

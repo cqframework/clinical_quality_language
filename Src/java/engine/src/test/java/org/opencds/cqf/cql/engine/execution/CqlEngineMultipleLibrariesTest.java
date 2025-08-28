@@ -298,6 +298,8 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
         var libraryResults = evalResultsForMultiLib.getResults();
         assertEquals(3, libraryResults.size());
         assertFalse(evalResultsForMultiLib.hasExceptions());
+        assertTrue(evalResultsForMultiLib.getExceptions().isEmpty());
+        assertFalse(evalResultsForMultiLib.hasWarnings());
 
         var evaluationResult1 = findResultsByLibId("MultiLibrary1", libraryResults);
         var evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults);
@@ -397,11 +399,24 @@ class CqlEngineMultipleLibrariesTest extends CqlTestBase {
     private static void sanityCheckForMultiLib(
             EvaluationResultsForMultiLib evalResultsForMultiLib, VersionedIdentifier libraryIdentifier) {
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier));
+
+        var bogusId = new VersionedIdentifier().withId("bogus");
+        assertFalse(evalResultsForMultiLib.containsResultsFor(bogusId));
+        assertFalse(evalResultsForMultiLib.containsWarningsFor(new VersionedIdentifier().withId("bogus")));
+        assertFalse(evalResultsForMultiLib.containsExceptionsFor(new VersionedIdentifier().withId("bogus")));
+
+        var bogusVersion = libraryIdentifier.withVersion("bogus");
+        assertFalse(evalResultsForMultiLib.containsResultsFor(bogusVersion));
+        assertFalse(evalResultsForMultiLib.containsWarningsFor(bogusVersion));
+        assertFalse(evalResultsForMultiLib.containsExceptionsFor(bogusVersion));
+
         // versionless identifier searches should work as well
         assertTrue(evalResultsForMultiLib.containsResultsFor(libraryIdentifier.withVersion(null)));
         assertThrows(IllegalStateException.class, evalResultsForMultiLib::getOnlyResultOrThrow);
         assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier));
         assertFalse(evalResultsForMultiLib.containsWarningsFor(libraryIdentifier));
+        assertTrue(evalResultsForMultiLib.getExceptions().isEmpty());
+        assertTrue(evalResultsForMultiLib.getWarnings().isEmpty());
         assertNotNull(evalResultsForMultiLib.getResultFor(libraryIdentifier));
         assertNull(evalResultsForMultiLib.getExceptionFor(libraryIdentifier));
         assertNull(evalResultsForMultiLib.getWarningFor(libraryIdentifier));

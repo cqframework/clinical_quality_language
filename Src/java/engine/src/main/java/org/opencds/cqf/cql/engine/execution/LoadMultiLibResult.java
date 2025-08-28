@@ -103,11 +103,11 @@ class LoadMultiLibResult {
                     .map(CqlCompilerException.class::cast)
                     .collect(Collectors.groupingBy(CqlCompilerException::getSeverity));
 
-            for (CqlCompilerException.ErrorSeverity errorSeverity : exceptionsBySeverity.keySet()) {
+            for (var exceptionsGroupedBySeverity : exceptionsBySeverity.entrySet()) {
 
-                var wrappedExceptions = wrapExceptions(libraryId, exceptionsBySeverity.get(errorSeverity));
+                var wrappedExceptions = wrapExceptions(libraryId, exceptionsGroupedBySeverity.getValue());
 
-                if (errorSeverity == CqlCompilerException.ErrorSeverity.Error) {
+                if (CqlCompilerException.ErrorSeverity.Error == exceptionsGroupedBySeverity.getKey()) {
                     this.exceptions.put(libraryId, wrappedExceptions);
                 } else {
                     this.warnings.put(libraryId, wrappedExceptions);
