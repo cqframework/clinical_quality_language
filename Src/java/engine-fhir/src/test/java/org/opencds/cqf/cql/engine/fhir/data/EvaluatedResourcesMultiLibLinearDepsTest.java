@@ -127,11 +127,12 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
     }
 
     @Test
-    void hiding() {
+    void ensureWarningsAreSeparateFromErrors() {
         var engine = getCqlEngineForFhirNewLibMgr(true);
 
         var multiLibResults = engine.evaluate(List.of(LIB_1, LIB_WARNING_HIDING), null);
 
+        assertFalse(multiLibResults.hasExceptions());
         assertTrue(multiLibResults.containsResultsFor(LIB_1));
         assertFalse(multiLibResults.containsWarningsFor(LIB_1));
         assertFalse(multiLibResults.containsExceptionsFor(LIB_1));
