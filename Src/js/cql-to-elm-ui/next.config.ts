@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { DefinePlugin } from "webpack";
 
 const nextConfig: NextConfig = {
   basePath: "/cql-to-elm-ui",
@@ -12,30 +11,38 @@ const nextConfig: NextConfig = {
       /The generated code contains 'async\/await' because this module is using "topLevelAwait"/,
     ];
 
-    if (isServer) {
-      config.plugins.push(
-        new DefinePlugin({
-          "import.meta": DefinePlugin.runtimeValue((arg0) => {
-            if (arg0.module.resource.includes("cql-all-cql-to-elm-wasm-js")) {
-              // Get WASM files from node_modules/cql-all-cql-to-elm-wasm-js/kotlin
-              return "{ url: __filename, resolve: (_) => url.pathToFileURL('node_modules/cql-all-cql-to-elm-wasm-js/kotlin/' + _) }";
-            }
-            return "import.meta";
-          }),
-        }),
-      );
-    } else {
-      config.plugins.push(
-        new DefinePlugin({
-          "process.release.name": "'browser'",
-        }),
-      );
-    }
+    config.module.rules.push({
+      test: /wasm\/packages\/cql-all-cql-to-elm\/kotlin\/cql-all-cql-to-elm\.uninstantiated\.mjs$/,
+      loader: "string-replace-loader",
+      options: {
+        multiple: [
+          {
+            search: `const module = await import(/* webpackIgnore: true */'node:module');
+        const importMeta = import.meta;
+        require = module.default.createRequire(importMeta.url);
+        const fs = require('fs');
+        const url = require('url');
+        const filepath = import.meta.resolve(wasmFilePath);
+        const wasmBuffer = fs.readFileSync(url.fileURLToPath(filepath));
+`,
+            replace: `const module = await import(/* webpackIgnore: true */'node:module');
+        require = module.default.createRequire(__filename);
+        const fs = require('fs');
+        const wasmBuffer = fs.readFileSync('node_modules/cql-all-cql-to-elm-wasm-js/kotlin/cql-all-cql-to-elm.wasm');
+`,
+          },
+          {
+            search: `const isNodeJs = (typeof process !== 'undefined') && (process.release.name === 'node');`,
+            replace: `const isNodeJs = ${isServer};`,
+          },
+        ],
+      },
+    });
 
     // Patch the `isNodeJs` function inside the ANTLR Kotlin runtime to make it work in a web worker
     config.module.rules.push(
       {
-        test: /cql-all-cql-to-elm\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
+        test: /js\/packages\/cql-all-cql-to-elm\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `function isNodeJs() {
@@ -49,7 +56,7 @@ const nextConfig: NextConfig = {
         },
       },
       {
-        test: /cql-all-cql-to-elm-wasm-js\/kotlin\/cql-all-cql-to-elm-wasm-js\.uninstantiated\.mjs$/,
+        test: /wasm\/packages\/cql-all-cql-to-elm\/kotlin\/cql-all-cql-to-elm\.uninstantiated\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `        'com.strumenta.antlrkotlin.runtime.isNodeJs' : () => 

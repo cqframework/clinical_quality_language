@@ -12,7 +12,7 @@ import org.hl7.elm.r1.TypeSpecifier
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
 class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver) {
-    class InternalModelResolver(private val modelManager: IModelManager) : ModelResolver {
+    class InternalModelResolver(private val modelManager: ModelManager) : ModelResolver {
         override fun getModel(modelName: String): Model {
             return modelManager.resolveModel(modelName)
         }
@@ -20,7 +20,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
 
     constructor(
         of: IdObjectFactory,
-        modelManager: IModelManager
+        modelManager: ModelManager
     ) : this(of, InternalModelResolver(modelManager))
 
     fun dataTypeToQName(type: DataType?): QName {

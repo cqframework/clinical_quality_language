@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -19,8 +21,8 @@ class EscapeSequenceTests {
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        CqlTranslator translator = CqlTranslator.fromStream(
-                org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceTests.cql"),
+        CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource( org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceTests.cql"))),
                 libraryManager);
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();

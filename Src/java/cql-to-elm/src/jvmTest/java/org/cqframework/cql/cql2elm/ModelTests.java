@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -30,8 +32,8 @@ class ModelTests {
     void modelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager(modelManager));
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"))), new LibraryManager(modelManager));
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

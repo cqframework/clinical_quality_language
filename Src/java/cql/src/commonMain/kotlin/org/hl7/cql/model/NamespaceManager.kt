@@ -1,7 +1,11 @@
 package org.hl7.cql.model
 
 import kotlin.collections.HashMap
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class NamespaceManager {
     private val namespaces: MutableMap<String, String> = HashMap()
     private val reverseNamespaces: MutableMap<String, String> = HashMap()

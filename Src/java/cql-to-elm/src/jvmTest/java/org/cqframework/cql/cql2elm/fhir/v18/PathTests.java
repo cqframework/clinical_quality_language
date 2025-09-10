@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.fhir.v18;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -41,7 +43,7 @@ class PathTests {
     void paths() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"), libraryManager);
+            translator = CqlTranslator.fromSource(buffered(asSource(PathTests.class.getResourceAsStream("PathTests.cql"))), libraryManager);
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

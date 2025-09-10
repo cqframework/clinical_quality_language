@@ -46,25 +46,8 @@ kotlin {
     jvmToolchain(17)
     jvm()
 
-    // This adds JavaScript as build target.
-    // Running the build outputs packages in the build/js/packages directory.
-    // These packages can e.g. be required or imported in JS or TS projects.
-    // If you get `Task :kotlinStoreYarnLock FAILED` during the build,
-    // run the `:kotlinUpgradeYarnLock` task and build again.
-    // Run `jsRun --continuous` to start a local development server with
-    // live reloading (automatic re-build on file changes). The local server serves
-    // <module>/src/jsMain/resources/index.html from the root.
-    js(IR) {
-
-        // Output ES2015 modules (.mjs files) to build/js/packages/<package>/kotlin
-        // instead of default UMD (.js) modules.
+    js {
         useEsModules()
-
-        // Set web browser environment as the target execution environment.
-        // This also runs webpack which bundles everything into a single
-        // <module>/build/dist/js/productionExecutable/<module>.js file.
-        // This file can be e.g. included in an HTML file and distributed
-        // via a CDN.
         browser {
             testTask {
                 useKarma {
@@ -72,43 +55,26 @@ kotlin {
                 }
             }
         }
-
-        // `nodejs {}` can be added here to set Node.js as the target execution
-        // environment. If no browser APIs are used, having just `browser {}`
-        // creates an isomorphic library.
-
-        // Explicitly instruct the Kotlin compiler to emit executable JS code.
-        // If `binaries.library()` is used instead, the
-        // <module>/build/dist/js/productionExecutable directory has
-        // un-webpacked JS.
-        binaries.executable()
-
-        // Generate TypeScript definitions (.d.ts files) from Kotlin code. The files are
-        // finally saved to build/js/packages/<package>/kotlin.
+        nodejs()
+        binaries.library()
         generateTypeScriptDefinitions()
     }
 
-    // Add Kotlin/WASM compilation target.
-    // The output is in the JS packages directory.
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
-        binaries.executable()
+        nodejs()
+        binaries.library()
         generateTypeScriptDefinitions()
     }
 
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-io:1.9.0")
                 implementation("io.github.oshai:kotlin-logging:7.0.3")
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
             }
         }
 

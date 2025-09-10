@@ -1,12 +1,20 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.ExperimentalJsStatic
+import kotlin.js.JsExport
+import kotlin.js.JsStatic
 import kotlin.jvm.JvmStatic
 import kotlinx.serialization.Serializable
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
+import org.cqframework.cql.shared.JsOnlyExport
 
-/** translation options for Cql source files */
+/** Translation options for CQL source files */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 @Serializable
-class CqlCompilerOptions {
+class CqlCompilerOptions() {
     enum class Options {
         EnableDateRangeOptimization,
         EnableAnnotations,
@@ -24,96 +32,14 @@ class CqlCompilerOptions {
     }
 
     val options = mutableSetOf<Options>()
-    /**
-     * Return instance of CqlTranslatorOptions validateUnits boolean
-     *
-     * @return
-     */
-    /**
-     * Set new validateUnits boolean
-     *
-     * @param validateUnits
-     */
     var validateUnits: Boolean = true
-    /**
-     * Return instance of CqlTranslatorOptions verifyOnly boolean
-     *
-     * @return
-     */
-    /**
-     * Set new verifyOnly boolean
-     *
-     * @param verifyOnly
-     */
     var verifyOnly: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions enableCqlOnly boolean
-     *
-     * @return
-     */
-    /**
-     * Set new enableCqlOnly boolean
-     *
-     * @param enableCqlOnly
-     */
     var enableCqlOnly: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions compatibilityLevel
-     *
-     * @return
-     */
-    /**
-     * Set new compatibilityLevel
-     *
-     * @param compatibilityLevel
-     */
     var compatibilityLevel: String = "1.5"
-    /**
-     * Return instance of CqlTranslatorOptions errorLevel (CqlTranslatorException.ErrorSeverity)
-     *
-     * @return
-     */
-    /**
-     * Set new errorLevel (CqlTranslatorException.ErrorSeverity)
-     *
-     * @param errorLevel
-     */
     var errorLevel: CqlCompilerException.ErrorSeverity? = CqlCompilerException.ErrorSeverity.Info
-    /**
-     * Return instance of CqlTranslatorOptions signatureLevel (LibraryBuilder.SignatureLevel)
-     *
-     * @return
-     */
-    /**
-     * Set new signatureLevel (LibraryBuilder.SignatureLevel)
-     *
-     * @param signatureLevel
-     */
     var signatureLevel: SignatureLevel = SignatureLevel.Overloads
-    /**
-     * Return instance of CqlTranslatorOptions analyzeDataRequirements boolean
-     *
-     * @return
-     */
-    /**
-     * Set new analyzeDataRequirements boolean
-     *
-     * @param analyzeDataRequirements
-     */
     var analyzeDataRequirements: Boolean = false
-    /**
-     * Return instance of CqlTranslatorOptions collapseDataRequirements boolean
-     *
-     * @return
-     */
-    /**
-     * Set new collapseDataRequirements boolean
-     *
-     * @param collapseDataRequirements
-     */
     var collapseDataRequirements: Boolean = false
-
-    constructor()
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and
@@ -121,11 +47,13 @@ class CqlCompilerOptions {
      *
      * @param options
      */
+    @JsExport.Ignore
     @Suppress("SpreadOperator")
     constructor(
         vararg options: Options
     ) : this(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.None, *options)
 
+    @JsExport.Ignore
     @Suppress("SpreadOperator")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
@@ -139,18 +67,18 @@ class CqlCompilerOptions {
      * @param signatureLevel
      * @param options
      */
+    @JsExport.Ignore
     @Suppress("SpreadOperator")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         signatureLevel: SignatureLevel,
         vararg options: Options
-    ) {
+    ) : this() {
         setOptions(*options)
         this.errorLevel = errorLevel
         this.signatureLevel = signatureLevel
     }
 
-    @Suppress("LongParameterList")
     /**
      * Constructor using defined SignatureLevel, and Compatibility Level, boolean set to true
      * denotes addition of predefined option
@@ -173,6 +101,8 @@ class CqlCompilerOptions {
      * @param signatureLevel LibraryBuilder.SignatureLevel
      * @param compatibilityLevel String
      */
+    @JsExport.Ignore
+    @Suppress("LongParameterList")
     constructor(
         dateRangeOptimizations: Boolean,
         annotations: Boolean,
@@ -192,7 +122,7 @@ class CqlCompilerOptions {
         disableDefaultModelInfoLoad: Boolean,
         signatureLevel: SignatureLevel,
         compatibilityLevel: String
-    ) {
+    ) : this() {
         this.verifyOnly = verifyOnly
         this.errorLevel = errorLevel
         this.signatureLevel = signatureLevel
@@ -364,7 +294,9 @@ class CqlCompilerOptions {
          *
          * @return
          */
+        @OptIn(ExperimentalJsStatic::class)
         @JvmStatic
+        @JsStatic
         fun defaultOptions(): CqlCompilerOptions {
             // Default options based on recommended settings:
             // http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm

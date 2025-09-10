@@ -1,10 +1,12 @@
 package org.cqframework.cql.elm;
 
+import kotlinx.io.Source;
 import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 
-import java.io.InputStream;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 
 public class TestLibrarySourceProvider implements LibrarySourceProvider {
 
@@ -17,13 +19,13 @@ public class TestLibrarySourceProvider implements LibrarySourceProvider {
     }
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
         return getLibraryContent(libraryIdentifier, LibraryContentType.CQL);
     }
 
     @Override
-    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        return TestLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type));
+    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        return buffered(asSource(TestLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type))));
     }
 
     private String getFileName(VersionedIdentifier libraryIdentifier, LibraryContentType type) {

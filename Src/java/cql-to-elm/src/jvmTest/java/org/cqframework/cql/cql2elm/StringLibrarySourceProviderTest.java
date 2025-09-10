@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.Utf8Kt.readString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -65,7 +66,7 @@ class StringLibrarySourceProviderTest {
         var result = provider.getLibrarySource(new VersionedIdentifier().withId("Test"));
 
         assertNotNull(result);
-        assertEquals(QUOTED, new String(result.readAllBytes()));
+        assertEquals(QUOTED, readString(result));
     }
 
     @Test
@@ -77,7 +78,7 @@ class StringLibrarySourceProviderTest {
         var result = provider.getLibrarySource(new VersionedIdentifier().withId("Test"));
 
         assertNotNull(result);
-        assertEquals(NOT_QUOTED, new String(result.readAllBytes()));
+        assertEquals(NOT_QUOTED, readString(result));
     }
 
     @Test
@@ -90,7 +91,7 @@ class StringLibrarySourceProviderTest {
                 new VersionedIdentifier().withId("Test").withVersion("1.0.0"));
 
         assertNotNull(result);
-        assertEquals(QUOTED_VERSION_1, new String(result.readAllBytes()));
+        assertEquals(QUOTED_VERSION_1, readString(result));
     }
 
     @Test
@@ -103,7 +104,7 @@ class StringLibrarySourceProviderTest {
                 new VersionedIdentifier().withId("Test").withVersion("2.0.0"));
 
         assertNotNull(result);
-        assertEquals(NOT_QUOTED_VERSION_2, new String(result.readAllBytes()));
+        assertEquals(NOT_QUOTED_VERSION_2, readString(result));
     }
 
     @Test

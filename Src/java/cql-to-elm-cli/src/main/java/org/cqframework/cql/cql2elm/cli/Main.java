@@ -85,8 +85,8 @@ public class Main {
         LibraryManager libraryManager = new LibraryManager(modelManager, options);
         modelManager
                 .getModelInfoLoader()
-                .registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
-        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+                .registerModelInfoProvider(new DefaultModelInfoProvider(new kotlinx.io.files.Path(inPath.getParent().toFile())), true);
+        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(new kotlinx.io.files.Path(inPath.getParent().toFile())));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
         NamespaceManager namespaceManager = libraryManager.getNamespaceManager();
@@ -118,7 +118,7 @@ public class Main {
             }
         }
 
-        CqlTranslator translator = fromFile(namespaceInfo, inPath.toFile(), libraryManager);
+        CqlTranslator translator = fromFile(namespaceInfo, new kotlinx.io.files.Path(inPath.toFile()), libraryManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (!translator.getErrors().isEmpty()) {

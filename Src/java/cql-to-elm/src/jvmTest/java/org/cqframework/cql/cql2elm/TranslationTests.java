@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.tracking.TrackBack;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hamcrest.Matchers;
@@ -40,7 +41,7 @@ class TranslationTests {
         File propertyTestFile = new File(
                 Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager))
+        String actualXml = CqlTranslator.fromFile(new Path(propertyTestFile), new LibraryManager(modelManager))
                 .toXml();
         assertThat(actualXml, is(expectedXml));
     }
@@ -65,7 +66,7 @@ class TranslationTests {
                 CqlCompilerOptions.Options.DisableMethodInvocation);
 
         CqlTranslator translator =
-                CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager, compilerOptions));
+                CqlTranslator.fromFile(new Path(propertyTestFile), new LibraryManager(modelManager, compilerOptions));
         System.out.println(translator.toJson());
     }
 
@@ -76,7 +77,7 @@ class TranslationTests {
         File cqlFile = new File(
                 Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(cqlFile, new LibraryManager(modelManager))
+        String actualXml = CqlTranslator.fromFile(new Path(cqlFile), new LibraryManager(modelManager))
                 .toXml();
         assertThat(actualXml, is(expectedXml));
     }

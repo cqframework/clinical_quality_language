@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -21,8 +23,8 @@ class AgeOperatorsTest {
     @BeforeAll
     static void setup() throws IOException {
         var modelManager = new ModelManager();
-        var translator = CqlTranslator.fromStream(
-                AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"),
+        var translator = CqlTranslator.fromSource(
+                buffered(asSource(AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"))),
                 new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         var library = translator.toELM();

@@ -26,7 +26,7 @@ class SystemModelInfoProvider : ModelInfoProvider {
             val stream =
                 this::class.java.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")
             checkNotNull(stream) { "Could not find system model info" }
-            parseModelInfoXml(stream.asSource().buffered())
+            stream.asSource().use { parseModelInfoXml(it.buffered()) }
         } else null
     }
 }

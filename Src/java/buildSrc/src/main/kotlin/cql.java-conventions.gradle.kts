@@ -29,7 +29,7 @@ java {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
     implementation("org.slf4j:slf4j-api:2.0.13")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
     testImplementation("uk.co.datumedge:hamcrest-json:0.2")

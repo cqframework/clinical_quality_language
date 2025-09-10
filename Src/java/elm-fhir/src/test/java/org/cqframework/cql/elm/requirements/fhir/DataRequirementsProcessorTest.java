@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 import java.util.List;
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
@@ -2626,7 +2627,7 @@ public class DataRequirementsProcessorTest {
         var libraryManager = new LibraryManager(modelManager, options);
         libraryManager
                 .getLibrarySourceLoader()
-                .registerProvider(new DefaultLibrarySourceProvider(Paths.get(relativePath)));
+                .registerProvider(new DefaultLibrarySourceProvider(new Path(Paths.get(relativePath).toFile())));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
         return libraryManager;
@@ -2648,7 +2649,7 @@ public class DataRequirementsProcessorTest {
 
         var compiler = new CqlCompiler(namespaceInfo, manager);
 
-        var lib = compiler.run(translationTestFile);
+        var lib = compiler.run(new Path(translationTestFile));
 
         assertTrue(compiler.getErrors().isEmpty());
 
@@ -2664,7 +2665,7 @@ public class DataRequirementsProcessorTest {
 
         var compiler = new CqlCompiler(null, manager);
 
-        var lib = compiler.run(translationTestFile);
+        var lib = compiler.run(new Path(translationTestFile));
 
         assertTrue(compiler.getErrors().isEmpty());
 
