@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -27,8 +29,8 @@ class CqlComparisonOperatorsTest {
     @BeforeAll
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(
-                CqlComparisonOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlComparisonOperators.cql"),
+        CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource(CqlComparisonOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlComparisonOperators.cql"))),
                 new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();

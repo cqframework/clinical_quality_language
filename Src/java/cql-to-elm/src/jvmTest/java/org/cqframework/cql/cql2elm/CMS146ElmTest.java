@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -33,8 +35,8 @@ public class CMS146ElmTest {
     @BeforeAll
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        translator = CqlTranslator.fromStream(
-                CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
+        translator = CqlTranslator.fromSource(
+                buffered(asSource(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"))),
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         library = translator.toELM();
@@ -51,8 +53,8 @@ public class CMS146ElmTest {
     @MethodSource("signatureLevels")
     void signatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
-        final CqlTranslator translator = CqlTranslator.fromStream(
-                CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
+        final CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"))),
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
         final Library library = translator.toELM();
 

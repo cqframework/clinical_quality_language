@@ -9,6 +9,9 @@ import org.hl7.cql.model.NamespaceInfo;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
 public class TestUtils {
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options)
             throws IOException {
@@ -34,7 +37,7 @@ public class TestUtils {
         var compilerOptions = new CqlCompilerOptions(options);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromSource(namespaceInfo, buffered(asSource(inputStream)), libraryManager);
         return translator;
     }
 }

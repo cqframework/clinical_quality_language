@@ -1,7 +1,7 @@
 // @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
-import * as cqlToElmJs from "../../../java/build/js/packages/cql-all-cql-to-elm";
-import * as cqlToElmWasmJs from "../../../java/build/js/packages/cql-all-cql-to-elm-wasm-js";
+import * as cqlToElmJs from "cql-all-cql-to-elm-js";
+import * as cqlToElmWasmJs from "cql-all-cql-to-elm-wasm-js";
 import { compilerOptions, TCompileCqlArgs, TOutput } from "@/shared";
 import { supportedModels } from "@/compiler/supported-models";
 import { fetchSync, readFile } from "@/compiler/utils";
@@ -17,6 +17,12 @@ export function createStatefulCompiler(sync: boolean) {
       return result.msg[0];
     }
   };
+  const ucumServiceJs = cqlToElmJs.createUcumService(() => {
+    throw new Error("Unsupported operation");
+  }, validateUnit);
+  const ucumServiceWasmJs = cqlToElmWasmJs.createUcumService(() => {
+    throw new Error("Unsupported operation");
+  }, validateUnit);
 
   const fetchedModels: {
     id: string;
@@ -32,13 +38,21 @@ export function createStatefulCompiler(sync: boolean) {
     cql: string | null;
   }[] = [];
 
-  const modelCacheJs = cqlToElmJs.LibraryManager.createModelCache();
-  const libraryCacheJs = cqlToElmJs.LibraryManager.createLibraryCache();
+  const modelManagerJs = new cqlToElmJs.ModelManager();
+  // @ts-expect-error TypeScript error
+  const modelManagerWasmJs = cqlToElmWasmJs.createModelManager();
 
+  const libraryManagerJs = new cqlToElmJs.LibraryManager(
+    modelManagerJs,
+    cqlToElmJs.CqlCompilerOptions.defaultOptions(),
+    null,
+    ucumServiceJs,
+  );
   // @ts-expect-error TypeScript error
-  const modelCacheWasmJs = cqlToElmWasmJs.createModelCache();
-  // @ts-expect-error TypeScript error
-  const libraryCacheWasmJs = cqlToElmWasmJs.createLibraryCache();
+  const libraryManagerWasmJs = cqlToElmWasmJs.createLibraryManager(
+    modelManagerWasmJs,
+    ucumServiceWasmJs,
+  );
 
   const compileCql = (
     args: TCompileCqlArgs,
@@ -249,34 +263,91 @@ export function createStatefulCompiler(sync: boolean) {
       }
     };
 
+    const modelInfoProviderJs = cqlToElmJs.createModelInfoProvider(
+      (id: string, system: string | null, version: string | null) => {
+        const xml = getModelXml(id, system, version);
+        if (xml === null) {
+          return null;
+        }
+        return cqlToElmJs.stringAsSource(xml);
+      },
+    );
+    const modelInfoProviderWasmJs = cqlToElmWasmJs.createModelInfoProvider(
+      (id: string, system: string | null, version: string | null) => {
+        const xml = getModelXml(id, system, version);
+        if (xml === null) {
+          return null;
+        }
+        return cqlToElmWasmJs.stringAsSource(xml);
+      },
+    );
+
+    const librarySourceProviderJs = cqlToElmJs.createLibrarySourceProvider(
+      (id: string, system: string | null, version: string | null) => {
+        const cql = getLibraryCql(id, system, version);
+        if (cql === null) {
+          return null;
+        }
+        return cqlToElmJs.stringAsSource(cql);
+      },
+    );
+    const librarySourceProviderWasmJs =
+      cqlToElmWasmJs.createLibrarySourceProvider(
+        (id: string, system: string | null, version: string | null) => {
+          const cql = getLibraryCql(id, system, version);
+          if (cql === null) {
+            return null;
+          }
+          return cqlToElmWasmJs.stringAsSource(cql);
+        },
+      );
+
     // @ts-expect-error TypeScript error
-    const libraryManagerJs = new cqlToElmJs.LibraryManager(
-      getModelXml,
-      getLibraryCql,
-      validateUnit,
-      modelCacheJs,
-      libraryCacheJs,
+    modelManagerJs.modelInfoLoader.clearModelInfoProviders();
+    // @ts-expect-error TypeScript error
+    modelManagerJs.modelInfoLoader.registerModelInfoProvider(
+      modelInfoProviderJs,
+    );
+    // @ts-expect-error TypeScript error
+    libraryManagerJs.librarySourceLoader.clearProviders();
+    // @ts-expect-error TypeScript error
+    libraryManagerJs.librarySourceLoader.registerProvider(
+      librarySourceProviderJs,
     );
 
     // @ts-expect-error TypeScript error
-    const libraryManagerWasmJs = cqlToElmWasmJs.createLibraryManager(
-      getModelXml,
-      getLibraryCql,
-      validateUnit,
-      modelCacheWasmJs,
-      libraryCacheWasmJs,
+    cqlToElmWasmJs.modelManagerClearModelInfoProviders(modelManagerWasmJs);
+    // @ts-expect-error TypeScript error
+    cqlToElmWasmJs.modelManagerRegisterModelInfoProvider(
+      modelManagerWasmJs,
+      modelInfoProviderWasmJs,
+    );
+    // @ts-expect-error TypeScript error
+    cqlToElmWasmJs.libraryManagerClearLibrarySourceProviders(
+      libraryManagerWasmJs,
+    );
+    // @ts-expect-error TypeScript error
+    cqlToElmWasmJs.libraryManagerRegisterLibrarySourceProvider(
+      libraryManagerWasmJs,
+      librarySourceProviderWasmJs,
     );
 
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
-        libraryManagerJs.addCompilerOption(compilerOption.value);
+        libraryManagerJs.cqlCompilerOptions.options.asJsSetView().add(
+          // @ts-expect-error TypeScript error
+          cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
+        );
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerAddCompilerOption(
           libraryManagerWasmJs,
           compilerOption.value,
         );
       } else {
-        libraryManagerJs.removeCompilerOption(compilerOption.value);
+        libraryManagerJs.cqlCompilerOptions.options.asJsSetView().delete(
+          // @ts-expect-error TypeScript error
+          cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
+        );
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
           libraryManagerWasmJs,
@@ -285,7 +356,8 @@ export function createStatefulCompiler(sync: boolean) {
       }
     }
 
-    libraryManagerJs.setSignatureLevel(args.signatureLevel);
+    libraryManagerJs.cqlCompilerOptions.signatureLevel = // @ts-expect-error TypeScript error
+      cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
     // @ts-expect-error TypeScript error
     cqlToElmWasmJs.libraryManagerSetSignatureLevel(
       libraryManagerWasmJs,
@@ -296,7 +368,7 @@ export function createStatefulCompiler(sync: boolean) {
       if (args.useWasm) {
         try {
           // @ts-expect-error TypeScript error
-          const cqlTranslator = cqlToElmWasmJs.createCqlTranslator(
+          const cqlTranslator = cqlToElmWasmJs.cqlTranslatorFromText(
             args.cql,
             libraryManagerWasmJs,
           );
@@ -326,7 +398,7 @@ export function createStatefulCompiler(sync: boolean) {
       }
 
       try {
-        const cqlTranslator = new cqlToElmJs.CqlTranslator(
+        const cqlTranslator = cqlToElmJs.CqlTranslator.fromText(
           args.cql,
           libraryManagerJs,
         );
@@ -334,13 +406,11 @@ export function createStatefulCompiler(sync: boolean) {
           ? {
               type: "elm",
               contentType: "json",
-              // @ts-expect-error TypeScript error
               elm: prettyPrintJsonIfPossible(cqlTranslator.toJson()),
             }
           : {
               type: "elm",
               contentType: "xml",
-              // @ts-expect-error TypeScript error
               elm: cqlTranslator.toXml(),
             };
       } catch (e) {

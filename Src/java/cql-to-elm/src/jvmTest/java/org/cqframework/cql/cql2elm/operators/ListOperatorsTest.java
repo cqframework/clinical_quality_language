@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
@@ -23,8 +25,8 @@ class ListOperatorsTest {
     @BeforeAll
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(
-                ListOperatorsTest.class.getResourceAsStream("../OperatorTests/ListOperators.cql"),
+        CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource(ListOperatorsTest.class.getResourceAsStream("../OperatorTests/ListOperators.cql"))),
                 new LibraryManager(modelManager, new CqlCompilerOptions()));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();

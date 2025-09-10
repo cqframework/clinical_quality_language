@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql_annotations.r1.CqlToElmError;
@@ -45,8 +47,8 @@ class LibraryTests {
     void libraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), libraryManager);
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"))), libraryManager);
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,7 +75,7 @@ class LibraryTests {
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
             var compiler = new CqlCompiler(libraryManager);
-            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"));
+            compiler.run(buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"))));
 
             assertThat(compiler.getErrors().size(), is(0));
 
@@ -111,14 +113,13 @@ class LibraryTests {
         InputStream translationTestFile = LibraryTests.class.getResourceAsStream("LibraryTests/Issue641.cql");
         libraryManager
                 .getLibrarySourceLoader()
-                .registerProvider(new DefaultLibrarySourceProvider(Paths.get(new File(LibraryTests.class
+                .registerProvider(new DefaultLibrarySourceProvider(new Path(new File(LibraryTests.class
                                 .getResource("LibraryTests/Issue641.cql")
-                                .getFile())
-                        .getParent())));
+                                .getFile())).getParent()));
 
         try {
             CqlCompiler compiler = new CqlCompiler(libraryManager);
-            compiler.run(translationTestFile);
+            compiler.run(buffered(asSource(translationTestFile)));
 
             System.out.println(compiler.getErrors());
 
@@ -147,8 +148,8 @@ class LibraryTests {
     void invalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"),
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"))),
                     libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
@@ -199,8 +200,8 @@ class LibraryTests {
     void invalidLibraryReference() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/InvalidLibraryReference.cql"), libraryManager);
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidLibraryReference.cql"))), libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,8 +212,8 @@ class LibraryTests {
     void duplicateExpressionLibrary() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"),
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"))),
                     libraryManager);
             assertThat(translator.getErrors().size(), is(1));
         } catch (IOException e) {
@@ -224,8 +225,8 @@ class LibraryTests {
     void missingLibrary() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"), libraryManager);
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"))), libraryManager);
             assertThat(translator.getErrors().size(), is(1));
             assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
             assertThat(translator.getErrors().get(0).getCause(), instanceOf(CqlIncludeException.class));
@@ -238,8 +239,8 @@ class LibraryTests {
     void invalidBaseLibrary() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"),
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"))),
                     libraryManager);
             assertThat(translator.getErrors().size(), is(1));
             assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
@@ -270,8 +271,8 @@ class LibraryTests {
     void mixedVersionModelReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), libraryManager);
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"))), libraryManager);
             assertThat(translator.getErrors().size(), is(3));
 
             for (CqlCompilerException error : translator.getErrors()) {
@@ -293,7 +294,7 @@ class LibraryTests {
             libraryManager = new LibraryManager(modelManager, options);
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
             var compiler = new CqlCompiler(libraryManager);
-            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"));
+            compiler.run(buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"))));
 
             assertThat(compiler.getErrors().size(), is(0));
             var includedLibraries = compiler.getLibraries();
@@ -318,7 +319,7 @@ class LibraryTests {
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
             compiler = new CqlCompiler(libraryManager);
-            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"));
+            compiler.run(buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"))));
 
             assertThat(compiler.getErrors().size(), is(0));
             var includedLibraries = compiler.getLibraries();

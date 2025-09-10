@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFromAlias;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
@@ -25,8 +27,8 @@ class AggregateOperatorsTest {
     @BeforeAll
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(
-                AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"),
+        CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"))),
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();

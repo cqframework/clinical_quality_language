@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
@@ -35,7 +36,7 @@ class CMS146SignatureTest {
         final File cms146 = getFile("CMS146v2_Test_CQM.cql");
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromFile(
-                cms146,
+                new Path(cms146),
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
 
         var visitor = FunctionalElmVisitor.Companion.from(

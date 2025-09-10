@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalJsExport::class)
+
 package org.cqframework.cql.cql2elm
 
-import kotlin.jvm.JvmField
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 import org.cqframework.cql.cql2elm.model.*
@@ -13,6 +16,7 @@ import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.getTranslatorVersion
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.*
@@ -22,37 +26,43 @@ import org.hl7.elm.r1.*
 private const val FP_THIS = "\$this"
 
 /** Created by Bryn on 12/29/2016. */
-@Suppress("LargeClass", "TooManyFunctions", "ForbiddenComment", "ReturnCount", "MaxLineLength")
+@JsOnlyExport
+@Suppress(
+    "LargeClass",
+    "TooManyFunctions",
+    "ForbiddenComment",
+    "ReturnCount",
+    "MaxLineLength",
+    "NON_EXPORTABLE_TYPE"
+)
 class LibraryBuilder(
-    @JvmField
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
-    val libraryManager: BaseLibraryManager,
+    val libraryManager: LibraryManager,
     val objectFactory: IdObjectFactory
 ) {
     enum class SignatureLevel {
-        /*
-        Indicates signatures will never be included in operator invocations
-         */
+        /** Indicates signatures will never be included in operator invocations */
         None,
 
-        /*
-        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different from the invocation signature
+        /**
+         * Indicates signatures will only be included in invocations if the declared signature of
+         * the resolve operator is different from the invocation signature
          */
         Differing,
 
-        /*
-        Indicates signatures will only be included in invocations if the function has multiple overloads with the same number of arguments as the invocation
+        /**
+         * Indicates signatures will only be included in invocations if the function has multiple
+         * overloads with the same number of arguments as the invocation
          */
         Overloads,
 
-        /*
-        Indicates signatures will always be included in invocations
-         */
+        /** Indicates signatures will always be included in invocations */
         All
     }
 
+    @JsExport.Ignore
     constructor(
-        libraryManager: BaseLibraryManager,
+        libraryManager: LibraryManager,
         objectFactory: IdObjectFactory
     ) : this(null, libraryManager, objectFactory)
 
@@ -81,7 +91,7 @@ class LibraryBuilder(
     private val localIdentifierStack = Stack<ArrayDeque<IdentifierContext>>()
     private var literalContext = 0
     private var typeSpecifierContext = 0
-    private val modelManager: IModelManager = libraryManager.modelManager
+    private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
             // The default model is the first model that is not System
@@ -99,8 +109,8 @@ class LibraryBuilder(
                     .withId("urn:hl7-org:elm") // TODO: Pull this from the ELM library namespace
                     .withVersion("r1")
             )
-    @JvmField var compiledLibrary = CompiledLibrary()
-    @JvmField val conversionMap = ConversionMap()
+    var compiledLibrary = CompiledLibrary()
+    val conversionMap = ConversionMap()
     private val af = ObjectFactory()
     private var listTraversal = true
     private val options: CqlCompilerOptions = libraryManager.cqlCompilerOptions
@@ -176,8 +186,9 @@ class LibraryBuilder(
         }
     }
 
-    /*
-    A "well-known" model name is one that is allowed to resolve without a namespace in a namespace-aware context
+    /**
+     * A "well-known" model name is one that is allowed to resolve without a namespace in a
+     * namespace-aware context
      */
     fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean {
         return if (namespaceInfo == null) {
@@ -200,6 +211,7 @@ class LibraryBuilder(
         return model
     }
 
+    @JsExport.Ignore
     fun getModel(modelIdentifier: ModelIdentifier, localIdentifier: String): Model {
         var model: Model? = models[localIdentifier]
         if (model == null) {
@@ -319,10 +331,12 @@ class LibraryBuilder(
         return result
     }
 
+    @JsExport.Ignore
     fun resolveTypeName(typeName: String): DataType? {
         return resolveTypeName(null, typeName)
     }
 
+    @JsExport.Ignore
     @Suppress("NestedBlockDepth")
     fun resolveTypeName(modelName: String?, typeName: String): DataType? {
         // Attempt to resolve as a label first
@@ -426,6 +440,7 @@ class LibraryBuilder(
         get() = // TODO: Support loading different versions of the system library
         getModel(ModelIdentifier("System"), "System") as SystemModel
 
+    @JsExport.Ignore
     fun getModel(modelName: String): Model {
         val usingDef = resolveUsingRef(modelName)
         if (usingDef == null && modelName == "FHIR") {
@@ -436,6 +451,7 @@ class LibraryBuilder(
         return getModel(usingDef)
     }
 
+    @JsExport.Ignore
     private fun getModel(usingDef: UsingDef): Model {
         return getModel(
             ModelIdentifier(
@@ -607,9 +623,7 @@ class LibraryBuilder(
         // Note that translation of a referenced library may result in implicit specification of the
         // namespace
         // In this case, the referencedLibrary will have a namespaceUri different from the currently
-        // resolved
-        // namespaceUri
-        // of the IncludeDef.
+        // resolved namespaceUri of the IncludeDef.
         val currentNamespaceUri = NamespaceManager.getUriPart(includeDef.path)
         @Suppress("ComplexCondition")
         if (
@@ -752,6 +766,7 @@ class LibraryBuilder(
         )
     }
 
+    @JsExport.Ignore
     fun resolveBinaryCall(
         libraryName: String?,
         operatorName: String,
@@ -779,6 +794,7 @@ class LibraryBuilder(
         )
     }
 
+    @JsExport.Ignore
     fun resolveBinaryCall(
         libraryName: String?,
         operatorName: String,
@@ -953,6 +969,7 @@ class LibraryBuilder(
         return except
     }
 
+    @JsExport.Ignore
     @Suppress("CyclomaticComplexMethod")
     fun resolveIn(left: Expression, right: Expression): Expression {
         @Suppress("ComplexCondition")
@@ -1014,6 +1031,7 @@ class LibraryBuilder(
         return inExpression
     }
 
+    @JsExport.Ignore
     fun resolveContains(left: Expression, right: Expression): Expression {
         // TODO: Add terminology overloads
         val contains = objectFactory.createContains().withOperand(listOf(left, right))
@@ -1021,6 +1039,7 @@ class LibraryBuilder(
         return contains
     }
 
+    @JsExport.Ignore
     fun resolveIn(
         left: Expression,
         right: Expression,
@@ -1065,6 +1084,7 @@ class LibraryBuilder(
         return resolveBinaryInvocation("System", "ProperIn", properIn)
     }
 
+    @JsExport.Ignore
     fun resolveContains(
         left: Expression,
         right: Expression,
@@ -1357,6 +1377,7 @@ class LibraryBuilder(
         return result?.expression
     }
 
+    @JsExport.Ignore
     fun resolveInvocation(
         libraryName: String?,
         operatorName: String,
@@ -1400,6 +1421,7 @@ class LibraryBuilder(
         )
     }
 
+    @JsExport.Ignore
     @Suppress("LongParameterList", "LongMethod")
     fun resolveInvocation(
         libraryName: String?,
@@ -1452,10 +1474,8 @@ class LibraryBuilder(
                 dataTypesToTypeSpecifiers(resolution.operator.signature.operandTypes)
         } else if (resolution.operatorHasOverloads && resolution.operator.libraryName != "System") {
             // NOTE: Because system functions only deal with CQL system-defined types, and there is
-            // one and only one
-            // runtime representation of each system-defined type, there is no possibility of
-            // ambiguous overload
-            // resolution with system functions
+            // one and only one runtime representation of each system-defined type, there is no
+            // possibility of ambiguous overload resolution with system functions
             // WARNING:
             reportWarning(
                 """
@@ -1485,8 +1505,7 @@ class LibraryBuilder(
         @Suppress("UnusedParameter") targetType: DataType
     ): Expression {
         // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the
-        // targetType (type
-        // leading)
+        // targetType (type leading)
         // This is a placeholder for where this functionality would be added in the future.
         return expression
     }
@@ -1523,8 +1542,7 @@ class LibraryBuilder(
                 result = systemLibrary.resolveCall(callContext, conversionMap)
                 if (result == null && callContext.allowFluent) {
                     // attempt to resolve in each non-system included library, in order of
-                    // inclusion, first resolution
-                    // wins
+                    // inclusion, first resolution wins
                     for (lib in libraries.values) {
                         if (lib != systemLibrary) {
                             result = lib.resolveCall(callContext, conversionMap)
@@ -1598,6 +1616,7 @@ class LibraryBuilder(
         }
     }
 
+    @JsExport.Ignore
     fun resolveFunction(
         libraryName: String?,
         functionName: String,
@@ -1627,6 +1646,7 @@ class LibraryBuilder(
         return functionRef
     }
 
+    @JsExport.Ignore
     @Suppress("LongParameterList")
     fun resolveFunction(
         libraryName: String?,
@@ -1652,12 +1672,8 @@ class LibraryBuilder(
                 as FunctionRef?
         if (functionRef != null) {
             if ("System" == invocation.resolution!!.operator.libraryName) {
-                val systemFun =
-                    buildFunctionRef(
-                        libraryName,
-                        functionName,
-                        paramList
-                    ) // Rebuild the fun from the original arguments, otherwise it will resolve with
+                val systemFun = buildFunctionRef(libraryName, functionName, paramList)
+                // Rebuild the fun from the original arguments, otherwise it will resolve with
                 // conversions in place
                 val systemFunctionInvocation =
                     systemFunctionResolver.resolveSystemFunction(systemFun)
@@ -1681,8 +1697,8 @@ class LibraryBuilder(
             functionRef = buildFunctionRef(libraryName, functionName, paramList)
             invocation = FunctionRefInvocation(functionRef)
             if (!allowFluent) {
-                // Only attempt to resolve as a system function if
-                // this is not a fluent call, or it is a required resolution
+                // Only attempt to resolve as a system function if this is not a fluent call, or it
+                // is a required resolution
                 val systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunction != null) {
                     return systemFunction
@@ -1714,6 +1730,7 @@ class LibraryBuilder(
         resolveBinaryCall("System", "Less", comparison)
     }
 
+    @JsExport.Ignore
     @JvmOverloads
     fun convertExpression(
         expression: Expression,
@@ -1831,9 +1848,7 @@ class LibraryBuilder(
     }
 
     // When promoting a point to an interval, if the point is null, the result is null, rather than
-    // constructing an
-    // interval
-    // with null boundaries
+    // constructing an interval with null boundaries
     private fun resolveToInterval(expression: Expression?): Expression {
         val condition = objectFactory.createIf()
         condition.condition = buildIsNull(expression)
@@ -1969,6 +1984,7 @@ class LibraryBuilder(
         return result
     }
 
+    @JsExport.Ignore
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     fun convertExpression(expression: Expression, conversion: Conversion): Expression {
         if (
@@ -2208,8 +2224,7 @@ class LibraryBuilder(
         }
 
         // If either side is a choice type, don't allow conversions because they will incorrectly
-        // eliminate choices
-        // based on convertibility
+        // eliminate choices based on convertibility
         if (!(first is ChoiceType || second is ChoiceType)) {
             var conversion =
                 findConversion(second, first, implicit = true, allowPromotionAndDemotion = false)
@@ -2257,6 +2272,7 @@ class LibraryBuilder(
         } else expression
     }
 
+    @JsExport.Ignore
     private fun createLiteral(value: String?, type: String): Literal {
         val resultType = resolveTypeName("System", type)
         val result =
@@ -2268,18 +2284,22 @@ class LibraryBuilder(
         return result
     }
 
+    @JsExport.Ignore
     fun createLiteral(string: String?): Literal {
         return createLiteral(string, "String")
     }
 
+    @JsExport.Ignore
     fun createLiteral(bool: Boolean): Literal {
         return createLiteral(bool.toString(), "Boolean")
     }
 
+    @JsExport.Ignore
     fun createLiteral(integer: Int): Literal {
         return createLiteral(integer.toString(), "Integer")
     }
 
+    @JsExport.Ignore
     fun createLiteral(value: Double): Literal {
         return createLiteral(value.toString(), "Decimal")
     }
@@ -2410,8 +2430,7 @@ class LibraryBuilder(
 
     fun resolvePath(sourceType: DataType?, path: String): DataType? {
         // TODO: This is using a naive implementation for now... needs full path support (but not
-        // full FluentPath
-        // support...)
+        // full FluentPath support...)
         var sourceType: DataType? = sourceType
         val identifiers: Array<String> =
             path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -2421,8 +2440,8 @@ class LibraryBuilder(
             // Actually, this doesn't matter for this call, we're just resolving the type...
             // if (!resolution.getTargetMap().equals(identifiers[i])) {
             //    throw new IllegalArgumentException(String.format("Identifier %s references an
-            // element with a target
-            // mapping defined and cannot be resolved as part of a path", identifiers[i]));
+            // element with a target mapping defined and cannot be resolved as part of a path",
+            // identifiers[i]));
             // }
         }
         return sourceType
@@ -2481,8 +2500,7 @@ class LibraryBuilder(
                 }
                 currentType is ChoiceType -> {
                     // TODO: Issue a warning if the property does not resolve against every type in
-                    // the
-                    // choice
+                    // the choice
 
                     // Resolve the property against each type in the choice
                     val resultTypes: MutableSet<DataType> = HashSet()
@@ -2586,12 +2604,8 @@ class LibraryBuilder(
         }
         if ((identifier == "\$total")) {
             val result: Total = objectFactory.createTotal()
-            result.resultType =
-                resolveTypeName(
-                    "System",
-                    "Decimal"
-                ) // TODO: This isn't right, but we don't set up a query for the Aggregate operator
-            // right
+            result.resultType = resolveTypeName("System", "Decimal")
+            // TODO: This isn't right, but we don't set up a query for the Aggregate operator right
             // now...
             return result
         }
@@ -2692,9 +2706,8 @@ class LibraryBuilder(
         }
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter
-        // with the same name
-        // as the context,
-        // the identifier may be resolved as an implicit property reference on that context.
+        // with the same name as the context, the identifier may be resolved as an implicit property
+        // reference on that context.
         val parameterRef: ParameterRef? = resolveImplicitContext()
         if (parameterRef != null) {
             val resolution: PropertyResolution? =
@@ -2754,6 +2767,7 @@ class LibraryBuilder(
         return null
     }
 
+    @JsExport.Ignore
     fun buildProperty(
         scope: String?,
         path: String?,
@@ -2771,6 +2785,7 @@ class LibraryBuilder(
         }
     }
 
+    @JsExport.Ignore
     fun buildProperty(
         source: Expression?,
         path: String?,
@@ -2874,9 +2889,8 @@ class LibraryBuilder(
         // path>
         // Resolves as a replacement of the property on which it appears
         // Replaces the path of the property on which it appears with the given qualified path,
-        // which then becomes the
-        // source of a query with a where clause with criteria built for each comparison in the
-        // indexer
+        // which then becomes the source of a query with a where clause with criteria built for each
+        // comparison in the indexer
         // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a
         // property access
         // Any other target map results in an exception
@@ -3471,24 +3485,21 @@ class LibraryBuilder(
 
     private fun getExpressionDefResultType(expressionDef: ExpressionDef): DataType? {
         // If the current expression context is the same as the expression def context, return the
-        // expression def result
-        // type.
+        // expression def result type.
         if ((currentExpressionContext() == expressionDef.context)) {
             return expressionDef.resultType
         }
 
         // If the current expression context is specific, a reference to an unfiltered context
-        // expression will indicate
-        // a full
-        // evaluation of the population context expression, and the result type is the same.
+        // expression will indicate a full evaluation of the population context expression, and the
+        // result type is the same.
         if (inSpecificContext()) {
             return expressionDef.resultType
         }
 
         // If the current expression context is unfiltered, a reference to a specific context
-        // expression will need to be
-        // performed for every context in the system, so the result type is promoted to a list (if
-        // it is not already).
+        // expression will need to be performed for every context in the system, so the result type
+        // is promoted to a list (if it is not already).
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references
             // patient context

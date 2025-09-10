@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -9,6 +11,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
+import kotlinx.io.files.Path;
 import org.antlr.v4.kotlinruntime.CharStream;
 import org.antlr.v4.kotlinruntime.CharStreams;
 import org.antlr.v4.kotlinruntime.CommonTokenStream;
@@ -45,7 +48,7 @@ public class TestUtils {
 
     public static Object visitFile(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
         final File file = getFileOrThrow(fileName);
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
+        CqlTranslator translator = CqlTranslator.fromFile(new Path(file), getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -57,7 +60,7 @@ public class TestUtils {
     public static CompiledLibrary visitFileLibrary(String fileName, SignatureLevel nullableSignatureLevel)
             throws IOException {
         final File file = getFileOrThrow(fileName);
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
+        CqlTranslator translator = CqlTranslator.fromFile(new Path(file), getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
@@ -231,7 +234,7 @@ public class TestUtils {
         var compilerOptions = new CqlCompilerOptions(options);
         Optional.ofNullable(nullableSignatureLevel).ifPresent(compilerOptions::setSignatureLevel);
         final LibraryManager libraryManager = getLibraryManager(modelManager, compilerOptions);
-        return CqlTranslator.fromStream(namespaceInfo, inputStream, libraryManager);
+        return CqlTranslator.fromSource(namespaceInfo, buffered(asSource(inputStream)), libraryManager);
     }
 
     private static LibraryManager getLibraryManager(
@@ -261,7 +264,7 @@ public class TestUtils {
 
         final LibraryManager libraryManager =
                 getLibraryManager(compilerOptions, modelManager, nullableLibrarySourceProvider);
-        return CqlTranslator.fromFile(testFile, libraryManager);
+        return CqlTranslator.fromFile(new Path(testFile), libraryManager);
     }
 
     public static CqlTranslator createTranslator(
@@ -281,7 +284,7 @@ public class TestUtils {
         final File translationTestFile = getFileOrThrow(testFileName);
         ModelManager modelManager = new ModelManager();
         final LibraryManager libraryManager = getLibraryManager(options, modelManager, path);
-        return CqlTranslator.fromFile(namespaceInfo, translationTestFile, libraryManager);
+        return CqlTranslator.fromFile(namespaceInfo, new Path(translationTestFile), libraryManager);
     }
 
     public static File getFileOrThrow(String fileName) throws FileNotFoundException {

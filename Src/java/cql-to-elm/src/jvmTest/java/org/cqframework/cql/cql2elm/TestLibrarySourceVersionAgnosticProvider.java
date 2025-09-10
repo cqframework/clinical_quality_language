@@ -1,7 +1,11 @@
 package org.cqframework.cql.cql2elm;
 
-import java.io.InputStream;
+
+import kotlinx.io.Source;
 import org.hl7.elm.r1.VersionedIdentifier;
+
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 
 /**
  * Clone of the {@link TestLibrarySourceProvider} that does not enforce versioning in the file names and thus will
@@ -18,13 +22,14 @@ public class TestLibrarySourceVersionAgnosticProvider implements LibrarySourcePr
     }
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
         return getLibraryContent(libraryIdentifier, LibraryContentType.CQL);
     }
 
     @Override
-    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        return TestLibrarySourceVersionAgnosticProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type));
+    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        var inputStream = TestLibrarySourceVersionAgnosticProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type));
+        return inputStream == null ? null : buffered(asSource(inputStream));
     }
 
     private String getFileName(VersionedIdentifier libraryIdentifier, LibraryContentType type) {

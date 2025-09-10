@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -34,8 +36,8 @@ class ElmSupportTest {
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
 
-            var translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
+            var translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"))),
                     libraryManager);
 
             assertTrue(translator.getErrors().size() > 0);
@@ -53,8 +55,8 @@ class ElmSupportTest {
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
         try {
-            var translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
+            var translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"))),
                     libraryManager);
 
             assertTrue(translator.getErrors().size() > 0);
@@ -71,9 +73,9 @@ class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
-            var translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream(
-                            "LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
+            var translator = CqlTranslator.fromSource(
+                    buffered(asSource(LibraryTests.class.getResourceAsStream(
+                            "LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"))),
                     libraryManager);
 
             assertTrue(translator.getErrors().size() > 0);

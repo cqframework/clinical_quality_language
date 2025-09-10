@@ -2,65 +2,54 @@
 
 package org.cqframework.cql.cql2elm
 
-import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.cql2elm.model.Model
-import org.cqframework.cql.cql2elm.ucum.createUcumService
-import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
-import org.hl7.cql.model.ModelIdentifier
-import org.hl7.cql.model.NamespaceManager
-import org.hl7.elm.r1.VersionedIdentifier
+import org.cqframework.cql.cql2elm.ucum.UcumService
 
 @JsExport
 fun createLibraryManager(
-    getModelXml: (id: String, system: String?, version: String?) -> String?,
-    getLibraryCql: (id: String, system: String?, version: String?) -> String?,
-    validateUnit: (unit: String) -> String?,
-    modelCache: JsReference<MutableMap<ModelIdentifier, Model>>,
-    libraryCache: JsReference<MutableMap<VersionedIdentifier, CompiledLibrary>>,
-): JsReference<BaseLibraryManager> {
-    return BaseLibraryManager(
-            createModelManager(getModelXml, modelCache.get()),
-            NamespaceManager(),
-            createLibrarySourceLoader(getLibraryCql),
-            lazy { createUcumService(validateUnit) },
-            CqlCompilerOptions.defaultOptions(),
-            libraryCache.get(),
-            DefaultElmLibraryReaderProvider
-        )
-        .toJsReference()
+    modelManager: JsReference<ModelManager>,
+    ucumService: JsReference<Lazy<UcumService>>
+): JsReference<LibraryManager> {
+    return LibraryManager(modelManager.get(), lazyUcumService = ucumService.get()).toJsReference()
 }
 
 @JsExport
-fun libraryManagerAddCompilerOption(
-    libraryManager: JsReference<BaseLibraryManager>,
-    option: String
+fun libraryManagerClearLibrarySourceProviders(
+    libraryManager: JsReference<LibraryManager>,
 ) {
-    libraryManager.get().addCompilerOptionInner(option)
+    libraryManager.get().librarySourceLoader.clearProviders()
+}
+
+@JsExport
+fun libraryManagerRegisterLibrarySourceProvider(
+    libraryManager: JsReference<LibraryManager>,
+    librarySourceProvider: JsReference<LibrarySourceProvider>
+) {
+    libraryManager.get().librarySourceLoader.registerProvider(librarySourceProvider.get())
+}
+
+@JsExport
+fun libraryManagerAddCompilerOption(libraryManager: JsReference<LibraryManager>, option: String) {
+
+    libraryManager.get().cqlCompilerOptions.options.add(CqlCompilerOptions.Options.valueOf(option))
 }
 
 @JsExport
 fun libraryManagerRemoveCompilerOption(
-    libraryManager: JsReference<BaseLibraryManager>,
+    libraryManager: JsReference<LibraryManager>,
     option: String
 ) {
-    libraryManager.get().removeCompilerOptionInner(option)
+    libraryManager
+        .get()
+        .cqlCompilerOptions
+        .options
+        .remove(CqlCompilerOptions.Options.valueOf(option))
 }
 
 @JsExport
 fun libraryManagerSetSignatureLevel(
-    libraryManager: JsReference<BaseLibraryManager>,
+    libraryManager: JsReference<LibraryManager>,
     signatureLevel: String
 ) {
     libraryManager.get().cqlCompilerOptions.signatureLevel =
         LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
-}
-
-@JsExport
-fun createModelCache(): JsReference<MutableMap<ModelIdentifier, Model>> {
-    return HashMap<ModelIdentifier, Model>().toJsReference()
-}
-
-@JsExport
-fun createLibraryCache(): JsReference<MutableMap<VersionedIdentifier, CompiledLibrary>> {
-    return HashMap<VersionedIdentifier, CompiledLibrary>().toJsReference()
 }

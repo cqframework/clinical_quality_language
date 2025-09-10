@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm.model
 
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import org.cqframework.cql.cql2elm.IModelManager
+import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.ClassTypeElement
@@ -50,7 +50,7 @@ import org.hl7.elm_modelinfo.r1.TypeSpecifier
     "ReturnCount",
     "UnusedParameter"
 )
-class ModelImporter(val modelInfo: ModelInfo, val modelManager: IModelManager?) {
+class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     private val modelIndex: MutableMap<String, Model> = HashMap()
     private val typeInfoIndex: MutableMap<String, TypeInfo> = HashMap()
     private val resolvedTypes: MutableMap<String, DataType> = HashMap()

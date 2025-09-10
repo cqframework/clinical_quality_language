@@ -1,12 +1,16 @@
 package org.cqframework.cql.cql2elm.quick;
 
 import java.io.InputStream;
+import kotlinx.io.Source;
 import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.VersionedIdentifier;
+
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 
 /**
  * Created by Bryn on 3/28/2017.
@@ -17,7 +21,7 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
     private static final String NAMESPACE_URI = "http://hl7.org/fhir";
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
         InputStream result = FhirLibrarySourceProvider.class.getResourceAsStream(
                 String.format("/org/hl7/fhir/%s-%s.cql", libraryIdentifier.getId(), libraryIdentifier.getVersion()));
 
@@ -31,7 +35,7 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
             libraryIdentifier.setSystem(NAMESPACE_URI);
         }
 
-        return result;
+        return result == null ? null : buffered(asSource(result));
     }
 
     private NamespaceManager namespaceManager;
@@ -42,7 +46,7 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
     }
 
     @Override
-    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier);
         }

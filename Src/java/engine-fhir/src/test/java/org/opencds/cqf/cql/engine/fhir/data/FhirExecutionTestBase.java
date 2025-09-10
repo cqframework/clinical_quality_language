@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.cql2elm.tracking.TrackBack;
@@ -99,7 +100,7 @@ public abstract class FhirExecutionTestBase {
 
                 CqlCompiler compiler = new CqlCompiler(getLibraryManager());
 
-                var library = compiler.run(cqlFile);
+                var library = compiler.run(new Path(cqlFile));
 
                 if (!compiler.getErrors().isEmpty()) {
                     System.err.println("Translation failed due to errors:");

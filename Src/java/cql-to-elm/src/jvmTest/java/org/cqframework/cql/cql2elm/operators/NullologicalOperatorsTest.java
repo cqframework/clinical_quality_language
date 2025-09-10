@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,8 +30,8 @@ class NullologicalOperatorsTest {
     @BeforeAll
     static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(
-                NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"),
+        CqlTranslator translator = CqlTranslator.fromSource(
+                buffered(asSource(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"))),
                 new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();

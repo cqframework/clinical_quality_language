@@ -1,5 +1,6 @@
 package org.cqframework.cql.elm.serializing;
 
+import kotlinx.io.files.Path;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
@@ -36,7 +37,7 @@ class CMS146XmlTest {
         final File cms146 = getFile("CMS146v2_Test_CQM.cql");
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromFile(
-                cms146,
+                new Path(cms146),
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         // The compiler version changes release-to-release

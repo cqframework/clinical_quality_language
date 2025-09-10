@@ -1,14 +1,14 @@
 package org.cqframework.cql.cql2elm.model
 
 import kotlin.jvm.JvmOverloads
-import org.cqframework.cql.cql2elm.IModelManager
+import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ModelContext
 import org.hl7.cql.model.NamedType
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
-open class Model(val modelInfo: ModelInfo, modelManager: IModelManager?) {
+open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     private var index: Map<String, DataType> = HashMap()
     private val classIndex: MutableMap<String, ClassType> = HashMap()
     private val conversions: MutableList<Conversion> = ArrayList()

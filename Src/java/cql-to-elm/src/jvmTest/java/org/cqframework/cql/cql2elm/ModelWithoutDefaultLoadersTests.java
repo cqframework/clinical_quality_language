@@ -1,10 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import org.hl7.cql.model.ModelInfoProvider;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.Library;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +19,7 @@ class ModelWithoutDefaultLoadersTests {
 
     @BeforeAll
     static void setup() {
-        modelManager = new ModelManager(false);
+        modelManager = new ModelManager(new NamespaceManager(), false);
         modelInfoProvider = new TestModelInfoProvider();
         // modelManager.getModelInfoLoader().registerSystemModelInfoProvider();
         modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider);
@@ -31,8 +34,8 @@ class ModelWithoutDefaultLoadersTests {
     void modelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(
-                    ModelWithoutDefaultLoadersTests.class.getResourceAsStream("ModelTests/ModelTest.cql"),
+            translator = CqlTranslator.fromSource(
+                    buffered(asSource(ModelWithoutDefaultLoadersTests.class.getResourceAsStream("ModelTests/ModelTest.cql"))),
                     new LibraryManager(modelManager));
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
