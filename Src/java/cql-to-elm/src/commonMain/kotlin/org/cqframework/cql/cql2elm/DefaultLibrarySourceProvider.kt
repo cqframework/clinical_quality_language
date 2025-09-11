@@ -1,11 +1,13 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.js.ExperimentalJsExport
 import kotlinx.io.Source
 import kotlinx.io.buffered
 import kotlinx.io.files.FileNotFoundException
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import org.cqframework.cql.cql2elm.model.Version
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier
 
 // NOTE: This implementation is naive and assumes library file names will always take the form:
@@ -14,6 +16,9 @@ import org.hl7.elm.r1.VersionedIdentifier
 // form
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAware {
     private var path: Path? = null
 

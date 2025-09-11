@@ -1,10 +1,12 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.js.ExperimentalJsExport
 import kotlinx.io.IOException
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import org.cqframework.cql.cql2elm.model.Version
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
 import org.hl7.elm_modelinfo.r1.ModelInfo
@@ -15,12 +17,15 @@ import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 // And further that <modelname> will never contain dashes, and that <version> will always be of the
 // form <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
-    constructor(path: Path) : this() {
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
+class DefaultModelInfoProvider(path: Path) : ModelInfoProvider, PathAware {
+    private var path: Path? = null
+
+    init {
         this.setPath(path)
     }
-
-    private var path: Path? = null
 
     override fun setPath(path: Path) {
         require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) {
