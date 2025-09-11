@@ -2,6 +2,7 @@ package org.hl7.cql.model
 
 import kotlin.collections.HashMap
 import kotlin.js.ExperimentalJsExport
+import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.JsOnlyExport
 
 @OptIn(ExperimentalJsExport::class)
@@ -49,10 +50,12 @@ class NamespaceManager {
     }
 
     companion object {
+        @JvmStatic
         fun getPath(namespaceUri: String?, name: String): String {
             return namespaceUri?.let { "$it/$name" } ?: name
         }
 
+        @JvmStatic
         fun getUriPart(namespaceQualifiedName: String?): String? {
             return namespaceQualifiedName
                 ?.lastIndexOf('/')
@@ -60,6 +63,7 @@ class NamespaceManager {
                 ?.let { namespaceQualifiedName.substring(0, it) }
         }
 
+        @JvmStatic
         fun getNamePart(namespaceQualifiedName: String?): String? {
             return namespaceQualifiedName
                 ?.lastIndexOf("/")

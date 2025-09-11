@@ -407,8 +407,8 @@ public class CqlEngine {
         if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
             for (IncludeDef include : library.getIncludes().getDef()) {
                 this.loadAndValidate(new VersionedIdentifier()
-                        .withSystem(NamespaceManager.Companion.getUriPart(include.getPath()))
-                        .withId(NamespaceManager.Companion.getNamePart(include.getPath()))
+                        .withSystem(NamespaceManager.getUriPart(include.getPath()))
+                        .withId(NamespaceManager.getNamePart(include.getPath()))
                         .withVersion(include.getVersion()));
             }
         }
@@ -430,12 +430,10 @@ public class CqlEngine {
 
         var resultBuilder = LoadMultiLibResult.builder();
 
-        if (CqlCompilerException.hasErrors(resolvedLibraryResults.allErrors())) {
-            for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
-                if (!libraryResult.getErrors().isEmpty()) {
-                    var identifier = libraryResult.getCompiledLibrary().getIdentifier();
-                    resultBuilder.addException(identifier, wrapException(identifier, libraryResult.getErrors()));
-                }
+        for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
+            if (!libraryResult.getErrors().isEmpty()) {
+                var identifier = libraryResult.getCompiledLibrary().getIdentifier();
+                resultBuilder.addExceptionsOrWarnings(identifier, libraryResult.getErrors());
             }
         }
 
@@ -451,8 +449,8 @@ public class CqlEngine {
                 if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
                     for (IncludeDef include : library.getIncludes().getDef()) {
                         this.loadAndValidate(new VersionedIdentifier()
-                                .withSystem(NamespaceManager.Companion.getUriPart(include.getPath()))
-                                .withId(NamespaceManager.Companion.getNamePart(include.getPath()))
+                                .withSystem(NamespaceManager.getUriPart(include.getPath()))
+                                .withId(NamespaceManager.getNamePart(include.getPath()))
                                 .withVersion(include.getVersion()));
                     }
                 }
@@ -460,7 +458,7 @@ public class CqlEngine {
             } catch (CqlException | CqlCompilerException exception) {
                 // As with previous code, per searched library identifier, this is an all or nothing operation:
                 // stop at the first Exception and don't capture subsequent errors for subsequent included libraries.
-                resultBuilder.addException(library.getIdentifier(), exception);
+                resultBuilder.addExceptionOrWarning(library.getIdentifier(), exception);
             }
         }
 
@@ -475,14 +473,6 @@ public class CqlEngine {
             });
             // TODO: Validate Expressions as well?
         }
-    }
-
-    private CqlException wrapException(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> exceptions) {
-        return new CqlException("Library %s loaded, but had errors: %s"
-                .formatted(
-                        libraryIdentifier.getId()
-                                + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
-                        exceptions.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
     }
 
     private void validateDataRequirements(Library library) {

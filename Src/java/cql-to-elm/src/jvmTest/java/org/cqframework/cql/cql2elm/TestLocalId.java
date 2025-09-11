@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class TestLocalId {
 
     // This visitor checks that all nodes the graph have a localId
-    static FunctionalElmVisitor<Void, String> idChecker = FunctionalElmVisitor.Companion.from((node, libraryName) -> {
+    static FunctionalElmVisitor<Void, String> idChecker = FunctionalElmVisitor.from((node, libraryName) -> {
         var trackbacks = Trackable.INSTANCE.getTrackbacks(node);
         var locator = trackbacks.isEmpty() ? "<unknown>" : trackbacks.get(0).toLocator();
         assertNotNull(

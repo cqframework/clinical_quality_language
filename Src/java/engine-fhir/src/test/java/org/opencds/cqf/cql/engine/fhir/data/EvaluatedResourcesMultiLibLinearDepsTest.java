@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 
 class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTestBase {
@@ -37,6 +39,11 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
             EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest2");
     private static final VersionedIdentifier LIB_3 =
             EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTest3");
+    private static final VersionedIdentifier LIB_WARNING_HIDING =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTestWarningHiding");
+    private static final VersionedIdentifier LIB_ERROR_INVALID_CAST_EXPRESSION =
+            EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibLinearDepsTestErrorInvalidCastExpression");
+
     private static final List<VersionedIdentifier> ALL_LIB_IDS = List.of(LIB_1, LIB_2, LIB_3);
 
     private static final String UNION_EXPRESSION = "Union";
@@ -124,6 +131,43 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
         assertThat(multiLibException.getMessage(), startsWith("Could not load source for library bad"));
     }
 
+    @Test
+    void ensureWarningsAreSeparateFromErrors() {
+        var engine = getCqlEngineForFhirNewLibMgr(true);
+
+        var multiLibResults =
+                engine.evaluate(List.of(LIB_1, LIB_WARNING_HIDING, LIB_ERROR_INVALID_CAST_EXPRESSION), null);
+
+        assertTrue(multiLibResults.hasExceptions());
+        assertTrue(multiLibResults.hasWarnings());
+        assertFalse(multiLibResults.getWarnings().isEmpty());
+        assertFalse(multiLibResults.getExceptions().isEmpty());
+
+        assertTrue(multiLibResults.containsResultsFor(LIB_1));
+        assertFalse(multiLibResults.containsWarningsFor(LIB_1));
+        assertFalse(multiLibResults.containsExceptionsFor(LIB_1));
+
+        assertTrue(multiLibResults.containsResultsFor(LIB_WARNING_HIDING));
+        assertTrue(multiLibResults.containsWarningsFor(LIB_WARNING_HIDING));
+        assertFalse(multiLibResults.containsExceptionsFor(LIB_WARNING_HIDING));
+
+        var warning = multiLibResults.getWarningFor(LIB_WARNING_HIDING);
+        assertInstanceOf(CqlException.class, warning);
+        assertTrue(warning.getMessage()
+                .contains("An alias identifier Definition is hiding another identifier of the same name."));
+
+        assertFalse(multiLibResults.containsResultsFor(LIB_ERROR_INVALID_CAST_EXPRESSION));
+        assertFalse(multiLibResults.containsWarningsFor(LIB_ERROR_INVALID_CAST_EXPRESSION));
+        assertTrue(multiLibResults.containsExceptionsFor(LIB_ERROR_INVALID_CAST_EXPRESSION));
+
+        var error = multiLibResults.getExceptionFor(LIB_ERROR_INVALID_CAST_EXPRESSION);
+        assertInstanceOf(CqlException.class, error);
+        assertTrue(
+                error.getMessage()
+                        .contains(
+                                "Expression of type 'List of System.Integer' cannot be cast as a value of type 'System.Integer'."));
+    }
+
     private static Stream<Arguments> multiLibParams() {
         return Stream.of(
                 Arguments.of(
@@ -167,7 +211,7 @@ class EvaluatedResourcesMultiLibLinearDepsTest extends FhirExecutionMultiLibTest
 
         var engine = getCqlEngineForFhirNewLibMgr(expressionCaching);
 
-        var results = engine.evaluate(getAllLibraryIdentifiers(), Set.of(expressionName));
+        var results = engine.evaluate(ALL_LIB_IDS, Set.of(expressionName));
 
         var evaluationResultForIdentifier = results.getResultFor(libId);
 

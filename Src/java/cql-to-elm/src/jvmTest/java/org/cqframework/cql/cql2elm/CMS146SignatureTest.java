@@ -39,7 +39,7 @@ class CMS146SignatureTest {
                 new Path(cms146),
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
 
-        var visitor = FunctionalElmVisitor.Companion.from(
+        var visitor = FunctionalElmVisitor.from(
                 (Element elm, Void context) -> {
                     if (elm instanceof OperatorExpression fd) {
                         return fd.getSignature().isEmpty() ? 0 : 1;

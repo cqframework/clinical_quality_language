@@ -60,7 +60,7 @@ public class LocalIdTests {
     // @Test
     public void simpleTest() {
         var lib = compile("library Test version '1.0.0'");
-        var missingIds = FunctionalElmVisitor.Companion.from(missingIdChecker).visitElement(lib, new ArrayList<>());
+        var missingIds = FunctionalElmVisitor.from(missingIdChecker).visitElement(lib, new ArrayList<>());
 
         for (var missingId : missingIds) {
             System.out.println(missingId.description());
@@ -72,7 +72,7 @@ public class LocalIdTests {
     // @Test
     public void equalityTest() {
         var lib = compile("library Test version '1.0.0'\n define foo: 1 = 1\n define bar: 1 != 1");
-        var missingIds = FunctionalElmVisitor.Companion.from(missingIdChecker).visitElement(lib, new ArrayList<>());
+        var missingIds = FunctionalElmVisitor.from(missingIdChecker).visitElement(lib, new ArrayList<>());
 
         for (var missingId : missingIds) {
             System.out.println(missingId.description());

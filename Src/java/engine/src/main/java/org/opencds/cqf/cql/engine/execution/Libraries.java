@@ -142,8 +142,8 @@ public class Libraries {
 
     public static VersionedIdentifier toVersionedIdentifier(IncludeDef includeDef) {
         return new VersionedIdentifier()
-                .withSystem(NamespaceManager.Companion.getUriPart(includeDef.getPath()))
-                .withId(NamespaceManager.Companion.getNamePart(includeDef.getPath()))
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
     }
 }

@@ -1,5 +1,6 @@
 package org.cqframework.cql.elm.visiting
 
+import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.Element
 
 /**
@@ -21,6 +22,7 @@ class FunctionalElmVisitor<T, C>(
     }
 
     companion object {
+        @JvmStatic
         fun <C, T> from(
             defaultResult: (Element, C) -> T,
             aggregateResult: (T, T) -> T
@@ -28,6 +30,7 @@ class FunctionalElmVisitor<T, C>(
             return FunctionalElmVisitor(defaultResult, aggregateResult)
         }
 
+        @JvmStatic
         fun <C, T> from(defaultResult: (Element, C) -> T): FunctionalElmVisitor<T, C> {
             return from(defaultResult) { _: T, b: T -> b }
         }

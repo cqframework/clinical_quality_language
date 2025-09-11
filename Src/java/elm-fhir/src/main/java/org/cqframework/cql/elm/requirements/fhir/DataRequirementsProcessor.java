@@ -608,8 +608,8 @@ public class DataRequirementsProcessor {
     }
 
     private String getReferenceUrl(String path, String version) {
-        String uri = NamespaceManager.Companion.getUriPart(path);
-        String name = NamespaceManager.Companion.getNamePart(path);
+        String uri = NamespaceManager.getUriPart(path);
+        String name = NamespaceManager.getNamePart(path);
 
         if (uri != null) {
             // The translator has no way to correctly infer the namespace of the FHIRHelpers library, since it will
