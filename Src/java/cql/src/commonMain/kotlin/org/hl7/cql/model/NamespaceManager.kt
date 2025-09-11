@@ -6,6 +6,7 @@ import org.cqframework.cql.shared.JsOnlyExport
 
 @OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class NamespaceManager {
     private val namespaces: MutableMap<String, String> = HashMap()
     private val reverseNamespaces: MutableMap<String, String> = HashMap()
