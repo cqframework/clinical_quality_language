@@ -1,8 +1,19 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("cql.kotlin-multiplatform-conventions")
 }
 
 kotlin {
+    js {
+        outputModuleName = "shared"
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        outputModuleName = "shared"
+    }
+
     sourceSets {
         commonMain {
             dependencies {

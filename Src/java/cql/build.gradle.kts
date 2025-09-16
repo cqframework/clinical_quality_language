@@ -1,4 +1,5 @@
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
@@ -7,6 +8,15 @@ plugins {
 }
 
 kotlin {
+    js {
+        outputModuleName = "cql"
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        outputModuleName = "cql"
+    }
+
     sourceSets {
         commonMain {
             kotlin {

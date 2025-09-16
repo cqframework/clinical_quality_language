@@ -1,8 +1,19 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("cql.kotlin-multiplatform-conventions")
 }
 
 kotlin {
+    js {
+        outputModuleName = "cql-to-elm"
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        outputModuleName = "cql-to-elm"
+    }
+
     sourceSets {
         commonMain {
             dependencies {
