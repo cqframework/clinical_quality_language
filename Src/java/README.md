@@ -12,6 +12,7 @@ It contains the following sub-projects:
 * **qdm:** contains schema and model info resources for QDM
 * **quick:** contains schema and model info resources for QUICK, FHIR, QI-Core, US Core, as well as the FHIRHelpers library
 * **cql-to-elm:** generates Expression Logical Model (ELM) XML and JSON from CQL source
+* **cql-to-elm-cli:** provides command-line access to the CQL-to-ELM translator
 * **ucum:** provides the default UCUM service
 * **tools:cql-formatter:** formats input CQL based on standard formatting conventions as suggested by the CQL specification
 * **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
