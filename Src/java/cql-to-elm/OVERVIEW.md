@@ -4,35 +4,14 @@ The HL7 CQL specification defines both a high-level, author friendly syntax for 
 
 The specification describes a formal mechanism for translating the high-level CQL syntax into the canonical ELM representation. This project provides a reference implementation of that translation. The translation component is designed to support use within an Integrated Development Environment (IDE), and has several options and features focused on providing translation support in such an environment. The reference implementation is intended to be used in support of CQF implementations as a tool to enable CQL output to be uniformly and automatically translated into ELM XML or JSON documents for sharing and distribution to support implementation, integration, translation, and execution of CQL-based artifacts.
 
-The CQL-to-ELM Translator is licensed under the open source [Apache Version 2.0](../../../LICENSE) license, and releases are made available via the Sonatype Maven repository:
+The CQL-to-ELM Translator is licensed under the open source [Apache Version 2.0](../../../LICENSE) license, and releases are made available via the Maven Central repository. `-SNAPSHOT` releases are also made available via the `https://central.sonatype.com/repository/maven-snapshots/` repository.
 
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public</name>
-      <url>https://oss.sonatype.org/content/groups/public/</url>
-    </repository>
-
-The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the translator:
+The `cql-to-elm-jvm` package is required to use the translator:
 
     <dependency>
       <groupId>info.cqframework</groupId>
-      <artifactId>cql</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cqframework</groupId>
-      <artifactId>model</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cqframework</groupId>
-      <artifactId>elm</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cqframework</groupId>
-      <artifactId>cql-to-elm</artifactId>
-      <version>2.8.0</version>
+      <artifactId>cql-to-elm-jvm</artifactId>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -40,12 +19,20 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>2.8.0</version>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>2.8.0</version>
+      <version>4.0.0-SNAPSHOT</version>
+    </dependency>
+
+To perform UCUM unit validation during translation using [`ucum-java`](https://github.com/FHIR/Ucum-java), the `ucum` package must also be included:
+
+    <dependency>
+      <groupId>info.cqframework</groupId>
+      <artifactId>ucum</artifact>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
 
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
@@ -53,7 +40,7 @@ To use the DataRequirementsProcessor, a component that performs data requirement
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
-      <version>2.8.0</version>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
 
 Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
