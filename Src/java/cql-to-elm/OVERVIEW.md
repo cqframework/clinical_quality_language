@@ -53,7 +53,7 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.3)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the [Issues](https://github.com/cqframework/clinical_quality_language/issues) tracker in the Github repository.
 
-The current release of the translator is version [3.28.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v3.28.0), which includes full support for library and model information sharing through NPM packages, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring and derived model info, as well as a new DataRequirementsProcessor to support data requirements inference and analysis.
+The current release of the translator is version [4.0.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v4.0.0), which includes full support for library and model information sharing through NPM packages, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring and derived model info, as well as a new DataRequirementsProcessor to support data requirements inference and analysis.
 
 ## Roadmap
 
