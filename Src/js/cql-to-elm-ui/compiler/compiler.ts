@@ -1,7 +1,7 @@
 // @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
-import * as cqlToElmJs from "cql-all-cql-to-elm-js";
-import * as cqlToElmWasmJs from "cql-all-cql-to-elm-wasm-js";
+import * as cqlToElmJs from "cql-to-elm-js";
+import * as cqlToElmWasmJs from "cql-to-elm-wasm-js";
 import { compilerOptions, TCompileCqlArgs, TOutput } from "@/shared";
 import { supportedModels } from "@/compiler/supported-models";
 import { fetchSync, readFile } from "@/compiler/utils";
