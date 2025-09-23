@@ -17,8 +17,7 @@ It contains the following sub-projects:
 * **tools:cql-formatter:** formats input CQL based on standard formatting conventions as suggested by the CQL specification
 * **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
 * **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
-* **cqf-fhir**
-* **cqf-fhir-npm**
+
 
 # Building the Project
 
