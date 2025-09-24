@@ -6,7 +6,7 @@ import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
-import org.cqframework.cql.cql2elm.CqlCompilerException
+import org.cqframework.cql.cql2elm.CqlSemanticException
 import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.ResultWithPossibleError
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
@@ -237,7 +237,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
                 typeSpecifierKey,
                 ResultWithPossibleError.withError()
             )
-            throw CqlCompilerException(
+            throw CqlSemanticException(
                 "Could not find type for model: $modelIdentifier and name: $identifier"
             )
         }

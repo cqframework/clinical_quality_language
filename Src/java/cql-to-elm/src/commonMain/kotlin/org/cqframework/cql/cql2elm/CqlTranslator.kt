@@ -91,16 +91,16 @@ private constructor(
     val libraries: Map<VersionedIdentifier, Library?>
         get() = compiler.libraries
 
-    val exceptions: kotlin.collections.List<CqlCompilerException?>?
+    val exceptions: kotlin.collections.List<CqlCompilerException>
         get() = compiler.exceptions
 
-    val errors: kotlin.collections.List<CqlCompilerException?>?
+    val errors: kotlin.collections.List<CqlCompilerException>
         get() = compiler.errors
 
-    val warnings: kotlin.collections.List<CqlCompilerException?>?
+    val warnings: kotlin.collections.List<CqlCompilerException>
         get() = compiler.warnings
 
-    val messages: kotlin.collections.List<CqlCompilerException?>?
+    val messages: kotlin.collections.List<CqlCompilerException>
         get() = compiler.messages
 
     @Suppress("TooManyFunctions")

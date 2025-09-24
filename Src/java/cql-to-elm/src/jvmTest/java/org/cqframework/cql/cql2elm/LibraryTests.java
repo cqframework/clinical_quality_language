@@ -228,8 +228,7 @@ class LibraryTests {
             translator = CqlTranslator.fromSource(
                     buffered(asSource(LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"))), libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
-            assertThat(translator.getErrors().get(0).getCause(), instanceOf(CqlIncludeException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlIncludeException.class));
         } catch (IOException e) {
             e.printStackTrace();
         }

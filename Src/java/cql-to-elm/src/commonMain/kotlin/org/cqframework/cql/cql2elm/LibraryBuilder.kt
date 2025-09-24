@@ -555,15 +555,17 @@ class LibraryBuilder(
                 else (if (e is CqlSemanticException) ErrorType.SEMANTIC else ErrorType.INTERNAL)
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
-                if (e.locator.library != null) {
-                    err.librarySystem = e.locator.library.system
-                    err.libraryId = e.locator.library.id
-                    err.libraryVersion = e.locator.library.version
+                val loc = e.locator!!
+                if (loc.library != null) {
+                    val lib = loc.library
+                    err.librarySystem = lib.system
+                    err.libraryId = lib.id
+                    err.libraryVersion = lib.version
                 }
-                err.startLine = e.locator.startLine
-                err.endLine = e.locator.endLine
-                err.startChar = e.locator.startChar
-                err.endChar = e.locator.endChar
+                err.startLine = loc.startLine
+                err.endLine = loc.endLine
+                err.startChar = loc.startChar
+                err.endChar = loc.endChar
             }
             if (e.cause != null && e.cause is CqlIncludeException) {
                 val incEx = e.cause as CqlIncludeException?
@@ -984,7 +986,7 @@ class LibraryBuilder(
                     objectFactory
                         .createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset(if (right is ValueSetRef) right else null)
+                        .withValueset(right as? ValueSetRef)
                         .withValuesetExpression(if (right is ValueSetRef) null else right)
                 resolveCall("System", "AnyInValueSet", AnyInValueSetInvocation(anyIn))
                 return anyIn
@@ -993,7 +995,7 @@ class LibraryBuilder(
                 objectFactory
                     .createInValueSet()
                     .withCode(left)
-                    .withValueset(if (right is ValueSetRef) right else null)
+                    .withValueset(right as? ValueSetRef)
                     .withValuesetExpression(if (right is ValueSetRef) null else right)
             resolveCall("System", "InValueSet", InValueSetInvocation(inValueSet))
             return inValueSet
@@ -1012,7 +1014,7 @@ class LibraryBuilder(
                     objectFactory
                         .createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem(if (right is CodeSystemRef) right else null)
+                        .withCodesystem(right as? CodeSystemRef)
                         .withCodesystemExpression(if (right is CodeSystemRef) null else right)
                 resolveCall("System", "AnyInCodeSystem", AnyInCodeSystemInvocation(anyIn))
                 return anyIn
@@ -1021,7 +1023,7 @@ class LibraryBuilder(
                 objectFactory
                     .createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem(if (right is CodeSystemRef) right else null)
+                    .withCodesystem(right as? CodeSystemRef)
                     .withCodesystemExpression(if (right is CodeSystemRef) null else right)
             resolveCall("System", "InCodeSystem", InCodeSystemInvocation(inCodeSystem))
             return inCodeSystem
@@ -1611,7 +1613,7 @@ class LibraryBuilder(
         ) {
             // ERROR:
             throw CqlSemanticException(
-                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library."
+                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library.",
             )
         }
     }
@@ -1782,7 +1784,7 @@ class LibraryBuilder(
             if (expression != null && expression.trackbacks.isNotEmpty()) expression.trackbacks[0]
             else null
         val warning =
-            CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback)
+            CqlSemanticException(message, trackback, CqlCompilerException.ErrorSeverity.Warning)
         recordParsingException(warning)
     }
 
@@ -2471,7 +2473,7 @@ class LibraryBuilder(
                         for (e: ClassTypeElement in classType.elements) {
                             if ((e.name == identifier)) {
                                 require(!e.prohibited) {
-                                    "Element ${e.name} cannot be referenced because it is marked prohibited in type ${(currentType as ClassType).name}."
+                                    "Element ${e.name} cannot be referenced because it is marked prohibited in type ${currentType.name}."
                                 }
                                 return PropertyResolution(e)
                             }
@@ -3507,11 +3509,7 @@ class LibraryBuilder(
                 scope.queries.peek().referencesSpecificContextValue = true
             }
             val resultType: DataType = expressionDef.resultType!!
-            return if (resultType !is ListType) {
-                ListType(resultType)
-            } else {
-                resultType
-            }
+            return resultType as? ListType ?: ListType(resultType)
         }
         throw IllegalArgumentException(
             "Invalid context reference from ${currentExpressionContext()} context to ${expressionDef.context} context."
@@ -3558,7 +3556,7 @@ class LibraryBuilder(
             else null
         val globalMatch = findMatchingIdentifierContext(globalIdentifiers, identifier)
         if (globalMatch != null || localMatch != null) {
-            val matchedContext = if (globalMatch != null) globalMatch else localMatch!!
+            val matchedContext = globalMatch ?: localMatch!!
             val matchedOnFunctionOverloads =
                 matchedContext.trackableSubclass == FunctionDef::class && element is FunctionDef
             if (!matchedOnFunctionOverloads) {

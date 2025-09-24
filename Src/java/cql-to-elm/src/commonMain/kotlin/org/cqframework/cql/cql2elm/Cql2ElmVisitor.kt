@@ -434,7 +434,7 @@ class Cql2ElmVisitor(
         }
         val resultType =
             libraryBuilder.resolveTypeName(modelIdentifier, identifier)
-                ?: throw CqlCompilerException(
+                ?: throw CqlSemanticException(
                     "Could not find type for model: $modelIdentifier and name: $identifier",
                     getTrackBack(ctx)
                 )
@@ -2916,9 +2916,9 @@ class Cql2ElmVisitor(
                 propertyException =
                     CqlSemanticException(
                         "Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
+                        getTrackBack(ctx),
                         if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
-                        else CqlCompilerException.ErrorSeverity.Warning,
-                        getTrackBack(ctx)
+                        else CqlCompilerException.ErrorSeverity.Warning
                     )
                 libraryBuilder.recordParsingException(propertyException)
             } else {
@@ -2933,9 +2933,9 @@ class Cql2ElmVisitor(
                     propertyException =
                         CqlSemanticException(
                             "Could not resolve code path $codePath for the type of the retrieve ${namedType.name}.",
+                            getTrackBack(ctx),
                             if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
                             else CqlCompilerException.ErrorSeverity.Warning,
-                            getTrackBack(ctx),
                             e
                         )
                     libraryBuilder.recordParsingException(propertyException)
@@ -3237,10 +3237,10 @@ class Cql2ElmVisitor(
                                 libraryBuilder.recordParsingException(
                                     CqlSemanticException(
                                         "Unexpected membership operator ${inExpression::class.simpleName} in retrieve",
+                                        getTrackBack(ctx),
                                         if (useStrictRetrieveTyping)
                                             CqlCompilerException.ErrorSeverity.Error
-                                        else CqlCompilerException.ErrorSeverity.Warning,
-                                        getTrackBack(ctx)
+                                        else CqlCompilerException.ErrorSeverity.Warning
                                     )
                                 )
                             }
@@ -3258,10 +3258,10 @@ class Cql2ElmVisitor(
                         libraryBuilder.recordParsingException(
                             CqlSemanticException(
                                 "Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
+                                getTrackBack(ctx),
                                 if (useStrictRetrieveTyping)
                                     CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning,
-                                getTrackBack(ctx)
+                                else CqlCompilerException.ErrorSeverity.Warning
                             )
                         )
                     }
@@ -3314,10 +3314,10 @@ class Cql2ElmVisitor(
                         libraryBuilder.recordParsingException(
                             CqlSemanticException(
                                 "Unknown code comparator $codeComparator in retrieve",
+                                getTrackBack(ctx.codeComparator()!!),
                                 if (useStrictRetrieveTyping)
                                     CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning,
-                                getTrackBack(ctx.codeComparator()!!)
+                                else CqlCompilerException.ErrorSeverity.Warning
                             )
                         )
                 }
@@ -3359,8 +3359,8 @@ class Cql2ElmVisitor(
                         libraryBuilder.recordParsingException(
                             CqlSemanticException(
                                 "Terminology target is a list of concepts, but expects a list of codes",
-                                CqlCompilerException.ErrorSeverity.Warning,
-                                getTrackBack(ctx)
+                                getTrackBack(ctx),
+                                CqlCompilerException.ErrorSeverity.Warning
                             )
                         )
                     }
@@ -3387,9 +3387,9 @@ class Cql2ElmVisitor(
                 libraryBuilder.recordParsingException(
                     CqlSemanticException(
                         "Could not resolve membership operator for terminology target of the retrieve.",
+                        getTrackBack(ctx),
                         if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
                         else CqlCompilerException.ErrorSeverity.Warning,
-                        getTrackBack(ctx),
                         e
                     )
                 )
@@ -4253,9 +4253,8 @@ class Cql2ElmVisitor(
                     )
                 }
                 if (!this.isMethodInvocationEnabled) {
-                    throw CqlCompilerException(
+                    throw CqlSemanticException(
                         "The identifier $identifier could not be resolved as an invocation because method-style invocation is disabled.",
-                        CqlCompilerException.ErrorSeverity.Error
                     )
                 }
                 throw IllegalArgumentException(
