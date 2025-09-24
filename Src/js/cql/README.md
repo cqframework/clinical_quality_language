@@ -1,6 +1,6 @@
 # CQL.js
 
-[![npm package](https://badge.fury.io/js/%40cqframework%2Fcql.svg)](https://badge.fury.io/js/%40cqframework%2Fcql)
+![NPM Version](https://img.shields.io/npm/v/%40cqframework%2Fcql)
 
 JavaScript tools for the Clinical Quality Language (CQL).
 
@@ -18,7 +18,7 @@ use it in Node.js and the browser (both on the main thread and in web workers).
 The library includes a fully featured CQL translator, allowing you to compile CQL to ELM in JavaScript environments:
 
 ```js
-import {ModelManager, LibraryManager, CqlTranslator} from "@cqframework/cql/cql-to-elm";
+import { ModelManager, LibraryManager, CqlTranslator } from "@cqframework/cql/cql-to-elm";
 
 const modelManager = new ModelManager();
 // Register the necessary model info providers with the model manager here
@@ -27,9 +27,6 @@ const libraryManager = new LibraryManager(modelManager);
 const cqlTranslator = CqlTranslator.fromText("library Test version '1.0.0'", libraryManager);
 const elmJson = cqlTranslator.toJson();
 ```
-
-For a complete example, see the source of the
-[demo CQL to ELM app](https://github.com/cqframework/clinical_quality_language/tree/feature-kotlin/Src/js/cql-to-elm-ui).
 
 ### TypeScript support
 
@@ -40,8 +37,8 @@ so the types may not be perfect.
 ## Project status
 
 This package is built from the Kotlin
-Multiplatform [source](https://github.com/cqframework/clinical_quality_language/tree/feature-kotlin/Src/java) which
-itself evolved from the reference Java implementation. The KMP project targets the JVM and JavaScript environments with
+Multiplatform [source](https://github.com/cqframework/clinical_quality_language/tree/master/Src/java) which itself
+evolved from the reference Java implementation. The KMP project targets the JVM and JavaScript environments with
 the goal of maintaining a single, shared codebase for both platforms.
 
 This new JavaScript target is currently in beta and its API may change in future releases. If you encounter any issues,
