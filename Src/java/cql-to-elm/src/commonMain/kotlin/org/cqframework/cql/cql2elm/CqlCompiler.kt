@@ -34,10 +34,16 @@ class CqlCompiler(
 
     private var visitResult: Any? = null
     private var retrieves: kotlin.collections.List<Retrieve>? = null
-    var exceptions: MutableList<CqlCompilerException>? = null
-    var errors: MutableList<CqlCompilerException>? = null
-    var warnings: MutableList<CqlCompilerException>? = null
-    var messages: MutableList<CqlCompilerException>? = null
+    val exceptions = ArrayList<CqlCompilerException>()
+    val errors: kotlin.collections.List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Error }
+
+    val warnings: kotlin.collections.List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Warning }
+
+    val messages: kotlin.collections.List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Info }
+
     private var sourceInfo =
         sourceInfo ?: VersionedIdentifier().withId("Anonymous").withSystem("text/cql")
 
@@ -140,7 +146,6 @@ class CqlCompiler(
                 TrackBack(libraryIdentifier, line, charPositionInLine, line, charPositionInLine)
             if (detailedErrors) {
                 builder.recordParsingException(CqlSyntaxException(msg, trackback, e))
-                builder.recordParsingException(CqlCompilerException(msg, trackback, e))
             } else {
                 if (offendingSymbol is CommonToken) {
                     builder.recordParsingException(
@@ -168,10 +173,6 @@ class CqlCompiler(
     }
 
     fun run(charStream: CharStream): Library {
-        exceptions = ArrayList()
-        errors = ArrayList()
-        warnings = ArrayList()
-        messages = ArrayList()
         val options = libraryManager.cqlCompilerOptions.options
         val builder = LibraryBuilder(namespaceInfo, libraryManager, IdObjectFactory())
         val errorListener =
@@ -222,10 +223,7 @@ class CqlCompiler(
         ElmEditor(edits).edit(library!!)
         compiledLibrary = builder.compiledLibrary
         retrieves = visitor.retrieves
-        exceptions?.addAll(builder.exceptions)
-        errors?.addAll(builder.errors)
-        warnings?.addAll(builder.warnings)
-        messages?.addAll(builder.messages)
+        exceptions.addAll(builder.exceptions)
         return library!!
     }
 

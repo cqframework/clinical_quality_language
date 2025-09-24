@@ -90,20 +90,20 @@ abstract class CqlPreprocessorElmCommonVisitor(
                         getTrackBack(tree)
                     )
                 }
-            } catch (e: CqlIncludeException) {
-                val translatorException = CqlCompilerException(e.message, getTrackBack(tree), e)
-                if (translatorException.locator == null) {
-                    throw translatorException
-                }
-                libraryBuilder.recordParsingException(translatorException)
             } catch (e: CqlCompilerException) {
+                e.locator = e.locator ?: getTrackBack(tree)
                 libraryBuilder.recordParsingException(e)
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                 val ex =
                     if (e.message == null) {
                         CqlInternalException("Internal translator error.", getTrackBack(tree), e)
                     } else {
-                        CqlSemanticException(e.message, getTrackBack(tree), e)
+                        CqlSemanticException(
+                            e.message!!,
+                            getTrackBack(tree),
+                            CqlCompilerException.ErrorSeverity.Error,
+                            e
+                        )
                     }
                 var rootCause = libraryBuilder.determineRootCause()
                 if (rootCause == null) {
