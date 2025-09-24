@@ -406,7 +406,7 @@ export function CqlCompilerPlayground() {
                 "url(https://raw.githubusercontent.com/microsoft/vscode-icons/refs/heads/main/icons/light/github-inverted.svg) center/18px 18px no-repeat",
             }}
             href={
-              "https://github.com/cqframework/clinical_quality_language/tree/feature-kotlin/Src/js/cql-to-elm-ui"
+              "https://github.com/cqframework/clinical_quality_language/tree/master/Src/js/cql-to-elm-ui"
             }
           />
         </div>

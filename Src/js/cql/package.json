@@ -6,7 +6,10 @@
     "cql",
     "clinical quality language"
   ],
-  "repository": "cqframework/clinical_quality_language",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cqframework/clinical_quality_language.git"
+  },
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
