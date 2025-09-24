@@ -431,9 +431,9 @@ public class CqlEngine {
         var resultBuilder = LoadMultiLibResult.builder();
 
         for (CompiledLibraryResult libraryResult : resolvedLibraryResults.allResults()) {
-            if (!libraryResult.errors().isEmpty()) {
-                var identifier = libraryResult.compiledLibrary().getIdentifier();
-                resultBuilder.addExceptionsOrWarnings(identifier, libraryResult.errors());
+            if (!libraryResult.getErrors().isEmpty()) {
+                var identifier = libraryResult.getCompiledLibrary().getIdentifier();
+                resultBuilder.addExceptionsOrWarnings(identifier, libraryResult.getErrors());
             }
         }
 

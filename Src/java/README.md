@@ -1,20 +1,23 @@
 # Overview
 
-This is a multi-module project for CQL java libraries and tooling applications.
+This is a multi-module project for CQL Kotlin and Java libraries and tooling applications.
 It contains the following sub-projects:
 
-* **cql:** generates and builds Java lexers, parsers, listeners, and visitors using the CQL ANTLR4 grammar
-* **model:** generates and builds Java classes based on the ELM Model Info schema and CQL base type system
-* **elm:** generates and builds Java classes based on the ELM XML schema
-* **elm-fhir:** contains data requirements processor and fhir-related utilities
+* **cql:** generates and builds Kotlin lexers, parsers, listeners, and visitors using the CQL ANTLR4 grammar; generates and builds Kotlin classes based on the ELM Model Info schema and CQL base type system
+* **elm:** generates and builds Kotlin classes based on the ELM XML schema
+* **shared:** contains shared classes used by other modules
+* **elm-fhir:** contains data requirements processor and FHIR-related utilities
 * **engine:** contains the ELM runtime (aka "CQL engine")
-* **engine-fhir:** contains fhir-related components for the ELM runtime
-* **qdm:** contains schema and model info resources for QDM (4.2, 5.0, 5.0.1, 5.0.2, 5.3)
-* **quick:** contains schema and model info resources for QUICK and FHIR, DSTU2 (1.0.2), and STU3 (1.4, 1.6, 1.8, and 3.0.1)
+* **engine-fhir:** contains FHIR-related components for the ELM runtime
+* **qdm:** contains schema and model info resources for QDM
+* **quick:** contains schema and model info resources for QUICK, FHIR, QI-Core, US Core, as well as the FHIRHelpers library
 * **cql-to-elm:** generates Expression Logical Model (ELM) XML and JSON from CQL source
+* **cql-to-elm-cli:** provides command-line access to the CQL-to-ELM translator
+* **ucum:** provides the default UCUM service
 * **tools:cql-formatter:** formats input CQL based on standard formatting conventions as suggested by the CQL specification
 * **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
 * **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
+
 
 # Building the Project
 
@@ -24,21 +27,12 @@ repository, then execute this command from within this directory:
 
     ./gradlew build
 
-This will generate and build the ANTLR4 CQL artifacts, the JAXB QUICK artifacts, and the JAXB ELM artifacts.
+This will generate and build the ANTLR4 CQL artifacts and the XSD-based ELM library and model info artifacts.
 It will also build and test the corresponding code libraries and applications.
 
 To clean up the build artifacts:
 
     ./gradlew clean
-
-# Generating IDE Projects
-
-You can generate an IDE project for IntelliJ IDEa:
-
-    ./gradlew idea
-
-In addition to creating project modules for cql, model, quick, elm, cql-to-elm, and the tools projects, this will also import project
-modules for the CQL grammar and examples.
 
 # Executing the Sample Code
 

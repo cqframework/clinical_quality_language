@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
 import static java.util.Collections.singletonList;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,7 +26,7 @@ import java.util.stream.Stream;
 import org.cqframework.cql.cql2elm.CqlCompiler;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -93,7 +95,7 @@ class EvaluatedResourceTestUtils {
 
                         log.info("compiling CQL file: {}", resourcePath);
 
-                        var library = compiler.run(inputStream);
+                        var library = compiler.run(buffered(asSource(inputStream)));
 
                         if (!compiler.getErrors().isEmpty()) {
                             System.err.println("Translation failed due to errors:");

@@ -1,11 +1,14 @@
 package org.cqframework.cql.cql2elm.quick;
 
-import java.io.IOException;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+import static org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReaderKt.parseModelInfoXml;
+
+import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 /**
  * Created by Bryn on 4/15/2016.
@@ -30,17 +33,20 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQuickFhirModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            try {
-                switch (localVersion) {
-                    case "3.0.1":
-                    case "":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickFhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"));
-                }
-            } catch (IOException e) {
-                // Do not throw, allow other providers to resolve
+            var stream = getResource(localVersion);
+            if (stream != null) {
+                return parseModelInfoXml(buffered(asSource(stream)));
             }
+        }
+
+        return null;
+    }
+
+    private InputStream getResource(String localVersion) {
+        switch (localVersion) {
+            case "3.0.1", "":
+                return QuickFhirModelInfoProvider.class.getResourceAsStream(
+                        "/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml");
         }
 
         return null;

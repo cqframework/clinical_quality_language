@@ -1,0 +1,37 @@
+{
+  "name": "cql-to-elm-ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-xml": "^6.1.0",
+    "@codemirror/legacy-modes": "^6.5.1",
+    "@lhncbc/ucum-lhc": "^7.1.2",
+    "@uiw/codemirror-theme-xcode": "^4.24.2",
+    "@uiw/react-codemirror": "^4.24.1",
+    "cql-to-elm-js": "file:../../java/build/js/packages/cql-to-elm",
+    "cql-to-elm-wasm-js": "file:../../java/build/wasm/packages/cql-to-elm",
+    "next": "15.0.2",
+    "node-fetch": "^3.3.2",
+    "react": "19.0.0-rc-02c0e824-20241028",
+    "react-dom": "19.0.0-rc-02c0e824-20241028"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.2",
+    "postcss": "^8",
+    "prettier": "^3.3.3",
+    "string-replace-loader": "^3.2.0",
+    "typescript": "^5",
+    "webpack": "^5.96.1"
+  }
+}

@@ -3,6 +3,7 @@ package org.cqframework.cql.elm.requirements;
 import static org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.*;
 
 import java.util.Iterator;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 
 public class ComparableElmRequirement {
@@ -267,8 +268,10 @@ public class ComparableElmRequirement {
                         Retrieve existingRetrieve = (Retrieve) existing.getElement();
                         Retrieve requiredRetrieve = (Retrieve) required.getElement();
                         Retrieve newRetrieve = ElmCloner.clone(existingRetrieve);
-                        // Merge trackbacks
-                        newRetrieve.getTrackbacks().addAll(requiredRetrieve.getTrackbacks());
+
+                        var trackbacks = Trackable.INSTANCE.getTrackbacks(requiredRetrieve);
+                        var newTrackbacks = Trackable.INSTANCE.getTrackbacks(newRetrieve);
+                        newTrackbacks.addAll(trackbacks);
 
                         ElmDataRequirement newRequirement =
                                 new ElmDataRequirement(existing.getLibraryIdentifier(), newRetrieve);

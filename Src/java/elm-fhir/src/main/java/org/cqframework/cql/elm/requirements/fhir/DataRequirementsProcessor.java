@@ -1,8 +1,6 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
 import ca.uhn.fhir.context.FhirVersionEnum;
-import jakarta.xml.bind.JAXBElement;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper;
 import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper;
 import org.cqframework.cql.elm.requirements.ElmDataRequirement;
@@ -20,8 +20,6 @@ import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
 import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
 import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel;
 import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationSupport;
-import org.cqframework.cql.elm.tracking.TrackBack;
-import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.cql.model.NamedType;
@@ -159,17 +157,19 @@ public class DataRequirementsProcessor {
                 }
 
                 for (String expression : expressions) {
-                    ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
-                    if (ed != null) {
-                        expressionDefs.add(ed);
-                        visitor.visitElement(ed, context);
-                    } else {
-                        // If the expression is the name of any functions, include those in the gather
-                        // TODO: Provide a mechanism to specify a function def (need signature)
-                        Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
-                        for (FunctionDef fd : fds) {
-                            expressionDefs.add(fd);
-                            visitor.visitElement(fd, context);
+                    if (expression != null) {
+                        ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
+                        if (ed != null) {
+                            expressionDefs.add(ed);
+                            visitor.visitElement(ed, context);
+                        } else {
+                            // If the expression is the name of any functions, include those in the gather
+                            // TODO: Provide a mechanism to specify a function def (need signature)
+                            Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
+                            for (FunctionDef fd : fds) {
+                                expressionDefs.add(fd);
+                                visitor.visitElement(fd, context);
+                            }
                         }
                     }
                 }
@@ -476,18 +476,11 @@ public class DataRequirementsProcessor {
     }
 
     private void addNarrativeText(StringBuilder sb, org.hl7.cql_annotations.r1.Narrative n) {
-        for (Serializable s : n.getContent()) {
+        for (var s : n.getContent()) {
             if (s instanceof org.hl7.cql_annotations.r1.Narrative) {
                 addNarrativeText(sb, (org.hl7.cql_annotations.r1.Narrative) s);
             } else if (s instanceof String) {
                 sb.append((String) s);
-            }
-            // TODO: THIS IS WRONG... SHOULDN'T NEED TO KNOW ABOUT JAXB TO ACCOMPLISH THIS
-            else if (s instanceof JAXBElement<?>) {
-                JAXBElement<?> j = (JAXBElement<?>) s;
-                if (j.getValue() instanceof org.hl7.cql_annotations.r1.Narrative) {
-                    addNarrativeText(sb, (org.hl7.cql_annotations.r1.Narrative) j.getValue());
-                }
             }
         }
     }
@@ -651,8 +644,9 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
+        var resultType = Trackable.INSTANCE.getResultType(def);
         FHIRTypes typeCode =
-                Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
+                Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(resultType, def.getName(), isList));
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -665,9 +659,10 @@ public class DataRequirementsProcessor {
     private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
         Enumerations.FHIRTypes typeCode = null;
+
+        var defResultType = Trackable.INSTANCE.getResultType(def);
         try {
-            typeCode =
-                    Enumerations.FHIRTypes.fromCode(toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
+            typeCode = Enumerations.FHIRTypes.fromCode(toFHIRResultTypeCode(defResultType, def.getName(), isList));
         } catch (org.hl7.fhir.exceptions.FHIRException fhirException) {
             validationMessages.add(new ValidationMessage(
                     ValidationMessage.Source.Publisher,
@@ -675,7 +670,7 @@ public class DataRequirementsProcessor {
                     "CQL Library Packaging",
                     String.format(
                             "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
-                            def.getResultType().toLabel(), libraryIdentifier.getId()),
+                            defResultType.toLabel(), libraryIdentifier.getId()),
                     ValidationMessage.IssueSeverity.WARNING));
         }
 
@@ -800,13 +795,11 @@ public class DataRequirementsProcessor {
      * @param libraryIdentifier
      * @return
      */
-    private VersionedIdentifier getDeclaredLibraryIdentifier(
-            Trackable trackable, VersionedIdentifier libraryIdentifier) {
-        if (trackable.getTrackbacks() != null) {
-            for (TrackBack tb : trackable.getTrackbacks()) {
-                if (tb.getLibrary() != null) {
-                    return tb.getLibrary();
-                }
+    private VersionedIdentifier getDeclaredLibraryIdentifier(Element trackable, VersionedIdentifier libraryIdentifier) {
+        var trackbacks = Trackable.INSTANCE.getTrackbacks(trackable);
+        for (TrackBack tb : trackbacks) {
+            if (tb.getLibrary() != null) {
+                return tb.getLibrary();
             }
         }
 

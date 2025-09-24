@@ -1,11 +1,11 @@
 package org.cqframework.fhir.npm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
-import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -99,7 +99,7 @@ public class NpmPackageManagerTests implements ILoggingService {
 
         LibraryLoader reader = new LibraryLoader("4.0.1");
         NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, this);
-        InputStream is = sp.getLibrarySource(new VersionedIdentifier()
+        var is = sp.getLibrarySource(new VersionedIdentifier()
                 .withSystem("http://somewhere.org/fhir/uv/myig")
                 .withId("example"));
         // assertNotNull(is);
@@ -117,13 +117,11 @@ public class NpmPackageManagerTests implements ILoggingService {
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertTrue(pm.getNpmList().size() >= 1);
+        assertFalse(pm.getNpmList().isEmpty());
 
         LibraryLoader reader = new LibraryLoader("5.0");
         NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
-        ModelInfo mi = mp.load(new ModelIdentifier()
-                .withSystem("http://hl7.org/fhir/us/qicore")
-                .withId("QICore"));
+        ModelInfo mi = mp.load(new ModelIdentifier("QICore", "http://hl7.org/fhir/us/qicore", null));
         assertNotNull(mi);
         assertEquals("QICore", mi.getName());
     }

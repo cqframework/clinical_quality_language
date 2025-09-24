@@ -1,0 +1,21 @@
+:root {
+    --border: 1px solid #ccc;
+    --border-radius: 4px;
+    --primary-color: #aa0d91;
+    --monospace-font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  background: #f2f2f2;
+  color: #333;
+  accent-color: var(--primary-color);
+  font-size: 14px;
+  overscroll-behavior: none;
+}
