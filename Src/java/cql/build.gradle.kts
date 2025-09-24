@@ -38,7 +38,9 @@ kotlin {
 
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
     dependsOn("cleanGenerateKotlinGrammarSource")
-    source = fileTree("../../grammar")
+    source = fileTree("../../grammar") {
+        include("**/*.g4")
+    }
     packageName = "org.cqframework.cql.gen"
     arguments = listOf("-visitor")
     outputDirectory = file("build/generated/sources/antlr/commonMain/kotlin/${packageName!!.replace(".", "/")}")
