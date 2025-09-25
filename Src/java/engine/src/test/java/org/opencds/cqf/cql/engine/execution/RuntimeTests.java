@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.Location;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
@@ -34,8 +36,12 @@ class RuntimeTests {
         Quantity s = new Quantity().withValue(new BigDecimal(10)).withUnit("mg/mL");
         Quantity e = new Quantity().withValue(new BigDecimal(10)).withUnit("kg/m3");
 
+        final var modelManager = new ModelManager();
+        final var libraryManager = new LibraryManager(modelManager);
+        final var environment = new Environment(libraryManager);
+        final var state = new State(environment);
         assertThrows(InvalidInterval.class, () -> {
-            new Interval(s, true, e, true);
+            new Interval(s, true, e, true, state);
         });
     }
 

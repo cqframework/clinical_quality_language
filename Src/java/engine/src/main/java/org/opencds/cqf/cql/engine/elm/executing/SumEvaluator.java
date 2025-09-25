@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 
 /*
 Sum(argument List<Integer>) Integer
@@ -16,13 +17,12 @@ Return types: Integer, BigDecimal & Quantity
 
 public class SumEvaluator {
 
-    public static Object sum(Object source) {
+    public static Object sum(Object source, final State state) {
         if (source == null) {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> elements = (Iterable<?>) source;
+        if (source instanceof Iterable<?> elements) {
             Object sum = null;
             for (Object element : elements) {
                 if (element == null) {
@@ -32,7 +32,7 @@ public class SumEvaluator {
                 if (sum == null) {
                     sum = element;
                 } else {
-                    sum = AddEvaluator.add(sum, element);
+                    sum = AddEvaluator.add(sum, element, state);
                 }
             }
 

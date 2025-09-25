@@ -43,14 +43,16 @@ public class CollapseEvaluator {
             return new Interval(
                     interval.getStart(),
                     true,
-                    AddEvaluator.add(interval.getEnd(), per.getValue().intValue()),
+                    AddEvaluator.add(interval.getEnd(), per.getValue().intValue(), state),
                     true);
         } else if (interval.getPointType().getTypeName().contains("BigDecimal")) {
-            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per.getValue()), true);
+            return new Interval(
+                    interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per.getValue(), state), true, state);
         }
         // Quantity, Date, DateTime, and Time
         else {
-            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per), true);
+            return new Interval(
+                    interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per, state), true, state);
         }
     }
 
@@ -68,7 +70,7 @@ public class CollapseEvaluator {
         boolean isTemporal = intervals.get(0).getStart() instanceof BaseTemporal
                 || intervals.get(0).getEnd() instanceof BaseTemporal;
 
-        intervals.sort(new CqlList().valueSort);
+        intervals.sort(new CqlList(state).valueSort);
 
         if (per == null) {
             per = new Quantity().withValue(new BigDecimal(0)).withDefaultUnit();
@@ -113,7 +115,8 @@ public class CollapseEvaluator {
                                 isNextEndGreater != null && isNextEndGreater
                                         ? (intervals.get(i + 1)).getEnd()
                                         : applyPer.getEnd(),
-                                true));
+                                true,
+                                state));
                 intervals.remove(i + 1);
                 i -= 1;
             }

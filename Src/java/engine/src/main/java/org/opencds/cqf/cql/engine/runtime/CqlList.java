@@ -8,6 +8,7 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.UnitConversionHelper;
 import org.opencds.cqf.cql.engine.exception.InvalidComparison;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
@@ -20,6 +21,10 @@ public class CqlList {
     private String path;
 
     public CqlList() {}
+
+    public CqlList(final State state) {
+        this.state = state;
+    }
 
     public CqlList(State state, ElmLibraryVisitor<Object, State> visitor, String alias, Expression expression) {
         this.state = state;
@@ -73,10 +78,20 @@ public class CqlList {
         else if (left == null) return -1;
         else if (right == null) return 1;
 
-        try {
-            return ((Comparable) left).compareTo(right);
-        } catch (ClassCastException cce) {
-            throw new InvalidComparison("Type " + left.getClass().getName() + " is not comparable");
+        // TODO(jmoringe): test is something like ({5 'ml',0.001 'l',0.02 'dl',3 'ml',4 'ml',6 'ml'}) l sort desc
+        if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            var nullableCompareTo = UnitConversionHelper.compareQuantities(leftQuantity, rightQuantity, state);
+            if (nullableCompareTo != null) {
+                return nullableCompareTo;
+            } else {
+                throw new InvalidComparison("Quantity " + left + " is not comparable to quantity " + right);
+            }
+        } else {
+            try {
+                return ((Comparable) left).compareTo(right);
+            } catch (ClassCastException cce) {
+                throw new InvalidComparison("Type " + left.getClass().getName() + " is not comparable");
+            }
         }
     }
 

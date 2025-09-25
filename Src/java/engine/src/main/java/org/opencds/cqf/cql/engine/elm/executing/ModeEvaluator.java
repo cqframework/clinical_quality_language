@@ -41,7 +41,7 @@ public class ModeEvaluator {
                 return null;
             }
 
-            values.sort(new CqlList().valueSort);
+            values.sort(new CqlList(state).valueSort);
 
             int max = 0;
             Object mode = new Object();

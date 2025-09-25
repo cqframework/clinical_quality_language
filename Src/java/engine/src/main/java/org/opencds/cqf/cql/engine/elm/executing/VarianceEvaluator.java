@@ -39,7 +39,9 @@ public class VarianceEvaluator {
                 if (element != null) {
                     if (element instanceof BigDecimal || element instanceof Quantity) {
                         newVals.add(MultiplyEvaluator.multiply(
-                                SubtractEvaluator.subtract(element, mean), SubtractEvaluator.subtract(element, mean)));
+                                SubtractEvaluator.subtract(element, mean, state),
+                                SubtractEvaluator.subtract(element, mean, state),
+                                state));
                     } else {
                         throw new InvalidOperatorArgument(
                                 "Variance(List<Decimal>) or Variance(List<Quantity>)",
@@ -50,7 +52,9 @@ public class VarianceEvaluator {
             }
 
             return DivideEvaluator.divide(
-                    SumEvaluator.sum(newVals), new BigDecimal(newVals.size() - 1), state); // slight variation to Avg
+                    SumEvaluator.sum(newVals, state),
+                    new BigDecimal(newVals.size() - 1),
+                    state); // slight variation to Avg
         }
 
         throw new InvalidOperatorArgument(

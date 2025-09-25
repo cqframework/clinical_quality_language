@@ -35,7 +35,9 @@ public class PopulationVarianceEvaluator {
 
             ((List<?>) source)
                     .forEach(ae -> newVals.add(MultiplyEvaluator.multiply(
-                            SubtractEvaluator.subtract(ae, mean), SubtractEvaluator.subtract(ae, mean))));
+                            SubtractEvaluator.subtract(ae, mean, state),
+                            SubtractEvaluator.subtract(ae, mean, state),
+                            state)));
 
             return AvgEvaluator.avg(newVals, state);
         }

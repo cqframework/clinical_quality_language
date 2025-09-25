@@ -43,7 +43,7 @@ public class GeometricMeanEvaluator {
             }
         }
         return (BigDecimal) PowerEvaluator.power(
-                ProductEvaluator.product(cleanSource),
+                ProductEvaluator.product(cleanSource, state),
                 DivideEvaluator.divide(
                         new BigDecimal(1), ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)), state));
     }
