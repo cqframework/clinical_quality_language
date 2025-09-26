@@ -3583,9 +3583,7 @@ class LibraryBuilder(
         identifierContext: Collection<IdentifierContext>,
         identifier: String
     ): IdentifierContext? {
-        return identifierContext.firstOrNull { innerContext: IdentifierContext ->
-            (innerContext.identifier == identifier)
-        }
+        return identifierContext.firstOrNull { it.identifier == identifier }
     }
 
     /**
