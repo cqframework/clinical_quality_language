@@ -2,6 +2,8 @@ package org.cqframework.cql.elm
 
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Files
+import kotlin.io.path.Path
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
@@ -12,14 +14,17 @@ import org.hl7.cql.model.NamespaceInfo
 
 object TestUtils {
     @Throws(IOException::class)
-    fun createTranslatorFromStream(
+    @JvmStatic
+    fun createTranslator(
         testFileName: String,
         vararg options: CqlCompilerOptions.Options
     ): CqlTranslator {
-        return createTranslatorFromStream(null, testFileName, *options)
+        val inputStream = Files.newInputStream(Path(testFileName))
+        return createTranslatorFromStream(null, inputStream, *options)
     }
 
     @Throws(IOException::class)
+    @JvmStatic
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
@@ -39,6 +44,7 @@ object TestUtils {
     }
 
     @Throws(IOException::class)
+    @JvmStatic
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         inputStream: InputStream,
