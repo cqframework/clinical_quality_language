@@ -84,7 +84,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
             // ERROR:
             try {
                 o = super.visit(tree)
-                if (o is Element && o.localId == null) {
+                if (o is Element && o.localId.isNullOrEmpty()) {
                     throw CqlInternalException(
                         "Internal translator error. 'localId' was not assigned for Element \"${o::class.simpleName}\"",
                         getTrackBack(tree)

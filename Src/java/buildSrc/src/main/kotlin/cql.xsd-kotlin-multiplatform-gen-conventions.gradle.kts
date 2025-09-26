@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
@@ -19,14 +19,16 @@ kotlin {
 
 val xsdKotlinGenTask = tasks.register<XsdKotlinGenTask>("runXsdKotlinGen")
 
-tasks.withType<KotlinCompileTool>().configureEach {
+tasks.withType<XsdKotlinGenTask>().configureEach {
+    mustRunAfter(tasks.withType<Delete>())
+}
+
+tasks.withType<AbstractKotlinCompile<*>>().configureEach {
     dependsOn(xsdKotlinGenTask)
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    dependsOn(xsdKotlinGenTask)
-}
-
-tasks.withType<Delete>().configureEach {
-    delete(destDir)
+tasks.named("clean").configure {
+    doLast {
+        delete(destDir)
+    }
 }
