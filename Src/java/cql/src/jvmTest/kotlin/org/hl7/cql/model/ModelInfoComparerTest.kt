@@ -184,7 +184,7 @@ class ModelInfoComparerTest {
             differences.append(this.focus)
             differences.append(".")
             differences.append(message)
-            differences.appendLine()
+            differences.append(System.lineSeparator())
         }
 
         fun length(): Int {
