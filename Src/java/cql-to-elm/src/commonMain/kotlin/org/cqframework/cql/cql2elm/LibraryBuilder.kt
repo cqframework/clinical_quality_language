@@ -550,9 +550,6 @@ class LibraryBuilder(
         if (shouldReport(e.severity)) {
             val err = af.createCqlToElmError()
             err.message = e.message
-            err.errorType =
-                if (e is CqlSyntaxException) ErrorType.SYNTAX
-                else (if (e is CqlSemanticException) ErrorType.SEMANTIC else ErrorType.INTERNAL)
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
                 val loc = e.locator!!
@@ -567,13 +564,20 @@ class LibraryBuilder(
                 err.startChar = loc.startChar
                 err.endChar = loc.endChar
             }
-            if (e.cause != null && e.cause is CqlIncludeException) {
-                val incEx = e.cause as CqlIncludeException?
-                err.targetIncludeLibrarySystem = incEx!!.librarySystem
-                err.targetIncludeLibraryId = incEx.libraryId
-                err.targetIncludeLibraryVersionId = incEx.versionId
-                err.errorType = ErrorType.INCLUDE
+            if (e is CqlIncludeException) {
+                err.targetIncludeLibrarySystem = e.librarySystem
+                err.targetIncludeLibraryId = e.libraryId
+                err.targetIncludeLibraryVersionId = e.versionId
             }
+
+            err.errorType =
+                when (e) {
+                    is CqlSyntaxException -> ErrorType.SYNTAX
+                    is CqlIncludeException -> ErrorType.INCLUDE
+                    is CqlSemanticException -> ErrorType.SEMANTIC
+                    else -> ErrorType.INTERNAL
+                }
+
             library.annotation.add(err)
         }
     }
@@ -857,7 +861,7 @@ class LibraryBuilder(
         )
     }
 
-    private inner class BinaryWrapper(var left: Expression, var right: Expression)
+    private class BinaryWrapper(var left: Expression, var right: Expression)
 
     @Suppress("NestedBlockDepth")
     private fun normalizeListTypes(left: Expression, right: Expression): BinaryWrapper {
@@ -3047,12 +3051,9 @@ class LibraryBuilder(
                     require(source is Property) {
                         "Cannot expand target map $targetMap for non-property-accessor type ${source!!::class.simpleName}"
                     }
-                    val sourceProperty = source
                     result =
-                        sourceProperty.source
-                            ?: sourceProperty.scope?.let {
-                                resolveIdentifier(sourceProperty.scope!!, true)
-                            }
+                        source.source
+                            ?: source.scope?.let { resolveIdentifier(source.scope!!, true) }
                     requireNotNull(result) {
                         "Cannot resolve %%parent reference in targetMap $targetMap"
                     }
@@ -3582,9 +3583,9 @@ class LibraryBuilder(
         identifierContext: Collection<IdentifierContext>,
         identifier: String
     ): IdentifierContext? {
-        return identifierContext
-            .filter { innerContext: IdentifierContext -> (innerContext.identifier == identifier) }
-            .firstOrNull()
+        return identifierContext.firstOrNull { innerContext: IdentifierContext ->
+            (innerContext.identifier == identifier)
+        }
     }
 
     /**
@@ -3625,7 +3626,7 @@ class LibraryBuilder(
             "$elementString identifier $identifierParam is hiding another identifier of the same name."
     }
 
-    private inner class Scope {
+    private class Scope {
         val targets = Stack<Expression>()
         val queries = Stack<QueryContext>()
     }
