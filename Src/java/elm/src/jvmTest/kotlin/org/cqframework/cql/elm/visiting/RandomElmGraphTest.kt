@@ -2,7 +2,7 @@ package org.cqframework.cql.elm.visiting
 
 import java.lang.reflect.Field
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.HashMap
 import javax.xml.namespace.QName
 import org.cqframework.cql.cql2elm.model.LibraryRef
 import org.hl7.cql_annotations.r1.Narrative
