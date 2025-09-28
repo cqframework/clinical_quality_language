@@ -1,16 +1,18 @@
-package org.cqframework.cql.cql2elm.model;
+package org.cqframework.cql.cql2elm.model
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-class ModelImporterTest {
-
+@Suppress("MaxLineLength")
+internal class ModelImporterTest {
     @Test
     @Disabled("TODO: Requires type resolution capability in the model classes")
-    void handleModelInfoGenerics() {
+    @Suppress("ForbiddenComment")
+    fun handleModelInfoGenerics() {
         // TODO: Re-enable generic support here
         // Requires type resolution capability in the model classes
-        // Was being handled by pre-resolving and passing the entire map through to the GenericClassSignatureParser
+        // Was being handled by pre-resolving and passing the entire map through to the
+        // GenericClassSignatureParser
         /*
                 try {
 
@@ -124,15 +126,18 @@ class ModelImporterTest {
 
     @Test
     @Disabled("Disabled until model classes support type resolution")
-    void handleModelInfoGenericsSad1() {
+    fun handleModelInfoGenericsSad1() {
         // /*
         // try {
 
         //     ModelManager modelManager = new ModelManager();
-        //     GentestModelInfoProviderSad1 gentestModelInfoProvider = new GentestModelInfoProviderSad1();
-        //     ModelImporter systemImporter = new ModelImporter(modelManager.getModelInfoLoader().getModelInfo(new
+        //     GentestModelInfoProviderSad1 gentestModelInfoProvider = new
+        // GentestModelInfoProviderSad1();
+        //     ModelImporter systemImporter = new
+        // ModelImporter(modelManager.getModelInfoLoader().getModelInfo(new
         // VersionedIdentifier().withId("System").withVersion("1")), null);
-        //     ModelInfo gentestModel = gentestModelInfoProvider.load(new VersionedIdentifier().withId("GENTEST"));
+        //     ModelInfo gentestModel = gentestModelInfoProvider.load(new
+        // VersionedIdentifier().withId("GENTEST"));
         //     try {
         //         ModelImporter gentestImporter = new ModelImporter(gentestModel, modelManager);
         //         fail();
