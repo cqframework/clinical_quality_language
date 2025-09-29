@@ -75,7 +75,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
                 contextName,
                 contextType,
                 if (keyName != null) listOf(keyName) else emptyList(),
-                null
+                null,
             )
         }
 

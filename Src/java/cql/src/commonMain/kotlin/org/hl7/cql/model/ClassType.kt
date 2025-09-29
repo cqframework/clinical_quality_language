@@ -12,13 +12,11 @@ open class ClassType(
      * be returned: K and V extends Person. The latter parameter has a constraint restricting the
      * type of the bound type to be a valid subtype of Person.
      */
-    var genericParameters: MutableList<TypeParameter> = mutableListOf()
+    var genericParameters: MutableList<TypeParameter> = mutableListOf(),
 ) : BaseDataType(baseType), NamedType {
 
     // For Java compatibility. Can be deleted once tests are updated.
-    constructor(
-        name: String,
-    ) : this(name, null, mutableListOf(), mutableListOf())
+    constructor(name: String) : this(name, null, mutableListOf(), mutableListOf())
 
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
@@ -128,7 +126,7 @@ open class ClassType(
      */
     fun getGenericParameterByIdentifier(
         identifier: String,
-        inCurrentClassOnly: Boolean
+        inCurrentClassOnly: Boolean,
     ): TypeParameter? {
         var param: TypeParameter? = null
         for (genericParameter in genericParameters) {
@@ -236,7 +234,7 @@ open class ClassType(
 
     private fun addTupleElements(
         classType: ClassType,
-        elements: LinkedHashMap<String, TupleTypeElement>
+        elements: LinkedHashMap<String, TupleTypeElement>,
     ) {
         // Add base elements first
         val baseType = classType.baseType
@@ -291,7 +289,7 @@ open class ClassType(
         return ClassType(
             name,
             baseType,
-            elements.map { ClassTypeElement(it.name, it.type.instantiate(context)) }.toMutableList()
+            elements.map { ClassTypeElement(it.name, it.type.instantiate(context)) }.toMutableList(),
         )
     }
 }

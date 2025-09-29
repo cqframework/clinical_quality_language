@@ -36,5 +36,5 @@ enum class ElmEdit : IElmEdit {
             element.resultTypeName = null
             element.resultTypeSpecifier = null
         }
-    }
+    },
 }

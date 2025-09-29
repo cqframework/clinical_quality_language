@@ -17,7 +17,7 @@ internal class IdObjectFactoryTest {
             val e = x.invoke(factory) as Element
             assertNotNull(
                 e.localId,
-                "%s returned null localId".format(Locale.US, e.javaClass.simpleName)
+                "%s returned null localId".format(Locale.US, e.javaClass.simpleName),
             )
         }
     }

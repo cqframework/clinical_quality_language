@@ -16,7 +16,7 @@ class DateTimeInvocation(expression: DateTime) :
                 expression.minute,
                 expression.second,
                 expression.millisecond,
-                expression.timezoneOffset
+                expression.timezoneOffset,
             )
         set(operands) {
             setDateTimeFieldsFromOperands(expression, operands)

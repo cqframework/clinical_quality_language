@@ -22,7 +22,7 @@ class OperatorMap {
     private fun supportsOperator(
         libraryName: String?,
         operatorName: String,
-        vararg signature: DataType
+        vararg signature: DataType,
     ): Boolean {
         val call =
             CallContext(
@@ -31,7 +31,7 @@ class OperatorMap {
                 allowPromotionAndDemotion = false,
                 allowFluent = false,
                 mustResolve = false,
-                operandTypes = signature
+                operandTypes = signature,
             )
         // Intentionally empty ConversionMap since we're only checking for support
         return resolveOperator(call, ConversionMap()) != null
@@ -48,7 +48,7 @@ class OperatorMap {
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     fun resolveOperator(
         callContext: CallContext,
-        conversionMap: ConversionMap
+        conversionMap: ConversionMap,
     ): OperatorResolution? {
         val entry = getEntry(callContext.operatorName)
         val results = entry.resolve(callContext, this, conversionMap)

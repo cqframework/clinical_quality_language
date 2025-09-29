@@ -26,7 +26,7 @@ object StringEscapeUtils {
             "\\f" to '\u000c',
             "\\n" to '\n',
             "\\r" to '\r',
-            "\\t" to '\t'
+            "\\t" to '\t',
             // unicode escapes are handled separately
         )
 

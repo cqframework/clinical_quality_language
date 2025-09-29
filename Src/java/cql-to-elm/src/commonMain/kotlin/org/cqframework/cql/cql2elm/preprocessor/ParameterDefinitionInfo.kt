@@ -4,5 +4,5 @@ import org.cqframework.cql.gen.cqlParser.ParameterDefinitionContext
 
 class ParameterDefinitionInfo(
     val name: String,
-    override val definition: ParameterDefinitionContext
+    override val definition: ParameterDefinitionContext,
 ) : BaseInfo(definition)

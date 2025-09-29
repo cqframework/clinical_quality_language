@@ -42,8 +42,8 @@ class CMS146ElmTest {
                     .buffered(),
                 LibraryManager(
                     modelManager,
-                    CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Warning, signatureLevel)
-                )
+                    CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Warning, signatureLevel),
+                ),
             )
         val library = translator.toELM()
 
@@ -67,7 +67,7 @@ class CMS146ElmTest {
             library!!.identifier,
             Matchers.`is`<VersionedIdentifier>(
                 of.createVersionedIdentifier().withId("CMS146").withVersion("2")
-            )
+            ),
         )
     }
 
@@ -77,7 +77,7 @@ class CMS146ElmTest {
         MatcherAssert.assertThat(models, Matchers.hasSize(2))
         MatcherAssert.assertThat<String?>(
             models[1].uri,
-            Matchers.`is`<String?>("http://hl7.org/fhir")
+            Matchers.`is`<String?>("http://hl7.org/fhir"),
         )
     }
 
@@ -128,7 +128,7 @@ class CMS146ElmTest {
                         of.createValueSetRef()
                             .withName("Group A Streptococcus Test")
                             .withPreserve(true)
-                    )
+                    ),
             )
 
         MatcherAssert.assertThat(actualCR, Matchers.`is`(expectedCR))
@@ -158,7 +158,7 @@ class CMS146ElmTest {
                     .withId("2.16.840.1.113883.3.464.1003.196.12.1001"),
                 of.createValueSetDef()
                     .withName("Group A Streptococcus Test")
-                    .withId("2.16.840.1.113883.3.464.1003.198.12.1012")
+                    .withId("2.16.840.1.113883.3.464.1003.198.12.1012"),
             )
 
         MatcherAssert.assertThat(actualVS, Matchers.`is`(expectedVS))
@@ -184,7 +184,7 @@ class CMS146ElmTest {
                 "InInitialPopulation",
                 "InDenominator",
                 "InDenominatorExclusions",
-                "InNumerator"
+                "InNumerator",
             )
 
         MatcherAssert.assertThat(actualVars, Matchers.`is`(expectedVars))
@@ -218,7 +218,7 @@ class CMS146ElmTest {
                 tb.library,
                 Matchers.`is`<VersionedIdentifier>(
                     of.createVersionedIdentifier().withId("CMS146").withVersion("2")
-                )
+                ),
             )
             MatcherAssert.assertThat(tb.startLine, Matchers.`is`(expectedNumbers!![0]))
             MatcherAssert.assertThat(tb.startChar, Matchers.`is`(expectedNumbers[1]))
@@ -252,7 +252,7 @@ class CMS146ElmTest {
                 tb.library,
                 Matchers.`is`<VersionedIdentifier>(
                     of.createVersionedIdentifier().withId("CMS146").withVersion("2")
-                )
+                ),
             )
             MatcherAssert.assertThat(tb.startLine, Matchers.`is`(expectedNumbers!![0]))
             MatcherAssert.assertThat(tb.startChar, Matchers.`is`(expectedNumbers[1]))
@@ -287,7 +287,7 @@ class CMS146ElmTest {
                 tb.library,
                 Matchers.`is`<VersionedIdentifier>(
                     of.createVersionedIdentifier().withId("CMS146").withVersion("2")
-                )
+                ),
             )
             MatcherAssert.assertThat(tb.startLine, Matchers.`is`(expectedNumbers!![0]))
             MatcherAssert.assertThat(tb.startChar, Matchers.`is`(expectedNumbers[1]))
@@ -321,9 +321,9 @@ class CMS146ElmTest {
                         modelManager,
                         CqlCompilerOptions(
                             CqlCompilerException.ErrorSeverity.Warning,
-                            LibraryBuilder.SignatureLevel.None
-                        )
-                    )
+                            LibraryBuilder.SignatureLevel.None,
+                        ),
+                    ),
                 )
             MatcherAssert.assertThat(translator!!.errors.size, Matchers.`is`(0))
             library = translator!!.toELM()
@@ -335,7 +335,7 @@ class CMS146ElmTest {
                 arrayOf(LibraryBuilder.SignatureLevel.None),
                 arrayOf(LibraryBuilder.SignatureLevel.Differing),
                 arrayOf(LibraryBuilder.SignatureLevel.Overloads),
-                arrayOf(LibraryBuilder.SignatureLevel.All)
+                arrayOf(LibraryBuilder.SignatureLevel.All),
             )
         }
     }

@@ -54,7 +54,7 @@ actual fun toXmlString(element: XmlNode.Element, namespaces: Map<String, String>
         documentElement.setAttributeNS(
             "http://www.w3.org/2000/xmlns/",
             if (prefix.isEmpty()) "xmlns" else "xmlns:$prefix",
-            uri
+            uri,
         )
     }
     exportDomContent(doc, documentElement, element, namespaces)
@@ -70,7 +70,7 @@ private fun exportDomContent(
     doc: Document,
     domElement: Element,
     element: XmlNode.Element,
-    namespaces: Map<String, String>
+    namespaces: Map<String, String>,
 ) {
     for ((name, value) in element.attributes) {
         domElement.setAttribute(name, value)
@@ -84,7 +84,7 @@ private fun exportDomContent(
                     val childElement =
                         doc.createElementNS(
                             namespaces[child.tagName.substringBefore(":", "")],
-                            child.tagName
+                            child.tagName,
                         )
                     exportDomContent(doc, childElement, child, namespaces)
                     childElement

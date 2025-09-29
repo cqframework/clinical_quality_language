@@ -161,7 +161,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r401/TestChoiceDateRangeOptimization.cql",
                 0,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization
+                CqlCompilerOptions.Options.EnableDateRangeOptimization,
             )
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
@@ -245,7 +245,7 @@ internal class BaseTest {
         translatedLibrary: CompiledLibrary,
         expressionName: String,
         namespace: String?,
-        name: String?
+        name: String?,
     ) {
         val ed = translatedLibrary.resolveExpressionRef(expressionName)
         val resultType = ed?.resultType
@@ -272,7 +272,7 @@ internal class BaseTest {
             resultType.toString(),
             Matchers.equalTo(
                 "choice<System.String,System.Boolean,System.Date,System.DateTime,System.Decimal,System.Integer,System.Time,System.Quantity,System.Concept,System.Code,interval<System.Quantity>,interval<System.DateTime>,System.Ratio,FHIR.Address,FHIR.Annotation,FHIR.Attachment,FHIR.ContactPoint,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.ContactDetail,FHIR.Contributor,FHIR.DataRequirement,FHIR.Expression,FHIR.ParameterDefinition,FHIR.RelatedArtifact,FHIR.TriggerDefinition,FHIR.UsageContext,FHIR.Dosage,FHIR.Meta>"
-            )
+            ),
         )
     }
 
@@ -443,7 +443,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 NamespaceInfo("Public", "http://cql.hl7.org/public"),
                 "fhir/r401/TestFHIRNamespaces.cql",
-                0
+                0,
             )
         val library = translator.translatedLibrary
         val usingDef = library!!.resolveUsingRef("FHIR")
@@ -927,7 +927,7 @@ internal class BaseTest {
         assertThat(
             warningMessages.toString(),
             warningMessages,
-            Matchers.containsInAnyOrder(first, second)
+            Matchers.containsInAnyOrder(first, second),
         )
     }
 
@@ -938,7 +938,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r401/TestOverload.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads
+                LibraryBuilder.SignatureLevel.Overloads,
             )
         assertThat(translator.warnings.size, `is`(1))
 
@@ -952,7 +952,7 @@ internal class BaseTest {
             warningMessages,
             Matchers.contains(
                 "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead."
-            )
+            ),
         )
     }
 
@@ -977,7 +977,7 @@ internal class BaseTest {
         assertThat(
             warningMessages.toString(),
             warningMessages,
-            Matchers.containsInAnyOrder(first, second)
+            Matchers.containsInAnyOrder(first, second),
         )
     }
 
@@ -988,7 +988,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r401/TestOverloadForward.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads
+                LibraryBuilder.SignatureLevel.Overloads,
             )
         assertThat(translator.warnings.size, `is`(1))
 
@@ -1002,7 +1002,7 @@ internal class BaseTest {
             warningMessages,
             Matchers.contains(
                 "String literal 'Encounter' matches the identifier Encounter. Consider whether the identifier was intended instead."
-            )
+            ),
         )
     }
 
@@ -1028,7 +1028,7 @@ internal class BaseTest {
         var r = q.source[0].expression as Retrieve?
         assertThat(
             r!!.templateId,
-            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest")
+            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest"),
         )
         assertThat(r.codeProperty, `is`("medication"))
         assertThat(r.codeComparator, `is`("in"))
@@ -1045,7 +1045,7 @@ internal class BaseTest {
         r = u.operand[0] as Retrieve?
         assertThat(
             r!!.templateId,
-            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest")
+            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest"),
         )
         assertThat(r.codeProperty, `is`("medication"))
         assertThat(r.codeComparator, `is`("in"))
@@ -1060,7 +1060,7 @@ internal class BaseTest {
         r = q.source[0].expression as Retrieve?
         assertThat(
             r!!.templateId,
-            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest")
+            `is`("http://hl7.org/fhir/StructureDefinition/MedicationRequest"),
         )
         assertThat(r.codeProperty == null, `is`(true))
         assertThat(r.codes == null, `is`(true))

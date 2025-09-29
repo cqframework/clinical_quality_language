@@ -17,7 +17,7 @@ class TestLibrarySourceVersionAgnosticProvider(val path: String = "LibraryTests"
 
     override fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): Source? {
         val inputStream =
             TestLibrarySourceVersionAgnosticProvider::class
@@ -28,7 +28,7 @@ class TestLibrarySourceVersionAgnosticProvider(val path: String = "LibraryTests"
 
     private fun getFileName(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): String {
         return "$path/${libraryIdentifier.id}.${type.toString().lowercase()}"
     }

@@ -35,11 +35,11 @@ import org.hl7.elm.r1.*
     "NestedBlockDepth",
     "TooManyFunctions",
     "ComplexCondition",
-    "ReturnCount"
+    "ReturnCount",
 )
 abstract class CqlPreprocessorElmCommonVisitor(
     @JvmField protected val libraryBuilder: LibraryBuilder,
-    protected val tokenStream: TokenStream
+    protected val tokenStream: TokenStream,
 ) : cqlBaseVisitor<Any?>() {
     @JvmField protected val of: IdObjectFactory = libraryBuilder.objectFactory
     private val af = ObjectFactory()
@@ -87,7 +87,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 if (o is Element && o.localId.isNullOrEmpty()) {
                     throw CqlInternalException(
                         "Internal translator error. 'localId' was not assigned for Element \"${o::class.simpleName}\"",
-                        getTrackBack(tree)
+                        getTrackBack(tree),
                     )
                 }
             } catch (e: CqlCompilerException) {
@@ -102,7 +102,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                             e.message!!,
                             getTrackBack(tree),
                             CqlCompilerException.ErrorSeverity.Error,
-                            e
+                            e,
                         )
                     }
                 var rootCause = libraryBuilder.determineRootCause()
@@ -231,7 +231,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         modelNamespace: NamespaceInfo?,
         modelName: String?,
         version: String?,
-        localIdentifier: String
+        localIdentifier: String,
     ): Model {
         val modelId = modelName ?: libraryInfo.defaultUsingDefinition?.name
         val modelVersion = version ?: libraryInfo.defaultUsingDefinition?.version
@@ -542,7 +542,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
             (ctx.start?.charPositionInLine ?: 0) + 1, // 1-based instead of 0-based
             ctx.stop?.line ?: 0,
             (ctx.stop?.charPositionInLine ?: 0) +
-                (ctx.stop?.text?.length ?: 0) // 1-based instead of 0-based
+                (ctx.stop?.text?.length ?: 0), // 1-based instead of 0-based
         )
     }
 
@@ -592,7 +592,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
             if (nextColon < 0) {
                 return Pair.of(
                     header.substring(start + 1, header.length).trim { it <= ' ' },
-                    header.length
+                    header.length,
                 )
             }
         } else {
@@ -602,7 +602,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 // next tag)
                 return Pair.of(
                     header.substring(start + 1, nextTagStart).trim { it <= ' ' },
-                    nextTagStart
+                    nextTagStart,
                 )
             }
         }
@@ -810,7 +810,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
 
         fun getTypeIdentifier(
             qualifiers: kotlin.collections.List<String>,
-            identifier: String
+            identifier: String,
         ): String {
             if (qualifiers.size > 1) {
                 var result: String? = null

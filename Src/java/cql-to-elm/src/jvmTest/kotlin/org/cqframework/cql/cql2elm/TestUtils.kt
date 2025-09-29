@@ -69,7 +69,7 @@ object TestUtils {
     @JvmStatic
     fun visitFileLibrary(
         fileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?
+        signatureLevel: LibraryBuilder.SignatureLevel?,
     ): CompiledLibrary? {
         val file = getFileOrThrow(fileName)
         val translator = CqlTranslator.fromFile(file.path, getLibraryManager(signatureLevel))
@@ -95,7 +95,7 @@ object TestUtils {
     fun visitData(
         cqlData: String,
         enableAnnotations: Boolean,
-        enableDateRangeOptimization: Boolean
+        enableDateRangeOptimization: Boolean,
     ): Any? {
         val compilerOptions = CqlCompilerOptions()
         if (enableAnnotations) {
@@ -144,7 +144,7 @@ object TestUtils {
     fun runSemanticTest(
         testFileName: String,
         expectedErrors: Int,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return runSemanticTest(null, testFileName, expectedErrors, *options)
     }
@@ -153,7 +153,7 @@ object TestUtils {
     @Throws(IOException::class)
     fun runSemanticTestNoErrors(
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return runSemanticTest(null, testFileName, 0, *options)
     }
@@ -164,7 +164,7 @@ object TestUtils {
         testFileName: String,
         expectedErrors: Int,
         signatureLevel: LibraryBuilder.SignatureLevel?,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val cqlCompilerOptions = CqlCompilerOptions(*options)
         if (signatureLevel != null) {
@@ -178,7 +178,7 @@ object TestUtils {
     fun runSemanticTest(
         testFileName: String,
         expectedErrors: Int,
-        options: CqlCompilerOptions
+        options: CqlCompilerOptions,
     ): CqlTranslator {
         return runSemanticTest(null, testFileName, expectedErrors, options)
     }
@@ -189,7 +189,7 @@ object TestUtils {
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
         expectedErrors: Int,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val cqlCompilerOptions = CqlCompilerOptions(*options)
         return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions)
@@ -202,7 +202,7 @@ object TestUtils {
         testFileName: String,
         expectedErrors: Int,
         signatureLevel: LibraryBuilder.SignatureLevel?,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val cqlCompilerOptions = CqlCompilerOptions(*options)
         if (signatureLevel != null) {
@@ -216,7 +216,7 @@ object TestUtils {
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
         expectedErrors: Int,
-        options: CqlCompilerOptions
+        options: CqlCompilerOptions,
     ): CqlTranslator {
         val translator = createTranslator(namespaceInfo, testFileName, options)
         for (error in translator.errors) {
@@ -224,7 +224,7 @@ object TestUtils {
                 "(%d,%d): %s%n",
                 error.locator!!.startLine,
                 error.locator!!.startChar,
-                error.message
+                error.message,
             )
         }
         // We want to defer asserting on errors to the unit test by passing -1
@@ -232,7 +232,7 @@ object TestUtils {
             MatcherAssert.assertThat(
                 translator.errors.toString(),
                 translator.errors.size,
-                Matchers.`is`(expectedErrors)
+                Matchers.`is`(expectedErrors),
             )
         }
         return translator
@@ -243,7 +243,7 @@ object TestUtils {
     fun runSemanticTestWithOrWithoutErrors(
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val translator = createTranslator(namespaceInfo, testFileName, CqlCompilerOptions(*options))
         for (error in translator.errors) {
@@ -251,7 +251,7 @@ object TestUtils {
                 "(%d,%d): %s%n",
                 error.locator!!.startLine,
                 error.locator!!.startChar,
-                error.message
+                error.message,
             )
         }
         return translator
@@ -260,7 +260,7 @@ object TestUtils {
     @JvmStatic
     fun createTranslatorFromText(
         cqlText: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val libraryManager = getLibraryManager(*options)
         return CqlTranslator.fromText(cqlText, libraryManager)
@@ -270,7 +270,7 @@ object TestUtils {
     @Throws(IOException::class)
     fun createTranslatorFromStream(
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return createTranslatorFromStream(null, testFileName, null, *options)
     }
@@ -280,7 +280,7 @@ object TestUtils {
     fun createTranslatorFromStream(
         testFileName: String,
         signatureLevel: LibraryBuilder.SignatureLevel?,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return createTranslatorFromStream(null, testFileName, signatureLevel, *options)
     }
@@ -290,7 +290,7 @@ object TestUtils {
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
         signatureLevel: LibraryBuilder.SignatureLevel?,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val inputStream = Cql2ElmVisitorTest::class.java.getResourceAsStream(testFileName)
         if (inputStream == null) {
@@ -304,7 +304,7 @@ object TestUtils {
         namespaceInfo: NamespaceInfo?,
         inputStream: InputStream,
         signatureLevel: LibraryBuilder.SignatureLevel?,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val modelManager = ModelManager()
         val compilerOptions = CqlCompilerOptions(*options)
@@ -315,13 +315,13 @@ object TestUtils {
         return CqlTranslator.fromSource(
             namespaceInfo,
             inputStream.asSource().buffered(),
-            libraryManager
+            libraryManager,
         )
     }
 
     private fun getLibraryManager(
         modelManager: ModelManager,
-        compilerOptions: CqlCompilerOptions?
+        compilerOptions: CqlCompilerOptions?,
     ): LibraryManager {
         val options = compilerOptions ?: CqlCompilerOptions.defaultOptions()
         val libraryManager = LibraryManager(modelManager, options)
@@ -333,7 +333,7 @@ object TestUtils {
     @Throws(IOException::class)
     fun createTranslator(
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return createTranslator(null, testFileName, CqlCompilerOptions(*options))
     }
@@ -349,7 +349,7 @@ object TestUtils {
     fun getTranslator(
         cqlTestFile: String,
         nullableLibrarySourceProvider: String?,
-        signatureLevel: LibraryBuilder.SignatureLevel
+        signatureLevel: LibraryBuilder.SignatureLevel,
     ): CqlTranslator {
         val testFile = getFileOrThrow(cqlTestFile)
         val modelManager = ModelManager()
@@ -366,13 +366,13 @@ object TestUtils {
     fun createTranslator(
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
-        options: CqlCompilerOptions
+        options: CqlCompilerOptions,
     ): CqlTranslator {
         val segments: Array<String?> =
             testFileName.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         var path: String? = null
         if (segments.size > 1) {
-            for (i in 0 ..< segments.size - 1) {
+            for (i in 0..<segments.size - 1) {
                 if (path == null) {
                     path = segments[i]
                 } else {
@@ -407,7 +407,7 @@ object TestUtils {
         return getLibraryManager(
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Warning,
-                signatureLevel ?: LibraryBuilder.SignatureLevel.All
+                signatureLevel ?: LibraryBuilder.SignatureLevel.All,
             )
         )
     }
@@ -425,7 +425,7 @@ object TestUtils {
     private fun getLibraryManager(
         options: CqlCompilerOptions,
         modelManager: ModelManager,
-        path: String?
+        path: String?,
     ): LibraryManager {
         val libraryManager = LibraryManager(modelManager, options)
         libraryManager.librarySourceLoader.registerProvider(

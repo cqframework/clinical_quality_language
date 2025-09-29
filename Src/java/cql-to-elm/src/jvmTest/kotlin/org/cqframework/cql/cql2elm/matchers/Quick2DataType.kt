@@ -52,7 +52,7 @@ class Quick2DataType(fullName: String) : TypeSafeDiagnosingMatcher<QName>() {
         fun quick2DataType(
             topic: String?,
             modality: String?,
-            occurrence: String?
+            occurrence: String?,
         ): Matcher<QName?> {
             return Quick2DataType(topic + modality + occurrence)
         }

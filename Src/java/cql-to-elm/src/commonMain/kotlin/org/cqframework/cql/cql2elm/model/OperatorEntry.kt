@@ -23,7 +23,7 @@ class OperatorEntry(val name: String) {
          */
         private fun getInvocationSignature(
             callSignature: Signature,
-            operatorSignature: Signature
+            operatorSignature: Signature,
         ): Signature {
             if (callSignature.size == operatorSignature.size) {
                 val invocationTypes = mutableListOf<DataType>()
@@ -55,7 +55,7 @@ class OperatorEntry(val name: String) {
             conversionMap: ConversionMap,
             operatorMap: OperatorMap,
             allowPromotionAndDemotion: Boolean,
-            requireConversions: Boolean
+            requireConversions: Boolean,
         ): OperatorResolution? {
             val conversions =
                 getConversions(
@@ -63,7 +63,7 @@ class OperatorEntry(val name: String) {
                     operator.signature,
                     conversionMap,
                     operatorMap,
-                    allowPromotionAndDemotion
+                    allowPromotionAndDemotion,
                 )
             if (requireConversions && conversions == null) {
                 return null
@@ -77,7 +77,7 @@ class OperatorEntry(val name: String) {
         fun resolve(
             callContext: CallContext,
             conversionMap: ConversionMap,
-            operatorMap: OperatorMap
+            operatorMap: OperatorMap,
         ): List<OperatorResolution> {
             var results: MutableList<OperatorResolution> = ArrayList()
             val invocationSignature =
@@ -93,7 +93,7 @@ class OperatorEntry(val name: String) {
                         conversionMap,
                         operatorMap,
                         callContext.allowPromotionAndDemotion,
-                        false
+                        false,
                     )
                 if (result != null) {
                     results.add(result)
@@ -114,7 +114,7 @@ class OperatorEntry(val name: String) {
                         conversionMap,
                         operatorMap,
                         callContext.allowPromotionAndDemotion,
-                        false
+                        false,
                     )
                 if (result != null) {
                     results.add(result)
@@ -132,7 +132,7 @@ class OperatorEntry(val name: String) {
                         conversionMap,
                         operatorMap,
                         callContext.allowPromotionAndDemotion,
-                        true
+                        true,
                     )
                 if (result != null) {
                     results.add(result)
@@ -148,7 +148,7 @@ class OperatorEntry(val name: String) {
             operatorSignature: Signature?,
             conversionMap: ConversionMap,
             operatorMap: OperatorMap,
-            allowPromotionAndDemotion: Boolean
+            allowPromotionAndDemotion: Boolean,
         ): Array<Conversion?>? {
             if (
                 callSignature == null ||
@@ -165,7 +165,7 @@ class OperatorEntry(val name: String) {
                     conversionMap,
                     operatorMap,
                     allowPromotionAndDemotion,
-                    conversions
+                    conversions,
                 )
 
             if (isConvertible) {
@@ -250,7 +250,7 @@ class OperatorEntry(val name: String) {
         fun resolve(
             callContext: CallContext,
             conversionMap: ConversionMap,
-            operatorMap: OperatorMap
+            operatorMap: OperatorMap,
         ): MutableList<OperatorResolution> {
             val results = arrayListOf<OperatorResolution>()
 
@@ -336,7 +336,7 @@ class OperatorEntry(val name: String) {
         operandList: ArrayList<ArrayList<DataType>>,
         result: Array<DataType?>,
         k: Int,
-        signatures: MutableList<Signature>
+        signatures: MutableList<Signature>,
     ) {
         if (k == operandList.size) {
             val noNulls = result.toList().requireNoNulls()
@@ -352,7 +352,7 @@ class OperatorEntry(val name: String) {
     fun resolve(
         callContext: CallContext,
         operatorMap: OperatorMap,
-        conversionMap: ConversionMap
+        conversionMap: ConversionMap,
     ): List<OperatorResolution> {
         // Attempt to instantiate any generic signatures
         // If the callContext signature contains choices, attempt instantiation with all possible
@@ -365,7 +365,7 @@ class OperatorEntry(val name: String) {
                     callSignature,
                     operatorMap,
                     conversionMap,
-                    callContext.allowPromotionAndDemotion
+                    callContext.allowPromotionAndDemotion,
                 )
             for (instantiation in instantiations) {
                 // If the generic signature was instantiated, store it as an actual signature.
@@ -382,7 +382,7 @@ class OperatorEntry(val name: String) {
         signature: Signature,
         operatorMap: OperatorMap,
         conversionMap: ConversionMap,
-        allowPromotionAndDemotion: Boolean
+        allowPromotionAndDemotion: Boolean,
     ): List<Operator> {
         return genericOperators.values
             .map {

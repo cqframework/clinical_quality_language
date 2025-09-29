@@ -9,7 +9,7 @@ actual val defaultLazyUcumService =
 @JsName("createUcumService")
 fun createUcumServiceReference(
     convertUnit: (value: String, sourceUnit: String, destUnit: String) -> String,
-    validateUnit: (unit: String) -> String?
+    validateUnit: (unit: String) -> String?,
 ): JsReference<Lazy<UcumService>> {
     return createUcumService(convertUnit, validateUnit).toJsReference()
 }

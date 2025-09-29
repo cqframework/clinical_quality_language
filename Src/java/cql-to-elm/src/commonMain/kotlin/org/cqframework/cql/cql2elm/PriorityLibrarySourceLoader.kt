@@ -65,7 +65,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
 
     override fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): Source? {
         var content: Source?
         for (provider in getProviders()) {

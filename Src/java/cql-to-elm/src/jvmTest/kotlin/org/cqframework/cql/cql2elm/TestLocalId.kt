@@ -28,7 +28,7 @@ internal class TestLocalId {
             TestUtils.createTranslator(
                     cqlFileName,
                     CqlCompilerOptions.Options.EnableLocators,
-                    CqlCompilerOptions.Options.EnableAnnotations
+                    CqlCompilerOptions.Options.EnableAnnotations,
                 )
                 .toELM()
 
@@ -51,7 +51,7 @@ internal class TestLocalId {
         val options =
             CqlCompilerOptions(
                 CqlCompilerOptions.Options.EnableLocators,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         val libraryManager = LibraryManager(modelManager, options)
         libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -86,13 +86,13 @@ internal class TestLocalId {
                     node.localId,
                     """Element of type ${node.javaClass.simpleName}
                         | in library $libraryName at $locator has a null localId"""
-                        .trimMargin()
+                        .trimMargin(),
                 )
                 Assertions.assertFalse(
                     node.localId!!.isEmpty(),
                     """Element of type ${node.javaClass.simpleName}
                         | in library $libraryName at $locator has an empty localId"""
-                        .trimMargin()
+                        .trimMargin(),
                 )
             }
     }

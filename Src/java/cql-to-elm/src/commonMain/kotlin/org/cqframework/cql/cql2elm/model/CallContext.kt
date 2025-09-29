@@ -8,7 +8,7 @@ class CallContext(
     val allowPromotionAndDemotion: Boolean,
     val allowFluent: Boolean,
     val mustResolve: Boolean,
-    operandTypes: List<DataType>
+    operandTypes: List<DataType>,
 ) {
     constructor(
         libraryName: String?,
@@ -16,14 +16,14 @@ class CallContext(
         allowPromotionAndDemotion: Boolean,
         allowFluent: Boolean,
         mustResolve: Boolean,
-        vararg operandTypes: DataType
+        vararg operandTypes: DataType,
     ) : this(
         libraryName,
         operatorName,
         allowPromotionAndDemotion,
         allowFluent,
         mustResolve,
-        operandTypes.toList()
+        operandTypes.toList(),
     )
 
     val signature: Signature

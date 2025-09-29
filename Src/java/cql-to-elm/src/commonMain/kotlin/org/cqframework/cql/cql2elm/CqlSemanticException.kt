@@ -7,5 +7,5 @@ class CqlSemanticException(
     message: String,
     locator: TrackBack? = null,
     severity: ErrorSeverity = ErrorSeverity.Error,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : CqlCompilerException(message, locator, severity, cause)

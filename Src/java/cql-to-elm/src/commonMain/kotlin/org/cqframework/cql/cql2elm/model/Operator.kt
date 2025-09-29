@@ -13,12 +13,12 @@ open class Operator(
     var functionDef: FunctionDef?,
     var accessLevel: AccessModifier = AccessModifier.PUBLIC,
     var fluent: Boolean = false,
-    var external: Boolean = false
+    var external: Boolean = false,
 ) {
     constructor(
         name: String,
         signature: Signature,
-        resultType: DataType?
+        resultType: DataType?,
     ) : this(name, signature, resultType, null)
 
     constructor(
@@ -30,7 +30,7 @@ open class Operator(
         functionDef,
         functionDef.accessLevel!!,
         functionDef.isFluent() ?: false,
-        functionDef.isExternal() ?: false
+        functionDef.isExternal() ?: false,
     )
 
     init {

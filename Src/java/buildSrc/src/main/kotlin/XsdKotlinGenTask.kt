@@ -13,11 +13,7 @@ import javax.xml.parsers.SAXParserFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-data class Config(
-    val project: String,
-    val xsd: String,
-    val outputDir: String,
-)
+data class Config(val project: String, val xsd: String, val outputDir: String)
 
 // Entry points for schema parsing and code generation
 val configs =
@@ -31,14 +27,14 @@ val configs =
             project = "elm",
             xsd = "../../cql-lm/schema/elm/library.xsd",
             outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
-        )
+        ),
     )
 
 val namespaceToPackageName =
     mapOf(
         "urn:hl7-org:elm-modelinfo:r1" to "org.hl7.elm_modelinfo.r1",
         "urn:hl7-org:elm:r1" to "org.hl7.elm.r1",
-        "urn:hl7-org:cql-annotations:r1" to "org.hl7.cql_annotations.r1"
+        "urn:hl7-org:cql-annotations:r1" to "org.hl7.cql_annotations.r1",
     )
 
 fun getPackageName(namespace: String): String {
@@ -181,9 +177,9 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
                         AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
                             .addMember(
                                 "%T::class",
-                                ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
+                                ClassName("kotlinx.serialization", "ExperimentalSerializationApi"),
                             )
-                            .build()
+                            .build(),
                     )
                 "dateTime" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
                 "time" -> CodeBlock.of("%T(it)", jsonPrimitiveClassName)
@@ -205,7 +201,7 @@ fun TypeSpec.Builder.addElement(
     elementDecl: XSElementDecl,
     typeName: TypeName,
     className: ClassName,
-    isRepeated: Boolean
+    isRepeated: Boolean,
 ) {
     // Create a list property if the element's `maxOccurs` isn't 0 or 1
     if (isRepeated) {
@@ -239,7 +235,7 @@ fun TypeSpec.Builder.addElement(
                         .addStatement(
                             "this.%N = %N",
                             className.member("_${elementDecl.name}"),
-                            valueParameter
+                            valueParameter,
                         )
                         .build()
                 )
@@ -262,7 +258,7 @@ fun TypeSpec.Builder.addWith(
     fieldName: String,
     fieldType: TypeName,
     className: ClassName,
-    override: Boolean
+    override: Boolean,
 ) {
     val valueParameter = ParameterSpec.builder("value", fieldType.copy(nullable = true)).build()
     addFunction(
@@ -286,7 +282,7 @@ fun TypeSpec.Builder.addWithList(
     fieldName: String,
     fieldType: TypeName,
     className: ClassName,
-    override: Boolean
+    override: Boolean,
 ) {
     val valuesParameter =
         ParameterSpec.builder("values", List::class.asClassName().parameterizedBy(fieldType))
@@ -299,7 +295,7 @@ fun TypeSpec.Builder.addWithList(
             .addStatement(
                 "this.%N = %N.toMutableList()",
                 className.member(fieldName),
-                valuesParameter
+                valuesParameter,
             )
             .addStatement("return this")
             .apply {
@@ -390,7 +386,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                 .addStatement(
                                     "if (this.%N == null) { this.%N = ArrayList() }",
                                     className.member("_content"),
-                                    className.member("_content")
+                                    className.member("_content"),
                                 )
                                 .addStatement("return this.%N!!", className.member("_content"))
                                 .build()
@@ -401,7 +397,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                 .addStatement(
                                     "this.%N = %N",
                                     className.member("_content"),
-                                    valueParameter
+                                    valueParameter,
                                 )
                                 .build()
                         )
@@ -433,14 +429,14 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                 CodeBlock.of(
                                     "%T.%N",
                                     typeName,
-                                    attribute.defaultValue.value.uppercase()
+                                    attribute.defaultValue.value.uppercase(),
                                 )
                         }
 
                     addProperty(
                         PropertySpec.builder(
                                 "_${attribute.decl.name}",
-                                typeName.copy(nullable = true)
+                                typeName.copy(nullable = true),
                             )
                             .addModifiers(KModifier.INTERNAL)
                             .mutable()
@@ -458,7 +454,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                     .addStatement(
                                         "return this.%N ?: %L",
                                         className.member("_${attribute.decl.name}"),
-                                        defaultValue
+                                        defaultValue,
                                     )
                                     .build()
                             )
@@ -468,7 +464,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                                     .addStatement(
                                         "this.%N = %N",
                                         className.member("_${attribute.decl.name}"),
-                                        valueParameter
+                                        valueParameter,
                                     )
                                     .build()
                             )
@@ -515,7 +511,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             elementDecl,
                             getTypeName(elementDecl.type),
                             className,
-                            particle.isRepeated
+                            particle.isRepeated,
                         )
                     }
                 }
@@ -530,7 +526,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             elementDecl.name,
                             getTypeName(elementDecl.type),
                             className,
-                            true
+                            true,
                         )
                     } else {
                         addWith(elementDecl.name, getTypeName(elementDecl.type), className, true)
@@ -557,7 +553,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                         addStatement(
                             "if (this.%N != other.%N) return false",
                             className.member(attribute.decl.name),
-                            className.member(attribute.decl.name)
+                            className.member(attribute.decl.name),
                         )
                     }
 
@@ -568,7 +564,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             addStatement(
                                 "if (this.%N != other.%N) return false",
                                 className.member(elementDecl.name),
-                                className.member(elementDecl.name)
+                                className.member(elementDecl.name),
                             )
                         }
                     }
@@ -593,7 +589,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                     getOwnAttributes(complexType).forEach { attribute ->
                         addStatement(
                             "result = 31 * result + (%N?.hashCode() ?: 0)",
-                            className.member(attribute.decl.name)
+                            className.member(attribute.decl.name),
                         )
                     }
 
@@ -602,7 +598,7 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                         if (elementDecl != null) {
                             addStatement(
                                 "result = 31 * result + (%N?.hashCode() ?: 0)",
-                                className.member(elementDecl.name)
+                                className.member(elementDecl.name),
                             )
                         }
                     }
@@ -624,7 +620,7 @@ fun getAllSubtypes(complexType: XSComplexType): List<XSComplexType> {
 // functions for the class and nested classes
 fun FileSpec.Builder.addSerializers(
     complexType: XSComplexType,
-    className: ClassName
+    className: ClassName,
 ): FileSpec.Builder {
 
     // Add `froXmlElement` static function
@@ -636,7 +632,7 @@ fun FileSpec.Builder.addSerializers(
             .addParameter(
                 "namespacesFromParent",
                 Map::class.asClassName()
-                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+                    .parameterizedBy(String::class.asClassName(), String::class.asClassName()),
             )
             .returns(className)
             .apply {
@@ -650,7 +646,7 @@ fun FileSpec.Builder.addSerializers(
                 // If the element has an `xsi:type` attribute, use the subtype's `fromXmlElement`
                 beginControlFlow(
                     "namespaces.entries.find { it.value == %S }?.key?.let",
-                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                 )
                 beginControlFlow("xmlElement.attributes[\"\$it:type\"]?.let")
                 beginControlFlow("when (%M(it, namespaces))", xmlStringToQName)
@@ -661,7 +657,7 @@ fun FileSpec.Builder.addSerializers(
                         subtype.targetNamespace,
                         subtype.name,
                         getTypeName(subtype),
-                        MemberName(getPackageName(subtype.targetNamespace), "fromXmlElement", true)
+                        MemberName(getPackageName(subtype.targetNamespace), "fromXmlElement", true),
                     )
                 }
                 endControlFlow()
@@ -673,7 +669,7 @@ fun FileSpec.Builder.addSerializers(
                 if (complexType.isAbstract) {
                     addStatement(
                         "error(%S)",
-                        "Cannot deserialize abstract class ${className.canonicalName}"
+                        "Cannot deserialize abstract class ${className.canonicalName}",
                     )
                 } else {
                     // Build the instance from attributes and child elements
@@ -686,7 +682,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "instance.%N = %L",
                             attribute.decl.name,
-                            getXmlAttributeParserCode(attribute.decl.type)
+                            getXmlAttributeParserCode(attribute.decl.type),
                         )
                         endControlFlow()
                     }
@@ -716,7 +712,7 @@ fun FileSpec.Builder.addSerializers(
                                     "%T(%S, %S) ->",
                                     qNameClassName,
                                     elementDecl.targetNamespace,
-                                    elementDecl.name
+                                    elementDecl.name,
                                 )
 
                                 if (particle.isRepeated) {
@@ -727,8 +723,8 @@ fun FileSpec.Builder.addSerializers(
                                         MemberName(
                                             getPackageName(elementDecl.type.targetNamespace),
                                             "fromXmlElement",
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 } else {
                                     addStatement(
@@ -738,8 +734,8 @@ fun FileSpec.Builder.addSerializers(
                                         MemberName(
                                             getPackageName(elementDecl.type.targetNamespace),
                                             "fromXmlElement",
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 }
 
@@ -767,13 +763,13 @@ fun FileSpec.Builder.addSerializers(
                 "namespaces",
                 mutableMapClassName.parameterizedBy(
                     String::class.asClassName(),
-                    String::class.asClassName()
-                )
+                    String::class.asClassName(),
+                ),
             )
             .addParameter(
                 "defaultNamespaces",
                 Map::class.asClassName()
-                    .parameterizedBy(String::class.asClassName(), String::class.asClassName())
+                    .parameterizedBy(String::class.asClassName(), String::class.asClassName()),
             )
             .returns(xmlElementClassName)
             .apply {
@@ -784,7 +780,7 @@ fun FileSpec.Builder.addSerializers(
                     addStatement(
                         "is %T -> return this.%M(tagName, true, namespaces, defaultNamespaces)",
                         getTypeName(subtype),
-                        MemberName(getPackageName(subtype.targetNamespace), "toXmlElement", true)
+                        MemberName(getPackageName(subtype.targetNamespace), "toXmlElement", true),
                     )
                 }
                 endControlFlow()
@@ -795,10 +791,10 @@ fun FileSpec.Builder.addSerializers(
                 // Write the `xsi:type` attribute if required
                 addStatement(
                     """
-                    if (withXsiType) {
-                      attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
-                    }
-                """
+                        if (withXsiType) {
+                          attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
+                        }
+                    """
                         .trimIndent(),
                     qNameToXmlString,
                     qNameClassName,
@@ -806,7 +802,7 @@ fun FileSpec.Builder.addSerializers(
                     qNameToXmlString,
                     qNameClassName,
                     complexType.targetNamespace,
-                    complexType.name ?: "null"
+                    complexType.name ?: "null",
                 )
 
                 (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
@@ -816,7 +812,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "attributes[%S] = %L",
                             attribute.decl.name,
-                            getXmlAttributeSerializerCode(attribute.decl.type)
+                            getXmlAttributeSerializerCode(attribute.decl.type),
                         )
                         endControlFlow()
                     } else {
@@ -824,7 +820,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "attributes[%S] = %L",
                             attribute.decl.name,
-                            getXmlAttributeSerializerCode(attribute.decl.type)
+                            getXmlAttributeSerializerCode(attribute.decl.type),
                         )
                         endControlFlow()
                     }
@@ -846,46 +842,46 @@ fun FileSpec.Builder.addSerializers(
                                 beginControlFlow("this.%N?.let", "_${elementDecl.name}")
                                 addStatement(
                                     """
-                                    it.forEach {
-                                      children.add(it.%M(
-                                        %T(%S, %S),
-                                        false,
-                                        namespaces,
-                                        defaultNamespaces
-                                      ))
-                                    }
-                                """
+                                        it.forEach {
+                                          children.add(it.%M(
+                                            %T(%S, %S),
+                                            false,
+                                            namespaces,
+                                            defaultNamespaces
+                                          ))
+                                        }
+                                    """
                                         .trimIndent(),
                                     MemberName(
                                         getPackageName(elementDecl.type.targetNamespace),
                                         "toXmlElement",
-                                        true
+                                        true,
                                     ),
                                     qNameClassName,
                                     elementDecl.targetNamespace,
-                                    elementDecl.name
+                                    elementDecl.name,
                                 )
                                 endControlFlow()
                             } else {
                                 beginControlFlow("this.%N?.let", elementDecl.name)
                                 addStatement(
                                     """
-                                    children.add(it.%M(
-                                      %T(%S, %S),
-                                      false,
-                                      namespaces,
-                                      defaultNamespaces
-                                    ))
-                                """
+                                        children.add(it.%M(
+                                          %T(%S, %S),
+                                          false,
+                                          namespaces,
+                                          defaultNamespaces
+                                        ))
+                                    """
                                         .trimIndent(),
                                     MemberName(
                                         getPackageName(elementDecl.type.targetNamespace),
                                         "toXmlElement",
-                                        true
+                                        true,
                                     ),
                                     qNameClassName,
                                     elementDecl.targetNamespace,
-                                    elementDecl.name
+                                    elementDecl.name,
                                 )
                                 endControlFlow()
                             }
@@ -895,7 +891,7 @@ fun FileSpec.Builder.addSerializers(
                 addStatement(
                     "return %T(%M(tagName, namespaces, defaultNamespaces), attributes, children)",
                     xmlElementClassName,
-                    qNameToXmlString
+                    qNameToXmlString,
                 )
             }
             .build()
@@ -918,7 +914,7 @@ fun FileSpec.Builder.addSerializers(
                         "%S -> return %T.%M(jsonObject)",
                         subtype.name,
                         getTypeName(subtype),
-                        MemberName(getPackageName(subtype.targetNamespace), "fromJsonObject", true)
+                        MemberName(getPackageName(subtype.targetNamespace), "fromJsonObject", true),
                     )
                 }
                 endControlFlow()
@@ -930,7 +926,7 @@ fun FileSpec.Builder.addSerializers(
                 if (complexType.isAbstract) {
                     addStatement(
                         "error(%S)",
-                        "Cannot deserialize abstract class ${className.canonicalName}"
+                        "Cannot deserialize abstract class ${className.canonicalName}",
                     )
                 } else {
                     // Build the instance from JSON object fields
@@ -947,7 +943,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "instance.%N = %L",
                             attribute.decl.name,
-                            getJsonPrimitiveParserCode(attribute.decl.type)
+                            getJsonPrimitiveParserCode(attribute.decl.type),
                         )
                         endControlFlow()
                         endControlFlow()
@@ -990,8 +986,8 @@ fun FileSpec.Builder.addSerializers(
                                         MemberName(
                                             getPackageName(elementDecl.type.targetNamespace),
                                             "fromJsonObject",
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 } else {
                                     addStatement(
@@ -1007,8 +1003,8 @@ fun FileSpec.Builder.addSerializers(
                                         MemberName(
                                             getPackageName(elementDecl.type.targetNamespace),
                                             "fromJsonObject",
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 }
 
@@ -1037,7 +1033,7 @@ fun FileSpec.Builder.addSerializers(
                     addStatement(
                         "is %T -> return this.%M(true)",
                         getTypeName(subtype),
-                        MemberName(getPackageName(subtype.targetNamespace), "toJsonObject", true)
+                        MemberName(getPackageName(subtype.targetNamespace), "toJsonObject", true),
                     )
                 }
                 endControlFlow()
@@ -1048,13 +1044,13 @@ fun FileSpec.Builder.addSerializers(
                 // Write the `type` field if required
                 addStatement(
                     """
-                    if (withType) {
-                      entries["type"] = %T(%S)
-                    }
-                """
+                        if (withType) {
+                          entries["type"] = %T(%S)
+                        }
+                    """
                         .trimIndent(),
                     jsonPrimitiveClassName,
-                    complexType.name ?: "null"
+                    complexType.name ?: "null",
                 )
 
                 (getInheritedAttributes(complexType) + getOwnAttributes(complexType)).forEach {
@@ -1064,7 +1060,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "entries[%S] = %L",
                             attribute.decl.name,
-                            getJsonPrimitiveSerializerCode(attribute.decl.type)
+                            getJsonPrimitiveSerializerCode(attribute.decl.type),
                         )
                         endControlFlow()
                     } else {
@@ -1072,7 +1068,7 @@ fun FileSpec.Builder.addSerializers(
                         addStatement(
                             "entries[%S] = %L",
                             attribute.decl.name,
-                            getJsonPrimitiveSerializerCode(attribute.decl.type)
+                            getJsonPrimitiveSerializerCode(attribute.decl.type),
                         )
                         endControlFlow()
                     }
@@ -1097,8 +1093,8 @@ fun FileSpec.Builder.addSerializers(
                                     MemberName(
                                         getPackageName(elementDecl.type.targetNamespace),
                                         "toJsonObject",
-                                        true
-                                    )
+                                        true,
+                                    ),
                                 )
                             } else {
                                 addStatement(
@@ -1108,8 +1104,8 @@ fun FileSpec.Builder.addSerializers(
                                     MemberName(
                                         getPackageName(elementDecl.type.targetNamespace),
                                         "toJsonObject",
-                                        true
-                                    )
+                                        true,
+                                    ),
                                 )
                             }
                         }
@@ -1201,7 +1197,7 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                     """
                                                         .trimIndent(),
                                                     valueParameter,
-                                                    valueParameter
+                                                    valueParameter,
                                                 )
                                                 .build()
                                         )
@@ -1214,9 +1210,9 @@ open class XsdKotlinGenTask : DefaultTask() {
                                             TypeSpec.anonymousClassBuilder()
                                                 .addSuperclassConstructorParameter(
                                                     "%S",
-                                                    facet.value.value
+                                                    facet.value.value,
                                                 )
-                                                .build()
+                                                .build(),
                                         )
                                     }
                                 }
@@ -1298,7 +1294,7 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                                         .returns(nestedClassName)
                                                                         .addStatement(
                                                                             "return %T()",
-                                                                            nestedClassName
+                                                                            nestedClassName,
                                                                         )
                                                                         .build()
                                                                 )

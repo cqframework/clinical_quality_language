@@ -8,7 +8,7 @@ class ElmEditor(private val edits: List<IElmEdit>) {
     private val visitor: FunctionalElmVisitor<Element?, Unit> =
         FunctionalElmVisitor.from(
             { t, _ -> t },
-            { current, next -> this.aggregateResults(current, next) }
+            { current, next -> this.aggregateResults(current, next) },
         )
 
     fun edit(library: Library) {

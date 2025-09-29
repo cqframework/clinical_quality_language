@@ -3,7 +3,7 @@ package org.cqframework.cql.shared.serializing
 /** Serializes an XML document to a string. Used in JS when the DOM API is not available. */
 internal fun serializeUsingPolyfill(
     element: XmlNode.Element,
-    namespaces: Map<String, String>
+    namespaces: Map<String, String>,
 ): String {
     val sb = StringBuilder()
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")

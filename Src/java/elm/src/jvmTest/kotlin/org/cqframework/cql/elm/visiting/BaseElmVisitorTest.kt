@@ -19,7 +19,7 @@ internal class BaseElmVisitorTest {
 
                 public override fun aggregateResult(
                     aggregate: Boolean,
-                    nextResult: Boolean
+                    nextResult: Boolean,
                 ): Boolean {
                     return aggregate || nextResult
                 }

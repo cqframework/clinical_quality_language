@@ -48,7 +48,7 @@ import org.hl7.elm_modelinfo.r1.TypeSpecifier
     "TooManyFunctions",
     "TooGenericExceptionThrown",
     "ReturnCount",
-    "UnusedParameter"
+    "UnusedParameter",
 )
 class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     private val modelIndex: MutableMap<String, Model> = HashMap()
@@ -119,7 +119,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     c.name!!,
                     contextType,
                     c.keyElement!!.split(";".toRegex()).dropLastWhile { it.isEmpty() },
-                    c.birthDateElement
+                    c.birthDateElement,
                 )
 
             contexts.add(modelContext)
@@ -136,7 +136,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                         contextType.simpleName,
                         contextType,
                         mutableListOf("id"),
-                        this.modelInfo.patientBirthDatePropertyName
+                        this.modelInfo.patientBirthDatePropertyName,
                     )
                 contexts.add(modelContext)
                 defaultContext = modelContext
@@ -169,7 +169,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
     private fun casify(
         typeName: String,
-        caseSensitive: Boolean = modelInfo.isCaseSensitive() ?: false
+        caseSensitive: Boolean = modelInfo.isCaseSensitive() ?: false,
     ): String {
         return if (caseSensitive) typeName.lowercase() else typeName
     }
@@ -208,7 +208,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val pointType =
                 resolveTypeNameOrSpecifier(
                     typeSpecifier.pointType,
-                    typeSpecifier.pointTypeSpecifier
+                    typeSpecifier.pointTypeSpecifier,
                 )
             return IntervalType(pointType!!)
         }
@@ -217,7 +217,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val elementType =
                 resolveTypeNameOrSpecifier(
                     typeSpecifier.elementType,
-                    typeSpecifier.elementTypeSpecifier
+                    typeSpecifier.elementTypeSpecifier,
                 )
             if (elementType != null) {
                 return ListType(elementType)
@@ -230,7 +230,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val element =
                     TupleTypeElement(
                         specifierElement.name!!,
-                        resolveTypeSpecifier(specifierElement.elementType!!)!!
+                        resolveTypeSpecifier(specifierElement.elementType!!)!!,
                     )
                 elements.add(element)
             }
@@ -286,7 +286,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
     private fun resolveTypeNameOrSpecifier(
         typeName: String?,
-        typeSpecifier: TypeSpecifier?
+        typeSpecifier: TypeSpecifier?,
     ): DataType? {
         return when {
             typeName.isNullOrEmpty() && typeSpecifier == null -> null
@@ -367,7 +367,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     SimpleType(
                         qualifiedTypeName,
                         resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier),
-                        t.target
+                        t.target,
                     )
                 }
             resolvedTypes[casify(result.name)] = result
@@ -456,7 +456,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 TypeParameter(
                     parameterInfo.name!!,
                     typeConstraint,
-                    resolveTypeName(parameterInfo.constraintType!!)
+                    resolveTypeName(parameterInfo.constraintType!!),
                 )
             )
         }
@@ -473,7 +473,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
      */
     private fun resolveClassTypeElements(
         classType: ClassType,
-        infoElements: Collection<ClassInfoElement>
+        infoElements: Collection<ClassInfoElement>,
     ): Collection<ClassTypeElement> {
         val elements: MutableList<ClassTypeElement> = ArrayList()
         for (e in infoElements) {
@@ -495,7 +495,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     elementType!!,
                     e.isProhibited() ?: false,
                     e.isOneBased() ?: false,
-                    e.target
+                    e.target,
                 )
             )
         }
@@ -579,7 +579,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             TypeParameter(
                 parameterTypeSpecifier.parameterName!!,
                 TypeParameterConstraint.TYPE,
-                null
+                null,
             )
         return elementType
     }
@@ -598,7 +598,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 if (t is ProfileInfo) {
                     ProfileType(
                         qualifiedName,
-                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier) ?: DataType.ANY
+                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier) ?: DataType.ANY,
                     )
                 } else {
                     // Added to support generic notation in ModelInfo file for class type names
@@ -613,7 +613,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                             ClassType(
                                 qualifiedName,
                                 resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
-                                    ?: DataType.ANY
+                                    ?: DataType.ANY,
                             )
                         }
                     }
@@ -669,7 +669,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         val relationship =
             Relationship(
                 modelContext,
-                relationshipInfo.relatedKeyElement!!.split(";").dropLastWhile { it.isEmpty() }
+                relationshipInfo.relatedKeyElement!!.split(";").dropLastWhile { it.isEmpty() },
             )
         return relationship
     }

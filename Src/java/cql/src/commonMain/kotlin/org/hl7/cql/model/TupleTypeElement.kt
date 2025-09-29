@@ -3,7 +3,7 @@ package org.hl7.cql.model
 data class TupleTypeElement(
     val name: String,
     val type: DataType,
-    private val oneBased: Boolean = false
+    private val oneBased: Boolean = false,
 ) {
     init {
         require(name.isNotEmpty()) { "name can not be empty" }

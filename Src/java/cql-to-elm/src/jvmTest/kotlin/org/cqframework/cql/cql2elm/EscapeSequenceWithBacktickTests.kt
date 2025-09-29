@@ -124,7 +124,7 @@ internal class EscapeSequenceWithBacktickTests {
                         .getResourceAsStream("EscapeSequenceWithBacktickTests.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager
+                    libraryManager,
                 )
             assertThat(translator.errors.size, `is`(0))
             val library = translator.toELM()

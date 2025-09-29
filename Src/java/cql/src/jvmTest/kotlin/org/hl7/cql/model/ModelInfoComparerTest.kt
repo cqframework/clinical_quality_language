@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test
     "ForbiddenComment",
     "MaxLineLength",
     "CyclomaticComplexMethod",
-    "LongMethod"
+    "LongMethod",
 )
 class ModelInfoComparerTest {
     private fun readModelInfo(resourceName: String): ModelInfo {
@@ -59,7 +59,7 @@ class ModelInfoComparerTest {
                         "ModelInfo.Conversion from FHIR.SimpleQuantity to System.Quantity in left only%n" +
                         "ModelInfo.Conversion from FHIR.id to System.String in left only%n")
                 )
-            )
+            ),
         )
         // assertThat(differences.length(), is(0));
     }
@@ -93,7 +93,7 @@ class ModelInfoComparerTest {
                         "ModelInfo.PractitionerRole.primaryCodePath: null <> code%n" +
                         "ModelInfo.RelatedPerson.primaryCodePath: null <> relationship%n")
                 )
-            )
+            ),
         )
         // assertThat(differences.length(), is(0));
     }
@@ -155,7 +155,7 @@ class ModelInfoComparerTest {
                         "ModelInfo.uuid.Element value in right only%n" // redeclaration for metadata
                     )
                 )
-            )
+            ),
         ) // redeclaration for metadata
     }
 
@@ -208,13 +208,13 @@ class ModelInfoComparerTest {
                 context,
                 "patientClassIdentifier",
                 a.patientClassIdentifier,
-                b.patientClassIdentifier
+                b.patientClassIdentifier,
             )
             compareAttribute(
                 context,
                 "patientBirthDatePropertyName",
                 a.patientBirthDatePropertyName,
-                b.patientBirthDatePropertyName
+                b.patientBirthDatePropertyName,
             )
 
             val msa = a.requiredModelInfo.associateBy { it.name!! }
@@ -294,7 +294,7 @@ class ModelInfoComparerTest {
             context: ModelInfoCompareContext,
             attributeName: String?,
             a: String?,
-            b: String?
+            b: String?,
         ) {
             if (a == null || a != b) {
                 if (a == null && b == null) {
@@ -308,7 +308,7 @@ class ModelInfoComparerTest {
             context: ModelInfoCompareContext,
             attributeName: String?,
             a: Boolean?,
-            b: Boolean?
+            b: Boolean?,
         ) {
             if (a == null || a != b) {
                 if (a == null && b == null) {
@@ -321,7 +321,7 @@ class ModelInfoComparerTest {
         fun compareModelSpecifier(
             context: ModelInfoCompareContext,
             a: ModelSpecifier?,
-            b: ModelSpecifier?
+            b: ModelSpecifier?,
         ) {
             if (a == null) {
                 context.append(
@@ -342,7 +342,7 @@ class ModelInfoComparerTest {
                     return String.format(
                         "%s.%s",
                         namedTypeSpecifier.namespace,
-                        namedTypeSpecifier.name
+                        namedTypeSpecifier.name,
                     )
                 }
 
@@ -350,7 +350,7 @@ class ModelInfoComparerTest {
                     return String.format(
                         "%s.%s",
                         namedTypeSpecifier.modelName,
-                        namedTypeSpecifier.name
+                        namedTypeSpecifier.name,
                     )
                 }
 
@@ -366,8 +366,8 @@ class ModelInfoComparerTest {
                     "Interval<%s>",
                     descriptor(
                         intervalTypeSpecifier.pointType,
-                        intervalTypeSpecifier.pointTypeSpecifier
-                    )
+                        intervalTypeSpecifier.pointTypeSpecifier,
+                    ),
                 )
             }
 
@@ -380,8 +380,8 @@ class ModelInfoComparerTest {
                     "List<%s>",
                     descriptor(
                         listTypeSpecifier.elementType,
-                        listTypeSpecifier.elementTypeSpecifier
-                    )
+                        listTypeSpecifier.elementTypeSpecifier,
+                    ),
                 )
             }
 
@@ -442,7 +442,7 @@ class ModelInfoComparerTest {
             if (listTypeInfo != null) {
                 return String.format(
                     "List<%s>",
-                    descriptor(listTypeInfo.elementType, listTypeInfo.elementTypeSpecifier)
+                    descriptor(listTypeInfo.elementType, listTypeInfo.elementTypeSpecifier),
                 )
             }
 
@@ -453,7 +453,7 @@ class ModelInfoComparerTest {
             if (intervalTypeInfo != null) {
                 return String.format(
                     "Interval<%s>",
-                    descriptor(intervalTypeInfo.pointType, intervalTypeInfo.pointTypeSpecifier)
+                    descriptor(intervalTypeInfo.pointType, intervalTypeInfo.pointTypeSpecifier),
                 )
             }
 
@@ -504,7 +504,7 @@ class ModelInfoComparerTest {
         fun compareTypeInfo(
             context: ModelInfoCompareContext,
             a: SimpleTypeInfo?,
-            b: SimpleTypeInfo?
+            b: SimpleTypeInfo?,
         ) {
             val descriptorA: String? = descriptor(a)
             val descriptorB: String? = descriptor(b)
@@ -524,7 +524,7 @@ class ModelInfoComparerTest {
                     context,
                     "baseType",
                     descriptor(a.baseType, a.baseTypeSpecifier),
-                    descriptor(b!!.baseType, b.baseTypeSpecifier)
+                    descriptor(b!!.baseType, b.baseTypeSpecifier),
                 )
                 compareAttribute(context, "label", a.label, b.label)
                 compareAttribute(context, "identifier", a.identifier, b.identifier)
@@ -533,11 +533,11 @@ class ModelInfoComparerTest {
                     context,
                     "primaryValueSetPath",
                     a.primaryValueSetPath,
-                    b.primaryValueSetPath
+                    b.primaryValueSetPath,
                 )
                 compareAttribute(context, "target", a.target, b.target)
 
-                for (i in 0 ..< a.element.size.coerceAtLeast(b.element.size)) {
+                for (i in 0..<a.element.size.coerceAtLeast(b.element.size)) {
                     if (i >= a.element.size) {
                         context.append(
                             java.lang.String.format("Element %s in right only", b.element[i].name)
@@ -558,7 +558,7 @@ class ModelInfoComparerTest {
         fun compareClassInfoElement(
             context: ModelInfoCompareContext,
             a: ClassInfoElement,
-            b: ClassInfoElement
+            b: ClassInfoElement,
         ) {
             context.pushFocus(a.name!!)
             try {
@@ -567,7 +567,7 @@ class ModelInfoComparerTest {
                     context,
                     "type",
                     descriptor(a.elementType, a.elementTypeSpecifier),
-                    descriptor(b.elementType, b.elementTypeSpecifier)
+                    descriptor(b.elementType, b.elementTypeSpecifier),
                 )
                 compareAttribute(context, "target", a.target, b.target)
                 compareAttribute(context, "isOneBased", a.isOneBased(), b.isOneBased())
@@ -580,7 +580,7 @@ class ModelInfoComparerTest {
         fun compareTypeInfo(
             context: ModelInfoCompareContext,
             a: IntervalTypeInfo?,
-            b: IntervalTypeInfo?
+            b: IntervalTypeInfo?,
         ) {
             val descriptorA: String? = descriptor(a)
             val descriptorB: String? = descriptor(b)
@@ -600,7 +600,7 @@ class ModelInfoComparerTest {
         fun compareTypeInfo(
             context: ModelInfoCompareContext,
             a: TupleTypeInfo?,
-            b: TupleTypeInfo?
+            b: TupleTypeInfo?,
         ) {
             val descriptorA: String? = descriptor(a)
             val descriptorB: String? = descriptor(b)
@@ -612,7 +612,7 @@ class ModelInfoComparerTest {
         fun compareTypeInfo(
             context: ModelInfoCompareContext,
             a: ChoiceTypeInfo?,
-            b: ChoiceTypeInfo?
+            b: ChoiceTypeInfo?,
         ) {
             val descriptorA: String? = descriptor(a)
             val descriptorB: String? = descriptor(b)
@@ -632,7 +632,7 @@ class ModelInfoComparerTest {
                         "Type info %s is %s in left, but %s in right",
                         descriptor(a),
                         a.javaClass.simpleName,
-                        descriptor(b)
+                        descriptor(b),
                     )
                 )
             } else if (a is SimpleTypeInfo) {
@@ -655,7 +655,7 @@ class ModelInfoComparerTest {
                 return String.format(
                     "Conversion from %s to %s",
                     descriptor(conversionInfo.fromType, conversionInfo.fromTypeSpecifier),
-                    descriptor(conversionInfo.toType, conversionInfo.toTypeSpecifier)
+                    descriptor(conversionInfo.toType, conversionInfo.toTypeSpecifier),
                 )
             }
 
@@ -665,7 +665,7 @@ class ModelInfoComparerTest {
         fun compareConversionInfo(
             context: ModelInfoCompareContext,
             a: ConversionInfo?,
-            b: ConversionInfo?
+            b: ConversionInfo?,
         ) {
             if (a == null) {
                 context.append(String.format("%s in right only", descriptor(b)))
@@ -699,14 +699,14 @@ class ModelInfoComparerTest {
                     context,
                     "contextType",
                     descriptor(a.contextType),
-                    descriptor(b.contextType)
+                    descriptor(b.contextType),
                 )
                 compareAttribute(context, "keyElement", a.keyElement, b.keyElement)
                 compareAttribute(
                     context,
                     "birthDateElement",
                     a.birthDateElement,
-                    b.birthDateElement
+                    b.birthDateElement,
                 )
             }
         }

@@ -18,7 +18,7 @@ internal class CommentTests {
             TestUtils.runSemanticTest(
                 "TestComments.cql",
                 0,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         val library = translator.translatedLibrary
         assertThat<Any?>(library!!.library!!.annotation, Matchers.notNullValue())
@@ -80,7 +80,7 @@ internal class CommentTests {
             TestUtils.runSemanticTest(
                 "TestTags.cql",
                 0,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         val library = translator.translatedLibrary
         assertThat<Any?>(library!!.library!!.annotation, Matchers.notNullValue())
@@ -93,7 +93,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(3))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -121,7 +121,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(2))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -150,7 +150,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(2))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -174,7 +174,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(3))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -187,7 +187,7 @@ internal class CommentTests {
                         t.value,
                         Matchers.equalTo(
                             "This is a multi-line description that\n spans multiple lines."
-                        )
+                        ),
                     )
                 }
                 2 -> {
@@ -207,7 +207,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(2))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -231,7 +231,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(4))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -263,7 +263,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(4))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -295,7 +295,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(1))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -315,7 +315,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(3))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -343,7 +343,7 @@ internal class CommentTests {
         assertThat<Annotation?>(a, Matchers.notNullValue())
         assertThat<Any?>(a!!.t, Matchers.notNullValue())
         assertThat(a.t.size, Matchers.equalTo(2))
-        for (i in 0 ..< a.t.size) {
+        for (i in 0..<a.t.size) {
             val t = a.t[i]
             when (i) {
                 0 -> {
@@ -354,7 +354,7 @@ internal class CommentTests {
                     assertThat(t.name, Matchers.equalTo("tagname2"))
                     assertThat(
                         t.value,
-                        Matchers.equalTo("tag value2 this is\n" + "a long tag value")
+                        Matchers.equalTo("tag value2 this is\n" + "a long tag value"),
                     )
                 }
             }

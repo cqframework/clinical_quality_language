@@ -4,5 +4,5 @@ package org.cqframework.cql.cql2elm.model
 data class InstantiationResult(
     val genericOperator: GenericOperator,
     val operator: Operator?,
-    val conversionScore: Int
+    val conversionScore: Int,
 )

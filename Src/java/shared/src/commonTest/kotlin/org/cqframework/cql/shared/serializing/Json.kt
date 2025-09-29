@@ -12,12 +12,12 @@ class JsonTest {
     fun qNameParserHandlesValueWithCurlyBraces() {
         assertEquals(
             QName("urn:hl7-org:elm-types:r1", "Integer"),
-            jsonStringToQName("{urn:hl7-org:elm-types:r1}Integer")
+            jsonStringToQName("{urn:hl7-org:elm-types:r1}Integer"),
         )
         assertEquals(QName("Integer"), jsonStringToQName("{}Integer"))
         assertEquals(
             QName("urn:hl7-org:elm-types:r1", ""),
-            jsonStringToQName("{urn:hl7-org:elm-types:r1}")
+            jsonStringToQName("{urn:hl7-org:elm-types:r1}"),
         )
     }
 

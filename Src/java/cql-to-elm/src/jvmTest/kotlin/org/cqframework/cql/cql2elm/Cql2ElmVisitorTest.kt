@@ -303,7 +303,7 @@ internal class Cql2ElmVisitorTest {
         val ivs = def!!.expression as InValueSet?
         assertThat<ValueSetRef?>(
             ivs!!.valueset,
-            Matchers.instanceOf<ValueSetRef?>(ValueSetRef::class.java)
+            Matchers.instanceOf<ValueSetRef?>(ValueSetRef::class.java),
         )
         val vsr = ivs.valueset
         assertThat(vsr!!.name, `is`("Acute Pharyngitis"))
@@ -744,7 +744,7 @@ internal class Cql2ElmVisitorTest {
         val eqLhsAs = eqLhs.source as As?
         assertThat<QName>(
             (eqLhsAs!!.asTypeSpecifier as NamedTypeSpecifier).name,
-            QuickDataType.quickDataType("Location")
+            QuickDataType.quickDataType("Location"),
         )
         val eqLhsAsSource = eqLhsAs.operand as Property?
         assertThat(eqLhsAsSource!!.path, `is`("location"))
@@ -848,7 +848,7 @@ internal class Cql2ElmVisitorTest {
 
     private fun testEncounterPerformanceInpatientForDateRangeOptimization(
         cql: String,
-        enableDateRangeOptimization: Boolean = true
+        enableDateRangeOptimization: Boolean = true,
     ): Query {
         val def = TestUtils.visitData(cql, false, enableDateRangeOptimization) as ExpressionDef?
         val query = def!!.expression as Query
@@ -937,7 +937,7 @@ internal class Cql2ElmVisitorTest {
         val whereLHS = where.operand[0] as DurationBetween
         assertThat<DateTimePrecision?>(
             whereLHS.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(whereLHS.operand, Matchers.hasSize(2))
         val whereLHSBegin = whereLHS.operand[0] as Start
@@ -970,7 +970,7 @@ internal class Cql2ElmVisitorTest {
         val rtnP2Val = rtnP2.value as DurationBetween?
         assertThat<DateTimePrecision?>(
             rtnP2Val!!.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(rtnP2Val.operand, Matchers.hasSize(2))
         val rtnP2ValBegin = rtnP2Val.operand[0] as Start
@@ -1042,7 +1042,7 @@ internal class Cql2ElmVisitorTest {
 
         assertThat<QName?>(
             instance!!.classType,
-            QdmDataType.qdmDataType("PositiveAssessmentPerformed")
+            QdmDataType.qdmDataType("PositiveAssessmentPerformed"),
         )
     }
 
@@ -1123,7 +1123,7 @@ internal class Cql2ElmVisitorTest {
         val sameYear = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameYear.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.YEAR)
+            `is`<DateTimePrecision>(DateTimePrecision.YEAR),
         )
         assertThat(sameYear.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameYear.operand[0] as AliasRef
@@ -1139,7 +1139,7 @@ internal class Cql2ElmVisitorTest {
         val sameMonth = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameMonth.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.MONTH)
+            `is`<DateTimePrecision>(DateTimePrecision.MONTH),
         )
         assertThat(sameMonth.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameMonth.operand[0] as AliasRef
@@ -1155,7 +1155,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameDay.operand[0] as AliasRef
@@ -1171,7 +1171,7 @@ internal class Cql2ElmVisitorTest {
         val sameHour = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameHour.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.HOUR)
+            `is`<DateTimePrecision>(DateTimePrecision.HOUR),
         )
         assertThat(sameHour.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameHour.operand[0] as AliasRef
@@ -1187,7 +1187,7 @@ internal class Cql2ElmVisitorTest {
         val sameMin = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameMin.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.MINUTE)
+            `is`<DateTimePrecision>(DateTimePrecision.MINUTE),
         )
         assertThat(sameMin.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameMin.operand[0] as AliasRef
@@ -1203,7 +1203,7 @@ internal class Cql2ElmVisitorTest {
         val sameSec = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameSec.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.SECOND)
+            `is`<DateTimePrecision>(DateTimePrecision.SECOND),
         )
         assertThat(sameSec.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameSec.operand[0] as AliasRef
@@ -1219,7 +1219,7 @@ internal class Cql2ElmVisitorTest {
         val sameMS = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameMS.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.MILLISECOND)
+            `is`<DateTimePrecision>(DateTimePrecision.MILLISECOND),
         )
         assertThat(sameMS.operand, Matchers.hasSize(2))
         val lhs: AliasRef = sameMS.operand[0] as AliasRef
@@ -1235,7 +1235,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: Start = sameDay.operand[0] as Start
@@ -1251,7 +1251,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: Start = sameDay.operand[0] as Start
@@ -1267,7 +1267,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: Start = sameDay.operand[0] as Start
@@ -1284,7 +1284,7 @@ internal class Cql2ElmVisitorTest {
         assertThat(sameOrAfter.operand, Matchers.hasSize(2))
         assertThat<DateTimePrecision?>(
             sameOrAfter.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         val lhs: Start = sameOrAfter.operand[0] as Start
         assertThat((lhs.operand as AliasRef).name, `is`("P"))
@@ -1299,7 +1299,7 @@ internal class Cql2ElmVisitorTest {
         val sameOrBefore = testInpatientWithPharyngitisWhere(where) as SameOrBefore
         assertThat<DateTimePrecision?>(
             sameOrBefore.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         val lhs: Start = sameOrBefore.operand[0] as Start
         assertThat((lhs.operand as AliasRef).name, `is`("P"))
@@ -1314,7 +1314,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: End = sameDay.operand[0] as End
@@ -1330,7 +1330,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: End = sameDay.operand[0] as End
@@ -1346,7 +1346,7 @@ internal class Cql2ElmVisitorTest {
         val sameDay = testInpatientWithPharyngitisWhere(where) as SameAs
         assertThat<DateTimePrecision?>(
             sameDay.precision,
-            `is`<DateTimePrecision>(DateTimePrecision.DAY)
+            `is`<DateTimePrecision>(DateTimePrecision.DAY),
         )
         assertThat(sameDay.operand, Matchers.hasSize(2))
         val lhs: End = sameDay.operand[0] as End

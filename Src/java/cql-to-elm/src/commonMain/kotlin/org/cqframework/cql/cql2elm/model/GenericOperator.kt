@@ -7,7 +7,7 @@ class GenericOperator(
     name: String,
     signature: Signature,
     resultType: DataType?,
-    private val typeParameters: List<TypeParameter>
+    private val typeParameters: List<TypeParameter>,
 ) : Operator(name, signature, resultType) {
     constructor(
         name: String,
@@ -20,14 +20,14 @@ class GenericOperator(
         callSignature: Signature,
         operatorMap: OperatorMap,
         conversionMap: ConversionMap,
-        allowPromotionAndDemotion: Boolean
+        allowPromotionAndDemotion: Boolean,
     ): InstantiationResult {
         return instantiate(
             callSignature,
             null,
             operatorMap,
             conversionMap,
-            allowPromotionAndDemotion
+            allowPromotionAndDemotion,
         )
     }
 
@@ -37,7 +37,7 @@ class GenericOperator(
         parameters: Map<TypeParameter, DataType?>?,
         operatorMap: OperatorMap,
         conversionMap: ConversionMap,
-        allowPromotionAndDemotion: Boolean
+        allowPromotionAndDemotion: Boolean,
     ): InstantiationResult {
         val typeMap: MutableMap<TypeParameter, DataType?> = HashMap()
 

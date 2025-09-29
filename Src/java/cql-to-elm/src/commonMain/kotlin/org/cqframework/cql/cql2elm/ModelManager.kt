@@ -51,13 +51,13 @@ constructor(
     @JsExport.Ignore
     constructor(
         path: Path?,
-        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap()
+        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap(),
     ) : this(NamespaceManager(), true, path, globalCache)
 
     @JsExport.Ignore
     constructor(
         enableDefaultModelInfoLoading: Boolean,
-        globalCache: MutableMap<ModelIdentifier, Model>
+        globalCache: MutableMap<ModelIdentifier, Model>,
     ) : this(NamespaceManager(), enableDefaultModelInfoLoading, null, globalCache)
 
     @JvmOverloads
@@ -65,13 +65,13 @@ constructor(
     constructor(
         enableDefaultModelInfoLoading: Boolean,
         path: Path? = null,
-        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap()
+        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap(),
     ) : this(NamespaceManager(), enableDefaultModelInfoLoading, path, globalCache)
 
     @JsExport.Ignore
     constructor(
         namespaceManager: NamespaceManager,
-        globalCache: MutableMap<ModelIdentifier, Model>
+        globalCache: MutableMap<ModelIdentifier, Model>,
     ) : this(namespaceManager, true, null, globalCache)
 
     @JvmOverloads
@@ -79,14 +79,14 @@ constructor(
     constructor(
         namespaceManager: NamespaceManager,
         path: Path?,
-        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap()
+        globalCache: MutableMap<ModelIdentifier, Model> = createConcurrentHashMap(),
     ) : this(namespaceManager, true, path, globalCache)
 
     @JsExport.Ignore
     constructor(
         namespaceManager: NamespaceManager,
         enableDefaultModelInfoLoading: Boolean,
-        globalCache: MutableMap<ModelIdentifier, Model>
+        globalCache: MutableMap<ModelIdentifier, Model>,
     ) : this(namespaceManager, enableDefaultModelInfoLoading, null, globalCache)
 
     /**

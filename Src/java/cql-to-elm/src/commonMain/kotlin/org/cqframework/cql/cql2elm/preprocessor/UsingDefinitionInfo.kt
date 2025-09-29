@@ -7,5 +7,5 @@ class UsingDefinitionInfo(
     val name: String,
     val version: String?,
     val localName: String,
-    override val definition: UsingDefinitionContext
+    override val definition: UsingDefinitionContext,
 ) : BaseInfo(definition)

@@ -76,7 +76,7 @@ private constructor(
     companion object {
         private fun Collection<TupleTypeElement>.zipAll(
             other: Collection<TupleTypeElement>,
-            predicate: (a: TupleTypeElement, b: TupleTypeElement) -> Boolean
+            predicate: (a: TupleTypeElement, b: TupleTypeElement) -> Boolean,
         ): Boolean = size == other.size && zip(other).all { predicate(it.first, it.second) }
     }
 }

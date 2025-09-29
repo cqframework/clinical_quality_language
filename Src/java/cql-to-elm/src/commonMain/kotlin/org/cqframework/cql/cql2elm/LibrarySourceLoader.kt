@@ -13,7 +13,7 @@ interface LibrarySourceLoader {
 
     fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): Source? {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier)

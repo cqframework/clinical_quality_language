@@ -54,7 +54,7 @@ class RandomElmGraphTest {
                         System.identityHashCode(t),
                         context.currentObject.javaClass.simpleName,
                         System.identityHashCode(context.currentObject),
-                        context.currentField
+                        context.currentField,
                     )
                 }
             }
@@ -89,7 +89,7 @@ class RandomElmGraphTest {
                     elementsDuplicated[hash] = x
                     return@FunctionalElmVisitor 0
                 },
-                { a, b -> a + b }
+                { a, b -> a + b },
             )
 
         val visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited)

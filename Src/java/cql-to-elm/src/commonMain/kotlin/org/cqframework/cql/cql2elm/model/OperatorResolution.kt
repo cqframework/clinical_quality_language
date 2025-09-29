@@ -5,7 +5,7 @@ import org.hl7.elm.r1.VersionedIdentifier
 data class OperatorResolution(var operator: Operator, val conversions: List<Conversion?>) {
     constructor(
         operator: Operator,
-        conversions: Array<Conversion?>?
+        conversions: Array<Conversion?>?,
     ) : this(operator, conversions?.toList() ?: emptyList())
 
     var score: Int = 0

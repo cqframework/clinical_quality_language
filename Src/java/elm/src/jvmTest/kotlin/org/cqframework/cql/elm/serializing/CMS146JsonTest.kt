@@ -22,7 +22,7 @@ internal class CMS146JsonTest {
     @Throws(IOException::class, JSONException::class)
     fun cms146SignatureLevels(
         fileName: String,
-        expectedSignatureLevel: LibraryBuilder.SignatureLevel
+        expectedSignatureLevel: LibraryBuilder.SignatureLevel,
     ) {
         val expectedJson: String? = getJson(fileName)
 
@@ -35,9 +35,9 @@ internal class CMS146JsonTest {
                     modelManager,
                     CqlCompilerOptions(
                         CqlCompilerException.ErrorSeverity.Warning,
-                        expectedSignatureLevel
-                    )
-                )
+                        expectedSignatureLevel,
+                    ),
+                ),
             )
         val jsonWithVersion = translator.toJson()
         val actualJson = jsonWithVersion.replace("\"translatorVersion\":\"[^\"]*\",".toRegex(), "")
@@ -50,20 +50,20 @@ internal class CMS146JsonTest {
             return arrayOf(
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_None.json",
-                    LibraryBuilder.SignatureLevel.None
+                    LibraryBuilder.SignatureLevel.None,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Differing.json",
-                    LibraryBuilder.SignatureLevel.Differing
+                    LibraryBuilder.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Overloads.json",
-                    LibraryBuilder.SignatureLevel.Overloads
+                    LibraryBuilder.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_All.json",
-                    LibraryBuilder.SignatureLevel.All
-                )
+                    LibraryBuilder.SignatureLevel.All,
+                ),
             )
         }
 

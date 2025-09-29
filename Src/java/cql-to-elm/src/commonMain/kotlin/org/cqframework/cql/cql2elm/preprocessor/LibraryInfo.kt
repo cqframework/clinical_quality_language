@@ -10,7 +10,7 @@ class LibraryInfo(
     val namespaceName: String? = null,
     val libraryName: String? = null,
     val version: String? = null,
-    override val definition: LibraryDefinitionContext? = null
+    override val definition: LibraryDefinitionContext? = null,
 ) : BaseInfo(definition) {
 
     var defaultUsingDefinition: UsingDefinitionInfo? = null

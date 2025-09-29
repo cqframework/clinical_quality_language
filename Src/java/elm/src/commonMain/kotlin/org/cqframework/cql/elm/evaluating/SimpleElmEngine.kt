@@ -226,7 +226,7 @@ class SimpleElmEngine {
                         if (
                             !typeSpecifiersEqual(
                                 leftElement.elementType,
-                                rightElement.elementType
+                                rightElement.elementType,
                             ) || !stringsEqual(leftElement.name, rightElement.name)
                         ) {
                             return false
@@ -860,7 +860,7 @@ class SimpleElmEngine {
 
     private fun operatorExpressionsEqual(
         left: OperatorExpression?,
-        right: OperatorExpression?
+        right: OperatorExpression?,
     ): Boolean {
         if (left == null && right == null) {
             return true
@@ -1297,7 +1297,7 @@ class SimpleElmEngine {
 
     private fun ternaryExpressionsEqual(
         left: TernaryExpression?,
-        right: TernaryExpression?
+        right: TernaryExpression?,
     ): Boolean {
         if (left == null && right == null) {
             return true
@@ -1346,7 +1346,7 @@ class SimpleElmEngine {
 
     private fun aggregateExpressionsEqual(
         left: AggregateExpression?,
-        right: AggregateExpression?
+        right: AggregateExpression?,
     ): Boolean {
         if (left == null && right == null) {
             return true

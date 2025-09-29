@@ -64,7 +64,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/dstu2/TestChoiceDateRangeOptimization.cql",
                 0,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization
+                CqlCompilerOptions.Options.EnableDateRangeOptimization,
             )
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
@@ -287,7 +287,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 NamespaceInfo("Public", "http://cql.hl7.org/public"),
                 "fhir/dstu2/TestFHIRNamespaces.cql",
-                0
+                0,
             )
         val library = translator.translatedLibrary
         val includeDef = library!!.resolveIncludeRef("FHIRHelpers")
@@ -303,7 +303,7 @@ internal class BaseTest {
             NamespaceInfo("Public", "http://cql.hl7.org/public"),
             "fhir/dstu2/TestFHIRNamespaces.cql",
             0,
-            LibraryBuilder.SignatureLevel.None
+            LibraryBuilder.SignatureLevel.None,
         )
     }
 

@@ -33,12 +33,12 @@ constructor(
     val cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
     libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary>? = null,
     lazyUcumService: Lazy<UcumService> = defaultLazyUcumService,
-    val elmLibraryReaderProvider: ElmLibraryReaderProvider = DefaultElmLibraryReaderProvider
+    val elmLibraryReaderProvider: ElmLibraryReaderProvider = DefaultElmLibraryReaderProvider,
 ) {
     enum class CacheMode {
         NONE,
         READ_ONLY,
-        READ_WRITE
+        READ_WRITE,
     }
 
     val namespaceManager: NamespaceManager = modelManager.namespaceManager
@@ -62,7 +62,7 @@ constructor(
     @JsExport.Ignore
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
-        cacheMode: CacheMode
+        cacheMode: CacheMode,
     ): CompiledLibrary {
         return this.resolveLibraryInner(libraryIdentifier, cacheMode).compiledLibrary
     }
@@ -81,7 +81,7 @@ constructor(
     @JsExport.Ignore
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
-        errors: MutableList<CqlCompilerException>
+        errors: MutableList<CqlCompilerException>,
     ): CompiledLibrary {
         val compiledLibraryResult =
             this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE)
@@ -91,7 +91,7 @@ constructor(
 
     private fun resolveLibraryInner(
         libraryIdentifier: VersionedIdentifier,
-        cacheMode: CacheMode
+        cacheMode: CacheMode,
     ): CompiledLibraryResult {
         require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
 
@@ -101,14 +101,14 @@ constructor(
     }
 
     fun resolveLibraries(
-        libraryIdentifiers: MutableList<VersionedIdentifier>
+        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>
     ): CompiledLibraryMultiResults {
         return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE)
     }
 
     private fun resolveLibraries(
-        libraryIdentifiers: MutableList<VersionedIdentifier>,
-        cacheMode: CacheMode
+        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>,
+        cacheMode: CacheMode,
     ): CompiledLibraryMultiResults {
         require(libraryIdentifiers.isNotEmpty()) { "libraryIdentifier can not be null" }
 
@@ -127,7 +127,7 @@ constructor(
             val librariesFromCache =
                 libraryIdentifiers
                     .filter { o -> compiledLibraries.containsKey(o) }
-                    .map { o -> compiledLibraries.get(o)!! }
+                    .map { o -> compiledLibraries[o]!! }
 
             if (librariesFromCache.size == libraryIdentifiers.size) {
                 return CompiledLibraryMultiResults.from(
@@ -170,7 +170,7 @@ constructor(
 
     private fun isLibraryAlreadyRetrievedFromCache(
         searchedForLibraryIdentifier: VersionedIdentifier,
-        compiledLibrariesFromCache: MutableList<CompiledLibraryResult>
+        compiledLibrariesFromCache: MutableList<CompiledLibraryResult>,
     ): Boolean {
         return compiledLibrariesFromCache
             .map { it.compiledLibrary.identifier }
@@ -183,7 +183,7 @@ constructor(
 
     private fun stripVersionIfNeeded(
         compiledLibraryIdentifier: VersionedIdentifier,
-        searchedForLibraryIdentifier: VersionedIdentifier
+        searchedForLibraryIdentifier: VersionedIdentifier,
     ): VersionedIdentifier {
         if (searchedForLibraryIdentifier.version == null) {
             return VersionedIdentifier().withId(compiledLibraryIdentifier.id)
@@ -211,7 +211,7 @@ constructor(
                 "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
                 libraryIdentifier.system,
                 libraryIdentifier.id!!,
-                libraryIdentifier.version
+                libraryIdentifier.version,
             )
         }
 
@@ -219,7 +219,7 @@ constructor(
             CqlCompiler(
                 libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
                 libraryIdentifier,
-                this
+                this,
             )
         compiler.run(cqlSource)
 
@@ -230,20 +230,20 @@ constructor(
                 "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system,
                 libraryIdentifier.id!!,
-                libraryIdentifier.version
+                libraryIdentifier.version,
             )
         }
 
         validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath)
 
         sortStatements(compiledLibrary)
-        return CompiledLibraryResult(compiledLibrary, compiler.exceptions ?: mutableListOf())
+        return CompiledLibraryResult(compiledLibrary, compiler.exceptions)
     }
 
     private fun validateIdentifiers(
         libraryIdentifier: VersionedIdentifier,
         result: CompiledLibrary,
-        libraryPath: String
+        libraryPath: String,
     ) {
 
         val resultIdentifier = result.identifier!!
@@ -258,7 +258,7 @@ constructor(
         if (libraryIdentifierVersion == null) {
             areIdentifiersValid = areIdsEqual
         } else {
-            val areVersionsEqual = libraryIdentifierVersion.equals(resultIdentifier.version)
+            val areVersionsEqual = libraryIdentifierVersion == resultIdentifier.version
             areIdentifiersValid = areIdsEqual && areVersionsEqual
         }
 
@@ -268,7 +268,7 @@ constructor(
                 "Library $libraryPath was included with version $libraryIdentifierVersion, but id: ${resultIdentifier.id} and version $resultIdentifierVersion of the library was found.",
                 libraryIdentifier.system,
                 libraryIdentifier.id!!,
-                libraryIdentifierVersion ?: "null"
+                libraryIdentifierVersion ?: "null",
             )
         }
     }
@@ -282,7 +282,7 @@ constructor(
 
     private fun tryCompiledLibraryElm(
         libraryIdentifier: VersionedIdentifier,
-        options: CqlCompilerOptions
+        options: CqlCompilerOptions,
     ): CompiledLibrary? {
         var elm: Source?
         @Suppress("LoopWithTooManyJumpStatements")
@@ -303,7 +303,7 @@ constructor(
         @Suppress("UnusedParameter") libraryIdentifier: VersionedIdentifier,
         librarySource: Source,
         type: LibraryContentType,
-        @Suppress("UnusedParameter") options: CqlCompilerOptions
+        @Suppress("UnusedParameter") options: CqlCompilerOptions,
     ): CompiledLibrary? {
         val library =
             try {

@@ -64,9 +64,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                     return resolveCalculateAge(
                         builder.enforceCompatible(
                             patientBirthDateProperty,
-                            builder.resolveTypeName("System", "Date")
+                            builder.resolveTypeName("System", "Date"),
                         ),
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "AgeInWeeks",
@@ -79,9 +79,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                     return resolveCalculateAge(
                         builder.ensureCompatible(
                             patientBirthDateProperty,
-                            builder.resolveTypeName("System", "DateTime")
+                            builder.resolveTypeName("System", "DateTime"),
                         ),
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "AgeInYearsAt",
@@ -108,14 +108,14 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "Date")!!,
                                 implicit = true,
-                                allowPromotionAndDemotion = false
+                                allowPromotionAndDemotion = false,
                             )
                         val dateTimeConversion =
                             builder.findConversion(
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "DateTime")!!,
                                 implicit = true,
-                                allowPromotionAndDemotion = false
+                                allowPromotionAndDemotion = false,
                             )
                         op =
                             when {
@@ -152,7 +152,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                     ops.add(op)
                     return resolveCalculateAgeAt(
                         ops,
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "AgeInHoursAt",
@@ -164,7 +164,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                     ops.addAll(functionRef.operand)
                     return resolveCalculateAgeAt(
                         ops,
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "CalculateAgeInYears",
@@ -178,7 +178,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                     checkNumberOfOperands(functionRef, 1)
                     return resolveCalculateAge(
                         functionRef.operand[0],
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "CalculateAgeInYearsAt",
@@ -191,7 +191,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 "CalculateAgeInMillisecondsAt" -> {
                     return resolveCalculateAgeAt(
                         functionRef.operand,
-                        resolveAgeRelatedFunctionPrecision(functionRef)
+                        resolveAgeRelatedFunctionPrecision(functionRef),
                     )
                 }
                 "DateTime" -> {
@@ -355,7 +355,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
     // Age-Related Function Support
     private fun resolveCalculateAge(
         e: Expression?,
-        p: DateTimePrecision
+        p: DateTimePrecision,
     ): UnaryExpressionInvocation<CalculateAge> {
         val operator = of.createCalculateAge().withPrecision(p).withOperand(e)
         val invocation = UnaryExpressionInvocation(operator)
@@ -365,7 +365,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun resolveCalculateAgeAt(
         e: kotlin.collections.List<Expression>,
-        p: DateTimePrecision
+        p: DateTimePrecision,
     ): BinaryExpressionInvocation<CalculateAgeAt> {
         val operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e)
         val invocation = BinaryExpressionInvocation(operator)
@@ -389,7 +389,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                         source,
                         resolution!!.name,
                         resolution.isSearch,
-                        resolution.type
+                        resolution.type,
                     )
                 result = builder.applyTargetMap(result, resolution.targetMap)
                 result

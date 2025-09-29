@@ -39,14 +39,14 @@ expect val defaultLazyUcumService: Lazy<UcumService>
 @Suppress("NON_EXPORTABLE_TYPE")
 fun createUcumService(
     convertUnit: (value: String, sourceUnit: String, destUnit: String) -> String,
-    validateUnit: (unit: String) -> String?
+    validateUnit: (unit: String) -> String?,
 ): Lazy<UcumService> {
     return lazy {
         object : UcumService {
             override fun convert(
                 value: BigDecimal,
                 sourceUnit: String,
-                destUnit: String
+                destUnit: String,
             ): BigDecimal {
                 val result = convertUnit(value.toPlainString(), sourceUnit, destUnit)
                 return BigDecimal(result)

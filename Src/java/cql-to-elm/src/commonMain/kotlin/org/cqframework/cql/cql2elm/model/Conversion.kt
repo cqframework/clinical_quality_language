@@ -19,11 +19,11 @@ class Conversion(
     val toType: DataType,
     val isImplicit: Boolean = false,
     val conversion: Conversion? = null,
-    val operator: Operator? = null
+    val operator: Operator? = null,
 ) {
     constructor(
         operator: Operator,
-        isImplicit: Boolean
+        isImplicit: Boolean,
     ) : this(singletonOperand(operator), ensureResultType(operator), isImplicit, null, operator)
 
     constructor(fromType: DataType, toType: DataType) : this(fromType, toType, true) {
@@ -33,7 +33,7 @@ class Conversion(
     constructor(
         fromType: ChoiceType,
         toType: DataType,
-        choiceConversion: Conversion
+        choiceConversion: Conversion,
     ) : this(fromType, toType, true, choiceConversion) {
         this.isCast = true
     }
@@ -41,7 +41,7 @@ class Conversion(
     constructor(
         fromType: DataType,
         toType: ChoiceType,
-        choiceConversion: Conversion
+        choiceConversion: Conversion,
     ) : this(fromType, toType, true, choiceConversion) {
         this.isCast = true
     }
@@ -49,7 +49,7 @@ class Conversion(
     constructor(
         fromType: ListType,
         toType: ListType,
-        elementConversion: Conversion
+        elementConversion: Conversion,
     ) : this(fromType, toType, true, elementConversion) {
         this.isListConversion = true
     }
@@ -57,7 +57,7 @@ class Conversion(
     constructor(
         fromType: ListType,
         toType: DataType,
-        elementConversion: Conversion?
+        elementConversion: Conversion?,
     ) : this(fromType, toType, true, elementConversion) {
         this.isListDemotion = true
     }
@@ -65,7 +65,7 @@ class Conversion(
     constructor(
         fromType: DataType,
         toType: ListType,
-        elementConversion: Conversion?
+        elementConversion: Conversion?,
     ) : this(fromType, toType, true, elementConversion) {
         this.isListPromotion = true
     }
@@ -73,7 +73,7 @@ class Conversion(
     constructor(
         fromType: IntervalType,
         toType: DataType,
-        elementConversion: Conversion?
+        elementConversion: Conversion?,
     ) : this(fromType, toType, true, elementConversion) {
         this.isIntervalDemotion = true
     }
@@ -81,7 +81,7 @@ class Conversion(
     constructor(
         fromType: DataType,
         toType: IntervalType,
-        elementConversion: Conversion?
+        elementConversion: Conversion?,
     ) : this(fromType, toType, true, elementConversion) {
         this.isIntervalPromotion = true
     }
@@ -89,7 +89,7 @@ class Conversion(
     constructor(
         fromType: IntervalType,
         toType: IntervalType,
-        pointConversion: Conversion
+        pointConversion: Conversion,
     ) : this(fromType, toType, true, pointConversion) {
         this.isIntervalConversion = true
     }

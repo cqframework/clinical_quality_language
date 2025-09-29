@@ -14,7 +14,7 @@ interface LibrarySourceProvider {
 
     fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): Source? {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier)
@@ -28,14 +28,14 @@ expect fun getLibrarySourceProviders(refresh: Boolean): Iterator<LibrarySourcePr
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 fun createLibrarySourceProvider(
-    getLibraryCql: (id: String, system: String?, version: String?) -> Source?,
+    getLibraryCql: (id: String, system: String?, version: String?) -> Source?
 ): LibrarySourceProvider {
     return object : LibrarySourceProvider {
         override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
             return getLibraryCql(
                 libraryIdentifier.id!!,
                 libraryIdentifier.system,
-                libraryIdentifier.version
+                libraryIdentifier.version,
             )
         }
     }

@@ -40,37 +40,37 @@ class BaseTest {
         val request = source.expression as Retrieve?
         MatcherAssert.assertThat(
             request!!.dataType,
-            QuickDataType.quickDataType("QuestionnaireResponse")
+            QuickDataType.quickDataType("QuestionnaireResponse"),
         )
 
         // Then check that the suchThat of the with is a greater with a Case as the left operand
         val relationship = query.relationship[0]
         MatcherAssert.assertThat<Expression?>(
             relationship.suchThat,
-            Matchers.instanceOf<Expression?>(Greater::class.java)
+            Matchers.instanceOf<Expression?>(Greater::class.java),
         )
         val suchThat = relationship.suchThat as Greater?
         MatcherAssert.assertThat(suchThat!!.operand[0], Matchers.instanceOf(Case::class.java))
         val caseExpression = suchThat.operand[0] as Case
         MatcherAssert.assertThat<MutableCollection<*>?>(
             caseExpression.caseItem,
-            Matchers.hasSize<Any?>(2)
+            Matchers.hasSize<Any?>(2),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[0].`when`,
-            Matchers.instanceOf(Is::class.java)
+            Matchers.instanceOf(Is::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[0].then,
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[1].`when`,
-            Matchers.instanceOf(Is::class.java)
+            Matchers.instanceOf(Is::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[1].then,
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
     }
 
@@ -105,7 +105,7 @@ class BaseTest {
         val where = query.where
         MatcherAssert.assertThat<Expression?>(
             where,
-            Matchers.instanceOf<Expression?>(In::class.java)
+            Matchers.instanceOf<Expression?>(In::class.java),
         )
         val inDef = where as In?
         MatcherAssert.assertThat(inDef!!.operand[0], Matchers.instanceOf(FunctionRef::class.java))
@@ -116,7 +116,7 @@ class BaseTest {
         MatcherAssert.assertThat(asExpression.asType!!.localPart, Matchers.`is`("dateTime"))
         MatcherAssert.assertThat<Expression?>(
             asExpression.operand,
-            Matchers.instanceOf<Expression?>(Property::class.java)
+            Matchers.instanceOf<Expression?>(Property::class.java),
         )
         val property = asExpression.operand as Property?
         MatcherAssert.assertThat(property!!.scope, Matchers.`is`("P"))
@@ -130,7 +130,7 @@ class BaseTest {
         val getGender = library!!.resolveExpressionRef("GetGender")
         MatcherAssert.assertThat<Expression?>(
             getGender!!.expression,
-            Matchers.instanceOf<Expression?>(Equal::class.java)
+            Matchers.instanceOf<Expression?>(Equal::class.java),
         )
         val equal = getGender.expression as Equal?
         MatcherAssert.assertThat(equal!!.operand[0], Matchers.instanceOf(FunctionRef::class.java))
@@ -157,11 +157,11 @@ class BaseTest {
         val codes = retrieve!!.codes
         MatcherAssert.assertThat<Expression?>(
             codes,
-            Matchers.instanceOf<Expression?>(ToList::class.java)
+            Matchers.instanceOf<Expression?>(ToList::class.java),
         )
         MatcherAssert.assertThat<Expression?>(
             (codes as ToList).operand,
-            Matchers.instanceOf<Expression?>(CodeRef::class.java)
+            Matchers.instanceOf<Expression?>(CodeRef::class.java),
         )
     }
 
@@ -172,7 +172,7 @@ class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/stu3/TestChoiceDateRangeOptimization.cql",
                 0,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization
+                CqlCompilerOptions.Options.EnableDateRangeOptimization,
             )
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
@@ -208,19 +208,19 @@ class BaseTest {
         var expressionDef: ExpressionDef = defs["DateCondition"]!!
         MatcherAssert.assertThat<Expression?>(
             expressionDef.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java)
+            Matchers.instanceOf<Expression?>(Query::class.java),
         )
         var query = expressionDef.expression as Query?
         MatcherAssert.assertThat(query!!.source.size, Matchers.`is`(1))
         MatcherAssert.assertThat(
             query.source[0].expression,
-            Matchers.instanceOf(Retrieve::class.java)
+            Matchers.instanceOf(Retrieve::class.java),
         )
         var retrieve: Retrieve = query.source[0].expression as Retrieve
         MatcherAssert.assertThat(retrieve.dateProperty, Matchers.`is`("assertedDate"))
         MatcherAssert.assertThat<Expression?>(
             retrieve.dateRange,
-            Matchers.instanceOf<Expression?>(ParameterRef::class.java)
+            Matchers.instanceOf<Expression?>(ParameterRef::class.java),
         )
 
         /*
@@ -248,19 +248,19 @@ class BaseTest {
         expressionDef = defs["ChoiceTypePeriodCondition"]!!
         MatcherAssert.assertThat<Expression?>(
             expressionDef.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java)
+            Matchers.instanceOf<Expression?>(Query::class.java),
         )
         query = expressionDef.expression as Query?
         MatcherAssert.assertThat(query!!.source.size, Matchers.`is`(1))
         MatcherAssert.assertThat(
             query.source[0].expression,
-            Matchers.instanceOf(Retrieve::class.java)
+            Matchers.instanceOf(Retrieve::class.java),
         )
         retrieve = query.source[0].expression as Retrieve
         MatcherAssert.assertThat(retrieve.dateProperty, Matchers.`is`("onset"))
         MatcherAssert.assertThat<Expression?>(
             retrieve.dateRange,
-            Matchers.instanceOf<Expression?>(ParameterRef::class.java)
+            Matchers.instanceOf<Expression?>(ParameterRef::class.java),
         )
     }
 
@@ -343,17 +343,17 @@ class BaseTest {
 
         MatcherAssert.assertThat<Expression?>(
             expressionDef.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java)
+            Matchers.instanceOf<Expression?>(Query::class.java),
         )
         var query = expressionDef.expression as Query?
         MatcherAssert.assertThat<Expression?>(
             query!!.where,
-            Matchers.instanceOf<Expression?>(Equivalent::class.java)
+            Matchers.instanceOf<Expression?>(Equivalent::class.java),
         )
         var equivalent = query.where as Equivalent?
         MatcherAssert.assertThat(
             equivalent!!.operand[0],
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         var functionRef: FunctionRef = equivalent.operand[0] as FunctionRef
         MatcherAssert.assertThat(functionRef.libraryName, Matchers.`is`("FHIRHelpers"))
@@ -387,17 +387,17 @@ class BaseTest {
         */
         MatcherAssert.assertThat<Expression?>(
             expressionDef.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java)
+            Matchers.instanceOf<Expression?>(Query::class.java),
         )
         query = expressionDef.expression as Query?
         MatcherAssert.assertThat<Expression?>(
             query!!.where,
-            Matchers.instanceOf<Expression?>(Equivalent::class.java)
+            Matchers.instanceOf<Expression?>(Equivalent::class.java),
         )
         equivalent = query.where as Equivalent?
         MatcherAssert.assertThat(
             equivalent!!.operand[0],
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         functionRef = equivalent.operand[0] as FunctionRef
         MatcherAssert.assertThat(functionRef.libraryName, Matchers.`is`("FHIRHelpers"))
@@ -414,17 +414,17 @@ class BaseTest {
 
         MatcherAssert.assertThat<Expression?>(
             expressionDef!!.expression,
-            Matchers.instanceOf<Expression?>(Retrieve::class.java)
+            Matchers.instanceOf<Expression?>(Retrieve::class.java),
         )
         val retrieve = expressionDef.expression as Retrieve?
         MatcherAssert.assertThat<Expression?>(
             retrieve!!.codes,
-            Matchers.instanceOf<Expression?>(ToList::class.java)
+            Matchers.instanceOf<Expression?>(ToList::class.java),
         )
         val toList = retrieve.codes as ToList?
         MatcherAssert.assertThat<Expression?>(
             toList!!.operand,
-            Matchers.instanceOf<Expression?>(CodeRef::class.java)
+            Matchers.instanceOf<Expression?>(CodeRef::class.java),
         )
     }
 }

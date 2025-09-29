@@ -13,7 +13,7 @@ actual fun getModelInfoProviders(refresh: Boolean): Iterator<ModelInfoProvider> 
 @JsExport
 @JsName("createModelInfoProvider")
 fun createModelInfoProviderReference(
-    getModelInfoXml: (id: String, system: String?, version: String?) -> JsReference<Source>?,
+    getModelInfoXml: (id: String, system: String?, version: String?) -> JsReference<Source>?
 ): JsReference<ModelInfoProvider> {
     return createModelInfoProvider { id, system, version ->
             val xml = getModelInfoXml(id, system, version)

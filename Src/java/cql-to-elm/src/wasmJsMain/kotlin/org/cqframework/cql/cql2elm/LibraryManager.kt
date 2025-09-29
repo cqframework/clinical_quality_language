@@ -7,22 +7,20 @@ import org.cqframework.cql.cql2elm.ucum.UcumService
 @JsExport
 fun createLibraryManager(
     modelManager: JsReference<ModelManager>,
-    ucumService: JsReference<Lazy<UcumService>>
+    ucumService: JsReference<Lazy<UcumService>>,
 ): JsReference<LibraryManager> {
     return LibraryManager(modelManager.get(), lazyUcumService = ucumService.get()).toJsReference()
 }
 
 @JsExport
-fun libraryManagerClearLibrarySourceProviders(
-    libraryManager: JsReference<LibraryManager>,
-) {
+fun libraryManagerClearLibrarySourceProviders(libraryManager: JsReference<LibraryManager>) {
     libraryManager.get().librarySourceLoader.clearProviders()
 }
 
 @JsExport
 fun libraryManagerRegisterLibrarySourceProvider(
     libraryManager: JsReference<LibraryManager>,
-    librarySourceProvider: JsReference<LibrarySourceProvider>
+    librarySourceProvider: JsReference<LibrarySourceProvider>,
 ) {
     libraryManager.get().librarySourceLoader.registerProvider(librarySourceProvider.get())
 }
@@ -36,7 +34,7 @@ fun libraryManagerAddCompilerOption(libraryManager: JsReference<LibraryManager>,
 @JsExport
 fun libraryManagerRemoveCompilerOption(
     libraryManager: JsReference<LibraryManager>,
-    option: String
+    option: String,
 ) {
     libraryManager
         .get()
@@ -48,7 +46,7 @@ fun libraryManagerRemoveCompilerOption(
 @JsExport
 fun libraryManagerSetSignatureLevel(
     libraryManager: JsReference<LibraryManager>,
-    signatureLevel: String
+    signatureLevel: String,
 ) {
     libraryManager.get().cqlCompilerOptions.signatureLevel =
         LibraryBuilder.SignatureLevel.valueOf(signatureLevel)

@@ -30,7 +30,7 @@ internal class PathTests {
                         .getResourceAsStream("PathTests.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             val library = translator.toELM()
             assertThat(translator.errors.size, `is`(0))

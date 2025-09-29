@@ -35,11 +35,11 @@ internal class GenericClassSignatureParserTest {
             assertThat(signature.genericParameters[0].identifier, `is`("M"))
             assertThat(
                 signature.genericParameters[0].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             assertThat(
                 (signature.genericParameters[0].constraintType as ClassType).name,
-                `is`("Collection")
+                `is`("Collection"),
             )
             assertThat(signature.genericParameters[1].identifier, `is`("N"))
         } else {
@@ -57,7 +57,7 @@ internal class GenericClassSignatureParserTest {
         val genericClassSignatureParser =
             GenericClassSignatureParser(
                 "MyType<M extends Collection,N extends Object>",
-                resolvedTypes
+                resolvedTypes,
             )
         if (genericClassSignatureParser.isValidGenericSignature) {
             val signature = genericClassSignatureParser.parseGenericSignature()
@@ -66,20 +66,20 @@ internal class GenericClassSignatureParserTest {
             assertThat(signature.genericParameters[0].identifier, `is`("M"))
             assertThat(
                 signature.genericParameters[0].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             assertThat(
                 (signature.genericParameters[0].constraintType as ClassType).name,
-                `is`("Collection")
+                `is`("Collection"),
             )
             assertThat(signature.genericParameters[1].identifier, `is`("N"))
             assertThat(
                 signature.genericParameters[1].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             assertThat(
                 (signature.genericParameters[1].constraintType as ClassType).name,
-                `is`("Object")
+                `is`("Object"),
             )
         } else {
             Assertions.fail<Any?>("Invalid generic class")
@@ -112,7 +112,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("T"),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         val resolvedTypes = mutableMapOf<String, DataType>()
@@ -127,7 +127,7 @@ internal class GenericClassSignatureParserTest {
             assertThat(signature.genericParameters[0].identifier, `is`("M"))
             assertThat(
                 signature.genericParameters[0].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             val listOfObject: ClassType = signature.genericParameters[0].constraintType as ClassType
             assertThat(listOfObject.name, `is`("List[Object]"))
@@ -150,7 +150,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("T"),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         val mapType = ClassType("Map")
@@ -162,7 +162,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("K"),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         mapType.addElement(
@@ -171,7 +171,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("V"),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         val resolvedTypes = mutableMapOf<String, DataType>()
@@ -188,7 +188,7 @@ internal class GenericClassSignatureParserTest {
             assertThat(signature.genericParameters[0].identifier, `is`("M"))
             assertThat(
                 signature.genericParameters[0].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             val map: ClassType = signature.genericParameters[0].constraintType as ClassType
             assertThat(map.name, `is`("Map[String,List[Object]]"))
@@ -212,7 +212,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("T"),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         val mapType = ClassType("Map")
@@ -224,7 +224,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("K", TypeParameter.TypeParameterConstraint.NONE, null),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         mapType.addElement(
@@ -233,7 +233,7 @@ internal class GenericClassSignatureParserTest {
                 TypeParameter("V", TypeParameter.TypeParameterConstraint.NONE, null),
                 prohibited = false,
                 oneBased = false,
-                target = null
+                target = null,
             )
         )
         val resolvedTypes = mutableMapOf<String, DataType>()
@@ -244,7 +244,7 @@ internal class GenericClassSignatureParserTest {
         val genericClassSignatureParser =
             GenericClassSignatureParser(
                 "MyType<M extends Map<String,List<Map<String,Integer>>>>",
-                resolvedTypes
+                resolvedTypes,
             )
         if (genericClassSignatureParser.isValidGenericSignature) {
             val signature = genericClassSignatureParser.parseGenericSignature()
@@ -253,7 +253,7 @@ internal class GenericClassSignatureParserTest {
             assertThat(signature.genericParameters[0].identifier, `is`("M"))
             assertThat(
                 signature.genericParameters[0].constraint,
-                `is`(TypeParameter.TypeParameterConstraint.TYPE)
+                `is`(TypeParameter.TypeParameterConstraint.TYPE),
             )
             val map: ClassType = signature.genericParameters[0].constraintType as ClassType
             assertThat(map.name, `is`("Map[String,List[Map[String,Integer]]]"))

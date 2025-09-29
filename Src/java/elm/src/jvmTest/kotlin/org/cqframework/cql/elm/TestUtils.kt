@@ -17,7 +17,7 @@ object TestUtils {
     @JvmStatic
     fun createTranslator(
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val inputStream = Files.newInputStream(Path(testFileName))
         return createTranslatorFromStream(null, inputStream, *options)
@@ -28,7 +28,7 @@ object TestUtils {
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val inputStream = TestUtils::class.java.getResourceAsStream(testFileName)
         return createTranslatorFromStream(namespaceInfo, inputStream!!, *options)
@@ -38,7 +38,7 @@ object TestUtils {
     @Throws(IOException::class)
     fun createTranslatorFromStream(
         inputStream: InputStream,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return createTranslatorFromStream(null, inputStream, *options)
     }
@@ -48,7 +48,7 @@ object TestUtils {
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         inputStream: InputStream,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val modelManager = ModelManager()
         val compilerOptions = CqlCompilerOptions(*options)
@@ -58,7 +58,7 @@ object TestUtils {
             CqlTranslator.fromSource(
                 namespaceInfo,
                 inputStream.asSource().buffered(),
-                libraryManager
+                libraryManager,
             )
         return translator
     }

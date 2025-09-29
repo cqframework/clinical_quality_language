@@ -25,13 +25,13 @@ object SystemLibraryHelper {
             Operator(
                 "And",
                 Signature(systemModel.boolean, systemModel.boolean),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Or", Signature(systemModel.boolean, systemModel.boolean), systemModel.boolean)
+            Operator("Or", Signature(systemModel.boolean, systemModel.boolean), systemModel.boolean),
         )
         add(
             system,
@@ -39,8 +39,8 @@ object SystemLibraryHelper {
             Operator(
                 "Xor",
                 Signature(systemModel.boolean, systemModel.boolean),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(system, tb, Operator("Not", Signature(systemModel.boolean), systemModel.boolean))
         add(
@@ -49,8 +49,8 @@ object SystemLibraryHelper {
             Operator(
                 "Implies",
                 Signature(systemModel.boolean, systemModel.boolean),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         // Nullological Operators
@@ -69,8 +69,8 @@ object SystemLibraryHelper {
                 "Coalesce",
                 Signature(ListType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         add(
             system,
@@ -79,8 +79,8 @@ object SystemLibraryHelper {
                 "Coalesce",
                 Signature(TypeParameter("T"), TypeParameter("T")),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         add(
             system,
@@ -89,23 +89,8 @@ object SystemLibraryHelper {
                 "Coalesce",
                 Signature(TypeParameter("T"), TypeParameter("T"), TypeParameter("T")),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
-        )
-        add(
-            system,
-            tb,
-            GenericOperator(
-                "Coalesce",
-                Signature(
-                    TypeParameter("T"),
-                    TypeParameter("T"),
-                    TypeParameter("T"),
-                    TypeParameter("T")
-                ),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+            ),
         )
         add(
             system,
@@ -117,11 +102,26 @@ object SystemLibraryHelper {
                     TypeParameter("T"),
                     TypeParameter("T"),
                     TypeParameter("T"),
-                    TypeParameter("T")
                 ),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
+        )
+        add(
+            system,
+            tb,
+            GenericOperator(
+                "Coalesce",
+                Signature(
+                    TypeParameter("T"),
+                    TypeParameter("T"),
+                    TypeParameter("T"),
+                    TypeParameter("T"),
+                    TypeParameter("T"),
+                ),
+                TypeParameter("T"),
+                TypeParameter("T"),
+            ),
         )
 
         // Conversion Operators
@@ -393,7 +393,7 @@ object SystemLibraryHelper {
             Operator(
                 "CanConvertQuantity",
                 Signature(systemModel.quantity, systemModel.string),
-                systemModel.boolean
+                systemModel.boolean,
             )
         add(system, tb, canConvertToQuantity)
 
@@ -402,7 +402,7 @@ object SystemLibraryHelper {
             Operator(
                 "ConvertQuantity",
                 Signature(systemModel.quantity, systemModel.string),
-                systemModel.quantity
+                systemModel.quantity,
             )
         add(system, tb, convertToQuantity)
 
@@ -449,8 +449,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.boolean, systemModel.boolean),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -458,8 +458,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.boolean, systemModel.boolean),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -467,8 +467,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -476,8 +476,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -485,8 +485,8 @@ object SystemLibraryHelper {
             Operator(
                 "Less",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -494,8 +494,8 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -503,8 +503,8 @@ object SystemLibraryHelper {
             Operator(
                 "Greater",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -512,13 +512,13 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Equal", Signature(systemModel.long, systemModel.long), systemModel.boolean)
+            Operator("Equal", Signature(systemModel.long, systemModel.long), systemModel.boolean),
         )
         add(
             system,
@@ -526,13 +526,13 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.long, systemModel.long),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Less", Signature(systemModel.long, systemModel.long), systemModel.boolean)
+            Operator("Less", Signature(systemModel.long, systemModel.long), systemModel.boolean),
         )
         add(
             system,
@@ -540,13 +540,13 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.long, systemModel.long),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Greater", Signature(systemModel.long, systemModel.long), systemModel.boolean)
+            Operator("Greater", Signature(systemModel.long, systemModel.long), systemModel.boolean),
         )
         add(
             system,
@@ -554,8 +554,8 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.long, systemModel.long),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -563,8 +563,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -572,8 +572,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -581,8 +581,8 @@ object SystemLibraryHelper {
             Operator(
                 "Less",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -590,8 +590,8 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -599,8 +599,8 @@ object SystemLibraryHelper {
             Operator(
                 "Greater",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -608,8 +608,8 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -617,8 +617,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -626,13 +626,13 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Less", Signature(systemModel.string, systemModel.string), systemModel.boolean)
+            Operator("Less", Signature(systemModel.string, systemModel.string), systemModel.boolean),
         )
         add(
             system,
@@ -640,8 +640,8 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -649,8 +649,8 @@ object SystemLibraryHelper {
             Operator(
                 "Greater",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -658,8 +658,8 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -667,8 +667,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -676,8 +676,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -685,8 +685,8 @@ object SystemLibraryHelper {
             Operator(
                 "Less",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -694,8 +694,8 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -703,8 +703,8 @@ object SystemLibraryHelper {
             Operator(
                 "Greater",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -712,13 +712,13 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Equal", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("Equal", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
@@ -726,13 +726,13 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Less", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("Less", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
@@ -740,13 +740,13 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Greater", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("Greater", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
@@ -754,13 +754,13 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Equal", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("Equal", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(
             system,
@@ -768,13 +768,13 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Less", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("Less", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(
             system,
@@ -782,13 +782,13 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Greater", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("Greater", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(
             system,
@@ -796,8 +796,8 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -805,8 +805,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -814,8 +814,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -823,8 +823,8 @@ object SystemLibraryHelper {
             Operator(
                 "Less",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -832,8 +832,8 @@ object SystemLibraryHelper {
             Operator(
                 "LessOrEqual",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -841,8 +841,8 @@ object SystemLibraryHelper {
             Operator(
                 "Greater",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -850,13 +850,13 @@ object SystemLibraryHelper {
             Operator(
                 "GreaterOrEqual",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Equal", Signature(systemModel.ratio, systemModel.ratio), systemModel.boolean)
+            Operator("Equal", Signature(systemModel.ratio, systemModel.ratio), systemModel.boolean),
         )
         add(
             system,
@@ -864,13 +864,13 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.ratio, systemModel.ratio),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Equal", Signature(systemModel.code, systemModel.code), systemModel.boolean)
+            Operator("Equal", Signature(systemModel.code, systemModel.code), systemModel.boolean),
         )
         add(
             system,
@@ -878,8 +878,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.code, systemModel.code),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -887,8 +887,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equal",
                 Signature(systemModel.concept, systemModel.concept),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -896,8 +896,8 @@ object SystemLibraryHelper {
             Operator(
                 "Equivalent",
                 Signature(systemModel.concept, systemModel.concept),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         // Arithmetic Operators
@@ -912,13 +912,13 @@ object SystemLibraryHelper {
             Operator(
                 "Add",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Add", Signature(systemModel.long, systemModel.long), systemModel.long)
+            Operator("Add", Signature(systemModel.long, systemModel.long), systemModel.long),
         )
         add(
             system,
@@ -926,8 +926,8 @@ object SystemLibraryHelper {
             Operator(
                 "Add",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -935,8 +935,8 @@ object SystemLibraryHelper {
             Operator(
                 "Add",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         add(system, tb, Operator("Ceiling", Signature(systemModel.decimal), systemModel.integer))
@@ -947,8 +947,8 @@ object SystemLibraryHelper {
             Operator(
                 "Divide",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         // add(system, tb, new Operator("Divide", new Signature(systemModel.getQuantity(),
         // systemModel.getDecimal()),
@@ -959,8 +959,8 @@ object SystemLibraryHelper {
             Operator(
                 "Divide",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         add(system, tb, Operator("Exp", Signature(systemModel.decimal), systemModel.decimal))
@@ -973,8 +973,8 @@ object SystemLibraryHelper {
             Operator(
                 "HighBoundary",
                 Signature(systemModel.decimal, systemModel.integer),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -982,8 +982,8 @@ object SystemLibraryHelper {
             Operator(
                 "HighBoundary",
                 Signature(systemModel.date, systemModel.integer),
-                systemModel.date
-            )
+                systemModel.date,
+            ),
         )
         add(
             system,
@@ -991,8 +991,8 @@ object SystemLibraryHelper {
             Operator(
                 "HighBoundary",
                 Signature(systemModel.dateTime, systemModel.integer),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1000,8 +1000,8 @@ object SystemLibraryHelper {
             Operator(
                 "HighBoundary",
                 Signature(systemModel.time, systemModel.integer),
-                systemModel.time
-            )
+                systemModel.time,
+            ),
         )
 
         add(
@@ -1010,8 +1010,8 @@ object SystemLibraryHelper {
             Operator(
                 "Log",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
 
         add(
@@ -1020,8 +1020,8 @@ object SystemLibraryHelper {
             Operator(
                 "LowBoundary",
                 Signature(systemModel.decimal, systemModel.integer),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -1029,8 +1029,8 @@ object SystemLibraryHelper {
             Operator(
                 "LowBoundary",
                 Signature(systemModel.date, systemModel.integer),
-                systemModel.date
-            )
+                systemModel.date,
+            ),
         )
         add(
             system,
@@ -1038,8 +1038,8 @@ object SystemLibraryHelper {
             Operator(
                 "LowBoundary",
                 Signature(systemModel.dateTime, systemModel.integer),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1047,8 +1047,8 @@ object SystemLibraryHelper {
             Operator(
                 "LowBoundary",
                 Signature(systemModel.time, systemModel.integer),
-                systemModel.time
-            )
+                systemModel.time,
+            ),
         )
 
         add(system, tb, Operator("Ln", Signature(systemModel.decimal), systemModel.decimal))
@@ -1061,13 +1061,13 @@ object SystemLibraryHelper {
             Operator(
                 "Modulo",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Modulo", Signature(systemModel.long, systemModel.long), systemModel.long)
+            Operator("Modulo", Signature(systemModel.long, systemModel.long), systemModel.long),
         )
         add(
             system,
@@ -1075,8 +1075,8 @@ object SystemLibraryHelper {
             Operator(
                 "Modulo",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -1084,8 +1084,8 @@ object SystemLibraryHelper {
             Operator(
                 "Modulo",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         add(
@@ -1094,13 +1094,13 @@ object SystemLibraryHelper {
             Operator(
                 "Multiply",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Multiply", Signature(systemModel.long, systemModel.long), systemModel.long)
+            Operator("Multiply", Signature(systemModel.long, systemModel.long), systemModel.long),
         )
         add(
             system,
@@ -1108,8 +1108,8 @@ object SystemLibraryHelper {
             Operator(
                 "Multiply",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -1117,8 +1117,8 @@ object SystemLibraryHelper {
             Operator(
                 "Multiply",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         add(system, tb, Operator("Negate", Signature(systemModel.integer), systemModel.integer))
@@ -1134,25 +1134,25 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("Predecessor", Signature(systemModel.integer), systemModel.integer)
+            Operator("Predecessor", Signature(systemModel.integer), systemModel.integer),
         )
         add(system, tb, Operator("Predecessor", Signature(systemModel.long), systemModel.long))
         add(
             system,
             tb,
-            Operator("Predecessor", Signature(systemModel.decimal), systemModel.decimal)
+            Operator("Predecessor", Signature(systemModel.decimal), systemModel.decimal),
         )
         add(system, tb, Operator("Predecessor", Signature(systemModel.date), systemModel.date))
         add(
             system,
             tb,
-            Operator("Predecessor", Signature(systemModel.dateTime), systemModel.dateTime)
+            Operator("Predecessor", Signature(systemModel.dateTime), systemModel.dateTime),
         )
         add(system, tb, Operator("Predecessor", Signature(systemModel.time), systemModel.time))
         add(
             system,
             tb,
-            Operator("Predecessor", Signature(systemModel.quantity), systemModel.quantity)
+            Operator("Predecessor", Signature(systemModel.quantity), systemModel.quantity),
         )
 
         add(
@@ -1161,13 +1161,13 @@ object SystemLibraryHelper {
             Operator(
                 "Power",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Power", Signature(systemModel.long, systemModel.long), systemModel.long)
+            Operator("Power", Signature(systemModel.long, systemModel.long), systemModel.long),
         )
         add(
             system,
@@ -1175,8 +1175,8 @@ object SystemLibraryHelper {
             Operator(
                 "Power",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
 
         add(system, tb, Operator("Round", Signature(systemModel.decimal), systemModel.decimal))
@@ -1186,8 +1186,8 @@ object SystemLibraryHelper {
             Operator(
                 "Round",
                 Signature(systemModel.decimal, systemModel.integer),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
 
         add(
@@ -1196,13 +1196,13 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Subtract", Signature(systemModel.long, systemModel.long), systemModel.long)
+            Operator("Subtract", Signature(systemModel.long, systemModel.long), systemModel.long),
         )
         add(
             system,
@@ -1210,8 +1210,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -1219,8 +1219,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         add(system, tb, Operator("Successor", Signature(systemModel.integer), systemModel.integer))
@@ -1230,13 +1230,13 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("Successor", Signature(systemModel.dateTime), systemModel.dateTime)
+            Operator("Successor", Signature(systemModel.dateTime), systemModel.dateTime),
         )
         add(system, tb, Operator("Successor", Signature(systemModel.time), systemModel.time))
         add(
             system,
             tb,
-            Operator("Successor", Signature(systemModel.quantity), systemModel.quantity)
+            Operator("Successor", Signature(systemModel.quantity), systemModel.quantity),
         )
 
         add(system, tb, Operator("Truncate", Signature(systemModel.decimal), systemModel.integer))
@@ -1247,8 +1247,8 @@ object SystemLibraryHelper {
             Operator(
                 "TruncatedDivide",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1256,8 +1256,8 @@ object SystemLibraryHelper {
             Operator(
                 "TruncatedDivide",
                 Signature(systemModel.long, systemModel.long),
-                systemModel.long
-            )
+                systemModel.long,
+            ),
         )
         add(
             system,
@@ -1265,8 +1265,8 @@ object SystemLibraryHelper {
             Operator(
                 "TruncatedDivide",
                 Signature(systemModel.decimal, systemModel.decimal),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -1274,20 +1274,20 @@ object SystemLibraryHelper {
             Operator(
                 "TruncatedDivide",
                 Signature(systemModel.quantity, systemModel.quantity),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
 
         // String operators
         add(
             system,
             tb,
-            Operator("Add", Signature(systemModel.string, systemModel.string), systemModel.string)
+            Operator("Add", Signature(systemModel.string, systemModel.string), systemModel.string),
         )
         add(
             system,
             tb,
-            Operator("Combine", Signature(ListType(systemModel.string)), systemModel.string)
+            Operator("Combine", Signature(ListType(systemModel.string)), systemModel.string),
         )
         add(
             system,
@@ -1295,8 +1295,8 @@ object SystemLibraryHelper {
             Operator(
                 "Combine",
                 Signature(ListType(systemModel.string), systemModel.string),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(
             system,
@@ -1304,8 +1304,8 @@ object SystemLibraryHelper {
             Operator(
                 "Concatenate",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(
             system,
@@ -1313,8 +1313,8 @@ object SystemLibraryHelper {
             Operator(
                 "EndsWith",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1322,8 +1322,8 @@ object SystemLibraryHelper {
             Operator(
                 "Indexer",
                 Signature(systemModel.string, systemModel.integer),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(
             system,
@@ -1331,8 +1331,8 @@ object SystemLibraryHelper {
             Operator(
                 "LastPositionOf",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(system, tb, Operator("Length", Signature(systemModel.string), systemModel.integer))
         add(system, tb, Operator("Lower", Signature(systemModel.string), systemModel.string))
@@ -1342,8 +1342,8 @@ object SystemLibraryHelper {
             Operator(
                 "Matches",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1351,8 +1351,8 @@ object SystemLibraryHelper {
             Operator(
                 "PositionOf",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1360,8 +1360,8 @@ object SystemLibraryHelper {
             Operator(
                 "ReplaceMatches",
                 Signature(systemModel.string, systemModel.string, systemModel.string),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(
             system,
@@ -1369,8 +1369,8 @@ object SystemLibraryHelper {
             Operator(
                 "Split",
                 Signature(systemModel.string, systemModel.string),
-                ListType(systemModel.string)
-            )
+                ListType(systemModel.string),
+            ),
         )
         add(
             system,
@@ -1378,8 +1378,8 @@ object SystemLibraryHelper {
             Operator(
                 "SplitOnMatches",
                 Signature(systemModel.string, systemModel.string),
-                ListType(systemModel.string)
-            )
+                ListType(systemModel.string),
+            ),
         )
         add(
             system,
@@ -1387,8 +1387,8 @@ object SystemLibraryHelper {
             Operator(
                 "StartsWith",
                 Signature(systemModel.string, systemModel.string),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1396,8 +1396,8 @@ object SystemLibraryHelper {
             Operator(
                 "Substring",
                 Signature(systemModel.string, systemModel.integer),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(
             system,
@@ -1405,8 +1405,8 @@ object SystemLibraryHelper {
             Operator(
                 "Substring",
                 Signature(systemModel.string, systemModel.integer, systemModel.integer),
-                systemModel.string
-            )
+                systemModel.string,
+            ),
         )
         add(system, tb, Operator("Upper", Signature(systemModel.string), systemModel.string))
 
@@ -1417,18 +1417,18 @@ object SystemLibraryHelper {
             Operator(
                 "Add",
                 Signature(systemModel.dateTime, systemModel.quantity),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Add", Signature(systemModel.date, systemModel.quantity), systemModel.date)
+            Operator("Add", Signature(systemModel.date, systemModel.quantity), systemModel.date),
         )
         add(
             system,
             tb,
-            Operator("Add", Signature(systemModel.time, systemModel.quantity), systemModel.time)
+            Operator("Add", Signature(systemModel.time, systemModel.quantity), systemModel.time),
         )
         add(
             system,
@@ -1436,18 +1436,18 @@ object SystemLibraryHelper {
             Operator(
                 "After",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("After", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("After", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("After", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("After", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(
             system,
@@ -1455,18 +1455,18 @@ object SystemLibraryHelper {
             Operator(
                 "Before",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Before", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("Before", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("Before", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("Before", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(system, tb, Operator("DateTime", Signature(systemModel.integer), systemModel.dateTime))
         add(
@@ -1475,8 +1475,8 @@ object SystemLibraryHelper {
             Operator(
                 "DateTime",
                 Signature(systemModel.integer, systemModel.integer),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1484,22 +1484,8 @@ object SystemLibraryHelper {
             Operator(
                 "DateTime",
                 Signature(systemModel.integer, systemModel.integer, systemModel.integer),
-                systemModel.dateTime
-            )
-        )
-        add(
-            system,
-            tb,
-            Operator(
-                "DateTime",
-                Signature(
-                    systemModel.integer,
-                    systemModel.integer,
-                    systemModel.integer,
-                    systemModel.integer
-                ),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1511,10 +1497,9 @@ object SystemLibraryHelper {
                     systemModel.integer,
                     systemModel.integer,
                     systemModel.integer,
-                    systemModel.integer
                 ),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1527,10 +1512,9 @@ object SystemLibraryHelper {
                     systemModel.integer,
                     systemModel.integer,
                     systemModel.integer,
-                    systemModel.integer
                 ),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1544,10 +1528,9 @@ object SystemLibraryHelper {
                     systemModel.integer,
                     systemModel.integer,
                     systemModel.integer,
-                    systemModel.integer
                 ),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1562,16 +1545,33 @@ object SystemLibraryHelper {
                     systemModel.integer,
                     systemModel.integer,
                     systemModel.integer,
-                    systemModel.decimal
                 ),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
+        )
+        add(
+            system,
+            tb,
+            Operator(
+                "DateTime",
+                Signature(
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.integer,
+                    systemModel.decimal,
+                ),
+                systemModel.dateTime,
+            ),
         )
         add(system, tb, Operator("Date", Signature(systemModel.integer), systemModel.date))
         add(
             system,
             tb,
-            Operator("Date", Signature(systemModel.integer, systemModel.integer), systemModel.date)
+            Operator("Date", Signature(systemModel.integer, systemModel.integer), systemModel.date),
         )
         add(
             system,
@@ -1579,35 +1579,35 @@ object SystemLibraryHelper {
             Operator(
                 "Date",
                 Signature(systemModel.integer, systemModel.integer, systemModel.integer),
-                systemModel.date
-            )
+                systemModel.date,
+            ),
         )
         add(system, tb, Operator("DateFrom", Signature(systemModel.dateTime), systemModel.date))
         add(system, tb, Operator("TimeFrom", Signature(systemModel.dateTime), systemModel.time))
         add(
             system,
             tb,
-            Operator("TimezoneFrom", Signature(systemModel.dateTime), systemModel.decimal)
+            Operator("TimezoneFrom", Signature(systemModel.dateTime), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("TimezoneOffsetFrom", Signature(systemModel.dateTime), systemModel.decimal)
+            Operator("TimezoneOffsetFrom", Signature(systemModel.dateTime), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("DateTimeComponentFrom", Signature(systemModel.dateTime), systemModel.integer)
+            Operator("DateTimeComponentFrom", Signature(systemModel.dateTime), systemModel.integer),
         )
         add(
             system,
             tb,
-            Operator("DateTimeComponentFrom", Signature(systemModel.date), systemModel.integer)
+            Operator("DateTimeComponentFrom", Signature(systemModel.date), systemModel.integer),
         )
         add(
             system,
             tb,
-            Operator("DateTimeComponentFrom", Signature(systemModel.time), systemModel.integer)
+            Operator("DateTimeComponentFrom", Signature(systemModel.time), systemModel.integer),
         )
         add(
             system,
@@ -1615,8 +1615,8 @@ object SystemLibraryHelper {
             Operator(
                 "DifferenceBetween",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1624,8 +1624,8 @@ object SystemLibraryHelper {
             Operator(
                 "DifferenceBetween",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1633,8 +1633,8 @@ object SystemLibraryHelper {
             Operator(
                 "DifferenceBetween",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1642,8 +1642,8 @@ object SystemLibraryHelper {
             Operator(
                 "DurationBetween",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1651,8 +1651,8 @@ object SystemLibraryHelper {
             Operator(
                 "DurationBetween",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -1660,8 +1660,8 @@ object SystemLibraryHelper {
             Operator(
                 "DurationBetween",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(system, tb, Operator("Now", Signature(), systemModel.dateTime))
         add(system, tb, Operator("now", Signature(), systemModel.dateTime))
@@ -1671,18 +1671,18 @@ object SystemLibraryHelper {
             Operator(
                 "SameAs",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("SameAs", Signature(systemModel.date, systemModel.date), systemModel.boolean)
+            Operator("SameAs", Signature(systemModel.date, systemModel.date), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("SameAs", Signature(systemModel.time, systemModel.time), systemModel.boolean)
+            Operator("SameAs", Signature(systemModel.time, systemModel.time), systemModel.boolean),
         )
         add(
             system,
@@ -1690,8 +1690,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrAfter",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1699,8 +1699,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrAfter",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1708,8 +1708,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrAfter",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1717,8 +1717,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrBefore",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1726,8 +1726,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrBefore",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1735,8 +1735,8 @@ object SystemLibraryHelper {
             Operator(
                 "SameOrBefore",
                 Signature(systemModel.time, systemModel.time),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -1744,8 +1744,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.dateTime, systemModel.quantity),
-                systemModel.dateTime
-            )
+                systemModel.dateTime,
+            ),
         )
         add(
             system,
@@ -1753,8 +1753,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.date, systemModel.quantity),
-                systemModel.date
-            )
+                systemModel.date,
+            ),
         )
         add(
             system,
@@ -1762,8 +1762,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subtract",
                 Signature(systemModel.time, systemModel.quantity),
-                systemModel.time
-            )
+                systemModel.time,
+            ),
         )
         add(system, tb, Operator("Today", Signature(), systemModel.date))
         add(system, tb, Operator("today", Signature(), systemModel.date))
@@ -1771,7 +1771,7 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("Time", Signature(systemModel.integer, systemModel.integer), systemModel.time)
+            Operator("Time", Signature(systemModel.integer, systemModel.integer), systemModel.time),
         )
         add(
             system,
@@ -1779,8 +1779,8 @@ object SystemLibraryHelper {
             Operator(
                 "Time",
                 Signature(systemModel.integer, systemModel.integer, systemModel.integer),
-                systemModel.time
-            )
+                systemModel.time,
+            ),
         )
         add(
             system,
@@ -1791,10 +1791,10 @@ object SystemLibraryHelper {
                     systemModel.integer,
                     systemModel.integer,
                     systemModel.integer,
-                    systemModel.integer
+                    systemModel.integer,
                 ),
-                systemModel.time
-            )
+                systemModel.time,
+            ),
         )
         add(system, tb, Operator("TimeOfDay", Signature(), systemModel.time))
         add(system, tb, Operator("timeOfDay", Signature(), systemModel.time))
@@ -1808,8 +1808,8 @@ object SystemLibraryHelper {
                 "After",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Before<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1819,8 +1819,8 @@ object SystemLibraryHelper {
                 "Before",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Collapse<T>(list<interval<T>>) : list<interval<T>>
         // Collapse<T>(list<interval<T>>, Quantity) : list<interval<T>>
@@ -1831,8 +1831,8 @@ object SystemLibraryHelper {
                 "Collapse",
                 Signature(ListType(IntervalType(TypeParameter("T"))), systemModel.quantity),
                 ListType(IntervalType(TypeParameter("T"))),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Contains<T>(interval<T>, T) : Boolean
         add(
@@ -1842,8 +1842,8 @@ object SystemLibraryHelper {
                 "Contains",
                 Signature(IntervalType(TypeParameter("T")), TypeParameter("T")),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // End<T>(interval<T>) : T
         add(
@@ -1853,8 +1853,8 @@ object SystemLibraryHelper {
                 "End",
                 Signature(IntervalType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Ends<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1864,8 +1864,8 @@ object SystemLibraryHelper {
                 "Ends",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Equal<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1875,8 +1875,8 @@ object SystemLibraryHelper {
                 "Equal",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Equivalent<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1886,8 +1886,8 @@ object SystemLibraryHelper {
                 "Equivalent",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Except<T>(interval<T>, interval<T>) : interval<T>
         add(
@@ -1897,8 +1897,8 @@ object SystemLibraryHelper {
                 "Except",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 IntervalType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Expand<T>(list<interval<T>>) : list<interval<T>>
         // Expand<T>(list<interval<T>>, Quantity) : list<interval<T>>
@@ -1911,8 +1911,8 @@ object SystemLibraryHelper {
                 "Expand",
                 Signature(ListType(IntervalType(TypeParameter("T"))), systemModel.quantity),
                 ListType(IntervalType(TypeParameter("T"))),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         add(
             system,
@@ -1921,8 +1921,8 @@ object SystemLibraryHelper {
                 "Expand",
                 Signature(IntervalType(TypeParameter("T")), systemModel.quantity),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // In<T>(T, interval<T>) : Boolean
         add(
@@ -1932,8 +1932,8 @@ object SystemLibraryHelper {
                 "In",
                 Signature(TypeParameter("T"), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Includes<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1943,8 +1943,8 @@ object SystemLibraryHelper {
                 "Includes",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // IncludedIn<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1954,8 +1954,8 @@ object SystemLibraryHelper {
                 "IncludedIn",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Intersect<T>(interval<T>, interval<T>) : interval<T>
         add(
@@ -1965,8 +1965,8 @@ object SystemLibraryHelper {
                 "Intersect",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 IntervalType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Meets<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1976,8 +1976,8 @@ object SystemLibraryHelper {
                 "Meets",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // MeetsBefore<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1987,8 +1987,8 @@ object SystemLibraryHelper {
                 "MeetsBefore",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // MeetsAfter<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -1998,8 +1998,8 @@ object SystemLibraryHelper {
                 "MeetsAfter",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Overlaps<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2009,8 +2009,8 @@ object SystemLibraryHelper {
                 "Overlaps",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // OverlapsBefore<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2020,8 +2020,8 @@ object SystemLibraryHelper {
                 "OverlapsBefore",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // OverlapsAfter<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2031,8 +2031,8 @@ object SystemLibraryHelper {
                 "OverlapsAfter",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // PointFrom<T>(interval<T>) : T
         val pointFrom =
@@ -2040,7 +2040,7 @@ object SystemLibraryHelper {
                 "PointFrom",
                 Signature(IntervalType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
+                TypeParameter("T"),
             )
         add(system, tb, pointFrom)
         // ProperContains<T>(interval<T>, T) : Boolean
@@ -2051,8 +2051,8 @@ object SystemLibraryHelper {
                 "ProperContains",
                 Signature(IntervalType(TypeParameter("T")), TypeParameter("T")),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIn<T>(T, interval<T>) : Boolean
         add(
@@ -2062,8 +2062,8 @@ object SystemLibraryHelper {
                 "ProperIn",
                 Signature(TypeParameter("T"), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIncludes<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2073,8 +2073,8 @@ object SystemLibraryHelper {
                 "ProperIncludes",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIncludedIn<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2084,8 +2084,8 @@ object SystemLibraryHelper {
                 "ProperIncludedIn",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // SameAs<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2095,8 +2095,8 @@ object SystemLibraryHelper {
                 "SameAs",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // SameOrAfter<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2106,8 +2106,8 @@ object SystemLibraryHelper {
                 "SameOrAfter",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2117,8 +2117,8 @@ object SystemLibraryHelper {
                 "SameOrBefore",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Size<T>(interval<T>) : T
         add(
@@ -2128,8 +2128,8 @@ object SystemLibraryHelper {
                 "Size",
                 Signature(IntervalType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Start<T>(interval<T>) : T
         add(
@@ -2139,8 +2139,8 @@ object SystemLibraryHelper {
                 "Start",
                 Signature(IntervalType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Starts<T>(interval<T>, interval<T>) : Boolean
         add(
@@ -2150,8 +2150,8 @@ object SystemLibraryHelper {
                 "Starts",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Union<T>(interval<T>, interval<T>) : interval<T>
         add(
@@ -2161,8 +2161,8 @@ object SystemLibraryHelper {
                 "Union",
                 Signature(IntervalType(TypeParameter("T")), IntervalType(TypeParameter("T"))),
                 IntervalType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Width<T>(interval<T>) : T
         add(
@@ -2172,8 +2172,8 @@ object SystemLibraryHelper {
                 "Width",
                 Signature(IntervalType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
 
         // List Operators
@@ -2185,8 +2185,8 @@ object SystemLibraryHelper {
                 "Contains",
                 Signature(ListType(TypeParameter("T")), TypeParameter("T")),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Distinct<T>(list<T>) : list<T>
         add(
@@ -2196,8 +2196,8 @@ object SystemLibraryHelper {
                 "Distinct",
                 Signature(ListType(TypeParameter("T"))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Equal<T>(list<T>, list<T>) : Boolean
         add(
@@ -2207,8 +2207,8 @@ object SystemLibraryHelper {
                 "Equal",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Equivalent<T>(list<T>, list<T>) : Boolean
         add(
@@ -2218,8 +2218,8 @@ object SystemLibraryHelper {
                 "Equivalent",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Except<T>(list<T>, list<T>) : list<T>
         add(
@@ -2229,8 +2229,8 @@ object SystemLibraryHelper {
                 "Except",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Exists<T>(list<T>) : Boolean
         add(
@@ -2240,8 +2240,8 @@ object SystemLibraryHelper {
                 "Exists",
                 Signature(ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Flatten<T>(list<list<T>>) : list<T>
         add(
@@ -2251,8 +2251,8 @@ object SystemLibraryHelper {
                 "Flatten",
                 Signature(ListType(ListType(TypeParameter("T")))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // First<T>(list<T>) : T
         add(
@@ -2262,8 +2262,8 @@ object SystemLibraryHelper {
                 "First",
                 Signature(ListType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // In<T>(T, list<T>) : Boolean
         add(
@@ -2273,8 +2273,8 @@ object SystemLibraryHelper {
                 "In",
                 Signature(TypeParameter("T"), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Includes<T>(list<T>, list<T>) : Boolean
         add(
@@ -2284,8 +2284,8 @@ object SystemLibraryHelper {
                 "Includes",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // IncludedIn<T>(list<T>, list<T>) : Boolean
         add(
@@ -2295,8 +2295,8 @@ object SystemLibraryHelper {
                 "IncludedIn",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Indexer<T>(list<T>, integer) : T
         add(
@@ -2306,8 +2306,8 @@ object SystemLibraryHelper {
                 "Indexer",
                 Signature(ListType(TypeParameter("T")), systemModel.integer),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // IndexOf<T>(list<T>, T) : Integer
         add(
@@ -2317,8 +2317,8 @@ object SystemLibraryHelper {
                 "IndexOf",
                 Signature(ListType(TypeParameter("T")), TypeParameter("T")),
                 systemModel.integer,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Intersect<T>(list<T>, list<T>) : list<T>
         add(
@@ -2328,8 +2328,8 @@ object SystemLibraryHelper {
                 "Intersect",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Last<T>(list<T>) : T
         add(
@@ -2339,8 +2339,8 @@ object SystemLibraryHelper {
                 "Last",
                 Signature(ListType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Length<T>(list<T>) : Integer
         add(
@@ -2350,8 +2350,8 @@ object SystemLibraryHelper {
                 "Length",
                 Signature(ListType(TypeParameter("T"))),
                 systemModel.integer,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperContains<T>(list<T>, T) : Boolean
         add(
@@ -2361,8 +2361,8 @@ object SystemLibraryHelper {
                 "ProperContains",
                 Signature(ListType(TypeParameter("T")), TypeParameter("T")),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIn<T>(T, list<T>) : Boolean
         add(
@@ -2372,8 +2372,8 @@ object SystemLibraryHelper {
                 "ProperIn",
                 Signature(TypeParameter("T"), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIncludes<T>(list<T>, list<T>) : Boolean
         add(
@@ -2383,8 +2383,8 @@ object SystemLibraryHelper {
                 "ProperIncludes",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // ProperIncludedIn<T>(list<T>, list<T>) : Boolean
         add(
@@ -2394,8 +2394,8 @@ object SystemLibraryHelper {
                 "ProperIncludedIn",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 systemModel.boolean,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // SingletonFrom<T>(list<T>) : T
         val singletonFrom =
@@ -2403,7 +2403,7 @@ object SystemLibraryHelper {
                 "SingletonFrom",
                 Signature(ListType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
+                TypeParameter("T"),
             )
         add(system, tb, singletonFrom)
         //// NOTE: FHIRPath Implicit List Demotion
@@ -2419,8 +2419,8 @@ object SystemLibraryHelper {
                 "Skip",
                 Signature(ListType(TypeParameter("T")), systemModel.integer),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Tail(list<T>): list<T>
         add(
@@ -2430,8 +2430,8 @@ object SystemLibraryHelper {
                 "Tail",
                 Signature(ListType(TypeParameter("T"))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Take(list<T>, Integer): list<T>
         add(
@@ -2441,8 +2441,8 @@ object SystemLibraryHelper {
                 "Take",
                 Signature(ListType(TypeParameter("T")), systemModel.integer),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         // Union<T>(list<T>, list<T>) : list<T>
         add(
@@ -2452,8 +2452,8 @@ object SystemLibraryHelper {
                 "Union",
                 Signature(ListType(TypeParameter("T")), ListType(TypeParameter("T"))),
                 ListType(TypeParameter("T")),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
 
         // NOTE: FHIRPath Implicit List Promotion operator
@@ -2467,22 +2467,22 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("AllTrue", Signature(ListType(systemModel.boolean)), systemModel.boolean)
+            Operator("AllTrue", Signature(ListType(systemModel.boolean)), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("AnyTrue", Signature(ListType(systemModel.boolean)), systemModel.boolean)
+            Operator("AnyTrue", Signature(ListType(systemModel.boolean)), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("Avg", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Avg", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Avg", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Avg", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         // Count<T>(list<T>) : Integer
         add(
@@ -2492,8 +2492,8 @@ object SystemLibraryHelper {
                 "Count",
                 Signature(ListType(TypeParameter("T"))),
                 systemModel.integer,
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         //// Count(list<Any>) : Integer
         // add(system, tb, new Operator("Count", new Signature(new ListType(systemModel.getAny())),
@@ -2501,73 +2501,73 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("GeometricMean", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("GeometricMean", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Max", Signature(ListType(systemModel.integer)), systemModel.integer)
+            Operator("Max", Signature(ListType(systemModel.integer)), systemModel.integer),
         )
         add(system, tb, Operator("Max", Signature(ListType(systemModel.long)), systemModel.long))
         add(
             system,
             tb,
-            Operator("Max", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Max", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Max", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Max", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         add(
             system,
             tb,
-            Operator("Max", Signature(ListType(systemModel.dateTime)), systemModel.dateTime)
+            Operator("Max", Signature(ListType(systemModel.dateTime)), systemModel.dateTime),
         )
         add(system, tb, Operator("Max", Signature(ListType(systemModel.date)), systemModel.date))
         add(system, tb, Operator("Max", Signature(ListType(systemModel.time)), systemModel.time))
         add(
             system,
             tb,
-            Operator("Max", Signature(ListType(systemModel.string)), systemModel.string)
+            Operator("Max", Signature(ListType(systemModel.string)), systemModel.string),
         )
         add(
             system,
             tb,
-            Operator("Min", Signature(ListType(systemModel.integer)), systemModel.integer)
+            Operator("Min", Signature(ListType(systemModel.integer)), systemModel.integer),
         )
         add(system, tb, Operator("Min", Signature(ListType(systemModel.long)), systemModel.long))
         add(
             system,
             tb,
-            Operator("Min", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Min", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Min", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Min", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         add(
             system,
             tb,
-            Operator("Min", Signature(ListType(systemModel.dateTime)), systemModel.dateTime)
+            Operator("Min", Signature(ListType(systemModel.dateTime)), systemModel.dateTime),
         )
         add(system, tb, Operator("Min", Signature(ListType(systemModel.date)), systemModel.date))
         add(system, tb, Operator("Min", Signature(ListType(systemModel.time)), systemModel.time))
         add(
             system,
             tb,
-            Operator("Min", Signature(ListType(systemModel.string)), systemModel.string)
+            Operator("Min", Signature(ListType(systemModel.string)), systemModel.string),
         )
         add(
             system,
             tb,
-            Operator("Median", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Median", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Median", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Median", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         // Mode<T>(list<T>) : T
         add(
@@ -2577,8 +2577,8 @@ object SystemLibraryHelper {
                 "Mode",
                 Signature(ListType(TypeParameter("T"))),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
         add(
             system,
@@ -2586,8 +2586,8 @@ object SystemLibraryHelper {
             Operator(
                 "PopulationStdDev",
                 Signature(ListType(systemModel.decimal)),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -2595,8 +2595,8 @@ object SystemLibraryHelper {
             Operator(
                 "PopulationStdDev",
                 Signature(ListType(systemModel.quantity)),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
         add(
             system,
@@ -2604,8 +2604,8 @@ object SystemLibraryHelper {
             Operator(
                 "PopulationVariance",
                 Signature(ListType(systemModel.decimal)),
-                systemModel.decimal
-            )
+                systemModel.decimal,
+            ),
         )
         add(
             system,
@@ -2613,64 +2613,64 @@ object SystemLibraryHelper {
             Operator(
                 "PopulationVariance",
                 Signature(ListType(systemModel.quantity)),
-                systemModel.quantity
-            )
+                systemModel.quantity,
+            ),
         )
         add(
             system,
             tb,
-            Operator("Product", Signature(ListType(systemModel.integer)), systemModel.integer)
+            Operator("Product", Signature(ListType(systemModel.integer)), systemModel.integer),
         )
         add(
             system,
             tb,
-            Operator("Product", Signature(ListType(systemModel.long)), systemModel.long)
+            Operator("Product", Signature(ListType(systemModel.long)), systemModel.long),
         )
         add(
             system,
             tb,
-            Operator("Product", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Product", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Product", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Product", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         add(
             system,
             tb,
-            Operator("StdDev", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("StdDev", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("StdDev", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("StdDev", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         add(
             system,
             tb,
-            Operator("Sum", Signature(ListType(systemModel.integer)), systemModel.integer)
+            Operator("Sum", Signature(ListType(systemModel.integer)), systemModel.integer),
         )
         add(system, tb, Operator("Sum", Signature(ListType(systemModel.long)), systemModel.long))
         add(
             system,
             tb,
-            Operator("Sum", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Sum", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Sum", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Sum", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
         add(
             system,
             tb,
-            Operator("Variance", Signature(ListType(systemModel.decimal)), systemModel.decimal)
+            Operator("Variance", Signature(ListType(systemModel.decimal)), systemModel.decimal),
         )
         add(
             system,
             tb,
-            Operator("Variance", Signature(ListType(systemModel.quantity)), systemModel.quantity)
+            Operator("Variance", Signature(ListType(systemModel.quantity)), systemModel.quantity),
         )
 
         // Clinical
@@ -2687,7 +2687,7 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("CalculateAge", Signature(systemModel.dateTime), systemModel.integer)
+            Operator("CalculateAge", Signature(systemModel.dateTime), systemModel.integer),
         )
         add(system, tb, Operator("CalculateAge", Signature(systemModel.date), systemModel.integer))
         add(
@@ -2696,8 +2696,8 @@ object SystemLibraryHelper {
             Operator(
                 "CalculateAgeAt",
                 Signature(systemModel.dateTime, systemModel.dateTime),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
         add(
             system,
@@ -2705,8 +2705,8 @@ object SystemLibraryHelper {
             Operator(
                 "CalculateAgeAt",
                 Signature(systemModel.date, systemModel.date),
-                systemModel.integer
-            )
+                systemModel.integer,
+            ),
         )
 
         add(system, tb, Operator("InValueSet", Signature(systemModel.string), systemModel.boolean))
@@ -2719,8 +2719,8 @@ object SystemLibraryHelper {
             Operator(
                 "InValueSet",
                 Signature(systemModel.string, systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2728,8 +2728,8 @@ object SystemLibraryHelper {
             Operator(
                 "InValueSet",
                 Signature(systemModel.code, systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2737,24 +2737,24 @@ object SystemLibraryHelper {
             Operator(
                 "InValueSet",
                 Signature(systemModel.concept, systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         add(
             system,
             tb,
-            Operator("AnyInValueSet", Signature(ListType(systemModel.string)), systemModel.boolean)
+            Operator("AnyInValueSet", Signature(ListType(systemModel.string)), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("AnyInValueSet", Signature(ListType(systemModel.code)), systemModel.boolean)
+            Operator("AnyInValueSet", Signature(ListType(systemModel.code)), systemModel.boolean),
         )
         add(
             system,
             tb,
-            Operator("AnyInValueSet", Signature(ListType(systemModel.concept)), systemModel.boolean)
+            Operator("AnyInValueSet", Signature(ListType(systemModel.concept)), systemModel.boolean),
         )
 
         add(
@@ -2763,8 +2763,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInValueSet",
                 Signature(ListType(systemModel.string), systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2772,8 +2772,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInValueSet",
                 Signature(ListType(systemModel.code), systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2781,20 +2781,20 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInValueSet",
                 Signature(ListType(systemModel.concept), systemModel.valueSet),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         add(
             system,
             tb,
-            Operator("InCodeSystem", Signature(systemModel.string), systemModel.boolean)
+            Operator("InCodeSystem", Signature(systemModel.string), systemModel.boolean),
         )
         add(system, tb, Operator("InCodeSystem", Signature(systemModel.code), systemModel.boolean))
         add(
             system,
             tb,
-            Operator("InCodeSystem", Signature(systemModel.concept), systemModel.boolean)
+            Operator("InCodeSystem", Signature(systemModel.concept), systemModel.boolean),
         )
 
         add(
@@ -2803,8 +2803,8 @@ object SystemLibraryHelper {
             Operator(
                 "InCodeSystem",
                 Signature(systemModel.string, systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2812,8 +2812,8 @@ object SystemLibraryHelper {
             Operator(
                 "InCodeSystem",
                 Signature(systemModel.code, systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2821,8 +2821,8 @@ object SystemLibraryHelper {
             Operator(
                 "InCodeSystem",
                 Signature(systemModel.concept, systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         add(
@@ -2831,13 +2831,13 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInCodeSystem",
                 Signature(ListType(systemModel.string)),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
             tb,
-            Operator("AnyInCodeSystem", Signature(ListType(systemModel.code)), systemModel.boolean)
+            Operator("AnyInCodeSystem", Signature(ListType(systemModel.code)), systemModel.boolean),
         )
         add(
             system,
@@ -2845,8 +2845,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInCodeSystem",
                 Signature(ListType(systemModel.concept)),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         add(
@@ -2855,8 +2855,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInCodeSystem",
                 Signature(ListType(systemModel.string), systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2864,8 +2864,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInCodeSystem",
                 Signature(ListType(systemModel.code), systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2873,8 +2873,8 @@ object SystemLibraryHelper {
             Operator(
                 "AnyInCodeSystem",
                 Signature(ListType(systemModel.concept), systemModel.codeSystem),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         val expandValueSet =
@@ -2885,7 +2885,7 @@ object SystemLibraryHelper {
         add(
             system,
             tb,
-            Operator("Subsumes", Signature(systemModel.code, systemModel.code), systemModel.boolean)
+            Operator("Subsumes", Signature(systemModel.code, systemModel.code), systemModel.boolean),
         )
         add(
             system,
@@ -2893,8 +2893,8 @@ object SystemLibraryHelper {
             Operator(
                 "Subsumes",
                 Signature(systemModel.concept, systemModel.concept),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         add(
@@ -2903,8 +2903,8 @@ object SystemLibraryHelper {
             Operator(
                 "SubsumedBy",
                 Signature(systemModel.code, systemModel.code),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
         add(
             system,
@@ -2912,8 +2912,8 @@ object SystemLibraryHelper {
             Operator(
                 "SubsumedBy",
                 Signature(systemModel.concept, systemModel.concept),
-                systemModel.boolean
-            )
+                systemModel.boolean,
+            ),
         )
 
         // Errors
@@ -2928,11 +2928,11 @@ object SystemLibraryHelper {
                     systemModel.boolean,
                     systemModel.string,
                     systemModel.string,
-                    systemModel.string
+                    systemModel.string,
                 ),
                 TypeParameter("T"),
-                TypeParameter("T")
-            )
+                TypeParameter("T"),
+            ),
         )
 
         return system

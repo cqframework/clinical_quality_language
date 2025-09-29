@@ -37,7 +37,7 @@ data class Signature(val operandTypes: List<DataType>) {
         conversionMap: ConversionMap?,
         operatorMap: OperatorMap,
         allowPromotionAndDemotion: Boolean,
-        conversions: Array<Conversion?>
+        conversions: Array<Conversion?>,
     ): Boolean {
         return size == other.size &&
             run {
@@ -57,7 +57,7 @@ data class Signature(val operandTypes: List<DataType>) {
                             second,
                             true,
                             allowPromotionAndDemotion,
-                            operatorMap
+                            operatorMap,
                         )
 
                     if (conversions[i] == null) {

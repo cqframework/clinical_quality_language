@@ -25,5 +25,5 @@ package org.hl7.cql.model
 class ProfileType(
     name: String,
     baseType: DataType?,
-    elements: MutableList<ClassTypeElement> = mutableListOf()
+    elements: MutableList<ClassTypeElement> = mutableListOf(),
 ) : ClassType(name, baseType, elements)

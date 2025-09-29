@@ -7,7 +7,7 @@ data class TrackBack(
     val startLine: Int,
     val startChar: Int,
     val endLine: Int,
-    val endChar: Int
+    val endChar: Int,
 ) {
 
     override fun toString(): String {

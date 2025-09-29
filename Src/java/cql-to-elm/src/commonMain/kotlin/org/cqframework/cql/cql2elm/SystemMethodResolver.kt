@@ -10,13 +10,13 @@ import org.hl7.elm.r1.*
 @Suppress("TooManyFunctions")
 class SystemMethodResolver(
     private val visitor: Cql2ElmVisitor,
-    private val builder: LibraryBuilder
+    private val builder: LibraryBuilder,
 ) {
     private val of = builder.objectFactory
 
     private fun getParams(
         target: Expression,
-        ctx: cqlParser.ParamListContext?
+        ctx: cqlParser.ParamListContext?,
     ): MutableList<Expression> {
         val params: MutableList<Expression> = ArrayList()
         params.add(target)
@@ -31,7 +31,7 @@ class SystemMethodResolver(
     private fun checkArgumentCount(
         ctx: cqlParser.ParamListContext?,
         functionName: String,
-        expectedCount: Int
+        expectedCount: Int,
     ) {
         var actualCount = 0
         if (ctx?.expression() != null) {
@@ -59,7 +59,7 @@ class SystemMethodResolver(
         source: AliasedQuerySource,
         let: LetClause?,
         where: Expression?,
-        ret: ReturnClause?
+        ret: ReturnClause?,
     ): Query {
         val queryContext = builder.peekQueryContext()
         val lets: MutableList<LetClause> = arrayListOf()
@@ -87,7 +87,7 @@ class SystemMethodResolver(
     private fun createWhere(
         target: Expression,
         functionName: String,
-        ctx: cqlParser.ParamListContext?
+        ctx: cqlParser.ParamListContext?,
     ): Query {
         val source = enterQueryContext(target)
         return try {
@@ -106,7 +106,7 @@ class SystemMethodResolver(
     private fun createOfType(
         target: Expression,
         functionName: String,
-        ctx: cqlParser.ParamListContext?
+        ctx: cqlParser.ParamListContext?,
     ): Expression {
         val source = enterQueryContext(target)
         return try {
@@ -122,7 +122,7 @@ class SystemMethodResolver(
             require(
                 DataTypes.equal(
                     typeArgument.resultType,
-                    builder.resolveTypeName("System", "String")
+                    builder.resolveTypeName("System", "String"),
                 )
             ) {
                 "Expected string literal argument"
@@ -150,7 +150,7 @@ class SystemMethodResolver(
     private fun createRepeat(
         target: Expression,
         functionName: String,
-        ctx: cqlParser.ParamListContext?
+        ctx: cqlParser.ParamListContext?,
     ): Expression {
         val source = enterQueryContext(target)
         return try {
@@ -179,7 +179,7 @@ class SystemMethodResolver(
     private fun createSelect(
         target: Expression,
         functionName: String,
-        ctx: cqlParser.ParamListContext?
+        ctx: cqlParser.ParamListContext?,
     ): Expression? {
         val isListResult: Boolean
         val isSingular: Boolean
@@ -223,7 +223,7 @@ class SystemMethodResolver(
     private fun gatherChildTypes(
         dataType: DataType,
         recurse: Boolean,
-        dataTypes: MutableSet<DataType>
+        dataTypes: MutableSet<DataType>,
     ) {
         when (dataType) {
             is ClassType -> {
@@ -266,7 +266,7 @@ class SystemMethodResolver(
         target: Expression,
         functionName: String,
         ctx: cqlParser.ParamListContext?,
-        mustResolve: Boolean
+        mustResolve: Boolean,
     ): Expression? {
         return when (functionName) {
             "aggregate" -> builder.resolveFunction(null, "Aggregate", getParams(target, ctx))
@@ -452,7 +452,7 @@ class SystemMethodResolver(
                 require(
                     DataTypes.equal(
                         typeArgument.resultType,
-                        builder.resolveTypeName("System", "String")
+                        builder.resolveTypeName("System", "String"),
                     )
                 ) {
                     "Expected string literal argument"
@@ -537,7 +537,7 @@ class SystemMethodResolver(
                     getParams(target, ctx),
                     mustResolve,
                     allowPromotionAndDemotion = false,
-                    allowFluent = true
+                    allowFluent = true,
                 )
             }
         }

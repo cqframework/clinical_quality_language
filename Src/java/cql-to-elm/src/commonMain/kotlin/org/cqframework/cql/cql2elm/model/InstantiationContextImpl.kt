@@ -13,13 +13,13 @@ import org.hl7.cql.model.TypeParameter
     "ReturnCount",
     "ComplexCondition",
     "NestedBlockDepth",
-    "CyclomaticComplexMethod"
+    "CyclomaticComplexMethod",
 )
 class InstantiationContextImpl(
     private val typeMap: MutableMap<TypeParameter, DataType?>,
     private val operatorMap: OperatorMap,
     private val conversionMap: ConversionMap,
-    private val allowPromotionAndDemotion: Boolean
+    private val allowPromotionAndDemotion: Boolean,
 ) : InstantiationContext {
 
     var conversionScore: Int = 0
@@ -59,7 +59,7 @@ class InstantiationContextImpl(
                         boundType,
                         true,
                         allowPromotionAndDemotion,
-                        operatorMap
+                        operatorMap,
                     )
                 if (conversion != null) {
                     // if the conversion is a list promotion, switch the bound type to the call type
@@ -88,7 +88,7 @@ class InstantiationContextImpl(
                         callType,
                         true,
                         allowPromotionAndDemotion,
-                        operatorMap
+                        operatorMap,
                     )
                 if (conversion != null) {
                     // switch the bound type to the call type and return true
@@ -167,7 +167,7 @@ class InstantiationContextImpl(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
-                            false
+                            false,
                         )
                     val operator = instantiationResult.operator
                     // Consider impact of conversion score of the generic instantiation on
@@ -215,7 +215,7 @@ class InstantiationContextImpl(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
-                            false
+                            false,
                         )
                     val operator = instantiationResult.operator
                     // Consider impact of conversion score of the generic instantiation on
@@ -262,7 +262,7 @@ class InstantiationContextImpl(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
-                            false
+                            false,
                         )
                     val operator = instantiationResult.operator
                     // TODO: Consider impact of conversion score of the generic instantiation on

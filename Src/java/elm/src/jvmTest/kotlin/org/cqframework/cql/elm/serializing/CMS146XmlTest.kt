@@ -21,7 +21,7 @@ internal class CMS146XmlTest {
     @Throws(IOException::class)
     fun cms146SignatureLevels(
         fileName: String,
-        expectedSignatureLevel: LibraryBuilder.SignatureLevel
+        expectedSignatureLevel: LibraryBuilder.SignatureLevel,
     ) {
         val expectedXml: String? = getXml(fileName)
 
@@ -34,9 +34,9 @@ internal class CMS146XmlTest {
                     modelManager,
                     CqlCompilerOptions(
                         CqlCompilerException.ErrorSeverity.Warning,
-                        expectedSignatureLevel
-                    )
-                )
+                        expectedSignatureLevel,
+                    ),
+                ),
             )
         // The compiler version changes release-to-release
         // so we strip it out of the XML before comparison
@@ -52,20 +52,20 @@ internal class CMS146XmlTest {
             return arrayOf(
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_None.xml",
-                    LibraryBuilder.SignatureLevel.None
+                    LibraryBuilder.SignatureLevel.None,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Differing.xml",
-                    LibraryBuilder.SignatureLevel.Differing
+                    LibraryBuilder.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Overloads.xml",
-                    LibraryBuilder.SignatureLevel.Overloads
+                    LibraryBuilder.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_All.xml",
-                    LibraryBuilder.SignatureLevel.All
-                )
+                    LibraryBuilder.SignatureLevel.All,
+                ),
             )
         }
 

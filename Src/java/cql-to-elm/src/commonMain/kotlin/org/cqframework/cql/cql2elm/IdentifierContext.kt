@@ -10,7 +10,7 @@ import org.hl7.elm.r1.IdentifierRef
  */
 class IdentifierContext(
     val identifierRef: IdentifierRef,
-    val trackableSubclass: KClass<out Element>?
+    val trackableSubclass: KClass<out Element>?,
 ) {
     val identifier: String
         get() = identifierRef.name!!

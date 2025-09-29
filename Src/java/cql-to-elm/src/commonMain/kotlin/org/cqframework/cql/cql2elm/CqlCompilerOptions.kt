@@ -28,7 +28,7 @@ class CqlCompilerOptions() {
         EnableIntervalPromotion,
         DisableMethodInvocation,
         RequireFromKeyword,
-        DisableDefaultModelInfoLoad
+        DisableDefaultModelInfoLoad,
     }
 
     val options = mutableSetOf<Options>()
@@ -57,7 +57,7 @@ class CqlCompilerOptions() {
     @Suppress("SpreadOperator")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
-        vararg options: Options
+        vararg options: Options,
     ) : this(errorLevel, SignatureLevel.None, *options)
 
     /**
@@ -72,7 +72,7 @@ class CqlCompilerOptions() {
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         signatureLevel: SignatureLevel,
-        vararg options: Options
+        vararg options: Options,
     ) : this() {
         setOptions(*options)
         this.errorLevel = errorLevel
@@ -121,7 +121,7 @@ class CqlCompilerOptions() {
         validateUnits: Boolean,
         disableDefaultModelInfoLoad: Boolean,
         signatureLevel: SignatureLevel,
-        compatibilityLevel: String
+        compatibilityLevel: String,
     ) : this() {
         this.verifyOnly = verifyOnly
         this.errorLevel = errorLevel

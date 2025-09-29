@@ -5,7 +5,7 @@ class QNameJs
 constructor(
     private val namespaceURI: String,
     private val localPart: String,
-    private val prefix: String
+    private val prefix: String,
 ) {
     constructor(namespaceURI: String, localPart: String) : this(namespaceURI, localPart, "")
 

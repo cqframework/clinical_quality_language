@@ -11,7 +11,7 @@ class TimeInvocation(expression: Time) : OperatorExpressionInvocation<Time>(expr
                 expression.hour,
                 expression.minute,
                 expression.second,
-                expression.millisecond
+                expression.millisecond,
             )
         set(operands) {
             setTimeFieldsFromOperands(expression, operands)
