@@ -10,7 +10,6 @@ import org.antlr.v4.kotlinruntime.*
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.cql2elm.elm.ElmEdit
 import org.cqframework.cql.cql2elm.elm.ElmEditor
-import org.cqframework.cql.cql2elm.elm.IElmEdit
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.cql2elm.tracking.TrackBack
@@ -74,17 +73,8 @@ class CqlCompiler(
         return retrieves
     }
 
-    val compiledLibraries: Map<VersionedIdentifier, CompiledLibrary>
-        get() = libraryManager.compiledLibraries
-
     val libraries: Map<VersionedIdentifier, Library>
-        get() {
-            val result = HashMap<VersionedIdentifier, Library>()
-            libraryManager.compiledLibraries.forEach { (id, compiledLibrary) ->
-                result[id] = compiledLibrary.library!!
-            }
-            return result
-        }
+        get() = libraryManager.compiledLibraries.mapValues { it.value.library!! }
 
     private inner class CqlErrorListener(
         private val builder: LibraryBuilder,
@@ -208,26 +198,20 @@ class CqlCompiler(
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are
         // removed and there will probably be a lot of other optimizations that happen here in the
         // future)
-        val edits =
-            allNonNull(
-                (if (!options.contains(CqlCompilerOptions.Options.EnableAnnotations))
-                    ElmEdit.REMOVE_ANNOTATION
-                else null),
-                (if (!options.contains(CqlCompilerOptions.Options.EnableResultTypes))
-                    ElmEdit.REMOVE_RESULT_TYPE
-                else null),
-                (if (!options.contains(CqlCompilerOptions.Options.EnableLocators))
-                    ElmEdit.REMOVE_LOCATOR
-                else null)
+        val optionToEdit =
+            mapOf(
+                CqlCompilerOptions.Options.EnableAnnotations to ElmEdit.REMOVE_ANNOTATION,
+                CqlCompilerOptions.Options.EnableResultTypes to ElmEdit.REMOVE_RESULT_TYPE,
+                CqlCompilerOptions.Options.EnableLocators to ElmEdit.REMOVE_LOCATOR,
             )
+
+        // The edits are applied if the corresponding option is NOT present
+        val edits = optionToEdit.filterKeys { it !in options }.values.toList()
+
         ElmEditor(edits).edit(library!!)
         compiledLibrary = builder.compiledLibrary
         retrieves = visitor.retrieves
         exceptions.addAll(builder.exceptions)
         return library!!
-    }
-
-    private fun allNonNull(vararg ts: IElmEdit?): kotlin.collections.List<IElmEdit> {
-        return ts.filterNotNull()
     }
 }
