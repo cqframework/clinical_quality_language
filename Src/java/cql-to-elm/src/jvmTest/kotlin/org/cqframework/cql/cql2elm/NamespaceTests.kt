@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.IOException
+import java.util.Locale
 import kotlinx.io.Source
 import kotlinx.io.asSource
 import kotlinx.io.buffered
@@ -15,7 +16,6 @@ import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.util.Locale
 
 @Suppress("PrintStackTrace")
 internal class NamespaceTests {
