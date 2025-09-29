@@ -29,9 +29,9 @@ internal class ArchitectureTest {
             .byClassesThat()
             .areAssignableTo(IdObjectFactory::class.java)
             .because(
-                ("ELM classes should never be instantiated directly, " +
+                "ELM classes should never be instantiated directly, " +
                     "use an ObjectFactory that ensures that " +
-                    "the classes are initialized and tracked correctly.")
+                    "the classes are initialized and tracked correctly."
             )
             .allowEmptyShould(true)
             .check(importedClasses)
