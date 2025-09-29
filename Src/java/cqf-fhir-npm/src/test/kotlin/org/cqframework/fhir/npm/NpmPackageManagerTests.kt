@@ -20,26 +20,31 @@ class NpmPackageManagerTests : ILoggingService {
 
     @Test
     fun sampleIGLocalNoDependencies() {
-        val igResource = FhirContext.forR4Cached()
-            .newXmlParser()
-            .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("myig.xml")) as Resource
-        val ig = convertor.convertResource(igResource) as ImplementationGuide?
+        val igResource =
+            FhirContext.forR4Cached()
+                .newXmlParser()
+                .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("myig.xml"))
+                as Resource
+        val ig = convertor.convertResource(igResource) as ImplementationGuide
         val pm = NpmPackageManager(ig)
-        Assertions.assertEquals(1, pm.getNpmList().size)
+        Assertions.assertEquals(1, pm.npmList.size)
     }
 
     @Test
     fun sampleContentIGLocalWithRecursiveDependencies() {
-        val igResource = FhirContext.forR4Cached()
-            .newXmlParser()
-            .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("mycontentig.xml")) as Resource
-        val ig = convertor.convertResource(igResource) as ImplementationGuide?
+        val igResource =
+            FhirContext.forR4Cached()
+                .newXmlParser()
+                .parseResource(
+                    NpmPackageManagerTests::class.java.getResourceAsStream("mycontentig.xml")
+                ) as Resource
+        val ig = convertor.convertResource(igResource) as ImplementationGuide
         val pm = NpmPackageManager(ig)
-        Assertions.assertTrue(pm.getNpmList().size >= 3)
+        Assertions.assertTrue(pm.npmList.size >= 3)
         var hasFHIR = false
         var hasCommon = false
         var hasCPG = false
-        for (p in pm.getNpmList()) {
+        for (p in pm.npmList) {
             when (p.canonical()) {
                 "http://hl7.org/fhir" -> hasFHIR = true
                 "http://fhir.org/guides/cqf/common" -> hasCommon = true
@@ -53,15 +58,18 @@ class NpmPackageManagerTests : ILoggingService {
 
     @Test
     fun opioidMmeIGLocalWithSingleFileDependency() {
-        val igResource = FhirContext.forR4Cached()
-            .newXmlParser()
-            .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("opioid-mme-r4.xml")) as Resource
-        val ig = convertor.convertResource(igResource) as ImplementationGuide?
+        val igResource =
+            FhirContext.forR4Cached()
+                .newXmlParser()
+                .parseResource(
+                    NpmPackageManagerTests::class.java.getResourceAsStream("opioid-mme-r4.xml")
+                ) as Resource
+        val ig = convertor.convertResource(igResource) as ImplementationGuide
         val pm = NpmPackageManager(ig)
-        Assertions.assertTrue(pm.getNpmList().size >= 2)
+        Assertions.assertTrue(pm.npmList.size >= 2)
         var hasFHIR = false
         var hasCPG = false
-        for (p in pm.getNpmList()) {
+        for (p in pm.npmList) {
             when (p.canonical()) {
                 "http://hl7.org/fhir" -> hasFHIR = true
                 "http://hl7.org/fhir/uv/cpg" -> hasCPG = true
@@ -72,42 +80,44 @@ class NpmPackageManagerTests : ILoggingService {
     }
 
     @Test
-    @Disabled("This test depends on the example.fhir.uv.myig package, which is not currently published")
+    @Disabled(
+        "This test depends on the example.fhir.uv.myig package, which is not currently published"
+    )
     fun librarySourceProviderLocal() {
-        val igResource = FhirContext.forR4Cached()
-            .newXmlParser()
-            .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("mycontentig.xml")) as Resource
-        val ig = convertor.convertResource(igResource) as ImplementationGuide?
+        val igResource =
+            FhirContext.forR4Cached()
+                .newXmlParser()
+                .parseResource(
+                    NpmPackageManagerTests::class.java.getResourceAsStream("mycontentig.xml")
+                ) as Resource
+        val ig = convertor.convertResource(igResource) as ImplementationGuide
         val pm = NpmPackageManager(ig)
 
         val reader = LibraryLoader("4.0.1")
-        val sp = NpmLibrarySourceProvider(pm.getNpmList(), reader, this)
-        var `is` = sp.getLibrarySource(
-            VersionedIdentifier()
-                .withSystem("http://somewhere.org/fhir/uv/myig")
-                .withId("example")
-        )
-        // assertNotNull(is);
-        `is` = sp.getLibrarySource(
-            VersionedIdentifier()
-                .withSystem("http://somewhere.org/fhir/uv/myig")
-                .withId("example")
-                .withVersion("0.2.0")
-        )
-        Assertions.assertNotNull(`is`)
+        val sp = NpmLibrarySourceProvider(pm.npmList, reader, this)
+        val source =
+            sp.getLibrarySource(
+                VersionedIdentifier()
+                    .withSystem("http://somewhere.org/fhir/uv/myig")
+                    .withId("example")
+                    .withVersion("0.2.0")
+            )
+        Assertions.assertNotNull(source)
     }
 
     @Test
     fun modelInfoProviderLocal() {
-        val igResource = FhirContext.forR4Cached()
-            .newXmlParser()
-            .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("testig.xml")) as Resource
-        val ig = convertor.convertResource(igResource) as ImplementationGuide?
+        val igResource =
+            FhirContext.forR4Cached()
+                .newXmlParser()
+                .parseResource(NpmPackageManagerTests::class.java.getResourceAsStream("testig.xml"))
+                as Resource
+        val ig = convertor.convertResource(igResource) as ImplementationGuide
         val pm = NpmPackageManager(ig)
-        Assertions.assertFalse(pm.getNpmList().isEmpty())
+        Assertions.assertFalse(pm.npmList.isEmpty())
 
         val reader = LibraryLoader("5.0")
-        val mp = NpmModelInfoProvider(pm.getNpmList(), reader, this)
+        val mp = NpmModelInfoProvider(pm.npmList, reader, this)
         val mi = mp.load(ModelIdentifier("QICore", "http://hl7.org/fhir/us/qicore", null))
         Assertions.assertNotNull(mi)
         Assertions.assertEquals("QICore", mi!!.name)
@@ -121,7 +131,8 @@ class NpmPackageManagerTests : ILoggingService {
         logMessage(msg)
     }
 
+    @Deprecated("Deprecated in FHIR core")
     override fun isDebugLogging(): Boolean {
-        return logger.isDebugEnabled()
+        return logger.isDebugEnabled
     }
 }
