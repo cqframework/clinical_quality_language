@@ -101,13 +101,13 @@ constructor(
     }
 
     fun resolveLibraries(
-        libraryIdentifiers: MutableList<VersionedIdentifier>
+        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>
     ): CompiledLibraryMultiResults {
         return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE)
     }
 
     private fun resolveLibraries(
-        libraryIdentifiers: MutableList<VersionedIdentifier>,
+        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>,
         cacheMode: CacheMode
     ): CompiledLibraryMultiResults {
         require(libraryIdentifiers.isNotEmpty()) { "libraryIdentifier can not be null" }
@@ -127,7 +127,7 @@ constructor(
             val librariesFromCache =
                 libraryIdentifiers
                     .filter { o -> compiledLibraries.containsKey(o) }
-                    .map { o -> compiledLibraries.get(o)!! }
+                    .map { o -> compiledLibraries[o]!! }
 
             if (librariesFromCache.size == libraryIdentifiers.size) {
                 return CompiledLibraryMultiResults.from(
@@ -237,7 +237,7 @@ constructor(
         validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath)
 
         sortStatements(compiledLibrary)
-        return CompiledLibraryResult(compiledLibrary, compiler.exceptions ?: mutableListOf())
+        return CompiledLibraryResult(compiledLibrary, compiler.exceptions)
     }
 
     private fun validateIdentifiers(
@@ -258,7 +258,7 @@ constructor(
         if (libraryIdentifierVersion == null) {
             areIdentifiersValid = areIdsEqual
         } else {
-            val areVersionsEqual = libraryIdentifierVersion.equals(resultIdentifier.version)
+            val areVersionsEqual = libraryIdentifierVersion == resultIdentifier.version
             areIdentifiersValid = areIdsEqual && areVersionsEqual
         }
 
