@@ -2,10 +2,8 @@ package org.cqframework.cql.cql2elm.fhir.stu301
 
 import java.io.IOException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
-import org.cqframework.cql.cql2elm.TestUtils.runSemanticTest
-import org.cqframework.cql.cql2elm.TestUtils.visitFile
-import org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary
-import org.cqframework.cql.cql2elm.matchers.QuickDataType.Companion.quickDataType
+import org.cqframework.cql.cql2elm.TestUtils
+import org.cqframework.cql.cql2elm.matchers.QuickDataType
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.instanceOf
@@ -32,18 +30,19 @@ import org.hl7.elm.r1.ToConcept
 import org.hl7.elm.r1.ToList
 import org.junit.jupiter.api.Test
 
+@Suppress("MaxLineLength")
 internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun choiceWithAlternativeConversion() {
-        val def = visitFile("fhir/stu301/TestChoiceTypes.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("fhir/stu301/TestChoiceTypes.cql") as ExpressionDef?
         val query = def!!.expression as Query?
 
         // First check the source
         val source = query!!.source[0]
         assertThat(source.alias, `is`("Q"))
         val request = source.expression as Retrieve?
-        assertThat(request!!.dataType, quickDataType("QuestionnaireResponse"))
+        assertThat(request!!.dataType, QuickDataType.quickDataType("QuestionnaireResponse"))
 
         // Then check that the suchThat of the with is a greater with a Case as the left operand
         val relationship = query.relationship[0]
@@ -62,13 +61,13 @@ internal class BaseTest {
     @Throws(IOException::class)
     fun uriConversion() {
         // If this translates without errors, the test is successful
-        val def = visitFile("fhir/stu301/TestURIConversion.cql") as ExpressionDef?
+        TestUtils.visitFile("fhir/stu301/TestURIConversion.cql") as ExpressionDef?
     }
 
     @Test
     @Throws(IOException::class)
     fun fhirTiming() {
-        val def = visitFile("fhir/stu301/TestFHIRTiming.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("fhir/stu301/TestFHIRTiming.cql") as ExpressionDef?
         // Query->
         //  where->
         //      IncludedIn->
@@ -83,14 +82,14 @@ internal class BaseTest {
         val source = query!!.source[0]
         assertThat(source.alias, `is`("P"))
         val request = source.expression as Retrieve?
-        assertThat(request!!.dataType, quickDataType("Procedure"))
+        assertThat(request!!.dataType, QuickDataType.quickDataType("Procedure"))
 
         // Then check that the where an IncludedIn with a ToInterval as the left operand
         val where = query.where
         assertThat<Expression?>(where, instanceOf<Expression?>(In::class.java))
-        val `in` = where as In?
-        assertThat(`in`!!.operand[0], instanceOf(FunctionRef::class.java))
-        val functionRef: FunctionRef = `in`.operand[0] as FunctionRef
+        val inDef = where as In?
+        assertThat(inDef!!.operand[0], instanceOf(FunctionRef::class.java))
+        val functionRef: FunctionRef = inDef.operand[0] as FunctionRef
         assertThat(functionRef.name, `is`("ToDateTime"))
         assertThat(functionRef.operand[0], instanceOf(As::class.java))
         val asExpression = functionRef.operand[0] as As
@@ -104,7 +103,7 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun equalityWithConversions() {
-        val library = visitFileLibrary("fhir/stu301/EqualityWithConversions.cql")
+        val library = TestUtils.visitFileLibrary("fhir/stu301/EqualityWithConversions.cql")
         val getGender = library!!.resolveExpressionRef("GetGender")
         assertThat<Expression?>(getGender!!.expression, instanceOf<Expression?>(Equal::class.java))
         val equal = getGender.expression as Equal?
@@ -117,7 +116,7 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun doubleListPromotion() {
-        val translator = runSemanticTest("fhir/stu301/TestDoubleListPromotion.cql", 0)
+        val translator = TestUtils.runSemanticTest("fhir/stu301/TestDoubleListPromotion.cql", 0)
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
 
@@ -141,7 +140,7 @@ internal class BaseTest {
     @Throws(IOException::class)
     fun choiceDateRangeOptimization() {
         val translator =
-            runSemanticTest(
+            TestUtils.runSemanticTest(
                 "fhir/stu301/TestChoiceDateRangeOptimization.cql",
                 0,
                 CqlCompilerOptions.Options.EnableDateRangeOptimization
@@ -233,43 +232,43 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun intervalImplicitConversion() {
-        runSemanticTest("fhir/stu301/TestIntervalImplicitConversion.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestIntervalImplicitConversion.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun fhirHelpers() {
-        runSemanticTest("fhir/stu301/TestFHIRHelpers.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestFHIRHelpers.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun implicitFHIRHelpers() {
-        runSemanticTest("fhir/stu301/TestImplicitFHIRHelpers.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestImplicitFHIRHelpers.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun fhir() {
-        runSemanticTest("fhir/stu301/TestFHIR.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestFHIR.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun fhirWithHelpers() {
-        runSemanticTest("fhir/stu301/TestFHIRWithHelpers.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestFHIRWithHelpers.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun bundle() {
-        runSemanticTest("fhir/stu301/TestBundle.cql", 0)
+        TestUtils.runSemanticTest("fhir/stu301/TestBundle.cql", 0)
     }
 
     @Test
     @Throws(IOException::class)
     fun conceptConversion() {
-        val translator = runSemanticTest("fhir/stu301/TestConceptConversion.cql", 0)
+        val translator = TestUtils.runSemanticTest("fhir/stu301/TestConceptConversion.cql", 0)
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
 
@@ -361,7 +360,7 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun retrieveWithConcept() {
-        val translator = runSemanticTest("fhir/stu301/TestRetrieveWithConcept.cql", 0)
+        val translator = TestUtils.runSemanticTest("fhir/stu301/TestRetrieveWithConcept.cql", 0)
         val library = translator.translatedLibrary
         val expressionDef = library!!.resolveExpressionRef("Test Tobacco Smoking Status")
 
@@ -379,7 +378,7 @@ internal class BaseTest {
     @Throws(IOException::class)
     fun fhirNamespaces() {
         val translator =
-            runSemanticTest(
+            TestUtils.runSemanticTest(
                 NamespaceInfo("Public", "http://cql.hl7.org/public"),
                 "fhir/stu301/TestFHIRNamespaces.cql",
                 0
@@ -394,7 +393,7 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun fhirWithoutNamespaces() {
-        val translator = runSemanticTest("fhir/stu301/TestFHIRNamespaces.cql", 0)
+        val translator = TestUtils.runSemanticTest("fhir/stu301/TestFHIRNamespaces.cql", 0)
         val library = translator.translatedLibrary
         val includeDef = library!!.resolveIncludeRef("FHIRHelpers")
         assertThat<IncludeDef?>(includeDef, Matchers.notNullValue())
@@ -405,7 +404,8 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun fhirPathLiteralStringEscapes() {
-        val translator = runSemanticTest("fhir/stu301/TestFHIRPathLiteralStringEscapes.cql", 0)
+        val translator =
+            TestUtils.runSemanticTest("fhir/stu301/TestFHIRPathLiteralStringEscapes.cql", 0)
         val library = translator.translatedLibrary
         val expressionDef = library!!.resolveExpressionRef("Test")
         assertThat<ExpressionDef?>(expressionDef, Matchers.notNullValue())
