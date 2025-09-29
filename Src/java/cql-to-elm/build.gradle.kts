@@ -22,6 +22,7 @@ kotlin {
             }
         }
         jvmTest {
+
             dependencies {
                 implementation(project(":quick"))
                 implementation(project(":qdm"))
