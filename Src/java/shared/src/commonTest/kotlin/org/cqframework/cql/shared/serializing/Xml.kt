@@ -15,8 +15,8 @@ class XmlTest {
             qNameToXmlAttributeValue(
                 QName("urn:example:one", "local"),
                 mutableMapOf("a" to "urn:example:one"),
-                mapOf()
-            )
+                mapOf(),
+            ),
         )
     }
 
@@ -27,7 +27,7 @@ class XmlTest {
             qNameToXmlAttributeValue(
                 QName("urn:hl7-org:cql-annotations:r1", "CqlToElmInfo"),
                 namespaces,
-                mapOf("a" to "urn:hl7-org:cql-annotations:r1")
+                mapOf("a" to "urn:hl7-org:cql-annotations:r1"),
             )
         assertEquals("a:CqlToElmInfo", result)
         assertEquals("urn:hl7-org:cql-annotations:r1", namespaces["a"])
@@ -46,7 +46,7 @@ class XmlTest {
     fun qNameSerializerHandlesEmptyNamespace() {
         assertEquals(
             "ns0:local",
-            qNameToXmlAttributeValue(QName("", "local"), mutableMapOf(), mapOf())
+            qNameToXmlAttributeValue(QName("", "local"), mutableMapOf(), mapOf()),
         )
     }
 
@@ -56,8 +56,8 @@ class XmlTest {
             QName("urn:hl7-org:cql-annotations:r1", "CqlToElmInfo"),
             xmlAttributeValueToQName(
                 "a:CqlToElmInfo",
-                mapOf("a" to "urn:hl7-org:cql-annotations:r1")
-            )
+                mapOf("a" to "urn:hl7-org:cql-annotations:r1"),
+            ),
         )
     }
 
@@ -65,7 +65,7 @@ class XmlTest {
     fun qNameParserHandlesDefaultNamespace() {
         assertEquals(
             QName("urn:example:one", "local"),
-            xmlAttributeValueToQName("local", mapOf("" to "urn:example:one"))
+            xmlAttributeValueToQName("local", mapOf("" to "urn:example:one")),
         )
     }
 

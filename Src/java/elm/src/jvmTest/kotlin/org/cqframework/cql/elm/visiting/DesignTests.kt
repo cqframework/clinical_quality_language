@@ -20,7 +20,7 @@ internal class DesignTests {
         val isAbstractElementType =
             DescribedPredicate.and(
                 HasModifiers.Predicates.modifier(JavaModifier.ABSTRACT),
-                JavaClass.Predicates.assignableTo(Element::class.java)
+                JavaClass.Predicates.assignableTo(Element::class.java),
             )
 
         ArchRuleDefinition.methods()
@@ -55,14 +55,14 @@ internal class DesignTests {
                 events.add(
                     SimpleConditionEvent.violated(
                         item,
-                        "Method ${item.fullName} calls defaultResult or visitFields"
+                        "Method ${item.fullName} calls defaultResult or visitFields",
                     )
                 )
             } else {
                 events.add(
                     SimpleConditionEvent.satisfied(
                         item,
-                        "Method ${item.fullName} does not call defaultResult"
+                        "Method ${item.fullName} does not call defaultResult",
                     )
                 )
             }

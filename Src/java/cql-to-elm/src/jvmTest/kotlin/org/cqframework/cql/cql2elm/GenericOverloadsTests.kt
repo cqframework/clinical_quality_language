@@ -21,7 +21,7 @@ internal class GenericOverloadsTests {
     @Throws(IOException::class)
     private fun getLibrary(
         enableResultTypes: Boolean,
-        level: LibraryBuilder.SignatureLevel
+        level: LibraryBuilder.SignatureLevel,
     ): Library {
         val translator: CqlTranslator = getTranslator(enableResultTypes, level)
         assertThat(translator.errors.size, `is`(0))
@@ -53,7 +53,7 @@ internal class GenericOverloadsTests {
         var listSpecifier = operand.operandTypeSpecifier as ListTypeSpecifier
         assertThat<TypeSpecifier?>(
             listSpecifier.elementType,
-            Matchers.instanceOf<TypeSpecifier?>(NamedTypeSpecifier::class.java)
+            Matchers.instanceOf<TypeSpecifier?>(NamedTypeSpecifier::class.java),
         )
         var namedSpecifier = listSpecifier.elementType as NamedTypeSpecifier?
         Assertions.assertNotNull(namedSpecifier!!.name)
@@ -64,7 +64,7 @@ internal class GenericOverloadsTests {
         listSpecifier = operand.operandTypeSpecifier as ListTypeSpecifier
         assertThat<TypeSpecifier?>(
             listSpecifier.elementType,
-            Matchers.instanceOf<TypeSpecifier?>(NamedTypeSpecifier::class.java)
+            Matchers.instanceOf<TypeSpecifier?>(NamedTypeSpecifier::class.java),
         )
         namedSpecifier = listSpecifier.elementType as NamedTypeSpecifier?
         Assertions.assertNotNull(namedSpecifier!!.name)
@@ -122,7 +122,7 @@ internal class GenericOverloadsTests {
         @Throws(IOException::class)
         private fun getTranslator(
             enableResultTypes: Boolean,
-            level: LibraryBuilder.SignatureLevel
+            level: LibraryBuilder.SignatureLevel,
         ): CqlTranslator {
             val options = CqlCompilerOptions()
             options.options.clear()

@@ -11,7 +11,7 @@ class MessageInvocation(expression: Message) : OperatorExpressionInvocation<Mess
                 expression.condition!!,
                 expression.code!!,
                 expression.severity!!,
-                expression.message!!
+                expression.message!!,
             )
         @Suppress("MagicNumber")
         set(operands) {

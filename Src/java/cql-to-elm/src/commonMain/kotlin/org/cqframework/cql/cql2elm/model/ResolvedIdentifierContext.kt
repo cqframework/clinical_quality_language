@@ -23,11 +23,11 @@ data class ResolvedIdentifierContext
 private constructor(
     private val identifier: String,
     private val element: Element?,
-    private val matchType: ResolvedIdentifierMatchType
+    private val matchType: ResolvedIdentifierMatchType,
 ) {
     private enum class ResolvedIdentifierMatchType {
         EXACT,
-        CASE_INSENSITIVE
+        CASE_INSENSITIVE,
     }
 
     val exactMatchElement: Element?
@@ -74,7 +74,7 @@ private constructor(
             return ResolvedIdentifierContext(
                 identifier,
                 element,
-                ResolvedIdentifierMatchType.CASE_INSENSITIVE
+                ResolvedIdentifierMatchType.CASE_INSENSITIVE,
             )
         }
 

@@ -132,7 +132,7 @@ internal class BaseTest {
         assertThat<Expression?>(codes, instanceOf<Expression?>(ToList::class.java))
         assertThat<Expression?>(
             (codes as ToList).operand,
-            instanceOf<Expression?>(CodeRef::class.java)
+            instanceOf<Expression?>(CodeRef::class.java),
         )
     }
 
@@ -143,7 +143,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/stu301/TestChoiceDateRangeOptimization.cql",
                 0,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization
+                CqlCompilerOptions.Options.EnableDateRangeOptimization,
             )
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
@@ -179,7 +179,7 @@ internal class BaseTest {
         var expressionDef: ExpressionDef = defs["DateCondition"]!!
         assertThat<Expression?>(
             expressionDef.expression,
-            instanceOf<Expression?>(Query::class.java)
+            instanceOf<Expression?>(Query::class.java),
         )
         var query = expressionDef.expression as Query?
         assertThat(query!!.source.size, `is`(1))
@@ -188,7 +188,7 @@ internal class BaseTest {
         assertThat(retrieve.dateProperty, `is`("assertedDate"))
         assertThat<Expression?>(
             retrieve.dateRange,
-            instanceOf<Expression?>(ParameterRef::class.java)
+            instanceOf<Expression?>(ParameterRef::class.java),
         )
 
         /*
@@ -216,7 +216,7 @@ internal class BaseTest {
         expressionDef = defs["ChoiceTypePeriodCondition"]!!
         assertThat<Expression?>(
             expressionDef.expression,
-            instanceOf<Expression?>(Query::class.java)
+            instanceOf<Expression?>(Query::class.java),
         )
         query = expressionDef.expression as Query?
         assertThat(query!!.source.size, `is`(1))
@@ -225,7 +225,7 @@ internal class BaseTest {
         assertThat(retrieve.dateProperty, `is`("onset"))
         assertThat<Expression?>(
             retrieve.dateRange,
-            instanceOf<Expression?>(ParameterRef::class.java)
+            instanceOf<Expression?>(ParameterRef::class.java),
         )
     }
 
@@ -307,7 +307,7 @@ internal class BaseTest {
 
         assertThat<Expression?>(
             expressionDef.expression,
-            instanceOf<Expression?>(Query::class.java)
+            instanceOf<Expression?>(Query::class.java),
         )
         var query = expressionDef.expression as Query?
         assertThat<Expression?>(query!!.where, instanceOf<Expression?>(Equivalent::class.java))
@@ -345,7 +345,7 @@ internal class BaseTest {
         */
         assertThat<Expression?>(
             expressionDef.expression,
-            instanceOf<Expression?>(Query::class.java)
+            instanceOf<Expression?>(Query::class.java),
         )
         query = expressionDef.expression as Query?
         assertThat<Expression?>(query!!.where, instanceOf<Expression?>(Equivalent::class.java))
@@ -366,7 +366,7 @@ internal class BaseTest {
 
         assertThat<Expression?>(
             expressionDef!!.expression,
-            instanceOf<Expression?>(Retrieve::class.java)
+            instanceOf<Expression?>(Retrieve::class.java),
         )
         val retrieve = expressionDef.expression as Retrieve?
         assertThat<Expression?>(retrieve!!.codes, instanceOf<Expression?>(ToList::class.java))
@@ -381,7 +381,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 NamespaceInfo("Public", "http://cql.hl7.org/public"),
                 "fhir/stu301/TestFHIRNamespaces.cql",
-                0
+                0,
             )
         val library = translator.translatedLibrary
         val includeDef = library!!.resolveIncludeRef("FHIRHelpers")

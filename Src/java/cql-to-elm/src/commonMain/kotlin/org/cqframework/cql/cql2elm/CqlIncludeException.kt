@@ -5,5 +5,5 @@ class CqlIncludeException(
     val librarySystem: String? = null,
     val libraryId: String,
     val versionId: String? = null,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : CqlCompilerException(message, null, ErrorSeverity.Error, cause)

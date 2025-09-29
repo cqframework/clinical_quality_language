@@ -15,7 +15,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
 
@@ -28,7 +28,7 @@ internal class ElmSupportTest {
                         .getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
 
             Assertions.assertTrue(translator.errors.isNotEmpty())
@@ -42,7 +42,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
         libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -55,7 +55,7 @@ internal class ElmSupportTest {
                         .getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
 
             Assertions.assertTrue(translator.errors.isNotEmpty())
@@ -69,7 +69,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
         libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -83,7 +83,7 @@ internal class ElmSupportTest {
                         )!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
 
             Assertions.assertTrue(translator.errors.isNotEmpty())

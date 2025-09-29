@@ -112,7 +112,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
                 unqualifiedIdentifier,
                 version,
                 localName,
-                ctx
+                ctx,
             )
         processHeader(ctx, usingDefinition)
         libraryInfo.addUsingDefinition(usingDefinition)
@@ -142,7 +142,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             modelNamespace,
             unqualifiedIdentifier,
             parseString(ctx.versionSpecifier()),
-            localIdentifier
+            localIdentifier,
         )
 
         return usingDefinition
@@ -218,7 +218,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             FunctionDefinitionInfo(
                 parseString(ctx.identifierOrFunctionIdentifier())!!,
                 currentContext,
-                ctx
+                ctx,
             )
         processHeader(ctx, functionDefinition)
         libraryInfo.addFunctionDefinition(functionDefinition)
@@ -235,7 +235,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         if (null == resultType) {
             libraryBuilder.addNamedTypeSpecifierResult(
                 typeSpecifierKey,
-                ResultWithPossibleError.withError()
+                ResultWithPossibleError.withError(),
             )
             throw CqlSemanticException(
                 "Could not find type for model: $modelIdentifier and name: $identifier"
@@ -248,7 +248,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         result.resultType = resultType
         libraryBuilder.addNamedTypeSpecifierResult(
             typeSpecifierKey,
-            ResultWithPossibleError.withTypeSpecifier(result)
+            ResultWithPossibleError.withTypeSpecifier(result),
         )
         return result
     }

@@ -22,7 +22,7 @@ object Trackable {
     constructor(
         val trackerId: Uuid = random(),
         val trackbacks: MutableList<TrackBack> = arrayListOf(),
-        var resultType: DataType? = null
+        var resultType: DataType? = null,
     )
 
     private val extensionPropertiesByElement = WeakIdentityHashMap<Element, ExtensionProperties>()

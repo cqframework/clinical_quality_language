@@ -20,7 +20,7 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
                             override fun convert(
                                 value: java.math.BigDecimal,
                                 sourceUnit: String,
-                                destUnit: String
+                                destUnit: String,
                             ): java.math.BigDecimal {
                                 val ucumValue = Decimal(value.toString())
                                 val converted = u.convert(ucumValue, sourceUnit, destUnit)
@@ -37,7 +37,7 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
                     """Failed to create UCUM service. 
                     Please ensure the 'ucum-essence.xml' file is available on the classpath.
                     The 'ucum' module is a reference implementation that can be used for this purpose.""",
-                    e
+                    e,
                 )
             }
         }

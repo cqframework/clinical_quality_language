@@ -10,16 +10,14 @@ fun createModelManager(): JsReference<ModelManager> {
 }
 
 @JsExport
-fun modelManagerClearModelInfoProviders(
-    modelManager: JsReference<ModelManager>,
-) {
+fun modelManagerClearModelInfoProviders(modelManager: JsReference<ModelManager>) {
     modelManager.get().modelInfoLoader.clearModelInfoProviders()
 }
 
 @JsExport
 fun modelManagerRegisterModelInfoProvider(
     modelManager: JsReference<ModelManager>,
-    modelInfoProvider: JsReference<ModelInfoProvider>
+    modelInfoProvider: JsReference<ModelInfoProvider>,
 ) {
     modelManager.get().modelInfoLoader.registerModelInfoProvider(modelInfoProvider.get())
 }

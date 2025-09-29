@@ -44,7 +44,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                     "$libraryName${
                 if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
                 else ""
-            }.cql"
+            }.cql",
                 )
             var libraryFile: Path? = libraryPath
             if (!SystemFileSystem.exists(libraryFile!!)) {
@@ -110,7 +110,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
             } catch (e: FileNotFoundException) {
                 throw IllegalArgumentException(
                     "Could not load source for library ${libraryIdentifier.id}.",
-                    e
+                    e,
                 )
             }
         }
@@ -119,7 +119,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
 
     override fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
+        type: LibraryContentType,
     ): Source? {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier)

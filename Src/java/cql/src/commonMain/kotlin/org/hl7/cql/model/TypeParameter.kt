@@ -3,7 +3,7 @@ package org.hl7.cql.model
 data class TypeParameter(
     val identifier: String,
     val constraint: TypeParameterConstraint = TypeParameterConstraint.NONE,
-    val constraintType: DataType? = null
+    val constraintType: DataType? = null,
 ) : BaseDataType() {
 
     // For Java compatibility. Can be deleted once tests are updated.
@@ -41,7 +41,7 @@ data class TypeParameter(
          * Indicates the type parameter can only be bound to the constraint type or a type derived
          * from the constraint type
          */
-        TYPE
+        TYPE,
     }
 
     /**

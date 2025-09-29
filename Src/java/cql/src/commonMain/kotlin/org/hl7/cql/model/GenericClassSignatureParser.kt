@@ -13,11 +13,11 @@ class GenericClassSignatureParser(
     private var genericSignature: String,
     /** The base type for the class type or the profile. */
     var baseType: String?,
-    private val resolvedTypes: MutableMap<String, DataType>
+    private val resolvedTypes: MutableMap<String, DataType>,
 ) {
     constructor(
         genericSignature: String,
-        resolvedTypes: MutableMap<String, DataType> = HashMap()
+        resolvedTypes: MutableMap<String, DataType> = HashMap(),
     ) : this(genericSignature, null, resolvedTypes)
 
     /**
@@ -33,7 +33,7 @@ class GenericClassSignatureParser(
             val parameters =
                 genericSignature.substring(
                     genericSignature.indexOf('<') + 1,
-                    genericSignature.lastIndexOf('>')
+                    genericSignature.lastIndexOf('>'),
                 )
             params =
                 escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile { it.isEmpty() }
@@ -73,7 +73,7 @@ class GenericClassSignatureParser(
                                 boundType!!,
                                 prohibited = false,
                                 oneBased = false,
-                                target = null
+                                target = null,
                             )
                         genericClassType.addElement(myElement)
                     }
@@ -98,7 +98,7 @@ class GenericClassSignatureParser(
                 TypeParameter(
                     paramComponents[0],
                     TypeParameter.TypeParameterConstraint.TYPE,
-                    resolveTypeName(paramComponents[2])
+                    resolveTypeName(paramComponents[2]),
                 )
             } else {
                 throw RuntimeException("Invalid parameter syntax: $parameterString")
@@ -148,7 +148,7 @@ class GenericClassSignatureParser(
                 val parameters =
                     boundGenericSignature.substring(
                         boundGenericSignature.indexOf('<') + 1,
-                        boundGenericSignature.lastIndexOf('>')
+                        boundGenericSignature.lastIndexOf('>'),
                     )
                 val params =
                     escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile {
@@ -175,7 +175,7 @@ class GenericClassSignatureParser(
                                     boundParam,
                                     prohibited = false,
                                     oneBased = false,
-                                    target = null
+                                    target = null,
                                 )
                             newType.addElement(newElement)
                         }

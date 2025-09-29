@@ -50,7 +50,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["PointOnOrBeforeInterval"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -64,7 +64,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["PointSameOrBeforeInterval"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -89,7 +89,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["IntervalOnOrBeforePoint"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -103,7 +103,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["IntervalSameOrBeforePoint"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrBefore::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -128,7 +128,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["PointOnOrAfterInterval"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -142,7 +142,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["PointSameOrAfterInterval"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -167,7 +167,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["IntervalOnOrAfterPoint"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -181,7 +181,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["IntervalSameOrAfterPoint"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(SameOrAfter::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]
@@ -251,7 +251,7 @@ internal class TestPointIntervalSignatures {
         def = defs!!["IntervalProperlyIncludesPoint"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(ProperContains::class.java, "System.Boolean")
+            HasTypeAndResult.hasTypeAndResult(ProperContains::class.java, "System.Boolean"),
         )
         op = def.expression as BinaryExpression?
         left = op!!.operand[0]

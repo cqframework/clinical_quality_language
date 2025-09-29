@@ -20,7 +20,7 @@ internal class LibraryManagerTests {
 
         MatcherAssert.assertThat(
             libraryManagerOwnCache!!.compiledLibraries.values,
-            Matchers.empty()
+            Matchers.empty(),
         )
     }
 
@@ -62,7 +62,7 @@ internal class LibraryManagerTests {
         Assertions.assertFalse(results.hasErrors())
         MatcherAssert.assertThat(
             results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         )
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
@@ -70,7 +70,7 @@ internal class LibraryManagerTests {
         val compiledLibraryOnlyResult = results.onlyResult
         MatcherAssert.assertThat(
             compiledLibraryOnlyResult.compiledLibrary.identifier,
-            Matchers.equalTo(compiledLibraryFirst.identifier)
+            Matchers.equalTo(compiledLibraryFirst.identifier),
         )
 
         val library = compiledLibraryOnlyResult.compiledLibrary.library
@@ -95,7 +95,7 @@ internal class LibraryManagerTests {
         Assertions.assertFalse(results.hasErrors())
         MatcherAssert.assertThat(
             results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(2)
+            Matchers.equalTo(2),
         )
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
@@ -119,7 +119,7 @@ internal class LibraryManagerTests {
         Assertions.assertEquals(
             "Could not load source for library BaseLibraryElmMismatchId, version 1.0.1, namespace uri null.", //                "Library BaseLibraryElmMismatchId was included with version null, but id:
             // BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
-            cqlIncludeException.message
+            cqlIncludeException.message,
         )
     }
 
@@ -137,7 +137,7 @@ internal class LibraryManagerTests {
         Assertions.assertTrue(results.hasErrors())
         MatcherAssert.assertThat(
             results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         )
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
@@ -152,7 +152,7 @@ internal class LibraryManagerTests {
 
         MatcherAssert.assertThat(
             cqlCompilerException.message,
-            Matchers.equalTo("Syntax error at define")
+            Matchers.equalTo("Syntax error at define"),
         )
     }
 
@@ -167,7 +167,7 @@ internal class LibraryManagerTests {
 
         Assertions.assertEquals(
             "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
-            cqlIncludeException.message
+            cqlIncludeException.message,
         )
     }
 
@@ -182,7 +182,7 @@ internal class LibraryManagerTests {
 
         Assertions.assertEquals(
             "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
-            cqlIncludeException.message
+            cqlIncludeException.message,
         )
     }
 
@@ -198,7 +198,7 @@ internal class LibraryManagerTests {
 
         Assertions.assertEquals(
             "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
-            cqlIncludeException.message
+            cqlIncludeException.message,
         )
     }
 
@@ -215,7 +215,7 @@ internal class LibraryManagerTests {
 
         Assertions.assertEquals(
             "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
-            cqlIncludeException.message
+            cqlIncludeException.message,
         )
     }
 
@@ -265,7 +265,7 @@ internal class LibraryManagerTests {
         Assertions.assertFalse(results.hasErrors())
         MatcherAssert.assertThat(
             results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         )
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
@@ -290,10 +290,10 @@ internal class LibraryManagerTests {
         MatcherAssert.assertThat(
             "The list should be larger than 3 elements to validate it actually sorted",
             defs.size,
-            Matchers.greaterThan(3)
+            Matchers.greaterThan(3),
         )
 
-        for (i in 0 ..< defs.size - 1) {
+        for (i in 0..<defs.size - 1) {
             val left = defs[i]
             val right = defs[i + 1]
 
@@ -301,7 +301,7 @@ internal class LibraryManagerTests {
             // In other words, they are ordered.
             MatcherAssert.assertThat(
                 left.name!!.compareTo(right.name!!),
-                Matchers.lessThanOrEqualTo(0)
+                Matchers.lessThanOrEqualTo(0),
             )
         }
     }
@@ -339,7 +339,7 @@ internal class LibraryManagerTests {
                 LibraryManager(
                     modelManager,
                     CqlCompilerOptions.Companion.defaultOptions(),
-                    HashMap()
+                    HashMap(),
                 )
             libraryManagerOwnCache!!
                 .librarySourceLoader

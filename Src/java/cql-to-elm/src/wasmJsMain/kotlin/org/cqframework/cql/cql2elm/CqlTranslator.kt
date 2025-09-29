@@ -5,7 +5,7 @@ package org.cqframework.cql.cql2elm
 @JsExport
 fun cqlTranslatorFromText(
     cqlText: String,
-    libraryManager: JsReference<LibraryManager>
+    libraryManager: JsReference<LibraryManager>,
 ): JsReference<CqlTranslator> {
     return CqlTranslator.fromText(cqlText, libraryManager.get()).toJsReference()
 }

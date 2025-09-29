@@ -18,7 +18,7 @@ class ConversionMap {
         Interval(4),
         List(5),
         Choice(6),
-        Other(7)
+        Other(7),
     }
 
     @Suppress("MagicNumber")
@@ -32,7 +32,7 @@ class ConversionMap {
         IntervalPromotion(6),
         ListDemotion(7),
         IntervalDemotion(8),
-        ListPromotion(9)
+        ListPromotion(9),
     }
 
     private val map: MutableMap<DataType, MutableList<Conversion>> = HashMap()
@@ -107,7 +107,7 @@ class ConversionMap {
         fromType: ChoiceType,
         toType: DataType,
         allowPromotionAndDemotion: Boolean,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         var result: Conversion? = null
         for (choice in fromType.types) {
@@ -129,7 +129,7 @@ class ConversionMap {
         fromType: DataType,
         toType: ChoiceType,
         allowPromotionAndDemotion: Boolean,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         for (choice in toType.types) {
             findConversion(fromType, choice, true, allowPromotionAndDemotion, operatorMap)?.let {
@@ -143,14 +143,14 @@ class ConversionMap {
     private fun findListConversion(
         fromType: ListType,
         toType: ListType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         return findConversion(
                 fromType.elementType,
                 toType.elementType,
                 isImplicit = true,
                 allowPromotionAndDemotion = false,
-                operatorMap = operatorMap
+                operatorMap = operatorMap,
             )
             ?.let { Conversion(fromType, toType, it) }
     }
@@ -158,14 +158,14 @@ class ConversionMap {
     private fun findIntervalConversion(
         fromType: IntervalType,
         toType: IntervalType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         return findConversion(
                 fromType.pointType,
                 toType.pointType,
                 isImplicit = true,
                 allowPromotionAndDemotion = false,
-                operatorMap = operatorMap
+                operatorMap = operatorMap,
             )
             ?.let { Conversion(fromType, toType, it) }
     }
@@ -173,7 +173,7 @@ class ConversionMap {
     private fun findListDemotion(
         fromType: ListType,
         toType: DataType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         val elementType = fromType.elementType
         return if (elementType.isSubTypeOf(toType)) {
@@ -184,7 +184,7 @@ class ConversionMap {
                     toType,
                     isImplicit = true,
                     allowPromotionAndDemotion = false,
-                    operatorMap = operatorMap
+                    operatorMap = operatorMap,
                 )
                 ?.let { Conversion(fromType, toType, it) }
         }
@@ -193,7 +193,7 @@ class ConversionMap {
     private fun findListPromotion(
         fromType: DataType,
         toType: ListType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.elementType)) {
             Conversion(fromType, toType, null)
@@ -203,7 +203,7 @@ class ConversionMap {
                     toType.elementType,
                     isImplicit = true,
                     allowPromotionAndDemotion = false,
-                    operatorMap = operatorMap
+                    operatorMap = operatorMap,
                 )
                 ?.let { Conversion(fromType, toType, it) }
         }
@@ -212,7 +212,7 @@ class ConversionMap {
     private fun findIntervalDemotion(
         fromType: IntervalType,
         toType: DataType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         val pointType = fromType.pointType
         return if (pointType.isSubTypeOf(toType)) {
@@ -223,7 +223,7 @@ class ConversionMap {
                     toType,
                     isImplicit = true,
                     allowPromotionAndDemotion = false,
-                    operatorMap = operatorMap
+                    operatorMap = operatorMap,
                 )
                 ?.let { Conversion(fromType, toType, it) }
         }
@@ -232,7 +232,7 @@ class ConversionMap {
     private fun findIntervalPromotion(
         fromType: DataType,
         toType: IntervalType,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.pointType)) {
             Conversion(fromType, toType, null)
@@ -242,7 +242,7 @@ class ConversionMap {
                     toType.pointType,
                     isImplicit = true,
                     allowPromotionAndDemotion = false,
-                    operatorMap = operatorMap
+                    operatorMap = operatorMap,
                 )
                 ?.let { Conversion(fromType, toType, it) }
         }
@@ -253,7 +253,7 @@ class ConversionMap {
         fromType: DataType,
         toType: DataType,
         isImplicit: Boolean,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Boolean {
         var operatorsInstantiated = false
         for (c in genericConversions) {
@@ -264,7 +264,7 @@ class ConversionMap {
                         Signature(fromType),
                         operatorMap,
                         this,
-                        false
+                        false,
                     )
                 val operator = instantiationResult.operator
                 if (operator != null && !operatorMap.containsOperator(operator)) {
@@ -283,7 +283,7 @@ class ConversionMap {
     private fun internalFindConversion(
         fromType: DataType,
         toType: DataType,
-        isImplicit: Boolean
+        isImplicit: Boolean,
     ): Conversion? {
         var result: Conversion? = null
         var score = Int.MAX_VALUE
@@ -325,7 +325,7 @@ class ConversionMap {
         toType: DataType,
         isImplicit: Boolean,
         allowPromotionAndDemotion: Boolean,
-        operatorMap: OperatorMap
+        operatorMap: OperatorMap,
     ): Conversion? {
         var result =
             findCompatibleConversion(fromType, toType)
@@ -370,7 +370,7 @@ class ConversionMap {
                             fromType,
                             toType,
                             allowPromotionAndDemotion,
-                            operatorMap
+                            operatorMap,
                         )
 
                     // If the target type is a choice,
@@ -381,7 +381,7 @@ class ConversionMap {
                             fromType,
                             toType,
                             allowPromotionAndDemotion,
-                            operatorMap
+                            operatorMap,
                         )
 
                     // If both types are lists,
@@ -418,7 +418,7 @@ class ConversionMap {
         fun getConversionScore(
             callOperand: DataType,
             operand: DataType,
-            conversion: Conversion?
+            conversion: Conversion?,
         ): Int {
             return when {
                 operand == callOperand -> ConversionScore.ExactMatch.score

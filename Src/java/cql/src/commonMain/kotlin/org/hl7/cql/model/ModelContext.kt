@@ -5,5 +5,5 @@ class ModelContext(
     val name: String,
     val type: ClassType,
     val keys: List<String>,
-    val birthDateElement: String? = null
+    val birthDateElement: String? = null,
 )

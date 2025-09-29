@@ -12,7 +12,7 @@ actual fun getLibrarySourceProviders(refresh: Boolean): Iterator<LibrarySourcePr
 @JsExport
 @JsName("createLibrarySourceProvider")
 fun createLibrarySourceProviderReference(
-    getLibraryCql: (id: String, system: String?, version: String?) -> JsReference<Source>?,
+    getLibraryCql: (id: String, system: String?, version: String?) -> JsReference<Source>?
 ): JsReference<LibrarySourceProvider> {
     return createLibrarySourceProvider { id, system, version ->
             val cql = getLibraryCql(id, system, version)

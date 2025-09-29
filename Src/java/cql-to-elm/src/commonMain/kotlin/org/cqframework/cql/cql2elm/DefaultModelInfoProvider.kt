@@ -43,7 +43,7 @@ class DefaultModelInfoProvider(path: Path) : ModelInfoProvider, PathAware {
             val modelPath =
                 Path(
                     currentPath,
-                    "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
+                    "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml",
                 )
             var modelFile: Path? = modelPath
             if (!SystemFileSystem.exists(modelFile!!)) {
@@ -108,7 +108,7 @@ class DefaultModelInfoProvider(path: Path) : ModelInfoProvider, PathAware {
             } catch (e: IOException) {
                 throw IllegalArgumentException(
                     "Could not load definition for model info ${modelIdentifier.id}.",
-                    e
+                    e,
                 )
             }
         }

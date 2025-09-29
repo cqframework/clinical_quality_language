@@ -20,7 +20,7 @@ class CqlTranslatorOptions {
     enum class Format {
         XML,
         JSON,
-        COFFEE
+        COFFEE,
     }
 
     var cqlCompilerOptions: CqlCompilerOptions? = null

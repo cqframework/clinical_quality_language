@@ -8,7 +8,7 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary
  */
 class CompiledLibraryResult(
     val compiledLibrary: CompiledLibrary,
-    val errors: List<CqlCompilerException>
+    val errors: List<CqlCompilerException>,
 ) {
     override fun toString(): String {
         return "${CompiledLibraryResult::class.simpleName}[compiledLibrary=$compiledLibrary, errors=$errors]"

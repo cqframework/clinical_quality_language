@@ -37,7 +37,7 @@ internal class NamespaceTests {
                     "%s%s%s.cql",
                     namespacePath,
                     libraryIdentifier.id,
-                    if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version) else ""
+                    if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version) else "",
                 )
             return NamespaceTests::class
                 .java
@@ -48,7 +48,7 @@ internal class NamespaceTests {
 
         override fun getLibraryContent(
             libraryIdentifier: VersionedIdentifier,
-            type: LibraryContentType
+            type: LibraryContentType,
         ): Source? {
             if (LibraryContentType.CQL == type) {
                 return getLibrarySource(libraryIdentifier)
@@ -63,7 +63,7 @@ internal class NamespaceTests {
     fun namespacePath() {
         assertThat(
             NamespaceManager.getPath(defaultNamespaceInfo!!.uri, "Main"),
-            `is`("http://cql.hl7.org/public/Main")
+            `is`("http://cql.hl7.org/public/Main"),
         )
     }
 
@@ -71,7 +71,7 @@ internal class NamespaceTests {
     fun namespaceNamePart() {
         assertThat<String?>(
             NamespaceManager.getNamePart("http://cql.hl7.org/public/Main"),
-            `is`<String?>("Main")
+            `is`<String?>("Main"),
         )
     }
 
@@ -79,7 +79,7 @@ internal class NamespaceTests {
     fun namespaceUriPart() {
         assertThat<String?>(
             NamespaceManager.getUriPart("http://cql.hl7.org/public/Main"),
-            `is`<String?>("http://cql.hl7.org/public")
+            `is`<String?>("http://cql.hl7.org/public"),
         )
     }
 
@@ -96,7 +96,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/ReferencingLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat(translator.toELM()!!.identifier!!.system, `is`(defaultNamespaceInfo!!.uri))
@@ -117,7 +117,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/InvalidReferencingLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, Matchers.`is`(not(0)))
         } catch (e: IOException) {
@@ -137,7 +137,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/InvalidLibraryReference.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, Matchers.`is`(not(0)))
         } catch (e: IOException) {
@@ -157,7 +157,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/ReferencingInvalidBaseLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(1))
             assertThat(translator.errors[0], Matchers.instanceOf(CqlCompilerException::class.java))
@@ -165,7 +165,7 @@ internal class NamespaceTests {
             assertThat(translator.errors[0].locator!!.library, Matchers.notNullValue())
             assertThat(
                 translator.errors[0].locator!!.library!!.system,
-                `is`(defaultNamespaceInfo!!.uri)
+                `is`(defaultNamespaceInfo!!.uri),
             )
             assertThat(translator.errors[0].locator!!.library!!.id, `is`("InvalidBaseLibrary"))
 
@@ -183,7 +183,7 @@ internal class NamespaceTests {
             assertThat(invalidBaseLibraryError!!.librarySystem, `is`(defaultNamespaceInfo!!.uri))
             assertThat<String?>(
                 invalidBaseLibraryError.libraryId,
-                `is`<String?>("InvalidBaseLibrary")
+                `is`<String?>("InvalidBaseLibrary"),
             )
         } catch (e: IOException) {
             e.printStackTrace()
@@ -201,7 +201,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Main.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(translator.toELM()!!.identifier!!.id, `is`<String?>("Main"))
@@ -222,12 +222,12 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/ReferencingMain.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(
                 translator.toELM()!!.identifier!!.id,
-                `is`<String?>("ReferencingMain")
+                `is`<String?>("ReferencingMain"),
             )
             assertThat(translator.toELM()!!.identifier!!.system, `is`(defaultNamespaceInfo!!.uri))
             assertThat<Library.Includes?>(translator.toELM()!!.includes, Matchers.notNullValue())
@@ -252,7 +252,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Core/Main.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(translator.toELM()!!.identifier!!.id, `is`<String?>("Main"))
@@ -273,12 +273,12 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Core/ReferencingMain.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(
                 translator.toELM()!!.identifier!!.id,
-                `is`<String?>("ReferencingMain")
+                `is`<String?>("ReferencingMain"),
             )
             assertThat(translator.toELM()!!.identifier!!.system, `is`(coreNamespaceInfo!!.uri))
             assertThat<Library.Includes?>(translator.toELM()!!.includes, Matchers.notNullValue())
@@ -303,7 +303,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Shared/Main.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(translator.toELM()!!.identifier!!.id, `is`<String?>("Main"))
@@ -331,12 +331,12 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Shared/ReferencingMain.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(
                 translator.toELM()!!.identifier!!.id,
-                `is`<String?>("ReferencingMain")
+                `is`<String?>("ReferencingMain"),
             )
             assertThat(translator.toELM()!!.identifier!!.system, `is`(sharedNamespaceInfo!!.uri))
             assertThat<Library.Includes?>(translator.toELM()!!.includes, Matchers.notNullValue())
@@ -361,7 +361,7 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Content/Main.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(translator.toELM()!!.identifier!!.id, `is`<String?>("Main"))
@@ -393,12 +393,12 @@ internal class NamespaceTests {
                         .getResourceAsStream("NamespaceTests/Content/ReferencingMain.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             assertThat(translator.errors.size, `is`(0))
             assertThat<String?>(
                 translator.toELM()!!.identifier!!.id,
-                `is`<String?>("ReferencingMain")
+                `is`<String?>("ReferencingMain"),
             )
             assertThat(translator.toELM()!!.identifier!!.system, `is`(contentNamespaceInfo!!.uri))
             assertThat<Library.Includes?>(translator.toELM()!!.includes, Matchers.notNullValue())

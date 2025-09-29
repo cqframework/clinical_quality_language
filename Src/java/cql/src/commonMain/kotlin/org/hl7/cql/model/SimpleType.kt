@@ -3,7 +3,7 @@ package org.hl7.cql.model
 data class SimpleType(
     override val name: String,
     val base: DataType? = null,
-    override var target: String? = null
+    override var target: String? = null,
 ) : BaseDataType(base), NamedType {
 
     constructor(name: String) : this(name, null, null)

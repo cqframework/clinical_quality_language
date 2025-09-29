@@ -11,7 +11,7 @@ data class PropertyResolution(
     val type: DataType,
     val name: String,
     val targetMap: String? = null,
-    val isSearch: Boolean = false
+    val isSearch: Boolean = false,
 ) {
     constructor(e: ClassTypeElement) : this(e.type, e.name, e.target)
 
@@ -23,7 +23,7 @@ data class PropertyResolution(
     constructor(
         type: DataType,
         name: String,
-        targetMaps: Map<DataType, String>? = null
+        targetMaps: Map<DataType, String>? = null,
     ) : this(type, name, targetMaps.toTargetMapString())
 
     companion object {

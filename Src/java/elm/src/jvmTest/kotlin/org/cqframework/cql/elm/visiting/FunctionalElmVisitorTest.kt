@@ -31,7 +31,7 @@ internal class FunctionalElmVisitorTest {
                 { _, _ -> 1 },
                 { aggregate, nextResult ->
                     if (aggregate >= 3) aggregate else aggregate + nextResult
-                }
+                },
             )
 
         result = maxThreeCounter.visitLibrary(library, 1)

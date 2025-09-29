@@ -22,7 +22,7 @@ import org.hl7.cql_annotations.r1.toXmlElement
 internal fun getNarrativeContentFromXml(
     xmlElement: XmlNode.Element,
     narrative: Narrative,
-    namespaces: Map<String, String>
+    namespaces: Map<String, String>,
 ) {
     narrative.content.addAll(
         xmlElement.children.map {
@@ -46,7 +46,7 @@ internal fun addNarrativeContentToXml(
     narrative: Narrative,
     children: MutableList<XmlNode>,
     namespaces: MutableMap<String, String>,
-    defaultNamespaces: Map<String, String>
+    defaultNamespaces: Map<String, String>,
 ) {
     children.addAll(
         narrative.content.map {
@@ -57,7 +57,7 @@ internal fun addNarrativeContentToXml(
                         QName("urn:hl7-org:cql-annotations:r1", "s"),
                         false,
                         namespaces,
-                        defaultNamespaces
+                        defaultNamespaces,
                     )
                 else -> error("Bad Narrative content")
             }
@@ -122,7 +122,7 @@ internal fun getNarrativeContentFromJson(jsonObject: JsonObject, narrative: Narr
  */
 internal fun addNarrativeContentToJson(
     narrative: Narrative,
-    entries: MutableMap<String, JsonElement>
+    entries: MutableMap<String, JsonElement>,
 ) {
     if (narrative.content.any { it is String }) {
         entries["value"] =

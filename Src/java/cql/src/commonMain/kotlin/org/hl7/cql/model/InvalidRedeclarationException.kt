@@ -2,7 +2,7 @@ package org.hl7.cql.model
 class InvalidRedeclarationException(
     classType: ClassType,
     original: ClassTypeElement,
-    redeclared: ClassTypeElement
+    redeclared: ClassTypeElement,
 ) :
     IllegalArgumentException(
         """${classType.name}.${redeclared.name} cannot be redeclared

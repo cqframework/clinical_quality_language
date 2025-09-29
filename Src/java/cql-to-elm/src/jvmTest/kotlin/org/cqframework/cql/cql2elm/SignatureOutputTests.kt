@@ -37,7 +37,7 @@ internal class SignatureOutputTests {
             translator.warnings[0].message,
             Matchers.equalTo(
                 "The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."
-            )
+            ),
         )
     }
 

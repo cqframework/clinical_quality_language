@@ -7,5 +7,5 @@ class IncludeDefinitionInfo(
     val name: String,
     val version: String?,
     val localName: String,
-    override val definition: IncludeDefinitionContext
+    override val definition: IncludeDefinitionContext,
 ) : BaseInfo(definition)

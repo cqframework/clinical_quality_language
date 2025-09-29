@@ -23,7 +23,7 @@ internal class ModelWithoutDefaultLoadersTests {
                         .getResourceAsStream("ModelTests/ModelTest.cql")!!
                         .asSource()
                         .buffered(),
-                    LibraryManager(modelManager!!)
+                    LibraryManager(modelManager!!),
                 )
             translator.toELM()
             assertThat(translator.errors.size, `is`(0))

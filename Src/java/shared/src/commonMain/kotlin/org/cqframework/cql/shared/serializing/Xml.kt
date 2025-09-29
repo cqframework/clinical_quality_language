@@ -11,7 +11,7 @@ sealed class XmlNode {
     data class Element(
         val tagName: String,
         val attributes: Map<String, String>,
-        val children: List<XmlNode>
+        val children: List<XmlNode>,
     ) : XmlNode()
 }
 
@@ -26,7 +26,7 @@ internal sealed class MutableXmlNode {
     data class Element(
         val tagName: String,
         val attributes: Map<String, String>,
-        val children: MutableList<MutableXmlNode>
+        val children: MutableList<MutableXmlNode>,
     ) : MutableXmlNode() {
         override fun toImmutable(): XmlNode.Element {
             return XmlNode.Element(tagName, attributes, children.map { it.toImmutable() })
@@ -68,7 +68,7 @@ fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QN
         1 ->
             QName(
                 namespaces[""] ?: throw IllegalArgumentException("No default namespace found"),
-                parts[0]
+                parts[0],
             )
         2 -> {
             val prefix = parts[0]
@@ -76,7 +76,7 @@ fun xmlAttributeValueToQName(value: String, namespaces: Map<String, String>): QN
                 namespaces[prefix]
                     ?: throw IllegalArgumentException("No namespace found for prefix: $prefix"),
                 parts[1],
-                prefix
+                prefix,
             )
         }
         else -> throw IllegalArgumentException("Invalid QName format: $value")
@@ -110,7 +110,7 @@ private fun getNewKey(namespaces: Map<String, String>): String {
 fun qNameToXmlAttributeValue(
     qname: QName,
     namespaces: MutableMap<String, String>,
-    defaultNamespaces: Map<String, String>
+    defaultNamespaces: Map<String, String>,
 ): String {
     val localPart = qname.getLocalPart()
     val namespace = qname.getNamespaceURI()

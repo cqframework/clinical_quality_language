@@ -20,7 +20,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
 
     constructor(
         of: IdObjectFactory,
-        modelManager: ModelManager
+        modelManager: ModelManager,
     ) : this(of, InternalModelResolver(modelManager))
 
     fun dataTypeToQName(type: DataType?): QName {
@@ -29,7 +29,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
             val modelInfo: ModelInfo = mr.getModel(namedType.namespace).modelInfo
             return QName(
                 if (modelInfo.targetUrl != null) modelInfo.targetUrl!! else modelInfo.url!!,
-                if (namedType.target != null) namedType.target!! else namedType.simpleName
+                if (namedType.target != null) namedType.target!! else namedType.simpleName,
             )
         }
 

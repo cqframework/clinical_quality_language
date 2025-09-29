@@ -12,12 +12,12 @@ abstract class CqlCompilerException(
     message: String,
     var locator: TrackBack? = null,
     val severity: ErrorSeverity = ErrorSeverity.Error,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : RuntimeException(message, cause) {
     enum class ErrorSeverity {
         Info,
         Warning,
-        Error
+        Error,
     }
 
     companion object {

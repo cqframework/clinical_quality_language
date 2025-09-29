@@ -95,7 +95,7 @@ internal class LiteralTests {
         var quantity = def.expression as Quantity?
         assertThat<BigDecimal?>(
             quantity!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10)),
         )
         assertThat<String?>(quantity.unit, Matchers.`is`<String?>("mm[Hg]"))
 
@@ -107,7 +107,7 @@ internal class LiteralTests {
         quantity = def.expression as Quantity?
         assertThat<BigDecimal?>(
             quantity!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10)),
         )
         assertThat<String?>(quantity.unit, Matchers.`is`<String?>("1"))
 
@@ -116,14 +116,14 @@ internal class LiteralTests {
         quantity = def.expression as Quantity?
         assertThat<BigDecimal?>(
             quantity!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(10)),
         )
         assertThat<String?>(quantity.unit, Matchers.`is`<String?>("{shab-shab-shab}"))
 
         def = defs!!["QuantityConversionTest"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(ConvertQuantity::class.java, "System.Quantity")
+            HasTypeAndResult.hasTypeAndResult(ConvertQuantity::class.java, "System.Quantity"),
         )
         var convertQuantity = def.expression as ConvertQuantity?
         assertThat(convertQuantity!!.operand[0], Matchers.instanceOf(Quantity::class.java))
@@ -137,14 +137,14 @@ internal class LiteralTests {
         def = defs!!["QuantityConversionWeekTest"]!!
         assertThat(
             def,
-            HasTypeAndResult.hasTypeAndResult(ConvertQuantity::class.java, "System.Quantity")
+            HasTypeAndResult.hasTypeAndResult(ConvertQuantity::class.java, "System.Quantity"),
         )
         convertQuantity = def.expression as ConvertQuantity?
         assertThat(convertQuantity!!.operand[0], Matchers.instanceOf(Quantity::class.java))
         quantity = convertQuantity.operand[0] as Quantity?
         assertThat<BigDecimal?>(
             quantity!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(28))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(28)),
         )
         assertThat<String?>(quantity.unit, Matchers.`is`<String?>("days"))
         assertThat(convertQuantity.operand[1], Matchers.instanceOf(Literal::class.java))
@@ -174,11 +174,11 @@ internal class LiteralTests {
         var ratio = def.expression as Ratio?
         assertThat<BigDecimal?>(
             ratio!!.numerator!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5)),
         )
         assertThat<BigDecimal?>(
             ratio.denominator!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5)),
         )
 
         def = defs!!["QuantityRatio"]!!
@@ -186,12 +186,12 @@ internal class LiteralTests {
         ratio = def.expression as Ratio?
         assertThat<BigDecimal?>(
             ratio!!.numerator!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(5)),
         )
         assertThat<String?>(ratio.numerator!!.unit, Matchers.`is`<String?>("mg"))
         assertThat<BigDecimal?>(
             ratio.denominator!!.value,
-            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(100))
+            Matchers.`is`<BigDecimal?>(BigDecimal.valueOf(100)),
         )
         assertThat<String?>(ratio.denominator!!.unit, Matchers.`is`<String?>("mL"))
     }

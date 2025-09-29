@@ -23,7 +23,7 @@ internal class ModelTests {
                         .getResourceAsStream("ModelTests/ModelTest.cql")!!
                         .asSource()
                         .buffered(),
-                    LibraryManager(modelManager!!)
+                    LibraryManager(modelManager!!),
                 )
             val library = translator.toELM()
             assertThat(translator.errors.size, `is`(0))

@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test
     "TooGenericExceptionThrown",
     "PrintStackTrace",
     "SwallowedException",
-    "ImplicitDefaultLocale"
+    "ImplicitDefaultLocale",
 )
 internal class ElmDeserializeTests {
     @Test
@@ -67,7 +67,7 @@ internal class ElmDeserializeTests {
                     CqlCompilerOptions.Options.EnableResultTypes,
                     CqlCompilerOptions.Options.DisableListDemotion,
                     CqlCompilerOptions.Options.DisableListPromotion,
-                    CqlCompilerOptions.Options.DisableMethodInvocation
+                    CqlCompilerOptions.Options.DisableMethodInvocation,
                 )
 
             assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions)
@@ -154,7 +154,7 @@ internal class ElmDeserializeTests {
                     CqlCompilerOptions.Options.EnableResultTypes,
                     CqlCompilerOptions.Options.DisableListDemotion,
                     CqlCompilerOptions.Options.DisableListPromotion,
-                    CqlCompilerOptions.Options.DisableMethodInvocation
+                    CqlCompilerOptions.Options.DisableMethodInvocation,
                 )
             assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions)
 
@@ -224,7 +224,7 @@ internal class ElmDeserializeTests {
                 String.format(
                     "Errors occurred reading ELM from json %s: %s",
                     jsonFileName,
-                    e.message
+                    e.message,
                 )
             )
         }
@@ -248,7 +248,7 @@ internal class ElmDeserializeTests {
                     testElmDeserialization(
                         file.absolutePath,
                         fileName,
-                        fileName.dropLast(4) + ".json"
+                        fileName.dropLast(4) + ".json",
                     )
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -424,7 +424,7 @@ internal class ElmDeserializeTests {
 
         private fun verifySigLevels(
             library: Library,
-            expectedSignatureLevel: LibraryBuilder.SignatureLevel
+            expectedSignatureLevel: LibraryBuilder.SignatureLevel,
         ) {
             val sigLevels =
                 library.annotation

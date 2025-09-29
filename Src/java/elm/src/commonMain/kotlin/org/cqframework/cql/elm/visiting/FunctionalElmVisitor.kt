@@ -10,7 +10,7 @@ import org.hl7.elm.r1.Element
  */
 class FunctionalElmVisitor<T, C>(
     private val defaultResultFunc: (Element, C) -> T,
-    private val aggregateResultFunc: (T, T) -> T
+    private val aggregateResultFunc: (T, T) -> T,
 ) : BaseElmLibraryVisitor<T, C>() {
 
     public override fun defaultResult(elm: Element, context: C): T {
@@ -25,7 +25,7 @@ class FunctionalElmVisitor<T, C>(
         @JvmStatic
         fun <C, T> from(
             defaultResult: (Element, C) -> T,
-            aggregateResult: (T, T) -> T
+            aggregateResult: (T, T) -> T,
         ): FunctionalElmVisitor<T, C> {
             return FunctionalElmVisitor(defaultResult, aggregateResult)
         }

@@ -15,7 +15,7 @@ internal class HidingTests {
             TestUtils.runSemanticTest(
                 "HidingTests/TestHidingCaseInsensitiveWarning.cql",
                 0,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         val warnings = translator.warnings
         assertLocatorsExist(warnings)
@@ -37,7 +37,7 @@ internal class HidingTests {
                 .collect(Collectors.toSet())
         MatcherAssert.assertThat(
             warningMessages,
-            Matchers.contains("A let identifier var is hiding another identifier of the same name.")
+            Matchers.contains("A let identifier var is hiding another identifier of the same name."),
         )
     }
 
@@ -72,7 +72,7 @@ internal class HidingTests {
         MatcherAssert.assertThat(
             distinct.toString(),
             distinct,
-            Matchers.containsInAnyOrder(first, second)
+            Matchers.containsInAnyOrder(first, second),
         )
     }
 
@@ -109,7 +109,7 @@ internal class HidingTests {
         MatcherAssert.assertThat(
             distinct.toString(),
             distinct,
-            Matchers.containsInAnyOrder(first, second, third)
+            Matchers.containsInAnyOrder(first, second, third),
         )
     }
 
@@ -138,7 +138,7 @@ internal class HidingTests {
                 .collect(Collectors.toList()),
             Matchers.containsInAnyOrder(
                 "An alias identifier SoMuchNesting is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -193,7 +193,7 @@ internal class HidingTests {
                 .collect(Collectors.toList()),
             Matchers.containsInAnyOrder<Any?>(
                 "A let identifier Alias is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -212,7 +212,7 @@ internal class HidingTests {
                 .collect(Collectors.toList()),
             Matchers.contains(
                 "An alias identifier testOperand is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -246,7 +246,7 @@ internal class HidingTests {
             warningMessages,
             Matchers.contains(
                 "An alias identifier IWantToBeHidden is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -267,7 +267,7 @@ internal class HidingTests {
             warningMessages,
             Matchers.contains(
                 "An alias identifier Measurement Period is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -288,7 +288,7 @@ internal class HidingTests {
             warningMessages,
             Matchers.contains(
                 "An alias identifier FHIRHelpers is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -318,13 +318,13 @@ internal class HidingTests {
         MatcherAssert.assertThat(
             distinctWarningMessages.toString(),
             distinctWarningMessages.size,
-            Matchers.`is`(1)
+            Matchers.`is`(1),
         )
         MatcherAssert.assertThat(
             distinctWarningMessages,
             Matchers.contains(
                 "An alias identifier 5 is hiding another identifier of the same name."
-            )
+            ),
         )
     }
 
@@ -348,7 +348,7 @@ internal class HidingTests {
         MatcherAssert.assertThat(
             distinctWarningMessages.toString(),
             distinctWarningMessages.size,
-            Matchers.`is`(2)
+            Matchers.`is`(2),
         )
 
         val stringLiteralIWantToBeHidden =
@@ -357,7 +357,7 @@ internal class HidingTests {
             "String literal 'IWantToHide' matches the identifier IWantToHide. Consider whether the identifier was intended instead."
         MatcherAssert.assertThat(
             distinctWarningMessages,
-            Matchers.containsInAnyOrder(stringLiteralIWantToBeHidden, stringLiteralIWantToHide)
+            Matchers.containsInAnyOrder(stringLiteralIWantToBeHidden, stringLiteralIWantToHide),
         )
     }
 }

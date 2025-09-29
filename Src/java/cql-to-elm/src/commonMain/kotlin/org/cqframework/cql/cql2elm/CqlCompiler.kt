@@ -23,7 +23,7 @@ import org.hl7.elm.r1.*
 class CqlCompiler(
     private val namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
-    private val libraryManager: LibraryManager
+    private val libraryManager: LibraryManager,
 ) {
     var library: Library? = null
         private set
@@ -50,7 +50,7 @@ class CqlCompiler(
 
     constructor(
         namespaceInfo: NamespaceInfo?,
-        libraryManager: LibraryManager
+        libraryManager: LibraryManager,
     ) : this(namespaceInfo, null, libraryManager)
 
     init {
@@ -78,7 +78,7 @@ class CqlCompiler(
 
     private inner class CqlErrorListener(
         private val builder: LibraryBuilder,
-        private val detailedErrors: Boolean
+        private val detailedErrors: Boolean,
     ) : BaseErrorListener() {
         private fun extractLibraryIdentifier(parser: cqlParser): VersionedIdentifier? {
             var context: RuleContext? = parser.context
@@ -120,7 +120,7 @@ class CqlCompiler(
             line: Int,
             charPositionInLine: Int,
             msg: String,
-            e: RecognitionException?
+            e: RecognitionException?,
         ) {
             var libraryIdentifier = builder.libraryIdentifier
             if (libraryIdentifier == null) {
@@ -168,7 +168,7 @@ class CqlCompiler(
         val errorListener =
             CqlErrorListener(
                 builder,
-                options.contains(CqlCompilerOptions.Options.EnableDetailedErrors)
+                options.contains(CqlCompilerOptions.Options.EnableDetailedErrors),
             )
 
         // Phase 1: Lexing

@@ -356,7 +356,7 @@ class SemanticTests {
         runSemanticTest(
             "TestCompatibilityLevel3.cql",
             0,
-            CqlCompilerOptions().withCompatibilityLevel("1.3")
+            CqlCompilerOptions().withCompatibilityLevel("1.3"),
         )
     }
 
@@ -442,7 +442,7 @@ class SemanticTests {
             TestUtils.runSemanticTest(
                 "Issue405.cql",
                 0,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         val library = translator.toELM()
         assertThat(library!!.statements!!.def.size, Matchers.equalTo(6))
@@ -458,7 +458,7 @@ class SemanticTests {
             TestUtils.runSemanticTest(
                 "Issue395.cql",
                 0,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         val library = translator.toELM()
         val expressionDef = library!!.statements!!.def[2]
@@ -492,7 +492,7 @@ class SemanticTests {
         TestUtils.runSemanticTest(
             "Issue592.cql",
             0,
-            CqlCompilerOptions().withCompatibilityLevel("1.3")
+            CqlCompilerOptions().withCompatibilityLevel("1.3"),
         )
     }
 
@@ -607,7 +607,7 @@ class SemanticTests {
         fd =
             resolveFunctionDef(
                 translator.translatedLibrary!!.library!!,
-                "EncountersWithServiceType"
+                "EncountersWithServiceType",
             )
         assertThat(fd!!.expression, Matchers.instanceOf(Query::class.java))
         q = fd.expression as Query?
@@ -632,7 +632,7 @@ class SemanticTests {
             TestUtils.runSemanticTest(
                 "IssueEmptySourceInterval.cql",
                 1,
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
 
         val exceptions = translator.exceptions
@@ -649,7 +649,7 @@ class SemanticTests {
                     CqlCompilerOptions.Options.EnableAnnotations,
                     CqlCompilerOptions.Options.DisableListDemotion,
                     CqlCompilerOptions.Options.DisableListPromotion,
-                    CqlCompilerOptions.Options.DisableMethodInvocation
+                    CqlCompilerOptions.Options.DisableMethodInvocation,
                 )
                 .withCompatibilityLevel("1.4")
         val translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options)
@@ -716,7 +716,7 @@ class SemanticTests {
                 .withOptions(
                     CqlCompilerOptions.Options.DisableListDemotion,
                     CqlCompilerOptions.Options.DisableListPromotion,
-                    CqlCompilerOptions.Options.DisableMethodInvocation
+                    CqlCompilerOptions.Options.DisableMethodInvocation,
                 )
         val translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options)
         var ed = translator.translatedLibrary!!.resolveExpressionRef("TestConditionsViaFunction")
@@ -802,7 +802,7 @@ class SemanticTests {
                 .stream()
                 .map { obj: CqlCompilerException? -> obj!!.message }
                 .collect(Collectors.toSet())
-                .toString()
+                .toString(),
         )
     }
 
@@ -826,7 +826,7 @@ class SemanticTests {
                 .stream()
                 .map { obj: CqlCompilerException? -> obj!!.message }
                 .collect(Collectors.toSet())
-                .toString()
+                .toString(),
         )
     }
 
@@ -869,7 +869,7 @@ class SemanticTests {
         assertEquals(
             actualChoiceTypes,
             expectedChoiceTypes,
-            "Expected types are String, Boolean, and Integer: "
+            "Expected types are String, Boolean, and Integer: ",
         )
     }
 
@@ -903,7 +903,7 @@ class SemanticTests {
         assertEquals(
             actualChoiceTypes,
             expectedChoiceTypes,
-            "Expected return types are String and Boolean: "
+            "Expected return types are String and Boolean: ",
         )
     }
 
@@ -922,8 +922,8 @@ class SemanticTests {
             errorMessages,
             Matchers.contains(
                 "Could not resolve identifier NonExistent in the current library.",
-                "Could not resolve identifier IaMaDiFeReNtCaSe. Consider whether the identifier iAmAdIfErEnTcAsE (differing only in case) was intended."
-            )
+                "Could not resolve identifier IaMaDiFeReNtCaSe. Consider whether the identifier iAmAdIfErEnTcAsE (differing only in case) was intended.",
+            ),
         )
 
         val warnings =
@@ -947,7 +947,7 @@ class SemanticTests {
             runSemanticTest(
                 "LibraryTests/Issue1407.cql",
                 0,
-                CqlCompilerOptions().withCompatibilityLevel(compatibilityLevel)
+                CqlCompilerOptions().withCompatibilityLevel(compatibilityLevel),
             )
         val library = translator.toELM()
         val testExpression =
@@ -985,7 +985,7 @@ class SemanticTests {
     private fun runSemanticTest(
         testFileName: String,
         expectedErrors: Int,
-        vararg options: CqlCompilerOptions.Options
+        vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, *options)
     }
@@ -994,7 +994,7 @@ class SemanticTests {
     private fun runSemanticTest(
         testFileName: String,
         expectedErrors: Int,
-        options: CqlCompilerOptions
+        options: CqlCompilerOptions,
     ): CqlTranslator {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options)
     }

@@ -107,7 +107,7 @@ internal class EscapeSequenceTests {
             literal!!.value,
             `is`(
                 "This is a string with 'multiple' embedded \t escapes\u0020\r\nno really, \r\n\u000c\t/\\lots of them"
-            )
+            ),
         )
     }
 
@@ -224,7 +224,7 @@ internal class EscapeSequenceTests {
                         .getResourceAsStream("EscapeSequenceTests.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager
+                    libraryManager,
                 )
             assertThat(translator.errors.size, `is`(0))
             val library = translator.toELM()

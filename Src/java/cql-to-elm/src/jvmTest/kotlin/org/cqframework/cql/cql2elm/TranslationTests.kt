@@ -75,13 +75,13 @@ internal class TranslationTests {
                 CqlCompilerOptions.Options.EnableResultTypes,
                 CqlCompilerOptions.Options.DisableListDemotion,
                 CqlCompilerOptions.Options.DisableListPromotion,
-                CqlCompilerOptions.Options.DisableMethodInvocation
+                CqlCompilerOptions.Options.DisableMethodInvocation,
             )
 
         val translator =
             CqlTranslator.fromFile(
                 propertyTestFile.path,
-                LibraryManager(modelManager, compilerOptions)
+                LibraryManager(modelManager, compilerOptions),
             )
         println(translator.toJson())
     }
@@ -120,7 +120,7 @@ internal class TranslationTests {
         val translator =
             TestUtils.createTranslator(
                 "CMS146v2_Test_CQM.cql",
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         assertEquals(0, translator.errors.size)
         val defs = translator.translatedLibrary!!.library!!.statements!!.def
@@ -143,7 +143,7 @@ internal class TranslationTests {
         val translator =
             TestUtils.createTranslator(
                 "CMS146v2_Test_CQM.cql",
-                CqlCompilerOptions.Options.EnableAnnotations
+                CqlCompilerOptions.Options.EnableAnnotations,
             )
         assertEquals(0, translator.errors.size)
         val library = translator.translatedLibrary!!.library
@@ -170,7 +170,7 @@ internal class TranslationTests {
         Assertions.assertNotNull(returnClause!!.expression)
         assertThat<Expression?>(
             returnClause.expression,
-            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java))
+            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java)),
         )
 
         var functionRef = returnClause.expression as FunctionRef?
@@ -180,7 +180,7 @@ internal class TranslationTests {
         var operand: Expression? = functionRef.operand[0]
         assertThat<Expression?>(
             operand,
-            `is`<Expression?>(Matchers.instanceOf(Property::class.java))
+            `is`<Expression?>(Matchers.instanceOf(Property::class.java)),
         )
 
         // Gets the "NeedsACast" define
@@ -193,7 +193,7 @@ internal class TranslationTests {
         Assertions.assertNotNull(returnClause!!.expression)
         assertThat<Expression?>(
             returnClause.expression,
-            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java))
+            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java)),
         )
 
         functionRef = returnClause.expression as FunctionRef?
@@ -206,7 +206,7 @@ internal class TranslationTests {
         val asDef = operand as As
         assertThat<TypeSpecifier?>(
             asDef.asTypeSpecifier,
-            `is`<TypeSpecifier?>(Matchers.instanceOf(ChoiceTypeSpecifier::class.java))
+            `is`<TypeSpecifier?>(Matchers.instanceOf(ChoiceTypeSpecifier::class.java)),
         )
     }
 
@@ -219,7 +219,7 @@ internal class TranslationTests {
                 "DefaultContext.cql",
                 CqlCompilerOptions.Options.EnableAnnotations,
                 CqlCompilerOptions.Options.EnableResultTypes,
-                CqlCompilerOptions.Options.EnableDetailedErrors
+                CqlCompilerOptions.Options.EnableDetailedErrors,
             )
         assertEquals(0, translator.errors.size)
         val library = translator.translatedLibrary!!.library
@@ -407,7 +407,7 @@ internal class TranslationTests {
         var test = statements[0]
         assertThat<Expression?>(
             test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java)
+            Matchers.instanceOf<Expression?>(ProperContains::class.java),
         )
         var properContains = test.expression as ProperContains?
         assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
@@ -416,7 +416,7 @@ internal class TranslationTests {
         var intervalResultType = interval.resultType
         assertThat<DataType?>(
             intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java)
+            Matchers.instanceOf<DataType?>(IntervalType::class.java),
         )
         var intervalType = intervalResultType as IntervalType?
         assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
@@ -430,7 +430,7 @@ internal class TranslationTests {
         test = statements[1]
         assertThat<Expression?>(
             test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java)
+            Matchers.instanceOf<Expression?>(ProperContains::class.java),
         )
         properContains = test.expression as ProperContains?
         assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
@@ -439,7 +439,7 @@ internal class TranslationTests {
         intervalResultType = interval.resultType
         assertThat<DataType?>(
             intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java)
+            Matchers.instanceOf<DataType?>(IntervalType::class.java),
         )
         intervalType = intervalResultType as IntervalType?
         assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
@@ -453,7 +453,7 @@ internal class TranslationTests {
         test = statements[2]
         assertThat<Expression?>(
             test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java)
+            Matchers.instanceOf<Expression?>(ProperContains::class.java),
         )
         properContains = test.expression as ProperContains?
         assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
@@ -462,7 +462,7 @@ internal class TranslationTests {
         intervalResultType = interval.resultType
         assertThat<DataType?>(
             intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java)
+            Matchers.instanceOf<DataType?>(IntervalType::class.java),
         )
         intervalType = intervalResultType as IntervalType?
         assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
@@ -473,7 +473,7 @@ internal class TranslationTests {
         test = statements[3]
         assertThat<Expression?>(
             test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java)
+            Matchers.instanceOf<Expression?>(ProperContains::class.java),
         )
         properContains = test.expression as ProperContains?
         assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
@@ -481,7 +481,7 @@ internal class TranslationTests {
         intervalResultType = interval.resultType
         assertThat<DataType?>(
             intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java)
+            Matchers.instanceOf<DataType?>(IntervalType::class.java),
         )
         intervalType = intervalResultType as IntervalType?
         assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
@@ -492,7 +492,7 @@ internal class TranslationTests {
         test = statements[4]
         assertThat<Expression?>(
             test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java)
+            Matchers.instanceOf<Expression?>(ProperContains::class.java),
         )
         properContains = test.expression as ProperContains?
         assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
@@ -501,7 +501,7 @@ internal class TranslationTests {
         intervalResultType = interval.resultType
         assertThat<DataType?>(
             intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java)
+            Matchers.instanceOf<DataType?>(IntervalType::class.java),
         )
         intervalType = intervalResultType as IntervalType?
         assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
@@ -559,8 +559,8 @@ internal class TranslationTests {
                 hidingLetCodeSystem,
                 hidingContextFhir,
                 hidingLetFhir,
-                hidingAliasLet
-            )
+                hidingAliasLet,
+            ),
         )
     }
 
@@ -577,7 +577,7 @@ internal class TranslationTests {
                 .collect(Collectors.toList())
         assertThat(
             errorMessages,
-            Matchers.contains("Specified data type DomainResource does not support retrieval.")
+            Matchers.contains("Specified data type DomainResource does not support retrieval."),
         )
     }
 
@@ -589,7 +589,7 @@ internal class TranslationTests {
             TestUtils.runSemanticTest(
                 "MappingExpansionsRespectSignatureLevel.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads
+                LibraryBuilder.SignatureLevel.Overloads,
             )
 
         /*
@@ -608,12 +608,12 @@ internal class TranslationTests {
         assertThat(encounterPeriod.name, `is`("EncounterPeriod"))
         assertThat<Expression?>(
             encounterPeriod.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java)
+            Matchers.instanceOf<Expression?>(Query::class.java),
         )
         val query = encounterPeriod.expression as Query?
         assertThat<Expression?>(
             query!!.`return`!!.expression,
-            Matchers.instanceOf<Expression?>(FunctionRef::class.java)
+            Matchers.instanceOf<Expression?>(FunctionRef::class.java),
         )
         val functionRef = query.`return`!!.expression as FunctionRef?
         assertThat(functionRef!!.libraryName, `is`("FHIRHelpers"))

@@ -28,7 +28,7 @@ open class XjcTask @Inject constructor(private val execOperations: ExecOperation
                 "-XhashCode",
                 "-XtoString",
                 "-Xsetters",
-                "-Xsetters-mode=direct"
+                "-Xsetters-mode=direct",
             )
         val options = listOf("-d", outputDir, schema) + bindingArgs + defaultArgs + extraArgs
 

@@ -33,12 +33,12 @@ private const val FP_THIS = "\$this"
     "ForbiddenComment",
     "ReturnCount",
     "MaxLineLength",
-    "NON_EXPORTABLE_TYPE"
+    "NON_EXPORTABLE_TYPE",
 )
 class LibraryBuilder(
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
     val libraryManager: LibraryManager,
-    val objectFactory: IdObjectFactory
+    val objectFactory: IdObjectFactory,
 ) {
     enum class SignatureLevel {
         /** Indicates signatures will never be included in operator invocations */
@@ -57,13 +57,13 @@ class LibraryBuilder(
         Overloads,
 
         /** Indicates signatures will always be included in invocations */
-        All
+        All,
     }
 
     @JsExport.Ignore
     constructor(
         libraryManager: LibraryManager,
-        objectFactory: IdObjectFactory
+        objectFactory: IdObjectFactory,
     ) : this(null, libraryManager, objectFactory)
 
     // Only exceptions of severity Error
@@ -237,7 +237,7 @@ class LibraryBuilder(
 
     fun addNamedTypeSpecifierResult(
         namedTypeSpecifierIdentifier: String,
-        namedTypeSpecifierResult: ResultWithPossibleError<NamedTypeSpecifier?>
+        namedTypeSpecifierResult: ResultWithPossibleError<NamedTypeSpecifier?>,
     ) {
         if (!nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
             nameTypeSpecifiers[namedTypeSpecifierIdentifier] = namedTypeSpecifierResult
@@ -253,7 +253,7 @@ class LibraryBuilder(
     private fun buildUsingDef(
         modelIdentifier: ModelIdentifier,
         model: Model?,
-        localIdentifier: String
+        localIdentifier: String,
     ): UsingDef {
         val usingDef =
             objectFactory
@@ -407,7 +407,7 @@ class LibraryBuilder(
                     resolveTypeSpecifier(
                         typeSpecifier.substring(
                             typeSpecifier.indexOf('<') + 1,
-                            typeSpecifier.lastIndexOf('>')
+                            typeSpecifier.lastIndexOf('>'),
                         )
                     )
                 IntervalType(pointType!!)
@@ -418,7 +418,7 @@ class LibraryBuilder(
                         resolveTypeName(
                             typeSpecifier.substring(
                                 typeSpecifier.indexOf('<') + 1,
-                                typeSpecifier.lastIndexOf('>')
+                                typeSpecifier.lastIndexOf('>'),
                             )
                         )
                     ListType(elementType!!)
@@ -457,9 +457,9 @@ class LibraryBuilder(
             ModelIdentifier(
                 id = NamespaceManager.getNamePart(usingDef.uri)!!,
                 system = NamespaceManager.getUriPart(usingDef.uri),
-                version = usingDef.version
+                version = usingDef.version,
             ),
-            usingDef.localIdentifier!!
+            usingDef.localIdentifier!!,
         )
     }
 
@@ -747,28 +747,28 @@ class LibraryBuilder(
         fromType: DataType,
         toType: DataType,
         implicit: Boolean,
-        allowPromotionAndDemotion: Boolean
+        allowPromotionAndDemotion: Boolean,
     ): Conversion? {
         return conversionMap.findConversion(
             fromType,
             toType,
             implicit,
             allowPromotionAndDemotion,
-            compiledLibrary.operatorMap
+            compiledLibrary.operatorMap,
         )
     }
 
     fun resolveUnaryCall(
         libraryName: String?,
         operatorName: String,
-        expression: UnaryExpression
+        expression: UnaryExpression,
     ): Expression? {
         return resolveCall(
             libraryName,
             operatorName,
             UnaryExpressionInvocation(expression),
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
@@ -776,7 +776,7 @@ class LibraryBuilder(
     fun resolveBinaryCall(
         libraryName: String?,
         operatorName: String,
-        expression: BinaryExpression
+        expression: BinaryExpression,
     ): Expression? {
         val invocation = resolveBinaryInvocation(libraryName, operatorName, expression)
         return invocation?.expression
@@ -788,7 +788,7 @@ class LibraryBuilder(
         operatorName: String,
         expression: BinaryExpression,
         mustResolve: Boolean = true,
-        allowPromotionAndDemotion: Boolean = false
+        allowPromotionAndDemotion: Boolean = false,
     ): Invocation? {
         return resolveInvocation(
             libraryName,
@@ -796,7 +796,7 @@ class LibraryBuilder(
             BinaryExpressionInvocation(expression),
             mustResolve,
             allowPromotionAndDemotion,
-            false
+            false,
         )
     }
 
@@ -806,7 +806,7 @@ class LibraryBuilder(
         operatorName: String,
         expression: BinaryExpression,
         mustResolve: Boolean,
-        allowPromotionAndDemotion: Boolean
+        allowPromotionAndDemotion: Boolean,
     ): Expression? {
         val invocation =
             resolveBinaryInvocation(
@@ -814,7 +814,7 @@ class LibraryBuilder(
                 operatorName,
                 expression,
                 mustResolve,
-                allowPromotionAndDemotion
+                allowPromotionAndDemotion,
             )
         return invocation?.expression
     }
@@ -822,42 +822,42 @@ class LibraryBuilder(
     fun resolveTernaryCall(
         libraryName: String?,
         operatorName: String,
-        expression: TernaryExpression
+        expression: TernaryExpression,
     ): Expression? {
         return resolveCall(
             libraryName,
             operatorName,
             TernaryExpressionInvocation(expression),
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
     fun resolveNaryCall(
         libraryName: String?,
         operatorName: String,
-        expression: NaryExpression?
+        expression: NaryExpression?,
     ): Expression? {
         return resolveCall(
             libraryName,
             operatorName,
             NaryExpressionInvocation(expression!!),
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
     fun resolveAggregateCall(
         libraryName: String?,
         operatorName: String,
-        expression: AggregateExpression
+        expression: AggregateExpression,
     ): Expression? {
         return resolveCall(
             libraryName,
             operatorName,
             AggregateExpressionInvocation(expression),
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
@@ -1049,7 +1049,7 @@ class LibraryBuilder(
     fun resolveIn(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val result = resolveInInvocation(left, right, dateTimePrecision)
         return result?.expression
@@ -1058,7 +1058,7 @@ class LibraryBuilder(
     private fun resolveInInvocation(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Invocation? {
         val inExpression =
             objectFactory
@@ -1071,7 +1071,7 @@ class LibraryBuilder(
     fun resolveProperIn(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val result = resolveProperInInvocation(left, right, dateTimePrecision)
         return result?.expression
@@ -1080,7 +1080,7 @@ class LibraryBuilder(
     private fun resolveProperInInvocation(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Invocation? {
         val properIn =
             objectFactory
@@ -1094,7 +1094,7 @@ class LibraryBuilder(
     fun resolveContains(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val result = resolveContainsInvocation(left, right, dateTimePrecision)
         return result?.expression
@@ -1103,7 +1103,7 @@ class LibraryBuilder(
     private fun resolveContainsInvocation(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Invocation? {
         val contains =
             objectFactory
@@ -1116,7 +1116,7 @@ class LibraryBuilder(
     fun resolveProperContains(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val result = resolveProperContainsInvocation(left, right, dateTimePrecision)
         return result?.expression
@@ -1125,7 +1125,7 @@ class LibraryBuilder(
     private fun resolveProperContainsInvocation(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Invocation? {
         val properContains =
             objectFactory
@@ -1185,7 +1185,7 @@ class LibraryBuilder(
     fun resolveIncludes(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val includes =
             objectFactory
@@ -1198,7 +1198,7 @@ class LibraryBuilder(
                 "Includes",
                 includes,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         val contains =
             objectFactory
@@ -1211,7 +1211,7 @@ class LibraryBuilder(
                 "Contains",
                 contains,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(includesInvocation, containsInvocation)
             ?: resolveBinaryCall("System", "Includes", includes)
@@ -1222,7 +1222,7 @@ class LibraryBuilder(
     fun resolveProperIncludes(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val properIncludes =
             objectFactory
@@ -1235,7 +1235,7 @@ class LibraryBuilder(
                 "ProperIncludes",
                 properIncludes,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         val properContains =
             objectFactory
@@ -1248,7 +1248,7 @@ class LibraryBuilder(
                 "ProperContains",
                 properContains,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(properIncludesInvocation, properContainsInvocation)
             ?: resolveBinaryCall("System", "ProperIncludes", properIncludes)
@@ -1259,7 +1259,7 @@ class LibraryBuilder(
     fun resolveIncludedIn(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val includedIn =
             objectFactory
@@ -1272,7 +1272,7 @@ class LibraryBuilder(
                 "IncludedIn",
                 includedIn,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         val inExpression =
             objectFactory
@@ -1285,7 +1285,7 @@ class LibraryBuilder(
                 "In",
                 inExpression,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(includedInInvocation, inInvocation)
             ?: resolveBinaryCall("System", "IncludedIn", includedIn)
@@ -1296,7 +1296,7 @@ class LibraryBuilder(
     fun resolveProperIncludedIn(
         left: Expression,
         right: Expression,
-        dateTimePrecision: DateTimePrecision?
+        dateTimePrecision: DateTimePrecision?,
     ): Expression? {
         val properIncludedIn =
             objectFactory
@@ -1309,7 +1309,7 @@ class LibraryBuilder(
                 "ProperIncludedIn",
                 properIncludedIn,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         val properIn =
             objectFactory
@@ -1322,7 +1322,7 @@ class LibraryBuilder(
                 "ProperIn",
                 properIn,
                 mustResolve = false,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(properIncludedInInvocation, properInInvocation)
             ?: resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn)
@@ -1333,7 +1333,7 @@ class LibraryBuilder(
     fun resolveCall(
         libraryName: String?,
         operatorName: String,
-        invocation: Invocation
+        invocation: Invocation,
     ): Expression? {
         return resolveCall(
             libraryName,
@@ -1341,7 +1341,7 @@ class LibraryBuilder(
             invocation,
             mustResolve = true,
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
@@ -1350,7 +1350,7 @@ class LibraryBuilder(
         operatorName: String,
         invocation: Invocation,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): Expression? {
         return resolveCall(
             libraryName,
@@ -1358,7 +1358,7 @@ class LibraryBuilder(
             invocation,
             true,
             allowPromotionAndDemotion,
-            allowFluent
+            allowFluent,
         )
     }
 
@@ -1369,7 +1369,7 @@ class LibraryBuilder(
         invocation: Invocation,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): Expression? {
         val result =
             resolveInvocation(
@@ -1378,7 +1378,7 @@ class LibraryBuilder(
                 invocation,
                 mustResolve,
                 allowPromotionAndDemotion,
-                allowFluent
+                allowFluent,
             )
         return result?.expression
     }
@@ -1389,7 +1389,7 @@ class LibraryBuilder(
         operatorName: String,
         invocation: Invocation,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): Invocation? {
         return resolveInvocation(
             libraryName,
@@ -1397,7 +1397,7 @@ class LibraryBuilder(
             invocation,
             true,
             allowPromotionAndDemotion,
-            allowFluent
+            allowFluent,
         )
     }
 
@@ -1408,7 +1408,7 @@ class LibraryBuilder(
         operands: Iterable<Expression?>,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): CallContext {
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in operands) {
@@ -1423,7 +1423,7 @@ class LibraryBuilder(
             allowPromotionAndDemotion,
             allowFluent,
             mustResolve,
-            dataTypes
+            dataTypes,
         )
     }
 
@@ -1435,7 +1435,7 @@ class LibraryBuilder(
         invocation: Invocation,
         mustResolve: Boolean = true,
         allowPromotionAndDemotion: Boolean = false,
-        allowFluent: Boolean = false
+        allowFluent: Boolean = false,
     ): Invocation? {
         val operands: Iterable<Expression> = invocation.operands
         val callContext =
@@ -1445,7 +1445,7 @@ class LibraryBuilder(
                 operands,
                 mustResolve,
                 allowPromotionAndDemotion,
-                allowFluent
+                allowFluent,
             )
         val resolution = resolveCall(callContext)
         if (resolution == null && !mustResolve) {
@@ -1495,7 +1495,7 @@ class LibraryBuilder(
                 """
                     .trimIndent()
                     .replace("\n", " "),
-                invocation.expression
+                invocation.expression,
             )
         }
         invocation.resultType = resolution.operator.resultType
@@ -1508,7 +1508,7 @@ class LibraryBuilder(
 
     private fun pruneChoices(
         expression: Expression,
-        @Suppress("UnusedParameter") targetType: DataType
+        @Suppress("UnusedParameter") targetType: DataType,
     ): Expression {
         // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the
         // targetType (type leading)
@@ -1533,7 +1533,7 @@ class LibraryBuilder(
                 false,
                 fd.fluent != null && fd.fluent!!,
                 false,
-                dataTypes
+                dataTypes,
             )
         // Resolve exact, no conversion map
         return compiledLibrary.resolveCall(callContext, conversionMap)?.operator
@@ -1581,7 +1581,7 @@ class LibraryBuilder(
             checkAccessLevel(
                 result.operator.libraryName,
                 result.operator.name,
-                result.operator.accessLevel
+                result.operator.accessLevel,
             )
         }
         return result
@@ -1609,7 +1609,7 @@ class LibraryBuilder(
     fun checkAccessLevel(
         libraryName: String?,
         objectName: String?,
-        accessModifier: AccessModifier
+        accessModifier: AccessModifier,
     ) {
         if (
             accessModifier == AccessModifier.PRIVATE &&
@@ -1617,7 +1617,7 @@ class LibraryBuilder(
         ) {
             // ERROR:
             throw CqlSemanticException(
-                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library.",
+                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library."
             )
         }
     }
@@ -1626,7 +1626,7 @@ class LibraryBuilder(
     fun resolveFunction(
         libraryName: String?,
         functionName: String,
-        paramList: kotlin.collections.List<Expression>
+        paramList: kotlin.collections.List<Expression>,
     ): Expression? {
         return resolveFunction(
                 libraryName,
@@ -1634,7 +1634,7 @@ class LibraryBuilder(
                 paramList,
                 mustResolve = true,
                 allowPromotionAndDemotion = false,
-                allowFluent = false
+                allowFluent = false,
             )
             ?.expression
     }
@@ -1642,7 +1642,7 @@ class LibraryBuilder(
     private fun buildFunctionRef(
         libraryName: String?,
         functionName: String,
-        paramList: Iterable<Expression>
+        paramList: Iterable<Expression>,
     ): FunctionRef {
         val functionRef =
             objectFactory.createFunctionRef().withLibraryName(libraryName).withName(functionName)
@@ -1660,7 +1660,7 @@ class LibraryBuilder(
         paramList: kotlin.collections.List<Expression>,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): Invocation? {
         var functionRef: FunctionRef? = buildFunctionRef(libraryName, functionName, paramList)
 
@@ -1673,7 +1673,7 @@ class LibraryBuilder(
                 invocation,
                 false,
                 allowPromotionAndDemotion,
-                allowFluent
+                allowFluent,
             )
                 as FunctionRef?
         if (functionRef != null) {
@@ -1718,7 +1718,7 @@ class LibraryBuilder(
                     invocation,
                     mustResolve,
                     allowPromotionAndDemotion,
-                    allowFluent
+                    allowFluent,
                 )
                     as FunctionRef?
             if (functionRef == null) {
@@ -1741,7 +1741,7 @@ class LibraryBuilder(
     fun convertExpression(
         expression: Expression,
         targetType: DataType,
-        implicit: Boolean = true
+        implicit: Boolean = true,
     ): Expression {
         val conversion = findConversion(expression.resultType!!, targetType, implicit, false)
         if (conversion != null) {
@@ -1775,7 +1775,7 @@ class LibraryBuilder(
                                 .createAliasRef()
                                 .withName("X")
                                 .withResultType(fromType.elementType),
-                            conversion.conversion!!
+                            conversion.conversion!!,
                         )
                     )
                     .withResultType(toType)
@@ -1827,7 +1827,7 @@ class LibraryBuilder(
 
     private fun demoteIntervalExpression(
         expression: Expression?,
-        conversion: Conversion
+        conversion: Conversion,
     ): Expression {
         val fromType = conversion.fromType as IntervalType
         val pointFrom = objectFactory.createPointFrom().withOperand(expression)
@@ -1844,7 +1844,7 @@ class LibraryBuilder(
 
     private fun promoteIntervalExpression(
         expression: Expression,
-        conversion: Conversion
+        conversion: Conversion,
     ): Expression {
         var expression = expression
         if (conversion.conversion != null) {
@@ -1874,7 +1874,7 @@ class LibraryBuilder(
 
     private fun convertIntervalExpression(
         expression: Expression?,
-        conversion: Conversion
+        conversion: Conversion,
     ): Expression {
         val fromType: IntervalType = conversion.fromType as IntervalType
         val toType: IntervalType = conversion.toType as IntervalType
@@ -1887,7 +1887,7 @@ class LibraryBuilder(
                         .withSource(expression)
                         .withPath("low")
                         .withResultType(fromType.pointType),
-                    conversion.conversion!!
+                    conversion.conversion!!,
                 )
             )
             .withLowClosedExpression(
@@ -1904,7 +1904,7 @@ class LibraryBuilder(
                         .withSource(expression)
                         .withPath("high")
                         .withResultType(fromType.pointType),
-                    conversion.conversion
+                    conversion.conversion,
                 )
             )
             .withHighClosedExpression(
@@ -2038,7 +2038,7 @@ class LibraryBuilder(
                                 .withThen(
                                     convertExpression(
                                         buildAs(expression, alternative.fromType),
-                                        alternative
+                                        alternative,
                                     )
                                 )
                         )
@@ -2077,7 +2077,7 @@ class LibraryBuilder(
                     functionRef.name!!,
                     FunctionRefInvocation(functionRef),
                     allowPromotionAndDemotion = false,
-                    allowFluent = false
+                    allowFluent = false,
                 )
                 return functionRef
             } else {
@@ -2204,7 +2204,7 @@ class LibraryBuilder(
                 actualType,
                 expectedType,
                 implicit = true,
-                allowPromotionAndDemotion = false
+                allowPromotionAndDemotion = false,
             )
         if (conversion != null) {
             return
@@ -2403,7 +2403,7 @@ class LibraryBuilder(
         low: Expression?,
         lowClosed: Boolean,
         high: Expression?,
-        highClosed: Boolean
+        highClosed: Boolean,
     ): Interval {
         val result: Interval =
             objectFactory
@@ -2459,7 +2459,7 @@ class LibraryBuilder(
     fun resolveProperty(
         sourceType: DataType?,
         identifier: String,
-        mustResolve: Boolean = true
+        mustResolve: Boolean = true,
     ): PropertyResolution? {
         var currentType: DataType? = sourceType
         while (currentType != null) {
@@ -2545,7 +2545,7 @@ class LibraryBuilder(
                         return PropertyResolution(
                             resultTypes.iterator().next(),
                             name!!,
-                            resultTargetMaps
+                            resultTargetMaps,
                         )
                     }
                 }
@@ -2724,7 +2724,7 @@ class LibraryBuilder(
                         parameterRef,
                         resolution.name,
                         resolution.isSearch,
-                        resolution.type
+                        resolution.type,
                     )
                 contextAccessor = applyTargetMap(contextAccessor, resolution.targetMap)
                 return contextAccessor
@@ -2778,7 +2778,7 @@ class LibraryBuilder(
         scope: String?,
         path: String?,
         isSearch: Boolean,
-        resultType: DataType?
+        resultType: DataType?,
     ): Property {
         return if (isSearch) {
             val result = objectFactory.createSearch().withScope(scope).withPath(path)
@@ -2796,7 +2796,7 @@ class LibraryBuilder(
         source: Expression?,
         path: String?,
         isSearch: Boolean,
-        resultType: DataType?
+        resultType: DataType?,
     ): Property {
         return if (isSearch) {
             val result = objectFactory.createSearch().withSource(source).withPath(path)
@@ -2823,7 +2823,7 @@ class LibraryBuilder(
                                     "|" + model.modelInfo.targetVersion
                                 else ""
                             }",
-                            sourceContext
+                            sourceContext,
                         )
                     }
                     result =
@@ -3115,7 +3115,7 @@ class LibraryBuilder(
                                 ref.name!!,
                                 FunctionRefInvocation(ref),
                                 allowPromotionAndDemotion = false,
-                                allowFluent = false
+                                allowFluent = false,
                             )
                     }
                 }
@@ -3138,7 +3138,7 @@ class LibraryBuilder(
                             ref.name!!,
                             FunctionRefInvocation(ref),
                             allowPromotionAndDemotion = false,
-                            allowFluent = false
+                            allowFluent = false,
                         )
                 }
                 if (indexerItems[0] == "code.coding.code") {
@@ -3156,7 +3156,7 @@ class LibraryBuilder(
                             ref.name!!,
                             FunctionRefInvocation(ref),
                             allowPromotionAndDemotion = false,
-                            allowFluent = false
+                            allowFluent = false,
                         )
                 }
                 val rightValue = indexerItems[1].substring(1, indexerItems[1].length - 1)
@@ -3339,7 +3339,7 @@ class LibraryBuilder(
                         left.name,
                         resolution!!.name,
                         resolution.isSearch,
-                        resolution.type
+                        resolution.type,
                     )
                 return applyTargetMap(result, resolution.targetMap)
             }
@@ -3356,7 +3356,7 @@ class LibraryBuilder(
                         objectFactory.createAliasRef().withName(FP_THIS),
                         resolution!!.name,
                         resolution.isSearch,
-                        resolution.type
+                        resolution.type,
                     )
                 accessor = applyTargetMap(accessor, resolution.targetMap)
                 val not: Expression = buildIsNotNull(accessor)
@@ -3367,7 +3367,7 @@ class LibraryBuilder(
                         objectFactory.createAliasRef().withName(FP_THIS),
                         resolution.name,
                         resolution.isSearch,
-                        resolution.type
+                        resolution.type,
                     )
                 accessor = applyTargetMap(accessor, resolution.targetMap)
                 val source: AliasedQuerySource =
@@ -3519,7 +3519,7 @@ class LibraryBuilder(
 
     enum class IdentifierScope {
         GLOBAL,
-        LOCAL
+        LOCAL,
     }
 
     /**
@@ -3548,7 +3548,7 @@ class LibraryBuilder(
     fun pushIdentifier(
         identifierRef: IdentifierRef,
         element: Element?,
-        scope: IdentifierScope = IdentifierScope.LOCAL
+        scope: IdentifierScope = IdentifierScope.LOCAL,
     ) {
         val identifier = identifierRef.name!!
         val localMatch =
@@ -3563,7 +3563,7 @@ class LibraryBuilder(
             if (!matchedOnFunctionOverloads) {
                 reportWarning(
                     resolveWarningMessage(matchedContext.identifier, identifier, element),
-                    identifierRef
+                    identifierRef,
                 )
             }
         }
@@ -3581,7 +3581,7 @@ class LibraryBuilder(
 
     private fun findMatchingIdentifierContext(
         identifierContext: Collection<IdentifierContext>,
-        identifier: String
+        identifier: String,
     ): IdentifierContext? {
         return identifierContext.firstOrNull { it.identifier == identifier }
     }
@@ -3615,7 +3615,7 @@ class LibraryBuilder(
     private fun resolveWarningMessage(
         matchedIdentifier: String?,
         identifierParam: String,
-        element: Element?
+        element: Element?,
     ): String {
         val elementString = lookupElementWarning(element)
         return if (element is Literal) {

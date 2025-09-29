@@ -28,7 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource
     "ComplexMethod",
     "MaxLineLength",
     "LongMethod",
-    "PrintStackTrace"
+    "PrintStackTrace",
 )
 internal class LibraryTests {
     @Test
@@ -42,7 +42,7 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/ReferencingLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(0))
         } catch (e: IOException) {
@@ -67,7 +67,7 @@ internal class LibraryTests {
         val compilerOptions =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, compilerOptions)
         libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -96,7 +96,7 @@ internal class LibraryTests {
             val baseLibDef: ExpressionDef = includedLibDefs["BaseLibSum"]!!
             MatcherAssert.assertThat(
                 (baseLibDef.expression as AggregateExpression).signature.size,
-                Matchers.`is`(1)
+                Matchers.`is`(1),
             )
         } catch (e: IOException) {
             e.printStackTrace()
@@ -112,7 +112,7 @@ internal class LibraryTests {
         val compilerOptions =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         val libraryManager = LibraryManager(modelManager, compilerOptions)
 
@@ -144,7 +144,7 @@ internal class LibraryTests {
             val baseLibDef: ExpressionDef = includedLibDefs["BaseLibSum"]!!
             MatcherAssert.assertThat(
                 (baseLibDef.expression as AggregateExpression).signature.size,
-                Matchers.`is`(1)
+                Matchers.`is`(1),
             )
         } catch (e: IOException) {
             e.printStackTrace()
@@ -162,7 +162,7 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(Matchers.not(0)))
         } catch (e: IOException) {
@@ -235,7 +235,7 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/InvalidLibraryReference.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(Matchers.not(0)))
         } catch (e: IOException) {
@@ -254,7 +254,7 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(1))
         } catch (e: IOException) {
@@ -273,12 +273,12 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/MissingLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(1))
             MatcherAssert.assertThat(
                 translator.errors[0],
-                Matchers.instanceOf(CqlIncludeException::class.java)
+                Matchers.instanceOf(CqlIncludeException::class.java),
             )
         } catch (e: IOException) {
             e.printStackTrace()
@@ -296,21 +296,21 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(1))
             MatcherAssert.assertThat(
                 translator.errors[0],
-                Matchers.instanceOf(CqlCompilerException::class.java)
+                Matchers.instanceOf(CqlCompilerException::class.java),
             )
             MatcherAssert.assertThat(translator.errors[0].locator, Matchers.notNullValue())
             MatcherAssert.assertThat(
                 translator.errors[0].locator!!.library,
-                Matchers.notNullValue()
+                Matchers.notNullValue(),
             )
             MatcherAssert.assertThat(
                 translator.errors[0].locator!!.library!!.id,
-                Matchers.`is`("InvalidBaseLibrary")
+                Matchers.`is`("InvalidBaseLibrary"),
             )
 
             MatcherAssert.assertThat(translator.toELM(), Matchers.notNullValue())
@@ -325,11 +325,11 @@ internal class LibraryTests {
             }
             MatcherAssert.assertThat<CqlToElmError?>(
                 invalidBaseLibraryError,
-                Matchers.notNullValue()
+                Matchers.notNullValue(),
             )
             MatcherAssert.assertThat(
                 invalidBaseLibraryError!!.libraryId,
-                Matchers.`is`("InvalidBaseLibrary")
+                Matchers.`is`("InvalidBaseLibrary"),
             )
         } catch (e: IOException) {
             e.printStackTrace()
@@ -349,7 +349,7 @@ internal class LibraryTests {
                         .getResourceAsStream("LibraryTests/TestMeasure.cql")!!
                         .asSource()
                         .buffered(),
-                    libraryManager!!
+                    libraryManager!!,
                 )
             MatcherAssert.assertThat(translator.errors.size, Matchers.`is`(3))
 
@@ -369,7 +369,7 @@ internal class LibraryTests {
                 CqlCompilerOptions(
                     CqlCompilerException.ErrorSeverity.Info,
                     LibraryBuilder.SignatureLevel.All,
-                    CqlCompilerOptions.Options.EnableAnnotations
+                    CqlCompilerOptions.Options.EnableAnnotations,
                 )
             libraryManager = LibraryManager(modelManager!!, options)
             libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -417,7 +417,7 @@ internal class LibraryTests {
                 // Ensure that no annotations are present.
                 Assertions.assertEquals(
                     0,
-                    includedLibrary.statements!!.def.count { x -> x.annotation.isNotEmpty() }
+                    includedLibrary.statements!!.def.count { x -> x.annotation.isNotEmpty() },
                 )
             }
         } catch (e: IOException) {
@@ -434,7 +434,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(1))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorWithNoLibrary")
+            Matchers.equalTo("SyntaxErrorWithNoLibrary"),
         )
     }
 
@@ -448,7 +448,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(1))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("Anonymous")
+            Matchers.equalTo("Anonymous"),
         )
     }
 
@@ -459,7 +459,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(1))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorWithLibrary")
+            Matchers.equalTo("SyntaxErrorWithLibrary"),
         )
     }
 
@@ -471,7 +471,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(1))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorWithLibrary")
+            Matchers.equalTo("SyntaxErrorWithLibrary"),
         )
     }
 
@@ -483,11 +483,11 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(2))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorReferencingLibrary")
+            Matchers.equalTo("SyntaxErrorReferencingLibrary"),
         )
         MatcherAssert.assertThat(
             translator.errors[1].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorWithLibrary")
+            Matchers.equalTo("SyntaxErrorWithLibrary"),
         )
     }
 
@@ -499,11 +499,11 @@ internal class LibraryTests {
         MatcherAssert.assertThat(translator.errors.size, Matchers.greaterThanOrEqualTo(2))
         MatcherAssert.assertThat(
             translator.errors[0].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorReferencingLibrary")
+            Matchers.equalTo("SyntaxErrorReferencingLibrary"),
         )
         MatcherAssert.assertThat(
             translator.errors[1].locator!!.library!!.id,
-            Matchers.equalTo("SyntaxErrorWithLibrary")
+            Matchers.equalTo("SyntaxErrorWithLibrary"),
         )
     }
 
@@ -528,7 +528,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat<Expression?>(e, Matchers.notNullValue())
         MatcherAssert.assertThat<Expression?>(
             e,
-            Matchers.instanceOf<Expression?>(Equal::class.java)
+            Matchers.instanceOf<Expression?>(Equal::class.java),
         )
         val eq = e as Equal
         MatcherAssert.assertThat(eq.operand, Matchers.notNullValue())
@@ -536,7 +536,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(eq.operand[0], Matchers.instanceOf(FunctionRef::class.java))
         MatcherAssert.assertThat(
             (eq.operand[0] as FunctionRef).libraryName,
-            Matchers.equalTo("TestFluent1")
+            Matchers.equalTo("TestFluent1"),
         )
     }
 
@@ -552,7 +552,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat<Expression?>(e, Matchers.notNullValue())
         MatcherAssert.assertThat<Expression?>(
             e,
-            Matchers.instanceOf<Expression?>(Equal::class.java)
+            Matchers.instanceOf<Expression?>(Equal::class.java),
         )
         val eq = e as Equal
         MatcherAssert.assertThat(eq.operand, Matchers.notNullValue())
@@ -560,7 +560,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(eq.operand[0], Matchers.instanceOf(FunctionRef::class.java))
         MatcherAssert.assertThat(
             (eq.operand[0] as FunctionRef).libraryName,
-            Matchers.equalTo("TestFluent2")
+            Matchers.equalTo("TestFluent2"),
         )
     }
 
@@ -570,13 +570,13 @@ internal class LibraryTests {
         val translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent5.cql")
         MatcherAssert.assertThat(
             translator.errors.size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         ) // Expects invalid invocation
         MatcherAssert.assertThat(
             translator.errors[0].message,
             Matchers.equalTo(
                 "Operator invalidInvocation with signature (System.String) is a fluent function and can only be invoked with fluent syntax."
-            )
+            ),
         )
     }
 
@@ -586,13 +586,13 @@ internal class LibraryTests {
         val translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent6.cql")
         MatcherAssert.assertThat(
             translator.errors.size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         ) // Expects invalid fluent invocation
         MatcherAssert.assertThat(
             translator.errors[0].message,
             Matchers.equalTo(
                 "Invocation of operator invalidInvocation with signature (System.String) uses fluent syntax, but the operator is not defined as a fluent function."
-            )
+            ),
         )
     }
 
@@ -608,7 +608,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat<Expression?>(e, Matchers.notNullValue())
         MatcherAssert.assertThat<Expression?>(
             e,
-            Matchers.instanceOf<Expression?>(Equal::class.java)
+            Matchers.instanceOf<Expression?>(Equal::class.java),
         )
         val eq = e as Equal
         MatcherAssert.assertThat(eq.operand, Matchers.notNullValue())
@@ -616,7 +616,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(eq.operand[0], Matchers.instanceOf(FunctionRef::class.java))
         MatcherAssert.assertThat(
             (eq.operand[0] as FunctionRef).libraryName,
-            Matchers.equalTo("TF1")
+            Matchers.equalTo("TF1"),
         )
     }
 
@@ -630,7 +630,7 @@ internal class LibraryTests {
             translator.errors[0].message,
             Matchers.equalTo(
                 "Could not resolve call to operator invalidInvocation with signature ()."
-            )
+            ),
         )
     }
 
@@ -666,7 +666,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -684,7 +684,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -702,7 +702,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -734,7 +734,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -766,7 +766,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -798,7 +798,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -835,7 +835,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         )
     }
 
@@ -849,7 +849,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -881,7 +881,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(0)
+            Matchers.equalTo(0),
         )
 
         val compileLibrary = translator.translatedLibrary!!.library
@@ -917,7 +917,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Errors: " + translator.errors,
             translator.errors.size,
-            Matchers.equalTo(1)
+            Matchers.equalTo(1),
         )
     }
 
@@ -932,7 +932,7 @@ internal class LibraryTests {
         val codeSystemRefError = errors[0]
         MatcherAssert.assertThat(
             codeSystemRefError.message,
-            Matchers.containsString("Could not resolve reference to code system DoesNotExist")
+            Matchers.containsString("Could not resolve reference to code system DoesNotExist"),
         )
 
         val privateCodeSystemError = errors[1]
@@ -940,7 +940,7 @@ internal class LibraryTests {
             privateCodeSystemError.message,
             Matchers.containsString(
                 "Identifier PrivateCodes in library Issue1587Include is marked private and cannot be referenced from another library."
-            )
+            ),
         )
     }
 
@@ -949,7 +949,7 @@ internal class LibraryTests {
     @Throws(IOException::class)
     fun forwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformationSignatureLevelNone(
         testFileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?
+        signatureLevel: LibraryBuilder.SignatureLevel?,
     ) {
         val translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel)
         val expectedWarningCount =
@@ -962,7 +962,7 @@ internal class LibraryTests {
         MatcherAssert.assertThat(
             "Warnings: " + translator.warnings,
             translator.warnings.size,
-            Matchers.equalTo(expectedWarningCount)
+            Matchers.equalTo(expectedWarningCount),
         )
 
         if (expectedWarningCount > 0) {
@@ -971,9 +971,9 @@ internal class LibraryTests {
                 Matchers.equalTo(
                     java.lang.String.format(
                         "The function TestAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation.TestAny has multiple overloads and due to the SignatureLevel setting (%s), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.",
-                        signatureLevel!!.name
+                        signatureLevel!!.name,
                     )
-                )
+                ),
             )
         }
     }
@@ -1007,36 +1007,36 @@ internal class LibraryTests {
             return arrayOf(
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.None
+                    LibraryBuilder.SignatureLevel.None,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Differing
+                    LibraryBuilder.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Overloads
+                    LibraryBuilder.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.All
+                    LibraryBuilder.SignatureLevel.All,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.None
+                    LibraryBuilder.SignatureLevel.None,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Differing
+                    LibraryBuilder.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Overloads
+                    LibraryBuilder.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.All
-                )
+                    LibraryBuilder.SignatureLevel.All,
+                ),
             )
         }
     }

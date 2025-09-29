@@ -14,16 +14,12 @@ expect fun getModelInfoProviders(refresh: Boolean): Iterator<ModelInfoProvider>
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 fun createModelInfoProvider(
-    getModelInfoXml: (id: String, system: String?, version: String?) -> Source?,
+    getModelInfoXml: (id: String, system: String?, version: String?) -> Source?
 ): ModelInfoProvider {
     return object : ModelInfoProvider {
         override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
             val modelInfoXml =
-                getModelInfoXml(
-                    modelIdentifier.id,
-                    modelIdentifier.system,
-                    modelIdentifier.version,
-                )
+                getModelInfoXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
             return modelInfoXml?.let { parseModelInfoXml(it) }
         }
     }

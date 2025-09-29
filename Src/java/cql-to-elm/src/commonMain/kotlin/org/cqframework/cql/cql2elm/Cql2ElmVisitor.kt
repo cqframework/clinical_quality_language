@@ -45,12 +45,12 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
     "MaxLineLength",
     "ForbiddenComment",
     "LoopWithTooManyJumpStatements",
-    "MagicNumber"
+    "MagicNumber",
 )
 class Cql2ElmVisitor(
     libraryBuilder: LibraryBuilder,
     tokenStream: TokenStream,
-    libraryInfo: LibraryInfo
+    libraryInfo: LibraryInfo,
 ) : CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
@@ -148,7 +148,7 @@ class Cql2ElmVisitor(
         track(
             ir,
             (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
-            else ctx.localIdentifier())!!
+            else ctx.localIdentifier())!!,
         )
         libraryBuilder.pushIdentifier(ir, usingDef, IdentifierScope.GLOBAL)
 
@@ -159,7 +159,7 @@ class Cql2ElmVisitor(
         modelNamespace: NamespaceInfo?,
         modelName: String?,
         version: String?,
-        localIdentifier: String
+        localIdentifier: String,
     ): Model {
         var modelName = modelName
         var version = version
@@ -226,7 +226,7 @@ class Cql2ElmVisitor(
         track(
             ir,
             (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
-            else ctx.localIdentifier())!!
+            else ctx.localIdentifier())!!,
         )
         libraryBuilder.pushIdentifier(ir, library, IdentifierScope.GLOBAL)
 
@@ -436,7 +436,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveTypeName(modelIdentifier, identifier)
                 ?: throw CqlSemanticException(
                     "Could not find type for model: $modelIdentifier and name: $identifier",
-                    getTrackBack(ctx)
+                    getTrackBack(ctx),
                 )
         val result =
             of.createNamedTypeSpecifier().withName(libraryBuilder.dataTypeToQName(resultType))
@@ -638,7 +638,7 @@ class Cql2ElmVisitor(
             parseExpression(ctx.expression(0)),
             ctx.getChild(1)!!.text == "[",
             parseExpression(ctx.expression(1)),
-            ctx.getChild(5)!!.text == "]"
+            ctx.getChild(5)!!.text == "]",
         )
     }
 
@@ -771,7 +771,7 @@ class Cql2ElmVisitor(
                         element.resultType!!,
                         elementType,
                         implicit = true,
-                        allowPromotionAndDemotion = false
+                        allowPromotionAndDemotion = false,
                     )
                 if (conversion != null) {
                     list.element.add(libraryBuilder.convertExpression(element, conversion))
@@ -832,7 +832,7 @@ class Cql2ElmVisitor(
             } catch (e: RuntimeException) {
                 throw IllegalArgumentException(
                     "Invalid time input ($input). Use ISO 8601 time representation (hh:mm:ss.fff).",
-                    e
+                    e,
                 )
             }
         } else {
@@ -1004,7 +1004,7 @@ class Cql2ElmVisitor(
                 throw IllegalArgumentException(
                     "Invalid date-time input ($input)." +
                         " Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).",
-                    e
+                    e,
                 )
             }
         } else
@@ -1064,7 +1064,7 @@ class Cql2ElmVisitor(
         return if (ctx.unit() != null) {
             libraryBuilder.createQuantity(
                 parseDecimal(ctx.NUMBER().text),
-                (parseString(ctx.unit()))!!
+                (parseString(ctx.unit()))!!,
             )
         } else {
             libraryBuilder.createNumberLiteral(ctx.NUMBER().text)
@@ -1126,7 +1126,7 @@ class Cql2ElmVisitor(
         exp.withOperand(
             listOf(
                 parseExpression(ctx.expressionTerm(0))!!,
-                parseExpression(ctx.expressionTerm(1))!!
+                parseExpression(ctx.expressionTerm(1))!!,
             )
         )
         libraryBuilder.resolveBinaryCall("System", operatorName, (exp))
@@ -1139,7 +1139,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expressionTerm(0))!!,
-                        parseExpression(ctx.expressionTerm(1))!!
+                        parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
         libraryBuilder.resolveBinaryCall("System", "Power", power)
@@ -1178,7 +1178,7 @@ class Cql2ElmVisitor(
             exp.withOperand(
                 listOf(
                     parseExpression(ctx.expressionTerm(0))!!,
-                    parseExpression(ctx.expressionTerm(1))!!
+                    parseExpression(ctx.expressionTerm(1))!!,
                 )
             )
             libraryBuilder.resolveBinaryCall("System", operatorName, (exp as BinaryExpression?)!!)
@@ -1193,7 +1193,7 @@ class Cql2ElmVisitor(
             concatenate!!.withOperand(
                 listOf(
                     parseExpression(ctx.expressionTerm(0))!!,
-                    parseExpression(ctx.expressionTerm(1))!!
+                    parseExpression(ctx.expressionTerm(1))!!,
                 )
             )
             for (i in concatenate.operand.indices) {
@@ -1266,13 +1266,13 @@ class Cql2ElmVisitor(
         return parseDateTimePrecision(
             dateTimePrecision,
             precisionRequired = true,
-            allowWeeks = false
+            allowWeeks = false,
         )
     }
 
     private fun parseComparableDateTimePrecision(
         dateTimePrecision: String?,
-        precisionRequired: Boolean
+        precisionRequired: Boolean,
     ): DateTimePrecision? {
         return parseDateTimePrecision(dateTimePrecision, precisionRequired, false)
     }
@@ -1280,7 +1280,7 @@ class Cql2ElmVisitor(
     private fun parseDateTimePrecision(
         dateTimePrecision: String?,
         precisionRequired: Boolean = true,
-        allowWeeks: Boolean = true
+        allowWeeks: Boolean = true,
     ): DateTimePrecision? {
         if (dateTimePrecision == null) {
             require(!precisionRequired) { "dateTimePrecision is null" }
@@ -1413,7 +1413,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveBinaryCall(
                 "System",
                 if (isProper) "ProperIncludedIn" else "IncludedIn",
-                result
+                result,
             )
             result
         } else {
@@ -1425,18 +1425,18 @@ class Cql2ElmVisitor(
                                 .withOperand(listOf(first, second)),
                             (if (isProper) of.createLess() else of.createLessOrEqual()).withOperand(
                                 listOf(first, third!!)
-                            )
+                            ),
                         )
                     )
             libraryBuilder.resolveBinaryCall(
                 "System",
                 if (isProper) "Greater" else "GreaterOrEqual",
-                (result.operand[0] as BinaryExpression)
+                (result.operand[0] as BinaryExpression),
             )
             libraryBuilder.resolveBinaryCall(
                 "System",
                 if (isProper) "Less" else "LessOrEqual",
-                (result.operand[1] as BinaryExpression)
+                (result.operand[1] as BinaryExpression),
             )
             libraryBuilder.resolveBinaryCall("System", "And", result)
             result
@@ -1450,7 +1450,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expressionTerm(0))!!,
-                        parseExpression(ctx.expressionTerm(1))!!
+                        parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
         libraryBuilder.resolveBinaryCall("System", "DurationBetween", result)
@@ -1464,7 +1464,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expressionTerm(0))!!,
-                        parseExpression(ctx.expressionTerm(1))!!
+                        parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
         libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result)
@@ -1497,7 +1497,7 @@ class Cql2ElmVisitor(
                             .withOperand(
                                 listOf(
                                     parseExpression(ctx.expression(0))!!,
-                                    parseExpression(ctx.expression(1))!!
+                                    parseExpression(ctx.expression(1))!!,
                                 )
                             )
                     libraryBuilder.resolveBinaryCall("System", "In", inExpression)
@@ -1519,7 +1519,7 @@ class Cql2ElmVisitor(
                             .withOperand(
                                 listOf(
                                     parseExpression(ctx.expression(0))!!,
-                                    parseExpression(ctx.expression(1))!!
+                                    parseExpression(ctx.expression(1))!!,
                                 )
                             )
                     libraryBuilder.resolveBinaryCall("System", "Contains", contains)
@@ -1536,7 +1536,7 @@ class Cql2ElmVisitor(
                         libraryBuilder.resolveCall(
                             "System",
                             "InValueSet",
-                            InValueSetInvocation(inValueSet)
+                            InValueSetInvocation(inValueSet),
                         )
                         return inValueSet
                     }
@@ -1549,7 +1549,7 @@ class Cql2ElmVisitor(
                         libraryBuilder.resolveCall(
                             "System",
                             "InCodeSystem",
-                            InCodeSystemInvocation(inCodeSystem)
+                            InCodeSystemInvocation(inCodeSystem),
                         )
                         return inCodeSystem
                     }
@@ -1567,7 +1567,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        parseExpression(ctx.expression(1))!!,
                     )
                 )
         libraryBuilder.resolveBinaryCall("System", "And", and)
@@ -1581,7 +1581,7 @@ class Cql2ElmVisitor(
                     .withOperand(
                         listOf(
                             parseExpression(ctx.expression(0))!!,
-                            parseExpression(ctx.expression(1))!!
+                            parseExpression(ctx.expression(1))!!,
                         )
                     )
             libraryBuilder.resolveBinaryCall("System", "Xor", xor)
@@ -1592,7 +1592,7 @@ class Cql2ElmVisitor(
                     .withOperand(
                         listOf(
                             parseExpression(ctx.expression(0))!!,
-                            parseExpression(ctx.expression(1))!!
+                            parseExpression(ctx.expression(1))!!,
                         )
                     )
             libraryBuilder.resolveBinaryCall("System", "Or", or)
@@ -1606,7 +1606,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        parseExpression(ctx.expression(1))!!,
                     )
                 )
         libraryBuilder.resolveBinaryCall("System", "Implies", implies)
@@ -1634,7 +1634,7 @@ class Cql2ElmVisitor(
                     .withOperand(
                         listOf(
                             parseExpression(ctx.expression(0))!!,
-                            parseExpression(ctx.expression(1))!!
+                            parseExpression(ctx.expression(1))!!,
                         )
                     )
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
@@ -1651,7 +1651,7 @@ class Cql2ElmVisitor(
                     .withOperand(
                         listOf(
                             parseExpression(ctx.expression(0))!!,
-                            parseExpression(ctx.expression(1))!!
+                            parseExpression(ctx.expression(1))!!,
                         )
                     )
             libraryBuilder.resolveBinaryCall("System", "Equal", equal)
@@ -1782,7 +1782,7 @@ class Cql2ElmVisitor(
                         operand.resultType!!,
                         targetType.resultType!!,
                         implicit = false,
-                        allowPromotionAndDemotion = true
+                        allowPromotionAndDemotion = true,
                     )
                         ?: // ERROR:
                         throw IllegalArgumentException(
@@ -1969,7 +1969,7 @@ class Cql2ElmVisitor(
             operatorName,
             operator,
             true,
-            allowPromotionAndDemotion
+            allowPromotionAndDemotion,
         )
         return operator
     }
@@ -2019,26 +2019,26 @@ class Cql2ElmVisitor(
                 libraryBuilder.resolveProperContains(
                     timingOperator.left,
                     timingOperator.right,
-                    parseComparableDateTimePrecision(dateTimePrecision, false)
+                    parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
             } else
                 libraryBuilder.resolveContains(
                     timingOperator.left,
                     timingOperator.right,
-                    parseComparableDateTimePrecision(dateTimePrecision, false)
+                    parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
         }
         return if (isProper) {
             libraryBuilder.resolveProperIncludes(
                 timingOperator.left,
                 timingOperator.right,
-                parseComparableDateTimePrecision(dateTimePrecision, false)
+                parseComparableDateTimePrecision(dateTimePrecision, false),
             )
         } else
             libraryBuilder.resolveIncludes(
                 timingOperator.left,
                 timingOperator.right,
-                parseComparableDateTimePrecision(dateTimePrecision, false)
+                parseComparableDateTimePrecision(dateTimePrecision, false),
             )
     }
 
@@ -2088,26 +2088,26 @@ class Cql2ElmVisitor(
                 libraryBuilder.resolveProperIn(
                     timingOperator.left,
                     timingOperator.right,
-                    parseComparableDateTimePrecision(dateTimePrecision, false)
+                    parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
             } else
                 libraryBuilder.resolveIn(
                     timingOperator.left,
                     timingOperator.right,
-                    parseComparableDateTimePrecision(dateTimePrecision, false)
+                    parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
         }
         return if (isProper) {
             libraryBuilder.resolveProperIncludedIn(
                 timingOperator.left,
                 timingOperator.right,
-                parseComparableDateTimePrecision(dateTimePrecision, false)
+                parseComparableDateTimePrecision(dateTimePrecision, false),
             )
         } else
             libraryBuilder.resolveIncludedIn(
                 timingOperator.left,
                 timingOperator.right,
-                parseComparableDateTimePrecision(dateTimePrecision, false)
+                parseComparableDateTimePrecision(dateTimePrecision, false),
             )
     }
 
@@ -2203,7 +2203,7 @@ class Cql2ElmVisitor(
                         "SameOrBefore",
                         sameOrBefore,
                         mustResolve = true,
-                        allowPromotionAndDemotion = true
+                        allowPromotionAndDemotion = true,
                     )
                     sameOrBefore
                 } else {
@@ -2218,7 +2218,7 @@ class Cql2ElmVisitor(
                         "SameOrAfter",
                         sameOrAfter,
                         mustResolve = true,
-                        allowPromotionAndDemotion = true
+                        allowPromotionAndDemotion = true,
                     )
                     sameOrAfter
                 }
@@ -2235,7 +2235,7 @@ class Cql2ElmVisitor(
                         "Before",
                         before,
                         mustResolve = true,
-                        allowPromotionAndDemotion = true
+                        allowPromotionAndDemotion = true,
                     )
                     before
                 } else {
@@ -2250,7 +2250,7 @@ class Cql2ElmVisitor(
                         "After",
                         after,
                         mustResolve = true,
-                        allowPromotionAndDemotion = true
+                        allowPromotionAndDemotion = true,
                     )
                     after
                 }
@@ -2343,7 +2343,7 @@ class Cql2ElmVisitor(
                                     "Before",
                                     before,
                                     mustResolve = true,
-                                    allowPromotionAndDemotion = true
+                                    allowPromotionAndDemotion = true,
                                 )
                                 before
                             } else {
@@ -2361,7 +2361,7 @@ class Cql2ElmVisitor(
                                     "SameOrBefore",
                                     sameOrBefore,
                                     mustResolve = true,
-                                    allowPromotionAndDemotion = true
+                                    allowPromotionAndDemotion = true,
                                 )
                                 sameOrBefore
                             }
@@ -2386,7 +2386,7 @@ class Cql2ElmVisitor(
                                     "After",
                                     after,
                                     mustResolve = true,
-                                    allowPromotionAndDemotion = true
+                                    allowPromotionAndDemotion = true,
                                 )
                                 after
                             } else {
@@ -2404,7 +2404,7 @@ class Cql2ElmVisitor(
                                     "SameOrAfter",
                                     sameOrAfter,
                                     mustResolve = true,
-                                    allowPromotionAndDemotion = true
+                                    allowPromotionAndDemotion = true,
                                 )
                                 sameOrAfter
                             }
@@ -2423,7 +2423,7 @@ class Cql2ElmVisitor(
                             libraryBuilder.resolveBinaryCall(
                                 "System",
                                 "Subtract",
-                                (lowerBound as BinaryExpression?)!!
+                                (lowerBound as BinaryExpression?)!!,
                             )
                             upperBound = right
                         } else {
@@ -2433,7 +2433,7 @@ class Cql2ElmVisitor(
                             libraryBuilder.resolveBinaryCall(
                                 "System",
                                 "Add",
-                                (upperBound as BinaryExpression?)!!
+                                (upperBound as BinaryExpression?)!!,
                             )
                         }
 
@@ -2447,14 +2447,14 @@ class Cql2ElmVisitor(
                                     lowerBound,
                                     isOffsetInclusive,
                                     upperBound,
-                                    isInclusive
+                                    isInclusive,
                                 )
                             else
                                 libraryBuilder.createInterval(
                                     lowerBound,
                                     isInclusive,
                                     upperBound,
-                                    isOffsetInclusive
+                                    isOffsetInclusive,
                                 )
                         track(interval, ctx.quantityOffset()!!)
                         val inExpression =
@@ -2699,12 +2699,12 @@ class Cql2ElmVisitor(
         ifObject.condition =
             libraryBuilder.ensureCompatible(
                 ifObject.condition,
-                libraryBuilder.resolveTypeName("System", "Boolean")
+                libraryBuilder.resolveTypeName("System", "Boolean"),
             )
         val resultType: DataType? =
             libraryBuilder.ensureCompatibleTypes(
                 ifObject.then!!.resultType,
-                ifObject.`else`!!.resultType!!
+                ifObject.`else`!!.resultType!!,
             )
         ifObject.resultType = resultType
         ifObject.then = libraryBuilder.ensureCompatible(ifObject.then, resultType)
@@ -2736,7 +2736,7 @@ class Cql2ElmVisitor(
                     resultType =
                         libraryBuilder.ensureCompatibleTypes(
                             resultType,
-                            result.`else`!!.resultType!!
+                            result.`else`!!.resultType!!,
                         )
                 } else {
                     result.comparand = parseExpression(pt)
@@ -2747,12 +2747,12 @@ class Cql2ElmVisitor(
                 if (result.comparand != null) {
                     libraryBuilder.verifyType(
                         caseItem.`when`!!.resultType!!,
-                        result.comparand!!.resultType!!
+                        result.comparand!!.resultType!!,
                     )
                 } else {
                     verifyType(
                         caseItem.`when`!!.resultType,
-                        libraryBuilder.resolveTypeName("System", "Boolean")
+                        libraryBuilder.resolveTypeName("System", "Boolean"),
                     )
                 }
                 resultType =
@@ -2761,7 +2761,7 @@ class Cql2ElmVisitor(
                     } else {
                         libraryBuilder.ensureCompatibleTypes(
                             resultType,
-                            caseItem.then!!.resultType!!
+                            caseItem.then!!.resultType!!,
                         )
                     }
                 result.caseItem.add(caseItem)
@@ -2772,7 +2772,7 @@ class Cql2ElmVisitor(
                 caseItem!!.`when` =
                     (libraryBuilder.ensureCompatible(
                         caseItem.`when`,
-                        result.comparand!!.resultType
+                        result.comparand!!.resultType,
                     ))
             }
             caseItem!!.then = libraryBuilder.ensureCompatible(caseItem.then, resultType)
@@ -2814,7 +2814,7 @@ class Cql2ElmVisitor(
             per =
                 libraryBuilder.createQuantity(
                     BigDecimal("1.0"), // Always use BigDecimal(String) for exact precision
-                    (parseString(ctx.dateTimePrecision()))!!
+                    (parseString(ctx.dateTimePrecision()))!!,
                 )
         } else if (ctx.expression().size > 1) {
             val perExpression = parseExpression(ctx.expression(1))
@@ -2874,7 +2874,7 @@ class Cql2ElmVisitor(
         val label: String =
             getTypeIdentifier(
                 qualifiers,
-                (parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()))!!
+                (parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()))!!,
             )
         val dataType = libraryBuilder.resolveTypeName(model, label)
 
@@ -2918,7 +2918,7 @@ class Cql2ElmVisitor(
                         "Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
                         getTrackBack(ctx),
                         if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
-                        else CqlCompilerException.ErrorSeverity.Warning
+                        else CqlCompilerException.ErrorSeverity.Warning,
                     )
                 libraryBuilder.recordParsingException(propertyException)
             } else {
@@ -2936,7 +2936,7 @@ class Cql2ElmVisitor(
                             getTrackBack(ctx),
                             if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
                             else CqlCompilerException.ErrorSeverity.Warning,
-                            e
+                            e,
                         )
                     libraryBuilder.recordParsingException(propertyException)
                 }
@@ -2988,7 +2988,7 @@ class Cql2ElmVisitor(
                             null,
                             null,
                             null,
-                            null
+                            null,
                         )
                     this.retrieves.add(mrRetrieve)
                     mrRetrieve.resultType = ListType(namedType as DataType)
@@ -3006,7 +3006,7 @@ class Cql2ElmVisitor(
                             null,
                             null,
                             null,
-                            null
+                            null,
                         )
                     this.retrieves.add(mRetrieve)
                     mRetrieve.resultType = ListType(mDataType)
@@ -3108,7 +3108,7 @@ class Cql2ElmVisitor(
                             property,
                             propertyType,
                             propertyException,
-                            terminology
+                            terminology,
                         )
                     this.retrieves.add(retrieve)
                     retrieve.resultType = ListType(namedType as DataType)
@@ -3140,7 +3140,7 @@ class Cql2ElmVisitor(
                     property,
                     property?.resultType,
                     propertyException,
-                    terminology
+                    terminology,
                 )
             this.retrieves.add(retrieve)
             retrieve.resultType = ListType(namedType as DataType)
@@ -3160,7 +3160,7 @@ class Cql2ElmVisitor(
         property: Property?,
         propertyType: DataType?,
         propertyException: Exception?,
-        terminology: Expression?
+        terminology: Expression?,
     ): Retrieve {
         var codeComparator: String? = codeComparator
         val retrieve: Retrieve =
@@ -3240,7 +3240,7 @@ class Cql2ElmVisitor(
                                         getTrackBack(ctx),
                                         if (useStrictRetrieveTyping)
                                             CqlCompilerException.ErrorSeverity.Error
-                                        else CqlCompilerException.ErrorSeverity.Warning
+                                        else CqlCompilerException.ErrorSeverity.Warning,
                                     )
                                 )
                             }
@@ -3261,7 +3261,7 @@ class Cql2ElmVisitor(
                                 getTrackBack(ctx),
                                 if (useStrictRetrieveTyping)
                                     CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning
+                                else CqlCompilerException.ErrorSeverity.Warning,
                             )
                         )
                     }
@@ -3317,7 +3317,7 @@ class Cql2ElmVisitor(
                                 getTrackBack(ctx.codeComparator()!!),
                                 if (useStrictRetrieveTyping)
                                     CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning
+                                else CqlCompilerException.ErrorSeverity.Warning,
                             )
                         )
                 }
@@ -3350,7 +3350,7 @@ class Cql2ElmVisitor(
                                     toList.operand,
                                     "codes",
                                     false,
-                                    toList.operand!!.resultType
+                                    toList.operand!!.resultType,
                                 )
                             retrieve.codes = codesAccessor
                         }
@@ -3360,7 +3360,7 @@ class Cql2ElmVisitor(
                             CqlSemanticException(
                                 "Terminology target is a list of concepts, but expects a list of codes",
                                 getTrackBack(ctx),
-                                CqlCompilerException.ErrorSeverity.Warning
+                                CqlCompilerException.ErrorSeverity.Warning,
                             )
                         )
                     }
@@ -3390,7 +3390,7 @@ class Cql2ElmVisitor(
                         getTrackBack(ctx),
                         if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
                         else CqlCompilerException.ErrorSeverity.Warning,
-                        e
+                        e,
                     )
                 )
             }
@@ -3567,6 +3567,7 @@ class Cql2ElmVisitor(
             }
         }
     }
+
     // TODO: Expand this optimization to work the DateLow/DateHigh property attributes
     /**
      * Some systems may wish to optimize performance by restricting retrieves with available date
@@ -3613,7 +3614,7 @@ class Cql2ElmVisitor(
     private fun attemptDateRangeOptimization(
         during: BinaryExpression,
         retrieve: Retrieve,
-        alias: String
+        alias: String,
     ): Boolean {
         if (retrieve.dateProperty != null || retrieve.dateRange != null) {
             return false
@@ -3675,7 +3676,7 @@ class Cql2ElmVisitor(
                 val o: Operator? =
                     libraryBuilder.conversionMap.getConversionOperator(
                         functionRef.operand[0].resultType!!,
-                        functionRef.resultType!!
+                        functionRef.resultType!!,
                     )
                 if (
                     ((o != null) &&
@@ -4007,7 +4008,7 @@ class Cql2ElmVisitor(
                 .withOperand(
                     listOf(
                         parseExpression(ctx.expressionTerm())!!,
-                        parseExpression(ctx.expression())!!
+                        parseExpression(ctx.expression())!!,
                     )
                 )
 
@@ -4131,7 +4132,7 @@ class Cql2ElmVisitor(
     private fun resolveFunction(
         libraryName: String?,
         functionName: String,
-        paramList: ParamListContext?
+        paramList: ParamListContext?,
     ): Expression? {
         val expressions: MutableList<Expression> = ArrayList()
         if (paramList?.expression() != null) {
@@ -4145,7 +4146,7 @@ class Cql2ElmVisitor(
             expressions,
             mustResolve = true,
             allowPromotionAndDemotion = false,
-            allowFluent = false
+            allowFluent = false,
         )
     }
 
@@ -4156,7 +4157,7 @@ class Cql2ElmVisitor(
         expressions: kotlin.collections.List<Expression>,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean
+        allowFluent: Boolean,
     ): Expression? {
         var name = functionName
         if (allowFluent) {
@@ -4193,7 +4194,7 @@ class Cql2ElmVisitor(
                 expressions,
                 mustResolve,
                 allowPromotionAndDemotion,
-                allowFluent
+                allowFluent,
             )
         if (
             result is FunctionRefInvocation &&
@@ -4232,7 +4233,7 @@ class Cql2ElmVisitor(
 
     private fun resolveFunctionOrQualifiedFunction(
         identifier: String,
-        paramListCtx: ParamListContext?
+        paramListCtx: ParamListContext?,
     ): Expression? {
         if (libraryBuilder.hasExpressionTarget()) {
             val target: Expression = libraryBuilder.popExpressionTarget()
@@ -4249,12 +4250,12 @@ class Cql2ElmVisitor(
                         target,
                         identifier,
                         paramListCtx,
-                        true
+                        true,
                     )
                 }
                 if (!this.isMethodInvocationEnabled) {
                     throw CqlSemanticException(
-                        "The identifier $identifier could not be resolved as an invocation because method-style invocation is disabled.",
+                        "The identifier $identifier could not be resolved as an invocation because method-style invocation is disabled."
                     )
                 }
                 throw IllegalArgumentException(
@@ -4285,7 +4286,7 @@ class Cql2ElmVisitor(
                     parameterRef,
                     identifier,
                     paramListCtx,
-                    false
+                    false,
                 )
             if (result != null) {
                 return result
@@ -4299,14 +4300,14 @@ class Cql2ElmVisitor(
     override fun visitFunction(ctx: FunctionContext): Expression? {
         return resolveFunctionOrQualifiedFunction(
             parseString(ctx.referentialIdentifier())!!,
-            ctx.paramList()
+            ctx.paramList(),
         )
     }
 
     override fun visitQualifiedFunction(ctx: QualifiedFunctionContext): Expression? {
         return resolveFunctionOrQualifiedFunction(
             parseString(ctx.identifierOrFunctionIdentifier())!!,
-            ctx.paramList()
+            ctx.paramList(),
         )
     }
 
@@ -4513,7 +4514,7 @@ class Cql2ElmVisitor(
             node.symbol.line,
             node.symbol.charPositionInLine + 1, // 1-based instead of 0-based
             node.symbol.line,
-            node.symbol.charPositionInLine + node.symbol.text!!.length
+            node.symbol.charPositionInLine + node.symbol.text!!.length,
         )
     }
 
@@ -4524,7 +4525,7 @@ class Cql2ElmVisitor(
             ctx.start?.charPositionInLine?.inc() ?: 0, // 1-based instead of 0-based
             ctx.stop?.line ?: 0,
             (ctx.stop?.charPositionInLine ?: 0) +
-                (ctx.stop?.text?.length ?: 0) // 1-based instead of 0-based
+                (ctx.stop?.text?.length ?: 0), // 1-based instead of 0-based
         )
     }
 

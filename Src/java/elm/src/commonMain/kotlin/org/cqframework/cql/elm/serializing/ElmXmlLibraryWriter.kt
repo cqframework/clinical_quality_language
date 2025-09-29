@@ -28,7 +28,7 @@ class ElmXmlLibraryWriter : ElmLibraryWriter {
                     "qdm43" to "urn:healthit-gov:qdm:v4_3",
                     "qdm53" to "urn:healthit-gov:qdm:v5_3",
                     "a" to "urn:hl7-org:cql-annotations:r1",
-                )
+                ),
             )
         return toXmlString(element, namespaces)
     }

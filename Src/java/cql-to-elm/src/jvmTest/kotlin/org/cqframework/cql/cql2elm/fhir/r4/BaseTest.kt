@@ -42,7 +42,7 @@ internal class BaseTest {
         val request = source.expression as Retrieve?
         MatcherAssert.assertThat<QName>(
             request!!.dataType,
-            QuickDataType.quickDataType("QuestionnaireResponse")
+            QuickDataType.quickDataType("QuestionnaireResponse"),
         )
 
         // Then check that the suchThat of the with is a greater with a Case as the left operand
@@ -53,23 +53,23 @@ internal class BaseTest {
         val caseExpression = suchThat.operand[0] as Case
         MatcherAssert.assertThat<MutableCollection<*>?>(
             caseExpression.caseItem,
-            Matchers.hasSize<Any?>(2)
+            Matchers.hasSize<Any?>(2),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[0].`when`,
-            Matchers.instanceOf(Is::class.java)
+            Matchers.instanceOf(Is::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[0].then,
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[1].`when`,
-            Matchers.instanceOf(Is::class.java)
+            Matchers.instanceOf(Is::class.java),
         )
         MatcherAssert.assertThat(
             caseExpression.caseItem[1].then,
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
     }
 
@@ -100,7 +100,7 @@ internal class BaseTest {
         val request = source.expression as Retrieve?
         MatcherAssert.assertThat<QName>(
             request!!.dataType,
-            QuickDataType.quickDataType("Procedure")
+            QuickDataType.quickDataType("Procedure"),
         )
 
         // Then check that the where is an In with a ToDateTime as the left operand
@@ -151,7 +151,7 @@ internal class BaseTest {
         MatcherAssert.assertThat(codes, Matchers.instanceOf(ToList::class.java))
         MatcherAssert.assertThat(
             (codes as ToList).operand,
-            Matchers.instanceOf(CodeRef::class.java)
+            Matchers.instanceOf(CodeRef::class.java),
         )
     }
 
@@ -162,7 +162,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r4/TestChoiceDateRangeOptimization.cql",
                 0,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization
+                CqlCompilerOptions.Options.EnableDateRangeOptimization,
             )
         val library = translator.toELM()
         val defs: MutableMap<String?, ExpressionDef> = HashMap()
@@ -201,7 +201,7 @@ internal class BaseTest {
         MatcherAssert.assertThat(query!!.source.size, Matchers.`is`(1))
         MatcherAssert.assertThat(
             query.source[0].expression,
-            Matchers.instanceOf(Retrieve::class.java)
+            Matchers.instanceOf(Retrieve::class.java),
         )
         var retrieve: Retrieve = query.source[0].expression as Retrieve
         MatcherAssert.assertThat(retrieve.dateProperty, Matchers.`is`("recordedDate"))
@@ -235,7 +235,7 @@ internal class BaseTest {
         MatcherAssert.assertThat(query!!.source.size, Matchers.`is`(1))
         MatcherAssert.assertThat(
             query.source[0].expression,
-            Matchers.instanceOf(Retrieve::class.java)
+            Matchers.instanceOf(Retrieve::class.java),
         )
         retrieve = query.source[0].expression as Retrieve
         MatcherAssert.assertThat(retrieve.dateProperty, Matchers.`is`("onset"))
@@ -324,7 +324,7 @@ internal class BaseTest {
         var equivalent = query.where as Equivalent?
         MatcherAssert.assertThat(
             equivalent!!.operand[0],
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         var functionRef: FunctionRef = equivalent.operand[0] as FunctionRef
         MatcherAssert.assertThat(functionRef.libraryName, Matchers.`is`("FHIRHelpers"))
@@ -362,7 +362,7 @@ internal class BaseTest {
         equivalent = query.where as Equivalent?
         MatcherAssert.assertThat(
             equivalent!!.operand[0],
-            Matchers.instanceOf(FunctionRef::class.java)
+            Matchers.instanceOf(FunctionRef::class.java),
         )
         functionRef = equivalent.operand[0] as FunctionRef
         MatcherAssert.assertThat(functionRef.libraryName, Matchers.`is`("FHIRHelpers"))
@@ -379,7 +379,7 @@ internal class BaseTest {
 
         MatcherAssert.assertThat(
             expressionDef!!.expression,
-            Matchers.instanceOf(Retrieve::class.java)
+            Matchers.instanceOf(Retrieve::class.java),
         )
         val retrieve = expressionDef.expression as Retrieve?
         MatcherAssert.assertThat(retrieve!!.codes, Matchers.instanceOf(ToList::class.java))
@@ -394,7 +394,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r4/exm108/EXM108.cql",
                 0,
-                LibraryBuilder.SignatureLevel.All
+                LibraryBuilder.SignatureLevel.All,
             )
         // Should only be one identifier being hid after fixes, "Warafin"
         Assertions.assertEquals(1, translator.exceptions.size)

@@ -36,7 +36,7 @@ private constructor(
     enum class Format {
         XML,
         JSON,
-        COFFEE
+        COFFEE,
     }
 
     private val compiler = CqlCompiler(namespaceInfo, sourceInfo, libraryManager)
@@ -47,14 +47,14 @@ private constructor(
 
     private fun toXml(
         library: Library,
-        elmLibraryWriterProvider: ElmLibraryWriterProvider
+        elmLibraryWriterProvider: ElmLibraryWriterProvider,
     ): String {
         return convertToXml(library, elmLibraryWriterProvider)
     }
 
     private fun toJson(
         library: Library,
-        elmLibraryWriterProvider: ElmLibraryWriterProvider
+        elmLibraryWriterProvider: ElmLibraryWriterProvider,
     ): String {
         return convertToJson(library, elmLibraryWriterProvider)
     }
@@ -118,13 +118,13 @@ private constructor(
         fun fromSource(
             namespaceInfo: NamespaceInfo?,
             source: Source,
-            libraryManager: LibraryManager
+            libraryManager: LibraryManager,
         ): CqlTranslator {
             return CqlTranslator(
                 namespaceInfo,
                 null,
                 CharStreams.fromString(source.readString()),
-                libraryManager
+                libraryManager,
             )
         }
 
@@ -136,7 +136,7 @@ private constructor(
                 null,
                 null,
                 CharStreams.fromString(source.readString()),
-                libraryManager
+                libraryManager,
             )
         }
 
@@ -147,13 +147,13 @@ private constructor(
             namespaceInfo: NamespaceInfo?,
             sourceInfo: VersionedIdentifier?,
             source: Source,
-            libraryManager: LibraryManager
+            libraryManager: LibraryManager,
         ): CqlTranslator {
             return CqlTranslator(
                 namespaceInfo,
                 sourceInfo,
                 CharStreams.fromString(source.readString()),
-                libraryManager
+                libraryManager,
             )
         }
 
@@ -172,7 +172,7 @@ private constructor(
         fun fromFile(
             namespaceInfo: NamespaceInfo?,
             cqlFileName: String,
-            libraryManager: LibraryManager
+            libraryManager: LibraryManager,
         ): CqlTranslator {
             return SystemFileSystem.source(Path(cqlFileName)).buffered().use {
                 fromSource(namespaceInfo, getSourceInfo(cqlFileName), it, libraryManager)
@@ -194,7 +194,7 @@ private constructor(
         fun fromFile(
             namespaceInfo: NamespaceInfo?,
             cqlFile: Path,
-            libraryManager: LibraryManager
+            libraryManager: LibraryManager,
         ): CqlTranslator {
             return SystemFileSystem.source(cqlFile).buffered().use {
                 fromSource(namespaceInfo, getSourceInfo(cqlFile), it, libraryManager)
@@ -208,7 +208,7 @@ private constructor(
             namespaceInfo: NamespaceInfo?,
             sourceInfo: VersionedIdentifier?,
             cqlFile: Path,
-            libraryManager: LibraryManager
+            libraryManager: LibraryManager,
         ): CqlTranslator {
             return SystemFileSystem.source(cqlFile).buffered().use {
                 fromSource(namespaceInfo, sourceInfo, it, libraryManager)
@@ -239,7 +239,7 @@ private constructor(
         @JsStatic
         fun convertToXml(
             library: Library,
-            elmLibraryWriterProvider: ElmLibraryWriterProvider = DefaultElmLibraryWriterProvider
+            elmLibraryWriterProvider: ElmLibraryWriterProvider = DefaultElmLibraryWriterProvider,
         ): String {
             return elmLibraryWriterProvider
                 .create(LibraryContentType.XML.mimeType())
@@ -251,7 +251,7 @@ private constructor(
         @JsStatic
         fun convertToJson(
             library: Library,
-            elmLibraryWriterProvider: ElmLibraryWriterProvider = DefaultElmLibraryWriterProvider
+            elmLibraryWriterProvider: ElmLibraryWriterProvider = DefaultElmLibraryWriterProvider,
         ): String {
             return elmLibraryWriterProvider
                 .create(LibraryContentType.JSON.mimeType())

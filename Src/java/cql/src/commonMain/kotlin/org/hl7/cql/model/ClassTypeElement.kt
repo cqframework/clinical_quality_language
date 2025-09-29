@@ -5,7 +5,7 @@ data class ClassTypeElement(
     val type: DataType,
     val prohibited: Boolean = false,
     val oneBased: Boolean = false,
-    val target: String? = null
+    val target: String? = null,
 ) {
 
     // For Java compatibility. Can be deleted once tests are updated.
