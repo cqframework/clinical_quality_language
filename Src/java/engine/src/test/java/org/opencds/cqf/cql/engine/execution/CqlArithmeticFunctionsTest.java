@@ -22,14 +22,17 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
     }
 
     /**
-     * {@link org.opencds.cqf.cql.engine.elm.execution.AddEvaluator#evaluate(Context)}
+     * {@link org.opencds.cqf.cql.engine.elm.executing.AddEvaluator#add}
      */
     @Test
     void add() {
 
         // error testing
         try {
-            var value = AddEvaluator.add("This is an error", 404);
+            // Passing null as the state argument to the subtract method is fine here since that method
+            // only uses the state when it has to convert Quantities with different units which cannot
+            // happen here.
+            var value = AddEvaluator.add("This is an error", 404, null);
             fail();
         } catch (CqlException e) {
             // pass

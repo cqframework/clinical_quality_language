@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.*;
 
 /*
@@ -53,37 +54,35 @@ NOTE: see note in AddEvaluator
 
 public class SubtractEvaluator {
 
-    public static Object subtract(Object left, Object right) {
+    public static Object subtract(Object left, Object right, final State state) {
         if (left == null || right == null) {
             return null;
         }
 
         // -(Integer, Integer)
-        if (left instanceof Integer) {
-            return (Integer) left - (Integer) right;
+        if (left instanceof Integer leftInteger && right instanceof Integer rightInteger) {
+            return leftInteger - rightInteger;
+        } else if (left instanceof Long leftLong && right instanceof Long rightLong) {
+            return leftLong - rightLong;
         }
-
-        if (left instanceof Long) {
-            return (Long) left - (Long) right;
-        }
-
         // -(Decimal, Decimal)
-        else if (left instanceof BigDecimal) {
-            return ((BigDecimal) left).subtract((BigDecimal) right);
+        else if (left instanceof BigDecimal leftBigDecimal && right instanceof BigDecimal rightBigDecimal) {
+            return leftBigDecimal.subtract(rightBigDecimal);
         }
-
         // -(Quantity, Quantity)
-        else if (left instanceof Quantity) {
-            return new Quantity()
-                    .withValue((((Quantity) left).getValue()).subtract(((Quantity) right).getValue()))
-                    .withUnit(((Quantity) left).getUnit());
+        else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
+            return UnitConversionHelper.computeWithConvertedUnits(
+                    leftQuantity,
+                    rightQuantity,
+                    (commonUnit, leftValue, rightValue) ->
+                            new Quantity().withUnit(commonUnit).withValue(leftValue.subtract(rightValue)),
+                    state);
         }
-
         // -(DateTime, Quantity)
-        else if (left instanceof BaseTemporal && right instanceof Quantity) {
-            Precision valueToSubtractPrecision = Precision.fromString(((Quantity) right).getUnit());
+        else if (left instanceof BaseTemporal && right instanceof Quantity rightQuantity) {
+            Precision valueToSubtractPrecision = Precision.fromString(rightQuantity.getUnit());
             Precision precision = Precision.fromString(BaseTemporal.getLowestPrecision((BaseTemporal) left));
-            int valueToSubtract = ((Quantity) right).getValue().intValue();
+            int valueToSubtract = rightQuantity.getValue().intValue();
 
             if (left instanceof DateTime || left instanceof Date) {
                 if (valueToSubtractPrecision == Precision.WEEK) {
@@ -117,13 +116,11 @@ public class SubtractEvaluator {
                                 .minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()),
                         precision);
             }
-        } else if (left instanceof Interval && right instanceof Interval) {
-            Interval leftInterval = (Interval) left;
-            Interval rightInterval = (Interval) right;
+        } else if (left instanceof Interval leftInterval && right instanceof Interval rightInterval) {
             return new Interval(
-                    subtract(leftInterval.getStart(), rightInterval.getStart()),
+                    subtract(leftInterval.getStart(), rightInterval.getStart(), state),
                     true,
-                    subtract(leftInterval.getEnd(), rightInterval.getEnd()),
+                    subtract(leftInterval.getEnd(), rightInterval.getEnd(), state),
                     true);
         }
 

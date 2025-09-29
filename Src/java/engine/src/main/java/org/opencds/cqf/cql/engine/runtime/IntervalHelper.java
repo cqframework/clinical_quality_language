@@ -116,7 +116,7 @@ public class IntervalHelper {
             var truncatedEnd = Value.roundToScale(endBigDecimal, quantityScale, false);
 
             if (truncatedStart.compareTo(truncatedEnd) <= 0) {
-                return new Interval(truncatedStart, true, truncatedEnd, true);
+                return new Interval(truncatedStart, true, truncatedEnd, true, state);
             }
 
             return null;
@@ -140,7 +140,7 @@ public class IntervalHelper {
             var truncatedEnd = endBaseTemporal.roundToPrecision(precision, false);
 
             if (Boolean.TRUE.equals(LessOrEqualEvaluator.lessOrEqual(truncatedStart, truncatedEnd, state))) {
-                return new Interval(truncatedStart, true, truncatedEnd, true);
+                return new Interval(truncatedStart, true, truncatedEnd, true, state);
             }
 
             return null;

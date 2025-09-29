@@ -56,13 +56,13 @@ public class Interval implements CqlType, Comparable<Interval> {
         }
     }
 
-    public static Object getSize(Object start, Object end) {
+    public static Object getSize(Object start, Object end, final State state) {
         if (start == null || end == null) {
             return null;
         }
 
         if (start instanceof Integer || start instanceof BigDecimal || start instanceof Quantity) {
-            return SubtractEvaluator.subtract(end, start);
+            return SubtractEvaluator.subtract(end, start, state);
         }
 
         throw new InvalidOperatorArgument(String.format(
@@ -130,8 +130,12 @@ public class Interval implements CqlType, Comparable<Interval> {
     public Object getStart() {
         if (!lowClosed) {
             return SuccessorEvaluator.successor(low);
+        } else if (low != null) {
+            return low;
+        } else if (high instanceof Quantity highQuantity) {
+            return new Quantity().withValue(Value.MIN_DECIMAL).withUnit(highQuantity.getUnit());
         } else {
-            return low == null ? MinValueEvaluator.minValue(pointType.getTypeName()) : low;
+            return MinValueEvaluator.minValue(pointType.getTypeName());
         }
     }
 
@@ -148,14 +152,18 @@ public class Interval implements CqlType, Comparable<Interval> {
     public Object getEnd() {
         if (!highClosed) {
             return PredecessorEvaluator.predecessor(high);
+        } else if (high != null) {
+            return high;
+        } else if (low instanceof Quantity lowQuantity) {
+            return new Quantity().withValue(Value.MAX_DECIMAL).withUnit(lowQuantity.getUnit());
         } else {
-            return high == null ? MaxValueEvaluator.maxValue(pointType.getTypeName()) : high;
+            return MaxValueEvaluator.maxValue(pointType.getTypeName());
         }
     }
 
     @Override
     public int compareTo(Interval other) {
-        CqlList cqlList = new CqlList();
+        CqlList cqlList = new CqlList(state);
         if (cqlList.compareTo(getStart(), other.getStart()) == 0) {
             return cqlList.compareTo(getEnd(), other.getEnd());
         }
