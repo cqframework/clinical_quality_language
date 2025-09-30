@@ -9,7 +9,7 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 internal class Issue33 : CqlTestBase() {
     @Test
     fun interval() {
-        val bigDecimalZoneOffset = getBigDecimalZoneOffset()
+        val bigDecimalZoneOffset = bigDecimalZoneOffset
 
         val results = engine.evaluate(toElmIdentifier("Issue33"))
         val value = results.forExpression("Issue33").value()
