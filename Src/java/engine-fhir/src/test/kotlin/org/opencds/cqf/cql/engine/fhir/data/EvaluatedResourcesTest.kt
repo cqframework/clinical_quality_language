@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.fhir.data
 
-import javax.annotation.Nonnull
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
@@ -67,7 +66,6 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
         )
     }
 
-    @Nonnull
     private fun getCqlEngineForFhir(expressionCaching: Boolean): CqlEngine {
         engine.state.environment.registerDataProvider(
             "http://hl7.org/fhir",

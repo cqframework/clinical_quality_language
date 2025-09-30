@@ -36,8 +36,14 @@ abstract class FhirExecutionTestBase {
     val environment: Environment
         get() = Environment(this.libraryManager)
 
+    private var _engine: CqlEngine? = null
     val engine: CqlEngine
-        get() = CqlEngine(this.environment)
+        get() {
+            if (_engine == null) {
+                _engine = CqlEngine(this.environment)
+            }
+            return _engine!!
+        }
 
     var library: Library? = null
 
