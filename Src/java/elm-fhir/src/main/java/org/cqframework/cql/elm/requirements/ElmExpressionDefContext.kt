@@ -23,12 +23,12 @@ class ElmExpressionDefContext(
         queryStack.push(ElmQueryContext(libraryIdentifier, query))
     }
 
-    fun exitQueryContext(): ElmQueryContext? {
+    fun exitQueryContext(): ElmQueryContext {
         val queryContext = queryStack.pop()
         return queryContext
     }
 
-    val currentQueryContext: ElmQueryContext?
+    val currentQueryContext: ElmQueryContext
         get() {
             require(!queryStack.empty()) { "Not in a query context" }
 

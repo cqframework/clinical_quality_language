@@ -179,7 +179,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             }
             return result
         }
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitFunctionRef(
@@ -198,8 +198,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             ) {
                 // Note that the assumption here is that the data requirement has already been
                 // reported to the context
-                return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
-                    .combine(result)
+                return ElmOperatorRequirement(context.currentLibraryIdentifier, elm).combine(result)
             }
         }
 
@@ -207,7 +206,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             return result
         }
 
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitParameterDef(
@@ -223,7 +222,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         context.reportParameterRef(elm)
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitRetrieve(elm: Retrieve, context: ElmRequirementsContext): ElmRequirement {
@@ -231,7 +230,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         val elmPertinenceContext = context.peekPertinenceContext()
         super.visitRetrieve(elm, context)
 
-        val result = ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmDataRequirement(context.currentLibraryIdentifier, elm)
         if (elmPertinenceContext != null) {
             result.pertinenceContext = elmPertinenceContext
         }
@@ -266,7 +265,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         context.reportCodeSystemRef(elm)
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitValueSetRef(
@@ -274,11 +273,11 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         context.reportValueSetRef(elm)
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitLibrary(elm: Library, context: ElmRequirementsContext): ElmRequirement? {
-        context.enterLibrary(elm.identifier)
+        context.enterLibrary(elm.identifier!!)
         try {
             return super.visitLibrary(elm, context)
         } finally {
@@ -304,7 +303,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
 
     override fun visitCodeRef(elm: CodeRef, context: ElmRequirementsContext): ElmRequirement {
         context.reportCodeRef(elm)
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitCodeDef(elm: CodeDef, context: ElmRequirementsContext): ElmRequirement? {
@@ -314,7 +313,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
 
     override fun visitConceptRef(elm: ConceptRef, context: ElmRequirementsContext): ElmRequirement {
         context.reportConceptRef(elm)
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitConceptDef(
@@ -350,7 +349,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             if (rightProperty != null && rightProperty.inCurrentScope) {
                 if (leftProperty.source === rightProperty.source) {
                     return ElmConstraintRequirement(
-                        context.getCurrentLibraryIdentifier(),
+                        context.currentLibraryIdentifier,
                         elm,
                         leftProperty,
                         rightProperty,
@@ -360,7 +359,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                         rightProperty.source is AliasedQuerySource
                 ) {
                     return ElmJoinRequirement(
-                        context.getCurrentLibraryIdentifier(),
+                        context.currentLibraryIdentifier,
                         elm,
                         leftProperty,
                         rightProperty,
@@ -369,7 +368,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             }
             if (right is ElmExpressionRequirement) {
                 return ElmConditionRequirement(
-                    context.getCurrentLibraryIdentifier(),
+                    context.currentLibraryIdentifier,
                     elm,
                     leftProperty,
                     right,
@@ -379,7 +378,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             if (leftProperty != null && leftProperty.inCurrentScope) {
                 if (leftProperty.source == rightProperty.source) {
                     return ElmConstraintRequirement(
-                        context.getCurrentLibraryIdentifier(),
+                        context.currentLibraryIdentifier,
                         elm,
                         leftProperty,
                         rightProperty,
@@ -389,7 +388,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                         rightProperty.source is AliasedQuerySource
                 ) {
                     return ElmJoinRequirement(
-                        context.getCurrentLibraryIdentifier(),
+                        context.currentLibraryIdentifier,
                         elm,
                         leftProperty,
                         rightProperty,
@@ -397,16 +396,11 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                 }
             }
             if (left is ElmExpressionRequirement) {
-                return ElmConditionRequirement(
-                    context.getCurrentLibraryIdentifier(),
-                    elm,
-                    right,
-                    left,
-                )
+                return ElmConditionRequirement(context.currentLibraryIdentifier, elm, right, left)
             }
         }
 
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     public override fun visitFields(
@@ -441,7 +435,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                 val right = visitElement(elm.operand[1], context)
 
                 if (left is ElmExpressionRequirement && right is ElmExpressionRequirement) {
-                    return ElmConjunctiveRequirement(context.getCurrentLibraryIdentifier(), elm)
+                    return ElmConjunctiveRequirement(context.currentLibraryIdentifier, elm)
                         .combine(left)
                         .combine(right)
                 } else if (left is ElmExpressionRequirement && right == null) {
@@ -458,7 +452,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                 val right = visitElement(elm.operand[1], context)
 
                 if (left is ElmExpressionRequirement && right is ElmExpressionRequirement) {
-                    return ElmDisjunctiveRequirement(context.getCurrentLibraryIdentifier(), elm)
+                    return ElmDisjunctiveRequirement(context.currentLibraryIdentifier, elm)
                         .combine(left)
                         .combine(right)
                 } else if (left is ElmExpressionRequirement && right == null) {
@@ -485,12 +479,12 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             "ProperIncludes",
             "ProperIncludedIn" -> {
                 super.visitFields(elm, context)
-                return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+                return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
             }
 
             else -> {
                 super.visitFields(elm, context)
-                return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+                return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
             }
         }
     }
@@ -500,8 +494,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         val requirements = super.visitTernaryExpression(elm, context)
-        return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
-            .combine(requirements)
+        return ElmOperatorRequirement(context.currentLibraryIdentifier, elm).combine(requirements)
     }
 
     override fun visitNaryExpression(
@@ -509,35 +502,34 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         val requirements = super.visitNaryExpression(elm, context)
-        return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
-            .combine(requirements)
+        return ElmOperatorRequirement(context.currentLibraryIdentifier, elm).combine(requirements)
     }
 
     override fun visitOperandRef(elm: OperandRef, context: ElmRequirementsContext): ElmRequirement {
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitIdentifierRef(
         elm: IdentifierRef,
         context: ElmRequirementsContext,
     ): ElmRequirement {
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitLiteral(elm: Literal, context: ElmRequirementsContext): ElmRequirement {
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitInterval(elm: Interval, context: ElmRequirementsContext): ElmRequirement {
         val result = super.visitInterval(elm, context)
-        val finalResult = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val finalResult = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         finalResult.combine(result)
         return finalResult
     }
 
     override fun visitIf(elm: If, context: ElmRequirementsContext): ElmRequirement {
         // TODO: Rewrite the if as equivalent logic
-        val result = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         var childResult: ElmRequirement?
 
         if (elm.condition != null) {
@@ -566,7 +558,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
 
     override fun visitCase(elm: Case, context: ElmRequirementsContext): ElmRequirement {
         // TODO: Rewrite the case as equivalent logic
-        val result = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         var childResult: ElmRequirement?
         if (elm.comparand != null) {
             childResult = this.visitElement(elm.comparand!!, context)
@@ -593,7 +585,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
     }
 
     override fun visitNull(elm: Null, context: ElmRequirementsContext): ElmRequirement {
-        return ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitSplit(elm: Split, context: ElmRequirementsContext): ElmRequirement? {
@@ -606,19 +598,19 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
     }
 
     override fun visitTimeOfDay(elm: TimeOfDay, context: ElmRequirementsContext): ElmRequirement {
-        return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitToday(elm: Today, context: ElmRequirementsContext): ElmRequirement {
-        return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitNow(elm: Now, context: ElmRequirementsContext): ElmRequirement {
-        return ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
     }
 
     override fun visitDateTime(elm: DateTime, context: ElmRequirementsContext): ElmRequirement {
-        val result = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         if (elm.year != null) {
             val childResult = visitExpression(elm.year!!, context)
             if (childResult is ElmExpressionRequirement) {
@@ -671,7 +663,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
     }
 
     override fun visitDate(elm: Date, context: ElmRequirementsContext): ElmRequirement {
-        val result = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         if (elm.year != null) {
             val childResult = visitExpression(elm.year!!, context)
             if (childResult is ElmExpressionRequirement) {
@@ -694,7 +686,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
     }
 
     override fun visitTime(elm: Time, context: ElmRequirementsContext): ElmRequirement {
-        val result = ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+        val result = ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
         if (elm.hour != null) {
             val childResult = visitExpression(elm.hour!!, context)
             if (childResult is ElmExpressionRequirement) {
