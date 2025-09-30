@@ -9,14 +9,10 @@ import org.hl7.elm.r1.Query
 import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.VersionedIdentifier
 
-class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier?, query: Query?) :
+class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) :
     ElmExpressionRequirement(libraryIdentifier, query) {
     val query: Query?
         get() = element as Query?
-
-    override fun getElement(): Query? {
-        return this.query
-    }
 
     private val dataRequirements: MutableSet<ElmDataRequirement> = LinkedHashSet()
 

@@ -10,13 +10,13 @@ import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
 
 open class ElmExpressionRequirement(
-    libraryIdentifier: VersionedIdentifier?,
-    expression: Expression?,
+    libraryIdentifier: VersionedIdentifier,
+    expression: Expression,
 ) : ElmRequirement(libraryIdentifier, expression) {
-    open val expression: Expression?
-        get() = this.element as Expression?
+    open val expression: Expression
+        get() = this.element as Expression
 
-    override fun getElement(): Expression? {
+    fun getElement(): Expression {
         return this.expression
     }
 

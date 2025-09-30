@@ -3,7 +3,7 @@ package org.cqframework.cql.elm.requirements
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.VersionedIdentifier
 
-class ElmConjunctiveRequirement(libraryIdentifier: VersionedIdentifier?, expression: Expression?) :
+class ElmConjunctiveRequirement(libraryIdentifier: VersionedIdentifier, expression: Expression) :
     ElmExpressionRequirement(libraryIdentifier, expression) {
     @JvmField val arguments: MutableList<ElmExpressionRequirement?> = ArrayList()
 
@@ -25,7 +25,7 @@ class ElmConjunctiveRequirement(libraryIdentifier: VersionedIdentifier?, express
             }
 
             is ElmRequirements -> {
-                for (r in requirement.requirements) {
+                for (r in requirement.getRequirements()) {
                     combine(r)
                 }
             }

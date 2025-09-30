@@ -25,13 +25,13 @@ import org.hl7.elm.r1.With
 
 class ElmDataRequirement : ElmExpressionRequirement {
     constructor(
-        libraryIdentifier: VersionedIdentifier?,
-        element: Retrieve?,
+        libraryIdentifier: VersionedIdentifier,
+        element: Retrieve,
     ) : super(libraryIdentifier, element)
 
     constructor(
-        libraryIdentifier: VersionedIdentifier?,
-        element: Retrieve?,
+        libraryIdentifier: VersionedIdentifier,
+        element: Retrieve,
         inferredFrom: Retrieve?,
     ) : super(libraryIdentifier, element) {
         this.inferredFrom = inferredFrom
@@ -39,10 +39,6 @@ class ElmDataRequirement : ElmExpressionRequirement {
 
     val retrieve: Retrieve
         get() = element as Retrieve
-
-    override fun getElement(): Retrieve {
-        return this.retrieve
-    }
 
     var inferredFrom: Retrieve? = null
         private set
@@ -71,15 +67,15 @@ class ElmDataRequirement : ElmExpressionRequirement {
             }
         }
 
-    override val expression: Expression?
+    override val expression: Expression
         get() {
             return when (querySource) {
                 is AliasedQuerySource -> {
-                    (querySource as AliasedQuerySource).expression
+                    (querySource as AliasedQuerySource).expression!!
                 }
 
                 is LetClause -> {
-                    (querySource as LetClause).expression
+                    (querySource as LetClause).expression!!
                 }
 
                 else -> {
@@ -219,7 +215,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
         val property = conditionRequirement.property!!.property
         // DataType propertyType = property.getResultType();
         // Use the comparison type due to the likelihood of conversion operators along the property
-        val comparisonType = conditionRequirement.comparand!!.expression?.resultType
+        val comparisonType = conditionRequirement.comparand!!.expression.resultType
         if (comparisonType != null) {
             if (context.typeResolver.isTerminologyType(comparisonType)) {
                 val codeFilter = CodeFilterElement()
@@ -228,7 +224,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
                 } else {
                     codeFilter.property = property!!.path
                 }
-                when (conditionRequirement.getElement()!!.javaClass.simpleName) {
+                when (conditionRequirement.getElement().javaClass.simpleName) {
                     "Equal" -> codeFilter.comparator = "="
                     "Equivalent" -> codeFilter.comparator = "~"
                     "In",
@@ -255,7 +251,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
                 val comparand = conditionRequirement.comparand!!.expression
                 if (conditionRequirement.isTargetable) {
                     if (context.typeResolver.isIntervalType(comparisonType)) {
-                        when (conditionRequirement.getElement()!!.javaClass.simpleName) {
+                        when (conditionRequirement.getElement().javaClass.simpleName) {
                             "Equal",
                             "Equivalent",
                             "SameAs",
@@ -300,7 +296,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
                             "Ends" -> {}
                         }
                     } else {
-                        when (conditionRequirement.getElement()!!.javaClass.simpleName) {
+                        when (conditionRequirement.getElement().javaClass.simpleName) {
                             "Equal",
                             "Equivalent",
                             "SameAs" ->
@@ -523,7 +519,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
             }
             return ElmDataRequirement(
                 requirement.libraryIdentifier,
-                getRetrieve(requirement.expression!!),
+                getRetrieve(requirement.expression),
             )
         }
 

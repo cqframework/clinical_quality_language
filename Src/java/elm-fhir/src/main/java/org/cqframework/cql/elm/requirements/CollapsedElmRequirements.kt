@@ -24,9 +24,8 @@ class CollapsedElmRequirements {
     }
 
     private fun mapRequirementId(oldRequirement: ElmRequirement, newRequirement: ElmRequirement) {
-        if (oldRequirement.getElement().localId != null) {
-            requirementIdMap[oldRequirement.getElement().localId] =
-                newRequirement.getElement().localId
+        if (oldRequirement.element.localId != null) {
+            requirementIdMap[oldRequirement.element.localId] = newRequirement.element.localId
         }
     }
 

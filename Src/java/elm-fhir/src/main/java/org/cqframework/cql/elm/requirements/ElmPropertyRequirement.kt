@@ -5,17 +5,13 @@ import org.hl7.elm.r1.Property
 import org.hl7.elm.r1.VersionedIdentifier
 
 class ElmPropertyRequirement(
-    libraryIdentifier: VersionedIdentifier?,
-    property: Property?,
+    libraryIdentifier: VersionedIdentifier,
+    property: Property,
     source: Element,
     inCurrentScope: Boolean,
 ) : ElmExpressionRequirement(libraryIdentifier, property) {
     val property: Property?
         get() = this.element as Property?
-
-    override fun getElement(): Property? {
-        return this.property
-    }
 
     var source: Element?
         private set

@@ -14,8 +14,8 @@ class ComparableElmRequirement(val requirement: ElmRequirement) {
 
     override fun hashCode(): Int {
         // Hashing only by the type/profile
-        if (requirement.getElement() is Retrieve) {
-            val retrieve = this.requirement.getElement() as Retrieve
+        if (requirement.element is Retrieve) {
+            val retrieve = this.requirement.element
             val typeUri =
                 if (retrieve.templateId != null) retrieve.templateId
                 else
@@ -218,8 +218,8 @@ class ComparableElmRequirement(val requirement: ElmRequirement) {
 
         @JvmStatic
         fun requirementsEquivalent(left: ElmRequirement, right: ElmRequirement): Boolean {
-            val retrieve = left.getElement() as Retrieve
-            val otherRetrieve = right.getElement() as Retrieve
+            val retrieve = left.element as Retrieve
+            val otherRetrieve = right.element as Retrieve
 
             return retrieve.dataType != null &&
                 retrieve.dataType!! == otherRetrieve.dataType &&
@@ -266,10 +266,10 @@ class ComparableElmRequirement(val requirement: ElmRequirement) {
         fun mergeRequirements(existing: ElmRequirement, required: ElmRequirement): ElmRequirement {
             if (existing is ElmDataRequirement) {
                 if (required is ElmDataRequirement) {
-                    if (existing.getElement() is Retrieve) {
-                        if (required.getElement() is Retrieve) {
-                            val existingRetrieve = existing.getElement() as Retrieve
-                            val requiredRetrieve = required.getElement() as Retrieve
+                    if (existing.element is Retrieve) {
+                        if (required.element is Retrieve) {
+                            val existingRetrieve = existing.element
+                            val requiredRetrieve = required.element
                             val newRetrieve = ElmCloner.clone(existingRetrieve)
 
                             val trackbacks = requiredRetrieve.trackbacks
@@ -277,7 +277,7 @@ class ComparableElmRequirement(val requirement: ElmRequirement) {
                             newTrackbacks.addAll(trackbacks)
 
                             val newRequirement =
-                                ElmDataRequirement(existing.getLibraryIdentifier(), newRetrieve)
+                                ElmDataRequirement(existing.libraryIdentifier, newRetrieve)
                             if (existing.properties != null) {
                                 for (property in existing.properties) {
                                     newRequirement.addProperty(property)

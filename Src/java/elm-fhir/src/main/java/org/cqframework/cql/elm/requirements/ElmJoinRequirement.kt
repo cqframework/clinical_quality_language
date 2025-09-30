@@ -4,8 +4,8 @@ import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.VersionedIdentifier
 
 open class ElmJoinRequirement(
-    libraryIdentifier: VersionedIdentifier?,
-    expression: Expression?,
+    libraryIdentifier: VersionedIdentifier,
+    expression: Expression,
     leftProperty: ElmPropertyRequirement,
     rightProperty: ElmPropertyRequirement,
 ) : ElmExpressionRequirement(libraryIdentifier, expression) {

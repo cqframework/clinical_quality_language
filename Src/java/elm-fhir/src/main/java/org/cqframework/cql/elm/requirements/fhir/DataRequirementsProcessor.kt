@@ -226,7 +226,8 @@ class DataRequirementsProcessor {
         // In the recursive case
         // Collect all top-level dependencies
         // Collect all reported or inferred data requirements
-        var requirements = ElmRequirements(translatedLibrary.identifier, translatedLibrary.library)
+        var requirements =
+            ElmRequirements(translatedLibrary.identifier!!, translatedLibrary.library!!)
         if (recursive) {
             // Collect all the dependencies
             requirements.reportRequirement(context.requirements)
@@ -268,7 +269,7 @@ class DataRequirementsProcessor {
 
         // Collapse the requirements
         if (options.collapseDataRequirements) {
-            for (requirement in requirements.requirements) {
+            for (requirement in requirements.getRequirements()) {
                 collapseExtensionReference(context, requirement)
             }
             requirements = requirements.collapse(context)
@@ -290,7 +291,7 @@ class DataRequirementsProcessor {
         libraryIdentifier: VersionedIdentifier?,
         sourceRequirements: ElmRequirements,
     ) {
-        for (requirement in sourceRequirements.requirements) {
+        for (requirement in sourceRequirements.getRequirements()) {
             gatherLibrarySpecificRequirements(requirements, libraryIdentifier, requirement)
         }
     }
@@ -300,7 +301,7 @@ class DataRequirementsProcessor {
         libraryIdentifier: VersionedIdentifier?,
         requirement: ElmRequirement?,
     ) {
-        if (requirement != null && requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
+        if (requirement != null && requirement.libraryIdentifier == libraryIdentifier) {
             requirements.reportRequirement(requirement)
         }
     }
@@ -338,52 +339,50 @@ class DataRequirementsProcessor {
 
                 if (urlProperty != null) {
                     val r = requirement.retrieve
-                    if (r != null) {
-                        var extensionFilterElement: CodeFilterElement? = null
-                        var extensionFilterComponent:
-                            DataRequirement.DataRequirementCodeFilterComponent? =
-                            null
-                        for (cfe in r.codeFilter) {
-                            val cfc =
-                                toCodeFilterComponent(
-                                    context,
-                                    requirement.getLibraryIdentifier(),
-                                    cfe.property,
-                                    cfe.value,
-                                )
+                    var extensionFilterElement: CodeFilterElement? = null
+                    var extensionFilterComponent:
+                        DataRequirement.DataRequirementCodeFilterComponent? =
+                        null
+                    for (cfe in r.codeFilter) {
+                        val cfc =
+                            toCodeFilterComponent(
+                                context,
+                                requirement.libraryIdentifier,
+                                cfe.property,
+                                cfe.value,
+                            )
 
-                            if (
-                                cfc.hasPath() &&
-                                    cfc.hasCode() &&
-                                    "url" == cfc.getPath() &&
-                                    cfc.codeFirstRep.hasCode() &&
-                                    cfc.codeFirstRep.getCode().startsWith("http://")
-                            ) {
-                                extensionFilterElement = cfe
-                                extensionFilterComponent = cfc
-                                break
-                            }
+                        if (
+                            cfc.hasPath() &&
+                                cfc.hasCode() &&
+                                "url" == cfc.getPath() &&
+                                cfc.codeFirstRep.hasCode() &&
+                                cfc.codeFirstRep.getCode().startsWith("http://")
+                        ) {
+                            extensionFilterElement = cfe
+                            extensionFilterComponent = cfc
+                            break
                         }
+                    }
 
-                        if (extensionFilterElement != null && extensionFilterComponent != null) {
-                            var extensionName = extensionFilterComponent.codeFirstRep.getCode()
-                            val tailIndex = extensionName.lastIndexOf("/")
-                            if (tailIndex > 0) {
-                                extensionName = extensionName.substring(tailIndex + 1)
-                            }
-                            if (extensionName.startsWith("us-core-")) {
-                                extensionName = extensionName.substring(8)
-                            }
-                            if (extensionName.startsWith("qicore-")) {
-                                extensionName = extensionName.substring(7)
-                            }
-                            r.codeFilter.remove(extensionFilterElement)
-                            requirement.removeProperty(urlProperty)
-                            if (extensionProperty != null) {
-                                requirement.removeProperty(extensionProperty)
-                            }
-                            requirement.addProperty(Property().withPath(extensionName))
+                    if (extensionFilterElement != null && extensionFilterComponent != null) {
+                        var extensionName = extensionFilterComponent.codeFirstRep.getCode()
+                        val tailIndex = extensionName.lastIndexOf("/")
+                        if (tailIndex > 0) {
+                            extensionName = extensionName.substring(tailIndex + 1)
                         }
+                        if (extensionName.startsWith("us-core-")) {
+                            extensionName = extensionName.substring(8)
+                        }
+                        if (extensionName.startsWith("qicore-")) {
+                            extensionName = extensionName.substring(7)
+                        }
+                        r.codeFilter.remove(extensionFilterElement)
+                        requirement.removeProperty(urlProperty)
+                        if (extensionProperty != null) {
+                            requirement.removeProperty(extensionProperty)
+                        }
+                        requirement.addProperty(Property().withPath(extensionName))
                     }
                 }
             }
@@ -435,11 +434,7 @@ class DataRequirementsProcessor {
 
         for (def in requirements.codeDefs) {
             result.add(
-                toDirectReferenceCode(
-                    context,
-                    def.getLibraryIdentifier(),
-                    (def.getElement() as CodeDef?)!!,
-                )
+                toDirectReferenceCode(context, def.libraryIdentifier, (def.element as CodeDef?)!!)
             )
         }
 
@@ -467,35 +462,24 @@ class DataRequirementsProcessor {
         // URL for a model info is: [baseCanonical]/Library/[model-name]-ModelInfo
         for (def in requirements.usingDefs) {
             // System model info is an implicit dependency, do not report
-            if (!(def.getElement() as UsingDef).localIdentifier.equals("System")) {
-                result.add(
-                    toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as UsingDef?)!!)
-                )
+            if (!(def.element as UsingDef).localIdentifier.equals("System")) {
+                result.add(toRelatedArtifact(def.libraryIdentifier, (def.element as UsingDef?)!!))
             }
         }
 
         // Report library dependencies
         for (def in requirements.includeDefs) {
-            result.add(
-                toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as IncludeDef?)!!)
-            )
+            result.add(toRelatedArtifact(def.libraryIdentifier, (def.element as IncludeDef?)!!))
         }
 
         // Report CodeSystem dependencies
         for (def in requirements.codeSystemDefs) {
-            result.add(
-                toRelatedArtifact(
-                    def.getLibraryIdentifier(),
-                    (def.getElement() as CodeSystemDef?)!!,
-                )
-            )
+            result.add(toRelatedArtifact(def.libraryIdentifier, (def.element as CodeSystemDef?)!!))
         }
 
         // Report ValueSet dependencies
         for (def in requirements.valueSetDefs) {
-            result.add(
-                toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as ValueSetDef?)!!)
-            )
+            result.add(toRelatedArtifact(def.libraryIdentifier, (def.element as ValueSetDef?)!!))
         }
 
         return result
@@ -521,11 +505,7 @@ class DataRequirementsProcessor {
         // Until then, name clashes should result in a warning
         val pds: MutableMap<String?, ParameterDefinition> = HashMap()
         for (def in requirements.parameterDefs) {
-            val pd =
-                toParameterDefinition(
-                    def.getLibraryIdentifier(),
-                    (def.getElement() as ParameterDef?)!!,
-                )
+            val pd = toParameterDefinition(def.libraryIdentifier, (def.element as ParameterDef?)!!)
             if (pds.containsKey(pd.getName())) {
                 val existingPd: ParameterDefinition = pds[pd.getName()]!!
                 if (!isEquivalentDefinition(existingPd, pd)) {
@@ -538,7 +518,7 @@ class DataRequirementsProcessor {
                             "CQL Library Packaging",
                             String.format(
                                 "Parameter declaration %s.%s is already defined in a different library with a different type. Parameter binding may result in errors during evaluation.",
-                                def.getLibraryIdentifier().id,
+                                def.libraryIdentifier.id,
                                 pd.getName(),
                             ),
                             ValidationMessage.IssueSeverity.WARNING,
@@ -600,7 +580,7 @@ class DataRequirementsProcessor {
 
         var sequence = 0
         for (req in requirements.expressionDefs) {
-            val def = req.getElement() as ExpressionDef
+            val def = req.element as ExpressionDef
             val a = getAnnotation(def)
             if (a != null) {
                 result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++))
@@ -608,7 +588,7 @@ class DataRequirementsProcessor {
         }
 
         for (req in requirements.functionDefs) {
-            val def = req.getElement() as FunctionDef
+            val def = req.element as FunctionDef
             val a = getAnnotation(def)
             if (a != null) {
                 result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++))
@@ -640,7 +620,7 @@ class DataRequirementsProcessor {
         e.setUrl(specificationSupport.logicDefinitionExtensionUrl)
         // TODO: Include the libraryUrl
         e.addExtension(
-            Extension().setUrl("libraryName").setValue(toString(req.getLibraryIdentifier().id))
+            Extension().setUrl("libraryName").setValue(toString(req.libraryIdentifier.id))
         )
         e.addExtension(Extension().setUrl("name").setValue(toString(def.name)))
         e.addExtension(Extension().setUrl("statement").setValue(toString(text)))
@@ -656,18 +636,18 @@ class DataRequirementsProcessor {
 
         val retrieveMap: MutableMap<String?, Retrieve> = HashMap()
         for (retrieve in requirements.retrieves) {
-            if (retrieve.getElement().localId != null) {
-                retrieveMap[retrieve.getElement().localId] = (retrieve.getElement() as Retrieve?)!!
+            if (retrieve.element.localId != null) {
+                retrieveMap[retrieve.element.localId] = (retrieve.element as Retrieve?)!!
             }
         }
 
         for (retrieve in requirements.retrieves) {
-            if ((retrieve.getElement() as Retrieve).dataType != null) {
+            if ((retrieve.element as Retrieve).dataType != null) {
                 result.add(
                     toDataRequirement(
                         context,
-                        retrieve.getLibraryIdentifier(),
-                        (retrieve.getElement() as Retrieve?)!!,
+                        retrieve.libraryIdentifier,
+                        (retrieve.element as Retrieve?)!!,
                         retrieveMap,
                         if (retrieve is ElmDataRequirement) retrieve.properties else null,
                         if (retrieve is ElmDataRequirement) retrieve.pertinenceContext else null,

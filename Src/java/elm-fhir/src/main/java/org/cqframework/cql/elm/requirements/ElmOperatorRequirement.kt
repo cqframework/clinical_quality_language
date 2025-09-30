@@ -3,7 +3,7 @@ package org.cqframework.cql.elm.requirements
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.VersionedIdentifier
 
-class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier?, expression: Expression?) :
+class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression: Expression) :
     ElmExpressionRequirement(libraryIdentifier, expression) {
     private val requirements: HashSet<ElmRequirement?> = LinkedHashSet()
 
@@ -15,7 +15,7 @@ class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier?, expression
         if (requirement is ElmExpressionRequirement) {
             requirements.add(requirement)
         } else if (requirement is ElmRequirements) {
-            for (r in requirement.requirements) {
+            for (r in requirement.getRequirements()) {
                 requirements.add(r)
             }
         }
