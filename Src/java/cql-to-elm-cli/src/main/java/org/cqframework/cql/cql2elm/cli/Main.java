@@ -93,7 +93,7 @@ public class Main {
         NamespaceInfo namespaceInfo = null;
         if (igContext != null) {
             NpmPackageManager pm = new NpmPackageManager(igContext.getSourceIg());
-            pm.getNpmList().forEach(npm -> {
+            pm.npmList.forEach(npm -> {
                 NamespaceInfo newNamespace = new NamespaceInfo(npm.id(), npm.canonical());
                 if (namespaceManager.resolveNamespaceUri(newNamespace.getName()) != null) {
                     // TODO: Logger.skip loading
@@ -104,10 +104,10 @@ public class Main {
                 }
             });
             LibraryLoader reader = new LibraryLoader(igContext.getFhirVersion());
-            NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, pm);
+            NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.npmList, reader, pm);
             libraryManager.getLibrarySourceLoader().registerProvider(sp);
 
-            NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, pm);
+            NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.npmList, reader, pm);
             modelManager.getModelInfoLoader().registerModelInfoProvider(mp);
 
             String packageId = igContext.getPackageId();
