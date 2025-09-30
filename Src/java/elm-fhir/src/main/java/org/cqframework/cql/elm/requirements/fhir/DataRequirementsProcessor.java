@@ -1,100 +1,153 @@
-package org.cqframework.cql.elm.requirements.fhir;
+package org.cqframework.cql.elm.requirements.fhir
 
-import ca.uhn.fhir.context.FhirVersionEnum;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.cql2elm.tracking.TrackBack;
-import org.cqframework.cql.cql2elm.tracking.Trackable;
-import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper;
-import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper;
-import org.cqframework.cql.elm.requirements.ElmDataRequirement;
-import org.cqframework.cql.elm.requirements.ElmPertinenceContext;
-import org.cqframework.cql.elm.requirements.ElmRequirement;
-import org.cqframework.cql.elm.requirements.ElmRequirements;
-import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
-import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
-import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel;
-import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationSupport;
-import org.hl7.cql.model.IntervalType;
-import org.hl7.cql.model.ListType;
-import org.hl7.cql.model.NamedType;
-import org.hl7.cql.model.NamespaceManager;
-import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Property;
-import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.r5.model.*;
-import org.hl7.fhir.r5.model.Enumerations.FHIRTypes;
-import org.hl7.fhir.r5.model.Library;
-import org.hl7.fhir.utilities.validation.ValidationMessage;
-import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter;
-import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory;
+import ca.uhn.fhir.context.FhirVersionEnum
+import org.cqframework.cql.cql2elm.CqlCompilerOptions
+import org.cqframework.cql.cql2elm.LibraryManager
+import org.cqframework.cql.cql2elm.model.CompiledLibrary
+import org.cqframework.cql.cql2elm.tracking.TrackBack
+import org.cqframework.cql.cql2elm.tracking.Trackable
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
+import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper
+import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper.evaluate
+import org.cqframework.cql.elm.requirements.ElmDataRequirement
+import org.cqframework.cql.elm.requirements.ElmPertinenceContext
+import org.cqframework.cql.elm.requirements.ElmRequirement
+import org.cqframework.cql.elm.requirements.ElmRequirements
+import org.cqframework.cql.elm.requirements.ElmRequirementsContext
+import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor
+import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel
+import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationSupport
+import org.hl7.cql.model.DataType
+import org.hl7.cql.model.IntervalType
+import org.hl7.cql.model.ListType
+import org.hl7.cql.model.NamedType
+import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
+import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
+import org.hl7.cql_annotations.r1.Annotation
+import org.hl7.cql_annotations.r1.Narrative
+import org.hl7.elm.r1.AccessModifier
+import org.hl7.elm.r1.Code
+import org.hl7.elm.r1.CodeDef
+import org.hl7.elm.r1.CodeFilterElement
+import org.hl7.elm.r1.CodeRef
+import org.hl7.elm.r1.CodeSystemDef
+import org.hl7.elm.r1.Concept
+import org.hl7.elm.r1.ConceptRef
+import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Expression
+import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.IncludeDef
+import org.hl7.elm.r1.IncludeElement
+import org.hl7.elm.r1.List
+import org.hl7.elm.r1.Literal
+import org.hl7.elm.r1.ParameterDef
+import org.hl7.elm.r1.Property
+import org.hl7.elm.r1.Retrieve
+import org.hl7.elm.r1.ToList
+import org.hl7.elm.r1.UsingDef
+import org.hl7.elm.r1.ValueSetDef
+import org.hl7.elm.r1.ValueSetRef
+import org.hl7.elm.r1.VersionedIdentifier
+import org.hl7.fhir.exceptions.FHIRException
+import org.hl7.fhir.r5.model.CanonicalType
+import org.hl7.fhir.r5.model.CodeableConcept
+import org.hl7.fhir.r5.model.Coding
+import org.hl7.fhir.r5.model.DataRequirement
+import org.hl7.fhir.r5.model.Enumerations
+import org.hl7.fhir.r5.model.Enumerations.FHIRTypes
+import org.hl7.fhir.r5.model.Extension
+import org.hl7.fhir.r5.model.IntegerType
+import org.hl7.fhir.r5.model.Library
+import org.hl7.fhir.r5.model.ParameterDefinition
+import org.hl7.fhir.r5.model.Period
+import org.hl7.fhir.r5.model.RelatedArtifact
+import org.hl7.fhir.r5.model.StringType
+import org.hl7.fhir.utilities.validation.ValidationMessage
+import org.jetbrains.annotations.NotNull
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory
+import java.lang.String
+import java.time.ZonedDateTime
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Exception
+import kotlin.IllegalArgumentException
+import kotlin.Int
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.Iterable
+import kotlin.collections.LinkedHashSet
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.MutableSet
+import kotlin.collections.containsKey
+import kotlin.collections.get
+import kotlin.collections.mutableListOf
+import kotlin.compareTo
+import kotlin.invoke
+import kotlin.plus
+import kotlin.requireNotNull
+import kotlin.text.StringBuilder
+import kotlin.text.endsWith
+import kotlin.text.equals
+import kotlin.text.format
+import kotlin.text.isEmpty
+import kotlin.text.lastIndexOf
+import kotlin.text.startsWith
+import kotlin.text.substring
+import kotlin.text.trim
 
-public class DataRequirementsProcessor {
+class DataRequirementsProcessor {
+    val validationMessages: MutableList<ValidationMessage?> = ArrayList<ValidationMessage?>()
 
-    private java.util.List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+    private var specificationSupport = SpecificationSupport()
 
-    public java.util.List<ValidationMessage> getValidationMessages() {
-        return this.validationMessages;
+    fun setSpecificationLevel(specificationLevel: SpecificationLevel) {
+        specificationSupport = SpecificationSupport(specificationLevel)
     }
 
-    private SpecificationSupport specificationSupport = new SpecificationSupport();
-
-    public void setSpecificationLevel(SpecificationLevel specificationLevel) {
-        specificationSupport = new SpecificationSupport(specificationLevel);
-    }
-
-    public Library gatherDataRequirements(
-            LibraryManager libraryManager,
-            CompiledLibrary translatedLibrary,
-            CqlCompilerOptions options,
-            Set<String> expressions,
-            boolean includeLogicDefinitions) {
+    @JvmOverloads
+    fun gatherDataRequirements(
+        libraryManager: LibraryManager,
+        translatedLibrary: CompiledLibrary,
+        options: CqlCompilerOptions,
+        expressions: MutableSet<String?>?,
+        includeLogicDefinitions: Boolean,
+        recursive: Boolean = true
+    ): Library {
         return gatherDataRequirements(
-                libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, true);
+            libraryManager,
+            translatedLibrary,
+            options,
+            expressions,
+            null,
+            null,
+            includeLogicDefinitions,
+            recursive
+        )
     }
 
-    public Library gatherDataRequirements(
-            LibraryManager libraryManager,
-            CompiledLibrary translatedLibrary,
-            CqlCompilerOptions options,
-            Set<String> expressions,
-            boolean includeLogicDefinitions,
-            boolean recursive) {
+    fun gatherDataRequirements(
+        libraryManager: LibraryManager,
+        translatedLibrary: CompiledLibrary,
+        options: CqlCompilerOptions,
+        expressions: MutableSet<String?>?,
+        parameters: MutableMap<String?, Any?>?,
+        includeLogicDefinitions: Boolean,
+        recursive: Boolean
+    ): Library {
         return gatherDataRequirements(
-                libraryManager,
-                translatedLibrary,
-                options,
-                expressions,
-                null,
-                null,
-                includeLogicDefinitions,
-                recursive);
-    }
-
-    public Library gatherDataRequirements(
-            LibraryManager libraryManager,
-            CompiledLibrary translatedLibrary,
-            CqlCompilerOptions options,
-            Set<String> expressions,
-            Map<String, Object> parameters,
-            boolean includeLogicDefinitions,
-            boolean recursive) {
-        return gatherDataRequirements(
-                libraryManager,
-                translatedLibrary,
-                options,
-                expressions,
-                parameters,
-                null,
-                includeLogicDefinitions,
-                recursive);
+            libraryManager,
+            translatedLibrary,
+            options,
+            expressions,
+            parameters,
+            null,
+            includeLogicDefinitions,
+            recursive
+        )
     }
 
     /**
@@ -105,76 +158,74 @@ public class DataRequirementsProcessor {
      * @param options The translator options used to compile the library
      * @param expressions The expressions to gather data requirements for, null for all expressions in the library
      * @param parameters Any parameters to the expressions to be analyzed. If null, analysis will only be performed on ELM,
-     *                   whereas if provided, analysis will be performed by attempting to evaluate compile-time evaluable
-     *                   data requirements comparands
+     * whereas if provided, analysis will be performed by attempting to evaluate compile-time evaluable
+     * data requirements comparands
      * @param evaluationDateTime The date time of the evaluation (used to provide the request date time to the engine in the
-     *                           case that compile-time evaluable expressions are evaluated
+     * case that compile-time evaluable expressions are evaluated
      * @param includeLogicDefinitions True to include logic definition extensions in the output containing the source for
-     *                                each expression from which data requirements are gathered
+     * each expression from which data requirements are gathered
      * @param recursive True to indicate the data requirements gather should be recursive
      * @return
      */
-    public Library gatherDataRequirements(
-            LibraryManager libraryManager,
-            CompiledLibrary translatedLibrary,
-            CqlCompilerOptions options,
-            Set<String> expressions,
-            Map<String, Object> parameters,
-            ZonedDateTime evaluationDateTime,
-            boolean includeLogicDefinitions,
-            boolean recursive) {
-        if (libraryManager == null) {
-            throw new IllegalArgumentException("libraryManager required");
-        }
+    fun gatherDataRequirements(
+        libraryManager: LibraryManager,
+        translatedLibrary: CompiledLibrary,
+        options: CqlCompilerOptions,
+        expressions: MutableSet<String?>?,
+        parameters: MutableMap<String?, Any?>?,
+        evaluationDateTime: ZonedDateTime?,
+        includeLogicDefinitions: Boolean,
+        recursive: Boolean
+    ): Library {
+        requireNotNull(libraryManager) { "libraryManager required" }
 
-        if (translatedLibrary == null) {
-            throw new IllegalArgumentException("translatedLibrary required");
-        }
+        requireNotNull(translatedLibrary) { "translatedLibrary required" }
 
-        ElmRequirementsVisitor visitor = new ElmRequirementsVisitor();
-        ElmRequirementsContext context =
-                new ElmRequirementsContext(libraryManager, options, visitor, parameters, evaluationDateTime);
+        val visitor = ElmRequirementsVisitor()
+        val context =
+            ElmRequirementsContext(libraryManager, options, visitor, parameters, evaluationDateTime)
 
-        List<ExpressionDef> expressionDefs = null;
+        var expressionDefs: MutableList<ExpressionDef?>? = null
         if (expressions == null) {
-            visitor.visitLibrary(translatedLibrary.getLibrary(), context);
-            if (translatedLibrary.getLibrary() != null
-                    && translatedLibrary.getLibrary().getStatements() != null) {
-                expressionDefs = translatedLibrary.getLibrary().getStatements().getDef();
+            visitor.visitLibrary(translatedLibrary.library!!, context)
+            if (translatedLibrary.library != null
+                && translatedLibrary.library!!.statements != null
+            ) {
+                expressionDefs = translatedLibrary.library!!.statements!!.def
             } else {
-                expressionDefs = new ArrayList<ExpressionDef>();
+                expressionDefs = ArrayList<ExpressionDef?>()
             }
         } else {
             if (expressionDefs == null) {
-                expressionDefs = new ArrayList<ExpressionDef>();
+                expressionDefs = ArrayList<ExpressionDef?>()
             }
 
-            context.enterLibrary(translatedLibrary.getIdentifier());
+            context.enterLibrary(translatedLibrary.identifier)
             try {
                 // Always visit using definitions
-                for (var usingDef : translatedLibrary.getLibrary().getUsings().getDef()) {
-                    visitor.visitUsingDef(usingDef, context);
+                for (usingDef in translatedLibrary.library!!.usings!!.def) {
+                    visitor.visitUsingDef(usingDef, context)
                 }
 
-                for (String expression : expressions) {
+                for (expression in expressions) {
                     if (expression != null) {
-                        ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
+                        val ed = translatedLibrary.resolveExpressionRef(expression)
                         if (ed != null) {
-                            expressionDefs.add(ed);
-                            visitor.visitElement(ed, context);
+                            expressionDefs.add(ed)
+                            visitor.visitElement(ed, context)
                         } else {
                             // If the expression is the name of any functions, include those in the gather
                             // TODO: Provide a mechanism to specify a function def (need signature)
-                            Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
-                            for (FunctionDef fd : fds) {
-                                expressionDefs.add(fd);
-                                visitor.visitElement(fd, context);
+                            val fds = translatedLibrary.resolveFunctionRef(expression)
+                            for (fd in fds) {
+                                expressionDefs.add(fd)
+                                visitor.visitElement(fd, context)
                             }
                         }
                     }
                 }
             } finally {
-                context.exitLibrary();
+                context.exitLibrary()
             }
         }
 
@@ -184,68 +235,73 @@ public class DataRequirementsProcessor {
         // In the recursive case
         // Collect all top-level dependencies
         // Collect all reported or inferred data requirements
-
-        ElmRequirements requirements =
-                new ElmRequirements(translatedLibrary.getIdentifier(), translatedLibrary.getLibrary());
+        var requirements =
+            ElmRequirements(translatedLibrary.identifier, translatedLibrary.library)
         if (recursive) {
             // Collect all the dependencies
-            requirements.reportRequirement(context.getRequirements());
+            requirements.reportRequirement(context.getRequirements())
             // Collect reported data requirements from each expression
-            for (ElmRequirements reportedRequirements : context.getReportedRequirements()) {
-                requirements.reportRequirement(reportedRequirements);
+            for (reportedRequirements in context.getReportedRequirements()) {
+                requirements.reportRequirement(reportedRequirements)
             }
-            for (ElmRequirement inferredRequirement : context.getInferredRequirements()) {
-                requirements.reportRequirement(inferredRequirement);
+            for (inferredRequirement in context.getInferredRequirements()) {
+                requirements.reportRequirement(inferredRequirement)
             }
         } else {
             gatherLibrarySpecificRequirements(
-                    requirements, translatedLibrary.getIdentifier(), context.getRequirements());
-            for (ExpressionDef ed : expressionDefs) {
+                requirements, translatedLibrary.identifier, context.getRequirements()
+            )
+            for (ed in expressionDefs) {
                 // Just being defensive here, can happen when there are errors deserializing the measure
                 if (ed != null) {
                     // Collect both inferred and reported requirements here, since reported requirements will not
                     // include
                     // directly inferred requirements
-                    ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
+                    val reportedRequirements = context.getReportedRequirements(ed)
                     gatherLibrarySpecificRequirements(
-                            requirements, translatedLibrary.getIdentifier(), reportedRequirements);
+                        requirements, translatedLibrary.identifier, reportedRequirements
+                    )
 
-                    ElmRequirement inferredRequirement = context.getInferredRequirements(ed);
+                    val inferredRequirement = context.getInferredRequirements(ed)
                     gatherLibrarySpecificRequirements(
-                            requirements, translatedLibrary.getIdentifier(), inferredRequirement);
+                        requirements, translatedLibrary.identifier, inferredRequirement
+                    )
                 }
             }
         }
 
         // Collapse the requirements
-        if (options.getCollapseDataRequirements()) {
-            for (ElmRequirement requirement : requirements.getRequirements()) {
-                collapseExtensionReference(context, requirement);
+        if (options.collapseDataRequirements) {
+            for (requirement in requirements.getRequirements()) {
+                collapseExtensionReference(context, requirement)
             }
-            requirements = requirements.collapse(context);
+            requirements = requirements.collapse(context)
         }
 
         return createLibrary(
-                context,
-                requirements,
-                translatedLibrary.getIdentifier(),
-                expressionDefs,
-                parameters,
-                evaluationDateTime,
-                includeLogicDefinitions);
+            context,
+            requirements,
+            translatedLibrary.identifier!!,
+            expressionDefs,
+            parameters,
+            evaluationDateTime,
+            includeLogicDefinitions
+        )
     }
 
-    private void gatherLibrarySpecificRequirements(
-            ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirements sourceRequirements) {
-        for (ElmRequirement requirement : sourceRequirements.getRequirements()) {
-            gatherLibrarySpecificRequirements(requirements, libraryIdentifier, requirement);
+    private fun gatherLibrarySpecificRequirements(
+        requirements: ElmRequirements, libraryIdentifier: VersionedIdentifier?, sourceRequirements: ElmRequirements
+    ) {
+        for (requirement in sourceRequirements.getRequirements()) {
+            gatherLibrarySpecificRequirements(requirements, libraryIdentifier, requirement)
         }
     }
 
-    private void gatherLibrarySpecificRequirements(
-            ElmRequirements requirements, VersionedIdentifier libraryIdentifier, ElmRequirement requirement) {
+    private fun gatherLibrarySpecificRequirements(
+        requirements: ElmRequirements, libraryIdentifier: VersionedIdentifier?, requirement: ElmRequirement?
+    ) {
         if (requirement != null && requirement.getLibraryIdentifier().equals(libraryIdentifier)) {
-            requirements.reportRequirement(requirement);
+            requirements.reportRequirement(requirement)
         }
     }
 
@@ -257,68 +313,69 @@ public class DataRequirementsProcessor {
      * of well-known prefixes
      * @param requirement
      */
-    private void collapseExtensionReference(ElmRequirementsContext context, ElmRequirement requirement) {
-        if (requirement instanceof ElmDataRequirement) {
-            ElmDataRequirement dataRequirement = (ElmDataRequirement) requirement;
+    private fun collapseExtensionReference(context: ElmRequirementsContext, requirement: ElmRequirement?) {
+        if (requirement is ElmDataRequirement) {
+            val dataRequirement = requirement
             if (dataRequirement.hasProperties()) {
-                Property urlProperty = null;
-                Property extensionProperty = null;
-                for (Property p : dataRequirement.getProperties()) {
-                    if (p.getPath().equals("url")) {
-                        urlProperty = p;
-                        continue;
+                var urlProperty: Property? = null
+                var extensionProperty: Property? = null
+                for (p in dataRequirement.getProperties()) {
+                    if (p.path.equals("url")) {
+                        urlProperty = p
+                        continue
                     }
 
-                    if (p.getPath().equals("extension")) {
-                        extensionProperty = p;
-                        continue;
+                    if (p.path.equals("extension")) {
+                        extensionProperty = p
+                        continue
                     }
                 }
 
                 if (urlProperty != null) {
-                    Retrieve r = dataRequirement.getRetrieve();
+                    val r = dataRequirement.getRetrieve()
                     if (r != null) {
-                        CodeFilterElement extensionFilterElement = null;
-                        org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent
-                                extensionFilterComponent = null;
-                        for (CodeFilterElement cfe : r.getCodeFilter()) {
-                            org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent cfc =
-                                    toCodeFilterComponent(
-                                            context,
-                                            dataRequirement.getLibraryIdentifier(),
-                                            cfe.getProperty(),
-                                            cfe.getValue());
+                        var extensionFilterElement: CodeFilterElement? = null
+                        var extensionFilterComponent: DataRequirement.DataRequirementCodeFilterComponent? = null
+                        for (cfe in r.codeFilter) {
+                            val cfc =
+                                toCodeFilterComponent(
+                                    context,
+                                    dataRequirement.getLibraryIdentifier(),
+                                    cfe.property,
+                                    cfe.value
+                                )
 
                             if (cfc.hasPath()
-                                    && cfc.hasCode()
-                                    && "url".equals(cfc.getPath())
-                                    && cfc.getCodeFirstRep().hasCode()
-                                    && cfc.getCodeFirstRep().getCode().startsWith("http://")) {
-                                extensionFilterElement = cfe;
-                                extensionFilterComponent = cfc;
-                                break;
+                                && cfc.hasCode()
+                                && "url" == cfc.getPath()
+                                && cfc.getCodeFirstRep().hasCode()
+                                && cfc.getCodeFirstRep().getCode().startsWith("http://")
+                            ) {
+                                extensionFilterElement = cfe
+                                extensionFilterComponent = cfc
+                                break
                             }
                         }
 
                         if (extensionFilterElement != null && extensionFilterComponent != null) {
-                            String extensionName =
-                                    extensionFilterComponent.getCodeFirstRep().getCode();
-                            int tailIndex = extensionName.lastIndexOf("/");
+                            var extensionName =
+                                extensionFilterComponent.getCodeFirstRep().getCode()
+                            val tailIndex = extensionName.lastIndexOf("/")
                             if (tailIndex > 0) {
-                                extensionName = extensionName.substring(tailIndex + 1);
+                                extensionName = extensionName.substring(tailIndex + 1)
                             }
                             if (extensionName.startsWith("us-core-")) {
-                                extensionName = extensionName.substring(8);
+                                extensionName = extensionName.substring(8)
                             }
                             if (extensionName.startsWith("qicore-")) {
-                                extensionName = extensionName.substring(7);
+                                extensionName = extensionName.substring(7)
                             }
-                            r.getCodeFilter().remove(extensionFilterElement);
-                            dataRequirement.removeProperty(urlProperty);
+                            r.codeFilter.remove(extensionFilterElement)
+                            dataRequirement.removeProperty(urlProperty)
                             if (extensionProperty != null) {
-                                dataRequirement.removeProperty(extensionProperty);
+                                dataRequirement.removeProperty(extensionProperty)
                             }
-                            dataRequirement.addProperty(new Property().withPath(extensionName));
+                            dataRequirement.addProperty(Property().withPath(extensionName))
                         }
                     }
                 }
@@ -326,251 +383,277 @@ public class DataRequirementsProcessor {
         }
     }
 
-    private Library createLibrary(
-            ElmRequirementsContext context,
-            ElmRequirements requirements,
-            VersionedIdentifier libraryIdentifier,
-            Iterable<ExpressionDef> expressionDefs,
-            Map<String, Object> parameters,
-            ZonedDateTime evaluationDateTime,
-            boolean includeLogicDefinitions) {
-        Library returnLibrary = new Library();
-        returnLibrary.setStatus(Enumerations.PublicationStatus.ACTIVE);
-        CodeableConcept libraryType = new CodeableConcept();
-        Coding typeCoding = new Coding().setCode("module-definition");
-        typeCoding.setSystem("http://terminology.hl7.org/CodeSystem/library-type");
-        libraryType.addCoding(typeCoding);
-        returnLibrary.setName("EffectiveDataRequirements");
-        returnLibrary.setType(libraryType);
-        returnLibrary.setSubject(extractSubject(context));
-        returnLibrary.getExtension().addAll(extractDirectReferenceCodes(context, requirements));
-        returnLibrary.getRelatedArtifact().addAll(extractRelatedArtifacts(context, requirements));
-        returnLibrary.getDataRequirement().addAll(extractDataRequirements(context, requirements));
+    private fun createLibrary(
+        context: ElmRequirementsContext,
+        requirements: ElmRequirements,
+        libraryIdentifier: VersionedIdentifier,
+        expressionDefs: Iterable<ExpressionDef?>,
+        parameters: MutableMap<String?, Any?>?,
+        evaluationDateTime: ZonedDateTime?,
+        includeLogicDefinitions: Boolean
+    ): Library {
+        val returnLibrary = Library()
+        returnLibrary.setStatus(Enumerations.PublicationStatus.ACTIVE)
+        val libraryType = CodeableConcept()
+        val typeCoding = Coding().setCode("module-definition")
+        typeCoding.setSystem("http://terminology.hl7.org/CodeSystem/library-type")
+        libraryType.addCoding(typeCoding)
+        returnLibrary.setName("EffectiveDataRequirements")
+        returnLibrary.setType(libraryType)
+        returnLibrary.setSubject(extractSubject(context))
+        returnLibrary.getExtension().addAll(extractDirectReferenceCodes(context, requirements))
+        returnLibrary.getRelatedArtifact().addAll(extractRelatedArtifacts(context, requirements))
+        returnLibrary.getDataRequirement().addAll(extractDataRequirements(context, requirements))
         returnLibrary
-                .getParameter()
-                .addAll(extractParameters(context, requirements, libraryIdentifier, expressionDefs));
+            .getParameter()
+            .addAll(extractParameters(context, requirements, libraryIdentifier, expressionDefs))
         if (includeLogicDefinitions) {
-            returnLibrary.getExtension().addAll(extractLogicDefinitions(context, requirements));
+            returnLibrary.getExtension().addAll(extractLogicDefinitions(context, requirements))
         }
-        return returnLibrary;
+        return returnLibrary
     }
 
-    private CodeableConcept extractSubject(ElmRequirementsContext context) {
+    private fun extractSubject(context: ElmRequirementsContext?): CodeableConcept? {
         // TODO: Determine context (defaults to Patient if not set, so not critical until we have a non-patient-context
         // use case)
-        return null;
+        return null
     }
 
-    private List<Extension> extractDirectReferenceCodes(ElmRequirementsContext context, ElmRequirements requirements) {
-        List<Extension> result = new ArrayList<>();
+    private fun extractDirectReferenceCodes(
+        context: ElmRequirementsContext,
+        requirements: ElmRequirements
+    ): MutableList<Extension?> {
+        val result: MutableList<Extension?> = ArrayList<Extension?>()
 
-        for (ElmRequirement def : requirements.getCodeDefs()) {
-            result.add(toDirectReferenceCode(context, def.getLibraryIdentifier(), (CodeDef) def.getElement()));
+        for (def in requirements.getCodeDefs()) {
+            result.add(toDirectReferenceCode(context, def.getLibraryIdentifier(), (def.getElement() as CodeDef?)!!))
         }
 
-        return result;
+        return result
     }
 
-    private Extension toDirectReferenceCode(
-            ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, CodeDef def) {
-        Extension e = new Extension();
-        e.setUrl(specificationSupport.getDirectReferenceCodeExtensionUrl());
-        e.setValue(toCoding(context, libraryIdentifier, context.toCode(def)));
-        return e;
+    private fun toDirectReferenceCode(
+        context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier?, def: CodeDef
+    ): Extension {
+        val e = Extension()
+        e.setUrl(specificationSupport.directReferenceCodeExtensionUrl)
+        e.setValue(toCoding(context, libraryIdentifier, context.toCode(def)))
+        return e
     }
 
-    private List<RelatedArtifact> extractRelatedArtifacts(
-            ElmRequirementsContext context, ElmRequirements requirements) {
-        List<RelatedArtifact> result = new ArrayList<>();
+    private fun extractRelatedArtifacts(
+        context: ElmRequirementsContext?, requirements: ElmRequirements
+    ): MutableList<RelatedArtifact?> {
+        val result: MutableList<RelatedArtifact?> = ArrayList<RelatedArtifact?>()
 
         // Report model dependencies
         // URL for a model info is: [baseCanonical]/Library/[model-name]-ModelInfo
-        for (ElmRequirement def : requirements.getUsingDefs()) {
+        for (def in requirements.getUsingDefs()) {
             // System model info is an implicit dependency, do not report
-            if (!((UsingDef) def.getElement()).getLocalIdentifier().equals("System")) {
-                result.add(toRelatedArtifact(def.getLibraryIdentifier(), (UsingDef) def.getElement()));
+            if (!(def.getElement() as UsingDef).localIdentifier.equals("System")) {
+                result.add(toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as UsingDef?)!!))
             }
         }
 
         // Report library dependencies
-        for (ElmRequirement def : requirements.getIncludeDefs()) {
-            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (IncludeDef) def.getElement()));
+        for (def in requirements.getIncludeDefs()) {
+            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as IncludeDef?)!!))
         }
 
         // Report CodeSystem dependencies
-        for (ElmRequirement def : requirements.getCodeSystemDefs()) {
-            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (CodeSystemDef) def.getElement()));
+        for (def in requirements.getCodeSystemDefs()) {
+            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as CodeSystemDef?)!!))
         }
 
         // Report ValueSet dependencies
-        for (ElmRequirement def : requirements.getValueSetDefs()) {
-            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (ValueSetDef) def.getElement()));
+        for (def in requirements.getValueSetDefs()) {
+            result.add(toRelatedArtifact(def.getLibraryIdentifier(), (def.getElement() as ValueSetDef?)!!))
         }
 
-        return result;
+        return result
     }
 
-    private boolean isEquivalentDefinition(ParameterDefinition existingPd, ParameterDefinition pd) {
+    private fun isEquivalentDefinition(existingPd: ParameterDefinition, pd: ParameterDefinition): Boolean {
         // TODO: Consider cardinality
-        return pd.getType() == existingPd.getType();
+        return pd.getType() == existingPd.getType()
     }
 
-    private List<ParameterDefinition> extractParameters(
-            ElmRequirementsContext context,
-            ElmRequirements requirements,
-            VersionedIdentifier libraryIdentifier,
-            Iterable<ExpressionDef> expressionDefs) {
-        List<ParameterDefinition> result = new ArrayList<>();
+    private fun extractParameters(
+        context: ElmRequirementsContext?,
+        requirements: ElmRequirements,
+        libraryIdentifier: VersionedIdentifier,
+        expressionDefs: Iterable<ExpressionDef?>
+    ): MutableList<ParameterDefinition?> {
+        val result: MutableList<ParameterDefinition?> = ArrayList<ParameterDefinition?>()
 
         // TODO: Support library qualified parameters
         // Until then, name clashes should result in a warning
-        Map<String, ParameterDefinition> pds = new HashMap<String, ParameterDefinition>();
-        for (ElmRequirement def : requirements.getParameterDefs()) {
-            ParameterDefinition pd = toParameterDefinition(def.getLibraryIdentifier(), (ParameterDef) def.getElement());
+        val pds: MutableMap<String?, ParameterDefinition> = HashMap<String?, ParameterDefinition>()
+        for (def in requirements.getParameterDefs()) {
+            val pd = toParameterDefinition(def.getLibraryIdentifier(), (def.getElement() as ParameterDef?)!!)
             if (pds.containsKey(pd.getName())) {
-                ParameterDefinition existingPd = pds.get(pd.getName());
+                val existingPd: ParameterDefinition = pds.get(pd.getName())!!
                 if (!isEquivalentDefinition(existingPd, pd)) {
                     // Issue a warning that the parameter has a duplicate name but an incompatible type
-                    validationMessages.add(new ValidationMessage(
+                    validationMessages.add(
+                        ValidationMessage(
                             ValidationMessage.Source.Publisher,
                             ValidationMessage.IssueType.NOTSUPPORTED,
                             "CQL Library Packaging",
                             String.format(
-                                    "Parameter declaration %s.%s is already defined in a different library with a different type. Parameter binding may result in errors during evaluation.",
-                                    def.getLibraryIdentifier().getId(), pd.getName()),
-                            ValidationMessage.IssueSeverity.WARNING));
+                                "Parameter declaration %s.%s is already defined in a different library with a different type. Parameter binding may result in errors during evaluation.",
+                                def.getLibraryIdentifier().id, pd.getName()
+                            ),
+                            ValidationMessage.IssueSeverity.WARNING
+                        )
+                    )
                 }
             } else {
-                pds.put(pd.getName(), pd);
-                result.add(pd);
+                pds.put(pd.getName(), pd)
+                result.add(pd)
             }
         }
 
-        for (ExpressionDef def : expressionDefs) {
-            if (def != null
-                    && !(def instanceof FunctionDef)
-                    && (def.getAccessLevel() == null || def.getAccessLevel() == AccessModifier.PUBLIC)) {
-                result.add(toOutputParameterDefinition(libraryIdentifier, def));
+        for (def in expressionDefs) {
+            if (def != null && (def !is FunctionDef) && (def.accessLevel == null || def.accessLevel == AccessModifier.PUBLIC)) {
+                result.add(toOutputParameterDefinition(libraryIdentifier, def))
             }
         }
 
-        return result;
+        return result
     }
 
-    private org.hl7.cql_annotations.r1.Annotation getAnnotation(Element e) {
-        for (Object o : e.getAnnotation()) {
-            if (o instanceof org.hl7.cql_annotations.r1.Annotation) {
-                return (org.hl7.cql_annotations.r1.Annotation) o;
+    private fun getAnnotation(e: Element): Annotation? {
+        for (o in e.annotation) {
+            if (o is Annotation) {
+                return o
             }
         }
 
-        return null;
+        return null
     }
 
-    private String toNarrativeText(org.hl7.cql_annotations.r1.Annotation a) {
-        StringBuilder sb = new StringBuilder();
-        if (a.getS() != null) {
-            addNarrativeText(sb, a.getS());
+    private fun toNarrativeText(a: Annotation): String {
+        val sb = StringBuilder()
+        if (a.s != null) {
+            addNarrativeText(sb, a.s!!)
         }
-        return sb.toString();
+        return sb.toString()
     }
 
-    private void addNarrativeText(StringBuilder sb, org.hl7.cql_annotations.r1.Narrative n) {
-        for (var s : n.getContent()) {
-            if (s instanceof org.hl7.cql_annotations.r1.Narrative) {
-                addNarrativeText(sb, (org.hl7.cql_annotations.r1.Narrative) s);
-            } else if (s instanceof String) {
-                sb.append((String) s);
+    private fun addNarrativeText(sb: StringBuilder, n: Narrative) {
+        for (s in n.content) {
+            if (s is Narrative) {
+                addNarrativeText(sb, (s as org.hl7.cql_annotations.r1.Narrative?)!!)
+            } else if (s is String) {
+                sb.append(s as String?)
             }
         }
     }
 
-    private List<Extension> extractLogicDefinitions(ElmRequirementsContext context, ElmRequirements requirements) {
-        List<Extension> result = new ArrayList<Extension>();
+    private fun extractLogicDefinitions(
+        context: ElmRequirementsContext?,
+        requirements: ElmRequirements
+    ): MutableList<Extension?> {
+        val result: MutableList<Extension?> = ArrayList<Extension?>()
 
-        int sequence = 0;
-        for (ElmRequirement req : requirements.getExpressionDefs()) {
-            ExpressionDef def = (ExpressionDef) req.getElement();
-            org.hl7.cql_annotations.r1.Annotation a = getAnnotation(def);
+        var sequence = 0
+        for (req in requirements.getExpressionDefs()) {
+            val def = req.getElement() as ExpressionDef
+            val a = getAnnotation(def)
             if (a != null) {
-                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++));
+                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++))
             }
         }
 
-        for (ElmRequirement req : requirements.getFunctionDefs()) {
-            FunctionDef def = (FunctionDef) req.getElement();
-            org.hl7.cql_annotations.r1.Annotation a = getAnnotation(def);
+        for (req in requirements.getFunctionDefs()) {
+            val def = req.getElement() as FunctionDef
+            val a = getAnnotation(def)
             if (a != null) {
-                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++));
+                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++))
             }
         }
 
-        return result;
+        return result
     }
 
-    private StringType toString(String value) {
-        StringType result = new StringType();
-        result.setValue(value);
-        return result;
+    private fun toString(value: String?): StringType {
+        val result = StringType()
+        result.setValue(value)
+        return result
     }
 
-    private IntegerType toInteger(int value) {
-        IntegerType result = new IntegerType();
-        result.setValue(value);
-        return result;
+    private fun toInteger(value: Int): IntegerType {
+        val result = IntegerType()
+        result.setValue(value)
+        return result
     }
 
-    private Extension toLogicDefinition(ElmRequirement req, ExpressionDef def, String text, int sequence) {
-        Extension e = new Extension();
-        e.setUrl(specificationSupport.getLogicDefinitionExtensionUrl());
+    private fun toLogicDefinition(req: ElmRequirement, def: ExpressionDef, text: String?, sequence: Int): Extension {
+        val e = Extension()
+        e.setUrl(specificationSupport.logicDefinitionExtensionUrl)
         // TODO: Include the libraryUrl
-        e.addExtension(new Extension()
+        e.addExtension(
+            Extension()
                 .setUrl("libraryName")
-                .setValue(toString(req.getLibraryIdentifier().getId())));
-        e.addExtension(new Extension().setUrl("name").setValue(toString(def.getName())));
-        e.addExtension(new Extension().setUrl("statement").setValue(toString(text)));
-        e.addExtension(new Extension().setUrl("displaySequence").setValue(toInteger(sequence)));
-        return e;
+                .setValue(toString(req.getLibraryIdentifier().id))
+        )
+        e.addExtension(Extension().setUrl("name").setValue(toString(def.name)))
+        e.addExtension(Extension().setUrl("statement").setValue(toString(text)))
+        e.addExtension(Extension().setUrl("displaySequence").setValue(toInteger(sequence)))
+        return e
     }
 
-    private List<DataRequirement> extractDataRequirements(
-            ElmRequirementsContext context, ElmRequirements requirements) {
-        List<DataRequirement> result = new ArrayList<>();
+    private fun extractDataRequirements(
+        context: ElmRequirementsContext, requirements: ElmRequirements
+    ): MutableList<DataRequirement?> {
+        val result: MutableList<DataRequirement?> = ArrayList<DataRequirement?>()
 
-        Map<String, Retrieve> retrieveMap = new HashMap<String, Retrieve>();
-        for (ElmRequirement retrieve : requirements.getRetrieves()) {
-            if (retrieve.getElement().getLocalId() != null) {
-                retrieveMap.put(retrieve.getElement().getLocalId(), (Retrieve) retrieve.getElement());
+        val retrieveMap: MutableMap<String?, Retrieve> = HashMap<String?, Retrieve>()
+        for (retrieve in requirements.getRetrieves()) {
+            if (retrieve.getElement().localId != null) {
+                retrieveMap.put(retrieve.getElement().localId, (retrieve.getElement() as Retrieve?)!!)
             }
         }
 
-        for (ElmRequirement retrieve : requirements.getRetrieves()) {
-            if (((Retrieve) retrieve.getElement()).getDataType() != null) {
-                result.add(toDataRequirement(
+        for (retrieve in requirements.getRetrieves()) {
+            if ((retrieve.getElement() as Retrieve).dataType != null) {
+                result.add(
+                    toDataRequirement(
                         context,
                         retrieve.getLibraryIdentifier(),
-                        (Retrieve) retrieve.getElement(),
+                        (retrieve.getElement() as Retrieve?)!!,
                         retrieveMap,
-                        retrieve instanceof ElmDataRequirement ? ((ElmDataRequirement) retrieve).getProperties() : null,
-                        retrieve instanceof ElmDataRequirement
-                                ? ((ElmDataRequirement) retrieve).getPertinenceContext()
-                                : null));
+                        if (retrieve is ElmDataRequirement) retrieve.getProperties() else null,
+                        if (retrieve is ElmDataRequirement)
+                            retrieve.getPertinenceContext()
+                        else
+                            null
+                    )
+                )
             }
         }
 
-        return result;
+        return result
     }
 
-    private org.hl7.fhir.r5.model.RelatedArtifact toRelatedArtifact(
-            VersionedIdentifier libraryIdentifier, UsingDef usingDef) {
-        return new org.hl7.fhir.r5.model.RelatedArtifact()
-                .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
-                .setDisplay(
-                        usingDef.getLocalIdentifier() != null
-                                ? String.format("%s model information", usingDef.getLocalIdentifier())
-                                : null) // Could potentially look for a well-known comment tag too, @description?
-                .setResource(getModelInfoReferenceUrl(
-                        usingDef.getUri(), usingDef.getLocalIdentifier(), usingDef.getVersion()));
+    private fun toRelatedArtifact(
+        libraryIdentifier: VersionedIdentifier?, usingDef: UsingDef
+    ): RelatedArtifact? {
+        return RelatedArtifact()
+            .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
+            .setDisplay(
+                if (usingDef.localIdentifier != null) String.format(
+                    "%s model information",
+                    usingDef.localIdentifier
+                ) else
+                    null
+            ) // Could potentially look for a well-known comment tag too, @description?
+            .setResource(
+                getModelInfoReferenceUrl(
+                    usingDef.uri, usingDef.localIdentifier!!, usingDef.version
+                )
+            )
     }
 
     /*
@@ -579,37 +662,39 @@ public class DataRequirementsProcessor {
     so there is no way for the UsingDefinition to have a Uri that is different than the expected URI that the
     providers understand. I.e. model names and model URIs are one-to-one.
      */
-    private String mapModelInfoUri(String uri, String name) {
-        if (name.equals("FHIR") && uri.equals("http://hl7.org/fhir")) {
-            return "http://fhir.org/guides/cqf/common";
+    private fun mapModelInfoUri(uri: String, name: String): String? {
+        if (name == "FHIR" && uri == "http://hl7.org/fhir") {
+            return "http://fhir.org/guides/cqf/common"
         }
-        return uri;
+        return uri
     }
 
-    private String getModelInfoReferenceUrl(String uri, String name, String version) {
+    private fun getModelInfoReferenceUrl(uri: String?, name: String, version: String?): String {
         if (uri != null) {
             return String.format(
-                    "%s/Library/%s-ModelInfo%s",
-                    mapModelInfoUri(uri, name), name, version != null ? ("|" + version) : "");
+                "%s/Library/%s-ModelInfo%s",
+                mapModelInfoUri(uri, name), name, if (version != null) ("|" + version) else ""
+            )
         }
 
-        return String.format("Library/%s-ModelInfo%s", name, version != null ? ("|" + version) : "");
+        return String.format("Library/%s-ModelInfo%s", name, if (version != null) ("|" + version) else "")
     }
 
-    private org.hl7.fhir.r5.model.RelatedArtifact toRelatedArtifact(
-            VersionedIdentifier libraryIdentifier, IncludeDef includeDef) {
-        return new org.hl7.fhir.r5.model.RelatedArtifact()
-                .setType(org.hl7.fhir.r5.model.RelatedArtifact.RelatedArtifactType.DEPENDSON)
-                .setDisplay(
-                        includeDef.getLocalIdentifier() != null
-                                ? String.format("Library %s", includeDef.getLocalIdentifier())
-                                : null) // Could potentially look for a well-known comment tag too, @description?
-                .setResource(getReferenceUrl(includeDef.getPath(), includeDef.getVersion()));
+    private fun toRelatedArtifact(
+        libraryIdentifier: VersionedIdentifier?, includeDef: IncludeDef
+    ): RelatedArtifact? {
+        return RelatedArtifact()
+            .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
+            .setDisplay(
+                if (includeDef.localIdentifier != null) String.format("Library %s", includeDef.localIdentifier) else
+                    null
+            ) // Could potentially look for a well-known comment tag too, @description?
+            .setResource(getReferenceUrl(includeDef.path, includeDef.version))
     }
 
-    private String getReferenceUrl(String path, String version) {
-        String uri = NamespaceManager.getUriPart(path);
-        String name = NamespaceManager.getNamePart(path);
+    private fun getReferenceUrl(path: String?, version: String?): String {
+        val uri = getUriPart(path)
+        val name = getNamePart(path)
 
         if (uri != null) {
             // The translator has no way to correctly infer the namespace of the FHIRHelpers library, since it will
@@ -620,164 +705,167 @@ public class DataRequirementsProcessor {
             // uri.equals("http://fhir.org/guides/cqf/common"))) {
             //    uri = "http://fhir.org/guides/cqf/common";
             // }
-            return String.format("%s/Library/%s%s", uri, name, version != null ? ("|" + version) : "");
+            return String.format("%s/Library/%s%s", uri, name, if (version != null) ("|" + version) else "")
         }
 
-        return String.format("Library/%s%s", path, version != null ? ("|" + version) : "");
+        return String.format("Library/%s%s", path, if (version != null) ("|" + version) else "")
     }
 
-    private org.hl7.fhir.r5.model.RelatedArtifact toRelatedArtifact(
-            VersionedIdentifier libraryIdentifier, CodeSystemDef codeSystemDef) {
-        return new org.hl7.fhir.r5.model.RelatedArtifact()
-                .setType(org.hl7.fhir.r5.model.RelatedArtifact.RelatedArtifactType.DEPENDSON)
-                .setDisplay(String.format("Code system %s", codeSystemDef.getName()))
-                .setResource(toReference(codeSystemDef));
+    private fun toRelatedArtifact(
+        libraryIdentifier: VersionedIdentifier?, codeSystemDef: CodeSystemDef
+    ): RelatedArtifact? {
+        return RelatedArtifact()
+            .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
+            .setDisplay(String.format("Code system %s", codeSystemDef.name))
+            .setResource(toReference(codeSystemDef))
     }
 
-    private org.hl7.fhir.r5.model.RelatedArtifact toRelatedArtifact(
-            VersionedIdentifier libraryIdentifier, ValueSetDef valueSetDef) {
-        return new org.hl7.fhir.r5.model.RelatedArtifact()
-                .setType(org.hl7.fhir.r5.model.RelatedArtifact.RelatedArtifactType.DEPENDSON)
-                .setDisplay(String.format("Value set %s", valueSetDef.getName()))
-                .setResource(toReference(valueSetDef));
+    private fun toRelatedArtifact(
+        libraryIdentifier: VersionedIdentifier?, valueSetDef: ValueSetDef
+    ): RelatedArtifact? {
+        return RelatedArtifact()
+            .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
+            .setDisplay(String.format("Value set %s", valueSetDef.name))
+            .setResource(toReference(valueSetDef))
     }
 
-    private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
-        AtomicBoolean isList = new AtomicBoolean(false);
-        var resultType = Trackable.INSTANCE.getResultType(def);
-        FHIRTypes typeCode =
-                Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(resultType, def.getName(), isList));
+    private fun toParameterDefinition(libraryIdentifier: VersionedIdentifier?, def: ParameterDef): ParameterDefinition {
+        val isList = AtomicBoolean(false)
+        val resultType = Trackable.resultType
+        val typeCode =
+            FHIRTypes.fromCode(toFHIRParameterTypeCode(resultType!!, def.name, isList))
 
-        return new ParameterDefinition()
-                .setName(def.getName())
-                .setUse(Enumerations.OperationParameterUse.IN)
-                .setMin(0)
-                .setMax(isList.get() ? "*" : "1")
-                .setType(typeCode);
+        return ParameterDefinition()
+            .setName(def.name)
+            .setUse(Enumerations.OperationParameterUse.IN)
+            .setMin(0)
+            .setMax(if (isList.get()) "*" else "1")
+            .setType(typeCode)
     }
 
-    private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
-        AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRTypes typeCode = null;
+    private fun toOutputParameterDefinition(
+        libraryIdentifier: VersionedIdentifier,
+        def: ExpressionDef
+    ): ParameterDefinition {
+        val isList = AtomicBoolean(false)
+        var typeCode: FHIRTypes? = null
 
-        var defResultType = Trackable.INSTANCE.getResultType(def);
+        val defResultType = Trackable.resultType
         try {
-            typeCode = Enumerations.FHIRTypes.fromCode(toFHIRResultTypeCode(defResultType, def.getName(), isList));
-        } catch (org.hl7.fhir.exceptions.FHIRException fhirException) {
-            validationMessages.add(new ValidationMessage(
+            typeCode = FHIRTypes.fromCode(toFHIRResultTypeCode(defResultType!!, def.name, isList))
+        } catch (fhirException: FHIRException) {
+            validationMessages.add(
+                ValidationMessage(
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
                     String.format(
-                            "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
-                            defResultType.toLabel(), libraryIdentifier.getId()),
-                    ValidationMessage.IssueSeverity.WARNING));
+                        "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
+                        defResultType!!.toLabel(), libraryIdentifier.id
+                    ),
+                    ValidationMessage.IssueSeverity.WARNING
+                )
+            )
         }
 
-        return new ParameterDefinition()
-                .setName(def.getName())
-                .setUse(Enumerations.OperationParameterUse.OUT)
-                .setMin(0)
-                .setMax(isList.get() ? "*" : "1")
-                .setType(typeCode);
+        return ParameterDefinition()
+            .setName(def.name)
+            .setUse(Enumerations.OperationParameterUse.OUT)
+            .setMin(0)
+            .setMax(if (isList.get()) "*" else "1")
+            .setType(typeCode)
     }
 
-    private String toFHIRResultTypeCode(org.hl7.cql.model.DataType dataType, String defName, AtomicBoolean isList) {
-        AtomicBoolean isValid = new AtomicBoolean(true);
-        String resultCode = toFHIRTypeCode(dataType, isValid, isList);
+    private fun toFHIRResultTypeCode(dataType: DataType, defName: String?, isList: AtomicBoolean): String {
+        val isValid = AtomicBoolean(true)
+        val resultCode = toFHIRTypeCode(dataType, isValid, isList)
         if (!isValid.get()) {
             // Issue a warning that the result type is not supported
-            validationMessages.add(new ValidationMessage(
+            validationMessages.add(
+                ValidationMessage(
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
                     String.format(
-                            "Result type %s of definition %s is not supported; implementations may not be able to use the result of this expression",
-                            dataType.toLabel(), defName),
-                    ValidationMessage.IssueSeverity.WARNING));
+                        "Result type %s of definition %s is not supported; implementations may not be able to use the result of this expression",
+                        dataType.toLabel(), defName
+                    ),
+                    ValidationMessage.IssueSeverity.WARNING
+                )
+            )
         }
 
-        return resultCode;
+        return resultCode
     }
 
-    private String toFHIRParameterTypeCode(
-            org.hl7.cql.model.DataType dataType, String parameterName, AtomicBoolean isList) {
-        AtomicBoolean isValid = new AtomicBoolean(true);
-        String resultCode = toFHIRTypeCode(dataType, isValid, isList);
+    private fun toFHIRParameterTypeCode(
+        dataType: DataType, parameterName: String?, isList: AtomicBoolean
+    ): String {
+        val isValid = AtomicBoolean(true)
+        val resultCode = toFHIRTypeCode(dataType, isValid, isList)
         if (!isValid.get()) {
             // Issue a warning that the parameter type is not supported
-            validationMessages.add(new ValidationMessage(
+            validationMessages.add(
+                ValidationMessage(
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
                     String.format(
-                            "Parameter type %s of parameter %s is not supported; reported as FHIR.Any",
-                            dataType.toLabel(), parameterName),
-                    ValidationMessage.IssueSeverity.WARNING));
+                        "Parameter type %s of parameter %s is not supported; reported as FHIR.Any",
+                        dataType.toLabel(), parameterName
+                    ),
+                    ValidationMessage.IssueSeverity.WARNING
+                )
+            )
         }
 
-        return resultCode;
+        return resultCode
     }
 
-    private String toFHIRTypeCode(org.hl7.cql.model.DataType dataType, AtomicBoolean isValid, AtomicBoolean isList) {
-        isList.set(false);
-        if (dataType instanceof ListType) {
-            isList.set(true);
-            return toFHIRTypeCode(((ListType) dataType).getElementType(), isValid);
+    private fun toFHIRTypeCode(dataType: DataType?, isValid: AtomicBoolean, isList: AtomicBoolean): String {
+        isList.set(false)
+        if (dataType is ListType) {
+            isList.set(true)
+            return toFHIRTypeCode(dataType.elementType, isValid)
         }
 
-        return toFHIRTypeCode(dataType, isValid);
+        return toFHIRTypeCode(dataType, isValid)
     }
 
-    private String toFHIRTypeCode(org.hl7.cql.model.DataType dataType, AtomicBoolean isValid) {
-        isValid.set(true);
-        if (dataType instanceof NamedType) {
-            switch (((NamedType) dataType).getName()) {
-                case "System.Boolean":
-                    return "boolean";
-                case "System.Integer":
-                    return "integer";
-                case "System.Decimal":
-                    return "decimal";
-                case "System.Date":
-                    return "date";
-                case "System.DateTime":
-                    return "dateTime";
-                case "System.Time":
-                    return "time";
-                case "System.String":
-                    return "string";
-                case "System.Quantity":
-                    return "Quantity";
-                case "System.Ratio":
-                    return "Ratio";
-                case "System.Any":
-                    return "Any";
-                case "System.Code":
-                    return "Coding";
-                case "System.Concept":
-                    return "CodeableConcept";
+    private fun toFHIRTypeCode(dataType: DataType?, isValid: AtomicBoolean): String {
+        isValid.set(true)
+        if (dataType is NamedType) {
+            when ((dataType as NamedType).name) {
+                "System.Boolean" -> return "boolean"
+                "System.Integer" -> return "integer"
+                "System.Decimal" -> return "decimal"
+                "System.Date" -> return "date"
+                "System.DateTime" -> return "dateTime"
+                "System.Time" -> return "time"
+                "System.String" -> return "string"
+                "System.Quantity" -> return "Quantity"
+                "System.Ratio" -> return "Ratio"
+                "System.Any" -> return "Any"
+                "System.Code" -> return "Coding"
+                "System.Concept" -> return "CodeableConcept"
             }
 
-            if ("FHIR".equals(((NamedType) dataType).getNamespace())) {
-                return ((NamedType) dataType).getSimpleName();
+            if ("FHIR" == (dataType as NamedType).namespace) {
+                return (dataType as NamedType).simpleName
             }
         }
 
-        if (dataType instanceof IntervalType) {
-            if (((IntervalType) dataType).getPointType() instanceof NamedType) {
-                switch (((NamedType) ((IntervalType) dataType).getPointType()).getName()) {
-                    case "System.Date":
-                    case "System.DateTime":
-                        return "Period";
-                    case "System.Quantity":
-                        return "Range";
+        if (dataType is IntervalType) {
+            if (dataType.pointType is NamedType) {
+                when ((dataType.pointType as NamedType).name) {
+                    "System.Date", "System.DateTime" -> return "Period"
+                    "System.Quantity" -> return "Range"
                 }
             }
         }
 
-        isValid.set(false);
-        return "Any";
+        isValid.set(false)
+        return "Any"
     }
 
     /**
@@ -795,118 +883,137 @@ public class DataRequirementsProcessor {
      * @param libraryIdentifier
      * @return
      */
-    private VersionedIdentifier getDeclaredLibraryIdentifier(Element trackable, VersionedIdentifier libraryIdentifier) {
-        var trackbacks = Trackable.INSTANCE.getTrackbacks(trackable);
-        for (TrackBack tb : trackbacks) {
-            if (tb.getLibrary() != null) {
-                return tb.getLibrary();
+    private fun getDeclaredLibraryIdentifier(
+        trackable: Element,
+        libraryIdentifier: VersionedIdentifier?
+    ): VersionedIdentifier? {
+        val trackbacks: @@NotNull MutableList<TrackBack?> = Trackable.trackbacks
+        for (tb in trackbacks) {
+            if (tb!!.library != null) {
+                return tb.library
             }
         }
 
-        validationMessages.add(new ValidationMessage(
+        validationMessages.add(
+            ValidationMessage(
                 ValidationMessage.Source.Publisher,
                 ValidationMessage.IssueType.PROCESSING,
                 "Data requirements processing",
                 String.format(
-                        "Library referencing element (%s) is potentially being resolved in a different context than it was declared. Ensure library aliases are consistent",
-                        trackable.getClass().getSimpleName()),
-                ValidationMessage.IssueSeverity.WARNING));
+                    "Library referencing element (%s) is potentially being resolved in a different context than it was declared. Ensure library aliases are consistent",
+                    trackable.getClass().getSimpleName()
+                ),
+                ValidationMessage.IssueSeverity.WARNING
+            )
+        )
 
-        return libraryIdentifier;
+        return libraryIdentifier
     }
 
-    private org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent toCodeFilterComponent(
-            ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, String property, Expression value) {
-        org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent cfc =
-                new org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent();
+    private fun toCodeFilterComponent(
+        context: ElmRequirementsContext,
+        libraryIdentifier: VersionedIdentifier?,
+        property: kotlin.String?,
+        value: Expression?
+    ): DataRequirement.DataRequirementCodeFilterComponent {
+        val cfc =
+            DataRequirement.DataRequirementCodeFilterComponent()
 
-        cfc.setPath(property);
+        cfc.setPath(property)
 
         // TODO: Support retrieval when the target is a CodeSystemRef
-
-        if (value instanceof ValueSetRef) {
-            ValueSetRef vsr = (ValueSetRef) value;
-            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(vsr, libraryIdentifier);
-            cfc.setValueSet(toReference(context.resolveValueSetRef(declaredLibraryIdentifier, vsr)));
+        if (value is ValueSetRef) {
+            val vsr = value
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(vsr, libraryIdentifier)
+            cfc.setValueSet(toReference(context.resolveValueSetRef(declaredLibraryIdentifier, vsr)))
         }
 
-        if (value instanceof org.hl7.elm.r1.ToList) {
-            org.hl7.elm.r1.ToList toList = (org.hl7.elm.r1.ToList) value;
-            resolveCodeFilterCodes(context, libraryIdentifier, cfc, toList.getOperand());
+        if (value is ToList) {
+            val toList = value
+            resolveCodeFilterCodes(context, libraryIdentifier, cfc, toList.operand)
         }
 
-        if (value instanceof org.hl7.elm.r1.List) {
-            org.hl7.elm.r1.List codeList = (org.hl7.elm.r1.List) value;
-            for (Expression e : codeList.getElement()) {
-                resolveCodeFilterCodes(context, libraryIdentifier, cfc, e);
+        if (value is List) {
+            val codeList = value
+            for (e in codeList.element) {
+                resolveCodeFilterCodes(context, libraryIdentifier, cfc, e)
             }
         }
 
-        if (value instanceof org.hl7.elm.r1.Literal) {
-            org.hl7.elm.r1.Literal literal = (org.hl7.elm.r1.Literal) value;
-            cfc.addCode().setCode(literal.getValue());
+        if (value is Literal) {
+            val literal = value
+            cfc.addCode().setCode(literal.value)
         }
 
-        return cfc;
+        return cfc
     }
 
-    private DataType toFhirValue(ElmRequirementsContext context, Expression value) {
+    private fun toFhirValue(context: ElmRequirementsContext, value: Expression?): org.hl7.fhir.r5.model.DataType? {
         if (value == null) {
-            return null;
+            return null
         }
 
         if (context.getParameters() == null) {
-            return ElmAnalysisHelper.toFhirValue(context, value);
+            return ElmAnalysisHelper.toFhirValue(context, value)
         } else {
             // Attempt to use an evaluation visitor to evaluate the value (must be compile-time literal or this will
             // produce a runtime error)
-            Object result = ElmEvaluationHelper.evaluate(
-                    context.resolveLibrary(context.getCurrentLibraryIdentifier())
-                            .getLibrary(),
-                    value,
-                    context.getParameters(),
-                    context.getEvaluationDateTime());
+            val result = evaluate(
+                context.resolveLibrary(context.getCurrentLibraryIdentifier())
+                    .library,
+                value,
+                context.getParameters(),
+                context.getEvaluationDateTime()
+            )
 
-            if (result instanceof DataType) {
-                return (DataType) result;
+            if (result is org.hl7.fhir.r5.model.DataType) {
+                return result
             }
 
             if (result == null) {
-                return null;
+                return null
             }
 
-            FhirTypeConverter converter = new FhirTypeConverterFactory().create(FhirVersionEnum.R5);
-            IBase fhirResult = converter.toFhirType(result);
-            if (fhirResult instanceof DataType) {
-                return (DataType) fhirResult;
+            val converter = FhirTypeConverterFactory().create(FhirVersionEnum.R5)
+            val fhirResult = converter.toFhirType(result)
+            if (fhirResult is org.hl7.fhir.r5.model.DataType) {
+                return fhirResult
             }
-            throw new IllegalArgumentException(String.format(
+            throw IllegalArgumentException(
+                kotlin.String.format(
                     "toFhirValue not implemented for result of type %s",
-                    result.getClass().getSimpleName()));
+                    result.javaClass.getSimpleName()
+                )
+            )
         }
     }
 
-    private org.hl7.fhir.r5.model.DataRequirement.DataRequirementDateFilterComponent toDateFilterComponent(
-            ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, String property, Expression value) {
-        org.hl7.fhir.r5.model.DataRequirement.DataRequirementDateFilterComponent dfc =
-                new org.hl7.fhir.r5.model.DataRequirement.DataRequirementDateFilterComponent();
+    private fun toDateFilterComponent(
+        context: ElmRequirementsContext,
+        libraryIdentifier: VersionedIdentifier?,
+        property: kotlin.String?,
+        value: Expression?
+    ): DataRequirement.DataRequirementDateFilterComponent {
+        val dfc =
+            DataRequirement.DataRequirementDateFilterComponent()
 
-        dfc.setPath(property);
+        dfc.setPath(property)
 
-        context.enterLibrary(libraryIdentifier);
+        context.enterLibrary(libraryIdentifier)
         try {
-            dfc.setValue(toFhirValue(context, value));
-        } catch (Exception e) {
-            Period p = new Period();
+            dfc.setValue(toFhirValue(context, value))
+        } catch (e: Exception) {
+            val p = Period()
             p.addExtension(
-                    "http://hl7.org/fhir/uv/crmi-analysisException",
-                    new StringType(String.format("Error attempting to determine filter value: %s", e.getMessage())));
-            dfc.setValue(p);
+                "http://hl7.org/fhir/uv/crmi-analysisException",
+                StringType(kotlin.String.format("Error attempting to determine filter value: %s", e.message))
+            )
+            dfc.setValue(p)
         } finally {
-            context.exitLibrary();
+            context.exitLibrary()
         }
 
-        return dfc;
+        return dfc
     }
 
     /**
@@ -914,208 +1021,230 @@ public class DataRequirementsProcessor {
      * @param path
      * @return
      */
-    private String stripReference(String path) {
+    private fun stripReference(path: kotlin.String): kotlin.String {
         if (path.endsWith(".reference")) {
-            return path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf("."))
         }
-        return path;
+        return path
     }
 
-    private org.hl7.fhir.r5.model.DataRequirement toDataRequirement(
-            ElmRequirementsContext context,
-            VersionedIdentifier libraryIdentifier,
-            Retrieve retrieve,
-            Map<String, Retrieve> retrieveMap,
-            Iterable<Property> properties,
-            ElmPertinenceContext pertinenceContext) {
-        org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
+    private fun toDataRequirement(
+        context: ElmRequirementsContext,
+        libraryIdentifier: VersionedIdentifier,
+        retrieve: Retrieve,
+        retrieveMap: MutableMap<kotlin.String?, Retrieve>,
+        properties: Iterable<Property>?,
+        pertinenceContext: ElmPertinenceContext?
+    ): DataRequirement {
+        val dr = DataRequirement()
         try {
-            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRTypes.fromCode(
-                    retrieve.getDataType().getLocalPart()));
-        } catch (org.hl7.fhir.exceptions.FHIRException fhirException) {
-            validationMessages.add(new ValidationMessage(
+            dr.setType(
+                FHIRTypes.fromCode(
+                    retrieve.dataType!!.getLocalPart()
+                )
+            )
+        } catch (fhirException: FHIRException) {
+            validationMessages.add(
+                ValidationMessage(
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
                     String.format(
-                            "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
-                            retrieve.getDataType().getLocalPart(), libraryIdentifier.getId()),
-                    ValidationMessage.IssueSeverity.WARNING));
+                        "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
+                        retrieve.dataType!!.getLocalPart(), libraryIdentifier.id
+                    ),
+                    ValidationMessage.IssueSeverity.WARNING
+                )
+            )
         }
 
         // Set the id attribute of the data requirement if it will be referenced from an included retrieve
-        if (retrieve.getLocalId() != null
-                && retrieve.getInclude() != null
-                && retrieve.getInclude().size() > 0) {
-            for (IncludeElement ie : retrieve.getInclude()) {
-                if (ie.getIncludeFrom() != null) {
-                    dr.setId(retrieve.getLocalId());
+        if (retrieve.localId != null && retrieve.include != null && retrieve.include.size() > 0) {
+            for (ie in retrieve.include) {
+                if (ie.includeFrom != null) {
+                    dr.setId(retrieve.localId)
                 }
             }
         }
 
         // Set profile if specified
-        if (retrieve.getTemplateId() != null) {
-            dr.setProfile(Collections.singletonList(new org.hl7.fhir.r5.model.CanonicalType(retrieve.getTemplateId())));
+        if (retrieve.templateId != null) {
+            dr.setProfile(mutableListOf<CanonicalType?>(CanonicalType(retrieve.templateId)))
         }
 
         // collect must supports
-        Set<String> ps = new LinkedHashSet<String>();
+        val ps: MutableSet<kotlin.String?> = LinkedHashSet<kotlin.String?>()
 
         // Set code path if specified
-        if (retrieve.getCodeProperty() != null) {
+        if (retrieve.codeProperty != null) {
             dr.getCodeFilter()
-                    .add(toCodeFilterComponent(
-                            context, libraryIdentifier, retrieve.getCodeProperty(), retrieve.getCodes()));
-            ps.add(retrieve.getCodeProperty());
+                .add(
+                    toCodeFilterComponent(
+                        context, libraryIdentifier, retrieve.codeProperty, retrieve.codes
+                    )
+                )
+            ps.add(retrieve.codeProperty)
         }
 
         // Add any additional code filters
-        for (CodeFilterElement cfe : retrieve.getCodeFilter()) {
+        for (cfe in retrieve.codeFilter) {
             dr.getCodeFilter()
-                    .add(toCodeFilterComponent(context, libraryIdentifier, cfe.getProperty(), cfe.getValue()));
+                .add(toCodeFilterComponent(context, libraryIdentifier, cfe.property, cfe.value))
         }
 
         // Set date path if specified
-        if (retrieve.getDateProperty() != null) {
+        if (retrieve.dateProperty != null) {
             dr.getDateFilter()
-                    .add(toDateFilterComponent(
-                            context, libraryIdentifier, retrieve.getDateProperty(), retrieve.getDateRange()));
-            ps.add(retrieve.getDateProperty());
+                .add(
+                    toDateFilterComponent(
+                        context, libraryIdentifier, retrieve.dateProperty, retrieve.dateRange
+                    )
+                )
+            ps.add(retrieve.dateProperty)
         }
 
         // Add any additional date filters
-        for (DateFilterElement dfe : retrieve.getDateFilter()) {
+        for (dfe in retrieve.dateFilter) {
             dr.getDateFilter()
-                    .add(toDateFilterComponent(context, libraryIdentifier, dfe.getProperty(), dfe.getValue()));
+                .add(toDateFilterComponent(context, libraryIdentifier, dfe.property, dfe.value))
         }
 
         // TODO: Add any other filters (use the cqfm-valueFilter extension until the content infrastructure IG is
         // available)
 
         // Add any related data requirements
-        if (retrieve.getIncludedIn() != null) {
-            Retrieve relatedRetrieve = retrieveMap.get(retrieve.getIncludedIn());
-            if (relatedRetrieve == null) {
-                throw new IllegalArgumentException(
-                        String.format("Could not resolve related retrieve with localid %s", retrieve.getIncludedIn()));
+        if (retrieve.includedIn != null) {
+            val relatedRetrieve: Retrieve = retrieveMap.get(retrieve.includedIn)!!
+            requireNotNull(relatedRetrieve) {
+                kotlin.String.format(
+                    "Could not resolve related retrieve with localid %s",
+                    retrieve.includedIn
+                )
             }
-            IncludeElement includeElement = null;
-            for (IncludeElement ie : relatedRetrieve.getInclude()) {
-                if (ie.getIncludeFrom() != null && ie.getIncludeFrom().equals(retrieve.getLocalId())) {
-                    includeElement = ie;
-                    break;
+            var includeElement: IncludeElement? = null
+            for (ie in relatedRetrieve.include) {
+                if (ie.includeFrom != null && ie.includeFrom.equals(retrieve.localId)) {
+                    includeElement = ie
+                    break
                 }
             }
             if (relatedRetrieve != null && includeElement != null) {
-                Extension relatedRequirement =
-                        new Extension().setUrl(specificationSupport.getRelatedRequirementExtensionUrl());
-                relatedRequirement.addExtension("targetId", new StringType(retrieve.getIncludedIn()));
+                val relatedRequirement =
+                    Extension().setUrl(specificationSupport.relatedRequirementExtensionUrl)
+                relatedRequirement.addExtension("targetId", StringType(retrieve.includedIn))
                 relatedRequirement.addExtension(
-                        "targetProperty", new StringType(stripReference(includeElement.getRelatedProperty())));
-                dr.addExtension(relatedRequirement);
+                    "targetProperty", StringType(stripReference(includeElement.relatedProperty!!))
+                )
+                dr.addExtension(relatedRequirement)
             }
         }
 
         // Add any properties as mustSupport items
         if (properties != null) {
-            for (Property p : properties) {
-                if (!ps.contains(p.getPath())) {
-                    ps.add(p.getPath());
+            for (p in properties) {
+                if (!ps.contains(p.path)) {
+                    ps.add(p.path)
                 }
             }
         }
-        for (String s : ps) {
-            dr.addMustSupport(s);
+        for (s in ps) {
+            dr.addMustSupport(s)
         }
 
-        if (pertinenceContext != null
-                && pertinenceContext.getPertinenceValue() != null
-                && !(pertinenceContext.getPertinenceValue().trim().isEmpty())) {
-            Extension extension = new Extension();
-            extension.setUrl(specificationSupport.getPertinenceExtensionUrl());
+        if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null && !(pertinenceContext.getPertinenceValue()
+                .trim { it <= ' ' }.isEmpty())
+        ) {
+            val extension = Extension()
+            extension.setUrl(specificationSupport.pertinenceExtensionUrl)
 
-            Coding coding = new Coding();
-            coding.setSystem("http://hl7.org/fhir/uv/cpg/CodeSystem/cpg-casefeature-pertinence");
-            coding.setCode(pertinenceContext.getPertinenceValue());
-            extension.setValue(coding);
+            val coding = Coding()
+            coding.setSystem("http://hl7.org/fhir/uv/cpg/CodeSystem/cpg-casefeature-pertinence")
+            coding.setCode(pertinenceContext.getPertinenceValue())
+            extension.setValue(coding)
 
-            dr.getExtension().add(extension);
+            dr.getExtension().add(extension)
         }
 
-        return dr;
+        return dr
     }
 
-    private void resolveCodeFilterCodes(
-            ElmRequirementsContext context,
-            VersionedIdentifier libraryIdentifier,
-            org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent cfc,
-            Expression e) {
-        if (e instanceof org.hl7.elm.r1.CodeRef) {
-            CodeRef cr = (CodeRef) e;
-            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier);
-            cfc.addCode(toCoding(
-                    context, libraryIdentifier, context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, cr))));
+    private fun resolveCodeFilterCodes(
+        context: ElmRequirementsContext,
+        libraryIdentifier: VersionedIdentifier?,
+        cfc: DataRequirement.DataRequirementCodeFilterComponent,
+        e: Expression?
+    ) {
+        if (e is CodeRef) {
+            val cr = e
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier)
+            cfc.addCode(
+                toCoding(
+                    context, libraryIdentifier, context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, cr))
+                )
+            )
         }
 
-        if (e instanceof org.hl7.elm.r1.Code) {
-            cfc.addCode(toCoding(context, libraryIdentifier, (org.hl7.elm.r1.Code) e));
+        if (e is Code) {
+            cfc.addCode(toCoding(context, libraryIdentifier, e))
         }
 
-        if (e instanceof org.hl7.elm.r1.ConceptRef) {
-            ConceptRef cr = (ConceptRef) e;
-            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier);
-            org.hl7.fhir.r5.model.CodeableConcept c = toCodeableConcept(
-                    context,
-                    libraryIdentifier,
-                    context.toConcept(libraryIdentifier, context.resolveConceptRef(declaredLibraryIdentifier, cr)));
-            for (org.hl7.fhir.r5.model.Coding code : c.getCoding()) {
-                cfc.addCode(code);
+        if (e is ConceptRef) {
+            val cr = e
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier)
+            val c = toCodeableConcept(
+                context,
+                libraryIdentifier,
+                context.toConcept(libraryIdentifier, context.resolveConceptRef(declaredLibraryIdentifier, cr))
+            )
+            for (code in c.getCoding()) {
+                cfc.addCode(code)
             }
         }
 
-        if (e instanceof org.hl7.elm.r1.Concept) {
-            org.hl7.fhir.r5.model.CodeableConcept c =
-                    toCodeableConcept(context, libraryIdentifier, (org.hl7.elm.r1.Concept) e);
-            for (org.hl7.fhir.r5.model.Coding code : c.getCoding()) {
-                cfc.addCode(code);
+        if (e is Concept) {
+            val c =
+                toCodeableConcept(context, libraryIdentifier, e)
+            for (code in c.getCoding()) {
+                cfc.addCode(code)
             }
         }
 
-        if (e instanceof org.hl7.elm.r1.Literal) {
-            org.hl7.elm.r1.Literal literal = (org.hl7.elm.r1.Literal) e;
-            cfc.addCode().setCode(literal.getValue());
+        if (e is Literal) {
+            val literal = e
+            cfc.addCode().setCode(literal.value)
         }
     }
 
-    private org.hl7.fhir.r5.model.Coding toCoding(
-            ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, Code code) {
-        VersionedIdentifier declaredLibraryIdentifier =
-                getDeclaredLibraryIdentifier(code.getSystem(), libraryIdentifier);
-        CodeSystemDef codeSystemDef = context.resolveCodeSystemRef(declaredLibraryIdentifier, code.getSystem());
-        org.hl7.fhir.r5.model.Coding coding = new org.hl7.fhir.r5.model.Coding();
-        coding.setCode(code.getCode());
-        coding.setDisplay(code.getDisplay());
-        coding.setSystem(codeSystemDef.getId());
-        coding.setVersion(codeSystemDef.getVersion());
-        return coding;
+    private fun toCoding(
+        context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier?, code: Code
+    ): Coding {
+        val declaredLibraryIdentifier =
+            getDeclaredLibraryIdentifier(code.system!!, libraryIdentifier)
+        val codeSystemDef = context.resolveCodeSystemRef(declaredLibraryIdentifier, code.system)
+        val coding = Coding()
+        coding.setCode(code.code)
+        coding.setDisplay(code.display)
+        coding.setSystem(codeSystemDef.id)
+        coding.setVersion(codeSystemDef.version)
+        return coding
     }
 
-    private org.hl7.fhir.r5.model.CodeableConcept toCodeableConcept(
-            ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, Concept concept) {
-        org.hl7.fhir.r5.model.CodeableConcept codeableConcept = new org.hl7.fhir.r5.model.CodeableConcept();
-        codeableConcept.setText(concept.getDisplay());
-        for (Code code : concept.getCode()) {
-            codeableConcept.addCoding(toCoding(context, libraryIdentifier, code));
+    private fun toCodeableConcept(
+        context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier?, concept: Concept
+    ): CodeableConcept {
+        val codeableConcept = CodeableConcept()
+        codeableConcept.setText(concept.display)
+        for (code in concept.code) {
+            codeableConcept.addCoding(toCoding(context, libraryIdentifier, code))
         }
-        return codeableConcept;
+        return codeableConcept
     }
 
-    private String toReference(CodeSystemDef codeSystemDef) {
-        return codeSystemDef.getId() + (codeSystemDef.getVersion() != null ? ("|" + codeSystemDef.getVersion()) : "");
+    private fun toReference(codeSystemDef: CodeSystemDef): kotlin.String {
+        return codeSystemDef.id + (if (codeSystemDef.version != null) ("|" + codeSystemDef.version) else "")
     }
 
-    private String toReference(ValueSetDef valueSetDef) {
-        return valueSetDef.getId() + (valueSetDef.getVersion() != null ? ("|" + valueSetDef.getVersion()) : "");
+    private fun toReference(valueSetDef: ValueSetDef): kotlin.String {
+        return valueSetDef.id + (if (valueSetDef.version != null) ("|" + valueSetDef.version) else "")
     }
 }
