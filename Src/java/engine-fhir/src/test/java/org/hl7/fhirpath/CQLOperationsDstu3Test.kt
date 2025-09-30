@@ -107,7 +107,7 @@ class CQLOperationsDstu3Test : TestFhirPath() {
 
             val testsToRun: MutableList<Array<Any>> = ArrayList()
             for (file in listOfFiles) {
-                for (group in loadTestsFile(file).getGroup()) {
+                for (group in loadTestsFile(file)!!.getGroup()) {
                     for (test in group.getTest()) {
                         if ("2.1.0" != test.getVersion()) { // unsupported version
                             val name: String = getTestName(file, group, test)
