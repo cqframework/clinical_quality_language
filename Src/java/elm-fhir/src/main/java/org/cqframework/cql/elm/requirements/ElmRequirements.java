@@ -333,7 +333,7 @@ public class ElmRequirements extends ElmRequirement {
 
             // Collect target mappings
             for (Map.Entry<String, String> idMapEntry :
-                    collapsedRetrieves.getRequirementIdMap().entrySet()) {
+                    collapsedRetrieves.requirementIdMap.entrySet()) {
                 requirementIdMap.put(idMapEntry.getKey(), idMapEntry.getValue());
             }
 

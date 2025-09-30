@@ -136,7 +136,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
                         ElmDataRequirement aliasDataRequirement = getDataRequirement(sourceProperty.getScope());
                         if (aliasDataRequirement != null && nestedAlias.getConjunctiveRequirement() != null) {
                             for (ElmExpressionRequirement nestedRequirement :
-                                    nestedAlias.getConjunctiveRequirement().getArguments()) {
+                                    nestedAlias.getConjunctiveRequirement().arguments) {
                                 // A conjunctive requirement against a nested query that is based on a property of the
                                 // current query
                                 // can be inferred as a conjunctive requirement against the qualified property in the
@@ -156,7 +156,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
                 // query, the nested requirement can be distributed to this query context as a join requirement
                 else if (nestedAlias.getExpression() instanceof Retrieve) {
                     for (ElmExpressionRequirement nestedRequirement :
-                            nestedAlias.getConjunctiveRequirement().getArguments()) {
+                            nestedAlias.getConjunctiveRequirement().arguments) {
                         if (nestedRequirement instanceof ElmConditionRequirement) {
                             ElmConditionRequirement nestedConditionRequirement =
                                     (ElmConditionRequirement) nestedRequirement;
@@ -213,7 +213,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
             ElmExpressionRequirement requirement, ElmRequirementsContext context) {
         if (requirement instanceof ElmConjunctiveRequirement) {
             for (ElmExpressionRequirement expressionRequirement :
-                    ((ElmConjunctiveRequirement) requirement).getArguments()) {
+                    ((ElmConjunctiveRequirement) requirement).arguments) {
                 distributeExpressionRequirement(expressionRequirement, context);
             }
             return true;

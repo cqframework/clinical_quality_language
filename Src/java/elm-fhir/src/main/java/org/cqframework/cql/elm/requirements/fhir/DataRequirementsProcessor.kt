@@ -1233,7 +1233,7 @@ class DataRequirementsProcessor {
         if (
             pertinenceContext != null &&
                 pertinenceContext.pertinenceValue != null &&
-                !(pertinenceContext.pertinenceValue.trim { it <= ' ' }.isEmpty())
+                !(pertinenceContext.pertinenceValue!!.trim { it <= ' ' }.isEmpty())
         ) {
             val extension = Extension()
             extension.setUrl(specificationSupport.pertinenceExtensionUrl)

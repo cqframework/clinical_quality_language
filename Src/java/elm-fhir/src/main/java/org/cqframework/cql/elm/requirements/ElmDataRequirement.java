@@ -489,7 +489,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         // for each ConditionRequirement
         // apply to the retrieve
         for (ElmExpressionRequirement conditionRequirement :
-                getConjunctiveRequirement().getArguments()) {
+                getConjunctiveRequirement().arguments) {
             if (conditionRequirement instanceof ElmConditionRequirement) {
                 applyConditionRequirementTo((ElmConditionRequirement) conditionRequirement, retrieve, context);
             } else if (conditionRequirement instanceof ElmJoinRequirement) {
