@@ -84,8 +84,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -148,8 +148,8 @@ class DataRequirementsProcessorTest {
             expressions.add("Negative PCP Screenings Count Since Last POS")
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     expressions,
                     false,
@@ -303,8 +303,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -581,8 +581,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     expressions,
                     false,
@@ -677,8 +677,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -768,8 +768,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -809,7 +809,7 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val expressions: MutableSet<String?> = HashSet<String?>()
             val externalFunctionDefs: MutableSet<String?> = HashSet<String?>()
-            for (ed in setup.library()!!.library!!.statements!!.def) {
+            for (ed in setup.library.library!!.statements!!.def) {
                 if (ed is FunctionDef) {
                     if (ed.isExternal() != null && ed.isExternal() == true) {
                         externalFunctionDefs.add(ed.name)
@@ -824,12 +824,12 @@ class DataRequirementsProcessorTest {
 
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     expressions,
-                    true,
-                    false,
+                    includeLogicDefinitions = true,
+                    recursive = false,
                 )
 
             // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -851,17 +851,17 @@ class DataRequirementsProcessorTest {
 
             val dqReqTrans = DataRequirementsProcessor()
             val expressions: MutableSet<String?> = HashSet<String?>()
-            for (ed in setup.library()!!.library!!.statements!!.def) {
+            for (ed in setup.library.library!!.statements!!.def) {
                 expressions.add(ed.name)
             }
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     expressions,
-                    true,
-                    false,
+                    includeLogicDefinitions = true,
+                    recursive = false,
                 )
 
             // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -884,12 +884,12 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
-                    true,
-                    false,
+                    includeLogicDefinitions = true,
+                    recursive = false,
                 )
 
             // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -913,12 +913,12 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
-                    false,
-                    false,
+                    includeLogicDefinitions = false,
+                    recursive = false,
                 )
             assertTrue(
                 moduleDefinitionLibrary
@@ -955,8 +955,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -1062,19 +1062,19 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         parameters: MutableMap<String?, Any?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 null,
                 parameters,
-                false,
-                false,
+                includeLogicDefinitions = false,
+                recursive = false,
             )
         assertTrue(
             moduleDefinitionLibrary
@@ -1087,21 +1087,21 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         parameters: MutableMap<String?, Any?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 null,
                 parameters,
                 evaluationDateTime,
-                false,
-                true,
+                includeLogicDefinitions = false,
+                recursive = true,
             )
         assertEquals("EffectiveDataRequirements", moduleDefinitionLibrary.getName())
         assertTrue(
@@ -1115,7 +1115,7 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         parameters: MutableMap<String?, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
@@ -1123,8 +1123,8 @@ class DataRequirementsProcessorTest {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 null,
                 parameters,
@@ -1143,7 +1143,7 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         parameters: MutableMap<String?, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
@@ -1152,8 +1152,8 @@ class DataRequirementsProcessorTest {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 null,
                 parameters,
@@ -1172,13 +1172,13 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 null,
                 false,
@@ -1194,14 +1194,14 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 false,
@@ -1217,15 +1217,15 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
         includeLogicDefinitions: Boolean,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 includeLogicDefinitions,
@@ -1241,7 +1241,7 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -1249,8 +1249,8 @@ class DataRequirementsProcessorTest {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 includeLogicDefinitions,
@@ -1267,16 +1267,16 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
-        specificationLevel: SpecificationLevel?,
+        specificationLevel: SpecificationLevel,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         dqReqTrans.setSpecificationLevel(specificationLevel)
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 false,
@@ -1292,17 +1292,17 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
         includeLogicDefinitions: Boolean,
-        specificationLevel: SpecificationLevel?,
+        specificationLevel: SpecificationLevel,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         dqReqTrans.setSpecificationLevel(specificationLevel)
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 includeLogicDefinitions,
@@ -1318,18 +1318,18 @@ class DataRequirementsProcessorTest {
 
     private fun getModuleDefinitionLibrary(
         setup: Setup,
-        cqlTranslatorOptions: CqlCompilerOptions?,
+        cqlTranslatorOptions: CqlCompilerOptions,
         expressions: MutableSet<String?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
-        specificationLevel: SpecificationLevel?,
+        specificationLevel: SpecificationLevel,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         dqReqTrans.setSpecificationLevel(specificationLevel)
         val moduleDefinitionLibrary =
             dqReqTrans.gatherDataRequirements(
-                setup.manager(),
-                setup.library(),
+                setup.manager,
+                setup.library,
                 cqlTranslatorOptions,
                 expressions,
                 includeLogicDefinitions,
@@ -1530,7 +1530,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("ESRD Observations")
+        val ed = manager.library.resolveExpressionRef("ESRD Observations")
         assertTrue(ed!!.expression is Retrieve)
         val r = ed.expression as Retrieve?
         assertEquals("code", r!!.codeProperty)
@@ -1571,7 +1571,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("Observations")
+        val ed = manager.library.resolveExpressionRef("Observations")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -1695,7 +1695,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("HospiceEncounterClaimsA")
+        val ed = manager.library.resolveExpressionRef("HospiceEncounterClaimsA")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -1751,7 +1751,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("HospiceEncounterClaimsBBoundDate")
+        val ed = manager.library.resolveExpressionRef("HospiceEncounterClaimsBBoundDate")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -1817,7 +1817,7 @@ class DataRequirementsProcessorTest {
           [Condition] C
             where onset as Period starts 90 days or less before Today()
         */
-        val ed = manager.library()!!.resolveExpressionRef("Date Filter Expression")
+        val ed = manager.library.resolveExpressionRef("Date Filter Expression")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -1888,7 +1888,7 @@ class DataRequirementsProcessorTest {
           [Condition] C
             where C.onset as dateTime = Today()
         */
-        val ed = manager.library()!!.resolveExpressionRef("DateTimeEqualToFunction")
+        val ed = manager.library.resolveExpressionRef("DateTimeEqualToFunction")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -1941,7 +1941,7 @@ class DataRequirementsProcessorTest {
         */
         val evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault())
         val expectedPeriodStart = evaluationDateTime.toOffsetDateTime().minusDays(90)
-        val ed = manager.library()!!.resolveExpressionRef("Date Filter Expression")
+        val ed = manager.library.resolveExpressionRef("Date Filter Expression")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2007,7 +2007,7 @@ class DataRequirementsProcessorTest {
         val expectedPeriodStart2 =
             ZonedDateTime.of(1, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")).toOffsetDateTime()
         val expectedPeriodEnd2 = evaluationDateTime.toOffsetDateTime()
-        val ed = manager.library()!!.resolveExpressionRef("Date Filter Expression")
+        val ed = manager.library.resolveExpressionRef("Date Filter Expression")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2107,7 +2107,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("MedicationRequestWithEncounter")
+        val ed = manager.library.resolveExpressionRef("MedicationRequestWithEncounter")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2187,7 +2187,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("MedicationRequestWithAspirinInLet")
+        val ed = manager.library.resolveExpressionRef("MedicationRequestWithAspirinInLet")
         assertTrue(ed!!.expression is Query)
         var q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2279,7 +2279,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("MedicationRequestWithAspirinInWhere")
+        val ed = manager.library.resolveExpressionRef("MedicationRequestWithAspirinInWhere")
         assertTrue(ed!!.expression is Query)
         var q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2366,7 +2366,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("MedicationRequestWithAspirinInFrom")
+        val ed = manager.library.resolveExpressionRef("MedicationRequestWithAspirinInFrom")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 2)
@@ -2456,7 +2456,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("ESRD Observations")
+        val ed = manager.library.resolveExpressionRef("ESRD Observations")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2526,7 +2526,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("ESRD Observations")
+        val ed = manager.library.resolveExpressionRef("ESRD Observations")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2564,7 +2564,7 @@ class DataRequirementsProcessorTest {
         */
 
         // Validate the ELM is correct
-        val ed = manager.library()!!.resolveExpressionRef("ESRD Observations")
+        val ed = manager.library.resolveExpressionRef("ESRD Observations")
         assertTrue(ed!!.expression is Query)
         val q = ed.expression as Query
         assertTrue(q.source.size == 1)
@@ -2917,7 +2917,7 @@ class DataRequirementsProcessorTest {
         compilerOptions.collapseDataRequirements = true
         compilerOptions.analyzeDataRequirements = false
         var manager: Setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", compilerOptions)
-        manager = nextSetup(manager.manager()!!, "CMS135/cql/CMS135FHIR-0.0.000.cql")
+        manager = nextSetup(manager.manager, "CMS135/cql/CMS135FHIR-0.0.000.cql")
         val expressions: MutableSet<String?> = HashSet<String?>()
         expressions.add("Initial Population")
         expressions.add("Denominator")
@@ -3081,8 +3081,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -3122,8 +3122,8 @@ class DataRequirementsProcessorTest {
             val dqReqTrans = DataRequirementsProcessor()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
-                    setup.manager(),
-                    setup.library(),
+                    setup.manager,
+                    setup.library,
                     cqlTranslatorOptions,
                     null,
                     false,
@@ -3166,15 +3166,7 @@ class DataRequirementsProcessorTest {
         }
     }
 
-    class Setup(private val manager: LibraryManager?, private val library: CompiledLibrary?) {
-        fun manager(): LibraryManager? {
-            return this.manager
-        }
-
-        fun library(): CompiledLibrary? {
-            return this.library
-        }
-    }
+    class Setup(val manager: LibraryManager, val library: CompiledLibrary)
 
     companion object {
         private val logger: Logger =
@@ -3224,7 +3216,7 @@ class DataRequirementsProcessorTest {
 
             manager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
-            return Setup(manager, compiler.compiledLibrary)
+            return Setup(manager, compiler.compiledLibrary!!)
         }
 
         @Throws(IOException::class)
@@ -3232,7 +3224,7 @@ class DataRequirementsProcessorTest {
             val translationTestFile =
                 DataRequirementsProcessorTest::class.java.getResource(testFileName)!!
 
-            var p = Path(translationTestFile.path)
+            val p = Path(translationTestFile.path)
 
             val compiler = CqlCompiler(null, manager)
 
@@ -3242,7 +3234,7 @@ class DataRequirementsProcessorTest {
 
             manager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
-            return Setup(manager, compiler.compiledLibrary)
+            return Setup(manager, compiler.compiledLibrary!!)
         }
     }
 }

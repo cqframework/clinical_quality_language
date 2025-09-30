@@ -5,5 +5,5 @@ enum class SpecificationLevel {
     US_QM_STU5,
     QM_STU_1,
     CRMI,
-    CPG
+    CPG,
 }
