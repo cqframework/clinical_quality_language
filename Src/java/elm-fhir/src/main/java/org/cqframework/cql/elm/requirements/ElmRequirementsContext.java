@@ -590,7 +590,7 @@ public class ElmRequirementsContext {
                 inCurrentScope = false;
             }
             ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(
-                    getCurrentLibraryIdentifier(), property, letContext.getLetClause(), inCurrentScope);
+                    getCurrentLibraryIdentifier(), property, letContext.letClause, inCurrentScope);
 
             letContext.reportProperty(propertyRequirement);
             return propertyRequirement;

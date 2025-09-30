@@ -19,7 +19,7 @@ class ElmExpressionDefContext(
 
     private val queryStack = Stack<ElmQueryContext>()
 
-    fun enterQueryContext(query: Query?) {
+    fun enterQueryContext(query: Query) {
         queryStack.push(ElmQueryContext(libraryIdentifier, query))
     }
 
