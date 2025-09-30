@@ -324,7 +324,7 @@ class DataRequirementsProcessor {
             if (requirement.hasProperties()) {
                 var urlProperty: Property? = null
                 var extensionProperty: Property? = null
-                for (p in requirement.properties) {
+                for (p in requirement.properties!!) {
                     if (p.path.equals("url")) {
                         urlProperty = p
                         continue

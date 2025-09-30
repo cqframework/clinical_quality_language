@@ -177,7 +177,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
         if (elmPertinenceContext != null) {
-            result.setPertinenceContext(elmPertinenceContext);
+            result.pertinenceContext = elmPertinenceContext;
         }
         // If not analyzing requirements, or in a query context, report the data
         // requirement
