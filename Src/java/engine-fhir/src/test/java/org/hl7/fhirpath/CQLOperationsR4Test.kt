@@ -29,12 +29,12 @@ import org.opencds.cqf.cql.engine.runtime.Code
 class CQLOperationsR4Test : TestFhirPath() {
     @ParameterizedTest(name = "{0}")
     @MethodSource("dataMethod")
-    fun test(name: String?, test: Test?) {
+    fun test(name: String, test: Test) {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping $name")
         runTest(test, "r4/input/", fhirContext, provider, fhirModelResolver)
     }
 
-    public override fun compareResults(
+    override fun compareResults(
         expectedResult: Any?,
         actualResult: Any?,
         state: State?,
@@ -103,7 +103,7 @@ class CQLOperationsR4Test : TestFhirPath() {
         @JvmStatic
         fun dataMethod(): Array<Array<Any>> {
             val listOfFiles =
-                arrayOf<String?>(
+                arrayOf(
                     "r4/tests-fhir-r4.xml",
                     "cql/CqlAggregateFunctionsTest.xml",
                     "cql/CqlAggregateTest.xml",
@@ -127,7 +127,7 @@ class CQLOperationsR4Test : TestFhirPath() {
                 for (group in loadTestsFile(file).getGroup()) {
                     for (test in group.getTest()) {
                         if ("2.1.0" != test.getVersion()) { // unsupported version
-                            val name: String = getTestName(file!!, group, test)
+                            val name: String = getTestName(file, group, test)
                             testsToRun.add(arrayOf(name, test))
                         }
                     }
@@ -136,8 +136,8 @@ class CQLOperationsR4Test : TestFhirPath() {
             return testsToRun.toTypedArray<Array<Any>>()
         }
 
-        var SKIP: MutableSet<String?> =
-            Sets.newHashSet<String?>(
+        var SKIP: MutableSet<String> =
+            Sets.newHashSet<String>(
                 "cql/CqlAggregateTest/AggregateTests/RolledOutIntervals",
                 "cql/CqlArithmeticFunctionsTest/Divide/Divide1Q1Q",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",

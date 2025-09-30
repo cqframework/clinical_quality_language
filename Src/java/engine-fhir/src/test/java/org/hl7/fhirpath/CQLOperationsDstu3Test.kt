@@ -29,12 +29,13 @@ import org.opencds.cqf.cql.engine.runtime.Code
 class CQLOperationsDstu3Test : TestFhirPath() {
     @ParameterizedTest(name = "{0}")
     @MethodSource("dataMethod")
-    fun test(name: String?, test: Test?) {
+    fun test(name: String, test: Test) {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping $name")
+        runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver)
         runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver)
     }
 
-    public override fun compareResults(
+    override fun compareResults(
         expectedResult: Any?,
         actualResult: Any?,
         state: State?,
@@ -102,14 +103,14 @@ class CQLOperationsDstu3Test : TestFhirPath() {
 
         @JvmStatic
         fun dataMethod(): Array<Array<Any>> {
-            val listOfFiles = arrayOf<String?>("stu3/tests-fhir-r3.xml")
+            val listOfFiles = arrayOf("stu3/tests-fhir-r3.xml")
 
             val testsToRun: MutableList<Array<Any>> = ArrayList()
             for (file in listOfFiles) {
                 for (group in loadTestsFile(file).getGroup()) {
                     for (test in group.getTest()) {
                         if ("2.1.0" != test.getVersion()) { // unsupported version
-                            val name: String = getTestName(file!!, group, test)
+                            val name: String = getTestName(file, group, test)
                             testsToRun.add(arrayOf(name, test))
                         }
                     }
@@ -118,8 +119,8 @@ class CQLOperationsDstu3Test : TestFhirPath() {
             return testsToRun.toTypedArray<Array<Any>>()
         }
 
-        var SKIP: MutableSet<String?> =
-            Sets.newHashSet<String?>(
+        var SKIP: MutableSet<String> =
+            Sets.newHashSet<String>(
                 "stu3/tests-fhir-r3/Dollar/testDollarOrderNotAllowed(Patient.children().skip(1))",
                 $$"stu3/tests-fhir-r3/Dollar/testDollarThis1(Patient.name.given.where(substring($this.length()-3) = 'out'))",
                 $$"stu3/tests-fhir-r3/Dollar/testDollarThis2(Patient.name.given.where(substring($this.length()-3) = 'ter'))",
