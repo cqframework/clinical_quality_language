@@ -102,9 +102,9 @@ public class ElmRequirementsContext {
             throw new IllegalArgumentException("Not in an expressionDef context");
         }
         ElmExpressionDefContext expressionDefContext = expressionDefStack.pop();
-        ExpressionDef ed = expressionDefContext.getExpressionDef();
+        ExpressionDef ed = expressionDefContext.expressionDef;
         reportExpressionDef(ed);
-        this.reportedRequirements.put(ed, expressionDefContext.getReportedRequirements());
+        this.reportedRequirements.put(ed, expressionDefContext.reportedRequirements);
         this.inferredRequirements.put(ed, inferredRequirements);
     }
 
@@ -574,7 +574,7 @@ public class ElmRequirementsContext {
                 inCurrentScope = false;
             }
             ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(
-                    getCurrentLibraryIdentifier(), property, aliasContext.getQuerySource(), inCurrentScope);
+                    getCurrentLibraryIdentifier(), property, aliasContext.querySource, inCurrentScope);
 
             aliasContext.reportProperty(propertyRequirement);
             return propertyRequirement;
@@ -590,7 +590,7 @@ public class ElmRequirementsContext {
                 inCurrentScope = false;
             }
             ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(
-                    getCurrentLibraryIdentifier(), property, letContext.getLetClause(), inCurrentScope);
+                    getCurrentLibraryIdentifier(), property, letContext.letClause, inCurrentScope);
 
             letContext.reportProperty(propertyRequirement);
             return propertyRequirement;
