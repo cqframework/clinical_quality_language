@@ -1,9 +1,12 @@
 package org.cqframework.cql.tools.xsd2modelinfo
 
-class ModelImporterMapperValue(@JvmField val targetSystemClass: String?, @JvmField val relationship: Relationship?) {
+class ModelImporterMapperValue(
+    @JvmField val targetSystemClass: String?,
+    @JvmField val relationship: Relationship?,
+) {
     enum class Relationship {
         RETYPE,
-        EXTEND
+        EXTEND,
     }
 
     val targetClassElementMap: MutableMap<String?, String?>

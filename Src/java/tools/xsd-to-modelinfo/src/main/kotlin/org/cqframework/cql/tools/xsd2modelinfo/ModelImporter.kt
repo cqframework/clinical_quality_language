@@ -1,5 +1,9 @@
 package org.cqframework.cql.tools.xsd2modelinfo
 
+import java.io.IOException
+import java.util.*
+import java.util.stream.Collectors
+import javax.xml.namespace.QName
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.apache.ws.commons.schema.XmlSchema
@@ -53,15 +57,12 @@ import org.hl7.elm_modelinfo.r1.TypeInfo
 import org.hl7.elm_modelinfo.r1.TypeParameterInfo
 import org.hl7.elm_modelinfo.r1.TypeSpecifier
 import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
-import java.io.IOException
-import java.util.*
-import java.util.stream.Collectors
-import javax.xml.namespace.QName
 
-class ModelImporter private constructor(
+class ModelImporter
+private constructor(
     private val schema: XmlSchema,
     options: ModelImporterOptions?,
-    private val config: ModelInfo?
+    private val config: ModelInfo?,
 ) {
     private val options: ModelImporterOptions
     private val dataTypes: MutableMap<String?, DataType?>
@@ -103,11 +104,14 @@ class ModelImporter private constructor(
             .withUrl(schema.targetNamespace)
             .withPatientClassName(if (config != null) config.patientClassName else null)
             .withPatientClassIdentifier(if (config != null) config.patientClassIdentifier else null)
-            .withPatientBirthDatePropertyName(if (config != null) config.patientBirthDatePropertyName else null)
+            .withPatientBirthDatePropertyName(
+                if (config != null) config.patientBirthDatePropertyName else null
+            )
             .withTypeInfo(
-                dataTypes.values.stream().map<TypeInfo?> { dataType: DataType? -> this.toTypeInfo(dataType!!) }.collect(
-                    Collectors.toList()
-                )
+                dataTypes.values
+                    .stream()
+                    .map<TypeInfo?> { dataType: DataType? -> this.toTypeInfo(dataType!!) }
+                    .collect(Collectors.toList())
             )
     }
 
@@ -126,9 +130,7 @@ class ModelImporter private constructor(
             return toTupleTypeInfo(dataType)
         } else {
             throw IllegalArgumentException(
-                java.lang.String.format(
-                    "Unknown data type class: %s", dataType.javaClass.name
-                )
+                java.lang.String.format("Unknown data type class: %s", dataType.javaClass.name)
             )
         }
     }
@@ -167,8 +169,8 @@ class ModelImporter private constructor(
         }
         if (dataType.label != null) {
             result.label = dataType.label
-        } else if (options.normalizePrefix != null
-            && dataType.name.startsWith(options.normalizePrefix!!)
+        } else if (
+            options.normalizePrefix != null && dataType.name.startsWith(options.normalizePrefix!!)
         ) {
             result.label = dataType.name.substring(options.normalizePrefix!!.length)
         }
@@ -190,12 +192,18 @@ class ModelImporter private constructor(
             val elementTypeSpecifier = toTypeSpecifier(element.type)
             if (elementTypeSpecifier is NamedTypeSpecifier) {
                 cie.elementType = toTypeName(elementTypeSpecifier)
-                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                if (
+                    options.getVersionPolicy() ==
+                        ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED
+                ) {
                     cie.type = toTypeName(elementTypeSpecifier)
                 }
             } else {
                 cie.elementTypeSpecifier = elementTypeSpecifier
-                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                if (
+                    options.getVersionPolicy() ==
+                        ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED
+                ) {
                     cie.typeSpecifier = elementTypeSpecifier
                 }
             }
@@ -242,12 +250,18 @@ class ModelImporter private constructor(
             val elementTypeSpecifier = toTypeSpecifier(element.type)
             if (elementTypeSpecifier is NamedTypeSpecifier) {
                 infoElement.elementType = toTypeName(elementTypeSpecifier)
-                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                if (
+                    options.getVersionPolicy() ==
+                        ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED
+                ) {
                     infoElement.type = toTypeName(elementTypeSpecifier)
                 }
             } else {
                 infoElement.elementTypeSpecifier = elementTypeSpecifier
-                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                if (
+                    options.getVersionPolicy() ==
+                        ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED
+                ) {
                     infoElement.typeSpecifier = elementTypeSpecifier
                 }
             }
@@ -273,9 +287,7 @@ class ModelImporter private constructor(
             return toChoiceTypeSpecifier(dataType)
         } else require(dataType !is TupleType) { "Tuple types cannot be used in type specifiers." }
         throw IllegalArgumentException(
-            java.lang.String.format(
-                "Unknown data type class: %s", dataType.javaClass.name
-            )
+            java.lang.String.format("Unknown data type class: %s", dataType.javaClass.name)
         )
     }
 
@@ -316,13 +328,17 @@ class ModelImporter private constructor(
         return choiceTypeSpecifier
     }
 
-    private fun getTypeName(schemaTypeName: QName, namespaces: MutableMap<String?, String?>): String {
+    private fun getTypeName(
+        schemaTypeName: QName,
+        namespaces: MutableMap<String?, String?>,
+    ): String {
         requireNotNull(schemaTypeName) { "schemaTypeName is null" }
 
         var modelName = namespaces[schemaTypeName.namespaceURI]
         if (modelName == null) {
             modelName =
-                schemaTypeName.prefix // Doesn't always work, but should be okay for a fallback position...
+                schemaTypeName
+                    .prefix // Doesn't always work, but should be okay for a fallback position...
             if (modelName != null && !modelName.isEmpty()) {
                 namespaces[schemaTypeName.namespaceURI] = modelName
             }
@@ -341,7 +357,9 @@ class ModelImporter private constructor(
         }
 
         val mapping = options.typeMap[schemaTypeName]
-        if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE) {
+        if (
+            mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE
+        ) {
             return SYSTEM_CATALOG[mapping.targetSystemClass]!!
         }
 
@@ -350,8 +368,12 @@ class ModelImporter private constructor(
             val typeName = getTypeName(schemaTypeName, namespaces)
             var resultType = dataTypes[typeName]
             if (resultType == null) {
-                if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND) {
-                    resultType = SimpleType(typeName, SYSTEM_CATALOG[mapping.targetSystemClass], null)
+                if (
+                    mapping != null &&
+                        mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND
+                ) {
+                    resultType =
+                        SimpleType(typeName, SYSTEM_CATALOG[mapping.targetSystemClass], null)
                 } else {
                     resultType = SimpleType(typeName)
                 }
@@ -381,7 +403,9 @@ class ModelImporter private constructor(
         }
 
         val mapping = options.typeMap[simpleType.qName]
-        if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE) {
+        if (
+            mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE
+        ) {
             return SYSTEM_CATALOG[mapping.targetSystemClass]
         }
 
@@ -391,10 +415,16 @@ class ModelImporter private constructor(
             var baseType: DataType? = null
             var retypeToBase = false
 
-            if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND) {
+            if (
+                mapping != null &&
+                    mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND
+            ) {
                 baseType = SYSTEM_CATALOG[mapping.targetSystemClass]
             } else if (simpleType.getContent() is XmlSchemaSimpleTypeRestriction) {
-                baseType = resolveType((simpleType.getContent() as XmlSchemaSimpleTypeRestriction).baseTypeName)
+                baseType =
+                    resolveType(
+                        (simpleType.getContent() as XmlSchemaSimpleTypeRestriction).baseTypeName
+                    )
                 when (options.getSimpleTypeRestrictionPolicy()) {
                     SimpleTypeRestrictionPolicy.EXTEND_BASETYPE -> {}
                     SimpleTypeRestrictionPolicy.IGNORE -> baseType = null
@@ -436,7 +466,9 @@ class ModelImporter private constructor(
         }
 
         val mapping = options.typeMap[complexType.qName]
-        if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE) {
+        if (
+            mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.RETYPE
+        ) {
             return SYSTEM_CATALOG[mapping.targetSystemClass]
         }
 
@@ -446,7 +478,10 @@ class ModelImporter private constructor(
             // Resolve the base type, if any
 
             var baseType: DataType? = null
-            if (mapping != null && mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND) {
+            if (
+                mapping != null &&
+                    mapping.relationship == ModelImporterMapperValue.Relationship.EXTEND
+            ) {
                 baseType = SYSTEM_CATALOG[mapping.targetSystemClass]
             } else if (complexType.getBaseSchemaTypeName() != null) {
                 baseType = resolveType(schema.getTypeByName(complexType.getBaseSchemaTypeName()))
@@ -466,8 +501,7 @@ class ModelImporter private constructor(
             if (complexType.contentModel != null) {
                 val content = complexType.contentModel.content
                 if (content is XmlSchemaComplexContentRestriction) {
-                    val restrictionContent =
-                        content
+                    val restrictionContent = content
                     attributeContent = restrictionContent.attributes
                     particleContent = restrictionContent.particle
                 } else if (content is XmlSchemaComplexContentExtension) {
@@ -492,7 +526,9 @@ class ModelImporter private constructor(
                     val valueElement = ClassTypeElement("value", valueType, false, false, null)
                     elements.add(valueElement)
                 } else {
-                    throw IllegalArgumentException("Unrecognized Schema Content: " + content.toString())
+                    throw IllegalArgumentException(
+                        "Unrecognized Schema Content: " + content.toString()
+                    )
                 }
             } else {
                 attributeContent = complexType.attributes
@@ -508,7 +544,8 @@ class ModelImporter private constructor(
                 resolveClassTypeElements(particle, elements)
             }
 
-            // TODO: Map elements to basetype if this or one of its parents is a configured extension of a CQL basetype.
+            // TODO: Map elements to basetype if this or one of its parents is a configured
+            // extension of a CQL basetype.
             // This could get complicated...
 
             // Filter out elements already in the base class
@@ -529,45 +566,49 @@ class ModelImporter private constructor(
                             throw e
                         }
 
-                        ElementRedeclarationPolicy.DISCARD_INVALID_REDECLARATIONS -> System.err.printf(
-                            "%s. Discarding element redeclaration.%n",
-                            e.message
-                        )
+                        ElementRedeclarationPolicy.DISCARD_INVALID_REDECLARATIONS ->
+                            System.err.printf("%s. Discarding element redeclaration.%n", e.message)
 
                         ElementRedeclarationPolicy.RENAME_INVALID_REDECLARATIONS -> {
                             val tName = getTypeName(element.type)
-                            val name =
-                                StringBuilder(element.name).append(tName[0].uppercaseChar())
+                            val name = StringBuilder(element.name).append(tName[0].uppercaseChar())
                             if (tName.length > 1) {
                                 name.append(tName.substring(1))
                             }
-                            System.err.printf("%s. Renaming element to %s.%n", e.message, name.toString())
+                            System.err.printf(
+                                "%s. Renaming element to %s.%n",
+                                e.message,
+                                name.toString(),
+                            )
                             classType.addElement(
                                 ClassTypeElement(
                                     name.toString(),
                                     element.type,
                                     element.prohibited,
                                     element.oneBased,
-                                    null
+                                    null,
                                 )
                             )
                         }
 
                         else -> {
                             val tName = getTypeName(element.type)
-                            val name =
-                                StringBuilder(element.name).append(tName[0].uppercaseChar())
+                            val name = StringBuilder(element.name).append(tName[0].uppercaseChar())
                             if (tName.length > 1) {
                                 name.append(tName.substring(1))
                             }
-                            System.err.printf("%s. Renaming element to %s.%n", e.message, name.toString())
+                            System.err.printf(
+                                "%s. Renaming element to %s.%n",
+                                e.message,
+                                name.toString(),
+                            )
                             classType.addElement(
                                 ClassTypeElement(
                                     name.toString(),
                                     element.type,
                                     element.prohibited,
                                     element.oneBased,
-                                    null
+                                    null,
                                 )
                             )
                         }
@@ -613,7 +654,10 @@ class ModelImporter private constructor(
         do {
             result++
 
-            if (result >= original.length || result >= comparison.length || original[result] != comparison[result]
+            if (
+                result >= original.length ||
+                    result >= comparison.length ||
+                    original[result] != comparison[result]
             ) {
                 break
             }
@@ -622,7 +666,10 @@ class ModelImporter private constructor(
         return result
     }
 
-    private fun resolveClassTypeElements(particle: XmlSchemaParticle?, elements: MutableList<ClassTypeElement>) {
+    private fun resolveClassTypeElements(
+        particle: XmlSchemaParticle?,
+        elements: MutableList<ClassTypeElement>,
+    ) {
         if (particle is XmlSchemaElement) {
             val element = resolveClassTypeElement(particle)
             if (element != null) {
@@ -654,7 +701,8 @@ class ModelImporter private constructor(
                         if (elementName == null) {
                             elementName = choiceElement.name
                         } else {
-                            val firstDifference = indexOfFirstDifference(elementName, choiceElement.name)
+                            val firstDifference =
+                                indexOfFirstDifference(elementName, choiceElement.name)
                             if (firstDifference < elementName.length) {
                                 elementName = elementName.substring(0, firstDifference)
                             }
@@ -709,8 +757,10 @@ class ModelImporter private constructor(
         }
 
         if (elementType == null) {
-            return null // The type is anonymous and will not be represented within the imported model
-            // throw new IllegalStateException(String.format("Unable to resolve type %s of element %s.",
+            return null // The type is anonymous and will not be represented within the imported
+            // model
+            // throw new IllegalStateException(String.format("Unable to resolve type %s of element
+            // %s.",
             // element.getSchemaType().getName(), element.getName()));
         }
 
@@ -742,18 +792,23 @@ class ModelImporter private constructor(
 
         if (elementType == null) {
             return null // The type is anonymous and will not be represented in the imported model
-            // throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.",
+            // throw new IllegalStateException(String.format("Unable to resolve type %s of attribute
+            // %s.",
             // attribute.getSchemaTypeName(), attribute.getName()));
         }
 
         return ClassTypeElement(
-            attribute.name, elementType, attribute.use == XmlSchemaUse.PROHIBITED, false, null
+            attribute.name,
+            elementType,
+            attribute.use == XmlSchemaUse.PROHIBITED,
+            false,
+            null,
         )
     }
 
     private fun resolveClassTypeElements(
         attribute: XmlSchemaAttributeOrGroupRef?,
-        elements: MutableList<ClassTypeElement>
+        elements: MutableList<ClassTypeElement>,
     ) {
         if (attribute is XmlSchemaAttribute) {
             val element = resolveClassTypeElement(attribute)
@@ -761,15 +816,13 @@ class ModelImporter private constructor(
                 elements.add(element)
             }
         } else if (attribute is XmlSchemaAttributeGroupRef) {
-            resolveClassTypeElements(
-                attribute.ref.getTarget(), elements
-            )
+            resolveClassTypeElements(attribute.ref.getTarget(), elements)
         }
     }
 
     private fun resolveClassTypeElements(
         attributeGroup: XmlSchemaAttributeGroup,
-        elements: MutableList<ClassTypeElement>
+        elements: MutableList<ClassTypeElement>,
     ) {
         for (member in attributeGroup.attributes) {
             if (member is XmlSchemaAttribute) {
@@ -778,9 +831,7 @@ class ModelImporter private constructor(
                     elements.add(element)
                 }
             } else if (member is XmlSchemaAttributeGroupRef) {
-                resolveClassTypeElements(
-                    member.ref.getTarget(), elements
-                )
+                resolveClassTypeElements(member.ref.getTarget(), elements)
             } else if (member is XmlSchemaAttributeGroup) {
                 resolveClassTypeElements(member, elements)
             }
@@ -788,34 +839,28 @@ class ModelImporter private constructor(
     }
 
     companion object {
-        private val SYSTEM_CATALOG: MutableMap<String?, DataType> =
-            systemCatalog
+        private val SYSTEM_CATALOG: MutableMap<String?, DataType> = systemCatalog
 
         private val systemCatalog: MutableMap<String?, DataType>
             get() {
                 val source =
-                    ModelImporter::class.java.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")!!
-                        .asSource().buffered()
+                    ModelImporter::class
+                        .java
+                        .getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")!!
+                        .asSource()
+                        .buffered()
                 val systemModelInfo: ModelInfo = parseModelInfoXml(source)
-                val map: MutableMap<String?, DataType> =
-                    HashMap<String?, DataType>()
+                val map: MutableMap<String?, DataType> = HashMap<String?, DataType>()
                 for (info in systemModelInfo.typeInfo) {
                     if (info is SimpleTypeInfo) {
-                        val sInfo =
-                            info
+                        val sInfo = info
                         val qualifiedName: String =
-                            getQualifiedName(
-                                systemModelInfo.name,
-                                sInfo.name!!
-                            )
+                            getQualifiedName(systemModelInfo.name, sInfo.name!!)
                         map[qualifiedName] = SimpleType(qualifiedName)
                     } else if (info is ClassInfo) {
                         val cInfo = info
                         val qualifiedName: String =
-                            getQualifiedName(
-                                systemModelInfo.name,
-                                cInfo.name!!
-                            )
+                            getQualifiedName(systemModelInfo.name, cInfo.name!!)
                         map[qualifiedName] = ClassType(qualifiedName)
                     }
                 }
@@ -831,7 +876,11 @@ class ModelImporter private constructor(
         }
 
         @JvmStatic
-        fun fromXsd(schema: XmlSchema, options: ModelImporterOptions?, config: ModelInfo?): ModelInfo {
+        fun fromXsd(
+            schema: XmlSchema,
+            options: ModelImporterOptions?,
+            config: ModelInfo?,
+        ): ModelInfo {
             val importer = ModelImporter(schema, options, config)
             return importer.importXsd()
         }

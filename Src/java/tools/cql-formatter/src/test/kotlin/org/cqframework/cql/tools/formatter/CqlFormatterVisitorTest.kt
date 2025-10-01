@@ -1,15 +1,13 @@
 package org.cqframework.cql.tools.formatter
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
-/**
- * Created by Christopher on 7/20/2017.
- */
+/** Created by Christopher on 7/20/2017. */
 internal class CqlFormatterVisitorTest {
     var inError: Boolean = false
 
@@ -25,12 +23,16 @@ internal class CqlFormatterVisitorTest {
     @Throws(IOException::class)
     fun formatterSpecific() {
         runTest("comments.cql")
-        // I commented these catches out because it seems to me that the formatter should not clobber input when these
+        // I commented these catches out because it seems to me that the formatter should not
+        // clobber input when these
         // errors occur...
-        // I don't understand why this first one ever ran, it should have reported an error, and should not have
+        // I don't understand why this first one ever ran, it should have reported an error, and
+        // should not have
         // clobbered input
-        // And the second one correctly reported an error, but why was it allowed to clobber the input?
-        // At any rate, they both work correctly now (I had to add null to the characters to ignore for comparison
+        // And the second one correctly reported an error, but why was it allowed to clobber the
+        // input?
+        // At any rate, they both work correctly now (I had to add null to the characters to ignore
+        // for comparison
         // though)
         // try {
         // this test has an extra "`", which is not ignored - causing a syntax error.
@@ -161,13 +163,17 @@ internal class CqlFormatterVisitorTest {
     }
 
     private fun inputMatchesOutput(input: String, output: String): Boolean {
-        return input.replace("[\\s\\u0000]".toRegex(), "") == output.replace("[\\s\\u0000]".toRegex(), "")
+        return input.replace("[\\s\\u0000]".toRegex(), "") ==
+            output.replace("[\\s\\u0000]".toRegex(), "")
     }
 
     private fun getInput(fileName: String): InputStream {
         var `is`: InputStream?
         try {
-            `is` = FileInputStream("../../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/$fileName")
+            `is` =
+                FileInputStream(
+                    "../../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/$fileName"
+                )
         } catch (e: FileNotFoundException) {
             `is` = CqlFormatterVisitorTest::class.java.getResourceAsStream(fileName)
 

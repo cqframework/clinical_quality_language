@@ -1,16 +1,14 @@
 package org.cqframework.cql.tools.parsetree
 
+import java.io.FileInputStream
+import java.io.IOException
 import org.antlr.v4.kotlinruntime.CharStreams.fromStream
 import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
-import java.io.FileInputStream
-import java.io.IOException
 
-/**
- * A simple wrapper around the ANTLR4 testrig.
- */
+/** A simple wrapper around the ANTLR4 testrig. */
 object Main {
     @Throws(IOException::class)
     @JvmStatic

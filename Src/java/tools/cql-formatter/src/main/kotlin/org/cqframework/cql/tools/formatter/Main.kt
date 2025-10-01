@@ -3,9 +3,7 @@ package org.cqframework.cql.tools.formatter
 import java.io.FileInputStream
 import java.io.IOException
 
-/**
- * A simple wrapper around the ANTLR4 testrig.
- */
+/** A simple wrapper around the ANTLR4 testrig. */
 object Main {
     @Throws(IOException::class)
     @JvmStatic
@@ -32,8 +30,7 @@ object Main {
             if (`is` !== System.`in`) {
                 try {
                     `is`.close()
-                } catch (iex: IOException) {
-                }
+                } catch (iex: IOException) {}
             }
         }
     }

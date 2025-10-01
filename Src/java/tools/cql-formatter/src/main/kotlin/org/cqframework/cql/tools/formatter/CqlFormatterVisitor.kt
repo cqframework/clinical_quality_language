@@ -1,5 +1,11 @@
 package org.cqframework.cql.tools.formatter
 
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.util.*
+import java.util.stream.Collectors
 import org.antlr.v4.kotlinruntime.BaseErrorListener
 import org.antlr.v4.kotlinruntime.CharStreams.fromStream
 import org.antlr.v4.kotlinruntime.CommonTokenStream
@@ -42,16 +48,8 @@ import org.cqframework.cql.gen.cqlParser.ValuesetDefinitionContext
 import org.cqframework.cql.gen.cqlParser.WhereClauseContext
 import org.cqframework.cql.gen.cqlParser.WithClauseContext
 import org.cqframework.cql.gen.cqlParser.WithoutClauseContext
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.util.*
-import java.util.stream.Collectors
 
-/**
- * Created by Bryn on 7/5/2017.
- */
+/** Created by Bryn on 7/5/2017. */
 class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
     val useSpaces: Boolean = true
 
@@ -192,7 +190,11 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
     }
 
     private fun needsWhitespaceBefore(terminal: String): Boolean {
-        if (terminal.trim { it <= ' ' }.isEmpty() || terminal.startsWith("//") || terminal.startsWith("/*")) {
+        if (
+            terminal.trim { it <= ' ' }.isEmpty() ||
+                terminal.startsWith("//") ||
+                terminal.startsWith("/*")
+        ) {
             return false
         }
 
@@ -230,9 +232,10 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
         val whitespace = out.substring(out.replace("\\s+$".toRegex(), "").length)
         if (whitespace != token.whitespaceBefore) {
             val whitespaceBefore = token.whitespaceBefore
-            output = StringBuilder()
-                .append(out.substring(0, out.length - whitespace.length))
-                .append(whitespaceBefore)
+            output =
+                StringBuilder()
+                    .append(out.substring(0, out.length - whitespace.length))
+                    .append(whitespaceBefore)
         }
         output!!.append(token.token.text).append(whitespace)
         newLine()
@@ -322,8 +325,9 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
 
             val c = node.getChild(i)
 
-            if ((node is TupleSelectorContext || node is TupleTypeSpecifierContext)
-                && c is TerminalNodeImpl
+            if (
+                (node is TupleSelectorContext || node is TupleTypeSpecifierContext) &&
+                    c is TerminalNodeImpl
             ) {
                 if (c.symbol.text == "}") {
                     decreaseIndentLevel()
@@ -827,7 +831,7 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
             line: Int,
             charPositionInLine: Int,
             msg: String,
-            e: RecognitionException?
+            e: RecognitionException?,
         ) {
             if (!(offendingSymbol as Token).text!!.trim { it <= ' ' }.isEmpty()) {
                 errors.add(Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)))
@@ -836,6 +840,7 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
     }
 
     class FormatResult(var errors: List<Exception>, var output: String)
+
     companion object {
         private val comments: MutableList<CommentToken> = ArrayList<CommentToken>()
 
@@ -853,7 +858,8 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
 
             if ((parser.errorListeners[1] as SyntaxErrorListener).errors.size > 0) {
                 return FormatResult(
-                    (parser.errorListeners[1] as SyntaxErrorListener).errors, `in`.toString()
+                    (parser.errorListeners[1] as SyntaxErrorListener).errors,
+                    `in`.toString(),
                 )
             }
 
@@ -879,11 +885,14 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
         fun populateComments(tokens: CommonTokenStream) {
             for (token in tokens.tokens) {
                 if (token.text!!.startsWith("//") || token.text!!.startsWith("/*")) {
-                    val whitespace = if (token.tokenIndex < 1)
-                        ""
-                    else
-                        tokens[token.tokenIndex - 1].text
-                    comments.add(CommentToken(token, if (whitespace!!.matches("\\s+".toRegex())) whitespace else ""))
+                    val whitespace =
+                        if (token.tokenIndex < 1) "" else tokens[token.tokenIndex - 1].text
+                    comments.add(
+                        CommentToken(
+                            token,
+                            if (whitespace!!.matches("\\s+".toRegex())) whitespace else "",
+                        )
+                    )
                 }
             }
         }
