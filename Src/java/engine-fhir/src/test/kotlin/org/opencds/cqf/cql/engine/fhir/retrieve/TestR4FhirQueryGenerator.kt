@@ -16,7 +16,6 @@ import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Duration
 import org.hl7.fhir.r4.model.ValueSet
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest
@@ -583,12 +582,6 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
     }
 
     companion object {
-        var CLIENT: IGenericClient? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun setUpBeforeAll() {
-            CLIENT = newClient()
-        }
+        var CLIENT: IGenericClient = newClient()
     }
 }

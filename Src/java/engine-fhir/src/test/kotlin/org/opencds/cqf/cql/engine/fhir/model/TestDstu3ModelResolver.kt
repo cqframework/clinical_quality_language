@@ -8,7 +8,6 @@ import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm_modelinfo.r1.ClassInfo
 import org.hl7.elm_modelinfo.r1.TypeInfo
 import org.hl7.fhir.dstu3.model.Base
-import org.hl7.fhir.dstu3.model.BaseDateTimeType
 import org.hl7.fhir.dstu3.model.DateTimeType
 import org.hl7.fhir.dstu3.model.Enumeration
 import org.hl7.fhir.dstu3.model.Enumerations
@@ -237,7 +236,7 @@ internal class TestDstu3ModelResolver {
 
     @Test
     fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base?, *, *, SimpleQuantity?, *, *, *, *> =
+        val resolver: FhirModelResolver<Base, *, *, SimpleQuantity, *, *, *, *> =
             Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         val q = Quantity()
@@ -251,8 +250,7 @@ internal class TestDstu3ModelResolver {
 
     @Test
     fun resolveNullPrimitiveReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         val dt = DateTimeType()
 

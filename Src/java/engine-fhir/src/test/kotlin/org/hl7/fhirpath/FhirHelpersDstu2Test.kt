@@ -44,7 +44,7 @@ class FhirHelpersDstu2Test {
         val modelResolver = Dstu2FhirModelResolver()
         val retrieveProvider =
             RestFhirRetrieveProvider(
-                SearchParameterResolver(modelResolver.getFhirContext()),
+                SearchParameterResolver(modelResolver.fhirContext),
                 modelResolver,
                 FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""),
             )

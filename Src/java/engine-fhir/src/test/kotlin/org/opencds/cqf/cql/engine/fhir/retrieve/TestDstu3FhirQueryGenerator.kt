@@ -16,7 +16,6 @@ import org.hl7.fhir.dstu3.model.Duration
 import org.hl7.fhir.dstu3.model.Reference
 import org.hl7.fhir.dstu3.model.ValueSet
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.Dstu3FhirTest
@@ -455,12 +454,6 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     }
 
     companion object {
-        var CLIENT: IGenericClient? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun setUpBeforeAll() {
-            CLIENT = newClient()
-        }
+        var CLIENT: IGenericClient = newClient()
     }
 }

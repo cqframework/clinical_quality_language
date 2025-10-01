@@ -36,7 +36,7 @@ internal class TestSearchParameterResolver {
                 "MedicationAdministration",
                 "medication",
                 RestSearchParameterTypeEnum.TOKEN,
-            )
+            )!!
         Assertions.assertNotNull(param)
         Assertions.assertEquals("code", param.name)
 
@@ -45,24 +45,19 @@ internal class TestSearchParameterResolver {
                 "MedicationAdministration",
                 "medication",
                 RestSearchParameterTypeEnum.REFERENCE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("medication", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "period")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "period")!!
         Assertions.assertEquals("date", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "reason")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "reason")!!
         Assertions.assertEquals("reason", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "subject")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "subject")!!
         Assertions.assertEquals("patient", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "type")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "type")!!
         Assertions.assertEquals("type", param.name)
     }
 
@@ -93,8 +88,7 @@ internal class TestSearchParameterResolver {
                 "MedicationAdministration",
                 "medication",
                 RestSearchParameterTypeEnum.TOKEN,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("code", param.name)
 
         param =
@@ -102,32 +96,25 @@ internal class TestSearchParameterResolver {
                 "MedicationAdministration",
                 "medication",
                 RestSearchParameterTypeEnum.REFERENCE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("medication", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "period")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "period")!!
         Assertions.assertEquals("date", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "reasonCode")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "reasonCode")!!
         Assertions.assertEquals("reason-code", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "subject")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "subject")!!
         Assertions.assertEquals("subject", param.name)
 
-        param = resolver.getSearchParameterDefinition("Encounter", "type")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Encounter", "type")!!
         Assertions.assertEquals("type", param.name)
 
-        param = resolver.getSearchParameterDefinition("Observation", "code")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Observation", "code")!!
         Assertions.assertEquals("code", param.name)
 
-        param = resolver.getSearchParameterDefinition("Observation", "subject")
-        Assertions.assertNotNull(param)
+        param = resolver.getSearchParameterDefinition("Observation", "subject")!!
         Assertions.assertEquals("subject", param.name)
     }
 
@@ -140,17 +127,15 @@ internal class TestSearchParameterResolver {
                 "ServiceRequest",
                 "authoredOn",
                 RestSearchParameterTypeEnum.DATE,
-            )
-        Assertions.assertNotNull(param)
-        Assertions.assertEquals("authored", param!!.name)
+            )!!
+        Assertions.assertEquals("authored", param.name)
 
         param =
             resolver.getSearchParameterDefinition(
                 "Condition",
                 "onset",
                 RestSearchParameterTypeEnum.DATE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("onset-date", param.name)
 
         param =
@@ -158,8 +143,7 @@ internal class TestSearchParameterResolver {
                 "Condition",
                 "abatement",
                 RestSearchParameterTypeEnum.DATE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("abatement-date", param.name)
 
         param =
@@ -167,8 +151,7 @@ internal class TestSearchParameterResolver {
                 "Observation",
                 "effective",
                 RestSearchParameterTypeEnum.DATE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("date", param.name)
 
         param =
@@ -176,8 +159,7 @@ internal class TestSearchParameterResolver {
                 "Observation",
                 "value",
                 RestSearchParameterTypeEnum.DATE,
-            )
-        Assertions.assertNotNull(param)
+            )!!
         Assertions.assertEquals("value-date", param.name)
     }
 
@@ -185,7 +167,7 @@ internal class TestSearchParameterResolver {
     fun r4ReferenceParameter() {
         val context = FhirContext.forCached(FhirVersionEnum.R4)
         val resolver = SearchParameterResolver(context)
-        val actual = resolver.createSearchParameter("Patient", "Observation", "subject", "123")
+        val actual = resolver.createSearchParameter("Patient", "Observation", "subject", "123")!!
 
         Assertions.assertEquals("Patient/123", actual.getRight()!!.getValueAsQueryToken(context))
     }
@@ -194,7 +176,7 @@ internal class TestSearchParameterResolver {
     fun r4TokenParameter() {
         val context = FhirContext.forCached(FhirVersionEnum.R4)
         val resolver = SearchParameterResolver(context)
-        val actual = resolver.createSearchParameter("Patient", "Observation", "code", "123")
+        val actual = resolver.createSearchParameter("Patient", "Observation", "code", "123")!!
 
         Assertions.assertEquals("123", actual.getRight()!!.getValueAsQueryToken(context))
     }
