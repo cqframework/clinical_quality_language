@@ -73,7 +73,7 @@ abstract class FhirExecutionMultiLibTestBase {
             dstu2RetrieveProvider =
                 RestFhirRetrieveProvider(
                     SearchParameterResolver(dstu2Context),
-                    dstu2ModelResolver,
+                    dstu2ModelResolver!!,
                     dstu2Context.newRestfulGenericClient("http://fhirtest.uhn.ca/baseDstu2"),
                 )
             dstu2Provider = CompositeDataProvider(dstu2ModelResolver, dstu2RetrieveProvider)
@@ -83,7 +83,7 @@ abstract class FhirExecutionMultiLibTestBase {
             dstu3RetrieveProvider =
                 RestFhirRetrieveProvider(
                     SearchParameterResolver(dstu3Context),
-                    dstu3ModelResolver,
+                    dstu3ModelResolver!!,
                     dstu3Context.newRestfulGenericClient(
                         "http://measure.eval.kanvix.com/cqf-ruler/baseDstu3"
                     ),
@@ -95,7 +95,7 @@ abstract class FhirExecutionMultiLibTestBase {
             r4RetrieveProvider =
                 RestFhirRetrieveProvider(
                     SearchParameterResolver(r4Context),
-                    r4ModelResolver,
+                    r4ModelResolver!!,
                     r4Context.newRestfulGenericClient(
                         "http://measure.eval.kanvix.com/cqf-ruler/baseDstu4"
                     ),

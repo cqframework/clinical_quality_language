@@ -8,7 +8,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import org.hl7.fhir.r4.model.Patient
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest
@@ -23,23 +22,24 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 
 internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     var provider: RestFhirRetrieveProvider? = null
-    var modelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>? = null
+    val modelResolver = getModelResolver(CLIENT.fhirContext.version.version)
 
     @BeforeEach
     fun setUp() {
-        modelResolver = getModelResolver(CLIENT!!.fhirContext.version.version)
         this.provider = RestFhirRetrieveProvider(RESOLVER, modelResolver, CLIENT)
     }
 
     private fun getModelResolver(
         fhirVersionEnum: FhirVersionEnum
-    ): FhirModelResolver<*, *, *, *, *, *, *, *>? {
+    ): FhirModelResolver<*, *, *, *, *, *, *, *> {
         if (fhirVersionEnum == FhirVersionEnum.DSTU3) {
             return CachedDstu3FhirModelResolver()
         } else if (fhirVersionEnum == FhirVersionEnum.R4) {
             return CachedR4FhirModelResolver()
         }
-        return null
+        throw FhirVersionMisMatchException(
+            "The FHIR version $fhirVersionEnum is not supported by this retrieve provider."
+        )
     }
 
     @Test
@@ -60,10 +60,10 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     @Throws(FhirVersionMisMatchException::class)
     fun userSpecifiedPageSizeIsUsed() {
         val expected = 100
-        provider!!.setPageSize(expected)
+        provider!!.pageSize = expected
         val fhirQueryGenerator =
             FhirQueryGeneratorFactory.create(
-                getModelResolver(CLIENT!!.fhirContext.version.version),
+                getModelResolver(CLIENT.fhirContext.version.version),
                 provider!!.searchParameterResolver,
                 provider!!.getTerminologyProvider(),
                 null,
@@ -79,7 +79,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     @Test
     fun userSpecifiedPageSizeIsUsedWhenCodeBasedQuery() {
         val code = Code().withSystem("http://mysystem.com").withCode("myCode")
-        val codes = mutableListOf<Code?>(code)
+        val codes = mutableListOf<Code>(code)
 
         mockFhirSearch(
             ("/Condition?code=" +
@@ -89,7 +89,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
                 "&_count=500")
         )
 
-        provider!!.setPageSize(500)
+        provider!!.pageSize = 500
         provider!!.retrieve(
             "Patient",
             "subject",
@@ -120,7 +120,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
                 "&_count=500")
         )
 
-        provider!!.setPageSize(500)
+        provider!!.pageSize = 500
         provider!!.retrieve(
             "Patient",
             "subject",
@@ -166,7 +166,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
             makeBundle(),
         )
 
-        provider!!.setPageSize(500)
+        provider!!.pageSize = 500
         provider!!.retrieve(
             "Patient",
             "subject",
@@ -187,7 +187,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     fun userSpecifiedPageSizeNotUsedWhenIDQuery() {
         mockFhirRead("/Patient/123", Patient())
 
-        provider!!.setPageSize(500)
+        provider!!.pageSize = 500
         provider!!.retrieve(
             "Patient",
             "id",
@@ -207,7 +207,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     @Test
     fun noUserSpecifiedPageSizeSpecifiedNoCountInURL() {
         val code = Code().withSystem("http://mysystem.com").withCode("myCode")
-        val codes = mutableListOf<Code?>(code)
+        val codes = mutableListOf<Code>(code)
 
         mockFhirSearch(
             ("/Condition?code=" +
@@ -233,14 +233,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     }
 
     companion object {
-        var RESOLVER: SearchParameterResolver? = null
-        var CLIENT: IGenericClient? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun setUpBeforeAll() {
-            CLIENT = newClient()
-            RESOLVER = SearchParameterResolver(CLIENT!!.fhirContext)
-        }
+        val CLIENT: IGenericClient = newClient()
+        val RESOLVER: SearchParameterResolver = SearchParameterResolver(CLIENT.fhirContext)
     }
 }

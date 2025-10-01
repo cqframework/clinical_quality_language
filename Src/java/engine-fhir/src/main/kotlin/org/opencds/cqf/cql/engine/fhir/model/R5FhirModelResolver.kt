@@ -3,33 +3,39 @@ package org.opencds.cqf.cql.engine.fhir.model
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import java.util.*
-import org.hl7.fhir.dstu2.model.Age
-import org.hl7.fhir.dstu2.model.AnnotatedUuidType
-import org.hl7.fhir.dstu2.model.Base
-import org.hl7.fhir.dstu2.model.BaseDateTimeType
-import org.hl7.fhir.dstu2.model.Count
-import org.hl7.fhir.dstu2.model.Distance
-import org.hl7.fhir.dstu2.model.Duration
-import org.hl7.fhir.dstu2.model.EnumFactory
-import org.hl7.fhir.dstu2.model.Enumeration
-import org.hl7.fhir.dstu2.model.Enumerations
-import org.hl7.fhir.dstu2.model.IdType
-import org.hl7.fhir.dstu2.model.IntegerType
-import org.hl7.fhir.dstu2.model.OidType
-import org.hl7.fhir.dstu2.model.PositiveIntType
-import org.hl7.fhir.dstu2.model.Quantity
-import org.hl7.fhir.dstu2.model.Resource
-import org.hl7.fhir.dstu2.model.SimpleQuantity
-import org.hl7.fhir.dstu2.model.StringType
-import org.hl7.fhir.dstu2.model.TimeType
-import org.hl7.fhir.dstu2.model.UnsignedIntType
-import org.hl7.fhir.dstu2.model.UriType
-import org.hl7.fhir.dstu2.model.UuidType
+import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.instance.model.api.IBaseResource
+import org.hl7.fhir.r5.model.Age
+import org.hl7.fhir.r5.model.Base
+import org.hl7.fhir.r5.model.BaseDateTimeType
+import org.hl7.fhir.r5.model.CanonicalType
+import org.hl7.fhir.r5.model.CodeType
+import org.hl7.fhir.r5.model.Count
+import org.hl7.fhir.r5.model.Distance
+import org.hl7.fhir.r5.model.Duration
+import org.hl7.fhir.r5.model.EnumFactory
+import org.hl7.fhir.r5.model.Enumeration
+import org.hl7.fhir.r5.model.Enumerations.FHIRTypes
+import org.hl7.fhir.r5.model.IdType
+import org.hl7.fhir.r5.model.IntegerType
+import org.hl7.fhir.r5.model.MarkdownType
+import org.hl7.fhir.r5.model.MoneyQuantity
+import org.hl7.fhir.r5.model.OidType
+import org.hl7.fhir.r5.model.PositiveIntType
+import org.hl7.fhir.r5.model.PrimitiveType
+import org.hl7.fhir.r5.model.Quantity
+import org.hl7.fhir.r5.model.Resource
+import org.hl7.fhir.r5.model.SimpleQuantity
+import org.hl7.fhir.r5.model.StringType
+import org.hl7.fhir.r5.model.TimeType
+import org.hl7.fhir.r5.model.UnsignedIntType
+import org.hl7.fhir.r5.model.UriType
+import org.hl7.fhir.r5.model.UrlType
+import org.hl7.fhir.r5.model.UuidType
 import org.opencds.cqf.cql.engine.exception.InvalidCast
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 
-open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
+open class R5FhirModelResolver(fhirContext: FhirContext) :
     FhirModelResolver<
         Base,
         BaseDateTimeType,
@@ -40,30 +46,23 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
         Enumeration<*>,
         EnumFactory<*>,
     >(fhirContext) {
-    constructor() : this(FhirContext.forDstu2())
+    constructor() : this(FhirContext.forR5())
 
     init {
-        this.setPackageNames(
-            mutableListOf<String>(
-                "ca.uhn.fhir.model.dstu2",
-                "org.hl7.fhir.dstu2.model",
-                "ca.uhn.fhir.model.primitive",
-            )
-        )
-        require(fhirContext.version.version == FhirVersionEnum.DSTU2) {
-            "The supplied context is not configured for DSTU2"
+        this.setPackageNames(mutableListOf<String>("org.hl7.fhir.r5.model"))
+        require(fhirContext.version.version == FhirVersionEnum.R5) {
+            "The supplied context is not configured for R5"
         }
     }
 
     override fun initialize() {
-        // HAPI has some bugs where it's missing annotations on certain types. This patches that.
-        this.fhirContext.registerCustomType(AnnotatedUuidType::class.java)
-
-        // The context loads Resources on demand which can cause resolution to fail in certain cases
+        // The context loads Resources on demand which can cause resolution to fail in
+        // certain cases
         // This forces all Resource types to be loaded.
 
         // force calling of validateInitialized();
-        this.fhirContext.getResourceDefinition(Enumerations.ResourceType.ACCOUNT.toCode())
+
+        this.fhirContext.getResourceDefinition(FHIRTypes.ACCOUNT.toCode())
 
         val myNameToResourceType: MutableMap<String?, Class<out IBaseResource?>>
         try {
@@ -72,19 +71,18 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
             myNameToResourceType =
                 f.get(this.fhirContext) as MutableMap<String?, Class<out IBaseResource?>>
 
-            val toLoad: MutableList<Class<out IBaseResource?>> =
-                ArrayList<Class<out IBaseResource?>>(myNameToResourceType.size)
+            val toLoad = ArrayList<Class<out IBaseResource?>?>(myNameToResourceType.size)
 
-            for (type in Enumerations.ResourceType.entries) {
+            for (type in FHIRTypes.entries) {
                 // These are abstract types that should never be resolved directly.
                 when (type) {
-                    Enumerations.ResourceType.DOMAINRESOURCE,
-                    Enumerations.ResourceType.RESOURCE,
-                    Enumerations.ResourceType.NULL -> continue
+                    FHIRTypes.DOMAINRESOURCE,
+                    FHIRTypes.RESOURCE,
+                    FHIRTypes.NULL -> continue
                     else -> {}
                 }
-                if (myNameToResourceType.containsKey(type.toCode().lowercase()))
-                    toLoad.add(myNameToResourceType[type.toCode().lowercase()]!!)
+                if (myNameToResourceType.containsKey(type.toCode().lowercase(Locale.getDefault())))
+                    toLoad.add(myNameToResourceType[type.toCode().lowercase(Locale.getDefault())])
             }
 
             // Sends a list of all classes to be loaded in bulk.
@@ -104,20 +102,51 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
         return left.equalsDeep(right)
     }
 
+    override fun resolveProperty(target: Any?, path: String): Any? {
+        // This is kind of a hack to get around contained resources - HAPI doesn't have
+        // ResourceContainer type for R5
+        if (target is Resource && target.fhirType() == path) {
+            return target
+        }
+
+        // Account for extensions on primitives
+        if (target is PrimitiveType<*> && path == "extension") {
+            return target.getExtension()
+        }
+
+        return super.resolveProperty(target, path)
+    }
+
     override fun castToSimpleQuantity(base: Base): SimpleQuantity {
-        return base.castToSimpleQuantity(base)
+        when (base) {
+            is SimpleQuantity -> return base
+            is Quantity -> {
+                val sq = SimpleQuantity()
+                sq.valueElement = base.valueElement
+                sq.comparatorElement = base.comparatorElement
+                sq.unitElement = base.unitElement
+                sq.systemElement = base.systemElement
+                sq.codeElement = base.codeElement
+                return sq
+            }
+
+            else ->
+                throw FHIRException(
+                    "Unable to convert a " + base.javaClass.getName() + " to an SimpleQuantity"
+                )
+        }
     }
 
     override fun getCalendar(dateTime: BaseDateTimeType): Calendar {
-        return dateTime.toCalendar()
+        return dateTime.valueAsCalendar
     }
 
     override fun getCalendarConstant(dateTime: BaseDateTimeType): Int {
-        return dateTime.getPrecision().calendarConstant
+        return dateTime.precision.calendarConstant
     }
 
-    override fun setCalendarConstant(dateTime: BaseDateTimeType, temporal: BaseTemporal) {
-        dateTime.setPrecision(toTemporalPrecisionEnum(temporal.getPrecision()))
+    override fun setCalendarConstant(target: BaseDateTimeType, value: BaseTemporal) {
+        target.precision = toTemporalPrecisionEnum(value.getPrecision())
     }
 
     override fun timeToString(time: TimeType): String {
@@ -141,32 +170,45 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
     }
 
     override fun enumFactoryTypeGetter(enumeration: Enumeration<*>): Class<*> {
-        val value: Enum<*>? = enumeration.getValue()
-        if (value != null) {
-            val enumSimpleName = value.javaClass.getSimpleName()
-            return this.resolveType(enumSimpleName + "EnumFactory")!!
-        } else {
-            val myEnumFactoryField = enumeration.javaClass.getDeclaredField("myEnumFactory")
-            myEnumFactoryField.setAccessible(true)
-            val factory = myEnumFactoryField.get(enumeration) as EnumFactory<*>
-            return factory.javaClass
+        return enumeration.getEnumFactory().javaClass
+    }
+
+    override fun resolveType(typeName: String): Class<*>? {
+        // TODO: Might be able to patch some of these by registering custom types in
+        // HAPI.
+
+        var typeName = typeName
+        when (typeName) {
+            "ConfidentialityClassification" -> typeName = $$"Composition$DocumentConfidentiality"
+            "ContractResourceStatusCodes" -> typeName = $$"Contract$ContractStatus"
+            "EventStatus" -> typeName = $$"Procedure$ProcedureStatus"
+            "FinancialResourceStatusCodes" -> typeName = $$"ClaimResponse$ClaimResponseStatus"
+            "SampledDataDataType" -> typeName = "StringType"
+            "ClaimProcessingCodes" -> typeName = $$"ClaimResponse$RemittanceOutcome"
+            "vConfidentialityClassification" -> typeName = $$"Composition$DocumentConfidentiality"
+            "ContractResourcePublicationStatusCodes" ->
+                typeName = $$"Contract$ContractPublicationStatus"
+            "CurrencyCode" -> typeName = "CodeType"
+            "MedicationAdministrationStatus" -> typeName = "CodeType"
+            "MedicationDispenseStatus" -> typeName = "CodeType"
+            "MedicationKnowledgeStatus" -> typeName = "CodeType"
+            "Messageheader_Response_Request" -> typeName = "CodeType"
+            "MimeType" -> typeName = "CodeType"
+            else -> {}
         }
+
+        return super.resolveType(typeName)
     }
 
     /*
-    Casting of derived primitives:
-    Datatypes that derive from datatypes other than Element are actually profiles
-    // Types that exhibit this behavior are:
-    // url: uri
-    // canonical: uri
-    // uuid: uri
-    // oid: uri
-    // positiveInt: integer
-    // unsignedInt: integer
-    // code: string
-    // markdown: string
-    // id: string
-
+     * Casting of derived primitives: Datatypes that derive from datatypes other
+     * than Element are
+     * actually profiles // Types that exhibit this behavior are: // url: uri //
+     * canonical: uri //
+     * uuid: uri // oid: uri // positiveInt: integer // unsignedInt: integer //
+     * code: string //
+     * markdown: string // id: string
+     *
      */
     override fun `is`(value: Any?, type: Class<*>): Boolean? {
         if (value == null) {
@@ -187,6 +229,7 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
                 "AnnotatedUuidType",
                 "UuidType" -> return true
                 "OidType" -> return true
+                else -> {}
             }
         }
 
@@ -197,6 +240,7 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
             when (type.getSimpleName()) {
                 "PositiveIntType" -> return true
                 "UnsignedIntType" -> return true
+                else -> {}
             }
         }
 
@@ -208,6 +252,7 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
                 "CodeType" -> return true
                 "MarkdownType" -> return true
                 "IdType" -> return true
+                else -> {}
             }
         }
 
@@ -220,7 +265,9 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
                 "Distance",
                 "Duration",
                 "Count",
-                "SimpleQuantity" -> return true
+                "SimpleQuantity",
+                "MoneyQuantity" -> return true
+                else -> {}
             }
         }
 
@@ -238,43 +285,50 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
 
         if (value is UriType) {
             when (type.getSimpleName()) {
+                "UrlType" ->
+                    return if (value.hasPrimitiveValue()) UrlType(value.primitiveValue()) else null
+                "CanonicalType" ->
+                    return if (value.hasPrimitiveValue()) CanonicalType(value.primitiveValue())
+                    else null
                 "AnnotatedUuidType",
                 "UuidType" ->
-                    return if (value.hasValue() && value.value.startsWith("urn:uuid:"))
+                    return if (value.hasPrimitiveValue() && value.value.startsWith("urn:uuid:"))
                         UuidType(value.primitiveValue())
                     else null
 
                 "OidType" ->
-                    return if (value.hasValue() && value.value.startsWith("urn:oid:"))
+                    return if (value.hasPrimitiveValue() && value.value.startsWith("urn:oid:"))
                         OidType(value.primitiveValue())
                     else null // castToOid(uriType); Throws an exception, not implemented
+                else -> {}
             }
         }
 
         if (value is IntegerType) {
             when (type.getSimpleName()) {
                 "PositiveIntType" ->
-                    return if (value.hasValue() && value.value > 0)
+                    return if (value.hasPrimitiveValue() && value.value > 0)
                         PositiveIntType(value.primitiveValue())
-                    else
-                        null // integerType.castToPositiveInt(integerType); Throws an exception, not
-                // implemented
+                    else null // integerType.castToPositiveInt(integerType); Throws an
                 "UnsignedIntType" ->
-                    return if (value.hasValue() && value.value >= 0)
+                    return if (value.hasPrimitiveValue() && value.value >= 0)
                         UnsignedIntType(value.primitiveValue())
-                    else
-                        null // castToUnsignedInt(integerType); Throws an exception, not implemented
+                    else null // castToUnsignedInt(integerType); Throws an exception, not
+                else -> {}
             }
         }
 
         if (value is StringType) {
             when (type.getSimpleName()) {
-                "CodeType" -> return value.castToCode(value)
-                "MarkdownType" -> return value.castToMarkdown(value)
+                "CodeType" ->
+                    return if (value.hasPrimitiveValue()) CodeType(value.primitiveValue()) else null
+                "MarkdownType" ->
+                    return if (value.hasPrimitiveValue()) MarkdownType(value.primitiveValue())
+                    else null
                 "IdType" ->
-                    return if (value.hasValue()) IdType(value.primitiveValue())
-                    else null // stringType.castToId(stringType); Throws an exception, not
-            // implemented
+                    return if (value.hasPrimitiveValue()) IdType(value.primitiveValue())
+                    else null // stringType.castToId(stringType);
+                else -> {}
             }
         }
 
@@ -331,9 +385,19 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
                 }
 
                 "SimpleQuantity" ->
-                    return value.castToSimpleQuantity(
-                        value
-                    ) // NOTE: This is wrong in that it is copying the comparator, it should be
+                    return castToSimpleQuantity(value) // NOTE: This is wrong in that it is
+                "MoneyQuantity" -> {
+                    val moneyQuantity = MoneyQuantity()
+                    moneyQuantity.setValue(value.getValue())
+                    moneyQuantity.setCode(value.getCode())
+                    moneyQuantity.setUnit(value.getUnit())
+                    moneyQuantity.setSystem(value.getSystem())
+                    moneyQuantity.setComparator(value.getComparator())
+                    // TODO: Ensure money constraints are met, else return null
+                    return moneyQuantity
+                }
+
+                else -> {}
             }
         }
 
@@ -357,7 +421,10 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
 
         if ("Patient" == contextType) {
             when (targetType) {
+                "MedicationStatement",
                 "QuestionnaireResponse" -> return "subject"
+                "Task" -> return "for"
+                "Coverage" -> return "beneficiary"
                 else -> {}
             }
         }
