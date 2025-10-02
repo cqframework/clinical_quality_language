@@ -157,10 +157,11 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
         mockFhirInteraction(
             WireMock.get(
                 WireMock.urlMatching(
-                    ("/Condition\\?subject=" +
+                    ("/Condition\\?" +
+                        ".*onset-date=ge2020[^&]+.*&onset-date=le[^&]+" +
+                        ".*subject=" +
                         UrlUtil.escapeUrlParam("Patient/123") +
-                        "&onset-date=ge2020[^&]+&onset-date=le[^&]+" +
-                        "&_count=500")
+                        ".*_count=500")
                 )
             ),
             makeBundle(),

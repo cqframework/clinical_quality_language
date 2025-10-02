@@ -137,7 +137,6 @@ abstract class R4FhirTest {
             logger.setLogRequestSummary(true)
             logger.setLogResponseBody(true)
             client.registerInterceptor(logger)
-
             return client
         }
     }
