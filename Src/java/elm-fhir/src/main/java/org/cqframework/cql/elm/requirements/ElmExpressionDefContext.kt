@@ -13,7 +13,7 @@ class ElmExpressionDefContext(
     @JvmField
     val reportedRequirements: ElmRequirements = ElmRequirements(libraryIdentifier, expressionDef)
 
-    fun reportRequirement(requirement: ElmRequirement?) {
+    fun reportRequirement(requirement: ElmRequirement) {
         this.reportedRequirements.reportRequirement(requirement)
     }
 

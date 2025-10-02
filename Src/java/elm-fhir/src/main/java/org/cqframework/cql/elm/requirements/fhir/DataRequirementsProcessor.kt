@@ -241,7 +241,7 @@ class DataRequirementsProcessor {
         } else {
             gatherLibrarySpecificRequirements(
                 requirements,
-                translatedLibrary.identifier,
+                translatedLibrary.identifier!!,
                 context.requirements,
             )
             for (ed in expressionDefs) {
@@ -252,18 +252,22 @@ class DataRequirementsProcessor {
                 // include
                 // directly inferred requirements
                 val reportedRequirements = context.getReportedRequirements(ed)
-                gatherLibrarySpecificRequirements(
-                    requirements,
-                    translatedLibrary.identifier,
-                    reportedRequirements,
-                )
+                if (reportedRequirements != null) {
+                    gatherLibrarySpecificRequirements(
+                        requirements,
+                        translatedLibrary.identifier!!,
+                        reportedRequirements,
+                    )
+                }
 
                 val inferredRequirement = context.getInferredRequirements(ed)
-                gatherLibrarySpecificRequirements(
-                    requirements,
-                    translatedLibrary.identifier,
-                    inferredRequirement,
-                )
+                if (inferredRequirement != null) {
+                    gatherLibrarySpecificRequirements(
+                        requirements,
+                        translatedLibrary.identifier!!,
+                        inferredRequirement,
+                    )
+                }
             }
         }
 
@@ -288,7 +292,7 @@ class DataRequirementsProcessor {
 
     private fun gatherLibrarySpecificRequirements(
         requirements: ElmRequirements,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         sourceRequirements: ElmRequirements,
     ) {
         for (requirement in sourceRequirements.getRequirements()) {
@@ -298,10 +302,10 @@ class DataRequirementsProcessor {
 
     private fun gatherLibrarySpecificRequirements(
         requirements: ElmRequirements,
-        libraryIdentifier: VersionedIdentifier?,
-        requirement: ElmRequirement?,
+        libraryIdentifier: VersionedIdentifier,
+        requirement: ElmRequirement,
     ) {
-        if (requirement != null && requirement.libraryIdentifier == libraryIdentifier) {
+        if (requirement.libraryIdentifier == libraryIdentifier) {
             requirements.reportRequirement(requirement)
         }
     }

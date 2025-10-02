@@ -24,15 +24,14 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         return requirements
     }
 
-    fun reportRequirement(requirement: ElmRequirement?) {
+    fun reportRequirement(requirement: ElmRequirement) {
+        // assert(requirement.libraryIdentifier == this.libraryIdentifier)
         if (requirement is ElmRequirements) {
             for (r in requirement.getRequirements()) {
                 reportRequirement(r)
             }
         } else {
-            if (requirement != null) {
-                requirements.add(requirement)
-            }
+            requirements.add(requirement)
         }
     }
 
@@ -119,7 +118,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         val result = ElmRequirements(this.libraryIdentifier, this.element)
 
         // UsingDefs
-        val models: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val models: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.usingDefs) {
             val ud = r.element as UsingDef
             val uri = ud.uri + (if (ud.version != null) "|" + ud.version else "")
@@ -134,7 +133,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // IncludeDefs
-        val libraries: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val libraries: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.includeDefs) {
             val id = r.element as IncludeDef
             val uri = id.path + (if (id.version != null) "|" + id.version else "")
@@ -149,7 +148,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // CodeSystemDefs
-        val codeSystems: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val codeSystems: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.codeSystemDefs) {
             val csd = r.element as CodeSystemDef
             val uri = csd.id + (if (csd.version != null) "|" + csd.version else "")
@@ -164,7 +163,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // ValueSetDefs
-        val valueSets: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val valueSets: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.valueSetDefs) {
             val vsd = r.element as ValueSetDef
             val uri = vsd.id + (if (vsd.version != null) "|" + vsd.version else "")
@@ -179,7 +178,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // ConceptDefs
-        val concepts: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val concepts: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.conceptDefs) {
             val cd = r.element as ConceptDef
             val uri =
@@ -201,7 +200,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // CodeDefs
-        val codes: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val codes: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.codeDefs) {
             val cd = r.element as CodeDef
             val uri =
@@ -227,10 +226,10 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         // artifact,
         // parameters of the same name should be bound to the same input (i.e. single input
         // parameter namespace)
-        val parameters: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val parameters: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.parameterDefs) {
             val pd = r.element as ParameterDef
-            val uri = pd.name
+            val uri = pd.name!!
 
             if (!parameters.containsKey(uri)) {
                 parameters[uri] = r
@@ -246,7 +245,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // ExpressionDefs
-        val expressions: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val expressions: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.expressionDefs) {
             val ed = r.element as ExpressionDef
             val uri =
@@ -269,7 +268,7 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         }
 
         // FunctionDefs
-        val functions: MutableMap<String?, ElmRequirement?> = LinkedHashMap()
+        val functions: MutableMap<String, ElmRequirement> = LinkedHashMap()
         for (r in this.functionDefs) {
             val fd = r.element as FunctionDef
             val uri =

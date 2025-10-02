@@ -154,7 +154,7 @@ class ElmRequirementsContext(
         return _inferredRequirements.values.filterNotNull()
     }
 
-    fun getInferredRequirements(ed: ExpressionDef?): ElmRequirement? {
+    fun getInferredRequirements(ed: ExpressionDef): ElmRequirement? {
         return _inferredRequirements[ed]
     }
 
@@ -185,11 +185,11 @@ class ElmRequirementsContext(
     ): CompiledLibrary {
         var targetLibrary = resolveLibrary(libraryIdentifier)
         if (localLibraryName != null) {
-            val includeDef = targetLibrary.resolveIncludeRef(localLibraryName)
+            val includeDef = targetLibrary.resolveIncludeRef(localLibraryName)!!
             if (!visited.contains(includeDef)) {
-                visitor.visitElement(includeDef!!, this)
+                visitor.visitElement(includeDef, this)
             }
-            targetLibrary = resolveLibraryFromIncludeDef(includeDef!!)
+            targetLibrary = resolveLibraryFromIncludeDef(includeDef)
             enterLibrary(targetLibrary.identifier!!)
         }
         return targetLibrary
@@ -224,7 +224,7 @@ class ElmRequirementsContext(
         return this.currentExpressionDefContext!!.resolveLet(letName)
     }
 
-    private val visited: MutableSet<Element?> = LinkedHashSet<Element?>()
+    private val visited: MutableSet<Element> = LinkedHashSet<Element>()
 
     val requirements: ElmRequirements
 
@@ -305,9 +305,9 @@ class ElmRequirementsContext(
     fun reportCodeRef(codeRef: CodeRef) {
         val targetLibrary = prepareLibraryVisit(this.currentLibraryIdentifier, codeRef.libraryName)
         try {
-            val cd = targetLibrary.resolveCodeRef(codeRef.name!!)
+            val cd = targetLibrary.resolveCodeRef(codeRef.name!!)!!
             if (!visited.contains(cd)) {
-                visitor.visitElement(cd!!, this)
+                visitor.visitElement(cd, this)
             }
         } finally {
             unprepareLibraryVisit(codeRef.libraryName)
@@ -318,9 +318,9 @@ class ElmRequirementsContext(
         val targetLibrary =
             prepareLibraryVisit(this.currentLibraryIdentifier, codeSystemRef.libraryName)
         try {
-            val csd = targetLibrary.resolveCodeSystemRef(codeSystemRef.name!!)
+            val csd = targetLibrary.resolveCodeSystemRef(codeSystemRef.name!!)!!
             if (!visited.contains(csd)) {
-                visitor.visitElement(csd!!, this)
+                visitor.visitElement(csd, this)
             }
         } finally {
             unprepareLibraryVisit(codeSystemRef.libraryName)
@@ -331,9 +331,9 @@ class ElmRequirementsContext(
         val targetLibrary =
             prepareLibraryVisit(this.currentLibraryIdentifier, conceptRef.libraryName)
         try {
-            val cd = targetLibrary.resolveConceptRef(conceptRef.name!!)
+            val cd = targetLibrary.resolveConceptRef(conceptRef.name!!)!!
             if (!visited.contains(cd)) {
-                visitor.visitElement(cd!!, this)
+                visitor.visitElement(cd, this)
             }
         } finally {
             unprepareLibraryVisit(conceptRef.libraryName)
@@ -344,9 +344,9 @@ class ElmRequirementsContext(
         val targetLibrary =
             prepareLibraryVisit(this.currentLibraryIdentifier, parameterRef.libraryName)
         try {
-            val pd = targetLibrary.resolveParameterRef(parameterRef.name!!)
+            val pd = targetLibrary.resolveParameterRef(parameterRef.name!!)!!
             if (!visited.contains(pd)) {
-                visitor.visitElement(pd!!, this)
+                visitor.visitElement(pd, this)
             }
         } finally {
             unprepareLibraryVisit(parameterRef.libraryName)
@@ -357,9 +357,9 @@ class ElmRequirementsContext(
         val targetLibrary =
             prepareLibraryVisit(this.currentLibraryIdentifier, valueSetRef.libraryName)
         try {
-            val vsd = targetLibrary.resolveValueSetRef(valueSetRef.name!!)
+            val vsd = targetLibrary.resolveValueSetRef(valueSetRef.name!!)!!
             if (!visited.contains(vsd)) {
-                visitor.visitElement(vsd!!, this)
+                visitor.visitElement(vsd, this)
             }
         } finally {
             unprepareLibraryVisit(valueSetRef.libraryName)
@@ -370,9 +370,9 @@ class ElmRequirementsContext(
         val targetLibrary =
             prepareLibraryVisit(this.currentLibraryIdentifier, expressionRef.libraryName)
         try {
-            val ed = targetLibrary.resolveExpressionRef(expressionRef.name!!)
+            val ed = targetLibrary.resolveExpressionRef(expressionRef.name!!)!!
             if (!visited.contains(ed)) {
-                visitor.visitElement(ed!!, this)
+                visitor.visitElement(ed, this)
             }
             val inferredRequirements = getInferredRequirements(ed)
 
@@ -420,11 +420,10 @@ class ElmRequirementsContext(
                 }
             }
 
-            val fds: Iterable<FunctionDef?> =
-                targetLibrary.resolveFunctionRef(functionRef.name!!, signature)
+            val fds = targetLibrary.resolveFunctionRef(functionRef.name!!, signature)
             for (fd in fds) {
                 if (!visited.contains(fd)) {
-                    visitor.visitElement(fd!!, this)
+                    visitor.visitElement(fd, this)
                 }
             }
         } finally {
@@ -456,33 +455,40 @@ class ElmRequirementsContext(
     of requirements, rather than the current focus of either a DataRequirement or a QueryRequirement)
      */
     fun reportRequirements(requirement: ElmRequirement, inferredRequirements: ElmRequirement?) {
-        if (requirement is ElmRequirements) {
-            for (childRequirement in requirement.getRequirements()) {
-                if (
-                    inferredRequirements == null ||
-                        !inferredRequirements.hasRequirement(childRequirement)
-                ) {
-                    reportRequirement(childRequirement)
+        when (requirement) {
+            is ElmRequirements -> {
+                for (childRequirement in requirement.getRequirements()) {
+                    if (
+                        inferredRequirements == null ||
+                            !inferredRequirements.hasRequirement(childRequirement)
+                    ) {
+                        reportRequirement(childRequirement)
+                    }
                 }
             }
-        } else if (requirement is ElmQueryRequirement) {
-            for (dataRequirement in requirement.getDataRequirements()) {
-                if (
-                    inferredRequirements == null ||
-                        !inferredRequirements.hasRequirement(dataRequirement)
-                ) {
-                    reportRequirement(dataRequirement)
+
+            is ElmQueryRequirement -> {
+                for (dataRequirement in requirement.getDataRequirements()) {
+                    if (
+                        inferredRequirements == null ||
+                            !inferredRequirements.hasRequirement(dataRequirement)
+                    ) {
+                        reportRequirement(dataRequirement)
+                    }
                 }
             }
-        } else if (requirement is ElmOperatorRequirement) {
-            val operatorRequirement = requirement
-            for (r in operatorRequirement.getRequirements()) {
-                if (inferredRequirements == null || !inferredRequirements.hasRequirement(r)) {
-                    reportRequirements(r!!, inferredRequirements)
+
+            is ElmOperatorRequirement -> {
+                for (r in requirement.getRequirements()) {
+                    if (inferredRequirements == null || !inferredRequirements.hasRequirement(r)) {
+                        reportRequirements(r!!, inferredRequirements)
+                    }
                 }
             }
-        } else {
-            reportRequirement(requirement)
+
+            else -> {
+                reportRequirement(requirement)
+            }
         }
     }
 
@@ -533,9 +539,7 @@ class ElmRequirementsContext(
         }
 
         if (type != null && type is ClassType && type.isRetrievable) {
-            var requirement =
-                unboundDataRequirements[
-                    if (profiledTypeName != null) profiledTypeName else typeName]
+            var requirement = unboundDataRequirements[profiledTypeName ?: typeName]
             if (requirement == null) {
                 val retrieve = Retrieve()
                 retrieve.dataType = typeName
