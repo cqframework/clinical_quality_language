@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider
 
 class TestCodeRef : FhirExecutionTestBase() {
-    private val fhirClient: IGenericClient? =
+    private val fhirClient: IGenericClient =
         FhirContext.forCached(FhirVersionEnum.DSTU3)
             .newRestfulGenericClient("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3")
     private val terminologyProvider = Dstu3FhirTerminologyProvider(fhirClient)

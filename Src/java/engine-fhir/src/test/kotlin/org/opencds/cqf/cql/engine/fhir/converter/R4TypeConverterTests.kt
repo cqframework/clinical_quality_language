@@ -40,7 +40,6 @@ import org.hl7.fhir.r4.model.SimpleQuantity
 import org.hl7.fhir.r4.model.StringType
 import org.hl7.fhir.r4.model.TimeType
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -103,55 +102,48 @@ internal class R4TypeConverterTests {
     // CQL-to-FHIR
     @Test
     fun isFhirType() {
-        Assertions.assertTrue(typeConverter!!.isFhirType(Patient()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(IdType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(Quantity()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(Ratio()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(BooleanType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(IntegerType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(DecimalType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(DateType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(InstantType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(DateTimeType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(TimeType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(StringType()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(Coding()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(CodeableConcept()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(Period()))
-        Assertions.assertTrue(typeConverter!!.isFhirType(Range()))
+        Assertions.assertTrue(typeConverter.isFhirType(Patient()))
+        Assertions.assertTrue(typeConverter.isFhirType(IdType()))
+        Assertions.assertTrue(typeConverter.isFhirType(Quantity()))
+        Assertions.assertTrue(typeConverter.isFhirType(Ratio()))
+        Assertions.assertTrue(typeConverter.isFhirType(BooleanType()))
+        Assertions.assertTrue(typeConverter.isFhirType(IntegerType()))
+        Assertions.assertTrue(typeConverter.isFhirType(DecimalType()))
+        Assertions.assertTrue(typeConverter.isFhirType(DateType()))
+        Assertions.assertTrue(typeConverter.isFhirType(InstantType()))
+        Assertions.assertTrue(typeConverter.isFhirType(DateTimeType()))
+        Assertions.assertTrue(typeConverter.isFhirType(TimeType()))
+        Assertions.assertTrue(typeConverter.isFhirType(StringType()))
+        Assertions.assertTrue(typeConverter.isFhirType(Coding()))
+        Assertions.assertTrue(typeConverter.isFhirType(CodeableConcept()))
+        Assertions.assertTrue(typeConverter.isFhirType(Period()))
+        Assertions.assertTrue(typeConverter.isFhirType(Range()))
 
-        Assertions.assertFalse(typeConverter!!.isFhirType(5))
-        Assertions.assertFalse(typeConverter!!.isFhirType(BigDecimal(0)))
-        Assertions.assertFalse(typeConverter!!.isFhirType(Code()))
-    }
-
-    @Test
-    fun nullIsFhirType() {
-        Assertions.assertThrows(NullPointerException::class.java) {
-            typeConverter!!.isFhirType(null)
-        }
+        Assertions.assertFalse(typeConverter.isFhirType(5))
+        Assertions.assertFalse(typeConverter.isFhirType(BigDecimal(0)))
+        Assertions.assertFalse(typeConverter.isFhirType(Code()))
     }
 
     @Test
     fun iterableIsFhirType() {
         val value = ArrayList<Any?>()
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.isFhirType(value)
+            typeConverter.isFhirType(value)
         }
     }
 
     @Test
     fun toFhirType() {
-        var actual: IBase? = typeConverter!!.toFhirType(Code())
+        var actual: IBase? = typeConverter.toFhirType(Code())
         MatcherAssert.assertThat<IBase?>(actual, Matchers.instanceOf<IBase?>(Coding::class.java))
 
-        actual = typeConverter!!.toFhirType(5)
+        actual = typeConverter.toFhirType(5)
         MatcherAssert.assertThat(actual, Matchers.instanceOf(IntegerType::class.java))
 
-        actual = typeConverter!!.toFhirType(IdType())
+        actual = typeConverter.toFhirType(IdType())
         MatcherAssert.assertThat(actual, Matchers.instanceOf(IdType::class.java))
 
-        actual = typeConverter!!.toFhirType(null)
+        actual = typeConverter.toFhirType(null)
         Assertions.assertNull(actual)
     }
 
@@ -159,7 +151,7 @@ internal class R4TypeConverterTests {
     fun toFhirTypeIterable() {
         val value = ArrayList<Any?>()
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toFhirType(value)
+            typeConverter.toFhirType(value)
         }
     }
 
@@ -167,7 +159,7 @@ internal class R4TypeConverterTests {
     fun toFhirTypeNotCql() {
         val offset = ZoneOffset.ofHours(3)
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toFhirType(offset)
+            typeConverter.toFhirType(offset)
         }
     }
 
@@ -189,7 +181,7 @@ internal class R4TypeConverterTests {
         test.add(null)
         test.add(5)
 
-        val actual: Iterable<Any?> = typeConverter!!.toFhirTypes(test)
+        val actual: Iterable<Any?> = typeConverter.toFhirTypes(test)
 
         Assertions.assertTrue(compareIterables(expected, actual))
     }
@@ -197,55 +189,55 @@ internal class R4TypeConverterTests {
     @Test
     fun stringToFhirId() {
         val expected: IIdType = IdType("123")
-        var actual: IIdType? = typeConverter!!.toFhirId("123")
+        var actual: IIdType? = typeConverter.toFhirId("123")
         Assertions.assertEquals(expected.value, actual!!.value)
 
-        actual = typeConverter!!.toFhirId(null)
+        actual = typeConverter.toFhirId(null)
         Assertions.assertNull(actual)
     }
 
     @Test
     fun primitiveCqlTypeToFhirType() {
         val expectedBoolean: IPrimitiveType<Boolean?> = BooleanType(false)
-        var actualBoolean: IPrimitiveType<Boolean?>? = typeConverter!!.toFhirBoolean(false)
+        var actualBoolean: IPrimitiveType<Boolean?>? = typeConverter.toFhirBoolean(false)
         Assertions.assertEquals(expectedBoolean.getValue(), actualBoolean!!.getValue())
 
-        actualBoolean = typeConverter!!.toFhirBoolean(null)
+        actualBoolean = typeConverter.toFhirBoolean(null)
         Assertions.assertNull(actualBoolean)
 
-        val expectedInteger: IPrimitiveType<Int?> = IntegerType(5)
-        var actualInteger: IPrimitiveType<Int?>? = typeConverter!!.toFhirInteger(5)
+        val expectedInteger: IPrimitiveType<Int> = IntegerType(5)
+        var actualInteger: IPrimitiveType<Int>? = typeConverter.toFhirInteger(5)
         Assertions.assertEquals(expectedInteger.getValue(), actualInteger!!.getValue())
 
-        actualInteger = typeConverter!!.toFhirInteger(null)
+        actualInteger = typeConverter.toFhirInteger(null)
         Assertions.assertNull(actualInteger)
 
-        val expectedString: IPrimitiveType<String?> = StringType("5")
-        var actualString: IPrimitiveType<String?>? = typeConverter!!.toFhirString("5")
+        val expectedString: IPrimitiveType<String> = StringType("5")
+        var actualString: IPrimitiveType<String>? = typeConverter.toFhirString("5")
         Assertions.assertEquals(expectedString.getValue(), actualString!!.getValue())
 
-        actualString = typeConverter!!.toFhirString(null)
+        actualString = typeConverter.toFhirString(null)
         Assertions.assertNull(actualString)
 
-        val expectedDecimal: IPrimitiveType<BigDecimal?> = DecimalType(BigDecimal("2.0"))
-        var actualDecimal: IPrimitiveType<BigDecimal?>? =
-            typeConverter!!.toFhirDecimal(BigDecimal("2.0"))
+        val expectedDecimal: IPrimitiveType<BigDecimal> = DecimalType(BigDecimal("2.0"))
+        var actualDecimal: IPrimitiveType<BigDecimal>? =
+            typeConverter.toFhirDecimal(BigDecimal("2.0"))
         Assertions.assertEquals(expectedDecimal.getValue(), actualDecimal!!.getValue())
 
-        actualDecimal = typeConverter!!.toFhirDecimal(null)
+        actualDecimal = typeConverter.toFhirDecimal(null)
         Assertions.assertNull(actualDecimal)
     }
 
     @Test
     fun dateToFhirDate() {
-        var expectedDate: IPrimitiveType<Date?> = DateType("2019-02-03")
-        var actualDate: IPrimitiveType<Date?> =
-            typeConverter!!.toFhirDate(org.opencds.cqf.cql.engine.runtime.Date("2019-02-03"))
-        Assertions.assertEquals(expectedDate.getValue(), actualDate.getValue())
+        var expectedDate: IPrimitiveType<Date> = DateType("2019-02-03")
+        var actualDate: IPrimitiveType<Date>? =
+            typeConverter.toFhirDate(org.opencds.cqf.cql.engine.runtime.Date("2019-02-03"))
+        Assertions.assertEquals(expectedDate.getValue(), actualDate!!.getValue())
 
         expectedDate = DateType("2019")
-        actualDate = typeConverter!!.toFhirDate(org.opencds.cqf.cql.engine.runtime.Date("2019"))
-        Assertions.assertEquals(expectedDate.value, actualDate.getValue())
+        actualDate = typeConverter.toFhirDate(org.opencds.cqf.cql.engine.runtime.Date("2019"))
+        Assertions.assertEquals(expectedDate.value, actualDate!!.getValue())
     }
 
     @ParameterizedTest
@@ -259,15 +251,14 @@ internal class R4TypeConverterTests {
         val evalDate = DateTimeFormatter.ISO_DATE.format(evaluationTime)
 
         var expectedDate = DateTimeType(evalTimeWithOffset)
-        var actualDate: IPrimitiveType<Date?> =
-            typeConverter!!.toFhirDateTime(DateTime(evalDate, defaultOffset))
-        Assertions.assertEquals(expectedDate.value, actualDate.getValue())
+        var actualDate: IPrimitiveType<Date>? =
+            typeConverter.toFhirDateTime(DateTime(evalDate, defaultOffset))
+        Assertions.assertEquals(expectedDate.value, actualDate!!.getValue())
 
         expectedDate = DateTimeType(evalTimeWithOffset)
-        actualDate =
-            typeConverter!!.toFhirDateTime(DateTime("" + evaluationTime.year, defaultOffset))
+        actualDate = typeConverter.toFhirDateTime(DateTime("" + evaluationTime.year, defaultOffset))
         expectedDate.precision = TemporalPrecisionEnum.YEAR
-        Assertions.assertEquals(expectedDate.value, actualDate.getValue())
+        Assertions.assertEquals(expectedDate.value, actualDate!!.getValue())
         Assertions.assertEquals(expectedDate.valueAsString, actualDate.valueAsString)
     }
 
@@ -275,17 +266,17 @@ internal class R4TypeConverterTests {
     fun dateTimeToFhirDateTimeTimezones() {
         var expectedDate = DateTimeType("2019-10-10T01:00:00-06:00")
         expectedDate.timeZone = TimeZone.getTimeZone("MST")
-        var actualDate: IPrimitiveType<Date?> =
-            typeConverter!!.toFhirDateTime(DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)))
-        Assertions.assertEquals(expectedDate.valueAsString, actualDate.valueAsString)
+        var actualDate: IPrimitiveType<Date>? =
+            typeConverter.toFhirDateTime(DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)))
+        Assertions.assertEquals(expectedDate.valueAsString, actualDate!!.valueAsString)
 
         expectedDate = DateTimeType("2019-10-10T19:35:53.000Z")
         expectedDate.precision = TemporalPrecisionEnum.MILLI
         actualDate =
-            typeConverter!!.toFhirDateTime(
+            typeConverter.toFhirDateTime(
                 DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND)
             )
-        Assertions.assertEquals(expectedDate.valueAsString, actualDate.valueAsString)
+        Assertions.assertEquals(expectedDate.valueAsString, actualDate!!.valueAsString)
     }
 
     @Test
@@ -297,7 +288,7 @@ internal class R4TypeConverterTests {
                 .setSystem("http://unitsofmeasure.org")
                 .setUnit("ml")
         val actual =
-            typeConverter!!.toFhirQuantity(
+            typeConverter.toFhirQuantity(
                 org.opencds.cqf.cql.engine.runtime
                     .Quantity()
                     .withValue(BigDecimal("2.0"))
@@ -337,21 +328,21 @@ internal class R4TypeConverterTests {
                 .withUnit("ml")
         )
 
-        val actual = typeConverter!!.toFhirRatio(testData) as Ratio?
+        val actual = typeConverter.toFhirRatio(testData) as Ratio?
 
         Assertions.assertTrue(expected.equalsDeep(actual))
     }
 
     @Test
     fun nullToFhirAny() {
-        val expected: IBase? = typeConverter!!.toFhirAny(null)
+        val expected: IBase? = typeConverter.toFhirAny(null)
         Assertions.assertNull(expected)
     }
 
     @Test
     fun objectToFhirAny() {
         Assertions.assertThrows(NotImplementedException::class.java) {
-            typeConverter!!.toFhirAny("Huh")
+            typeConverter.toFhirAny("Huh")
         }
     }
 
@@ -364,7 +355,7 @@ internal class R4TypeConverterTests {
                 .setDisplay("system-test")
                 .setVersion("1.5")
         var actual =
-            typeConverter!!.toFhirCoding(
+            typeConverter.toFhirCoding(
                 Code()
                     .withSystem("http://the-system.com")
                     .withCode("test")
@@ -373,7 +364,7 @@ internal class R4TypeConverterTests {
             ) as Coding?
         Assertions.assertTrue(expected.equalsDeep(actual))
 
-        actual = typeConverter!!.toFhirCoding(null) as Coding?
+        actual = typeConverter.toFhirCoding(null) as Coding?
         Assertions.assertNull(actual)
     }
 
@@ -389,7 +380,7 @@ internal class R4TypeConverterTests {
                 )
                 .setText("additional-text")
         var actual =
-            typeConverter!!.toFhirCodeableConcept(
+            typeConverter.toFhirCodeableConcept(
                 Concept()
                     .withCode(
                         Code()
@@ -402,7 +393,7 @@ internal class R4TypeConverterTests {
             ) as CodeableConcept?
         Assertions.assertTrue(expected.equalsDeep(actual))
 
-        actual = typeConverter!!.toFhirCodeableConcept(null) as CodeableConcept?
+        actual = typeConverter.toFhirCodeableConcept(null) as CodeableConcept?
         Assertions.assertNull(actual)
     }
 
@@ -417,7 +408,7 @@ internal class R4TypeConverterTests {
                 .setStartElement(DateTimeType(startTimeAsyyyyMMdd))
                 .setEndElement(DateTimeType(endTimeAsyyyyMMdd))
         val actual =
-            typeConverter!!.toFhirPeriod(
+            typeConverter.toFhirPeriod(
                 Interval(
                     org.opencds.cqf.cql.engine.runtime.Date(startTimeAsyyyyMMdd),
                     true,
@@ -454,7 +445,7 @@ internal class R4TypeConverterTests {
         val dateTimeStart = DateTime(startTimeNoOffset, defaultOffset)
         val dateTimeEnd = DateTime(endTimeNoOffset, defaultOffset)
         val intervalStartEnd = Interval(dateTimeStart, true, dateTimeEnd, true)
-        val actual = typeConverter!!.toFhirPeriod(intervalStartEnd) as Period?
+        val actual = typeConverter.toFhirPeriod(intervalStartEnd) as Period?
 
         Assertions.assertTrue(expected.equalsDeep(actual))
     }
@@ -470,7 +461,7 @@ internal class R4TypeConverterTests {
                 .setStartElement(DateTimeType("$startYear-01-01T00:00:00$defaultOffset"))
                 .setEndElement(DateTimeType("$endYear-01-01T00:00:00$defaultOffset"))
         val actual =
-            typeConverter!!.toFhirPeriod(
+            typeConverter.toFhirPeriod(
                 Interval(
                     DateTime("" + startYear, defaultOffset),
                     true,
@@ -483,7 +474,7 @@ internal class R4TypeConverterTests {
 
     @Test
     fun intervalToFhirPeriodNull() {
-        Assertions.assertNull(typeConverter!!.toFhirPeriod(null))
+        Assertions.assertNull(typeConverter.toFhirPeriod(null))
     }
 
     @Test
@@ -505,7 +496,7 @@ internal class R4TypeConverterTests {
                         .setSystem("http://unitsofmeasure.org")
                 )
         var actual =
-            typeConverter!!.toFhirRange(
+            typeConverter.toFhirRange(
                 Interval(
                     org.opencds.cqf.cql.engine.runtime
                         .Quantity()
@@ -521,7 +512,7 @@ internal class R4TypeConverterTests {
             ) as Range?
         Assertions.assertTrue(expected.equalsDeep(actual))
 
-        actual = typeConverter!!.toFhirRange(null) as Range?
+        actual = typeConverter.toFhirRange(null) as Range?
         Assertions.assertNull(actual)
     }
 
@@ -529,7 +520,7 @@ internal class R4TypeConverterTests {
     fun invalidIntervalToFhirRange() {
         val interval = Interval(5, true, 6, true)
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toFhirRange(interval)
+            typeConverter.toFhirRange(interval)
         }
     }
 
@@ -540,7 +531,7 @@ internal class R4TypeConverterTests {
                 .setStartElement(DateTimeType("2019-02-03"))
                 .setEndElement(DateTimeType("2019-02-05"))
         val actualPeriod =
-            typeConverter!!.toFhirInterval(
+            typeConverter.toFhirInterval(
                 Interval(
                     org.opencds.cqf.cql.engine.runtime.Date("2019-02-03"),
                     true,
@@ -567,7 +558,7 @@ internal class R4TypeConverterTests {
                         .setSystem("http://unitsofmeasure.org")
                 )
         val actualRange =
-            typeConverter!!.toFhirInterval(
+            typeConverter.toFhirInterval(
                 Interval(
                     org.opencds.cqf.cql.engine.runtime
                         .Quantity()
@@ -583,14 +574,14 @@ internal class R4TypeConverterTests {
             ) as Range?
         Assertions.assertTrue(expectedRange.equalsDeep(actualRange))
 
-        val expected: IBase? = typeConverter!!.toFhirInterval(null)
+        val expected: IBase? = typeConverter.toFhirInterval(null)
         Assertions.assertNull(expected)
     }
 
     @Test
     fun integerIntervalToFhirString() {
         val interval = Interval(5, true, 6, true)
-        val result: IBase? = typeConverter!!.toFhirInterval(interval)
+        val result: IBase? = typeConverter.toFhirInterval(interval)
         Assertions.assertNotNull(result)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
         Assertions.assertEquals("Interval[5, 6]", stringType!!.value)
@@ -607,7 +598,7 @@ internal class R4TypeConverterTests {
     fun exceptionToFhirOperationOutcome() {
         val exception = IllegalArgumentException("Test exception")
         exception.fillInStackTrace()
-        val result: IBaseOperationOutcome? = typeConverter!!.toFhirOperationOutcome(exception)
+        val result: IBaseOperationOutcome? = typeConverter.toFhirOperationOutcome(exception)
         Assertions.assertNotNull(result)
         val outcome = Assertions.assertInstanceOf(OperationOutcome::class.java, result)
         Assertions.assertEquals(1, outcome!!.getIssue().size)
@@ -630,11 +621,11 @@ internal class R4TypeConverterTests {
 
     @Test
     fun tupleToFhirTuple() {
-        var actual = typeConverter!!.toFhirTuple(null) as Parameters.ParametersParameterComponent?
+        var actual = typeConverter.toFhirTuple(null) as Parameters.ParametersParameterComponent?
         Assertions.assertNull(actual)
 
         val tuple = Tuple()
-        actual = typeConverter!!.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
+        actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
         Assertions.assertNotNull(actual)
         Assertions.assertEquals(
             FhirTypeConverter.EMPTY_TUPLE_EXT_URL,
@@ -652,7 +643,7 @@ internal class R4TypeConverterTests {
         tuple.getElements()["Y"] = Encounter().setId("123")
         tuple.getElements()["Z"] = ArrayList<Any?>()
 
-        actual = typeConverter!!.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
+        actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
         val first = actual
         Assertions.assertEquals(9, first.getPart().size)
 
@@ -697,7 +688,7 @@ internal class R4TypeConverterTests {
         outerTuple.getElements()["B"] = tupleList
 
         val actual =
-            typeConverter!!.toFhirTuple(outerTuple) as Parameters.ParametersParameterComponent
+            typeConverter.toFhirTuple(outerTuple) as Parameters.ParametersParameterComponent
         Assertions.assertEquals(4, actual.getPart().size)
 
         val a: MutableList<Parameters.ParametersParameterComponent> = getPartsByName(actual, "A")
@@ -727,87 +718,80 @@ internal class R4TypeConverterTests {
     // FHIR-to-CQL
     @Test
     fun isCqlType() {
-        Assertions.assertTrue(typeConverter!!.isCqlType(5))
-        Assertions.assertTrue(typeConverter!!.isCqlType(BigDecimal(0)))
-        Assertions.assertTrue(typeConverter!!.isCqlType(Code()))
+        Assertions.assertTrue(typeConverter.isCqlType(5))
+        Assertions.assertTrue(typeConverter.isCqlType(BigDecimal(0)))
+        Assertions.assertTrue(typeConverter.isCqlType(Code()))
 
-        Assertions.assertFalse(typeConverter!!.isCqlType(Patient()))
-        Assertions.assertFalse(typeConverter!!.isCqlType(IdType()))
-    }
-
-    @Test
-    fun nullIsCqlType() {
-        Assertions.assertThrows(NullPointerException::class.java) {
-            typeConverter!!.isCqlType(null)
-        }
+        Assertions.assertFalse(typeConverter.isCqlType(Patient()))
+        Assertions.assertFalse(typeConverter.isCqlType(IdType()))
     }
 
     @Test
     fun iterableIsCqlType() {
         val value = ArrayList<Any?>()
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.isCqlType(value)
+            typeConverter.isCqlType(value)
         }
     }
 
     @Test
     fun toCqlType() {
-        var actual: Any? = typeConverter!!.toCqlType(Code())
+        var actual: Any? = typeConverter.toCqlType(Code())
         MatcherAssert.assertThat<Any?>(actual, Matchers.instanceOf<Any?>(Code::class.java))
 
-        actual = typeConverter!!.toCqlType(IntegerType(5))
+        actual = typeConverter.toCqlType(IntegerType(5))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Int::class.java))
 
-        actual = typeConverter!!.toCqlType(StringType("test"))
+        actual = typeConverter.toCqlType(StringType("test"))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(String::class.java))
 
-        actual = typeConverter!!.toCqlType(IdType("test"))
+        actual = typeConverter.toCqlType(IdType("test"))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(String::class.java))
 
-        actual = typeConverter!!.toCqlType(BooleanType(true))
+        actual = typeConverter.toCqlType(BooleanType(true))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Boolean::class.java))
 
-        actual = typeConverter!!.toCqlType(DecimalType(1.0))
+        actual = typeConverter.toCqlType(DecimalType(1.0))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(BigDecimal::class.java))
 
-        actual = typeConverter!!.toCqlType(DateType(Calendar.getInstance().getTime()))
+        actual = typeConverter.toCqlType(DateType(Calendar.getInstance().getTime()))
         MatcherAssert.assertThat(
             actual,
             Matchers.instanceOf(org.opencds.cqf.cql.engine.runtime.Date::class.java),
         )
 
-        actual = typeConverter!!.toCqlType(InstantType(Calendar.getInstance()))
+        actual = typeConverter.toCqlType(InstantType(Calendar.getInstance()))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(DateTime::class.java))
 
-        actual = typeConverter!!.toCqlType(DateTimeType(Calendar.getInstance()))
+        actual = typeConverter.toCqlType(DateTimeType(Calendar.getInstance()))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(DateTime::class.java))
 
-        actual = typeConverter!!.toCqlType(TimeType("10:00:00.0000"))
+        actual = typeConverter.toCqlType(TimeType("10:00:00.0000"))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Time::class.java))
 
-        actual = typeConverter!!.toCqlType(StringType("test"))
+        actual = typeConverter.toCqlType(StringType("test"))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(String::class.java))
 
-        actual = typeConverter!!.toCqlType(Quantity())
+        actual = typeConverter.toCqlType(Quantity())
         MatcherAssert.assertThat(
             actual,
             Matchers.instanceOf(org.opencds.cqf.cql.engine.runtime.Quantity::class.java),
         )
 
-        actual = typeConverter!!.toCqlType(Ratio())
+        actual = typeConverter.toCqlType(Ratio())
         MatcherAssert.assertThat(
             actual,
             Matchers.instanceOf(org.opencds.cqf.cql.engine.runtime.Ratio::class.java),
         )
 
-        actual = typeConverter!!.toCqlType(Coding())
+        actual = typeConverter.toCqlType(Coding())
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Code::class.java))
 
-        actual = typeConverter!!.toCqlType(CodeableConcept())
+        actual = typeConverter.toCqlType(CodeableConcept())
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Concept::class.java))
 
         actual =
-            typeConverter!!.toCqlType(
+            typeConverter.toCqlType(
                 Period()
                     .setStart(Calendar.getInstance().getTime())
                     .setEnd(Calendar.getInstance().getTime())
@@ -821,10 +805,10 @@ internal class R4TypeConverterTests {
         val high = SimpleQuantity()
         high.setValue(BigDecimal.valueOf(4.0))
         high.setUnit("d")
-        actual = typeConverter!!.toCqlType(Range().setLow(low).setHigh(high))
+        actual = typeConverter.toCqlType(Range().setLow(low).setHigh(high))
         MatcherAssert.assertThat(actual, Matchers.instanceOf(Interval::class.java))
 
-        actual = typeConverter!!.toCqlType(null)
+        actual = typeConverter.toCqlType(null)
         Assertions.assertNull(actual)
     }
 
@@ -832,7 +816,7 @@ internal class R4TypeConverterTests {
     fun toCqlTypeIterable() {
         val list = ArrayList<Any?>()
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toCqlType(list)
+            typeConverter.toCqlType(list)
         }
     }
 
@@ -840,7 +824,7 @@ internal class R4TypeConverterTests {
     fun toCqlTypeNotCql() {
         val offset = ZoneOffset.ofHours(3)
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toCqlType(offset)
+            typeConverter.toCqlType(offset)
         }
     }
 
@@ -862,7 +846,7 @@ internal class R4TypeConverterTests {
         test.add(null)
         test.add(IntegerType(5))
 
-        val actual: Iterable<Any?> = typeConverter!!.toCqlTypes(test)
+        val actual: Iterable<Any?> = typeConverter.toCqlTypes(test)
 
         Assertions.assertTrue(compareIterables(expected, actual))
     }
@@ -870,43 +854,42 @@ internal class R4TypeConverterTests {
     @Test
     fun stringToCqlId() {
         val expected = "123"
-        var actual: String? = typeConverter!!.toCqlId(IdType("123"))
+        var actual: String? = typeConverter.toCqlId(IdType("123"))
         Assertions.assertEquals(expected, actual)
 
-        actual = typeConverter!!.toCqlId(null)
+        actual = typeConverter.toCqlId(null)
         Assertions.assertNull(actual)
     }
 
     @Test
     fun primitiveFhirTypeToCqlType() {
         var actualBoolean: Boolean? =
-            typeConverter!!.toCqlBoolean(org.hl7.fhir.r5.model.BooleanType(false))
+            typeConverter.toCqlBoolean(org.hl7.fhir.r5.model.BooleanType(false))
         Assertions.assertFalse(actualBoolean!!)
 
-        actualBoolean = typeConverter!!.toCqlBoolean(null)
+        actualBoolean = typeConverter.toCqlBoolean(null)
         Assertions.assertNull(actualBoolean)
 
         val expectedInteger = 5
-        var actualInteger: Int? = typeConverter!!.toCqlInteger(org.hl7.fhir.r5.model.IntegerType(5))
+        var actualInteger: Int? = typeConverter.toCqlInteger(org.hl7.fhir.r5.model.IntegerType(5))
         Assertions.assertEquals(expectedInteger, actualInteger)
 
-        actualInteger = typeConverter!!.toCqlInteger(null)
+        actualInteger = typeConverter.toCqlInteger(null)
         Assertions.assertNull(actualInteger)
 
         val expectedString = "5"
-        var actualString: String? =
-            typeConverter!!.toCqlString(org.hl7.fhir.r5.model.StringType("5"))
+        var actualString: String? = typeConverter.toCqlString(org.hl7.fhir.r5.model.StringType("5"))
         Assertions.assertEquals(expectedString, actualString)
 
-        actualString = typeConverter!!.toCqlString(null)
+        actualString = typeConverter.toCqlString(null)
         Assertions.assertNull(actualString)
 
         val expectedDecimal = BigDecimal("2.0")
         var actualDecimal: BigDecimal? =
-            typeConverter!!.toCqlDecimal(org.hl7.fhir.r5.model.DecimalType(BigDecimal("2.0")))
+            typeConverter.toCqlDecimal(org.hl7.fhir.r5.model.DecimalType(BigDecimal("2.0")))
         Assertions.assertEquals(expectedDecimal, actualDecimal)
 
-        actualDecimal = typeConverter!!.toCqlDecimal(null)
+        actualDecimal = typeConverter.toCqlDecimal(null)
         Assertions.assertNull(actualDecimal)
     }
 
@@ -914,26 +897,26 @@ internal class R4TypeConverterTests {
     fun dateToCqlType() {
         var expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019-02-03")
         var actualDate: org.opencds.cqf.cql.engine.runtime.Date? =
-            typeConverter!!.toCqlDate(DateType("2019-02-03"))
+            typeConverter.toCqlDate(DateType("2019-02-03"))
         Assertions.assertTrue(expectedDate.equal(actualDate))
 
         expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019")
-        actualDate = typeConverter!!.toCqlDate(DateType("2019"))
+        actualDate = typeConverter.toCqlDate(DateType("2019"))
         Assertions.assertTrue(expectedDate.equal(actualDate))
     }
 
     @Test
     fun dateTimeToCqlType() {
         var expectedDate = DateTime("2019-02-03", ZoneOffset.UTC)
-        var actualDate: DateTime? = typeConverter!!.toCqlDateTime(DateTimeType("2019-02-03"))
+        var actualDate: DateTime? = typeConverter.toCqlDateTime(DateTimeType("2019-02-03"))
         Assertions.assertTrue(expectedDate.equal(actualDate))
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
-        actualDate = typeConverter!!.toCqlDateTime(DateTimeType("2019"))
+        actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
         Assertions.assertTrue(expectedDate.equal(actualDate))
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
-        actualDate = typeConverter!!.toCqlDateTime(DateTimeType("2019"))
+        actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
         Assertions.assertTrue(expectedDate.equal(actualDate))
     }
 
@@ -945,7 +928,7 @@ internal class R4TypeConverterTests {
                 .withValue(BigDecimal("2.0"))
                 .withUnit("ml"))
         val actual: org.opencds.cqf.cql.engine.runtime.Quantity? =
-            typeConverter!!.toCqlQuantity(
+            typeConverter.toCqlQuantity(
                 Quantity()
                     .setValue(BigDecimal("2.0"))
                     .setUnit("ml")
@@ -983,22 +966,20 @@ internal class R4TypeConverterTests {
 
         val test = Ratio().setNumerator(testNumerator).setDenominator(testDenominator)
 
-        val actual: org.opencds.cqf.cql.engine.runtime.Ratio? = typeConverter!!.toCqlRatio(test)
+        val actual: org.opencds.cqf.cql.engine.runtime.Ratio? = typeConverter.toCqlRatio(test)
         Assertions.assertTrue(expected.equal(actual))
     }
 
     @Test
     fun nullToCqlType() {
-        val expected: Any? = typeConverter!!.toCqlAny(null)
+        val expected: Any? = typeConverter.toCqlAny(null)
         Assertions.assertNull(expected)
     }
 
     @Test
     fun objectToCqlType() {
         val id = IdType()
-        Assertions.assertThrows(NotImplementedException::class.java) {
-            typeConverter!!.toCqlAny(id)
-        }
+        Assertions.assertThrows(NotImplementedException::class.java) { typeConverter.toCqlAny(id) }
     }
 
     @Test
@@ -1009,8 +990,8 @@ internal class R4TypeConverterTests {
                 .withCode("test")
                 .withDisplay("system-test")
                 .withVersion("1.5")
-        val actual: Code =
-            typeConverter!!.toCqlCode(
+        val actual: Code? =
+            typeConverter.toCqlCode(
                 Coding()
                     .setSystem("http://the-system.com")
                     .setCode("test")
@@ -1019,7 +1000,7 @@ internal class R4TypeConverterTests {
             )
         Assertions.assertTrue(expected.equal(actual))
 
-        expected = typeConverter!!.toCqlCode(null)
+        expected = typeConverter.toCqlCode(null)
         Assertions.assertNull(expected)
     }
 
@@ -1035,8 +1016,8 @@ internal class R4TypeConverterTests {
                         .withVersion("1.5")
                 )
                 .withDisplay("additional-text")
-        val actual: Concept =
-            typeConverter!!.toCqlConcept(
+        val actual: Concept? =
+            typeConverter.toCqlConcept(
                 CodeableConcept(
                         Coding()
                             .setSystem("http://the-system.com")
@@ -1049,7 +1030,7 @@ internal class R4TypeConverterTests {
 
         Assertions.assertTrue(expected.equal(actual))
 
-        expected = typeConverter!!.toCqlConcept(null)
+        expected = typeConverter.toCqlConcept(null)
         Assertions.assertNull(expected)
     }
 
@@ -1063,7 +1044,7 @@ internal class R4TypeConverterTests {
                 true,
             )
         var actual: Interval? =
-            typeConverter!!.toCqlInterval(
+            typeConverter.toCqlInterval(
                 Period()
                     .setStartElement(DateTimeType("2019-02-03"))
                     .setEndElement(DateTimeType("2019-02-05"))
@@ -1078,7 +1059,7 @@ internal class R4TypeConverterTests {
                 true,
             )
         actual =
-            typeConverter!!.toCqlInterval(
+            typeConverter.toCqlInterval(
                 Period().setStartElement(DateTimeType("2019")).setEndElement(DateTimeType("2020"))
             )
         Assertions.assertTrue(expected.equal(actual))
@@ -1091,14 +1072,14 @@ internal class R4TypeConverterTests {
                 true,
             )
         actual =
-            typeConverter!!.toCqlInterval(
+            typeConverter.toCqlInterval(
                 Period()
                     .setStartElement(DateTimeType("2020-09-18T19:35:53+00:00"))
                     .setEndElement(DateTimeType("2020-09-18T19:37:00+00:00"))
             )
         Assertions.assertTrue(expected.equal(actual))
 
-        actual = typeConverter!!.toCqlInterval(null)
+        actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)
     }
 
@@ -1118,7 +1099,7 @@ internal class R4TypeConverterTests {
                 true,
             )
         var actual: Interval? =
-            typeConverter!!.toCqlInterval(
+            typeConverter.toCqlInterval(
                 Range()
                     .setLow(
                         SimpleQuantity()
@@ -1135,7 +1116,7 @@ internal class R4TypeConverterTests {
             )
         Assertions.assertTrue(expected.equal(actual))
 
-        actual = typeConverter!!.toCqlInterval(null)
+        actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)
     }
 
@@ -1143,43 +1124,35 @@ internal class R4TypeConverterTests {
     fun invalidTypeToCqlInterval() {
         val attachment = Attachment()
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toCqlInterval(attachment)
+            typeConverter.toCqlInterval(attachment)
         }
     }
 
     @Test
     fun tupleToCqlTuple() {
-        val expected: Any? = typeConverter!!.toCqlTuple(null)
+        val expected: Any? = typeConverter.toCqlTuple(null)
         Assertions.assertNull(expected)
 
         val p = Patient()
-        Assertions.assertThrows(NotImplementedException::class.java) {
-            typeConverter!!.toCqlTuple(p)
-        }
+        Assertions.assertThrows(NotImplementedException::class.java) { typeConverter.toCqlTuple(p) }
     }
 
     @Test
     fun longToCqlLong() {
         val expected = 5L
-        val actual: Any? = typeConverter!!.toCqlType(expected)
+        val actual: Any? = typeConverter.toCqlType(expected)
         Assertions.assertEquals(expected, actual)
     }
 
     @Test
     fun longToFhirInteger64() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            typeConverter!!.toFhirInteger64(5L)
+            typeConverter.toFhirInteger64(5L)
         }
     }
 
     companion object {
-        private var typeConverter: R4FhirTypeConverter? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun initialize() {
-            typeConverter = R4FhirTypeConverter()
-        }
+        private var typeConverter: R4FhirTypeConverter = R4FhirTypeConverter()
 
         @JvmStatic
         private fun nowsAndEvaluationTimes(): Array<Array<Any?>?> {

@@ -16,7 +16,6 @@ import org.hl7.fhir.dstu3.model.Duration
 import org.hl7.fhir.dstu3.model.Reference
 import org.hl7.fhir.dstu3.model.ValueSet
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.Dstu3FhirTest
@@ -33,8 +32,8 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     var generator: Dstu3FhirQueryGenerator? = null
     var evaluationOffsetDateTime: OffsetDateTime? = null
     var evaluationDateTime: DateTime? = null
-    var contextValues: MutableMap<String?, Any?>? = null
-    var parameters: MutableMap<String?, Any?>? = null
+    var contextValues: MutableMap<String, Any?>? = null
+    var parameters: MutableMap<String, Any?>? = null
 
     @BeforeEach
     @Throws(FhirVersionMisMatchException::class)
@@ -48,8 +47,8 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
         this.evaluationOffsetDateTime =
             OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 0, ZoneOffset.ofHours(-7))
         this.evaluationDateTime = DateTime(evaluationOffsetDateTime)
-        this.contextValues = HashMap<String?, Any?>()
-        this.parameters = HashMap<String?, Any?>()
+        this.contextValues = HashMap<String, Any?>()
+        this.parameters = HashMap<String, Any?>()
     }
 
     private fun getTestValueSet(id: String?, numberOfCodesToInclude: Int): ValueSet {
@@ -149,7 +148,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
@@ -296,7 +295,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.generator!!.isExpandValueSets = true
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
@@ -338,9 +337,9 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setQueryBatchThreshold(5)
+        this.generator!!.queryBatchThreshold = 5
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
@@ -375,9 +374,9 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(5)
+        this.generator!!.maxCodesPerQuery = 5
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setQueryBatchThreshold(5)
+        this.generator!!.queryBatchThreshold = 5
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
@@ -455,12 +454,6 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     }
 
     companion object {
-        var CLIENT: IGenericClient? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun setUpBeforeAll() {
-            CLIENT = newClient()
-        }
+        var CLIENT: IGenericClient = newClient()
     }
 }

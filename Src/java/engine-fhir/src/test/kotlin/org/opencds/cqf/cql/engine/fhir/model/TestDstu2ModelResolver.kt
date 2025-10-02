@@ -3,20 +3,13 @@ package org.opencds.cqf.cql.engine.fhir.model
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import java.lang.reflect.Field
-import java.math.BigDecimal
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm_modelinfo.r1.ClassInfo
 import org.hl7.elm_modelinfo.r1.TypeInfo
-import org.hl7.fhir.dstu2.model.Base
-import org.hl7.fhir.dstu2.model.BaseDateTimeType
-import org.hl7.fhir.dstu2.model.DateTimeType
 import org.hl7.fhir.dstu2.model.EnumFactory
 import org.hl7.fhir.dstu2.model.Enumeration
 import org.hl7.fhir.dstu2.model.Enumerations
-import org.hl7.fhir.dstu2.model.Patient
-import org.hl7.fhir.dstu2.model.Quantity
-import org.hl7.fhir.dstu2.model.SimpleQuantity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
@@ -189,45 +182,6 @@ class TestDstu2ModelResolver {
 
         path = resolver.getContextPath("Unspecified", "MedicationStatement") as String?
         Assertions.assertNull(path)
-    }
-
-    // This is a serious failure that needs to be addressed. There's some sort of
-    // mixup
-    // between the dstu2 and hl7org dstu2 objects.
-    // @Test
-    fun resolveMissingPropertyReturnsNull() {
-        val resolver: ModelResolver =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
-
-        val p = Patient()
-
-        val value = resolver.resolvePath(p, "not-a-path")
-        Assertions.assertNull(value)
-    }
-
-    // @Test
-    fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base?, *, *, SimpleQuantity?, *, *, *, *> =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
-
-        val q = Quantity()
-        q.setValue(BigDecimal("10.0"))
-        q.setUnit("1")
-        val sq = resolver.castToSimpleQuantity(q)
-
-        val value = resolver.resolvePath(sq, "comparator")
-        Assertions.assertNull(value)
-    }
-
-    // @Test
-    fun resolveNullPrimitiveReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
-
-        val dt = DateTimeType()
-
-        val value = resolver.resolvePath(dt, "value")
-        Assertions.assertNull(value)
     }
 
     companion object {

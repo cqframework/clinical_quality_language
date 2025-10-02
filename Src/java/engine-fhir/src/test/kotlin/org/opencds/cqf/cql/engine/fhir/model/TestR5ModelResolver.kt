@@ -8,8 +8,6 @@ import java.util.*
 import org.apache.commons.lang3.time.DateUtils
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.hl7.fhir.r5.model.Base
-import org.hl7.fhir.r5.model.BaseDateTimeType
 import org.hl7.fhir.r5.model.DateTimeType
 import org.hl7.fhir.r5.model.DateType
 import org.hl7.fhir.r5.model.Enumeration
@@ -18,7 +16,6 @@ import org.hl7.fhir.r5.model.Enumerations.FHIRTypes
 import org.hl7.fhir.r5.model.Extension
 import org.hl7.fhir.r5.model.Patient
 import org.hl7.fhir.r5.model.Quantity
-import org.hl7.fhir.r5.model.SimpleQuantity
 import org.hl7.fhir.r5.model.VisionPrescription
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -274,8 +271,7 @@ internal class TestR5ModelResolver {
 
     @Test
     fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base?, *, *, SimpleQuantity?, *, *, *, *> =
-            R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
 
         val q = Quantity()
         q.setValue(BigDecimal("10.0"))
@@ -288,8 +284,7 @@ internal class TestR5ModelResolver {
 
     @Test
     fun resolveNullPrimitiveReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
 
         val dt = DateTimeType()
 

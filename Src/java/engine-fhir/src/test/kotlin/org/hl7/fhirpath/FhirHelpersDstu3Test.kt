@@ -44,7 +44,7 @@ class FhirHelpersDstu3Test {
         val libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpers", "0.1.0")
 
         val modelResolver = Dstu3FhirModelResolver()
-        val fhirContext = modelResolver.getFhirContext()
+        val fhirContext = modelResolver.fhirContext
         val retrieveProvider =
             RestFhirRetrieveProvider(
                 SearchParameterResolver(fhirContext),

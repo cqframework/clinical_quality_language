@@ -13,7 +13,6 @@ import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm_modelinfo.r1.ClassInfo
 import org.hl7.elm_modelinfo.r1.TypeInfo
 import org.hl7.fhir.r4.model.Base
-import org.hl7.fhir.r4.model.BaseDateTimeType
 import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.DateType
 import org.hl7.fhir.r4.model.Enumeration
@@ -335,7 +334,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base?, *, *, SimpleQuantity?, *, *, *, *> =
+        val resolver: FhirModelResolver<Base, *, *, SimpleQuantity, *, *, *, *> =
             R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val q = Quantity()
@@ -349,8 +348,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun resolveNullPrimitiveReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val dt = DateTimeType()
 
@@ -361,8 +359,7 @@ internal class TestR4ModelResolver {
     @Test
     fun resolveIdPatient() {
         val expectedId = "123"
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val patient = Patient()
         patient.setId(expectedId)
@@ -393,8 +390,7 @@ internal class TestR4ModelResolver {
     @Test
     fun resolveIdProcedure() {
         val expectedId = "456"
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val procedure = Procedure()
         procedure.setId(expectedId)
@@ -404,16 +400,14 @@ internal class TestR4ModelResolver {
 
     @Test
     fun resolveIdStringReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         Assertions.assertNull(resolver.resolveId(Date()))
     }
 
     @Test
     fun resolveIdStringTypeReturnsNull() {
-        val resolver: FhirModelResolver<Base?, BaseDateTimeType?, *, *, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         Assertions.assertNull(resolver.resolveId(StringType()))
     }

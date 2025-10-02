@@ -16,7 +16,6 @@ import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Duration
 import org.hl7.fhir.r4.model.ValueSet
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest
@@ -33,8 +32,8 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
     var generator: R4FhirQueryGenerator? = null
     var evaluationOffsetDateTime: OffsetDateTime? = null
     var evaluationDateTime: DateTime? = null
-    var contextValues: MutableMap<String?, Any?>? = null
-    var parameters: MutableMap<String?, Any?>? = null
+    var contextValues: MutableMap<String, Any?>? = null
+    var parameters: MutableMap<String, Any?>? = null
 
     @BeforeEach
     @Throws(FhirVersionMisMatchException::class)
@@ -48,8 +47,8 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
         this.evaluationOffsetDateTime =
             OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 0, ZoneOffset.ofHours(-7))
         this.evaluationDateTime = DateTime(evaluationOffsetDateTime)
-        this.contextValues = HashMap<String?, Any?>()
-        this.parameters = HashMap<String?, Any?>()
+        this.contextValues = HashMap<String, Any?>()
+        this.parameters = HashMap<String, Any?>()
     }
 
     @Test
@@ -121,7 +120,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -142,7 +141,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -177,7 +176,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -207,13 +206,13 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -234,7 +233,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -271,7 +270,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -305,7 +304,7 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -352,14 +351,14 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.generator!!.isExpandValueSets = true
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -394,15 +393,15 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(4)
+        this.generator!!.maxCodesPerQuery = 4
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setQueryBatchThreshold(5)
+        this.generator!!.queryBatchThreshold = 5
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -430,15 +429,15 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
 
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
-        this.generator!!.setMaxCodesPerQuery(5)
+        this.generator!!.maxCodesPerQuery = 5
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setQueryBatchThreshold(5)
+        this.generator!!.queryBatchThreshold = 5
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -483,13 +482,13 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setQueryBatchThreshold(5)
+        this.generator!!.queryBatchThreshold = 5
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -522,14 +521,14 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
         val dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet)
 
         this.generator!!.isExpandValueSets = true
-        this.generator!!.setMaxCodesPerQuery(2)
+        this.generator!!.maxCodesPerQuery = 2
 
         this.contextValues!!["Patient"] = "{{context.patientId}}"
         val actual =
             this.generator!!.generateFhirQueries(
                 dataRequirement,
                 this.evaluationDateTime,
-                this.contextValues,
+                this.contextValues!!,
                 this.parameters,
                 null,
             )
@@ -583,12 +582,6 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
     }
 
     companion object {
-        var CLIENT: IGenericClient? = null
-
-        @JvmStatic
-        @BeforeAll
-        fun setUpBeforeAll() {
-            CLIENT = newClient()
-        }
+        var CLIENT: IGenericClient = newClient()
     }
 }
