@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.utils
 
-import info.cqframework.cql_to_elm.BuildConfig
+import org.cqframework.cql_to_elm.BuildConfig
 
 internal fun getTranslatorVersion(): String {
 
