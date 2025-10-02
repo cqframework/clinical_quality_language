@@ -189,7 +189,7 @@ class DataRequirementsProcessor {
                 }
         } else {
             expressionDefs = ArrayList()
-            context.enterLibrary(translatedLibrary.identifier)
+            context.enterLibrary(translatedLibrary.identifier!!)
             try {
                 // Always visit using definitions
                 for (usingDef in translatedLibrary.library!!.usings!!.def) {
@@ -232,10 +232,10 @@ class DataRequirementsProcessor {
             // Collect all the dependencies
             requirements.reportRequirement(context.requirements)
             // Collect reported data requirements from each expression
-            for (reportedRequirements in context.reportedRequirements) {
+            for (reportedRequirements in context.getReportedRequirements()) {
                 requirements.reportRequirement(reportedRequirements)
             }
-            for (inferredRequirement in context.inferredRequirements) {
+            for (inferredRequirement in context.getInferredRequirements()) {
                 requirements.reportRequirement(inferredRequirement)
             }
         } else {
@@ -443,7 +443,7 @@ class DataRequirementsProcessor {
 
     private fun toDirectReferenceCode(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         def: CodeDef,
     ): Extension {
         val e = Extension()
@@ -968,7 +968,7 @@ class DataRequirementsProcessor {
 
     private fun toCodeFilterComponent(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         property: String?,
         value: Expression?,
     ): DataRequirement.DataRequirementCodeFilterComponent {
@@ -978,9 +978,9 @@ class DataRequirementsProcessor {
 
         // TODO: Support retrieval when the target is a CodeSystemRef
         if (value is ValueSetRef) {
-            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(value, libraryIdentifier)
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(value, libraryIdentifier)!!
             cfc.setValueSet(
-                toReference(context.resolveValueSetRef(declaredLibraryIdentifier, value))
+                toReference(context.resolveValueSetRef(declaredLibraryIdentifier, value)!!)
             )
         }
 
@@ -1017,7 +1017,7 @@ class DataRequirementsProcessor {
             // produce a runtime error)
             val result =
                 evaluate(
-                    context.resolveLibrary(context.getCurrentLibraryIdentifier()).library,
+                    context.resolveLibrary(context.currentLibraryIdentifier).library,
                     value,
                     context.parameters,
                     context.evaluationDateTime,
@@ -1047,7 +1047,7 @@ class DataRequirementsProcessor {
 
     private fun toDateFilterComponent(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         property: String?,
         value: Expression?,
     ): DataRequirement.DataRequirementDateFilterComponent {
@@ -1231,17 +1231,17 @@ class DataRequirementsProcessor {
 
     private fun resolveCodeFilterCodes(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         cfc: DataRequirement.DataRequirementCodeFilterComponent,
         e: Expression?,
     ) {
         if (e is CodeRef) {
-            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)!!
             cfc.addCode(
                 toCoding(
                     context,
                     libraryIdentifier,
-                    context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, e)),
+                    context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, e)!!),
                 )
             )
         }
@@ -1251,14 +1251,14 @@ class DataRequirementsProcessor {
         }
 
         if (e is ConceptRef) {
-            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)
+            val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)!!
             val c =
                 toCodeableConcept(
                     context,
                     libraryIdentifier,
                     context.toConcept(
                         libraryIdentifier,
-                        context.resolveConceptRef(declaredLibraryIdentifier, e),
+                        context.resolveConceptRef(declaredLibraryIdentifier, e)!!,
                     ),
                 )
             for (code in c.getCoding()) {
@@ -1280,23 +1280,23 @@ class DataRequirementsProcessor {
 
     private fun toCoding(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         code: Code,
     ): Coding {
         val declaredLibraryIdentifier =
-            getDeclaredLibraryIdentifier(code.system!!, libraryIdentifier)
-        val codeSystemDef = context.resolveCodeSystemRef(declaredLibraryIdentifier, code.system)
+            getDeclaredLibraryIdentifier(code.system!!, libraryIdentifier)!!
+        val codeSystemDef = context.resolveCodeSystemRef(declaredLibraryIdentifier, code.system!!)
         val coding = Coding()
         coding.setCode(code.code)
         coding.setDisplay(code.display)
-        coding.setSystem(codeSystemDef.id)
-        coding.setVersion(codeSystemDef.version)
+        coding.setSystem(codeSystemDef?.id)
+        coding.setVersion(codeSystemDef?.version)
         return coding
     }
 
     private fun toCodeableConcept(
         context: ElmRequirementsContext,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         concept: Concept,
     ): CodeableConcept {
         val codeableConcept = CodeableConcept()

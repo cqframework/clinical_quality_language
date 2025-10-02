@@ -349,7 +349,7 @@ object ElmAnalysisHelper {
         var expression = parameterRef.name
         if (
             parameterRef.libraryName != null &&
-                !parameterRef.libraryName.equals(context.getCurrentLibraryIdentifier().id)
+                !parameterRef.libraryName.equals(context.currentLibraryIdentifier.id)
         ) {
             expression =
                 kotlin.String.format("\"%s\".\"%s\"", parameterRef.libraryName, parameterRef.name)
