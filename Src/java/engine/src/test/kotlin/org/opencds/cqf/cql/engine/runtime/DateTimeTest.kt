@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 internal class DateTimeTest {
     @ParameterizedTest
     @MethodSource("dateStrings")
-    fun dateStrings(dateString: String?, zoneOffset: ZoneOffset?, precision: Precision?) {
+    fun dateStringsTest(dateString: String, zoneOffset: ZoneOffset, precision: Precision) {
         val dateTime = DateTime(dateString, zoneOffset)
 
         val normalizedDateTime = dateTime.getNormalized(precision)
@@ -37,7 +37,7 @@ internal class DateTimeTest {
 
     @ParameterizedTest
     @MethodSource("dateStringsOtherZoneId")
-    fun dateStringsOtherZoneId(
+    fun dateStringsOtherZoneIdTest(
         localDateTime: LocalDateTime,
         zoneOffsetInit: ZoneOffset,
         zonedOffsetGetNormalized: ZoneOffset,
@@ -59,10 +59,10 @@ internal class DateTimeTest {
 
     @ParameterizedTest
     @MethodSource("offsetPrecisions")
-    fun offsetPrecisions(
+    fun offsetPrecisionsTest(
         localDateTime: LocalDateTime,
         zoneOffset: ZoneOffset,
-        precision: Precision?,
+        precision: Precision,
     ) {
         val offsetDateTime = OffsetDateTime.of(localDateTime, zoneOffset)
         val dateTimeNoPrecision = DateTime(offsetDateTime)
@@ -77,8 +77,8 @@ internal class DateTimeTest {
 
     @ParameterizedTest
     @MethodSource("bigDecimals")
-    fun bigDecimal(offset: BigDecimal?, precision: Precision?, dateElements: MutableList<Int?>) {
-        val dateElementsArray = dateElements.stream().mapToInt { anInt: Int? -> anInt!! }.toArray()
+    fun bigDecimal(offset: BigDecimal, precision: Precision, dateElements: MutableList<Int?>) {
+        val dateElementsArray = dateElements.stream().mapToInt { anInt -> anInt!! }.toArray()
         val dateTime = DateTime(offset, *dateElementsArray)
 
         val normalizedDateTime = dateTime.getNormalized(precision)
@@ -99,7 +99,7 @@ internal class DateTimeTest {
     @Test
     fun nullBigDecimalOffset() {
         val digits: IntArray =
-            DST_2023_10_26_22_12_0_INTS.stream().mapToInt { anInt: Int? -> anInt!! }.toArray()
+            DST_2023_10_26_22_12_0_INTS.stream().mapToInt { anInt -> anInt!! }.toArray()
         Assertions.assertThrows(CqlException::class.java) { DateTime(null, *digits) }
     }
 
@@ -110,7 +110,7 @@ internal class DateTimeTest {
         val offset = TemporalHelper.zoneToOffset(currentOffsetForMyZone)
 
         val dateElementsArray: IntArray =
-            DST_2023_10_26_22_12_0_INTS.stream().mapToInt { anInt: Int? -> anInt!! }.toArray()
+            DST_2023_10_26_22_12_0_INTS.stream().mapToInt { anInt -> anInt!! }.toArray()
         val dateTime = DateTime(offset, *dateElementsArray)
 
         val normalizedDateTime = dateTime.getNormalized(Precision.HOUR)
@@ -154,19 +154,19 @@ internal class DateTimeTest {
 
         var roundedDateTime = dateTime.roundToPrecision(Precision.MILLISECOND, false) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+11:00", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.MILLISECOND, true) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+11:00", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.SECOND, false) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+11:00", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.SECOND, true) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+11:00", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
     }
 
     @Test
@@ -176,11 +176,11 @@ internal class DateTimeTest {
 
         var roundedDateTime = dateTime.roundToPrecision(Precision.MINUTE, false) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+12:45", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.MINUTE, true) as DateTime
         Assertions.assertEquals("2025-07-15T10:30+12:45", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedDateTime.precision)
     }
 
     @Test
@@ -190,43 +190,43 @@ internal class DateTimeTest {
 
         var roundedDateTime = dateTime.roundToPrecision(Precision.HOUR, false) as DateTime
         Assertions.assertEquals("2025-07-15T10:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.HOUR, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.HOUR, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.HOUR, true) as DateTime
         Assertions.assertEquals("2025-07-15T11:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.HOUR, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.HOUR, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.DAY, false) as DateTime
         Assertions.assertEquals("2025-07-15T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.DAY, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.DAY, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.DAY, true) as DateTime
         Assertions.assertEquals("2025-07-16T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.DAY, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.DAY, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.WEEK, false) as DateTime
         Assertions.assertEquals("2025-07-15T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.DAY, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.DAY, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.WEEK, true) as DateTime
         Assertions.assertEquals("2025-07-16T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.DAY, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.DAY, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.MONTH, false) as DateTime
         Assertions.assertEquals("2025-07-01T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MONTH, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MONTH, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.MONTH, true) as DateTime
         Assertions.assertEquals("2025-08-01T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.MONTH, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.MONTH, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.YEAR, false) as DateTime
         Assertions.assertEquals("2025-01-01T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.YEAR, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.YEAR, roundedDateTime.precision)
 
         roundedDateTime = dateTime.roundToPrecision(Precision.YEAR, true) as DateTime
         Assertions.assertEquals("2026-01-01T00:00-04:30", roundedDateTime.dateTime.toString())
-        Assertions.assertEquals(Precision.YEAR, roundedDateTime.getPrecision())
+        Assertions.assertEquals(Precision.YEAR, roundedDateTime.precision)
     }
 
     companion object {

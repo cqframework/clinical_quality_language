@@ -23,7 +23,7 @@ internal class Issue1226 : FhirExecutionTestBase() {
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
-                    codes: Iterable<Code?>?,
+                    codes: Iterable<Code>?,
                     valueSet: String?,
                     datePath: String?,
                     dateLowPath: String?,
@@ -31,9 +31,9 @@ internal class Issue1226 : FhirExecutionTestBase() {
                     dateRange: Interval?,
                 ): Iterable<Any?> {
                     when (dataType) {
-                        "Patient" -> return mutableListOf<Any?>(Patient().setId("123"))
+                        "Patient" -> return mutableListOf(Patient().setId("123"))
                         "MedicationRequest" ->
-                            return mutableListOf<Any?>(
+                            return mutableListOf(
                                 MedicationRequest().setMedication(Reference("Medication/456"))
                             )
                     }
@@ -50,7 +50,7 @@ internal class Issue1226 : FhirExecutionTestBase() {
         val result =
             engine
                 .evaluate("Issue1226")
-                .forExpression("Most Recent Medication Request reference")
+                .forExpression("Most Recent Medication Request reference")!!
                 .value()
 
         Assertions.assertEquals("Medication/456", result)

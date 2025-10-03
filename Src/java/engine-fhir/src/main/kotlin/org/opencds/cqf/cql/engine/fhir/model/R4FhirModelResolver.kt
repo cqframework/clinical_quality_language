@@ -45,7 +45,7 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
     constructor() : this(FhirContext.forR4())
 
     init {
-        this.setPackageNames(mutableListOf<String>("org.hl7.fhir.r4.model"))
+        this.packageNames = mutableListOf("org.hl7.fhir.r4.model")
         require(fhirContext.version.version == FhirVersionEnum.R4) {
             "The supplied context is not configured for R4"
         }
@@ -128,7 +128,7 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
     }
 
     override fun setCalendarConstant(target: BaseDateTimeType, value: BaseTemporal) {
-        target.precision = toTemporalPrecisionEnum(value.getPrecision())
+        target.precision = toTemporalPrecisionEnum(value.precision!!)
     }
 
     override fun timeToString(time: TimeType): String {
@@ -155,7 +155,7 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
         return enumeration.getEnumFactory().javaClass
     }
 
-    override fun resolveType(typeName: String): Class<*>? {
+    override fun resolveType(typeName: String?): Class<*>? {
         // TODO: Might be able to patch some of these by registering custom types in HAPI.
 
         var typeName = typeName
@@ -196,12 +196,12 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
     // id: string
 
      */
-    override fun `is`(value: Any?, type: Class<*>): Boolean? {
+    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
         if (value == null) {
             return null
         }
 
-        if (type.isAssignableFrom(value.javaClass)) {
+        if (type!!.isAssignableFrom(value.javaClass)) {
             return true
         }
 
@@ -260,12 +260,12 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
         return false
     }
 
-    override fun `as`(value: Any?, type: Class<*>, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
         if (value == null) {
             return null
         }
 
-        if (type.isAssignableFrom(value.javaClass)) {
+        if (type!!.isAssignableFrom(value.javaClass)) {
             return value
         }
 

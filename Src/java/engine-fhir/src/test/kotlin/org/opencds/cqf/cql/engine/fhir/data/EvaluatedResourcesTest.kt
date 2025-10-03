@@ -9,7 +9,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     fun withCache() {
         val engine = getCqlEngineForFhir(true)
 
-        var results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Union"))
+        var results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -17,14 +17,14 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
             listOf(EvaluatedResourceTestUtils.CONDITION, EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Encounter"))
+        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Encounter"))
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Encounter",
             listOf(EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Condition"))
+        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Condition"))
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Condition",
@@ -36,7 +36,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     fun withoutCache() {
         val engine = getCqlEngineForFhir(false)
 
-        var results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Union"))
+        var results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -44,21 +44,21 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
             listOf(EvaluatedResourceTestUtils.CONDITION, EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Encounter"))
+        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Encounter"))
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Encounter",
             listOf(EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Condition"))
+        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Condition"))
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Condition",
             listOf(EvaluatedResourceTestUtils.CONDITION),
         )
 
-        results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("Union"))
+        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Union",
@@ -69,7 +69,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     private fun getCqlEngineForFhir(expressionCaching: Boolean): CqlEngine {
         engine.state.environment.registerDataProvider(
             "http://hl7.org/fhir",
-            CompositeDataProvider(r4ModelResolver, EvaluatedResourceTestUtils.RETRIEVE_PROVIDER),
+            CompositeDataProvider(r4ModelResolver!!, EvaluatedResourceTestUtils.RETRIEVE_PROVIDER),
         )
         engine.cache.setExpressionCaching(expressionCaching)
         return engine

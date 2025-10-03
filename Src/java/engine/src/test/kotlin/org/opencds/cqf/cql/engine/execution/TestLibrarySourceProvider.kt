@@ -21,7 +21,7 @@ class TestLibrarySourceProvider @JvmOverloads constructor(private val subfolder:
         return String.format(
             "%s%s.cql",
             Optional.ofNullable<String?>(subfolder)
-                .map(Function { nonNull: String? -> "$nonNull/" })
+                .map(Function { nonNull -> "$nonNull/" })
                 .orElse(""),
             libraryIdentifier.id,
         )

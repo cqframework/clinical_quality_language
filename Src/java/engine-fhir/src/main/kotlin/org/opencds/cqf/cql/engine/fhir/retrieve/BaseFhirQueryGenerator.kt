@@ -117,7 +117,7 @@ protected constructor(
                 low =
                     DateParam(
                         ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
-                        Date.from((dateRange.low as DateTime).dateTime.toInstant()),
+                        Date.from((dateRange.low as DateTime).dateTime!!.toInstant()),
                     )
             }
         }
@@ -133,7 +133,7 @@ protected constructor(
                 high =
                     DateParam(
                         ParamPrefixEnum.LESSTHAN_OR_EQUALS,
-                        Date.from((dateRange.high as DateTime).dateTime.toInstant()),
+                        Date.from((dateRange.high as DateTime).dateTime!!.toInstant()),
                     )
             }
         }
@@ -189,7 +189,7 @@ protected constructor(
     protected fun getCodeParams(
         dataType: String?,
         codePath: String?,
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
     ): Pair<String, MutableList<TokenOrListParam>>? {
         var valueSet = valueSet
@@ -231,7 +231,7 @@ protected constructor(
     // support that then it's
     // "dataType.codePath in ValueSet"
     protected fun getCodeParams(
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
     ): MutableList<TokenOrListParam> {
         var codes = codes
@@ -353,7 +353,7 @@ protected constructor(
         dataType: String?,
         templateId: String?,
         codePath: String?,
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
         datePath: String?,
         dateLowPath: String?,

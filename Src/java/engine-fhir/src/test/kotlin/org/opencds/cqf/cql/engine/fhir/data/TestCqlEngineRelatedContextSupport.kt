@@ -93,10 +93,10 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         cqlEngine: CqlEngine,
         expression: String,
         initialContext: Pair<String?, Any?>?,
-    ): Any {
+    ): Any? {
         val evaluateResult =
-            cqlEngine.evaluate(library!!.identifier, mutableSetOf(expression), initialContext)
-        return evaluateResult.forExpression(expression).value()
+            cqlEngine.evaluate(library!!.identifier!!, mutableSetOf(expression), initialContext)
+        return evaluateResult.forExpression(expression)!!.value()
     }
 
     companion object {
@@ -131,80 +131,78 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
             getPatient("def", LocalDate.of(1975, Month.AUGUST, 21), PRACTITIONER_ZULU)
 
         private val retrieveProvider =
-            RetrieveProvider {
-                context: String?,
-                contextPath: String?,
-                contextValue: Any?,
-                dataType: String?,
-                templateId: String?,
-                codePath: String?,
-                codes: Iterable<Code?>?,
-                valueSet: String?,
-                datePath: String?,
-                dateLowPath: String?,
-                dateHighPath: String?,
-                dateRange: Interval? ->
-                val allPatients =
-                    setOf<Patient?>(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
-                val allPractitioners = setOf<Practitioner?>(PRACTITIONER_XYZ, PRACTITIONER_ZULU)
+            object : RetrieveProvider {
+                override fun retrieve(
+                    context: String?,
+                    contextPath: String?,
+                    contextValue: Any?,
+                    dataType: String,
+                    templateId: String?,
+                    codePath: String?,
+                    codes: Iterable<Code>?,
+                    valueSet: String?,
+                    datePath: String?,
+                    dateLowPath: String?,
+                    dateHighPath: String?,
+                    dateRange: Interval?,
+                ): Iterable<Any?>? {
+                    val allPatients =
+                        setOf(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
+                    val allPractitioners = setOf(PRACTITIONER_XYZ, PRACTITIONER_ZULU)
 
-                // a) All matching patients for the patient being searched by ID=123
-                if (
-                    PATIENT == dataType &&
-                        PATIENT == context &&
-                        ID == contextPath &&
-                        _PATIENT_123 == contextValue
-                ) {
-                    return@RetrieveProvider allPatients.filter { patient: Patient? ->
-                        _PATIENT_123 == patient!!.getId()
+                    // a) All matching patients for the patient being searched by ID=123
+                    if (
+                        PATIENT == dataType &&
+                            PATIENT == context &&
+                            ID == contextPath &&
+                            _PATIENT_123 == contextValue
+                    ) {
+                        return allPatients.filter { patient -> _PATIENT_123 == patient.getId() }
                     }
-                }
 
-                // b) All practitioners matching XYZ and patient 123
-                if (
-                    PRACTITIONER == dataType &&
-                        PATIENT == context &&
-                        ID == codePath &&
-                        codesEqual(codes, PRACTITIONER_SLASH + XYZ)
-                ) {
-                    val optPatient123 =
-                        allPatients.firstOrNull { patient: Patient? ->
-                            _PATIENT_123 == patient!!.getId()
-                        }
+                    // b) All practitioners matching XYZ and patient 123
+                    if (
+                        PRACTITIONER == dataType &&
+                            PATIENT == context &&
+                            ID == codePath &&
+                            codesEqual(codes, PRACTITIONER_SLASH + XYZ)
+                    ) {
+                        val optPatient123 =
+                            allPatients.firstOrNull { patient -> _PATIENT_123 == patient.getId() }
 
-                    if (optPatient123 != null) {
-                        val generalPractitionerIds =
-                            optPatient123
-                                .getGeneralPractitioner()
-                                .map { obj: Reference? -> obj!!.getReference() }
-                                .map { ref: String? ->
-                                    ref!!
-                                        .split(PRACTITIONER_SLASH.toRegex())
-                                        .dropLastWhile { it.isEmpty() }
-                                        .toTypedArray()[1]
-                                }
+                        if (optPatient123 != null) {
+                            val generalPractitionerIds =
+                                optPatient123
+                                    .getGeneralPractitioner()
+                                    .map { obj -> obj!!.getReference() }
+                                    .map { ref ->
+                                        ref!!
+                                            .split(PRACTITIONER_SLASH.toRegex())
+                                            .dropLastWhile { it.isEmpty() }
+                                            .toTypedArray()[1]
+                                    }
 
-                        return@RetrieveProvider allPractitioners.filter {
-                            practitioner: Practitioner? ->
-                            generalPractitionerIds.contains(practitioner!!.getId())
+                            return allPractitioners.filter { practitioner ->
+                                generalPractitionerIds.contains(practitioner.getId())
+                            }
                         }
                     }
-                }
 
-                // c) All patients belonging to Patient 123'd generalPractitioner
-                val equals = "xyz" == contextValue.toString()
-                if (
-                    PATIENT == dataType &&
-                        PRACTITIONER == context &&
-                        GENERAL_PRACTITIONER == contextPath &&
-                        equals
-                ) {
-                    logger.info(">>> patients for practitioner xyz")
-                    return@RetrieveProvider allPatients.filter { patient: Patient? ->
-                        getMatchingPractitioners(patient!!).contains(PRACTITIONER_XYZ.getId())
+                    // c) All patients belonging to Patient 123'd generalPractitioner
+                    val equals = "xyz" == contextValue.toString()
+                    if (
+                        PATIENT == dataType &&
+                            PRACTITIONER == context &&
+                            GENERAL_PRACTITIONER == contextPath &&
+                            equals
+                    ) {
+                        logger.info(">>> patients for practitioner xyz")
+                        return allPatients.filter { patient ->
+                            getMatchingPractitioners(patient).contains(PRACTITIONER_XYZ.getId())
+                        }
                     }
+                    return null
                 }
-                null
             }
 
         // TODO: LD: Due to a type erasure and the CQL compiler historically being in separate

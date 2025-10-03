@@ -189,36 +189,30 @@ abstract class FhirModelResolver<
         return this.equalsDeep(left as BaseType, right as BaseType)
     }
 
-    override fun createInstance(typeName: String): Any {
+    override fun createInstance(typeName: String?): Any {
         return createInstance(resolveType(typeName)!!)
     }
 
-    var _packageNames = listOf<String>()
-
-    override fun getPackageNames(): List<String> {
-        return _packageNames
-    }
-
-    override fun setPackageNames(packageNames: List<String>) {
-        this._packageNames = packageNames
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getPackageName(): String? {
-        if (packageNames.isEmpty()) {
-            return null
+    @get:Deprecated("Deprecated in Java")
+    @set:Deprecated("Deprecated in Java")
+    override var packageName: String?
+        get() {
+            if (packageNames.isEmpty()) {
+                return null
+            }
+            return packageNames[0]
         }
-        return packageNames[0]
-    }
+        set(packageName) {
+            this.packageNames =
+                if (packageName != null) mutableListOf(packageName) else mutableListOf()
+        }
 
-    @Deprecated("Deprecated in Java")
-    override fun setPackageName(packageName: String?) {
-        this.packageNames = if (packageName != null) listOf(packageName) else listOf()
-    }
+    override var packageNames = mutableListOf<String?>()
 
-    override fun resolvePath(target: Any?, path: String): Any? {
+    override fun resolvePath(target: Any?, path: String?): Any? {
         var target = target
-        val identifiers = path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val identifiers =
+            path!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         for (identifier in identifiers) {
             // handling indexes: i.e. item[0].code
             if (identifier.contains("[")) {
@@ -233,10 +227,10 @@ abstract class FhirModelResolver<
         return target
     }
 
-    override fun resolveType(typeName: String): Class<*>? {
+    override fun resolveType(typeName: String?): Class<*>? {
         // For Dstu2
         var typeName = typeName
-        if (typeName.startsWith("FHIR.")) {
+        if (typeName!!.startsWith("FHIR.")) {
             typeName = typeName.replace("FHIR.", "")
         }
         // dataTypes
@@ -345,7 +339,7 @@ abstract class FhirModelResolver<
         return value.javaClass
     }
 
-    override fun setValue(target: Any?, path: String, value: Any) {
+    override fun setValue(target: Any?, path: String?, value: Any?) {
         var value = value
         if (target == null) {
             return
@@ -383,7 +377,7 @@ abstract class FhirModelResolver<
                 child.mutator.setValue(base, setBaseValue(value, base))
             }
         } catch (le: IllegalArgumentException) {
-            if (value.javaClass.getSimpleName() == "Quantity") {
+            if (value!!.javaClass.getSimpleName() == "Quantity") {
                 try {
                     value = this.castToSimpleQuantity(value as BaseType)!!
                 } catch (e: FHIRException) {
@@ -500,11 +494,11 @@ abstract class FhirModelResolver<
 
     protected fun resolveChoiceProperty(
         definition: BaseRuntimeElementCompositeDefinition<*>,
-        path: String,
+        path: String?,
     ): BaseRuntimeChildDefinition? {
         for (child in definition.children) {
             if (child is RuntimeChildChoiceDefinition) {
-                if (child.elementName.startsWith(path)) {
+                if (child.elementName.startsWith(path!!)) {
                     return child
                 }
             }
@@ -690,14 +684,14 @@ abstract class FhirModelResolver<
         }
     }
 
-    fun setBaseValue(value: Any, target: IBase?): IBase? {
+    fun setBaseValue(value: Any?, target: IBase?): IBase? {
         if (target is IPrimitiveType<*>) {
             setPrimitiveValue(value, target)
         }
         return value as IBase?
     }
 
-    fun setPrimitiveValue(value: Any, target: IPrimitiveType<*>) {
+    fun setPrimitiveValue(value: Any?, target: IPrimitiveType<*>) {
         val simpleName = target.javaClass.getSimpleName()
         when (simpleName) {
             "DateTimeType",

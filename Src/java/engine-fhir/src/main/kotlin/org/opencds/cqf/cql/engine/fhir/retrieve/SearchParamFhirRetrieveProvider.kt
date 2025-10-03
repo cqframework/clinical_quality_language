@@ -39,7 +39,7 @@ protected constructor(
         }
 
     protected abstract fun executeQueries(
-        dataType: String,
+        dataType: String?,
         queries: MutableList<SearchParameterMap>,
     ): Iterable<Any?>?
 
@@ -47,7 +47,7 @@ protected constructor(
         context: String?,
         contextPath: String?,
         contextValue: Any?,
-        dataType: String?,
+        dataType: String,
         templateId: String?,
         codePath: String?,
         codes: Iterable<Code>?,
@@ -105,6 +105,6 @@ protected constructor(
                 dateRange,
             )
 
-        return this.executeQueries(dataType!!, queries!!)
+        return this.executeQueries(dataType, queries)
     }
 }

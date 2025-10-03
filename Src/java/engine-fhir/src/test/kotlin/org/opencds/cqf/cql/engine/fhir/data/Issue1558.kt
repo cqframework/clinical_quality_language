@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Interval
 
 // https://github.com/cqframework/clinical_quality_language/issues/1558
 // care team cardinality bug for QI Core 6.0.0
@@ -18,23 +20,26 @@ internal class Issue1558 : FhirExecutionTestBase() {
         careTeam.addParticipant().addRole().setText("Care Team Role 2")
 
         val r =
-            RetrieveProvider {
-                context,
-                contextPath,
-                contextValue,
-                dataType,
-                templateId,
-                codePath,
-                codes,
-                valueSet,
-                datePath,
-                dateLowPath,
-                dateHighPath,
-                dateRange ->
-                when (dataType) {
-                    "Patient" -> mutableListOf<Any?>(patient)
-                    "CareTeam" -> mutableListOf<Any?>(careTeam)
-                    else -> mutableListOf()
+            object : RetrieveProvider {
+                override fun retrieve(
+                    context: String?,
+                    contextPath: String?,
+                    contextValue: Any?,
+                    dataType: String,
+                    templateId: String?,
+                    codePath: String?,
+                    codes: Iterable<Code>?,
+                    valueSet: String?,
+                    datePath: String?,
+                    dateLowPath: String?,
+                    dateHighPath: String?,
+                    dateRange: Interval?,
+                ): Iterable<Any?>? {
+                    return when (dataType) {
+                        "Patient" -> mutableListOf(patient)
+                        "CareTeam" -> mutableListOf(careTeam)
+                        else -> mutableListOf()
+                    }
                 }
             }
 
@@ -43,7 +48,7 @@ internal class Issue1558 : FhirExecutionTestBase() {
             CompositeDataProvider(r4ModelResolver, r),
         )
         val result = engine.evaluate("Issue1558")
-        val x = result.forExpression("Care Teams Participant.Role Issue").value()
+        val x = result.forExpression("Care Teams Participant.Role Issue")!!.value()
         val participantList = Assertions.assertInstanceOf(MutableList::class.java, x)
         Assertions.assertEquals(1, participantList!!.size.toLong())
         val roles: Any? = participantList[0]

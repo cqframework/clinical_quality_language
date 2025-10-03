@@ -22,7 +22,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     @MethodSource("singleLibraryEvaluationParams")
     fun singleLibraryEvaluation(
         expressionCaching: Boolean,
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         expressionName: String?,
         expectedEvaluatedResources: List<IBaseResource>,
         expectedValues: List<IBaseResource>,
@@ -51,15 +51,14 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     ) {
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
-        val resultsSingleLib =
-            engine.evaluate(listOf<VersionedIdentifier?>(libraryIdentifier), ALL_EXPRESSIONS)
+        val resultsSingleLib = engine.evaluate(listOf(libraryIdentifier), ALL_EXPRESSIONS)
 
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
         Assertions.assertFalse(resultsSingleLib.containsExceptionsFor(libraryIdentifier))
         Assertions.assertFalse(resultsSingleLib.containsExceptionsFor(libraryIdentifier))
         Assertions.assertNotNull(resultsSingleLib.getResultFor(libraryIdentifier))
-        Assertions.assertNotNull(resultsSingleLib.getOnlyResultOrThrow())
+        Assertions.assertNotNull(resultsSingleLib.onlyResultOrThrow)
         Assertions.assertNull(resultsSingleLib.getExceptionFor(libraryIdentifier))
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
@@ -82,7 +81,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     ) {
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
-        val allLibs = listOf<VersionedIdentifier?>(LIB_1A, LIB_1B)
+        val allLibs = listOf(LIB_1A, LIB_1B)
 
         val results = engine.evaluate(allLibs, ALL_EXPRESSIONS)
 
@@ -91,9 +90,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
         Assertions.assertFalse(results.containsExceptionsFor(LIB_1A))
         Assertions.assertFalse(results.containsExceptionsFor(LIB_1B))
         Assertions.assertNotNull(results.getResultFor(LIB_1A))
-        Assertions.assertThrows(IllegalStateException::class.java) {
-            results.getOnlyResultOrThrow()
-        }
+        Assertions.assertThrows(IllegalStateException::class.java) { results.onlyResultOrThrow }
         Assertions.assertNull(results.getExceptionFor(LIB_1A))
 
         EvaluatedResourceTestUtils.assertEvaluationResult(

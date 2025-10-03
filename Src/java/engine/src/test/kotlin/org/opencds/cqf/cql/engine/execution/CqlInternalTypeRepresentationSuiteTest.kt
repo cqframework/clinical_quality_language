@@ -30,112 +30,122 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
 
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
-        var value = results.forExpression("BoolTrue").value()
+        var value = results.forExpression("BoolTrue")!!.value()
         Assertions.assertTrue(value is Boolean)
         Assertions.assertTrue(value as Boolean)
 
-        value = results.forExpression("BoolFalse").value()
+        value = results.forExpression("BoolFalse")!!.value()
         Assertions.assertTrue(value is Boolean)
         Assertions.assertFalse(value as Boolean)
 
-        value = results.forExpression("IntOne").value()
+        value = results.forExpression("IntOne")!!.value()
         Assertions.assertTrue(value is Int)
         Assertions.assertTrue(value as Int == 1)
 
-        value = results.forExpression("DecimalTenth").value()
+        value = results.forExpression("DecimalTenth")!!.value()
         Assertions.assertTrue(value is BigDecimal)
         Assertions.assertEquals(0, (value as BigDecimal).compareTo(BigDecimal("0.1")))
 
-        value = results.forExpression("StringTrue").value()
+        value = results.forExpression("StringTrue")!!.value()
         Assertions.assertTrue(value is String)
         Assertions.assertEquals("true", value)
 
-        value = results.forExpression("DateTimeX").value()
+        value = results.forExpression("DateTimeX")!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456))
+            (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
+                true
         )
 
-        value = results.forExpression("DateTimeFX").value()
+        value = results.forExpression("DateTimeFX")!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456))
+            (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
+                true
         )
 
-        value = results.forExpression("TimeX").value()
+        value = results.forExpression("TimeX")!!.value()
         Assertions.assertTrue(value is Time)
-        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)))
+        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)) == true)
 
         value = results.expressionResults["DateTime_Year"]!!.value()
         Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue((value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012)))
+        Assertions.assertTrue(
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012)) == true
+        )
 
         value = results.expressionResults["DateTime_Month"]!!.value()
         Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue((value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2)))
+        Assertions.assertTrue(
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2)) == true
+        )
 
         value = results.expressionResults["DateTime_Day"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15))
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15)) == true
         )
 
         value = results.expressionResults["DateTime_Hour"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12))
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12)) == true
         )
 
         value = results.expressionResults["DateTime_Minute"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10))
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10)) == true
         )
 
         value = results.expressionResults["DateTime_Second"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59))
+            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59)) ==
+                true
         )
 
         value = results.expressionResults["DateTime_Millisecond"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456))
+            (value as DateTime).equal(
+                DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456)
+            ) == true
         )
 
         value = results.expressionResults["DateTime_TimezoneOffset"]!!.value()
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
-            (value as DateTime).equal(DateTime(BigDecimal("-8.0"), 2012, 2, 15, 12, 10, 59, 456))
+            (value as DateTime).equal(DateTime(BigDecimal("-8.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
+                true
         )
 
         value = results.expressionResults["Time_Hour"]!!.value()
         Assertions.assertTrue(value is Time)
-        Assertions.assertTrue((value as Time).equal(Time(12)))
+        Assertions.assertTrue((value as Time).equal(Time(12)) == true)
 
         value = results.expressionResults["Time_Minute"]!!.value()
         Assertions.assertTrue(value is Time)
-        Assertions.assertTrue((value as Time).equal(Time(12, 10)))
+        Assertions.assertTrue((value as Time).equal(Time(12, 10)) == true)
 
         value = results.expressionResults["Time_Second"]!!.value()
         Assertions.assertTrue(value is Time)
-        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59)))
+        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59)) == true)
 
         value = results.expressionResults["Time_Millisecond"]!!.value()
         Assertions.assertTrue(value is Time)
-        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)))
+        Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)) == true)
 
         value = results.expressionResults["Clinical_quantity"]!!.value()
         Assertions.assertTrue(value is Quantity)
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a"))
+            (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
         )
 
         value = results.expressionResults["Clinical_QuantityA"]!!.value()
         Assertions.assertTrue(value is Quantity)
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a"))
+            (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
         )
 
         value = results.expressionResults["Clinical_CodeA"]!!.value()
@@ -147,7 +157,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                     .withSystem("http://loinc.org")
                     .withVersion("1")
                     .withDisplay("Test Code")
-            )
+            ) == true
         )
 
         value = results.expressionResults["Clinical_ConceptA"]!!.value()
@@ -163,15 +173,17 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                             .withDisplay("Test Code")
                     )
                     .withDisplay("Test Concept")
-            )
+            ) == true
         )
 
-        val elements = LinkedHashMap<String?, Any?>()
+        val elements = LinkedHashMap<String, Any?>()
         elements["a"] = 1
         elements["b"] = 2
         value = results.expressionResults["Structured_tuple"]!!.value()
         Assertions.assertTrue(value is Tuple)
-        Assertions.assertTrue((value as Tuple).equal(Tuple(engine.state).withElements(elements)))
+        Assertions.assertTrue(
+            (value as Tuple).equal(Tuple(engine.state).withElements(elements)) == true
+        )
 
         elements.clear()
         elements["class"] = "Portable CQL Test Suite"
@@ -181,7 +193,9 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
 
         value = results.expressionResults["Structured_TupleA"]!!.value()
         Assertions.assertTrue(value is Tuple)
-        Assertions.assertTrue((value as Tuple).equal(Tuple(engine.state).withElements(elements)))
+        Assertions.assertTrue(
+            (value as Tuple).equal(Tuple(engine.state).withElements(elements)) == true
+        )
 
         value = results.expressionResults["Interval_Open"]!!.value()
         Assertions.assertTrue(value is Interval)
@@ -193,7 +207,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                     DateTime(bigDecimalZoneOffset, 2013, 1, 1),
                     false,
                 )
-            )
+            ) == true
         )
 
         value = results.expressionResults["Interval_LeftOpen"]!!.value()
@@ -206,7 +220,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                     DateTime(bigDecimalZoneOffset, 2013, 1, 1),
                     true,
                 )
-            )
+            ) == true
         )
 
         value = results.expressionResults["Interval_RightOpen"]!!.value()
@@ -219,7 +233,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                     DateTime(bigDecimalZoneOffset, 2013, 1, 1),
                     false,
                 )
-            )
+            ) == true
         )
 
         value = results.expressionResults["Interval_Closed"]!!.value()
@@ -232,7 +246,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                     DateTime(bigDecimalZoneOffset, 2013, 1, 1),
                     true,
                 )
-            )
+            ) == true
         )
 
         value = results.expressionResults["List_BoolList"]!!.value()
@@ -361,7 +375,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         elements.clear()
         elements["a"] = 1
         elements["b"] = "2"
-        val elements2 = LinkedHashMap<String?, Any?>()
+        val elements2 = mutableMapOf<String, Any?>()
         elements2["x"] = 2
         elements2["z"] = "3"
         value = results.expressionResults["List_TupleList"]!!.value()

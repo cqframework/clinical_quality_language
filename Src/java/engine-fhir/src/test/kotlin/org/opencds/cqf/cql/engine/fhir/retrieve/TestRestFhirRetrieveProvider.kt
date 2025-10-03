@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve
 
 import ca.uhn.fhir.context.FhirVersionEnum
-import ca.uhn.fhir.rest.client.api.IGenericClient
 import ca.uhn.fhir.util.UrlUtil
 import com.github.tomakehurst.wiremock.client.WireMock
 import java.time.OffsetDateTime
@@ -49,7 +48,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
             FhirQueryGeneratorFactory.create(
                 modelResolver,
                 provider!!.searchParameterResolver,
-                provider!!.getTerminologyProvider(),
+                provider!!.terminologyProvider,
             )
 
         val map = fhirQueryGenerator.getBaseMap(null, null, null, null)
@@ -65,7 +64,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
             FhirQueryGeneratorFactory.create(
                 getModelResolver(CLIENT.fhirContext.version.version),
                 provider!!.searchParameterResolver,
-                provider!!.getTerminologyProvider(),
+                provider!!.terminologyProvider,
                 null,
                 null,
                 expected,
@@ -79,7 +78,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     @Test
     fun userSpecifiedPageSizeIsUsedWhenCodeBasedQuery() {
         val code = Code().withSystem("http://mysystem.com").withCode("myCode")
-        val codes = mutableListOf<Code>(code)
+        val codes = mutableListOf(code)
 
         mockFhirSearch(
             ("/Condition?code=" +
@@ -208,7 +207,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     @Test
     fun noUserSpecifiedPageSizeSpecifiedNoCountInURL() {
         val code = Code().withSystem("http://mysystem.com").withCode("myCode")
-        val codes = mutableListOf<Code>(code)
+        val codes = mutableListOf(code)
 
         mockFhirSearch(
             ("/Condition?code=" +
@@ -234,7 +233,7 @@ internal class TestRestFhirRetrieveProvider : R4FhirTest() {
     }
 
     companion object {
-        val CLIENT: IGenericClient = newClient()
-        val RESOLVER: SearchParameterResolver = SearchParameterResolver(CLIENT.fhirContext)
+        val CLIENT = newClient()
+        val RESOLVER = SearchParameterResolver(CLIENT.fhirContext)
     }
 }
