@@ -36,38 +36,32 @@ class CqlList {
 
     var valueSort: Comparator<Any?> = Comparator { left, right -> this.compareTo(left, right) }
 
-    var expressionSort: Comparator<Any?> =
-        object : Comparator<Any?> {
-            override fun compare(left: Any?, right: Any?): Int {
-                var leftResult: Any? = null
-                try {
-                    state!!.push(Variable(alias!!).withValue(left))
-                    leftResult = visitor!!.visitExpression(expression!!, state)
-                } finally {
-                    state!!.pop()
-                }
-
-                var rightResult: Any? = null
-                try {
-                    state!!.push(Variable(alias!!).withValue(right))
-                    rightResult = visitor!!.visitExpression(expression!!, state)
-                } finally {
-                    state!!.pop()
-                }
-
-                return compareTo(leftResult, rightResult)
-            }
+    var expressionSort: Comparator<Any?> = Comparator { left, right ->
+        var leftResult: Any? = null
+        try {
+            state!!.push(Variable(alias!!).withValue(left))
+            leftResult = visitor!!.visitExpression(expression!!, state)
+        } finally {
+            state!!.pop()
         }
 
-    val columnSort: Comparator<Any?> =
-        object : Comparator<Any?> {
-            override fun compare(left: Any?, right: Any?): Int {
-                val leftCol = state!!.environment.resolvePath(left, path!!)
-                val rightCol = state!!.environment.resolvePath(right, path!!)
-
-                return compareTo(leftCol, rightCol)
-            }
+        var rightResult: Any? = null
+        try {
+            state!!.push(Variable(alias!!).withValue(right))
+            rightResult = visitor!!.visitExpression(expression!!, state)
+        } finally {
+            state!!.pop()
         }
+
+        compareTo(leftResult, rightResult)
+    }
+
+    val columnSort: Comparator<Any?> = Comparator { left, right ->
+        val leftCol = state!!.environment.resolvePath(left, path!!)
+        val rightCol = state!!.environment.resolvePath(right, path!!)
+
+        compareTo(leftCol, rightCol)
+    }
 
     fun compareTo(left: Any?, right: Any?): Int {
         if (left == null && right == null) return 0
@@ -75,13 +69,13 @@ class CqlList {
 
         try {
             return (left as Comparable<Any?>).compareTo(right)
-        } catch (cce: ClassCastException) {
+        } catch (_: ClassCastException) {
             throw InvalidComparison("Type " + left.javaClass.getName() + " is not comparable")
         }
     }
 
     companion object {
-        fun equivalent(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean? {
+        fun equivalent(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean {
             val leftIterator = left.iterator()
             val rightIterator = right.iterator()
 

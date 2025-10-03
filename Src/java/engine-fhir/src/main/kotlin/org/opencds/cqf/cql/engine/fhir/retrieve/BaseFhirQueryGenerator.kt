@@ -138,9 +138,7 @@ protected constructor(
             }
         }
         val rangeParam =
-            if (low == null && high != null) {
-                DateRangeParam(high)
-            } else if (high == null && low != null) {
+            if (high == null && low != null) {
                 DateRangeParam(low)
             } else {
                 DateRangeParam(low, high)
@@ -286,8 +284,7 @@ protected constructor(
 
             codeCount++
             if (code is Code) {
-                val c = code
-                codeParams!!.addOr(TokenParam(c.system, c.code))
+                codeParams!!.addOr(TokenParam(code.system, code.code))
             } else if (code is String) {
                 val s = code as String
                 codeParams!!.addOr(TokenParam(s))

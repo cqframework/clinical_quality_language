@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
     @Suppress("deprecation")
+    @Deprecated("use packageNames instead")
     override var packageName: String?
         get() = this.innerResolver.packageName
         set(value) {

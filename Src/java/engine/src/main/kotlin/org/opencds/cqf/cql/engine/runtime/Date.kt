@@ -93,19 +93,18 @@ class Date : BaseTemporal {
     fun expandPartialMax(precision: Precision): org.opencds.cqf.cql.engine.runtime.Date {
         var ld = this.date!!.plusYears(0)
         for (i in this.precision!!.toDateIndex() + 1..2) {
-            if (i <= precision.toDateIndex()) {
-                ld =
+            ld =
+                if (i <= precision.toDateIndex()) {
                     ld.with(
                         Precision.fromDateIndex(i).toChronoField(),
                         ld.range(Precision.fromDateIndex(i).toChronoField()).maximum,
                     )
-            } else {
-                ld =
+                } else {
                     ld.with(
                         Precision.fromDateIndex(i).toChronoField(),
                         ld.range(Precision.fromDateIndex(i).toChronoField()).minimum,
                     )
-            }
+                }
         }
         return org.opencds.cqf.cql.engine.runtime
             .Date(ld.year, ld.monthValue, ld.dayOfMonth)
@@ -131,8 +130,8 @@ class Date : BaseTemporal {
         }
     }
 
-    override fun compareToPrecision(other: BaseTemporal, precision: Precision): Int? {
-        var precision = precision
+    override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        var precision = p
         val leftMeetsPrecisionRequirements =
             this.precision!!.toDateIndex() >= precision.toDateIndex()
         val rightMeetsPrecisionRequirements =
@@ -162,8 +161,8 @@ class Date : BaseTemporal {
         return null
     }
 
-    override fun isUncertain(precision: Precision): Boolean {
-        var precision = precision
+    override fun isUncertain(p: Precision): Boolean {
+        var precision = p
         if (precision == Precision.WEEK) {
             precision = Precision.DAY
         }
@@ -171,9 +170,9 @@ class Date : BaseTemporal {
         return this.precision!!.toDateIndex() < precision.toDateIndex()
     }
 
-    override fun getUncertaintyInterval(precision: Precision): Interval {
-        val start = expandPartialMin(precision)
-        val end = expandPartialMax(precision).expandPartialMinFromPrecision(precision)
+    override fun getUncertaintyInterval(p: Precision): Interval {
+        val start = expandPartialMin(p)
+        val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
@@ -208,7 +207,7 @@ class Date : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun equivalent(other: Any?): Boolean? {
+    override fun equivalent(other: Any?): Boolean {
         val comparison = compare((other as BaseTemporal?)!!, false)
         return comparison != null && comparison == 0
     }
@@ -231,11 +230,12 @@ class Date : BaseTemporal {
     @JvmOverloads
     fun toJavaDate(c: State? = null): Date {
         var zonedDateTime: ZonedDateTime? = null
-        if (c != null) {
-            zonedDateTime = date!!.atStartOfDay(c.evaluationZonedDateTime!!.zone)
-        } else {
-            zonedDateTime = date!!.atStartOfDay(TimeZone.getDefault().toZoneId())
-        }
+        zonedDateTime =
+            if (c != null) {
+                date!!.atStartOfDay(c.evaluationZonedDateTime!!.zone)
+            } else {
+                date!!.atStartOfDay(TimeZone.getDefault().toZoneId())
+            }
         val instant = zonedDateTime.toInstant()
         val date = Date.from(instant)
         return date

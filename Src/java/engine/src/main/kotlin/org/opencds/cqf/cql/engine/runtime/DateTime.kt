@@ -181,8 +181,8 @@ class DateTime : BaseTemporal {
         return DateTime(odt, if (precision == null) Precision.MILLISECOND else precision)
     }
 
-    override fun isUncertain(precision: Precision): Boolean {
-        var precision = precision
+    override fun isUncertain(p: Precision): Boolean {
+        var precision = p
         if (precision == Precision.WEEK) {
             precision = Precision.DAY
         }
@@ -190,9 +190,9 @@ class DateTime : BaseTemporal {
         return this.precision!!.toDateTimeIndex() < precision.toDateTimeIndex()
     }
 
-    override fun getUncertaintyInterval(precision: Precision): Interval {
-        val start = expandPartialMin(precision)
-        val end = expandPartialMax(precision).expandPartialMinFromPrecision(precision)
+    override fun getUncertaintyInterval(p: Precision): Interval {
+        val start = expandPartialMin(p)
+        val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
@@ -254,8 +254,8 @@ class DateTime : BaseTemporal {
         return dateTime!!
     }
 
-    override fun compareToPrecision(other: BaseTemporal, precision: Precision): Int? {
-        var precision = precision
+    override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        var precision = p
         val leftMeetsPrecisionRequirements =
             this.precision!!.toDateTimeIndex() >= precision.toDateTimeIndex()
         val rightMeetsPrecisionRequirements =

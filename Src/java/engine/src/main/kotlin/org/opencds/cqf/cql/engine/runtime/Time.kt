@@ -86,36 +86,35 @@ class Time : BaseTemporal {
 
     fun expandPartialMin(precision: Precision?): Time {
         val ot = this.time.plusHours(0)
-        return Time(ot, if (precision == null) Precision.MILLISECOND else precision)
+        return Time(ot, precision ?: Precision.MILLISECOND)
     }
 
     fun expandPartialMax(precision: Precision?): Time {
         var ot = this.time.plusHours(0)
         for (i in this.precision!!.toTimeIndex() + 1..3) {
-            if (i <= precision!!.toTimeIndex()) {
-                ot =
+            ot =
+                if (i <= precision!!.toTimeIndex()) {
                     ot.with(
                         Precision.fromTimeIndex(i).toChronoField(),
                         ot.range(Precision.fromTimeIndex(i).toChronoField()).maximum,
                     )
-            } else {
-                ot =
+                } else {
                     ot.with(
                         Precision.fromTimeIndex(i).toChronoField(),
                         ot.range(Precision.fromTimeIndex(i).toChronoField()).minimum,
                     )
-            }
+                }
         }
-        return Time(ot, if (precision == null) Precision.MILLISECOND else precision)
+        return Time(ot, precision ?: Precision.MILLISECOND)
     }
 
-    override fun isUncertain(precision: Precision): Boolean {
-        return this.precision!!.toTimeIndex() < precision.toTimeIndex()
+    override fun isUncertain(p: Precision): Boolean {
+        return this.precision!!.toTimeIndex() < p.toTimeIndex()
     }
 
-    override fun getUncertaintyInterval(precision: Precision): Interval {
-        val start = expandPartialMin(precision)
-        val end = expandPartialMax(precision).expandPartialMinFromPrecision(precision)
+    override fun getUncertaintyInterval(p: Precision): Interval {
+        val start = expandPartialMin(p)
+        val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
@@ -127,15 +126,15 @@ class Time : BaseTemporal {
             Precision.MINUTE,
             Precision.SECOND,
             Precision.MILLISECOND ->
-                if (precision.toTimeIndex() < originalPrecision.toTimeIndex()) {
+                return if (precision.toTimeIndex() < originalPrecision.toTimeIndex()) {
                     val floorLocalTime = originalLocalTime.truncatedTo(precision.toChronoUnit())
                     if (useCeiling && floorLocalTime != originalLocalTime) {
-                        return Time(floorLocalTime.plus(1, precision.toChronoUnit()), precision)
+                        Time(floorLocalTime.plus(1, precision.toChronoUnit()), precision)
                     } else {
-                        return Time(floorLocalTime, precision)
+                        Time(floorLocalTime, precision)
                     }
                 } else {
-                    return Time(originalLocalTime, originalPrecision)
+                    Time(originalLocalTime, originalPrecision)
                 }
             else -> return null
         }
@@ -160,8 +159,8 @@ class Time : BaseTemporal {
         }
     }
 
-    override fun compareToPrecision(other: BaseTemporal, precision: Precision): Int? {
-        var precision = precision
+    override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        var precision = p
         val leftMeetsPrecisionRequirements =
             this.precision!!.toTimeIndex() >= precision.toTimeIndex()
         val rightMeetsPrecisionRequirements =
@@ -196,7 +195,7 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun equivalent(other: Any?): Boolean? {
+    override fun equivalent(other: Any?): Boolean {
         val comparison = compare((other as BaseTemporal?)!!, false)
         return comparison != null && comparison == 0
     }
@@ -207,13 +206,13 @@ class Time : BaseTemporal {
     }
 
     override fun toString(): String {
-        when (precision) {
-            Precision.HOUR -> return String.format("%02d", time.hour)
-            Precision.MINUTE -> return String.format("%02d:%02d", time.hour, time.minute)
-            Precision.SECOND ->
-                return String.format("%02d:%02d:%02d", time.hour, time.minute, time.second)
+        return when (precision) {
+            Precision.HOUR -> String.format("%02d", time.hour)
+            Precision.MINUTE -> String.format("%02d:%02d", time.hour, time.minute)
+            Precision.SECOND -> String.format("%02d:%02d:%02d", time.hour, time.minute, time.second)
+
             else ->
-                return String.format(
+                String.format(
                     "%02d:%02d:%02d.%03d",
                     time.hour,
                     time.minute,

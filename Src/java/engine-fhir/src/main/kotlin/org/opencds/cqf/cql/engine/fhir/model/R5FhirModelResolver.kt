@@ -93,7 +93,7 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
                 )
             m.setAccessible(true)
             m.invoke(this.fhirContext, toLoad)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // intentionally ignored
         }
     }

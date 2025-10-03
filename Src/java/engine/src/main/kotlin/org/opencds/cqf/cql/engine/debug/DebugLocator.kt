@@ -29,9 +29,7 @@ class DebugLocator {
     }
 
     private fun guardLocator(locator: String) {
-        require(!(locator == null || locator.trim { it <= ' ' }.isEmpty())) {
-            "nodeId locator required"
-        }
+        require(locator.isNotBlank()) { "nodeId locator required" }
     }
 
     constructor(type: DebugLocatorType, locator: String) {
@@ -56,22 +54,18 @@ class DebugLocator {
                 this.location = Location.Companion.fromLocator(locator)
                 this.locator = locator
             }
-            else ->
-                throw IllegalArgumentException(
-                    String.format("Unknown debug locator type: %s", type.toString())
-                )
         }
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
-        if (o == null || javaClass != o.javaClass) {
+        if (other == null || javaClass != other.javaClass) {
             return false
         }
 
-        val other = o as DebugLocator
+        other as DebugLocator
 
         if (this.locatorType != other.locatorType) {
             return false

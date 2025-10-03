@@ -1,15 +1,9 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
-import java.util.Objects
 import java.util.function.Consumer
 import java.util.function.IntFunction
-import java.util.function.IntUnaryOperator
-import java.util.function.Supplier
 import java.util.stream.IntStream
-import kotlin.Deprecated
-import kotlin.Exception
-import kotlin.RuntimeException
 import org.apache.commons.lang3.tuple.Pair
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
@@ -58,7 +52,8 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     }
 
     val state: State
-    private val engineOptions: MutableSet<Options>
+    private val engineOptions: MutableSet<Options> =
+        engineOptions ?: mutableSetOf(Options.EnableExpressionCaching)
 
     /** @return the internal engine visitor */
     @get:Deprecated(
@@ -69,9 +64,6 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     val evaluationVisitor: EvaluationVisitor = EvaluationVisitor()
 
     init {
-        this.engineOptions =
-            if (engineOptions != null) engineOptions
-            else mutableSetOf(Options.EnableExpressionCaching)
         this.state = State(environment, this.engineOptions)
 
         if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
@@ -231,13 +223,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         debugMap: DebugMap? = null,
         nullableEvaluationDateTime: ZonedDateTime? = null,
     ): EvaluationResultsForMultiLib {
-        require(
-            !(libraryIdentifiers == null ||
-                libraryIdentifiers.isEmpty() ||
-                libraryIdentifiers.get(0) == null)
-        ) {
-            "libraryIdentifier can not be null or empty."
-        }
+        require(!(libraryIdentifiers.isEmpty())) { "libraryIdentifier can not be null or empty." }
 
         val loadMultiLibResult = this.loadAndValidate(libraryIdentifiers)
 
@@ -262,11 +248,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // first
         val reversedOrderLibraryIdentifiers =
             IntStream.range(0, loadMultiLibResult.libraryCount())
-                .map(
-                    IntUnaryOperator { index: Int ->
-                        loadMultiLibResult.allLibraries.size - 1 - index
-                    }
-                )
+                .map { index: Int -> loadMultiLibResult.allLibraries.size - 1 - index }
                 .mapToObj<VersionedIdentifier>(
                     IntFunction { index: Int ->
                         loadMultiLibResult.getLibraryIdentifierAtIndex(index)
@@ -279,8 +261,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
         for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
             val library = loadMultiLibResult.retrieveLibrary(libraryIdentifier)
-            val expressionSet =
-                if (expressions == null) this.getExpressionSet(library!!) else expressions
+            val expressionSet = expressions ?: this.getExpressionSet(library!!)
 
             val joinedExpressions = expressionSet.joinToString(", ")
             log.debug(
@@ -304,12 +285,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     }
 
     private fun initializeEvalTime(nullableEvaluationDateTime: ZonedDateTime?) {
-        this.state.setEvaluationDateTime(
-            Objects.requireNonNullElseGet<ZonedDateTime?>(
-                nullableEvaluationDateTime,
-                Supplier { ZonedDateTime.now() },
-            )
-        )
+        this.state.setEvaluationDateTime(nullableEvaluationDateTime ?: ZonedDateTime.now())
     }
 
     private fun initializeDebugMap(debugMap: DebugMap?) {
@@ -335,13 +311,6 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             for (expression in expressions) {
                 val currentLibrary = this.state.getCurrentLibrary()
                 val def = Libraries.resolveExpressionRef(expression, currentLibrary!!)
-
-                if (def == null) {
-                    throw CqlException(
-                        String.format("Unable to resolve expression \"%s.\"", expression)
-                    )
-                }
-
                 if (def is FunctionDef) {
                     continue
                 }
@@ -385,19 +354,16 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
     private fun loadAndValidate(libraryIdentifier: VersionedIdentifier) {
         val errors = ArrayList<CqlCompilerException>()
-        val library: Library? =
+        val library: Library =
             this.environment.libraryManager!!.resolveLibrary(libraryIdentifier, errors).library
-
-        if (library == null) {
-            throw CqlException(
-                String.format(
-                    "Unable to load library %s",
-                    libraryIdentifier.id +
-                        (if (libraryIdentifier.version != null) "-" + libraryIdentifier.version
-                        else ""),
+                ?: throw CqlException(
+                    String.format(
+                        "Unable to load library %s",
+                        libraryIdentifier.id +
+                            (if (libraryIdentifier.version != null) "-" + libraryIdentifier.version
+                            else ""),
+                    )
                 )
-            )
-        }
 
         if (CqlCompilerException.hasErrors(errors)) {
             throw CqlException(
@@ -420,7 +386,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // We probably want to just load all relevant libraries into
         // memory before we start evaluation. This will further separate
         // environment from state.
-        if (library.includes != null && library.includes!!.def != null) {
+        if (library.includes != null) {
             for (include in library.includes!!.def) {
                 this.loadAndValidate(
                     VersionedIdentifier()
@@ -465,7 +431,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // environment from state.
         for (library in libraries) {
             try {
-                if (library!!.includes != null && library.includes!!.def != null) {
+                if (library!!.includes != null) {
                     for (include in library.includes!!.def) {
                         this.loadAndValidate(
                             VersionedIdentifier()
@@ -505,23 +471,16 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     private fun validateDataRequirements(library: Library) {
         // TODO: What we actually need here is a check of the actual retrieves, based on data
         // requirements
-        if (
-            library.usings != null &&
-                library.usings!!.def != null &&
-                !library.usings!!.def.isEmpty()
-        ) {
+        if (library.usings != null && !library.usings!!.def.isEmpty()) {
             for (using in library.usings!!.def) {
                 // Skip system using since the context automatically registers that.
                 if (using.uri.equals("urn:hl7-org:elm-types:r1")) {
                     continue
                 }
 
-                require(
-                    !(this.environment.dataProviders == null ||
-                        !this.environment.dataProviders.containsKey(using.uri))
-                ) {
+                require(this.environment.dataProviders.containsKey(using.uri)) {
                     String.format(
-                        "Library %1\$s is using %2\$s and no data provider is registered for uri %2\$s.",
+                        $$"Library %1$s is using %2$s and no data provider is registered for uri %2$s.",
                         this.getLibraryDescription(library.identifier!!),
                         using.uri,
                     )
@@ -534,15 +493,9 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // TODO: Smarter validation would be to checkout and see if any retrieves
         // Use terminology, and to check for any codesystem lookups.
         require(
-            !((library.codeSystems != null &&
-                library.codeSystems!!.def != null &&
-                !library.codeSystems!!.def.isEmpty()) ||
-                (library.codes != null &&
-                    library.codes!!.def != null &&
-                    !library.codes!!.def.isEmpty()) ||
-                (library.valueSets != null &&
-                    library.valueSets!!.def != null &&
-                    !library.valueSets!!.def.isEmpty()) &&
+            !((library.codeSystems != null && !library.codeSystems!!.def.isEmpty()) ||
+                (library.codes != null && !library.codes!!.def.isEmpty()) ||
+                (library.valueSets != null && !library.valueSets!!.def.isEmpty()) &&
                     this.environment.terminologyProvider == null)
         ) {
             String.format(
@@ -559,7 +512,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
     private fun getExpressionSet(library: Library): MutableSet<String> {
         val expressionNames = mutableSetOf<String>()
-        if (library.statements != null && library.statements!!.def != null) {
+        if (library.statements != null) {
             for (ed in library.statements!!.def) {
                 expressionNames.add(ed.name!!)
             }

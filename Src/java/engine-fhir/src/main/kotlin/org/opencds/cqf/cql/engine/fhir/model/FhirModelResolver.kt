@@ -148,7 +148,7 @@ abstract class FhirModelResolver<
         if (child is RuntimeChildResourceBlockDefinition) {
             val currentName = child.elementName
             val element = child.getChildByName(currentName)
-            val children = element.getChildren() as MutableList<BaseRuntimeChildDefinition>
+            val children = element.getChildren() as List<BaseRuntimeChildDefinition>
 
             for (nextChild in children) {
                 if (visitedElements.contains(nextChild.elementName)) {
@@ -242,7 +242,7 @@ abstract class FhirModelResolver<
         try {
             // Resources
             return this.fhirContext.getResourceDefinition(typeName).implementingClass
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
         try {
             if (typeName.contains(".")) {
@@ -264,20 +264,20 @@ abstract class FhirModelResolver<
                 }
                 return childElement.getImplementingClass()
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
         // Special case for enumerations. They are often in the "Enumerations" class.
         for (packageName in this.packageNames) {
             try {
                 return Class.forName(String.format("%s.Enumerations$%s", packageName, typeName))
-            } catch (e: ClassNotFoundException) {}
+            } catch (_: ClassNotFoundException) {}
         }
 
         // Other Types in package.
         for (packageName in this.packageNames) {
             try {
                 return Class.forName(String.format("%s.%s", packageName, typeName))
-            } catch (e: ClassNotFoundException) {}
+            } catch (_: ClassNotFoundException) {}
         }
 
         // Scan all resources.
@@ -290,7 +290,7 @@ abstract class FhirModelResolver<
         try {
             // Just give me SOMETHING.
             return Class.forName(typeName)
-        } catch (e: ClassNotFoundException) {
+        } catch (_: ClassNotFoundException) {
             throw UnknownType(
                 String.format(
                     "Could not resolve type %s. Primary package(s) for this resolver are %s",
@@ -332,7 +332,7 @@ abstract class FhirModelResolver<
 
         // For FHIR enumerations, return the type of the backing Enum
         if (this.enumChecker(value)) {
-            val factoryName = this.enumFactoryTypeGetter(value as EnumerationType)!!.getSimpleName()
+            val factoryName = this.enumFactoryTypeGetter(value as EnumerationType).getSimpleName()
             return this.resolveType(factoryName.substringBefore("EnumFactory"))
         }
 
@@ -380,7 +380,7 @@ abstract class FhirModelResolver<
             if (value!!.javaClass.getSimpleName() == "Quantity") {
                 try {
                     value = this.castToSimpleQuantity(value as BaseType)!!
-                } catch (e: FHIRException) {
+                } catch (_: FHIRException) {
                     throw InvalidCast("Unable to cast Quantity to SimpleQuantity")
                 }
                 child.mutator.setValue(base, setBaseValue(value, base))
@@ -667,12 +667,12 @@ abstract class FhirModelResolver<
         // ZoneOffset zoneOffset =
         // tz.toZoneId().getRules().getStandardOffset(calendar.toInstant());
         return when (calendarConstant) {
-            Calendar.YEAR -> Date(calendar!!.get(Calendar.YEAR))
-            Calendar.MONTH -> Date(calendar!!.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+            Calendar.YEAR -> Date(calendar.get(Calendar.YEAR))
+            Calendar.MONTH -> Date(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
 
             Calendar.DAY_OF_MONTH ->
                 Date(
-                    calendar!!.get(Calendar.YEAR),
+                    calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH),
                 )
@@ -709,7 +709,7 @@ abstract class FhirModelResolver<
 
             "TimeType" -> (target as IPrimitiveType<String>).value = value.toString()
             "Base64BinaryType" -> target.valueAsString = value as String?
-            else -> (target as IPrimitiveType<Any?>).value = value as Any?
+            else -> (target as IPrimitiveType<Any?>).value = value
         }
     }
 
@@ -746,6 +746,7 @@ abstract class FhirModelResolver<
         }
 
         val simpleName = source.javaClass.getSimpleName()
+        @Suppress("UNCHECKED_CAST")
         return when (simpleName) {
             "InstantType",
             "DateTimeType" -> toDateTime(source as BaseDateTimeType)

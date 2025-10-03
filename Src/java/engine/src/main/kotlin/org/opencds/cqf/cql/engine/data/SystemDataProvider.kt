@@ -27,6 +27,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
         throw IllegalArgumentException("SystemDataProvider does not support retrieval.")
     }
 
+    @Deprecated("Use packageNames instead")
     override var packageName: String?
         get() = "org.opencds.cqf.cql.engine.runtime"
         set(value) {}

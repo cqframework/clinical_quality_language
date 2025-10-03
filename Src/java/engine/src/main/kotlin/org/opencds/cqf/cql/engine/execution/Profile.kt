@@ -84,12 +84,7 @@ class Profile
 
         fun ensureChild(expression: Element?, context: String?): Node {
             return this.children
-                .computeIfAbsent(context) { context2 ->
-                    java.util.IdentityHashMap<
-                        org.hl7.elm.r1.Element?,
-                        org.opencds.cqf.cql.engine.execution.Profile.Node,
-                    >()
-                }!!
+                .computeIfAbsent(context) { context2 -> IdentityHashMap<Element?, Node>() }!!
                 .computeIfAbsent(expression) { expression2 -> Node(expression, context) }
         }
 
@@ -212,7 +207,7 @@ class Profile
             val sorted =
                 this.children.values
                     .flatMap { contextMap -> contextMap!!.values }
-                    .sortedWith(Comparator.comparing<Node?, Long?> { node -> -node!!.time })
+                    .sortedWith(Comparator.comparing<Node?, Long> { node -> -node!!.time })
             var xc = x
             for (child in sorted) {
                 xc = child.renderStep(writer, i++, xc, depth + 1, scaleX, scaleY)

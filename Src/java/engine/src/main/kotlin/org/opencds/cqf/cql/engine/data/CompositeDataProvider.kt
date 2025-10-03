@@ -9,7 +9,7 @@ class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
     protected var retrieveProvider: RetrieveProvider?,
 ) : org.opencds.cqf.cql.engine.data.DataProvider {
-    @Suppress("deprecation")
+    @Deprecated("Use packageNames instead")
     override var packageName: String?
         get() = this.modelResolver!!.packageName
         set(value) {
