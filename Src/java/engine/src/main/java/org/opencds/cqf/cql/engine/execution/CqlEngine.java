@@ -499,7 +499,9 @@ public class CqlEngine {
     private void validateTerminologyRequirements(Library library) {
         // TODO: Smarter validation would be to checkout and see if any retrieves
         // Use terminology, and to check for any codesystem lookups.
-        if ((library.getCodeSystems() != null
+        // Please remember that (true) || (true) || (true) && false == true beacause of order of operations, so the
+        // extra () are needed!
+        if (((library.getCodeSystems() != null
                         && library.getCodeSystems().getDef() != null
                         && !library.getCodeSystems().getDef().isEmpty())
                 || (library.getCodes() != null
@@ -507,7 +509,7 @@ public class CqlEngine {
                         && !library.getCodes().getDef().isEmpty())
                 || (library.getValueSets() != null
                                 && library.getValueSets().getDef() != null
-                                && !library.getValueSets().getDef().isEmpty())
+                                && !library.getValueSets().getDef().isEmpty()))
                         && this.environment.getTerminologyProvider() == null) {
             throw new IllegalArgumentException(String.format(
                     "Library %s has terminology requirements and no terminology provider is registered.",
