@@ -192,7 +192,7 @@ class CompiledLibrary {
     fun resolveFunctionRef(
         functionName: String,
         signature: List<DataType>?,
-    ): Iterable<FunctionDef?> {
+    ): Iterable<FunctionDef> {
         return when (signature) {
             null -> resolveFunctionRef(functionName)
             else -> {
@@ -206,9 +206,9 @@ class CompiledLibrary {
                         operandTypes = signature,
                     )
                 val resolution = resolveCall(cc, ConversionMap())
-                val results = ArrayList<FunctionDef?>()
+                val results = ArrayList<FunctionDef>()
                 if (resolution != null) {
-                    results.add(resolution.operator.functionDef)
+                    results.add(resolution.operator.functionDef!!)
                 }
                 results
             }

@@ -120,7 +120,7 @@ class ElmQueryContext(
         queryRequirement.addChildRequirements(childRequirements)
 
         // distribute query requirements to each alias
-        if (context.options.analyzeDataRequirements) {
+        if (context.options?.analyzeDataRequirements == true) {
             queryRequirement.distributeExpressionRequirement(queryRequirements, context)
         }
 
