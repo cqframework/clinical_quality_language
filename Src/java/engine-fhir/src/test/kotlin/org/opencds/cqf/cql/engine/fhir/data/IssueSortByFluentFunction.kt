@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Interval
 
 // Fluent functions were not sorting correctly due
 // to the engine not looking in the variable stack
@@ -33,24 +35,27 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
         obs2.setEffective(period2)
 
         val r =
-            RetrieveProvider {
-                context,
-                contextPath,
-                contextValue,
-                dataType,
-                templateId,
-                codePath,
-                codes,
-                valueSet,
-                datePath,
-                dateLowPath,
-                dateHighPath,
-                dateRange ->
-                when (dataType) {
-                    "Patient" -> mutableListOf(patient)
-                    "Observation" ->
-                        listOf(obs2, obs1) // Intentionally out of order to test sorting
-                    else -> mutableListOf()
+            object : RetrieveProvider {
+                override fun retrieve(
+                    context: String?,
+                    contextPath: String?,
+                    contextValue: Any?,
+                    dataType: String,
+                    templateId: String?,
+                    codePath: String?,
+                    codes: Iterable<Code>?,
+                    valueSet: String?,
+                    datePath: String?,
+                    dateLowPath: String?,
+                    dateHighPath: String?,
+                    dateRange: Interval?,
+                ): Iterable<Any?>? {
+                    return when (dataType) {
+                        "Patient" -> mutableListOf(patient)
+                        "Observation" ->
+                            listOf(obs2, obs1) // Intentionally out of order to test sorting
+                        else -> mutableListOf()
+                    }
                 }
             }
 
@@ -61,7 +66,7 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
         val result =
             engine
                 .evaluate("IssueSortByFluentFunction")
-                .forExpression("Ordered Observations")
+                .forExpression("Ordered Observations")!!
                 .value()
 
         val obs = Assertions.assertInstanceOf(MutableList::class.java, result)

@@ -10,7 +10,7 @@ internal class IncludedCodeRefTest : CqlTestBase() {
     @Test
     fun included_code_ref() {
         val results = engine.evaluate(toElmIdentifier("IncludedCodeRefTest"))
-        val value = results.forExpression("IncludedCode").value()
+        val value = results.forExpression("IncludedCode")!!.value()
         Assertions.assertNotNull(value)
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.instanceOf(Code::class.java)))
     }

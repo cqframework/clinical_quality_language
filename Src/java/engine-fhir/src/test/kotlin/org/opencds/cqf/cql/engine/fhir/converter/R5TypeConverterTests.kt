@@ -316,18 +316,16 @@ internal class R5TypeConverterTests {
         val expected = Ratio().setNumerator(expectedNumerator).setDenominator(expectedDenominator)
 
         val testData = org.opencds.cqf.cql.engine.runtime.Ratio()
-        testData.setNumerator(
-            org.opencds.cqf.cql.engine.runtime
+        testData.numerator =
+            (org.opencds.cqf.cql.engine.runtime
                 .Quantity()
                 .withValue(BigDecimal.valueOf(1.0))
-                .withUnit("ml")
-        )
-        testData.setDenominator(
-            org.opencds.cqf.cql.engine.runtime
+                .withUnit("ml"))
+        testData.denominator =
+            (org.opencds.cqf.cql.engine.runtime
                 .Quantity()
                 .withValue(BigDecimal.valueOf(2.0))
-                .withUnit("ml")
-        )
+                .withUnit("ml"))
 
         val actual = typeConverter.toFhirRatio(testData) as Ratio?
 
@@ -646,11 +644,11 @@ internal class R5TypeConverterTests {
             ints.add(i)
         }
 
-        tuple.getElements()["V"] = ints
-        tuple.getElements()["W"] = null
-        tuple.getElements()["X"] = 5
-        tuple.getElements()["Y"] = Encounter().setId("123")
-        tuple.getElements()["Z"] = ArrayList<Any?>()
+        tuple.elements["V"] = ints
+        tuple.elements["W"] = null
+        tuple.elements["X"] = 5
+        tuple.elements["Y"] = Encounter().setId("123")
+        tuple.elements["Z"] = ArrayList<Any?>()
 
         actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
         val first = actual
@@ -682,19 +680,19 @@ internal class R5TypeConverterTests {
     @Test
     fun complexTupleToFhirTuple() {
         val innerTuple = Tuple()
-        innerTuple.getElements()["X"] = 1
-        innerTuple.getElements()["Y"] = 2
-        innerTuple.getElements()["Z"] = null
+        innerTuple.elements["X"] = 1
+        innerTuple.elements["Y"] = 2
+        innerTuple.elements["Z"] = null
         val outerTuple = Tuple()
-        outerTuple.getElements()["A"] = innerTuple
+        outerTuple.elements["A"] = innerTuple
         val tupleList = ArrayList<Tuple?>()
         for (i in 0..2) {
             val elementTuple = Tuple()
-            elementTuple.getElements()["P"] = i
-            elementTuple.getElements()["Q"] = i + 1
+            elementTuple.elements["P"] = i
+            elementTuple.elements["Q"] = i + 1
             tupleList.add(elementTuple)
         }
-        outerTuple.getElements()["B"] = tupleList
+        outerTuple.elements["B"] = tupleList
 
         val actual =
             typeConverter.toFhirTuple(outerTuple) as Parameters.ParametersParameterComponent
@@ -905,26 +903,26 @@ internal class R5TypeConverterTests {
         var expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019-02-03")
         var actualDate: org.opencds.cqf.cql.engine.runtime.Date? =
             typeConverter.toCqlDate(DateType("2019-02-03"))
-        Assertions.assertTrue(expectedDate.equal(actualDate))
+        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
 
         expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019")
         actualDate = typeConverter.toCqlDate(DateType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate))
+        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
     }
 
     @Test
     fun dateTimeToCqlType() {
         var expectedDate = DateTime("2019-02-03", ZoneOffset.UTC)
         var actualDate: DateTime? = typeConverter.toCqlDateTime(DateTimeType("2019-02-03"))
-        Assertions.assertTrue(expectedDate.equal(actualDate))
+        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
         actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate))
+        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
         actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate))
+        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
     }
 
     @Test
@@ -941,24 +939,22 @@ internal class R5TypeConverterTests {
                     .setUnit("ml")
                     .setSystem("http://unitsofmeasure.org")
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
     }
 
     @Test
     fun ratioToCqlType() {
         val expected = org.opencds.cqf.cql.engine.runtime.Ratio()
-        expected.setNumerator(
-            org.opencds.cqf.cql.engine.runtime
+        expected.numerator =
+            (org.opencds.cqf.cql.engine.runtime
                 .Quantity()
                 .withValue(BigDecimal.valueOf(1.0))
-                .withUnit("ml")
-        )
-        expected.setDenominator(
-            org.opencds.cqf.cql.engine.runtime
+                .withUnit("ml"))
+        expected.denominator =
+            (org.opencds.cqf.cql.engine.runtime
                 .Quantity()
                 .withValue(BigDecimal.valueOf(2.0))
-                .withUnit("ml")
-        )
+                .withUnit("ml"))
 
         val testNumerator =
             Quantity()
@@ -974,7 +970,7 @@ internal class R5TypeConverterTests {
         val test = Ratio().setNumerator(testNumerator).setDenominator(testDenominator)
 
         val actual: org.opencds.cqf.cql.engine.runtime.Ratio? = typeConverter.toCqlRatio(test)
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
     }
 
     @Test
@@ -991,7 +987,7 @@ internal class R5TypeConverterTests {
 
     @Test
     fun codingToCqlCode() {
-        var expected =
+        var expected: Code? =
             Code()
                 .withSystem("http://the-system.com")
                 .withCode("test")
@@ -1005,7 +1001,7 @@ internal class R5TypeConverterTests {
                     .setDisplay("system-test")
                     .setVersion("1.5")
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected!!.equal(actual) == true)
 
         expected = typeConverter.toCqlCode(null)
         Assertions.assertNull(expected)
@@ -1013,7 +1009,7 @@ internal class R5TypeConverterTests {
 
     @Test
     fun codeableConceptToCqlConcept() {
-        var expected =
+        var expected: Concept? =
             Concept()
                 .withCode(
                     Code()
@@ -1035,7 +1031,7 @@ internal class R5TypeConverterTests {
                     .setText("additional-text")
             )
 
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected!!.equal(actual) == true)
 
         expected = typeConverter.toCqlConcept(null)
         Assertions.assertNull(expected)
@@ -1056,7 +1052,7 @@ internal class R5TypeConverterTests {
                     .setStartElement(DateTimeType("2019-02-03"))
                     .setEndElement(DateTimeType("2019-02-05"))
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
 
         expected =
             Interval(
@@ -1069,7 +1065,7 @@ internal class R5TypeConverterTests {
             typeConverter.toCqlInterval(
                 Period().setStartElement(DateTimeType("2019")).setEndElement(DateTimeType("2020"))
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
 
         expected =
             Interval(
@@ -1084,7 +1080,7 @@ internal class R5TypeConverterTests {
                     .setStartElement(DateTimeType("2020-09-18T19:35:53+00:00"))
                     .setEndElement(DateTimeType("2020-09-18T19:37:00+00:00"))
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
 
         actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)
@@ -1121,7 +1117,7 @@ internal class R5TypeConverterTests {
                             .setSystem("http://unitsofmeasure.org") as SimpleQuantity?
                     )
             )
-        Assertions.assertTrue(expected.equal(actual))
+        Assertions.assertTrue(expected.equal(actual) == true)
 
         actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)

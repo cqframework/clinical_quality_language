@@ -49,7 +49,7 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
     constructor() : this(FhirContext.forR5())
 
     init {
-        this.setPackageNames(mutableListOf<String>("org.hl7.fhir.r5.model"))
+        this.packageNames = mutableListOf("org.hl7.fhir.r5.model")
         require(fhirContext.version.version == FhirVersionEnum.R5) {
             "The supplied context is not configured for R5"
         }
@@ -93,7 +93,7 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
                 )
             m.setAccessible(true)
             m.invoke(this.fhirContext, toLoad)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // intentionally ignored
         }
     }
@@ -146,7 +146,7 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
     }
 
     override fun setCalendarConstant(target: BaseDateTimeType, value: BaseTemporal) {
-        target.precision = toTemporalPrecisionEnum(value.getPrecision())
+        target.precision = toTemporalPrecisionEnum(value.precision!!)
     }
 
     override fun timeToString(time: TimeType): String {
@@ -173,7 +173,7 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
         return enumeration.getEnumFactory().javaClass
     }
 
-    override fun resolveType(typeName: String): Class<*>? {
+    override fun resolveType(typeName: String?): Class<*>? {
         // TODO: Might be able to patch some of these by registering custom types in
         // HAPI.
 
@@ -210,12 +210,12 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
      * markdown: string // id: string
      *
      */
-    override fun `is`(value: Any?, type: Class<*>): Boolean? {
+    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
         if (value == null) {
             return null
         }
 
-        if (type.isAssignableFrom(value.javaClass)) {
+        if (type!!.isAssignableFrom(value.javaClass)) {
             return true
         }
 
@@ -274,12 +274,12 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
         return false
     }
 
-    override fun `as`(value: Any?, type: Class<*>, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
         if (value == null) {
             return null
         }
 
-        if (type.isAssignableFrom(value.javaClass)) {
+        if (type!!.isAssignableFrom(value.javaClass)) {
             return value
         }
 

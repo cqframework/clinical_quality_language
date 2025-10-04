@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZoneOffset
-import java.util.Map
 import java.util.stream.Stream
 import org.cqframework.cql.cql2elm.CqlIncludeException
 import org.hamcrest.MatcherAssert.assertThat
@@ -29,9 +28,9 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     @BeforeEach
     fun setup() {
         debugMap = DebugMap()
-        cqlEngineWithNoOptions = CqlEngine(environment, null)
+        cqlEngineWithNoOptions = CqlEngine(environment!!, null)
         cqlEngineWithOptions =
-            CqlEngine(environment, setOf(CqlEngine.Options.EnableExpressionCaching))
+            CqlEngine(environment!!, mutableSetOf(CqlEngine.Options.EnableExpressionCaching))
     }
 
     @Test
@@ -188,11 +187,7 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val versionedIdentifierBad2 = toElmIdentifier("MultiLibrary2", "bad")
         val versionedIdentifierBad3 = toElmIdentifier("MultiLibrary3", "bad")
         val versionedIdentifiers =
-            listOf<VersionedIdentifier?>(
-                versionedIdentifierBad1,
-                versionedIdentifierBad2,
-                versionedIdentifierBad3,
-            )
+            listOf(versionedIdentifierBad1, versionedIdentifierBad2, versionedIdentifierBad3)
 
         val exception =
             Assertions.assertThrows(CqlIncludeException::class.java) {
@@ -218,10 +213,10 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesWithParameters() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate(
-                listOf<VersionedIdentifier?>(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
+                listOf(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
                 null,
                 null,
-                Map.of<String?, Any?>("Measurement Period", _1900_01_01_TO_1901_01_01),
+                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
                 debugMap,
                 null,
             )
@@ -230,8 +225,8 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_2)
         sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_3)
 
-        Assertions.assertThrows<IllegalStateException?>(IllegalStateException::class.java) {
-            evalResultsForMultiLib.getOnlyResultOrThrow()
+        Assertions.assertThrows(IllegalStateException::class.java) {
+            evalResultsForMultiLib.onlyResultOrThrow
         }
         Assertions.assertNotNull(evalResultsForMultiLib)
         val libraryResults = evalResultsForMultiLib.results
@@ -296,13 +291,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesWithExpressionUniqueToASingleLib() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate(
-                listOf<VersionedIdentifier?>(
+                listOf(
                     MULTI_LIBRARY_1,
                     MULTI_LIBRARY_2,
                     MULTI_LIBRARY_3,
                 ), // One expression common to all libraries, one each unique to a different single
                 // library
-                mutableSetOf<String?>("Number", "MultiLibraryIdent1", "MultiLibraryValue2"),
+                mutableSetOf("Number", "MultiLibraryIdent1", "MultiLibraryValue2"),
                 null,
                 null,
                 debugMap,
@@ -339,14 +334,14 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesWithSubsetOfAllCommonExpressions() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate(
-                listOf<VersionedIdentifier?>(
+                listOf(
                     MULTI_LIBRARY_1,
                     MULTI_LIBRARY_2,
                     MULTI_LIBRARY_3,
                 ), // We're leaving out "Name" here
-                mutableSetOf<String?>("Number", "Period"),
+                mutableSetOf("Number", "Period"),
                 null,
-                Map.of<String?, Any?>("Measurement Period", _1900_01_01_TO_1901_01_01),
+                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
                 debugMap,
                 null,
             )
@@ -388,17 +383,17 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun singleLibraryInvalid() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate(
-                listOf<VersionedIdentifier?>(toElmIdentifier("MultiLibraryBad", "0.1")),
+                listOf(toElmIdentifier("MultiLibraryBad", "0.1")),
                 null,
                 null,
-                Map.of<String?, Any?>("Measurement Period", _1900_01_01_TO_1901_01_01),
+                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
                 debugMap,
                 null,
             )
 
         val exception =
             Assertions.assertThrows(CqlException::class.java) {
-                evalResultsForMultiLib.getOnlyResultOrThrow()
+                evalResultsForMultiLib.onlyResultOrThrow
             }
         assertThat<String?>(
             exception.message,
@@ -413,15 +408,10 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val versionedIdentifierBad = toElmIdentifier("MultiLibraryBad", "0.1")
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate(
-                listOf<VersionedIdentifier?>(
-                    MULTI_LIBRARY_1,
-                    MULTI_LIBRARY_2,
-                    MULTI_LIBRARY_3,
-                    versionedIdentifierBad,
-                ),
+                listOf(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, versionedIdentifierBad),
                 null,
                 null,
-                Map.of<String?, Any?>("Measurement Period", _1900_01_01_TO_1901_01_01),
+                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
                 debugMap,
                 null,
             )
@@ -446,7 +436,7 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         Assertions.assertNotNull(exception)
         Assertions.assertEquals(
             "Library MultiLibraryBad-0.1 loaded, but had errors: Syntax error at define",
-            exception!!.message,
+            exception.message,
         )
         Assertions.assertNull(evalResultsForMultiLib.getResultFor(versionedIdentifierBad))
 
@@ -479,17 +469,10 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     }
 
     private fun findResultsByLibId(
-        libId: String?,
-        results: MutableMap<VersionedIdentifier?, EvaluationResult?>,
+        libId: String,
+        results: Map<VersionedIdentifier, EvaluationResult>,
     ): EvaluationResult {
-        return results.entries
-            .stream()
-            .filter { x: MutableMap.MutableEntry<VersionedIdentifier?, EvaluationResult?>? ->
-                x!!.key!!.id.equals(libId)
-            }
-            .map<EvaluationResult> { it.value }
-            .findFirst()
-            .orElseThrow()
+        return results.filter { x -> x.key.id.equals(libId) }.map { it.value }.first()
     }
 
     companion object {
@@ -546,7 +529,7 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
                 evalResultsForMultiLib.containsResultsFor(libraryIdentifier.withVersion(null))
             )
             Assertions.assertThrows(IllegalStateException::class.java) {
-                evalResultsForMultiLib.getOnlyResultOrThrow()
+                evalResultsForMultiLib.onlyResultOrThrow
             }
             Assertions.assertFalse(evalResultsForMultiLib.containsExceptionsFor(libraryIdentifier))
             Assertions.assertFalse(evalResultsForMultiLib.containsWarningsFor(libraryIdentifier))

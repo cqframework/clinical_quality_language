@@ -42,8 +42,8 @@ internal class RuntimeTests {
         MatcherAssert.assertThat(t.toString(), Matchers.`is`("Tuple {}"))
 
         t = Tuple()
-        t.getElements()["id"] = 1
-        t.getElements()["value"] = Quantity().withValue(BigDecimal("1.0")).withUnit("g")
+        t.elements["id"] = 1
+        t.elements["value"] = Quantity().withValue(BigDecimal("1.0")).withUnit("g")
         MatcherAssert.assertThat(
             t.toString(),
             Matchers.`is`("Tuple {\n  id: 1\n  value: 1.0 'g'\n}"),

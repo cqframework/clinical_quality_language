@@ -13,14 +13,14 @@ dependencies {
 
 tasks.jacocoTestReport {
     sourceDirectories.setFrom(files(
-            "${projectDir}/../elm/src/main/java",
-            "${projectDir}/../cql-to-elm/src/main/java",
-            "${projectDir}/../engine/src/main/java",
+            "${projectDir}/../elm/src/commonMain/kotlin",
+            "${projectDir}/../cql-to-elm/src/commonMain/kotlin",
+            "${projectDir}/../engine/src/main/kotlin",
     ))
 
     classDirectories.setFrom(files(
-            "${projectDir}/../elm/build/classes/java/main",
-            "${projectDir}/../cql-to-elm/build/classes/java/main",
-            "${projectDir}/../engine/build/classes/java/main",
+            "${projectDir}/../elm/build/classes/kotlin/jvm/main",
+            "${projectDir}/../cql-to-elm/build/classes/kotlin/jvm/main",
+            "${projectDir}/../engine/build/classes/kotlin/main",
     ))
 }

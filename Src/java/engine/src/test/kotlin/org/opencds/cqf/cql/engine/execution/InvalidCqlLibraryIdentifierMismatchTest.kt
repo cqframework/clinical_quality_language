@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource
 internal class InvalidCqlLibraryIdentifierMismatchTest : CqlTestBase() {
     @ParameterizedTest
     @MethodSource("evaluateWithMatchedLibraryIdsParams")
-    fun evaluateWithMismatchedLibraryIds(libraryIdentifierToSearch: VersionedIdentifier?) {
+    fun evaluateWithMismatchedLibraryIds(libraryIdentifierToSearch: VersionedIdentifier) {
         // We're simply asserting that we do not fail
         Assertions.assertNotNull(engine.evaluate(libraryIdentifierToSearch))
     }
@@ -20,7 +20,7 @@ internal class InvalidCqlLibraryIdentifierMismatchTest : CqlTestBase() {
     @ParameterizedTest
     @MethodSource("evaluateWithMismatchedLibraryIdsParams")
     fun evaluateWithMismatchedLibraryIds(
-        libraryIdentifierToSearch: VersionedIdentifier?,
+        libraryIdentifierToSearch: VersionedIdentifier,
         expectedExceptionMessage: String?,
     ) {
         val exception =

@@ -12,7 +12,7 @@ internal class TimeTest {
 
         val roundedTime = time.roundToPrecision(Precision.MILLISECOND, false) as Time
         Assertions.assertEquals("10:30", roundedTime.time.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedTime.precision)
     }
 
     @Test
@@ -22,7 +22,7 @@ internal class TimeTest {
 
         val roundedTime = time.roundToPrecision(Precision.MINUTE, false) as Time
         Assertions.assertEquals("10:30", roundedTime.time.toString())
-        Assertions.assertEquals(Precision.MINUTE, roundedTime.getPrecision())
+        Assertions.assertEquals(Precision.MINUTE, roundedTime.precision)
     }
 
     @Test
@@ -32,11 +32,11 @@ internal class TimeTest {
 
         var roundedTime = time.roundToPrecision(Precision.HOUR, false) as Time?
         Assertions.assertEquals("10:00", roundedTime!!.time.toString())
-        Assertions.assertEquals(Precision.HOUR, roundedTime.getPrecision())
+        Assertions.assertEquals(Precision.HOUR, roundedTime.precision)
 
         roundedTime = time.roundToPrecision(Precision.HOUR, true) as Time
         Assertions.assertEquals("11:00", roundedTime.time.toString())
-        Assertions.assertEquals(Precision.HOUR, roundedTime.getPrecision())
+        Assertions.assertEquals(Precision.HOUR, roundedTime.precision)
 
         roundedTime = time.roundToPrecision(Precision.MONTH, false) as Time?
         Assertions.assertNull(roundedTime)

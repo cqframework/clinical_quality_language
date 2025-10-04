@@ -15,11 +15,14 @@ class ProfilingTest : CqlTestBase() {
         val engine =
             CqlEngine(
                 environment,
-                setOf(CqlEngine.Options.EnableExpressionCaching, CqlEngine.Options.EnableProfiling),
+                mutableSetOf(
+                    CqlEngine.Options.EnableExpressionCaching,
+                    CqlEngine.Options.EnableProfiling,
+                ),
             ) // TODO: engine options to CqlTestBase.getEngine instead?
         val result = engine.evaluate("ProfilingTest")
         val debugResult = result.debugResult
-        return debugResult.profile
+        return debugResult!!.profile!!
     }
 
     @Test

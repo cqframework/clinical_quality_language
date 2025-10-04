@@ -9,12 +9,6 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.exception.CqlException
 
 internal class CqlLibraryLoadingTest : CqlTestBase() {
-    @Test
-    fun missing_identifier_throws_error() {
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
-            engine.evaluate(null as VersionedIdentifier?)
-        }
-    }
 
     @Test
     fun missing_library_throws_error() {

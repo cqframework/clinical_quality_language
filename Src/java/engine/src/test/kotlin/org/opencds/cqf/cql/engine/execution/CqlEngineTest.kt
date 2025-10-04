@@ -2,10 +2,8 @@ package org.opencds.cqf.cql.engine.execution
 
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.debug.DebugLocator
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResultEntry
 import org.opencds.cqf.cql.engine.exception.CqlException
@@ -19,18 +17,14 @@ internal class CqlEngineTest : CqlTestBase() {
         debugMap.isLoggingEnabled = true
         val results = engine.evaluate(toElmIdentifier("CqlEngineTest"), null, null, null, debugMap)
 
-        val libraryDebug = results.debugResult.libraryResults["CqlEngineTest"]!!.results
+        val libraryDebug = results.debugResult!!.libraryResults["CqlEngineTest"]!!.results
 
         Assertions.assertNotNull(libraryDebug)
 
         // Find the debug result for the AnInteger expression
         // It's indexed by location
         val result =
-            libraryDebug!!
-                .keys
-                .stream()
-                .filter { e: DebugLocator? -> e!!.locator == "6:1-6:21" }
-                .findFirst()
+            libraryDebug.keys.stream().filter { e -> e!!.locator == "6:1-6:21" }.findFirst()
 
         Assertions.assertTrue(result.isPresent)
 
@@ -60,10 +54,9 @@ internal class CqlEngineTest : CqlTestBase() {
         val singleLibResult = engine.evaluate(versionedIdentifierWithVersion)
         Assertions.assertNotNull(singleLibResult)
 
-        val multiLibResults =
-            engine.evaluate(listOf<VersionedIdentifier?>(versionedIdentifierWithVersion))
+        val multiLibResults = engine.evaluate(listOf(versionedIdentifierWithVersion))
         Assertions.assertNotNull(multiLibResults)
-        Assertions.assertNotNull(multiLibResults!!.getResultFor(versionedIdentifierNoVersion))
+        Assertions.assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion))
     }
 
     @Test

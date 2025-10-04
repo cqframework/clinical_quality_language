@@ -42,6 +42,7 @@ kotlin {
         // Assuming expect/actual classes are removed,
         // we'll need to refactor the code to use interfaces.
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
     }
     jvmToolchain(17)
     jvm()

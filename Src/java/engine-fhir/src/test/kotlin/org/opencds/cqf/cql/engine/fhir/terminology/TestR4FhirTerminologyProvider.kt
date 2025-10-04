@@ -115,7 +115,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         val info = ValueSetInfo()
         info.id = "urn:oid:Test"
-        info.getCodeSystems().add(codeSystem)
+        info.codeSystems!!.add(codeSystem)
 
         Assertions.assertThrows(UnsupportedOperationException::class.java) {
             provider!!.resolveValueSetId(info)
@@ -152,7 +152,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
         secondSet.setId("1")
         secondSet.setUrl(info.id)
 
-        mockFhirSearch("/ValueSet?url=" + urlEncode(info.id), firstSet, secondSet)
+        mockFhirSearch("/ValueSet?url=" + urlEncode(info.id!!), firstSet, secondSet)
 
         Assertions.assertThrows(IllegalArgumentException::class.java) {
             provider!!.resolveValueSetId(info)
@@ -219,9 +219,9 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockFhirRead(
             ($$"/ValueSet/Test/$validate-code?code=" +
-                urlEncode(code.code) +
+                urlEncode(code.code!!) +
                 "&system=" +
-                urlEncode(code.system)),
+                urlEncode(code.system!!)),
             parameters,
         )
 
@@ -250,9 +250,9 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockFhirRead(
             ($$"/ValueSet/Test/$validate-code?code=" +
-                urlEncode(code.code) +
+                urlEncode(code.code!!) +
                 "&system=" +
-                urlEncode(code.system)),
+                urlEncode(code.system!!)),
             parameters,
         )
 
@@ -278,7 +278,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
         val parameters = Parameters()
         parameters.parameterFirstRep.setName("result").setValue(BooleanType(true))
 
-        mockFhirRead($$"/ValueSet/Test/$validate-code?code=" + urlEncode(code.code), parameters)
+        mockFhirRead($$"/ValueSet/Test/$validate-code?code=" + urlEncode(code.code!!), parameters)
 
         val result = provider!!.`in`(code, info)
         Assertions.assertTrue(result)
@@ -305,7 +305,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         val result = provider!!.lookup(code, info)
         Assertions.assertNotNull(result)
-        Assertions.assertEquals(result!!.system, code.system)
+        Assertions.assertEquals(result.system, code.system)
         Assertions.assertEquals(result.code, code.code)
         Assertions.assertEquals(result.display, code.display)
     }
@@ -318,22 +318,22 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
     @Throws(UnsupportedEncodingException::class)
     private fun mockResolveSearchPath(info: ValueSetInfo, valueSet: ValueSet?) {
         if (valueSet != null && valueSet.getUrl() != null) {
-            mockFhirSearch("/ValueSet?url=" + urlEncode(info.id), valueSet)
+            mockFhirSearch("/ValueSet?url=" + urlEncode(info.id!!), valueSet)
         } else {
-            mockFhirSearch("/ValueSet?url=" + urlEncode(info.id))
+            mockFhirSearch("/ValueSet?url=" + urlEncode(info.id!!))
         }
 
         if (valueSet != null && valueSet.getIdentifier().isNotEmpty()) {
-            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.id), valueSet)
+            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.id!!), valueSet)
         } else {
-            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.id))
+            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.id!!))
         }
 
         if (valueSet != null) {
             mockFhirRead("/ValueSet/" + valueSet.getId(), valueSet)
         } else {
-            val parts: Array<String?> =
-                info.id.split("[:/]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val parts =
+                info.id!!.split("[:/]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val expectedId = parts[parts.size - 1]
             mockNotFound("/ValueSet/$expectedId")
         }

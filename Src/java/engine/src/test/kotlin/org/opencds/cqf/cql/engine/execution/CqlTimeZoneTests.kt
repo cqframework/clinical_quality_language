@@ -36,8 +36,8 @@ internal class CqlTimeZoneTests : CqlTestBase() {
         }
     }
 
-    private fun evaluateExpression(functionName: String?, expectedResult: Boolean?) {
-        val value = engine.expression(library, functionName).value()
+    private fun evaluateExpression(functionName: String, expectedResult: Boolean?) {
+        val value = engine.expression(library, functionName)!!.value()
         Assertions.assertEquals(expectedResult, value, functionName)
     }
 

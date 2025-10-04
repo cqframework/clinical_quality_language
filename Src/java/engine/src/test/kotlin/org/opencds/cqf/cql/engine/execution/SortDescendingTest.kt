@@ -8,10 +8,12 @@ internal class SortDescendingTest : CqlTestBase() {
     @Test
     fun evaluate() {
         val results = engine.evaluate(toElmIdentifier("SortDescendingTest"))
-        val value = results.forExpression("sorted list of numbers descending").value()
-        Assertions.assertTrue(EquivalentEvaluator.equivalent((value as MutableList<*>)[0], 9))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], 4))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[2], 2))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[3], 1))
+        val value = results.forExpression("sorted list of numbers descending")!!.value()
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], 9) == true
+        )
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], 4) == true)
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[2], 2) == true)
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[3], 1) == true)
     }
 }

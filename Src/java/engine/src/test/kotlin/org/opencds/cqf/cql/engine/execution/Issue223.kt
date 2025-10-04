@@ -8,13 +8,13 @@ internal class Issue223 : CqlTestBase() {
     @Test
     fun interval() {
         val results = engine.evaluate(toElmIdentifier("Issue223"))
-        var value = results.forExpression("Access Flattened List of List Items").value()
+        var value = results.forExpression("Access Flattened List of List Items")!!.value()
         var list = value as MutableList<*>
         MatcherAssert.assertThat(list.size, Matchers.`is`(1))
         MatcherAssert.assertThat(list[0], Matchers.`is`<Any?>(true))
 
         value =
-            results.forExpression("Access Flattened List of List Items in a Single Query").value()
+            results.forExpression("Access Flattened List of List Items in a Single Query")!!.value()
         list = (value as MutableList<*>?)!!
         MatcherAssert.assertThat(list.size, Matchers.`is`(1))
         MatcherAssert.assertThat(list[0], Matchers.`is`<Any?>(true))

@@ -60,7 +60,7 @@ class R4FhirTerminologyProvider(val fhirClient: IGenericClient) : TerminologyPro
         }
     }
 
-    override fun expand(valueSet: ValueSetInfo): Iterable<Code?> {
+    override fun expand(valueSet: ValueSetInfo): Iterable<Code> {
         try {
             val id = resolveValueSetId(valueSet)
             val respParam =
@@ -73,7 +73,7 @@ class R4FhirTerminologyProvider(val fhirClient: IGenericClient) : TerminologyPro
                     .execute()
 
             val expanded = respParam.getParameter()[0].getResource() as ValueSet
-            val codes: MutableList<Code?> = ArrayList()
+            val codes = mutableListOf<Code>()
             for (codeInfo in expanded.getExpansion().getContains()) {
                 val nextCode =
                     Code()
@@ -92,7 +92,7 @@ class R4FhirTerminologyProvider(val fhirClient: IGenericClient) : TerminologyPro
         }
     }
 
-    override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code? {
+    override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code {
         try {
             val respParam =
                 fhirClient
@@ -165,7 +165,7 @@ class R4FhirTerminologyProvider(val fhirClient: IGenericClient) : TerminologyPro
     fun resolveValueSetId(valueSet: ValueSetInfo): String? {
         if (
             valueSet.version != null ||
-                (valueSet.getCodeSystems() != null && !valueSet.getCodeSystems().isEmpty())
+                (valueSet.codeSystems != null && !valueSet.codeSystems!!.isEmpty())
         ) {
             throw UnsupportedOperationException(
                 String.format(
@@ -183,7 +183,7 @@ class R4FhirTerminologyProvider(val fhirClient: IGenericClient) : TerminologyPro
         }
 
         if (!searchResults.hasEntry()) {
-            searchResults = searchById(valueSet.id)
+            searchResults = searchById(valueSet.id!!)
         }
 
         require(!(!searchResults.hasEntry() || searchResults.getEntry().isEmpty())) {

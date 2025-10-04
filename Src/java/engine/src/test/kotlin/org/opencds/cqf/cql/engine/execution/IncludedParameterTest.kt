@@ -7,64 +7,56 @@ import org.junit.jupiter.api.Test
 internal class IncludedParameterTest : CqlTestBase() {
     @Test
     fun gets_global_param_value() {
-        val expressions = HashSet<String?>()
-        expressions.add("Included Parameter")
-        expressions.add("Local Parameter")
+        val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = HashMap<String?, Any?>()
-        params["Measurement Period"] = 1
+        val params = mutableMapOf<String?, Any?>("Measurement Period" to 1)
 
         val result: EvaluationResult = engine.evaluate(library, expressions, params)
         // Parameter added as a global should affect all expressions
-        Assertions.assertEquals(1, result.forExpression("Included Parameter").value())
-        Assertions.assertEquals(1, result.forExpression("Local Parameter").value())
+        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value())
+        Assertions.assertEquals(1, result.forExpression("Local Parameter")!!.value())
     }
 
     @Test
     fun local_param_value() {
-        val expressions = HashSet<String?>()
-        expressions.add("Included Parameter")
-        expressions.add("Local Parameter")
+        val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = HashMap<String?, Any?>()
-        params["IncludedParameterTest.Measurement Period"] = 1
+        val params = mutableMapOf<String?, Any?>("IncludedParameterTest.Measurement Period" to 1)
 
         val result: EvaluationResult = engine.evaluate(library, expressions, params)
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result.forExpression("Included Parameter").value())
-        Assertions.assertEquals(1, result.forExpression("Local Parameter").value())
+        Assertions.assertNull(result.forExpression("Included Parameter")!!.value())
+        Assertions.assertEquals(1, result.forExpression("Local Parameter")!!.value())
     }
 
     @Test
     fun include_param_value() {
-        val expressions = HashSet<String?>()
-        expressions.add("Included Parameter")
-        expressions.add("Local Parameter")
+        val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = HashMap<String?, Any?>()
-        params["IncludedParameterTestCommon.Measurement Period"] = 1
+        val params =
+            mutableMapOf<String?, Any?>("IncludedParameterTestCommon.Measurement Period" to 1)
 
         val result: EvaluationResult = engine.evaluate(library, expressions, params)
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result.forExpression("Local Parameter").value())
-        Assertions.assertEquals(1, result.forExpression("Included Parameter").value())
+        Assertions.assertNull(result.forExpression("Local Parameter")!!.value())
+        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value())
     }
 
     @Test
     fun local_override_param_value() {
-        val expressions = HashSet<String?>()
-        expressions.add("Included Parameter")
-        expressions.add("Local Parameter")
+        val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = HashMap<String?, Any?>()
-        params["Measurement Period"] = 2
-        params["IncludedParameterTestCommon.Measurement Period"] = 1
+        val params =
+            mutableMapOf<String?, Any?>(
+                "Measurement Period" to 2,
+                "IncludedParameterTestCommon.Measurement Period" to 1,
+            )
 
-        val result: EvaluationResult = engine.evaluate(library, expressions, params)
+        val result = engine.evaluate(library, expressions, params)
         // If a library-specific parameter is not specified, the global
         // value should be used
-        Assertions.assertEquals(2, result.forExpression("Local Parameter").value())
-        Assertions.assertEquals(1, result.forExpression("Included Parameter").value())
+        Assertions.assertEquals(2, result.forExpression("Local Parameter")!!.value())
+        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value())
     }
 
     companion object {

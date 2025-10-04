@@ -100,8 +100,8 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val result = DateTimeType(value.dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-        result.precision = toFhirPrecision(value.getPrecision())
+        val result = DateTimeType(value.dateTime!!.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        result.precision = toFhirPrecision(value.precision!!)
         return result
     }
 
@@ -194,7 +194,7 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
         }
 
         val period = Period()
-        if (getSimpleName(value.pointType.getTypeName()) == "DateTime") {
+        if (getSimpleName(value.pointType!!.typeName) == "DateTime") {
             if (value.start != null) {
                 period.startElement = toFhirDateTime(value.start as DateTime?) as DateTimeType?
             }
@@ -204,7 +204,7 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             }
 
             return period
-        } else if (getSimpleName(value.pointType.getTypeName()) == "Date") {
+        } else if (getSimpleName(value.pointType!!.typeName) == "Date") {
             // TODO: This will construct DateTimeType values in FHIR with the system
             // timezone id, not the
             // timezoneoffset of the evaluation request..... this is a bug waiting to happen
@@ -233,7 +233,7 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        require(getSimpleName(value.pointType.getTypeName()) == "Quantity") {
+        require(getSimpleName(value.pointType!!.typeName) == "Quantity") {
             "FHIR Range can only be created from an Interval of Quantity type"
         }
 
@@ -289,12 +289,12 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
         val parameters = Parameters()
         val param = parameters.addParameter()
 
-        if (value.getElements().isEmpty()) {
+        if (value.elements.isEmpty()) {
             param.setValue(emptyBooleanWithExtension(EMPTY_TUPLE_EXT_URL, BooleanType(true)))
         }
 
-        for (key in value.getElements().keys) {
-            addElementToParameter(param, key, value.getElements()[key])
+        for (key in value.elements.keys) {
+            addElementToParameter(param, key, value.elements[key])
         }
 
         return param
@@ -326,8 +326,8 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
         val ratio = value as org.hl7.fhir.r4.model.Ratio
 
         return Ratio()
-            .setNumerator(toCqlQuantity(ratio.getNumerator()))
-            .setDenominator(toCqlQuantity(ratio.getDenominator()))
+            .withNumerator(toCqlQuantity(ratio.getNumerator()))
+            .withDenominator(toCqlQuantity(ratio.getDenominator()))
     }
 
     override fun toCqlAny(value: IBase?): Any? {

@@ -20,6 +20,9 @@ repositories {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
+    }
 }
 
 java {

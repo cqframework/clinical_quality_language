@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Interval
 
 // https://github.com/cqframework/clinical_quality_language/issues/1441
 // unions without aliases are not working
@@ -18,24 +20,27 @@ internal class Issue1441 : FhirExecutionTestBase() {
         val procedure = Procedure().setId("789")
 
         val r =
-            RetrieveProvider {
-                context,
-                contextPath,
-                contextValue,
-                dataType,
-                templateId,
-                codePath,
-                codes,
-                valueSet,
-                datePath,
-                dateLowPath,
-                dateHighPath,
-                dateRange ->
-                when (dataType) {
-                    "Patient" -> mutableListOf<Any?>(patient)
-                    "Observation" -> mutableListOf<Any?>(observation)
-                    "Procedure" -> mutableListOf<Any?>(procedure)
-                    else -> mutableListOf()
+            object : RetrieveProvider {
+                override fun retrieve(
+                    context: String?,
+                    contextPath: String?,
+                    contextValue: Any?,
+                    dataType: String,
+                    templateId: String?,
+                    codePath: String?,
+                    codes: Iterable<Code>?,
+                    valueSet: String?,
+                    datePath: String?,
+                    dateLowPath: String?,
+                    dateHighPath: String?,
+                    dateRange: Interval?,
+                ): Iterable<Any?>? {
+                    return when (dataType) {
+                        "Patient" -> mutableListOf(patient)
+                        "Observation" -> mutableListOf(observation)
+                        "Procedure" -> mutableListOf(procedure)
+                        else -> mutableListOf()
+                    }
                 }
             }
 
@@ -44,8 +49,8 @@ internal class Issue1441 : FhirExecutionTestBase() {
             CompositeDataProvider(r4ModelResolver, r),
         )
         val result = engine.evaluate("Issue1441")
-        val x = result.forExpression("x").value() as Iterable<*>?
-        val y = result.forExpression("y").value() as Iterable<*>?
+        val x = result.forExpression("x")!!.value() as Iterable<*>?
+        val y = result.forExpression("y")!!.value() as Iterable<*>?
 
         Assertions.assertIterableEquals(x, y)
     }

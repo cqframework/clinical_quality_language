@@ -14,7 +14,7 @@ internal class CqlListDistinguishedOverloadsTest : CqlTestBase() {
 
         val engine1 =
             getEngine(compilerOptions.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads))
-        val value = engine1.expression(library, "Test").value()
+        val value = engine1.expression(library, "Test")!!.value()
         Assertions.assertEquals("1, 2, 3, 4, 5", value)
 
         val engine2 =

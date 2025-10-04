@@ -36,7 +36,7 @@ internal class CachingModelResolverDecoratorTest {
     @Suppress("deprecation")
     fun context_path_resolved_only_once() {
         val m = Mockito.mock(ModelResolver::class.java)
-        Mockito.`when`(m.getPackageName()).thenReturn("test.package")
+        Mockito.`when`(m.packageName).thenReturn("test.package")
         Mockito.`when`(m.getContextPath("Patient", "Patient")).thenReturn("id")
 
         val cache = CachingModelResolverDecorator(m)
@@ -51,7 +51,7 @@ internal class CachingModelResolverDecoratorTest {
     @Suppress("deprecation")
     fun type_resolved_only_once() {
         val m = Mockito.mock(ModelResolver::class.java)
-        Mockito.`when`(m.getPackageName()).thenReturn("test.package")
+        Mockito.`when`(m.packageName).thenReturn("test.package")
         Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Int::class.java)))
             .thenReturn(Int::class.java as Class<*>)
         Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Class::class.java)))

@@ -19,13 +19,13 @@ internal class CqlConceptTest : CqlTestBase() {
         val codes = listOf(createCode("123", "1"), createCode("234", "1"), createCode("abc", "a"))
         val expected = Concept().withDisplay("test-concept-display").withCodes(codes)
 
-        val actual = results.forExpression("testConceptRef").value() as CqlType?
+        val actual = results.forExpression("testConceptRef")!!.value() as CqlType?
 
         assertEqual(expected, actual)
     }
 
     companion object {
-        private fun createCode(prefix: String?, systemVal: String?): Code? {
+        private fun createCode(prefix: String?, systemVal: String?): Code {
             return Code()
                 .withCode("$prefix-value")
                 .withSystem("http://system-$systemVal.org")
@@ -34,7 +34,7 @@ internal class CqlConceptTest : CqlTestBase() {
         }
 
         fun assertEqual(expected: CqlType, actual: CqlType?) {
-            if (!expected.equal(actual)) {
+            if (expected.equal(actual) != true) {
                 val message = "Expected $expected but got $actual"
                 Assertions.fail<Any?>(message)
             }

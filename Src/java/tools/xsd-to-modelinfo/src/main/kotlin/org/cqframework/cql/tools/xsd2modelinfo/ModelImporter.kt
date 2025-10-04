@@ -116,7 +116,6 @@ private constructor(
     }
 
     private fun toTypeInfo(dataType: DataType): TypeInfo {
-        requireNotNull(dataType) { "dataType is null" }
 
         if (dataType is SimpleType) {
             return toSimpleTypeInfo(dataType)
@@ -154,9 +153,7 @@ private constructor(
     private fun toSimpleTypeInfo(dataType: SimpleType): SimpleTypeInfo {
         val result = SimpleTypeInfo()
         result.name = dataType.simpleName
-        if (dataType.baseType != null) {
-            setBaseType(result, dataType.baseType)
-        }
+        setBaseType(result, dataType.baseType)
 
         return result
     }
@@ -164,9 +161,7 @@ private constructor(
     private fun toClassInfo(dataType: ClassType): ClassInfo {
         val result = ClassInfo()
         result.name = dataType.simpleName
-        if (dataType.baseType != null) {
-            setBaseType(result, dataType.baseType)
-        }
+        setBaseType(result, dataType.baseType)
         if (dataType.label != null) {
             result.label = dataType.label
         } else if (
@@ -240,9 +235,7 @@ private constructor(
 
     private fun toTupleTypeInfo(dataType: TupleType): TupleTypeInfo {
         val result = TupleTypeInfo()
-        if (dataType.baseType != null) {
-            setBaseType(result, dataType.baseType)
-        }
+        setBaseType(result, dataType.baseType)
 
         for (element in dataType.elements) {
             val infoElement = TupleTypeInfoElement().withName(element.name)
@@ -273,7 +266,6 @@ private constructor(
     }
 
     private fun toTypeSpecifier(dataType: DataType): TypeSpecifier {
-        requireNotNull(dataType) { "dataType is null" }
 
         if (dataType is SimpleType) {
             return toNamedTypeSpecifier(dataType)
@@ -332,7 +324,6 @@ private constructor(
         schemaTypeName: QName,
         namespaces: MutableMap<String?, String?>,
     ): String {
-        requireNotNull(schemaTypeName) { "schemaTypeName is null" }
 
         var modelName = namespaces[schemaTypeName.namespaceURI]
         if (modelName == null) {
@@ -590,28 +581,6 @@ private constructor(
                                 )
                             )
                         }
-
-                        else -> {
-                            val tName = getTypeName(element.type)
-                            val name = StringBuilder(element.name).append(tName[0].uppercaseChar())
-                            if (tName.length > 1) {
-                                name.append(tName.substring(1))
-                            }
-                            System.err.printf(
-                                "%s. Renaming element to %s.%n",
-                                e.message,
-                                name.toString(),
-                            )
-                            classType.addElement(
-                                ClassTypeElement(
-                                    name.toString(),
-                                    element.type,
-                                    element.prohibited,
-                                    element.oneBased,
-                                    null,
-                                )
-                            )
-                        }
                     }
                 }
             }
@@ -646,9 +615,6 @@ private constructor(
 
     private fun indexOfFirstDifference(original: String, comparison: String): Int {
         // Returns the index of the first difference between the two strings
-        requireNotNull(original) { "original is null" }
-
-        requireNotNull(comparison) { "comparison is null" }
 
         var result = -1
         do {

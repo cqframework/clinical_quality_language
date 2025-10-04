@@ -51,25 +51,28 @@ internal object EvaluatedResourceTestUtils {
         Procedure().setId(IdType(ResourceType.Procedure.name, "Procedure1")) as Procedure
 
     val RETRIEVE_PROVIDER: RetrieveProvider =
-        RetrieveProvider {
-            context: String?,
-            contextPath: String?,
-            contextValue: Any?,
-            dataType: String?,
-            templateId: String?,
-            codePath: String?,
-            codes: Iterable<Code?>?,
-            valueSet: String?,
-            datePath: String?,
-            dateLowPath: String?,
-            dateHighPath: String?,
-            dateRange: Interval? ->
-            when (dataType) {
-                "Encounter" -> mutableListOf<Any?>(ENCOUNTER)
-                "Condition" -> mutableListOf<Any?>(CONDITION)
-                "Patient" -> mutableListOf<Any?>(PATIENT)
-                "Procedure" -> mutableListOf<Any?>(PROCEDURE)
-                else -> mutableListOf<Any?>()
+        object : RetrieveProvider {
+            override fun retrieve(
+                context: String?,
+                contextPath: String?,
+                contextValue: Any?,
+                dataType: String,
+                templateId: String?,
+                codePath: String?,
+                codes: Iterable<Code>?,
+                valueSet: String?,
+                datePath: String?,
+                dateLowPath: String?,
+                dateHighPath: String?,
+                dateRange: Interval?,
+            ): Iterable<Any?>? {
+                return when (dataType) {
+                    "Encounter" -> mutableListOf<Any?>(ENCOUNTER)
+                    "Condition" -> mutableListOf<Any?>(CONDITION)
+                    "Patient" -> mutableListOf<Any?>(PATIENT)
+                    "Procedure" -> mutableListOf<Any?>(PROCEDURE)
+                    else -> mutableListOf<Any?>()
+                }
             }
         }
 
@@ -232,7 +235,7 @@ internal object EvaluatedResourceTestUtils {
         for (expressionName in expressionResults.keys) {
             val expressionResult: ExpressionResult = expressionResults[expressionName]!!
 
-            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources()
+            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources()!!
             val expectedEvaluatedResourcesForName = expectedEvaluatedResources[expressionName]!!
 
             assertResourcesEqual(expectedEvaluatedResourcesForName, actualEvaluatedResourcesForName)
@@ -250,7 +253,7 @@ internal object EvaluatedResourceTestUtils {
         expectedEvaluatedResources: Collection<IBaseResource>,
     ) {
         val expressionResult = evaluationResult.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult.evaluatedResources()
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
         val actualValue = expressionResult.value()
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
@@ -269,8 +272,8 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
         val evaluationResult = evaluationResultsForMultiLib!!.getResultFor(libraryIdentifier)
-        val expressionResult = evaluationResult.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult.evaluatedResources()
+        val expressionResult = evaluationResult!!.forExpression(expressionName)
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
         val actualValue = expressionResult.value()
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
@@ -288,7 +291,7 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
         val expressionResult = evaluationResult!!.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult.evaluatedResources()
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
         val actualValue = expressionResult.value()
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
@@ -374,10 +377,10 @@ internal object EvaluatedResourceTestUtils {
             context: String?,
             contextPath: String?,
             contextValue: Any?,
-            dataType: String?,
+            dataType: String,
             templateId: String?,
             codePath: String?,
-            codes: Iterable<Code?>?,
+            codes: Iterable<Code>?,
             valueSet: String?,
             datePath: String?,
             dateLowPath: String?,

@@ -65,13 +65,12 @@ object Main {
         val schemaCol = XmlSchemaCollection()
         schemaCol.setBaseUri(schemaFile.getParent())
         val schema = schemaCol.read(StreamSource(`is`))
-
-        val importerOptions: ModelImporterOptions?
-        if (options.has(optionsFileOpt)) {
-            importerOptions = loadFromProperties(optionsFileOpt.value(options))
-        } else {
-            importerOptions = ModelImporterOptions()
-        }
+        val importerOptions =
+            if (options.has(optionsFileOpt)) {
+                loadFromProperties(optionsFileOpt.value(options))
+            } else {
+                ModelImporterOptions()
+            }
 
         if (options.has(modelOpt)) {
             importerOptions.model = modelOpt.value(options)
@@ -93,13 +92,11 @@ object Main {
         }
 
         var config: ModelInfo? = null
-        if (configOpt != null) {
-            val configFile = configOpt.value(options)
-            if (configFile != null) {
-                val stream = FileInputStream(configFile)
-                val source = stream.asSource().buffered()
-                config = parseModelInfoXml(source)
-            }
+        val configFile = configOpt.value(options)
+        if (configFile != null) {
+            val stream = FileInputStream(configFile)
+            val source = stream.asSource().buffered()
+            config = parseModelInfoXml(source)
         }
 
         val modelInfo = fromXsd(schema, importerOptions, config)

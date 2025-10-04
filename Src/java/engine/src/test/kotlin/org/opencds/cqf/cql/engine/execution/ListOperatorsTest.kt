@@ -35,16 +35,16 @@ internal class ListOperatorsTest : CqlTestBase() {
 
         val results = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"))
 
-        var value = results.forExpression("simpleList").value()
+        var value = results.forExpression("simpleList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(4, 5, 1, 6, 2, 1)))
 
-        value = results.forExpression("simpleSortAsc").value()
+        value = results.forExpression("simpleSortAsc")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 1, 2, 4, 5, 6)))
 
-        value = results.forExpression("simpleSortDesc").value()
+        value = results.forExpression("simpleSortDesc")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(6, 5, 4, 2, 1, 1)))
 
-        value = results.forExpression("simpleSortStringAsc").value()
+        value = results.forExpression("simpleSortStringAsc")!!.value()
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(
@@ -60,7 +60,7 @@ internal class ListOperatorsTest : CqlTestBase() {
             ),
         )
 
-        value = results.forExpression("simpleSortStringDesc").value()
+        value = results.forExpression("simpleSortStringDesc")!!.value()
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(
@@ -76,56 +76,65 @@ internal class ListOperatorsTest : CqlTestBase() {
             ),
         )
 
-        value = results.forExpression("SortDatesAsc").value()
+        value = results.forExpression("SortDatesAsc")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 1, 1),
-            )
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12))
+            EquivalentEvaluator.equivalent(
+                value[1],
+                DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12),
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[2], DateTime(bigDecimalZoneOffset, 2012, 10, 5))
+            EquivalentEvaluator.equivalent(value[2], DateTime(bigDecimalZoneOffset, 2012, 10, 5)) ==
+                true
         )
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value[3],
                 DateTime(bigDecimalZoneOffset, 2012, 10, 5, 10),
-            )
+            ) == true
         )
 
-        value = results.forExpression("SortDatesDesc").value()
+        value = results.forExpression("SortDatesDesc")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 10, 5, 10),
-            )
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 10, 5))
+            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 10, 5)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[2], DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12))
+            EquivalentEvaluator.equivalent(
+                value[2],
+                DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12),
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[3], DateTime(bigDecimalZoneOffset, 2012, 1, 1))
+            EquivalentEvaluator.equivalent(value[3], DateTime(bigDecimalZoneOffset, 2012, 1, 1)) ==
+                true
         )
 
-        value = results.forExpression("SortIntWithNullAsc1").value()
+        value = results.forExpression("SortIntWithNullAsc1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf(null, 1, 2, 3)))
 
-        value = results.forExpression("SortIntWithNullAsc2").value()
+        value = results.forExpression("SortIntWithNullAsc2")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf(null, 1, 2, 3)))
 
-        value = results.forExpression("SortIntWithNullDesc1").value()
+        value = results.forExpression("SortIntWithNullDesc1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf(3, 2, 1, null)))
 
-        value = results.forExpression("SortIntWithNullDesc2").value()
+        value = results.forExpression("SortIntWithNullDesc2")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf(3, 2, 1, null)))
 
-        value = results.forExpression("intList").value()
+        value = results.forExpression("intList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(3, 2, 1)))
 
         //        value = results.forExpression("decimalList").value();
@@ -140,50 +149,50 @@ internal class ListOperatorsTest : CqlTestBase() {
         // new Quantity().withValue(new BigDecimal("17.33")).withUnit("lbs") ,  new
         // Quantity().withValue(new
         // BigDecimal("10.66")).withUnit("lbs") )));
-        value = results.forExpression("dateTimeList").value()
+        value = results.forExpression("dateTimeList")!!.value()
         val arrListDateTime: MutableList<DateTime?> = ArrayList()
         arrListDateTime.add(DateTime(bigDecimalZoneOffset, 2016))
         arrListDateTime.add(DateTime(bigDecimalZoneOffset, 2015))
         arrListDateTime.add(DateTime(bigDecimalZoneOffset, 2010))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, arrListDateTime))
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, arrListDateTime) == true)
 
-        value = results.forExpression("timeList").value()
+        value = results.forExpression("timeList")!!.value()
         val arrList: MutableList<Time?> = ArrayList()
         arrList.add(Time(15, 59, 59, 999))
         arrList.add(Time(15, 12, 59, 999))
         arrList.add(Time(15, 12, 13, 999))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, arrList))
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, arrList) == true)
 
-        value = results.forExpression("ContainsABNullHasNull").value()
+        value = results.forExpression("ContainsABNullHasNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ContainsNullFirst").value()
+        value = results.forExpression("ContainsNullFirst")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ContainsABCHasA").value()
+        value = results.forExpression("ContainsABCHasA")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ContainsJan2012True").value()
+        value = results.forExpression("ContainsJan2012True")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ContainsJan2012False").value()
+        value = results.forExpression("ContainsJan2012False")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ContainsTimeTrue").value()
+        value = results.forExpression("ContainsTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ContainsTimeFalse").value()
+        value = results.forExpression("ContainsTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        //        value = results.forExpression("ContainsNullLeft").value();
+        //        value = results.forExpression("ContainsNullLeft")!!.value();
         //        assertThat(value, is(false));
-        value = results.forExpression("DescendentsEmptyList").value()
+        value = results.forExpression("DescendentsEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DistinctEmptyList").value()
+        value = results.forExpression("DistinctEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("DistinctNullNullNull").value()
+        value = results.forExpression("DistinctNullNullNull")!!.value()
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(
@@ -195,600 +204,621 @@ internal class ListOperatorsTest : CqlTestBase() {
             ),
         )
 
-        value = results.forExpression("DistinctANullANull").value()
+        value = results.forExpression("DistinctANullANull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf("a", null)))
 
-        value = results.forExpression("Distinct112233").value()
+        value = results.forExpression("Distinct112233")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3)))
 
-        value = results.forExpression("Distinct123123").value()
+        value = results.forExpression("Distinct123123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3)))
 
-        value = results.forExpression("DistinctAABBCC").value()
+        value = results.forExpression("DistinctAABBCC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<String?>("a", "b", "c")))
 
-        value = results.forExpression("DistinctABCABC").value()
+        value = results.forExpression("DistinctABCABC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<String?>("a", "b", "c")))
 
-        value = results.forExpression("DistinctDateTime").value()
+        value = results.forExpression("DistinctDateTime")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 10, 5),
-            )
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 1, 1))
+            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 1, 1)) ==
+                true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("DistinctTime").value()
+        value = results.forExpression("DistinctTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999))
+            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999)) ==
+                true
         )
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)))
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)) == true
+        )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("EqualNullNull").value()
+        value = results.forExpression("EqualNullNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EqualEmptyListNull").value()
+        value = results.forExpression("EqualEmptyListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("EqualNullEmptyList").value()
+        value = results.forExpression("EqualNullEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("EqualEmptyListAndEmptyList").value()
+        value = results.forExpression("EqualEmptyListAndEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("Equal12And123").value()
+        value = results.forExpression("Equal12And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("Equal123And12").value()
+        value = results.forExpression("Equal123And12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("Equal123And123").value()
+        value = results.forExpression("Equal123And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EqualDateTimeTrue").value()
+        value = results.forExpression("EqualDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EqualDateTimeFalse").value()
+        value = results.forExpression("EqualDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EqualTimeTrue").value()
+        value = results.forExpression("EqualTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EqualTimeFalse").value()
+        value = results.forExpression("EqualTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ExceptEmptyListAndEmptyList").value()
+        value = results.forExpression("ExceptEmptyListAndEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("Except1234And23").value()
+        value = results.forExpression("Except1234And23")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 4)))
 
-        value = results.forExpression("Except23And1234").value()
+        value = results.forExpression("Except23And1234")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("ExceptDateTimeList").value()
+        value = results.forExpression("ExceptDateTimeList")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 5, 10),
-            )
+            ) == true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
 
-        value = results.forExpression("ExceptTimeList").value()
+        value = results.forExpression("ExceptTimeList")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999))
+            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999)) ==
+                true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
 
-        value = results.forExpression("ExceptNullRight").value()
+        value = results.forExpression("ExceptNullRight")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 4)))
 
-        value = results.forExpression("ExistsEmpty").value()
+        value = results.forExpression("ExistsEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ExistsListNull").value()
+        value = results.forExpression("ExistsListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("Exists1").value()
+        value = results.forExpression("Exists1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("Exists12").value()
+        value = results.forExpression("Exists12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ExistsDateTime").value()
+        value = results.forExpression("ExistsDateTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ExistsTime").value()
+        value = results.forExpression("ExistsTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ExistsNull").value()
+        value = results.forExpression("ExistsNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("FlattenEmpty").value()
+        value = results.forExpression("FlattenEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("FlattenListNullAndNull").value()
+        value = results.forExpression("FlattenListNullAndNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>(null, null)))
 
-        value = results.forExpression("FlattenNullAndListNull").value()
+        value = results.forExpression("FlattenNullAndListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>(null, null)))
 
-        value = results.forExpression("FlattenList12And34").value()
+        value = results.forExpression("FlattenList12And34")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3, 4)))
 
-        value = results.forExpression("FlattenDateTime").value()
+        value = results.forExpression("FlattenDateTime")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 5, 10),
-            )
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2014, 12, 10))
+            EquivalentEvaluator.equivalent(
+                value[1],
+                DateTime(bigDecimalZoneOffset, 2014, 12, 10),
+            ) == true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("FlattenTime").value()
+        value = results.forExpression("FlattenTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999))
+            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999)) ==
+                true
         )
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)))
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)) == true
+        )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("FirstEmpty").value()
+        value = results.forExpression("FirstEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FirstNull1").value()
+        value = results.forExpression("FirstNull1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("First1Null").value()
+        value = results.forExpression("First1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("First12").value()
+        value = results.forExpression("First12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("FirstDateTime").value()
+        value = results.forExpression("FirstDateTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10))
+            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10)) ==
+                true
         )
 
-        value = results.forExpression("FirstTime").value()
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)))
+        value = results.forExpression("FirstTime")!!.value()
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)) == true)
 
-        value = results.forExpression("InNullEmpty").value()
+        value = results.forExpression("InNullEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("InNullAnd1Null").value()
+        value = results.forExpression("InNullAnd1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("In1Null").value()
+        value = results.forExpression("In1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("In1And12").value()
+        value = results.forExpression("In1And12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("In3And12").value()
+        value = results.forExpression("In3And12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("InDateTimeTrue").value()
+        value = results.forExpression("InDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("InDateTimeFalse").value()
+        value = results.forExpression("InDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("InTimeTrue").value()
+        value = results.forExpression("InTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("InTimeFalse").value()
+        value = results.forExpression("InTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludesEmptyAndEmpty").value()
+        value = results.forExpression("IncludesEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludesListNullAndListNull").value()
+        value = results.forExpression("IncludesListNullAndListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("Includes123AndEmpty").value()
+        value = results.forExpression("Includes123AndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("Includes123And2").value()
+        value = results.forExpression("Includes123And2")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("Includes123And4").value()
+        value = results.forExpression("Includes123And4")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludesDateTimeTrue").value()
+        value = results.forExpression("IncludesDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludesDateTimeFalse").value()
+        value = results.forExpression("IncludesDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludesTimeTrue").value()
+        value = results.forExpression("IncludesTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludesTimeFalse").value()
+        value = results.forExpression("IncludesTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludesNullLeft").value()
+        value = results.forExpression("IncludesNullLeft")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
         // TODO: fix test - going to ContainsEvaluator
-        //        value = results.forExpression("IncludesNullRight").value();
+        //        value = results.forExpression("IncludesNullRight")!!.value();
         //        assertThat(value, is(true));
-        value = results.forExpression("IncludedInEmptyAndEmpty").value()
+        value = results.forExpression("IncludedInEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedInListNullAndListNull").value()
+        value = results.forExpression("IncludedInListNullAndListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedInEmptyAnd123").value()
+        value = results.forExpression("IncludedInEmptyAnd123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedIn2And123").value()
+        value = results.forExpression("IncludedIn2And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedIn4And123").value()
+        value = results.forExpression("IncludedIn4And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludedInDateTimeTrue").value()
+        value = results.forExpression("IncludedInDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedInDateTimeFalse").value()
+        value = results.forExpression("IncludedInDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IncludedInTimeTrue").value()
+        value = results.forExpression("IncludedInTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IncludedInTimeFalse").value()
+        value = results.forExpression("IncludedInTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
         // TODO: fix test - going to InEvaluator
-        //        value = results.forExpression("IncludedInNullLeft").value();
+        //        value = results.forExpression("IncludedInNullLeft")!!.value();
         //        assertThat(value, is(true));
-        value = results.forExpression("IncludedInNullRight").value()
+        value = results.forExpression("IncludedInNullRight")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IndexerNull1List").value()
+        value = results.forExpression("IndexerNull1List")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("Indexer0Of12").value()
+        value = results.forExpression("Indexer0Of12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("Indexer1Of12").value()
+        value = results.forExpression("Indexer1Of12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("Indexer2Of12").value()
+        value = results.forExpression("Indexer2Of12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerNeg1Of12").value()
+        value = results.forExpression("IndexerNeg1Of12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerDateTime").value()
+        value = results.forExpression("IndexerDateTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10))
+            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10)) ==
+                true
         )
 
-        value = results.forExpression("IndexerTime").value()
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)))
+        value = results.forExpression("IndexerTime")!!.value()
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)) == true)
 
-        value = results.forExpression("IndexOfEmptyNull").value()
+        value = results.forExpression("IndexOfEmptyNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexOfNullEmpty").value()
+        value = results.forExpression("IndexOfNullEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexOfNullIn1Null").value()
+        value = results.forExpression("IndexOfNullIn1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexOf1In12").value()
+        value = results.forExpression("IndexOf1In12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("IndexOf2In12").value()
+        value = results.forExpression("IndexOf2In12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("IndexOf3In12").value()
+        value = results.forExpression("IndexOf3In12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(-1))
 
-        value = results.forExpression("IndexOfDateTime").value()
+        value = results.forExpression("IndexOfDateTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("IndexOfTime").value()
+        value = results.forExpression("IndexOfTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("IntersectEmptyListAndEmptyList").value()
+        value = results.forExpression("IntersectEmptyListAndEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("Intersect1234And23").value()
+        value = results.forExpression("Intersect1234And23")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(2, 3)))
 
-        value = results.forExpression("Intersect23And1234").value()
+        value = results.forExpression("Intersect23And1234")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(2, 3)))
 
-        value = results.forExpression("IntersectDateTime").value()
+        value = results.forExpression("IntersectDateTime")!!.value()
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as MutableList<*>)[0],
                 DateTime(bigDecimalZoneOffset, 2012, 5, 10),
-            )
+            ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2014, 12, 10))
+            EquivalentEvaluator.equivalent(
+                value[1],
+                DateTime(bigDecimalZoneOffset, 2014, 12, 10),
+            ) == true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("IntersectTime").value()
+        value = results.forExpression("IntersectTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999))
+            EquivalentEvaluator.equivalent((value as MutableList<*>)[0], Time(15, 59, 59, 999)) ==
+                true
         )
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)))
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)) == true
+        )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("LastEmpty").value()
+        value = results.forExpression("LastEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("LastNull1").value()
+        value = results.forExpression("LastNull1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("Last1Null").value()
+        value = results.forExpression("Last1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("Last12").value()
+        value = results.forExpression("Last12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("LastDateTime").value()
+        value = results.forExpression("LastDateTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 12, 10))
+            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 12, 10)) ==
+                true
         )
 
-        value = results.forExpression("LastTime").value()
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(20, 59, 59, 999)))
+        value = results.forExpression("LastTime")!!.value()
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(20, 59, 59, 999)) == true)
 
-        value = results.forExpression("LengthEmptyList").value()
+        value = results.forExpression("LengthEmptyList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("LengthNull1").value()
+        value = results.forExpression("LengthNull1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("Length1Null").value()
+        value = results.forExpression("Length1Null")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("Length12").value()
+        value = results.forExpression("Length12")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("LengthDateTime").value()
+        value = results.forExpression("LengthDateTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(3))
 
-        value = results.forExpression("LengthTime").value()
+        value = results.forExpression("LengthTime")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(6))
 
-        value = results.forExpression("LengthNullList").value()
+        value = results.forExpression("LengthNullList")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("EquivalentEmptyAndEmpty").value()
+        value = results.forExpression("EquivalentEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EquivalentABCAndABC").value()
+        value = results.forExpression("EquivalentABCAndABC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EquivalentABCAndAB").value()
+        value = results.forExpression("EquivalentABCAndAB")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EquivalentABCAnd123").value()
+        value = results.forExpression("EquivalentABCAnd123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("Equivalent123AndABC").value()
+        value = results.forExpression("Equivalent123AndABC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("Equivalent123AndString123").value()
+        value = results.forExpression("Equivalent123AndString123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EquivalentDateTimeTrue").value()
+        value = results.forExpression("EquivalentDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EquivalentDateTimeNull").value()
+        value = results.forExpression("EquivalentDateTimeNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EquivalentDateTimeFalse").value()
+        value = results.forExpression("EquivalentDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EquivalentTimeTrue").value()
+        value = results.forExpression("EquivalentTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EquivalentTimeNull").value()
+        value = results.forExpression("EquivalentTimeNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("EquivalentTimeFalse").value()
+        value = results.forExpression("EquivalentTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NotEqualEmptyAndEmpty").value()
+        value = results.forExpression("NotEqualEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NotEqualABCAndABC").value()
+        value = results.forExpression("NotEqualABCAndABC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NotEqualABCAndAB").value()
+        value = results.forExpression("NotEqualABCAndAB")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqualABCAnd123").value()
+        value = results.forExpression("NotEqualABCAnd123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqual123AndABC").value()
+        value = results.forExpression("NotEqual123AndABC")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqual123AndString123").value()
+        value = results.forExpression("NotEqual123AndString123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqualDateTimeTrue").value()
+        value = results.forExpression("NotEqualDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqualDateTimeFalse").value()
+        value = results.forExpression("NotEqualDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NotEqualTimeTrue").value()
+        value = results.forExpression("NotEqualTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotEqualTimeFalse").value()
+        value = results.forExpression("NotEqualTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludesEmptyAndEmpty").value()
+        value = results.forExpression("ProperIncludesEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludesListNullAndListNull").value()
+        value = results.forExpression("ProperIncludesListNullAndListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludes123AndEmpty").value()
+        value = results.forExpression("ProperIncludes123AndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludes123And2").value()
+        value = results.forExpression("ProperIncludes123And2")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludes123And4").value()
+        value = results.forExpression("ProperIncludes123And4")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludesDateTimeTrue").value()
+        value = results.forExpression("ProperIncludesDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludesDateTimeFalse").value()
+        value = results.forExpression("ProperIncludesDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludesTimeTrue").value()
+        value = results.forExpression("ProperIncludesTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludesTimeFalse").value()
+        value = results.forExpression("ProperIncludesTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperlyIncludesNullLeft").value()
+        value = results.forExpression("ProperlyIncludesNullLeft")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperlyIncludes1And111").value()
+        value = results.forExpression("ProperlyIncludes1And111")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperContainsNullRightFalse").value()
+        value = results.forExpression("ProperContainsNullRightFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperContainsNullRightTrue").value()
+        value = results.forExpression("ProperContainsNullRightTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperContainsTimeTrue").value()
+        value = results.forExpression("ProperContainsTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperContainsTimeNull").value()
+        value = results.forExpression("ProperContainsTimeNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ProperInNullRightFalse").value()
+        value = results.forExpression("ProperInNullRightFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperInNullRightTrue").value()
+        value = results.forExpression("ProperInNullRightTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperInTimeTrue").value()
+        value = results.forExpression("ProperInTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperInTimeNull").value()
+        value = results.forExpression("ProperInTimeNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ProperIncludedInEmptyAndEmpty").value()
+        value = results.forExpression("ProperIncludedInEmptyAndEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludedInListNullAndListNull").value()
+        value = results.forExpression("ProperIncludedInListNullAndListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludedInEmptyAnd123").value()
+        value = results.forExpression("ProperIncludedInEmptyAnd123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludedIn2And123").value()
+        value = results.forExpression("ProperIncludedIn2And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludedIn4And123").value()
+        value = results.forExpression("ProperIncludedIn4And123")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludedInDateTimeTrue").value()
+        value = results.forExpression("ProperIncludedInDateTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludedInDateTimeFalse").value()
+        value = results.forExpression("ProperIncludedInDateTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperIncludedInTimeTrue").value()
+        value = results.forExpression("ProperIncludedInTimeTrue")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("ProperIncludedInTimeFalse").value()
+        value = results.forExpression("ProperIncludedInTimeFalse")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperlyIncludedInNullRight").value()
+        value = results.forExpression("ProperlyIncludedInNullRight")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("ProperlyIncludedIn11And1").value()
+        value = results.forExpression("ProperlyIncludedIn11And1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("SingletonFromEmpty").value()
+        value = results.forExpression("SingletonFromEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SingletonFromListNull").value()
+        value = results.forExpression("SingletonFromListNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SingletonFrom1").value()
+        value = results.forExpression("SingletonFrom1")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("SingletonFromDateTime").value()
+        value = results.forExpression("SingletonFromDateTime")!!.value()
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10))
+            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 10)) ==
+                true
         )
 
-        value = results.forExpression("SingletonFromTime").value()
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)))
+        value = results.forExpression("SingletonFromTime")!!.value()
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(15, 59, 59, 999)) == true)
 
-        value = results.forExpression("SkipNull").value()
+        value = results.forExpression("SkipNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SkipEven").value()
+        value = results.forExpression("SkipEven")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(3, 4, 5)))
 
-        value = results.forExpression("SkipOdd").value()
+        value = results.forExpression("SkipOdd")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(4, 5)))
 
-        value = results.forExpression("SkipNone").value()
+        value = results.forExpression("SkipNone")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3, 4, 5)))
 
-        value = results.forExpression("SkipAll").value()
+        value = results.forExpression("SkipAll")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("TailNull").value()
+        value = results.forExpression("TailNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TailEven").value()
+        value = results.forExpression("TailEven")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(2, 3, 4)))
 
-        value = results.forExpression("TailOdd").value()
+        value = results.forExpression("TailOdd")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(2, 3, 4, 5)))
 
-        value = results.forExpression("TailEmpty").value()
+        value = results.forExpression("TailEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("TailOneElement").value()
+        value = results.forExpression("TailOneElement")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("TakeNull").value()
+        value = results.forExpression("TakeNull")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TakeNullEmpty").value()
+        value = results.forExpression("TakeNullEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("TakeEmpty").value()
+        value = results.forExpression("TakeEmpty")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = results.forExpression("TakeEven").value()
+        value = results.forExpression("TakeEven")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2)))
 
-        value = results.forExpression("TakeOdd").value()
+        value = results.forExpression("TakeOdd")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3)))
 
-        value = results.forExpression("TakeAll").value()
+        value = results.forExpression("TakeAll")!!.value()
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3, 4)))
     }
 
@@ -798,46 +828,59 @@ internal class ListOperatorsTest : CqlTestBase() {
         val eng = getEngine(testCompilerOptions())
         val results = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"))
 
-        var value = results.forExpression("UnionEmptyAndEmpty").value() as MutableList<*>
+        var value = results.forExpression("UnionEmptyAndEmpty")!!.value() as MutableList<*>
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>()))
 
-        value = (results.forExpression("UnionListNullAndListNull").value() as MutableList<*>?)!!
+        value = (results.forExpression("UnionListNullAndListNull")!!.value() as MutableList<*>?)!!
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf(null)))
 
-        value = (results.forExpression("Union123AndEmpty").value() as MutableList<*>?)!!
+        value = (results.forExpression("Union123AndEmpty")!!.value() as MutableList<*>?)!!
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3)))
 
-        value = (results.forExpression("Union123And2").value() as MutableList<*>?)!!
+        value = (results.forExpression("Union123And2")!!.value() as MutableList<*>?)!!
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3)))
 
-        value = (results.forExpression("Union123And4").value() as MutableList<*>?)!!
+        value = (results.forExpression("Union123And4")!!.value() as MutableList<*>?)!!
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3, 4)))
 
-        value = (results.forExpression("UnionDateTime").value() as MutableList<*>?)!!
+        value = (results.forExpression("UnionDateTime")!!.value() as MutableList<*>?)!!
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[0], DateTime(bigDecimalZoneOffset, 2001, 9, 11))
+            EquivalentEvaluator.equivalent(value[0], DateTime(bigDecimalZoneOffset, 2001, 9, 11)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 5, 10))
+            EquivalentEvaluator.equivalent(value[1], DateTime(bigDecimalZoneOffset, 2012, 5, 10)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value[2], DateTime(bigDecimalZoneOffset, 2014, 12, 10))
+            EquivalentEvaluator.equivalent(
+                value[2],
+                DateTime(bigDecimalZoneOffset, 2014, 12, 10),
+            ) == true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(3))
 
-        value = (results.forExpression("UnionTime").value() as MutableList<*>?)!!
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[0], Time(15, 59, 59, 999)))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[2], Time(12, 59, 59, 999)))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[3], Time(10, 59, 59, 999)))
+        value = (results.forExpression("UnionTime")!!.value() as MutableList<*>?)!!
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[0], Time(15, 59, 59, 999)) == true
+        )
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[1], Time(20, 59, 59, 999)) == true
+        )
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[2], Time(12, 59, 59, 999)) == true
+        )
+        Assertions.assertTrue(
+            EquivalentEvaluator.equivalent(value[3], Time(10, 59, 59, 999)) == true
+        )
         MatcherAssert.assertThat(value.size, Matchers.`is`(4))
 
-        value = (results.forExpression("UnionDisparateTypes").value() as MutableList<*>?)!!
+        value = (results.forExpression("UnionDisparateTypes")!!.value() as MutableList<*>?)!!
         MatcherAssert.assertThat(value.size, Matchers.`is`(4))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[0], 1))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], "hi"))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[2], true))
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[3], BigDecimal("1.0")))
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[0], 1) == true)
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[1], "hi") == true)
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[2], true) == true)
+        Assertions.assertTrue(EquivalentEvaluator.equivalent(value[3], BigDecimal("1.0")) == true)
     }
 
     private fun testCompilerOptions(): CqlCompilerOptions {

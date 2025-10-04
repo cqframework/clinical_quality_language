@@ -15,8 +15,8 @@ internal class IntervalHelperTest {
     fun quantityFromCoarsestPrecisionOfBoundaries() {
         var intervals = listOf(null, Interval(BigDecimal("1.12"), true, BigDecimal("1.1234"), true))
         var quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-        Assertions.assertEquals(1, quantity.value.toInt())
-        Assertions.assertEquals(2, quantity.value.scale())
+        Assertions.assertEquals(1, quantity.value!!.toInt())
+        Assertions.assertEquals(2, quantity.value!!.scale())
         Assertions.assertTrue(Quantity.isDefaultUnit(quantity.unit))
 
         intervals =
@@ -24,20 +24,20 @@ internal class IntervalHelperTest {
                 Interval(null, false, Quantity().withValue(BigDecimal("1.123")).withUnit("g"), true)
             )
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-        Assertions.assertEquals(1, quantity.value.toInt())
-        Assertions.assertEquals(3, quantity.value.scale())
+        Assertions.assertEquals(1, quantity.value!!.toInt())
+        Assertions.assertEquals(3, quantity.value!!.scale())
         Assertions.assertEquals("g", quantity.unit)
 
         intervals = listOf<Interval?>(Interval(Date("2025-07-15"), true, Date("2025-12"), true))
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-        Assertions.assertEquals(1, quantity.value.toInt())
-        Assertions.assertEquals(0, quantity.value.scale())
+        Assertions.assertEquals(1, quantity.value!!.toInt())
+        Assertions.assertEquals(0, quantity.value!!.scale())
         Assertions.assertEquals("month", quantity.unit)
 
         intervals = listOf<Interval?>(Interval(10, true, null, true))
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-        Assertions.assertEquals(1, quantity.value.toInt())
-        Assertions.assertEquals(0, quantity.value.scale())
+        Assertions.assertEquals(1, quantity.value!!.toInt())
+        Assertions.assertEquals(0, quantity.value!!.scale())
         Assertions.assertTrue(Quantity.isDefaultUnit(quantity.unit))
     }
 

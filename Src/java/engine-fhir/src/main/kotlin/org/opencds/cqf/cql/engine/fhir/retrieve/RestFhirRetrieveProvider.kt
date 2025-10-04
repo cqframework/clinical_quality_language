@@ -24,7 +24,7 @@ class RestFhirRetrieveProvider(
     var searchStyle: SearchStyleEnum = DEFAULT_SEARCH_STYLE
 
     override fun executeQueries(
-        dataType: String,
+        dataType: String?,
         queries: MutableList<SearchParameterMap>,
     ): Iterable<Any?> {
         if (queries.isEmpty()) {

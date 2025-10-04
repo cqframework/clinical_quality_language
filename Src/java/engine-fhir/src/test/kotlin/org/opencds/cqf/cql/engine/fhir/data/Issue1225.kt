@@ -19,10 +19,10 @@ internal class Issue1225 : FhirExecutionTestBase() {
                     context: String?,
                     contextPath: String?,
                     contextValue: Any?,
-                    dataType: String?,
+                    dataType: String,
                     templateId: String?,
                     codePath: String?,
-                    codes: Iterable<Code?>?,
+                    codes: Iterable<Code>?,
                     valueSet: String?,
                     datePath: String?,
                     dateLowPath: String?,
@@ -45,6 +45,6 @@ internal class Issue1225 : FhirExecutionTestBase() {
         )
         val result = engine.evaluate("Issue1225")
 
-        Assertions.assertEquals("123", result.forExpression("Address Line 1").value())
+        Assertions.assertEquals("123", result.forExpression("Address Line 1")!!.value())
     }
 }

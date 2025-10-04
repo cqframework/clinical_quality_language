@@ -97,7 +97,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 null,
                 null,
                 null,
-            )
+            )!!
 
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3");
@@ -118,10 +118,9 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     // @Test
     fun testChoiceTypes() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
-        val results =
-            engine.evaluate(library!!.identifier, mutableSetOf<String?>("testChoiceTypes"))
+        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testChoiceTypes"))
 
-        val value = results.forExpression("testChoiceTypes").value()
+        val value = results.forExpression("testChoiceTypes")!!.value()
         Assertions.assertNotNull(value)
     }
 
@@ -129,18 +128,17 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     fun testDateType() {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
         engine.state.setContextValue("Patient", "Patient-12214")
-        val results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("testDateType"))
+        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testDateType"))
 
-        val value = results.forExpression("testDateType").value()
+        val value = results.forExpression("testDateType")!!.value()
         Assertions.assertNotNull(value)
     }
 
     @Test
     fun fhirObjectEqual() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
-        val results =
-            engine.evaluate(library!!.identifier, mutableSetOf<String?>("testFhirObjectEqual"))
-        val value = results.forExpression("testFhirObjectEqual").value()
+        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testFhirObjectEqual"))
+        val value = results.forExpression("testFhirObjectEqual")!!.value()
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -148,8 +146,8 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     fun fhirObjectEquivalent() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
         val results =
-            engine.evaluate(library!!.identifier, mutableSetOf<String?>("testFhirObjectEquivalent"))
-        val value = results.forExpression("testFhirObjectEquivalent").value()
+            engine.evaluate(library!!.identifier!!, mutableSetOf("testFhirObjectEquivalent"))
+        val value = results.forExpression("testFhirObjectEquivalent")!!.value()
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -204,7 +202,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 null,
                 null,
                 null,
-            )
+            )!!
 
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhir.hl7.de:8080/baseDstu3");
@@ -294,15 +292,15 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
             .withId("77d90968-1965-4574-aa34-19d7d1483d8a")
             .execute()
 
-        dstu3RetrieveProvider!!.setTerminologyProvider(Dstu3FhirTerminologyProvider(fhirClient))
+        dstu3RetrieveProvider!!.terminologyProvider = (Dstu3FhirTerminologyProvider(fhirClient))
         // dstu3Provider.setTerminologyProvider(new
         // FhirTerminologyProvider().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3", false));
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
         engine.state.enterContext("Patient")
         engine.state.setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a")
 
-        val results = engine.evaluate(library!!.identifier, mutableSetOf<String?>("GetProvenance"))
-        val value = results.forExpression("GetProvenance").value()
+        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("GetProvenance"))
+        val value = results.forExpression("GetProvenance")!!.value()
         Assertions.assertTrue(value is MutableList<*> && value.size == 1)
     }
 }

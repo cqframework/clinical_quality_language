@@ -19,16 +19,16 @@ internal class ExpandValueSetTest {
         val expected = Code().withCode("M").withSystem("http://test.com/system")
         val terminologyProvider: TerminologyProvider =
             object : TerminologyProvider {
-                override fun `in`(code: Code?, valueSet: ValueSetInfo?): Boolean {
+                override fun `in`(code: Code, valueSet: ValueSetInfo): Boolean {
                     return true
                 }
 
-                override fun expand(valueSet: ValueSetInfo?): Iterable<Code?> {
-                    return mutableListOf<Code?>(expected)
+                override fun expand(valueSet: ValueSetInfo): Iterable<Code> {
+                    return mutableListOf(expected)
                 }
 
-                override fun lookup(code: Code?, codeSystem: CodeSystemInfo?): Code? {
-                    return null
+                override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code {
+                    error("Not implemented")
                 }
             }
 
@@ -37,7 +37,7 @@ internal class ExpandValueSetTest {
         val engine = CqlEngine(environment)
         val results = engine.evaluate(CqlTestBase.toElmIdentifier("ExpandValueSetTest"))
 
-        val actual = results.forExpression("ExpandValueSet").value() as MutableList<*>
+        val actual = results.forExpression("ExpandValueSet")!!.value() as MutableList<*>
         Assertions.assertEquals(1, actual.size)
 
         CqlConceptTest.assertEqual(expected, actual[0] as CqlType)
