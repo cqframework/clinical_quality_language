@@ -27,7 +27,7 @@ object Uris {
                     createQuery(uri.rawQuery) +
                     createFragment(uri.rawFragment))
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
@@ -45,7 +45,7 @@ object Uris {
             }
 
             return uri
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }

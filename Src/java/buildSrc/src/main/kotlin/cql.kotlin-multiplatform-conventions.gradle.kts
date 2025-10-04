@@ -7,6 +7,7 @@ plugins {
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
     kotlin("plugin.serialization")
+    id("org.openrewrite.rewrite")
 }
 
 

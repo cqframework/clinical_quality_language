@@ -20,7 +20,7 @@ import org.hl7.fhir.utilities.VersionUtilities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-@Suppress("LocalVariableName")
+@Suppress("VariableNaming")
 open class IGContext {
     private class DefaultLogger : ILoggingService {
         private val log: Logger = LoggerFactory.getLogger(IGContext::class.java)
@@ -126,7 +126,7 @@ open class IGContext {
             }
 
             initializeFromIg(iniDir, igPath, specifiedFhirVersion)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             val message =
                 String.format(
                     "Exceptions occurred initializing refresh from ini file '%s':%s",

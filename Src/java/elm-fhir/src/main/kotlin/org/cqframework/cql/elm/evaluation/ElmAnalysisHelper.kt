@@ -210,7 +210,7 @@ object ElmAnalysisHelper {
         padWith: kotlin.String?,
     ): kotlin.String? {
         var input = input
-        if (input == null || padWith == null || padWith.length == 0) {
+        if (input == null || padWith == null || padWith.isEmpty()) {
             return null
         }
 

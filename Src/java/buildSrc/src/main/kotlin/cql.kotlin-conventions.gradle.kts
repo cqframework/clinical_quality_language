@@ -6,7 +6,8 @@ plugins {
     id("cql.maven-publishing-conventions")
     id("jacoco")
     id("org.jetbrains.dokka")
-    id("io.gitlab.arturbosch.detekt")
+    // id("io.gitlab.arturbosch.detekt")
+    id("org.openrewrite.rewrite")
 }
 
 repositories {
@@ -18,19 +19,19 @@ repositories {
 }
 
 
-detekt {
-    // Applies the config files on top of detekt's default config.
-    buildUponDefaultConfig = true
-
-    // The directories where detekt looks for source files.
-    source.setFrom(
-        "src/main/kotlin",
-        "src/test/kotlin",
-    )
-
-    // Custom config with overrides.
-    config.setFrom("$rootDir/config/detekt/detekt.yml")
-}
+//detekt {
+//    // Applies the config files on top of detekt's default config.
+//    buildUponDefaultConfig = true
+//
+//    // The directories where detekt looks for source files.
+//    source.setFrom(
+//        "src/main/kotlin",
+//        "src/test/kotlin",
+//    )
+//
+//    // Custom config with overrides.
+//    config.setFrom("$rootDir/config/detekt/detekt.yml")
+//}
 
 
 kotlin {
@@ -40,7 +41,11 @@ kotlin {
     }
 }
 
-
+rewrite {
+    dependencies {
+        project(":rewrite")
+    }
+}
 
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.13")

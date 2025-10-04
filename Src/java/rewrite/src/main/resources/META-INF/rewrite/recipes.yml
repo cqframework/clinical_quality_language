@@ -1,0 +1,6 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: org.cqframework.internal.rewrite.TestRecipes
+displayName: Example Kotlin recipe
+description: Example transformation
+recipeList:
+  - org.cqframework.internal.rewrite.TestRecipe

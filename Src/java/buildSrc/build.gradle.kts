@@ -17,6 +17,7 @@ dependencies {
     implementation("org.glassfish.jaxb:xsom:4.0.5")
     implementation("com.squareup:kotlinpoet:2.1.0")
     implementation("com.github.gmazzo.buildconfig:com.github.gmazzo.buildconfig.gradle.plugin:5.6.7")
+    implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.17.0")
 }
 
 kotlin {
