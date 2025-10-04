@@ -5,7 +5,6 @@ plugins {
     kotlin("jvm")
     id("cql.maven-publishing-conventions")
     id("jacoco")
-    id("cql.sca-conventions")
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
 }
