@@ -43,6 +43,7 @@ object IGUtils {
     @sourceIg: The implementationGuide (as an R5 resource)
      */
     @JvmStatic
+    @Suppress("MaxLineLength", "UnusedParameter")
     fun extractBinaryPaths(rootDir: String?, sourceIg: ImplementationGuide?): MutableList<String?> {
         val result: MutableList<String?> = ArrayList<String?>()
 

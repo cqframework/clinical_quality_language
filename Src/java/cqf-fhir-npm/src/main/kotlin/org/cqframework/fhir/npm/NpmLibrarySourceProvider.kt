@@ -19,6 +19,7 @@ class NpmLibrarySourceProvider(
     private val reader: ILibraryReader,
     private val logger: ILoggingService,
 ) : LibrarySourceProvider {
+    @Suppress("NestedBlockDepth")
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         // VersionedIdentifier.id: Name of the library
         // VersionedIdentifier.system: Namespace for the library, as a URL

@@ -18,6 +18,7 @@ class NpmModelInfoProvider(
     private val reader: ILibraryReader,
     private val logger: ILoggingService,
 ) : ModelInfoProvider {
+    @Suppress("NestedBlockDepth")
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         // VersionedIdentifier.id: Name of the model
         // VersionedIdentifier.system: Namespace for the model, as a URL

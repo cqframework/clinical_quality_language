@@ -1,5 +1,5 @@
 plugins {
-    id("cql.java-conventions")
+    id("cql.kotlin-conventions")
     id("application")
 }
 

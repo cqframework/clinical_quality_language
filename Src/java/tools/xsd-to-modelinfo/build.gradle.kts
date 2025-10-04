@@ -1,5 +1,4 @@
 plugins {
-    id("cql.java-conventions")
     id("cql.library-conventions")
     id("application")
 }

@@ -46,10 +46,7 @@ class NpmProcessor(
                 val packages = packageManager!!.npmList
                 for (p in packages) {
                     if (
-                        p.name() != null &&
-                            !p.name().isEmpty() &&
-                            p.canonical() != null &&
-                            !p.canonical().isEmpty()
+                        !p.name().isNullOrBlank() && !p.canonical().isNullOrBlank()
                     ) {
                         val ni = NamespaceInfo(p.name(), p.canonical())
                         namespaceInfos.add(ni)
