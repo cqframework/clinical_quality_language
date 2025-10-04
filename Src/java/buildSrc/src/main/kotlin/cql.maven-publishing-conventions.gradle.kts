@@ -5,7 +5,7 @@ plugins {
 /*
 A few things:
    - You must have a Maven Central account (https://central.sonatype.org/register/central-portal/)
-   - Your account must have privileges to upload info.cqframework artifacts
+   - Your account must have privileges to upload org.cqframework artifacts
    - You must have a gpg key (http://central.sonatype.org/pages/working-with-pgp-signatures.html)
    - You must set your account info and GPG key in your user's gradle.properties file.  For example:
        mavenCentralUsername=foo
