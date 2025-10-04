@@ -9,7 +9,7 @@ The CQL-to-ELM Translator is licensed under the open source [Apache Version 2.0]
 The `cql-to-elm-jvm` package is required to use the translator:
 
     <dependency>
-      <groupId>info.cqframework</groupId>
+      <groupId>org.cqframework</groupId>
       <artifactId>cql-to-elm-jvm</artifactId>
       <version>4.0.0-SNAPSHOT</version>
     </dependency>
@@ -17,12 +17,12 @@ The `cql-to-elm-jvm` package is required to use the translator:
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
 
     <dependency>
-      <groupId>info.cqframework</groupId>
+      <groupId>org.cqframework</groupId>
       <artifactId>quick</artifactId>
       <version>4.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>info.cqframework</groupId>
+      <groupId>org.cqframework</groupId>
       <artifactId>qdm</artifactId>
       <version>4.0.0-SNAPSHOT</version>
     </dependency>
@@ -30,7 +30,7 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
 To perform UCUM unit validation during translation using [`ucum-java`](https://github.com/FHIR/Ucum-java), the `ucum` package must also be included:
 
     <dependency>
-      <groupId>info.cqframework</groupId>
+      <groupId>org.cqframework</groupId>
       <artifactId>ucum</artifact>
       <version>4.0.0-SNAPSHOT</version>
     </dependency>
@@ -38,7 +38,7 @@ To perform UCUM unit validation during translation using [`ucum-java`](https://g
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
 
     <dependency>
-      <groupId>info.cqframework</groupId>
+      <groupId>org.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
       <version>4.0.0-SNAPSHOT</version>
     </dependency>
