@@ -11,7 +11,7 @@ object Uris {
     fun getHead(uri: URI): URI? {
         val path = uri.rawPath
         return when {
-            path == null ->  uri
+            path == null -> uri
             path.lastIndexOf("/") > -1 -> withPath(uri, path.substringBeforeLast("/"))
             else -> return uri
         }
@@ -68,7 +68,7 @@ object Uris {
     }
 
     private fun stripTrailingSlash(path: String?): String {
-        return when  {
+        return when {
             path.isNullOrBlank() -> ""
             path.endsWith("/") -> path.dropLast(1)
             else -> return path

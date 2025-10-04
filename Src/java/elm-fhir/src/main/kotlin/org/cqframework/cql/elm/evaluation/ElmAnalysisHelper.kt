@@ -86,10 +86,7 @@ object ElmAnalysisHelper {
                     return range
                 } else {
                     throw IllegalArgumentException(
-                        String.format(
-                            "toFhirValue not implemented for interval of %s",
-                            pointType.toString(),
-                        )
+                        "toFhirValue not implemented for interval of $pointType"
                     )
                 }
             } else if (context.typeResolver.isBooleanType(valueResultType)) {

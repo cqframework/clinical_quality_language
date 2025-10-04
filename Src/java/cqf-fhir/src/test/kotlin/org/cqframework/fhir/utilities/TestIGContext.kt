@@ -29,7 +29,7 @@ class TestIGContext : ILoggingService {
     }
 
     override fun logDebugMessage(logCategory: ILoggingService.LogCategory, s: String?) {
-        println(String.format("%s: %s", logCategory.toString(), s))
+        println("${logCategory}: $s")
     }
 
     @Deprecated("Deprecated in FHIR core")

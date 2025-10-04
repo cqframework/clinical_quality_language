@@ -4,15 +4,15 @@ package org.opencds.cqf.cql.engine.debug
 Identifies a location in a source file
  */
 class Location(val startLine: Int, val startChar: Int, val endLine: Int, val endChar: Int) {
-    override fun equals(o: Any?): Boolean {
-        if (this === o) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
-        if (o == null || javaClass != o.javaClass) {
+        if (other == null || javaClass != other.javaClass) {
             return false
         }
 
-        val other = o as Location
+        other as Location
 
         if (endChar != other.endChar) {
             return false
@@ -34,8 +34,6 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
     Returns true if this location includes the other location (i.e. starts on or before and ends on or after)
      */
     fun includes(other: Location): Boolean {
-        requireNotNull(other) { "other required" }
-
         if (this.startLine > other.startLine) {
             return false
         }
@@ -78,17 +76,14 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
     }
 
     fun toLocator(): String {
-        return if (startLine == endLine && startChar == endChar)
-            String.format("%s:%s", startLine, startChar)
-        else String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar)
+        return if (startLine == endLine && startChar == endChar) "${startLine}:${startChar}"
+        else "${startLine}:${startChar}-${endLine}:${endChar}"
     }
 
     companion object {
         @JvmStatic
         fun fromLocator(locator: String): Location {
-            require(!(locator == null || locator.trim { it <= ' ' }.isEmpty())) {
-                "locator required"
-            }
+            require(locator.isNotBlank()) { "locator required" }
 
             var startLine = 0
             var startChar = 0
@@ -102,7 +97,7 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
                         .split(":".toRegex())
                         .dropLastWhile { it.isEmpty() }
                         .toTypedArray()
-                require(ranges.size == 2) { String.format("Invalid locator format: %s", locator) }
+                require(ranges.size == 2) { "Invalid locator format: $locator" }
                 if (i == 0) {
                     startLine = ranges[0]!!.toInt()
                     startChar = ranges[1]!!.toInt()

@@ -54,7 +54,7 @@ class NpmModelInfoProvider(
                         }
                     }
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
                     String.format(

@@ -83,7 +83,7 @@ object IGUtils {
         var combinedPath: String?
         try {
             combinedPath = Utilities.path(rootDir, path)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return null
         }
 

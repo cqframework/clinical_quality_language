@@ -4,7 +4,6 @@ import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.math.BigDecimal
-import java.util.Locale
 import org.opencds.cqf.cql.engine.model.BaseModelResolver
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Date
@@ -52,9 +51,8 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
     }
 
     internal class AccessorKey(private val path: String?, private val type: Class<*>) {
-        override fun equals(obj: Any?): Boolean {
-            if (obj is AccessorKey) {
-                val other = obj
+        override fun equals(other: Any?): Boolean {
+            if (other is AccessorKey) {
                 return path == other.path && type == other.type
             }
             return false
@@ -69,20 +67,15 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
         // Field field = getProperty(clazz, path);
         val accessorKey = AccessorKey(path, clazz)
         if (readAccessorCache.containsKey(accessorKey)) {
-            return readAccessorCache.get(accessorKey)
+            return readAccessorCache[accessorKey]
         }
 
         val accessorMethodName =
-            String.format(
-                "%s%s%s",
-                "get",
-                path!!.substring(0, 1).uppercase(Locale.getDefault()),
-                path.substring(1),
-            )
+            String.format("%s%s%s", "get", path!![0].uppercase(), path.substring(1))
         var accessor: Method? = null
         try {
             accessor = clazz.getMethod(accessorMethodName)
-            readAccessorCache.put(accessorKey, accessor)
+            readAccessorCache[accessorKey] = accessor
         } catch (e: NoSuchMethodException) {
             return null
         }
@@ -92,30 +85,25 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
     private fun getWriteAccessor(clazz: Class<*>, path: String?): Method {
         val accessorKey = AccessorKey(path, clazz)
         if (writeAccessorCache.containsKey(accessorKey)) {
-            return writeAccessorCache.get(accessorKey)!!
+            return writeAccessorCache[accessorKey]!!
         }
 
         val field = getProperty(clazz, path)
         val accessorMethodName =
-            String.format(
-                "%s%s%s",
-                "set",
-                path!!.substring(0, 1).uppercase(Locale.getDefault()),
-                path.substring(1),
-            )
+            String.format("%s%s%s", "set", path!![0].uppercase(), path.substring(1))
         var accessor: Method? = null
         try {
-            accessor = clazz.getMethod(accessorMethodName, field.getType())
-            writeAccessorCache.put(accessorKey, accessor)
+            accessor = clazz.getMethod(accessorMethodName, field.type)
+            writeAccessorCache[accessorKey] = accessor
             return accessor
         } catch (e: NoSuchMethodException) {
             // If there is no setMethod with the exact signature, look for a signature that would
             // accept a value of the
             // type of the backing field
             for (method in clazz.getMethods()) {
-                if (method.getName() == accessorMethodName && method.getParameterCount() == 1) {
-                    val parameterTypes = method.getParameterTypes()
-                    if (parameterTypes[0].isAssignableFrom(field.getType())) {
+                if (method.name == accessorMethodName && method.parameterCount == 1) {
+                    val parameterTypes = method.parameterTypes
+                    if (parameterTypes[0].isAssignableFrom(field.type)) {
                         return method
                     }
                 }

@@ -27,7 +27,7 @@ constructor(
             loadDependencies()
         } catch (e: Exception) {
             logErrorMessage(e.message)
-            throw NpmPackageManagerException(e.message)
+            throw NpmPackageManagerException(e.message, e)
         }
     }
 

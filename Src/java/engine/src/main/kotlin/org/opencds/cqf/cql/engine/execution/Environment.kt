@@ -176,7 +176,7 @@ constructor(
     fun resolveDataProvider(dataType: QName): DataProvider {
         var dataType = dataType
         dataType = fixupQName(dataType)
-        val dataProvider: DataProvider = dataProviders[dataType.namespaceURI]!!
+        val dataProvider = dataProviders[dataType.namespaceURI]
         if (dataProvider == null) {
             throw CqlException(
                 String.format(

@@ -103,7 +103,7 @@ object Main {
         val namespaceManager = libraryManager.namespaceManager
         var namespaceInfo: NamespaceInfo? = null
         if (igContext != null) {
-            val pm = NpmPackageManager(igContext.getSourceIg())
+            val pm = NpmPackageManager(igContext.sourceIg!!)
             pm.npmList.forEach { npm: NpmPackage? ->
                 val newNamespace = NamespaceInfo(npm!!.id(), npm.canonical())
                 if (namespaceManager.resolveNamespaceUri(newNamespace.name) != null) {

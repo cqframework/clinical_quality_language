@@ -218,9 +218,9 @@ object QueryEvaluator {
             result = evaluateAggregate(elm.aggregate!!, state, visitor, result)
         }
 
-        QueryEvaluator.sortResult(elm, result!!, state, visitor)
+        QueryEvaluator.sortResult(elm, result, state, visitor)
 
-        if ((result == null || result.isEmpty()) && !sourceIsList) {
+        if ((result.isEmpty()) && !sourceIsList) {
             return null
         }
 

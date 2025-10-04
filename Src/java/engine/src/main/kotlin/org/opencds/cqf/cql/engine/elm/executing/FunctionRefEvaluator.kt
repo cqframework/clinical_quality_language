@@ -123,7 +123,7 @@ object FunctionRefEvaluator {
         val operands = functionDef.operand
 
         // Check if the number of operands match and if the type specifiers match
-        return operands.size === signature.size &&
+        return operands.size == signature.size &&
             IntStream.range(0, operands.size)
                 .allMatch(
                     IntPredicate { i: Int ->

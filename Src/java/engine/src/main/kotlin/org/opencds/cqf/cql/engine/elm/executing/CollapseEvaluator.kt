@@ -54,20 +54,23 @@ object CollapseEvaluator {
         }
     }
 
-    fun collapse(list: Iterable<Interval?>?, per: Quantity?, state: State?): List<Interval?>? {
+    fun collapse(
+        list: Iterable<Interval?>?,
+        per: Quantity?,
+        state: State?,
+    ): MutableList<Interval?>? {
         var per = per
         if (list == null) {
             return null
         }
 
-        var intervals = CqlList.toList(list, false)
+        val intervals = CqlList.toList(list, false)
 
         if (intervals.size == 1 || intervals.isEmpty()) {
             return intervals
         }
 
-        val isTemporal =
-            intervals.get(0)!!.start is BaseTemporal || intervals.get(0)!!.end is BaseTemporal
+        val isTemporal = intervals[0]!!.start is BaseTemporal || intervals[0]!!.end is BaseTemporal
 
         intervals.sortWith(CqlList().valueSort)
 
@@ -79,7 +82,7 @@ object CollapseEvaluator {
 
         var i = 0
         while (i < intervals.size - 1) {
-            var applyPer = getIntervalWithPerApplied(intervals.get(i)!!, per, state)
+            var applyPer = getIntervalWithPerApplied(intervals[i]!!, per, state)
 
             if (isTemporal) {
                 if (
@@ -92,7 +95,7 @@ object CollapseEvaluator {
                     // But they can only do full units (ms, seconds, days): They cannot do "4 days"
                     // of precision.
                     // The getIntervalWithPerApplied takes that into account.
-                    applyPer = intervals.get(i)!!
+                    applyPer = intervals[i]!!
                 } else {
                     precision = "millisecond"
                 }
@@ -100,14 +103,9 @@ object CollapseEvaluator {
 
             val doMerge =
                 AnyTrueEvaluator.anyTrue(
-                    listOf<Boolean?>(
-                        OverlapsEvaluator.overlaps(
-                            applyPer,
-                            intervals.get(i + 1),
-                            precision,
-                            state,
-                        ),
-                        MeetsEvaluator.meets(applyPer, intervals.get(i + 1), precision, state),
+                    listOf(
+                        OverlapsEvaluator.overlaps(applyPer, intervals[i + 1], precision, state),
+                        MeetsEvaluator.meets(applyPer, intervals[i + 1], precision, state),
                     )
                 )
 
@@ -120,24 +118,21 @@ object CollapseEvaluator {
                 val isNextEndGreater =
                     if (isTemporal)
                         AfterEvaluator.after(
-                            (intervals.get(i + 1))!!.end,
+                            (intervals[i + 1])!!.end,
                             applyPer.end,
                             precision,
                             state,
                         )
-                    else GreaterEvaluator.greater((intervals.get(i + 1))!!.end, applyPer.end, state)
+                    else GreaterEvaluator.greater((intervals[i + 1])!!.end, applyPer.end, state)
 
-                intervals.set(
-                    i,
+                intervals[i] =
                     Interval(
                         applyPer.start,
                         true,
-                        if (isNextEndGreater != null && isNextEndGreater)
-                            (intervals.get(i + 1))!!.end
+                        if (isNextEndGreater != null && isNextEndGreater) (intervals[i + 1])!!.end
                         else applyPer.end,
                         true,
-                    ),
-                )
+                    )
                 intervals.removeAt(i + 1)
                 i -= 1
             }

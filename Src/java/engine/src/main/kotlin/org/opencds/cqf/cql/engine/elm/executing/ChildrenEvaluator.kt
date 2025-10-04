@@ -48,7 +48,7 @@ object ChildrenEvaluator {
         }
     }
 
-    private fun addList(list: MutableList<Any?>, listToProcess: MutableList<Any?>) {
+    private fun addList(list: MutableList<Any?>, listToProcess: Iterable<*>) {
         for (o in listToProcess) {
             list.add(children(o))
         }
@@ -60,7 +60,7 @@ object ChildrenEvaluator {
             return null
         }
 
-        val ret: MutableList<Any?> = ArrayList<Any?>()
+        val ret: MutableList<Any?> = ArrayList()
 
         if (source is Int || source is BigDecimal || source is String || source is Boolean) {
             ret.add(source)
@@ -75,7 +75,7 @@ object ChildrenEvaluator {
         } else if (source is Time) {
             addTime(ret, source)
         } else if (source is Iterable<*>) {
-            addList(ret, source as MutableList<Any?>)
+            addList(ret, source)
         }
 
         // TODO: Intervals and Tuples?
