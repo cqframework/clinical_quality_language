@@ -102,6 +102,11 @@ kotlin {
     }
 }
 
+// Add rewrite dependency for multiplatform projects
+dependencies {
+    rewrite(project(":rewrite"))
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

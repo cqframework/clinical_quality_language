@@ -41,14 +41,11 @@ kotlin {
     }
 }
 
-rewrite {
-    dependencies {
-        project(":rewrite")
-    }
-}
-
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.13")
+
+    rewrite(project(":rewrite"))
+
     testImplementation("org.hamcrest:hamcrest-all:1.3")
     testImplementation("uk.co.datumedge:hamcrest-json:0.2")
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
