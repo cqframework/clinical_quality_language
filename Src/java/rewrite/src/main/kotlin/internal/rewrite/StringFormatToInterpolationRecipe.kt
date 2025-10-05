@@ -1,95 +1,76 @@
 package internal.rewrite
 
-import java.util.UUID
 import java.util.regex.Pattern
 import org.openrewrite.ExecutionContext
 import org.openrewrite.Recipe
+import org.openrewrite.Tree.randomId
 import org.openrewrite.TreeVisitor
-import org.openrewrite.java.JavaIsoVisitor
-import org.openrewrite.java.MethodMatcher
 import org.openrewrite.java.tree.J
-import org.openrewrite.java.tree.JavaType
-import org.openrewrite.marker.Markers
+import org.openrewrite.kotlin.KotlinVisitor
+import org.openrewrite.kotlin.tree.K
 
 class StringFormatToInterpolationRecipe : Recipe() {
     override fun getDisplayName() = "Convert String.format to Kotlin string interpolation"
 
     override fun getDescription() =
-        "Converts String.format calls to Kotlin string interpolation using template expressions"
+        "Converts String.format calls to Kotlin string interpolation using template expressions."
 
     override fun getVisitor(): TreeVisitor<*, ExecutionContext> {
         return StringFormatToInterpolationVisitor()
     }
 
-    private class StringFormatToInterpolationVisitor : JavaIsoVisitor<ExecutionContext>() {
+    private class StringFormatToInterpolationVisitor : KotlinVisitor<ExecutionContext>() {
 
-        private val stringFormatMatcher = MethodMatcher("java.lang.String format(String, ..)")
+        override fun visitMethodInvocation(method: J.MethodInvocation, ctx: ExecutionContext): J {
+            val call = super.visitMethodInvocation(method, ctx) as J.MethodInvocation
 
-        override fun visitMethodInvocation(
-            method: J.MethodInvocation,
-            ctx: ExecutionContext,
-        ): J.MethodInvocation {
-            val m = super.visitMethodInvocation(method, ctx)
+            // Check if this is a String.format method invocation
+            if (isStringFormatCall(call)) {
+                val interpolatedString = createInterpolatedString(call)
+                if (interpolatedString != null) {
+                    // Mark this node for replacement using the cursor
+                    val literal =
+                        J.Literal(
+                            call.id,
+                            call.prefix,
+                            call.markers,
+                            interpolatedString,
+                            "\"$interpolatedString\"",
+                            null,
+                            org.openrewrite.java.tree.JavaType.Primitive.String,
+                        )
 
-            // Check if this is a String.format call
-            if (stringFormatMatcher.matches(m) || isStringFormatCall(m)) {
-                val replacement = createInterpolatedStringLiteral(m)
-                if (replacement != null) {
-                    // Return the replacement literal wrapped as a method invocation
-                    // This is a workaround to return the correct type
-                    return m.withSelect(null)
-                        .withName(m.name.withSimpleName(""))
-                        .withArguments(listOf(replacement))
+                    cursor.putMessage("replaceWithLiteral", true)
+                    return K.ExpressionStatement(randomId(), literal)
                 }
             }
 
-            return m
+            return call
         }
 
         private fun isStringFormatCall(method: J.MethodInvocation): Boolean {
             val select = method.select
-            val methodName = method.name.simpleName
+            val methodName = method.simpleName
 
-            if (methodName != "format") return false
-
-            // Check for String.format pattern
-            when (select) {
-                is J.Identifier -> return select.simpleName == "String"
-                is J.FieldAccess -> {
-                    val target = select.target
-                    if (target is J.Identifier && target.simpleName == "kotlin") {
-                        return select.name.simpleName == "String"
-                    }
-                    return false
-                }
-                else -> return false
-            }
+            return methodName == "format" &&
+                ((select is J.Identifier && select.simpleName == "String") ||
+                    (select is J.FieldAccess &&
+                        select.target is J.Identifier &&
+                        (select.target as J.Identifier).simpleName == "String"))
         }
 
-        private fun createInterpolatedStringLiteral(method: J.MethodInvocation): J.Literal? {
+        private fun createInterpolatedString(method: J.MethodInvocation): String? {
             val arguments = method.arguments
             if (arguments.isEmpty()) return null
 
-            val formatString = arguments[0]
-            if (formatString !is J.Literal || formatString.type != JavaType.Primitive.String)
-                return null
+            val formatExpression = arguments[0]
+            if (formatExpression !is J.Literal) return null
 
-            val formatValue = formatString.value as? String ?: return null
+            val formatValue = formatExpression.value as? String ?: return null
             val formatArgs = arguments.drop(1)
 
             return try {
-                val interpolatedString = convertFormatStringToInterpolation(formatValue, formatArgs)
-
-                // Create a new string literal with the interpolated content
-                J.Literal(
-                    UUID.randomUUID(),
-                    method.prefix,
-                    Markers.EMPTY,
-                    interpolatedString,
-                    "\"$interpolatedString\"",
-                    null,
-                    JavaType.Primitive.String,
-                )
+                convertFormatStringToInterpolation(formatValue, formatArgs)
             } catch (_: Exception) {
                 null
             }
@@ -124,19 +105,22 @@ class StringFormatToInterpolationRecipe : Recipe() {
                         // Handle special formatting cases
                         when {
                             specifier.contains("02x") ->
-                                sb.append("\${$argText.toString(16).padStart(2, '0')}")
-                            specifier.contains("x") -> sb.append("\${$argText.toString(16)}")
+                                sb.append($$"${$$argText.toString(16).padStart(2, '0')}")
+                            specifier.contains("x") -> sb.append($$"${$$argText.toString(16)}")
                             specifier.contains("X") ->
-                                sb.append("\${$argText.toString(16).uppercase()}")
-                            specifier.contains("d") -> sb.append("\${$argText}")
-                            specifier.contains("f") -> sb.append("\${$argText}")
-                            specifier.contains("s") || specifier.contains("S") ->
-                                sb.append("\${$argText}")
-                            specifier.contains("g") || specifier.contains("G") ->
-                                sb.append("\${$argText}")
-                            specifier.contains("e") || specifier.contains("E") ->
-                                sb.append("\${$argText}")
-                            else -> sb.append("\${$argText}")
+                                sb.append($$"${$$argText.toString(16).uppercase()}")
+                            else -> {
+                                // For string literals, embed them directly without interpolation
+                                if (arg is J.Literal && arg.value is String) {
+                                    sb.append(argText)
+                                } else if (isSimpleIdentifier(argText)) {
+                                    // Simple variable names use $variable syntax
+                                    sb.append("$$argText")
+                                } else {
+                                    // Complex expressions use ${expression} syntax
+                                    sb.append($$"${$$argText}")
+                                }
+                            }
                         }
                     }
                     else -> sb.append(specifier) // Keep original if no more args
@@ -149,22 +133,22 @@ class StringFormatToInterpolationRecipe : Recipe() {
             return sb.toString()
         }
 
+        private fun isSimpleIdentifier(text: String): Boolean {
+            // Check if the text is just a simple identifier (no dots, parentheses, brackets, etc.)
+            return text.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))
+        }
+
         private fun extractArgumentText(arg: J): String {
             return when (arg) {
                 is J.Identifier -> arg.simpleName
                 is J.Literal -> {
-                    // For literals, we want the variable name that was passed, not the literal
-                    // value
-                    // This is tricky since we need the source code representation
-                    arg.valueSource?.removeSurrounding("\"") ?: arg.value?.toString() ?: "null"
+                    // For string literals, return the actual value, not the quoted version
+                    when (val value = arg.value) {
+                        is String -> value
+                        else -> value?.toString() ?: "null"
+                    }
                 }
-                is J.FieldAccess -> "${extractArgumentText(arg.target)}.${arg.name.simpleName}"
-                is J.MethodInvocation -> {
-                    val select = arg.select?.let { "${extractArgumentText(it)}." } ?: ""
-                    val args = arg.arguments.joinToString(", ") { extractArgumentText(it) }
-                    "$select${arg.name.simpleName}($args)"
-                }
-                else -> arg.toString().trim()
+                else -> arg.printTrimmed(cursor)
             }
         }
     }

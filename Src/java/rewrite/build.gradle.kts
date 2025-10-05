@@ -14,3 +14,7 @@ dependencies {
     testImplementation("org.openrewrite:rewrite-test:8.62.6")
     testImplementation(kotlin("test"))
 }
+
+//tasks.test {
+//    useJUnitPlatform()
+//}
