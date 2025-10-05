@@ -75,11 +75,7 @@ open class IGContext {
             igPath = Utilities.path(rootDir, igPath)
         } catch (e: IOException) {
             val message =
-                String.format(
-                    "Exceptions occurred creating igPath from source rootDir: %s, and igPath: %s",
-                    rootDir,
-                    igPath,
-                )
+                ("Exceptions occurred creating igPath from source rootDir: ${rootDir}, and igPath: $igPath")
             logMessage(message)
             throw IGInitializationException(message, e)
         }
@@ -128,16 +124,13 @@ open class IGContext {
             initializeFromIg(iniDir, igPath, specifiedFhirVersion)
         } catch (e: IOException) {
             val message =
-                String.format(
-                    "Exceptions occurred initializing refresh from ini file '%s':%s",
-                    iniFile,
-                    e.message,
-                )
+                ("Exceptions occurred initializing refresh from ini file '${iniFile}':${e.message}")
             logMessage(message)
             throw IGInitializationException(message, e)
         }
     }
 
+    @Suppress("LongMethod")
     private fun loadSourceIG(igPath: String?): ImplementationGuide {
         try {
             try {
@@ -200,15 +193,9 @@ open class IGContext {
                 }
             }
         } catch (e: IOException) {
-            throw IGInitializationException(
-                String.format("error initializing IG from igPath: %s", igPath),
-                e,
-            )
+            throw IGInitializationException(("error initializing IG from igPath: $igPath"), e)
         } catch (e: FHIRException) {
-            throw IGInitializationException(
-                String.format("error initializing IG from igPath: %s", igPath),
-                e,
-            )
+            throw IGInitializationException(("error initializing IG from igPath: $igPath"), e)
         }
 
         return sourceIg!!
@@ -233,7 +220,7 @@ open class IGContext {
                 throw FHIRException("Unknown Version '$specifiedFhirVersion'")
             }
         } catch (e: IOException) {
-            val message = String.format("Exceptions occurred loading IG path: %s", igPath)
+            val message = ("Exceptions occurred loading IG path: $igPath")
             logMessage(message)
             throw IGInitializationException(message, e)
         }

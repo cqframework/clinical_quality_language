@@ -6,7 +6,7 @@ plugins {
     id("cql.maven-publishing-conventions")
     id("jacoco")
     id("org.jetbrains.dokka")
-    // id("io.gitlab.arturbosch.detekt")
+    id("io.gitlab.arturbosch.detekt")
     id("org.openrewrite.rewrite")
 }
 

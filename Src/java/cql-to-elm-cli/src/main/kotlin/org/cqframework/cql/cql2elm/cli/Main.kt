@@ -38,6 +38,7 @@ import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 import org.hl7.fhir.utilities.npm.NpmPackage
 
 object Main {
+    @Suppress("PrintStackTrace")
     fun getModelInfoProvider(modelInfoXML: File): ModelInfoProvider {
         try {
             val source = FileInputStream(modelInfoXML).asSource().buffered()
@@ -55,18 +56,12 @@ object Main {
             val tb = error.locator
             val lines =
                 if (tb == null) "[n/a]"
-                else
-                    String.format(
-                        "[%d:%d, %d:%d]",
-                        tb.startLine,
-                        tb.startChar,
-                        tb.endLine,
-                        tb.endChar,
-                    )
+                else ("[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]")
             System.err.printf("%s:%s %s%n", error.severity, lines, error.message)
         }
     }
 
+    @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
     @Throws(IOException::class)
     private fun writeELM(
         inPath: Path,
@@ -104,6 +99,7 @@ object Main {
         var namespaceInfo: NamespaceInfo? = null
         if (igContext != null) {
             val pm = NpmPackageManager(igContext.sourceIg!!)
+            @Suppress("ForbiddenComment")
             pm.npmList.forEach { npm: NpmPackage? ->
                 val newNamespace = NamespaceInfo(npm!!.id(), npm.canonical())
                 if (namespaceManager.resolveNamespaceUri(newNamespace.name) != null) {
@@ -124,12 +120,7 @@ object Main {
             val packageId = igContext.packageId
             val canonicalBase = igContext.canonicalBase
 
-            if (
-                packageId != null &&
-                    !packageId.isEmpty() &&
-                    canonicalBase != null &&
-                    !canonicalBase.isEmpty()
-            ) {
+            if (!packageId.isNullOrBlank() && !canonicalBase.isNullOrBlank()) {
                 namespaceInfo = NamespaceInfo(packageId, canonicalBase)
             }
         }
@@ -161,12 +152,13 @@ object Main {
                 }
                 pw.println()
             }
-            System.err.println(String.format("ELM output written to: %s", outPath.toString()))
+            System.err.println("ELM output written to: $outPath")
         }
 
         System.err.println()
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "MemberNameEqualsClassName", "MaxLineLength")
     @Throws(IOException::class, InterruptedException::class)
     @JvmStatic
     fun main(args: Array<String>) {
@@ -254,7 +246,7 @@ object Main {
                     "Compatibility level for the translator, valid values are 1.3, 1.4, and 1.5"
                 )
 
-        val options = parser.parse(*args)
+        @Suppress("SpreadOperator") val options = parser.parse(*args)
 
         val source = input.value(options)!!.toPath()
         val destination =
