@@ -17,19 +17,13 @@ class DateTime : BaseTemporal {
         set(dateTime) {
             if (dateTime!!.year < 1) {
                 throw InvalidDateTime(
-                    String.format(
-                        "The year: %d falls below the accepted bounds of 0001-9999.",
-                        dateTime.year,
-                    )
+                    "The year: ${dateTime.year} falls below the accepted bounds of 0001-9999."
                 )
             }
 
             if (dateTime.year > 9999) {
                 throw InvalidDateTime(
-                    String.format(
-                        "The year: %d falls above the accepted bounds of 0001-9999.",
-                        dateTime.year,
-                    )
+                    "The year: ${dateTime.year} falls above the accepted bounds of 0001-9999."
                 )
             }
             field = dateTime
