@@ -18,6 +18,7 @@ repositories {
     }
 }
 
+// Reenable once we have time to address the issues
 //detekt {
 //    // Applies the config files on top of detekt's default config.
 //    buildUponDefaultConfig = true

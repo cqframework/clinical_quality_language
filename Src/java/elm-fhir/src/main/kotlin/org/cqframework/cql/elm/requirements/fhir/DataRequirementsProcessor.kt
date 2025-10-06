@@ -89,6 +89,7 @@ import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.utilities.validation.ValidationMessage
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory
 
+@Suppress("MaxLineLength", "ReturnCount", "ForbiddenComment", "NestedBlockDepth", "UnusedParameter")
 class DataRequirementsProcessor {
     val validationMessages: MutableList<ValidationMessage?> = ArrayList<ValidationMessage?>()
 
@@ -858,7 +859,7 @@ class DataRequirementsProcessor {
     private fun toFHIRTypeCode(dataType: DataType?, isValid: AtomicBoolean): String {
         isValid.set(true)
         if (dataType is NamedType) {
-            when ((dataType as NamedType).name) {
+            when (dataType.name) {
                 "System.Boolean" -> return "boolean"
                 "System.Integer" -> return "integer"
                 "System.Decimal" -> return "decimal"
