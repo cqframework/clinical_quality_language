@@ -62,9 +62,6 @@ object ToDecimalEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "ToDecimal(String)",
-            String.format("ToDecimal(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToDecimal(String)", "ToDecimal(${operand.javaClass.name})")
     }
 }

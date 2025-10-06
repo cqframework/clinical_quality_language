@@ -73,11 +73,7 @@ object LessEvaluator {
 
         throw InvalidOperatorArgument(
             "Less(Integer, Integer), Less(Long, Long), Less(Decimal, Decimal), Less(Quantity, Quantity), Less(Date, Date), Less(DateTime, DateTime), Less(Time, Time) or Less(String, String)",
-            String.format(
-                "Less(%s, %s)",
-                left.javaClass.getSimpleName(),
-                right.javaClass.getSimpleName(),
-            ),
+            "Less(${left.javaClass.getSimpleName()}, ${right.javaClass.getSimpleName()})",
         )
     }
 }

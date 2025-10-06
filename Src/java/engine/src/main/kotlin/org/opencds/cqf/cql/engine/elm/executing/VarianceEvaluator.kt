@@ -42,7 +42,7 @@ object VarianceEvaluator {
                     } else {
                         throw InvalidOperatorArgument(
                             "Variance(List<Decimal>) or Variance(List<Quantity>)",
-                            String.format("Variance(List<%s>)", element.javaClass.name),
+                            "Variance(List<${element.javaClass.name}>)",
                         )
                     }
                 }
@@ -57,7 +57,7 @@ object VarianceEvaluator {
 
         throw InvalidOperatorArgument(
             "Variance(List<Decimal>) or Variance(List<Quantity>)",
-            String.format("Variance(%s)", source.javaClass.name),
+            "Variance(${source.javaClass.name})",
         )
     }
 }

@@ -31,7 +31,7 @@ object FlattenEvaluator {
 
         throw InvalidOperatorArgument(
             "Flatten(List<List<T>>)",
-            String.format("Flatten(%s)", operand.javaClass.name),
+            "Flatten(${operand.javaClass.name})",
         )
     }
 }

@@ -72,9 +72,6 @@ object ToBooleanEvaluator {
             return null
         }
 
-        throw InvalidOperatorArgument(
-            "ToBoolean(String)",
-            String.format("ToBoolean(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToBoolean(String)", "ToBoolean(${operand.javaClass.name})")
     }
 }

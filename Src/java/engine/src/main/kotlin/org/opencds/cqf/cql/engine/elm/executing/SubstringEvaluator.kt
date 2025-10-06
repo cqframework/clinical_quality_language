@@ -44,12 +44,7 @@ object SubstringEvaluator {
 
         throw InvalidOperatorArgument(
             "Substring(String, Integer) or Substring(String, Integer, Integer)",
-            String.format(
-                "Substring(%s, %s%s)",
-                stringValue.javaClass.name,
-                startIndexValue.javaClass.name,
-                if (lengthValue == null) "" else ", " + lengthValue.javaClass.name,
-            ),
+            "Substring(${stringValue.javaClass.name}, ${startIndexValue.javaClass.name}${if (lengthValue == null) "" else ", " + lengthValue.javaClass.name})",
         )
     }
 }

@@ -48,9 +48,7 @@ object MaxValueEvaluator {
             return Quantity().withValue(Value.MAX_DECIMAL).withUnit("1")
         }
 
-        throw InvalidOperatorArgument(
-            String.format("The Maximum operator is not implemented for type %s", type)
-        )
+        throw InvalidOperatorArgument("The Maximum operator is not implemented for type ${type}")
     }
 
     @JvmStatic

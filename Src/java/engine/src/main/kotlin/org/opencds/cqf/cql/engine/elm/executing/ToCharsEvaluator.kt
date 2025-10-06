@@ -24,9 +24,6 @@ object ToCharsEvaluator {
             return result
         }
 
-        throw InvalidOperatorArgument(
-            "ToChars(String)",
-            String.format("ToInteger(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToChars(String)", "ToInteger(${operand.javaClass.name})")
     }
 }

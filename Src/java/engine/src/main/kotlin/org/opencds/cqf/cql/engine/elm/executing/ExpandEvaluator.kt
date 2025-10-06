@@ -46,7 +46,7 @@ object ExpandEvaluator {
             else ->
                 throw InvalidOperatorArgument(
                     "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-                    String.format("Expand(%s, %s)", addTo.javaClass.name, per.javaClass.name),
+                    "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
                 )
         }
     }
@@ -212,11 +212,7 @@ object ExpandEvaluator {
 
         throw InvalidOperatorArgument(
             "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-            String.format(
-                "Expand(%s, %s)",
-                listOrInterval.javaClass.name,
-                per?.javaClass?.getName(),
-            ),
+            "Expand(${listOrInterval.javaClass.name}, ${per?.javaClass?.getName()})",
         )
     }
 }

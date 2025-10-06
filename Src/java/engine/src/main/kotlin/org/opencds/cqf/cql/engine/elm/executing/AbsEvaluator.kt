@@ -33,7 +33,7 @@ object AbsEvaluator {
 
         throw InvalidOperatorArgument(
             "Abs(Integer), Abs(Long), Abs(Decimal) or Abs(Quantity)",
-            String.format("Abs(%s)", operand.javaClass.name),
+            "Abs(${operand.javaClass.name})",
         )
     }
 }

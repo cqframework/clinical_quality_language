@@ -41,18 +41,14 @@ object ProductEvaluator {
                     result = MultiplyEvaluator.multiply(result, element)
                 } else if (element is Quantity && result is Quantity) {
                     require(element.unit == result.unit) {
-                        String.format(
-                            "Found different units during Quantity product evaluation: %s and %s",
-                            element.unit,
-                            result.unit,
-                        )
+                        "Found different units during Quantity product evaluation: ${element.unit} and ${result.unit}"
                     }
                     result.value =
                         MultiplyEvaluator.multiply(result.value, element.value) as BigDecimal
                 } else {
                     throw InvalidOperatorArgument(
                         "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-                        String.format("Product(List<%s>)", element.javaClass.name),
+                        "Product(List<${element.javaClass.name}>)",
                     )
                 }
             }
@@ -62,7 +58,7 @@ object ProductEvaluator {
 
         throw InvalidOperatorArgument(
             "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-            String.format("Product(%s)", source.javaClass.name),
+            "Product(${source.javaClass.name})",
         )
     }
 }

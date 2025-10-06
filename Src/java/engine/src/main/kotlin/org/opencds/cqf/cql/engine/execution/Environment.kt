@@ -56,10 +56,7 @@ constructor(
         val provider = externalFunctionProviders.get(identifier)
         if (provider == null) {
             throw CqlException(
-                String.format(
-                    "Could not resolve external function provider for library '%s'.",
-                    identifier,
-                )
+                "Could not resolve external function provider for library '${identifier}'."
             )
         }
         return provider
@@ -77,11 +74,7 @@ constructor(
 
         if (clazz.getPackage().name.startsWith("java.lang")) {
             throw CqlException(
-                String.format(
-                    "Invalid path: %s for type: %s - this is likely an issue with the data model.",
-                    path,
-                    clazz.getName(),
-                )
+                "Invalid path: ${path} for type: ${clazz.getName()} - this is likely an issue with the data model."
             )
         }
 
@@ -179,10 +172,7 @@ constructor(
         val dataProvider = dataProviders[dataType.namespaceURI]
         if (dataProvider == null) {
             throw CqlException(
-                String.format(
-                    "Could not resolve data provider for model '%s'.",
-                    dataType.namespaceURI,
-                )
+                "Could not resolve data provider for model '${dataType.namespaceURI}'."
             )
         }
 
@@ -192,9 +182,7 @@ constructor(
     fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
         val dataProvider = dataProviders[modelUri]
         if (dataProvider == null) {
-            throw CqlException(
-                String.format("Could not resolve data provider for model '%s'.", modelUri)
-            )
+            throw CqlException("Could not resolve data provider for model '${modelUri}'.")
         }
 
         return dataProvider
@@ -204,9 +192,7 @@ constructor(
     fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): DataProvider? {
         val dataProvider = packageMap.get(packageName)
         if (dataProvider == null && mustResolve) {
-            throw CqlException(
-                String.format("Could not resolve data provider for package '%s'.", packageName)
-            )
+            throw CqlException("Could not resolve data provider for package '${packageName}'.")
         }
 
         return dataProvider

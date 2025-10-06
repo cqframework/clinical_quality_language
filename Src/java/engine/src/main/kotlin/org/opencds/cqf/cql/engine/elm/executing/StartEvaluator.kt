@@ -24,9 +24,6 @@ object StartEvaluator {
             return operand.start
         }
 
-        throw InvalidOperatorArgument(
-            "Start(Interval<T>)",
-            String.format("Start(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Start(Interval<T>)", "Start(${operand.javaClass.name})")
     }
 }

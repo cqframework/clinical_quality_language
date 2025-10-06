@@ -44,7 +44,7 @@ object StdDevEvaluator {
 
         throw InvalidOperatorArgument(
             "StdDev(List<Decimal>) or StdDev(List<Quantity>)",
-            String.format("StdDev(%s)", source.javaClass.name),
+            "StdDev(${source.javaClass.name})",
         )
     }
 }

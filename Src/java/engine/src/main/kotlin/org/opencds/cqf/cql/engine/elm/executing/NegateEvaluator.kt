@@ -43,7 +43,7 @@ object NegateEvaluator {
 
         throw InvalidOperatorArgument(
             "Negate(Integer), Negate(Long), Negate(Decimal) or Negate(Quantity)",
-            String.format("Negate(%s)", source.javaClass.name),
+            "Negate(${source.javaClass.name})",
         )
     }
 

@@ -49,7 +49,7 @@ object ConvertsToBooleanEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToBoolean(String)",
-            String.format("ConvertsToBoolean(%s)", argument.javaClass.name),
+            "ConvertsToBoolean(${argument.javaClass.name})",
         )
     }
 }

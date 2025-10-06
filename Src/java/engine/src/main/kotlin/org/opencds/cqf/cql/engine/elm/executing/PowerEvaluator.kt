@@ -45,7 +45,7 @@ object PowerEvaluator {
 
         throw InvalidOperatorArgument(
             "Power(Integer, Integer), Power(Long, Long) or Power(Decimal, Decimal)",
-            String.format("Power(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Power(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

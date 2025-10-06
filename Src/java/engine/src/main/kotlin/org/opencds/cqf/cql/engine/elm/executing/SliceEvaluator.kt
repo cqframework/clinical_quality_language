@@ -60,12 +60,7 @@ object SliceEvaluator {
 
         throw InvalidOperatorArgument(
             "Slice(List<T>, Integer, Integer)",
-            String.format(
-                "Slice(%s, %s, %s)",
-                source.javaClass.name,
-                start!!.javaClass.name,
-                end!!.javaClass.name,
-            ),
+            "Slice(${source.javaClass.name}, ${start!!.javaClass.name}, ${end!!.javaClass.name})",
         )
     }
 }

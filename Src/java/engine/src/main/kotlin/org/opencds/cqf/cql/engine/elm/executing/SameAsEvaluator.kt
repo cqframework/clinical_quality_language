@@ -130,7 +130,7 @@ object SameAsEvaluator {
 
         throw InvalidOperatorArgument(
             "SameAs(Date, Date), SameAs(DateTime, DateTime), SameAs(Time, Time) or SameAs(Interval<T>, Interval<T>)",
-            String.format("SameAs(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "SameAs(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

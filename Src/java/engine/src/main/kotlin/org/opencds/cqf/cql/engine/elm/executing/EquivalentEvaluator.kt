@@ -92,11 +92,7 @@ object EquivalentEvaluator {
         }
 
         throw InvalidOperatorArgument(
-            String.format(
-                "Equivalent(%s, %s) requires Context and context was null",
-                left.javaClass.name,
-                right.javaClass.name,
-            )
+            "Equivalent(${left.javaClass.name}, ${right.javaClass.name}) requires Context and context was null"
         )
     }
 }

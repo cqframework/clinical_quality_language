@@ -21,7 +21,7 @@ object ConcatenateEvaluator {
 
         throw InvalidOperatorArgument(
             "Concatenate(String, String)",
-            String.format("Concatenate(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Concatenate(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

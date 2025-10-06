@@ -117,10 +117,7 @@ object PredecessorEvaluator {
         }
 
         throw InvalidOperatorArgument(
-            String.format(
-                "The Predecessor operation is not implemented for type %s",
-                value.javaClass.name,
-            )
+            "The Predecessor operation is not implemented for type ${value.javaClass.name}"
         )
     }
 

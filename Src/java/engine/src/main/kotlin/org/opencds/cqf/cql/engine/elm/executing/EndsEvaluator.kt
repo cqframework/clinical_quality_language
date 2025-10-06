@@ -43,7 +43,7 @@ object EndsEvaluator {
 
         throw InvalidOperatorArgument(
             "Ends(Interval<T>, Interval<T>)",
-            String.format("Ends(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Ends(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

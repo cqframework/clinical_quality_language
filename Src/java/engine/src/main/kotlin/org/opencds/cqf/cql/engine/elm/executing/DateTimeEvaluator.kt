@@ -34,7 +34,7 @@ object DateTimeEvaluator {
                 *TemporalHelper.cleanArray(year, month, day, hour, minute, second, milliSecond),
             )
         } catch (e: DateTimeParseException) {
-            throw InvalidDateTime(String.format("Invalid date time components %s", e.message), e)
+            throw InvalidDateTime("Invalid date time components ${e.message}", e)
         }
     }
 }

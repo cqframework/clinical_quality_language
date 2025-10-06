@@ -34,7 +34,7 @@ object GeometricMeanEvaluator {
                 } else {
                     throw InvalidOperatorArgument(
                         "GeometricMean(List<Decimal>)",
-                        String.format("GeometricMean(%s)", element.javaClass.name),
+                        "GeometricMean(${element.javaClass.name})",
                     )
                 }
             }

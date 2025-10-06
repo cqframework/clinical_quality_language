@@ -112,7 +112,7 @@ object LowBoundaryEvaluator {
 
         throw InvalidOperatorArgument(
             "LowBoundary(Decimal, Integer) or LowBoundary(Date, Integer) or LowBoundary(DateTime, Integer) or LowBoundary(Time, Integer)",
-            String.format("LowBoundary(%s, %s)", input.javaClass.name, precision!!.javaClass.name),
+            "LowBoundary(${input.javaClass.name}, ${precision!!.javaClass.name})",
         )
     }
 }

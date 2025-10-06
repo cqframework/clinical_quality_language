@@ -50,9 +50,6 @@ object TimeFromEvaluator {
             return Time(hour, minute, second, millisecond)
         }
 
-        throw InvalidOperatorArgument(
-            "TimeFrom(DateTime)",
-            String.format("TimeFrom(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("TimeFrom(DateTime)", "TimeFrom(${operand.javaClass.name})")
     }
 }

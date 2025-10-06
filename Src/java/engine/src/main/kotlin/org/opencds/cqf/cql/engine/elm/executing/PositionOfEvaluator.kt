@@ -22,7 +22,7 @@ object PositionOfEvaluator {
 
         throw InvalidOperatorArgument(
             "PositionOf(String, String)",
-            String.format("PositionOf(%s, %s)", pattern.javaClass.name, string.javaClass.name),
+            "PositionOf(${pattern.javaClass.name}, ${string.javaClass.name})",
         )
     }
 }

@@ -57,7 +57,7 @@ object MaxEvaluator {
 
         throw InvalidOperatorArgument(
             "Max(List<Integer>), Max(List<Long>, Max(List<Decimal>, Max(List<Quantity>), Max(List<Date>), Max(List<DateTime>), Max(List<Time>) or Max(List<String>))",
-            String.format("Max(%s)", source.javaClass.name),
+            "Max(${source.javaClass.name})",
         )
     }
 }

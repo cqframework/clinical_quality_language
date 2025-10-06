@@ -51,12 +51,14 @@ class StringFormatToInterpolationRecipe : Recipe() {
         private fun isStringFormatCall(method: J.MethodInvocation): Boolean {
             val select = method.select
             val methodName = method.simpleName
+            val arg = method.typeParameters?.firstOrNull()
 
             return methodName == "format" &&
-                ((select is J.Identifier && select.simpleName == "String") ||
+                (((select is J.Identifier && select.simpleName == "String") ||
                     (select is J.FieldAccess &&
                         select.target is J.Identifier &&
-                        (select.target as J.Identifier).simpleName == "String"))
+                        (select.target as J.Identifier).simpleName == "String"))) &&
+                !(arg.let { (it as? J.FieldAccess)?.type?.javaClass?.simpleName == "Locale" })
         }
 
         private fun createInterpolatedString(method: J.MethodInvocation): String? {
@@ -104,18 +106,21 @@ class StringFormatToInterpolationRecipe : Recipe() {
 
                         // Handle special formatting cases
                         when {
+                            specifier.contains("02d") ->
+                                sb.append($$"${($$argText).toString().padStart(2, '0')}")
+                            specifier.contains("03d") ->
+                                sb.append($$"${($$argText).toString().padStart(3, '0')}")
+                            specifier.contains("04d") ->
+                                sb.append($$"${($$argText).toString().padStart(4, '0')}")
                             specifier.contains("02x") ->
-                                sb.append($$"${$$argText.toString(16).padStart(2, '0')}")
-                            specifier.contains("x") -> sb.append($$"${$$argText.toString(16)}")
+                                sb.append($$"${($$argText).toString(16).padStart(2, '0')}")
+                            specifier.contains("x") -> sb.append($$"${($$argText).toString(16)}")
                             specifier.contains("X") ->
-                                sb.append($$"${$$argText.toString(16).uppercase()}")
+                                sb.append($$"${$$(argText).toString(16).uppercase()}")
                             else -> {
                                 // For string literals, embed them directly without interpolation
                                 if (arg is J.Literal && arg.value is String) {
                                     sb.append(argText)
-                                } else if (isSimpleIdentifier(argText)) {
-                                    // Simple variable names use $variable syntax
-                                    sb.append("$$argText")
                                 } else {
                                     // Complex expressions use ${expression} syntax
                                     sb.append($$"${$$argText}")

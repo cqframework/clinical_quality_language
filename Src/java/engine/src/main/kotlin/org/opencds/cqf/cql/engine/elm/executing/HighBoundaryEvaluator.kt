@@ -113,7 +113,7 @@ object HighBoundaryEvaluator {
 
         throw InvalidOperatorArgument(
             "HighBoundary(Decimal, Integer) or HighBoundary(Date, Integer) or HighBoundary(DateTime, Integer) or HighBoundary(Time, Integer)",
-            String.format("HighBoundary(%s, %s)", input.javaClass.name, precision!!.javaClass.name),
+            "HighBoundary(${input.javaClass.name}, ${precision!!.javaClass.name})",
         )
     }
 }

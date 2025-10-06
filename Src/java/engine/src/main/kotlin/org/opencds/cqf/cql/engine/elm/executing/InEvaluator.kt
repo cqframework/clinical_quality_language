@@ -43,7 +43,7 @@ object InEvaluator {
 
         throw InvalidOperatorArgument(
             "In(T, Interval<T>) or In(T, List<T>)",
-            String.format("In(%s, %s)", left!!.javaClass.name, right.javaClass.name),
+            "In(${left!!.javaClass.name}, ${right.javaClass.name})",
         )
     }
 

@@ -45,7 +45,7 @@ object PopulationStdDevEvaluator {
 
         throw InvalidOperatorArgument(
             "PopulationStdDev(List<Decimal>) or PopulationStdDev(List<Quantity>)",
-            String.format("PopulationStdDev(%s)", source.javaClass.name),
+            "PopulationStdDev(${source.javaClass.name})",
         )
     }
 }

@@ -41,12 +41,7 @@ object CalculateAgeAtEvaluator {
 
         throw InvalidOperatorArgument(
             "CalculateAgeInYearsAt(Date, Date), CalculateAgeInYearsAt(DateTime, DateTime), CalculateAgeInMonthsAt(Date, Date), CalculateAgeInMonthsAt(DateTime, DateTime), CalculateAgeInWeeksAt(Date, Date), CalculateAgeInWeeksAt(DateTime, DateTime), CalculateAgeInDaysAt(Date, Date), CalculateAgeInDaysAt(DateTime, DateTime), CalculateAgeInHoursAt(Date, Date), CalculateAgeInHoursAt(DateTime, DateTime), CalculateAgeInMinutesAt(Date, Date), CalculateAgeInMinutesAt(DateTime, DateTime), CalculateAgeInSecondsAt(Date, Date), CalculateAgeInSecondsAt(DateTime, DateTime)",
-            String.format(
-                "CalculateAgeIn%ssAt(%s, %s)",
-                precision,
-                birthDate.javaClass.name,
-                asOf.javaClass.name,
-            ),
+            "CalculateAgeIn${precision}sAt(${birthDate.javaClass.name}, ${asOf.javaClass.name})",
         )
     }
 }

@@ -118,10 +118,7 @@ object SuccessorEvaluator {
         }
 
         throw InvalidOperatorArgument(
-            String.format(
-                "The Successor operation is not implemented for type %s",
-                value.javaClass.name,
-            )
+            "The Successor operation is not implemented for type ${value.javaClass.name}"
         )
     }
 

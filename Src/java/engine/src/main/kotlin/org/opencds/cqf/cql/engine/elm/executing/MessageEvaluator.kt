@@ -50,7 +50,7 @@ object MessageEvaluator {
                     val finalMessage =
                         messageBuilder
                             .append(message)
-                            .append(String.format("%n%s", stripPHI(state, source)))
+                            .append("\n${stripPHI(state, source)}")
                             .toString()
                     state!!.logDebugTrace(sourceLocator, finalMessage)
                     logger.debug(finalMessage)
@@ -59,7 +59,7 @@ object MessageEvaluator {
                     val finalMessage =
                         messageBuilder
                             .append(message)
-                            .append(String.format("%n%s", stripPHI(state, source)))
+                            .append("\n${stripPHI(state, source)}")
                             .toString()
                     // NOTE: debug logging happens through exception-handling
                     logger.error(finalMessage)

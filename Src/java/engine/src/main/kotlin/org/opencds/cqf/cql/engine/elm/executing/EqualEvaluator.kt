@@ -66,11 +66,7 @@ object EqualEvaluator {
         }
 
         throw InvalidOperatorArgument(
-            String.format(
-                "Equal(%s, %s) requires Context and state was null",
-                left.javaClass.name,
-                right.javaClass.name,
-            )
+            "Equal(${left.javaClass.name}, ${right.javaClass.name}) requires Context and state was null"
         )
     }
 }

@@ -83,7 +83,7 @@ object AddEvaluator {
 
         throw InvalidOperatorArgument(
             "Add(Integer, Integer), Add(Long, Long), Add(Decimal, Decimal), Add(Quantity, Quantity), Add(Date, Quantity), Add(DateTime, Quantity) or Add(Time, Quantity)",
-            String.format("Add(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Add(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

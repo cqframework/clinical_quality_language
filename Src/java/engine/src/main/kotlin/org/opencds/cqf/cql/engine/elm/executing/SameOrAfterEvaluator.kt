@@ -122,7 +122,7 @@ object SameOrAfterEvaluator {
 
         throw InvalidOperatorArgument(
             "OnOrAfter(Date, Date), OnOrAfter(DateTime, DateTime), OnOrAfter(Time, Time), OnOrAfter(Interval<T>, Interval<T>), OnOrAfter(T, Interval<T>) or OnOrAfter(Interval<T>, T)",
-            String.format("OnOrAfter(%s, %s)", left!!.javaClass.name, right!!.javaClass.name),
+            "OnOrAfter(${left!!.javaClass.name}, ${right!!.javaClass.name})",
         )
     }
 
@@ -150,7 +150,7 @@ object SameOrAfterEvaluator {
 
         throw InvalidOperatorArgument(
             "SameOrAfter(Date, Date), SameOrAfter(DateTime, DateTime), SameOrAfter(Time, Time), SameOrAfter(Interval<T>, Interval<T>), SameOrAfter(T, Interval<T>) or SameOrAfter(Interval<T>, T)",
-            String.format("SameOrAfter(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "SameOrAfter(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

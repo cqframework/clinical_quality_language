@@ -46,7 +46,7 @@ object InCodeSystemEvaluator {
 
         throw InvalidOperatorArgument(
             "In(String, CodeSystemRef), In(Code, CodeSystemRef) or In(Concept, CodeSystemRef)",
-            String.format("In(%s, %s)", code.javaClass.name, codeSystem.javaClass.name),
+            "In(${code.javaClass.name}, ${codeSystem.javaClass.name})",
         )
     }
 }

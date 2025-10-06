@@ -40,7 +40,7 @@ object AnyTrueEvaluator {
                 } else {
                     throw InvalidOperatorArgument(
                         "AnyTrue(List<Boolean>)",
-                        String.format("AnyTrue(List<%s>)", exp.javaClass.name),
+                        "AnyTrue(List<${exp.javaClass.name}>)",
                     )
                 }
             }
@@ -48,9 +48,6 @@ object AnyTrueEvaluator {
             return false // all null or all false
         }
 
-        throw InvalidOperatorArgument(
-            "AnyTrue(List<Boolean>)",
-            String.format("AnyTrue(%s)", src.javaClass.name),
-        )
+        throw InvalidOperatorArgument("AnyTrue(List<Boolean>)", "AnyTrue(${src.javaClass.name})")
     }
 }

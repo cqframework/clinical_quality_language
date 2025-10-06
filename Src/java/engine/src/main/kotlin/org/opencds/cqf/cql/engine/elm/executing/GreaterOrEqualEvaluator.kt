@@ -55,11 +55,7 @@ object GreaterOrEqualEvaluator {
 
         throw InvalidOperatorArgument(
             "GreaterOrEqual(Integer, Integer), GreaterOrEqual(Long, Long), GreaterOrEqual(Decimal, Decimal), GreaterOrEqual(Quantity, Quantity), GreaterOrEqual(Date, Date), GreaterOrEqual(DateTime, DateTime), GreaterOrEqual(Time, Time) or GreaterOrEqual(String, String)",
-            String.format(
-                "Cannot perform greater than or equal operator on types %s and %s",
-                left.javaClass.getSimpleName(),
-                right.javaClass.getSimpleName(),
-            ),
+            "Cannot perform greater than or equal operator on types ${left.javaClass.getSimpleName()} and ${right.javaClass.getSimpleName()}",
         )
     }
 }

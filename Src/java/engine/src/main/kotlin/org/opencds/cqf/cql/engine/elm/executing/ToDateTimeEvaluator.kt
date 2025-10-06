@@ -67,7 +67,7 @@ object ToDateTimeEvaluator {
 
         throw InvalidOperatorArgument(
             "ToDateTime(String) or ToDateTime(Date)",
-            String.format("ToDateTime(%s)", operand.javaClass.name),
+            "ToDateTime(${operand.javaClass.name})",
         )
     }
 }

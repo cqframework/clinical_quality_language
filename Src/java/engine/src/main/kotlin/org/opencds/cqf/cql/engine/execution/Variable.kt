@@ -13,6 +13,6 @@ class Variable(val name: String?) {
     }
 
     override fun toString(): String {
-        return String.format("Variable{name=%s, value=%s, isList=%s}", name, value, isList)
+        return "Variable{name=${name}, value=${value}, isList=${isList}}"
     }
 }
