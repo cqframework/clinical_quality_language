@@ -1,4 +1,4 @@
-# cql2elm-esm-worker
+# cql2elm-browser
 
 Start a local server using
 
