@@ -41,10 +41,10 @@ object TranslatorHelper {
 
     fun getEnvironment(cql: String): Environment {
         val env = getEnvironment(null as TerminologyProvider?)
-        env.libraryManager.compiledLibraries.clear()
-        env.libraryManager.librarySourceLoader.registerProvider(
-            StringLibrarySourceProvider(listOf(cql))
-        )
+        env.libraryManager!!.compiledLibraries.clear()
+        env.libraryManager!!
+            .librarySourceLoader
+            .registerProvider(StringLibrarySourceProvider(listOf(cql)))
         return env
     }
 
@@ -56,7 +56,7 @@ object TranslatorHelper {
     }
 
     fun getEngine(environment: Environment?): CqlEngine {
-        return CqlEngine(environment)
+        return CqlEngine(environment!!)
     }
 
     @JvmStatic

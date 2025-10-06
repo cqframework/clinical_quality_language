@@ -181,7 +181,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             return null
         }
 
-        return when (getSimpleName(value.pointType.getTypeName())) {
+        return when (getSimpleName(value.pointType!!.typeName)) {
             "Date",
             "DateTime" -> toFhirPeriod(value)
             "Quantity" -> toFhirRange(value)

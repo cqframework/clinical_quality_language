@@ -43,7 +43,7 @@ open class CqlTestBase {
         libraryId: VersionedIdentifier,
         errors: MutableList<CqlCompilerException>,
     ): Library? {
-        return environment!!.libraryManager.resolveLibrary(libraryId, errors).library
+        return environment!!.libraryManager!!.resolveLibrary(libraryId, errors).library
     }
 
     fun getLibrary(libraryId: VersionedIdentifier): Library? {
@@ -82,7 +82,7 @@ open class CqlTestBase {
     }
 
     val bigDecimalZoneOffset: BigDecimal
-        get() = getBigDecimalZoneOffset(engine.state.evaluationZonedDateTime.offset)
+        get() = getBigDecimalZoneOffset(engine.state.evaluationZonedDateTime!!.offset)
 
     fun getBigDecimalZoneOffset(zoneId: ZoneId): BigDecimal {
         return getBigDecimalZoneOffset(zoneId.rules.getOffset(Instant.now()))

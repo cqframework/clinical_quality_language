@@ -56,7 +56,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
         }
     }
 
-    override fun expand(valueSet: ValueSetInfo): Iterable<Code?> {
+    override fun expand(valueSet: ValueSetInfo): Iterable<Code> {
         try {
             val id = resolveValueSetId(valueSet)
             val respParam =
@@ -69,7 +69,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
                     .execute()
 
             val expanded = respParam.getParameter()[0].getResource() as ValueSet
-            val codes: MutableList<Code?> = ArrayList()
+            val codes = mutableListOf<Code>()
             for (codeInfo in expanded.getExpansion().getContains()) {
                 val nextCode =
                     Code()
@@ -82,21 +82,21 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
             return codes
         } catch (e: Exception) {
             throw TerminologyProviderException(
-                String.format("Error performing expansion of ValueSet: %s", valueSet.id),
+                String.format("Error performing expansion of ValueSet: %s", valueSet!!.id),
                 e,
             )
         }
     }
 
-    override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code? {
+    override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code {
         try {
             val respParam =
                 fhirClient
                     .operation()
                     .onType(CodeSystem::class.java)
                     .named("lookup")
-                    .withParameter(Parameters::class.java, "code", CodeType(code.code))
-                    .andParameter("system", UriType(codeSystem.id))
+                    .withParameter(Parameters::class.java, "code", CodeType(code!!.code))
+                    .andParameter("system", UriType(codeSystem!!.id))
                     .execute()
 
             val display =
@@ -117,7 +117,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
                 String.format(
                     "Error performing lookup of Code: %s in CodeSystem: %s",
                     code.toString(),
-                    codeSystem.id,
+                    codeSystem!!.id,
                 ),
                 e,
             )
@@ -168,7 +168,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
     fun resolveValueSetId(valueSet: ValueSetInfo): String? {
         if (
             valueSet.version != null ||
-                (valueSet.getCodeSystems() != null && !valueSet.getCodeSystems().isEmpty())
+                (valueSet.codeSystems != null && !valueSet.codeSystems!!.isEmpty())
         ) {
             throw UnsupportedOperationException(
                 String.format(
@@ -186,7 +186,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
         }
 
         if (!searchResults.hasEntry()) {
-            searchResults = searchById(valueSet.id)
+            searchResults = searchById(valueSet.id!!)
         }
 
         require(!(!searchResults.hasEntry() || searchResults.getEntry().isEmpty())) {
