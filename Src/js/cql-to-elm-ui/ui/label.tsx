@@ -5,6 +5,7 @@ export function Label({ children }: { children: React.ReactNode }) {
         fontSize: 14,
         fontWeight: 700,
         margin: "0 0 10px 0",
+        color: "#777",
       }}
     >
       {children}
