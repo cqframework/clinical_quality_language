@@ -1,17 +1,16 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import java.math.BigDecimal
-import java.util.stream.Stream
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 internal class ValueTest {
     @Test
     fun getCoarsestScale() {
-        Assertions.assertEquals(0, Value.getCoarsestScale(Stream.of()))
+        Assertions.assertEquals(0, Value.getCoarsestScale(listOf()))
         Assertions.assertEquals(
             2,
-            Value.getCoarsestScale(Stream.of(BigDecimal("1.1234"), BigDecimal("1.12"), null)),
+            Value.getCoarsestScale(listOf(BigDecimal("1.1234"), BigDecimal("1.12"), null)),
         )
     }
 

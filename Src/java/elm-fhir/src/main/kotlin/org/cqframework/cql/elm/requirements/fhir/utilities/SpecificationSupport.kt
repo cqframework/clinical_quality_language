@@ -14,7 +14,6 @@ constructor(val specificationLevel: SpecificationLevel = SpecificationLevel.US_Q
                 SpecificationLevel.QM_STU_1,
                 SpecificationLevel.CRMI,
                 SpecificationLevel.CPG -> CqfConstants.DIRECT_REF_CODE_EXT_URL
-                else -> CqfConstants.DIRECT_REF_CODE_EXT_URL
             }
         }
 
@@ -26,7 +25,6 @@ constructor(val specificationLevel: SpecificationLevel = SpecificationLevel.US_Q
                 SpecificationLevel.QM_STU_1,
                 SpecificationLevel.CRMI,
                 SpecificationLevel.CPG -> CqfConstants.LOGIC_DEFINITION_EXT_URL
-                else -> CqfConstants.LOGIC_DEFINITION_EXT_URL
             }
         }
 
@@ -38,7 +36,6 @@ constructor(val specificationLevel: SpecificationLevel = SpecificationLevel.US_Q
                 SpecificationLevel.QM_STU_1,
                 SpecificationLevel.CRMI,
                 SpecificationLevel.CPG -> CqfConstants.RELATED_REQUIREMENT_EXT_URL
-                else -> CqfConstants.RELATED_REQUIREMENT_EXT_URL
             }
         }
 
@@ -50,7 +47,6 @@ constructor(val specificationLevel: SpecificationLevel = SpecificationLevel.US_Q
                 SpecificationLevel.QM_STU_1,
                 SpecificationLevel.CRMI,
                 SpecificationLevel.CPG -> CqfConstants.PERTINENCE_EXT_URL
-                else -> CqfConstants.PERTINENCE_EXT_URL
             }
         }
 }

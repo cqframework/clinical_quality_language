@@ -142,7 +142,7 @@ abstract class TestFhirPath {
             return
         }
 
-        val testValue = result.forExpression("Test").value()
+        val testValue = result.forExpression("Test")!!.value()
         val actualList =
             testValue as? MutableList<*>
                 ?: if (testValue == null) mutableListOf() else listOf<Any?>(testValue)

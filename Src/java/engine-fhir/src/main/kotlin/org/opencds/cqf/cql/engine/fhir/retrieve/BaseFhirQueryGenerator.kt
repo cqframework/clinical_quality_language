@@ -117,7 +117,7 @@ protected constructor(
                 low =
                     DateParam(
                         ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
-                        Date.from((dateRange.low as DateTime).dateTime.toInstant()),
+                        Date.from((dateRange.low as DateTime).dateTime!!.toInstant()),
                     )
             }
         }
@@ -133,14 +133,12 @@ protected constructor(
                 high =
                     DateParam(
                         ParamPrefixEnum.LESSTHAN_OR_EQUALS,
-                        Date.from((dateRange.high as DateTime).dateTime.toInstant()),
+                        Date.from((dateRange.high as DateTime).dateTime!!.toInstant()),
                     )
             }
         }
         val rangeParam =
-            if (low == null && high != null) {
-                DateRangeParam(high)
-            } else if (high == null && low != null) {
+            if (high == null && low != null) {
                 DateRangeParam(low)
             } else {
                 DateRangeParam(low, high)
@@ -189,7 +187,7 @@ protected constructor(
     protected fun getCodeParams(
         dataType: String?,
         codePath: String?,
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
     ): Pair<String, MutableList<TokenOrListParam>>? {
         var valueSet = valueSet
@@ -231,7 +229,7 @@ protected constructor(
     // support that then it's
     // "dataType.codePath in ValueSet"
     protected fun getCodeParams(
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
     ): MutableList<TokenOrListParam> {
         var codes = codes
@@ -286,8 +284,7 @@ protected constructor(
 
             codeCount++
             if (code is Code) {
-                val c = code
-                codeParams!!.addOr(TokenParam(c.system, c.code))
+                codeParams!!.addOr(TokenParam(code.system, code.code))
             } else if (code is String) {
                 val s = code as String
                 codeParams!!.addOr(TokenParam(s))
@@ -353,7 +350,7 @@ protected constructor(
         dataType: String?,
         templateId: String?,
         codePath: String?,
-        codes: Iterable<Code>?,
+        codes: Iterable<Code?>?,
         valueSet: String?,
         datePath: String?,
         dateLowPath: String?,

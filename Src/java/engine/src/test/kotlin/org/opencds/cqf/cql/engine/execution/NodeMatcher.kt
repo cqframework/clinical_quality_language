@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.ExpressionDef
 
 internal class NodeMatcher
@@ -33,7 +32,7 @@ constructor(
                 val expressionName = e.key
                 val matcher: Matcher<Profile.Node> = e.value
                 val childElement =
-                    contextChildren.keys.firstOrNull { expression: Element? ->
+                    contextChildren.keys.firstOrNull { expression ->
                         if (expression is ExpressionDef) {
                             return@firstOrNull expression.name.equals(expressionName)
                         } else {
