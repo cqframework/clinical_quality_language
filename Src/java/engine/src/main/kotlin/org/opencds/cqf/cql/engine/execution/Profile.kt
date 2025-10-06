@@ -32,6 +32,7 @@ import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
  * This class provides the [render][.render] methods to render a profile as a simple
  * [flamegraph](https://en.wiktionary.org/wiki/flamegraph).
  */
+@Suppress("MagicNumber")
 class Profile
     /**
      * Creates a new, empty Profile.

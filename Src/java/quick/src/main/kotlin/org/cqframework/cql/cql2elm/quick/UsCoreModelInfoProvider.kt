@@ -39,21 +39,21 @@ class UsCoreModelInfoProvider : ModelInfoProvider {
     }
 
     private fun getResource(localVersion: String): InputStream? {
-        when (localVersion) {
+        return when (localVersion) {
             "3.1.0" ->
-                return QuickModelInfoProvider::class
+                QuickModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml")
             "3.1.1" ->
-                return QuickModelInfoProvider::class
+                QuickModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml")
             "6.1.0",
             "" ->
-                return QuickModelInfoProvider::class
+                QuickModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-6.1.0.xml")
+            else -> null
         }
-        return null
     }
 }

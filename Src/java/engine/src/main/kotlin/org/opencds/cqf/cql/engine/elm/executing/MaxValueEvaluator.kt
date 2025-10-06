@@ -18,6 +18,7 @@ For DateTime, maximum returns the maximum representable date/time value, DateTim
 For Time, maximum returns the maximum representable time value, Time(23, 59, 59, 999).
 For any other type, attempting to invoke maximum results in an error.
 */
+@Suppress("MagicNumber")
 object MaxValueEvaluator {
     @JvmStatic
     fun maxValue(type: String?): Any? {

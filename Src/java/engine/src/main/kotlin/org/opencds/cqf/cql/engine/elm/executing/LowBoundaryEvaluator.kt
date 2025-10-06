@@ -32,6 +32,7 @@ import org.opencds.cqf.cql.engine.runtime.Time
     If the input value is null, the result is null.
 
 */
+@Suppress("MagicNumber")
 object LowBoundaryEvaluator {
     @JvmStatic
     fun lowBoundary(input: Any?, precision: Any?): Any? {

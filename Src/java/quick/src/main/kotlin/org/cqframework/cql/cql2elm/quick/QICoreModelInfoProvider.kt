@@ -39,29 +39,29 @@ class QICoreModelInfoProvider : ModelInfoProvider {
     }
 
     private fun getResource(localVersion: String): InputStream? {
-        when (localVersion) {
+        return when (localVersion) {
             "4.0.0" ->
-                return QICoreModelInfoProvider::class
+                QICoreModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml")
             "4.1.0" ->
-                return QICoreModelInfoProvider::class
+                QICoreModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml")
             "4.1.1" ->
-                return QICoreModelInfoProvider::class
+                QICoreModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml")
             "5.0.0" ->
-                return QICoreModelInfoProvider::class
+                QICoreModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-5.0.0.xml")
             "6.0.0",
             "" ->
-                return QICoreModelInfoProvider::class
+                QICoreModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-6.0.0.xml")
+            else -> null
         }
-        return null
     }
 }
