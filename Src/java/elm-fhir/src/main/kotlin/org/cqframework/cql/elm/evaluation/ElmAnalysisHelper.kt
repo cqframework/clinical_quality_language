@@ -127,10 +127,7 @@ object ElmAnalysisHelper {
                 return result
             } else {
                 throw IllegalArgumentException(
-                    String.format(
-                        "toFhirValue not implemented for parameter of type %s",
-                        valueResultType.toString(),
-                    )
+                    "toFhirValue not implemented for parameter of type ${valueResultType.toString()}"
                 )
             }
         }

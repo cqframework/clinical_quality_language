@@ -18,7 +18,6 @@ repositories {
     }
 }
 
-
 //detekt {
 //    // Applies the config files on top of detekt's default config.
 //    buildUponDefaultConfig = true

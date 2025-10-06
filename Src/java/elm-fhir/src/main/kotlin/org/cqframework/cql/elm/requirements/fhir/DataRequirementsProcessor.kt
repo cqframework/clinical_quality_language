@@ -20,7 +20,6 @@ import kotlin.plus
 import kotlin.text.StringBuilder
 import kotlin.text.endsWith
 import kotlin.text.equals
-import kotlin.text.format
 import kotlin.text.isEmpty
 import kotlin.text.lastIndexOf
 import kotlin.text.startsWith
@@ -520,11 +519,7 @@ class DataRequirementsProcessor {
                             ValidationMessage.Source.Publisher,
                             ValidationMessage.IssueType.NOTSUPPORTED,
                             "CQL Library Packaging",
-                            String.format(
-                                "Parameter declaration %s.%s is already defined in a different library with a different type. Parameter binding may result in errors during evaluation.",
-                                def.libraryIdentifier.id,
-                                pd.getName(),
-                            ),
+                            "Parameter declaration ${def.libraryIdentifier.id}.${pd.getName()} is already defined in a different library with a different type. Parameter binding may result in errors during evaluation.",
                             ValidationMessage.IssueSeverity.WARNING,
                         )
                     )
@@ -671,7 +666,7 @@ class DataRequirementsProcessor {
             .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
             .setDisplay(
                 if (usingDef.localIdentifier != null)
-                    String.format("%s model information", usingDef.localIdentifier)
+                    "${usingDef.localIdentifier} model information"
                 else null
             ) // Could potentially look for a well-known comment tag too, @description?
             .setResource(
@@ -694,19 +689,10 @@ class DataRequirementsProcessor {
 
     private fun getModelInfoReferenceUrl(uri: String?, name: String, version: String?): String {
         if (uri != null) {
-            return String.format(
-                "%s/Library/%s-ModelInfo%s",
-                mapModelInfoUri(uri, name),
-                name,
-                if (version != null) ("|$version") else "",
-            )
+            return "${mapModelInfoUri(uri, name)}/Library/${name}-ModelInfo${if (version != null) ("|$version") else ""}"
         }
 
-        return String.format(
-            "Library/%s-ModelInfo%s",
-            name,
-            if (version != null) ("|$version") else "",
-        )
+        return "Library/${name}-ModelInfo${if (version != null) ("|$version") else ""}"
     }
 
     private fun toRelatedArtifact(
@@ -716,8 +702,7 @@ class DataRequirementsProcessor {
         return RelatedArtifact()
             .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
             .setDisplay(
-                if (includeDef.localIdentifier != null)
-                    String.format("Library %s", includeDef.localIdentifier)
+                if (includeDef.localIdentifier != null) "Library ${includeDef.localIdentifier}"
                 else null
             ) // Could potentially look for a well-known comment tag too, @description?
             .setResource(getReferenceUrl(includeDef.path, includeDef.version))
@@ -738,15 +723,10 @@ class DataRequirementsProcessor {
             // uri.equals("http://fhir.org/guides/cqf/common"))) {
             //    uri = "http://fhir.org/guides/cqf/common";
             // }
-            return String.format(
-                "%s/Library/%s%s",
-                uri,
-                name,
-                if (version != null) ("|$version") else "",
-            )
+            return "${uri}/Library/${name}${if (version != null) ("|$version") else ""}"
         }
 
-        return String.format("Library/%s%s", path, if (version != null) ("|$version") else "")
+        return "Library/${path}${if (version != null) ("|$version") else ""}"
     }
 
     private fun toRelatedArtifact(
@@ -755,7 +735,7 @@ class DataRequirementsProcessor {
     ): RelatedArtifact? {
         return RelatedArtifact()
             .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
-            .setDisplay(String.format("Code system %s", codeSystemDef.name))
+            .setDisplay("Code system ${codeSystemDef.name}")
             .setResource(toReference(codeSystemDef))
     }
 
@@ -765,7 +745,7 @@ class DataRequirementsProcessor {
     ): RelatedArtifact? {
         return RelatedArtifact()
             .setType(RelatedArtifact.RelatedArtifactType.DEPENDSON)
-            .setDisplay(String.format("Value set %s", valueSetDef.name))
+            .setDisplay("Value set ${valueSetDef.name}")
             .setResource(toReference(valueSetDef))
     }
 
@@ -801,11 +781,7 @@ class DataRequirementsProcessor {
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
-                    String.format(
-                        "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
-                        defResultType!!.toLabel(),
-                        libraryIdentifier.id,
-                    ),
+                    "Result type ${defResultType!!.toLabel()} of library ${libraryIdentifier.id} is not supported; implementations may not be able to use the result of this expression",
                     ValidationMessage.IssueSeverity.WARNING,
                 )
             )
@@ -833,11 +809,7 @@ class DataRequirementsProcessor {
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
-                    String.format(
-                        "Result type %s of definition %s is not supported; implementations may not be able to use the result of this expression",
-                        dataType.toLabel(),
-                        defName,
-                    ),
+                    "Result type ${dataType.toLabel()} of definition ${defName} is not supported; implementations may not be able to use the result of this expression",
                     ValidationMessage.IssueSeverity.WARNING,
                 )
             )
@@ -860,11 +832,7 @@ class DataRequirementsProcessor {
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
-                    String.format(
-                        "Parameter type %s of parameter %s is not supported; reported as FHIR.Any",
-                        dataType.toLabel(),
-                        parameterName,
-                    ),
+                    "Parameter type ${dataType.toLabel()} of parameter ${parameterName} is not supported; reported as FHIR.Any",
                     ValidationMessage.IssueSeverity.WARNING,
                 )
             )
@@ -959,10 +927,7 @@ class DataRequirementsProcessor {
                 ValidationMessage.Source.Publisher,
                 ValidationMessage.IssueType.PROCESSING,
                 "Data requirements processing",
-                String.format(
-                    "Library referencing element (%s) is potentially being resolved in a different context than it was declared. Ensure library aliases are consistent",
-                    trackable.javaClass.simpleName,
-                ),
+                "Library referencing element (${trackable.javaClass.simpleName}) is potentially being resolved in a different context than it was declared. Ensure library aliases are consistent",
                 ValidationMessage.IssueSeverity.WARNING,
             )
         )
@@ -1041,10 +1006,7 @@ class DataRequirementsProcessor {
                 return fhirResult
             }
             throw IllegalArgumentException(
-                String.format(
-                    "toFhirValue not implemented for result of type %s",
-                    result.javaClass.getSimpleName(),
-                )
+                "toFhirValue not implemented for result of type ${result.javaClass.getSimpleName()}"
             )
         }
     }
@@ -1066,9 +1028,7 @@ class DataRequirementsProcessor {
             val p = Period()
             p.addExtension(
                 "http://hl7.org/fhir/uv/crmi-analysisException",
-                StringType(
-                    String.format("Error attempting to determine filter value: %s", e.message)
-                ),
+                StringType("Error attempting to determine filter value: ${e.message}"),
             )
             dfc.setValue(p)
         } finally {
@@ -1108,11 +1068,7 @@ class DataRequirementsProcessor {
                     ValidationMessage.Source.Publisher,
                     ValidationMessage.IssueType.NOTSUPPORTED,
                     "CQL Library Packaging",
-                    String.format(
-                        "Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
-                        retrieve.dataType!!.localPart,
-                        libraryIdentifier.id,
-                    ),
+                    "Result type ${retrieve.dataType!!.localPart} of library ${libraryIdentifier.id} is not supported; implementations may not be able to use the result of this expression",
                     ValidationMessage.IssueSeverity.WARNING,
                 )
             )

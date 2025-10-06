@@ -48,7 +48,7 @@ class ElmExpressionDefContext(
             }
         }
 
-        requireNotNull(letContext) { String.format("Could not resolve let %s", letName) }
+        requireNotNull(letContext) { "Could not resolve let ${letName}" }
 
         return letContext
     }
@@ -62,7 +62,7 @@ class ElmExpressionDefContext(
             }
         }
 
-        requireNotNull(aliasContext) { String.format("Could not resolve alias %s", aliasName) }
+        requireNotNull(aliasContext) { "Could not resolve alias ${aliasName}" }
 
         return aliasContext
     }

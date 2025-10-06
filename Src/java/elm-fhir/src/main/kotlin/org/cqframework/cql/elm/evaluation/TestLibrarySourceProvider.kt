@@ -10,10 +10,8 @@ import org.hl7.elm.r1.VersionedIdentifier
 class TestLibrarySourceProvider : LibrarySourceProvider {
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         val libraryFileName =
-            String.format(
-                "%s.cql",
-                libraryIdentifier.id,
-            ) // , libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion())
+            "${libraryIdentifier.id}.cql" // , libraryIdentifier.getVersion() != null ? ("-" +
+        // libraryIdentifier.getVersion())
         // : "");
         val inputStream = TestLibrarySourceProvider::class.java.getResourceAsStream(libraryFileName)
         return if (inputStream == null) null else inputStream.asSource().buffered()

@@ -72,7 +72,7 @@ class ElmRequirementsContext(
 
     fun generateLocalId(): String {
         nextLocalId++
-        return String.format("G%d", nextLocalId)
+        return "G${nextLocalId}"
     }
 
     private val expressionDefStack = Stack<ElmExpressionDefContext>()
