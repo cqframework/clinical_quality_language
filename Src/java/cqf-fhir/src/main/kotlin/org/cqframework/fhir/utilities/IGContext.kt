@@ -66,6 +66,7 @@ open class IGContext {
         this.logger = DefaultLogger()
     }
 
+    @Suppress("ForbiddenComment")
     fun initializeFromIg(rootDir: String?, igPath: String?, fhirVersion: String?) {
         var igPath = igPath
         this.rootDir = rootDir
@@ -123,7 +124,7 @@ open class IGContext {
             }
 
             initializeFromIg(iniDir, igPath, specifiedFhirVersion)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             val message =
                 ("Exceptions occurred initializing refresh from ini file '${iniFile}':${e.message}")
             logMessage(message)
@@ -131,7 +132,7 @@ open class IGContext {
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("LongMethod", "VariableNaming")
     private fun loadSourceIG(igPath: String?): ImplementationGuide {
         try {
             try {
@@ -202,6 +203,7 @@ open class IGContext {
         return sourceIg!!
     }
 
+    @Suppress("VariableNaming")
     private fun loadSourceIG(igPath: String?, specifiedFhirVersion: String?): ImplementationGuide {
         try {
             if (VersionUtilities.isR3Ver(specifiedFhirVersion)) {

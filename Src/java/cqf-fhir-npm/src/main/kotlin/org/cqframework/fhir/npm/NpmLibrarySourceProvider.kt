@@ -18,6 +18,7 @@ class NpmLibrarySourceProvider(
     private val reader: ILibraryReader,
     private val logger: ILoggingService,
 ) : LibrarySourceProvider {
+    @Suppress("NestedBlockDepth")
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         // VersionedIdentifier.id: Name of the library
         // VersionedIdentifier.system: Namespace for the library, as a URL
@@ -51,7 +52,7 @@ class NpmLibrarySourceProvider(
                         }
                     }
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
                     "Exceptions occurred attempting to load npm library source for $libraryIdentifier",

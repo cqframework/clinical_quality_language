@@ -25,9 +25,9 @@ constructor(
         try {
             this.fspcm = fspcm ?: FilesystemPackageCacheManager.Builder().build()
             loadDependencies()
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             logErrorMessage(e.message)
-            throw NpmPackageManagerException(e.message)
+            throw NpmPackageManagerException(e.message, e)
         }
     }
 

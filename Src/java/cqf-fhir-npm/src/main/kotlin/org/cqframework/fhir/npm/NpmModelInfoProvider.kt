@@ -18,6 +18,7 @@ class NpmModelInfoProvider(
     private val reader: ILibraryReader,
     private val logger: ILoggingService,
 ) : ModelInfoProvider {
+    @Suppress("NestedBlockDepth")
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         // VersionedIdentifier.id: Name of the model
         // VersionedIdentifier.system: Namespace for the model, as a URL
@@ -53,7 +54,7 @@ class NpmModelInfoProvider(
                         }
                     }
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
                     "Exceptions occurred attempting to load npm library for model $modelIdentifier",
