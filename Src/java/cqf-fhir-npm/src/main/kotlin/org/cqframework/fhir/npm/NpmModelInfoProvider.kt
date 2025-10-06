@@ -56,10 +56,7 @@ class NpmModelInfoProvider(
             } catch (e: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
-                    String.format(
-                        "Exceptions occurred attempting to load npm library for model %s",
-                        modelIdentifier,
-                    ),
+                    "Exceptions occurred attempting to load npm library for model $modelIdentifier",
                 )
             }
         }

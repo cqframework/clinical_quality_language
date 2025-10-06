@@ -44,11 +44,7 @@ open class IGContext {
     var rootDir: String? = null
         protected set
 
-    protected var _sourceIg: ImplementationGuide? = null
-
-    fun getSourceIg(): ImplementationGuide {
-        return _sourceIg!!
-    }
+    var sourceIg: ImplementationGuide? = null
 
     var fhirVersion: String? = null
         protected set
@@ -78,11 +74,7 @@ open class IGContext {
             igPath = Utilities.path(rootDir, igPath)
         } catch (e: IOException) {
             val message =
-                String.format(
-                    "Exceptions occurred creating igPath from source rootDir: %s, and igPath: %s",
-                    rootDir,
-                    igPath,
-                )
+                ("Exceptions occurred creating igPath from source rootDir: ${rootDir}, and igPath: $igPath")
             logMessage(message)
             throw IGInitializationException(message, e)
         }
@@ -95,9 +87,9 @@ open class IGContext {
 
         // TODO: Perhaps we should validate the passed in fhirVersion against the
         // fhirVersion in the IG?
-        this.fhirVersion = _sourceIg!!.getFhirVersion()[0].code
-        packageId = _sourceIg!!.getPackageId()
-        canonicalBase = getImplementationGuideCanonicalBase(_sourceIg!!.getUrl())
+        this.fhirVersion = sourceIg!!.getFhirVersion()[0].code
+        packageId = sourceIg!!.getPackageId()
+        canonicalBase = getImplementationGuideCanonicalBase(sourceIg!!.getUrl())
 
         /*
         try {
@@ -111,7 +103,7 @@ open class IGContext {
         */
 
         // Setup binary paths (cql source directories)
-        binaryPaths = extractBinaryPaths(rootDir, _sourceIg)
+        binaryPaths = extractBinaryPaths(rootDir, sourceIg)
     }
 
     /*
@@ -133,90 +125,81 @@ open class IGContext {
             initializeFromIg(iniDir, igPath, specifiedFhirVersion)
         } catch (e: Exception) {
             val message =
-                String.format(
-                    "Exceptions occurred initializing refresh from ini file '%s':%s",
-                    iniFile,
-                    e.message,
-                )
+                ("Exceptions occurred initializing refresh from ini file '${iniFile}':${e.message}")
             logMessage(message)
             throw IGInitializationException(message, e)
         }
     }
 
+    @Suppress("LongMethod")
     private fun loadSourceIG(igPath: String?): ImplementationGuide {
         try {
             try {
-                _sourceIg = FormatUtilities.loadFile(igPath) as ImplementationGuide
-            } catch (e: IOException) {
+                sourceIg = FormatUtilities.loadFile(igPath) as ImplementationGuide
+            } catch (_: IOException) {
                 try {
                     val versionConvertor_40_50 = VersionConvertor_40_50(BaseAdvisor_40_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_40_50.convertResource(
                             org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath)
                         ) as ImplementationGuide
-                } catch (ex: IOException) {
+                } catch (_: IOException) {
                     val src = FileUtilities.fileToBytes(igPath)
                     val fmt = FormatUtilities.determineFormat(src)
 
                     val parser =
                         org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString())
                     val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_30_50.convertResource(parser.parse(src))
                             as ImplementationGuide
-                } catch (ex: FHIRException) {
+                } catch (_: FHIRException) {
                     val src = FileUtilities.fileToBytes(igPath)
                     val fmt = FormatUtilities.determineFormat(src)
 
                     val parser =
                         org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString())
                     val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_30_50.convertResource(parser.parse(src))
                             as ImplementationGuide
                 }
-            } catch (e: FHIRException) {
+            } catch (_: FHIRException) {
                 try {
                     val versionConvertor_40_50 = VersionConvertor_40_50(BaseAdvisor_40_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_40_50.convertResource(
                             org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath)
                         ) as ImplementationGuide
-                } catch (ex: IOException) {
+                } catch (_: IOException) {
                     val src = FileUtilities.fileToBytes(igPath)
                     val fmt = FormatUtilities.determineFormat(src)
 
                     val parser =
                         org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString())
                     val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_30_50.convertResource(parser.parse(src))
                             as ImplementationGuide
-                } catch (ex: FHIRException) {
+                } catch (_: FHIRException) {
                     val src = FileUtilities.fileToBytes(igPath)
                     val fmt = FormatUtilities.determineFormat(src)
 
                     val parser =
                         org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString())
                     val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-                    _sourceIg =
+                    sourceIg =
                         versionConvertor_30_50.convertResource(parser.parse(src))
                             as ImplementationGuide
                 }
             }
         } catch (e: IOException) {
-            throw IGInitializationException(
-                String.format("error initializing IG from igPath: %s", igPath),
-                e,
-            )
+            throw IGInitializationException(("error initializing IG from igPath: $igPath"), e)
         } catch (e: FHIRException) {
-            throw IGInitializationException(
-                String.format("error initializing IG from igPath: %s", igPath),
-                e,
-            )
+            throw IGInitializationException(("error initializing IG from igPath: $igPath"), e)
         }
 
-        return _sourceIg!!
+        return sourceIg!!
     }
 
     private fun loadSourceIG(igPath: String?, specifiedFhirVersion: String?): ImplementationGuide {
@@ -226,24 +209,24 @@ open class IGContext {
                 val fmt = FormatUtilities.determineFormat(src)
                 val parser = org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString())
                 val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-                _sourceIg =
+                sourceIg =
                     versionConvertor_30_50.convertResource(parser.parse(src)) as ImplementationGuide
             } else if (VersionUtilities.isR4Ver(specifiedFhirVersion)) {
                 val res = org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath)
                 val versionConvertor_40_50 = VersionConvertor_40_50(BaseAdvisor_40_50())
-                _sourceIg = versionConvertor_40_50.convertResource(res) as ImplementationGuide
+                sourceIg = versionConvertor_40_50.convertResource(res) as ImplementationGuide
             } else if (VersionUtilities.isR5Ver(specifiedFhirVersion)) {
-                _sourceIg = FormatUtilities.loadFile(igPath) as ImplementationGuide
+                sourceIg = FormatUtilities.loadFile(igPath) as ImplementationGuide
             } else {
                 throw FHIRException("Unknown Version '$specifiedFhirVersion'")
             }
         } catch (e: IOException) {
-            val message = String.format("Exceptions occurred loading IG path: %s", igPath)
+            val message = ("Exceptions occurred loading IG path: $igPath")
             logMessage(message)
             throw IGInitializationException(message, e)
         }
 
-        return _sourceIg!!
+        return sourceIg!!
     }
 
     fun logMessage(msg: String?) {

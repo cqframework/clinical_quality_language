@@ -62,7 +62,7 @@ object TruncatedDivideEvaluator {
 
         throw InvalidOperatorArgument(
             "TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal),  TruncatedDivide(Quantity, Quantity)",
-            String.format("TruncatedDivide(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "TruncatedDivide(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import java.time.LocalTime
+import java.util.Locale
 import org.opencds.cqf.cql.engine.exception.InvalidTime
 
 class Time : BaseTemporal {
@@ -207,12 +208,14 @@ class Time : BaseTemporal {
 
     override fun toString(): String {
         return when (precision) {
-            Precision.HOUR -> String.format("%02d", time.hour)
-            Precision.MINUTE -> String.format("%02d:%02d", time.hour, time.minute)
-            Precision.SECOND -> String.format("%02d:%02d:%02d", time.hour, time.minute, time.second)
+            Precision.HOUR -> String.format(Locale.US, "%02d", time.hour)
+            Precision.MINUTE -> String.format(Locale.US, "%02d:%02d", time.hour, time.minute)
+            Precision.SECOND ->
+                String.format(Locale.US, "%02d:%02d:%02d", time.hour, time.minute, time.second)
 
             else ->
                 String.format(
+                    Locale.US,
                     "%02d:%02d:%02d.%03d",
                     time.hour,
                     time.minute,

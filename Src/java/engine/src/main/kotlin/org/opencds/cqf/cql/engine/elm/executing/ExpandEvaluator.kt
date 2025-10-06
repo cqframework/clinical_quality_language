@@ -34,16 +34,20 @@ object ExpandEvaluator {
     private fun addPer(addTo: Any, per: Quantity): Any? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
-        if (addTo is Int) {
-            return AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
-        } else if (addTo is Long) {
-            return AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
-        } else if (addTo is BigDecimal) {
-            return AddEvaluator.add(addTo, per.value)
-        } else if (addTo is Quantity) {
-            return AddEvaluator.add(addTo, per)
-        } else if (addTo is BaseTemporal) {
-            return AddEvaluator.add(addTo, per)
+        return when (addTo) {
+            is Int -> AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
+            is Long ->
+                AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
+            is BigDecimal -> AddEvaluator.add(addTo, per.value)
+            is Quantity -> AddEvaluator.add(addTo, per)
+
+            is BaseTemporal -> AddEvaluator.add(addTo, per)
+
+            else ->
+                throw InvalidOperatorArgument(
+                    "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                    "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
+                )
         }
 
         throw InvalidOperatorArgument(
@@ -218,11 +222,7 @@ object ExpandEvaluator {
 
         throw InvalidOperatorArgument(
             "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-            String.format(
-                "Expand(%s, %s)",
-                listOrInterval.javaClass.name,
-                per?.javaClass?.getName(),
-            ),
+            "Expand(${listOrInterval.javaClass.name}, ${per?.javaClass?.getName()})",
         )
     }
 }

@@ -10,6 +10,7 @@ import java.util.regex.Pattern
 import java.util.stream.Collectors
 import javax.xml.namespace.QName
 
+@Suppress("TooManyFunctions")
 class ModelImporterOptions {
     enum class SimpleTypeRestrictionPolicy {
         USE_BASETYPE,
@@ -178,6 +179,7 @@ class ModelImporterOptions {
         return this
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun applyProperties(properties: Properties) {
         val model = properties.getProperty("model")
         if (model != null && !model.isEmpty()) {
@@ -214,6 +216,7 @@ class ModelImporterOptions {
         }
 
         // Iterate the properties (sorting to ensure class extensions come before element mappings)
+        @Suppress("LoopWithTooManyJumpStatements")
         for (p in properties.stringPropertyNames().stream().sorted().collect(Collectors.toList())) {
             var matcher: Matcher = RETYPE_PATTERN.matcher(p)
             if (matcher.matches()) {
@@ -232,17 +235,16 @@ class ModelImporterOptions {
             matcher = EXTEND_EL_PATTERN.matcher(p)
             if (matcher.matches()) {
                 val value: ModelImporterMapperValue = typeMap[QName.valueOf(matcher.group(1))]!!
-                requireNotNull(value) {
-                    String.format("Class element mapping declared before class mapping: %s", p)
-                }
+                requireNotNull(value) { "Class element mapping declared before class mapping: $p" }
                 require(value.relationship != ModelImporterMapperValue.Relationship.RETYPE) {
-                    String.format("Cannot map class elements for retyped classes: %s", p)
+                    "Cannot map class elements for retyped classes: $p"
                 }
                 value.addClassElementMapping(matcher.group(2), properties.getProperty(p))
             }
         }
     }
 
+    @Suppress("NestedBlockDepth")
     fun exportProperties(): Properties {
         val properties = Properties()
         if (model != null) {
@@ -274,21 +276,12 @@ class ModelImporterOptions {
                 val key: QName = entry.key!!
                 val value = entry.value
                 if (value.relationship == ModelImporterMapperValue.Relationship.RETYPE) {
-                    properties.setProperty(
-                        String.format("retype.%s", key.toString()),
-                        value.targetSystemClass,
-                    )
+                    properties.setProperty("retype.$key", value.targetSystemClass)
                 } else if (value.relationship == ModelImporterMapperValue.Relationship.EXTEND) {
-                    properties.setProperty(
-                        String.format("extend.%s", key.toString()),
-                        value.targetSystemClass,
-                    )
+                    properties.setProperty("extend.$key", value.targetSystemClass)
                     for (el in value.targetClassElementMap.keys) {
                         val elValue = value.targetClassElementMap[el]
-                        properties.setProperty(
-                            String.format("extend.%s[%s]", key.toString(), el),
-                            elValue,
-                        )
+                        properties.setProperty("extend.$key[$el]", elValue)
                     }
                 }
             }

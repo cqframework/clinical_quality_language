@@ -14,7 +14,7 @@ object Libraries {
             }
         }
 
-        throw CqlException(String.format("Could not resolve library reference '%s'.", libraryName))
+        throw CqlException("Could not resolve library reference '${libraryName}'.")
     }
 
     fun resolveAllExpressionRef(name: String?, relativeTo: Library): MutableList<ExpressionDef> {
@@ -52,11 +52,7 @@ object Libraries {
         }
 
         throw CqlException(
-            String.format(
-                "Could not resolve expression reference '%s' in library '%s'.",
-                name,
-                relativeTo.identifier!!.id,
-            )
+            "Could not resolve expression reference '${name}' in library '${relativeTo.identifier!!.id}'."
         )
     }
 
@@ -68,11 +64,7 @@ object Libraries {
         }
 
         throw CqlException(
-            String.format(
-                "Could not resolve code system reference '%s' in library '%s'.",
-                name,
-                relativeTo.identifier!!.id,
-            )
+            "Could not resolve code system reference '${name}' in library '${relativeTo.identifier!!.id}'."
         )
     }
 
@@ -84,11 +76,7 @@ object Libraries {
         }
 
         throw CqlException(
-            String.format(
-                "Could not resolve value set reference '%s' in library '%s'.",
-                name,
-                relativeTo.identifier!!.id,
-            )
+            "Could not resolve value set reference '${name}' in library '${relativeTo.identifier!!.id}'."
         )
     }
 
@@ -100,11 +88,7 @@ object Libraries {
         }
 
         throw CqlException(
-            String.format(
-                "Could not resolve code reference '%s' in library '%s'.",
-                name,
-                relativeTo.identifier!!.id,
-            )
+            "Could not resolve code reference '${name}' in library '${relativeTo.identifier!!.id}'."
         )
     }
 
@@ -116,11 +100,7 @@ object Libraries {
         }
 
         throw CqlException(
-            String.format(
-                "Could not resolve parameter reference '%s' in library '%s'.",
-                name,
-                relativeTo.identifier!!.id,
-            )
+            "Could not resolve parameter reference '${name}' in library '${relativeTo.identifier!!.id}'."
         )
     }
 
@@ -131,7 +111,7 @@ object Libraries {
             }
         }
 
-        throw CqlException(String.format("Could not resolve concept reference '%s'.", name))
+        throw CqlException("Could not resolve concept reference '${name}'.")
     }
 
     fun getFunctionDefs(name: String?, relativeTo: Library): List<FunctionDef> {

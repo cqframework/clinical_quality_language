@@ -50,6 +50,7 @@ import org.cqframework.cql.gen.cqlParser.WithClauseContext
 import org.cqframework.cql.gen.cqlParser.WithoutClauseContext
 
 /** Created by Bryn on 7/5/2017. */
+@Suppress("LargeClass", "CyclomaticComplexMethod", "TooManyFunctions", "LongMethod")
 class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
     val useSpaces: Boolean = true
 
@@ -198,31 +199,31 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
             return false
         }
 
-        when (terminal) {
-            ":" -> return false
-            "." -> return false
-            "," -> return false
-            "<" -> return !inTypeSpecifier()
-            ">" -> return !inTypeSpecifier()
-            "(" -> return !inFunctionDefinition() && !inFunctionInvocation()
-            ")" -> return !inFunctionDefinition() && !inFunctionInvocation()
-            "[" -> return inRetrieve()
-            "]" -> return false
-            "starts" -> return !inFunctionDefinition() || !inFunctionInvocation()
-            else -> return true
+        return when (terminal) {
+            ":" -> false
+            "." -> false
+            "," -> false
+            "<" -> !inTypeSpecifier()
+            ">" -> !inTypeSpecifier()
+            "(" -> !inFunctionDefinition() && !inFunctionInvocation()
+            ")" -> !inFunctionDefinition() && !inFunctionInvocation()
+            "[" -> inRetrieve()
+            "]" -> false
+            "starts" -> !inFunctionDefinition() || !inFunctionInvocation()
+            else -> true
         }
     }
 
     private fun needsWhitespaceAfter(terminal: String): Boolean {
-        when (terminal) {
-            "." -> return false
-            "<" -> return !inTypeSpecifier()
-            ">" -> return !inTypeSpecifier()
-            "(" -> return !inFunctionDefinition() && !inFunctionInvocation()
-            ")" -> return !inFunctionDefinition() || !inFunctionInvocation()
-            "[" -> return false
-            "]" -> return inRetrieve()
-            else -> return true
+        return when (terminal) {
+            "." -> false
+            "<" -> !inTypeSpecifier()
+            ">" -> !inTypeSpecifier()
+            "(" -> !inFunctionDefinition() && !inFunctionInvocation()
+            ")" -> !inFunctionDefinition() || !inFunctionInvocation()
+            "[" -> false
+            "]" -> inRetrieve()
+            else -> true
         }
     }
 
@@ -834,7 +835,7 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
             e: RecognitionException?,
         ) {
             if (!(offendingSymbol as Token).text!!.trim { it <= ' ' }.isEmpty()) {
-                errors.add(Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)))
+                errors.add(Exception("[$line:$charPositionInLine]: $msg"))
             }
         }
     }
@@ -845,9 +846,9 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
         private val comments: MutableList<CommentToken> = ArrayList<CommentToken>()
 
         @Throws(IOException::class)
-        fun getFormattedOutput(`is`: InputStream): FormatResult {
-            val `in` = fromStream(`is`)
-            val lexer = cqlLexer(`in`)
+        fun getFormattedOutput(stream: InputStream): FormatResult {
+            val charStream = fromStream(stream)
+            val lexer = cqlLexer(charStream)
             val tokens = CommonTokenStream(lexer)
             tokens.fill()
             populateComments(tokens)
@@ -859,7 +860,7 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
             if ((parser.errorListeners[1] as SyntaxErrorListener).errors.size > 0) {
                 return FormatResult(
                     (parser.errorListeners[1] as SyntaxErrorListener).errors,
-                    `in`.toString(),
+                    charStream.toString(),
                 )
             }
 
@@ -878,8 +879,10 @@ class CqlFormatterVisitor : cqlBaseVisitor<Any?>() {
             return FormatResult(ArrayList<Exception>(), output)
         }
 
-        fun getInputStreamAsString(`is`: InputStream): String {
-            return BufferedReader(InputStreamReader(`is`)).lines().collect(Collectors.joining("\n"))
+        fun getInputStreamAsString(stream: InputStream): String {
+            return BufferedReader(InputStreamReader(stream))
+                .lines()
+                .collect(Collectors.joining("\n"))
         }
 
         fun populateComments(tokens: CommonTokenStream) {

@@ -23,7 +23,7 @@ object TimezoneOffsetFromEvaluator {
 
         throw InvalidOperatorArgument(
             "TimezoneOffsetFrom(DateTime)",
-            String.format("TimezoneOffsetFrom(%s)", operand.javaClass.name),
+            "TimezoneOffsetFrom(${operand.javaClass.name})",
         )
     }
 }

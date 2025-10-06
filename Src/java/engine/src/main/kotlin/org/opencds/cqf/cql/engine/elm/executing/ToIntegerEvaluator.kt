@@ -45,9 +45,6 @@ object ToIntegerEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "ToInteger(String)",
-            String.format("ToInteger(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToInteger(String)", "ToInteger(${operand.javaClass.name})")
     }
 }

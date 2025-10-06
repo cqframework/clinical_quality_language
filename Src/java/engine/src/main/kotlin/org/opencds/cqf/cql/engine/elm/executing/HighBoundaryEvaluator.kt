@@ -32,6 +32,7 @@ import org.opencds.cqf.cql.engine.runtime.Time
     If the input value is null, the result is null.
 
 */
+@Suppress("MagicNumber")
 object HighBoundaryEvaluator {
     @JvmStatic
     fun highBoundary(input: Any?, precision: Any?): Any? {
@@ -113,7 +114,7 @@ object HighBoundaryEvaluator {
 
         throw InvalidOperatorArgument(
             "HighBoundary(Decimal, Integer) or HighBoundary(Date, Integer) or HighBoundary(DateTime, Integer) or HighBoundary(Time, Integer)",
-            String.format("HighBoundary(%s, %s)", input.javaClass.name, precision!!.javaClass.name),
+            "HighBoundary(${input.javaClass.name}, ${precision!!.javaClass.name})",
         )
     }
 }

@@ -40,7 +40,7 @@ object ConvertsToDateEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToDate(String)",
-            String.format("ConvertsToDate(%s)", argument.javaClass.name),
+            "ConvertsToDate(${argument.javaClass.name})",
         )
     }
 }

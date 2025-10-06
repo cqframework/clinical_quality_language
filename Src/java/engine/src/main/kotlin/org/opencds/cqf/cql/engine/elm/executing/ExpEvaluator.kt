@@ -32,9 +32,6 @@ object ExpEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "Exp(Decimal)",
-            String.format("Exp(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Exp(Decimal)", "Exp(${operand.javaClass.name})")
     }
 }

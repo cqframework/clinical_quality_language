@@ -102,7 +102,7 @@ object ProperContainsEvaluator {
 
         throw InvalidOperatorArgument(
             "ProperContains(List<T>, T) or ProperContains(Interval<T>, T)",
-            String.format("ProperContains(%s, %s)", left.javaClass.name, right!!.javaClass.name),
+            "ProperContains(${left.javaClass.name}, ${right!!.javaClass.name})",
         )
     }
 

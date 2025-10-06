@@ -20,9 +20,6 @@ object LowerEvaluator {
             return operand.lowercase(Locale.getDefault())
         }
 
-        throw InvalidOperatorArgument(
-            "Lower(String)",
-            String.format("Lower(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Lower(String)", "Lower(${operand.javaClass.name})")
     }
 }

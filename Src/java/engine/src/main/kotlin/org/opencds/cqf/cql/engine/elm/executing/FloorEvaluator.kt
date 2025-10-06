@@ -24,9 +24,6 @@ object FloorEvaluator {
             return BigDecimal.valueOf(kotlin.math.floor(operand.value!!.toDouble())).toInt()
         }
 
-        throw InvalidOperatorArgument(
-            "Floor(Decimal)",
-            String.format("Floor(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Floor(Decimal)", "Floor(${operand.javaClass.name})")
     }
 }

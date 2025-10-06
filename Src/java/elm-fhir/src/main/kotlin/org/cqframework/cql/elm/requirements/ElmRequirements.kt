@@ -182,13 +182,8 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         for (r in this.conceptDefs) {
             val cd = r.element as ConceptDef
             val uri =
-                String.format(
-                    "%s%s.%s",
-                    if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
-                    else "",
-                    r.libraryIdentifier.id,
-                    cd.name,
-                )
+                "${if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
+else ""}${r.libraryIdentifier.id}.${cd.name}"
             if (!concepts.containsKey(uri)) {
                 concepts[uri] = r
                 // TODO: How to report duplicate references, potentially warn about different names?
@@ -204,11 +199,8 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         for (r in this.codeDefs) {
             val cd = r.element as CodeDef
             val uri =
-                String.format(
-                    "%s#%s", // TODO: Look up CodeSystemDef to determine code system URI
-                    cd.codeSystem!!.name,
-                    cd.id,
-                )
+                "${// TODO: Look up CodeSystemDef to determine code system URI
+                   cd.codeSystem!!.name}#${cd.id}"
 
             if (!codes.containsKey(uri)) {
                 codes[uri] = r
@@ -249,13 +241,8 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         for (r in this.expressionDefs) {
             val ed = r.element as ExpressionDef
             val uri =
-                String.format(
-                    "%s%s.%s",
-                    if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
-                    else "",
-                    r.libraryIdentifier.id,
-                    ed.name,
-                )
+                "${if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
+else ""}${r.libraryIdentifier.id}.${ed.name}"
 
             if (!expressions.containsKey(uri)) {
                 expressions[uri] = r
@@ -272,14 +259,8 @@ class ElmRequirements(libraryIdentifier: VersionedIdentifier, element: Element) 
         for (r in this.functionDefs) {
             val fd = r.element as FunctionDef
             val uri =
-                String.format(
-                    "%s%s.%s(%s)",
-                    if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
-                    else "",
-                    r.libraryIdentifier.id,
-                    fd.name,
-                    getSignature(fd),
-                )
+                "${if (r.libraryIdentifier.system != null) r.libraryIdentifier.system + "."
+else ""}${r.libraryIdentifier.id}.${fd.name}(${getSignature(fd)})"
 
             if (!functions.containsKey(uri)) {
                 functions[uri] = r

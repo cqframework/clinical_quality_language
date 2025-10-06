@@ -36,7 +36,7 @@ object SingletonFromEvaluator {
 
         throw InvalidOperatorArgument(
             "SingletonFrom(List<T>)",
-            String.format("SingletonFrom(%s)", operand.javaClass.name),
+            "SingletonFrom(${operand.javaClass.name})",
         )
     }
 }

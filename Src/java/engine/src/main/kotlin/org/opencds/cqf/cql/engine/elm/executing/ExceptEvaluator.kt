@@ -137,13 +137,7 @@ object ExceptEvaluator {
             }
 
             throw UndefinedResult(
-                String.format(
-                    "The following interval values led to an undefined Except result: leftStart: %s, leftEnd: %s, rightStart: %s, rightEnd: %s",
-                    leftStart.toString(),
-                    leftEnd.toString(),
-                    rightStart.toString(),
-                    rightEnd.toString(),
-                )
+                "The following interval values led to an undefined Except result: leftStart: ${leftStart.toString()}, leftEnd: ${leftEnd.toString()}, rightStart: ${rightStart.toString()}, rightEnd: ${rightEnd.toString()}"
             )
         } else if (left is Iterable<*>) {
             val leftArr = left
@@ -163,7 +157,7 @@ object ExceptEvaluator {
 
         throw InvalidOperatorArgument(
             "Except(Interval<T>, Interval<T>) or Except(List<T>, List<T>)",
-            String.format("Except(%s, %s)", left.javaClass.name, right!!.javaClass.name),
+            "Except(${left.javaClass.name}, ${right!!.javaClass.name})",
         )
     }
 }

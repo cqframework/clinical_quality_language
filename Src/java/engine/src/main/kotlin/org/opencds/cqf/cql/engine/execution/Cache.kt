@@ -10,6 +10,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  * not, like Function resolutions (and thus can be cached for the entire duration of the
  * evaluation).
  */
+@Suppress("MagicNumber")
 class Cache {
     var isExpressionCachingEnabled: Boolean = false
         private set

@@ -24,7 +24,7 @@ object StartsWithEvaluator {
 
         throw InvalidOperatorArgument(
             "StartsWith(String, String)",
-            String.format("StartsWith(%s, %s)", argument.javaClass.name, prefix.javaClass.name),
+            "StartsWith(${argument.javaClass.name}, ${prefix.javaClass.name})",
         )
     }
 }

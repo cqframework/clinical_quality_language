@@ -35,9 +35,6 @@ object LnEvaluator {
             return Value.verifyPrecision(retVal, null)
         }
 
-        throw InvalidOperatorArgument(
-            "Ln(Decimal)",
-            String.format("Ln(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Ln(Decimal)", "Ln(${operand.javaClass.name})")
     }
 }

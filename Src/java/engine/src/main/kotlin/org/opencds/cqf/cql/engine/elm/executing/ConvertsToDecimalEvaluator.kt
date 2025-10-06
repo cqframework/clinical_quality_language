@@ -45,7 +45,7 @@ object ConvertsToDecimalEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToDecimal(String)",
-            String.format("ConvertsToDecimal(%s)", argument.javaClass.name),
+            "ConvertsToDecimal(${argument.javaClass.name})",
         )
     }
 }

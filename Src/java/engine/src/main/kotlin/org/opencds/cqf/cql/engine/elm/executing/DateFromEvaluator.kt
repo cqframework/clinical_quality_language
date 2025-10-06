@@ -34,9 +34,6 @@ object DateFromEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "date from(DateTime)",
-            String.format("date from(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("date from(DateTime)", "date from(${operand.javaClass.name})")
     }
 }

@@ -106,10 +106,7 @@ object ToQuantityEvaluator {
         }
 
         throw IllegalArgumentException(
-            String.format(
-                "Cannot cast a value of type %s as Quantity - use String, Integer, Decimal, or Ratio values.",
-                operand.javaClass.name,
-            )
+            "Cannot cast a value of type ${operand.javaClass.name} as Quantity - use String, Integer, Decimal, or Ratio values."
         )
     }
 }

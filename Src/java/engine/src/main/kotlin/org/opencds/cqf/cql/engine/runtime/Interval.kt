@@ -62,22 +62,14 @@ constructor(
         if (low is Date && high is Date) {
             if ((low as Date).after(high as Date)) {
                 throw InvalidInterval(
-                    String.format(
-                        "Invalid Interval - the ending boundary (%s) must be greater than or equal to the starting boundary (%s).",
-                        high,
-                        low,
-                    )
+                    "Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."
                 )
             }
         } else if (low != null && high != null) {
             val isStartGreater = greater(this.start, this.end, this.state)
             if (isStartGreater == null || isStartGreater) {
                 throw InvalidInterval(
-                    String.format(
-                        "Invalid Interval - the ending boundary (%s) must be greater than or equal to the starting boundary (%s).",
-                        high,
-                        low,
-                    )
+                    "Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."
                 )
             }
         }
@@ -159,11 +151,7 @@ constructor(
         }
 
         throw InvalidOperatorArgument(
-            String.format(
-                "Cannot perform equal operation on types: '%s' and '%s'",
-                this.javaClass.getName(),
-                other?.javaClass?.getName(),
-            )
+            "Cannot perform equal operation on types: '${this.javaClass.getName()}' and '${other?.javaClass?.getName()}'"
         )
     }
 
@@ -179,13 +167,7 @@ constructor(
     }
 
     override fun toString(): String {
-        return String.format(
-            "Interval%s%s, %s%s",
-            if (this.lowClosed) "[" else "(",
-            if (this.low == null) "null" else this.low.toString(),
-            if (this.high == null) "null" else this.high.toString(),
-            if (this.highClosed) "]" else ")",
-        )
+        return "Interval${if (this.lowClosed) "[" else "("}${if (this.low == null) "null" else this.low.toString()}, ${if (this.high == null) "null" else this.high.toString()}${if (this.highClosed) "]" else ")"}"
     }
 
     companion object {
@@ -199,10 +181,7 @@ constructor(
             }
 
             throw InvalidOperatorArgument(
-                String.format(
-                    "Cannot perform width operator with argument of type '%s'.",
-                    start.javaClass.getName(),
-                )
+                "Cannot perform width operator with argument of type '${start.javaClass.getName()}'."
             )
         }
     }

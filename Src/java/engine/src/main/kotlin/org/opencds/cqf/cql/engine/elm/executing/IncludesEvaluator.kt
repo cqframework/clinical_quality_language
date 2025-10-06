@@ -32,7 +32,7 @@ object IncludesEvaluator {
         } catch (e: IllegalArgumentException) {
             throw InvalidOperatorArgument(
                 "Includes(Interval<T>, Interval<T>), Includes(List<T>, List<T>) or Includes(List<T>, T)",
-                String.format("Includes(%s, %s)", left!!.javaClass.name, right!!.javaClass.name),
+                "Includes(${left!!.javaClass.name}, ${right!!.javaClass.name})",
             )
         }
     }

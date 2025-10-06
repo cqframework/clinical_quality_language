@@ -2,7 +2,6 @@ package org.cqframework.fhir.npm
 
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.lang.String
 import kotlin.plus
 import kotlinx.io.Source
 import kotlinx.io.asSource
@@ -55,10 +54,7 @@ class NpmLibrarySourceProvider(
             } catch (e: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
-                    String.format(
-                        "Exceptions occurred attempting to load npm library source for %s",
-                        libraryIdentifier.toString(),
-                    ),
+                    "Exceptions occurred attempting to load npm library source for $libraryIdentifier",
                 )
             }
         }

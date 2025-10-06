@@ -40,11 +40,7 @@ object SplitOnMatchesEvaluator {
 
         throw InvalidOperatorArgument(
             "SplitOnMatches(String, String)",
-            String.format(
-                "SplitOnMatches(%s, %s)",
-                stringToSplit.javaClass.name,
-                separator!!.javaClass.name,
-            ),
+            "SplitOnMatches(${stringToSplit.javaClass.name}, ${separator!!.javaClass.name})",
         )
     }
 }

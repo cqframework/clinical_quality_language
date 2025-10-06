@@ -24,7 +24,7 @@ object LastPositionOfEvaluator {
 
         throw InvalidOperatorArgument(
             "LastPositionOf(String, String)",
-            String.format("LastPositionOf(%s, %s)", pattern.javaClass.name, string.javaClass.name),
+            "LastPositionOf(${pattern.javaClass.name}, ${string.javaClass.name})",
         )
     }
 }

@@ -11,7 +11,6 @@ import kotlin.assert
 import kotlin.check
 import kotlin.checkNotNull
 import kotlin.text.StringBuilder
-import kotlin.text.format
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.Library
@@ -63,14 +62,14 @@ constructor(
             } else if (this.element is ExpressionDef) {
                 result.append((element as ExpressionDef).name)
             } else if (this.element is Retrieve) {
-                result.append(String.format("[%s]", (element as Retrieve).dataType!!.localPart))
+                result.append("[${(element as Retrieve).dataType!!.localPart}]")
             } else {
                 result.append(this.element!!::class.simpleName)
             }
             if (this.endTime == 0L) {
                 result.append(", active")
             } else {
-                result.append(String.format(", %,d ms", (this.endTime - this.startTime) / 1000000))
+                result.append(", ${(this.endTime - this.startTime) / 1000000} ms")
             }
             if (this.isCached) {
                 result.append(", cached")
@@ -116,8 +115,7 @@ constructor(
         val enteredLibrary = enterLibrary(libraryName)
         try {
             val fullName =
-                if (libraryName != null)
-                    String.format("%s.%s", getCurrentLibrary()!!.identifier!!.id, name)
+                if (libraryName != null) "${getCurrentLibrary()!!.identifier!!.id}.${name}"
                 else name
             parameters[fullName] = value
         } finally {
@@ -264,7 +262,7 @@ constructor(
     fun resolveVariable(name: String?, mustResolve: Boolean): Variable? {
         val result = resolveVariable(name)
         if (mustResolve && result == null) {
-            throw CqlException(String.format("Could not resolve variable reference %s", name))
+            throw CqlException("Could not resolve variable reference ${name}")
         }
 
         return result

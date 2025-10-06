@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.IllegalArgumentException
 import kotlin.require
 import kotlin.requireNotNull
-import kotlin.text.format
 import kotlin.text.lastIndexOf
 import kotlin.text.substring
 import org.cqframework.cql.cql2elm.LibraryManager
@@ -92,7 +91,7 @@ class TypeResolver(val libraryManager: LibraryManager) {
 
         val model = libraryManager.modelManager.resolveModelByUri(typeName.namespaceURI)
         val result = model.resolveTypeName(typeName.localPart)
-        requireNotNull(result) { String.format("Could not resolve type %s", typeName.toString()) }
+        requireNotNull(result) { "Could not resolve type ${typeName.toString()}" }
         return result
     }
 
@@ -170,9 +169,7 @@ class TypeResolver(val libraryManager: LibraryManager) {
         // context
         val model = libraryManager.modelManager.resolveModel(modelName)
         val result = model.resolveTypeName(typeName)
-        requireNotNull(result) {
-            String.format("Could not resolve type %s.%s", modelName, typeName)
-        }
+        requireNotNull(result) { "Could not resolve type ${modelName}.${typeName}" }
         return result
     }
 

@@ -41,7 +41,7 @@ object AvgEvaluator {
                 } else {
                     throw InvalidOperatorArgument(
                         "Avg(List<Decimal>), Avg(List<Quantity>)",
-                        String.format("Avg(List<%s>)", source.javaClass.name),
+                        "Avg(List<${source.javaClass.name}>)",
                     )
                 }
             }
@@ -51,7 +51,7 @@ object AvgEvaluator {
 
         throw InvalidOperatorArgument(
             "Avg(List<Decimal>), Avg(List<Quantity>)",
-            String.format("Avg(%s)", source.javaClass.name),
+            "Avg(${source.javaClass.name})",
         )
     }
 }

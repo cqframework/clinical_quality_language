@@ -52,7 +52,7 @@ object PrecisionEvaluator {
 
         throw InvalidOperatorArgument(
             "Precision(Decimal), Precision(Date), Precision(DateTime) or Precision(Time)",
-            String.format("Precision(%s)", argument.javaClass.name),
+            "Precision(${argument.javaClass.name})",
         )
     }
 }

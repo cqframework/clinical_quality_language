@@ -70,7 +70,7 @@ object MedianEvaluator {
 
         throw InvalidOperatorArgument(
             "Median(List<Decimal>) or Median(List<Quantity>)",
-            String.format("Median(%s)", source.javaClass.name),
+            "Median(${source.javaClass.name})",
         )
     }
 }

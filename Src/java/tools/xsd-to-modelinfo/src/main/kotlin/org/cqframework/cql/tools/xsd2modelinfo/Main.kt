@@ -26,6 +26,7 @@ import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 object Main {
     @Throws(IOException::class)
     @JvmStatic
+    @Suppress("LongMethod", "MemberNameEqualsClassName", "SpreadOperator", "ForbiddenComment")
     fun main(args: Array<String>) {
         val parser = OptionParser()
         val schemaOpt: OptionSpec<File> =
@@ -104,7 +105,7 @@ object Main {
         val outputfile: File
         if (!options.has(outputOpt) || outputOpt.value(options).isDirectory()) {
             // construct output filename using modelinfo
-            val name = String.format("%s-modelinfo.xml", modelInfo.targetQualifier)
+            val name = "${modelInfo.targetQualifier}-modelinfo.xml"
             val basePath =
                 if (options.has(outputOpt)) outputOpt.value(options).absolutePath
                 else schemaFile.getParent()
@@ -116,7 +117,7 @@ object Main {
 
         val os: OutputStream = FileOutputStream(outputfile, false)
         try {
-            val writer = OutputStreamWriter(os, "UTF-8")
+            @Suppress("UnusedPrivateProperty") val writer = OutputStreamWriter(os, "UTF-8")
             // TODO: implement ModelInfo writer
             // marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
         } finally {

@@ -37,6 +37,6 @@ class Ratio : CqlType {
     }
 
     override fun toString(): String {
-        return String.format("%s:%s", this.numerator.toString(), this.denominator.toString())
+        return "${this.numerator.toString()}:${this.denominator.toString()}"
     }
 }

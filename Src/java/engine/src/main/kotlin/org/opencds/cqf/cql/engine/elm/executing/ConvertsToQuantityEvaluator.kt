@@ -46,7 +46,7 @@ object ConvertsToQuantityEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToQuantity(String) or ConvertsToQuantity(Ratio) or ConvertsToQuantity(Integer) or ConvertsToQuantity(Decimal)",
-            String.format("ConvertsToQuantity(%s)", argument.javaClass.name),
+            "ConvertsToQuantity(${argument.javaClass.name})",
         )
     }
 }

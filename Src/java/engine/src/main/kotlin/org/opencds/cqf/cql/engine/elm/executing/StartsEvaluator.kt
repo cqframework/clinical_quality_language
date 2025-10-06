@@ -43,7 +43,7 @@ object StartsEvaluator {
 
         throw InvalidOperatorArgument(
             "Starts(Interval<T>, Interval<T>)",
-            String.format("Starts(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Starts(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

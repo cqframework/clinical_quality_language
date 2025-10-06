@@ -38,7 +38,7 @@ object IncludedInEvaluator {
 
         throw InvalidOperatorArgument(
             "IncludedIn(Interval<T>, Interval<T>), IncludedIn(List<T>, List<T>) or IncludedIn(T, List<T>)",
-            String.format("IncludedIn(%s, %s)", left!!.javaClass.name, right!!.javaClass.name),
+            "IncludedIn(${left!!.javaClass.name}, ${right!!.javaClass.name})",
         )
     }
 

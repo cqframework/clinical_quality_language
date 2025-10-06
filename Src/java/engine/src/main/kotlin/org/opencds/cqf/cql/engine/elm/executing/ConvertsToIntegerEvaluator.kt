@@ -42,7 +42,7 @@ object ConvertsToIntegerEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToInteger(String)",
-            String.format("ConvertsToInteger(%s)", argument.javaClass.name),
+            "ConvertsToInteger(${argument.javaClass.name})",
         )
     }
 }

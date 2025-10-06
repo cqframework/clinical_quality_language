@@ -42,7 +42,7 @@ object PopulationVarianceEvaluator {
 
         throw InvalidOperatorArgument(
             "PopulationVariance(List<Decimal>) or PopulationVariance(List<Quantity>)",
-            String.format("PopulationVariance(%s)", source.javaClass.name),
+            "PopulationVariance(${source.javaClass.name})",
         )
     }
 }

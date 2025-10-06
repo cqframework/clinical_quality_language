@@ -22,7 +22,7 @@ object ParameterRefEvaluator {
             val name: String? = parameterDef.name
             val libraryName: String? = state.getCurrentLibrary()!!.identifier!!.id
 
-            val fullName = String.format("%s.%s", libraryName, name)
+            val fullName = "${libraryName}.${name}"
 
             if (state.parameters.containsKey(fullName)) {
                 return state.parameters.get(fullName)

@@ -38,7 +38,7 @@ object ConvertsToLongEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToLong(String)",
-            String.format("ConvertsToLong(%s)", argument.javaClass.name),
+            "ConvertsToLong(${argument.javaClass.name})",
         )
     }
 }

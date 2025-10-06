@@ -68,7 +68,7 @@ object DivideEvaluator {
 
         throw InvalidOperatorArgument(
             "Divide(Decimal, Decimal), Divide(Quantity, Decimal), Divide(Quantity, Quantity)",
-            String.format("Divide(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Divide(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

@@ -28,6 +28,7 @@ import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
+@Suppress("MaxLineLength")
 internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     var generator: Dstu3FhirQueryGenerator? = null
     var evaluationOffsetDateTime: OffsetDateTime? = null

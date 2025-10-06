@@ -45,7 +45,7 @@ object ConvertQuantityEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertQuantity(Quantity, String)",
-            String.format("ConvertQuantity(%s, %s)", argument.javaClass.name, unit.javaClass.name),
+            "ConvertQuantity(${argument.javaClass.name}, ${unit.javaClass.name})",
         )
     }
 }

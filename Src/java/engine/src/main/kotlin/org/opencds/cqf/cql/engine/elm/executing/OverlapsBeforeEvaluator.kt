@@ -39,7 +39,7 @@ object OverlapsBeforeEvaluator {
 
         throw InvalidOperatorArgument(
             "OverlapsBefore(Interval<T>, Interval<T>)",
-            String.format("OverlapsBefore(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "OverlapsBefore(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

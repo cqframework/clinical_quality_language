@@ -32,7 +32,7 @@ class LoadMultiLibResult(builder: Builder) {
     fun retrieveLibrary(libraryIdentifier: VersionedIdentifier): Library? {
         if (libraryIdentifier.version != null) {
             require(results.containsKey(libraryIdentifier)) {
-                String.format("libraryIdentifier '%s' does not exist.", libraryIdentifier)
+                "libraryIdentifier '${libraryIdentifier}' does not exist."
             }
 
             return results[libraryIdentifier]
@@ -42,9 +42,7 @@ class LoadMultiLibResult(builder: Builder) {
             .filter { entry -> entry.key.id.equals(libraryIdentifier.id) }
             .map { entry -> entry.value }
             .firstOrNull()
-            ?: throw IllegalArgumentException(
-                String.format("library id %s not found.", libraryIdentifier.id)
-            )
+            ?: throw IllegalArgumentException("library id ${libraryIdentifier.id} not found.")
     }
 
     class Builder {

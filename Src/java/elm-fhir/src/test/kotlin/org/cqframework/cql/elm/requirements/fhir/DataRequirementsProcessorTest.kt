@@ -48,6 +48,15 @@ import org.junit.jupiter.api.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Suppress(
+    "LongMethod",
+    "ComplexCondition",
+    "NestedBlockDepth",
+    "PrintStackTrace",
+    "MaxLineLength",
+    "ForbiddenComment",
+    "UnusedPrivateMember",
+)
 class DataRequirementsProcessorTest {
     @Test
     fun dataRequirementsProcessor() {

@@ -12,14 +12,15 @@ import org.junit.jupiter.api.Test
 
 internal class TestTypes {
     @Test
+    @Suppress("PrintStackTrace")
     fun modelImporter() {
-        var `is`: InputStream?
+        var inputStream: InputStream?
         try {
             val f = File(TestTypes::class.java.getResource("fhir-single.xsd")!!.file)
-            `is` = FileInputStream(f)
+            inputStream = FileInputStream(f)
             val schemaCol = XmlSchemaCollection()
             schemaCol.setBaseUri(f.path)
-            val schema = schemaCol.read(StreamSource(`is`))
+            val schema = schemaCol.read(StreamSource(inputStream))
             val modelInfo =
                 ModelImporter.fromXsd(
                     schema,

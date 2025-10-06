@@ -130,7 +130,7 @@ object SubtractEvaluator {
 
         throw InvalidOperatorArgument(
             "Subtract(Integer, Integer), Subtract(Long, Long) Subtract(Decimal, Decimal), Subtract(Quantity, Quantity), Subtract(Date, Quantity), Subtract(DateTime, Quantity), Subtract(Time, Quantity)",
-            String.format("Subtract(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Subtract(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

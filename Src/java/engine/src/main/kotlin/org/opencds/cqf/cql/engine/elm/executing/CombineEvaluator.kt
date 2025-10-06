@@ -37,11 +37,7 @@ object CombineEvaluator {
                     } else {
                         throw InvalidOperatorArgument(
                             "Combine(List<String>) or Combine(List<String>, String)",
-                            String.format(
-                                "Combine(List<%s>%s)",
-                                item.javaClass.name,
-                                if (separator == "") "" else ", " + separator,
-                            ),
+                            "Combine(List<${item.javaClass.name}>${if (separator == "") "" else ", " + separator})",
                         )
                     }
                 }
@@ -51,11 +47,7 @@ object CombineEvaluator {
 
         throw InvalidOperatorArgument(
             "Combine(List<String>) or Combine(List<String>, String)",
-            String.format(
-                "Combine(%s%s)",
-                source.javaClass.name,
-                if (separator == "") "" else ", " + separator,
-            ),
+            "Combine(${source.javaClass.name}${if (separator == "") "" else ", " + separator})",
         )
     }
 }

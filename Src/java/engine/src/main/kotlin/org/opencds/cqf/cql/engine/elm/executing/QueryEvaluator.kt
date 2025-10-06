@@ -220,11 +220,11 @@ object QueryEvaluator {
 
         QueryEvaluator.sortResult(elm, result!!, state, visitor)
 
-        if ((result == null || result.isEmpty()) && !sourceIsList) {
+        if ((result.isEmpty()) && !sourceIsList) {
             return null
         }
 
-        return if (elm.aggregate != null || !sourceIsList) result.get(0) else result
+        return if (elm.aggregate != null || !sourceIsList) result[0] else result
     }
 
     private fun assignVariables(variables: MutableList<Variable>, elements: MutableList<Any?>) {

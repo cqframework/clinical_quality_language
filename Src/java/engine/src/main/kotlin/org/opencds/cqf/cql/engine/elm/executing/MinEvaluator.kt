@@ -56,7 +56,7 @@ object MinEvaluator {
 
         throw InvalidOperatorArgument(
             "Min(List<Integer>), Min(List<Long>), Min(List<Decimal>), Min(List<Quantity>), Min(List<Date>), Min(List<DateTime>), Min(List<Time>) or Min(List<String>)",
-            String.format("Min(%s)", source.javaClass.name),
+            "Min(${source.javaClass.name})",
         )
     }
 }

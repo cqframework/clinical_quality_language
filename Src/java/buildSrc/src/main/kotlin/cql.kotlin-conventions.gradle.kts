@@ -5,9 +5,9 @@ plugins {
     kotlin("jvm")
     id("cql.maven-publishing-conventions")
     id("jacoco")
-    id("cql.sca-conventions")
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
+    id("org.openrewrite.rewrite")
 }
 
 repositories {
@@ -18,16 +18,25 @@ repositories {
     }
 }
 
+// Reenable once we have time to address the issues
+//detekt {
+//    // Applies the config files on top of detekt's default config.
+//    buildUponDefaultConfig = true
+//
+//    // The directories where detekt looks for source files.
+//    source.setFrom(
+//        "src/main/kotlin",
+//        "src/test/kotlin",
+//    )
+//
+//    // Custom config with overrides.
+//    config.setFrom("$rootDir/config/detekt/detekt.yml")
+//}
+
 kotlin {
     jvmToolchain(17)
     compilerOptions {
         freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
-    }
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -44,6 +53,8 @@ dependencies {
     testRuntimeOnly("org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2")
     testRuntimeOnly("org.eclipse.parsson:parsson:1.1.5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    rewrite(project(":rewrite"))
 }
 
 tasks.jar {
@@ -63,7 +74,6 @@ tasks.register<Jar>("dokkaHtmlJar") {
 
 jacoco {
     toolVersion = "0.8.11"
-
 }
 
 tasks.withType<Test> {

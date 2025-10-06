@@ -26,7 +26,7 @@ class NpmProcessor(
     // @Inject
     init {
         if (igContext != null) {
-            packageManager = NpmPackageManager(igContext.getSourceIg())
+            packageManager = NpmPackageManager(igContext.sourceIg!!)
         }
     }
 

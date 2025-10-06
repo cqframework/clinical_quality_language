@@ -40,7 +40,7 @@ object SumEvaluator {
 
         throw InvalidOperatorArgument(
             "Sum(List<Integer>), Sum(List<Long>), Sum(List<Decimal>) or Sum(List<Quantity>)",
-            String.format("Sum(%s)", source.javaClass.name),
+            "Sum(${source.javaClass.name})",
         )
     }
 }

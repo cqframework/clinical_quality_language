@@ -61,7 +61,7 @@ object ConvertsToDateTimeEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToDateTime(String) or ConvertsToDateTime(Date)",
-            String.format("ConvertsToDateTime(%s)", argument.javaClass.name),
+            "ConvertsToDateTime(${argument.javaClass.name})",
         )
     }
 }

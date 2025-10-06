@@ -43,10 +43,7 @@ object LiteralEvaluator {
             "String" -> return value
             else ->
                 throw InvalidLiteral(
-                    String.format(
-                        "Cannot construct literal value for type '%s'.",
-                        valueType.toString(),
-                    )
+                    "Cannot construct literal value for type '${valueType.toString()}'."
                 )
         }
     }

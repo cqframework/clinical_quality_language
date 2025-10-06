@@ -17,19 +17,13 @@ class DateTime : BaseTemporal {
         set(dateTime) {
             if (dateTime!!.year < 1) {
                 throw InvalidDateTime(
-                    String.format(
-                        "The year: %d falls below the accepted bounds of 0001-9999.",
-                        dateTime.year,
-                    )
+                    "The year: ${dateTime.year} falls below the accepted bounds of 0001-9999."
                 )
             }
 
             if (dateTime.year > 9999) {
                 throw InvalidDateTime(
-                    String.format(
-                        "The year: %d falls above the accepted bounds of 0001-9999.",
-                        dateTime.year,
-                    )
+                    "The year: ${dateTime.year} falls above the accepted bounds of 0001-9999."
                 )
             }
             field = dateTime
@@ -321,11 +315,12 @@ class DateTime : BaseTemporal {
 
     override fun toString(): String {
         when (precision) {
-            Precision.YEAR -> return String.format("%04d", dateTime!!.year)
+            Precision.YEAR -> return String.format(Locale.US, "%04d", dateTime!!.year)
             Precision.MONTH ->
-                return String.format("%04d-%02d", dateTime!!.year, dateTime!!.monthValue)
+                return String.format(Locale.US, "%04d-%02d", dateTime!!.year, dateTime!!.monthValue)
             Precision.DAY ->
                 return String.format(
+                    Locale.US,
                     "%04d-%02d-%02d",
                     dateTime!!.year,
                     dateTime!!.monthValue,
@@ -333,6 +328,7 @@ class DateTime : BaseTemporal {
                 )
             Precision.HOUR ->
                 return String.format(
+                    Locale.US,
                     "%04d-%02d-%02dT%02d",
                     dateTime!!.year,
                     dateTime!!.monthValue,
@@ -341,6 +337,7 @@ class DateTime : BaseTemporal {
                 )
             Precision.MINUTE ->
                 return String.format(
+                    Locale.US,
                     "%04d-%02d-%02dT%02d:%02d",
                     dateTime!!.year,
                     dateTime!!.monthValue,
@@ -350,6 +347,7 @@ class DateTime : BaseTemporal {
                 )
             Precision.SECOND ->
                 return String.format(
+                    Locale.US,
                     "%04d-%02d-%02dT%02d:%02d:%02d",
                     dateTime!!.year,
                     dateTime!!.monthValue,
@@ -361,6 +359,7 @@ class DateTime : BaseTemporal {
             else -> {
                 val offsetSeconds = this.zoneOffset.totalSeconds
                 return String.format(
+                    Locale.US,
                     "%04d-%02d-%02dT%02d:%02d:%02d.%03d%s%02d:%02d",
                     dateTime!!.year,
                     dateTime!!.monthValue,

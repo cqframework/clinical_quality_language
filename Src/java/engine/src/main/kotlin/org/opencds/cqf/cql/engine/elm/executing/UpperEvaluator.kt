@@ -20,9 +20,6 @@ object UpperEvaluator {
             return operand.uppercase(Locale.getDefault())
         }
 
-        throw InvalidOperatorArgument(
-            "Upper(String)",
-            String.format("Upper(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Upper(String)", "Upper(${operand.javaClass.name})")
     }
 }

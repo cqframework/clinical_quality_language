@@ -11,6 +11,7 @@ time from(argument DateTime) Time
 NOTE: this is within the purview of DateTimeComponentFrom
   Description available in that class
 */
+@Suppress("MagicNumber")
 object TimeFromEvaluator {
     @JvmStatic
     fun timeFrom(operand: Any?): Any? {
@@ -50,9 +51,6 @@ object TimeFromEvaluator {
             return Time(hour, minute, second, millisecond)
         }
 
-        throw InvalidOperatorArgument(
-            "TimeFrom(DateTime)",
-            String.format("TimeFrom(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("TimeFrom(DateTime)", "TimeFrom(${operand.javaClass.name})")
     }
 }
