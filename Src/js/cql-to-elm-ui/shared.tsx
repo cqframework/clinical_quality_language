@@ -58,8 +58,7 @@ export const compilerOptions = [
           style={{
             fontFamily: "var(--monospace-font-family)",
             fontSize: "90%",
-            color: "#aa0d91",
-            fontWeight: 700,
+            color: "#d73a49",
           }}
         >
           from

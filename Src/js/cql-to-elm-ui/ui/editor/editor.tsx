@@ -8,7 +8,7 @@ import CodeMirror, {
   StateField,
 } from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
-import { xcodeLight } from "@uiw/codemirror-theme-xcode";
+import { githubLight } from "@uiw/codemirror-theme-github";
 
 // eslint-disable-next-line react/display-name
 export const Editor = forwardRef<
@@ -30,12 +30,13 @@ export const Editor = forwardRef<
         minWidth: 0,
         minHeight: 0,
         fontSize: "90%",
+        filter: "saturate(1.1) contrast(1.1)",
       }}
       height={"100%"}
       width={"100%"}
       editable={editable}
       theme={[
-        xcodeLight,
+        githubLight,
         EditorView.theme({
           "&.cm-focused": {
             outline: "none",

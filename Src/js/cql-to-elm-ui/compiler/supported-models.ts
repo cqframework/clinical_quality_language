@@ -8,13 +8,13 @@ export const supportedModels: {
     id: "System",
     system: null,
     version: null,
-    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/model/src/main/resources/org/hl7/elm/r1/system-modelinfo.xml",
+    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/cql/src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml",
   },
   {
     id: "System",
     system: null,
     version: "1.0.0",
-    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/model/src/main/resources/org/hl7/elm/r1/system-modelinfo.xml",
+    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/cql/src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml",
   },
 
   {
