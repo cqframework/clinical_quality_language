@@ -7,11 +7,7 @@ class InvalidConversion : CqlException {
         from: Any,
         to: Any,
     ) : super(
-        String.format(
-            "Cannot Convert a value of type %s as %s.",
-            from.javaClass.getName(),
-            to.javaClass.getName(),
-        )
+        "Cannot Convert a value of type ${from.javaClass.getName()} as ${to.javaClass.getName()}."
     )
 
     companion object {

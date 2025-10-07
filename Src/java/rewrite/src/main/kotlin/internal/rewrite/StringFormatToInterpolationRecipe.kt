@@ -3,11 +3,9 @@ package internal.rewrite
 import java.util.regex.Pattern
 import org.openrewrite.ExecutionContext
 import org.openrewrite.Recipe
-import org.openrewrite.Tree.randomId
 import org.openrewrite.TreeVisitor
 import org.openrewrite.java.tree.J
 import org.openrewrite.kotlin.KotlinVisitor
-import org.openrewrite.kotlin.tree.K
 
 class StringFormatToInterpolationRecipe : Recipe() {
     override fun getDisplayName() = "Convert String.format to Kotlin string interpolation"
@@ -41,7 +39,7 @@ class StringFormatToInterpolationRecipe : Recipe() {
                         )
 
                     cursor.putMessage("replaceWithLiteral", true)
-                    return K.ExpressionStatement(randomId(), literal)
+                    return literal.withPrefix(call.prefix)
                 }
             }
 
@@ -51,14 +49,34 @@ class StringFormatToInterpolationRecipe : Recipe() {
         private fun isStringFormatCall(method: J.MethodInvocation): Boolean {
             val select = method.select
             val methodName = method.simpleName
-            val arg = method.typeParameters?.firstOrNull()
 
-            return methodName == "format" &&
-                (((select is J.Identifier && select.simpleName == "String") ||
+            if (methodName != "format") {
+                return false
+            }
+
+            val isStringCompanion =
+                (select is J.Identifier && select.simpleName == "String") ||
                     (select is J.FieldAccess &&
                         select.target is J.Identifier &&
-                        (select.target as J.Identifier).simpleName == "String"))) &&
-                !(arg.let { (it as? J.FieldAccess)?.type?.javaClass?.simpleName == "Locale" })
+                        (select.target as J.Identifier).simpleName == "String")
+
+            if (!isStringCompanion) {
+                return false
+            }
+
+            // Check if the first argument is a Locale, in which case we should not convert it.
+            val firstArg = method.arguments.firstOrNull()
+            if (firstArg != null) {
+                val type = firstArg.type
+                if (
+                    type is org.openrewrite.java.tree.JavaType.Class &&
+                        type.fullyQualifiedName == "java.util.Locale"
+                ) {
+                    return false
+                }
+            }
+
+            return true
         }
 
         private fun createInterpolatedString(method: J.MethodInvocation): String? {
