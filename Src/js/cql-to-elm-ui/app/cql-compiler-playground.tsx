@@ -27,6 +27,8 @@ import { Caption } from "@/ui/caption";
 import { buttonStyle } from "@/ui/button";
 import { supportedModels } from "@/compiler/supported-models";
 import { readFile } from "@/compiler/utils";
+import { Heading } from "@/ui/heading";
+import { Check } from "@/ui/icons/check";
 
 const initialCompileCqlArgs: TCompileCqlArgs = {
   cql: `library Test version '0.1.0'
@@ -275,12 +277,14 @@ export function CqlCompilerPlayground() {
       <div
         style={{
           gridArea: "header",
+          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+          zIndex: 1,
         }}
       >
         <div
           style={{
             display: "flex",
-            minHeight: 40,
+            minHeight: 44,
             padding: "0 4px 0 0",
             gap: 10,
           }}
@@ -288,12 +292,10 @@ export function CqlCompilerPlayground() {
           <h1
             style={{
               flex: "0 0 auto",
-              padding: "0 15px",
+              padding: "0 20px",
               margin: 0,
-              fontSize: 15,
-              fontWeight: 400,
-              color: "white",
-              background: "var(--primary-color)",
+              fontSize: 18,
+              fontWeight: 700,
               display: "grid",
               placeItems: "center start",
             }}
@@ -362,6 +364,7 @@ export function CqlCompilerPlayground() {
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              fontFamily: "inherit",
             }}
             defaultValue={""}
             onChange={async (event) => {
@@ -451,7 +454,6 @@ export function CqlCompilerPlayground() {
                 gridTemplateRows: "auto 1fr",
                 gridTemplateAreas: '"label" "textarea"',
                 minHeight: 0,
-                borderTop: "2px solid var(--primary-color)",
               }}
             >
               <Editor
@@ -523,10 +525,7 @@ export function CqlCompilerPlayground() {
                 gridTemplateAreas: '"label" "textarea"',
                 minHeight: 0,
                 borderLeft: "var(--border)",
-                borderTop: `2px solid ${state.isBusy ? "#ddd" : "#15df1d"}`,
-                transition: `border-color ${
-                  state.isBusy ? "0.2s" : "0.1s"
-                } linear`,
+                position: "relative",
               }}
             >
               <Editor
@@ -538,6 +537,17 @@ export function CqlCompilerPlayground() {
                 lineNumbers={true}
                 extensions={[state.elm.contentType === "json" ? json() : xml()]}
               />
+              <div
+                style={{
+                  position: "absolute",
+                  top: 5,
+                  right: 15,
+                  opacity: state.isBusy ? 0 : 1,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                <Check style={{ width: 20 }} />
+              </div>
             </div>
           </div>
           <div
@@ -548,7 +558,7 @@ export function CqlCompilerPlayground() {
               gridTemplateRows: "auto 1fr",
               gridTemplateAreas: '"label" "textarea"',
               minHeight: 0,
-              borderTop: "2px solid var(--primary-color)",
+              borderTop: "var(--border)",
             }}
           >
             <Editor
@@ -568,19 +578,11 @@ export function CqlCompilerPlayground() {
             gridArea: "sidebar",
             padding: 20,
             minHeight: 0,
-            borderTop: "2px solid var(--primary-color)",
+            borderLeft: "var(--border)",
             overflow: "auto",
           }}
         >
-          <h2
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              margin: "0 0 18px 0",
-            }}
-          >
-            Settings
-          </h2>
+          <Heading>Settings</Heading>
 
           <div
             style={{
@@ -635,6 +637,7 @@ export function CqlCompilerPlayground() {
                             padding: "6px 12px",
                             border: "var(--border)",
                             borderRadius: "var(--border-radius)",
+                            fontFamily: "inherit",
                           }}
                         />
                         <Caption>
@@ -682,7 +685,7 @@ export function CqlCompilerPlayground() {
               <div
                 style={{
                   display: "grid",
-                  gap: 5,
+                  gap: 3,
                   margin: "0 0 12px 0",
                 }}
               >
@@ -741,6 +744,7 @@ export function CqlCompilerPlayground() {
                     padding: "6px 12px 6px 8px",
                     border: "var(--border)",
                     borderRadius: "var(--border-radius)",
+                    fontFamily: "inherit",
                   }}
                 >
                   {signatureLevels.map(
@@ -866,15 +870,7 @@ export function CqlCompilerPlayground() {
             </div>
           </div>
 
-          <h2
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              margin: "0 0 18px 0",
-            }}
-          >
-            Supported models
-          </h2>
+          <Heading>Supported models</Heading>
 
           <div>
             <div style={{ fontSize: 12, margin: "0 0 5px 0" }}>
@@ -904,8 +900,7 @@ export function CqlCompilerPlayground() {
                 >
                   <span
                     style={{
-                      color: "#aa0d91",
-                      fontWeight: 700,
+                      color: "#d73a49",
                     }}
                   >
                     using
@@ -916,13 +911,12 @@ export function CqlCompilerPlayground() {
                       {" "}
                       <span
                         style={{
-                          color: "#aa0d91",
-                          fontWeight: 700,
+                          color: "#d73a49",
                         }}
                       >
                         version
                       </span>{" "}
-                      <span style={{ color: "#D23423" }}>
+                      <span style={{ color: "#032f62" }}>
                         {"'"}
                         {model.version}
                         {"'"}
