@@ -1,6 +1,5 @@
 package org.cqframework.cql.elm.evaluation
 
-import java.lang.String
 import java.math.BigDecimal
 import kotlin.IllegalArgumentException
 import kotlin.Int
@@ -56,6 +55,7 @@ object ElmAnalysisHelper {
         throw IllegalArgumentException("Could not convert expression to a DateTime value")
     }
 
+    @Suppress("UseRequire")
     @JvmStatic
     fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType? {
         if (value == null) {
@@ -86,7 +86,7 @@ object ElmAnalysisHelper {
                     return range
                 } else {
                     throw IllegalArgumentException(
-                        "toFhirValue not implemented for interval of ${pointType.toString()}"
+                        "toFhirValue not implemented for interval of $pointType"
                     )
                 }
             } else if (context.typeResolver.isBooleanType(valueResultType)) {
@@ -200,32 +200,14 @@ object ElmAnalysisHelper {
         )
     }
 
-    // Can't believe I have to write this, there seriously isn't a String.format option for this!!!!
-    private fun padLeft(
-        input: kotlin.String?,
-        width: Int,
-        padWith: kotlin.String?,
-    ): kotlin.String? {
-        var input = input
-        if (input == null || padWith == null || padWith.length == 0) {
-            return null
-        }
-
-        // Can't believe I have to do this, why is repeat not available until Java 11!!!!!
-        while (input!!.length < width) {
-            input = padWith + input
-        }
-
-        return input
-    }
-
-    private fun padZero(input: kotlin.String?, width: Int): kotlin.String? {
-        return padLeft(input, width, "0")
+    private fun padZero(input: String?, width: Int): String? {
+        return input?.padStart(width, '0')
     }
 
     // Ugly to have to do this here, but cannot reuse engine evaluation logic without a major
     // refactor
     // TODO: Consider refactoring to reuse engine evaluation logic here
+    @Suppress("MagicNumber")
     private fun toDateTimeString(
         year: DataType?,
         month: DataType?,
@@ -235,7 +217,7 @@ object ElmAnalysisHelper {
         second: DataType?,
         millisecond: DataType?,
         timezoneOffset: DataType?,
-    ): kotlin.String? {
+    ): String? {
         if (year == null) {
             return null
         }
@@ -285,7 +267,8 @@ object ElmAnalysisHelper {
         return result.toString()
     }
 
-    private fun toDateString(year: DataType?, month: DataType?, day: DataType?): kotlin.String? {
+    @Suppress("MagicNumber")
+    private fun toDateString(year: DataType?, month: DataType?, day: DataType?): String? {
         if (year == null) {
             return null
         }
@@ -306,12 +289,13 @@ object ElmAnalysisHelper {
         return result.toString()
     }
 
+    @Suppress("MagicNumber")
     private fun toTimeString(
         hour: DataType?,
         minute: DataType?,
         second: DataType?,
         millisecond: DataType?,
-    ): kotlin.String? {
+    ): String? {
         if (hour == null) {
             return null
         }
@@ -345,8 +329,7 @@ object ElmAnalysisHelper {
             parameterRef.libraryName != null &&
                 !parameterRef.libraryName.equals(context.currentLibraryIdentifier.id)
         ) {
-            expression =
-                kotlin.String.format("\"%s\".\"%s\"", parameterRef.libraryName, parameterRef.name)
+            expression = String.format("\"%s\".\"%s\"", parameterRef.libraryName, parameterRef.name)
         }
         return Extension()
             .setUrl("http://hl7.org/fhir/StructureDefinition/cqf-expression")
