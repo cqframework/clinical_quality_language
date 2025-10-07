@@ -33,6 +33,7 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
     /*
     Returns true if this location includes the other location (i.e. starts on or before and ends on or after)
      */
+    @Suppress("ReturnCount")
     fun includes(other: Location): Boolean {
         requireNotNull(other) { "other required" }
 

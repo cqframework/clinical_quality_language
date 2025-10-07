@@ -32,6 +32,7 @@ object DebugUtilities {
         return result
     }
 
+    @Suppress("ReturnCount")
     fun toDebugString(result: Any?): String {
         if (result is Iterable<*>) {
             val iterable = result

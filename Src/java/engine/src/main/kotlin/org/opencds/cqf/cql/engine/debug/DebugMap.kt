@@ -9,6 +9,7 @@ class DebugMap {
     private val nodeTypeEntries: MutableMap<String?, DebugMapEntry?>
     private val exceptionTypeEntries: MutableMap<String?, DebugMapEntry?>
 
+    @Suppress("ReturnCount")
     fun shouldDebug(e: Exception): DebugAction? {
         if (exceptionTypeEntries.size == 0) {
             return DebugAction.LOG
@@ -22,6 +23,7 @@ class DebugMap {
         return DebugAction.LOG
     }
 
+    @Suppress("ReturnCount")
     fun shouldDebug(node: Element, currentLibrary: Library): DebugAction? {
         val libraryMap = libraryMaps.get(currentLibrary.identifier!!.id)
         if (libraryMap != null) {
@@ -75,14 +77,9 @@ class DebugMap {
             DebugLocatorType.EXCEPTION_TYPE ->
                 exceptionTypeEntries.put(debugLocator.locator, DebugMapEntry(debugLocator, action))
             else -> {
-                if (libraryName != null) {
-                    val libraryMap = ensureLibraryMap(libraryName)
-                    libraryMap.addEntry(debugLocator, action)
-                } else {
-                    throw IllegalArgumentException(
-                        "Library entries must have a library name specified"
-                    )
-                }
+                requireNotNull(libraryName) { "Library entries must have a library name specified" }
+                val libraryMap = getLibraryMap(libraryName)
+                libraryMap?.addEntry(debugLocator, action)
             }
         }
     }
@@ -92,16 +89,9 @@ class DebugMap {
             DebugLocatorType.NODE_TYPE -> nodeTypeEntries.remove(debugLocator.locator)
             DebugLocatorType.EXCEPTION_TYPE -> exceptionTypeEntries.remove(debugLocator.locator)
             else -> {
-                if (libraryName != null) {
-                    val libraryMap = getLibraryMap(libraryName)
-                    if (libraryMap != null) {
-                        libraryMap.removeEntry(debugLocator)
-                    }
-                } else {
-                    throw IllegalArgumentException(
-                        "Library entries must have a library name specified"
-                    )
-                }
+                requireNotNull(libraryName) { "Library entries must have a library name specified" }
+                val libraryMap = getLibraryMap(libraryName)
+                libraryMap?.removeEntry(debugLocator)
             }
         }
     }

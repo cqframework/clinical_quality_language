@@ -36,6 +36,7 @@ else "(?)"}"
             )
         }
 
+        @Suppress("ReturnCount")
         fun stripEvaluator(nodeType: String?): String? {
             if (nodeType == null) {
                 return nodeType
