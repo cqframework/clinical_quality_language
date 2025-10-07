@@ -109,40 +109,26 @@ class RestFhirRetrieveProvider(
 
     private fun queryById(dataType: String?, map: SearchParameterMap): IBaseResource? {
         require(map.entrySet().size <= 1) {
-            String.format(
-                "Error querying %s. Queries by id must not have any other search criteria.",
-                dataType,
-            )
+            "Error querying $dataType. Queries by id must not have any other search criteria."
         }
 
         val tokenList: MutableList<IQueryParameterType> = map.get("_id")!![0]
         require(!tokenList.isEmpty()) {
-            String.format(
-                "Error querying %s. Attempted query by id but no id was specified.",
-                dataType,
-            )
+            "Error querying $dataType. Attempted query by id but no id was specified."
         }
 
         require(tokenList.size <= 1) {
-            String.format(
-                "Error querying %s. Attempted query by id but multiple ids were specified.",
-                dataType,
-            )
+            "Error querying $dataType. Attempted query by id but multiple ids were specified."
         }
 
         val param = tokenList[0]
         require(param is TokenParam) {
-            String.format(
-                "Error querying %s. Attempted query by id but a non-token parameter was given.",
-                dataType,
-            )
+            "Error querying $dataType. Attempted query by id but a non-token parameter was given."
         }
 
         val id = param.value
 
-        requireNotNull(id) {
-            String.format("Error querying %s. Attempted query by id but id was null.", dataType)
-        }
+        requireNotNull(id) { "Error querying $dataType. Attempted query by id but id was null." }
 
         return queryById(dataType, id)
     }

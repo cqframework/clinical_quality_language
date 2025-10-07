@@ -342,11 +342,7 @@ open class Dstu3FhirModelResolver(fhirContext: FhirContext) :
 
         if (isStrict) {
             throw InvalidCast(
-                String.format(
-                    "Cannot cast a value of type %s as %s.",
-                    value.javaClass.getName(),
-                    type.getName(),
-                )
+                "Cannot cast a value of type ${value.javaClass.name} as ${type.name}."
             )
         }
 

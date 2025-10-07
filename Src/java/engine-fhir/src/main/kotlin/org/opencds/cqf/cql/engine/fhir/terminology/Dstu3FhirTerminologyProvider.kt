@@ -46,11 +46,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
             return (respParam.getParameter()[0].getValue() as BooleanType).booleanValue()
         } catch (e: Exception) {
             throw TerminologyProviderException(
-                String.format(
-                    "Error performing membership check of Code: %s in ValueSet: %s",
-                    code.toString(),
-                    valueSet.id,
-                ),
+                "Error performing membership check of Code: $code in ValueSet: ${valueSet.id}",
                 e,
             )
         }
@@ -82,7 +78,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
             return codes
         } catch (e: Exception) {
             throw TerminologyProviderException(
-                String.format("Error performing expansion of ValueSet: %s", valueSet!!.id),
+                "Error performing expansion of ValueSet: ${valueSet.id}",
                 e,
             )
         }
@@ -114,11 +110,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
             return code.withSystem(codeSystem.id)
         } catch (e: Exception) {
             throw TerminologyProviderException(
-                String.format(
-                    "Error performing lookup of Code: %s in CodeSystem: %s",
-                    code.toString(),
-                    codeSystem!!.id,
-                ),
+                "Error performing lookup of Code: $code in CodeSystem: ${codeSystem.id}",
                 e,
             )
         }
@@ -171,10 +163,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
                 (valueSet.codeSystems != null && !valueSet.codeSystems!!.isEmpty())
         ) {
             throw UnsupportedOperationException(
-                String.format(
-                    "Could not expand value set %s; version and code system bindings are not supported at this time.",
-                    valueSet.id,
-                )
+                "Could not expand value set ${valueSet.id}; version and code system bindings are not supported at this time."
             )
         }
 
@@ -190,7 +179,7 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
         }
 
         require(!(!searchResults.hasEntry() || searchResults.getEntry().isEmpty())) {
-            String.format("Could not resolve value set %s.", valueSet.id)
+            "Could not resolve value set ${valueSet.id}."
         }
         require(searchResults.getEntry().size <= 1) {
             "Found more than 1 ValueSet with url: " + valueSet.id

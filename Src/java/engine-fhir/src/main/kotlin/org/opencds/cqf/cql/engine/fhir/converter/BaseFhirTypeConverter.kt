@@ -63,9 +63,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             return value as IBase
         }
 
-        require(isCqlType(value)) {
-            String.format("can't convert %s to FHIR type", value.javaClass.getName())
-        }
+        require(isCqlType(value)) { "can't convert ${value.javaClass.name} to FHIR type" }
 
         when (value.javaClass.getSimpleName()) {
             "Boolean" -> return toFhirBoolean(value as Boolean)
@@ -227,9 +225,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             return value
         }
 
-        require(isFhirType(value)) {
-            String.format("can't convert %s to CQL type", value.javaClass.getName())
-        }
+        require(isFhirType(value)) { "can't convert ${value.javaClass.name} to CQL type" }
 
         when (value.javaClass.getSimpleName()) {
             "IdType" -> return toCqlId(value as IIdType)
@@ -250,7 +246,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             "Range" -> return toCqlInterval(value as ICompositeType)
             else ->
                 throw IllegalArgumentException(
-                    String.format("missing case statement for: %s", value.javaClass.getName())
+                    "missing case statement for: ${value.javaClass.name}"
                 )
         }
     }
@@ -346,10 +342,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
                     calendar.get(Calendar.MILLISECOND),
                 )
 
-            else ->
-                throw InvalidPrecision(
-                    String.format("Invalid temporal precision %s", calendarConstant)
-                )
+            else -> throw InvalidPrecision("Invalid temporal precision $calendarConstant")
         }
     }
 
@@ -420,10 +413,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
                     calendar.get(Calendar.MILLISECOND),
                 )
 
-            else ->
-                throw InvalidPrecision(
-                    String.format("Invalid temporal precision %s", calendarConstant)
-                )
+            else -> throw InvalidPrecision("Invalid temporal precision $calendarConstant")
         }
     }
 
@@ -439,10 +429,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
                     calendar.get(Calendar.DAY_OF_MONTH),
                 )
 
-            else ->
-                throw InvalidPrecision(
-                    String.format("Invalid temporal precision %s", calendarConstant)
-                )
+            else -> throw InvalidPrecision("Invalid temporal precision $calendarConstant")
         }
     }
 

@@ -31,10 +31,7 @@ object FhirQueryGeneratorFactory {
             }
             else -> {
                 throw IllegalArgumentException(
-                    String.format(
-                        "Unsupported FHIR version for FHIR Query Generation: %s",
-                        fhirVersionEnum,
-                    )
+                    "Unsupported FHIR version for FHIR Query Generation: $fhirVersionEnum"
                 )
             }
         }
