@@ -65,12 +65,6 @@ class Code : CqlType {
     }
 
     override fun toString(): String {
-        return String.format(
-            "Code { code: %s, system: %s, version: %s, display: %s }",
-            this.code,
-            this.system,
-            this.version,
-            this.display,
-        )
+        return "Code { code: ${this.code}, system: ${this.system}, version: ${this.version}, display: ${this.display} }"
     }
 }

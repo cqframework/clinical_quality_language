@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 /** Created by Christopher on 7/20/2017. */
+@Suppress("LargeClass", "CyclomaticComplexMethod", "TooManyFunctions", "LongMethod")
 internal class CqlFormatterVisitorTest {
     var inError: Boolean = false
 
@@ -74,7 +75,7 @@ internal class CqlFormatterVisitorTest {
         Assertions.assertFalse(inError)
         try {
             runTest("invalid-syntax.cql")
-        } catch (ae: AssertionError) {
+        } catch (_: AssertionError) {
             Assertions.assertTrue(inError)
         }
     }
@@ -168,18 +169,18 @@ internal class CqlFormatterVisitorTest {
     }
 
     private fun getInput(fileName: String): InputStream {
-        var `is`: InputStream?
+        var stream: InputStream?
         try {
-            `is` =
+            stream =
                 FileInputStream(
                     "../../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/$fileName"
                 )
-        } catch (e: FileNotFoundException) {
-            `is` = CqlFormatterVisitorTest::class.java.getResourceAsStream(fileName)
+        } catch (_: FileNotFoundException) {
+            stream = CqlFormatterVisitorTest::class.java.getResourceAsStream(fileName)
 
-            requireNotNull(`is`) { String.format("Invalid test resource: %s", fileName) }
+            requireNotNull(stream) { "Invalid test resource: $fileName" }
         }
 
-        return `is`
+        return stream
     }
 }

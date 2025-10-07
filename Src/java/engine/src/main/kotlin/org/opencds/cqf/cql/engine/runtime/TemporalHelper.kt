@@ -8,6 +8,7 @@ import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import org.apache.commons.lang3.StringUtils
 
+@Suppress("MagicNumber")
 object TemporalHelper {
     fun normalizeDateTimeElements(vararg elements: Int): Array<String?> {
         val ret = arrayOfNulls<String>(elements.size)

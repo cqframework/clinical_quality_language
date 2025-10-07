@@ -34,22 +34,19 @@ object ExpandEvaluator {
     private fun addPer(addTo: Any, per: Quantity): Any? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
-        if (addTo is Int) {
-            return AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
-        } else if (addTo is Long) {
-            return AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
-        } else if (addTo is BigDecimal) {
-            return AddEvaluator.add(addTo, per.value)
-        } else if (addTo is Quantity) {
-            return AddEvaluator.add(addTo, per)
-        } else if (addTo is BaseTemporal) {
-            return AddEvaluator.add(addTo, per)
+        return when (addTo) {
+            is Int -> AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
+            is Long ->
+                AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
+            is BigDecimal -> AddEvaluator.add(addTo, per.value)
+            is Quantity -> AddEvaluator.add(addTo, per)
+            is BaseTemporal -> AddEvaluator.add(addTo, per)
+            else ->
+                throw InvalidOperatorArgument(
+                    "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                    "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
+                )
         }
-
-        throw InvalidOperatorArgument(
-            "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-            String.format("Expand(%s, %s)", addTo.javaClass.name, per.javaClass.name),
-        )
     }
 
     /**
@@ -66,7 +63,7 @@ object ExpandEvaluator {
         state: State?,
     ): List<Interval?>? {
         var start = interval.start
-        var nextStart = ExpandEvaluator.addPer(start!!, per)
+        var nextStart = addPer(start!!, per)
 
         // per may be too small
         if (true != LessEvaluator.less(start, nextStart, state)) {
@@ -85,7 +82,7 @@ object ExpandEvaluator {
                     Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true)
                 )
                 start = nextStart
-                nextStart = ExpandEvaluator.addPer(start!!, per)
+                nextStart = addPer(start!!, per)
             } else {
                 break
             }
@@ -109,8 +106,7 @@ object ExpandEvaluator {
         per: Quantity?,
         state: State?,
     ): List<Any?>? {
-        val returnedIntervals =
-            expandIntervalsIntoIntervals(mutableListOf<Interval?>(interval), per, state)
+        val returnedIntervals = expandIntervalsIntoIntervals(mutableListOf(interval), per, state)
 
         if (returnedIntervals == null) {
             return null
@@ -173,9 +169,9 @@ object ExpandEvaluator {
         per: Quantity?,
         state: State?,
     ): List<Interval?>? {
-        var intervals: List<Interval?> = CqlList.toList<Interval?>(list, false)
+        var intervals: List<Interval?> = CqlList.toList(list, false)
 
-        if (intervals!!.isEmpty()) {
+        if (intervals.isEmpty()) {
             return intervals
         }
 
@@ -185,22 +181,16 @@ object ExpandEvaluator {
             else per
 
         // Make sure the per quantity is compatible with the boundaries of the intervals
-        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault!!, intervals)) {
+        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
             return null
         }
 
         intervals = prepareIntervals(intervals, perOrDefault, state)!!
-        if (intervals == null) {
-            return null
-        }
 
-        return intervals
-            .filter { obj -> obj != null }
-            .flatMap { interval ->
-                val returnedIntervals =
-                    ExpandEvaluator.expandIntervalIntoIntervals(interval!!, perOrDefault!!, state)
-                if (returnedIntervals == null) listOf() else returnedIntervals
-            }
+        return intervals.filterNotNull().flatMap { interval ->
+            val returnedIntervals = expandIntervalIntoIntervals(interval, perOrDefault, state)
+            returnedIntervals ?: listOf()
+        }
     }
 
     @JvmStatic
@@ -218,11 +208,7 @@ object ExpandEvaluator {
 
         throw InvalidOperatorArgument(
             "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-            String.format(
-                "Expand(%s, %s)",
-                listOrInterval.javaClass.name,
-                per?.javaClass?.getName(),
-            ),
+            "Expand(${listOrInterval.javaClass.name}, ${per?.javaClass?.getName()})",
         )
     }
 }

@@ -111,7 +111,7 @@ object IntersectEvaluator {
 
         throw InvalidOperatorArgument(
             "Intersect(Interval<T>, Interval<T>) or Intersect(List<T>, List<T>)",
-            String.format("Intersect(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Intersect(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

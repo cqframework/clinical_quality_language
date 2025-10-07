@@ -40,16 +40,13 @@ object AllTrueEvaluator {
                 } else {
                     throw InvalidOperatorArgument(
                         "AllTrue(List<Boolean>)",
-                        String.format("AllTrue(List<%s>)", exp.javaClass.name),
+                        "AllTrue(List<${exp.javaClass.name}>)",
                     )
                 }
             }
             return true
         }
 
-        throw InvalidOperatorArgument(
-            "AllTrue(List<Boolean>)",
-            String.format("AllTrue(%s)", src.javaClass.name),
-        )
+        throw InvalidOperatorArgument("AllTrue(List<Boolean>)", "AllTrue(${src.javaClass.name})")
     }
 }

@@ -106,7 +106,7 @@ object UnionEvaluator {
 
         throw InvalidOperatorArgument(
             "Union(Interval<T>, Interval<T>) or Union(List<T>, List<T>)",
-            String.format("Union(%s, %s)", leftName, rightName),
+            "Union(${leftName}, ${rightName})",
         )
     }
 }

@@ -18,9 +18,6 @@ object NotEvaluator {
             return !operand
         }
 
-        throw InvalidOperatorArgument(
-            "Not(Boolean)",
-            String.format("Not(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Not(Boolean)", "Not(${operand.javaClass.name})")
     }
 }

@@ -29,11 +29,7 @@ object OrEvaluator {
 
         throw InvalidOperatorArgument(
             "Or(Boolean, Boolean)",
-            String.format(
-                "Or(%s, %s)",
-                if (left == null) "Null" else left.javaClass.name,
-                if (right == null) "Null" else right.javaClass.name,
-            ),
+            "Or(${if (left == null) "Null" else left.javaClass.name}, ${if (right == null) "Null" else right.javaClass.name})",
         )
     }
 }

@@ -153,11 +153,7 @@ protected constructor(
 
         if (dateParam == null) {
             throw UnsupportedOperationException(
-                String.format(
-                    "Could not resolve a search parameter with date type for %s.%s ",
-                    dataType,
-                    datePath,
-                )
+                "Could not resolve a search parameter with date type for $dataType.$datePath "
             )
         }
 
@@ -386,11 +382,7 @@ protected constructor(
         for (cp in codeParams) {
             if (cp.value != null && cp.value!!.size > 1) {
                 require(chunkedCodeParam == null) {
-                    String.format(
-                        "Cannot evaluate multiple chunked code filters on %s and %s",
-                        chunkedCodeParam!!.key,
-                        cp.key,
-                    )
+                    "Cannot evaluate multiple chunked code filters on ${chunkedCodeParam!!.key} and ${cp.key}"
                 }
                 chunkedCodeParam = cp
             }

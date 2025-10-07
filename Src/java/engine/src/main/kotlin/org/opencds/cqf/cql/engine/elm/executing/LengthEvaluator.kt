@@ -32,7 +32,7 @@ object LengthEvaluator {
 
         throw InvalidOperatorArgument(
             "Length(List<T>) or Length(String)",
-            String.format("Length(%s)", operand?.javaClass?.getName()),
+            "Length(${operand?.javaClass?.getName()})",
         )
     }
 

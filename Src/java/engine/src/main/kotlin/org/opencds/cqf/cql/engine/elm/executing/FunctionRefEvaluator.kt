@@ -165,12 +165,7 @@ object FunctionRefEvaluator {
 
         if (functionDefs.isEmpty()) {
             throw CqlException(
-                String.format(
-                    "Could not resolve call to operator '%s(%s)' in library '%s'.",
-                    name,
-                    typesToString(state, types),
-                    state!!.getCurrentLibrary()!!.identifier!!.id,
-                )
+                "Could not resolve call to operator '${name}(${typesToString(state, types)})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
             )
         }
 
@@ -180,12 +175,7 @@ object FunctionRefEvaluator {
         }
 
         throw CqlException(
-            String.format(
-                "Ambiguous call to operator '%s(%s)' in library '%s'.",
-                name,
-                typesToString(state, types),
-                state!!.getCurrentLibrary()!!.identifier!!.id,
-            )
+            "Ambiguous call to operator '${name}(${typesToString(state, types)})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
         )
     }
 

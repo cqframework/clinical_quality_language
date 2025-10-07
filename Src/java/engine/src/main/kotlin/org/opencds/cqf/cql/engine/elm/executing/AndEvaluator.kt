@@ -35,11 +35,7 @@ object AndEvaluator {
 
         throw InvalidOperatorArgument(
             "And(Boolean, Boolean)",
-            String.format(
-                "And(%s, %s)",
-                if (left == null) "Null" else left.javaClass.name,
-                if (right == null) "Null" else right.javaClass.name,
-            ),
+            "And(${if (left == null) "Null" else left.javaClass.name}, ${if (right == null) "Null" else right.javaClass.name})",
         )
     }
 }

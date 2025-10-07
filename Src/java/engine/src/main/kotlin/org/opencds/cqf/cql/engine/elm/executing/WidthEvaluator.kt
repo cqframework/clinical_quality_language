@@ -26,9 +26,6 @@ object WidthEvaluator {
             return Interval.getSize(start, end)
         }
 
-        throw InvalidOperatorArgument(
-            "Width(Interval<T>)",
-            String.format("Width(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Width(Interval<T>)", "Width(${operand.javaClass.name})")
     }
 }

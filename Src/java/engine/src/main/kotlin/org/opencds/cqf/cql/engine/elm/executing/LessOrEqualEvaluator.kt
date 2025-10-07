@@ -65,11 +65,7 @@ object LessOrEqualEvaluator {
 
         throw InvalidOperatorArgument(
             "LessOrEqual(Integer, Integer), LessOrEqual(Long, Long), LessOrEqual(Decimal, Decimal), LessOrEqual(Quantity, Quantity), LessOrEqual(Date, Date), LessOrEqual(DateTime, DateTime), LessOrEqual(Time, Time) or LessOrEqual(String, String)",
-            String.format(
-                "LessOrEqual(%s, %s)",
-                left.javaClass.getSimpleName(),
-                right.javaClass.getSimpleName(),
-            ),
+            "LessOrEqual(${left.javaClass.getSimpleName()}, ${right.javaClass.getSimpleName()})",
         )
     }
 }

@@ -53,7 +53,7 @@ class Quantity : CqlType, Comparable<Quantity> {
     }
 
     override fun toString(): String {
-        return String.format("%s '%s'", this.value, this.unit)
+        return "${this.value} '${this.unit}'"
     }
 
     companion object {

@@ -29,7 +29,7 @@ object SplitEvaluator {
 
         throw InvalidOperatorArgument(
             "Split(String, String)",
-            String.format("Split(%s, %s)", stringToSplit.javaClass.name, separator!!.javaClass.name),
+            "Split(${stringToSplit.javaClass.name}, ${separator!!.javaClass.name})",
         )
     }
 }

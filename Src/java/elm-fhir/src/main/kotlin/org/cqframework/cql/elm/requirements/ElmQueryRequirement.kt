@@ -87,7 +87,7 @@ class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) 
     ) {
         val qualifiedProperty = Property()
         val nestedProperty = requirement.property!!.property
-        qualifiedProperty.path = String.format("%s.%s", path, nestedProperty!!.path)
+        qualifiedProperty.path = "${path}.${nestedProperty!!.path}"
         qualifiedProperty.scope = dataRequirement.alias
         qualifiedProperty.resultTypeName = nestedProperty.resultTypeName
         qualifiedProperty.resultTypeSpecifier = nestedProperty.resultTypeSpecifier

@@ -25,9 +25,6 @@ object CeilingEvaluator {
             return BigDecimal.valueOf(ceil(operand.value!!.toDouble())).toInt()
         }
 
-        throw InvalidOperatorArgument(
-            "Ceiling(Decimal)",
-            String.format("Ceiling(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Ceiling(Decimal)", "Ceiling(${operand.javaClass.name})")
     }
 }

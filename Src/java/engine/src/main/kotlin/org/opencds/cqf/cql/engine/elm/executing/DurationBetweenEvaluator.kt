@@ -119,7 +119,7 @@ object DurationBetweenEvaluator {
 
         throw InvalidOperatorArgument(
             "DurationBetween(Date, Date), DurationBetween(DateTime, DateTime), DurationBetween(Time, Time)",
-            String.format("DurationBetween(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "DurationBetween(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

@@ -27,11 +27,7 @@ object ContainsEvaluator {
         } catch (e: InvalidOperatorArgument) {
             throw InvalidOperatorArgument(
                 "Contains(List<T>, T)",
-                String.format(
-                    "Contains(%s, %s)",
-                    left?.javaClass?.getName(),
-                    right?.javaClass?.getName(),
-                ),
+                "Contains(${left?.javaClass?.getName()}, ${right?.javaClass?.getName()})",
             )
         }
     }

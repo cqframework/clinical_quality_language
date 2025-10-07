@@ -48,9 +48,7 @@ object MinValueEvaluator {
             return Quantity().withValue(Value.MIN_DECIMAL).withUnit("1")
         }
 
-        throw InvalidOperatorArgument(
-            String.format("The Minimum operator is not implemented for type %s", type)
-        )
+        throw InvalidOperatorArgument("The Minimum operator is not implemented for type ${type}")
     }
 
     @JvmStatic

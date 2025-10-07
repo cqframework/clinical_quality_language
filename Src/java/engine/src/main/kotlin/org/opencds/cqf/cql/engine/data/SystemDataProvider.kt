@@ -4,7 +4,6 @@ import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.math.BigDecimal
-import java.util.Locale
 import org.opencds.cqf.cql.engine.model.BaseModelResolver
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Date
@@ -42,11 +41,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
                 return field
             }
             throw IllegalArgumentException(
-                String.format(
-                    "Could not determine field for path %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Could not determine field for path ${path} of type ${clazz.getSimpleName()}"
             )
         }
     }
@@ -72,13 +67,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             return readAccessorCache.get(accessorKey)
         }
 
-        val accessorMethodName =
-            String.format(
-                "%s%s%s",
-                "get",
-                path!!.substring(0, 1).uppercase(Locale.getDefault()),
-                path.substring(1),
-            )
+        val accessorMethodName = "get${path!![0].uppercase()}${path.substring(1)}"
         var accessor: Method? = null
         try {
             accessor = clazz.getMethod(accessorMethodName)
@@ -96,13 +85,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
         }
 
         val field = getProperty(clazz, path)
-        val accessorMethodName =
-            String.format(
-                "%s%s%s",
-                "set",
-                path!!.substring(0, 1).uppercase(Locale.getDefault()),
-                path.substring(1),
-            )
+        val accessorMethodName = "set${path!![0].uppercase()}${path.substring(1)}"
         var accessor: Method? = null
         try {
             accessor = clazz.getMethod(accessorMethodName, field.getType())
@@ -121,11 +104,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
                 }
             }
             throw IllegalArgumentException(
-                String.format(
-                    "Could not determine accessor function for property %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Could not determine accessor function for property ${path} of type ${clazz.getSimpleName()}"
             )
         }
     }
@@ -149,19 +128,11 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             return accessor.invoke(target)
         } catch (e: InvocationTargetException) {
             throw IllegalArgumentException(
-                String.format(
-                    "Errors occurred attempting to invoke the accessor function for property %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Errors occurred attempting to invoke the accessor function for property ${path} of type ${clazz.getSimpleName()}"
             )
         } catch (e: IllegalAccessException) {
             throw IllegalArgumentException(
-                String.format(
-                    "Could not invoke the accessor function for property %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Could not invoke the accessor function for property ${path} of type ${clazz.getSimpleName()}"
             )
         }
     }
@@ -177,19 +148,11 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             accessor.invoke(target, value)
         } catch (e: InvocationTargetException) {
             throw IllegalArgumentException(
-                String.format(
-                    "Errors occurred attempting to invoke the accessor function for property %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Errors occurred attempting to invoke the accessor function for property ${path} of type ${clazz.getSimpleName()}"
             )
         } catch (e: IllegalAccessException) {
             throw IllegalArgumentException(
-                String.format(
-                    "Could not invoke the accessor function for property %s of type %s",
-                    path,
-                    clazz.getSimpleName(),
-                )
+                "Could not invoke the accessor function for property ${path} of type ${clazz.getSimpleName()}"
             )
         }
     }
@@ -217,10 +180,10 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             "Time" -> return Time::class.java
             else ->
                 try {
-                    return Class.forName(String.format("%s.%s", packageName, typeName))
+                    return Class.forName("${packageName}.${typeName}")
                 } catch (e: ClassNotFoundException) {
                     throw IllegalArgumentException(
-                        String.format("Could not resolve type %s.%s.", packageName, typeName)
+                        "Could not resolve type ${packageName}.${typeName}."
                     )
                 }
         }
@@ -232,27 +195,27 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             return clazz.getDeclaredConstructor().newInstance()
         } catch (e: InstantiationException) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         } catch (e: InvocationTargetException) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         } catch (e: ExceptionInInitializerError) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         } catch (e: IllegalAccessException) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         } catch (e: SecurityException) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         } catch (e: NoSuchMethodException) {
             throw IllegalArgumentException(
-                String.format("Could not create an instance of class %s.", clazz.getName())
+                "Could not create an instance of class ${clazz.getName()}."
             )
         }
     }

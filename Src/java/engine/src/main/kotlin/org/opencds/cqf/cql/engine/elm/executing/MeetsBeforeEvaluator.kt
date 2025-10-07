@@ -46,7 +46,7 @@ object MeetsBeforeEvaluator {
 
         throw InvalidOperatorArgument(
             "MeetsBefore(Interval<T>, Interval<T>)",
-            String.format("MeetsBefore(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "MeetsBefore(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

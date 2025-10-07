@@ -54,7 +54,7 @@ object InValueSetEvaluator {
 
         throw InvalidOperatorArgument(
             "In(String, ValueSetRef), In(Code, ValueSetRef) or In(Concept, ValueSetRef)",
-            String.format("In(%s, %s)", code.javaClass.name, valueset.javaClass.name),
+            "In(${code.javaClass.name}, ${valueset.javaClass.name})",
         )
     }
 }

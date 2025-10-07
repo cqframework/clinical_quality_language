@@ -166,7 +166,7 @@ object DifferenceBetweenEvaluator {
 
         throw InvalidOperatorArgument(
             "DifferenceBetween(Date, Date), DifferenceBetween(DateTime, DateTime), DifferenceBetween(Time, Time)",
-            String.format("DifferenceBetween(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "DifferenceBetween(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

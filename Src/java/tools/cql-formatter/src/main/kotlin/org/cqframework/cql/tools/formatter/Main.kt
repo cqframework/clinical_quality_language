@@ -4,6 +4,7 @@ import java.io.FileInputStream
 import java.io.IOException
 
 /** A simple wrapper around the ANTLR4 testrig. */
+@Suppress("MemberNameEqualsClassName")
 object Main {
     @Throws(IOException::class)
     @JvmStatic
@@ -30,7 +31,9 @@ object Main {
             if (`is` !== System.`in`) {
                 try {
                     `is`.close()
-                } catch (iex: IOException) {}
+                } catch (_: IOException) {
+                    // intentional noop
+                }
             }
         }
     }

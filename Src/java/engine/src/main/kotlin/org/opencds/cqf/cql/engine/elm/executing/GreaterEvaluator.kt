@@ -82,7 +82,7 @@ object GreaterEvaluator {
 
         throw InvalidOperatorArgument(
             "Greater(Integer, Integer), Greater(Long, Long), Greater(Decimal, Decimal), Greater(Quantity, Quantity), Greater(Date, Date), Greater(DateTime, DateTime), Greater(Time, Time) or Greater(String, String)",
-            String.format("Greater(%s, %s)", left, right),
+            "Greater(${left}, ${right})",
         )
     }
 }

@@ -51,9 +51,6 @@ object ToDateEvaluator {
                 )
         }
 
-        throw InvalidOperatorArgument(
-            "ToDate(String)",
-            String.format("ToDate(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToDate(String)", "ToDate(${operand.javaClass.name})")
     }
 }

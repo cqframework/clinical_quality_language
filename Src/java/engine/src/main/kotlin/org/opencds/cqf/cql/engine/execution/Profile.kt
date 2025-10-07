@@ -9,7 +9,6 @@ import kotlin.Throws
 import kotlin.assert
 import kotlin.checkNotNull
 import kotlin.text.StringBuilder
-import kotlin.text.format
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.FunctionDef
@@ -33,6 +32,7 @@ import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
  * This class provides the [render][.render] methods to render a profile as a simple
  * [flamegraph](https://en.wiktionary.org/wiki/flamegraph).
  */
+@Suppress("MagicNumber")
 class Profile
     /**
      * Creates a new, empty Profile.
@@ -147,61 +147,26 @@ class Profile
             val red = (50 * depth) % 256
             val green = (50 * i) % 256
             val blue = if (this.expression is FunctionDef) 128 else 0
-            val color = String.format("#%02x%02x%02x", red, green, blue)
-            val idString = String.format("%d-%f", depth, x)
+            val color =
+                "#${(red).toString(16).padStart(2, '0')}${(green).toString(16).padStart(2, '0')}${(blue).toString(16).padStart(2, '0')}"
+            val idString = "${depth}-${x}"
             val rectString =
-                String.format(
-                    "  <rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" style=\"fill:%s;stroke:%s;fill-opacity:0.5;\"/>\n",
-                    x1,
-                    y1,
-                    x2 - x1,
-                    y2 - y1,
-                    color,
-                    color,
-                )
+                "  <rect x=\"${x1}\" y=\"${y1}\" width=\"${x2 - x1}\" height=\"${y2 - y1}\" style=\"fill:${color};stroke:${color};fill-opacity:0.5;\"/>\n"
             writer.append(rectString)
             writer.append(
-                String.format(
-                    "    <defs>\n      <clipPath id=\"%s\">%s</clipPath>\n    </defs>\n",
-                    idString,
-                    rectString,
-                )
+                "    <defs>\n      <clipPath id=\"${idString}\">${rectString}</clipPath>\n    </defs>\n"
             )
             writer.append(
-                String.format(
-                    "    <text x=\"%f\" y=\"%f\" clip-path=\"url(#%s)\"><tspan>%s</tspan></text>\n",
-                    x1,
-                    y1 + (y2 - y1) * .15,
-                    idString,
-                    expressionLabel(this.expression),
-                )
+                "    <text x=\"${x1}\" y=\"${y1 + (y2 - y1) * .15}\" clip-path=\"url(#${idString})\"><tspan>${expressionLabel(this.expression)}</tspan></text>\n"
             )
             writer.append(
-                String.format(
-                    "    <text x=\"%f\" y=\"%f\" clip-path=\"url(#%s)\"><tspan>%,3d ms</tspan></text>\n",
-                    x1,
-                    y1 + (y2 - y1) * .35,
-                    idString,
-                    this.time / 1000000,
-                )
+                "    <text x=\"${x1}\" y=\"${y1 + (y2 - y1) * .35}\" clip-path=\"url(#${idString})\"><tspan>${this.time / 1000000} ms</tspan></text>\n"
             )
             writer.append(
-                String.format(
-                    "    <text x=\"%f\" y=\"%f\" clip-path=\"url(#%s)\"><tspan>%,3d Calls</tspan></text>\n",
-                    x1,
-                    y1 + (y2 - y1) * .55,
-                    idString,
-                    this.count,
-                )
+                "    <text x=\"${x1}\" y=\"${y1 + (y2 - y1) * .55}\" clip-path=\"url(#${idString})\"><tspan>${this.count} Calls</tspan></text>\n"
             )
             writer.append(
-                String.format(
-                    "    <text x=\"%f\" y=\"%f\" clip-path=\"url(#%s)\"><tspan>%,3d Misses</tspan></text>\n",
-                    x1,
-                    y1 + (y2 - y1) * .75,
-                    idString,
-                    this.misses,
-                )
+                "    <text x=\"${x1}\" y=\"${y1 + (y2 - y1) * .75}\" clip-path=\"url(#${idString})\"><tspan>${this.misses} Misses</tspan></text>\n"
             )
 
             val sorted =
@@ -220,7 +185,7 @@ class Profile
             if (expression == null) {
                 result.append("«root»")
             } else if (expression is Retrieve) {
-                result.append(String.format("[%s]", expression.dataType!!.localPart))
+                result.append("[${expression.dataType!!.localPart}]")
             } else if (expression is ExpressionDef) {
                 result.append(expression.name)
                 if (expression is FunctionDef) {
@@ -238,14 +203,7 @@ class Profile
         }
 
         override fun toString(): String {
-            return String.format(
-                "Node{expression=%s, context=%s, count=%d, time=%s ms, misses=%d}",
-                expressionLabel(this.expression),
-                this.context,
-                this.count,
-                this.time,
-                this.misses,
-            )
+            return "Node{expression=${expressionLabel(this.expression)}, context=${this.context}, count=${this.count}, time=${this.time} ms, misses=${this.misses}}"
         }
     }
 

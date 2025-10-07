@@ -17,11 +17,7 @@ class FhirLibrarySourceProvider : LibrarySourceProvider, NamespaceAware {
             FhirLibrarySourceProvider::class
                 .java
                 .getResourceAsStream(
-                    String.format(
-                        "/org/hl7/fhir/%s-%s.cql",
-                        libraryIdentifier.id,
-                        libraryIdentifier.version,
-                    )
+                    "/org/hl7/fhir/${libraryIdentifier.id}-${libraryIdentifier.version}.cql"
                 )
 
         if (result != null && namespaceManager != null && namespaceManager!!.hasNamespaces()) {

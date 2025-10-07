@@ -10,21 +10,16 @@ object Uris {
 
     fun getHead(uri: URI): URI? {
         val path = uri.rawPath
-        if (path != null) {
-            val index = path.lastIndexOf("/")
-            if (index > -1) {
-                return withPath(uri, path.substring(0, index))
-            }
-
-            return uri
+        return when {
+            path == null -> uri
+            path.lastIndexOf("/") > -1 -> withPath(uri, path.substringBeforeLast("/"))
+            else -> uri
         }
-
-        return uri
     }
 
     fun withPath(uri: URI, path: String?): URI? {
-        try {
-            return URI.create(
+        return try {
+            URI.create(
                 ((if (uri.scheme != null) uri.scheme + ":" else "") +
                     "//" +
                     createAuthority(uri.rawAuthority) +
@@ -32,8 +27,8 @@ object Uris {
                     createQuery(uri.rawQuery) +
                     createFragment(uri.rawFragment))
             )
-        } catch (e: Exception) {
-            return null
+        } catch (_: Exception) {
+            null
         }
     }
 
@@ -50,7 +45,7 @@ object Uris {
             }
 
             return uri
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
@@ -69,19 +64,15 @@ object Uris {
     }
 
     private fun createAuthority(rawAuthority: String?): String {
-        return if (rawAuthority != null) rawAuthority else ""
+        return rawAuthority ?: ""
     }
 
     private fun stripTrailingSlash(path: String?): String {
-        if (path == null || path.isEmpty()) {
-            return ""
+        return when {
+            path.isNullOrBlank() -> ""
+            path.endsWith("/") -> path.dropLast(1)
+            else -> path
         }
-
-        if (path.endsWith("/")) {
-            return path.substring(0, path.length - 1)
-        }
-
-        return path
     }
 
     private fun createPath(pathValue: String?): String {

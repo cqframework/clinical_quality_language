@@ -33,7 +33,7 @@ object LogEvaluator {
 
         throw InvalidOperatorArgument(
             "Log(Decimal, Decimal)",
-            String.format("Log(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Log(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

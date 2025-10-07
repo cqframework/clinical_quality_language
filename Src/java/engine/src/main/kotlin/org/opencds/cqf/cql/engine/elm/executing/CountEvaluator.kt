@@ -40,9 +40,6 @@ object CountEvaluator {
             return size
         }
 
-        throw InvalidOperatorArgument(
-            "Count(List<T>)",
-            String.format("Count(%s)", source.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Count(List<T>)", "Count(${source.javaClass.name})")
     }
 }

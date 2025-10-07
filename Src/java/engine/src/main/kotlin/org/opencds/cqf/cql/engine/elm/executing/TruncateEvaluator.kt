@@ -27,9 +27,6 @@ object TruncateEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "Truncate(Decimal)",
-            String.format("Truncate(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Truncate(Decimal)", "Truncate(${operand.javaClass.name})")
     }
 }

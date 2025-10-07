@@ -45,9 +45,6 @@ object ToLongEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument(
-            "ToLong(String)",
-            String.format("ToLong(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToLong(String)", "ToLong(${operand.javaClass.name})")
     }
 }

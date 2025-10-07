@@ -57,9 +57,6 @@ object ModeEvaluator {
             }
             return mode
         }
-        throw InvalidOperatorArgument(
-            "Mode(List<T>)",
-            String.format("Mode(%s)", source.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Mode(List<T>)", "Mode(${source.javaClass.name})")
     }
 }

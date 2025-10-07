@@ -130,7 +130,7 @@ open class Dstu3FhirTest {
 
         fun newClient(): IGenericClient {
             val client: IGenericClient =
-                fhirContext.newRestfulGenericClient(String.format("http://localhost:%d/", httpPort))
+                fhirContext.newRestfulGenericClient("http://localhost:$httpPort/")
 
             val logger = LoggingInterceptor()
             logger.setLogRequestSummary(true)

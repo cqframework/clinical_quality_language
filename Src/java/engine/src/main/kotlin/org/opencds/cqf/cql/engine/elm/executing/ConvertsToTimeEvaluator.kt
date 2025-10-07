@@ -38,7 +38,7 @@ object ConvertsToTimeEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToTime(String)",
-            String.format("ConvertsToTime(%s)", argument.javaClass.name),
+            "ConvertsToTime(${argument.javaClass.name})",
         )
     }
 }

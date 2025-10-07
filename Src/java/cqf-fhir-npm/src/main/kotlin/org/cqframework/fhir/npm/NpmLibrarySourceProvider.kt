@@ -2,7 +2,6 @@ package org.cqframework.fhir.npm
 
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.lang.String
 import kotlin.plus
 import kotlinx.io.Source
 import kotlinx.io.asSource
@@ -19,6 +18,7 @@ class NpmLibrarySourceProvider(
     private val reader: ILibraryReader,
     private val logger: ILoggingService,
 ) : LibrarySourceProvider {
+    @Suppress("NestedBlockDepth")
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         // VersionedIdentifier.id: Name of the library
         // VersionedIdentifier.system: Namespace for the library, as a URL
@@ -52,13 +52,10 @@ class NpmLibrarySourceProvider(
                         }
                     }
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 logger.logDebugMessage(
                     ILoggingService.LogCategory.PROGRESS,
-                    String.format(
-                        "Exceptions occurred attempting to load npm library source for %s",
-                        libraryIdentifier.toString(),
-                    ),
+                    "Exceptions occurred attempting to load npm library source for $libraryIdentifier",
                 )
             }
         }

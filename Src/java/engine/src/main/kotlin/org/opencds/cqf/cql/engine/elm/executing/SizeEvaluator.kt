@@ -34,9 +34,6 @@ object SizeEvaluator {
             )
         }
 
-        throw InvalidOperatorArgument(
-            "Size(Interval<T>)",
-            String.format("Size(%s)", argument.javaClass.name),
-        )
+        throw InvalidOperatorArgument("Size(Interval<T>)", "Size(${argument.javaClass.name})")
     }
 }

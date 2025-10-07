@@ -58,6 +58,7 @@ import org.hl7.elm_modelinfo.r1.TypeParameterInfo
 import org.hl7.elm_modelinfo.r1.TypeSpecifier
 import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 
+@Suppress("LargeClass", "TooManyFunctions", "ForbiddenComment")
 class ModelImporter
 private constructor(
     private val schema: XmlSchema,
@@ -116,27 +117,38 @@ private constructor(
     }
 
     private fun toTypeInfo(dataType: DataType): TypeInfo {
+        return when (dataType) {
+            is SimpleType -> {
+                toSimpleTypeInfo(dataType)
+            }
 
-        if (dataType is SimpleType) {
-            return toSimpleTypeInfo(dataType)
-        } else if (dataType is ClassType) {
-            return toClassInfo(dataType)
-        } else if (dataType is IntervalType) {
-            return toIntervalTypeInfo(dataType)
-        } else if (dataType is ListType) {
-            return toListTypeInfo(dataType)
-        } else if (dataType is TupleType) {
-            return toTupleTypeInfo(dataType)
-        } else {
-            throw IllegalArgumentException(
-                java.lang.String.format("Unknown data type class: %s", dataType.javaClass.name)
-            )
+            is ClassType -> {
+                toClassInfo(dataType)
+            }
+
+            is IntervalType -> {
+                toIntervalTypeInfo(dataType)
+            }
+
+            is ListType -> {
+                toListTypeInfo(dataType)
+            }
+
+            is TupleType -> {
+                toTupleTypeInfo(dataType)
+            }
+
+            else -> {
+                throw IllegalArgumentException(
+                    java.lang.String.format("Unknown data type class: %s", dataType.javaClass.name)
+                )
+            }
         }
     }
 
     private fun toTypeName(typeSpecifier: NamedTypeSpecifier): String? {
         if (typeSpecifier.modelName != null) {
-            return String.format("%s.%s", typeSpecifier.modelName, typeSpecifier.name)
+            return "${typeSpecifier.modelName}, ${typeSpecifier.name}"
         }
         return typeSpecifier.name
     }
@@ -266,21 +278,18 @@ private constructor(
     }
 
     private fun toTypeSpecifier(dataType: DataType): TypeSpecifier {
-
-        if (dataType is SimpleType) {
-            return toNamedTypeSpecifier(dataType)
-        } else if (dataType is ClassType) {
-            return toNamedTypeSpecifier(dataType)
-        } else if (dataType is IntervalType) {
-            return toIntervalTypeSpecifier(dataType)
-        } else if (dataType is ListType) {
-            return toListTypeSpecifier(dataType)
-        } else if (dataType is ChoiceType) {
-            return toChoiceTypeSpecifier(dataType)
-        } else require(dataType !is TupleType) { "Tuple types cannot be used in type specifiers." }
-        throw IllegalArgumentException(
-            java.lang.String.format("Unknown data type class: %s", dataType.javaClass.name)
-        )
+        require(dataType !is TupleType) { "Tuple types cannot be used in type specifiers." }
+        return when (dataType) {
+            is SimpleType -> toNamedTypeSpecifier(dataType)
+            is ClassType -> toNamedTypeSpecifier(dataType)
+            is IntervalType -> toIntervalTypeSpecifier(dataType)
+            is ListType -> toListTypeSpecifier(dataType)
+            is ChoiceType -> toChoiceTypeSpecifier(dataType)
+            else ->
+                throw IllegalArgumentException(
+                    "Unknown data type class: ${dataType.javaClass.name}"
+                )
+        }
     }
 
     private fun toNamedTypeSpecifier(dataType: NamedType): TypeSpecifier {
@@ -342,6 +351,7 @@ private constructor(
         return schemaTypeName.localPart
     }
 
+    @Suppress("ReturnCount")
     private fun resolveType(schemaTypeName: QName?): DataType? {
         if (schemaTypeName == null) {
             return null
@@ -378,6 +388,7 @@ private constructor(
         }
     }
 
+    @Suppress("ReturnCount")
     private fun resolveType(schemaType: XmlSchemaType?): DataType? {
         if (schemaType is XmlSchemaSimpleType) {
             return resolveSimpleType(schemaType)
@@ -388,6 +399,7 @@ private constructor(
         return null
     }
 
+    @Suppress("ReturnCount")
     private fun resolveSimpleType(simpleType: XmlSchemaSimpleType): DataType? {
         if (simpleType.isAnonymous) {
             return null
@@ -434,6 +446,7 @@ private constructor(
         return resultType
     }
 
+    @Suppress("NestedBlockDepth")
     private fun applyConfig(classType: ClassType) {
         if (config != null) {
             for (i in 0..<config.typeInfo.size) {
@@ -451,6 +464,13 @@ private constructor(
         }
     }
 
+    @Suppress(
+        "LongMethod",
+        "CyclomaticComplexMethod",
+        "NestedBlockDepth",
+        "ReturnCount",
+        "MaxLineLength",
+    )
     private fun resolveComplexType(complexType: XmlSchemaComplexType): DataType? {
         if (complexType.isAnonymous) {
             return null
@@ -632,6 +652,7 @@ private constructor(
         return result
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     private fun resolveClassTypeElements(
         particle: XmlSchemaParticle?,
         elements: MutableList<ClassTypeElement>,
@@ -838,7 +859,7 @@ private constructor(
                 return name
             }
 
-            return String.format("%s.%s", modelName, name)
+            return "$modelName.$name"
         }
 
         @JvmStatic

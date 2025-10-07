@@ -50,11 +50,7 @@ object ProperIncludedInEvaluator {
         } catch (e: InvalidOperatorArgument) {
             throw InvalidOperatorArgument(
                 "ProperIncludedIn(Interval<T>, Interval<T>) or ProperIncludedIn(List<T>, List<T>)",
-                String.format(
-                    "ProperlyIncludedIn(%s, %s)",
-                    left!!.javaClass.name,
-                    right!!.javaClass.name,
-                ),
+                "ProperlyIncludedIn(${left!!.javaClass.name}, ${right!!.javaClass.name})",
             )
         }
     }

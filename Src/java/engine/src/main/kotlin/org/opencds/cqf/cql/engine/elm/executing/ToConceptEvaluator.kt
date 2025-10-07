@@ -30,9 +30,6 @@ object ToConceptEvaluator {
             return result
         }
 
-        throw InvalidOperatorArgument(
-            "ToConcept(Code)",
-            String.format("ToConcept(%s)", operand.javaClass.name),
-        )
+        throw InvalidOperatorArgument("ToConcept(Code)", "ToConcept(${operand.javaClass.name})")
     }
 }

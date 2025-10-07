@@ -82,11 +82,7 @@ object DateTimeComponentFromEvaluator {
 
         throw InvalidOperatorArgument(
             "_precision_ from(Date), _precision_ from(DateTime) or _precision_ from(Time)",
-            String.format(
-                "%s from(%s)",
-                precision.lowercase(Locale.getDefault()),
-                operand.javaClass.name,
-            ),
+            "${precision.lowercase(Locale.getDefault())} from(${operand.javaClass.name})",
         )
     }
 }

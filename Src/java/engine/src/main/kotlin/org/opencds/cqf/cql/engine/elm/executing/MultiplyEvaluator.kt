@@ -62,7 +62,7 @@ object MultiplyEvaluator {
 
         throw InvalidOperatorArgument(
             "Multiply(Integer, Integer), Multiply(Long, Long), Multiply(Decimal, Decimal), Multiply(Decimal, Quantity), Multiply(Quantity, Decimal) or Multiply(Quantity, Quantity)",
-            String.format("Multiply(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Multiply(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

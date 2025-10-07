@@ -121,7 +121,7 @@ object SameOrBeforeEvaluator {
 
         throw InvalidOperatorArgument(
             "OnOrBefore(Date, Date), OnOrBefore(DateTime, DateTime), OnOrBefore(Time, Time), OnOrBefore(Interval<T>, Interval<T>), OnOrBefore(T, Interval<T>) or OnOrBefore(Interval<T>, T)",
-            String.format("OnOrBefore(%s, %s)", left!!.javaClass.name, right!!.javaClass.name),
+            "OnOrBefore(${left!!.javaClass.name}, ${right!!.javaClass.name})",
         )
     }
 
@@ -149,7 +149,7 @@ object SameOrBeforeEvaluator {
 
         throw InvalidOperatorArgument(
             "SameOrBefore(Date, Date), SameOrBefore(DateTime, DateTime), SameOrBefore(Time, Time), SameOrBefore(Interval<T>, Interval<T>), SameOrBefore(T, Interval<T>) or SameOrBefore(Interval<T>, T)",
-            String.format("SameOrBefore(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "SameOrBefore(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

@@ -53,15 +53,11 @@ constructor(
     }
 
     fun getExternalFunctionProvider(identifier: VersionedIdentifier?): ExternalFunctionProvider {
-        val provider = externalFunctionProviders.get(identifier)
-        if (provider == null) {
-            throw CqlException(
-                String.format(
-                    "Could not resolve external function provider for library '%s'.",
-                    identifier,
+        val provider =
+            externalFunctionProviders[identifier]
+                ?: throw CqlException(
+                    "Could not resolve external function provider for library '${identifier}'."
                 )
-            )
-        }
         return provider
     }
 
@@ -77,11 +73,7 @@ constructor(
 
         if (clazz.getPackage().name.startsWith("java.lang")) {
             throw CqlException(
-                String.format(
-                    "Invalid path: %s for type: %s - this is likely an issue with the data model.",
-                    path,
-                    clazz.getName(),
-                )
+                "Invalid path: $path for type: ${clazz.getName()} - this is likely an issue with the data model."
             )
         }
 
@@ -176,37 +168,22 @@ constructor(
     fun resolveDataProvider(dataType: QName): DataProvider {
         var dataType = dataType
         dataType = fixupQName(dataType)
-        val dataProvider: DataProvider = dataProviders[dataType.namespaceURI]!!
-        if (dataProvider == null) {
-            throw CqlException(
-                String.format(
-                    "Could not resolve data provider for model '%s'.",
-                    dataType.namespaceURI,
-                )
-            )
-        }
-
-        return dataProvider
+        return resolveDataProviderByModelUri(dataType.namespaceURI)
     }
 
     fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
-        val dataProvider = dataProviders[modelUri]
-        if (dataProvider == null) {
-            throw CqlException(
-                String.format("Could not resolve data provider for model '%s'.", modelUri)
-            )
-        }
+        val dataProvider =
+            dataProviders[modelUri]
+                ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
 
         return dataProvider
     }
 
     @JvmOverloads
     fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): DataProvider? {
-        val dataProvider = packageMap.get(packageName)
+        val dataProvider = packageMap[packageName]
         if (dataProvider == null && mustResolve) {
-            throw CqlException(
-                String.format("Could not resolve data provider for package '%s'.", packageName)
-            )
+            throw CqlException("Could not resolve data provider for package '${packageName}'.")
         }
 
         return dataProvider
@@ -220,21 +197,21 @@ constructor(
     }
 
     fun resolveType(typeSpecifier: TypeSpecifier?): Class<*>? {
-        if (typeSpecifier is NamedTypeSpecifier) {
-            return resolveType(typeSpecifier.name)
-        } else if (typeSpecifier is ListTypeSpecifier) {
-            // TODO: This doesn't allow for list-distinguished overloads...
-            return MutableList::class.java
+        return when (typeSpecifier) {
+            is NamedTypeSpecifier -> resolveType(typeSpecifier.name)
+            is ListTypeSpecifier ->
+                // TODO: This doesn't allow for list-distinguished overloads...
+                MutableList::class.java
             // return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
-        } else if (typeSpecifier is IntervalTypeSpecifier) {
-            // TODO: This doesn't allow for interval-distinguished overloads
-            return Interval::class.java
-        } else if (typeSpecifier is ChoiceTypeSpecifier) {
-            // TODO: This doesn't allow for choice-distinguished overloads...
-            return Any::class.java
-        } else {
-            // TODO: This doesn't allow for tuple-distinguished overloads....
-            return Tuple::class.java
+            is IntervalTypeSpecifier ->
+                // TODO: This doesn't allow for interval-distinguished overloads
+                Interval::class.java
+            is ChoiceTypeSpecifier ->
+                // TODO: This doesn't allow for choice-distinguished overloads...
+                Any::class.java
+            else ->
+                // TODO: This doesn't allow for tuple-distinguished overloads....
+                Tuple::class.java
         }
     }
 
@@ -271,10 +248,10 @@ constructor(
     }
 
     fun resolveOperandType(operandDef: OperandDef): Class<*>? {
-        if (operandDef.operandTypeSpecifier != null) {
-            return resolveType(operandDef.operandTypeSpecifier)
+        return if (operandDef.operandTypeSpecifier != null) {
+            resolveType(operandDef.operandTypeSpecifier)
         } else {
-            return resolveType(operandDef.operandType)
+            resolveType(operandDef.operandType)
         }
     }
 

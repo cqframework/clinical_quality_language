@@ -53,7 +53,7 @@ object ProperIncludesEvaluator {
 
         throw InvalidOperatorArgument(
             "ProperlyIncludes(Interval<T>, Interval<T>) or ProperlyIncludes(List<T>, List<T>)",
-            String.format("ProperlyIncludes(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "ProperlyIncludes(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 

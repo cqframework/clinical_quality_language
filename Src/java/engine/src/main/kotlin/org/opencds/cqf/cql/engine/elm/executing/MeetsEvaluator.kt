@@ -103,7 +103,7 @@ object MeetsEvaluator {
 
         throw InvalidOperatorArgument(
             "Meets(Interval<T>, Interval<T>)",
-            String.format("Meets(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Meets(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

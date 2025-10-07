@@ -29,7 +29,7 @@ internal class Issue1225 : FhirExecutionTestBase() {
                     dateHighPath: String?,
                     dateRange: Interval?,
                 ): Iterable<Any?> {
-                    if (dataType != null && dataType == "Patient") {
+                    if (dataType == "Patient") {
                         val p = Patient()
                         p.getAddress().add(Address().addLine("123").addLine("456"))
                         return mutableListOf<Any?>(p)

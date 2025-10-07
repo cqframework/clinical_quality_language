@@ -33,6 +33,7 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
     /*
     Returns true if this location includes the other location (i.e. starts on or before and ends on or after)
      */
+    @Suppress("ReturnCount")
     fun includes(other: Location): Boolean {
         requireNotNull(other) { "other required" }
 
@@ -78,9 +79,8 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
     }
 
     fun toLocator(): String {
-        return if (startLine == endLine && startChar == endChar)
-            String.format("%s:%s", startLine, startChar)
-        else String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar)
+        return if (startLine == endLine && startChar == endChar) "${startLine}:${startChar}"
+        else "${startLine}:${startChar}-${endLine}:${endChar}"
     }
 
     companion object {
@@ -102,7 +102,7 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
                         .split(":".toRegex())
                         .dropLastWhile { it.isEmpty() }
                         .toTypedArray()
-                require(ranges.size == 2) { String.format("Invalid locator format: %s", locator) }
+                require(ranges.size == 2) { "Invalid locator format: ${locator}" }
                 if (i == 0) {
                     startLine = ranges[0]!!.toInt()
                     startChar = ranges[1]!!.toInt()

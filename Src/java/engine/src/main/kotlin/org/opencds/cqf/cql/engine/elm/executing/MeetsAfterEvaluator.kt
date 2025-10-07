@@ -46,7 +46,7 @@ object MeetsAfterEvaluator {
 
         throw InvalidOperatorArgument(
             "MeetsAfter(Interval<T>, Interval<T>)",
-            String.format("MeetsAfter(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "MeetsAfter(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

@@ -47,7 +47,7 @@ object ConvertsToStringEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertsToString(Boolean) or ConvertsToString(Long) or ConvertsToString(Integer) or ConvertsToString(Decimal) or ConvertsToString(Quantity) or ConvertsToString(Ratio) or ConvertsToString(Date) or ConvertsToString(DateTime) or ConvertsToString(Time)",
-            String.format("ConvertsToString(%s)", argument.javaClass.name),
+            "ConvertsToString(${argument.javaClass.name})",
         )
     }
 }

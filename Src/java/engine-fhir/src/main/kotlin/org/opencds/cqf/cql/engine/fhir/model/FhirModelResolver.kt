@@ -269,14 +269,14 @@ abstract class FhirModelResolver<
         // Special case for enumerations. They are often in the "Enumerations" class.
         for (packageName in this.packageNames) {
             try {
-                return Class.forName(String.format("%s.Enumerations$%s", packageName, typeName))
+                return Class.forName("$packageName.Enumerations$$typeName")
             } catch (_: ClassNotFoundException) {}
         }
 
         // Other Types in package.
         for (packageName in this.packageNames) {
             try {
-                return Class.forName(String.format("%s.%s", packageName, typeName))
+                return Class.forName("$packageName.$typeName")
             } catch (_: ClassNotFoundException) {}
         }
 
@@ -292,11 +292,7 @@ abstract class FhirModelResolver<
             return Class.forName(typeName)
         } catch (_: ClassNotFoundException) {
             throw UnknownType(
-                String.format(
-                    "Could not resolve type %s. Primary package(s) for this resolver are %s",
-                    typeName,
-                    this.packageNames.joinToString(","),
-                )
+                "Could not resolve type $typeName. Primary package(s) for this resolver are ${this.packageNames.joinToString(",")}"
             )
         }
     }
@@ -365,7 +361,7 @@ abstract class FhirModelResolver<
         }
 
         if (child == null) {
-            throw DataProviderException(String.format("Unable to resolve path %s.", path))
+            throw DataProviderException("Unable to resolve path $path.")
         }
 
         try {
@@ -385,9 +381,7 @@ abstract class FhirModelResolver<
                 }
                 child.mutator.setValue(base, setBaseValue(value, base))
             } else {
-                throw DataProviderException(
-                    String.format("Configuration error encountered: %s", le.message)
-                )
+                throw DataProviderException("Configuration error encountered: ${le.message}")
             }
         }
     }
@@ -484,10 +478,7 @@ abstract class FhirModelResolver<
 
             else ->
                 throw UnknownType(
-                    String.format(
-                        "Unable to resolve the runtime definition for %s",
-                        base.javaClass.getName(),
-                    )
+                    "Unable to resolve the runtime definition for ${base.javaClass.name}"
                 )
         }
     }
@@ -538,35 +529,19 @@ abstract class FhirModelResolver<
             return clazz.getDeclaredConstructor().newInstance()
         } catch (e: NoSuchMethodException) {
             throw UnknownType(
-                String.format(
-                    "Could not create an instance of class %s.\nRoot cause: %s",
-                    clazz.getName(),
-                    e.message,
-                )
+                "Could not create an instance of class ${clazz.name}.\nRoot cause: ${e.message}"
             )
         } catch (e: InvocationTargetException) {
             throw UnknownType(
-                String.format(
-                    "Could not create an instance of class %s.\nRoot cause: %s",
-                    clazz.getName(),
-                    e.message,
-                )
+                "Could not create an instance of class ${clazz.name}.\nRoot cause: ${e.message}"
             )
         } catch (e: InstantiationException) {
             throw UnknownType(
-                String.format(
-                    "Could not create an instance of class %s.\nRoot cause: %s",
-                    clazz.getName(),
-                    e.message,
-                )
+                "Could not create an instance of class ${clazz.name}.\nRoot cause: ${e.message}"
             )
         } catch (e: IllegalAccessException) {
             throw UnknownType(
-                String.format(
-                    "Could not create an instance of class %s.\nRoot cause: %s",
-                    clazz.getName(),
-                    e.message,
-                )
+                "Could not create an instance of class ${clazz.name}.\nRoot cause: ${e.message}"
             )
         }
     }
@@ -650,10 +625,7 @@ abstract class FhirModelResolver<
                     calendar.get(Calendar.MILLISECOND),
                 )
 
-            else ->
-                throw InvalidPrecision(
-                    String.format("Invalid temporal precision %s", calendarConstant)
-                )
+            else -> throw InvalidPrecision("Invalid temporal precision $calendarConstant")
         }
     }
 
@@ -677,10 +649,7 @@ abstract class FhirModelResolver<
                     calendar.get(Calendar.DAY_OF_MONTH),
                 )
 
-            else ->
-                throw InvalidPrecision(
-                    String.format("Invalid temporal precision %s", calendarConstant)
-                )
+            else -> throw InvalidPrecision("Invalid temporal precision $calendarConstant")
         }
     }
 
@@ -722,10 +691,7 @@ abstract class FhirModelResolver<
             Precision.MINUTE -> TemporalPrecisionEnum.MINUTE
             Precision.SECOND -> TemporalPrecisionEnum.SECOND
             Precision.MILLISECOND -> TemporalPrecisionEnum.MILLI
-            else ->
-                throw IllegalArgumentException(
-                    String.format("Unknown precision %s", precision.toString())
-                )
+            else -> throw IllegalArgumentException("Unknown precision $precision")
         }
     }
 

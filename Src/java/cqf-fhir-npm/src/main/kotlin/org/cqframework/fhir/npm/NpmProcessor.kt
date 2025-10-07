@@ -26,7 +26,7 @@ class NpmProcessor(
     // @Inject
     init {
         if (igContext != null) {
-            packageManager = NpmPackageManager(igContext.getSourceIg())
+            packageManager = NpmPackageManager(igContext.sourceIg!!)
         }
     }
 
@@ -45,12 +45,7 @@ class NpmProcessor(
             if (packageManager != null) {
                 val packages = packageManager!!.npmList
                 for (p in packages) {
-                    if (
-                        p.name() != null &&
-                            !p.name().isEmpty() &&
-                            p.canonical() != null &&
-                            !p.canonical().isEmpty()
-                    ) {
+                    if (!p.name().isNullOrBlank() && !p.canonical().isNullOrBlank()) {
                         val ni = NamespaceInfo(p.name(), p.canonical())
                         namespaceInfos.add(ni)
                     }

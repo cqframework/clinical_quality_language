@@ -17,26 +17,30 @@ import org.hl7.fhir.r5.model.Library
 import org.hl7.fhir.utilities.VersionUtilities
 
 class LibraryLoader(private val version: String?) : ILibraryReader {
+    @Suppress("VariableNaming")
     @Throws(FHIRFormatError::class, IOException::class)
     override fun readLibrary(stream: InputStream?): Library? {
-        if (VersionUtilities.isR2Ver(version)) {
-            throw FHIRException("Library is not supported in R2")
-        } else if (VersionUtilities.isR2BVer(version)) {
-            val res = JsonParser().parse(stream)
-            val versionConvertor_14_50 = VersionConvertor_14_50(BaseAdvisor_14_50())
-            return versionConvertor_14_50.convertResource(res) as Library?
-        } else if (VersionUtilities.isR3Ver(version)) {
-            val res = org.hl7.fhir.dstu3.formats.JsonParser().parse(stream)
-            val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
-            return versionConvertor_30_50.convertResource(res) as Library?
-        } else if (VersionUtilities.isR4Ver(version)) {
-            val res = org.hl7.fhir.r4.formats.JsonParser().parse(stream)
-            val versionConvertor_40_50 = VersionConvertor_40_50(BaseAdvisor_40_50())
-            return versionConvertor_40_50.convertResource(res) as Library?
-        } else if (VersionUtilities.isR5Ver(version)) {
-            return org.hl7.fhir.r5.formats.JsonParser().parse(stream) as Library?
-        } else {
-            throw FHIRException("Unknown Version '$version'")
+        return when {
+            VersionUtilities.isR2Ver(version) ->
+                throw FHIRException("Library is not supported in R2")
+            VersionUtilities.isR2BVer(version) -> {
+                val res = JsonParser().parse(stream)
+                val versionConvertor_14_50 = VersionConvertor_14_50(BaseAdvisor_14_50())
+                versionConvertor_14_50.convertResource(res) as Library?
+            }
+            VersionUtilities.isR3Ver(version) -> {
+                val res = org.hl7.fhir.dstu3.formats.JsonParser().parse(stream)
+                val versionConvertor_30_50 = VersionConvertor_30_50(BaseAdvisor_30_50())
+                versionConvertor_30_50.convertResource(res) as Library?
+            }
+            VersionUtilities.isR4Ver(version) -> {
+                val res = org.hl7.fhir.r4.formats.JsonParser().parse(stream)
+                val versionConvertor_40_50 = VersionConvertor_40_50(BaseAdvisor_40_50())
+                versionConvertor_40_50.convertResource(res) as Library?
+            }
+            VersionUtilities.isR5Ver(version) ->
+                org.hl7.fhir.r5.formats.JsonParser().parse(stream) as Library?
+            else -> throw FHIRException("Unknown Version '$version'")
         }
     }
 }

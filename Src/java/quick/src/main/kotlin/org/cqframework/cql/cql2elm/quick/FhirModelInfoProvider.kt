@@ -41,54 +41,53 @@ class FhirModelInfoProvider : ModelInfoProvider, NamespaceAware {
     }
 
     private fun getResource(localVersion: String): InputStream? {
-        when (localVersion) {
+        return when (localVersion) {
             "1.0.2" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml")
 
             "1.4" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml")
 
             "1.6" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml")
 
             "1.8" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml")
 
             "3.0.0",
             "" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml")
 
             "3.0.1" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.1.xml")
 
             "3.2.0" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.2.0.xml")
 
             "4.0.0" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml")
 
             "4.0.1" ->
-                return FhirModelInfoProvider::class
+                FhirModelInfoProvider::class
                     .java
                     .getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml")
+            else -> null
         }
-
-        return null
     }
 }

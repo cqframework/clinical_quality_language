@@ -9,6 +9,7 @@ import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 
 /** A simple wrapper around the ANTLR4 testrig. */
+@Suppress("MemberNameEqualsClassName", "UnusedPrivateProperty")
 object Main {
     @Throws(IOException::class)
     @JvmStatic

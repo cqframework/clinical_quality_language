@@ -21,7 +21,7 @@ object XorEvaluator {
 
         throw InvalidOperatorArgument(
             "Xor(Boolean, Boolean)",
-            String.format("Xor(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Xor(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

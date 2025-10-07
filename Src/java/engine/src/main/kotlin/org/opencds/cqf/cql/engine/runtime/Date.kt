@@ -14,6 +14,7 @@ class Date : BaseTemporal {
             if (date!!.year < 1) {
                 throw InvalidDate(
                     String.format(
+                        Locale.US,
                         "The year: %d falls below the accepted bounds of 0001-9999.",
                         date.year,
                     )
@@ -22,6 +23,7 @@ class Date : BaseTemporal {
             if (date.year > 9999) {
                 throw InvalidDate(
                     String.format(
+                        Locale.US,
                         "The year: %d falls above the accepted bounds of 0001-9999.",
                         date.year,
                     )
@@ -219,11 +221,17 @@ class Date : BaseTemporal {
 
     override fun toString(): String {
         return when (precision) {
-            Precision.YEAR -> String.format("%04d", date!!.year)
-            Precision.MONTH -> String.format("%04d-%02d", date!!.year, date!!.monthValue)
+            Precision.YEAR -> String.format(Locale.US, "%04d", date!!.year)
+            Precision.MONTH -> String.format(Locale.US, "%04d-%02d", date!!.year, date!!.monthValue)
 
             else ->
-                String.format("%04d-%02d-%02d", date!!.year, date!!.monthValue, date!!.dayOfMonth)
+                String.format(
+                    Locale.US,
+                    "%04d-%02d-%02d",
+                    date!!.year,
+                    date!!.monthValue,
+                    date!!.dayOfMonth,
+                )
         }
     }
 

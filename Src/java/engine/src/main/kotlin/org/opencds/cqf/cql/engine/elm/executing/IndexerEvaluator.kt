@@ -51,7 +51,7 @@ object IndexerEvaluator {
 
         throw InvalidOperatorArgument(
             "Indexer(String, Integer) or Indexer(List<T>, Integer)",
-            String.format("Indexer(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Indexer(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

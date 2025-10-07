@@ -6,6 +6,7 @@ import org.hl7.fhir.r4.model.Parameters
 import org.hl7.fhir.r4.model.ValueSet
 import org.hl7.fhir.r4.model.codesystems.ConceptSubsumptionOutcome
 
+@Suppress("ForbiddenComment", "TooManyFunctions")
 interface FhirTerminologyService : FhirService {
     // https://hl7.org/fhir/valueset-operation-expand.html
     // TODO: Consider activeOnly, as well as includeDraft and expansion parameters (see Measure

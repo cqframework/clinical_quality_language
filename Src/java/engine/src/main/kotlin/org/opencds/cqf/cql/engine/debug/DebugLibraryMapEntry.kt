@@ -12,6 +12,7 @@ class DebugLibraryMapEntry(val libraryName: String?) {
         locationEntries = HashMap<String?, DebugMapEntry>()
     }
 
+    @Suppress("ReturnCount")
     fun shouldDebug(node: Element?): DebugAction? {
         if (node != null) {
             val nodeEntry = nodeEntries.get(node.localId)

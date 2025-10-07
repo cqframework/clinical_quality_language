@@ -55,7 +55,7 @@ object ModuloEvaluator {
 
         throw InvalidOperatorArgument(
             "Modulo(Integer, Integer), Modulo(Long, Long) or Modulo(Decimal, Decimal), , Modulo(Quantity, Quantity)",
-            String.format("Modulo(%s, %s)", left.javaClass.name, right.javaClass.name),
+            "Modulo(${left.javaClass.name}, ${right.javaClass.name})",
         )
     }
 }

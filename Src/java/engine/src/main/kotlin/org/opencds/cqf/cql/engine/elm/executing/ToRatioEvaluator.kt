@@ -44,10 +44,7 @@ object ToRatioEvaluator {
         }
 
         throw IllegalArgumentException(
-            String.format(
-                "Cannot cast a value of type %s as Ratio - use String values.",
-                operand.javaClass.name,
-            )
+            "Cannot cast a value of type ${operand.javaClass.name} as Ratio - use String values."
         )
     }
 }

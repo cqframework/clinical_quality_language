@@ -22,11 +22,7 @@ abstract class BaseModelResolver : ModelResolver {
 
         if (isStrict) {
             throw InvalidCast(
-                String.format(
-                    "Cannot cast a value of type %s as %s.",
-                    value.javaClass.getName(),
-                    type.getName(),
-                )
+                "Cannot cast a value of type ${value.javaClass.getName()} as ${type.getName()}."
             )
         }
 

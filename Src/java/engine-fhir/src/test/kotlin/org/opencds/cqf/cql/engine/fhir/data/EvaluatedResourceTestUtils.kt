@@ -102,13 +102,7 @@ internal object EvaluatedResourceTestUtils {
                                     val lines =
                                         if (tb == null) "[n/a]"
                                         else
-                                            String.format(
-                                                "[%d:%d, %d:%d]",
-                                                tb.startLine,
-                                                tb.startChar,
-                                                tb.endLine,
-                                                tb.endChar,
-                                            )
+                                            "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                                     System.err.printf("%s %s%n", lines, error.message)
                                     errors.add(lines + error.message)
                                 }

@@ -24,7 +24,7 @@ object ExpandValueSetEvaluator {
 
         throw InvalidOperatorArgument(
             "ExpandValueSet(ValueSet)",
-            String.format("ExpandValueSet(%s)", valueset.javaClass.name),
+            "ExpandValueSet(${valueset.javaClass.name})",
         )
     }
 }

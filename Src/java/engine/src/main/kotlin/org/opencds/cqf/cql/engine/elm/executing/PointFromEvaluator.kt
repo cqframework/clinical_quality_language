@@ -34,7 +34,7 @@ object PointFromEvaluator {
 
         throw InvalidOperatorArgument(
             "PointFrom(Interval<T>)",
-            String.format("PointFrom(%s)", operand.javaClass.name),
+            "PointFrom(${operand.javaClass.name})",
         )
     }
 }

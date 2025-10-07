@@ -42,7 +42,7 @@ constructor(
             if (
                 this.templateId != null &&
                     this.templateId!!.startsWith(
-                        String.format("http://hl7.org/fhir/StructureDefinition/%s", dataType)
+                        "http://hl7.org/fhir/StructureDefinition/$dataType"
                     )
             ) {
                 this.templateId = null

@@ -38,11 +38,7 @@ object RoundEvaluator {
 
         throw InvalidOperatorArgument(
             "Round(Decimal) or Round(Decimal, Integer)",
-            String.format(
-                "Round(%s%s)",
-                operand.javaClass.name,
-                if (precision == null) "" else ", " + precision.javaClass.name,
-            ),
+            "Round(${operand.javaClass.name}${if (precision == null) "" else ", " + precision.javaClass.name})",
         )
     }
 }

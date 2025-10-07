@@ -16,7 +16,7 @@ object ElmEvaluationHelper {
         parameters: MutableMap<String?, Any?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Any? {
-        // TODO: Cache for libraries?
+        // NOTE: Consider caching for libraries in the future.
 
         val engine = getEngine(library, parameters, evaluationDateTime)
         return engine.evaluationVisitor.visitExpression(value!!, engine.state)
