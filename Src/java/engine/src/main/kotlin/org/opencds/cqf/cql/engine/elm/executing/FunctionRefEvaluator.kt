@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import java.util.function.IntPredicate
 import java.util.stream.IntStream
 import org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.qnamesEqual
 import org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.typeSpecifiersEqual
@@ -21,7 +20,7 @@ object FunctionRefEvaluator {
         state: State?,
         visitor: ElmLibraryVisitor<Any?, State?>,
     ): Any? {
-        val arguments: ArrayList<Any?> = ArrayList<Any?>(functionRef!!.operand.size)
+        val arguments: ArrayList<Any?> = ArrayList(functionRef!!.operand.size)
         for (operand in functionRef.operand) {
             arguments.add(visitor.visitExpression(operand, state))
         }
@@ -40,9 +39,7 @@ object FunctionRefEvaluator {
                 state.pushActivationFrame(functionDef, functionDef.context)
                 try {
                     for (i in arguments.indices) {
-                        state.push(
-                            Variable(functionDef.operand.get(i).name!!).withValue(arguments.get(i))
-                        )
+                        state.push(Variable(functionDef.operand[i].name!!).withValue(arguments[i]))
                     }
                     return visitor.visitExpression(functionDef.expression!!, state)
                 } finally {
@@ -66,14 +63,14 @@ object FunctionRefEvaluator {
         if (!functionRef.signature.isEmpty() || arguments.isEmpty()) {
             eligibleForCaching = true
             if (state!!.cache.functionCache.containsKey(functionRef)) {
-                return state.cache.functionCache.get(functionRef)!!
+                return state.cache.functionCache[functionRef]!!
             }
         }
 
         val functionDef = resolveFunctionRef(state, functionRef, arguments)
 
         if (eligibleForCaching) {
-            state!!.cache.functionCache.put(functionRef, functionDef)
+            state!!.cache.functionCache[functionRef] = functionDef
         }
 
         return functionDef
@@ -103,9 +100,7 @@ object FunctionRefEvaluator {
         // If the function ref includes a signature, use the signature to find the matching function
         // defs
         if (!signature.isEmpty()) {
-            return namedDefs.filter { x ->
-                FunctionRefEvaluator.functionDefOperandsSignatureEqual(x!!, signature)
-            }
+            return namedDefs.filter { x -> functionDefOperandsSignatureEqual(x, signature) }
         }
 
         logger.debug(
@@ -113,45 +108,35 @@ object FunctionRefEvaluator {
             name,
         )
 
-        return namedDefs.filter { x -> state.environment.matchesTypes(x!!, arguments) }
+        return namedDefs.filter { x -> state.environment.matchesTypes(x, arguments) }
     }
 
     fun functionDefOperandsSignatureEqual(
         functionDef: FunctionDef,
         signature: List<TypeSpecifier>,
-    ): kotlin.Boolean {
+    ): Boolean {
         val operands = functionDef.operand
 
         // Check if the number of operands match and if the type specifiers match
-        return operands.size === signature.size &&
-            IntStream.range(0, operands.size)
-                .allMatch(
-                    IntPredicate { i: Int ->
-                        FunctionRefEvaluator.operandDefTypeSpecifierEqual(
-                            operands.get(i)!!,
-                            signature.get(i),
-                        )
-                    }
-                )
+        return operands.size == signature.size &&
+            IntStream.range(0, operands.size).allMatch { i: Int ->
+                operandDefTypeSpecifierEqual(operands[i], signature[i])
+            }
     }
 
     @JvmStatic
     fun operandDefTypeSpecifierEqual(
         operandDef: OperandDef,
         typeSpecifier: TypeSpecifier?,
-    ): kotlin.Boolean {
+    ): Boolean {
         // An operand def can have an operandTypeSpecifier or operandType
 
         val operandDefOperandTypeSpecifier = operandDef.operandTypeSpecifier
-        if (operandDefOperandTypeSpecifier != null) {
-            return typeSpecifiersEqual(operandDefOperandTypeSpecifier, typeSpecifier)
-        }
-
-        if (typeSpecifier is NamedTypeSpecifier) {
-            return qnamesEqual(operandDef.operandType, typeSpecifier.name)
-        }
-
-        return false
+        return if (operandDefOperandTypeSpecifier != null) {
+            typeSpecifiersEqual(operandDefOperandTypeSpecifier, typeSpecifier)
+        } else if (typeSpecifier is NamedTypeSpecifier) {
+            qnamesEqual(operandDef.operandType, typeSpecifier.name)
+        } else false
     }
 
     fun pickFunctionDef(
@@ -161,7 +146,7 @@ object FunctionRefEvaluator {
         signature: List<TypeSpecifier>,
         functionDefs: List<FunctionDef>,
     ): FunctionDef {
-        val types = if (signature.isEmpty()) arguments else signature
+        val types = signature.ifEmpty { arguments }
 
         if (functionDefs.isEmpty()) {
             throw CqlException(
@@ -171,7 +156,7 @@ object FunctionRefEvaluator {
 
         if (functionDefs.size == 1) {
             // Normal case
-            return functionDefs.get(0)
+            return functionDefs[0]
         }
 
         throw CqlException(

@@ -47,9 +47,8 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
     }
 
     internal class AccessorKey(private val path: String?, private val type: Class<*>) {
-        override fun equals(obj: Any?): Boolean {
-            if (obj is AccessorKey) {
-                val other = obj
+        override fun equals(other: Any?): Boolean {
+            if (other is AccessorKey) {
                 return path == other.path && type == other.type
             }
             return false
