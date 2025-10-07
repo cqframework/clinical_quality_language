@@ -53,7 +53,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     }
 
     private fun getTestValueSet(id: String?, numberOfCodesToInclude: Int): ValueSet {
-        val valueSetUrl = String.format("http://myterm.com/fhir/ValueSet/%s", id)
+        val valueSetUrl = "http://myterm.com/fhir/ValueSet/$id"
         val valueSet = ValueSet()
         valueSet.setId("MyValueSet")
         valueSet.setUrl(valueSetUrl)
@@ -62,9 +62,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
             ArrayList<ValueSet.ValueSetExpansionContainsComponent?>()
         for (i in 0..<numberOfCodesToInclude) {
             val expansionContainsComponent = ValueSet.ValueSetExpansionContainsComponent()
-            expansionContainsComponent.setSystem(
-                String.format("http://myterm.com/fhir/CodeSystem/%s", id)
-            )
+            expansionContainsComponent.setSystem("http://myterm.com/fhir/CodeSystem/$id")
             expansionContainsComponent.setCode("code$i")
             contains.add(expansionContainsComponent)
         }
@@ -221,11 +219,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val actualQuery = actual[0]
         val expectedQuery =
-            String.format(
-                "Appointment?actor=Patient/{{context.patientId}}&date=ge%s&date=le%s",
-                dateTimeString,
-                dateTimeString,
-            )
+            "Appointment?actor=Patient/{{context.patientId}}&date=ge$dateTimeString&date=le$dateTimeString"
 
         Assertions.assertEquals(actualQuery, expectedQuery)
     }
@@ -266,11 +260,7 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val actualQuery = actual[0]
         val expectedQuery =
-            String.format(
-                    "Observation?date=ge%s&date=le%s&patient=Patient/{{context.patientId}}",
-                    simpleDateFormatter.format(expectedRangeStartDateTime),
-                    dateTimeFormatter.format(evaluationDateTimeAsLocal),
-                )
+            "Observation?date=ge${simpleDateFormatter.format(expectedRangeStartDateTime)}&date=le${dateTimeFormatter.format(evaluationDateTimeAsLocal)}&patient=Patient/{{context.patientId}}"
                 .replace("Z", "+00:00")
 
         Assertions.assertEquals(actualQuery, expectedQuery)

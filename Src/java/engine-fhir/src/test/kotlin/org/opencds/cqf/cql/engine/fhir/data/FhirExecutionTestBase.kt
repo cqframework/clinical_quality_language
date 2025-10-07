@@ -66,14 +66,7 @@ abstract class FhirExecutionTestBase {
                         val tb = error.locator
                         val lines =
                             if (tb == null) "[n/a]"
-                            else
-                                String.format(
-                                    "[%d:%d, %d:%d]",
-                                    tb.startLine,
-                                    tb.startChar,
-                                    tb.endLine,
-                                    tb.endChar,
-                                )
+                            else "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                         System.err.printf("%s %s%n", lines, error.message)
                         errors.add(lines + error.message)
                     }
