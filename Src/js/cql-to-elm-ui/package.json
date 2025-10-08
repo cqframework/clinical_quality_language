@@ -17,9 +17,9 @@
     "@uiw/react-codemirror": "^4.24.1",
     "cql-to-elm-js": "file:../../java/build/js/packages/cql-to-elm",
     "cql-to-elm-wasm-js": "file:../../java/build/wasm/packages/cql-to-elm",
-    "next": "15.0.2",
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028"
+    "next": "^15.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/node": "^20",
