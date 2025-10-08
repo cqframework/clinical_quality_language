@@ -13,8 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gradle-build:
-    name: Gradle Build
+  gradle:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -48,25 +47,20 @@ jobs:
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  deploy-pages:
-    name: Deploy playground to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: gradle-build
-    steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-node@v5
+    - name: Install Node.js
+      uses: actions/setup-node@v5
       with:
         node-version: '24'
         package-manager-cache: false
-    - name: Install dependencies
+    - name: Install playground dependencies
       working-directory: ./Src/js/cql-to-elm-ui
       run: npm ci -f
-    - name: Build and export
+    - name: Build and export playground
       working-directory: ./Src/js/cql-to-elm-ui
       run: npm run build
     - name: Add .nojekyll
       run: touch ./Src/js/cql-to-elm-ui/out/.nojekyll
-    - name: Deploy to GitHub Pages
+    - name: Deploy playground to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
