@@ -60,7 +60,7 @@ jobs:
         package-manager-cache: false
     - name: Install dependencies
       working-directory: ./Src/js/cql-to-elm-ui
-      run: npm ci
+      run: npm ci -f
     - name: Build and export
       working-directory: ./Src/js/cql-to-elm-ui
       run: npm run build
