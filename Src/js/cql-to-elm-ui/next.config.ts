@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  basePath: "/cql-to-elm-ui",
+  basePath: "/clinical_quality_language/playground",
   output: "export",
   reactStrictMode: false,
   webpack: (config, { isServer }) => {
