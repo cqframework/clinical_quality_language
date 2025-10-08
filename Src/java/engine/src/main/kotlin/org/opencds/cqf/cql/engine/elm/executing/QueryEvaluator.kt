@@ -28,8 +28,7 @@ object QueryEvaluator {
         visitor: ElmLibraryVisitor<Any?, State?>,
     ) {
         for (i in 0..<elm!!.let.size) {
-            letVariables.get(i)!!.value =
-                visitor.visitExpression(elm.let.get(i).expression!!, state)
+            letVariables[i]!!.value = visitor.visitExpression(elm.let[i].expression!!, state)
         }
     }
 
@@ -79,10 +78,10 @@ object QueryEvaluator {
         elm: Query,
         state: State?,
         visitor: ElmLibraryVisitor<Any?, State?>,
-    ): kotlin.Boolean {
+    ): Boolean {
         if (elm.where != null) {
             val satisfiesCondition = visitor.visitExpression(elm.where!!, state)
-            if (!(satisfiesCondition is kotlin.Boolean && satisfiesCondition)) {
+            if (!(satisfiesCondition is Boolean && satisfiesCondition)) {
                 return false
             }
         }
@@ -99,10 +98,10 @@ object QueryEvaluator {
         return mutableListOf(AggregateClauseEvaluator.aggregate(elm, state, visitor, elements))
     }
 
-    private fun constructTuple(state: State?, variables: MutableList<Variable>): Any? {
+    private fun constructTuple(state: State?, variables: MutableList<Variable>): Tuple {
         val elementMap = mutableMapOf<String, Any?>()
         for (v in variables) {
-            elementMap.put(v.name!!, v.value)
+            elementMap[v.name!!] = v.value
         }
 
         return Tuple(state).withElements(elementMap)
@@ -118,14 +117,15 @@ object QueryEvaluator {
 
         if (sortClause != null) {
             for (byItem in sortClause.by) {
-                if (byItem is ByExpression) {
-                    result.sortWith(
-                        CqlList(state, visitor, "\$this", byItem.expression!!).expressionSort
-                    )
-                } else if (byItem is ByColumn) {
-                    result.sortWith(CqlList(state, byItem.path).columnSort)
-                } else {
-                    result.sortWith(CqlList().valueSort)
+                when (byItem) {
+                    is ByExpression ->
+                        result.sortWith(
+                            CqlList(state, visitor, "\$this", byItem.expression!!).expressionSort
+                        )
+
+                    is ByColumn -> result.sortWith(CqlList(state, byItem.path).columnSort)
+
+                    else -> result.sortWith(CqlList().valueSort)
                 }
 
                 val direction = byItem.direction!!.value()
@@ -175,7 +175,9 @@ object QueryEvaluator {
             val iterator = QueryIterator(state, sources)
 
             while (iterator.hasNext()) {
-                val elements = iterator.next() as MutableList<Any?>
+                // We need type metadata tracking in the CQL engine
+                // to narrow this down better
+                @Suppress("UNCHECKED_CAST") val elements = iterator.next() as MutableList<Any?>
 
                 // Assign  variables
                 assignVariables(variables, elements)
@@ -192,11 +194,11 @@ object QueryEvaluator {
 
                 // There's a "return" clause in the CQL
                 if (elm.`return` != null) {
-                    result!!.add(visitor.visitExpression(elm.`return`!!.expression!!, state))
+                    result.add(visitor.visitExpression(elm.`return`!!.expression!!, state))
                 } else if (elm.aggregate != null || variables.size > 1) {
-                    result!!.add(constructTuple(state, variables))
+                    result.add(constructTuple(state, variables))
                 } else {
-                    result!!.add(elements.get(0))
+                    result.add(elements[0])
                 }
             }
         } finally {
@@ -218,7 +220,7 @@ object QueryEvaluator {
             result = evaluateAggregate(elm.aggregate!!, state, visitor, result)
         }
 
-        QueryEvaluator.sortResult(elm, result!!, state, visitor)
+        sortResult(elm, result, state, visitor)
 
         if ((result.isEmpty()) && !sourceIsList) {
             return null
@@ -229,12 +231,12 @@ object QueryEvaluator {
 
     private fun assignVariables(variables: MutableList<Variable>, elements: MutableList<Any?>) {
         for (i in variables.indices) {
-            variables.get(i).value = elements.get(i)
+            variables[i].value = elements[i]
         }
     }
 
     internal class QuerySource(val alias: String?, data: Any?) {
-        val isList: kotlin.Boolean
+        val isList: Boolean
         val data: Iterable<Any?>?
 
         init {

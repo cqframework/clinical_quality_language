@@ -18,20 +18,17 @@ repositories {
     }
 }
 
-// Reenable once we have time to address the issues
-//detekt {
-//    // Applies the config files on top of detekt's default config.
-//    buildUponDefaultConfig = true
-//
-//    // The directories where detekt looks for source files.
-//    source.setFrom(
-//        "src/main/kotlin",
-//        "src/test/kotlin",
-//    )
-//
-//    // Custom config with overrides.
-//    config.setFrom("$rootDir/config/detekt/detekt.yml")
-//}
+detekt {
+    buildUponDefaultConfig = true
+
+    source.setFrom(
+        "src/main/kotlin",
+        "src/test/kotlin",
+    )
+
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    baseline = file("$projectDir/config/detekt-baseline.xml")
+}
 
 kotlin {
     jvmToolchain(17)
@@ -54,7 +51,7 @@ dependencies {
     testRuntimeOnly("org.eclipse.parsson:parsson:1.1.5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    rewrite(project(":rewrite"))
+    rewrite(project(":tools:rewrite"))
 }
 
 tasks.jar {

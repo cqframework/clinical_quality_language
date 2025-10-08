@@ -202,7 +202,10 @@ object ExpandEvaluator {
         if (listOrInterval is Interval) {
             return expandIntervalIntoPoints(listOrInterval, per, state)
         } else if (listOrInterval is Iterable<*>) {
-            val list = listOrInterval as Iterable<Interval?>
+            // We'll address this by introducing
+            // a CqlType interface for all the internal engine types
+            // So that we're not using "Any" everywhere.
+            @Suppress("UNCHECKED_CAST") val list = listOrInterval as Iterable<Interval?>
             return expandIntervalsIntoIntervals(list, per, state)
         }
 

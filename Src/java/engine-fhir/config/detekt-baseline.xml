@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$context != null &amp;&amp; context == "Patient" &amp;&amp; contextValue != null &amp;&amp; contextPath != null</ID>
+    <ID>ComplexCondition:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion.&lt;no name provided>$PATIENT == dataType &amp;&amp; PATIENT == context &amp;&amp; ID == contextPath &amp;&amp; _PATIENT_123 == contextValue</ID>
+    <ID>ComplexCondition:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion.&lt;no name provided>$PATIENT == dataType &amp;&amp; PRACTITIONER == context &amp;&amp; GENERAL_PRACTITIONER == contextPath &amp;&amp; equals</ID>
+    <ID>ComplexCondition:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion.&lt;no name provided>$PRACTITIONER == dataType &amp;&amp; PATIENT == context &amp;&amp; ID == codePath &amp;&amp; codesEqual(codes, PRACTITIONER_SLASH + XYZ)</ID>
+    <ID>CyclomaticComplexMethod:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( codes: Iterable&lt;Code?>?, valueSet: String?, ): MutableList&lt;TokenOrListParam></ID>
+    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): Any?</ID>
+    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: Any?): IBase?</ID>
+    <ID>CyclomaticComplexMethod:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>CyclomaticComplexMethod:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>CyclomaticComplexMethod:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
+    <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$protected open fun resolveProperty(target: Any?, path: String): Any?</ID>
+    <ID>CyclomaticComplexMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>CyclomaticComplexMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
+    <ID>CyclomaticComplexMethod:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>CyclomaticComplexMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>CyclomaticComplexMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
+    <ID>CyclomaticComplexMethod:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
+    <ID>CyclomaticComplexMethod:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
+    <ID>CyclomaticComplexMethod:TestR4ModelResolver.kt$TestR4ModelResolver$@Test @Throws(Exception::class) fun modelInfo401Tests()</ID>
+    <ID>ForbiddenComment:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
+    <ID>ForbiddenComment:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$// TODO: This assumes the code path will always be a token param.</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: Ensure age constraints are met, else return null (Except that we can't</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: Ensure count constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: Ensure distance constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: Ensure duration constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: These should not return true unless the constraints that are used in the as logic</ID>
+    <ID>ForbiddenComment:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$// TODO: These should really be using profile validation</ID>
+    <ID>ForbiddenComment:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$// TODO: This will construct DateTimeType values in FHIR with the system timezone id,</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: Ensure age constraints are met, else return null (Except that we can't</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: Ensure count constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: Ensure distance constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: Ensure duration constraints are met, else return null</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: Might be able to patch some of these by registering custom types in HAPI.</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: These should not return true unless the constraints that are used in the as logic</ID>
+    <ID>ForbiddenComment:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$// TODO: These should really be using profile validation</ID>
+    <ID>ForbiddenComment:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$// TODO: Deal with the case that the value is expressed as an expression extension</ID>
+    <ID>ForbiddenComment:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$// TODO: What to do if/when System is not provided...</ID>
+    <ID>ForbiddenComment:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$// TODO: This will construct DateTimeType values in FHIR with the system timezone id,</ID>
+    <ID>ForbiddenComment:FhirBundleCursor.kt$FhirBundleCursor.FhirBundleIterator$// TODO: It would be possible to get here if the next link was present, but the returned</ID>
+    <ID>ForbiddenComment:FhirExecutionMultiLibTestBase.kt$FhirExecutionMultiLibTestBase.Companion$// TODO: LD: figure out how to compile the CQLs only once for the whole test class</ID>
+    <ID>ForbiddenComment:FhirHelpersDstu3Test.kt$FhirHelpersDstu3Test$// TODO: ModelInfo bug. Not aware of SimpleQuantity</ID>
+    <ID>ForbiddenComment:FhirHelpersDstu3Test.kt$FhirHelpersDstu3Test$// TODO: Resolve Error: Could not load model information for model FHIR, version</ID>
+    <ID>ForbiddenComment:FhirModelResolver.kt$FhirModelResolver$/* * // TODO: Find HAPI registry of Primitive Type conversions public Object * fromJavaPrimitive(Object value, Object target) { String simpleName = * target.getClass().getSimpleName(); switch(simpleName) { case "DateTimeType": * case "InstantType": return ((DateTime)value).toJavaDate(); case "DateType": * return ((org.opencds.cqf.cql.engine.runtime.Date)value).toJavaDate(); case * "TimeType": return ((Time) value).toString(); } * * if (value instanceof Time) { return ((Time) value).toString(); } else { * return value; } } */</ID>
+    <ID>ForbiddenComment:FhirModelResolver.kt$FhirModelResolver$// TODO: Consider using getResourceType everywhere?</ID>
+    <ID>ForbiddenComment:FhirModelResolver.kt$FhirModelResolver$// TODO: Probably quite a bit of redundancy here. Probably only really need the BaseType and the</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Ensure age constraints are met, else return null (Except that we can't</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Ensure count constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Ensure distance constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Ensure duration constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Ensure money constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: Might be able to patch some of these by registering custom types in HAPI.</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: These should not return true unless the constraints that are used in the as logic</ID>
+    <ID>ForbiddenComment:R4FhirModelResolver.kt$R4FhirModelResolver$// TODO: These should really be using profile validation</ID>
+    <ID>ForbiddenComment:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$// TODO: Deal with the case that the value is expressed as an expression extension</ID>
+    <ID>ForbiddenComment:R4FhirTypeConverter.kt$R4FhirTypeConverter$// TODO: This will construct DateTimeType values in FHIR with the system</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Ensure age constraints are met, else return null (Except that we can't</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Ensure count constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Ensure distance constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Ensure duration constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Ensure money constraints are met, else return null</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: Might be able to patch some of these by registering custom types in</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: These should not return true unless the constraints that are used in the as logic</ID>
+    <ID>ForbiddenComment:R5FhirModelResolver.kt$R5FhirModelResolver$// TODO: These should really be using profile validation</ID>
+    <ID>ForbiddenComment:R5FhirTypeConverter.kt$R5FhirTypeConverter$// TODO: This will construct DateTimeType values in FHIR with the system timezone id,</ID>
+    <ID>ForbiddenComment:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$// TODO: evaluate this lazily in case the engine only needs the first element</ID>
+    <ID>ForbiddenComment:SearchParameterResolver.kt$SearchParameterResolver$// TODO: All the others like "_language"</ID>
+    <ID>ForbiddenComment:SearchParameterResolver.kt$SearchParameterResolver$// TODO: What we really need is FhirPath parsing to just get the path</ID>
+    <ID>ForbiddenComment:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion$// TODO: LD: Due to a type erasure and the CQL compiler historically being in separate</ID>
+    <ID>ForbiddenComment:TestDstu2ModelResolver.kt$TestDstu2ModelResolver$// TODO: Consider making this an exception on the resolver because</ID>
+    <ID>ForbiddenComment:TestDstu3ModelResolver.kt$TestDstu3ModelResolver$// TODO: Consider making this an exception on the resolver because</ID>
+    <ID>ForbiddenComment:TestFhirExecution.kt$TestFhirExecution$// TODO: fix this... I think it requires a resource to be loaded - put in init bundle</ID>
+    <ID>ForbiddenComment:TestR4ModelResolver.kt$TestR4ModelResolver$// TODO: Consider making this an exception on the resolver because</ID>
+    <ID>ForbiddenComment:TestR4ModelResolver.kt$TestR4ModelResolver$// TODO: The cause of failure for this is unknown.</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver$// // TODO: HAPI Doesn't have a ResourceContainer type</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver$// // TODO: The cause of failure for this is unknown.</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver$// TODO: Consider making this an exception on the resolver because</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver$// TODO: Replace with 5.0.0 model info once that's available</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver$// TODO: Replace with R5 special cases once that's available</ID>
+    <ID>ForbiddenComment:TestR5ModelResolver.kt$TestR5ModelResolver.Companion.&lt;no name provided>$// TODO: Add the remainder of the FHIR R5 enums.</ID>
+    <ID>FunctionParameterNaming:FhirModelResolver.kt$FhirModelResolver$`object`: Any</ID>
+    <ID>ImplicitDefaultLocale:TranslatorHelper.kt$TranslatorHelper$String.format( "[%d:%d, %d:%d]", tb.startLine, tb.startChar, tb.endLine, tb.endChar, )</ID>
+    <ID>IteratorNotThrowingNoSuchElementException:FhirBundleCursor.kt$FhirBundleCursor$FhirBundleIterator : Iterator</ID>
+    <ID>LargeClass:Dstu2TypeConverterTests.kt$Dstu2TypeConverterTests</ID>
+    <ID>LargeClass:Dstu3TypeConverterTests.kt$Dstu3TypeConverterTests</ID>
+    <ID>LargeClass:R4TypeConverterTests.kt$R4TypeConverterTests</ID>
+    <ID>LargeClass:R5TypeConverterTests.kt$R5TypeConverterTests</ID>
+    <ID>LongMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$protected fun toDateTime(calendar: Calendar, calendarConstant: Int): DateTime</ID>
+    <ID>LongMethod:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>LongMethod:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>LongMethod:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun multiLibraryEvaluationParams(): Stream&lt;Arguments?></ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun multiLibrarySingleEvaluationAtATimeParams(): Stream&lt;Arguments?></ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun singleLibraryEvaluationParams(): Stream&lt;Arguments></ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest$@ParameterizedTest @MethodSource("multiLibEnsurePartialCacheAllowsUncachedLibsToBeCompiledParams") fun multiLibEnsurePartialCacheAllowsUncachedLibsToBeCompiled(expressionCaching: Boolean)</ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun multiLibParams(): List&lt;Arguments></ID>
+    <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun singleLibParams(): List&lt;Arguments></ID>
+    <ID>LongMethod:FhirModelResolver.kt$FhirModelResolver$protected fun toDateTime( value: BaseDateTimeType, calendarConstant: Int = this.getCalendarConstant(value), ): DateTime</ID>
+    <ID>LongMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>LongMethod:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>LongMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>LongMethod:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
+    <ID>LongMethod:TestFHIR2Helpers.kt$TestFHIR2Helpers$fun test()</ID>
+    <ID>LongMethod:TestFHIR3Helpers.kt$TestFHIR3Helpers$fun test()</ID>
+    <ID>LongMethod:TestFHIRHelpers.kt$TestFHIRHelpers$@Test fun testFhirHelpers()</ID>
+    <ID>LongMethod:TestFhirDataProviderDstu3.kt$TestFhirDataProviderDstu3$fun testContained()</ID>
+    <ID>LongMethod:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
+    <ID>LongMethod:TestPrimitiveProfiles.kt$TestPrimitiveProfiles$@Test fun profileCast()</ID>
+    <ID>LongParameterList:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$( context: String?, contextPath: String?, contextValue: Any?, dataType: String?, templateId: String?, codeFilters: MutableList&lt;CodeFilter>?, dateFilters: MutableList&lt;DateFilter>?, )</ID>
+    <ID>LongParameterList:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$( context: String?, contextPath: String?, contextValue: Any?, dataType: String?, templateId: String?, codePath: String?, codes: Iterable&lt;Code?>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, )</ID>
+    <ID>LongParameterList:FhirQueryGeneratorFactory.kt$FhirQueryGeneratorFactory$( modelResolver: ModelResolver, searchParameterResolver: SearchParameterResolver, terminologyProvider: TerminologyProvider?, shouldExpandValueSets: Boolean?, maxCodesPerQuery: Int?, pageSize: Int?, queryBatchThreshold: Int?, )</ID>
+    <ID>LoopWithTooManyJumpStatements:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$for</ID>
+    <ID>LoopWithTooManyJumpStatements:SearchParameterResolver.kt$SearchParameterResolver$for</ID>
+    <ID>LoopWithTooManyJumpStatements:TestDstu2ModelResolver.kt$TestDstu2ModelResolver$for</ID>
+    <ID>LoopWithTooManyJumpStatements:TestDstu3ModelResolver.kt$TestDstu3ModelResolver$for</ID>
+    <ID>LoopWithTooManyJumpStatements:TestR4ModelResolver.kt$TestR4ModelResolver$for</ID>
+    <ID>MaxLineLength:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$"Expand value sets cannot be used without a terminology provider and no terminology provider is set."</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$$</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testDistinct(Questionnaire.descendants().linkId.select(substring(0,1)).isDistinct().not())</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime').exists())</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime1').empty())</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testSelect(Patient.name.select(given | family) = 'Peter' | 'James' | 'Chalmers' | 'Jim')</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testVariables(%</ID>
+    <ID>MaxLineLength:CQLOperationsR4Test.kt$CQLOperationsR4Test.Companion$"r4/tests-fhir-r4/testInvariants/extension('http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-scoring').exists() and extension('http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-scoring').value = 'ratio' implies group.population.where(code.coding.where(system = 'http://terminology.hl7.org/CodeSystem/measure-population').code = 'initial-population').count() in (1 | 2)"</ID>
+    <ID>MaxLineLength:Dstu3FhirTerminologyProvider.kt$Dstu3FhirTerminologyProvider$"Could not expand value set ${valueSet.id}; version and code system bindings are not supported at this time."</ID>
+    <ID>MaxLineLength:FhirModelResolver.kt$FhirModelResolver$"Could not resolve type $typeName. Primary package(s) for this resolver are ${this.packageNames.joinToString(",")}"</ID>
+    <ID>MaxLineLength:FhirModelResolver.kt$FhirModelResolver$/* * type-to-class and contextPath resolutions are potentially expensive and can be cached * for improved performance. * * See &lt;a href="https://github.com/DBCG/cql-evaluator/blob/master/evaluator.engine/src/main/java/org/opencds/cqf/cql/evaluator/engine/model/CachingModelResolverDecorator.java"/> * for a decorator that adds caching logic for ModelResolvers. */</ID>
+    <ID>MaxLineLength:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$"Cannot process data requirements with subjects not specified using a code from http://hl7.org/fhir/resource-types"</ID>
+    <ID>MaxLineLength:R4FhirTerminologyProvider.kt$R4FhirTerminologyProvider$"Could not expand value set ${valueSet.id}; version and code system bindings are not supported at this time."</ID>
+    <ID>MaxLineLength:TestFhirDataProviderDstu2.kt$TestFhirDataProviderDstu2$// FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.dstu2.composite");</ID>
+    <ID>MaxLineLength:TestFhirDataProviderDstu2.kt$TestFhirDataProviderDstu2$// FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");</ID>
+    <ID>MaxLineLength:TestFhirPath.kt$TestFhirPath$"%s failed as expected, but unable to determine the cause of the failure. Possible bug in engine. Skipping."</ID>
+    <ID>MaxLineLength:TestLibrarySourceProvider.kt$TestLibrarySourceProvider$"stu3/${libraryIdentifier.id}${if (libraryIdentifier.version != null) "-${libraryIdentifier.version}" else ""}.cql"</ID>
+    <ID>MaxLineLength:TestPrimitiveProfiles.kt$TestPrimitiveProfiles$/* define DistanceQuantity: FHIR.Quantity { value: FHIR.decimal { value: 1200.0 }, code: FHIR.code { value: 'km' } } define CastToDistance: DistanceQuantity as FHIR.Distance */</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code0,http://myterm.com/fhir/CodeSystem/MyValueSet|code1,http://myterm.com/fhir/CodeSystem/MyValueSet|code10,http://myterm.com/fhir/CodeSystem/MyValueSet|code11,http://myterm.com/fhir/CodeSystem/MyValueSet|code12,http://myterm.com/fhir/CodeSystem/MyValueSet|code13,http://myterm.com/fhir/CodeSystem/MyValueSet|code14,http://myterm.com/fhir/CodeSystem/MyValueSet|code15,http://myterm.com/fhir/CodeSystem/MyValueSet|code16,http://myterm.com/fhir/CodeSystem/MyValueSet|code17,http://myterm.com/fhir/CodeSystem/MyValueSet|code18,http://myterm.com/fhir/CodeSystem/MyValueSet|code19,http://myterm.com/fhir/CodeSystem/MyValueSet|code2,http://myterm.com/fhir/CodeSystem/MyValueSet|code20,http://myterm.com/fhir/CodeSystem/MyValueSet|code3,http://myterm.com/fhir/CodeSystem/MyValueSet|code4,http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7,http://myterm.com/fhir/CodeSystem/MyValueSet|code8,http://myterm.com/fhir/CodeSystem/MyValueSet|code9&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code0,http://myterm.com/fhir/CodeSystem/MyValueSet|code1,http://myterm.com/fhir/CodeSystem/MyValueSet|code2,http://myterm.com/fhir/CodeSystem/MyValueSet|code3&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code0,http://myterm.com/fhir/CodeSystem/MyValueSet|code1,http://myterm.com/fhir/CodeSystem/MyValueSet|code2,http://myterm.com/fhir/CodeSystem/MyValueSet|code3,http://myterm.com/fhir/CodeSystem/MyValueSet|code4&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code10,http://myterm.com/fhir/CodeSystem/MyValueSet|code11,http://myterm.com/fhir/CodeSystem/MyValueSet|code12,http://myterm.com/fhir/CodeSystem/MyValueSet|code13,http://myterm.com/fhir/CodeSystem/MyValueSet|code14&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code15,http://myterm.com/fhir/CodeSystem/MyValueSet|code16,http://myterm.com/fhir/CodeSystem/MyValueSet|code17,http://myterm.com/fhir/CodeSystem/MyValueSet|code18,http://myterm.com/fhir/CodeSystem/MyValueSet|code19&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code20&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code4,http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7,http://myterm.com/fhir/CodeSystem/MyValueSet|code8,http://myterm.com/fhir/CodeSystem/MyValueSet|code9&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MaxLineLength:TestR4FhirQueryGenerator.kt$TestR4FhirQueryGenerator$"Observation?date=ge${simpleDateFormatter.format(expectedRangeStartDateTime)}&amp;date=le${dateTimeFormatter.format(evaluationDateTimeAsLocal)}&amp;subject=Patient/{{context.patientId}}"</ID>
+    <ID>MemberNameEqualsClassName:TestFHIRHelpers.kt$TestFHIRHelpers$@Test fun testFhirHelpers()</ID>
+    <ID>NestedBlockDepth:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$@JvmStatic fun dataMethod(): Array&lt;Array&lt;Any>></ID>
+    <ID>NestedBlockDepth:CQLOperationsR4Test.kt$CQLOperationsR4Test.Companion$@JvmStatic fun dataMethod(): Array&lt;Array&lt;Any>></ID>
+    <ID>NestedBlockDepth:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>NestedBlockDepth:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$fun setupCql( classToUse: Class&lt;*>, librariesToPopulate: MutableList&lt;Library?>, libraryManagerToUse: LibraryManager, )</ID>
+    <ID>NestedBlockDepth:FhirBundleCursor.kt$FhirBundleCursor.FhirBundleIterator$fun getTrustedEntries( entries: MutableList&lt;out IBaseResource>, templateId: String?, ): MutableList&lt;out IBaseResource></ID>
+    <ID>NestedBlockDepth:FhirExecutionTestBase.kt$FhirExecutionTestBase$@BeforeEach @Throws(IOException::class, UcumException::class) fun beforeEachTestMethod()</ID>
+    <ID>NestedBlockDepth:FhirModelResolver.kt$FhirModelResolver$private fun resolveChildren( children: List&lt;BaseRuntimeChildDefinition>, childName: String, ): Class&lt;*>?</ID>
+    <ID>NestedBlockDepth:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
+    <ID>NestedBlockDepth:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$private fun executeQuery(dataType: String?, map: SearchParameterMap): IBaseResource?</ID>
+    <ID>NestedBlockDepth:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
+    <ID>NestedBlockDepth:SearchParameterMap.kt$SearchParameterMap$private fun clean( theParamName: String?, theAndOrParams: MutableList&lt;MutableList&lt;IQueryParameterType>>, )</ID>
+    <ID>ObjectPropertyNaming:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion$private const val _PATIENT_123 = "123"</ID>
+    <ID>PrintStackTrace:FhirExecutionTestBase.kt$FhirExecutionTestBase$e</ID>
+    <ID>PrintStackTrace:FhirHelpersDstu2Test.kt$FhirHelpersDstu2Test$e</ID>
+    <ID>PrintStackTrace:FhirHelpersDstu3Test.kt$FhirHelpersDstu3Test$e</ID>
+    <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( codes: Iterable&lt;Code?>?, valueSet: String?, ): MutableList&lt;TokenOrListParam></ID>
+    <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( dataType: String?, codePath: String?, codes: Iterable&lt;Code?>?, valueSet: String?, ): Pair&lt;String, MutableList&lt;TokenOrListParam>>?</ID>
+    <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun innerSetupQueries( templateParam: Pair&lt;String, IQueryParameterType>?, contextParam: Pair&lt;String, IQueryParameterType>?, dateRangeParams: MutableList&lt;Pair&lt;String, DateRangeParam>>?, codeParams: MutableList&lt;Pair&lt;String, MutableList&lt;TokenOrListParam>>>?, ): MutableList&lt;SearchParameterMap></ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): Any?</ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: Any?): IBase?</ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$protected fun toDateTime(calendar: Calendar, calendarConstant: Int): DateTime</ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$protected fun toTime(calendar: Calendar, calendarConstant: Int): Time</ID>
+    <ID>ReturnCount:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>ReturnCount:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
+    <ID>ReturnCount:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$override fun toCqlInterval(value: ICompositeType?): Interval?</ID>
+    <ID>ReturnCount:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
+    <ID>ReturnCount:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$override fun toFhirPeriod(value: Interval?): ICompositeType?</ID>
+    <ID>ReturnCount:Dstu2TypeConverterTests.kt$Dstu2TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
+    <ID>ReturnCount:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>ReturnCount:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
+    <ID>ReturnCount:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$override fun toCqlInterval(value: ICompositeType?): Interval?</ID>
+    <ID>ReturnCount:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
+    <ID>ReturnCount:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$override fun toFhirPeriod(value: Interval?): ICompositeType?</ID>
+    <ID>ReturnCount:Dstu3TypeConverterTests.kt$Dstu3TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun objectEqual(left: Any?, right: Any?): Boolean?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun objectEquivalent(left: Any?, right: Any?): Boolean</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun resolveType(value: Any?): Class&lt;*>?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun setValue(target: Any?, path: String?, value: Any?)</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun innerGetContextPath( visitedElements: MutableSet&lt;String?>, child: BaseRuntimeChildDefinition, type: Class&lt;out IBase?>?, ): String?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun resolveRuntimeDefinition(base: IBase): BaseRuntimeElementCompositeDefinition&lt;*></ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun toDateTime( value: BaseDateTimeType, calendarConstant: Int = this.getCalendarConstant(value), ): DateTime</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected open fun resolveProperty(target: Any?, path: String): Any?</ID>
+    <ID>ReturnCount:Issue1226.kt$Issue1226.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;Any?></ID>
+    <ID>ReturnCount:R4FhirModelResolver.kt$R4FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:R4FhirModelResolver.kt$R4FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>ReturnCount:R4FhirModelResolver.kt$R4FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
+    <ID>ReturnCount:R4FhirModelResolver.kt$R4FhirModelResolver$override fun resolveProperty(target: Any?, path: String): Any?</ID>
+    <ID>ReturnCount:R4FhirTypeConverter.kt$R4FhirTypeConverter$override fun toCqlInterval(value: ICompositeType?): Interval?</ID>
+    <ID>ReturnCount:R4FhirTypeConverter.kt$R4FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
+    <ID>ReturnCount:R4FhirTypeConverter.kt$R4FhirTypeConverter$override fun toFhirPeriod(value: Interval?): ICompositeType?</ID>
+    <ID>ReturnCount:R4TypeConverterTests.kt$R4TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
+    <ID>ReturnCount:R5FhirModelResolver.kt$R5FhirModelResolver$override fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:R5FhirModelResolver.kt$R5FhirModelResolver$override fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>ReturnCount:R5FhirModelResolver.kt$R5FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
+    <ID>ReturnCount:R5FhirModelResolver.kt$R5FhirModelResolver$override fun resolveProperty(target: Any?, path: String): Any?</ID>
+    <ID>ReturnCount:R5FhirTypeConverter.kt$R5FhirTypeConverter$override fun toCqlInterval(value: ICompositeType?): Interval?</ID>
+    <ID>ReturnCount:R5FhirTypeConverter.kt$R5FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
+    <ID>ReturnCount:R5FhirTypeConverter.kt$R5FhirTypeConverter$override fun toFhirPeriod(value: Interval?): ICompositeType?</ID>
+    <ID>ReturnCount:R5TypeConverterTests.kt$R5TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
+    <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun createSearchParameter( context: String?, dataType: String?, path: String?, value: String?, ): Pair&lt;String, IQueryParameterType>?</ID>
+    <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun getSearchParameterDefinition( dataType: String?, path: String?, paramType: RestSearchParameterTypeEnum?, ): RuntimeSearchParam?</ID>
+    <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion$private fun codesEqual(codes: Iterable&lt;*>?, equalTo: String): Boolean</ID>
+    <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;Any?>?</ID>
+    <ID>ReturnCount:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
+    <ID>SpreadOperator:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$(*codings)</ID>
+    <ID>SwallowedException:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$ex: Exception</ID>
+    <ID>SwallowedException:Dstu3FhirTerminologyProvider.kt$Dstu3FhirTerminologyProvider$rnfe: ResourceNotFoundException</ID>
+    <ID>SwallowedException:FhirModelResolver.kt$FhirModelResolver$e: IllegalAccessException</ID>
+    <ID>SwallowedException:FhirModelResolver.kt$FhirModelResolver$e: InstantiationException</ID>
+    <ID>SwallowedException:FhirModelResolver.kt$FhirModelResolver$e: InvocationTargetException</ID>
+    <ID>SwallowedException:FhirModelResolver.kt$FhirModelResolver$e: NoSuchMethodException</ID>
+    <ID>SwallowedException:FhirModelResolver.kt$FhirModelResolver$le: IllegalArgumentException</ID>
+    <ID>SwallowedException:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$ex: Exception</ID>
+    <ID>SwallowedException:R4FhirTerminologyProvider.kt$R4FhirTerminologyProvider$rnfe: ResourceNotFoundException</ID>
+    <ID>SwallowedException:SearchParamFhirRetrieveProvider.kt$SearchParamFhirRetrieveProvider$exception: FhirVersionMisMatchException</ID>
+    <ID>SwallowedException:TestDstu2ModelResolver.kt$TestDstu2ModelResolver$e: Exception</ID>
+    <ID>ThrowsCount:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$fun setupCql( classToUse: Class&lt;*>, librariesToPopulate: MutableList&lt;Library?>, libraryManagerToUse: LibraryManager, )</ID>
+    <ID>ThrowsCount:FhirModelResolver.kt$FhirModelResolver$protected fun createInstance(clazz: Class&lt;*>): Any</ID>
+    <ID>ThrowsCount:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
+    <ID>TooGenericExceptionCaught:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:Dstu3FhirTerminologyProvider.kt$Dstu3FhirTerminologyProvider$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$ex: Exception</ID>
+    <ID>TooGenericExceptionCaught:R4FhirTerminologyProvider.kt$R4FhirTerminologyProvider$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:Dstu3FhirTest.kt$Dstu3FhirTest.Companion$throw RuntimeException( "Failed to determine a port for the wiremock server", ex, )</ID>
+    <ID>TooGenericExceptionThrown:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$throw RuntimeException(error, exception)</ID>
+    <ID>TooGenericExceptionThrown:R4FhirTest.kt$R4FhirTest.Companion$throw RuntimeException( "Failed to determine a port for the wiremock server", ex, )</ID>
+    <ID>TooGenericExceptionThrown:SearchParamFhirRetrieveProvider.kt$SearchParamFhirRetrieveProvider$throw RuntimeException(exception.message)</ID>
+    <ID>TooManyFunctions:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator : FhirVersionIntegrityChecker</ID>
+    <ID>TooManyFunctions:BaseFhirTypeConverter.kt$BaseFhirTypeConverter : FhirTypeConverter</ID>
+    <ID>TooManyFunctions:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver : FhirModelResolver</ID>
+    <ID>TooManyFunctions:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter : BaseFhirTypeConverter</ID>
+    <ID>TooManyFunctions:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver : FhirModelResolver</ID>
+    <ID>TooManyFunctions:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter : BaseFhirTypeConverter</ID>
+    <ID>TooManyFunctions:FhirModelResolver.kt$FhirModelResolver&lt;BaseType, BaseDateTimeType, TimeType, SimpleQuantityType, IdType, ResourceType, EnumerationType : IBaseEnumeration&lt;*>, EnumFactoryType : IBaseEnumFactory&lt;*>> : ModelResolver</ID>
+    <ID>TooManyFunctions:FhirTypeConverter.kt$FhirTypeConverter</ID>
+    <ID>TooManyFunctions:R4FhirModelResolver.kt$R4FhirModelResolver : FhirModelResolver</ID>
+    <ID>TooManyFunctions:R4FhirTypeConverter.kt$R4FhirTypeConverter : BaseFhirTypeConverter</ID>
+    <ID>TooManyFunctions:R5FhirModelResolver.kt$R5FhirModelResolver : FhirModelResolver</ID>
+    <ID>TooManyFunctions:R5FhirTypeConverter.kt$R5FhirTypeConverter : BaseFhirTypeConverter</ID>
+    <ID>TooManyFunctions:SearchParameterMap.kt$SearchParameterMap : Serializable</ID>
+    <ID>UnusedParameter:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$dateHighPath: String?</ID>
+    <ID>UnusedParameter:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$dateLowPath: String?</ID>
+    <ID>UnusedPrivateClass:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$TestRetrieveProvider : RetrieveProvider</ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest$@Nonnull private fun getCqlEngineForFhirNewLibMgr(expressionCaching: Boolean): CqlEngine</ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun multiLibraryEvaluationParams(): Stream&lt;Arguments?></ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun multiLibrarySingleEvaluationAtATimeParams(): Stream&lt;Arguments?></ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibComplexDepsTest.kt$EvaluatedResourcesMultiLibComplexDepsTest.Companion$@JvmStatic private fun singleLibraryEvaluationParams(): Stream&lt;Arguments></ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun multiLibEnsurePartialCacheAllowsUncachedLibsToBeCompiledParams(): List&lt;Arguments></ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun multiLibParams(): List&lt;Arguments></ID>
+    <ID>UnusedPrivateMember:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun singleLibParams(): List&lt;Arguments></ID>
+    <ID>UnusedPrivateProperty:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator.Companion$i</ID>
+    <ID>UnusedPrivateProperty:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$index</ID>
+    <ID>UnusedPrivateProperty:TestCodeRef.kt$TestCodeRef$private val terminologyProvider = Dstu3FhirTerminologyProvider(fhirClient)</ID>
+    <ID>UseRequire:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Instant or DateTime")</ID>
+    <ID>UseRequire:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Range or Period")</ID>
+    <ID>UseRequire:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Instant or DateTime")</ID>
+    <ID>UseRequire:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Range or Period")</ID>
+    <ID>UseRequire:R4FhirTypeConverter.kt$R4FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Instant or DateTime")</ID>
+    <ID>UseRequire:R4FhirTypeConverter.kt$R4FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Range or Period")</ID>
+    <ID>UseRequire:R5FhirTypeConverter.kt$R5FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Instant or DateTime")</ID>
+    <ID>UseRequire:R5FhirTypeConverter.kt$R5FhirTypeConverter$throw IllegalArgumentException("value is not a FHIR Range or Period")</ID>
+  </CurrentIssues>
+</SmellBaseline>

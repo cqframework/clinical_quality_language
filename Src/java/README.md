@@ -16,6 +16,7 @@ It contains the following sub-projects:
 * **ucum:** provides the default UCUM service
 * **tools:cql-formatter:** formats input CQL based on standard formatting conventions as suggested by the CQL specification
 * **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
+* **tools:rewrite:** contains [OpenRewrite](https://openrewrite.org/) recipes for automated refactoring.
 * **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
 
 
@@ -41,7 +42,6 @@ You can execute the sample code using the `gradlew` command or a script generate
 To execute the sample code using `gradlew`, you must execute the `run` command, using the project-specific
 path.  The following are current possibilities:
 
-    ./gradlew :cql:run
     ./gradlew :cql-to-elm-cli:run
     ./gradlew :tools:cql-parsetree:run
 
