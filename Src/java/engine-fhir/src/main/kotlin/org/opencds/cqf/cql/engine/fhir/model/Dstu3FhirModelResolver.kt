@@ -63,6 +63,10 @@ open class Dstu3FhirModelResolver(fhirContext: FhirContext) :
         try {
             val f = this.fhirContext.javaClass.getDeclaredField("myNameToResourceType")
             f.setAccessible(true)
+
+            // This is magic reflection to handle the fact that we need to manually
+            // initialize this map, but it's a private field with no accessor.
+            @Suppress("UNCHECKED_CAST")
             myNameToResourceType =
                 f.get(this.fhirContext) as MutableMap<String?, Class<out IBaseResource?>>
 

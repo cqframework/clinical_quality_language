@@ -229,15 +229,15 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
 
         when (value.javaClass.getSimpleName()) {
             "IdType" -> return toCqlId(value as IIdType)
-            "BooleanType" -> return toCqlBoolean(value as IPrimitiveType<Boolean>)
-            "IntegerType" -> return toCqlInteger(value as IPrimitiveType<Int>)
-            "Integer64Type" -> return toCqlLong(value as IPrimitiveType<Long>)
-            "DecimalType" -> return toCqlDecimal(value as IPrimitiveType<BigDecimal>)
-            "DateType" -> return toCqlDate(value as IPrimitiveType<java.util.Date>)
+            "BooleanType" -> return toCqlBoolean(value.asIPrimitive())
+            "IntegerType" -> return toCqlInteger(value.asIPrimitive())
+            "Integer64Type" -> return toCqlLong(value.asIPrimitive())
+            "DecimalType" -> return toCqlDecimal(value.asIPrimitive())
+            "DateType" -> return toCqlDate(value.asIPrimitive())
             "InstantType",
-            "DateTimeType" -> return toCqlDateTime(value as IPrimitiveType<java.util.Date>)
-            "TimeType" -> return toCqlTime(value as IPrimitiveType<String>)
-            "StringType" -> return toCqlString(value as IPrimitiveType<String>)
+            "DateTimeType" -> return toCqlDateTime(value.asIPrimitive())
+            "TimeType" -> return toCqlTime(value.asIPrimitive())
+            "StringType" -> return toCqlString(value.asIPrimitive())
             "Quantity" -> return toCqlQuantity(value as ICompositeType)
             "Ratio" -> return toCqlRatio(value as ICompositeType)
             "Coding" -> return toCqlCode(value as IBaseCoding)
@@ -249,6 +249,11 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
                     "missing case statement for: ${value.javaClass.name}"
                 )
         }
+    }
+
+    private fun <T> Any?.asIPrimitive(): IPrimitiveType<T>? {
+        @Suppress("UNCHECKED_CAST")
+        return this as? IPrimitiveType<T>
     }
 
     override fun toCqlId(value: IIdType?): String? {

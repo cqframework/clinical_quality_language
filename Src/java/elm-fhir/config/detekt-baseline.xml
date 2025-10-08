@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:DataRequirementsProcessor.kt$DataRequirementsProcessor$cfc.hasPath() &amp;&amp; cfc.hasCode() &amp;&amp; "url" == cfc.getPath() &amp;&amp; cfc.codeFirstRep.hasCode() &amp;&amp; cfc.codeFirstRep.getCode().startsWith("http://")</ID>
+    <ID>ComplexCondition:DataRequirementsProcessor.kt$DataRequirementsProcessor$def != null &amp;&amp; (def !is FunctionDef) &amp;&amp; (def.accessLevel == null || def.accessLevel == AccessModifier.PUBLIC)</ID>
+    <ID>ComplexCondition:ElmDataRequirement.kt$ElmDataRequirement$retrieve.dateProperty != null || retrieve.dateSearch != null || retrieve.dateLowProperty != null || retrieve.dateHighProperty != null</ID>
+    <ID>CyclomaticComplexMethod:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun requirementsEquivalent(left: ElmRequirement, right: ElmRequirement): Boolean</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$fun gatherDataRequirements( libraryManager: LibraryManager, translatedLibrary: CompiledLibrary, options: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, parameters: MutableMap&lt;String?, Any?>?, evaluationDateTime: ZonedDateTime?, includeLogicDefinitions: Boolean, recursive: Boolean, ): Library</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun collapseExtensionReference( context: ElmRequirementsContext, requirement: ElmRequirement?, )</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun toDataRequirement( context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier, retrieve: Retrieve, retrieveMap: MutableMap&lt;String?, Retrieve>, properties: Iterable&lt;Property>?, pertinenceContext: ElmPertinenceContext?, ): DataRequirement</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun toFHIRTypeCode(dataType: DataType?, isValid: AtomicBoolean): String</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest$@Test @Throws(IOException::class) fun dataRequirementsAnalysisCase2j()</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest$@Test fun dataRequirementsProcessorWithExpressions()</ID>
+    <ID>CyclomaticComplexMethod:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest$@Test fun libraryDataRequirements()</ID>
+    <ID>CyclomaticComplexMethod:ElmAnalysisHelper.kt$ElmAnalysisHelper$@Suppress("UseRequire") @JvmStatic fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType?</ID>
+    <ID>CyclomaticComplexMethod:ElmDataRequirement.kt$ElmDataRequirement$private fun applyConditionRequirementTo( conditionRequirement: ElmConditionRequirement, retrieve: Retrieve, context: ElmRequirementsContext, )</ID>
+    <ID>CyclomaticComplexMethod:ElmDataRequirement.kt$ElmDataRequirement$private fun applyJoinRequirementTo( joinRequirement: ElmJoinRequirement, retrieve: Retrieve?, context: ElmRequirementsContext, queryRequirements: ElmQueryRequirement, )</ID>
+    <ID>CyclomaticComplexMethod:ElmRequirements.kt$ElmRequirements$fun collapse(context: ElmRequirementsContext): ElmRequirements</ID>
+    <ID>CyclomaticComplexMethod:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$override fun visitDateTime(elm: DateTime, context: ElmRequirementsContext): ElmRequirement</ID>
+    <ID>CyclomaticComplexMethod:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$private fun inferConditionRequirement( elm: Expression, context: ElmRequirementsContext, left: ElmRequirement?, right: ElmRequirement?, ): ElmRequirement</ID>
+    <ID>CyclomaticComplexMethod:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun visitFields( elm: BinaryExpression, context: ElmRequirementsContext, ): ElmRequirement?</ID>
+    <ID>EmptyElseBlock:ElmDataRequirement.kt$ElmDataRequirement${}</ID>
+    <ID>ForbiddenComment:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$// TODO: Don't rely on order dependence here...</ID>
+    <ID>ForbiddenComment:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$// TODO: Handle types other than strings</ID>
+    <ID>ForbiddenComment:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$// TODO: support for collapsing includes</ID>
+    <ID>ForbiddenComment:ElmAnalysisHelper.kt$ElmAnalysisHelper$// TODO: Consider refactoring to reuse engine evaluation logic here</ID>
+    <ID>ForbiddenComment:ElmAnalysisHelper.kt$ElmAnalysisHelper$// TODO: Handle lowclosed/highclosed</ID>
+    <ID>ForbiddenComment:ElmCloner.kt$ElmCloner$// TODO: Consider a cloning visitor?</ID>
+    <ID>ForbiddenComment:ElmDataRequirement.kt$ElmDataRequirement$// TODO:</ID>
+    <ID>ForbiddenComment:ElmOperatorRequirement.kt$ElmOperatorRequirement$// TODO: Determine parameter or external data access within the operator or function</ID>
+    <ID>ForbiddenComment:ElmQueryRequirement.kt$ElmQueryRequirement$// TODO: Distribute disjunctive requirements (requires union rewrite)</ID>
+    <ID>ForbiddenComment:ElmQueryRequirement.kt$ElmQueryRequirement$// TODO: Placeholder to support processing child requirements gathered during the query</ID>
+    <ID>ForbiddenComment:ElmQueryRequirement.kt$ElmQueryRequirement$// TODO: Validate that the comparand is context literal and scope stable</ID>
+    <ID>ForbiddenComment:ElmRequirements.kt$ElmRequirements$// TODO: Do we need to report all the libraries that referred to this?</ID>
+    <ID>ForbiddenComment:ElmRequirements.kt$ElmRequirements$// TODO: How to report duplicate references, potentially warn about different names?</ID>
+    <ID>ForbiddenComment:ElmRequirements.kt$ElmRequirements$// TODO: Look up CodeSystemDef to determine code system URI</ID>
+    <ID>ForbiddenComment:ElmRequirements.kt$ElmRequirements$// TODO: Note that it is potentially a hidden error here if parameters with the same</ID>
+    <ID>ForbiddenComment:ElmRequirements.kt$ElmRequirements$// TODO: code/date-range consolidation</ID>
+    <ID>ForbiddenComment:ElmRequirementsContext.kt$ElmRequirementsContext$// TODO: Need to support loading from ELM so we don't need options.</ID>
+    <ID>ForbiddenComment:ElmRequirementsContext.kt$ElmRequirementsContext$// TODO: Report translation errors here...</ID>
+    <ID>ForbiddenComment:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$// TODO: Rewrite the case as equivalent logic</ID>
+    <ID>ForbiddenComment:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$// TODO: Rewrite the if as equivalent logic</ID>
+    <ID>ForbiddenComment:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$// TODO: childResult reporting?</ID>
+    <ID>FunctionOnlyReturningConstant:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun extractSubject(context: ElmRequirementsContext?): CodeableConcept?</ID>
+    <ID>ImplicitDefaultLocale:ElmAnalysisHelper.kt$ElmAnalysisHelper$String.format("\"%s\".\"%s\"", parameterRef.libraryName, parameterRef.name)</ID>
+    <ID>LargeClass:DataRequirementsProcessor.kt$DataRequirementsProcessor</ID>
+    <ID>LargeClass:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest</ID>
+    <ID>LargeClass:ElmRequirementsVisitor.kt$ElmRequirementsVisitor : BaseElmLibraryVisitor</ID>
+    <ID>LongMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$fun gatherDataRequirements( libraryManager: LibraryManager, translatedLibrary: CompiledLibrary, options: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, parameters: MutableMap&lt;String?, Any?>?, evaluationDateTime: ZonedDateTime?, includeLogicDefinitions: Boolean, recursive: Boolean, ): Library</ID>
+    <ID>LongMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun collapseExtensionReference( context: ElmRequirementsContext, requirement: ElmRequirement?, )</ID>
+    <ID>LongMethod:DataRequirementsProcessor.kt$DataRequirementsProcessor$private fun toDataRequirement( context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier, retrieve: Retrieve, retrieveMap: MutableMap&lt;String?, Retrieve>, properties: Iterable&lt;Property>?, pertinenceContext: ElmPertinenceContext?, ): DataRequirement</ID>
+    <ID>LongMethod:ElmAnalysisHelper.kt$ElmAnalysisHelper$@Suppress("UseRequire") @JvmStatic fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType?</ID>
+    <ID>LongMethod:ElmDataRequirement.kt$ElmDataRequirement$private fun applyConditionRequirementTo( conditionRequirement: ElmConditionRequirement, retrieve: Retrieve, context: ElmRequirementsContext, )</ID>
+    <ID>LongMethod:ElmDataRequirement.kt$ElmDataRequirement$private fun applyJoinRequirementTo( joinRequirement: ElmJoinRequirement, retrieve: Retrieve?, context: ElmRequirementsContext, queryRequirements: ElmQueryRequirement, )</ID>
+    <ID>LongMethod:ElmQueryRequirement.kt$ElmQueryRequirement$private fun distributeQueryRequirement( requirement: ElmQueryRequirement, context: ElmRequirementsContext, ): Boolean</ID>
+    <ID>LongMethod:ElmRequirements.kt$ElmRequirements$fun collapse(context: ElmRequirementsContext): ElmRequirements</ID>
+    <ID>LongMethod:ElmRequirementsContext.kt$ElmRequirementsContext$fun reportProperty(property: Property): ElmPropertyRequirement?</ID>
+    <ID>LongMethod:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun visitFields( elm: BinaryExpression, context: ElmRequirementsContext, ): ElmRequirement?</ID>
+    <ID>LongParameterList:DataRequirementsProcessor.kt$DataRequirementsProcessor$( context: ElmRequirementsContext, libraryIdentifier: VersionedIdentifier, retrieve: Retrieve, retrieveMap: MutableMap&lt;String?, Retrieve>, properties: Iterable&lt;Property>?, pertinenceContext: ElmPertinenceContext?, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessor.kt$DataRequirementsProcessor$( context: ElmRequirementsContext, requirements: ElmRequirements, libraryIdentifier: VersionedIdentifier, expressionDefs: Iterable&lt;ExpressionDef?>, parameters: MutableMap&lt;String?, Any?>?, evaluationDateTime: ZonedDateTime?, includeLogicDefinitions: Boolean, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessor.kt$DataRequirementsProcessor$( libraryManager: LibraryManager, translatedLibrary: CompiledLibrary, options: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, includeLogicDefinitions: Boolean, recursive: Boolean = true, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessor.kt$DataRequirementsProcessor$( libraryManager: LibraryManager, translatedLibrary: CompiledLibrary, options: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, parameters: MutableMap&lt;String?, Any?>?, evaluationDateTime: ZonedDateTime?, includeLogicDefinitions: Boolean, recursive: Boolean, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessor.kt$DataRequirementsProcessor$( libraryManager: LibraryManager, translatedLibrary: CompiledLibrary, options: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, parameters: MutableMap&lt;String?, Any?>?, includeLogicDefinitions: Boolean, recursive: Boolean, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest$( setup: Setup, cqlTranslatorOptions: CqlCompilerOptions, expressions: MutableSet&lt;String?>?, includeLogicDefinitions: Boolean, recursive: Boolean, specificationLevel: SpecificationLevel, )</ID>
+    <ID>LongParameterList:DataRequirementsProcessorTest.kt$DataRequirementsProcessorTest$( setup: Setup, cqlTranslatorOptions: CqlCompilerOptions, parameters: MutableMap&lt;String?, Any?>?, evaluationDateTime: ZonedDateTime?, includeLogicDefinitions: Boolean, recursive: Boolean, )</ID>
+    <ID>LongParameterList:ElmAnalysisHelper.kt$ElmAnalysisHelper$( year: DataType?, month: DataType?, day: DataType?, hour: DataType?, minute: DataType?, second: DataType?, millisecond: DataType?, timezoneOffset: DataType?, )</ID>
+    <ID>LoopWithTooManyJumpStatements:DataRequirementsProcessor.kt$DataRequirementsProcessor$for</ID>
+    <ID>MagicNumber:DataRequirementsProcessor.kt$DataRequirementsProcessor$7</ID>
+    <ID>MagicNumber:DataRequirementsProcessor.kt$DataRequirementsProcessor$8</ID>
+    <ID>MagicNumber:ElmRequirementsContext.kt$ElmRequirementsContext$10000</ID>
+    <ID>MaxLineLength:ElmDataRequirement.kt$ElmDataRequirement$"Cannot determine alias from data requirement because source is not an AliasedQuerySource or LetClause"</ID>
+    <ID>MaxLineLength:ElmDataRequirement.kt$ElmDataRequirement$"Cannot determine expression for data requirement because source is not an AliasedQuerySource or LetClause"</ID>
+    <ID>MaxLineLength:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$/* This class implements an ELM Visitor to perform static analysis of data and dependency requirements for ELM trees. # Overall optimization/dependency tracing strategy: Two different types of requirements, reported requirements and inferred requirements. Reported requirements are tracked at the ExpressionDef level and rolled-up across expression defs Inferred requirements are inferred through expressions and reported at query boundaries (or reported directly if the retrieve is not defined as part of a query source definition) The visitor is focused on two main tasks: * Gathering dependencies (any artifacts or declarations used) * Inferring data requirements (the minimum set of retrieves required to achieve a successful evaluation) Dependencies in any given visit are tracked cumulatively at the root Data Requirements must be tracked as inferred per expression def So in the context, when a requirement is reported, if it's a data requirement, it's tracked at the expression def level, whereas if it's a dependency, it's always tracked at the root. # Where clause optimization strategy: Visit a where clause looking for sargeable conditions of the form: A op B Where: * A is an order-preserving expression with a single property reference to a property of some source in the current query context * op is a positive relative comparison operation (=, >, &lt;, >=, &lt;=) * B is a functional, repeatable, and deterministic context literal expression with respect to the current query context Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes. At an OR, the result is separate lists of condition lists. At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF) At a property, return an ElmPropertyRequirement At a literal return an ElmExpressionRequirement w/ contextLiteral true At a parameter return an ElmExpressionRequirement w/ contextLiteral true At a unary expression, return an ElmExpressionRequirement w/ contextLiteral false At a binary comparison expression, return ElmConditionRequirement if possible At a logical expression, return ElmConjunctiveRequirement or ElmDisjunctiveRequirement */</ID>
+    <ID>NestedBlockDepth:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun mergeRequirements(existing: ElmRequirement, required: ElmRequirement): ElmRequirement</ID>
+    <ID>NestedBlockDepth:ElmDataRequirement.kt$ElmDataRequirement$private fun applyConditionRequirementTo( conditionRequirement: ElmConditionRequirement, retrieve: Retrieve, context: ElmRequirementsContext, )</ID>
+    <ID>NestedBlockDepth:ElmDataRequirement.kt$ElmDataRequirement$private fun applyJoinRequirementTo( joinRequirement: ElmJoinRequirement, retrieve: Retrieve?, context: ElmRequirementsContext, queryRequirements: ElmQueryRequirement, )</ID>
+    <ID>NestedBlockDepth:ElmQueryRequirement.kt$ElmQueryRequirement$private fun distributeQueryRequirement( requirement: ElmQueryRequirement, context: ElmRequirementsContext, ): Boolean</ID>
+    <ID>NestedBlockDepth:ElmRequirements.kt$ElmRequirements$fun collapse(context: ElmRequirementsContext): ElmRequirements</ID>
+    <ID>NestedBlockDepth:ElmRequirementsContext.kt$ElmRequirementsContext$fun reportFunctionRef(functionRef: FunctionRef)</ID>
+    <ID>ReturnCount:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun codeFiltersEqual( left: Iterable&lt;CodeFilterElement>, right: Iterable&lt;CodeFilterElement>, ): Boolean</ID>
+    <ID>ReturnCount:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun dateFiltersEqual( left: Iterable&lt;DateFilterElement>, right: Iterable&lt;DateFilterElement>, ): Boolean</ID>
+    <ID>ReturnCount:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun includeElementsEqual( left: Iterable&lt;IncludeElement>, right: Iterable&lt;IncludeElement>, ): Boolean</ID>
+    <ID>ReturnCount:ComparableElmRequirement.kt$ComparableElmRequirement.Companion$@JvmStatic fun otherFiltersEqual( left: Iterable&lt;OtherFilterElement>, right: Iterable&lt;OtherFilterElement>, ): Boolean</ID>
+    <ID>ReturnCount:ElmAnalysisHelper.kt$ElmAnalysisHelper$@Suppress("UseRequire") @JvmStatic fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType?</ID>
+    <ID>ReturnCount:ElmAnalysisHelper.kt$ElmAnalysisHelper$private fun toFhirDateTimeValue( context: ElmRequirementsContext, value: Expression?, ): DateTimeType?</ID>
+    <ID>ReturnCount:ElmDataRequirement.kt$ElmDataRequirement.Companion$@JvmStatic fun inferFrom(requirement: ElmExpressionRequirement): ElmDataRequirement</ID>
+    <ID>ReturnCount:ElmQueryRequirement.kt$ElmQueryRequirement$fun distributeExpressionRequirement( requirement: ElmExpressionRequirement?, context: ElmRequirementsContext, ): Boolean</ID>
+    <ID>ReturnCount:ElmQueryRequirement.kt$ElmQueryRequirement$fun getDataRequirement(querySource: Element?): ElmDataRequirement?</ID>
+    <ID>ReturnCount:ElmQueryRequirement.kt$ElmQueryRequirement$private fun distributeQueryRequirement( requirement: ElmQueryRequirement, context: ElmRequirementsContext, ): Boolean</ID>
+    <ID>ReturnCount:ElmRequirementsContext.kt$ElmRequirementsContext$fun reportProperty(property: Property): ElmPropertyRequirement?</ID>
+    <ID>ReturnCount:ElmRequirementsContext.kt$ElmRequirementsContext$private fun getType(expression: Expression?): QName?</ID>
+    <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$override fun visitFunctionRef( elm: FunctionRef, context: ElmRequirementsContext, ): ElmRequirement</ID>
+    <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$private fun inferConditionRequirement( elm: Expression, context: ElmRequirementsContext, left: ElmRequirement?, right: ElmRequirement?, ): ElmRequirement</ID>
+    <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun aggregateResult( aggregate: ElmRequirement?, nextResult: ElmRequirement?, ): ElmRequirement?</ID>
+    <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun visitFields( elm: BinaryExpression, context: ElmRequirementsContext, ): ElmRequirement?</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$fun dataTypeToProfileQName(type: DataType?): QName?</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$fun getTypeUri(type: DataType?): String?</ID>
+    <ID>SwallowedException:DataRequirementsProcessor.kt$DataRequirementsProcessor$fhirException: FHIRException</ID>
+    <ID>SwallowedException:ElmRequirementsContext.kt$ElmRequirementsContext$e: Exception</ID>
+    <ID>ThrowsCount:ElmAnalysisHelper.kt$ElmAnalysisHelper$@Suppress("UseRequire") @JvmStatic fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType?</ID>
+    <ID>TooGenericExceptionCaught:DataRequirementsProcessor.kt$DataRequirementsProcessor$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ElmRequirementsContext.kt$ElmRequirementsContext$e: Exception</ID>
+    <ID>TooManyFunctions:ComparableElmRequirement.kt$ComparableElmRequirement$Companion</ID>
+    <ID>TooManyFunctions:DataRequirementsProcessor.kt$DataRequirementsProcessor</ID>
+    <ID>TooManyFunctions:ElmDataRequirement.kt$ElmDataRequirement : ElmExpressionRequirement</ID>
+    <ID>TooManyFunctions:ElmQueryContext.kt$ElmQueryContext</ID>
+    <ID>TooManyFunctions:ElmQueryRequirement.kt$ElmQueryRequirement : ElmExpressionRequirement</ID>
+    <ID>TooManyFunctions:ElmRequirementsContext.kt$ElmRequirementsContext</ID>
+    <ID>TooManyFunctions:ElmRequirementsVisitor.kt$ElmRequirementsVisitor : BaseElmLibraryVisitor</ID>
+    <ID>TooManyFunctions:TypeResolver.kt$TypeResolver</ID>
+    <ID>UnusedParameter:ElmDataRequirement.kt$ElmDataRequirement$context: ElmRequirementsContext?</ID>
+    <ID>UnusedParameter:ElmQueryRequirement.kt$ElmQueryRequirement$childRequirements: ElmRequirement?</ID>
+  </CurrentIssues>
+</SmellBaseline>

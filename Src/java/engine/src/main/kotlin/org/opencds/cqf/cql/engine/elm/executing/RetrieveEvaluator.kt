@@ -18,14 +18,14 @@ object RetrieveEvaluator {
         val context = elm!!.context
 
         var isEnteredContext = false
-        var result: Iterable<Any?>? = mutableListOf<Any?>()
+        var result: Iterable<Any?>?
 
         if (context != null) {
             /*
                This whole block is a bit a hack in the sense that the need to switch to the context (e.g. Practitioner) identifies itself in a non-domain specific way
             */
             val contextValue: Any = visitor.visitExpression(context, state)!!
-            val name = contextValue.javaClass.getPackage().getName()
+            val name = contextValue.javaClass.getPackage().name
             val dataProvider = state!!.environment.resolveDataProvider(name)
             val contextTypeName = contextValue.javaClass.getSimpleName()
             val contextId = dataProvider!!.resolveId(contextValue)
@@ -47,23 +47,23 @@ object RetrieveEvaluator {
             if (elm.codes != null) {
                 if (elm.codes is ValueSetRef) {
                     val vs = ValueSetRefEvaluator.toValueSet(state, elm.codes as ValueSetRef)
-                    valueSet = vs!!.id
+                    valueSet = vs.id
                 } else {
                     val codesResult: Any = visitor.visitExpression(elm.codes!!, state)!!
-                    if (codesResult is ValueSet) {
-                        valueSet = codesResult.id
-                    } else if (codesResult is String) {
-                        codes = mutableListOf(Code().withCode(codesResult as String?))
-                    } else if (codesResult is Code) {
-                        codes = mutableListOf(codesResult)
-                    } else if (codesResult is Concept) {
-                        val codesList = mutableListOf<Code>()
-                        for (conceptCode in codesResult.codes!!) {
-                            codesList.add(conceptCode!!)
-                        }
-                        codes = codesList
-                    } else {
-                        codes = codesResult as Iterable<Code>?
+
+                    // Due to erased generics this is the best we can do here.
+                    @Suppress("UNCHECKED_CAST")
+                    when (codesResult) {
+                        is ValueSet -> valueSet = codesResult.id
+                        is String -> codes = mutableListOf(Code().withCode(codesResult as String?))
+                        is Code -> codes = mutableListOf(codesResult)
+                        is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
+                        is Iterable<*> -> codes = codesResult as Iterable<Code>
+                        else ->
+                            throw IllegalArgumentException(
+                                "The codes argument to Retrieve must be a ValueSet, Code, Concept, String," +
+                                    " or List of those types. Found '${codesResult.javaClass.name}'."
+                            )
                     }
                 }
             }

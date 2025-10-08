@@ -757,7 +757,11 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        val list = left as Iterable<Interval?>?
+        // Due to type erasure this is the best
+        // we can for now. We'll address this
+        // by introducing CqlType metadata
+        // in a future release.
+        @Suppress("UNCHECKED_CAST") val list = left as Iterable<Interval?>?
         val per = right as Quantity?
 
         return collapse(list, per, context)

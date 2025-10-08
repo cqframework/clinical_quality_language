@@ -11,7 +11,6 @@ plugins {
 rootProject.name = "cql-all"
 
 include(
-    "rewrite",
     "cqf-fhir",
     "cqf-fhir-npm",
     "cql",
@@ -25,6 +24,7 @@ include(
     "cql-to-elm-cli",
     "elm-fhir",
     "ucum",
+    "tools:rewrite",
     "tools:cql-formatter",
     "tools:cql-parsetree",
     "tools:xsd-to-modelinfo"
