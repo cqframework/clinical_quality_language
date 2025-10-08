@@ -175,7 +175,9 @@ object QueryEvaluator {
             val iterator = QueryIterator(state, sources)
 
             while (iterator.hasNext()) {
-                val elements = iterator.next() as MutableList<Any?>
+                // We need type metadata tracking in the CQL engine
+                // to narrow this down better
+                @Suppress("UNCHECKED_CAST") val elements = iterator.next() as MutableList<Any?>
 
                 // Assign  variables
                 assignVariables(variables, elements)

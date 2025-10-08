@@ -25,6 +25,7 @@ import org.hl7.fhir.instance.model.api.IBaseEnumFactory
 import org.hl7.fhir.instance.model.api.IBaseEnumeration
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.ICompositeType
+import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
 import org.opencds.cqf.cql.engine.exception.DataProviderException
 import org.opencds.cqf.cql.engine.exception.InvalidCast
@@ -47,13 +48,14 @@ import org.opencds.cqf.cql.engine.runtime.Time
  * See <a href="https://github.com/DBCG/cql-evaluator/blob/master/evaluator.engine/src/main/java/org/opencds/cqf/cql/evaluator/engine/model/CachingModelResolverDecorator.java"/>
  * for a decorator that adds caching logic for ModelResolvers.
  */
+@Suppress("TooManyFunctions")
 abstract class FhirModelResolver<
-    BaseType,
-    BaseDateTimeType,
-    TimeType,
-    SimpleQuantityType,
-    IdType,
-    ResourceType,
+    BaseType : IBase,
+    BaseDateTimeType : IPrimitiveType<java.util.Date>,
+    TimeType : IPrimitiveType<String>,
+    SimpleQuantityType : ICompositeType,
+    IdType : IIdType,
+    ResourceType : IBaseResource,
     EnumerationType : IBaseEnumeration<*>,
     EnumFactoryType : IBaseEnumFactory<*>,
 >( // getters & setters
@@ -114,7 +116,10 @@ abstract class FhirModelResolver<
 
         val resourceDefinition = this.fhirContext.getResourceDefinition(targetType)
         val theValue = this.createInstance(contextType)
-        val type = theValue.javaClass as Class<out IBase>
+
+        // Because we created this instance from the local FhirContext, we know it is an IBase
+        // The model resolver interface is not generic, so we have to cast here
+        @Suppress("UNCHECKED_CAST") val type = theValue.javaClass as Class<out IBase>
 
         val children = resourceDefinition.children
         for (child in children) {
@@ -148,6 +153,10 @@ abstract class FhirModelResolver<
         if (child is RuntimeChildResourceBlockDefinition) {
             val currentName = child.elementName
             val element = child.getChildByName(currentName)
+
+            // Potential Kotlin/Java interop issue here?
+            // element.getChildren() returns ListBaseRuntimeChildDefinition>
+            @Suppress("UNCHECKED_CAST")
             val children = element.getChildren() as List<BaseRuntimeChildDefinition>
 
             for (nextChild in children) {
@@ -174,6 +183,7 @@ abstract class FhirModelResolver<
             return null
         }
 
+        @Suppress("UNCHECKED_CAST")
         return this.equalsDeep(left as BaseType, right as BaseType)
     }
 
@@ -186,6 +196,7 @@ abstract class FhirModelResolver<
             return false
         }
 
+        @Suppress("UNCHECKED_CAST")
         return this.equalsDeep(left as BaseType, right as BaseType)
     }
 
@@ -217,7 +228,7 @@ abstract class FhirModelResolver<
             // handling indexes: i.e. item[0].code
             if (identifier.contains("[")) {
                 val index = Character.getNumericValue(identifier[identifier.indexOf("[") + 1])
-                target = resolveProperty(target, identifier.replace("\\[\\d\\]".toRegex(), ""))!!
+                target = resolveProperty(target, identifier.replace("\\[\\d]".toRegex(), ""))!!
                 target = (target as ArrayList<*>)[index]
             } else {
                 target = resolveProperty(target, identifier)
@@ -311,6 +322,8 @@ abstract class FhirModelResolver<
             if (c is RuntimeChildResourceBlockDefinition) {
                 for (childrenName in c.validChildNames) {
                     if (c.elementName == childrenName) continue
+
+                    @Suppress("UNCHECKED_CAST")
                     val nextChildren =
                         c.getChildByName(childrenName).getChildren()
                             as List<BaseRuntimeChildDefinition>
@@ -328,6 +341,7 @@ abstract class FhirModelResolver<
 
         // For FHIR enumerations, return the type of the backing Enum
         if (this.enumChecker(value)) {
+            @Suppress("UNCHECKED_CAST")
             val factoryName = this.enumFactoryTypeGetter(value as EnumerationType).getSimpleName()
             return this.resolveType(factoryName.substringBefore("EnumFactory"))
         }
@@ -375,7 +389,8 @@ abstract class FhirModelResolver<
         } catch (le: IllegalArgumentException) {
             if (value!!.javaClass.getSimpleName() == "Quantity") {
                 try {
-                    value = this.castToSimpleQuantity(value as BaseType)!!
+                    @Suppress("UNCHECKED_CAST")
+                    value = this.castToSimpleQuantity(value as BaseType)
                 } catch (_: FHIRException) {
                     throw InvalidCast("Unable to cast Quantity to SimpleQuantity")
                 }
@@ -397,6 +412,7 @@ abstract class FhirModelResolver<
         }
 
         // TODO: Consider using getResourceType everywhere?
+        @Suppress("UNCHECKED_CAST")
         if (target is IAnyResource && this.getResourceType(target as ResourceType) == path) {
             return target
         }
@@ -472,6 +488,7 @@ abstract class FhirModelResolver<
             }
 
             is ICompositeType -> {
+                @Suppress("UNCHECKED_CAST")
                 return this.fhirContext.getElementDefinition(base.javaClass)
                     as BaseRuntimeElementCompositeDefinition<ICompositeType?>
             }
@@ -522,6 +539,8 @@ abstract class FhirModelResolver<
         try {
             if (clazz.isEnum) {
                 val factoryClass = this.resolveType(clazz.getName() + "EnumFactory")
+
+                @Suppress("UNCHECKED_CAST")
                 val factory = this.createInstance(factoryClass!!) as EnumFactoryType
                 return this.enumConstructor(factory)
             }
@@ -668,18 +687,28 @@ abstract class FhirModelResolver<
                 // Ensure offset is taken into account from the ISO datetime String instead of the
                 // default timezone
                 target.valueAsString = (value as DateTime).toDateString()
+
+                @Suppress("UNCHECKED_CAST")
                 setCalendarConstant(target as BaseDateTimeType, value as BaseTemporal)
             }
             "DateType" -> {
                 val targetValue = (value as Date).toJavaDate()
-                (target as IPrimitiveType<java.util.Date>).value = targetValue
-                setCalendarConstant(target as BaseDateTimeType, value as BaseTemporal)
+
+                @Suppress("UNCHECKED_CAST")
+                target as BaseDateTimeType
+                target.value = targetValue
+                setCalendarConstant(target, value as BaseTemporal)
             }
 
-            "TimeType" -> (target as IPrimitiveType<String>).value = value.toString()
+            "TimeType" -> target.asIPrimitive<String>().value = value.toString()
             "Base64BinaryType" -> target.valueAsString = value as String?
-            else -> (target as IPrimitiveType<Any?>).value = value
+            else -> target.asIPrimitive<Any>().value = value
         }
+    }
+
+    private fun <T : Any> Any?.asIPrimitive(): IPrimitiveType<T?> {
+        @Suppress("UNCHECKED_CAST")
+        return this as IPrimitiveType<T?>
     }
 
     fun toTemporalPrecisionEnum(precision: Precision): TemporalPrecisionEnum {

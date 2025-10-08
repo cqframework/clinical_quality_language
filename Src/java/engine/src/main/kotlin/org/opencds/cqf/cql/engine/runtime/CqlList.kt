@@ -68,6 +68,8 @@ class CqlList {
         else if (left == null) return -1 else if (right == null) return 1
 
         try {
+            // The exception handling below handles the case where left is not Comparable
+            @Suppress("UNCHECKED_CAST")
             return (left as Comparable<Any?>).compareTo(right)
         } catch (_: ClassCastException) {
             throw InvalidComparison("Type " + left.javaClass.getName() + " is not comparable")
