@@ -93,19 +93,14 @@ constructor(
      * A "well-known" model name is one that is allowed to resolve without a namespace in a
      * namespace-aware context
      */
-    @Suppress("ReturnCount")
     fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean {
-        if (unqualifiedIdentifier == null) {
-            return false
-        }
-
-        when (unqualifiedIdentifier) {
+        return when (unqualifiedIdentifier) {
             "FHIR",
             "QDM",
             "USCore",
             "QICore",
-            "QUICK" -> return true
-            else -> return false
+            "QUICK" -> true
+            else -> false
         }
     }
 
@@ -116,14 +111,16 @@ constructor(
         pushLoading(modelPath)
         try {
             val modelInfo = modelInfoLoader.getModelInfo(identifier)
-            if (identifier.id.equals("System")) {
-                model = SystemModel(modelInfo)
-            } else {
-                model = Model(modelInfo, this)
-            }
-        } catch (@Suppress("TooGenericExceptionCaught", "SwallowedException") e: Exception) {
+            model =
+                if (identifier.id == "System") {
+                    SystemModel(modelInfo)
+                } else {
+                    Model(modelInfo, this)
+                }
+        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             throw IllegalArgumentException(
-                "Could not load model information for model ${identifier.id}, version ${identifier.version}."
+                "Could not load model information for model ${identifier.id}, version ${identifier.version}.",
+                e,
             )
         } finally {
             popLoading(modelPath)
@@ -156,23 +153,23 @@ constructor(
     @JsExport.Ignore
     fun resolveModel(modelIdentifier: ModelIdentifier): Model {
         val modelPath = NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id)
-        var model = models.get(modelPath)
+        var model = models[modelPath]
         if (model != null) {
             checkModelVersion(modelIdentifier, model)
         }
 
         if (model == null && this.globalCache.containsKey(modelIdentifier)) {
-            model = this.globalCache.get(modelIdentifier)
-            models.put(modelPath, model!!)
-            modelsByUri.put(model.modelInfo.url!!, model)
+            model = this.globalCache[modelIdentifier]
+            models[modelPath] = model!!
+            modelsByUri[model.modelInfo.url!!] = model
         }
 
         if (model == null) {
             model = buildModel(modelIdentifier)
-            this.globalCache.put(modelIdentifier, model)
+            this.globalCache[modelIdentifier] = model
             checkModelVersion(modelIdentifier, model)
-            models.put(modelPath, model)
-            modelsByUri.put(model.modelInfo.url!!, model)
+            models[modelPath] = model
+            modelsByUri[model.modelInfo.url!!] = model
         }
 
         return model
@@ -189,7 +186,7 @@ constructor(
     }
 
     fun resolveModelByUri(namespaceUri: String): Model {
-        val model = modelsByUri.get(namespaceUri)
+        val model = modelsByUri[namespaceUri]
         requireNotNull(model) { "Could not resolve model with namespace $namespaceUri" }
 
         return model

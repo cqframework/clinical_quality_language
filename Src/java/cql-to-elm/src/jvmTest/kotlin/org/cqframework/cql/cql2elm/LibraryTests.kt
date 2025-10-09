@@ -69,10 +69,10 @@ internal class LibraryTests {
                 CqlCompilerException.ErrorSeverity.Info,
                 LibraryBuilder.SignatureLevel.All,
             )
-        libraryManager = LibraryManager(modelManager!!, compilerOptions)
-        libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
+        val libraryManager = LibraryManager(modelManager!!, compilerOptions)
+        libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
         try {
-            val compiler = CqlCompiler(libraryManager!!)
+            val compiler = CqlCompiler(libraryManager = libraryManager)
             compiler.run(
                 LibraryTests::class
                     .java
@@ -81,10 +81,11 @@ internal class LibraryTests {
                     .buffered()
             )
 
-            MatcherAssert.assertThat(compiler.errors.size, Matchers.`is`(0))
+            MatcherAssert.assertThat(compiler.exceptions.size, Matchers.`is`(0))
 
             val includedLibDefs: MutableMap<String?, ExpressionDef> = HashMap()
-            val includedLibraries = compiler.libraries
+            val includedLibraries =
+                compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
             includedLibraries.values.forEach { includedLibrary ->
                 if (includedLibrary.statements != null) {
                     for (def in includedLibrary.statements!!.def) {
@@ -126,13 +127,14 @@ internal class LibraryTests {
         )
 
         try {
-            val compiler = CqlCompiler(libraryManager)
+            val compiler = CqlCompiler(libraryManager = libraryManager)
             compiler.run(translationTestFile!!.asSource().buffered())
 
-            println(compiler.errors)
+            println(compiler.exceptions)
 
             val includedLibDefs: MutableMap<String?, ExpressionDef> = HashMap()
-            val includedLibraries = compiler.libraries
+            val includedLibraries =
+                compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
             includedLibraries.values.forEach { includedLibrary ->
                 if (includedLibrary.statements != null) {
                     for (def in includedLibrary.statements!!.def) {
@@ -371,9 +373,9 @@ internal class LibraryTests {
                     LibraryBuilder.SignatureLevel.All,
                     CqlCompilerOptions.Options.EnableAnnotations,
                 )
-            libraryManager = LibraryManager(modelManager!!, options)
-            libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
-            val compiler = CqlCompiler(libraryManager!!)
+            val libraryManager = LibraryManager(modelManager!!, options)
+            libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
+            val compiler = CqlCompiler(libraryManager = libraryManager)
             compiler.run(
                 LibraryTests::class
                     .java
@@ -382,8 +384,9 @@ internal class LibraryTests {
                     .buffered()
             )
 
-            MatcherAssert.assertThat(compiler.errors.size, Matchers.`is`(0))
-            val includedLibraries = compiler.libraries
+            MatcherAssert.assertThat(compiler.exceptions.size, Matchers.`is`(0))
+            val includedLibraries =
+                compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
             includedLibraries.values.forEach { includedLibrary ->
                 // Ensure that some annotations are present.
                 Assertions.assertTrue(
@@ -398,11 +401,11 @@ internal class LibraryTests {
     @Test
     fun translatorOptionsFlowDownWithoutAnnotations() {
         try {
-            libraryManager = LibraryManager(modelManager!!, CqlCompilerOptions())
-            libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
+            val libraryManager = LibraryManager(modelManager!!, CqlCompilerOptions())
+            libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
 
             // Test Annotations are created for both libraries
-            val compiler = CqlCompiler(libraryManager!!)
+            val compiler = CqlCompiler(libraryManager = libraryManager)
             compiler.run(
                 LibraryTests::class
                     .java
@@ -411,8 +414,9 @@ internal class LibraryTests {
                     .buffered()
             )
 
-            MatcherAssert.assertThat(compiler.errors.size, Matchers.`is`(0))
-            val includedLibraries = compiler.libraries
+            MatcherAssert.assertThat(compiler.exceptions.size, Matchers.`is`(0))
+            val includedLibraries =
+                compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
             includedLibraries.values.forEach { includedLibrary ->
                 // Ensure that no annotations are present.
                 Assertions.assertEquals(

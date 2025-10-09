@@ -89,15 +89,15 @@ internal object EvaluatedResourceTestUtils {
                     try {
                         classToUse.getClassLoader().getResourceAsStream(resourcePath).use {
                             inputStream ->
-                            val compiler = CqlCompiler(libraryManagerToUse)
+                            val compiler = CqlCompiler(libraryManager = libraryManagerToUse)
                             log.info("compiling CQL file: {}", resourcePath)
 
                             val library = compiler.run(inputStream!!.asSource().buffered())
 
-                            if (!compiler.errors.isEmpty()) {
+                            if (!compiler.exceptions.isEmpty()) {
                                 System.err.println("Translation failed due to errors:")
                                 val errors = ArrayList<String?>()
-                                for (error in compiler.errors) {
+                                for (error in compiler.exceptions) {
                                     val tb = error.locator
                                     val lines =
                                         if (tb == null) "[n/a]"

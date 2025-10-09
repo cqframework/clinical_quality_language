@@ -71,14 +71,14 @@ object TranslatorHelper {
 
     @Throws(UcumException::class)
     fun translate(cql: String?, libraryManager: LibraryManager): Library {
-        val compiler = CqlCompiler(libraryManager)
+        val compiler = CqlCompiler(libraryManager = libraryManager)
         val lib = compiler.run(cql!!)
 
         libraryManager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
-        if (!compiler.errors.isEmpty()) {
+        if (!compiler.exceptions.isEmpty()) {
             val errors = ArrayList<String?>()
-            for (error in compiler.errors) {
+            for (error in compiler.exceptions) {
                 val tb = error.locator
                 val lines =
                     if (tb == null) "[n/a]"

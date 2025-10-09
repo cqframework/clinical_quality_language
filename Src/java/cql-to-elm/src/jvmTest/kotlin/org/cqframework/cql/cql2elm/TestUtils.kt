@@ -56,7 +56,7 @@ object TestUtils {
         val file = getFileOrThrow(fileName)
         val translator = CqlTranslator.fromFile(file.path, getLibraryManager(signatureLevel))
         ensureValid(translator)
-        return translator.toObject()
+        return translator.root
     }
 
     @Throws(IOException::class)
@@ -81,7 +81,7 @@ object TestUtils {
     fun visitData(cqlData: String): Any? {
         val translator = CqlTranslator.fromText(cqlData, libraryManager)
         ensureValid(translator)
-        return translator.toObject()
+        return translator.root
     }
 
     @JvmStatic
@@ -107,7 +107,7 @@ object TestUtils {
 
         val translator = CqlTranslator.fromText(cqlData, getLibraryManager(compilerOptions))
         ensureValid(translator)
-        return translator.toObject()
+        return translator.root
     }
 
     private fun ensureValid(translator: CqlTranslator) {
@@ -384,6 +384,9 @@ object TestUtils {
         val translationTestFile = getFileOrThrow(testFileName)
         val modelManager = ModelManager()
         val libraryManager = getLibraryManager(options, modelManager, path)
+        if (namespaceInfo != null) {
+            libraryManager.namespaceManager.ensureNamespaceRegistered(namespaceInfo)
+        }
         return CqlTranslator.fromFile(namespaceInfo, translationTestFile.path, libraryManager)
     }
 
