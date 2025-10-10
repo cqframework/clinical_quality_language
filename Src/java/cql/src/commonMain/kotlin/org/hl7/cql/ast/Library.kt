@@ -110,36 +110,8 @@ data class ParameterDefinition(
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable
-@JsonClassDiscriminator("kind")
-sealed interface Statement : AstNode
-
-@Serializable
-@SerialName("unsupported")
-data class UnsupportedStatement(
-    val grammarRule: String,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Statement
-
-@Serializable
-@SerialName("context")
-data class ContextDefinition(
-    val model: Identifier? = null,
-    val context: Identifier,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Statement
 
 @Serializable data class ParameterRef(val name: Identifier, val locator: Locator = Locator.UNKNOWN)
-
-@Serializable
-@SerialName("expression")
-data class ExpressionDefinition(
-    val access: AccessModifier? = null,
-    val name: Identifier,
-    val expression: Expression,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Statement
 
 @Serializable
 data class OperandDefinition(
@@ -160,15 +132,3 @@ data class ExpressionFunctionBody(
 @Serializable
 @SerialName("externalBody")
 data class ExternalFunctionBody(override val locator: Locator = Locator.UNKNOWN) : FunctionBody
-
-@Serializable
-@SerialName("function")
-data class FunctionDefinition(
-    val access: AccessModifier? = null,
-    val fluent: Boolean = false,
-    val name: Identifier,
-    val operands: List<OperandDefinition> = emptyList(),
-    val returnType: TypeSpecifier? = null,
-    val body: FunctionBody,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Statement

@@ -10,7 +10,13 @@ import org.antlr.v4.kotlinruntime.Token
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 
-@Suppress("TooManyFunctions")
+@Suppress(
+    "TooManyFunctions",
+    "LongMethod",
+    "CyclomaticComplexMethod",
+    "ReturnCount",
+    "LargeClass",
+)
 class CqlAstBuilder(private val sourceId: String? = null) {
 
     private val problems = mutableListOf<AstProblem>()
@@ -270,15 +276,10 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             is cqlParser.RetrieveExpressionContext -> buildRetrieve(ctx.retrieve())
             is cqlParser.QueryExpressionContext -> buildQuery(ctx.query())
             is cqlParser.BooleanExpressionContext -> buildBooleanExpression(ctx)
-            is cqlParser.EqualityExpressionContext ->
-                buildBinaryExpression(
-                    BinaryOperator.EQUALS,
-                    ctx.expression(0),
-                    ctx.expression(1),
-                    ctx,
-                )
+            is cqlParser.EqualityExpressionContext -> buildEqualityExpression(ctx)
 
             is cqlParser.InequalityExpressionContext -> buildInequalityExpression(ctx)
+            is cqlParser.TimingExpressionContext -> buildTimingExpression(ctx)
             is cqlParser.InFixSetExpressionContext -> buildInfixSetExpression(ctx)
             is cqlParser.MembershipExpressionContext -> buildMembershipExpression(ctx)
             is cqlParser.BetweenExpressionContext -> buildBetweenExpression(ctx)
@@ -290,8 +291,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             is cqlParser.AndExpressionContext ->
                 buildBinaryExpression(BinaryOperator.AND, ctx.expression(0), ctx.expression(1), ctx)
 
-            is cqlParser.OrExpressionContext ->
-                buildBinaryExpression(BinaryOperator.OR, ctx.expression(0), ctx.expression(1), ctx)
+            is cqlParser.OrExpressionContext -> buildOrExpression(ctx)
 
             is cqlParser.ImpliesExpressionContext ->
                 buildBinaryExpression(
@@ -346,6 +346,22 @@ class CqlAstBuilder(private val sourceId: String? = null) {
         )
     }
 
+    private fun buildEqualityExpression(ctx: cqlParser.EqualityExpressionContext): Expression {
+        val operatorToken =
+            ctx.children
+                ?.map { it.text }
+                ?.firstOrNull { it == "=" || it == "!=" || it == "~" || it == "!~" }
+        val operator =
+            when (operatorToken) {
+                "=" -> BinaryOperator.EQUALS
+                "!=" -> BinaryOperator.NOT_EQUALS
+                "~" -> BinaryOperator.EQUIVALENT
+                "!~" -> BinaryOperator.NOT_EQUIVALENT
+                else -> BinaryOperator.EQUALS
+            }
+        return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
+    }
+
     private fun buildInequalityExpression(ctx: cqlParser.InequalityExpressionContext): Expression {
         val operatorToken = ctx.getChild(1)?.text
         val operator =
@@ -355,6 +371,19 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                 ">" -> BinaryOperator.GT
                 ">=" -> BinaryOperator.GTE
                 else -> BinaryOperator.LT
+            }
+        return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
+    }
+
+    private fun buildOrExpression(ctx: cqlParser.OrExpressionContext): Expression {
+        val operatorToken =
+            ctx.children
+                ?.map { it.text.lowercase() }
+                ?.firstOrNull { it == "or" || it == "xor" }
+        val operator =
+            when (operatorToken) {
+                "xor" -> BinaryOperator.XOR
+                else -> BinaryOperator.OR
             }
         return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
     }
@@ -467,18 +496,19 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                 )
 
             is cqlParser.ElementExtractorExpressionTermContext -> {
-                val kind =
-                    when (ctx.getChild(0)?.text?.lowercase()) {
-                        "singleton" -> ElementExtractorKind.SINGLETON
-                        "point" -> ElementExtractorKind.POINT
-                        else -> return unsupportedExpression("elementExtractorExpressionTerm", ctx)
-                    }
                 ElementExtractorExpression(
-                    kind = kind,
+                    kind = ElementExtractorKind.SINGLETON,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
                 )
             }
+
+            is cqlParser.PointExtractorExpressionTermContext ->
+                ElementExtractorExpression(
+                    kind = ElementExtractorKind.POINT,
+                    operand = buildExpressionTerm(ctx.expressionTerm()),
+                    locator = ctx.toLocator(),
+                )
 
             is cqlParser.TypeExtentExpressionTermContext -> {
                 val kind =
@@ -878,6 +908,14 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             locator = ctx.toLocator(),
         )
 
+    private fun buildTimingExpression(ctx: cqlParser.TimingExpressionContext): Expression =
+        IntervalRelationExpression(
+            left = buildExpression(ctx.expression(0)!!),
+            phrase = buildIntervalOperatorPhrase(ctx.intervalOperatorPhrase()),
+            right = buildExpression(ctx.expression(1)!!),
+            locator = ctx.toLocator(),
+        )
+
     private fun buildTypeExpression(ctx: cqlParser.TypeExpressionContext): Expression {
         val keyword = ctx.getChild(1)?.text?.lowercase()
         return when (keyword) {
@@ -1200,6 +1238,254 @@ class CqlAstBuilder(private val sourceId: String? = null) {
         when (ctx.text.lowercase()) {
             "desc", "descending" -> SortDirection.DESCENDING
             else -> SortDirection.ASCENDING
+        }
+
+    private fun buildIntervalOperatorPhrase(
+        ctx: cqlParser.IntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase =
+        when (ctx) {
+            is cqlParser.ConcurrentWithIntervalOperatorPhraseContext ->
+                buildConcurrentIntervalPhrase(ctx)
+
+            is cqlParser.IncludesIntervalOperatorPhraseContext ->
+                buildIncludesIntervalPhrase(ctx)
+
+            is cqlParser.IncludedInIntervalOperatorPhraseContext ->
+                buildIncludedInIntervalPhrase(ctx)
+
+            is cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ->
+                buildBeforeOrAfterIntervalPhrase(ctx)
+
+            is cqlParser.WithinIntervalOperatorPhraseContext -> buildWithinIntervalPhrase(ctx)
+            is cqlParser.MeetsIntervalOperatorPhraseContext -> buildMeetsIntervalPhrase(ctx)
+            is cqlParser.OverlapsIntervalOperatorPhraseContext -> buildOverlapsIntervalPhrase(ctx)
+            is cqlParser.StartsIntervalOperatorPhraseContext -> buildStartsIntervalPhrase(ctx)
+            is cqlParser.EndsIntervalOperatorPhraseContext -> buildEndsIntervalPhrase(ctx)
+            else -> {
+                problems +=
+                    AstProblem(
+                        "Unsupported interval operator phrase: ${ctx.text}",
+                        ctx.toLocator(),
+                    )
+                UnsupportedIntervalPhrase(ctx.text, ctx.toLocator())
+            }
+        }
+
+    private fun buildConcurrentIntervalPhrase(
+        ctx: cqlParser.ConcurrentWithIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val leftBoundary = ctx.findLeadingBoundary()
+        val precision = ctx.dateTimePrecision()?.text?.lowercase()
+        val qualifier =
+            ctx.relativeQualifier()?.text?.lowercase()?.let {
+                when (it) {
+                    "or before" -> ConcurrentQualifier.OR_BEFORE
+                    "or after" -> ConcurrentQualifier.OR_AFTER
+                    else -> ConcurrentQualifier.AS
+                }
+            } ?: ConcurrentQualifier.AS
+        val rightBoundary = ctx.findTrailingBoundary()
+        return ConcurrentIntervalPhrase(
+            leftBoundary = leftBoundary,
+            precision = precision,
+            qualifier = qualifier,
+            rightBoundary = rightBoundary,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildIncludesIntervalPhrase(
+        ctx: cqlParser.IncludesIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
+        val rightBoundary = ctx.findTrailingBoundary()
+        val proper = tokens.contains("properly")
+        return IncludesIntervalPhrase(
+            proper = proper,
+            precision = precision,
+            rightBoundary = rightBoundary,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildIncludedInIntervalPhrase(
+        ctx: cqlParser.IncludedInIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val leftBoundary = ctx.findLeadingBoundary()
+        val proper = tokens.contains("properly")
+        val variant =
+            when {
+                tokens.contains("during") -> InclusionVariant.DURING
+                else -> InclusionVariant.INCLUDED_IN
+            }
+        val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
+        return IncludedInIntervalPhrase(
+            leftBoundary = leftBoundary,
+            proper = proper,
+            variant = variant,
+            precision = precision,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildBeforeOrAfterIntervalPhrase(
+        ctx: cqlParser.BeforeOrAfterIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val leftBoundary = ctx.findLeadingBoundary()
+        val offset = ctx.quantityOffset()?.let { buildQuantityOffset(it) }
+        val relationship = buildTemporalRelationship(ctx.temporalRelationship())
+        val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
+        val rightBoundary = ctx.findTrailingBoundary()
+        return BeforeOrAfterIntervalPhrase(
+            leftBoundary = leftBoundary,
+            offset = offset,
+            relationship = relationship,
+            precision = precision,
+            rightBoundary = rightBoundary,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildWithinIntervalPhrase(
+        ctx: cqlParser.WithinIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val leftBoundary = ctx.findLeadingBoundary()
+        val proper = tokens.contains("properly")
+        val quantity = ctx.quantity().toQuantityLiteral()
+        val rightBoundary = ctx.findTrailingBoundary()
+        return WithinIntervalPhrase(
+            leftBoundary = leftBoundary,
+            proper = proper,
+            quantity = quantity,
+            rightBoundary = rightBoundary,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildMeetsIntervalPhrase(
+        ctx: cqlParser.MeetsIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val direction =
+            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
+        val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
+        return MeetsIntervalPhrase(
+            direction = direction,
+            precision = precision,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildOverlapsIntervalPhrase(
+        ctx: cqlParser.OverlapsIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val direction =
+            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
+        val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
+        return OverlapsIntervalPhrase(
+            direction = direction,
+            precision = precision,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildStartsIntervalPhrase(
+        ctx: cqlParser.StartsIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase =
+        StartsIntervalPhrase(
+            precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase(),
+            locator = ctx.toLocator(),
+        )
+
+    private fun buildEndsIntervalPhrase(
+        ctx: cqlParser.EndsIntervalOperatorPhraseContext,
+    ): IntervalOperatorPhrase =
+        EndsIntervalPhrase(
+            precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase(),
+            locator = ctx.toLocator(),
+        )
+
+    private fun buildQuantityOffset(ctx: cqlParser.QuantityOffsetContext): QuantityOffset {
+        val quantity =
+            ctx.quantity()?.toQuantityLiteral()
+                ?: QuantityLiteral(ctx.text, null, ctx.toLocator())
+        val offsetQualifier =
+            ctx.offsetRelativeQualifier()?.text?.lowercase()?.let {
+                when (it) {
+                    "or more" -> OffsetRelativeQualifier.OR_MORE
+                    "or less" -> OffsetRelativeQualifier.OR_LESS
+                    else -> null
+                }
+            }
+        val exclusiveQualifier =
+            ctx.exclusiveRelativeQualifier()?.text?.lowercase()?.let {
+                when (it) {
+                    "less than" -> ExclusiveRelativeQualifier.LESS_THAN
+                    "more than" -> ExclusiveRelativeQualifier.MORE_THAN
+                    else -> null
+                }
+            }
+        return QuantityOffset(
+            quantity = quantity,
+            offsetQualifier = offsetQualifier,
+            exclusiveQualifier = exclusiveQualifier,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun buildTemporalRelationship(
+        ctx: cqlParser.TemporalRelationshipContext,
+    ): TemporalRelationshipPhrase {
+        val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
+        val direction =
+            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
+                ?: TemporalRelationshipDirection.BEFORE
+        val inclusive = tokens.any { it == "on or" || it == "or on" }
+        val qualifier =
+            tokens.firstOrNull { it == "more than" || it == "less than" }?.let {
+                when (it) {
+                    "more than" -> ExclusiveRelativeQualifier.MORE_THAN
+                    "less than" -> ExclusiveRelativeQualifier.LESS_THAN
+                    else -> null
+                }
+            }
+        return TemporalRelationshipPhrase(
+            direction = direction,
+            inclusive = inclusive,
+            leadingQualifier = qualifier,
+            locator = ctx.toLocator(),
+        )
+    }
+
+    private fun ParserRuleContext.findLeadingBoundary(): IntervalBoundarySelector? {
+        val tokens = children?.map { it.text.lowercase() }.orEmpty()
+        val keyword = tokens.firstOrNull { it == "starts" || it == "ends" || it == "occurs" }
+        return keyword?.toIntervalBoundarySelector()
+    }
+
+    private fun ParserRuleContext.findTrailingBoundary(): IntervalBoundarySelector? {
+        val tokens = children?.map { it.text.lowercase() }.orEmpty()
+        val keyword = tokens.asReversed().firstOrNull { it == "start" || it == "end" }
+        return keyword?.toIntervalBoundarySelector()
+    }
+
+    private fun String.toIntervalBoundarySelector(): IntervalBoundarySelector? =
+        when (this.lowercase()) {
+            "starts", "start" -> IntervalBoundarySelector.START
+            "ends", "end" -> IntervalBoundarySelector.END
+            "occurs" -> IntervalBoundarySelector.OCCURS
+            else -> null
+        }
+
+    private fun String.toTemporalDirection(): TemporalRelationshipDirection? =
+        when (this.lowercase()) {
+            "before" -> TemporalRelationshipDirection.BEFORE
+            "after" -> TemporalRelationshipDirection.AFTER
+            else -> null
         }
 
     private fun buildSimpleLiteralExpression(

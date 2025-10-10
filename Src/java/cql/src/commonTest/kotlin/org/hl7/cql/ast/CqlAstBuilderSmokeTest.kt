@@ -133,6 +133,7 @@ class CqlAstBuilderSmokeTest {
         assertEquals(3, result.library.statements.size)
     }
 
+    @Suppress("LongMethod", "MaxLineLength")
     @Test
     fun parsesExtensiveExpressionCoverage() {
         val expressions =
@@ -184,6 +185,10 @@ class CqlAstBuilderSmokeTest {
                 "duration in days of Interval[@2020-01-01T00:00:00, @2020-01-05T00:00:00]",
                 "distinct { 1, 1, 2 }",
                 "flatten { { 1 }, { 2 } }",
+                "Interval[1, 5] starts on or before start of Interval[5, 10]",
+                "Interval[1, 5] starts before or on end of Interval[5, 10]",
+                "Interval[1, 5] starts on or after start of Interval[5, 10]",
+                "Interval[1, 5] starts after or on end of Interval[5, 10]",
                 "List<Integer>{ 1, 2, 3 }",
                 "Tuple { value: 1, flag: true }",
                 "System.Code{ code: '140', system: 'http://snomed.info/sct' }",

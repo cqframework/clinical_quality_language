@@ -18,13 +18,6 @@ data class IdentifierExpression(
 ) : Expression
 
 @Serializable
-@SerialName("literal")
-data class LiteralExpression(
-    val literal: Literal,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Expression
-
-@Serializable
 @SerialName("exists")
 data class ExistsExpression(
     val operand: Expression,
@@ -166,22 +159,6 @@ data class PropertyAccessExpression(
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
 
-@Serializable
-@SerialName("binary")
-data class BinaryExpression(
-    val operator: BinaryOperator,
-    val left: Expression,
-    val right: Expression,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Expression
-
-@Serializable
-@SerialName("unary")
-data class UnaryExpression(
-    val operator: UnaryOperator,
-    val operand: Expression,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Expression
 
 @Serializable
 @SerialName("if")
@@ -361,53 +338,163 @@ enum class SortDirection {
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("kind")
-sealed interface Literal : AstNode
+sealed interface IntervalOperatorPhrase : AstNode
 
 @Serializable
-@SerialName("string")
-data class StringLiteral(val value: String, override val locator: Locator = Locator.UNKNOWN) :
-    Literal
+enum class IntervalBoundarySelector {
+    @SerialName("start") START,
+    @SerialName("end") END,
+    @SerialName("occurs") OCCURS,
+}
 
 @Serializable
-@SerialName("number")
-data class NumberLiteral(
-    val value: String,
-    val isDecimal: Boolean,
+enum class RelativeQualifier {
+    @SerialName("orBefore") OR_BEFORE,
+    @SerialName("orAfter") OR_AFTER,
+}
+
+@Serializable
+enum class OffsetRelativeQualifier {
+    @SerialName("orMore") OR_MORE,
+    @SerialName("orLess") OR_LESS,
+}
+
+@Serializable
+enum class ExclusiveRelativeQualifier {
+    @SerialName("lessThan") LESS_THAN,
+    @SerialName("moreThan") MORE_THAN,
+}
+
+@Serializable
+enum class ConcurrentQualifier {
+    @SerialName("as") AS,
+    @SerialName("orBefore") OR_BEFORE,
+    @SerialName("orAfter") OR_AFTER,
+}
+
+@Serializable
+enum class TemporalRelationshipDirection {
+    @SerialName("before") BEFORE,
+    @SerialName("after") AFTER,
+}
+
+@Serializable
+data class TemporalRelationshipPhrase(
+    val direction: TemporalRelationshipDirection,
+    val inclusive: Boolean,
+    val leadingQualifier: ExclusiveRelativeQualifier? = null,
     override val locator: Locator = Locator.UNKNOWN,
-) : Literal
+) : AstNode
 
 @Serializable
-@SerialName("boolean")
-data class BooleanLiteral(val value: Boolean, override val locator: Locator = Locator.UNKNOWN) :
-    Literal
-
-@Serializable
-@SerialName("null")
-data class NullLiteral(override val locator: Locator = Locator.UNKNOWN) : Literal
-
-@Serializable
-@SerialName("quantity")
-data class QuantityLiteral(
-    val value: String,
-    val unit: String?,
+data class QuantityOffset(
+    val quantity: QuantityLiteral,
+    val offsetQualifier: OffsetRelativeQualifier? = null,
+    val exclusiveQualifier: ExclusiveRelativeQualifier? = null,
     override val locator: Locator = Locator.UNKNOWN,
-) : Literal
+) : AstNode
 
 @Serializable
-@SerialName("dateTime")
-data class DateTimeLiteral(val text: String, override val locator: Locator = Locator.UNKNOWN) :
-    Literal
-
-@Serializable
-@SerialName("time")
-data class TimeLiteral(val text: String, override val locator: Locator = Locator.UNKNOWN) : Literal
-
-@Serializable
-@SerialName("tuple")
-data class TupleLiteral(
-    val elements: List<TupleElementValue>,
+@SerialName("intervalRelation")
+data class IntervalRelationExpression(
+    val left: Expression,
+    val phrase: IntervalOperatorPhrase,
+    val right: Expression,
     override val locator: Locator = Locator.UNKNOWN,
-) : Literal
+) : Expression
+
+@Serializable
+@SerialName("concurrent")
+data class ConcurrentIntervalPhrase(
+    val leftBoundary: IntervalBoundarySelector? = null,
+    val precision: String? = null,
+    val qualifier: ConcurrentQualifier = ConcurrentQualifier.AS,
+    val rightBoundary: IntervalBoundarySelector? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+enum class InclusionVariant {
+    @SerialName("during") DURING,
+    @SerialName("includedIn") INCLUDED_IN,
+}
+
+@Serializable
+@SerialName("includes")
+data class IncludesIntervalPhrase(
+    val proper: Boolean,
+    val precision: String? = null,
+    val rightBoundary: IntervalBoundarySelector? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("includedIn")
+data class IncludedInIntervalPhrase(
+    val leftBoundary: IntervalBoundarySelector? = null,
+    val proper: Boolean,
+    val variant: InclusionVariant,
+    val precision: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("beforeOrAfter")
+data class BeforeOrAfterIntervalPhrase(
+    val leftBoundary: IntervalBoundarySelector? = null,
+    val offset: QuantityOffset? = null,
+    val relationship: TemporalRelationshipPhrase,
+    val precision: String? = null,
+    val rightBoundary: IntervalBoundarySelector? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("within")
+data class WithinIntervalPhrase(
+    val leftBoundary: IntervalBoundarySelector? = null,
+    val proper: Boolean,
+    val quantity: QuantityLiteral,
+    val rightBoundary: IntervalBoundarySelector? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("meets")
+data class MeetsIntervalPhrase(
+    val direction: TemporalRelationshipDirection? = null,
+    val precision: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("overlaps")
+data class OverlapsIntervalPhrase(
+    val direction: TemporalRelationshipDirection? = null,
+    val precision: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("starts")
+data class StartsIntervalPhrase(
+    val precision: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("ends")
+data class EndsIntervalPhrase(
+    val precision: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
+
+@Serializable
+@SerialName("unsupportedInterval")
+data class UnsupportedIntervalPhrase(
+    val text: String,
+    override val locator: Locator = Locator.UNKNOWN,
+) : IntervalOperatorPhrase
 
 @Serializable
 data class TupleElementValue(
@@ -415,57 +502,6 @@ data class TupleElementValue(
     val expression: Expression,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
-
-@Serializable
-@SerialName("instance")
-data class InstanceLiteral(
-    val type: NamedTypeSpecifier? = null,
-    val elements: List<TupleElementValue>,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
-
-@Serializable
-@SerialName("interval")
-data class IntervalLiteral(
-    val lower: Expression,
-    val upper: Expression,
-    val lowerClosed: Boolean,
-    val upperClosed: Boolean,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
-
-@Serializable
-@SerialName("list")
-data class ListLiteral(
-    val elements: List<Expression>,
-    val elementType: TypeSpecifier? = null,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
-
-@Serializable
-@SerialName("ratio")
-data class RatioLiteral(
-    val numerator: QuantityLiteral,
-    val denominator: QuantityLiteral,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
-
-@Serializable
-@SerialName("code")
-data class CodeLiteral(
-    val code: String,
-    val system: TerminologyReference,
-    val display: String? = null,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
-
-@Serializable
-@SerialName("concept")
-data class ConceptLiteral(
-    val codes: List<CodeLiteral>,
-    val display: String? = null,
-    override val locator: Locator = Locator.UNKNOWN,
-) : Literal
 
 @Serializable
 @SerialName("is")
@@ -499,37 +535,3 @@ data class UnsupportedExpression(
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
 
-@Serializable
-enum class BinaryOperator {
-    @SerialName("add") ADD,
-    @SerialName("subtract") SUBTRACT,
-    @SerialName("multiply") MULTIPLY,
-    @SerialName("divide") DIVIDE,
-    @SerialName("modulo") MODULO,
-    @SerialName("power") POWER,
-    @SerialName("concat") CONCAT,
-    @SerialName("equals") EQUALS,
-    @SerialName("notEquals") NOT_EQUALS,
-    @SerialName("equivalent") EQUIVALENT,
-    @SerialName("notEquivalent") NOT_EQUIVALENT,
-    @SerialName("lessThan") LT,
-    @SerialName("lessOrEqual") LTE,
-    @SerialName("greaterThan") GT,
-    @SerialName("greaterOrEqual") GTE,
-    @SerialName("and") AND,
-    @SerialName("or") OR,
-    @SerialName("xor") XOR,
-    @SerialName("implies") IMPLIES,
-    @SerialName("union") UNION,
-    @SerialName("intersect") INTERSECT,
-    @SerialName("except") EXCEPT,
-}
-
-@Serializable
-enum class UnaryOperator {
-    @SerialName("negate") NEGATE,
-    @SerialName("positive") POSITIVE,
-    @SerialName("not") NOT,
-    @SerialName("successor") SUCCESSOR,
-    @SerialName("predecessor") PREDECESSOR,
-}
