@@ -165,6 +165,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
     }
 
     override fun resolveType(typeName: String?): Class<*> {
+        // Important: Boolean, Integer, and Long must be mapped to their Java Object types here
         when (typeName) {
             "Boolean" -> return Boolean::class.javaObjectType
             "Integer" -> return Int::class.javaObjectType

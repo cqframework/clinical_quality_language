@@ -5,10 +5,10 @@ import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
 
-class CompositeDataProvider(
+open class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
     protected var retrieveProvider: RetrieveProvider?,
-) : org.opencds.cqf.cql.engine.data.DataProvider {
+) : DataProvider {
     @Deprecated("Use packageNames instead")
     override var packageName: String?
         get() = this.modelResolver!!.packageName

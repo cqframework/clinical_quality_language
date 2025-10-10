@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.model
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
+open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
     @Suppress("deprecation")
     @Deprecated("use packageNames instead")
     override var packageName: String?

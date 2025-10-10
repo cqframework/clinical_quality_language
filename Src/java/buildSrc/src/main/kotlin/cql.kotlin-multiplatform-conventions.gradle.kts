@@ -79,6 +79,12 @@ kotlin {
             }
         }
 
+        jvmMain {
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.0")
+            }
+        }
+
         jsMain {
             dependencies {
             }

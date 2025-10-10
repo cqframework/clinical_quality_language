@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
+import org.apache.commons.lang3.StringUtils
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 
 /*
@@ -12,19 +13,17 @@ If the stringToSplit argument does not contain any appearances of the separator,
 */
 object SplitEvaluator {
     @JvmStatic
+    @Suppress("ReturnCount")
     fun split(stringToSplit: Any?, separator: Any?): Any? {
         if (stringToSplit == null) {
             return null
         }
 
         if (stringToSplit is String) {
-            val result: MutableList<Any?> = ArrayList<Any?>()
             if (separator == null) {
-                result.add(stringToSplit)
-            } else {
-                result.addAll(stringToSplit.split(separator as String))
+                return mutableListOf(stringToSplit)
             }
-            return result
+            return StringUtils.split(stringToSplit, separator as String).toMutableList()
         }
 
         throw InvalidOperatorArgument(

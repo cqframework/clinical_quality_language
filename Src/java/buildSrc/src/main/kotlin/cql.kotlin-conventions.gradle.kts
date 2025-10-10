@@ -44,6 +44,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.slf4j:slf4j-simple:2.0.13")
+    testImplementation(kotlin("test"))
 
     // These are JAXB dependencies excluded because the libraries need to work
     // on Android. But for test purposes we use them pretty much everywhere.
