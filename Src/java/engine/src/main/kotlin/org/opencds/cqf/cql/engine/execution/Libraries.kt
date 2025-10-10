@@ -7,6 +7,7 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 
 /** This class provides static utility methods for resolving ELM elements from a ELM library. */
 object Libraries {
+    @JvmStatic
     fun resolveLibraryRef(libraryName: String?, relativeTo: Library): IncludeDef {
         for (includeDef in relativeTo.includes!!.def) {
             if (includeDef.localIdentifier.equals(libraryName)) {
@@ -17,6 +18,7 @@ object Libraries {
         throw CqlException("Could not resolve library reference '${libraryName}'.")
     }
 
+    @JvmStatic
     fun resolveAllExpressionRef(name: String?, relativeTo: Library): MutableList<ExpressionDef> {
         // Assumption: List of defs is sorted.
         val defs = relativeTo.statements!!.def
@@ -41,6 +43,7 @@ object Libraries {
         return defs.subList(first, last)
     }
 
+    @JvmStatic
     fun resolveExpressionRef(name: String?, relativeTo: Library): ExpressionDef {
         // Assumption: List of defs is sorted.
         val result =
@@ -56,6 +59,7 @@ object Libraries {
         )
     }
 
+    @JvmStatic
     fun resolveCodeSystemRef(name: String?, relativeTo: Library): CodeSystemDef {
         for (codeSystemDef in relativeTo.codeSystems!!.def) {
             if (codeSystemDef.name.equals(name)) {
@@ -68,6 +72,7 @@ object Libraries {
         )
     }
 
+    @JvmStatic
     fun resolveValueSetRef(name: String?, relativeTo: Library): ValueSetDef {
         for (valueSetDef in relativeTo.valueSets!!.def) {
             if (valueSetDef.name.equals(name)) {
@@ -80,6 +85,7 @@ object Libraries {
         )
     }
 
+    @JvmStatic
     fun resolveCodeRef(name: String?, relativeTo: Library): CodeDef {
         for (codeDef in relativeTo.codes!!.def) {
             if (codeDef.name.equals(name)) {
@@ -92,6 +98,7 @@ object Libraries {
         )
     }
 
+    @JvmStatic
     fun resolveParameterRef(name: String?, relativeTo: Library): ParameterDef {
         for (parameterDef in relativeTo.parameters!!.def) {
             if (parameterDef.name.equals(name)) {
@@ -104,6 +111,7 @@ object Libraries {
         )
     }
 
+    @JvmStatic
     fun resolveConceptRef(name: String?, relativeTo: Library): ConceptDef {
         for (conceptDef in relativeTo.concepts!!.def) {
             if (conceptDef.name.equals(name)) {
@@ -114,12 +122,14 @@ object Libraries {
         throw CqlException("Could not resolve concept reference '${name}'.")
     }
 
+    @JvmStatic
     fun getFunctionDefs(name: String?, relativeTo: Library): List<FunctionDef> {
         val defs = resolveAllExpressionRef(name, relativeTo)
 
         return defs.filter { obj -> obj is FunctionDef }.map { obj -> obj as FunctionDef }
     }
 
+    @JvmStatic
     fun toVersionedIdentifier(includeDef: IncludeDef): VersionedIdentifier {
         return VersionedIdentifier()
             .withSystem(getUriPart(includeDef.path))

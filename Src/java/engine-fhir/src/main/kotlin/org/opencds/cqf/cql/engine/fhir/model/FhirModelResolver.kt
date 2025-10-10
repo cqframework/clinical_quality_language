@@ -381,7 +381,7 @@ abstract class FhirModelResolver<
         try {
             if (value is Iterable<*>) {
                 for (`val` in value) {
-                    child.mutator.addValue(base, setBaseValue(`val`!!, base))
+                    child.mutator.addValue(base, setBaseValue(`val`, base))
                 }
             } else {
                 child.mutator.setValue(base, setBaseValue(value, base))

@@ -18,7 +18,7 @@ constructor(
     npmList: MutableList<NpmPackage>? = null,
 ) : ILoggingService {
     private val fspcm: FilesystemPackageCacheManager
-    @JvmField val npmList: MutableList<NpmPackage> = npmList ?: ArrayList()
+    val npmList: MutableList<NpmPackage> = npmList ?: ArrayList()
 
     init {
 
