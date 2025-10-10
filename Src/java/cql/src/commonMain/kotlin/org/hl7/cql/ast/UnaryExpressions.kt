@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("unary")
-data class UnaryExpression(
+data class OperatorUnaryExpression(
     val operator: UnaryOperator,
-    val operand: Expression,
+    override val operand: Expression,
     override val locator: Locator = Locator.UNKNOWN,
-) : Expression
+) : UnaryExpression
 
 @Serializable
 enum class UnaryOperator {
@@ -19,4 +19,3 @@ enum class UnaryOperator {
     @SerialName("successor") SUCCESSOR,
     @SerialName("predecessor") PREDECESSOR,
 }
-

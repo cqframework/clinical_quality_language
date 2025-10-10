@@ -14,13 +14,6 @@ data class Library(
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 
-@Serializable
-data class LibraryIdentifier(
-    val name: QualifiedIdentifier,
-    val version: VersionSpecifier? = null,
-    val locator: Locator = Locator.UNKNOWN,
-)
-
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("kind")

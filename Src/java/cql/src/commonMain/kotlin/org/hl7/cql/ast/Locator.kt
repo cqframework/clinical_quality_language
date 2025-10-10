@@ -30,10 +30,12 @@ enum class ProblemSeverity {
 }
 
 @Serializable
-data class AstProblem(
+data class Problem(
     val message: String,
     override val locator: Locator = Locator.UNKNOWN,
     val severity: ProblemSeverity = ProblemSeverity.ERROR,
 ) : AstNode
 
-@Serializable data class AstResult(val library: Library, val problems: List<AstProblem>)
+@Serializable data class LibraryResult(val library: Library, val problems: List<Problem>)
+
+@Serializable data class ExpressionResult(val expression: Expression, val problems: List<Problem>)

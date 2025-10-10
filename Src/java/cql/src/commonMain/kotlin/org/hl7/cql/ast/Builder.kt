@@ -17,11 +17,12 @@ import org.cqframework.cql.gen.cqlParser
     "ReturnCount",
     "LargeClass",
 )
-class CqlAstBuilder(private val sourceId: String? = null) {
+class Builder(private val sourceId: String? = null) {
 
-    private val problems = mutableListOf<AstProblem>()
+    private val problems = mutableListOf<Problem>()
 
-    fun parseLibrary(text: String): AstResult {
+    fun parseLibrary(text: String): LibraryResult {
+        problems.clear()
         val parser = createParser(text)
         val listener = ProblemCollector()
         parser.removeErrorListeners()
@@ -29,7 +30,27 @@ class CqlAstBuilder(private val sourceId: String? = null) {
         val libraryContext = parser.library()
         problems.addAll(listener.problems)
         val library = buildLibrary(libraryContext)
-        return AstResult(library, problems.toList())
+        return LibraryResult(library, problems.toList())
+    }
+
+    fun parseExpression(text: String): ExpressionResult {
+        problems.clear()
+        val parser = createParser(text)
+        val listener = ProblemCollector()
+        parser.removeErrorListeners()
+        parser.addErrorListener(listener)
+        val expressionContext = parser.expression()
+        problems.addAll(listener.problems)
+        val expression = buildExpression(expressionContext)
+        val trailing = parser.currentToken
+        if (trailing != null && trailing.type != Token.EOF) {
+            problems +=
+                Problem(
+                    message = "Unexpected input after expression: '${trailing.text}'",
+                    locator = trailing.toLocator(),
+                )
+        }
+        return ExpressionResult(expression, problems.toList())
     }
 
     private fun createParser(text: String): cqlParser {
@@ -169,7 +190,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             else ->
                 UnsupportedStatement(grammarRule = "statement", locator = ctx.toLocator()).also {
                     problems +=
-                        AstProblem(
+                        Problem(
                             message = "Unsupported statement: ${ctx.text}",
                             locator = ctx.toLocator(),
                         )
@@ -261,7 +282,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             }
 
             else -> {
-                problems += AstProblem("Unsupported type specifier: ${ctx.text}", ctx.toLocator())
+                problems += Problem("Unsupported type specifier: ${ctx.text}", ctx.toLocator())
                 NamedTypeSpecifier(
                     name = QualifiedIdentifier(listOf("Any")),
                     locator = ctx.toLocator(),
@@ -309,7 +330,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
 
             is cqlParser.TypeExpressionContext -> buildTypeExpression(ctx)
             is cqlParser.NotExpressionContext ->
-                UnaryExpression(
+                OperatorUnaryExpression(
                     operator = UnaryOperator.NOT,
                     operand = buildExpression(ctx.expression()),
                     locator = ctx.toLocator(),
@@ -338,7 +359,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             if (ctx.text.contains("is not", ignoreCase = true)) BinaryOperator.NOT_EQUALS
             else BinaryOperator.EQUALS
         val right = LiteralExpression(literal, ctx.toLocator())
-        return BinaryExpression(
+        return OperatorBinaryExpression(
             operator = op,
             left = left,
             right = right,
@@ -398,7 +419,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             leftCtx?.let { buildExpression(it) } ?: unsupportedExpression("expression", parent)
         val right =
             rightCtx?.let { buildExpression(it) } ?: unsupportedExpression("expression", parent)
-        return BinaryExpression(
+        return OperatorBinaryExpression(
             operator = operator,
             left = left,
             right = right,
@@ -413,7 +434,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             is cqlParser.PolarityExpressionTermContext -> {
                 val symbol = ctx.getChild(0)?.text
                 val operator = if (symbol == "-") UnaryOperator.NEGATE else UnaryOperator.POSITIVE
-                UnaryExpression(
+                OperatorUnaryExpression(
                     operator = operator,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
@@ -427,7 +448,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                     "&" -> BinaryOperator.CONCAT
                     else -> return unsupportedExpression("additionExpressionTerm", ctx)
                 }
-                BinaryExpression(
+                OperatorBinaryExpression(
                     operator = operator,
                     left = buildExpressionTerm(ctx.expressionTerm(0)!!),
                     right = buildExpressionTerm(ctx.expressionTerm(1)!!),
@@ -445,7 +466,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                         "mod" -> BinaryOperator.MODULO
                         else -> return unsupportedExpression("multiplicationExpressionTerm", ctx)
                     }
-                BinaryExpression(
+                OperatorBinaryExpression(
                     operator = operator,
                     left = buildExpressionTerm(ctx.expressionTerm(0)!!),
                     right = buildExpressionTerm(ctx.expressionTerm(1)!!),
@@ -454,7 +475,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             }
 
             is cqlParser.PowerExpressionTermContext ->
-                BinaryExpression(
+                OperatorBinaryExpression(
                     operator = BinaryOperator.POWER,
                     left = buildExpressionTerm(ctx.expressionTerm(0)!!),
                     right = buildExpressionTerm(ctx.expressionTerm(1)!!),
@@ -482,14 +503,14 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                 )
 
             is cqlParser.SuccessorExpressionTermContext ->
-                UnaryExpression(
+                OperatorUnaryExpression(
                     operator = UnaryOperator.SUCCESSOR,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
                 )
 
             is cqlParser.PredecessorExpressionTermContext ->
-                UnaryExpression(
+                OperatorUnaryExpression(
                     operator = UnaryOperator.PREDECESSOR,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
@@ -847,7 +868,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
                 "except" -> BinaryOperator.EXCEPT
                 else -> return unsupportedExpression("inFixSetExpression", ctx)
             }
-        return BinaryExpression(
+        return OperatorBinaryExpression(
             operator = operator,
             left = buildExpression(ctx.expression(0)!!),
             right = buildExpression(ctx.expression(1)!!),
@@ -1263,7 +1284,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             is cqlParser.EndsIntervalOperatorPhraseContext -> buildEndsIntervalPhrase(ctx)
             else -> {
                 problems +=
-                    AstProblem(
+                    Problem(
                         "Unsupported interval operator phrase: ${ctx.text}",
                         ctx.toLocator(),
                     )
@@ -1611,17 +1632,17 @@ class CqlAstBuilder(private val sourceId: String? = null) {
         }
 
     private fun unsupportedExpression(rule: String, ctx: ParserRuleContext): Expression {
-        problems += AstProblem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
+        problems += Problem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
         return UnsupportedExpression(description = ctx.text, locator = ctx.toLocator())
     }
 
     private fun unsupportedDefinition(rule: String, ctx: ParserRuleContext): Definition {
-        problems += AstProblem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
+        problems += Problem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
         return UnsupportedDefinition(grammarRule = rule, locator = ctx.toLocator())
     }
 
     private inner class ProblemCollector : BaseErrorListener() {
-        val problems = mutableListOf<AstProblem>()
+        val problems = mutableListOf<Problem>()
 
         override fun syntaxError(
             recognizer: Recognizer<*, *>,
@@ -1632,7 +1653,7 @@ class CqlAstBuilder(private val sourceId: String? = null) {
             e: RecognitionException?,
         ) {
             problems +=
-                AstProblem(
+                Problem(
                     message = msg,
                     locator =
                         Locator(

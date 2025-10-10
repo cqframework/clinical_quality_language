@@ -31,9 +31,9 @@ enum class BinaryOperator {
 
 @Serializable
 @SerialName("binary")
-data class BinaryExpression(
+data class OperatorBinaryExpression(
     val operator: BinaryOperator,
-    val left: Expression,
-    val right: Expression,
+    override val left: Expression,
+    override val right: Expression,
     override val locator: Locator = Locator.UNKNOWN,
-) : Expression
+) : BinaryExpression
