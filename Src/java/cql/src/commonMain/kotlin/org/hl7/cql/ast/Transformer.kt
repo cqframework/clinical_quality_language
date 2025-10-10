@@ -3,7 +3,7 @@ package org.hl7.cql.ast
 /**
  * A reusable visitor that can traverse and optionally rewrite any node in the CQL AST. Subclasses
  * can override the *visit* functions to normalize locators, enrich nodes with inferred metadata, or
- * return entirely different subtrees. By default the transformer rebuilds nodes with the visits
+ * return entirely different subtrees. By default, the transformer rebuilds nodes with the visits
  * applied to their children and returns the original node when no modification is required.
  */
 open class Transformer {
@@ -33,9 +33,7 @@ open class Transformer {
     open fun visitCodeSystemDefinition(definition: CodeSystemDefinition): Definition = definition
 
     open fun visitValueSetDefinition(definition: ValueSetDefinition): Definition =
-        definition.copy(
-            codesystems = definition.codesystems.map { visitTerminologyReference(it) },
-        )
+        definition.copy(codesystems = definition.codesystems.map { visitTerminologyReference(it) })
 
     open fun visitCodeDefinition(definition: CodeDefinition): Definition =
         definition.copy(system = visitTerminologyReference(definition.system))
@@ -104,6 +102,7 @@ open class Transformer {
             is TimeBoundaryExpression -> visitTimeBoundaryExpression(expression)
             is FunctionCallExpression -> visitFunctionCallExpression(expression)
             is PropertyAccessExpression -> visitPropertyAccessExpression(expression)
+            is IndexExpression -> visitIndexExpression(expression)
             is IfExpression -> visitIfExpression(expression)
             is CaseExpression -> visitCaseExpression(expression)
             is QueryExpression -> visitQueryExpression(expression)
@@ -114,6 +113,8 @@ open class Transformer {
             is IsExpression -> visitIsExpression(expression)
             is AsExpression -> visitAsExpression(expression)
             is CastExpression -> visitCastExpression(expression)
+            is DateTimeComponentExpression -> visitDateTimeComponentExpression(expression)
+            is ExternalConstantExpression -> visitExternalConstantExpression(expression)
             is UnsupportedExpression -> visitUnsupportedExpression(expression)
             is LiteralExpression -> visitLiteralExpression(expression)
             is OperatorBinaryExpression -> visitOperatorBinaryExpression(expression)
@@ -182,6 +183,12 @@ open class Transformer {
 
     open fun visitPropertyAccessExpression(expression: PropertyAccessExpression): Expression =
         expression.copy(target = visitExpression(expression.target))
+
+    open fun visitIndexExpression(expression: IndexExpression): Expression =
+        expression.copy(
+            target = visitExpression(expression.target),
+            index = visitExpression(expression.index),
+        )
 
     open fun visitIfExpression(expression: IfExpression): Expression =
         expression.copy(
@@ -257,6 +264,12 @@ open class Transformer {
             type = visitTypeSpecifier(expression.type),
         )
 
+    open fun visitDateTimeComponentExpression(expression: DateTimeComponentExpression): Expression =
+        expression.copy(operand = visitExpression(expression.operand))
+
+    open fun visitExternalConstantExpression(expression: ExternalConstantExpression): Expression =
+        expression
+
     open fun visitUnsupportedExpression(expression: UnsupportedExpression): Expression = expression
 
     open fun visitLiteralExpression(expression: LiteralExpression): Expression =
@@ -274,7 +287,9 @@ open class Transformer {
     open fun visitLiteral(literal: Literal): Literal =
         when (literal) {
             is StringLiteral -> visitStringLiteral(literal)
-            is NumberLiteral -> visitNumberLiteral(literal)
+            is LongLiteral -> visitLongLiteral(literal)
+            is IntLiteral -> visitIntLiteral(literal)
+            is DecimalLiteral -> visitDecimalLiteral(literal)
             is BooleanLiteral -> visitBooleanLiteral(literal)
             is NullLiteral -> visitNullLiteral(literal)
             is QuantityLiteral -> visitQuantityLiteral(literal)
@@ -291,7 +306,11 @@ open class Transformer {
 
     open fun visitStringLiteral(literal: StringLiteral): Literal = literal
 
-    open fun visitNumberLiteral(literal: NumberLiteral): Literal = literal
+    open fun visitLongLiteral(literal: LongLiteral): Literal = literal
+
+    open fun visitIntLiteral(literal: IntLiteral): Literal = literal
+
+    open fun visitDecimalLiteral(literal: DecimalLiteral): Literal = literal
 
     open fun visitBooleanLiteral(literal: BooleanLiteral): Literal = literal
 
@@ -313,10 +332,7 @@ open class Transformer {
         )
 
     open fun visitIntervalLiteral(literal: IntervalLiteral): Literal =
-        literal.copy(
-            lower = visitExpression(literal.lower),
-            upper = visitExpression(literal.upper),
-        )
+        literal.copy(lower = visitExpression(literal.lower), upper = visitExpression(literal.upper))
 
     open fun visitListLiteral(literal: ListLiteral): Literal =
         literal.copy(
@@ -345,7 +361,8 @@ open class Transformer {
             is ChoiceTypeSpecifier -> visitChoiceTypeSpecifier(typeSpecifier)
         }
 
-    open fun visitNamedTypeSpecifier(typeSpecifier: NamedTypeSpecifier): NamedTypeSpecifier = typeSpecifier
+    open fun visitNamedTypeSpecifier(typeSpecifier: NamedTypeSpecifier): NamedTypeSpecifier =
+        typeSpecifier
 
     open fun visitListTypeSpecifier(typeSpecifier: ListTypeSpecifier): TypeSpecifier =
         typeSpecifier.copy(elementType = visitTypeSpecifier(typeSpecifier.elementType))
@@ -365,9 +382,12 @@ open class Transformer {
     open fun visitTupleElementValue(value: TupleElementValue): TupleElementValue =
         value.copy(expression = visitExpression(value.expression))
 
-    open fun visitTerminologyReference(reference: TerminologyReference): TerminologyReference = reference
+    open fun visitTerminologyReference(reference: TerminologyReference): TerminologyReference =
+        reference
 
-    open fun visitTerminologyRestriction(restriction: TerminologyRestriction): TerminologyRestriction =
+    open fun visitTerminologyRestriction(
+        restriction: TerminologyRestriction
+    ): TerminologyRestriction =
         restriction.copy(terminology = visitExpression(restriction.terminology))
 
     open fun visitLetClauseItem(item: LetClauseItem): LetClauseItem =
@@ -432,13 +452,20 @@ open class Transformer {
             is UnsupportedIntervalPhrase -> visitUnsupportedIntervalPhrase(phrase)
         }
 
-    open fun visitConcurrentIntervalPhrase(phrase: ConcurrentIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitConcurrentIntervalPhrase(
+        phrase: ConcurrentIntervalPhrase
+    ): IntervalOperatorPhrase = phrase
 
-    open fun visitIncludesIntervalPhrase(phrase: IncludesIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitIncludesIntervalPhrase(phrase: IncludesIntervalPhrase): IntervalOperatorPhrase =
+        phrase
 
-    open fun visitIncludedInIntervalPhrase(phrase: IncludedInIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitIncludedInIntervalPhrase(
+        phrase: IncludedInIntervalPhrase
+    ): IntervalOperatorPhrase = phrase
 
-    open fun visitBeforeOrAfterIntervalPhrase(phrase: BeforeOrAfterIntervalPhrase): IntervalOperatorPhrase =
+    open fun visitBeforeOrAfterIntervalPhrase(
+        phrase: BeforeOrAfterIntervalPhrase
+    ): IntervalOperatorPhrase =
         phrase.copy(
             offset = phrase.offset?.let { visitQuantityOffset(it) },
             relationship = visitTemporalRelationshipPhrase(phrase.relationship),
@@ -449,26 +476,28 @@ open class Transformer {
 
     open fun visitMeetsIntervalPhrase(phrase: MeetsIntervalPhrase): IntervalOperatorPhrase = phrase
 
-    open fun visitOverlapsIntervalPhrase(phrase: OverlapsIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitOverlapsIntervalPhrase(phrase: OverlapsIntervalPhrase): IntervalOperatorPhrase =
+        phrase
 
-    open fun visitStartsIntervalPhrase(phrase: StartsIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitStartsIntervalPhrase(phrase: StartsIntervalPhrase): IntervalOperatorPhrase =
+        phrase
 
     open fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase): IntervalOperatorPhrase = phrase
 
-    open fun visitUnsupportedIntervalPhrase(phrase: UnsupportedIntervalPhrase): IntervalOperatorPhrase = phrase
+    open fun visitUnsupportedIntervalPhrase(
+        phrase: UnsupportedIntervalPhrase
+    ): IntervalOperatorPhrase = phrase
 
     open fun visitQuantityOffset(offset: QuantityOffset): QuantityOffset =
         offset.copy(quantity = visitQuantityLiteral(offset.quantity) as QuantityLiteral)
 
-    open fun visitTemporalRelationshipPhrase(phrase: TemporalRelationshipPhrase): TemporalRelationshipPhrase = phrase
+    open fun visitTemporalRelationshipPhrase(
+        phrase: TemporalRelationshipPhrase
+    ): TemporalRelationshipPhrase = phrase
 }
 
-/**
- * Transform the library using the supplied [Transformer].
- */
+/** Transform the library using the supplied [Transformer]. */
 fun Library.transform(transformer: Transformer): Library = transformer.visitLibrary(this)
 
-/**
- * Transform the expression using the supplied [Transformer].
- */
+/** Transform the expression using the supplied [Transformer]. */
 fun Expression.transform(transformer: Transformer): Expression = transformer.visitExpression(this)

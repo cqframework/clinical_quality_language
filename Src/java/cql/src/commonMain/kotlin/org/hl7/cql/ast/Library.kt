@@ -103,7 +103,6 @@ data class ParameterDefinition(
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
-
 @Serializable data class ParameterRef(val name: Identifier, val locator: Locator = Locator.UNKNOWN)
 
 @Serializable

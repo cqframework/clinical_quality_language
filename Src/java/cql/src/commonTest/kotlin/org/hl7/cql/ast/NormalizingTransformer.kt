@@ -14,46 +14,70 @@ object NormalizingTransformer : Transformer() {
         (super.visitUsingDefinition(definition) as UsingDefinition).copy(locator = Locator.UNKNOWN)
 
     override fun visitIncludeDefinition(definition: IncludeDefinition): Definition =
-        (super.visitIncludeDefinition(definition) as IncludeDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitIncludeDefinition(definition) as IncludeDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitCodeSystemDefinition(definition: CodeSystemDefinition): Definition =
-        (super.visitCodeSystemDefinition(definition) as CodeSystemDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitCodeSystemDefinition(definition) as CodeSystemDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitValueSetDefinition(definition: ValueSetDefinition): Definition =
-        (super.visitValueSetDefinition(definition) as ValueSetDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitValueSetDefinition(definition) as ValueSetDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitCodeDefinition(definition: CodeDefinition): Definition =
         (super.visitCodeDefinition(definition) as CodeDefinition).copy(locator = Locator.UNKNOWN)
 
     override fun visitConceptDefinition(definition: ConceptDefinition): Definition =
-        (super.visitConceptDefinition(definition) as ConceptDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitConceptDefinition(definition) as ConceptDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitParameterDefinition(definition: ParameterDefinition): Definition =
-        (super.visitParameterDefinition(definition) as ParameterDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitParameterDefinition(definition) as ParameterDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitUnsupportedDefinition(definition: UnsupportedDefinition): Definition =
-        (super.visitUnsupportedDefinition(definition) as UnsupportedDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitUnsupportedDefinition(definition) as UnsupportedDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitExpressionDefinition(statement: ExpressionDefinition): Statement =
-        (super.visitExpressionDefinition(statement) as ExpressionDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitExpressionDefinition(statement) as ExpressionDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitFunctionDefinition(statement: FunctionDefinition): Statement =
-        (super.visitFunctionDefinition(statement) as FunctionDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitFunctionDefinition(statement) as FunctionDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitContextDefinition(statement: ContextDefinition): Statement =
-        (super.visitContextDefinition(statement) as ContextDefinition).copy(locator = Locator.UNKNOWN)
+        (super.visitContextDefinition(statement) as ContextDefinition).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitUnsupportedStatement(statement: UnsupportedStatement): Statement =
-        (super.visitUnsupportedStatement(statement) as UnsupportedStatement).copy(locator = Locator.UNKNOWN)
+        (super.visitUnsupportedStatement(statement) as UnsupportedStatement).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitOperandDefinition(definition: OperandDefinition): OperandDefinition =
         super.visitOperandDefinition(definition).copy(locator = Locator.UNKNOWN)
 
     override fun visitExpressionFunctionBody(body: ExpressionFunctionBody): FunctionBody =
-        (super.visitExpressionFunctionBody(body) as ExpressionFunctionBody).copy(locator = Locator.UNKNOWN)
+        (super.visitExpressionFunctionBody(body) as ExpressionFunctionBody).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitExternalFunctionBody(body: ExternalFunctionBody): FunctionBody =
-        (super.visitExternalFunctionBody(body) as ExternalFunctionBody).copy(locator = Locator.UNKNOWN)
+        (super.visitExternalFunctionBody(body) as ExternalFunctionBody).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitExpression(expression: Expression): Expression =
         super.visitExpression(expression).withUnknownLocator()
@@ -71,16 +95,24 @@ object NormalizingTransformer : Transformer() {
         super.visitNamedTypeSpecifier(typeSpecifier).copy(locator = Locator.UNKNOWN)
 
     override fun visitListTypeSpecifier(typeSpecifier: ListTypeSpecifier): TypeSpecifier =
-        (super.visitListTypeSpecifier(typeSpecifier) as ListTypeSpecifier).copy(locator = Locator.UNKNOWN)
+        (super.visitListTypeSpecifier(typeSpecifier) as ListTypeSpecifier).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitIntervalTypeSpecifier(typeSpecifier: IntervalTypeSpecifier): TypeSpecifier =
-        (super.visitIntervalTypeSpecifier(typeSpecifier) as IntervalTypeSpecifier).copy(locator = Locator.UNKNOWN)
+        (super.visitIntervalTypeSpecifier(typeSpecifier) as IntervalTypeSpecifier).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitTupleTypeSpecifier(typeSpecifier: TupleTypeSpecifier): TypeSpecifier =
-        (super.visitTupleTypeSpecifier(typeSpecifier) as TupleTypeSpecifier).copy(locator = Locator.UNKNOWN)
+        (super.visitTupleTypeSpecifier(typeSpecifier) as TupleTypeSpecifier).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitChoiceTypeSpecifier(typeSpecifier: ChoiceTypeSpecifier): TypeSpecifier =
-        (super.visitChoiceTypeSpecifier(typeSpecifier) as ChoiceTypeSpecifier).copy(locator = Locator.UNKNOWN)
+        (super.visitChoiceTypeSpecifier(typeSpecifier) as ChoiceTypeSpecifier).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitTupleElement(element: TupleElement): TupleElement =
         super.visitTupleElement(element).copy(locator = Locator.UNKNOWN)
@@ -115,50 +147,92 @@ object NormalizingTransformer : Transformer() {
     override fun visitWithoutClause(clause: WithoutClause): QueryInclusionClause =
         (super.visitWithoutClause(clause) as WithoutClause).copy(locator = Locator.UNKNOWN)
 
+    override fun visitRetrieveExpression(expression: RetrieveExpression): Expression =
+        (super.visitRetrieveExpression(expression) as RetrieveExpression).copy(
+            locator = Locator.UNKNOWN
+        )
+
     override fun visitAliasedQuerySource(source: AliasedQuerySource): AliasedQuerySource =
         super.visitAliasedQuerySource(source).copy(locator = Locator.UNKNOWN)
 
     override fun visitExpressionQuerySource(source: ExpressionQuerySource): QuerySource =
-        (super.visitExpressionQuerySource(source) as ExpressionQuerySource).copy(locator = Locator.UNKNOWN)
+        (super.visitExpressionQuerySource(source) as ExpressionQuerySource).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitTerminologyRestriction(restriction: TerminologyRestriction): TerminologyRestriction =
+    override fun visitTerminologyRestriction(
+        restriction: TerminologyRestriction
+    ): TerminologyRestriction =
         super.visitTerminologyRestriction(restriction).copy(locator = Locator.UNKNOWN)
 
-    override fun visitConcurrentIntervalPhrase(phrase: ConcurrentIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitConcurrentIntervalPhrase(phrase) as ConcurrentIntervalPhrase).copy(locator = Locator.UNKNOWN)
+    override fun visitConcurrentIntervalPhrase(
+        phrase: ConcurrentIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitConcurrentIntervalPhrase(phrase) as ConcurrentIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitIncludesIntervalPhrase(phrase: IncludesIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitIncludesIntervalPhrase(phrase) as IncludesIntervalPhrase).copy(locator = Locator.UNKNOWN)
+    override fun visitIncludesIntervalPhrase(
+        phrase: IncludesIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitIncludesIntervalPhrase(phrase) as IncludesIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitIncludedInIntervalPhrase(phrase: IncludedInIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitIncludedInIntervalPhrase(phrase) as IncludedInIntervalPhrase).copy(locator = Locator.UNKNOWN)
+    override fun visitIncludedInIntervalPhrase(
+        phrase: IncludedInIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitIncludedInIntervalPhrase(phrase) as IncludedInIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitBeforeOrAfterIntervalPhrase(phrase: BeforeOrAfterIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitBeforeOrAfterIntervalPhrase(phrase) as BeforeOrAfterIntervalPhrase)
-            .copy(locator = Locator.UNKNOWN)
+    override fun visitBeforeOrAfterIntervalPhrase(
+        phrase: BeforeOrAfterIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitBeforeOrAfterIntervalPhrase(phrase) as BeforeOrAfterIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitWithinIntervalPhrase(phrase: WithinIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitWithinIntervalPhrase(phrase) as WithinIntervalPhrase).copy(locator = Locator.UNKNOWN)
+        (super.visitWithinIntervalPhrase(phrase) as WithinIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitMeetsIntervalPhrase(phrase: MeetsIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitMeetsIntervalPhrase(phrase) as MeetsIntervalPhrase).copy(locator = Locator.UNKNOWN)
+        (super.visitMeetsIntervalPhrase(phrase) as MeetsIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitOverlapsIntervalPhrase(phrase: OverlapsIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitOverlapsIntervalPhrase(phrase) as OverlapsIntervalPhrase).copy(locator = Locator.UNKNOWN)
+    override fun visitOverlapsIntervalPhrase(
+        phrase: OverlapsIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitOverlapsIntervalPhrase(phrase) as OverlapsIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitStartsIntervalPhrase(phrase: StartsIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitStartsIntervalPhrase(phrase) as StartsIntervalPhrase).copy(locator = Locator.UNKNOWN)
+        (super.visitStartsIntervalPhrase(phrase) as StartsIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitEndsIntervalPhrase(phrase) as EndsIntervalPhrase).copy(locator = Locator.UNKNOWN)
+        (super.visitEndsIntervalPhrase(phrase) as EndsIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
-    override fun visitUnsupportedIntervalPhrase(phrase: UnsupportedIntervalPhrase): IntervalOperatorPhrase =
-        (super.visitUnsupportedIntervalPhrase(phrase) as UnsupportedIntervalPhrase).copy(locator = Locator.UNKNOWN)
+    override fun visitUnsupportedIntervalPhrase(
+        phrase: UnsupportedIntervalPhrase
+    ): IntervalOperatorPhrase =
+        (super.visitUnsupportedIntervalPhrase(phrase) as UnsupportedIntervalPhrase).copy(
+            locator = Locator.UNKNOWN
+        )
 
     override fun visitQuantityOffset(offset: QuantityOffset): QuantityOffset =
         super.visitQuantityOffset(offset).copy(locator = Locator.UNKNOWN)
 
-    override fun visitTemporalRelationshipPhrase(phrase: TemporalRelationshipPhrase): TemporalRelationshipPhrase =
+    override fun visitTemporalRelationshipPhrase(
+        phrase: TemporalRelationshipPhrase
+    ): TemporalRelationshipPhrase =
         super.visitTemporalRelationshipPhrase(phrase).copy(locator = Locator.UNKNOWN)
 }
 
@@ -175,10 +249,12 @@ private fun Expression.withUnknownLocator(): Expression =
         is WidthExpression -> copy(locator = Locator.UNKNOWN)
         is ElementExtractorExpression -> copy(locator = Locator.UNKNOWN)
         is TypeExtentExpression -> copy(locator = Locator.UNKNOWN)
+        is DateTimeComponentExpression -> copy(locator = Locator.UNKNOWN)
         is ConversionExpression -> copy(locator = Locator.UNKNOWN)
         is TimeBoundaryExpression -> copy(locator = Locator.UNKNOWN)
         is FunctionCallExpression -> copy(locator = Locator.UNKNOWN)
         is PropertyAccessExpression -> copy(locator = Locator.UNKNOWN)
+        is IndexExpression -> copy(locator = Locator.UNKNOWN)
         is IfExpression -> copy(locator = Locator.UNKNOWN)
         is CaseExpression -> copy(locator = Locator.UNKNOWN)
         is QueryExpression -> copy(locator = Locator.UNKNOWN)
@@ -189,6 +265,7 @@ private fun Expression.withUnknownLocator(): Expression =
         is IsExpression -> copy(locator = Locator.UNKNOWN)
         is AsExpression -> copy(locator = Locator.UNKNOWN)
         is CastExpression -> copy(locator = Locator.UNKNOWN)
+        is ExternalConstantExpression -> copy(locator = Locator.UNKNOWN)
         is UnsupportedExpression -> copy(locator = Locator.UNKNOWN)
         is LiteralExpression -> copy(locator = Locator.UNKNOWN)
         is OperatorBinaryExpression -> copy(locator = Locator.UNKNOWN)
@@ -198,7 +275,9 @@ private fun Expression.withUnknownLocator(): Expression =
 private fun Literal.withUnknownLocator(): Literal =
     when (this) {
         is StringLiteral -> copy(locator = Locator.UNKNOWN)
-        is NumberLiteral -> copy(locator = Locator.UNKNOWN)
+        is LongLiteral -> copy(locator = Locator.UNKNOWN)
+        is IntLiteral -> copy(locator = Locator.UNKNOWN)
+        is DecimalLiteral -> copy(locator = Locator.UNKNOWN)
         is BooleanLiteral -> copy(locator = Locator.UNKNOWN)
         is NullLiteral -> copy(locator = Locator.UNKNOWN)
         is QuantityLiteral -> copy(locator = Locator.UNKNOWN)

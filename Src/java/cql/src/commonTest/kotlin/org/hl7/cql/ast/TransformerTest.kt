@@ -12,23 +12,19 @@ class TransformerTest {
         val expression = builder.parseExpression("1 + 2").expression
         val incrementingTransformer =
             object : Transformer() {
-                override fun visitNumberLiteral(literal: NumberLiteral): Literal {
-                    val value = literal.value.toIntOrNull()
-                    return if (value != null) {
-                        literal.copy(value = (value + 1).toString())
-                    } else {
-                        literal
-                    }
+                override fun visitIntLiteral(literal: IntLiteral): Literal {
+                    val value = literal.value
+                    return literal.copy(value = (value + 1))
                 }
             }
 
         val transformed = expression.transform(incrementingTransformer) as OperatorBinaryExpression
 
-        val left = ((transformed.left as LiteralExpression).literal as NumberLiteral).value
-        val right = ((transformed.right as LiteralExpression).literal as NumberLiteral).value
+        val left = ((transformed.left as LiteralExpression).literal as IntLiteral).value
+        val right = ((transformed.right as LiteralExpression).literal as IntLiteral).value
 
-        assertEquals("2", left)
-        assertEquals("3", right)
+        assertEquals(2, left)
+        assertEquals(3, right)
     }
 
     @Test
@@ -39,7 +35,7 @@ class TransformerTest {
                 library Test version '1.0'
 
                 define "Greeting": 'hello'
-                """,
+                """
             )
         val library = result.library
 

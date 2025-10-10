@@ -85,6 +85,30 @@ data class TypeExtentExpression(
 ) : Expression
 
 @Serializable
+enum class DateTimeComponent {
+    @SerialName("year") YEAR,
+    @SerialName("month") MONTH,
+    @SerialName("week") WEEK,
+    @SerialName("day") DAY,
+    @SerialName("hour") HOUR,
+    @SerialName("minute") MINUTE,
+    @SerialName("second") SECOND,
+    @SerialName("millisecond") MILLISECOND,
+    @SerialName("date") DATE,
+    @SerialName("time") TIME,
+    @SerialName("timezone") TIMEZONE,
+    @SerialName("timezoneOffset") TIMEZONE_OFFSET,
+}
+
+@Serializable
+@SerialName("dateTimeComponent")
+data class DateTimeComponentExpression(
+    val component: DateTimeComponent,
+    override val operand: Expression,
+    override val locator: Locator = Locator.UNKNOWN,
+) : UnaryExpression
+
+@Serializable
 @SerialName("conversion")
 data class ConversionExpression(
     override val operand: Expression,

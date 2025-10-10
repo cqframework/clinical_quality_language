@@ -2,6 +2,7 @@ package org.hl7.cql.ast
 
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.cqframework.cql.shared.BigDecimal
 
 typealias ExpressionSpec = ExpressionBuilder.() -> Expression
 
@@ -10,13 +11,12 @@ fun buildExpressionSpec(block: ExpressionSpec): Expression = ExpressionBuilder()
 class ExpressionBuilder {
     private fun expression(block: ExpressionSpec): Expression = ExpressionBuilder().block()
 
-    fun number(value: String, decimal: Boolean = false): Expression =
-        LiteralExpression(NumberLiteral(value = value, isDecimal = decimal))
+    fun long(value: Long): Expression = LiteralExpression(LongLiteral(value = value))
 
-    fun int(value: Int): Expression = number(value.toString(), decimal = false)
+    fun int(value: Int): Expression = LiteralExpression(IntLiteral(value = value))
 
     fun decimal(value: Double): Expression =
-        LiteralExpression(NumberLiteral(value = value.toString(), isDecimal = true))
+        LiteralExpression(DecimalLiteral(value = BigDecimal(value)))
 
     fun string(value: String): Expression = LiteralExpression(StringLiteral(value))
 
@@ -40,21 +40,25 @@ class ExpressionBuilder {
     fun terminology(identifier: String, library: String? = null): TerminologyReference =
         TerminologyReference(Identifier(identifier), library?.let { Identifier(it) })
 
-    fun codeLiteral(code: String, system: TerminologyReference, display: String? = null): CodeLiteral =
-        CodeLiteral(code = code, system = system, display = display)
+    fun codeLiteral(
+        code: String,
+        system: TerminologyReference,
+        display: String? = null,
+    ): CodeLiteral = CodeLiteral(code = code, system = system, display = display)
 
-    fun code(code: String, system: String, library: String? = null, display: String? = null): Expression =
-        LiteralExpression(codeLiteral(code, terminology(system, library), display))
+    fun code(
+        code: String,
+        system: String,
+        library: String? = null,
+        display: String? = null,
+    ): Expression = LiteralExpression(codeLiteral(code, terminology(system, library), display))
 
     fun concept(vararg codes: CodeLiteral, display: String? = null): Expression =
         LiteralExpression(ConceptLiteral(codes = codes.toList(), display = display))
 
     fun list(vararg elements: ExpressionSpec, elementType: TypeSpecifier? = null): Expression =
         LiteralExpression(
-            ListLiteral(
-                elements = elements.map { expression(it) },
-                elementType = elementType,
-            ),
+            ListLiteral(elements = elements.map { expression(it) }, elementType = elementType)
         )
 
     fun tuple(vararg elements: Pair<String, ExpressionSpec>): Expression =
@@ -63,8 +67,8 @@ class ExpressionBuilder {
                 elements =
                     elements.map { (name, spec) ->
                         TupleElementValue(Identifier(name), expression(spec))
-                    },
-            ),
+                    }
+            )
         )
 
     fun instance(
@@ -78,7 +82,7 @@ class ExpressionBuilder {
                     elements.map { (name, spec) ->
                         TupleElementValue(Identifier(name), expression(spec))
                     },
-            ),
+            )
         )
 
     fun interval(
@@ -93,11 +97,16 @@ class ExpressionBuilder {
                 upper = expression(upper),
                 lowerClosed = lowerClosed,
                 upperClosed = upperClosed,
-            ),
+            )
         )
 
     fun identifier(vararg parts: String): Expression =
         IdentifierExpression(QualifiedIdentifier(parts.toList()))
+
+    fun externalConstant(name: String): Expression = ExternalConstantExpression(name)
+
+    fun index(target: ExpressionSpec, index: ExpressionSpec): Expression =
+        IndexExpression(expression(target), expression(index))
 
     fun unary(operator: UnaryOperator, operand: ExpressionSpec): Expression =
         OperatorUnaryExpression(operator, expression(operand))
@@ -112,22 +121,37 @@ class ExpressionBuilder {
         left: ExpressionSpec,
         right: ExpressionSpec,
         precision: String? = null,
-    ): Expression =
-        MembershipExpression(operator, precision, expression(left), expression(right))
+    ): Expression = MembershipExpression(operator, precision, expression(left), expression(right))
 
-    fun ifThenElse(condition: ExpressionSpec, thenBranch: ExpressionSpec, elseBranch: ExpressionSpec): Expression =
+    fun ifThenElse(
+        condition: ExpressionSpec,
+        thenBranch: ExpressionSpec,
+        elseBranch: ExpressionSpec,
+    ): Expression =
         IfExpression(expression(condition), expression(thenBranch), expression(elseBranch))
 
-    fun case(block: CaseExpressionBuilder.() -> Unit): Expression = CaseExpressionBuilder().apply(block).build()
+    fun case(block: CaseExpressionBuilder.() -> Unit): Expression =
+        CaseExpressionBuilder().apply(block).build()
 
-    fun between(input: ExpressionSpec, lower: ExpressionSpec, upper: ExpressionSpec, properly: Boolean = false): Expression =
+    fun between(
+        input: ExpressionSpec,
+        lower: ExpressionSpec,
+        upper: ExpressionSpec,
+        properly: Boolean = false,
+    ): Expression =
         BetweenExpression(expression(input), expression(lower), expression(upper), properly)
 
-    fun durationBetween(precision: String, lower: ExpressionSpec, upper: ExpressionSpec): Expression =
-        DurationBetweenExpression(precision, expression(lower), expression(upper))
+    fun durationBetween(
+        precision: String,
+        lower: ExpressionSpec,
+        upper: ExpressionSpec,
+    ): Expression = DurationBetweenExpression(precision, expression(lower), expression(upper))
 
-    fun differenceBetween(precision: String, lower: ExpressionSpec, upper: ExpressionSpec): Expression =
-        DifferenceBetweenExpression(precision, expression(lower), expression(upper))
+    fun differenceBetween(
+        precision: String,
+        lower: ExpressionSpec,
+        upper: ExpressionSpec,
+    ): Expression = DifferenceBetweenExpression(precision, expression(lower), expression(upper))
 
     fun durationOf(precision: String, operand: ExpressionSpec): Expression =
         DurationOfExpression(precision, expression(operand))
@@ -147,11 +171,13 @@ class ExpressionBuilder {
         operand: ExpressionSpec,
         destinationType: TypeSpecifier? = null,
         destinationUnit: String? = null,
-    ): Expression =
-        ConversionExpression(expression(operand), destinationType, destinationUnit)
+    ): Expression = ConversionExpression(expression(operand), destinationType, destinationUnit)
 
     fun timeBoundary(kind: TimeBoundaryKind, operand: ExpressionSpec): Expression =
         TimeBoundaryExpression(kind, expression(operand))
+
+    fun dateTimeComponent(component: DateTimeComponent, operand: ExpressionSpec): Expression =
+        DateTimeComponentExpression(component, expression(operand))
 
     fun listTransform(kind: ListTransformKind, operand: ExpressionSpec): Expression =
         ListTransformExpression(kind, expression(operand))
@@ -194,7 +220,8 @@ class ExpressionBuilder {
 
     fun listType(elementType: TypeSpecifier): ListTypeSpecifier = ListTypeSpecifier(elementType)
 
-    fun intervalType(pointType: TypeSpecifier): IntervalTypeSpecifier = IntervalTypeSpecifier(pointType)
+    fun intervalType(pointType: TypeSpecifier): IntervalTypeSpecifier =
+        IntervalTypeSpecifier(pointType)
 
     fun tupleType(vararg elements: TupleElement): TupleTypeSpecifier =
         TupleTypeSpecifier(elements.toList())
@@ -216,10 +243,11 @@ class CaseExpressionBuilder {
     }
 
     fun whenThen(condition: ExpressionSpec, result: ExpressionSpec) {
-        items += CaseItem(
-            condition = buildExpressionSpec(condition),
-            result = buildExpressionSpec(result),
-        )
+        items +=
+            CaseItem(
+                condition = buildExpressionSpec(condition),
+                result = buildExpressionSpec(result),
+            )
     }
 
     fun elseResult(block: ExpressionSpec) {
@@ -227,13 +255,8 @@ class CaseExpressionBuilder {
     }
 
     fun build(): CaseExpression {
-        val fallback =
-            elseResult ?: error("case expression must define an elseResult")
-        return CaseExpression(
-            comparand = comparand,
-            cases = items.toList(),
-            elseResult = fallback,
-        )
+        val fallback = elseResult ?: error("case expression must define an elseResult")
+        return CaseExpression(comparand = comparand, cases = items.toList(), elseResult = fallback)
     }
 }
 
@@ -306,11 +329,15 @@ class IntervalPhraseBuilder {
             rightBoundary = rightBoundary,
         )
 
-    fun meets(direction: TemporalRelationshipDirection? = null, precision: String? = null): IntervalOperatorPhrase =
-        MeetsIntervalPhrase(direction, precision)
+    fun meets(
+        direction: TemporalRelationshipDirection? = null,
+        precision: String? = null,
+    ): IntervalOperatorPhrase = MeetsIntervalPhrase(direction, precision)
 
-    fun overlaps(direction: TemporalRelationshipDirection? = null, precision: String? = null): IntervalOperatorPhrase =
-        OverlapsIntervalPhrase(direction, precision)
+    fun overlaps(
+        direction: TemporalRelationshipDirection? = null,
+        precision: String? = null,
+    ): IntervalOperatorPhrase = OverlapsIntervalPhrase(direction, precision)
 
     fun starts(precision: String? = null): IntervalOperatorPhrase = StartsIntervalPhrase(precision)
 

@@ -1,9 +1,11 @@
 package org.hl7.cql.ast
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
+import org.cqframework.cql.shared.BigDecimal
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -16,10 +18,17 @@ data class StringLiteral(val value: String, override val locator: Locator = Loca
     Literal
 
 @Serializable
-@SerialName("number")
-data class NumberLiteral(
-    val value: String,
-    val isDecimal: Boolean,
+@SerialName("long")
+data class LongLiteral(val value: Long, override val locator: Locator = Locator.UNKNOWN) : Literal
+
+@Serializable
+@SerialName("long")
+data class IntLiteral(val value: Int, override val locator: Locator = Locator.UNKNOWN) : Literal
+
+@Serializable
+@SerialName("long")
+data class DecimalLiteral(
+    @Contextual val value: BigDecimal,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Literal
 
@@ -55,7 +64,6 @@ data class TupleLiteral(
     val elements: List<TupleElementValue>,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Literal
-
 
 @Serializable
 @SerialName("instance")
@@ -114,4 +122,3 @@ data class LiteralExpression(
     val literal: Literal,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
-

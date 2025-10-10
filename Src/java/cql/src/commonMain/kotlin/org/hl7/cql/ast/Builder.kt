@@ -9,14 +9,9 @@ import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.Token
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
+import org.cqframework.cql.shared.BigDecimal
 
-@Suppress(
-    "TooManyFunctions",
-    "LongMethod",
-    "CyclomaticComplexMethod",
-    "ReturnCount",
-    "LargeClass",
-)
+@Suppress("TooManyFunctions", "LongMethod", "CyclomaticComplexMethod", "ReturnCount", "LargeClass")
 class Builder(private val sourceId: String? = null) {
 
     private val problems = mutableListOf<Problem>()
@@ -322,11 +317,12 @@ class Builder(private val sourceId: String? = null) {
                     ctx,
                 )
 
-            is cqlParser.CastExpressionContext -> CastExpression(
-                operand = buildExpression(ctx.expression()),
-                type = buildTypeSpecifier(ctx.typeSpecifier()),
-                locator = ctx.toLocator(),
-            )
+            is cqlParser.CastExpressionContext ->
+                CastExpression(
+                    operand = buildExpression(ctx.expression()),
+                    type = buildTypeSpecifier(ctx.typeSpecifier()),
+                    locator = ctx.toLocator(),
+                )
 
             is cqlParser.TypeExpressionContext -> buildTypeExpression(ctx)
             is cqlParser.NotExpressionContext ->
@@ -398,9 +394,7 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildOrExpression(ctx: cqlParser.OrExpressionContext): Expression {
         val operatorToken =
-            ctx.children
-                ?.map { it.text.lowercase() }
-                ?.firstOrNull { it == "or" || it == "xor" }
+            ctx.children?.map { it.text.lowercase() }?.firstOrNull { it == "or" || it == "xor" }
         val operator =
             when (operatorToken) {
                 "xor" -> BinaryOperator.XOR
@@ -431,6 +425,12 @@ class Builder(private val sourceId: String? = null) {
         when (ctx) {
             is cqlParser.TermExpressionTermContext -> buildTerm(ctx.term())
             is cqlParser.InvocationExpressionTermContext -> buildInvocationExpression(ctx)
+            is cqlParser.IndexedExpressionTermContext ->
+                IndexExpression(
+                    target = buildExpressionTerm(ctx.expressionTerm()),
+                    index = buildExpression(ctx.expression()),
+                    locator = ctx.toLocator(),
+                )
             is cqlParser.PolarityExpressionTermContext -> {
                 val symbol = ctx.getChild(0)?.text
                 val operator = if (symbol == "-") UnaryOperator.NEGATE else UnaryOperator.POSITIVE
@@ -442,12 +442,13 @@ class Builder(private val sourceId: String? = null) {
             }
 
             is cqlParser.AdditionExpressionTermContext -> {
-                val operator = when (ctx.getChild(1)?.text?.lowercase()) {
-                    "+" -> BinaryOperator.ADD
-                    "-" -> BinaryOperator.SUBTRACT
-                    "&" -> BinaryOperator.CONCAT
-                    else -> return unsupportedExpression("additionExpressionTerm", ctx)
-                }
+                val operator =
+                    when (ctx.getChild(1)?.text?.lowercase()) {
+                        "+" -> BinaryOperator.ADD
+                        "-" -> BinaryOperator.SUBTRACT
+                        "&" -> BinaryOperator.CONCAT
+                        else -> return unsupportedExpression("additionExpressionTerm", ctx)
+                    }
                 OperatorBinaryExpression(
                     operator = operator,
                     left = buildExpressionTerm(ctx.expressionTerm(0)!!),
@@ -544,17 +545,12 @@ class Builder(private val sourceId: String? = null) {
                         name = typeContext.toQualifiedIdentifier(),
                         locator = typeContext.toLocator(),
                     )
-                TypeExtentExpression(
-                    kind = kind,
-                    type = namedType,
-                    locator = ctx.toLocator(),
-                )
+                TypeExtentExpression(kind = kind, type = namedType, locator = ctx.toLocator())
             }
 
             is cqlParser.ConversionExpressionTermContext -> {
                 val operand = buildExpression(ctx.expression())
-                val type =
-                    ctx.typeSpecifier()?.let { buildTypeSpecifier(it) }
+                val type = ctx.typeSpecifier()?.let { buildTypeSpecifier(it) }
                 val unit = ctx.unit()?.text?.trim('\'')
                 ConversionExpression(
                     operand = operand,
@@ -577,6 +573,12 @@ class Builder(private val sourceId: String? = null) {
                     locator = ctx.toLocator(),
                 )
             }
+            is cqlParser.TimeUnitExpressionTermContext ->
+                DateTimeComponentExpression(
+                    component = ctx.dateTimeComponent().toDateTimeComponent(),
+                    operand = buildExpressionTerm(ctx.expressionTerm()),
+                    locator = ctx.toLocator(),
+                )
 
             is cqlParser.IfThenElseExpressionTermContext -> {
                 val condition = buildExpression(ctx.expression(0)!!)
@@ -682,6 +684,9 @@ class Builder(private val sourceId: String? = null) {
             is cqlParser.IntervalSelectorTermContext ->
                 LiteralExpression(buildIntervalLiteral(ctx.intervalSelector()), ctx.toLocator())
 
+            is cqlParser.ExternalConstantTermContext ->
+                buildExternalConstant(ctx.externalConstant())
+
             else -> unsupportedExpression("term", ctx)
         }
 
@@ -727,27 +732,27 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildLiteral(ctx: cqlParser.LiteralContext): Expression =
         when (ctx) {
-            is cqlParser.NumberLiteralContext ->
-                LiteralExpression(
-                    literal =
-                        NumberLiteral(
-                            ctx.NUMBER().text,
-                            isDecimal =
-                                ctx.NUMBER().text.contains('.') ||
-                                    ctx.NUMBER().text.contains('e', true),
-                            locator = ctx.toLocator(),
-                        ),
-                    locator = ctx.toLocator(),
-                )
+            is cqlParser.NumberLiteralContext -> {
+                val isDecimal =
+                    ctx.NUMBER().text.contains('.') || ctx.NUMBER().text.contains('e', true)
+                val literal =
+                    when {
+                        isDecimal ->
+                            DecimalLiteral(
+                                value = BigDecimal(ctx.NUMBER().text),
+                                locator = ctx.toLocator(),
+                            )
+                        else ->
+                            IntLiteral(value = ctx.NUMBER().text.toInt(), locator = ctx.toLocator())
+                    }
+
+                LiteralExpression(literal = literal, locator = ctx.toLocator())
+            }
 
             is cqlParser.LongNumberLiteralContext ->
                 LiteralExpression(
                     literal =
-                        NumberLiteral(
-                            ctx.LONGNUMBER().text,
-                            isDecimal = false,
-                            locator = ctx.toLocator(),
-                        ),
+                        LongLiteral(ctx.LONGNUMBER().text.toLong(), locator = ctx.toLocator()),
                     locator = ctx.toLocator(),
                 )
 
@@ -800,6 +805,20 @@ class Builder(private val sourceId: String? = null) {
             else -> unsupportedExpression("literal", ctx)
         }
 
+    private fun buildExternalConstant(ctx: cqlParser.ExternalConstantContext): Expression {
+        val identifier = ctx.identifier()
+        val keyword = ctx.keywordIdentifier()
+        val stringToken = ctx.STRING()
+        val name =
+            when {
+                identifier != null -> identifier.toIdentifier().value
+                keyword != null -> keyword.text
+                stringToken != null -> stringToken.text.unquote()
+                else -> ctx.text.removePrefix("%")
+            }
+        return ExternalConstantExpression(name = name, locator = ctx.toLocator())
+    }
+
     private fun cqlParser.VersionSpecifierContext.toVersionSpecifier(): VersionSpecifier =
         VersionSpecifier(this.text.unquote())
 
@@ -834,6 +853,26 @@ class Builder(private val sourceId: String? = null) {
                 }
         )
 
+    private fun cqlParser.DateTimeComponentContext.toDateTimeComponent(): DateTimeComponent =
+        when (text.lowercase()) {
+            "year" -> DateTimeComponent.YEAR
+            "month" -> DateTimeComponent.MONTH
+            "week" -> DateTimeComponent.WEEK
+            "day" -> DateTimeComponent.DAY
+            "hour" -> DateTimeComponent.HOUR
+            "minute" -> DateTimeComponent.MINUTE
+            "second" -> DateTimeComponent.SECOND
+            "millisecond" -> DateTimeComponent.MILLISECOND
+            "date" -> DateTimeComponent.DATE
+            "time" -> DateTimeComponent.TIME
+            "timezone" -> DateTimeComponent.TIMEZONE
+            "timezoneoffset" -> DateTimeComponent.TIMEZONE_OFFSET
+            else -> {
+                problems += Problem("Unsupported dateTimeComponent: ${text}", toLocator())
+                DateTimeComponent.DATE
+            }
+        }
+
     private fun cqlParser.NamedTypeSpecifierContext.toQualifiedIdentifier(): QualifiedIdentifier =
         QualifiedIdentifier(
             parts =
@@ -863,7 +902,8 @@ class Builder(private val sourceId: String? = null) {
     private fun buildInfixSetExpression(ctx: cqlParser.InFixSetExpressionContext): Expression {
         val operator =
             when (ctx.getChild(1)?.text?.lowercase()) {
-                "|", "union" -> BinaryOperator.UNION
+                "|",
+                "union" -> BinaryOperator.UNION
                 "intersect" -> BinaryOperator.INTERSECT
                 "except" -> BinaryOperator.EXCEPT
                 else -> return unsupportedExpression("inFixSetExpression", ctx)
@@ -876,9 +916,7 @@ class Builder(private val sourceId: String? = null) {
         )
     }
 
-    private fun buildMembershipExpression(
-        ctx: cqlParser.MembershipExpressionContext,
-    ): Expression {
+    private fun buildMembershipExpression(ctx: cqlParser.MembershipExpressionContext): Expression {
         val operatorToken =
             ctx.children
                 ?.map { it.text.lowercase() }
@@ -910,7 +948,7 @@ class Builder(private val sourceId: String? = null) {
         )
 
     private fun buildDurationBetweenExpression(
-        ctx: cqlParser.DurationBetweenExpressionContext,
+        ctx: cqlParser.DurationBetweenExpressionContext
     ): Expression =
         DurationBetweenExpression(
             precision = ctx.pluralDateTimePrecision().text,
@@ -920,7 +958,7 @@ class Builder(private val sourceId: String? = null) {
         )
 
     private fun buildDifferenceBetweenExpression(
-        ctx: cqlParser.DifferenceBetweenExpressionContext,
+        ctx: cqlParser.DifferenceBetweenExpressionContext
     ): Expression =
         DifferenceBetweenExpression(
             precision = ctx.pluralDateTimePrecision().text,
@@ -962,7 +1000,8 @@ class Builder(private val sourceId: String? = null) {
     private fun buildCaseExpression(ctx: cqlParser.CaseExpressionTermContext): Expression {
         val expressionList = ctx.expression()
         val items = ctx.caseExpressionItem()
-        val comparand = if (expressionList.size > 1) buildExpression(expressionList.first()) else null
+        val comparand =
+            if (expressionList.size > 1) buildExpression(expressionList.first()) else null
         val caseItems =
             items.map { item ->
                 CaseItem(
@@ -1021,7 +1060,12 @@ class Builder(private val sourceId: String? = null) {
         val code = ctx.STRING().text.unquote()
         val system = ctx.codesystemIdentifier().toTerminologyReference()
         val display = ctx.displayClause()?.STRING()?.text?.unquote()
-        return CodeLiteral(code = code, system = system, display = display, locator = ctx.toLocator())
+        return CodeLiteral(
+            code = code,
+            system = system,
+            display = display,
+            locator = ctx.toLocator(),
+        )
     }
 
     private fun buildConceptLiteral(ctx: cqlParser.ConceptSelectorContext): ConceptLiteral {
@@ -1060,8 +1104,7 @@ class Builder(private val sourceId: String? = null) {
                 name = ctx.namedTypeSpecifier().toQualifiedIdentifier(),
                 locator = ctx.namedTypeSpecifier().toLocator(),
             )
-        val codePath =
-            ctx.codePath()?.simplePath()?.toQualifiedIdentifier()
+        val codePath = ctx.codePath()?.simplePath()?.toQualifiedIdentifier()
         val comparator =
             ctx.codeComparator()?.text?.lowercase()?.let {
                 when (it) {
@@ -1071,8 +1114,7 @@ class Builder(private val sourceId: String? = null) {
                     else -> null
                 }
             }
-        val terminologyRestriction =
-            ctx.terminology()?.let { buildTerminologyRestriction(it) }
+        val terminologyRestriction = ctx.terminology()?.let { buildTerminologyRestriction(it) }
         return RetrieveExpression(
             typeSpecifier = typeSpecifier,
             terminology = terminologyRestriction,
@@ -1085,8 +1127,7 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildQuery(ctx: cqlParser.QueryContext): QueryExpression {
         val sources = ctx.sourceClause().aliasedQuerySource().map { buildAliasedQuerySource(it) }
-        val lets =
-            ctx.letClause()?.letClauseItem()?.map { buildLetClauseItem(it) }.orEmpty()
+        val lets = ctx.letClause()?.letClauseItem()?.map { buildLetClauseItem(it) }.orEmpty()
         val inclusions = ctx.queryInclusionClause().map { buildInclusionClause(it) }
         val where = ctx.whereClause()?.expression()?.let { buildExpression(it) }
         val aggregate = ctx.aggregateClause()?.let { buildAggregateClauseNode(it) }
@@ -1105,7 +1146,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildAliasedQuerySource(
-        ctx: cqlParser.AliasedQuerySourceContext,
+        ctx: cqlParser.AliasedQuerySourceContext
     ): AliasedQuerySource =
         AliasedQuerySource(
             source = buildQuerySource(ctx.querySource()),
@@ -1114,7 +1155,9 @@ class Builder(private val sourceId: String? = null) {
         )
 
     private fun buildQuerySource(ctx: cqlParser.QuerySourceContext): QuerySource {
-        ctx.retrieve()?.let { return buildRetrieve(it) }
+        ctx.retrieve()?.let {
+            return buildRetrieve(it)
+        }
         ctx.qualifiedIdentifierExpression()?.let {
             return ExpressionQuerySource(
                 expression =
@@ -1149,10 +1192,9 @@ class Builder(private val sourceId: String? = null) {
         )
 
     private fun buildInclusionClause(
-        ctx: cqlParser.QueryInclusionClauseContext,
+        ctx: cqlParser.QueryInclusionClauseContext
     ): QueryInclusionClause {
         return when {
-
             ctx.withClause() != null -> {
                 val withClause = ctx.withClause()!!
                 WithClause(
@@ -1199,9 +1241,7 @@ class Builder(private val sourceId: String? = null) {
             locator = ctx.toLocator(),
         )
 
-    private fun buildAggregateClauseNode(
-        ctx: cqlParser.AggregateClauseContext,
-    ): AggregateClause {
+    private fun buildAggregateClauseNode(ctx: cqlParser.AggregateClauseContext): AggregateClause {
         val distinct = ctx.children?.any { it.text.equals("distinct", true) } == true
         val identifier = ctx.identifier().toIdentifier()
         val starting = ctx.startingClause()?.let { buildStartingExpression(it) }
@@ -1218,10 +1258,7 @@ class Builder(private val sourceId: String? = null) {
     private fun buildStartingExpression(ctx: cqlParser.StartingClauseContext): Expression =
         ctx.simpleLiteral()?.let { buildSimpleLiteralExpression(it) }
             ?: ctx.quantity()?.let {
-                LiteralExpression(
-                    literal = it.toQuantityLiteral(),
-                    locator = it.toLocator(),
-                )
+                LiteralExpression(literal = it.toQuantityLiteral(), locator = it.toLocator())
             }
             ?: ctx.expression()?.let { buildExpression(it) }
             ?: LiteralExpression(literal = NullLiteral(ctx.toLocator()), locator = ctx.toLocator())
@@ -1257,19 +1294,19 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildSortDirection(ctx: cqlParser.SortDirectionContext): SortDirection =
         when (ctx.text.lowercase()) {
-            "desc", "descending" -> SortDirection.DESCENDING
+            "desc",
+            "descending" -> SortDirection.DESCENDING
             else -> SortDirection.ASCENDING
         }
 
     private fun buildIntervalOperatorPhrase(
-        ctx: cqlParser.IntervalOperatorPhraseContext,
+        ctx: cqlParser.IntervalOperatorPhraseContext
     ): IntervalOperatorPhrase =
         when (ctx) {
             is cqlParser.ConcurrentWithIntervalOperatorPhraseContext ->
                 buildConcurrentIntervalPhrase(ctx)
 
-            is cqlParser.IncludesIntervalOperatorPhraseContext ->
-                buildIncludesIntervalPhrase(ctx)
+            is cqlParser.IncludesIntervalOperatorPhraseContext -> buildIncludesIntervalPhrase(ctx)
 
             is cqlParser.IncludedInIntervalOperatorPhraseContext ->
                 buildIncludedInIntervalPhrase(ctx)
@@ -1284,16 +1321,13 @@ class Builder(private val sourceId: String? = null) {
             is cqlParser.EndsIntervalOperatorPhraseContext -> buildEndsIntervalPhrase(ctx)
             else -> {
                 problems +=
-                    Problem(
-                        "Unsupported interval operator phrase: ${ctx.text}",
-                        ctx.toLocator(),
-                    )
+                    Problem("Unsupported interval operator phrase: ${ctx.text}", ctx.toLocator())
                 UnsupportedIntervalPhrase(ctx.text, ctx.toLocator())
             }
         }
 
     private fun buildConcurrentIntervalPhrase(
-        ctx: cqlParser.ConcurrentWithIntervalOperatorPhraseContext,
+        ctx: cqlParser.ConcurrentWithIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val leftBoundary = ctx.findLeadingBoundary()
         val precision = ctx.dateTimePrecision()?.text?.lowercase()
@@ -1316,7 +1350,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildIncludesIntervalPhrase(
-        ctx: cqlParser.IncludesIntervalOperatorPhraseContext,
+        ctx: cqlParser.IncludesIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase()
@@ -1331,7 +1365,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildIncludedInIntervalPhrase(
-        ctx: cqlParser.IncludedInIntervalOperatorPhraseContext,
+        ctx: cqlParser.IncludedInIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val leftBoundary = ctx.findLeadingBoundary()
@@ -1352,7 +1386,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildBeforeOrAfterIntervalPhrase(
-        ctx: cqlParser.BeforeOrAfterIntervalOperatorPhraseContext,
+        ctx: cqlParser.BeforeOrAfterIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val leftBoundary = ctx.findLeadingBoundary()
         val offset = ctx.quantityOffset()?.let { buildQuantityOffset(it) }
@@ -1370,7 +1404,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildWithinIntervalPhrase(
-        ctx: cqlParser.WithinIntervalOperatorPhraseContext,
+        ctx: cqlParser.WithinIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val leftBoundary = ctx.findLeadingBoundary()
@@ -1387,7 +1421,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildMeetsIntervalPhrase(
-        ctx: cqlParser.MeetsIntervalOperatorPhraseContext,
+        ctx: cqlParser.MeetsIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val direction =
@@ -1401,7 +1435,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildOverlapsIntervalPhrase(
-        ctx: cqlParser.OverlapsIntervalOperatorPhraseContext,
+        ctx: cqlParser.OverlapsIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val direction =
@@ -1415,7 +1449,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildStartsIntervalPhrase(
-        ctx: cqlParser.StartsIntervalOperatorPhraseContext,
+        ctx: cqlParser.StartsIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase =
         StartsIntervalPhrase(
             precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase(),
@@ -1423,7 +1457,7 @@ class Builder(private val sourceId: String? = null) {
         )
 
     private fun buildEndsIntervalPhrase(
-        ctx: cqlParser.EndsIntervalOperatorPhraseContext,
+        ctx: cqlParser.EndsIntervalOperatorPhraseContext
     ): IntervalOperatorPhrase =
         EndsIntervalPhrase(
             precision = ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.lowercase(),
@@ -1432,8 +1466,7 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildQuantityOffset(ctx: cqlParser.QuantityOffsetContext): QuantityOffset {
         val quantity =
-            ctx.quantity()?.toQuantityLiteral()
-                ?: QuantityLiteral(ctx.text, null, ctx.toLocator())
+            ctx.quantity()?.toQuantityLiteral() ?: QuantityLiteral(ctx.text, null, ctx.toLocator())
         val offsetQualifier =
             ctx.offsetRelativeQualifier()?.text?.lowercase()?.let {
                 when (it) {
@@ -1459,7 +1492,7 @@ class Builder(private val sourceId: String? = null) {
     }
 
     private fun buildTemporalRelationship(
-        ctx: cqlParser.TemporalRelationshipContext,
+        ctx: cqlParser.TemporalRelationshipContext
     ): TemporalRelationshipPhrase {
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
         val direction =
@@ -1467,13 +1500,15 @@ class Builder(private val sourceId: String? = null) {
                 ?: TemporalRelationshipDirection.BEFORE
         val inclusive = tokens.any { it == "on or" || it == "or on" }
         val qualifier =
-            tokens.firstOrNull { it == "more than" || it == "less than" }?.let {
-                when (it) {
-                    "more than" -> ExclusiveRelativeQualifier.MORE_THAN
-                    "less than" -> ExclusiveRelativeQualifier.LESS_THAN
-                    else -> null
+            tokens
+                .firstOrNull { it == "more than" || it == "less than" }
+                ?.let {
+                    when (it) {
+                        "more than" -> ExclusiveRelativeQualifier.MORE_THAN
+                        "less than" -> ExclusiveRelativeQualifier.LESS_THAN
+                        else -> null
+                    }
                 }
-            }
         return TemporalRelationshipPhrase(
             direction = direction,
             inclusive = inclusive,
@@ -1496,8 +1531,10 @@ class Builder(private val sourceId: String? = null) {
 
     private fun String.toIntervalBoundarySelector(): IntervalBoundarySelector? =
         when (this.lowercase()) {
-            "starts", "start" -> IntervalBoundarySelector.START
-            "ends", "end" -> IntervalBoundarySelector.END
+            "starts",
+            "start" -> IntervalBoundarySelector.START
+            "ends",
+            "end" -> IntervalBoundarySelector.END
             "occurs" -> IntervalBoundarySelector.OCCURS
             else -> null
         }
@@ -1509,9 +1546,7 @@ class Builder(private val sourceId: String? = null) {
             else -> null
         }
 
-    private fun buildSimpleLiteralExpression(
-        ctx: cqlParser.SimpleLiteralContext,
-    ): Expression =
+    private fun buildSimpleLiteralExpression(ctx: cqlParser.SimpleLiteralContext): Expression =
         when (ctx) {
             is cqlParser.SimpleStringLiteralContext ->
                 LiteralExpression(
@@ -1521,15 +1556,17 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.SimpleNumberLiteralContext -> {
                 val value = ctx.NUMBER().text
-                LiteralExpression(
-                    literal =
-                        NumberLiteral(
-                            value = value,
-                            isDecimal = value.contains('.') || value.contains('e', true),
-                            locator = ctx.toLocator(),
-                        ),
-                    locator = ctx.toLocator(),
-                )
+                val isDecimal = value.contains('.') || value.contains('e', true)
+                val literal =
+                    if (isDecimal) {
+                        DecimalLiteral(BigDecimal(value), ctx.toLocator())
+                    } else if (value.toIntOrNull() != null) {
+                        IntLiteral(value.toInt(), ctx.toLocator())
+                    } else {
+                        LongLiteral(value.toLong())
+                    }
+
+                LiteralExpression(literal = literal, locator = ctx.toLocator())
             }
 
             else ->
@@ -1537,7 +1574,7 @@ class Builder(private val sourceId: String? = null) {
         }
 
     private fun buildTerminologyRestriction(
-        ctx: cqlParser.TerminologyContext,
+        ctx: cqlParser.TerminologyContext
     ): TerminologyRestriction {
         ctx.qualifiedIdentifierExpression()?.let { qualified ->
             val identifierExpression =
@@ -1545,7 +1582,10 @@ class Builder(private val sourceId: String? = null) {
                     name = qualified.toQualifiedIdentifier(),
                     locator = qualified.toLocator(),
                 )
-            return TerminologyRestriction(terminology = identifierExpression, locator = ctx.toLocator())
+            return TerminologyRestriction(
+                terminology = identifierExpression,
+                locator = ctx.toLocator(),
+            )
         }
 
         ctx.expression()?.let { expressionContext ->
@@ -1557,7 +1597,10 @@ class Builder(private val sourceId: String? = null) {
 
         return TerminologyRestriction(
             terminology =
-                LiteralExpression(literal = NullLiteral(ctx.toLocator()), locator = ctx.toLocator()),
+                LiteralExpression(
+                    literal = NullLiteral(ctx.toLocator()),
+                    locator = ctx.toLocator(),
+                ),
             locator = ctx.toLocator(),
         )
     }
@@ -1567,7 +1610,11 @@ class Builder(private val sourceId: String? = null) {
         QualifiedIdentifier(
             parts =
                 buildList {
-                    addAll(qualifierExpression().map { it.referentialIdentifier().toIdentifier().value })
+                    addAll(
+                        qualifierExpression().map {
+                            it.referentialIdentifier().toIdentifier().value
+                        }
+                    )
                     add(referentialIdentifier().toIdentifier().value)
                 }
         )
@@ -1592,7 +1639,8 @@ class Builder(private val sourceId: String? = null) {
             else -> QualifiedIdentifier(listOf(text))
         }
 
-    private fun cqlParser.CodesystemIdentifierContext.toTerminologyReference(): TerminologyReference =
+    private fun cqlParser.CodesystemIdentifierContext.toTerminologyReference():
+        TerminologyReference =
         TerminologyReference(
             identifier = identifier().toIdentifier(),
             libraryName = libraryIdentifier()?.identifier()?.toIdentifier(),

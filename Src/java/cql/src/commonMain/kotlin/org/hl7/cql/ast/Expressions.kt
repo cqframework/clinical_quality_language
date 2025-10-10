@@ -29,6 +29,13 @@ data class IdentifierExpression(
 ) : Expression
 
 @Serializable
+@SerialName("externalConstant")
+data class ExternalConstantExpression(
+    val name: String,
+    override val locator: Locator = Locator.UNKNOWN,
+) : Expression
+
+@Serializable
 @SerialName("exists")
 data class ExistsExpression(
     override val operand: Expression,
@@ -95,6 +102,14 @@ data class FunctionCallExpression(
 data class PropertyAccessExpression(
     val target: Expression,
     val property: Identifier,
+    override val locator: Locator = Locator.UNKNOWN,
+) : Expression
+
+@Serializable
+@SerialName("index")
+data class IndexExpression(
+    val target: Expression,
+    val index: Expression,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
 

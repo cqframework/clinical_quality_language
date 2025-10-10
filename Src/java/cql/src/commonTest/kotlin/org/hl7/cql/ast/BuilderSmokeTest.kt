@@ -27,7 +27,7 @@ class BuilderSmokeTest {
                 codesystem "SNOMED": 'http://snomed.info/sct'
 
                 define "Always True": true
-                """,
+                """
             )
 
         assertNoProblems(result)
@@ -47,7 +47,7 @@ class BuilderSmokeTest {
                 concept "Quadrivalent Vaccines": { "CVX"."140", "CVX"."141" }
 
                 define "Is Vaccine": "CVX"."140" = "CVX"."140"
-                """,
+                """
             )
 
         assertNoProblems(result)
@@ -65,7 +65,7 @@ class BuilderSmokeTest {
 
                 define function "Are Equal"(left String, right String):
                   left = right
-                """,
+                """
             )
 
         assertNoProblems(result)
@@ -80,7 +80,7 @@ class BuilderSmokeTest {
                 library Properties version '1.0'
 
                 define "Patient Name": Patient.name
-                """,
+                """
             )
 
         assertNoProblems(result)
@@ -97,7 +97,7 @@ class BuilderSmokeTest {
                 define "Null Check": true is not null
                 define "Equality": 'abc' = 'abc'
                 define "Inequality": 5 < 10
-                """,
+                """
             )
 
         assertNoProblems(result)
