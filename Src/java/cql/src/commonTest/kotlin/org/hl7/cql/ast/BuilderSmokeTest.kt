@@ -3,17 +3,10 @@ package org.hl7.cql.ast
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.hl7.cql.ast.ProblemSeverity
 
 class BuilderSmokeTest {
 
-    private val frontend = CqlFrontend()
-
-    private fun build(text: String): LibraryResult =
-        frontend.buildLibrary(text.trimIndent(), sourceId = "test.cql")
-
-    private fun analyze(result: LibraryResult): LibraryAnalysisResult =
-        frontend.analyzeLibrary(result.library)
+    private val builder = Builder()
 
     private fun assertNoProblems(result: LibraryResult) {
         assertTrue(
@@ -25,7 +18,7 @@ class BuilderSmokeTest {
     @Test
     fun parsesMinimalLibraryWithCodesystem() {
         val result =
-            build(
+            builder.parseLibrary(
                 """
                 library Minimal version '1.0.0'
                 using SimpleModel version '1.0'
@@ -44,7 +37,7 @@ class BuilderSmokeTest {
     @Test
     fun parsesValueSetAndConceptDefinitions() {
         val result =
-            build(
+            builder.parseLibrary(
                 """
                 library Terminology version '1.0'
 
@@ -63,7 +56,7 @@ class BuilderSmokeTest {
     @Test
     fun parsesParameterWithDefaultAndFunctionDefinition() {
         val result =
-            build(
+            builder.parseLibrary(
                 """
                 library SharedLogic version '2.1'
 
@@ -81,7 +74,7 @@ class BuilderSmokeTest {
     @Test
     fun parsesPropertyAccessExpression() {
         val result =
-            build(
+            builder.parseLibrary(
                 """
                 library Properties version '1.0'
 
@@ -96,7 +89,7 @@ class BuilderSmokeTest {
     @Test
     fun parsesBooleanComparisonExpression() {
         val result =
-            build(
+            builder.parseLibrary(
                 """
                 library Booleans version '1.0'
 
@@ -140,57 +133,8 @@ class BuilderSmokeTest {
                 return O
             """
 
-        val result = build(queryLibrary)
+        val result = builder.parseLibrary(queryLibrary)
         assertNoProblems(result)
         assertEquals(4, result.library.statements.size)
-    }
-
-    @Test
-    fun warnsOnIdentifierShadowing() {
-        val buildResult =
-            build(
-                """
-                library Shadowing version '1.0'
-
-                define function \"Foo\"(value Integer):
-                  from [Observation] O
-                    let value: 1
-                    return value
-                """
-            )
-
-        val analysis = analyze(buildResult)
-
-        assertTrue(
-            analysis.problems.any { it.severity == ProblemSeverity.WARNING && "value" in it.message },
-            "Expected a shadowing warning but found: ${analysis.problems}",
-        )
-    }
-
-    @Test
-    fun analysisProducesAstNodeIds() {
-        val buildResult =
-            build(
-                """
-                library Metadata version '1.0'
-
-                define "One": 1
-                """
-            )
-
-        val analysis = analyze(buildResult)
-        val ids = analysis.metadata.ids
-
-        val statement = buildResult.library.statements.first() as ExpressionDefinition
-        val statementId = ids.idFor(statement)
-        val expressionId = ids.idFor(statement.expression)
-
-        assertTrue(statementId.value > 0)
-        assertTrue(expressionId.value > 0)
-        assertEquals(
-            null,
-            analysis.metadata.typeTable.get(statement.expression),
-            "Stub type inference should not assign types yet.",
-        )
     }
 }

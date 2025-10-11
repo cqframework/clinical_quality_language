@@ -217,6 +217,79 @@ open class AstWalker {
         visitExpression(item.result)
     }
 
+    open fun visitTupleElementValue(value: TupleElementValue) {
+        visitExpression(value.expression)
+    }
+
+    open fun visitLiteralExpression(expression: LiteralExpression) {
+        visitLiteral(expression.literal)
+    }
+
+    open fun visitLiteral(literal: Literal) {
+        when (literal) {
+            is QuantityLiteral -> visitQuantityLiteral(literal)
+            is TupleLiteral -> visitTupleLiteral(literal)
+            is InstanceLiteral -> visitInstanceLiteral(literal)
+            is IntervalLiteral -> visitIntervalLiteral(literal)
+            is ListLiteral -> visitListLiteral(literal)
+            is RatioLiteral -> visitRatioLiteral(literal)
+            is CodeLiteral -> visitCodeLiteral(literal)
+            is ConceptLiteral -> visitConceptLiteral(literal)
+            else -> {}
+        }
+    }
+
+    open fun visitQuantityLiteral(literal: QuantityLiteral) {}
+
+    open fun visitTupleLiteral(literal: TupleLiteral) {
+        literal.elements.forEach { visitTupleElementValue(it) }
+    }
+
+    open fun visitInstanceLiteral(literal: InstanceLiteral) {
+        literal.elements.forEach { visitTupleElementValue(it) }
+    }
+
+    open fun visitIntervalLiteral(literal: IntervalLiteral) {
+        visitExpression(literal.lower)
+        visitExpression(literal.upper)
+    }
+
+    open fun visitListLiteral(literal: ListLiteral) {
+        literal.elements.forEach { visitExpression(it) }
+    }
+
+    open fun visitRatioLiteral(literal: RatioLiteral) {
+        visitQuantityLiteral(literal.numerator)
+        visitQuantityLiteral(literal.denominator)
+    }
+
+    open fun visitCodeLiteral(literal: CodeLiteral) {}
+
+    open fun visitConceptLiteral(literal: ConceptLiteral) {
+        literal.codes.forEach { visitCodeLiteral(it) }
+    }
+
+    open fun visitOperatorBinaryExpression(expression: OperatorBinaryExpression) {
+        visitExpression(expression.left)
+        visitExpression(expression.right)
+    }
+
+    open fun visitOperatorUnaryExpression(expression: OperatorUnaryExpression) {
+        visitExpression(expression.operand)
+    }
+
+    open fun visitIsExpression(expression: IsExpression) {
+        visitExpression(expression.operand)
+    }
+
+    open fun visitAsExpression(expression: AsExpression) {
+        visitExpression(expression.operand)
+    }
+
+    open fun visitCastExpression(expression: CastExpression) {
+        visitExpression(expression.operand)
+    }
+
     open fun visitQueryExpression(expression: QueryExpression) {
         expression.sources.forEach { visitAliasedQuerySource(it) }
         expression.lets.forEach { visitLetClauseItem(it) }
@@ -288,86 +361,6 @@ open class AstWalker {
         visitExpression(item.expression)
     }
 
-    open fun visitIsExpression(expression: IsExpression) {
-        visitExpression(expression.operand)
-    }
-
-    open fun visitAsExpression(expression: AsExpression) {
-        visitExpression(expression.operand)
-    }
-
-    open fun visitCastExpression(expression: CastExpression) {
-        visitExpression(expression.operand)
-    }
-
-    open fun visitUnsupportedExpression(expression: UnsupportedExpression) {}
-
-    open fun visitLiteralExpression(expression: LiteralExpression) {
-        visitLiteral(expression.literal)
-    }
-
-    open fun visitOperatorBinaryExpression(expression: OperatorBinaryExpression) {
-        visitExpression(expression.left)
-        visitExpression(expression.right)
-    }
-
-    open fun visitOperatorUnaryExpression(expression: OperatorUnaryExpression) {
-        visitExpression(expression.operand)
-    }
-
-    open fun visitLiteral(literal: Literal) {
-        when (literal) {
-            is StringLiteral,
-            is IntLiteral,
-            is LongLiteral,
-            is DecimalLiteral,
-            is BooleanLiteral,
-            is NullLiteral -> {}
-            is QuantityLiteral -> visitQuantityLiteral(literal)
-            is DateTimeLiteral,
-            is TimeLiteral -> {}
-            is TupleLiteral -> visitTupleLiteral(literal)
-            is InstanceLiteral -> visitInstanceLiteral(literal)
-            is IntervalLiteral -> visitIntervalLiteral(literal)
-            is ListLiteral -> visitListLiteral(literal)
-            is RatioLiteral -> visitRatioLiteral(literal)
-            is CodeLiteral -> visitCodeLiteral(literal)
-            is ConceptLiteral -> visitConceptLiteral(literal)
-        }
-    }
-
-    open fun visitQuantityLiteral(literal: QuantityLiteral) {}
-
-    open fun visitTupleLiteral(literal: TupleLiteral) {
-        literal.elements.forEach { visitTupleElementValue(it) }
-    }
-
-    open fun visitTupleElementValue(value: TupleElementValue) {
-        visitExpression(value.expression)
-    }
-
-    open fun visitInstanceLiteral(literal: InstanceLiteral) {
-        literal.elements.forEach { visitTupleElementValue(it) }
-    }
-
-    open fun visitIntervalLiteral(literal: IntervalLiteral) {
-        visitExpression(literal.lower)
-        visitExpression(literal.upper)
-    }
-
-    open fun visitListLiteral(literal: ListLiteral) {
-        literal.elements.forEach { visitExpression(it) }
-    }
-
-    open fun visitRatioLiteral(literal: RatioLiteral) {
-        visitLiteral(literal.numerator)
-        visitLiteral(literal.denominator)
-    }
-
-    open fun visitCodeLiteral(literal: CodeLiteral) {}
-
-    open fun visitConceptLiteral(literal: ConceptLiteral) {}
-
     open fun visitIntervalRelationExpression(expression: IntervalRelationExpression) {
         visitExpression(expression.left)
         visitIntervalOperatorPhrase(expression.phrase)
@@ -401,7 +394,7 @@ open class AstWalker {
     }
 
     open fun visitWithinIntervalPhrase(phrase: WithinIntervalPhrase) {
-        visitLiteral(phrase.quantity)
+        visitQuantityLiteral(phrase.quantity)
     }
 
     open fun visitMeetsIntervalPhrase(phrase: MeetsIntervalPhrase) {}
@@ -415,8 +408,10 @@ open class AstWalker {
     open fun visitUnsupportedIntervalPhrase(phrase: UnsupportedIntervalPhrase) {}
 
     open fun visitQuantityOffset(offset: QuantityOffset) {
-        visitLiteral(offset.quantity)
+        visitQuantityLiteral(offset.quantity)
     }
 
     open fun visitTemporalRelationshipPhrase(phrase: TemporalRelationshipPhrase) {}
+
+    open fun visitUnsupportedExpression(expression: UnsupportedExpression) {}
 }
