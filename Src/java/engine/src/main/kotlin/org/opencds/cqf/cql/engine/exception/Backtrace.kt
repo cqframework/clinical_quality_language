@@ -8,6 +8,7 @@ import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.OperandDef
+import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
 import org.opencds.cqf.cql.engine.execution.Variable
 
@@ -70,6 +71,13 @@ class Backtrace {
          */
         val localVariables: MutableList<Variable?>?,
         /**
+         * Returns the name of the Library that was current during the evaluation represented by
+         * the frame.
+         *
+         * @return The name of the Library in context.
+         */
+        val libraryIdentifier: VersionedIdentifier?,
+        /**
          * Returns the name of the CQL context that was current during the evaluation represented by
          * the frame.
          *
@@ -97,6 +105,7 @@ class Backtrace {
         stack: Deque<ActivationFrame>,
         contextName: String?,
         contextValue: Any?,
+        libraryIdentifier: VersionedIdentifier?,
         expression: Expression?,
     ) {
         // When the EvaluationVisitor unwinds through
@@ -169,6 +178,7 @@ class Backtrace {
                 containingDefinition,
                 arguments,
                 localVariables,
+                libraryIdentifier,
                 contextName,
                 contextValue,
             )

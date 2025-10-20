@@ -210,6 +210,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
                 context.stack,
                 context.getCurrentContext(),
                 context.currentContextValue,
+                context.getCurrentLibrary()?.identifier,
                 expression,
             )
         }
