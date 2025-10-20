@@ -41,6 +41,7 @@ class Backtrace {
      * function or expression definition, function arguments, local variables as well as the name
      * and value of the CQL context.
      */
+    @Suppress("LongParameterList")
     class FunctionoidFrame(
         expression: Expression?,
         /**
@@ -99,6 +100,7 @@ class Backtrace {
         this.frames.add(frame)
     }
 
+    @Suppress("LongParameterList")
     fun maybeAddFrame(
         containingDefinition: ExpressionDef?,
         definitionFrame: ActivationFrame?,
