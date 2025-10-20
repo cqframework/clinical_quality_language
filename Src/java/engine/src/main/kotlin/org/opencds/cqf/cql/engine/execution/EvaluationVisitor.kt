@@ -174,6 +174,8 @@ import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 
 class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     override fun visitExpression(elm: Expression, context: State?): Any? {
+        context?.markElementAsVisitedForCoverageReport(elm)
+
         try {
             return super.visitExpression(elm, context)
         } catch (e: CqlException) {

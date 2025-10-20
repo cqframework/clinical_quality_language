@@ -49,6 +49,10 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // ratio for certain elements such as expression and function
         // definitions and retrieves.
         EnableProfiling,
+
+        // Collect coverage information during execution. Coverage
+        // data can be exported in LCOV format after execution.
+        EnableCoverageCollection,
     }
 
     val state: State
