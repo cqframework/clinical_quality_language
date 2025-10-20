@@ -71,8 +71,8 @@ class Backtrace {
          */
         val localVariables: MutableList<Variable?>?,
         /**
-         * Returns the name of the Library that was current during the evaluation represented by
-         * the frame.
+         * Returns the name of the Library that was current during the evaluation represented by the
+         * frame.
          *
          * @return The name of the Library in context.
          */

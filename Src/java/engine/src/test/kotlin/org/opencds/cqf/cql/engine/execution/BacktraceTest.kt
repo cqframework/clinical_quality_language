@@ -70,12 +70,12 @@ internal class BacktraceTest : CqlTestBase() {
         }
     }
 
-    internal  class VersionedIdentifierMatcher(
+    internal class VersionedIdentifierMatcher(
         private val expectedId: String?,
         private val expectedVersion: String?,
     ) : TypeSafeMatcher<VersionedIdentifier>() {
-        override  fun matchesSafely(vi: VersionedIdentifier): Boolean {
-            return true;
+        override fun matchesSafely(vi: VersionedIdentifier): Boolean {
+            return true
         }
 
         override fun describeTo(description: Description) {
@@ -87,7 +87,10 @@ internal class BacktraceTest : CqlTestBase() {
         }
 
         companion object {
-            fun isVersionedIdentifier(expectedId: String?, expectedVersion: String?): VersionedIdentifierMatcher {
+            fun isVersionedIdentifier(
+                expectedId: String?,
+                expectedVersion: String?,
+            ): VersionedIdentifierMatcher {
                 return VersionedIdentifierMatcher(expectedId, expectedVersion)
             }
         }
@@ -149,7 +152,11 @@ internal class BacktraceTest : CqlTestBase() {
             )
             MatcherAssert.assertThat(
                 frame1Functionoid.libraryIdentifier,
-                VersionedIdentifierMatcher.isVersionedIdentifier("BacktraceTest", expectedVersion = null))
+                VersionedIdentifierMatcher.isVersionedIdentifier(
+                    "BacktraceTest",
+                    expectedVersion = null,
+                ),
+            )
             MatcherAssert.assertThat(
                 frame1Functionoid,
                 ContextMatcher.hasContext("Unfiltered", null),
@@ -174,7 +181,11 @@ internal class BacktraceTest : CqlTestBase() {
             MatcherAssert.assertThat(frame2Functionoid.localVariables, Matchers.empty())
             MatcherAssert.assertThat(
                 frame2Functionoid.libraryIdentifier,
-                VersionedIdentifierMatcher.isVersionedIdentifier("BacktraceTest", expectedVersion = null))
+                VersionedIdentifierMatcher.isVersionedIdentifier(
+                    "BacktraceTest",
+                    expectedVersion = null,
+                ),
+            )
             MatcherAssert.assertThat(
                 frame2Functionoid,
                 ContextMatcher.hasContext("Unfiltered", null),
@@ -194,7 +205,11 @@ internal class BacktraceTest : CqlTestBase() {
             MatcherAssert.assertThat(frame3Functionoid.localVariables, Matchers.empty())
             MatcherAssert.assertThat(
                 frame3Functionoid.libraryIdentifier,
-                VersionedIdentifierMatcher.isVersionedIdentifier("BacktraceTest", expectedVersion = null))
+                VersionedIdentifierMatcher.isVersionedIdentifier(
+                    "BacktraceTest",
+                    expectedVersion = null,
+                ),
+            )
             MatcherAssert.assertThat(
                 frame3Functionoid,
                 ContextMatcher.hasContext("Unfiltered", null),
