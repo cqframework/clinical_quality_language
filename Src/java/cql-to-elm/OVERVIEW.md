@@ -11,7 +11,7 @@ The `cql-to-elm-jvm` package is required to use the translator:
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>cql-to-elm-jvm</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -19,12 +19,12 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
 To perform UCUM unit validation during translation using [`ucum-java`](https://github.com/FHIR/Ucum-java), the `ucum` package must also be included:
@@ -32,7 +32,7 @@ To perform UCUM unit validation during translation using [`ucum-java`](https://g
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>ucum</artifact>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
@@ -40,7 +40,7 @@ To use the DataRequirementsProcessor, a component that performs data requirement
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
 Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
