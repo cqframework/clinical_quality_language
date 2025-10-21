@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.execution
 
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
+import org.hl7.elm.r1.If
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.VersionedIdentifier
@@ -35,6 +37,24 @@ class CoverageTest : CqlTestBase() {
         val branch = Branch(elm, emptyList())
 
         assertEquals(2, coverage.getBranchVisitCount(branch))
+    }
+
+    @Test
+    fun branchCollectionVisitorTest() {
+        val conditionNode = Literal()
+        val thenNode = Literal()
+        val elseNode = Literal()
+        val ifNode = If().withCondition(conditionNode).withThen(thenNode).withElse(elseNode)
+        val visitor = BranchCollectionVisitor()
+        val branches = visitor.visitExpression(ifNode, Unit)
+
+        assertEquals(1, branches.size)
+        assertSame(branches[0].elm, ifNode)
+        assertEquals(3, branches[0].children.size)
+        assertSame(conditionNode, branches[0].children[0].elm)
+        assertSame(thenNode, branches[0].children[1].elm)
+        assertSame(elseNode, branches[0].children[2].elm)
+        assertEquals(Literal(), Literal())
     }
 
     private fun assertEqualsIgnoringLineEndings(expected: String, actual: String) {

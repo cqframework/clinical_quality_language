@@ -60,7 +60,12 @@ internal class LibraryCoverage(val library: Library) {
         return elementVisitCounts[branch.elm] ?: 0
     }
 
-    /** Calculates line coverage results from branches. */
+    /**
+     * Calculates line coverage results from branches.
+     *
+     * @param branches The branches representing an ELM library.
+     * @return A map of line numbers to their coverage information.
+     */
     fun calculateLineCoverages(branches: List<Branch>): Map<Int, LineCoverage> {
 
         /** Maps line numbers to their coverage information. */
@@ -188,7 +193,7 @@ internal class BranchCollectionVisitor : BaseElmLibraryVisitor<List<Branch>, Uni
     }
 }
 
-/** Converts an ELM tree to a [Branch] tree. */
+/** Converts an ELM tree to a [Branch] tree using [BranchCollectionVisitor]. */
 internal fun collectBranches(library: Library): List<Branch> {
     return library.statements?.def?.map {
         Branch(it, BranchCollectionVisitor().visitExpression(it.expression!!, Unit))
