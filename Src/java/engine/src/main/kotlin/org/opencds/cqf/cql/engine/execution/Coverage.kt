@@ -16,7 +16,7 @@ class GlobalCoverage {
     private val libraryCoverages = mutableMapOf<VersionedIdentifier, LibraryCoverage>()
 
     /** Called during ELM evaluation to mark an element as visited for coverage reporting. */
-    internal fun markElementAsVisitedForCoverageReport(elm: Element, library: Library) {
+    fun markElementAsVisitedForCoverageReport(elm: Element, library: Library) {
         val libraryIdentifier =
             checkNotNull(library.identifier) {
                 "Current library has null identifier when marking element for coverage report"
@@ -25,7 +25,7 @@ class GlobalCoverage {
         coverage.markVisited(elm)
     }
 
-    /** Exports coverage information in LCOV format (lcov.info). */
+    /** Exports coverage information in LCOV format (lcov.info) for multiple libraries. */
     fun exportLcovInfo(libraryIdentifiers: List<VersionedIdentifier>): String {
         return buildString {
             for (libraryIdentifier in libraryIdentifiers) {
@@ -39,7 +39,7 @@ class GlobalCoverage {
 }
 
 /** Represents coverage information for a single ELM library. */
-class LibraryCoverage(val library: Library) {
+internal class LibraryCoverage(val library: Library) {
     /** Keeps track of how many times each element was visited. */
     private val elementVisitCounts = mutableMapOf<Element, Int>()
 
@@ -50,6 +50,9 @@ class LibraryCoverage(val library: Library) {
 
     /** Returns the visit count for a branch. */
     fun getBranchVisitCount(branch: Branch): Int {
+        // ExpressionDefs (including FunctionDefs) aren't directly marked as visited. When they are
+        // called or evaluated, the evaluation visitor instead visits the expression inside the
+        // definition.
         if (branch.elm is ExpressionDef) {
             return branch.children.sumOf { getBranchVisitCount(it) }
         }
@@ -88,10 +91,8 @@ class LibraryCoverage(val library: Library) {
             }
 
             for ((lineNumber, branchSet) in branchesGroupedByLine) {
-                if (branchSet.size > 1) {
-                    val lineCoverage = lineCoverages.getOrPut(lineNumber) { LineCoverage() }
-                    lineCoverage.branchBlocks.add(branchSet)
-                }
+                val lineCoverage = lineCoverages.getOrPut(lineNumber) { LineCoverage() }
+                lineCoverage.branchBlocks.add(branchSet)
             }
         }
 
@@ -144,7 +145,7 @@ class LibraryCoverage(val library: Library) {
 }
 
 /** Represents coverage information for a single line in an ELM source file. */
-class LineCoverage {
+internal class LineCoverage {
     /** How many times an ELM element on this line was visited. */
     var visitCount = 0
 
@@ -158,7 +159,7 @@ class LineCoverage {
  * Represents an ELM node as an execution branch. A branch can have child branches, e.g. in the case
  * of If, List, In nodes.
  */
-class Branch(val elm: Element, val children: List<Branch>) {
+internal class Branch(val elm: Element, val children: List<Branch>) {
     @Suppress("VariableNaming") var _location: Location? = null
     val location: Location?
         get() {
@@ -173,7 +174,7 @@ class Branch(val elm: Element, val children: List<Branch>) {
 }
 
 /** Used to collect the branches of an ELM tree. */
-class BranchCollectionVisitor : BaseElmLibraryVisitor<List<Branch>, Unit>() {
+internal class BranchCollectionVisitor : BaseElmLibraryVisitor<List<Branch>, Unit>() {
     override fun visitExpression(elm: Expression, context: Unit): List<Branch> {
         return listOf(Branch(elm, super.visitExpression(elm, context)))
     }
@@ -188,7 +189,7 @@ class BranchCollectionVisitor : BaseElmLibraryVisitor<List<Branch>, Unit>() {
 }
 
 /** Converts an ELM tree to a [Branch] tree. */
-fun collectBranches(library: Library): List<Branch> {
+internal fun collectBranches(library: Library): List<Branch> {
     return library.statements?.def?.map {
         Branch(it, BranchCollectionVisitor().visitExpression(it.expression!!, Unit))
     } ?: emptyList()
