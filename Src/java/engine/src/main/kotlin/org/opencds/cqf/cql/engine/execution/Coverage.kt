@@ -74,30 +74,24 @@ internal class LibraryCoverage(val library: Library) {
         /** Recursively calculates line coverages for branches. */
         fun calculateLineCoveragesInner(branches: List<Branch>) {
 
-            /** Maps line numbers to branches that start or end on that line. */
-            val branchesGroupedByLine = mutableMapOf<Int, MutableSet<Branch>>()
+            /** Maps line numbers to branches that cover that line. */
+            val branchBlocks = mutableMapOf<Int, MutableSet<Branch>>()
 
             for (branch in branches) {
                 val branchLocation = branch.location
                 if (branchLocation != null) {
-                    branchesGroupedByLine
-                        .getOrPut(branchLocation.startLine) { mutableSetOf() }
-                        .apply { add(branch) }
-                    branchesGroupedByLine
-                        .getOrPut(branchLocation.endLine) { mutableSetOf() }
-                        .apply { add(branch) }
                     val visitCountForBranch = getBranchVisitCount(branch)
                     for (lineNumber in branchLocation.startLine..branchLocation.endLine) {
-                        val lineCoverage = lineCoverages.getOrPut(lineNumber) { LineCoverage() }
-                        lineCoverage.visitCount += visitCountForBranch
+                        lineCoverages.getOrPut(lineNumber) { LineCoverage() }.visitCount +=
+                            visitCountForBranch
+                        branchBlocks.getOrPut(lineNumber) { mutableSetOf() }.add(branch)
                     }
                 }
                 calculateLineCoveragesInner(branch.children)
             }
 
-            for ((lineNumber, branchSet) in branchesGroupedByLine) {
-                val lineCoverage = lineCoverages.getOrPut(lineNumber) { LineCoverage() }
-                lineCoverage.branchBlocks.add(branchSet)
+            for ((lineNumber, branchBlock) in branchBlocks) {
+                lineCoverages.getOrPut(lineNumber) { LineCoverage() }.branchBlocks.add(branchBlock)
             }
         }
 
@@ -154,9 +148,7 @@ internal class LineCoverage {
     /** How many times an ELM element on this line was visited. */
     var visitCount = 0
 
-    /**
-     * Each branch block is a collection of sibling (same-level) branches that meet on this line.
-     */
+    /** Each branch block is a collection of sibling (same-level) branches that cover this line. */
     val branchBlocks = mutableListOf<Set<Branch>>()
 }
 
