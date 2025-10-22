@@ -143,7 +143,7 @@ internal class LibraryCoverage(val library: Library) {
     }
 }
 
-/** Represents coverage information for a single line in an ELM source file. */
+/** Represents coverage information for a single line in a CQL source file. */
 internal class LineCoverage {
     /** How many times an ELM element on this line was visited. */
     var visitCount = 0
