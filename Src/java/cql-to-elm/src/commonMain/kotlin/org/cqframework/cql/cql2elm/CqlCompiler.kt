@@ -8,6 +8,7 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import org.antlr.v4.kotlinruntime.*
 import org.antlr.v4.kotlinruntime.tree.ParseTree
+import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
 import org.cqframework.cql.cql2elm.elm.ElmEdit
 import org.cqframework.cql.cql2elm.elm.ElmEditor
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
@@ -17,64 +18,26 @@ import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.LibraryContext
-import org.hl7.cql.model.*
-import org.hl7.elm.r1.*
+import org.hl7.cql.model.NamespaceInfo
+import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.VersionedIdentifier
 
 class CqlCompiler(
-    private val namespaceInfo: NamespaceInfo?,
-    sourceInfo: VersionedIdentifier?,
-    private val libraryManager: LibraryManager,
+    private val namespaceInfo: NamespaceInfo? = null,
+    private val sourceInfo: VersionedIdentifier? = null,
+    val libraryManager: LibraryManager,
 ) {
+
     var library: Library? = null
+        private set
+
+    var root: Any? = null
         private set
 
     var compiledLibrary: CompiledLibrary? = null
         private set
 
-    private var visitResult: Any? = null
-    private var retrieves: kotlin.collections.List<Retrieve>? = null
-    val exceptions = ArrayList<CqlCompilerException>()
-    val errors: kotlin.collections.List<CqlCompilerException>
-        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Error }
-
-    val warnings: kotlin.collections.List<CqlCompilerException>
-        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Warning }
-
-    val messages: kotlin.collections.List<CqlCompilerException>
-        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Info }
-
-    private var sourceInfo =
-        sourceInfo ?: VersionedIdentifier().withId("Anonymous").withSystem("text/cql")
-
-    constructor(libraryManager: LibraryManager) : this(null, null, libraryManager)
-
-    constructor(
-        namespaceInfo: NamespaceInfo?,
-        libraryManager: LibraryManager,
-    ) : this(namespaceInfo, null, libraryManager)
-
-    init {
-        if (namespaceInfo != null) {
-            libraryManager.namespaceManager.ensureNamespaceRegistered(namespaceInfo)
-        }
-        if (
-            libraryManager.namespaceManager.hasNamespaces() &&
-                libraryManager.librarySourceLoader is NamespaceAware
-        ) {
-            libraryManager.librarySourceLoader.setNamespaceManager(libraryManager.namespaceManager)
-        }
-    }
-
-    fun toObject(): Any? {
-        return visitResult
-    }
-
-    fun toRetrieves(): kotlin.collections.List<Retrieve>? {
-        return retrieves
-    }
-
-    val libraries: Map<VersionedIdentifier, Library>
-        get() = libraryManager.compiledLibraries.mapValues { it.value.library!! }
+    val exceptions = mutableListOf<CqlCompilerException>()
 
     private inner class CqlErrorListener(
         private val builder: LibraryBuilder,
@@ -85,33 +48,29 @@ class CqlCompiler(
             while (context != null && context !is LibraryContext) {
                 context = context.getParent()
             }
-            if (context is LibraryContext) {
-                val ldc = context.libraryDefinition()
-                if (ldc?.qualifiedIdentifier() != null) {
-                    var identifierText = ldc.qualifiedIdentifier().identifier().text
-                    // The identifier may or may not be surrounded by double quotes. If it is,
-                    // "unescape" and strip the delimiting double quotes.
-                    if (identifierText.startsWith("\"")) {
-                        val unescaped = StringEscapeUtils.unescapeCql(identifierText)
-                        require(unescaped.startsWith("\"")) {
-                            "Expected string to start with double quotes"
-                        }
-                        require(unescaped.endsWith("\"")) {
-                            "Expected string to end with double quotes"
-                        }
-                        identifierText = unescaped.substring(1, unescaped.length - 1)
-                    }
-                    val vi = VersionedIdentifier().withId(identifierText)
-                    if (ldc.versionSpecifier() != null) {
-                        var version = StringEscapeUtils.unescapeCql(ldc.versionSpecifier()!!.text)
-                        version = version.substring(1, version.length - 1)
-                        vi.version = version
-                    }
 
-                    return vi
+            val ldc = context?.libraryDefinition() ?: return null
+            var identifierText = ldc.qualifiedIdentifier().identifier().text
+            // The identifier may or may not be surrounded by double quotes. If it is,
+            // "unescape" and strip the delimiting double quotes.
+            if (identifierText.startsWith("\"")) {
+                val unescaped = unescapeCql(identifierText)
+                require(unescaped.startsWith("\"")) {
+                    "Expected string to start with double quotes"
                 }
+                require(unescaped.endsWith("\"")) { "Expected string to end with double quotes" }
+                identifierText = unescaped.substring(1, unescaped.length - 1)
             }
-            return null
+            var versionText: String? = null
+            if (ldc.versionSpecifier() != null) {
+                versionText = unescapeCql(ldc.versionSpecifier()!!.text)
+                versionText = versionText.substring(1, versionText.length - 1)
+            }
+
+            return VersionedIdentifier().apply {
+                id = identifierText
+                version = versionText
+            }
         }
 
         override fun syntaxError(
@@ -122,29 +81,28 @@ class CqlCompiler(
             msg: String,
             e: RecognitionException?,
         ) {
-            var libraryIdentifier = builder.libraryIdentifier
-            if (libraryIdentifier == null) {
-                // Attempt to extract a libraryIdentifier from the currently parsed content
-                if (recognizer is cqlParser) {
-                    libraryIdentifier = extractLibraryIdentifier(recognizer)
-                }
-                if (libraryIdentifier == null) {
-                    libraryIdentifier = sourceInfo
-                }
-            }
+
+            val libraryIdentifier =
+                builder.libraryIdentifier
+                    ?: (recognizer as? cqlParser)?.let { extractLibraryIdentifier(it) }
+                    ?: sourceInfo
+                    ?: VersionedIdentifier().apply {
+                        id = "Anonymous"
+                        system = "text/cql"
+                    }
+
             val trackback =
                 TrackBack(libraryIdentifier, line, charPositionInLine, line, charPositionInLine)
-            if (detailedErrors) {
-                builder.recordParsingException(CqlSyntaxException(msg, trackback, e))
-            } else {
-                if (offendingSymbol is CommonToken) {
-                    builder.recordParsingException(
+
+            val syntaxError =
+                when {
+                    detailedErrors -> CqlSyntaxException(msg, trackback, e)
+                    offendingSymbol is CommonToken ->
                         CqlSyntaxException("Syntax error at ${offendingSymbol.text}", trackback, e)
-                    )
-                } else {
-                    builder.recordParsingException(CqlSyntaxException("Syntax error", trackback, e))
+                    else -> CqlSyntaxException("Syntax error", trackback, e)
                 }
-            }
+
+            builder.recordParsingException(syntaxError)
         }
     }
 
@@ -192,7 +150,7 @@ class CqlCompiler(
         // Phase 4: generate the ELM (the ELM is generated with full type information that can be
         // used for validation, optimization, rewriting, debugging, etc.)
         val visitor = Cql2ElmVisitor(builder, tokens, preprocessor.libraryInfo)
-        visitResult = visitor.visit(tree)
+        root = visitor.visit(tree)
         library = builder.library
 
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are
@@ -210,7 +168,6 @@ class CqlCompiler(
 
         ElmEditor(edits).edit(library!!)
         compiledLibrary = builder.compiledLibrary
-        retrieves = visitor.retrieves
         exceptions.addAll(builder.exceptions)
         return library!!
     }

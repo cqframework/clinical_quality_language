@@ -10,12 +10,14 @@ import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackerId
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor.Companion.from
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.hl7.cql_annotations.r1.CqlToElmBase
 import org.hl7.cql_annotations.r1.CqlToElmInfo
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.ObjectFactory
+import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
@@ -83,10 +85,15 @@ class CMS146ElmTest {
 
     @Test
     fun clinicalRequests() {
-        val actualCR = translator!!.toRetrieves()
+        val v = from<MutableList<Retrieve>, Unit>({ elm, acc -> if (elm is Retrieve) acc.add(elm) })
+        val actualCR = mutableListOf<Retrieve>()
+        v.visitLibrary(library!!, actualCR)
 
         val expectedCR =
             listOf(
+                of.createRetrieve()
+                    .withDataType(quickDataType("Patient"))
+                    .withTemplateId("patient-qicore-qicore-patient"),
                 of.createRetrieve()
                     .withDataType(quickDataType("Condition"))
                     .withTemplateId("condition-qicore-qicore-condition")
@@ -196,7 +203,10 @@ class CMS146ElmTest {
     @Test
     @Disabled
     fun trackBacks() {
-        for (dc in translator!!.toRetrieves()!!) {
+        val v = from<MutableList<Retrieve>, Unit>({ elm, acc -> if (elm is Retrieve) acc.add(elm) })
+        val retrieves = mutableListOf<Retrieve>()
+        v.visitLibrary(library!!, retrieves)
+        for (dc in retrieves) {
             var expectedNumbers: IntArray? = IntArray(4)
             when ((dc!!.codes as ValueSetRef).name) {
                 "Acute Pharyngitis" -> expectedNumbers = intArrayOf(19, 6, 19, 37)

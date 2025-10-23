@@ -10,6 +10,7 @@ import java.util.*
 import kotlinx.io.IOException
 import kotlinx.io.files.Path
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider
@@ -3217,11 +3218,13 @@ class DataRequirementsProcessorTest {
                 manager.namespaceManager.addNamespace(namespaceInfo)
             }
 
-            val compiler = CqlCompiler(namespaceInfo, manager)
+            val compiler = CqlCompiler(namespaceInfo, null, manager)
 
             val lib = compiler.run(p)
 
-            assertTrue(compiler.errors.isEmpty())
+            assertTrue(
+                compiler.exceptions.none { it.severity == CqlCompilerException.ErrorSeverity.Error }
+            )
 
             manager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
@@ -3235,11 +3238,13 @@ class DataRequirementsProcessorTest {
 
             val p = Path(translationTestFile.path)
 
-            val compiler = CqlCompiler(null, manager)
+            val compiler = CqlCompiler(null, null, manager)
 
             val lib = compiler.run(p)
 
-            assertTrue(compiler.errors.isEmpty())
+            assertTrue(
+                compiler.exceptions.none { it.severity == CqlCompilerException.ErrorSeverity.Error }
+            )
 
             manager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
