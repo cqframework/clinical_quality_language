@@ -21,6 +21,7 @@ import org.opencds.cqf.cql.engine.debug.DebugResult
 import org.opencds.cqf.cql.engine.debug.SourceLocator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
+import org.opencds.cqf.cql.engine.execution.CqlEngine.Options
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
@@ -98,6 +99,8 @@ constructor(
         private set
 
     var debugMap: DebugMap? = null
+
+    val globalCoverage by lazy { GlobalCoverage() }
 
     fun getCurrentLibrary(): Library? {
         return currentLibrary.peek()
@@ -470,5 +473,15 @@ constructor(
     fun logDebugError(e: CqlException?) {
         ensureDebugResult()
         debugResult!!.logDebugError(e)
+    }
+
+    fun markElementAsVisitedForCoverageReport(elm: Element) {
+        if (engineOptions.contains(Options.EnableCoverageCollection)) {
+            val library =
+                checkNotNull(getCurrentLibrary()) {
+                    "No current library available when marking element for coverage report"
+                }
+            globalCoverage.markElementAsVisitedForCoverageReport(elm, library)
+        }
     }
 }
