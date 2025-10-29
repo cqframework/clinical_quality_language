@@ -27,6 +27,11 @@ kotlin {
                 api("com.strumenta:antlr-kotlin-runtime:1.0.3")
             }
         }
+        jvmMain {
+            dependencies {
+                api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.3")
+            }
+        }
         jvmTest {
             dependencies {
                 implementation(project(":quick"))

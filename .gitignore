@@ -29,4 +29,5 @@ node_modules
 coverage
 gen
 .kotlin
+.worktrees
 

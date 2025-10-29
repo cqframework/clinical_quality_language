@@ -3,7 +3,7 @@ package org.cqframework.fhir.npm
 import org.cqframework.fhir.utilities.IGContext
 import org.hl7.cql.model.NamespaceInfo
 
-class NpmProcessor(
+open class NpmProcessor(
     /**
      * The igContext for the npmProcessor (i.e. the root IG that defines dependencies accessible in
      * the context) Note that this may be null in the case that there is no IG context
@@ -39,7 +39,7 @@ class NpmProcessor(
             return null
         }
 
-    val namespaces: MutableList<NamespaceInfo>
+    open val namespaces: MutableList<NamespaceInfo>
         get() {
             val namespaceInfos: MutableList<NamespaceInfo> = ArrayList()
             if (packageManager != null) {
