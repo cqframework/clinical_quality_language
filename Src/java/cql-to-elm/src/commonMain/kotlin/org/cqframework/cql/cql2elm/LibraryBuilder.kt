@@ -196,8 +196,9 @@ class LibraryBuilder(
         } else modelManager.isWellKnownModelName(unqualifiedIdentifier)
     }
 
-    /*
-    A "well-known" library name is a library name that is allowed to resolve without a namespace in a namespace-aware context
+    /**
+     * A "well-known" library name is a library name that is allowed to resolve without a namespace
+     * in a namespace-aware context
      */
     fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean {
         return if (namespaceInfo == null) {

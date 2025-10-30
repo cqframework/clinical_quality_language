@@ -22,6 +22,10 @@ import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 
+/**
+ * Compiles CQL source into the corresponding ELM tree representation. Records and exposes
+ * compile-time exceptions and the resulting library.
+ */
 class CqlCompiler(
     private val namespaceInfo: NamespaceInfo? = null,
     private val sourceInfo: VersionedIdentifier? = null,
@@ -120,6 +124,7 @@ class CqlCompiler(
         return run(source.readString())
     }
 
+    /** Compiles CQL source from the provided [CharStream] into an ELM [Library]. */
     fun run(charStream: CharStream): Library {
         val options = libraryManager.cqlCompilerOptions.options
         val builder = LibraryBuilder(namespaceInfo, libraryManager, IdObjectFactory())

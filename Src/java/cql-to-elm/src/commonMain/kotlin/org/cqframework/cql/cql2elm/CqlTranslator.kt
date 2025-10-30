@@ -24,6 +24,10 @@ import org.hl7.cql.model.*
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 
+/**
+ * Wraps [CqlCompiler] and produces ELM outputs in different formats. Exposes compilation exceptions
+ * and filtered views for errors, warnings, and messages.
+ */
 @OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
