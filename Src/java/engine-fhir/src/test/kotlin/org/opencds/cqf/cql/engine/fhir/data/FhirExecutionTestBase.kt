@@ -5,7 +5,7 @@ import ca.uhn.fhir.context.FhirVersionEnum
 import java.io.IOException
 import kotlinx.io.files.Path
 import org.cqframework.cql.cql2elm.CqlCompiler
-import org.cqframework.cql.cql2elm.CqlCompilerException
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
@@ -60,13 +60,10 @@ abstract class FhirExecutionTestBase {
 
                 val library = compiler.run(cqlFile)
 
-                val errors =
-                    compiler.exceptions.filter {
-                        it.severity == CqlCompilerException.ErrorSeverity.Error
-                    }
-                if (errors.any()) {
+                val errors = compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+                if (errors.isNotEmpty()) {
                     System.err.println("Translation failed due to errors:")
-                    val messages = ArrayList<String?>()
+                    val messages = mutableListOf<String>()
                     for (error in errors) {
                         val tb = error.locator
                         val lines =

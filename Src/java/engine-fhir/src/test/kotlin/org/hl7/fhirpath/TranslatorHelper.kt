@@ -79,7 +79,7 @@ object TranslatorHelper {
 
         val errors = compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
         if (errors.isNotEmpty()) {
-            val formattedErrors = mutableListOf<String>()
+            val messages = mutableListOf<String>()
             for (error in compiler.exceptions) {
                 val tb = error.locator
                 val lines =
@@ -92,9 +92,9 @@ object TranslatorHelper {
                             tb.endLine,
                             tb.endChar,
                         )
-                formattedErrors.add(lines + error.message)
+                messages.add(lines + error.message)
             }
-            throw IllegalArgumentException(formattedErrors.toString())
+            throw IllegalArgumentException(messages.toString())
         }
 
         return lib

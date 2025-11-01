@@ -99,7 +99,7 @@ internal object EvaluatedResourceTestUtils {
                                 compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
                             if (errors.isNotEmpty()) {
                                 System.err.println("Translation failed due to errors:")
-                                val formattedErrors = mutableListOf<String>()
+                                val messages = mutableListOf<String>()
                                 for (error in compiler.exceptions) {
                                     val tb = error.locator
                                     val lines =
@@ -107,9 +107,9 @@ internal object EvaluatedResourceTestUtils {
                                         else
                                             "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                                     System.err.printf("%s %s%n", lines, error.message)
-                                    formattedErrors.add(lines + error.message)
+                                    messages.add(lines + error.message)
                                 }
-                                throw IllegalArgumentException(formattedErrors.toString())
+                                throw IllegalArgumentException(messages.toString())
                             }
                             librariesToPopulate.add(library)
                         }
