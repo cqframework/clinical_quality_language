@@ -85,9 +85,6 @@ private constructor(
     val translatedLibrary: CompiledLibrary?
         get() = compiler.compiledLibrary
 
-    val root: Any?
-        get() = compiler.root
-
     val libraries: Map<VersionedIdentifier, Library?>
         get() = compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
 

@@ -31,11 +31,7 @@ class CqlCompiler(
     private val sourceInfo: VersionedIdentifier? = null,
     val libraryManager: LibraryManager,
 ) {
-
     var library: Library? = null
-        private set
-
-    var root: Any? = null
         private set
 
     var compiledLibrary: CompiledLibrary? = null
@@ -155,7 +151,7 @@ class CqlCompiler(
         // Phase 4: generate the ELM (the ELM is generated with full type information that can be
         // used for validation, optimization, rewriting, debugging, etc.)
         val visitor = Cql2ElmVisitor(builder, tokens, preprocessor.libraryInfo)
-        root = visitor.visit(tree)
+        visitor.visit(tree)
         library = builder.library
 
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are

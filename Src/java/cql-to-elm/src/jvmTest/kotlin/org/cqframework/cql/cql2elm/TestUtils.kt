@@ -25,6 +25,7 @@ import org.cqframework.cql.gen.cqlParser
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.hl7.cql.model.NamespaceInfo
+import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.Library
 
 object TestUtils {
@@ -46,17 +47,20 @@ object TestUtils {
 
     @Throws(IOException::class)
     @JvmStatic
-    fun visitFile(fileName: String): Any? {
+    fun visitFile(fileName: String): ExpressionDef? {
         return visitFile(fileName, null)
     }
 
     @Throws(IOException::class)
     @JvmStatic
-    fun visitFile(fileName: String, signatureLevel: LibraryBuilder.SignatureLevel?): Any? {
+    fun visitFile(
+        fileName: String,
+        signatureLevel: LibraryBuilder.SignatureLevel?,
+    ): ExpressionDef? {
         val file = getFileOrThrow(fileName)
         val translator = CqlTranslator.fromFile(file.path, getLibraryManager(signatureLevel))
         ensureValid(translator)
-        return translator.root
+        return translator.toExpressionDef()
     }
 
     @Throws(IOException::class)
@@ -78,10 +82,10 @@ object TestUtils {
     }
 
     @JvmStatic
-    fun visitData(cqlData: String): Any? {
+    fun visitData(cqlData: String): ExpressionDef? {
         val translator = CqlTranslator.fromText(cqlData, libraryManager)
         ensureValid(translator)
-        return translator.root
+        return translator.toExpressionDef()
     }
 
     @JvmStatic
@@ -96,7 +100,7 @@ object TestUtils {
         cqlData: String,
         enableAnnotations: Boolean,
         enableDateRangeOptimization: Boolean,
-    ): Any? {
+    ): ExpressionDef? {
         val compilerOptions = CqlCompilerOptions()
         if (enableAnnotations) {
             compilerOptions.options.add(CqlCompilerOptions.Options.EnableAnnotations)
@@ -107,7 +111,7 @@ object TestUtils {
 
         val translator = CqlTranslator.fromText(cqlData, getLibraryManager(compilerOptions))
         ensureValid(translator)
-        return translator.root
+        return translator.toExpressionDef()
     }
 
     private fun ensureValid(translator: CqlTranslator) {
@@ -435,5 +439,11 @@ object TestUtils {
             if (path == null) TestLibrarySourceProvider() else TestLibrarySourceProvider(path)
         )
         return libraryManager
+    }
+
+    /** Returns the last `define` from the translated library if there are any. */
+    private fun CqlTranslator.toExpressionDef(): ExpressionDef? {
+        val library = this.toELM()
+        return library?.statements?.def?.lastOrNull()
     }
 }

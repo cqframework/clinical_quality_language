@@ -9,6 +9,7 @@ import java.util.stream.Collectors
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -94,9 +95,11 @@ internal object EvaluatedResourceTestUtils {
 
                             val library = compiler.run(inputStream!!.asSource().buffered())
 
-                            if (!compiler.exceptions.isEmpty()) {
+                            val errors =
+                                compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+                            if (errors.isNotEmpty()) {
                                 System.err.println("Translation failed due to errors:")
-                                val errors = ArrayList<String?>()
+                                val formattedErrors = mutableListOf<String>()
                                 for (error in compiler.exceptions) {
                                     val tb = error.locator
                                     val lines =
@@ -104,9 +107,9 @@ internal object EvaluatedResourceTestUtils {
                                         else
                                             "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                                     System.err.printf("%s %s%n", lines, error.message)
-                                    errors.add(lines + error.message)
+                                    formattedErrors.add(lines + error.message)
                                 }
-                                throw IllegalArgumentException(errors.toString())
+                                throw IllegalArgumentException(formattedErrors.toString())
                             }
                             librariesToPopulate.add(library)
                         }

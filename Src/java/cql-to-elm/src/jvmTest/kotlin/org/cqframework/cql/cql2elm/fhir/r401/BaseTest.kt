@@ -56,7 +56,7 @@ internal class BaseTest {
     @Test
     @Throws(IOException::class)
     fun choiceWithAlternativeConversion() {
-        val def = TestUtils.visitFile("fhir/r401/TestChoiceTypes.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("fhir/r401/TestChoiceTypes.cql")
         val query = def!!.expression as Query?
 
         // First check the source
@@ -82,13 +82,13 @@ internal class BaseTest {
     @Throws(IOException::class)
     fun uriConversion() {
         // If this translates without errors, the test is successful
-        TestUtils.visitFile("fhir/r401/TestURIConversion.cql") as ExpressionDef?
+        TestUtils.visitFile("fhir/r401/TestURIConversion.cql")
     }
 
     @Test
     @Throws(IOException::class)
     fun fhirTiming() {
-        val def = TestUtils.visitFile("fhir/r401/TestFHIRTiming.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("fhir/r401/TestFHIRTiming.cql")
         // Query->
         //  where->
         //      In->

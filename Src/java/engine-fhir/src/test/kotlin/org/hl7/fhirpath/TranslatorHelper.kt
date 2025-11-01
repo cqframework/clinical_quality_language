@@ -1,6 +1,7 @@
 package org.hl7.fhirpath
 
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryManager
@@ -76,8 +77,9 @@ object TranslatorHelper {
 
         libraryManager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
-        if (!compiler.exceptions.isEmpty()) {
-            val errors = ArrayList<String?>()
+        val errors = compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+        if (errors.isNotEmpty()) {
+            val formattedErrors = mutableListOf<String>()
             for (error in compiler.exceptions) {
                 val tb = error.locator
                 val lines =
@@ -90,9 +92,9 @@ object TranslatorHelper {
                             tb.endLine,
                             tb.endChar,
                         )
-                errors.add(lines + error.message)
+                formattedErrors.add(lines + error.message)
             }
-            throw IllegalArgumentException(errors.toString())
+            throw IllegalArgumentException(formattedErrors.toString())
         }
 
         return lib
