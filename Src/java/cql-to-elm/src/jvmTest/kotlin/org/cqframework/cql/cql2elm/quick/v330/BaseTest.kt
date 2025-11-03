@@ -29,7 +29,7 @@ class BaseTest {
     // The test is not valid for the QUICK Model
     @Throws(IOException::class)
     fun testChoiceWithAlternativeConversion() {
-        val def = TestUtils.visitFile("quick/v330/TestChoiceTypes.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("quick/v330/TestChoiceTypes.cql")
         val query = def!!.expression as Query?
 
         // First check the source
@@ -56,13 +56,13 @@ class BaseTest {
     @Throws(IOException::class)
     fun testURIConversion() {
         // If this translates without errors, the test is successful
-        TestUtils.visitFile("quick/v330/TestURIConversion.cql") as ExpressionDef?
+        TestUtils.visitFile("quick/v330/TestURIConversion.cql")
     }
 
     @Test
     @Throws(IOException::class)
     fun fhirTiming() {
-        val def = TestUtils.visitFile("quick/v330/TestFHIRTiming.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("quick/v330/TestFHIRTiming.cql")
         // Query->
         //  where->
         //      In->

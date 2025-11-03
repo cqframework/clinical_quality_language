@@ -5,6 +5,7 @@ import ca.uhn.fhir.context.FhirVersionEnum
 import java.io.IOException
 import kotlinx.io.files.Path
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
@@ -55,22 +56,23 @@ abstract class FhirExecutionTestBase {
             try {
                 val cqlFile = Path(this.javaClass.getResource("$fileName.cql")!!.path)
 
-                val compiler = CqlCompiler(this.libraryManager)
+                val compiler = CqlCompiler(libraryManager = libraryManager)
 
                 val library = compiler.run(cqlFile)
 
-                if (!compiler.errors.isEmpty()) {
+                val errors = compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+                if (errors.isNotEmpty()) {
                     System.err.println("Translation failed due to errors:")
-                    val errors = ArrayList<String?>()
-                    for (error in compiler.errors) {
+                    val messages = mutableListOf<String>()
+                    for (error in errors) {
                         val tb = error.locator
                         val lines =
                             if (tb == null) "[n/a]"
                             else "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                         System.err.printf("%s %s%n", lines, error.message)
-                        errors.add(lines + error.message)
+                        messages.add(lines + error.message)
                     }
-                    throw IllegalArgumentException(errors.toString())
+                    throw IllegalArgumentException(messages.toString())
                 }
 
                 this.library = library

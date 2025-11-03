@@ -1,6 +1,7 @@
 package org.hl7.fhirpath
 
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryManager
@@ -71,14 +72,15 @@ object TranslatorHelper {
 
     @Throws(UcumException::class)
     fun translate(cql: String?, libraryManager: LibraryManager): Library {
-        val compiler = CqlCompiler(libraryManager)
+        val compiler = CqlCompiler(libraryManager = libraryManager)
         val lib = compiler.run(cql!!)
 
         libraryManager.compiledLibraries[lib.identifier!!] = compiler.compiledLibrary!!
 
-        if (!compiler.errors.isEmpty()) {
-            val errors = ArrayList<String?>()
-            for (error in compiler.errors) {
+        val errors = compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+        if (errors.isNotEmpty()) {
+            val messages = mutableListOf<String>()
+            for (error in compiler.exceptions) {
                 val tb = error.locator
                 val lines =
                     if (tb == null) "[n/a]"
@@ -90,9 +92,9 @@ object TranslatorHelper {
                             tb.endLine,
                             tb.endChar,
                         )
-                errors.add(lines + error.message)
+                messages.add(lines + error.message)
             }
-            throw IllegalArgumentException(errors.toString())
+            throw IllegalArgumentException(messages.toString())
         }
 
         return lib

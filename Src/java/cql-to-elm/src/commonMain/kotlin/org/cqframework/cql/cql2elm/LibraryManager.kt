@@ -18,7 +18,10 @@ import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.NamespaceManager
-import org.hl7.elm.r1.*
+import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.FunctionRef
+import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
@@ -43,7 +46,12 @@ constructor(
 
     val namespaceManager: NamespaceManager = modelManager.namespaceManager
     val compiledLibraries = libraryCache ?: HashMap()
-    val librarySourceLoader: LibrarySourceLoader = PriorityLibrarySourceLoader()
+    val librarySourceLoader: LibrarySourceLoader =
+        DefaultLibrarySourceLoader(modelManager.namespaceManager).also {
+            if (modelManager.path != null) {
+                it.setPath(modelManager.path)
+            }
+        }
 
     val ucumService by lazyUcumService
 
@@ -101,13 +109,13 @@ constructor(
     }
 
     fun resolveLibraries(
-        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>
+        libraryIdentifiers: List<VersionedIdentifier>
     ): CompiledLibraryMultiResults {
         return resolveLibraries(libraryIdentifiers, CacheMode.READ_WRITE)
     }
 
     private fun resolveLibraries(
-        libraryIdentifiers: kotlin.collections.List<VersionedIdentifier>,
+        libraryIdentifiers: List<VersionedIdentifier>,
         cacheMode: CacheMode,
     ): CompiledLibraryMultiResults {
         require(libraryIdentifiers.isNotEmpty()) { "libraryIdentifier can not be null" }
@@ -321,66 +329,38 @@ constructor(
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")
     private fun generateCompiledLibrary(library: Library): CompiledLibrary? {
-        var compilationSuccess = true
-        val compiledLibrary = CompiledLibrary()
         try {
-            compiledLibrary.library = library
-            if (library.identifier != null) {
-                compiledLibrary.identifier = library.identifier
-            }
-            if (library.usings != null) {
-                for (usingDef in library.usings!!.def) {
-                    compiledLibrary.add(usingDef)
-                }
-            }
-            if (library.includes != null) {
-                for (includeDef in library.includes!!.def) {
-                    compiledLibrary.add(includeDef)
-                }
-            }
-            if (library.codeSystems != null) {
-                for (codeSystemDef in library.codeSystems!!.def) {
-                    compiledLibrary.add(codeSystemDef)
-                }
-            }
-            for (valueSetDef in library.valueSets!!.def) {
-                compiledLibrary.add(valueSetDef)
-            }
-            if (library.codes != null) {
-                for (codeDef in library.codes!!.def) {
-                    compiledLibrary.add(codeDef)
-                }
-            }
-            if (library.concepts != null) {
-                for (conceptDef in library.concepts!!.def) {
-                    compiledLibrary.add(conceptDef)
-                }
-            }
-            if (library.parameters != null) {
-                for (parameterDef in library.parameters!!.def) {
-                    compiledLibrary.add(parameterDef)
-                }
-            }
-            if (library.statements != null) {
-                for (expressionDef in library.statements!!.def) {
 
-                    // to do implement an ElmTypeInferencingVisitor; make sure that the resultType
-                    // is set for each node
-                    if (expressionDef.resultType != null) {
-                        compiledLibrary.add(expressionDef)
-                    } else {
-                        compilationSuccess = false
-                        break
-                    }
+            val compiledLibrary = CompiledLibrary()
+            compiledLibrary.library = library
+            compiledLibrary.identifier = library.identifier
+            library.usings?.def?.forEach { compiledLibrary.add(it) }
+
+            library.includes?.def?.forEach { compiledLibrary.add(it) }
+
+            library.codeSystems?.def?.forEach { compiledLibrary.add(it) }
+
+            library.valueSets?.def?.forEach { compiledLibrary.add(it) }
+
+            library.codes?.def?.forEach { compiledLibrary.add(it) }
+
+            library.concepts?.def?.forEach { compiledLibrary.add(it) }
+
+            library.parameters?.def?.forEach { compiledLibrary.add(it) }
+
+            library.statements?.def?.forEach {
+                requireNotNull(it.resultType) {
+                    "Expression ${it.name} in library ${library.identifier?.id} does not have a result type."
                 }
+
+                compiledLibrary.add(it)
             }
-        } catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") e: Exception) {
-            compilationSuccess = false
-        }
-        if (compilationSuccess) {
+
             return compiledLibrary
+        } catch (e: IllegalArgumentException) {
+            logger.error("Error generating compiled library", e)
+            return null
         }
-        return null
     }
 
     private fun compilerOptionsMatch(library: Library): Boolean {
