@@ -21,8 +21,13 @@ import org.cqframework.cql.elm.serializing.DefaultElmLibraryWriterProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterProvider
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.*
-import org.hl7.elm.r1.*
+import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.VersionedIdentifier
 
+/**
+ * Wraps [CqlCompiler] and produces ELM outputs in different formats. Exposes compilation exceptions
+ * and filtered views for errors, warnings, and messages.
+ */
 @OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
@@ -80,28 +85,20 @@ private constructor(
     val translatedLibrary: CompiledLibrary?
         get() = compiler.compiledLibrary
 
-    fun toObject(): Any? {
-        return compiler.toObject()
-    }
-
-    fun toRetrieves(): kotlin.collections.List<Retrieve?>? {
-        return compiler.toRetrieves()
-    }
-
     val libraries: Map<VersionedIdentifier, Library?>
-        get() = compiler.libraries
+        get() = compiler.libraryManager.compiledLibraries.mapValues { it.value.library!! }
 
-    val exceptions: kotlin.collections.List<CqlCompilerException>
+    val exceptions: List<CqlCompilerException>
         get() = compiler.exceptions
 
-    val errors: kotlin.collections.List<CqlCompilerException>
-        get() = compiler.errors
+    val errors: List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Error }
 
-    val warnings: kotlin.collections.List<CqlCompilerException>
-        get() = compiler.warnings
+    val warnings: List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Warning }
 
-    val messages: kotlin.collections.List<CqlCompilerException>
-        get() = compiler.messages
+    val messages: List<CqlCompilerException>
+        get() = exceptions.filter { it.severity == CqlCompilerException.ErrorSeverity.Info }
 
     @Suppress("TooManyFunctions")
     companion object {
@@ -223,12 +220,12 @@ private constructor(
             var name = cqlFile.name
             val extensionIndex = name.lastIndexOf('.')
             if (extensionIndex > 0) {
-                name = name.substring(0, extensionIndex)
+                name = name.take(extensionIndex)
             }
             val system: String? =
                 try {
                     SystemFileSystem.resolve(cqlFile).toString()
-                } catch (@Suppress("SwallowedException") e: IOException) {
+                } catch (_: IOException) {
                     null
                 }
             return VersionedIdentifier().withId(name).withSystem(system)

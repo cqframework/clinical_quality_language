@@ -9,6 +9,7 @@ import java.util.stream.Collectors
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -89,24 +90,26 @@ internal object EvaluatedResourceTestUtils {
                     try {
                         classToUse.getClassLoader().getResourceAsStream(resourcePath).use {
                             inputStream ->
-                            val compiler = CqlCompiler(libraryManagerToUse)
+                            val compiler = CqlCompiler(libraryManager = libraryManagerToUse)
                             log.info("compiling CQL file: {}", resourcePath)
 
                             val library = compiler.run(inputStream!!.asSource().buffered())
 
-                            if (!compiler.errors.isEmpty()) {
+                            val errors =
+                                compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+                            if (errors.isNotEmpty()) {
                                 System.err.println("Translation failed due to errors:")
-                                val errors = ArrayList<String?>()
-                                for (error in compiler.errors) {
+                                val messages = mutableListOf<String>()
+                                for (error in compiler.exceptions) {
                                     val tb = error.locator
                                     val lines =
                                         if (tb == null) "[n/a]"
                                         else
                                             "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
                                     System.err.printf("%s %s%n", lines, error.message)
-                                    errors.add(lines + error.message)
+                                    messages.add(lines + error.message)
                                 }
-                                throw IllegalArgumentException(errors.toString())
+                                throw IllegalArgumentException(messages.toString())
                             }
                             librariesToPopulate.add(library)
                         }

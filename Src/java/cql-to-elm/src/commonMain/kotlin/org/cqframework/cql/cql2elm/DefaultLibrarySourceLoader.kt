@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.collections.ArrayList
 import kotlinx.io.Source
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -13,14 +12,16 @@ import org.hl7.elm.r1.VersionedIdentifier
  * includes within CQL. Package private since it's not intended to be used outside the context of
  * the instantiating [LibraryManager] instance.
  */
-internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAware {
-    private val providers: MutableList<LibrarySourceProvider> = ArrayList()
-    private var initialized: Boolean = false
+class DefaultLibrarySourceLoader(val namespaceManager: NamespaceManager) :
+    LibrarySourceLoader, PathAware {
+    private val providers: MutableList<LibrarySourceProvider> = mutableListOf()
+    private var initialized = false
 
     override fun registerProvider(provider: LibrarySourceProvider) {
-        if (namespaceManager != null && provider is NamespaceAware) {
-            provider.setNamespaceManager(namespaceManager!!)
+        if (provider is NamespaceAware) {
+            provider.setNamespaceManager(namespaceManager)
         }
+
         if (path != null && provider is PathAware) {
             provider.setPath(path!!)
         }
@@ -33,7 +34,6 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) {
             "path '$path' is not a valid directory"
         }
-
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {
@@ -50,40 +50,30 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private fun getProviders(): List<LibrarySourceProvider> {
         if (!initialized) {
             initialized = true
-            val it: Iterator<LibrarySourceProvider> = getLibrarySourceProviders(false)
+            val it = getLibrarySourceProviders(false)
             while (it.hasNext()) {
-                val provider: LibrarySourceProvider = it.next()
+                val provider = it.next()
                 registerProvider(provider)
             }
         }
         return providers
     }
 
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source {
-        var source: Source? = null
-        for (provider: LibrarySourceProvider in getProviders()) {
-            val localSource = provider.getLibrarySource(libraryIdentifier)
-            if (localSource != null) {
-                require(source == null) {
-                    "Multiple sources found for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}."
-                }
-                source = localSource
-            }
-        }
-        requireNotNull(source) {
-            "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}."
-        }
-        return source
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
+        return getLibraryContent(libraryIdentifier, LibraryContentType.CQL)
     }
 
-    private var namespaceManager: NamespaceManager? = null
-
-    override fun setNamespaceManager(namespaceManager: NamespaceManager) {
-        this.namespaceManager = namespaceManager
-        for (provider: LibrarySourceProvider? in getProviders()) {
-            if (provider is NamespaceAware) {
-                (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+    override fun getLibraryContent(
+        libraryIdentifier: VersionedIdentifier,
+        type: LibraryContentType,
+    ): Source? {
+        var content: Source?
+        for (provider in getProviders()) {
+            content = provider.getLibraryContent(libraryIdentifier, type)
+            if (content != null) {
+                return content
             }
         }
+        return null
     }
 }

@@ -26,7 +26,6 @@ import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.End
 import org.hl7.elm.r1.Equal
 import org.hl7.elm.r1.Expression
-import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
 import org.hl7.elm.r1.First
 import org.hl7.elm.r1.FunctionRef
@@ -76,45 +75,45 @@ import org.junit.jupiter.api.Test
 internal class Cql2ElmVisitorTest {
     @Test
     fun let() {
-        val def = TestUtils.visitData("define b : true") as ExpressionDef?
+        val def = TestUtils.visitData("define b : true")
         assertThat(def!!.name, `is`("b"))
         assertTrackable(def)
     }
 
     @Test
     fun booleanLiteral() {
-        var def = TestUtils.visitData("define b : true") as ExpressionDef?
+        var def = TestUtils.visitData("define b : true")
         assertThat(def!!.expression, literalFor(true))
         assertTrackable(def.expression)
 
-        def = TestUtils.visitData("define b : false") as ExpressionDef?
+        def = TestUtils.visitData("define b : false")
         assertThat(def!!.expression, literalFor(false))
     }
 
     @Test
     fun stringLiteral() {
-        val def = TestUtils.visitData("define st : 'hey its a string'") as ExpressionDef?
+        val def = TestUtils.visitData("define st : 'hey its a string'")
         assertThat(def!!.expression, literalFor("hey its a string"))
         assertTrackable(def.expression)
     }
 
     @Test
     fun nullLiteral() {
-        val def = TestUtils.visitData("define st : null") as ExpressionDef?
+        val def = TestUtils.visitData("define st : null")
         assertThat(def!!.expression, Matchers.instanceOf(Null::class.java))
         assertTrackable(def.expression)
     }
 
     @Test
     fun quantityLiteral() {
-        var def = TestUtils.visitData("define st : 1") as ExpressionDef?
+        var def = TestUtils.visitData("define st : 1")
         assertThat(def!!.expression, literalFor(1))
         assertTrackable(def.expression)
 
-        def = TestUtils.visitData("define st : 1.1") as ExpressionDef?
+        def = TestUtils.visitData("define st : 1.1")
         assertThat(def!!.expression, literalFor(1.1))
 
-        def = TestUtils.visitData("define st : 1.1 'mm'") as ExpressionDef?
+        def = TestUtils.visitData("define st : 1.1 'mm'")
         val quantity = def!!.expression as Quantity?
         assertThat(quantity!!.value, `is`(BigDecimal.valueOf(1.1)))
         assertThat(quantity.unit, `is`("mm"))
@@ -123,7 +122,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun andExpressions() {
-        val def = TestUtils.visitData("define st : true and false") as ExpressionDef?
+        val def = TestUtils.visitData("define st : true and false")
         val and = def!!.expression as And?
         val left: Expression = and!!.operand[0]
         val right: Expression = and.operand[1]
@@ -138,7 +137,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun orExpressions() {
-        var def = TestUtils.visitData("define st : true or false") as ExpressionDef?
+        var def = TestUtils.visitData("define st : true or false")
         val or = def!!.expression as Or?
         var left: Expression? = or!!.operand[0]
         var right: Expression? = or.operand[1]
@@ -150,7 +149,7 @@ internal class Cql2ElmVisitorTest {
         assertTrackable(left)
         assertTrackable(right)
 
-        def = TestUtils.visitData("define st : true xor false") as ExpressionDef?
+        def = TestUtils.visitData("define st : true xor false")
         val xor = def!!.expression as Xor?
         left = xor!!.operand[0]
         right = xor.operand[1]
@@ -177,7 +176,7 @@ internal class Cql2ElmVisitorTest {
             }
 
         for (e in comparisons.entries) {
-            val def = TestUtils.visitData("define st : 1 " + e.key + " 2") as ExpressionDef?
+            val def = TestUtils.visitData("define st : 1 " + e.key + " 2")
             val binary = def!!.expression as BinaryExpression?
             val left: Expression = binary!!.operand[0]
             val right: Expression = binary.operand[1]
@@ -194,7 +193,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun notEqualExpression() {
-        val def = TestUtils.visitData("define st : 1 != 2") as ExpressionDef?
+        val def = TestUtils.visitData("define st : 1 != 2")
         val not = def!!.expression as Not?
         val equal = not!!.operand as Equal?
         val left: Expression = equal!!.operand[0]
@@ -211,7 +210,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun isTrueExpressions() {
-        val def = TestUtils.visitData("define X : true\ndefine st : X is true") as ExpressionDef?
+        val def = TestUtils.visitData("define X : true\ndefine st : X is true")
         val isTrue = def!!.expression as IsTrue?
         val left = isTrue!!.operand as ExpressionRef?
 
@@ -223,8 +222,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun isNotTrueExpressions() {
-        val def =
-            TestUtils.visitData("define X : true\ndefine st : X is not true") as ExpressionDef?
+        val def = TestUtils.visitData("define X : true\ndefine st : X is not true")
         val not = def!!.expression as Not?
         val isTrue = not!!.operand as IsTrue?
         val left = isTrue!!.operand as ExpressionRef?
@@ -237,7 +235,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun isNullExpressions() {
-        val def = TestUtils.visitData("define X : 1\ndefine st : X is null") as ExpressionDef?
+        val def = TestUtils.visitData("define X : 1\ndefine st : X is null")
         val isNull = def!!.expression as IsNull?
         val id = isNull!!.operand as ExpressionRef?
 
@@ -249,7 +247,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun isNotNullExpressions() {
-        val def = TestUtils.visitData("define X : 1\ndefine st : X is not null") as ExpressionDef?
+        val def = TestUtils.visitData("define X : 1\ndefine st : X is not null")
         val not = def!!.expression as Not?
         val isNull = not!!.operand as IsNull?
         val id = isNull!!.operand as ExpressionRef?
@@ -264,7 +262,7 @@ internal class Cql2ElmVisitorTest {
     @Test
     fun expressionReference() {
         val cql = "using QUICK\n" + "define X : [Condition]\n" + "define st : X"
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val exp = def!!.expression as ExpressionRef?
         assertThat(exp!!.name, `is`("X"))
         assertThat(exp.libraryName, `is`(nullValue()))
@@ -274,7 +272,7 @@ internal class Cql2ElmVisitorTest {
     fun propertyReference() {
         val cql =
             "using QUICK\n" + "define X : First([Condition])\n" + "define st : X.onsetDateTime"
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val prop = def!!.expression as Property?
         val source = prop!!.source as ExpressionRef?
         assertThat(source!!.name, `is`("X"))
@@ -288,7 +286,7 @@ internal class Cql2ElmVisitorTest {
         val cql =
             ("valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
                 "define st : \"Acute Pharyngitis\"")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val vs = def!!.expression as ValueSetRef?
         assertThat(vs!!.name, `is`("Acute Pharyngitis"))
         assertThat(vs.libraryName, Matchers.`is`(nullValue()))
@@ -299,7 +297,7 @@ internal class Cql2ElmVisitorTest {
         val cql =
             ("valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
                 "define m : 'Value' in \"Acute Pharyngitis\"")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val ivs = def!!.expression as InValueSet?
         assertThat<ValueSetRef?>(
             ivs!!.valueset,
@@ -313,7 +311,7 @@ internal class Cql2ElmVisitorTest {
     @Disabled("TODO: Fix when operator semantics are completed")
     fun functionReference() {
         val cql = "define function MyFunction() { return true }\n" + "define st : MyFunction()"
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val funRef = def!!.expression as FunctionRef?
         assertThat(funRef!!.name, `is`("MyFunction"))
         assertThat(funRef.libraryName, Matchers.`is`(nullValue()))
@@ -326,7 +324,7 @@ internal class Cql2ElmVisitorTest {
         val cql =
             "define function MyFunction(arg String) { return arg }\n" +
                 "define st : MyFunction('hello there')"
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val funRef = def!!.expression as FunctionRef?
         assertThat(funRef!!.name, `is`("MyFunction"))
         assertThat(funRef.libraryName, Matchers.`is`(nullValue()))
@@ -353,7 +351,7 @@ internal class Cql2ElmVisitorTest {
             }
 
         for (e in comparisons.entries) {
-            val def = TestUtils.visitData("define st : 1 " + e.key + " 2") as ExpressionDef?
+            val def = TestUtils.visitData("define st : 1 " + e.key + " 2")
             val binary = def!!.expression as BinaryExpression?
             val left: Expression = binary!!.operand[0]
             val right: Expression = binary.operand[1]
@@ -429,7 +427,7 @@ internal class Cql2ElmVisitorTest {
 
     @Test
     fun retrieveTopic() {
-        val def = TestUtils.visitData("using QUICK define st : [Condition]") as ExpressionDef?
+        val def = TestUtils.visitData("using QUICK define st : [Condition]")
         val request = def!!.expression as Retrieve?
         assertThat<QName>(request!!.dataType, QuickDataType.quickDataType("Condition"))
         assertThat(request.codeProperty, Matchers.`is`(nullValue()))
@@ -446,7 +444,7 @@ internal class Cql2ElmVisitorTest {
             ("using QUICK\n" +
                 "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
                 "define st : [Condition: \"Acute Pharyngitis\"]")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val request = def!!.expression as Retrieve?
         assertThat<QName>(request!!.dataType, QuickDataType.quickDataType("Condition"))
         assertThat(request.codeProperty, `is`("code"))
@@ -465,7 +463,7 @@ internal class Cql2ElmVisitorTest {
             ("using QUICK\n" +
                 "valueset \"Moderate or Severe\" : '2.16.840.1.113883.3.526.3.1092'\n" +
                 "define st : [Condition: severity in \"Moderate or Severe\"]")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val request = def!!.expression as Retrieve?
         assertThat<QName>(request!!.dataType, QuickDataType.quickDataType("Condition"))
         assertThat(request.codeProperty, `is`("severity"))
@@ -850,7 +848,7 @@ internal class Cql2ElmVisitorTest {
         cql: String,
         enableDateRangeOptimization: Boolean = true,
     ): Query {
-        val def = TestUtils.visitData(cql, false, enableDateRangeOptimization) as ExpressionDef?
+        val def = TestUtils.visitData(cql, false, enableDateRangeOptimization)
         val query = def!!.expression as Query
 
         val source = query.source[0]
@@ -881,7 +879,7 @@ internal class Cql2ElmVisitorTest {
                 "    where duration in days of E.period >= 120\n" +
                 "    return Tuple { id: E.id, lengthOfStay: duration in days of E.period }\n" +
                 "    sort by lengthOfStay desc")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val query = def!!.expression as Query?
 
         // First check the source
@@ -1000,7 +998,7 @@ internal class Cql2ElmVisitorTest {
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    let a : 1\n" +
                 "    return a")
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val query = def!!.expression as Query?
 
         // First check the source
@@ -1037,7 +1035,7 @@ internal class Cql2ElmVisitorTest {
     @Test
     @Throws(IOException::class)
     fun choiceAssignment() {
-        val def = TestUtils.visitFile("TestChoiceAssignment.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("TestChoiceAssignment.cql")
         val instance = def!!.expression as Instance?
 
         assertThat<QName?>(
@@ -1049,7 +1047,7 @@ internal class Cql2ElmVisitorTest {
     @Test
     @Throws(IOException::class)
     fun localFunctionResolution() {
-        val def = TestUtils.visitFile("LocalFunctionResolutionTest.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("LocalFunctionResolutionTest.cql")
         assertThat(def!!.expression, Matchers.instanceOf(FunctionRef::class.java))
         val functionRef = def.expression as FunctionRef?
         assertThat(functionRef!!.name, `is`("ToDate"))
@@ -1058,7 +1056,7 @@ internal class Cql2ElmVisitorTest {
     @Test
     @Throws(IOException::class)
     fun union() {
-        val def = TestUtils.visitFile("TestUnion.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("TestUnion.cql")
 
         // Union(Union(Union(Union(A, B), Union(C,D)), Union(E,F)), Union(G,H))
         val union1 = def!!.expression as Union?
@@ -1090,7 +1088,7 @@ internal class Cql2ElmVisitorTest {
     @Test
     @Throws(IOException::class)
     fun includedIn() {
-        val def = TestUtils.visitFile("TestIncludedIn.cql") as ExpressionDef?
+        val def = TestUtils.visitFile("TestIncludedIn.cql")
         // Query->
         //   where->
         //      In ->
@@ -1365,7 +1363,7 @@ internal class Cql2ElmVisitorTest {
                 "    such that " +
                 withWhereClause)
 
-        val def = TestUtils.visitData(cql) as ExpressionDef?
+        val def = TestUtils.visitData(cql)
         val query = def!!.expression as Query?
         assertThat(query!!.source[0].alias, `is`("E"))
         val request = query.source[0].expression as Retrieve

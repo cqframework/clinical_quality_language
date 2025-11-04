@@ -63,7 +63,6 @@ class Cql2ElmVisitor(
     private val functionDefinitions = IdentityHashMap<FunctionHeader, FunctionDefinitionContext>()
 
     private val timingOperators = Stack<TimingOperatorContext>()
-    val retrieves: MutableList<Retrieve> = ArrayList()
     val expressions: kotlin.collections.List<Expression> = ArrayList()
     private val contextDefinitions: MutableMap<String, Element?> = HashMap()
 
@@ -2990,7 +2989,6 @@ class Cql2ElmVisitor(
                             null,
                             null,
                         )
-                    this.retrieves.add(mrRetrieve)
                     mrRetrieve.resultType = ListType(namedType as DataType)
                     val mDataType: DataType? = libraryBuilder.resolveTypeName(model, "Medication")
                     val mClassType = mDataType as ClassType
@@ -3008,7 +3006,6 @@ class Cql2ElmVisitor(
                             null,
                             null,
                         )
-                    this.retrieves.add(mRetrieve)
                     mRetrieve.resultType = ListType(mDataType)
                     val q: Query = of.createQuery()
                     val aqs: AliasedQuerySource =
@@ -3110,7 +3107,6 @@ class Cql2ElmVisitor(
                             propertyException,
                             terminology,
                         )
-                    this.retrieves.add(retrieve)
                     retrieve.resultType = ListType(namedType as DataType)
                     result =
                         if (result == null) {
@@ -3142,7 +3138,6 @@ class Cql2ElmVisitor(
                     propertyException,
                     terminology,
                 )
-            this.retrieves.add(retrieve)
             retrieve.resultType = ListType(namedType as DataType)
             result = retrieve
         }
