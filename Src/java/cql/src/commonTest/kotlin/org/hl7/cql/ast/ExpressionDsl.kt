@@ -299,6 +299,7 @@ class IntervalPhraseBuilder {
             precision = precision,
         )
 
+    @Suppress("LongParameterList")
     fun beforeOrAfter(
         direction: TemporalRelationshipDirection,
         leftBoundary: IntervalBoundarySelector? = null,

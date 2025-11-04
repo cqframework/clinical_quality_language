@@ -81,6 +81,7 @@ open class AstWalker {
 
     open fun visitExternalFunctionBody(body: ExternalFunctionBody) {}
 
+    @Suppress("CyclomaticComplexMethod")
     open fun visitExpression(expression: Expression) {
         when (expression) {
             is IdentifierExpression -> visitIdentifierExpression(expression)

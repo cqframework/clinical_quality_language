@@ -1,3 +1,5 @@
+@file:Suppress("UnusedParameter")
+
 package org.cqframework.cql.cql2elm.frontend
 
 import org.hl7.cql.ast.Library
@@ -25,9 +27,7 @@ class CompilerFrontend(
  * Placeholder symbol table representation. As the front-end matures this structure will retain
  * definitions, contexts, and inferred types discovered during analysis.
  */
-data class SymbolTable(
-    val declarations: Map<String, Unit> = emptyMap(),
-)
+data class SymbolTable(val declarations: Map<String, Unit> = emptyMap())
 
 class SymbolCollector {
     fun collect(library: Library): SymbolTable {

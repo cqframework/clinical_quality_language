@@ -1,15 +1,16 @@
 package org.hl7.cql.ast
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlinx.serialization.json.Json
 import org.antlr.v4.kotlinruntime.BaseErrorListener
-import org.antlr.v4.kotlinruntime.CharStreams
-import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.RecognitionException
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.Token
-import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.shared.BigDecimal
+import org.hl7.cql.parsetree.createParser
 
 @Suppress("TooManyFunctions", "LongMethod", "CyclomaticComplexMethod", "ReturnCount", "LargeClass")
 class Builder(private val sourceId: String? = null) {
@@ -46,13 +47,6 @@ class Builder(private val sourceId: String? = null) {
                 )
         }
         return ExpressionResult(expression, problems.toList())
-    }
-
-    private fun createParser(text: String): cqlParser {
-        val input = CharStreams.fromString(text)
-        val lexer = cqlLexer(input)
-        val tokens = CommonTokenStream(lexer)
-        return cqlParser(tokens)
     }
 
     private fun buildLibrary(ctx: cqlParser.LibraryContext): Library {
@@ -1718,4 +1712,13 @@ class Builder(private val sourceId: String? = null) {
     companion object {
         private val QUANTITY_REGEX = Regex("^(-?[0-9]+(?:\\.[0-9]+)?)\\s*(.*)$")
     }
+}
+
+/** Generates the AST for the given CQL in the JSON format. */
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun inspectCqlAst(text: String): String {
+    val builder = Builder()
+    val libraryResult = builder.parseLibrary(text)
+    return Json.encodeToString(libraryResult)
 }
