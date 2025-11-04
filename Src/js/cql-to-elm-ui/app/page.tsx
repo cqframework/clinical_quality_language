@@ -1,5 +1,5 @@
-import { CqlCompilerPlayground } from "@/app/cql-compiler-playground";
+import { CqlPlayground } from "@/app/cql-playground";
 
 export default function Home() {
-  return <CqlCompilerPlayground />;
+  return <CqlPlayground />;
 }

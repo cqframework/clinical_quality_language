@@ -236,6 +236,7 @@ object NormalizingTransformer : Transformer() {
         super.visitTemporalRelationshipPhrase(phrase).copy(locator = Locator.UNKNOWN)
 }
 
+@Suppress("CyclomaticComplexMethod")
 private fun Expression.withUnknownLocator(): Expression =
     when (this) {
         is IdentifierExpression -> copy(locator = Locator.UNKNOWN)
@@ -272,6 +273,7 @@ private fun Expression.withUnknownLocator(): Expression =
         is OperatorUnaryExpression -> copy(locator = Locator.UNKNOWN)
     }
 
+@Suppress("CyclomaticComplexMethod")
 private fun Literal.withUnknownLocator(): Literal =
     when (this) {
         is StringLiteral -> copy(locator = Locator.UNKNOWN)

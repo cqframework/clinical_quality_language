@@ -36,8 +36,7 @@ import org.hl7.elm.r1.VersionedIdentifier
 class ElmEmitter {
     private val typesNamespace = "urn:hl7-org:elm-types:r1"
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    data class Result(val library: Library)
+    @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 
     class UnsupportedNodeException(message: String) : RuntimeException(message)
 
@@ -45,12 +44,13 @@ class ElmEmitter {
         val elmLibrary = Library()
         elmLibrary.schemaIdentifier = defaultSchemaIdentifier()
         astLibrary.name?.let {
-            elmLibrary.identifier = VersionedIdentifier().apply {
-                id = it.simpleName
-                if (it.parts.size > 1) {
-                    system = it.parts.dropLast(1).joinToString(".")
+            elmLibrary.identifier =
+                VersionedIdentifier().apply {
+                    id = it.simpleName
+                    if (it.parts.size > 1) {
+                        system = it.parts.dropLast(1).joinToString(".")
+                    }
                 }
-            }
         }
         astLibrary.version?.let { version ->
             val identifier = elmLibrary.identifier ?: VersionedIdentifier()
@@ -82,13 +82,12 @@ class ElmEmitter {
         }
 
     private fun emitUsings(definitions: List<Definition>): List<UsingDef> {
-        return definitions
-            .mapNotNull { definition ->
-                when (definition) {
-                    is UsingDefinition -> emitUsing(definition)
-                    else -> null
-                }
+        return definitions.mapNotNull { definition ->
+            when (definition) {
+                is UsingDefinition -> emitUsing(definition)
+                else -> null
             }
+        }
     }
 
     private fun emitUsing(definition: UsingDefinition): UsingDef {
@@ -140,10 +139,11 @@ class ElmEmitter {
                     name = definition.name.value
                     accessLevel = ElmAccessModifier.PUBLIC
                     definition.access?.let { access ->
-                        accessLevel = when (access) {
-                            AstAccessModifier.PUBLIC -> ElmAccessModifier.PUBLIC
-                            AstAccessModifier.PRIVATE -> ElmAccessModifier.PRIVATE
-                        }
+                        accessLevel =
+                            when (access) {
+                                AstAccessModifier.PUBLIC -> ElmAccessModifier.PUBLIC
+                                AstAccessModifier.PRIVATE -> ElmAccessModifier.PRIVATE
+                            }
                     }
                     currentContext?.let { context = it }
                     expression = emitExpression(definition.expression)
@@ -167,21 +167,19 @@ class ElmEmitter {
     private fun emitLiteral(literal: Literal): ElmExpression {
         return when (literal) {
             is StringLiteral ->
-                ElmLiteral()
-                    .withValueType(QName(typesNamespace, "String"))
-                    .withValue(literal.value)
+                ElmLiteral().withValueType(QName(typesNamespace, "String")).withValue(literal.value)
             is BooleanLiteral ->
                 ElmLiteral()
                     .withValueType(QName(typesNamespace, "Boolean"))
                     .withValue(literal.value.toString())
             is IntLiteral ->
-                ElmLiteral().withValueType(QName(typesNamespace, "Integer")).withValue(
-                    literal.value.toString()
-                )
+                ElmLiteral()
+                    .withValueType(QName(typesNamespace, "Integer"))
+                    .withValue(literal.value.toString())
             is LongLiteral ->
-                ElmLiteral().withValueType(QName(typesNamespace, "Long")).withValue(
-                    literal.value.toString()
-                )
+                ElmLiteral()
+                    .withValueType(QName(typesNamespace, "Long"))
+                    .withValue(literal.value.toString())
             is DecimalLiteral ->
                 ElmLiteral()
                     .withValueType(QName(typesNamespace, "Decimal"))

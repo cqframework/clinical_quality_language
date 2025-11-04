@@ -189,6 +189,7 @@ class BuilderExpressionTest {
         }
     }
 
+    @Suppress("LongMethod")
     @Test
     fun parsesIntervalRelationships() {
         assertExpression("Interval[1, 5] starts on or before start of Interval[5, 10]") {
@@ -422,6 +423,7 @@ class BuilderExpressionTest {
             )
         }
         assertExpression(
+            @Suppress("MaxLineLength")
             "collapse { Interval[@2020-01-01T00:00:00, @2020-01-02T00:00:00], Interval[@2020-01-02T00:00:00, @2020-01-03T00:00:00] }"
         ) {
             expandCollapse(

@@ -6,6 +6,7 @@ package org.hl7.cql.ast
  * return entirely different subtrees. By default, the transformer rebuilds nodes with the visits
  * applied to their children and returns the original node when no modification is required.
  */
+@Suppress("TooManyFunctions")
 open class Transformer {
 
     open fun visitLibrary(library: Library): Library =
@@ -85,6 +86,7 @@ open class Transformer {
 
     open fun visitExternalFunctionBody(body: ExternalFunctionBody): FunctionBody = body
 
+    @Suppress("CyclomaticComplexMethod")
     open fun visitExpression(expression: Expression): Expression =
         when (expression) {
             is IdentifierExpression -> visitIdentifierExpression(expression)
@@ -284,6 +286,7 @@ open class Transformer {
     open fun visitOperatorUnaryExpression(expression: OperatorUnaryExpression): Expression =
         expression.copy(operand = visitExpression(expression.operand))
 
+    @Suppress("CyclomaticComplexMethod")
     open fun visitLiteral(literal: Literal): Literal =
         when (literal) {
             is StringLiteral -> visitStringLiteral(literal)

@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.ast
 
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -12,8 +14,6 @@ import org.cqframework.cql.cql2elm.frontend.CompilerFrontend
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.hl7.cql.ast.Builder
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ElmEmitterParityTest {
 
@@ -23,15 +23,18 @@ class ElmEmitterParityTest {
     fun `literal expression matches legacy translator`() {
         val cql =
             """
-            library Simple version '1.0.0'
-            using System
-            context Patient
-            define Foo: 42
-        """
+                library Simple version '1.0.0'
+                using System
+                context Patient
+                define Foo: 42
+            """
                 .trimIndent()
 
         val astResult = Builder().parseLibrary(cql)
-        assertTrue(astResult.problems.isEmpty(), "AST builder reported issues: ${astResult.problems}")
+        assertTrue(
+            astResult.problems.isEmpty(),
+            "AST builder reported issues: ${astResult.problems}",
+        )
 
         val frontendResult = CompilerFrontend().analyze(astResult.library)
         val emittedLibrary = ElmEmitter().emit(frontendResult.library).library
@@ -48,7 +51,8 @@ class ElmEmitterParityTest {
         assertEquals(
             normalizedLegacy,
             normalizedEmitted,
-            "Emitter output differed from the legacy translator.\nEmitter: $normalizedEmitted\nLegacy: $normalizedLegacy"
+            @Suppress("MaxLineLength")
+            "Emitter output differed from the legacy translator.\nEmitter: $normalizedEmitted\nLegacy: $normalizedLegacy",
         )
     }
 

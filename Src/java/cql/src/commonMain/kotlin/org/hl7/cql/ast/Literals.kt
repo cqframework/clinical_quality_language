@@ -1,11 +1,11 @@
 package org.hl7.cql.ast
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.serializing.BigDecimalSerializer
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -22,13 +22,13 @@ data class StringLiteral(val value: String, override val locator: Locator = Loca
 data class LongLiteral(val value: Long, override val locator: Locator = Locator.UNKNOWN) : Literal
 
 @Serializable
-@SerialName("long")
+@SerialName("int")
 data class IntLiteral(val value: Int, override val locator: Locator = Locator.UNKNOWN) : Literal
 
 @Serializable
-@SerialName("long")
+@SerialName("decimal")
 data class DecimalLiteral(
-    @Contextual val value: BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class) val value: BigDecimal,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Literal
 
