@@ -131,7 +131,9 @@ define "Inpatient Encounter":
 
   tabs: {
     "cql-to-parse-tree": {},
-    "cql-to-ast": {},
+    "cql-to-ast": {
+      showJson: false,
+    },
     "cql-to-elm": {
       cqlToElmArgs: {
         useWasm: false,

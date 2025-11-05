@@ -3,6 +3,8 @@ import { Fragment } from "react";
 import { json } from "@codemirror/lang-json";
 import { Editor } from "@/ui/editor/editor";
 import { cqlToAst } from "@/compiler/ast";
+import { AstTree } from "@/ui/ast-tree";
+import { Heading } from "@/ui/heading";
 
 export function CqlToAstResult({
   state,
@@ -10,26 +12,120 @@ export function CqlToAstResult({
   state: TState;
   setState: TSetState;
 }) {
-  const ast = (() => {
-    try {
-      return JSON.stringify(cqlToAst(state.common.cql), null, 2);
-    } catch (e) {
-      console.error(e);
-      return String(e);
-    }
-  })();
+  try {
+    const ast = cqlToAst(state.common.cql);
 
-  return (
-    <Editor
-      value={ast}
-      onChange={() => {}}
-      editable={false}
-      lineNumbers={true}
-      extensions={[json()]}
-    />
-  );
+    if (state.tabs["cql-to-ast"].showJson) {
+      return (
+        <Editor
+          value={JSON.stringify(ast, null, 2)}
+          onChange={() => {}}
+          editable={false}
+          lineNumbers={true}
+          extensions={[json()]}
+        />
+      );
+    }
+
+    return (
+      <div
+        style={{
+          padding: 20,
+          minHeight: 0,
+          overflow: "auto",
+        }}
+      >
+        <Heading>AST</Heading>
+
+        {ast.problems.length > 0 && (
+          <div
+            style={{
+              background: "#fff0f0",
+              padding: 14,
+              borderRadius: 5,
+              margin: "0 0 20px 0",
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 700,
+                margin: "0 0 8px 0",
+                color: "#900",
+              }}
+            >
+              Problems
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gap: 7,
+              }}
+            >
+              {ast.problems.map((problem: unknown, problemIndex: number) => (
+                <div key={problemIndex}>
+                  <AstTree ast={problem} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <AstTree
+          ast={{
+            kind: "library",
+            ...ast.library,
+          }}
+        />
+      </div>
+    );
+  } catch (e) {
+    console.error(e);
+    return (
+      <Editor
+        value={String(e)}
+        onChange={() => {}}
+        editable={false}
+        lineNumbers={true}
+        extensions={[]}
+      />
+    );
+  }
 }
 
-export function CqlToAstSettings({}: { state: TState; setState: TSetState }) {
-  return <Fragment />;
+export function CqlToAstSettings({
+  state,
+  setState,
+}: {
+  state: TState;
+  setState: TSetState;
+}) {
+  return (
+    <Fragment>
+      <div>
+        <label style={{ display: "flex", gap: 5 }}>
+          <input
+            type={"checkbox"}
+            style={{
+              margin: 0,
+            }}
+            checked={state.tabs["cql-to-ast"].showJson}
+            onChange={(event) => {
+              const nextShowJson = event.target.checked;
+              setState((prevState) => ({
+                ...prevState,
+                tabs: {
+                  ...prevState.tabs,
+                  "cql-to-ast": {
+                    ...prevState.tabs["cql-to-ast"],
+                    showJson: nextShowJson,
+                  },
+                },
+              }));
+            }}
+          />
+          Show AST as JSON
+        </label>
+      </div>
+    </Fragment>
+  );
 }
