@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.ast
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
@@ -13,7 +14,7 @@ import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.frontend.CompilerFrontend
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.hl7.cql.ast.Builder
-import org.junit.jupiter.api.Test
+import org.hl7.cql.model.SystemModelInfoProvider
 
 class ElmEmitterParityTest {
 
@@ -39,7 +40,15 @@ class ElmEmitterParityTest {
         val frontendResult = CompilerFrontend().analyze(astResult.library)
         val emittedLibrary = ElmEmitter().emit(frontendResult.library).library
 
-        val legacyTranslator = CqlTranslator.fromText(cql, LibraryManager(ModelManager()))
+        val legacyTranslator =
+            CqlTranslator.fromText(
+                cql,
+                LibraryManager(
+                    ModelManager().apply {
+                        modelInfoLoader.registerModelInfoProvider(SystemModelInfoProvider())
+                    }
+                ),
+            )
         val legacyLibrary = requireNotNull(legacyTranslator.toELM())
 
         val emittedJson = serialize(emittedLibrary)
