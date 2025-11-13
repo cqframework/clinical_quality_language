@@ -1,13 +1,14 @@
 package org.cqframework.cql.cql2elm.utils
 
 import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentHashMap
 
 internal actual class WeakIdentityHashMap<K : Any, V : Any> {
     companion object {
         const val OPERATION_CLEANUP_INTERVAL = 5000
     }
 
-    private val backingMap = HashMap<WeakKey<K>, V>()
+    private val backingMap = ConcurrentHashMap<WeakKey<K>, V>()
     private var operationCount = 0
 
     actual fun getOrPut(key: K, defaultValue: () -> V): V {
