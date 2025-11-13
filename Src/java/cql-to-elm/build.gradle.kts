@@ -1,8 +1,11 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
 }
+
+val loadTestResourcesTask = tasks.register<LoadTestResourcesTask>("loadTestResources")
 
 kotlin {
     js {
@@ -21,8 +24,13 @@ kotlin {
                 api(project(":elm"))
             }
         }
-        jvmTest {
 
+        // Add source sets with TestResource implementations
+        matching { it.name.endsWith("Test") }.configureEach {
+            kotlin.srcDir(loadTestResourcesTask.get().getDirForSourceSet(name))
+        }
+
+        jvmTest {
             dependencies {
                 implementation(project(":quick"))
                 implementation(project(":qdm"))
@@ -31,4 +39,8 @@ kotlin {
             }
         }
     }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(loadTestResourcesTask)
 }

@@ -13,6 +13,7 @@ import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.frontend.CompilerFrontend
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
+import org.cqframework.cql.shared.TestResource
 import org.hl7.cql.ast.Builder
 import org.hl7.cql.model.SystemModelInfoProvider
 
@@ -22,14 +23,7 @@ class ElmEmitterParityTest {
 
     @Test
     fun `literal expression matches legacy translator`() {
-        val cql =
-            """
-                library Simple version '1.0.0'
-                using System
-                context Patient
-                define Foo: 42
-            """
-                .trimIndent()
+        val cql = TestResource("org/cqframework/cql/cql2elm/ast/Simple.cql").readText()
 
         val astResult = Builder().parseLibrary(cql)
         assertTrue(
