@@ -65,7 +65,7 @@ enum class ElementExtractorKind {
 @Serializable
 @SerialName("elementExtractor")
 data class ElementExtractorExpression(
-    val kind: ElementExtractorKind,
+    val elementExtractorKind: ElementExtractorKind,
     override val operand: Expression,
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression
@@ -79,7 +79,7 @@ enum class TypeExtentKind {
 @Serializable
 @SerialName("typeExtent")
 data class TypeExtentExpression(
-    val kind: TypeExtentKind,
+    val typeExtentKind: TypeExtentKind,
     val type: NamedTypeSpecifier,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
@@ -126,7 +126,7 @@ enum class TimeBoundaryKind {
 @Serializable
 @SerialName("timeBoundary")
 data class TimeBoundaryExpression(
-    val kind: TimeBoundaryKind,
+    val timeBoundaryKind: TimeBoundaryKind,
     override val operand: Expression,
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression

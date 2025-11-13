@@ -513,7 +513,7 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.ElementExtractorExpressionTermContext -> {
                 ElementExtractorExpression(
-                    kind = ElementExtractorKind.SINGLETON,
+                    elementExtractorKind = ElementExtractorKind.SINGLETON,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
                 )
@@ -521,13 +521,13 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.PointExtractorExpressionTermContext ->
                 ElementExtractorExpression(
-                    kind = ElementExtractorKind.POINT,
+                    elementExtractorKind = ElementExtractorKind.POINT,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
                 )
 
             is cqlParser.TypeExtentExpressionTermContext -> {
-                val kind =
+                val typeExtentKind =
                     when (ctx.getChild(0)?.text?.lowercase()) {
                         "minimum" -> TypeExtentKind.MINIMUM
                         "maximum" -> TypeExtentKind.MAXIMUM
@@ -539,7 +539,11 @@ class Builder(private val sourceId: String? = null) {
                         name = typeContext.toQualifiedIdentifier(),
                         locator = typeContext.toLocator(),
                     )
-                TypeExtentExpression(kind = kind, type = namedType, locator = ctx.toLocator())
+                TypeExtentExpression(
+                    typeExtentKind = typeExtentKind,
+                    type = namedType,
+                    locator = ctx.toLocator(),
+                )
             }
 
             is cqlParser.ConversionExpressionTermContext -> {
@@ -555,14 +559,14 @@ class Builder(private val sourceId: String? = null) {
             }
 
             is cqlParser.TimeBoundaryExpressionTermContext -> {
-                val kind =
+                val timeBoundaryKind =
                     when (ctx.getChild(0)?.text?.lowercase()) {
                         "start" -> TimeBoundaryKind.START
                         "end" -> TimeBoundaryKind.END
                         else -> return unsupportedExpression("timeBoundaryExpressionTerm", ctx)
                     }
                 TimeBoundaryExpression(
-                    kind = kind,
+                    timeBoundaryKind = timeBoundaryKind,
                     operand = buildExpressionTerm(ctx.expressionTerm()),
                     locator = ctx.toLocator(),
                 )
@@ -590,14 +594,14 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.AggregateExpressionTermContext -> {
                 val keyword = ctx.getChild(0)?.text?.lowercase()
-                val kind =
+                val listTransformKind =
                     when (keyword) {
                         "distinct" -> ListTransformKind.DISTINCT
                         "flatten" -> ListTransformKind.FLATTEN
                         else -> return unsupportedExpression("aggregateExpressionTerm", ctx)
                     }
                 ListTransformExpression(
-                    kind = kind,
+                    listTransformKind = listTransformKind,
                     operand = buildExpression(ctx.expression()),
                     locator = ctx.toLocator(),
                 )
@@ -605,7 +609,7 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.SetAggregateExpressionTermContext -> {
                 val keyword = ctx.getChild(0)?.text?.lowercase()
-                val kind =
+                val expandCollapseKind =
                     when (keyword) {
                         "expand" -> ExpandCollapseKind.EXPAND
                         "collapse" -> ExpandCollapseKind.COLLAPSE
@@ -615,7 +619,7 @@ class Builder(private val sourceId: String? = null) {
                 val perExpression =
                     ctx.expression().drop(1).firstOrNull()?.let { buildExpression(it) }
                 ExpandCollapseExpression(
-                    kind = kind,
+                    expandCollapseKind = expandCollapseKind,
                     operand = buildExpression(ctx.expression(0)!!),
                     perPrecision = precision,
                     perExpression = perExpression,

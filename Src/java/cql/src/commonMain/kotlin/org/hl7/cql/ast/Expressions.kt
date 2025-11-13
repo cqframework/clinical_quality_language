@@ -67,7 +67,7 @@ enum class ListTransformKind {
 @Serializable
 @SerialName("listTransform")
 data class ListTransformExpression(
-    val kind: ListTransformKind,
+    val listTransformKind: ListTransformKind,
     override val operand: Expression,
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression
@@ -81,7 +81,7 @@ enum class ExpandCollapseKind {
 @Serializable
 @SerialName("expandCollapse")
 data class ExpandCollapseExpression(
-    val kind: ExpandCollapseKind,
+    val expandCollapseKind: ExpandCollapseKind,
     override val operand: Expression,
     val perPrecision: String? = null,
     val perExpression: Expression? = null,

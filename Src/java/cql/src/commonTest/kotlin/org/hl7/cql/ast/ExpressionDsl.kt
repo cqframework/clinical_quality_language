@@ -189,7 +189,7 @@ class ExpressionBuilder {
         perExpression: ExpressionSpec? = null,
     ): Expression =
         ExpandCollapseExpression(
-            kind = kind,
+            expandCollapseKind = kind,
             operand = expression(operand),
             perPrecision = perPrecision,
             perExpression = perExpression?.let { expression(it) },
