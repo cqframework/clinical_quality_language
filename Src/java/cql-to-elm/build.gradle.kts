@@ -27,7 +27,9 @@ kotlin {
 
         // Add source sets with TestResource implementations
         matching { it.name.endsWith("Test") }.configureEach {
-            kotlin.srcDir(loadTestResourcesTask.get().getDirForSourceSet(name))
+            kotlin.srcDir(loadTestResourcesTask.flatMap {
+                it.getSrcDirForSourceSet(name)
+            })
         }
 
         jvmTest {
@@ -39,8 +41,4 @@ kotlin {
             }
         }
     }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(loadTestResourcesTask)
 }

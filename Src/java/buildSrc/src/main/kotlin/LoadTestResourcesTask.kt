@@ -4,25 +4,32 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 
 /**
  * Generates multiplatform TestResource classes that provide access to test resources from
  * src/commonTest/resources.
  */
-open class LoadTestResourcesTask : DefaultTask() {
+abstract class LoadTestResourcesTask : DefaultTask() {
 
-    @get:InputDirectory val inputDir = File(project.projectDir, "src/commonTest/resources")
+    @get:InputDirectory abstract val inputDir: DirectoryProperty
 
-    @get:OutputDirectory
-    val outputDir = File(project.projectDir, "build/generated/sources/testResources")
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
 
-    fun getDirForSourceSet(sourceSetName: String): File {
-        return File(outputDir, sourceSetName)
+    init {
+        inputDir.set(File(project.projectDir, "src/commonTest/resources"))
+        outputDir.set(File(project.projectDir, "build/generated/sources/testResources"))
+    }
+
+    fun getSrcDirForSourceSet(sourceSetName: String): Provider<Directory> {
+        return outputDir.map { it.dir(sourceSetName) }
     }
 
     private fun getKotlinDirForSourceSet(sourceSetName: String): File {
-        return File(getDirForSourceSet(sourceSetName), "kotlin")
+        return outputDir.dir("$sourceSetName/kotlin").get().asFile
     }
 
     @TaskAction
@@ -76,12 +83,19 @@ open class LoadTestResourcesTask : DefaultTask() {
             .build()
             .writeTo(getKotlinDirForSourceSet("jvmTest"))
 
+        val inputDirAsFile = inputDir.get().asFile
         val relativePathToFileContentMap =
-            inputDir
+            inputDirAsFile
                 .walkTopDown()
                 .filter { it.isFile }
                 .associateBy(
-                    { inputDir.toPath().relativize(it.toPath()).toString().replace("\\", "/") },
+                    {
+                        inputDirAsFile
+                            .toPath()
+                            .relativize(it.toPath())
+                            .toString()
+                            .replace("\\", "/")
+                    },
                     { Files.readString(it.toPath(), StandardCharsets.UTF_8) },
                 )
 
