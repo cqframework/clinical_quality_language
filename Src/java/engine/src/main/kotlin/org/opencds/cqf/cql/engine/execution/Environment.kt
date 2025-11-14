@@ -86,6 +86,11 @@ constructor(
             return null
         }
 
+        // Special case for Iterable instances being cast to CQL Lists.
+        if (Iterable::class.java.isAssignableFrom(type) && operand is Iterable<*>) {
+            return operand
+        }
+
         if (type.isAssignableFrom(operand.javaClass)) {
             return operand
         }
