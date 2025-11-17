@@ -11,6 +11,7 @@ plugins {
 rootProject.name = "cql-all"
 
 include(
+    "cql-bom",
     "cqf-fhir",
     "cqf-fhir-npm",
     "cql",
