@@ -12,10 +12,8 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
     companion object {
         private fun createUcumService(): UcumService {
             return try {
-                UcumEssenceService(
-                        UcumEssenceService::class.java.getResourceAsStream("/ucum-essence.xml")
-                    )
-                    .let { u ->
+                UcumEssenceService::class.java.getResourceAsStream("/ucum-essence.xml").use {
+                    UcumEssenceService(it).let { u ->
                         object : UcumService {
                             override fun convert(
                                 value: java.math.BigDecimal,
@@ -32,6 +30,7 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
                             }
                         }
                     }
+                }
             } catch (e: org.fhir.ucum.UcumException) {
                 throw IllegalStateException(
                     """Failed to create UCUM service. 

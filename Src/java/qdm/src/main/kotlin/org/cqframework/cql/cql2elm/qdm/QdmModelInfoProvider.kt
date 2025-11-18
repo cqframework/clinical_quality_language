@@ -31,9 +31,8 @@ class QdmModelInfoProvider : ModelInfoProvider, NamespaceAware {
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         if (isQDMModelIdentifier(modelIdentifier)) {
             val localVersion = if (modelIdentifier.version == null) "" else modelIdentifier.version
-            val stream = getQdmResource(localVersion!!)
-            if (stream != null) {
-                return parseModelInfoXml(stream.asSource().buffered())
+            getQdmResource(localVersion!!)?.use {
+                return parseModelInfoXml(it.asSource().buffered())
             }
         }
 
