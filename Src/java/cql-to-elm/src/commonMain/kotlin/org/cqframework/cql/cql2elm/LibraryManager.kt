@@ -212,16 +212,15 @@ constructor(
             }
         }
 
-        val cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier)
-        if (cqlSource == null) {
-            throw CqlIncludeException(
-                @Suppress("MaxLineLength")
-                "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
-                libraryIdentifier.system,
-                libraryIdentifier.id!!,
-                libraryIdentifier.version,
-            )
-        }
+        val cqlSource =
+            librarySourceLoader.getLibrarySource(libraryIdentifier)
+                ?: throw CqlIncludeException(
+                    @Suppress("MaxLineLength")
+                    "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}, namespace uri ${libraryIdentifier.system}.",
+                    libraryIdentifier.system,
+                    libraryIdentifier.id!!,
+                    libraryIdentifier.version,
+                )
 
         val compiler =
             CqlCompiler(
@@ -229,18 +228,17 @@ constructor(
                 libraryIdentifier,
                 this,
             )
-        compiler.run(cqlSource)
 
-        val compiledLibrary = compiler.compiledLibrary
+        cqlSource.use { compiler.run(it) }
 
-        if (compiledLibrary == null) {
-            throw CqlIncludeException(
-                "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
-                libraryIdentifier.system,
-                libraryIdentifier.id!!,
-                libraryIdentifier.version,
-            )
-        }
+        val compiledLibrary =
+            compiler.compiledLibrary
+                ?: throw CqlIncludeException(
+                    "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
+                    libraryIdentifier.system,
+                    libraryIdentifier.id!!,
+                    libraryIdentifier.version,
+                )
 
         validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath)
 
