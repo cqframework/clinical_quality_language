@@ -99,7 +99,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
 
     @Test
     fun throwsWhenOverloadNotFound() {
-        val evaluationFunctionRef = EvaluationFunctionRef("nonexistentFunc", listOf(), listOf())
+        val evaluationFunctionRef = EvaluationFunctionRef("funcWithOverloads", listOf(), listOf())
         assertFailsWith<CqlException> {
             engine
                 .evaluate {
