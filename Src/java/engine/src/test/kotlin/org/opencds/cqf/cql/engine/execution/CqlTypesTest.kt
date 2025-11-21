@@ -23,43 +23,43 @@ internal class CqlTypesTest : CqlTestBase() {
     fun all_types() {
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
-        val results = engine.evaluate(toElmIdentifier("CqlTypesTest"))
-        var value = results.forExpression("AnyInteger")!!.value()
+        val results = engine.evaluate { library("CqlTypesTest") }.onlyResultOrThrow
+        var value = results.forExpression("AnyInteger")!!.value
         Assertions.assertEquals(5, value, "AnyInteger")
 
-        value = results.forExpression("AnyLong")!!.value()
+        value = results.forExpression("AnyLong")!!.value
         Assertions.assertEquals(value, "12".toLong(), "AnyLong")
 
-        value = results.forExpression("AnyDecimal")!!.value()
+        value = results.forExpression("AnyDecimal")!!.value
         Assertions.assertEquals(value, BigDecimal("5.0"), "AnyDecimal")
 
-        value = results.forExpression("AnyQuantity")!!.value()
+        value = results.forExpression("AnyQuantity")!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal("5.0")).withUnit("g")) ==
                 true,
             "AnyQuantity",
         )
 
-        value = results.forExpression("AnyDateTime")!!.value()
+        value = results.forExpression("AnyDateTime")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 4, 4)) ==
                 true,
             "AnyDateTime",
         )
 
-        value = results.forExpression("AnyTime")!!.value()
+        value = results.forExpression("AnyTime")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, Time(9, 0, 0, 0)) == true,
             "AnyTime",
         )
 
-        value = results.forExpression("AnyInterval")!!.value()
+        value = results.forExpression("AnyInterval")!!.value
         Assertions.assertEquals((value as Interval?), Interval(2, true, 7, true), "AnyInterval")
 
-        value = results.forExpression("AnyList")!!.value()
+        value = results.forExpression("AnyList")!!.value
         Assertions.assertEquals(value, mutableListOf<Int?>(1, 2, 3), "AnyList")
 
-        value = results.forExpression("AnyTuple")!!.value()
+        value = results.forExpression("AnyTuple")!!.value
         Assertions.assertEquals(
             (value as Tuple).elements,
             object : HashMap<String?, Any?>() {
@@ -71,15 +71,15 @@ internal class CqlTypesTest : CqlTestBase() {
             "AnyTuple",
         )
 
-        value = results.forExpression("BooleanTestTrue")!!.value()
+        value = results.forExpression("BooleanTestTrue")!!.value
         Assertions.assertEquals("Boolean", value!!.javaClass.getSimpleName(), "BooleanTestTrue")
         Assertions.assertTrue(value as Boolean, "BooleanTestTrue")
 
-        value = results.forExpression("BooleanTestFalse")!!.value()
+        value = results.forExpression("BooleanTestFalse")!!.value
         Assertions.assertEquals("Boolean", value!!.javaClass.getSimpleName(), "BooleanTestFalse")
         Assertions.assertFalse(value as Boolean, "BooleanTestFalse")
 
-        value = results.forExpression("CodeLiteral")!!.value()
+        value = results.forExpression("CodeLiteral")!!.value
         Assertions.assertTrue(
             (value as Code).equal(
                 Code()
@@ -91,7 +91,7 @@ internal class CqlTypesTest : CqlTestBase() {
             "CodeLiteral",
         )
 
-        value = results.forExpression("CodeLiteral2")!!.value()
+        value = results.forExpression("CodeLiteral2")!!.value
         Assertions.assertTrue(
             (value as Code).equal(
                 Code()
@@ -103,7 +103,7 @@ internal class CqlTypesTest : CqlTestBase() {
             "CodeLiteral2",
         )
 
-        value = results.forExpression("ConceptTest")!!.value()
+        value = results.forExpression("ConceptTest")!!.value
         Assertions.assertTrue(
             (value as Concept).equal(
                 Concept()
@@ -126,10 +126,10 @@ internal class CqlTypesTest : CqlTestBase() {
             "ConceptTest",
         )
 
-        value = results.forExpression("DateTimeNull")!!.value()
+        value = results.forExpression("DateTimeNull")!!.value
         Assertions.assertNull(value, "DateTimeNull")
 
-        value = results.forExpression("DateTimeProper")!!.value()
+        value = results.forExpression("DateTimeProper")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value,
@@ -138,18 +138,18 @@ internal class CqlTypesTest : CqlTestBase() {
             "DateTimeProper",
         )
 
-        value = results.forExpression("DateTimeIncomplete")!!.value()
+        value = results.forExpression("DateTimeIncomplete")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2015, 2, 10)) ==
                 true,
             "DateTimeIncomplete",
         )
 
-        value = results.forExpression("DateTimeUncertain")!!.value()
+        value = results.forExpression("DateTimeUncertain")!!.value
         Assertions.assertEquals(19, (value as Interval).start, "DateTimeUncertain")
         Assertions.assertEquals(49, value.end, "DateTimeUncertain")
 
-        value = results.forExpression("DateTimeMin")!!.value()
+        value = results.forExpression("DateTimeMin")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value,
@@ -157,7 +157,7 @@ internal class CqlTypesTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("DateTimeMax")!!.value()
+        value = results.forExpression("DateTimeMax")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value,
@@ -165,14 +165,14 @@ internal class CqlTypesTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("DecimalUpperBoundExcept")!!.value()
+        value = results.forExpression("DecimalUpperBoundExcept")!!.value
         Assertions.assertEquals(
             value,
             BigDecimal("10000000000000000000000000000000000.00000000"),
             "DecimalUpperBoundExcept",
         )
 
-        value = results.forExpression("DecimalLowerBoundExcept")!!.value()
+        value = results.forExpression("DecimalLowerBoundExcept")!!.value
         Assertions.assertEquals(
             value,
             BigDecimal("-10000000000000000000000000000000000.00000000"),
@@ -180,23 +180,23 @@ internal class CqlTypesTest : CqlTestBase() {
         )
 
         // NOTE: This should also return an error as the fractional precision is greater than 8
-        value = results.forExpression("DecimalFractionalTooBig")!!.value()
+        value = results.forExpression("DecimalFractionalTooBig")!!.value
         Assertions.assertEquals(value, BigDecimal("5.999999999"), "DecimalFractionalTooBig")
 
-        value = results.forExpression("DecimalPi")!!.value()
+        value = results.forExpression("DecimalPi")!!.value
         Assertions.assertEquals(value, BigDecimal("3.14159265"), "DecimalPi")
 
-        value = results.forExpression("IntegerProper")!!.value()
+        value = results.forExpression("IntegerProper")!!.value
         Assertions.assertEquals(5000, value, "IntegerProper")
 
-        value = results.forExpression("QuantityTest")!!.value()
+        value = results.forExpression("QuantityTest")!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(
                 Quantity().withValue(BigDecimal("150.2")).withUnit("[lb_av]")
             ) == true
         )
 
-        value = results.forExpression("QuantityTest2")!!.value()
+        value = results.forExpression("QuantityTest2")!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(
                 Quantity().withValue(BigDecimal("2.5589")).withUnit("{eskimo kisses}")
@@ -204,14 +204,14 @@ internal class CqlTypesTest : CqlTestBase() {
         )
 
         // NOTE: This should also return an error as the fractional precision is greater than 8
-        value = results.forExpression("QuantityFractionalTooBig")!!.value()
+        value = results.forExpression("QuantityFractionalTooBig")!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(
                 Quantity().withValue(BigDecimal("5.99999999")).withUnit("g")
             ) == true
         )
 
-        value = results.forExpression("RatioTest")!!.value()
+        value = results.forExpression("RatioTest")!!.value
         Assertions.assertTrue(
             (value as Ratio)
                 .numerator!!
@@ -223,26 +223,26 @@ internal class CqlTypesTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("StringTestEscapeQuotes")!!.value()
+        value = results.forExpression("StringTestEscapeQuotes")!!.value
         Assertions.assertEquals(
             "\'I start with a single quote and end with a double quote\"",
             value,
             "StringTestEscapeQuotes",
         )
 
-        value = results.forExpression("TimeProper")!!.value()
+        value = results.forExpression("TimeProper")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, Time(10, 25, 12, 863)) == true,
             "TimeProper",
         )
 
-        value = results.forExpression("TimeAllMax")!!.value()
+        value = results.forExpression("TimeAllMax")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, Time(23, 59, 59, 999)) == true,
             "TimeAllMax",
         )
 
-        value = results.forExpression("TimeAllMin")!!.value()
+        value = results.forExpression("TimeAllMin")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, Time(0, 0, 0, 0)) == true,
             "TimeAllMin",

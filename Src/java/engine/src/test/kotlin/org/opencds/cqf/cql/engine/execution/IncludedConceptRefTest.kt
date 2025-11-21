@@ -17,8 +17,8 @@ internal class IncludedConceptRefTest : CqlTestBase() {
         val expected =
             Concept().withDisplay("concept-display").withCodes(mutableListOf<Code?>(code))
 
-        val results = engine.evaluate(toElmIdentifier("IncludedConceptRefTest"))
-        val actual = results.forExpression("testIncludedConceptRef")!!.value() as CqlType?
+        val results = engine.evaluate { library("IncludedConceptRefTest") }.onlyResultOrThrow
+        val actual = results.forExpression("testIncludedConceptRef")!!.value as CqlType?
 
         CqlConceptTest.assertEqual(expected, actual)
     }

@@ -55,25 +55,25 @@ class FhirHelpersDstu3Test {
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhirtest.uhn.ca/baseDstu3");
         engine.environment.registerDataProvider("http://hl7.org/fhir", provider)
-        val results = engine.evaluate(libraryId)
+        val results = engine.evaluate { library(libraryId) }.onlyResultOrThrow
 
         // TODO - fix
-        var value = results.forExpression("TestPeriodToInterval")!!.value()
+        var value = results.forExpression("TestPeriodToInterval")!!.value
         // Assertions.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 18, 8, 0}));
         // Assertions.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 19, 8, 0}));
-        value = results.forExpression("TestToQuantity")!!.value()
+        value = results.forExpression("TestToQuantity")!!.value
         // TODO: ModelInfo bug. Not aware of SimpleQuantity
-        value = results.forExpression("TestRangeToInterval")!!.value()
-        value = results.forExpression("TestToCode")!!.value()
-        value = results.forExpression("TestToConcept")!!.value()
-        value = results.forExpression("TestToString")!!.value()
-        value = results.forExpression("TestRequestStatusToString")!!.value()
-        value = results.forExpression("TestToDateTime")!!.value()
-        value = results.forExpression("TestToTime")!!.value()
-        value = results.forExpression("TestToInteger")!!.value()
-        value = results.forExpression("TestToDecimal")!!.value()
-        value = results.forExpression("TestToBoolean")!!.value()
+        value = results.forExpression("TestRangeToInterval")!!.value
+        value = results.forExpression("TestToCode")!!.value
+        value = results.forExpression("TestToConcept")!!.value
+        value = results.forExpression("TestToString")!!.value
+        value = results.forExpression("TestRequestStatusToString")!!.value
+        value = results.forExpression("TestToDateTime")!!.value
+        value = results.forExpression("TestToTime")!!.value
+        value = results.forExpression("TestToInteger")!!.value
+        value = results.forExpression("TestToDecimal")!!.value
+        value = results.forExpression("TestToBoolean")!!.value
     }
 }

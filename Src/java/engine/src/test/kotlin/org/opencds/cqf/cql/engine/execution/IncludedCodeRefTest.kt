@@ -9,8 +9,8 @@ import org.opencds.cqf.cql.engine.runtime.Code
 internal class IncludedCodeRefTest : CqlTestBase() {
     @Test
     fun included_code_ref() {
-        val results = engine.evaluate(toElmIdentifier("IncludedCodeRefTest"))
-        val value = results.forExpression("IncludedCode")!!.value()
+        val results = engine.evaluate { library("IncludedCodeRefTest") }.onlyResultOrThrow
+        val value = results.forExpression("IncludedCode")!!.value
         Assertions.assertNotNull(value)
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.instanceOf(Code::class.java)))
     }

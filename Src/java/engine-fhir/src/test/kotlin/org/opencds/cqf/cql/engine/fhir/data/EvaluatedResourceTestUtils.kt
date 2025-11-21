@@ -232,12 +232,12 @@ internal object EvaluatedResourceTestUtils {
         for (expressionName in expressionResults.keys) {
             val expressionResult: ExpressionResult = expressionResults[expressionName]!!
 
-            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources()!!
+            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources!!
             val expectedEvaluatedResourcesForName = expectedEvaluatedResources[expressionName]!!
 
             assertResourcesEqual(expectedEvaluatedResourcesForName, actualEvaluatedResourcesForName)
 
-            val actualValue = expressionResult.value()
+            val actualValue = expressionResult.value
             val expectedValue = expectedValues[expressionName]!!
 
             assertValuesEqual(expectedValue, actualValue)
@@ -246,12 +246,12 @@ internal object EvaluatedResourceTestUtils {
 
     fun assertEvaluationResult(
         evaluationResult: EvaluationResult,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: Collection<IBaseResource>,
     ) {
         val expressionResult = evaluationResult.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
-        val actualValue = expressionResult.value()
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedEvaluatedResources, actualValue)
@@ -260,7 +260,7 @@ internal object EvaluatedResourceTestUtils {
     fun assertEvaluationResult(
         evaluationResultsForMultiLib: EvaluationResultsForMultiLib?,
         libraryIdentifier: VersionedIdentifier?,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: Collection<IBaseResource>,
         expectedValue: Collection<IBaseResource>,
     ) {
@@ -270,8 +270,8 @@ internal object EvaluatedResourceTestUtils {
         )
         val evaluationResult = evaluationResultsForMultiLib!!.getResultFor(libraryIdentifier)
         val expressionResult = evaluationResult!!.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
-        val actualValue = expressionResult.value()
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedValue, actualValue)
@@ -279,7 +279,7 @@ internal object EvaluatedResourceTestUtils {
 
     fun assertEvaluationResult(
         evaluationResult: EvaluationResult?,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: Collection<IBaseResource>,
         expectedValue: Collection<IBaseResource>,
     ) {
@@ -288,8 +288,8 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
         val expressionResult = evaluationResult!!.forExpression(expressionName)
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources()!!
-        val actualValue = expressionResult.value()
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedValue, actualValue)

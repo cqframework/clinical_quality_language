@@ -154,8 +154,7 @@ class DataRequirementsProcessorTest {
                 setup(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10.cql", cqlTranslatorOptions)
 
             val dqReqTrans = DataRequirementsProcessor()
-            val expressions: MutableSet<String?> = HashSet<String?>()
-            expressions.add("Negative PCP Screenings Count Since Last POS")
+            val expressions = mutableSetOf("Negative PCP Screenings Count Since Last POS")
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
                     setup.manager,
@@ -580,12 +579,11 @@ class DataRequirementsProcessorTest {
     fun dataRequirementsProcessorWithExpressions() {
         val cqlTranslatorOptions = CqlCompilerOptions()
         try {
-            val expressions: MutableSet<String?> = HashSet<String?>()
             // TODO - add expressions to expressions
-            expressions.add(
-                "Conditions Indicating End of Life or With Limited Life Expectancy"
-            ) // Active Ambulatory Opioid
-            // Rx");
+            val expressions =
+                mutableSetOf(
+                    "Conditions Indicating End of Life or With Limited Life Expectancy"
+                ) // Active Ambulatory Opioid Rx");
             val setup: Setup = setup("OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions)
 
             val dqReqTrans = DataRequirementsProcessor()
@@ -817,15 +815,15 @@ class DataRequirementsProcessorTest {
             val setup: Setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", cqlTranslatorOptions)
 
             val dqReqTrans = DataRequirementsProcessor()
-            val expressions: MutableSet<String?> = HashSet<String?>()
-            val externalFunctionDefs: MutableSet<String?> = HashSet<String?>()
+            val expressions = mutableSetOf<String>()
+            val externalFunctionDefs = mutableSetOf<String>()
             for (ed in setup.library.library!!.statements!!.def) {
                 if (ed is FunctionDef) {
                     if (ed.isExternal() != null && ed.isExternal() == true) {
-                        externalFunctionDefs.add(ed.name)
+                        externalFunctionDefs.add(ed.name!!)
                     }
                 }
-                expressions.add(ed.name)
+                expressions.add(ed.name!!)
             }
 
             for (efd in externalFunctionDefs) {
@@ -860,10 +858,8 @@ class DataRequirementsProcessorTest {
             val setup: Setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", cqlTranslatorOptions)
 
             val dqReqTrans = DataRequirementsProcessor()
-            val expressions: MutableSet<String?> = HashSet<String?>()
-            for (ed in setup.library.library!!.statements!!.def) {
-                expressions.add(ed.name)
-            }
+            val expressions =
+                setup.library.library!!.statements!!.def.map { it.name!! }.toMutableSet()
             val moduleDefinitionLibrary =
                 dqReqTrans.gatherDataRequirements(
                     setup.manager,
@@ -1073,7 +1069,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
@@ -1098,7 +1094,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
@@ -1126,7 +1122,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {
@@ -1151,10 +1147,11 @@ class DataRequirementsProcessorTest {
         return moduleDefinitionLibrary
     }
 
+    @Suppress("LongParameterList")
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -1205,7 +1202,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
@@ -1228,7 +1225,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         includeLogicDefinitions: Boolean,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
@@ -1252,7 +1249,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
     ): Library {
@@ -1278,7 +1275,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         specificationLevel: SpecificationLevel,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
@@ -1303,7 +1300,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         includeLogicDefinitions: Boolean,
         specificationLevel: SpecificationLevel,
     ): Library {
@@ -1326,10 +1323,11 @@ class DataRequirementsProcessorTest {
         return moduleDefinitionLibrary
     }
 
+    @Suppress("LongParameterList")
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
         specificationLevel: SpecificationLevel,
@@ -1624,8 +1622,7 @@ class DataRequirementsProcessorTest {
     fun dataRequirementsAnalysisCase1c() {
         val compilerOptions = this.compilerOptions
         val manager = setupDataRequirementsAnalysis("TestCases/TestCase1c.cql", compilerOptions)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("TestReferencedDataRequirement")
+        val expressions = mutableSetOf("TestReferencedDataRequirement")
         val moduleDefinitionLibrary =
             getModuleDefinitionLibrary(manager, compilerOptions, expressions)
 
@@ -1810,12 +1807,7 @@ class DataRequirementsProcessorTest {
         // Evaluate this test as of 12/31/2022
         val evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC)
         val moduleDefinitionLibrary =
-            getModuleDefinitionLibrary(
-                manager,
-                compilerOptions,
-                HashMap<String?, Any?>(),
-                evaluationDateTime,
-            )
+            getModuleDefinitionLibrary(manager, compilerOptions, mutableMapOf(), evaluationDateTime)
 
         /*
         2e - Timing phrase 90 days or less before
@@ -1886,7 +1878,7 @@ class DataRequirementsProcessorTest {
         val compilerOptions = this.compilerOptions
         val manager = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", compilerOptions)
         val moduleDefinitionLibrary =
-            getModuleDefinitionLibrary(manager, compilerOptions, HashMap<String?, Any?>())
+            getModuleDefinitionLibrary(manager, compilerOptions, mutableMapOf())
 
         /*
         2g - Equal to a compile-time literal function
@@ -1937,7 +1929,7 @@ class DataRequirementsProcessorTest {
         val compilerOptions = this.compilerOptions
         val manager = setupDataRequirementsAnalysis("TestCases/TestCase2i.cql", compilerOptions)
         val moduleDefinitionLibrary =
-            getModuleDefinitionLibrary(manager, compilerOptions, HashMap<String?, Any?>())
+            getModuleDefinitionLibrary(manager, compilerOptions, mutableMapOf())
 
         /*
         2i - In a compile-time literal interval
@@ -1996,7 +1988,7 @@ class DataRequirementsProcessorTest {
         val compilerOptions = this.compilerOptions
         val manager = setupDataRequirementsAnalysis("TestCases/TestCase2j.cql", compilerOptions)
         val moduleDefinitionLibrary =
-            getModuleDefinitionLibrary(manager, compilerOptions, HashMap<String?, Any?>())
+            getModuleDefinitionLibrary(manager, compilerOptions, mutableMapOf())
 
         /*
         2j - Before and after
@@ -2670,7 +2662,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                HashMap<String?, Any?>(),
+                mutableMapOf(),
                 ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
                 includeLogicDefinitions = false,
                 recursive = true,
@@ -2693,7 +2685,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                HashMap<String?, Any?>(),
+                mutableMapOf(),
                 ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
             )
         Assertions.assertNotNull(moduleDefinitionLibrary)
@@ -2715,7 +2707,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                HashMap<String?, Any?>(),
+                mutableMapOf(),
                 ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
                 includeLogicDefinitions = false,
                 recursive = true,
@@ -2734,18 +2726,20 @@ class DataRequirementsProcessorTest {
     fun cms143() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
         // expressions.add("Qualifying Encounter");
         // expressions.add("Qualifying Encounter During Measurement Period");
         // expressions.add("Qualifying Encounter During Measurement Period Expanded");
-        expressions.add("Initial Population")
-        expressions.add("Denominator")
-        expressions.add("Denominator Exception")
-        expressions.add("Numerator")
-        expressions.add("SDE Ethnicity")
-        expressions.add("SDE Race")
-        expressions.add("SDE Sex")
-        expressions.add("SDE Payer")
+        val expressions =
+            mutableSetOf(
+                "Initial Population",
+                "Denominator",
+                "Denominator Exception",
+                "Numerator",
+                "SDE Ethnicity",
+                "SDE Race",
+                "SDE Sex",
+                "SDE Payer",
+            )
         // var manager = setupUncollapsedDataRequirementsAnalysis(new
         // NamespaceInfo("gov.healthit.ecqi.ecqms",
         // "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/TestUnion.cql", compilerOptions);
@@ -2770,8 +2764,7 @@ class DataRequirementsProcessorTest {
     fun sdeSex() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("SDE Sex")
+        val expressions = mutableSetOf("SDE Sex")
         val manager =
             setupDataRequirementsAnalysis(
                 NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
@@ -2801,8 +2794,7 @@ class DataRequirementsProcessorTest {
     fun sdePayer() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("SDE Payer")
+        val expressions = mutableSetOf("SDE Payer")
         val manager =
             setupDataRequirementsAnalysis(
                 NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
@@ -2831,8 +2823,7 @@ class DataRequirementsProcessorTest {
     fun sdeEthnicity() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("SDE Ethnicity")
+        val expressions = mutableSetOf("SDE Ethnicity")
         val manager =
             setupDataRequirementsAnalysis(
                 NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
@@ -2859,8 +2850,7 @@ class DataRequirementsProcessorTest {
     fun sdeRace() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("SDE Race")
+        val expressions = mutableSetOf("SDE Race")
         val manager =
             setupDataRequirementsAnalysis(
                 NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
@@ -2887,8 +2877,7 @@ class DataRequirementsProcessorTest {
     fun qualifyingEncounterMP() {
         val compilerOptions = defaultOptions()
         compilerOptions.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("Qualifying Encounter During Measurement Period")
+        val expressions = mutableSetOf("Qualifying Encounter During Measurement Period")
         val manager =
             setupDataRequirementsAnalysis(
                 NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
@@ -2928,12 +2917,14 @@ class DataRequirementsProcessorTest {
         compilerOptions.analyzeDataRequirements = false
         var manager: Setup = setup("CMS135/cql/FHIRHelpers-4.4.000.cql", compilerOptions)
         manager = nextSetup(manager.manager, "CMS135/cql/CMS135FHIR-0.0.000.cql")
-        val expressions: MutableSet<String?> = HashSet<String?>()
-        expressions.add("Initial Population")
-        expressions.add("Denominator")
-        expressions.add("Denominator Exclusions")
-        expressions.add("Numerator")
-        expressions.add("Denominator Exceptions")
+        val expressions =
+            mutableSetOf(
+                "Initial Population",
+                "Denominator",
+                "Denominator Exclusions",
+                "Numerator",
+                "Denominator Exceptions",
+            )
         val moduleDefinitionLibrary =
             getModuleDefinitionLibrary(
                 manager,
@@ -2978,7 +2969,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                HashMap<String?, Any?>(),
+                mutableMapOf(),
                 ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
                 includeLogicDefinitions = false,
                 recursive = true,
@@ -3001,11 +2992,10 @@ class DataRequirementsProcessorTest {
                 "CMS986/cql/CMS986FHIRMalnutritionScore-0.3.000.cql",
                 compilerOptions,
             )
-        val expressions: MutableSet<String?> = HashSet<String?>()
         // expressions.add("Initial Population");
         // expressions.add("Measure Population");
         // expressions.add("Measure Population Exclusion");
-        expressions.add("Measure Observation 1")
+        val expressions = mutableSetOf("Measure Observation 1")
         // expressions.add("SDE CMS Sex");
         // expressions.add("SDE Payer Type");
         // expressions.add("SDE Ethnicity");
@@ -3054,7 +3044,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                HashMap<String?, Any?>(),
+                mutableMapOf(),
                 ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
                 true,
             )

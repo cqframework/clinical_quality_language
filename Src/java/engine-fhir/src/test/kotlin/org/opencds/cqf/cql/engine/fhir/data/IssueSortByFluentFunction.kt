@@ -65,9 +65,10 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
         )
         val result =
             engine
-                .evaluate("IssueSortByFluentFunction")
+                .evaluate { library("IssueSortByFluentFunction") }
+                .onlyResultOrThrow
                 .forExpression("Ordered Observations")!!
-                .value()
+                .value
 
         val obs = Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(obs1, obs!![0])

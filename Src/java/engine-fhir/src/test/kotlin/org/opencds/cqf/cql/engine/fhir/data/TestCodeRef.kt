@@ -14,15 +14,27 @@ class TestCodeRef : FhirExecutionTestBase() {
 
     // @Test
     fun CodeRefTest1() {
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("CodeRef1"))
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("CodeRef1")
+                }
+                .onlyResultOrThrow
 
-        Assertions.assertTrue(results.forExpression("CodeRef1")!!.value() != null)
+        Assertions.assertTrue(results.forExpression("CodeRef1")!!.value != null)
     }
 
     // @Test
     fun CodeRefTest2() {
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("CodeRef2"))
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("CodeRef2")
+                }
+                .onlyResultOrThrow
 
-        Assertions.assertTrue(results.forExpression("CodeRef2")!!.value() != null)
+        Assertions.assertTrue(results.forExpression("CodeRef2")!!.value != null)
     }
 }

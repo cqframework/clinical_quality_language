@@ -1,12 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import org.hl7.elm.r1.If
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.VersionedIdentifier
-import org.junit.jupiter.api.Test
 
 class CoverageTest : CqlTestBase() {
     override val cqlSubdirectory = "CoverageTest"
@@ -14,7 +14,7 @@ class CoverageTest : CqlTestBase() {
     @Test
     fun exportLcovInfoTest() {
         engine.state.engineOptions.add(CqlEngine.Options.EnableCoverageCollection)
-        engine.evaluate("Tests")
+        engine.evaluate { library("Tests") }
         val actual =
             engine.state.globalCoverage.exportLcovInfo(
                 listOf(

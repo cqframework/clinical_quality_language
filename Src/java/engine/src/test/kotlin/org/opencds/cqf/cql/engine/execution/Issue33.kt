@@ -11,8 +11,8 @@ internal class Issue33 : CqlTestBase() {
     fun interval() {
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
-        val results = engine.evaluate(toElmIdentifier("Issue33"))
-        val value = results.forExpression("Issue33")!!.value()
+        val results = engine.evaluate { library("Issue33") }.onlyResultOrThrow
+        val value = results.forExpression("Issue33")!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as Interval).start,

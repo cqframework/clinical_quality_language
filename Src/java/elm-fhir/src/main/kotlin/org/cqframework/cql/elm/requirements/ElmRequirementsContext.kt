@@ -49,14 +49,14 @@ class ElmRequirementsContext(
     libraryManager: LibraryManager,
     options: CqlCompilerOptions?,
     visitor: ElmRequirementsVisitor,
-    parameters: MutableMap<String?, Any?>?,
+    parameters: MutableMap<String, Any?>?,
     evaluationDateTime: ZonedDateTime?,
 ) {
     var options: CqlCompilerOptions?
 
     val libraryManager: LibraryManager
 
-    val parameters: MutableMap<String?, Any?>?
+    val parameters: MutableMap<String, Any?>?
 
     val evaluationDateTime: ZonedDateTime?
 

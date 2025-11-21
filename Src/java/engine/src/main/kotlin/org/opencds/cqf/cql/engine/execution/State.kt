@@ -89,7 +89,7 @@ constructor(
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
-    val parameters = mutableMapOf<String?, Any?>()
+    val parameters = mutableMapOf<String, Any?>()
     var contextValues = mutableMapOf<String?, Any?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
@@ -106,7 +106,7 @@ constructor(
         return currentLibrary.peek()
     }
 
-    fun setParameters(library: Library?, parameters: Map<String?, Any?>?) {
+    fun setParameters(library: Library?, parameters: Map<String, Any?>?) {
         if (parameters != null) {
             for (parameterValue in parameters.entries) {
                 setParameter(null, parameterValue.key, parameterValue.value)
@@ -114,7 +114,7 @@ constructor(
         }
     }
 
-    fun setParameter(libraryName: String?, name: String?, value: Any?) {
+    fun setParameter(libraryName: String?, name: String, value: Any?) {
         val enteredLibrary = enterLibrary(libraryName)
         try {
             val fullName =

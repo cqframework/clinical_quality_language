@@ -7,9 +7,15 @@ class TestFhirExecution : FhirExecutionTestBase() {
     // @Test
     fun testCoalesce() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testCoalesce"))
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testCoalesce")
+                }
+                .onlyResultOrThrow
 
-        val value = results.forExpression("testCoalesce")!!.value()
+        val value = results.forExpression("testCoalesce")!!.value
         Assertions.assertTrue((value as MutableList<*>)[0] as Int? == 72)
     }
 
@@ -17,8 +23,14 @@ class TestFhirExecution : FhirExecutionTestBase() {
     fun testMonthFrom() {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
         engine.state.setParameter(null, "MAXYEAR", 2014)
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testMonthFrom"))
-        val value = results.forExpression("testMonthFrom")!!.value()
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testMonthFrom")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("testMonthFrom")!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -26,16 +38,27 @@ class TestFhirExecution : FhirExecutionTestBase() {
     fun testMultisourceQueryCreatingDatePeriod() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
         val results =
-            engine.evaluate(library!!.identifier!!, mutableSetOf("Immunizations in range"))
-        val value = results.forExpression("Immunizations in range")!!.value()
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("Immunizations in range")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("Immunizations in range")!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testIdResolution() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("Resource Id"))
-        val value = results.forExpression("Resource Id")!!.value()
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("Resource Id")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("Resource Id")!!.value
         Assertions.assertNotNull(value)
     }
 }

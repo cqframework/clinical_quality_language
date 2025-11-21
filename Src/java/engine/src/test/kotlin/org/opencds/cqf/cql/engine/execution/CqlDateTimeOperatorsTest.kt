@@ -26,35 +26,35 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     /** [org.opencds.cqf.cql.engine.elm.execution.DurationBetweenEvaluator.evaluate] */
     @Test
     fun duration() {
-        var value = engine.expression(library, "DateTimeDurationBetweenYear")!!.value()
+        var value = engine.expression(library, "DateTimeDurationBetweenYear")
         MatcherAssert.assertThat(value, Matchers.`is`(5))
 
-        value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval")!!.value()
+        value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval")
         Assertions.assertEquals(17, (value as Interval).start)
         Assertions.assertEquals(44, value.end)
 
-        value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval2")!!.value()
+        value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval2")
         Assertions.assertEquals(5, (value as Interval).start)
         Assertions.assertEquals(16, value.end)
 
         //        assertThat(((Uncertainty)result).getUncertaintyInterval(), is(new Interval(5,
         // true, 17, true)));
-        value = engine.expression(library, "DateTimeDurationBetweenUncertainAdd")!!.value()
+        value = engine.expression(library, "DateTimeDurationBetweenUncertainAdd")
         Assertions.assertEquals(34, (value as Interval).start)
         Assertions.assertEquals(88, value.end)
 
-        value = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract")!!.value()
+        value = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract")
         Assertions.assertEquals(12, (value as Interval).start)
         Assertions.assertEquals(28, value.end)
 
-        value = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply")!!.value()
+        value = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply")
         Assertions.assertEquals(289, (value as Interval).start)
         Assertions.assertEquals(1936, value.end)
 
-        value = engine.expression(library, "DurationInDaysA")!!.value()
+        value = engine.expression(library, "DurationInDaysA")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "DurationInDaysAA")!!.value()
+        value = engine.expression(library, "DurationInDaysAA")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
     }
 
@@ -63,9 +63,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     fun now() {
         val evaluationDateTime = DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 5, 4, 999)
         val value =
-            engine
-                .expression(library, "Issue34A", evaluationDateTime.dateTime!!.toZonedDateTime())!!
-                .value()
+            engine.expression(library, "Issue34A", evaluationDateTime.dateTime!!.toZonedDateTime())
         Assertions.assertTrue(EquivalentEvaluator.equivalent(value, evaluationDateTime) == true)
         Assertions.assertEquals(
             (value as DateTime).dateTime!!.offset,
@@ -78,7 +76,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     fun timeOfDay() {
         // TODO: uncomment once Time(x,x,x,x,x) format is fixed
         // Context context = new Context(library);
-        // var value = engine.expression(library, "TimeOfDayTest").value();
+        // var value = engine.expression(library, "TimeOfDayTest").value;
         // assertThat(((Time)result).getPartial().getValue(0), is(10));
     }
 
@@ -88,7 +86,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
         //        context = new Context(library, new DateTime(TemporalHelper.getDefaultOffset(),
         // 2016, 6, 10, 5, 5, 4,
         // 999));
-        //        value = engine.expression(library, "Issue34B").value();
+        //        value = engine.expression(library, "Issue34B").value;
         //        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(null,
         // 2016, 6, 10)));
         //        Assertions.assertTrue(((DateTime)
@@ -114,7 +112,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
             // the spec.
             // CQL also has `timezoneoffset from DateTime(...)` but here we are testing a more
             // complex scenario.
-            val value = engine.expression(library, "Issue1420", evaluationZonedDateTime)!!.value()
+            val value = engine.expression(library, "Issue1420", evaluationZonedDateTime)
             val expected = evaluationZonedDateTime.offset.totalSeconds / 3600
             Assertions.assertEquals(expected, value)
         }

@@ -9,7 +9,13 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     fun withCache() {
         val engine = getCqlEngineForFhir(true)
 
-        var results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
+        var results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Union")
+                }
+                .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -17,14 +23,26 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
             listOf(EvaluatedResourceTestUtils.CONDITION, EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Encounter"))
+        results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Encounter")
+                }
+                .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Encounter",
             listOf(EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Condition"))
+        results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Condition")
+                }
+                .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Condition",
@@ -36,7 +54,13 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     fun withoutCache() {
         val engine = getCqlEngineForFhir(false)
 
-        var results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
+        var results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Union")
+                }
+                .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -44,21 +68,39 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
             listOf(EvaluatedResourceTestUtils.CONDITION, EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Encounter"))
+        results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Encounter")
+                }
+                .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Encounter",
             listOf(EvaluatedResourceTestUtils.ENCOUNTER),
         )
 
-        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Condition"))
+        results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Condition")
+                }
+                .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Condition",
             listOf(EvaluatedResourceTestUtils.CONDITION),
         )
 
-        results = engine.evaluate(library!!.identifier!!, mutableSetOf("Union"))
+        results =
+            engine
+                .evaluate {
+                    this.library(library!!.identifier!!)
+                    expression("Union")
+                }
+                .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
             "Union",

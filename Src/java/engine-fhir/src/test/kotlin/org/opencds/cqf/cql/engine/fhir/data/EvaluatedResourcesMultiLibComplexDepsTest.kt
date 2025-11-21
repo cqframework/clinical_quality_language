@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.execution.CqlEngine
-import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.Companion.allEncounters
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 
@@ -23,14 +22,21 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     fun singleLibraryEvaluation(
         expressionCaching: Boolean,
         libraryIdentifier: VersionedIdentifier,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: List<IBaseResource>,
         expectedValues: List<IBaseResource>,
     ) {
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
-        val resultsSingleLib: EvaluationResult? =
-            engine.evaluate(libraryIdentifier, ALL_EXPRESSIONS)
+        val resultsSingleLib =
+            engine
+                .evaluate {
+                    library(libraryIdentifier)
+                    for (expr in ALL_EXPRESSIONS) {
+                        expression(expr)
+                    }
+                }
+                .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             resultsSingleLib,
@@ -45,13 +51,19 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     fun multiLibrarySingleEvaluationAtATime(
         expressionCaching: Boolean,
         libraryIdentifier: VersionedIdentifier,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: List<IBaseResource>,
         expectedValues: List<IBaseResource>,
     ) {
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
-        val resultsSingleLib = engine.evaluate(listOf(libraryIdentifier), ALL_EXPRESSIONS)
+        val resultsSingleLib =
+            engine.evaluate {
+                library(libraryIdentifier)
+                for (expr in ALL_EXPRESSIONS) {
+                    expression(expr)
+                }
+            }
 
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
@@ -75,15 +87,20 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
     fun multiLibraryEvaluation(
         expressionCaching: Boolean,
         libraryIdentifier: VersionedIdentifier?,
-        expressionName: String?,
+        expressionName: String,
         expectedEvaluatedResources: List<IBaseResource>,
         expectedValues: List<IBaseResource>,
     ) {
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
-        val allLibs = listOf(LIB_1A, LIB_1B)
-
-        val results = engine.evaluate(allLibs, ALL_EXPRESSIONS)
+        val results =
+            engine.evaluate {
+                library(LIB_1A)
+                library(LIB_1B)
+                for (expr in ALL_EXPRESSIONS) {
+                    expression(expr)
+                }
+            }
 
         Assertions.assertTrue(results.containsResultsFor(LIB_1A))
         Assertions.assertTrue(results.containsResultsFor(LIB_1B))

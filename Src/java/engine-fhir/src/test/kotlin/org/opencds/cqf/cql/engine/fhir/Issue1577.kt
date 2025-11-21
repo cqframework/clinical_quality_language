@@ -19,7 +19,7 @@ class Issue1577 {
         val engine =
             TranslatorHelper.getEngine(
                 """
-                    library Issue1577 version '1.0.0'
+                    library Issue1577
                     using FHIR version '4.0.1'
                     context Patient
                     define expr1: [Condition] union [Observation]
@@ -67,8 +67,13 @@ class Issue1577 {
             CompositeDataProvider(CachedR4FhirModelResolver(), retrieveProvider),
         )
         val evaluationResult =
-            engine.evaluate(TranslatorHelper.toElmIdentifier("Issue1577", "1.0.0"), setOf("expr1"))
-        val expressionResult = evaluationResult.forExpression("expr1")!!.value()
+            engine
+                .evaluate {
+                    library("Issue1577")
+                    expression("expr1")
+                }
+                .onlyResultOrThrow
+        val expressionResult = evaluationResult.forExpression("expr1")!!.value
         assertTrue(expressionResult is Iterable<*>)
         assertEquals(2, expressionResult.toList().size)
     }

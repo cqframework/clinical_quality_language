@@ -7,7 +7,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToCalendarUnit"
+      "valueString": "ToInterval"
     }, {
       "url": "statement"
     }, {
@@ -21,7 +21,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToValue"
+      "valueString": "ToInterval"
     }, {
       "url": "statement"
     }, {
@@ -35,7 +35,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToQuantity"
+      "valueString": "ToQuantityIgnoringComparator"
     }, {
       "url": "statement"
     }, {
@@ -49,7 +49,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToConcept"
+      "valueString": "ToCalendarUnit"
     }, {
       "url": "statement"
     }, {
@@ -63,7 +63,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToCode"
+      "valueString": "ToQuantity"
     }, {
       "url": "statement"
     }, {
@@ -91,7 +91,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToInterval"
+      "valueString": "ToRatio"
     }, {
       "url": "statement"
     }, {
@@ -105,7 +105,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToRatio"
+      "valueString": "ToCode"
     }, {
       "url": "statement"
     }, {
@@ -119,7 +119,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToInterval"
+      "valueString": "ToConcept"
     }, {
       "url": "statement"
     }, {
@@ -133,7 +133,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToQuantityIgnoringComparator"
+      "valueString": "ToValueSet"
     }, {
       "url": "statement"
     }, {
@@ -147,7 +147,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToValueSet"
+      "valueString": "ToValue"
     }, {
       "url": "statement"
     }, {
