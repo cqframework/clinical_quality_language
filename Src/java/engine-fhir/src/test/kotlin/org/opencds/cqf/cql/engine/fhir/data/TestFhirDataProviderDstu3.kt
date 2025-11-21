@@ -118,9 +118,15 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     // @Test
     fun testChoiceTypes() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testChoiceTypes"))
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testChoiceTypes")
+                }
+                .onlyResultOrThrow
 
-        val value = results.forExpression("testChoiceTypes")!!.value()
+        val value = results.forExpression("testChoiceTypes")!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -128,17 +134,29 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     fun testDateType() {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
         engine.state.setContextValue("Patient", "Patient-12214")
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testDateType"))
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testDateType")
+                }
+                .onlyResultOrThrow
 
-        val value = results.forExpression("testDateType")!!.value()
+        val value = results.forExpression("testDateType")!!.value
         Assertions.assertNotNull(value)
     }
 
     @Test
     fun fhirObjectEqual() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("testFhirObjectEqual"))
-        val value = results.forExpression("testFhirObjectEqual")!!.value()
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testFhirObjectEqual")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("testFhirObjectEqual")!!.value
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -146,8 +164,13 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     fun fhirObjectEquivalent() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", r4Provider)
         val results =
-            engine.evaluate(library!!.identifier!!, mutableSetOf("testFhirObjectEquivalent"))
-        val value = results.forExpression("testFhirObjectEquivalent")!!.value()
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("testFhirObjectEquivalent")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("testFhirObjectEquivalent")!!.value
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -299,8 +322,14 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
         engine.state.enterContext("Patient")
         engine.state.setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a")
 
-        val results = engine.evaluate(library!!.identifier!!, mutableSetOf("GetProvenance"))
-        val value = results.forExpression("GetProvenance")!!.value()
+        val results =
+            engine
+                .evaluate {
+                    library(library!!.identifier!!)
+                    expression("GetProvenance")
+                }
+                .onlyResultOrThrow
+        val value = results.forExpression("GetProvenance")!!.value
         Assertions.assertTrue(value is MutableList<*> && value.size == 1)
     }
 }

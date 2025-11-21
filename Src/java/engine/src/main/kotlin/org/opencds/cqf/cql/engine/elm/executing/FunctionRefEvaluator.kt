@@ -29,25 +29,34 @@ object FunctionRefEvaluator {
         try {
             val functionDef = resolveOrCacheFunctionDef(state, functionRef, arguments)
 
-            if (true == functionDef.isExternal()) {
-                return state.environment
-                    .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
-                    .evaluate(functionDef.name, arguments)
-            } else {
-                // Establish activation frame with the function
-                // definition being evaluated.
-                state.pushActivationFrame(functionDef, functionDef.context)
-                try {
-                    for (i in arguments.indices) {
-                        state.push(Variable(functionDef.operand[i].name!!).withValue(arguments[i]))
-                    }
-                    return visitor.visitExpression(functionDef.expression!!, state)
-                } finally {
-                    state.popActivationFrame()
-                }
-            }
+            return evaluateFunctionDef(functionDef, state, visitor, arguments)
         } finally {
             state.exitLibrary(enteredLibrary)
+        }
+    }
+
+    fun evaluateFunctionDef(
+        functionDef: FunctionDef,
+        state: State,
+        visitor: ElmLibraryVisitor<Any?, State?>,
+        arguments: MutableList<Any?>,
+    ): Any? {
+        if (true == functionDef.isExternal()) {
+            return state.environment
+                .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
+                .evaluate(functionDef.name, arguments)
+        } else {
+            // Establish activation frame with the function
+            // definition being evaluated.
+            state.pushActivationFrame(functionDef, functionDef.context)
+            try {
+                for (i in arguments.indices) {
+                    state.push(Variable(functionDef.operand[i].name!!).withValue(arguments[i]))
+                }
+                return visitor.visitExpression(functionDef.expression!!, state)
+            } finally {
+                state.popActivationFrame()
+            }
         }
     }
 

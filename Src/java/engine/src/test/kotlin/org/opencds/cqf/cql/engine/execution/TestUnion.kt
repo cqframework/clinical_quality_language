@@ -6,32 +6,32 @@ import org.junit.jupiter.api.Test
 internal class TestUnion : CqlTestBase() {
     @Test
     fun union() {
-        val results = engine.evaluate(toElmIdentifier("TestUnion"))
+        val results = engine.evaluate { library("TestUnion") }.onlyResultOrThrow
 
-        var value = results.forExpression("NullAndNullList")!!.value()
+        var value = results.forExpression("NullAndNullList")!!.value
         Assertions.assertNotNull(value)
         Assertions.assertTrue((value as MutableList<*>).isEmpty())
 
-        value = results.forExpression("NullAndNullInterval")!!.value()
+        value = results.forExpression("NullAndNullInterval")!!.value
         Assertions.assertNull(value)
 
-        value = results.forExpression("NullAndNullUntyped")!!.value()
+        value = results.forExpression("NullAndNullUntyped")!!.value
         Assertions.assertNull(value)
 
-        value = results.forExpression("NullAndEmpty")!!.value()
+        value = results.forExpression("NullAndEmpty")!!.value
         Assertions.assertNotNull(value)
         Assertions.assertTrue((value as MutableList<*>).isEmpty())
 
-        value = results.forExpression("EmptyAndNull")!!.value()
+        value = results.forExpression("EmptyAndNull")!!.value
         Assertions.assertNotNull(value)
         Assertions.assertTrue((value as MutableList<*>).isEmpty())
 
-        value = results.forExpression("NullAndSingle")!!.value()
+        value = results.forExpression("NullAndSingle")!!.value
         Assertions.assertNotNull(value)
         Assertions.assertEquals(1, (value as MutableList<*>).size)
         Assertions.assertEquals(1, value[0])
 
-        value = results.forExpression("SingleAndNull")!!.value()
+        value = results.forExpression("SingleAndNull")!!.value
         Assertions.assertNotNull(value)
         Assertions.assertEquals(1, (value as MutableList<*>).size)
         Assertions.assertEquals(1, value[0])

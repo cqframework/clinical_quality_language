@@ -13,7 +13,7 @@ object ElmEvaluationHelper {
     fun evaluate(
         library: Library?,
         value: Expression?,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Any? {
         // NOTE: Consider caching for libraries in the future.
@@ -24,7 +24,7 @@ object ElmEvaluationHelper {
 
     private fun getEngine(
         library: Library?,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
     ): CqlEngine {
         val environment = Environment(libraryManager)

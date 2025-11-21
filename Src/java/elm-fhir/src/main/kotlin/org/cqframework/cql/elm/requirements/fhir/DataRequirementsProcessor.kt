@@ -100,11 +100,12 @@ class DataRequirementsProcessor {
     }
 
     @JvmOverloads
+    @Suppress("LongParameterList")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: MutableSet<String>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean = true,
     ): Library {
@@ -120,12 +121,13 @@ class DataRequirementsProcessor {
         )
     }
 
+    @Suppress("LongParameterList")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
-        parameters: MutableMap<String?, Any?>?,
+        expressions: MutableSet<String>?,
+        parameters: MutableMap<String, Any?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
     ): Library {
@@ -161,12 +163,13 @@ class DataRequirementsProcessor {
      * @param recursive True to indicate the data requirements gather should be recursive
      * @return
      */
+    @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
-        parameters: MutableMap<String?, Any?>?,
+        expressions: MutableSet<String>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -393,12 +396,13 @@ class DataRequirementsProcessor {
         }
     }
 
+    @Suppress("LongParameterList")
     private fun createLibrary(
         context: ElmRequirementsContext,
         requirements: ElmRequirements,
         libraryIdentifier: VersionedIdentifier,
         expressionDefs: Iterable<ExpressionDef?>,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {

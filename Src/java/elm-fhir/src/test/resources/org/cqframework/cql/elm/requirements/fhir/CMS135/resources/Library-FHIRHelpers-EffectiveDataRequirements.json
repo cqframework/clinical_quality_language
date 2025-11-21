@@ -7,7 +7,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToCalendarUnit"
+      "valueString": "ToInterval"
     }, {
       "url": "statement"
     }, {
@@ -21,7 +21,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "extension"
+      "valueString": "ToInterval"
     }, {
       "url": "statement"
     }, {
@@ -35,7 +35,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "extension"
+      "valueString": "ToQuantityIgnoringComparator"
     }, {
       "url": "statement"
     }, {
@@ -49,7 +49,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "resolve"
+      "valueString": "ToCalendarUnit"
     }, {
       "url": "statement"
     }, {
@@ -63,7 +63,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "resolve"
+      "valueString": "ToQuantity"
     }, {
       "url": "statement"
     }, {
@@ -77,7 +77,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "modifierExtension"
+      "valueString": "ToInterval"
     }, {
       "url": "statement"
     }, {
@@ -91,7 +91,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "modifierExtension"
+      "valueString": "ToRatio"
     }, {
       "url": "statement"
     }, {
@@ -105,7 +105,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToValue"
+      "valueString": "ToCode"
     }, {
       "url": "statement"
     }, {
@@ -119,7 +119,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToQuantity"
+      "valueString": "ToConcept"
     }, {
       "url": "statement"
     }, {
@@ -133,7 +133,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToConcept"
+      "valueString": "ToValueSet"
     }, {
       "url": "statement"
     }, {
@@ -147,7 +147,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToCode"
+      "valueString": "reference"
     }, {
       "url": "statement"
     }, {
@@ -161,7 +161,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToInterval"
+      "valueString": "reference"
     }, {
       "url": "statement"
     }, {
@@ -175,7 +175,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToInterval"
+      "valueString": "ToValue"
     }, {
       "url": "statement"
     }, {
@@ -189,7 +189,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToRatio"
+      "valueString": "resolve"
     }, {
       "url": "statement"
     }, {
@@ -203,7 +203,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "checkModifiers"
+      "valueString": "resolve"
     }, {
       "url": "statement"
     }, {
@@ -217,7 +217,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "checkModifiers"
+      "valueString": "extension"
     }, {
       "url": "statement"
     }, {
@@ -231,7 +231,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "checkModifiers"
+      "valueString": "extension"
     }, {
       "url": "statement"
     }, {
@@ -245,7 +245,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "checkModifiers"
+      "valueString": "modifierExtension"
     }, {
       "url": "statement"
     }, {
@@ -259,7 +259,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "reference"
+      "valueString": "modifierExtension"
     }, {
       "url": "statement"
     }, {
@@ -273,7 +273,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "reference"
+      "valueString": "hasValue"
     }, {
       "url": "statement"
     }, {
@@ -287,7 +287,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "slice"
+      "valueString": "getValue"
     }, {
       "url": "statement"
     }, {
@@ -301,7 +301,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "memberOf"
+      "valueString": "ofType"
     }, {
       "url": "statement"
     }, {
@@ -315,7 +315,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "memberOf"
+      "valueString": "is"
     }, {
       "url": "statement"
     }, {
@@ -329,7 +329,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "memberOf"
+      "valueString": "as"
     }, {
       "url": "statement"
     }, {
@@ -343,7 +343,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "subsumedBy"
+      "valueString": "elementDefinition"
     }, {
       "url": "statement"
     }, {
@@ -357,7 +357,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "subsumedBy"
+      "valueString": "slice"
     }, {
       "url": "statement"
     }, {
@@ -371,7 +371,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ofType"
+      "valueString": "checkModifiers"
     }, {
       "url": "statement"
     }, {
@@ -385,7 +385,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToInterval"
+      "valueString": "checkModifiers"
     }, {
       "url": "statement"
     }, {
@@ -399,7 +399,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToQuantityIgnoringComparator"
+      "valueString": "checkModifiers"
     }, {
       "url": "statement"
     }, {
@@ -413,7 +413,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "subsumes"
+      "valueString": "checkModifiers"
     }, {
       "url": "statement"
     }, {
@@ -427,7 +427,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "subsumes"
+      "valueString": "conformsTo"
     }, {
       "url": "statement"
     }, {
@@ -441,7 +441,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "htmlChecks"
+      "valueString": "memberOf"
     }, {
       "url": "statement"
     }, {
@@ -455,7 +455,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "hasValue"
+      "valueString": "memberOf"
     }, {
       "url": "statement"
     }, {
@@ -469,7 +469,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "is"
+      "valueString": "memberOf"
     }, {
       "url": "statement"
     }, {
@@ -483,7 +483,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "getValue"
+      "valueString": "subsumes"
     }, {
       "url": "statement"
     }, {
@@ -497,7 +497,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "as"
+      "valueString": "subsumes"
     }, {
       "url": "statement"
     }, {
@@ -511,7 +511,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "conformsTo"
+      "valueString": "subsumedBy"
     }, {
       "url": "statement"
     }, {
@@ -525,7 +525,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "ToValueSet"
+      "valueString": "subsumedBy"
     }, {
       "url": "statement"
     }, {
@@ -539,7 +539,7 @@
       "valueString": "FHIRHelpers"
     }, {
       "url": "name",
-      "valueString": "elementDefinition"
+      "valueString": "htmlChecks"
     }, {
       "url": "statement"
     }, {

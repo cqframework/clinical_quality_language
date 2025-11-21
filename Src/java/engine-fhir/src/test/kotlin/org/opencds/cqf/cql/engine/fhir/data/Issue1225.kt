@@ -43,8 +43,8 @@ internal class Issue1225 : FhirExecutionTestBase() {
             "http://hl7.org/fhir",
             CompositeDataProvider(r4ModelResolver, r),
         )
-        val result = engine.evaluate("Issue1225")
+        val result = engine.evaluate { library("Issue1225") }.onlyResultOrThrow
 
-        Assertions.assertEquals("123", result.forExpression("Address Line 1")!!.value())
+        Assertions.assertEquals("123", result.forExpression("Address Line 1")!!.value)
     }
 }

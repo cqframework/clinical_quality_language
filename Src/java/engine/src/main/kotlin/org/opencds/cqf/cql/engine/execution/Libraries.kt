@@ -3,9 +3,11 @@ package org.opencds.cqf.cql.engine.execution
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.*
+import org.opencds.cqf.cql.engine.elm.executing.FunctionRefEvaluator.functionDefOperandsSignatureEqual
 import org.opencds.cqf.cql.engine.exception.CqlException
 
 /** This class provides static utility methods for resolving ELM elements from a ELM library. */
+@Suppress("TooManyFunctions")
 object Libraries {
     @JvmStatic
     fun resolveLibraryRef(libraryName: String?, relativeTo: Library): IncludeDef {
@@ -127,6 +129,45 @@ object Libraries {
         val defs = resolveAllExpressionRef(name, relativeTo)
 
         return defs.filter { obj -> obj is FunctionDef }.map { obj -> obj as FunctionDef }
+    }
+
+    @JvmStatic
+    @Suppress("ThrowsCount")
+    fun resolveFunctionDef(
+        name: String?,
+        signature: List<TypeSpecifier>?,
+        relativeTo: Library,
+    ): FunctionDef {
+        val functionDefs = getFunctionDefs(name, relativeTo)
+
+        if (functionDefs.isEmpty()) {
+            throw CqlException(
+                "Library '${relativeTo.identifier!!.id}' does not have function '${name}'."
+            )
+        }
+
+        if (signature == null) {
+            if (functionDefs.size > 1) {
+                throw CqlException(
+                    @Suppress("MaxLineLength")
+                    "Library '${relativeTo.identifier!!.id}' has multiple overloads for function '${name}'. A signature is required to disambiguate."
+                )
+            }
+
+            return functionDefs.single()
+        }
+
+        val functionDefsWithMatchingSignature =
+            functionDefs.filter { functionDefOperandsSignatureEqual(it, signature) }
+
+        if (functionDefsWithMatchingSignature.isEmpty()) {
+            throw CqlException(
+                @Suppress("MaxLineLength")
+                "Library '${relativeTo.identifier!!.id}' does not have a function '${name}' with the specified signature."
+            )
+        }
+
+        return functionDefsWithMatchingSignature.single()
     }
 
     @JvmStatic
