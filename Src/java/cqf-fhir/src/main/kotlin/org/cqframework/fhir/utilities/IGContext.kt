@@ -46,7 +46,7 @@ open class IGContext {
 
     var sourceIg: ImplementationGuide? = null
 
-    var fhirVersion: String? = null
+    var fhirVersion: String = "4.0.1"
         protected set
 
     var packageId: String? = null
@@ -204,7 +204,7 @@ open class IGContext {
     }
 
     @Suppress("VariableNaming")
-    private fun loadSourceIG(igPath: String?, specifiedFhirVersion: String?): ImplementationGuide {
+    private fun loadSourceIG(igPath: String?, specifiedFhirVersion: String): ImplementationGuide {
         try {
             if (VersionUtilities.isR3Ver(specifiedFhirVersion)) {
                 val src = FileUtilities.fileToBytes(igPath)

@@ -16,7 +16,7 @@ import org.hl7.fhir.exceptions.FHIRFormatError
 import org.hl7.fhir.r5.model.Library
 import org.hl7.fhir.utilities.VersionUtilities
 
-class LibraryLoader(private val version: String?) : ILibraryReader {
+class LibraryLoader(private val version: String) : ILibraryReader {
     @Suppress("VariableNaming")
     @Throws(FHIRFormatError::class, IOException::class)
     override fun readLibrary(stream: InputStream?): Library? {
