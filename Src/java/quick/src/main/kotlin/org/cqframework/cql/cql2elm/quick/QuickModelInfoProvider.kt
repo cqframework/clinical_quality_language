@@ -29,9 +29,8 @@ class QuickModelInfoProvider : ModelInfoProvider {
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         if (isQuickModelIdentifier(modelIdentifier)) {
             val localVersion = if (modelIdentifier.version == null) "" else modelIdentifier.version
-            val stream = getResource(localVersion!!)
-            if (stream != null) {
-                return parseModelInfoXml(stream.asSource().buffered())
+            getResource(localVersion!!)?.use {
+                return parseModelInfoXml(it.asSource().buffered())
             }
         }
 
