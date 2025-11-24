@@ -105,7 +105,7 @@ class DataRequirementsProcessor {
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String>?,
+        expressions: Set<String>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean = true,
     ): Library {
@@ -126,7 +126,7 @@ class DataRequirementsProcessor {
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String>?,
+        expressions: Set<String>?,
         parameters: MutableMap<String, Any?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
