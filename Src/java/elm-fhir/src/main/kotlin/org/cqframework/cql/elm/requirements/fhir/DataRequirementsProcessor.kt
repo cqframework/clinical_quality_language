@@ -168,7 +168,7 @@ class DataRequirementsProcessor {
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String>?,
+        expressions: Set<String>?,
         parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
@@ -200,20 +200,18 @@ class DataRequirementsProcessor {
                 }
 
                 for (expression in expressions) {
-                    if (expression != null) {
-                        val ed = translatedLibrary.resolveExpressionRef(expression)
-                        if (ed != null) {
-                            expressionDefs.add(ed)
-                            visitor.visitElement(ed, context)
-                        } else {
-                            // If the expression is the name of any functions, include those in the
-                            // gather
-                            // TODO: Provide a mechanism to specify a function def (need signature)
-                            val fds = translatedLibrary.resolveFunctionRef(expression)
-                            for (fd in fds) {
-                                expressionDefs.add(fd)
-                                visitor.visitElement(fd, context)
-                            }
+                    val ed = translatedLibrary.resolveExpressionRef(expression)
+                    if (ed != null) {
+                        expressionDefs.add(ed)
+                        visitor.visitElement(ed, context)
+                    } else {
+                        // If the expression is the name of any functions, include those in the
+                        // gather
+                        // TODO: Provide a mechanism to specify a function def (need signature)
+                        val fds = translatedLibrary.resolveFunctionRef(expression)
+                        for (fd in fds) {
+                            expressionDefs.add(fd)
+                            visitor.visitElement(fd, context)
                         }
                     }
                 }
@@ -402,7 +400,7 @@ class DataRequirementsProcessor {
         requirements: ElmRequirements,
         libraryIdentifier: VersionedIdentifier,
         expressionDefs: Iterable<ExpressionDef?>,
-        parameters: MutableMap<String, Any?>?,
+        parameters: Map<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {
