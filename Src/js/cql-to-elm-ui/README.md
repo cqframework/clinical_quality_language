@@ -13,4 +13,4 @@ Run:
     npm install -f
     npm run dev
 
-And open `http://localhost:3000/cql-to-elm-ui` in your browser.
+And open `http://localhost:3000/clinical_quality_language/playground` in your browser.
