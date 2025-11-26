@@ -1,5 +1,7 @@
 # CQL-to-ELM UI
 
+**Live URL:** https://www.cqframework.org/clinical_quality_language/playground/
+
 A front end for the Kotlin/JS-based CQL compiler.
 
 ## Local development
@@ -14,3 +16,7 @@ Run:
     npm run dev
 
 And open `http://localhost:3000/clinical_quality_language/playground` in your browser.
+
+## Deployment
+
+This project is deployed to GitHub Pages (the `gh-pages` branch) automatically from the `master` branch.
