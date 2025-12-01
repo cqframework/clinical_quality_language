@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, Fragment } from "react";
-import { initialState } from "@/shared";
-import { cqlLanguage } from "@/ui/editor/cql-language";
+import { initialState } from "@/state";
 import { logLanguage } from "@/ui/editor/log-language";
-import { customHighlightsEffectType, Editor } from "@/ui/editor/editor";
+import { Editor } from "@/ui/editor/editor";
 import { EditorView } from "@codemirror/view";
 import { Label } from "@/ui/label";
 import { buttonStyle } from "@/ui/button";
@@ -18,7 +17,7 @@ import {
 import { CqlToAstResult, CqlToAstSettings } from "@/ui/cql-to-ast";
 import { CqlToElmResult, CqlToElmSettings } from "@/ui/cql-to-elm";
 import { Caption } from "@/ui/caption";
-import { findRangesForCqlPos } from "@/cql/ast";
+import { CqlEditor } from "@/ui/cql-editor";
 
 const tabs = [
   {
@@ -175,34 +174,7 @@ export function CqlPlayground() {
                 minHeight: 0,
               }}
             >
-              <Editor
-                value={state.common.cql}
-                onChange={(nextCql) => {
-                  setState((prevState) => ({
-                    ...prevState,
-                    common: {
-                      ...prevState.common,
-                      cql: nextCql,
-                    },
-                  }));
-                }}
-                editable={true}
-                lineNumbers={true}
-                extensions={[
-                  cqlLanguage,
-                  EditorView.updateListener.of((update) => {
-                    if (update.docChanged || update.selectionSet) {
-                      const text = update.view.state.doc.toString();
-                      const cursorPosition =
-                        update.view.state.selection.main.head;
-                      const ranges = findRangesForCqlPos(text, cursorPosition);
-                      update.view.dispatch({
-                        effects: [customHighlightsEffectType.of(ranges)],
-                      });
-                    }
-                  }),
-                ]}
-              />
+              <CqlEditor state={state} setState={setState} />
             </div>
 
             <div

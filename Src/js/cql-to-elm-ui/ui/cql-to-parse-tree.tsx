@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
-import { TSetState, TState } from "@/shared";
+import { TSetState, TState } from "@/state";
 import { Editor } from "@/ui/editor/editor";
-import { cqlToParseTree } from "@/cql/parse-tree";
+import { cqlToParseTree } from "@/cql/cql-to-parse-tree";
 
 export function CqlToParseTreeResult({
   state,

@@ -1,4 +1,4 @@
-import { createStatefulCompiler } from "@/cql/compiler";
+import { createStatefulCompiler } from "@/cql/cql-to-elm";
 
 const { compileCql } = createStatefulCompiler(true);
 

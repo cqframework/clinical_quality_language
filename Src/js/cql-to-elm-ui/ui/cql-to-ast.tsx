@@ -1,8 +1,7 @@
-import { TState, TSetState } from "@/shared";
+import { TSetState, TState } from "@/state";
 import { Fragment } from "react";
 import { json } from "@codemirror/lang-json";
 import { Editor } from "@/ui/editor/editor";
-import { cqlToAst } from "@/cql/ast";
 import { AstTree } from "@/ui/ast-tree";
 import { Heading } from "@/ui/heading";
 
@@ -12,77 +11,80 @@ export function CqlToAstResult({
   state: TState;
   setState: TSetState;
 }) {
-  try {
-    const ast = cqlToAst(state.common.cql);
+  const cqlToAstOutput = state.common.cqlToAstOutput;
 
-    if (state.tabs["cql-to-ast"].showJson) {
+  if (cqlToAstOutput) {
+    if (cqlToAstOutput.ok) {
+      if (state.tabs["cql-to-ast"].showJson) {
+        return (
+          <Editor
+            value={JSON.stringify(cqlToAstOutput.ast, null, 2)}
+            onChange={() => {}}
+            editable={false}
+            lineNumbers={true}
+            extensions={[json()]}
+          />
+        );
+      }
+
       return (
-        <Editor
-          value={JSON.stringify(ast, null, 2)}
-          onChange={() => {}}
-          editable={false}
-          lineNumbers={true}
-          extensions={[json()]}
-        />
+        <div
+          style={{
+            padding: 20,
+            minHeight: 0,
+            overflow: "auto",
+          }}
+        >
+          <Heading>AST</Heading>
+
+          {cqlToAstOutput.ast.problems.length > 0 && (
+            <div
+              style={{
+                background: "#fff0f0",
+                padding: 14,
+                borderRadius: 5,
+                margin: "0 0 20px 0",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 700,
+                  margin: "0 0 8px 0",
+                  color: "#900",
+                }}
+              >
+                Problems
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 7,
+                }}
+              >
+                {cqlToAstOutput.ast.problems.map(
+                  (problem: unknown, problemIndex: number) => (
+                    <div key={problemIndex}>
+                      <AstTree ast={problem} />
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
+
+          <AstTree
+            ast={{
+              kind: "library",
+              ...cqlToAstOutput.ast.library,
+            }}
+          />
+        </div>
       );
     }
 
     return (
-      <div
-        style={{
-          padding: 20,
-          minHeight: 0,
-          overflow: "auto",
-        }}
-      >
-        <Heading>AST</Heading>
-
-        {ast.problems.length > 0 && (
-          <div
-            style={{
-              background: "#fff0f0",
-              padding: 14,
-              borderRadius: 5,
-              margin: "0 0 20px 0",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 700,
-                margin: "0 0 8px 0",
-                color: "#900",
-              }}
-            >
-              Problems
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gap: 7,
-              }}
-            >
-              {ast.problems.map((problem: unknown, problemIndex: number) => (
-                <div key={problemIndex}>
-                  <AstTree ast={problem} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <AstTree
-          ast={{
-            kind: "library",
-            ...ast.library,
-          }}
-        />
-      </div>
-    );
-  } catch (e) {
-    console.error(e);
-    return (
       <Editor
-        value={String(e)}
+        value={cqlToAstOutput.error}
         onChange={() => {}}
         editable={false}
         lineNumbers={true}
@@ -90,6 +92,8 @@ export function CqlToAstResult({
       />
     );
   }
+
+  return <div />;
 }
 
 export function CqlToAstSettings({

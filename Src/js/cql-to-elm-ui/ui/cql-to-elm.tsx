@@ -4,11 +4,10 @@ import {
   TCqlToElmArgs,
   TLibrarySource,
   TOutput,
-  TSetState,
-  TState,
 } from "@/shared";
+import { TSetState, TState } from "@/state";
 import { Fragment, useEffect, useRef } from "react";
-import { createStatefulCompiler } from "@/cql/compiler";
+import { createStatefulCompiler } from "@/cql/cql-to-elm";
 import { json } from "@codemirror/lang-json";
 import { xml } from "@codemirror/lang-xml";
 import { Editor } from "@/ui/editor/editor";
