@@ -8,8 +8,8 @@ import { customHighlightsEffectType, Editor } from "@/ui/editor/editor";
 import { EditorView } from "@codemirror/view";
 import { Label } from "@/ui/label";
 import { buttonStyle } from "@/ui/button";
-import { supportedModels } from "@/compiler/supported-models";
-import { readFile } from "@/compiler/utils";
+import { supportedModels } from "@/cql/supported-models";
+import { readFile } from "@/cql/utils";
 import { Heading } from "@/ui/heading";
 import {
   CqlToParseTreeResult,
@@ -18,7 +18,7 @@ import {
 import { CqlToAstResult, CqlToAstSettings } from "@/ui/cql-to-ast";
 import { CqlToElmResult, CqlToElmSettings } from "@/ui/cql-to-elm";
 import { Caption } from "@/ui/caption";
-import { findRangesForCqlPos } from "@/compiler/ast";
+import { findRangesForCqlPos } from "@/cql/ast";
 
 const tabs = [
   {

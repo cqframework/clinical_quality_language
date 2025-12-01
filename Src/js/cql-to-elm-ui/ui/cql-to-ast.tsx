@@ -2,7 +2,7 @@ import { TState, TSetState } from "@/shared";
 import { Fragment } from "react";
 import { json } from "@codemirror/lang-json";
 import { Editor } from "@/ui/editor/editor";
-import { cqlToAst } from "@/compiler/ast";
+import { cqlToAst } from "@/cql/ast";
 import { AstTree } from "@/ui/ast-tree";
 import { Heading } from "@/ui/heading";
 

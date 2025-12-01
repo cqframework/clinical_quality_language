@@ -8,7 +8,7 @@ import {
   TState,
 } from "@/shared";
 import { Fragment, useEffect, useRef } from "react";
-import { createStatefulCompiler } from "@/compiler/compiler";
+import { createStatefulCompiler } from "@/cql/compiler";
 import { json } from "@codemirror/lang-json";
 import { xml } from "@codemirror/lang-xml";
 import { Editor } from "@/ui/editor/editor";
@@ -31,7 +31,9 @@ export function CqlToElmResult({
   const workerPromiseRef = useRef<Promise<Worker> | null>(null);
 
   const createWorkerPromise = async () => {
-    const worker = new Worker(new URL("@/compiler/worker", import.meta.url));
+    const worker = new Worker(
+      new URL("@/cql/cql-to-elm-worker", import.meta.url),
+    );
 
     await new Promise<void>((resolve) => {
       worker.onmessage = (event) => {

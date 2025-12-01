@@ -3,8 +3,8 @@ import * as ucum from "@lhncbc/ucum-lhc";
 import * as cqlToElmJs from "cql-to-elm-js";
 import * as cqlToElmWasmJs from "cql-to-elm-wasm-js";
 import { compilerOptions, TCqlToElmArgs, TOutput } from "@/shared";
-import { supportedModels } from "@/compiler/supported-models";
-import { fetchSync, readFile } from "@/compiler/utils";
+import { supportedModels } from "@/cql/supported-models";
+import { fetchSync, readFile } from "@/cql/utils";
 
 export function createStatefulCompiler(sync: boolean) {
   const ucumUtils = ucum.UcumLhcUtils.getInstance();
