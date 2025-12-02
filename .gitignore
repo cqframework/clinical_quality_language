@@ -17,17 +17,19 @@ target
 bin
 test-
 
-build
 generated
 *.iml
 
 lib
 lib-test
 node_modules
-.DS_Store
 .nyc_output
 coverage
 gen
-.kotlin
 .worktrees
 
+# asdf-vm specific files
+.tool-versions
+
+# mise-vm specific files
+mise.toml
