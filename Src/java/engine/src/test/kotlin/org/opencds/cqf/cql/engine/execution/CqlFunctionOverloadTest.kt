@@ -9,16 +9,16 @@ internal class CqlFunctionOverloadTest : CqlTestBase() {
     @Test
     fun function_overloads() {
         val results = engine.evaluate { library("FunctionOverloadTest") }.onlyResultOrThrow
-        var value = results.forExpression("TestAnyFunctionWithInteger")!!.value
+        var value = results["TestAnyFunctionWithInteger"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("TestAnyFunctionWithString")!!.value
+        value = results["TestAnyFunctionWithString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("joe"))
 
-        value = results.forExpression("TestAnyFunctionWithDecimal")!!.value
+        value = results["TestAnyFunctionWithDecimal"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("12.3")))
 
-        value = results.forExpression("TestAnyFunctionWithNoArgs")!!.value
+        value = results["TestAnyFunctionWithNoArgs"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("any"))
     }
 }

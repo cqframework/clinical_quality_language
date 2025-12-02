@@ -14,106 +14,106 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
     fun all_value_literals_and_selectors() {
         val results =
             engine.evaluate { library("CqlValueLiteralsAndSelectorsTest") }.onlyResultOrThrow
-        var value = results.forExpression("Null")!!.value
+        var value = results["Null"]!!.value
         Assertions.assertNull(value)
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("BooleanFalse")!!.value
+        value = results["BooleanFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("BooleanTrue")!!.value
+        value = results["BooleanTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerZero")!!.value
+        value = results["IntegerZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("IntegerPosZero")!!.value
+        value = results["IntegerPosZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(+0))
 
-        value = results.forExpression("IntegerNegZero")!!.value
+        value = results["IntegerNegZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-0))
 
-        value = results.forExpression("IntegerOne")!!.value
+        value = results["IntegerOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("IntegerPosOne")!!.value
+        value = results["IntegerPosOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(+1))
 
-        value = results.forExpression("IntegerNegOne")!!.value
+        value = results["IntegerNegOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-1))
 
-        value = results.forExpression("IntegerTwo")!!.value
+        value = results["IntegerTwo"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("IntegerPosTwo")!!.value
+        value = results["IntegerPosTwo"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(+2))
 
-        value = results.forExpression("IntegerNegTwo")!!.value
+        value = results["IntegerNegTwo"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-2))
 
-        value = results.forExpression("Integer10Pow9")!!.value
+        value = results["Integer10Pow9"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(10.0.pow(9.0).toInt()))
 
-        value = results.forExpression("IntegerPos10Pow9")!!.value
+        value = results["IntegerPos10Pow9"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(+1 * 10.0.pow(9.0).toInt()))
 
-        value = results.forExpression("IntegerNeg10Pow9")!!.value
+        value = results["IntegerNeg10Pow9"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-1 * 10.0.pow(9.0).toInt()))
 
-        value = results.forExpression("Integer2Pow31ToZero1IntegerMaxValue")!!.value
+        value = results["Integer2Pow31ToZero1IntegerMaxValue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(2147483647))
         MatcherAssert.assertThat(
             value,
             Matchers.`is`((2.0.pow(30.0) - 1 + 2.0.pow(30.0)).toInt()),
         ) // Power(2,30)-1+Power(2,30)
 
-        value = results.forExpression("IntegerPos2Pow31ToZero1IntegerMaxValue")!!.value
+        value = results["IntegerPos2Pow31ToZero1IntegerMaxValue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(+2147483647))
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(+1 * (2.0.pow(30.0) - 1 + 2.0.pow(30.0)).toInt()),
         )
 
-        value = results.forExpression("IntegerNeg2Pow31ToZero1")!!.value
+        value = results["IntegerNeg2Pow31ToZero1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-2147483647))
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(-1 * (2.0.pow(30.0) - 1 + 2.0.pow(30.0)).toInt()),
         )
 
-        value = results.forExpression("IntegerNeg2Pow31IntegerMinValue")!!.value
+        value = results["IntegerNeg2Pow31IntegerMinValue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-2147483648))
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(-1 * (2.0.pow(30.0)).toInt() - 1 * (2.0.pow(30.0)).toInt()),
         )
 
-        value = results.forExpression("QuantityZero")!!.value
+        value = results["QuantityZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat((value as Quantity).value, Matchers.comparesEqualTo(BigDecimal(0)))
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantityPosZero")!!.value
+        value = results["QuantityPosZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat((value as Quantity).value, Matchers.comparesEqualTo(BigDecimal(0)))
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantityNegZero")!!.value
+        value = results["QuantityNegZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat((value as Quantity).value, Matchers.comparesEqualTo(BigDecimal(0)))
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantityOne")!!.value
+        value = results["QuantityOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat((value as Quantity).value, Matchers.comparesEqualTo(BigDecimal(1)))
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantityPosOne")!!.value
+        value = results["QuantityPosOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat((value as Quantity).value, Matchers.comparesEqualTo(BigDecimal(1)))
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantityNegOne")!!.value
+        value = results["QuantityNegOne"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -121,7 +121,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("g"))
 
-        value = results.forExpression("QuantitySmall")!!.value
+        value = results["QuantitySmall"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -129,7 +129,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("QuantityPosSmall")!!.value
+        value = results["QuantityPosSmall"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -137,7 +137,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("QuantityNegSmall")!!.value
+        value = results["QuantityNegSmall"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -147,7 +147,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("QuantityStep")!!.value
+        value = results["QuantityStep"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -155,7 +155,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("QuantityPosStep")!!.value
+        value = results["QuantityPosStep"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -163,7 +163,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("QuantityNegStep")!!.value
+        value = results["QuantityNegStep"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -174,7 +174,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
         // define QuantityMax: 99999999999999999999.99999999 'mg'
-        value = results.forExpression("QuantityMax")!!.value
+        value = results["QuantityMax"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -183,7 +183,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
         // define QuantityPosMax: +99999999999999999999.99999999 'mg'
-        value = results.forExpression("QuantityPosMax")!!.value
+        value = results["QuantityPosMax"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -192,7 +192,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
         // define QuantityMin: -99999999999999999999.99999999 'mg'
-        value = results.forExpression("QuantityMin")!!.value
+        value = results["QuantityMin"]!!.value
         MatcherAssert.assertThat(value, Matchers.instanceOf(Quantity::class.java))
         MatcherAssert.assertThat(
             (value as Quantity).value,
@@ -200,21 +200,13 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.unit, Matchers.`is`("mg"))
 
-        value = results.forExpression("DecimalZero")!!.value
+        value = results["DecimalZero"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(0.0)),
         )
 
-        value = results.forExpression("DecimalPosZero")!!.value
-        MatcherAssert.assertThat<BigDecimal?>(
-            value as BigDecimal?,
-            Matchers.comparesEqualTo(BigDecimal(0.0)),
-        )
-
-        // assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new
-        // BigDecimal(42.0))));
-        value = results.forExpression("DecimalNegZero")!!.value
+        value = results["DecimalPosZero"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(0.0)),
@@ -222,55 +214,63 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new
         // BigDecimal(42.0))));
-        value = results.forExpression("DecimalOne")!!.value
+        value = results["DecimalNegZero"]!!.value
+        MatcherAssert.assertThat<BigDecimal?>(
+            value as BigDecimal?,
+            Matchers.comparesEqualTo(BigDecimal(0.0)),
+        )
+
+        // assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new
+        // BigDecimal(42.0))));
+        value = results["DecimalOne"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal.ONE),
         )
 
-        value = results.forExpression("DecimalPosOne")!!.value
+        value = results["DecimalPosOne"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal.ONE),
         )
 
-        value = results.forExpression("DecimalNegOne")!!.value
+        value = results["DecimalNegOne"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-1.0)),
         )
 
-        value = results.forExpression("DecimalTwo")!!.value
+        value = results["DecimalTwo"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2.0)),
         )
 
-        value = results.forExpression("DecimalPosTwo")!!.value
+        value = results["DecimalPosTwo"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2.0)),
         )
 
-        value = results.forExpression("DecimalNegTwo")!!.value
+        value = results["DecimalNegTwo"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-2.0)),
         )
 
-        value = results.forExpression("Decimal10Pow9")!!.value
+        value = results["Decimal10Pow9"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(10.0.pow(9.0))),
         )
 
-        value = results.forExpression("DecimalNeg10Pow9")!!.value
+        value = results["DecimalNeg10Pow9"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal((-10.0).pow(9.0))),
         )
 
-        value = results.forExpression("Decimal2Pow31ToZero1")!!.value
+        value = results["Decimal2Pow31ToZero1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483647.0)),
@@ -280,7 +280,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(2.0.pow(30.0) - 1 + 2.0.pow(30.0))),
         )
 
-        value = results.forExpression("DecimalPos2Pow31ToZero1")!!.value
+        value = results["DecimalPos2Pow31ToZero1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483647.0)),
@@ -290,7 +290,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(2.0.pow(30.0) - 1 + 2.0.pow(30.0))),
         )
 
-        value = results.forExpression("DecimalNeg2Pow31ToZero1")!!.value
+        value = results["DecimalNeg2Pow31ToZero1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-2147483647.0)),
@@ -300,7 +300,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(-1 * (2.0.pow(30.0)) + 1 - 1 * (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("Decimal2Pow31")!!.value
+        value = results["Decimal2Pow31"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483648.0)),
@@ -310,7 +310,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal((2.0.pow(30.0)) + (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("DecimalPos2Pow31")!!.value
+        value = results["DecimalPos2Pow31"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483648.0)),
@@ -320,7 +320,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal((2.0.pow(30.0)) + (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("DecimalNeg2Pow31")!!.value
+        value = results["DecimalNeg2Pow31"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-2147483648.0)),
@@ -330,7 +330,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(-(2.0.pow(30.0)) - (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("Decimal2Pow31ToInf1")!!.value
+        value = results["Decimal2Pow31ToInf1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483649.0)),
@@ -340,7 +340,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal((2.0.pow(30.0)) + 1.0 + (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("DecimalPos2Pow31ToInf1")!!.value
+        value = results["DecimalPos2Pow31ToInf1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(2147483649.0)),
@@ -350,7 +350,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal((2.0.pow(30.0)) + 1.0 + (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("DecimalNeg2Pow31ToInf1")!!.value
+        value = results["DecimalNeg2Pow31ToInf1"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-2147483649.0)),
@@ -360,7 +360,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(-(2.0.pow(30.0)) - 1.0 - (2.0.pow(30.0)))),
         )
 
-        value = results.forExpression("DecimalZeroStep")!!.value
+        value = results["DecimalZeroStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(0.00000000)),
@@ -370,7 +370,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(42.0).subtract(BigDecimal(42.0))),
         )
 
-        value = results.forExpression("DecimalPosZeroStep")!!.value
+        value = results["DecimalPosZeroStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(0.00000000)),
@@ -380,7 +380,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(42.0).subtract(BigDecimal(42.0))),
         )
 
-        value = results.forExpression("DecimalNegZeroStep")!!.value
+        value = results["DecimalNegZeroStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             value as BigDecimal?,
             Matchers.comparesEqualTo(BigDecimal(-0.00000000)),
@@ -390,7 +390,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             Matchers.comparesEqualTo(BigDecimal(42.0).subtract(BigDecimal(42.0))),
         )
 
-        value = results.forExpression("DecimalOneStep")!!.value
+        value = results["DecimalOneStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal(10.0.pow(-8.0)).setScale(8, RoundingMode.HALF_EVEN)),
@@ -398,7 +398,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalPosOneStep")!!.value
+        value = results["DecimalPosOneStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal(10.0.pow(-8.0)).setScale(8, RoundingMode.HALF_EVEN)),
@@ -406,7 +406,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalNegOneStep")!!.value
+        value = results["DecimalNegOneStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(
@@ -416,7 +416,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(-1*Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalTwoStep")!!.value
+        value = results["DecimalTwoStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(
@@ -427,7 +427,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(2 *
         // Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalPosTwoStep")!!.value
+        value = results["DecimalPosTwoStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(
@@ -438,7 +438,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(2 *
         // Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalNegTwoStep")!!.value
+        value = results["DecimalNegTwoStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(
@@ -449,7 +449,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         // assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(-2 *
         // Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalTenStep")!!.value
+        value = results["DecimalTenStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal(10.0.pow(-7.0)).setScale(7, RoundingMode.HALF_EVEN)),
@@ -457,7 +457,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalPosTenStep")!!.value
+        value = results["DecimalPosTenStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal(10.0.pow(-7.0)).setScale(7, RoundingMode.HALF_EVEN)),
@@ -465,7 +465,7 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
 
         // assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
-        value = results.forExpression("DecimalNegTenStep")!!.value
+        value = results["DecimalNegTenStep"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(
@@ -477,19 +477,19 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
         // BigDecimal(-1*Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
 
         // define DecimalMaxValue : 99999999999999999999.99999999
-        value = results.forExpression("DecimalMaxValue")!!.value
+        value = results["DecimalMaxValue"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal("99999999999999999999.99999999")),
         )
         // define DecimalPosMaxValue : +99999999999999999999.99999999
-        value = results.forExpression("DecimalPosMaxValue")!!.value
+        value = results["DecimalPosMaxValue"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal("99999999999999999999.99999999")),
         )
         // define DecimalMinValue: -99999999999999999999.99999999
-        value = results.forExpression("DecimalMinValue")!!.value
+        value = results["DecimalMinValue"]!!.value
         MatcherAssert.assertThat<BigDecimal?>(
             (value as BigDecimal?),
             Matchers.comparesEqualTo(BigDecimal("-99999999999999999999.99999999")),

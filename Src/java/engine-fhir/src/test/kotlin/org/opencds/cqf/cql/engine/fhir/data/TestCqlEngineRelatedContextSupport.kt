@@ -100,7 +100,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                     contextParameter = initialContext
                 }
                 .onlyResultOrThrow
-        return evaluateResult.forExpression(expression)!!.value
+        return evaluateResult[expression]!!.value
     }
 
     companion object {

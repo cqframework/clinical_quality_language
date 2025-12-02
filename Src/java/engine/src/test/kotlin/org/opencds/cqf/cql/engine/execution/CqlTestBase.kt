@@ -108,8 +108,7 @@ open class CqlTestBase {
                 library(libraryIdentifier) { expressions(expressionName) }
                 this.evaluationDateTime = evaluationDateTime
             }
-            .onlyResultOrThrow
-            .forExpression(expressionName)!!
+            .onlyResultOrThrow[expressionName]!!
             .value
     }
 

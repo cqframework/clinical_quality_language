@@ -19,7 +19,7 @@ class TestCodeRef : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("CodeRef1") } }
                 .onlyResultOrThrow
 
-        Assertions.assertTrue(results.forExpression("CodeRef1")!!.value != null)
+        Assertions.assertTrue(results["CodeRef1"]!!.value != null)
     }
 
     // @Test
@@ -29,6 +29,6 @@ class TestCodeRef : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("CodeRef2") } }
                 .onlyResultOrThrow
 
-        Assertions.assertTrue(results.forExpression("CodeRef2")!!.value != null)
+        Assertions.assertTrue(results["CodeRef2"]!!.value != null)
     }
 }

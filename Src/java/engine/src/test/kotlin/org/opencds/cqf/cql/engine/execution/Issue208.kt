@@ -8,7 +8,7 @@ internal class Issue208 : CqlTestBase() {
     @Test
     fun interval() {
         val results = engine.evaluate { library("Issue208") }.onlyResultOrThrow
-        var value = results.forExpression("Let Test 1")!!.value
+        var value = results["Let Test 1"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (((value as MutableList<*>)[0]) as MutableList<*>)[0],
@@ -32,7 +32,7 @@ internal class Issue208 : CqlTestBase() {
             EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[2], 6) == true
         )
 
-        value = results.forExpression("Let Test 2")!!.value
+        value = results["Let Test 2"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (((value as MutableList<*>)[0]) as MutableList<*>)[0],

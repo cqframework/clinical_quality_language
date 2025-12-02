@@ -12,7 +12,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("testCoalesce") } }
                 .onlyResultOrThrow
 
-        val value = results.forExpression("testCoalesce")!!.value
+        val value = results["testCoalesce"]!!.value
         Assertions.assertTrue((value as MutableList<*>)[0] as Int? == 72)
     }
 
@@ -24,7 +24,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
             engine
                 .evaluate { library(library!!.identifier!!) { expressions("testMonthFrom") } }
                 .onlyResultOrThrow
-        val value = results.forExpression("testMonthFrom")!!.value
+        val value = results["testMonthFrom"]!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -37,7 +37,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
                     library(library!!.identifier!!) { expressions("Immunizations in range") }
                 }
                 .onlyResultOrThrow
-        val value = results.forExpression("Immunizations in range")!!.value
+        val value = results["Immunizations in range"]!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -48,7 +48,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
             engine
                 .evaluate { library(library!!.identifier!!) { expressions("Resource Id") } }
                 .onlyResultOrThrow
-        val value = results.forExpression("Resource Id")!!.value
+        val value = results["Resource Id"]!!.value
         Assertions.assertNotNull(value)
     }
 }

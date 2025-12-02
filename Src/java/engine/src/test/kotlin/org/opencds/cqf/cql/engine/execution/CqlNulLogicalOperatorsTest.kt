@@ -13,76 +13,76 @@ internal class CqlNulLogicalOperatorsTest : CqlTestBase() {
     fun all_null_logical_operators() {
         val bigDecimalZoneOffset = bigDecimalZoneOffset
         val results = engine.evaluate { library("CqlNullologicalOperatorsTest") }.onlyResultOrThrow
-        var value = results.forExpression("CoalesceANull")!!.value
+        var value = results["CoalesceANull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("CoalesceNullA")!!.value
+        value = results["CoalesceNullA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("CoalesceEmptyList")!!.value
+        value = results["CoalesceEmptyList"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("CoalesceListFirstA")!!.value
+        value = results["CoalesceListFirstA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("CoalesceListLastA")!!.value
+        value = results["CoalesceListLastA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("CoalesceFirstList")!!.value
+        value = results["CoalesceFirstList"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<String?>("a")))
 
-        value = results.forExpression("CoalesceLastList")!!.value
+        value = results["CoalesceLastList"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<String?>("a")))
 
-        value = results.forExpression("DateTimeCoalesce")!!.value
+        value = results["DateTimeCoalesce"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 18)) ==
                 true
         )
 
-        value = results.forExpression("DateTimeListCoalesce")!!.value
+        value = results["DateTimeListCoalesce"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 5, 18)) ==
                 true
         )
 
-        value = results.forExpression("TimeCoalesce")!!.value
+        value = results["TimeCoalesce"]!!.value
         Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(5, 15, 33, 556)) == true)
 
-        value = results.forExpression("TimeListCoalesce")!!.value
+        value = results["TimeListCoalesce"]!!.value
         Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(5, 15, 33, 556)) == true)
 
-        value = results.forExpression("IsNullTrue")!!.value
+        value = results["IsNullTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IsNullFalseEmptyString")!!.value
+        value = results["IsNullFalseEmptyString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsNullAlsoFalseAbcString")!!.value
+        value = results["IsNullAlsoFalseAbcString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsNullAlsoFalseNumber1")!!.value
+        value = results["IsNullAlsoFalseNumber1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsNullAlsoFalseNumberZero")!!.value
+        value = results["IsNullAlsoFalseNumberZero"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsFalseFalse")!!.value
+        value = results["IsFalseFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IsFalseTrue")!!.value
+        value = results["IsFalseTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsFalseNull")!!.value
+        value = results["IsFalseNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsTrueTrue")!!.value
+        value = results["IsTrueTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IsTrueFalse")!!.value
+        value = results["IsTrueFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IsTrueNull")!!.value
+        value = results["IsTrueNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
     }
 }

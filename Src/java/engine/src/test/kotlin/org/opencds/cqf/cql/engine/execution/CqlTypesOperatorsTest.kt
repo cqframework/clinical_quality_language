@@ -29,40 +29,40 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
             val bigDecimalZoneOffset = bigDecimalZoneOffset
 
             val results = engine.evaluate { library("CqlTypeOperatorsTest") }.onlyResultOrThrow
-            var value = results.forExpression("AsQuantity")!!.value
+            var value = results["AsQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("45.5")).withUnit("g")) ==
                     true
             )
 
-            value = results.forExpression("CastAsQuantity")!!.value
+            value = results["CastAsQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("45.5")).withUnit("g")) ==
                     true
             )
 
-            value = results.forExpression("AsDateTime")!!.value
+            value = results["AsDateTime"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
                     true
             )
 
-            value = results.forExpression("IntegerToDecimal")!!.value
+            value = results["IntegerToDecimal"]!!.value
             Assertions.assertEquals(value, BigDecimal(5))
 
-            value = results.forExpression("IntegerToString")!!.value
+            value = results["IntegerToString"]!!.value
             Assertions.assertEquals("5", value)
 
-            value = results.forExpression("StringToDateTime")!!.value
+            value = results["StringToDateTime"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
                     true
             )
 
-            value = results.forExpression("StringToTime")!!.value
+            value = results["StringToTime"]!!.value
             Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(14, 30, 0, 0)) == true)
 
-            value = results.forExpression("ConvertQuantity")!!.value
+            value = results["ConvertQuantity"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -70,7 +70,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 ) == true
             )
 
-            value = results.forExpression("ConvertSyntax")!!.value
+            value = results["ConvertSyntax"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -78,150 +78,150 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 ) == true
             )
 
-            value = results.forExpression("ConvertsToBooleanTrue")!!.value
+            value = results["ConvertsToBooleanTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToBooleanFalse")!!.value
+            value = results["ConvertsToBooleanFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToBooleanNull")!!.value
+            value = results["ConvertsToBooleanNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToDateTrue")!!.value
+            value = results["ConvertsToDateTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDateFalse")!!.value
+            value = results["ConvertsToDateFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDateNull")!!.value
+            value = results["ConvertsToDateNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToDateTimeStringTrue")!!.value
+            value = results["ConvertsToDateTimeStringTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDateTimeDateTrue")!!.value
+            value = results["ConvertsToDateTimeDateTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDateTimeFalse")!!.value
+            value = results["ConvertsToDateTimeFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDateTimeNull")!!.value
+            value = results["ConvertsToDateTimeNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToDecimalTrue")!!.value
+            value = results["ConvertsToDecimalTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDecimalFalse")!!.value
+            value = results["ConvertsToDecimalFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToDecimalNull")!!.value
+            value = results["ConvertsToDecimalNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToIntegerTrue")!!.value
+            value = results["ConvertsToIntegerTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToIntegerLong")!!.value
+            value = results["ConvertsToIntegerLong"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToIntegerFalse")!!.value
+            value = results["ConvertsToIntegerFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToIntegerNull")!!.value
+            value = results["ConvertsToIntegerNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToLongTrue")!!.value
+            value = results["ConvertsToLongTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToLongFalse")!!.value
+            value = results["ConvertsToLongFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToLongNull")!!.value
+            value = results["ConvertsToLongNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToQuantityStringTrue")!!.value
+            value = results["ConvertsToQuantityStringTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToQuantityStringFalse")!!.value
+            value = results["ConvertsToQuantityStringFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToQuantityIntegerTrue")!!.value
+            value = results["ConvertsToQuantityIntegerTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToQuantityDecimalTrue")!!.value
+            value = results["ConvertsToQuantityDecimalTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToQuantityRatioTrue")!!.value
+            value = results["ConvertsToQuantityRatioTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToQuantityNull")!!.value
+            value = results["ConvertsToQuantityNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToStringBoolean")!!.value
+            value = results["ConvertsToStringBoolean"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringInteger")!!.value
+            value = results["ConvertsToStringInteger"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringLong")!!.value
+            value = results["ConvertsToStringLong"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringDecimal")!!.value
+            value = results["ConvertsToStringDecimal"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringQuantity")!!.value
+            value = results["ConvertsToStringQuantity"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringRatio")!!.value
+            value = results["ConvertsToStringRatio"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringDate")!!.value
+            value = results["ConvertsToStringDate"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringDateTime")!!.value
+            value = results["ConvertsToStringDateTime"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringTime")!!.value
+            value = results["ConvertsToStringTime"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToStringNull")!!.value
+            value = results["ConvertsToStringNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("ConvertsToTimeTrue")!!.value
+            value = results["ConvertsToTimeTrue"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToTimeFalse")!!.value
+            value = results["ConvertsToTimeFalse"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("ConvertsToTimeNull")!!.value
+            value = results["ConvertsToTimeNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("IntegerIsInteger")!!.value
+            value = results["IntegerIsInteger"]!!.value
             Assertions.assertTrue((value as Boolean?)!!)
 
-            value = results.forExpression("StringIsInteger")!!.value
+            value = results["StringIsInteger"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("StringNoToBoolean")!!.value
+            value = results["StringNoToBoolean"]!!.value
             Assertions.assertFalse((value as Boolean?)!!)
 
-            value = results.forExpression("CodeToConcept1")!!.value
+            value = results["CodeToConcept1"]!!.value
             Assertions.assertTrue(
                 (value as Concept).equivalent(Concept().withCode(Code().withCode("8480-6"))) == true
             )
 
-            value = results.forExpression("ToDateTime0")!!.value
+            value = results["ToDateTime0"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1)) ==
                     true
             )
 
-            value = results.forExpression("ToDateTime1")!!.value
+            value = results["ToDateTime1"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
                     true
             )
 
-            value = results.forExpression("ToDateTime2")!!.value
+            value = results["ToDateTime2"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -229,7 +229,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 ) == true
             )
 
-            value = results.forExpression("ToDateTime3")!!.value
+            value = results["ToDateTime3"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -237,7 +237,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 ) == true
             )
 
-            value = results.forExpression("ToDateTime4")!!.value
+            value = results["ToDateTime4"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -246,7 +246,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 "ToDateTime4 vs. new DateTime(-1.5)",
             )
 
-            value = results.forExpression("ToDateTime5")!!.value
+            value = results["ToDateTime5"]!!.value
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
                     value,
@@ -255,7 +255,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 "ToDateTime5 vs. new DateTime(-1.25)",
             )
 
-            value = results.forExpression("ToDateTime6")!!.value
+            value = results["ToDateTime6"]!!.value
             val bigDecimalOffsetForUtc = getBigDecimalZoneOffset(ZoneId.of("UTC"))
             Assertions.assertTrue(
                 EquivalentEvaluator.equivalent(
@@ -264,92 +264,92 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 ) == true
             )
 
-            value = results.forExpression("ToDateTimeMalformed")!!.value
+            value = results["ToDateTimeMalformed"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("String25D5ToDecimal")!!.value
+            value = results["String25D5ToDecimal"]!!.value
             Assertions.assertEquals(value, BigDecimal("25.5"))
 
-            value = results.forExpression("StringNeg25ToInteger")!!.value
+            value = results["StringNeg25ToInteger"]!!.value
             Assertions.assertEquals(-25, value)
 
-            value = results.forExpression("String123ToLong")!!.value
+            value = results["String123ToLong"]!!.value
             Assertions.assertEquals(123L, value)
 
-            value = results.forExpression("String5D5CMToQuantity")!!.value
+            value = results["String5D5CMToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("5.5")).withUnit("cm")) ==
                     true
             )
 
-            value = results.forExpression("StringInvalidToQuantityNull")!!.value
+            value = results["StringInvalidToQuantityNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("String100PerMinPerSqMeterToQuantity")!!.value
+            value = results["String100PerMinPerSqMeterToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(
                     Quantity().withValue(BigDecimal("100")).withUnit("daL/min/m2")
                 ) == true
             )
 
-            value = results.forExpression("String100UnitPer10BillionToQuantity")!!.value
+            value = results["String100UnitPer10BillionToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(
                     Quantity().withValue(BigDecimal("100")).withUnit("U/10*10{cells}")
                 ) == true
             )
 
-            value = results.forExpression("String60DayPer7DayToQuantity")!!.value
+            value = results["String60DayPer7DayToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(
                     Quantity().withValue(BigDecimal("60")).withUnit("d/(7.d)")
                 ) == true
             )
 
-            value = results.forExpression("String60EhrlichPer100gmToQuantity")!!.value
+            value = results["String60EhrlichPer100gmToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(
                     Quantity().withValue(BigDecimal("60")).withUnit("{EhrlichU}/100.g")
                 ) == true
             )
 
-            value = results.forExpression("StringPercentToQuantity")!!.value
+            value = results["StringPercentToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("60")).withUnit("%")) ==
                     true
             )
 
-            value = results.forExpression("StringPercentWithoutQuoteToQuantity")!!.value
+            value = results["StringPercentWithoutQuoteToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("70")).withUnit("%")) ==
                     true
             )
 
-            value = results.forExpression("StringPercentWithTabToQuantity")!!.value
+            value = results["StringPercentWithTabToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("80")).withUnit("%")) ==
                     true
             )
 
-            value = results.forExpression("StringPercentWithMultiSpacesToQuantity")!!.value
+            value = results["StringPercentWithMultiSpacesToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("90")).withUnit("%")) ==
                     true
             )
 
-            value = results.forExpression("StringPercentWithSpacesUnitToQuantity")!!.value
+            value = results["StringPercentWithSpacesUnitToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("10")).withUnit("ml")) ==
                     true
             )
 
-            value = results.forExpression("StringPercentWithQuoteUnitToQuantity")!!.value
+            value = results["StringPercentWithQuoteUnitToQuantity"]!!.value
             Assertions.assertTrue(
                 (value as Quantity).equal(Quantity().withValue(BigDecimal("20")).withUnit("ml")) ==
                     true
             )
 
-            value = results.forExpression("ToRatioIsValid")!!.value
+            value = results["ToRatioIsValid"]!!.value
             Assertions.assertTrue(
                 (value as Ratio)
                     .numerator!!
@@ -360,28 +360,28 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                     true
             )
 
-            value = results.forExpression("ToRatioIsNull")!!.value
+            value = results["ToRatioIsNull"]!!.value
             Assertions.assertNull(value)
 
-            value = results.forExpression("IntegerNeg5ToString")!!.value
+            value = results["IntegerNeg5ToString"]!!.value
             Assertions.assertEquals("-5", value)
 
-            value = results.forExpression("LongNeg5ToString")!!.value
+            value = results["LongNeg5ToString"]!!.value
             Assertions.assertEquals("-5", value)
 
-            value = results.forExpression("Decimal18D55ToString")!!.value
+            value = results["Decimal18D55ToString"]!!.value
             Assertions.assertEquals("18.55", value)
 
-            value = results.forExpression("Quantity5D5CMToString")!!.value
+            value = results["Quantity5D5CMToString"]!!.value
             Assertions.assertEquals("5.5 'cm'", value)
 
-            value = results.forExpression("BooleanTrueToString")!!.value
+            value = results["BooleanTrueToString"]!!.value
             Assertions.assertEquals("true", value)
 
-            value = results.forExpression("ToTime1")!!.value
+            value = results["ToTime1"]!!.value
             Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(14, 30, 0, 0)) == true)
 
-            value = results.forExpression("ToTimeMalformed")!!.value
+            value = results["ToTimeMalformed"]!!.value
             Assertions.assertNull(value)
         } finally {
             TimeZone.setDefault(TimeZone.getTimeZone(oldTz))

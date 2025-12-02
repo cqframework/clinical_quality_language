@@ -11,25 +11,25 @@ internal class IncludedSignatureWithAliasOutputTests : CqlTestBase() {
         val results =
             engine.evaluate { library("IncludedSignatureWithAliasOutputTests") }.onlyResultOrThrow
 
-        var value = results.forExpression("TestOverload")!!.value
+        var value = results["TestOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(5))
 
-        value = results.forExpression("TestOverloadOneInt")!!.value
+        value = results["TestOverloadOneInt"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("TestOverloadOneDecimal")!!.value
+        value = results["TestOverloadOneDecimal"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("2.0")))
 
-        value = results.forExpression("TestOverloadTwoInts")!!.value
+        value = results["TestOverloadTwoInts"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("TestOverloadTwoDecimals")!!.value
+        value = results["TestOverloadTwoDecimals"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("2.0")))
 
-        value = results.forExpression("TestOverloadOneIntOneDecimal")!!.value
+        value = results["TestOverloadOneIntOneDecimal"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("2.0")))
 
-        value = results.forExpression("TestOverloadOneIntTwoDecimal")!!.value
+        value = results["TestOverloadOneIntTwoDecimal"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
     }
 }

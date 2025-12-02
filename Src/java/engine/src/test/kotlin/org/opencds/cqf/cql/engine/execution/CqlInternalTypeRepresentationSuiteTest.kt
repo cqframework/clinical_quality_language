@@ -32,82 +32,82 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
 
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
-        var value = results.forExpression("BoolTrue")!!.value
+        var value = results["BoolTrue"]!!.value
         Assertions.assertTrue(value is Boolean)
         Assertions.assertTrue(value as Boolean)
 
-        value = results.forExpression("BoolFalse")!!.value
+        value = results["BoolFalse"]!!.value
         Assertions.assertTrue(value is Boolean)
         Assertions.assertFalse(value as Boolean)
 
-        value = results.forExpression("IntOne")!!.value
+        value = results["IntOne"]!!.value
         Assertions.assertTrue(value is Int)
         Assertions.assertTrue(value as Int == 1)
 
-        value = results.forExpression("DecimalTenth")!!.value
+        value = results["DecimalTenth"]!!.value
         Assertions.assertTrue(value is BigDecimal)
         Assertions.assertEquals(0, (value as BigDecimal).compareTo(BigDecimal("0.1")))
 
-        value = results.forExpression("StringTrue")!!.value
+        value = results["StringTrue"]!!.value
         Assertions.assertTrue(value is String)
         Assertions.assertEquals("true", value)
 
-        value = results.forExpression("DateTimeX")!!.value
+        value = results["DateTimeX"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
                 true
         )
 
-        value = results.forExpression("DateTimeFX")!!.value
+        value = results["DateTimeFX"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
                 true
         )
 
-        value = results.forExpression("TimeX")!!.value
+        value = results["TimeX"]!!.value
         Assertions.assertTrue(value is Time)
         Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)) == true)
 
-        value = results.expressionResults["DateTime_Year"]!!.value
+        value = results["DateTime_Year"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012)) == true
         )
 
-        value = results.expressionResults["DateTime_Month"]!!.value
+        value = results["DateTime_Month"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2)) == true
         )
 
-        value = results.expressionResults["DateTime_Day"]!!.value
+        value = results["DateTime_Day"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15)) == true
         )
 
-        value = results.expressionResults["DateTime_Hour"]!!.value
+        value = results["DateTime_Hour"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12)) == true
         )
 
-        value = results.expressionResults["DateTime_Minute"]!!.value
+        value = results["DateTime_Minute"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10)) == true
         )
 
-        value = results.expressionResults["DateTime_Second"]!!.value
+        value = results["DateTime_Second"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59)) ==
                 true
         )
 
-        value = results.expressionResults["DateTime_Millisecond"]!!.value
+        value = results["DateTime_Millisecond"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(
@@ -115,42 +115,42 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["DateTime_TimezoneOffset"]!!.value
+        value = results["DateTime_TimezoneOffset"]!!.value
         Assertions.assertTrue(value is DateTime)
         Assertions.assertTrue(
             (value as DateTime).equal(DateTime(BigDecimal("-8.0"), 2012, 2, 15, 12, 10, 59, 456)) ==
                 true
         )
 
-        value = results.expressionResults["Time_Hour"]!!.value
+        value = results["Time_Hour"]!!.value
         Assertions.assertTrue(value is Time)
         Assertions.assertTrue((value as Time).equal(Time(12)) == true)
 
-        value = results.expressionResults["Time_Minute"]!!.value
+        value = results["Time_Minute"]!!.value
         Assertions.assertTrue(value is Time)
         Assertions.assertTrue((value as Time).equal(Time(12, 10)) == true)
 
-        value = results.expressionResults["Time_Second"]!!.value
+        value = results["Time_Second"]!!.value
         Assertions.assertTrue(value is Time)
         Assertions.assertTrue((value as Time).equal(Time(12, 10, 59)) == true)
 
-        value = results.expressionResults["Time_Millisecond"]!!.value
+        value = results["Time_Millisecond"]!!.value
         Assertions.assertTrue(value is Time)
         Assertions.assertTrue((value as Time).equal(Time(12, 10, 59, 456)) == true)
 
-        value = results.expressionResults["Clinical_quantity"]!!.value
+        value = results["Clinical_quantity"]!!.value
         Assertions.assertTrue(value is Quantity)
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
         )
 
-        value = results.expressionResults["Clinical_QuantityA"]!!.value
+        value = results["Clinical_QuantityA"]!!.value
         Assertions.assertTrue(value is Quantity)
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
         )
 
-        value = results.expressionResults["Clinical_CodeA"]!!.value
+        value = results["Clinical_CodeA"]!!.value
         Assertions.assertTrue(value is Code)
         Assertions.assertTrue(
             (value as Code).equal(
@@ -162,7 +162,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["Clinical_ConceptA"]!!.value
+        value = results["Clinical_ConceptA"]!!.value
         Assertions.assertTrue(value is Concept)
         Assertions.assertTrue(
             (value as Concept).equal(
@@ -181,7 +181,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         val elements = LinkedHashMap<String, Any?>()
         elements["a"] = 1
         elements["b"] = 2
-        value = results.expressionResults["Structured_tuple"]!!.value
+        value = results["Structured_tuple"]!!.value
         Assertions.assertTrue(value is Tuple)
         Assertions.assertTrue(
             (value as Tuple).equal(Tuple(engine.state).withElements(elements)) == true
@@ -193,13 +193,13 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         elements["date"] = DateTime(bigDecimalZoneOffset, 2018, 7, 18)
         elements["developer"] = "Christopher Schuler"
 
-        value = results.expressionResults["Structured_TupleA"]!!.value
+        value = results["Structured_TupleA"]!!.value
         Assertions.assertTrue(value is Tuple)
         Assertions.assertTrue(
             (value as Tuple).equal(Tuple(engine.state).withElements(elements)) == true
         )
 
-        value = results.expressionResults["Interval_Open"]!!.value
+        value = results["Interval_Open"]!!.value
         Assertions.assertTrue(value is Interval)
         Assertions.assertTrue(
             (value as Interval).equal(
@@ -212,7 +212,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["Interval_LeftOpen"]!!.value
+        value = results["Interval_LeftOpen"]!!.value
         Assertions.assertTrue(value is Interval)
         Assertions.assertTrue(
             (value as Interval).equal(
@@ -225,7 +225,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["Interval_RightOpen"]!!.value
+        value = results["Interval_RightOpen"]!!.value
         Assertions.assertTrue(value is Interval)
         Assertions.assertTrue(
             (value as Interval).equal(
@@ -238,7 +238,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["Interval_Closed"]!!.value
+        value = results["Interval_Closed"]!!.value
         Assertions.assertTrue(value is Interval)
         Assertions.assertTrue(
             (value as Interval).equal(
@@ -251,7 +251,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.expressionResults["List_BoolList"]!!.value
+        value = results["List_BoolList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         var listComp =
             CqlList.equal(
@@ -261,12 +261,12 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_IntList"]!!.value
+        value = results["List_IntList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp = CqlList.equal(value as Iterable<*>, mutableListOf<Int?>(9, 7, 8), engine.state)
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_DecimalList"]!!.value
+        value = results["List_DecimalList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -276,7 +276,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_StringList"]!!.value
+        value = results["List_StringList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -286,7 +286,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_DateTimeList"]!!.value
+        value = results["List_DateTimeList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -300,7 +300,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_TimeList"]!!.value
+        value = results["List_TimeList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -310,7 +310,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_QuantityList"]!!.value
+        value = results["List_QuantityList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -324,7 +324,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_CodeList"]!!.value
+        value = results["List_CodeList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -345,7 +345,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_ConceptList"]!!.value
+        value = results["List_ConceptList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -380,7 +380,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         val elements2 = mutableMapOf<String, Any?>()
         elements2["x"] = 2
         elements2["z"] = "3"
-        value = results.expressionResults["List_TupleList"]!!.value
+        value = results["List_TupleList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -393,7 +393,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_ListList"]!!.value
+        value = results["List_ListList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -403,7 +403,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_IntervalList"]!!.value
+        value = results["List_IntervalList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp =
             CqlList.equal(
@@ -417,12 +417,12 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
             )
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_MixedList"]!!.value
+        value = results["List_MixedList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp = CqlList.equal(value as Iterable<*>, mutableListOf(1, "two", 3), engine.state)
         Assertions.assertTrue(listComp != null && listComp)
 
-        value = results.expressionResults["List_EmptyList"]!!.value
+        value = results["List_EmptyList"]!!.value
         Assertions.assertTrue(value is Iterable<*>)
         listComp = CqlList.equal(value as Iterable<*>, Collections.EMPTY_LIST, engine.state)
         Assertions.assertNull(listComp)

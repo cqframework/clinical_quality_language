@@ -48,7 +48,7 @@ internal class Issue1558 : FhirExecutionTestBase() {
             CompositeDataProvider(r4ModelResolver, r),
         )
         val result = engine.evaluate { library("Issue1558") }.onlyResultOrThrow
-        val x = result.forExpression("Care Teams Participant.Role Issue")!!.value
+        val x = result["Care Teams Participant.Role Issue"]!!.value
         val participantList = Assertions.assertInstanceOf(MutableList::class.java, x)
         Assertions.assertEquals(1, participantList!!.size.toLong())
         val roles: Any? = participantList[0]

@@ -9,294 +9,294 @@ internal class CqlStringOperatorsTest : CqlTestBase() {
     @Test
     fun all_string_operators() {
         val results = engine.evaluate { library("CqlStringOperatorsTest") }.onlyResultOrThrow
-        var value = results.forExpression("CombineNull")!!.value
+        var value = results["CombineNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("CombineEmptyList")!!.value
+        value = results["CombineEmptyList"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(""))
 
-        value = results.forExpression("CombineABC")!!.value
+        value = results["CombineABC"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("abc"))
 
-        value = results.forExpression("CombineABCSepDash")!!.value
+        value = results["CombineABCSepDash"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a-b-c"))
 
-        value = results.forExpression("ConcatenateNullNull")!!.value
+        value = results["ConcatenateNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ConcatenateANull")!!.value
+        value = results["ConcatenateANull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ConcatenateNullB")!!.value
+        value = results["ConcatenateNullB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ConcatenateAB")!!.value
+        value = results["ConcatenateAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("ab"))
 
-        value = results.forExpression("ConcatenateABWithAdd")!!.value
+        value = results["ConcatenateABWithAdd"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("ab"))
 
-        value = results.forExpression("EndsWithNull")!!.value
+        value = results["EndsWithNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("EndsWithTrue")!!.value
+        value = results["EndsWithTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("EndsWithFalse")!!.value
+        value = results["EndsWithFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IndexerNullNull")!!.value
+        value = results["IndexerNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerANull")!!.value
+        value = results["IndexerANull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerNull1String")!!.value
+        value = results["IndexerNull1String"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerAB0")!!.value
+        value = results["IndexerAB0"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("IndexerAB1")!!.value
+        value = results["IndexerAB1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("b"))
 
-        value = results.forExpression("IndexerAB2")!!.value
+        value = results["IndexerAB2"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IndexerABNeg1")!!.value
+        value = results["IndexerABNeg1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("MatchesNull")!!.value
+        value = results["MatchesNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("MatchesNumberFalse")!!.value
+        value = results["MatchesNumberFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("MatchesNumberTrue")!!.value
+        value = results["MatchesNumberTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("MatchesAllTrue")!!.value
+        value = results["MatchesAllTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("MatchesWordsAndSpacesTrue")!!.value
+        value = results["MatchesWordsAndSpacesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("MatchesWordsAndSpacesFalse")!!.value
+        value = results["MatchesWordsAndSpacesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("MatchesNotWords")!!.value
+        value = results["MatchesNotWords"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("MatchesWhiteSpace")!!.value
+        value = results["MatchesWhiteSpace"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("LastPositionOfNull")!!.value
+        value = results["LastPositionOfNull"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("LastPositionOfNull1")!!.value
+        value = results["LastPositionOfNull1"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("LastPositionOfNull2")!!.value
+        value = results["LastPositionOfNull2"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("LastPositionOf1")!!.value
+        value = results["LastPositionOf1"]!!.value
         Assertions.assertTrue(value as Int? == 1)
 
-        value = results.forExpression("LastPositionOf2")!!.value
+        value = results["LastPositionOf2"]!!.value
         Assertions.assertTrue(value as Int? == 11)
 
-        value = results.forExpression("LengthNullString")!!.value
+        value = results["LengthNullString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("LengthEmptyString")!!.value
+        value = results["LengthEmptyString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("LengthA")!!.value
+        value = results["LengthA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("LengthAB")!!.value
+        value = results["LengthAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
-        value = results.forExpression("LowerNull")!!.value
+        value = results["LowerNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("LowerEmpty")!!.value
+        value = results["LowerEmpty"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(""))
 
-        value = results.forExpression("LowerA")!!.value
+        value = results["LowerA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("LowerB")!!.value
+        value = results["LowerB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("b"))
 
-        value = results.forExpression("LowerAB")!!.value
+        value = results["LowerAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("ab"))
 
-        value = results.forExpression("PositionOfNullNull")!!.value
+        value = results["PositionOfNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("PositionOfANull")!!.value
+        value = results["PositionOfANull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("PositionOfNullA")!!.value
+        value = results["PositionOfNullA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("PositionOfAInAB")!!.value
+        value = results["PositionOfAInAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(0))
 
-        value = results.forExpression("PositionOfBInAB")!!.value
+        value = results["PositionOfBInAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("PositionOfCInAB")!!.value
+        value = results["PositionOfCInAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-1))
 
-        value = results.forExpression("ReplaceMatchesNull")!!.value
+        value = results["ReplaceMatchesNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("ReplaceMatchesAll")!!.value
+        value = results["ReplaceMatchesAll"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("But still waters run deep"))
 
-        value = results.forExpression("ReplaceMatchesMany")!!.value
+        value = results["ReplaceMatchesMany"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`("Who put the bang in the bang she bang she bang?"),
         )
 
-        value = results.forExpression("ReplaceMatchesSpaces")!!.value
+        value = results["ReplaceMatchesSpaces"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`($$"All$that$glitters$is$not$gold"))
 
-        value = results.forExpression("SplitNullNull")!!.value
+        value = results["SplitNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SplitNullComma")!!.value
+        value = results["SplitNullComma"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SplitABNull")!!.value
+        value = results["SplitABNull"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a,b"))),
         )
 
-        value = results.forExpression("SplitABDash")!!.value
+        value = results["SplitABDash"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a,b"))),
         )
 
-        value = results.forExpression("SplitABSpace")!!.value
+        value = results["SplitABSpace"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a", "b"))),
         )
 
-        value = results.forExpression("SplitABComma")!!.value
+        value = results["SplitABComma"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a", "b"))),
         )
 
-        value = results.forExpression("SplitMatchesNullNull")!!.value
+        value = results["SplitMatchesNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SplitMatchesNullComma")!!.value
+        value = results["SplitMatchesNullComma"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SplitMatchesABNull")!!.value
+        value = results["SplitMatchesABNull"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a,b"))),
         )
 
-        value = results.forExpression("SplitMatchesABSpaceRegex")!!.value
+        value = results["SplitMatchesABSpaceRegex"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a", "b"))),
         )
 
-        value = results.forExpression("SplitMatchesABComma")!!.value
+        value = results["SplitMatchesABComma"]!!.value
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<String?>("a", "b"))),
         )
 
-        value = results.forExpression("StartsWithNull")!!.value
+        value = results["StartsWithNull"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("StartsWithNull1")!!.value
+        value = results["StartsWithNull1"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("StartsWithNull2")!!.value
+        value = results["StartsWithNull2"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("StartsWithTrue1")!!.value
+        value = results["StartsWithTrue1"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
 
-        value = results.forExpression("StartsWithFalse1")!!.value
+        value = results["StartsWithFalse1"]!!.value
         Assertions.assertFalse((value as Boolean?)!!)
 
-        value = results.forExpression("SubstringNullNull")!!.value
+        value = results["SubstringNullNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SubstringANull")!!.value
+        value = results["SubstringANull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SubstringNull1")!!.value
+        value = results["SubstringNull1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SubstringAB0")!!.value
+        value = results["SubstringAB0"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("ab"))
 
-        value = results.forExpression("SubstringAB1")!!.value
+        value = results["SubstringAB1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("b"))
 
-        value = results.forExpression("SubstringAB2")!!.value
+        value = results["SubstringAB2"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SubstringABNeg1")!!.value
+        value = results["SubstringABNeg1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("SubstringAB0To1")!!.value
+        value = results["SubstringAB0To1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("a"))
 
-        value = results.forExpression("SubstringABC1To1")!!.value
+        value = results["SubstringABC1To1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("b"))
 
-        value = results.forExpression("SubstringAB0To3")!!.value
+        value = results["SubstringAB0To3"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("ab"))
 
-        value = results.forExpression("UpperNull")!!.value
+        value = results["UpperNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("UpperSpace")!!.value
+        value = results["UpperSpace"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(" "))
 
-        value = results.forExpression("UpperEmpty")!!.value
+        value = results["UpperEmpty"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(""))
 
-        value = results.forExpression("UpperA")!!.value
+        value = results["UpperA"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("A"))
 
-        value = results.forExpression("UpperB")!!.value
+        value = results["UpperB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("B"))
 
-        value = results.forExpression("UpperAB")!!.value
+        value = results["UpperAB"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("AB"))
 
-        value = results.forExpression("QuantityToString")!!.value
+        value = results["QuantityToString"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("125 'cm'"))
 
-        value = results.forExpression("DateTimeToString1")!!.value
+        value = results["DateTimeToString1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("2000-01-01"))
 
-        value = results.forExpression("DateTimeToString2")!!.value
+        value = results["DateTimeToString2"]!!.value
         // The DateTime uses the local timezone. Strip that for the assertion.
         val withoutTimezone = (value as String).replace("[+-][0-9]{2}:[0-9]{2}$".toRegex(), "")
         MatcherAssert.assertThat(withoutTimezone, Matchers.`is`("2000-01-01T15:25:25.300"))
 
-        value = results.forExpression("DateTimeToString3")!!.value
+        value = results["DateTimeToString3"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("2000-01-01T08:25:25.300-07:00"))
 
-        value = results.forExpression("TimeToString1")!!.value
+        value = results["TimeToString1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("09:30:01.003"))
     }
 }

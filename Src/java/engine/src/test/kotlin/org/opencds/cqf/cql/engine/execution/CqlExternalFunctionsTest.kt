@@ -18,10 +18,10 @@ internal class CqlExternalFunctionsTest : CqlTestBase() {
         )
 
         val results = engine.evaluate { library(identifier) }.onlyResultOrThrow
-        var value = results.forExpression("CallMyPlus")!!.value
+        var value = results["CallMyPlus"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(10))
 
-        value = results.forExpression("CallMyMinus")!!.value
+        value = results["CallMyMinus"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-2))
     }
 }

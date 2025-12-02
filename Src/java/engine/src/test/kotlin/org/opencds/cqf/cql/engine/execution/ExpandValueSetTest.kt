@@ -37,7 +37,7 @@ internal class ExpandValueSetTest {
         val engine = CqlEngine(environment)
         val results = engine.evaluate { library("ExpandValueSetTest") }.onlyResultOrThrow
 
-        val actual = results.forExpression("ExpandValueSet")!!.value as MutableList<*>
+        val actual = results["ExpandValueSet"]!!.value as MutableList<*>
         Assertions.assertEquals(1, actual.size)
 
         CqlConceptTest.assertEqual(expected, actual[0] as CqlType)

@@ -99,11 +99,8 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         Assertions.assertFalse(evalResultsForMultiLib.hasExceptions())
 
         val evaluationResult = findResultsByLibId(LIBRARY_WITH_VERSION, libraryResults)
-        Assertions.assertEquals(5, evaluationResult.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(
-            _2031_01_01_TO_2032_01_01,
-            evaluationResult.expressionResults["Period"]!!.value,
-        )
+        Assertions.assertEquals(5, evaluationResult["Number"]!!.value)
+        Assertions.assertEquals(_2031_01_01_TO_2032_01_01, evaluationResult["Period"]!!.value)
     }
 
     // Various bespoke assertions to increase test coverage
@@ -158,22 +155,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value)
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _2021_01_01_TO_2022_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _2022_01_01_TO_2023_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _2023_01_01_TO_2024_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value,
-        )
+        Assertions.assertEquals(_2021_01_01_TO_2022_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_2022_01_01_TO_2023_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_2023_01_01_TO_2024_01_01, evaluationResult3["Period"]!!.value)
     }
 
     @Test
@@ -229,54 +217,27 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value)
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals("Uno", evaluationResult1.expressionResults["Name"]!!.value)
-        Assertions.assertEquals("Dos", evaluationResult2.expressionResults["Name"]!!.value)
-        Assertions.assertEquals("Tres", evaluationResult3.expressionResults["Name"]!!.value)
+        Assertions.assertEquals("Uno", evaluationResult1["Name"]!!.value)
+        Assertions.assertEquals("Dos", evaluationResult2["Name"]!!.value)
+        Assertions.assertEquals("Tres", evaluationResult3["Name"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value,
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
 
         // Expressions unique to the libraries in question
-        Assertions.assertEquals(
-            "MultiLibrary1",
-            evaluationResult1.expressionResults["MultiLibraryIdent1"]!!.value,
-        )
-        Assertions.assertEquals(
-            "One",
-            evaluationResult1.expressionResults["MultiLibraryValue1"]!!.value,
-        )
+        Assertions.assertEquals("MultiLibrary1", evaluationResult1["MultiLibraryIdent1"]!!.value)
+        Assertions.assertEquals("One", evaluationResult1["MultiLibraryValue1"]!!.value)
 
-        Assertions.assertEquals(
-            "MultiLibrary2",
-            evaluationResult2.expressionResults["MultiLibraryIdent2"]!!.value,
-        )
-        Assertions.assertEquals(
-            "Two",
-            evaluationResult2.expressionResults["MultiLibraryValue2"]!!.value,
-        )
+        Assertions.assertEquals("MultiLibrary2", evaluationResult2["MultiLibraryIdent2"]!!.value)
+        Assertions.assertEquals("Two", evaluationResult2["MultiLibraryValue2"]!!.value)
 
-        Assertions.assertEquals(
-            "MultiLibrary3",
-            evaluationResult3.expressionResults["MultiLibraryIdent3"]!!.value,
-        )
-        Assertions.assertEquals(
-            "Three",
-            evaluationResult3.expressionResults["MultiLibraryValue3"]!!.value,
-        )
+        Assertions.assertEquals("MultiLibrary3", evaluationResult3["MultiLibraryIdent3"]!!.value)
+        Assertions.assertEquals("Three", evaluationResult3["MultiLibraryValue3"]!!.value)
     }
 
     @Test
@@ -342,26 +303,17 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value)
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value,
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
 
-        Assertions.assertNull(evaluationResult1.expressionResults["Name"])
-        Assertions.assertNull(evaluationResult2.expressionResults["Name"])
-        Assertions.assertNull(evaluationResult3.expressionResults["Name"])
+        Assertions.assertNull(evaluationResult1["Name"])
+        Assertions.assertNull(evaluationResult2["Name"])
+        Assertions.assertNull(evaluationResult3["Name"])
     }
 
     @Test
@@ -432,22 +384,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value)
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value)
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value,
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value,
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
     }
 
     private fun findResultsByLibId(

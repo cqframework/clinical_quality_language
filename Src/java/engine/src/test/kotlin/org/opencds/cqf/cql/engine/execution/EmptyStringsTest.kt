@@ -8,13 +8,13 @@ internal class EmptyStringsTest : CqlTestBase() {
     @Test
     fun all_empty_string() {
         val results = engine.evaluate { library("EmptyStringsTest") }.onlyResultOrThrow
-        var value = results.forExpression("Null")!!.value
+        var value = results["Null"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("Space")!!.value
+        value = results["Space"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(" "))
 
-        value = results.forExpression("Empty")!!.value
+        value = results["Empty"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(""))
     }
 }

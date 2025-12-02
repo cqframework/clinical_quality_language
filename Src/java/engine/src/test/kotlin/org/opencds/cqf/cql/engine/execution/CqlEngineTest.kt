@@ -69,44 +69,44 @@ internal class CqlEngineTest : CqlTestBase() {
     @Test
     fun hedisCompatibility() {
         var libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
-        var result = libraryResult.expressionResults["QuantityListIncludes"]!!.value
+        var result = libraryResult["QuantityListIncludes"]!!.value
         Assertions.assertFalse((result as Boolean?)!!)
 
-        result = libraryResult.expressionResults["ReturnUnspecified"]!!.value
+        result = libraryResult["ReturnUnspecified"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(2, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnAll"]!!.value
+        result = libraryResult["ReturnAll"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnDistinct"]!!.value
+        result = libraryResult["ReturnDistinct"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(2, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["Test Null Tuple"]!!.value
+        result = libraryResult["Test Null Tuple"]!!.value
         Assertions.assertNull(result)
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableHedisCompatibilityMode)
         libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
         // equivalent semantics for lists
-        result = libraryResult.expressionResults["QuantityListIncludes"]!!.value
+        result = libraryResult["QuantityListIncludes"]!!.value
         Assertions.assertTrue((result as Boolean?)!!)
 
         // no "distinct" behavior for lists
-        result = libraryResult.expressionResults["ReturnUnspecified"]!!.value
+        result = libraryResult["ReturnUnspecified"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnAll"]!!.value
+        result = libraryResult["ReturnAll"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnDistinct"]!!.value
+        result = libraryResult["ReturnDistinct"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["Test Null Tuple"]!!.value
+        result = libraryResult["Test Null Tuple"]!!.value
         Assertions.assertNull(result)
     }
 }

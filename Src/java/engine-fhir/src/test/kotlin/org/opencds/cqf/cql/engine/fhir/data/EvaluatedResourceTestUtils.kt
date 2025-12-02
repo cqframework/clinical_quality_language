@@ -249,7 +249,7 @@ internal object EvaluatedResourceTestUtils {
         expressionName: String,
         expectedEvaluatedResources: Collection<IBaseResource>,
     ) {
-        val expressionResult = evaluationResult.forExpression(expressionName)
+        val expressionResult = evaluationResult[expressionName]
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 
@@ -269,7 +269,7 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
         val evaluationResult = evaluationResultsForMultiLib!!.getResultFor(libraryIdentifier)
-        val expressionResult = evaluationResult!!.forExpression(expressionName)
+        val expressionResult = evaluationResult!![expressionName]
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 
@@ -287,7 +287,7 @@ internal object EvaluatedResourceTestUtils {
             evaluationResult,
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
-        val expressionResult = evaluationResult!!.forExpression(expressionName)
+        val expressionResult = evaluationResult!![expressionName]
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 

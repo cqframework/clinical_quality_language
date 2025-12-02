@@ -55,31 +55,31 @@ class TestFhirDataProviderDstu2 : FhirExecutionTestBase() {
 
     // @Test
     fun testDstu2ProviderString() {
-        val value = results!!.forExpression("testString")!!.value
+        val value = results!!["testString"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderCode() {
-        val value = results!!.forExpression("testCode")!!.value
+        val value = results!!["testCode"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderDate() {
-        val value = results!!.forExpression("testDate")!!.value
+        val value = results!!["testDate"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderDecimal() {
-        val value = results!!.forExpression("testDecimal")!!.value
+        val value = results!!["testDecimal"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderID() {
-        val value = results!!.forExpression("testID")!!.value
+        val value = results!!["testID"]!!.value
         Assertions.assertNotNull(value)
     }
 }

@@ -68,7 +68,7 @@ class Issue1577 {
         )
         val evaluationResult =
             engine.evaluate { library("Issue1577") { expressions("expr1") } }.onlyResultOrThrow
-        val expressionResult = evaluationResult.forExpression("expr1")!!.value
+        val expressionResult = evaluationResult["expr1"]!!.value
         assertTrue(expressionResult is Iterable<*>)
         assertEquals(2, expressionResult.toList().size)
     }

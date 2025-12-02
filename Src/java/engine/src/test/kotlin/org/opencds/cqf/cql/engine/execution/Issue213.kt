@@ -9,7 +9,7 @@ internal class Issue213 : CqlTestBase() {
         //
         //        results = engine.evaluate(toElmIdentifier("Issue213"), null, null, null, null,
         // null);
-        //        Object value = results.forExpression("Collapsed Treatment Intervals").value;
+        //        Object value = results["Collapsed Treatment Intervals"].value;
         //        Assertions.assertTrue(EquivalentEvaluator.equivalent(((Interval) ((List)
         // value).get(0)).getStart(),
         // new

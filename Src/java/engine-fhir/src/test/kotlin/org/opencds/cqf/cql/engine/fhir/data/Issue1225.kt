@@ -45,6 +45,6 @@ internal class Issue1225 : FhirExecutionTestBase() {
         )
         val result = engine.evaluate { library("Issue1225") }.onlyResultOrThrow
 
-        Assertions.assertEquals("123", result.forExpression("Address Line 1")!!.value)
+        Assertions.assertEquals("123", result["Address Line 1"]!!.value)
     }
 }

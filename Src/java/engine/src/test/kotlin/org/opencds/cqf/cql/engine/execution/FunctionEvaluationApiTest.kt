@@ -26,7 +26,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(3, results[evaluationFunctionRef]!!.value)
     }
 
@@ -42,7 +41,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(3, results[evaluationFunctionRef1]!!.value)
         assertEquals(7, results[evaluationFunctionRef2]!!.value)
     }
@@ -59,7 +57,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(3, results[evaluationFunctionRef]!!.value)
         assertEquals(5, results[evaluationExpressionRef]!!.value)
     }
@@ -90,7 +87,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(3, results[evaluationFunctionRef]!!.value)
     }
 
@@ -127,7 +123,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(2, results[evaluationFunctionRef]!!.value)
     }
 
@@ -145,7 +140,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-                .results
         assertEquals(5, results[evaluationFunctionRef]!!.value)
     }
 }

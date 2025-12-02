@@ -14,34 +14,34 @@ internal class CqlFunctionTest : CqlTestBase() {
         val engine = getEngine(compilerOptions)
 
         val results = engine.evaluate { library("CqlFunctionTests") }.onlyResultOrThrow
-        var value = results.forExpression("FunctionTestStringArg")!!.value
+        var value = results["FunctionTestStringArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("hello"))
 
-        value = results.forExpression("FunctionTestNullStringArg")!!.value
+        value = results["FunctionTestNullStringArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FunctionTestMultipleArgs")!!.value
+        value = results["FunctionTestMultipleArgs"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("hell0"))
 
-        value = results.forExpression("FunctionTestNullMultipleArgs")!!.value
+        value = results["FunctionTestNullMultipleArgs"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FunctionTestOverload")!!.value
+        value = results["FunctionTestOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("hell00.000"))
 
-        value = results.forExpression("FunctionTestNullOverload")!!.value
+        value = results["FunctionTestNullOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FunctionTestTupleArg")!!.value
+        value = results["FunctionTestTupleArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(3))
 
-        value = results.forExpression("FunctionTestNullTupleArg")!!.value
+        value = results["FunctionTestNullTupleArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FunctionTestQuantityArg")!!.value
+        value = results["FunctionTestQuantityArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`("cm"))
 
-        value = results.forExpression("FunctionTestNullQuantityArg")!!.value
+        value = results["FunctionTestNullQuantityArg"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
     }
 }

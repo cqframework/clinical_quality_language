@@ -58,22 +58,22 @@ class FhirHelpersDstu3Test {
         val results = engine.evaluate { library(libraryId) }.onlyResultOrThrow
 
         // TODO - fix
-        var value = results.forExpression("TestPeriodToInterval")!!.value
+        var value = results["TestPeriodToInterval"]!!.value
         // Assertions.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 18, 8, 0}));
         // Assertions.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 19, 8, 0}));
-        value = results.forExpression("TestToQuantity")!!.value
+        value = results["TestToQuantity"]!!.value
         // TODO: ModelInfo bug. Not aware of SimpleQuantity
-        value = results.forExpression("TestRangeToInterval")!!.value
-        value = results.forExpression("TestToCode")!!.value
-        value = results.forExpression("TestToConcept")!!.value
-        value = results.forExpression("TestToString")!!.value
-        value = results.forExpression("TestRequestStatusToString")!!.value
-        value = results.forExpression("TestToDateTime")!!.value
-        value = results.forExpression("TestToTime")!!.value
-        value = results.forExpression("TestToInteger")!!.value
-        value = results.forExpression("TestToDecimal")!!.value
-        value = results.forExpression("TestToBoolean")!!.value
+        value = results["TestRangeToInterval"]!!.value
+        value = results["TestToCode"]!!.value
+        value = results["TestToConcept"]!!.value
+        value = results["TestToString"]!!.value
+        value = results["TestRequestStatusToString"]!!.value
+        value = results["TestToDateTime"]!!.value
+        value = results["TestToTime"]!!.value
+        value = results["TestToInteger"]!!.value
+        value = results["TestToDecimal"]!!.value
+        value = results["TestToBoolean"]!!.value
     }
 }

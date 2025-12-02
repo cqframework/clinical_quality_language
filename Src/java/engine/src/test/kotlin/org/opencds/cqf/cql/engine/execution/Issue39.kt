@@ -8,7 +8,7 @@ internal class Issue39 : CqlTestBase() {
     @Test
     fun interval() {
         val results = engine.evaluate { library("Issue39") }.onlyResultOrThrow
-        val value = results.forExpression("EquivalentIntervals")!!.value
+        val value = results["EquivalentIntervals"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
     }
 }

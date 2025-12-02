@@ -19,8 +19,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a global should affect all expressions
-        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value)
-        Assertions.assertEquals(1, result.forExpression("Local Parameter")!!.value)
+        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
+        Assertions.assertEquals(1, result["Local Parameter"]!!.value)
     }
 
     @Test
@@ -37,8 +37,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result.forExpression("Included Parameter")!!.value)
-        Assertions.assertEquals(1, result.forExpression("Local Parameter")!!.value)
+        Assertions.assertNull(result["Included Parameter"]!!.value)
+        Assertions.assertEquals(1, result["Local Parameter"]!!.value)
     }
 
     @Test
@@ -55,8 +55,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result.forExpression("Local Parameter")!!.value)
-        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value)
+        Assertions.assertNull(result["Local Parameter"]!!.value)
+        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
     }
 
     @Test
@@ -78,8 +78,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 .onlyResultOrThrow
         // If a library-specific parameter is not specified, the global
         // value should be used
-        Assertions.assertEquals(2, result.forExpression("Local Parameter")!!.value)
-        Assertions.assertEquals(1, result.forExpression("Included Parameter")!!.value)
+        Assertions.assertEquals(2, result["Local Parameter"]!!.value)
+        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
     }
 
     companion object {

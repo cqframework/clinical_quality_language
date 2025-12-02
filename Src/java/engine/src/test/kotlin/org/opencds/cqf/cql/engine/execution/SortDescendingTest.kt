@@ -8,7 +8,7 @@ internal class SortDescendingTest : CqlTestBase() {
     @Test
     fun evaluate() {
         val results = engine.evaluate { library("SortDescendingTest") }.onlyResultOrThrow
-        val value = results.forExpression("sorted list of numbers descending")!!.value
+        val value = results["sorted list of numbers descending"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent((value as MutableList<*>)[0], 9) == true
         )

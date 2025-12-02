@@ -19,7 +19,7 @@ internal class CqlConceptTest : CqlTestBase() {
         val codes = listOf(createCode("123", "1"), createCode("234", "1"), createCode("abc", "a"))
         val expected = Concept().withDisplay("test-concept-display").withCodes(codes)
 
-        val actual = results.forExpression("testConceptRef")!!.value as CqlType?
+        val actual = results["testConceptRef"]!!.value as CqlType?
 
         assertEqual(expected, actual)
     }

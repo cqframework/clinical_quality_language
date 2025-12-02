@@ -123,7 +123,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("testChoiceTypes") } }
                 .onlyResultOrThrow
 
-        val value = results.forExpression("testChoiceTypes")!!.value
+        val value = results["testChoiceTypes"]!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -136,7 +136,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("testDateType") } }
                 .onlyResultOrThrow
 
-        val value = results.forExpression("testDateType")!!.value
+        val value = results["testDateType"]!!.value
         Assertions.assertNotNull(value)
     }
 
@@ -147,7 +147,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
             engine
                 .evaluate { library(library!!.identifier!!) { expressions("testFhirObjectEqual") } }
                 .onlyResultOrThrow
-        val value = results.forExpression("testFhirObjectEqual")!!.value
+        val value = results["testFhirObjectEqual"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -160,7 +160,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                     library(library!!.identifier!!) { expressions("testFhirObjectEquivalent") }
                 }
                 .onlyResultOrThrow
-        val value = results.forExpression("testFhirObjectEquivalent")!!.value
+        val value = results["testFhirObjectEquivalent"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
     }
 
@@ -316,7 +316,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
             engine
                 .evaluate { library(library!!.identifier!!) { expressions("GetProvenance") } }
                 .onlyResultOrThrow
-        val value = results.forExpression("GetProvenance")!!.value
+        val value = results["GetProvenance"]!!.value
         Assertions.assertTrue(value is MutableList<*> && value.size == 1)
     }
 }
