@@ -96,8 +96,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         val evaluateResult =
             cqlEngine
                 .evaluate {
-                    library(library!!.identifier!!)
-                    this.expression(expression)
+                    library(library!!.identifier!!) { expressions(expression) }
                     contextParameter = initialContext
                 }
                 .onlyResultOrThrow

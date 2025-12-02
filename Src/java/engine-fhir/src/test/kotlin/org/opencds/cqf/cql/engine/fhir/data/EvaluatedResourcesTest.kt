@@ -11,10 +11,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         var results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Union")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Union") } }
                 .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
@@ -25,10 +22,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Encounter")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Encounter") } }
                 .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -38,10 +32,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Condition")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Condition") } }
                 .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -56,10 +47,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         var results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Union")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Union") } }
                 .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
@@ -70,10 +58,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Encounter")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Encounter") } }
                 .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -83,10 +68,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Condition")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Condition") } }
                 .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,
@@ -96,10 +78,7 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
 
         results =
             engine
-                .evaluate {
-                    this.library(library!!.identifier!!)
-                    expression("Union")
-                }
+                .evaluate { this.library(library!!.identifier!!) { expressions("Union") } }
                 .onlyResultOrThrow
         EvaluatedResourceTestUtils.assertEvaluationResult(
             results,

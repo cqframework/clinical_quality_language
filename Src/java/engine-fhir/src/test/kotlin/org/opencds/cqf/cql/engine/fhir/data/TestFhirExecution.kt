@@ -9,10 +9,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
         val results =
             engine
-                .evaluate {
-                    library(library!!.identifier!!)
-                    expression("testCoalesce")
-                }
+                .evaluate { library(library!!.identifier!!) { expressions("testCoalesce") } }
                 .onlyResultOrThrow
 
         val value = results.forExpression("testCoalesce")!!.value
@@ -25,10 +22,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
         engine.state.setParameter(null, "MAXYEAR", 2014)
         val results =
             engine
-                .evaluate {
-                    library(library!!.identifier!!)
-                    expression("testMonthFrom")
-                }
+                .evaluate { library(library!!.identifier!!) { expressions("testMonthFrom") } }
                 .onlyResultOrThrow
         val value = results.forExpression("testMonthFrom")!!.value
         Assertions.assertNotNull(value)
@@ -40,8 +34,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
         val results =
             engine
                 .evaluate {
-                    library(library!!.identifier!!)
-                    expression("Immunizations in range")
+                    library(library!!.identifier!!) { expressions("Immunizations in range") }
                 }
                 .onlyResultOrThrow
         val value = results.forExpression("Immunizations in range")!!.value
@@ -53,10 +46,7 @@ class TestFhirExecution : FhirExecutionTestBase() {
         engine.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
         val results =
             engine
-                .evaluate {
-                    library(library!!.identifier!!)
-                    expression("Resource Id")
-                }
+                .evaluate { library(library!!.identifier!!) { expressions("Resource Id") } }
                 .onlyResultOrThrow
         val value = results.forExpression("Resource Id")!!.value
         Assertions.assertNotNull(value)

@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
-import java.util.function.Consumer
 import java.util.function.IntFunction
 import java.util.stream.IntStream
+import org.cqframework.cql.cql2elm.CompiledLibraryResult
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
@@ -96,11 +96,9 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      *   during the process.
      */
     fun evaluate(evaluationParams: EvaluationParams): EvaluationResultsForMultiLib {
-        require(evaluationParams.libraryIdentifiers.isNotEmpty()) {
-            "libraryIdentifiers can not be empty."
-        }
+        require(evaluationParams.expressions.isNotEmpty()) { "expressions can not be empty." }
 
-        val loadMultiLibResult = this.loadAndValidate(evaluationParams.libraryIdentifiers)
+        val loadMultiLibResult = this.loadAndValidate(evaluationParams.expressions.keys.toList())
 
         initializeEvalTime(evaluationParams.evaluationDateTime)
 
@@ -139,7 +137,8 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
         for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
             val library = loadMultiLibResult.retrieveLibrary(libraryIdentifier)
-            val expressions = evaluationParams.expressionRefs ?: this.getExpressions(library!!)
+            val expressions =
+                evaluationParams.expressions[libraryIdentifier] ?: this.getExpressions(library!!)
 
             val joinedExpressions = expressions.joinToString(", ", transform = { it.name })
             log.debug(
@@ -331,16 +330,17 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             }
         }
 
-        val libraries = resolvedLibraryResults.allLibrariesWithoutErrorSeverity()
+        val compiledLibraryResults = resolvedLibraryResults.allResultsWithoutErrorSeverity()
 
-        validateLibrariesIfNeeded(libraries)
+        validateLibrariesIfNeeded(compiledLibraryResults)
 
         // We probably want to just load all relevant libraries into
         // memory before we start evaluation. This will further separate
         // environment from state.
-        for (library in libraries) {
+        for (compiledLibraryResult in compiledLibraryResults) {
+            val library = compiledLibraryResult.compiledLibrary.library!!
             try {
-                if (library!!.includes != null) {
+                if (library.includes != null) {
                     for (include in library.includes!!.def) {
                         this.loadAndValidate(
                             VersionedIdentifier()
@@ -350,29 +350,29 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
                         )
                     }
                 }
-                resultBuilder.addResult(library.identifier!!, library)
+                resultBuilder.addResult(compiledLibraryResult.identifier, library)
             } catch (exception: CqlException) {
                 // As with previous code, per searched library identifier, this is an all or nothing
                 // operation:
                 // stop at the first Exception and don't capture subsequent errors for subsequent
                 // included libraries.
-                resultBuilder.addExceptionOrWarning(library!!.identifier!!, exception)
+                resultBuilder.addExceptionOrWarning(compiledLibraryResult.identifier, exception)
             } catch (exception: CqlCompilerException) {
-                resultBuilder.addExceptionOrWarning(library!!.identifier!!, exception)
+                resultBuilder.addExceptionOrWarning(compiledLibraryResult.identifier, exception)
             }
         }
 
         return resultBuilder.build()
     }
 
-    private fun validateLibrariesIfNeeded(libraries: List<Library?>) {
+    private fun validateLibrariesIfNeeded(compiledLibraryResults: List<CompiledLibraryResult>) {
         if (this.engineOptions.contains(Options.EnableValidation)) {
-            libraries.forEach(
-                Consumer { library ->
-                    this.validateTerminologyRequirements(library!!)
-                    this.validateDataRequirements(library)
-                }
-            )
+            compiledLibraryResults.forEach { compiledLibraryResult ->
+                this.validateTerminologyRequirements(
+                    compiledLibraryResult.compiledLibrary.library!!
+                )
+                this.validateDataRequirements(compiledLibraryResult.compiledLibrary.library!!)
+            }
             // TODO: Validate Expressions as well?
         }
     }

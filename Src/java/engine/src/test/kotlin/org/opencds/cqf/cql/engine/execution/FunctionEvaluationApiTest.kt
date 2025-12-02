@@ -23,8 +23,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
                 .results
@@ -38,9 +37,9 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef1)
-                    expressionRef(evaluationFunctionRef2)
+                    library("FunctionEvaluationApiTest") {
+                        expressions(evaluationFunctionRef1, evaluationFunctionRef2)
+                    }
                 }
                 .onlyResultOrThrow
                 .results
@@ -55,9 +54,9 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
-                    expressionRef(evaluationExpressionRef)
+                    library("FunctionEvaluationApiTest") {
+                        expressions(evaluationFunctionRef, evaluationExpressionRef)
+                    }
                 }
                 .onlyResultOrThrow
                 .results
@@ -71,8 +70,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         assertFailsWith<CqlException> {
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
         }
@@ -89,8 +87,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
                 .results
@@ -103,8 +100,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         assertFailsWith<CqlException> {
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
         }
@@ -116,8 +112,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         assertFailsWith<CqlException> {
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
         }
@@ -129,8 +124,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
                 .results
@@ -148,8 +142,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
         val results =
             engine
                 .evaluate {
-                    library("FunctionEvaluationApiTest")
-                    expressionRef(evaluationFunctionRef)
+                    library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
                 .results

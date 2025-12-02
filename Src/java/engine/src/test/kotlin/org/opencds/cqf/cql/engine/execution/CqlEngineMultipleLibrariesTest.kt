@@ -283,14 +283,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesWithExpressionUniqueToASingleLib() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate {
-                library(MULTI_LIBRARY_1)
-                library(MULTI_LIBRARY_2)
-                library(MULTI_LIBRARY_3)
                 // One expression common to all libraries, one each unique to a different single
                 // library
-                expression("Number")
-                expression("MultiLibraryIdent1")
-                expression("MultiLibraryValue2")
+                val expressions = listOf("Number", "MultiLibraryIdent1", "MultiLibraryValue2")
+                library(MULTI_LIBRARY_1) { expressions(expressions) }
+                library(MULTI_LIBRARY_2) { expressions(expressions) }
+                library(MULTI_LIBRARY_3) { expressions(expressions) }
                 debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
             }
 
@@ -324,12 +322,11 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesWithSubsetOfAllCommonExpressions() {
         val evalResultsForMultiLib =
             cqlEngineWithOptions!!.evaluate {
-                library(MULTI_LIBRARY_1)
-                library(MULTI_LIBRARY_2)
-                library(MULTI_LIBRARY_3)
                 // We're leaving out "Name" here
-                expression("Number")
-                expression("Period")
+                val expressions = listOf("Number", "Period")
+                library(MULTI_LIBRARY_1) { expressions(expressions) }
+                library(MULTI_LIBRARY_2) { expressions(expressions) }
+                library(MULTI_LIBRARY_3) { expressions(expressions) }
                 parameters = mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01)
                 debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
             }

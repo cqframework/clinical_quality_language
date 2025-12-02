@@ -105,8 +105,7 @@ open class CqlTestBase {
         evaluationDateTime: ZonedDateTime? = null,
     ): Any? {
         return evaluate {
-                library(libraryIdentifier)
-                expression(expressionName)
+                library(libraryIdentifier) { expressions(expressionName) }
                 this.evaluationDateTime = evaluationDateTime
             }
             .onlyResultOrThrow

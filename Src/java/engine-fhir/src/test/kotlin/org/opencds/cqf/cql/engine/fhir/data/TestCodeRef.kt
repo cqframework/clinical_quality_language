@@ -16,10 +16,7 @@ class TestCodeRef : FhirExecutionTestBase() {
     fun CodeRefTest1() {
         val results =
             engine
-                .evaluate {
-                    library(library!!.identifier!!)
-                    expression("CodeRef1")
-                }
+                .evaluate { library(library!!.identifier!!) { expressions("CodeRef1") } }
                 .onlyResultOrThrow
 
         Assertions.assertTrue(results.forExpression("CodeRef1")!!.value != null)
@@ -29,10 +26,7 @@ class TestCodeRef : FhirExecutionTestBase() {
     fun CodeRefTest2() {
         val results =
             engine
-                .evaluate {
-                    library(library!!.identifier!!)
-                    expression("CodeRef2")
-                }
+                .evaluate { library(library!!.identifier!!) { expressions("CodeRef2") } }
                 .onlyResultOrThrow
 
         Assertions.assertTrue(results.forExpression("CodeRef2")!!.value != null)

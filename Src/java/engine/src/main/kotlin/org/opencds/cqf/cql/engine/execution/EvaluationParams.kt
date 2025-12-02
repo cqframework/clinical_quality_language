@@ -7,53 +7,85 @@ import org.opencds.cqf.cql.engine.debug.DebugMap
 /**
  * Parameters for the engine's evaluation request.
  *
- * @property libraryIdentifiers List of the libraries to be evaluated.
- * @property expressionRefs If null, all expressions from each library will be evaluated. Otherwise,
- *   only the referenced expressions and functions will be evaluated.
+ * @property expressions The key is the library identifier and the value is the list of expression
+ *   refs to evaluate for that library. If the value is null, all expressions in that library will
+ *   be evaluated.
  * @property contextParameter The context parameter name and its value.
  * @property parameters Library parameters for evaluation.
  * @property debugMap Captures debug information during evaluation.
  * @property evaluationDateTime Represents the evaluation date and time.
  */
 class EvaluationParams(
-    val libraryIdentifiers: List<VersionedIdentifier>,
-    val expressionRefs: List<EvaluationExpressionRef>? = null,
+    val expressions: Map<VersionedIdentifier, List<EvaluationExpressionRef>?>,
     val contextParameter: Pair<String, Any>? = null,
     val parameters: Map<String, Any?>? = null,
     val debugMap: DebugMap? = null,
     val evaluationDateTime: ZonedDateTime? = null,
 ) {
     class Builder {
-        private val libraryIdentifiers = mutableListOf<VersionedIdentifier>()
-        private var expressionRefs: MutableList<EvaluationExpressionRef>? = null
+        private val expressions =
+            mutableMapOf<VersionedIdentifier, List<EvaluationExpressionRef>?>()
 
         var contextParameter: Pair<String, Any>? = null
         var parameters: Map<String, Any?>? = null
         var debugMap: DebugMap? = null
         var evaluationDateTime: ZonedDateTime? = null
 
-        fun library(id: VersionedIdentifier) = apply { libraryIdentifiers.add(id) }
-
-        fun library(libraryName: String) = library(VersionedIdentifier().apply { id = libraryName })
-
-        fun expressionRef(ref: EvaluationExpressionRef) = apply {
-            if (this.expressionRefs == null) {
-                this.expressionRefs = mutableListOf()
+        /**
+         * Adds a library to the evaluation.
+         *
+         * @param id The VersionedIdentifier of the library.
+         * @param block A DSL block to define specific expressions.
+         */
+        fun library(id: VersionedIdentifier, block: (LibraryScope.() -> Unit)? = null) = apply {
+            if (block == null) {
+                expressions[id] = null
+            } else {
+                val scope = LibraryScope()
+                scope.block()
+                expressions[id] = scope.build()
             }
-            this.expressionRefs!!.add(ref)
         }
 
-        fun expression(name: String) = expressionRef(EvaluationExpressionRef(name))
+        /** Shorthand for adding a library by name. */
+        fun library(libraryName: String, block: (LibraryScope.() -> Unit)? = null) {
+            library(VersionedIdentifier().apply { id = libraryName }, block)
+        }
 
         fun build(): EvaluationParams {
             return EvaluationParams(
-                libraryIdentifiers = libraryIdentifiers,
-                expressionRefs = expressionRefs,
+                expressions = expressions,
                 contextParameter = contextParameter,
                 parameters = parameters,
                 debugMap = debugMap,
                 evaluationDateTime = evaluationDateTime,
             )
         }
+    }
+
+    /** Scopes expression calls within a library block. */
+    class LibraryScope {
+        private val expressions = mutableListOf<EvaluationExpressionRef>()
+
+        /** Adds expression refs to be evaluated. */
+        fun expressions(vararg refs: EvaluationExpressionRef) {
+            expressions.addAll(refs)
+        }
+
+        /** Adds expressions by name. */
+        fun expressions(names: Iterable<String>) {
+            for (name in names) {
+                expressions.add(EvaluationExpressionRef(name))
+            }
+        }
+
+        /** Adds expressions by name. */
+        fun expressions(vararg names: String) {
+            for (name in names) {
+                expressions.add(EvaluationExpressionRef(name))
+            }
+        }
+
+        fun build(): List<EvaluationExpressionRef> = expressions
     }
 }

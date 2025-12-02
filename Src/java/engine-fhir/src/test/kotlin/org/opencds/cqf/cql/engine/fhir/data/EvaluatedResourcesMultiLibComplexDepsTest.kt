@@ -30,12 +30,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
 
         val resultsSingleLib =
             engine
-                .evaluate {
-                    library(libraryIdentifier)
-                    for (expr in ALL_EXPRESSIONS) {
-                        expression(expr)
-                    }
-                }
+                .evaluate { library(libraryIdentifier) { expressions(ALL_EXPRESSIONS) } }
                 .onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
@@ -58,12 +53,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
         val engine = getCqlEngineForFhirExistingLibMgr(expressionCaching)
 
         val resultsSingleLib =
-            engine.evaluate {
-                library(libraryIdentifier)
-                for (expr in ALL_EXPRESSIONS) {
-                    expression(expr)
-                }
-            }
+            engine.evaluate { library(libraryIdentifier) { expressions(ALL_EXPRESSIONS) } }
 
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
         Assertions.assertTrue(resultsSingleLib.containsResultsFor(libraryIdentifier))
@@ -95,11 +85,8 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
 
         val results =
             engine.evaluate {
-                library(LIB_1A)
-                library(LIB_1B)
-                for (expr in ALL_EXPRESSIONS) {
-                    expression(expr)
-                }
+                library(LIB_1A) { expressions(ALL_EXPRESSIONS) }
+                library(LIB_1B) { expressions(ALL_EXPRESSIONS) }
             }
 
         Assertions.assertTrue(results.containsResultsFor(LIB_1A))

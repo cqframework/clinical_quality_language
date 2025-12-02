@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm
 
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
@@ -39,10 +39,9 @@ class CompiledLibraryMultiResults(val results: List<CompiledLibraryResult>) {
             .flatMap { it.errors }
     }
 
-    fun allLibrariesWithoutErrorSeverity(): List<Library?> {
-        return results.filter({ res -> !CqlCompilerException.hasErrors(res.errors) }).map {
-            it.compiledLibrary.library
-        }
+    /** Get all results that do not have exceptions with severity of [ErrorSeverity.Error] */
+    fun allResultsWithoutErrorSeverity(): List<CompiledLibraryResult> {
+        return results.filter({ res -> !CqlCompilerException.hasErrors(res.errors) })
     }
 
     fun allErrors(): List<CqlCompilerException> {

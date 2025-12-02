@@ -28,12 +28,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
 
         // Old single-lib API
         val singleResult =
-            engine
-                .evaluate {
-                    library(libId)
-                    expression(expressionName)
-                }
-                .onlyResultOrThrow
+            engine.evaluate { library(libId) { expressions(expressionName) } }.onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             singleResult,
@@ -43,11 +38,8 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         // Old multi-lib API passing a single lib
-        val multiResults =
-            engine.evaluate {
-                library(libId)
-                expression(expressionName)
-            }
+        val multiResults = engine.evaluate { library(libId) { expressions(expressionName) } }
+
         Assertions.assertTrue(multiResults.containsResultsFor(libId))
         Assertions.assertFalse(multiResults.containsExceptionsFor(libId))
         val multiResultFor = multiResults.getResultFor(libId)
@@ -176,9 +168,8 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val results =
             engine.evaluate {
                 for (id in ALL_LIB_IDS) {
-                    library(id)
+                    library(id) { expressions(expressionName) }
                 }
-                expression(expressionName)
             }
 
         val evaluationResultForIdentifier = results.getResultFor(libId)
@@ -197,13 +188,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val engine = getCqlEngineForFhirNewLibMgr(expressionCaching)
 
         // Compile only one library:  it will be cached
-        val resultsSingleLib =
-            engine.evaluate {
-                library(LIB_1)
-                for (expressionName in ALL_EXPRESSIONS) {
-                    expression(expressionName)
-                }
-            }
+        val resultsSingleLib = engine.evaluate { library(LIB_1) { expressions(ALL_EXPRESSIONS) } }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
             resultsSingleLib,
@@ -233,10 +218,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val resultsMultiLib =
             engine.evaluate {
                 for (id in ALL_LIB_IDS) {
-                    library(id)
-                }
-                for (expressionName in ALL_EXPRESSIONS) {
-                    expression(expressionName)
+                    library(id) { expressions(ALL_EXPRESSIONS) }
                 }
             }
 
@@ -312,12 +294,9 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         // Now use the same engine, but pass the identifiers in a different order
         val resultsMultiLibDifferentOrder =
             engine.evaluate {
-                library(LIB_3)
-                library(LIB_2)
-                library(LIB_1)
-                for (expressionName in ALL_EXPRESSIONS) {
-                    expression(expressionName)
-                }
+                library(LIB_3) { expressions(ALL_EXPRESSIONS) }
+                library(LIB_2) { expressions(ALL_EXPRESSIONS) }
+                library(LIB_1) { expressions(ALL_EXPRESSIONS) }
             }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(

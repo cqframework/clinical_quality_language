@@ -14,10 +14,7 @@ internal class IncludedParameterTest : CqlTestBase() {
         val result =
             engine
                 .evaluate {
-                    this.library(library)
-                    for (expressionName in expressions) {
-                        expression(expressionName)
-                    }
+                    this.library(library) { expressions(expressions) }
                     parameters = params
                 }
                 .onlyResultOrThrow
@@ -35,10 +32,7 @@ internal class IncludedParameterTest : CqlTestBase() {
         val result =
             engine
                 .evaluate {
-                    this.library(library)
-                    for (expressionName in expressions) {
-                        expression(expressionName)
-                    }
+                    this.library(library) { expressions(expressions) }
                     parameters = params
                 }
                 .onlyResultOrThrow
@@ -56,10 +50,7 @@ internal class IncludedParameterTest : CqlTestBase() {
         val result: EvaluationResult =
             engine
                 .evaluate {
-                    this.library(library)
-                    for (expressionName in expressions) {
-                        expression(expressionName)
-                    }
+                    this.library(library) { expressions(expressions) }
                     parameters = params
                 }
                 .onlyResultOrThrow
@@ -81,10 +72,7 @@ internal class IncludedParameterTest : CqlTestBase() {
         val result =
             engine
                 .evaluate {
-                    this.library(library)
-                    for (expressionName in expressions) {
-                        expression(expressionName)
-                    }
+                    this.library(library) { expressions(expressions) }
                     parameters = params
                 }
                 .onlyResultOrThrow

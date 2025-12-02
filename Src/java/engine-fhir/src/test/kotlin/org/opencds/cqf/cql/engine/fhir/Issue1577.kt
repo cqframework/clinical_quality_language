@@ -67,12 +67,7 @@ class Issue1577 {
             CompositeDataProvider(CachedR4FhirModelResolver(), retrieveProvider),
         )
         val evaluationResult =
-            engine
-                .evaluate {
-                    library("Issue1577")
-                    expression("expr1")
-                }
-                .onlyResultOrThrow
+            engine.evaluate { library("Issue1577") { expressions("expr1") } }.onlyResultOrThrow
         val expressionResult = evaluationResult.forExpression("expr1")!!.value
         assertTrue(expressionResult is Iterable<*>)
         assertEquals(2, expressionResult.toList().size)
