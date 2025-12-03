@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
-import java.util.function.IntFunction
-import java.util.stream.IntStream
 import org.cqframework.cql.cql2elm.CompiledLibraryResult
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
@@ -122,15 +120,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library
         // first
-        val reversedOrderLibraryIdentifiers =
-            IntStream.range(0, loadMultiLibResult.libraryCount())
-                .map { index: Int -> loadMultiLibResult.allLibraries.size - 1 - index }
-                .mapToObj<VersionedIdentifier>(
-                    IntFunction { index: Int ->
-                        loadMultiLibResult.getLibraryIdentifierAtIndex(index)
-                    }
-                )
-                .toList()
+        val reversedOrderLibraryIdentifiers = loadMultiLibResult.allLibraryIds.reversed()
 
         val resultBuilder: EvaluationResultsForMultiLib.Builder =
             EvaluationResultsForMultiLib.builder(loadMultiLibResult)
