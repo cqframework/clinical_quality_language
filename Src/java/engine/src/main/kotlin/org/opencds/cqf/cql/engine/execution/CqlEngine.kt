@@ -311,12 +311,16 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         val resolvedLibraryResults =
             this.environment.libraryManager!!.resolveLibraries(libraryIdentifiers)
 
+        // The results, exceptions, and warnings are keyed by identifiers from the provided
+        // `libraryIdentifiers` list.
         val resultBuilder: LoadMultiLibResult.Builder = LoadMultiLibResult.builder()
 
         for (libraryResult in resolvedLibraryResults.allResults()) {
             if (!libraryResult.errors.isEmpty()) {
-                val identifier = libraryResult.compiledLibrary.identifier
-                resultBuilder.addExceptionsOrWarnings(identifier!!, libraryResult.errors)
+                resultBuilder.addExceptionsOrWarnings(
+                    libraryResult.identifier,
+                    libraryResult.errors,
+                )
             }
         }
 
