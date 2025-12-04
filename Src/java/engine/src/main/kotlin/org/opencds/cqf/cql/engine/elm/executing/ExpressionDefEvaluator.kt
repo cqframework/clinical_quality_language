@@ -23,14 +23,14 @@ object ExpressionDefEvaluator {
 
             if (isExpressionCachingEnabled && isExpressionCached) {
                 val er = state.cache.getCachedExpression(libraryId, expressionDef.name)
-                state.evaluatedResources!!.addAll(er!!.evaluatedResources()!!)
+                state.evaluatedResources!!.addAll(er!!.evaluatedResources!!)
 
                 // TODO(jmoringe): make public interface
                 val frame = state.topActivationFrame
                 assert(frame.element === expressionDef)
                 frame.isCached = true
 
-                return er.value()
+                return er.value
             }
 
             val value = visitor.visitExpression(expressionDef.expression!!, state)

@@ -1,20 +1,19 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
-import java.util.function.Consumer
-import java.util.function.IntFunction
-import java.util.stream.IntStream
-import org.apache.commons.lang3.tuple.Pair
+import org.cqframework.cql.cql2elm.CompiledLibraryResult
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
+import org.opencds.cqf.cql.engine.elm.executing.FunctionRefEvaluator.evaluateFunctionDef
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -81,200 +80,64 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     val cache: Cache
         get() = this.state.cache
 
-    /**
-     * @param libraryIdentifier the library where the expression is defined
-     * @param expressionName the name of the expression to evaluate
-     * @param evaluationDateTime the value for "Now()"
-     * @return the result of the expression
-     */
-    @Deprecated(
-        """I added to assist with unit testing, but really it's indicative of the fact
-      that we need to further refine the engine API. Please use this sparingly as it will go away
-      """
-    )
-    fun expression(
-        libraryIdentifier: VersionedIdentifier,
-        expressionName: String,
-        evaluationDateTime: ZonedDateTime?,
-    ): ExpressionResult? {
-        val set = HashSet<String>()
-        set.add(expressionName)
-        val result = this.evaluate(libraryIdentifier, set, null, null, null, evaluationDateTime)
-        return result.forExpression(expressionName)
+    /** Evaluates expressions and/or functions from multiple libraries. */
+    fun evaluate(block: EvaluationParams.Builder.() -> Unit): EvaluationResultsForMultiLib {
+        return evaluate(EvaluationParams.Builder().apply(block).build())
     }
 
     /**
-     * @param libraryIdentifier the library where the expression is defined
-     * @param expressionName the name of the expression to evaluate
-     * @return the result of the expression
+     * Evaluates expressions and/or functions from multiple libraries.
+     *
+     * @param evaluationParams The parameters for the evaluation, including library identifiers,
+     *   context, parameters, etc.
+     * @return A result object containing the evaluation results and any exceptions encountered
+     *   during the process.
      */
-    @Deprecated(
-        """I added to assist with unit testing, but really it's indicative of the fact
-      that we need to further refine the engine API. Please use this sparingly as it will go away
-      """
-    )
-    fun expression(
-        libraryIdentifier: VersionedIdentifier,
-        expressionName: String,
-    ): ExpressionResult? {
-        return this.expression(libraryIdentifier, expressionName, null)
-    }
+    fun evaluate(evaluationParams: EvaluationParams): EvaluationResultsForMultiLib {
+        require(evaluationParams.expressions.isNotEmpty()) { "expressions can not be empty." }
 
-    fun evaluate(
-        libraryName: String,
-        expressions: MutableSet<String>?,
-        parameters: MutableMap<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryName, expressions, null, parameters)
-    }
+        val loadMultiLibResult = this.loadAndValidate(evaluationParams.expressions.keys.toList())
 
-    fun evaluate(libraryName: String, contextParameter: Pair<String?, Any?>?): EvaluationResult {
-        return this.evaluate(libraryName, null, contextParameter, null)
-    }
-
-    fun evaluate(
-        libraryName: String,
-        contextParameter: Pair<String?, Any?>?,
-        parameters: MutableMap<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryName, null, contextParameter, parameters)
-    }
-
-    fun evaluate(libraryName: String, parameters: MutableMap<String?, Any?>?): EvaluationResult {
-        return this.evaluate(libraryName, null, null, parameters)
-    }
-
-    // TODO: Add debugging info as a parameter.
-    @JvmOverloads
-    fun evaluate(
-        libraryName: String?,
-        expressions: MutableSet<String>? = null,
-        contextParameter: Pair<String?, Any?>? = null,
-        parameters: MutableMap<String?, Any?>? = null,
-    ): EvaluationResult {
-        return this.evaluate(
-            VersionedIdentifier().withId(libraryName),
-            expressions,
-            contextParameter,
-            parameters,
-            null,
-        )
-    }
-
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        evaluationDateTime: ZonedDateTime?,
-    ): EvaluationResult {
-        return this.evaluate(libraryIdentifier, null, null, null, null, evaluationDateTime)
-    }
-
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        expressions: MutableSet<String>?,
-        parameters: MutableMap<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryIdentifier, expressions, null, parameters, null)
-    }
-
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        contextParameter: Pair<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryIdentifier, null, contextParameter, null, null)
-    }
-
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        contextParameter: Pair<String?, Any?>?,
-        parameters: MutableMap<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryIdentifier, null, contextParameter, parameters, null)
-    }
-
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        parameters: MutableMap<String?, Any?>?,
-    ): EvaluationResult {
-        return this.evaluate(libraryIdentifier, null, null, parameters, null)
-    }
-
-    @JvmOverloads
-    fun evaluate(
-        libraryIdentifier: VersionedIdentifier,
-        expressions: Set<String>? = null,
-        contextParameter: Pair<String?, Any?>? = null,
-        parameters: Map<String?, Any?>? = null,
-        debugMap: DebugMap? = null,
-        evaluationDateTime: ZonedDateTime? = null,
-    ): EvaluationResult {
-        return evaluate(
-                mutableListOf(libraryIdentifier),
-                expressions,
-                contextParameter,
-                parameters,
-                debugMap,
-                evaluationDateTime,
-            )
-            .onlyResultOrThrow!!
-    }
-
-    @JvmOverloads
-    fun evaluate(
-        libraryIdentifiers: List<VersionedIdentifier>,
-        expressions: Set<String>? = null,
-        contextParameter: Pair<String?, Any?>? = null,
-        parameters: Map<String?, Any?>? = null,
-        debugMap: DebugMap? = null,
-        nullableEvaluationDateTime: ZonedDateTime? = null,
-    ): EvaluationResultsForMultiLib {
-        require(!(libraryIdentifiers.isEmpty())) { "libraryIdentifier can not be null or empty." }
-
-        val loadMultiLibResult = this.loadAndValidate(libraryIdentifiers)
-
-        initializeEvalTime(nullableEvaluationDateTime)
+        initializeEvalTime(evaluationParams.evaluationDateTime)
 
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(loadMultiLibResult.allLibraries)
 
         // We must do this only once per library evaluation otherwise, we may clear the cache
         // prematurely
-        if (contextParameter != null) {
-            state.setContextValue(contextParameter.getLeft(), contextParameter.getRight()!!)
+        if (evaluationParams.contextParameter != null) {
+            state.setContextValue(
+                evaluationParams.contextParameter.first,
+                evaluationParams.contextParameter.second,
+            )
         }
 
-        loadMultiLibResult.allLibraries.forEach(
-            Consumer { library -> state.setParameters(library, parameters) }
-        )
+        loadMultiLibResult.allLibraries.forEach { library ->
+            state.setParameters(library, evaluationParams.parameters)
+        }
 
-        initializeDebugMap(debugMap)
+        initializeDebugMap(evaluationParams.debugMap)
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library
         // first
-        val reversedOrderLibraryIdentifiers =
-            IntStream.range(0, loadMultiLibResult.libraryCount())
-                .map { index: Int -> loadMultiLibResult.allLibraries.size - 1 - index }
-                .mapToObj<VersionedIdentifier>(
-                    IntFunction { index: Int ->
-                        loadMultiLibResult.getLibraryIdentifierAtIndex(index)
-                    }
-                )
-                .toList()
+        val reversedOrderLibraryIdentifiers = loadMultiLibResult.allLibraryIds.reversed()
 
         val resultBuilder: EvaluationResultsForMultiLib.Builder =
             EvaluationResultsForMultiLib.builder(loadMultiLibResult)
 
         for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
             val library = loadMultiLibResult.retrieveLibrary(libraryIdentifier)
-            val expressionSet = expressions ?: this.getExpressionSet(library!!)
+            val expressions =
+                evaluationParams.expressions[libraryIdentifier] ?: this.getExpressions(library!!)
 
-            val joinedExpressions = expressionSet.joinToString(", ")
+            val joinedExpressions = expressions.joinToString(", ", transform = { it.name })
             log.debug(
-                "Evaluating library: {} with expressions: [{}]",
+                "Evaluating library: {} with expressions/functions: [{}]",
                 libraryIdentifier.id,
                 joinedExpressions,
             )
             try {
-                val evaluationResult = this.evaluateExpressions(expressionSet)
+                val evaluationResult = this.evaluateExpressions(expressions)
                 resultBuilder.addResult(libraryIdentifier, evaluationResult)
             } catch (exception: RuntimeException) {
                 val error =
@@ -307,40 +170,40 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @return The EvaluationResult containing the results of the evaluated expressions for the
      *   current library.
      */
-    private fun evaluateExpressions(expressions: Set<String>): EvaluationResult {
+    @Suppress("NestedBlockDepth")
+    private fun evaluateExpressions(expressions: List<EvaluationExpressionRef>): EvaluationResult {
         val result = EvaluationResult()
 
         this.state.beginEvaluation()
         try {
             for (expression in expressions) {
                 val currentLibrary = this.state.getCurrentLibrary()
-                val def = Libraries.resolveExpressionRef(expression, currentLibrary!!)
-                if (def is FunctionDef) {
-                    continue
-                }
 
-                try {
-                    val action = this.state.shouldDebug(def)
-                    state.pushActivationFrame(def, def.context)
-                    try {
-                        val `object` = this.evaluationVisitor.visitExpressionDef(def, this.state)
-                        result.expressionResults[expression] =
-                            ExpressionResult(`object`, this.state.evaluatedResources)
-                        this.state.logDebugResult(def, `object`, action)
-                    } finally {
-                        this.state.popActivationFrame()
-                        // this avoids spill over of evaluatedResources from previous/next
-                        // expression evaluations
-                        this.state.clearEvaluatedResources()
+                if (expression is EvaluationFunctionRef) {
+                    val functionDef =
+                        Libraries.resolveFunctionDef(
+                            expression.name,
+                            expression.signature,
+                            currentLibrary!!,
+                        )
+
+                    evaluateExpression(functionDef, expression, result) {
+                        evaluateFunctionDef(
+                            functionDef,
+                            this.state,
+                            this.evaluationVisitor,
+                            expression.arguments.toMutableList(),
+                        )
                     }
-                } catch (ce: CqlException) {
-                    processException(ce, def)
-                } catch (e: Exception) {
-                    processException(
-                        e,
-                        def,
-                        String.format("Error evaluating expression %s: %s", expression, e.message),
-                    )
+                } else {
+                    val def = Libraries.resolveExpressionRef(expression.name, currentLibrary!!)
+                    if (def is FunctionDef) {
+                        continue
+                    }
+
+                    evaluateExpression(def, expression, result) {
+                        this.evaluationVisitor.visitExpressionDef(def, this.state)
+                    }
                 }
             }
         } finally {
@@ -354,6 +217,37 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         result.debugResult = (this.state.debugResult)
 
         return result
+    }
+
+    private fun evaluateExpression(
+        def: ExpressionDef,
+        expression: EvaluationExpressionRef,
+        result: EvaluationResult,
+        eval: () -> Any?,
+    ) {
+        try {
+            val action = this.state.shouldDebug(def)
+            state.pushActivationFrame(def, def.context)
+            try {
+                val value = eval()
+                result.results[expression] = ExpressionResult(value, this.state.evaluatedResources)
+                this.state.logDebugResult(def, value, action)
+            } finally {
+                this.state.popActivationFrame()
+                // this avoids spill over of evaluatedResources from previous/next
+                // expression evaluations
+                this.state.clearEvaluatedResources()
+            }
+        } catch (ce: CqlException) {
+            processException(ce, def)
+        } catch (e: Exception) {
+            processException(
+                e,
+                def,
+                @Suppress("MaxLineLength")
+                "Error evaluating expression/function ${expression.name}: ${e.message}",
+            )
+        }
     }
 
     private fun loadAndValidate(libraryIdentifier: VersionedIdentifier) {
@@ -417,25 +311,30 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         val resolvedLibraryResults =
             this.environment.libraryManager!!.resolveLibraries(libraryIdentifiers)
 
+        // The results, exceptions, and warnings are keyed by identifiers from the provided
+        // `libraryIdentifiers` list.
         val resultBuilder: LoadMultiLibResult.Builder = LoadMultiLibResult.builder()
 
         for (libraryResult in resolvedLibraryResults.allResults()) {
             if (!libraryResult.errors.isEmpty()) {
-                val identifier = libraryResult.compiledLibrary.identifier
-                resultBuilder.addExceptionsOrWarnings(identifier!!, libraryResult.errors)
+                resultBuilder.addExceptionsOrWarnings(
+                    libraryResult.identifier,
+                    libraryResult.errors,
+                )
             }
         }
 
-        val libraries = resolvedLibraryResults.allLibrariesWithoutErrorSeverity()
+        val compiledLibraryResults = resolvedLibraryResults.allResultsWithoutErrorSeverity()
 
-        validateLibrariesIfNeeded(libraries)
+        validateLibrariesIfNeeded(compiledLibraryResults)
 
         // We probably want to just load all relevant libraries into
         // memory before we start evaluation. This will further separate
         // environment from state.
-        for (library in libraries) {
+        for (compiledLibraryResult in compiledLibraryResults) {
+            val library = compiledLibraryResult.compiledLibrary.library!!
             try {
-                if (library!!.includes != null) {
+                if (library.includes != null) {
                     for (include in library.includes!!.def) {
                         this.loadAndValidate(
                             VersionedIdentifier()
@@ -445,29 +344,29 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
                         )
                     }
                 }
-                resultBuilder.addResult(library.identifier!!, library)
+                resultBuilder.addResult(compiledLibraryResult.identifier, library)
             } catch (exception: CqlException) {
                 // As with previous code, per searched library identifier, this is an all or nothing
                 // operation:
                 // stop at the first Exception and don't capture subsequent errors for subsequent
                 // included libraries.
-                resultBuilder.addExceptionOrWarning(library!!.identifier!!, exception)
+                resultBuilder.addExceptionOrWarning(compiledLibraryResult.identifier, exception)
             } catch (exception: CqlCompilerException) {
-                resultBuilder.addExceptionOrWarning(library!!.identifier!!, exception)
+                resultBuilder.addExceptionOrWarning(compiledLibraryResult.identifier, exception)
             }
         }
 
         return resultBuilder.build()
     }
 
-    private fun validateLibrariesIfNeeded(libraries: List<Library?>) {
+    private fun validateLibrariesIfNeeded(compiledLibraryResults: List<CompiledLibraryResult>) {
         if (this.engineOptions.contains(Options.EnableValidation)) {
-            libraries.forEach(
-                Consumer { library ->
-                    this.validateTerminologyRequirements(library!!)
-                    this.validateDataRequirements(library)
-                }
-            )
+            compiledLibraryResults.forEach { compiledLibraryResult ->
+                this.validateTerminologyRequirements(
+                    compiledLibraryResult.compiledLibrary.library!!
+                )
+                this.validateDataRequirements(compiledLibraryResult.compiledLibrary.library!!)
+            }
             // TODO: Validate Expressions as well?
         }
     }
@@ -514,15 +413,9 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             (if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version) else ""))
     }
 
-    private fun getExpressionSet(library: Library): MutableSet<String> {
-        val expressionNames = mutableSetOf<String>()
-        if (library.statements != null) {
-            for (ed in library.statements!!.def) {
-                expressionNames.add(ed.name!!)
-            }
-        }
-
-        return expressionNames
+    private fun getExpressions(library: Library): List<EvaluationExpressionRef> {
+        return library.statements?.def?.map { EvaluationExpressionRef(it.name!!) }?.toList()
+            ?: emptyList()
     }
 
     fun processException(e: CqlException, element: Element) {

@@ -7,95 +7,95 @@ import org.junit.jupiter.api.Test
 internal class CqlLogicalOperatorsTest : CqlTestBase() {
     @Test
     fun all_logical_operators() {
-        val results = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"))
-        var value = results.forExpression("TrueAndTrue")!!.value()
+        val results = engine.evaluate { library("CqlLogicalOperatorsTest") }.onlyResultOrThrow
+        var value = results["TrueAndTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TrueAndFalse")!!.value()
+        value = results["TrueAndFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TrueAndNull")!!.value()
+        value = results["TrueAndNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FalseAndTrue")!!.value()
+        value = results["FalseAndTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("FalseAndFalse")!!.value()
+        value = results["FalseAndFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("FalseAndNull")!!.value()
+        value = results["FalseAndNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NullAndTrue")!!.value()
+        value = results["NullAndTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullAndFalse")!!.value()
+        value = results["NullAndFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NullAndNull")!!.value()
+        value = results["NullAndNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NotTrue")!!.value()
+        value = results["NotTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("NotFalse")!!.value()
+        value = results["NotFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NotNull")!!.value()
+        value = results["NotNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TrueOrTrue")!!.value()
+        value = results["TrueOrTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TrueOrFalse")!!.value()
+        value = results["TrueOrFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TrueOrNull")!!.value()
+        value = results["TrueOrNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("FalseOrTrue")!!.value()
+        value = results["FalseOrTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("FalseOrFalse")!!.value()
+        value = results["FalseOrFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("FalseOrNull")!!.value()
+        value = results["FalseOrNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullOrTrue")!!.value()
+        value = results["NullOrTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("NullOrFalse")!!.value()
+        value = results["NullOrFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullOrNull")!!.value()
+        value = results["NullOrNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TrueXorTrue")!!.value()
+        value = results["TrueXorTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TrueXorFalse")!!.value()
+        value = results["TrueXorFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TrueXorNull")!!.value()
+        value = results["TrueXorNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("FalseXorTrue")!!.value()
+        value = results["FalseXorTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("FalseXorFalse")!!.value()
+        value = results["FalseXorFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("FalseXorNull")!!.value()
+        value = results["FalseXorNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullXorTrue")!!.value()
+        value = results["NullXorTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullXorFalse")!!.value()
+        value = results["NullXorFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("NullXorNull")!!.value()
+        value = results["NullXorNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
     }
 }

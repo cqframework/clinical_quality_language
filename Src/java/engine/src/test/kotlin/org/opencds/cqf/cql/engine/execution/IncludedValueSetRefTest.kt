@@ -16,9 +16,9 @@ internal class IncludedValueSetRefTest {
 
         val engine = CqlEngine(environment)
 
-        val results = engine.evaluate(CqlTestBase.toElmIdentifier("IncludedValueSetRefTest"))
+        val results = engine.evaluate { library("IncludedValueSetRefTest") }.onlyResultOrThrow
 
-        val actual = results.forExpression("IncludedValueSet")!!.value() as ValueSet?
+        val actual = results["IncludedValueSet"]!!.value as ValueSet?
 
         Assertions.assertNotNull(actual)
         Assertions.assertEquals("http://test/common", actual!!.id)

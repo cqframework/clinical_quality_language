@@ -134,18 +134,20 @@ constructor(
 
             val librariesFromCache =
                 libraryIdentifiers
-                    .filter { o -> compiledLibraries.containsKey(o) }
-                    .map { o -> compiledLibraries[o]!! }
+                    .filter { it in compiledLibraries }
+                    .associateWith { compiledLibraries[it]!! }
 
             if (librariesFromCache.size == libraryIdentifiers.size) {
                 return CompiledLibraryMultiResults.from(
-                    librariesFromCache.map { lib -> CompiledLibraryResult(lib, mutableListOf()) }
+                    librariesFromCache.map { (identifier, lib) ->
+                        CompiledLibraryResult(identifier, lib, mutableListOf())
+                    }
                 )
             }
 
             librariesFromCache
-                .map { libraryFromCache ->
-                    CompiledLibraryResult(libraryFromCache, mutableListOf())
+                .map { (identifier, libraryFromCache) ->
+                    CompiledLibraryResult(identifier, libraryFromCache, mutableListOf())
                 }
                 .forEach { e -> compiledLibraryResults.add(e) }
         }
@@ -208,7 +210,7 @@ constructor(
             if (elmCompiledLibrary != null) {
                 validateIdentifiers(libraryIdentifier, elmCompiledLibrary, libraryPath)
                 sortStatements(elmCompiledLibrary)
-                return CompiledLibraryResult(elmCompiledLibrary, mutableListOf())
+                return CompiledLibraryResult(libraryIdentifier, elmCompiledLibrary, mutableListOf())
             }
         }
 
@@ -243,7 +245,7 @@ constructor(
         validateIdentifiers(libraryIdentifier, compiledLibrary, libraryPath)
 
         sortStatements(compiledLibrary)
-        return CompiledLibraryResult(compiledLibrary, compiler.exceptions)
+        return CompiledLibraryResult(libraryIdentifier, compiledLibrary, compiler.exceptions)
     }
 
     private fun validateIdentifiers(

@@ -14,15 +14,15 @@ import org.opencds.cqf.cql.engine.elm.executing.obfuscate.RedactingPHIObfuscator
 internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
     @Test
     fun message() {
-        var value = engine.expression(library, "TestMessageInfo")!!.value()
+        var value = engine.expression(library, "TestMessageInfo")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
         // Assertions.assertEquals(result.toString(), "100: Test Message");
-        value = engine.expression(library, "TestMessageWarn")!!.value()
+        value = engine.expression(library, "TestMessageWarn")
         MatcherAssert.assertThat(value, Matchers.`is`(2))
 
         // Assertions.assertEquals(result.toString(), "200: You have been warned!");
-        value = engine.expression(library, "TestMessageTrace")!!.value()
+        value = engine.expression(library, "TestMessageTrace")
         MatcherAssert.assertThat(
             value,
             Matchers.`is`(ArrayList<Any?>(mutableListOf<Int?>(3, 4, 5))),
@@ -30,73 +30,73 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
 
         // Assertions.assertEquals(result.toString(), "300: This is a trace\n[3, 4, 5]");
         try {
-            value = engine.expression(library, "TestMessageError")!!.value()
+            value = engine.expression(library, "TestMessageError")
         } catch (re: RuntimeException) {
             Assertions.assertEquals(re.message, String.format("400: This is an error!%n"))
         }
 
-        value = engine.expression(library, "TestMessageWithNullSeverity")!!.value()
+        value = engine.expression(library, "TestMessageWithNullSeverity")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestMessageWithNullSource")!!.value()
+        value = engine.expression(library, "TestMessageWithNullSource")
         MatcherAssert.assertThat(value == null, Matchers.`is`(true))
 
-        value = engine.expression(library, "TestMessageWithNullCondition")!!.value()
+        value = engine.expression(library, "TestMessageWithNullCondition")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestMessageWithNullCode")!!.value()
+        value = engine.expression(library, "TestMessageWithNullCode")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestMessageWithNullMessage")!!.value()
+        value = engine.expression(library, "TestMessageWithNullMessage")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestWarningWithNullSource")!!.value()
+        value = engine.expression(library, "TestWarningWithNullSource")
         MatcherAssert.assertThat(value == null, Matchers.`is`(true))
 
-        value = engine.expression(library, "TestWarningWithNullCondition")!!.value()
+        value = engine.expression(library, "TestWarningWithNullCondition")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestWarningWithNullCode")!!.value()
+        value = engine.expression(library, "TestWarningWithNullCode")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestWarningWithNullMessage")!!.value()
+        value = engine.expression(library, "TestWarningWithNullMessage")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestTraceWithNullSource")!!.value()
+        value = engine.expression(library, "TestTraceWithNullSource")
         MatcherAssert.assertThat(value == null, Matchers.`is`(true))
 
-        value = engine.expression(library, "TestTraceWithNullCondition")!!.value()
+        value = engine.expression(library, "TestTraceWithNullCondition")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestTraceWithNullCode")!!.value()
+        value = engine.expression(library, "TestTraceWithNullCode")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = engine.expression(library, "TestTraceWithNullMessage")!!.value()
+        value = engine.expression(library, "TestTraceWithNullMessage")
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
         try {
-            value = engine.expression(library, "TestErrorWithNullSource")!!.value()
+            value = engine.expression(library, "TestErrorWithNullSource")
             MatcherAssert.assertThat(value == null, Matchers.`is`(true))
         } catch (re: RuntimeException) {
             Assertions.assertEquals(re.message, String.format("1: This is a message%nnull"))
         }
 
         try {
-            value = engine.expression(library, "TestErrorWithNullCondition")!!.value()
+            value = engine.expression(library, "TestErrorWithNullCondition")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
             Assertions.assertEquals(re.message, String.format("1: This is a message%n"))
         }
 
         try {
-            value = engine.expression(library, "TestErrorWithNullCode")!!.value()
+            value = engine.expression(library, "TestErrorWithNullCode")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
             Assertions.assertEquals(re.message, String.format("This is a message%n"))
         }
 
         try {
-            value = engine.expression(library, "TestErrorWithNullMessage")!!.value()
+            value = engine.expression(library, "TestErrorWithNullMessage")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
             Assertions.assertEquals(re.message, String.format("1: null%n"))
@@ -111,7 +111,7 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
 
         val e = CqlEngine(environment)
         try {
-            e.expression(library, "TestMessageObfuscation")!!.value()
+            e.expression(library, "TestMessageObfuscation")
         } catch (result: RuntimeException) {
             Assertions.assertEquals(
                 result.message,

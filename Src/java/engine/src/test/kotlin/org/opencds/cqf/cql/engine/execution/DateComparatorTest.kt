@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 internal class DateComparatorTest : CqlTestBase() {
     @Test
     fun date_comparator() {
-        val results = engine.evaluate(toElmIdentifier("DateComparatorTest"))
-        val value = results.forExpression("Date Comparator Test")!!.value()
+        val results = engine.evaluate { library("DateComparatorTest") }.onlyResultOrThrow
+        val value = results["Date Comparator Test"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
     }
 }

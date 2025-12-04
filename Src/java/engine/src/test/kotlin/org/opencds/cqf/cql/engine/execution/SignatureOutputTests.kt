@@ -8,23 +8,23 @@ import org.junit.jupiter.api.Test
 internal class SignatureOutputTests : CqlTestBase() {
     @Test
     fun evaluate() {
-        val results = engine.evaluate(toElmIdentifier("SignatureOutputTests"))
-        var value = results.forExpression("TestIntegerOverload")!!.value()
+        val results = engine.evaluate { library("SignatureOutputTests") }.onlyResultOrThrow
+        var value = results["TestIntegerOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("1")))
 
-        value = results.forExpression("TestDecimalOverload")!!.value()
+        value = results["TestDecimalOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("1.0")))
 
-        value = results.forExpression("TestMultipleOverload")!!.value()
+        value = results["TestMultipleOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(5))
 
-        value = results.forExpression("TestIntegerMultipleOverload")!!.value()
+        value = results["TestIntegerMultipleOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("TestDecimalMultipleOverload")!!.value()
+        value = results["TestDecimalMultipleOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("2.0")))
 
-        value = results.forExpression("TestIntegerAndDecimalMultipleOverload")!!.value()
+        value = results["TestIntegerAndDecimalMultipleOverload"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
     }
 }

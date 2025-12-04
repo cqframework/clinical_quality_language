@@ -17,11 +17,11 @@ internal class CqlExternalFunctionsTest : CqlTestBase() {
             SystemExternalFunctionProvider(listOf(*MyMath::class.java.getDeclaredMethods())),
         )
 
-        val results = engine.evaluate(identifier)
-        var value = results.forExpression("CallMyPlus")!!.value()
+        val results = engine.evaluate { library(identifier) }.onlyResultOrThrow
+        var value = results["CallMyPlus"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(10))
 
-        value = results.forExpression("CallMyMinus")!!.value()
+        value = results["CallMyMinus"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(-2))
     }
 }

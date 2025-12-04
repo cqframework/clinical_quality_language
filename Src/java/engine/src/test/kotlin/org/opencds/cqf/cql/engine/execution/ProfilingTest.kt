@@ -20,7 +20,7 @@ class ProfilingTest : CqlTestBase() {
                     CqlEngine.Options.EnableProfiling,
                 ),
             ) // TODO: engine options to CqlTestBase.getEngine instead?
-        val result = engine.evaluate("ProfilingTest")
+        val result = engine.evaluate { library("ProfilingTest") }.onlyResultOrThrow
         val debugResult = result.debugResult
         return debugResult!!.profile!!
     }

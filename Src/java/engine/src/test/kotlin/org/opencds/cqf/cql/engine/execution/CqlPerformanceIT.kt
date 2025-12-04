@@ -73,15 +73,23 @@ class CqlPerformanceIT : CqlTestBase() {
         // Warm up the JVM
         for (i in 0..<ITERATIONS) {
             val engine = CqlEngine(environment, engineOptions)
-            val results =
-                engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime)
+            engine
+                .evaluate {
+                    library(libraryId)
+                    evaluationDateTime = evaluationZonedDateTime
+                }
+                .onlyResultOrThrow
         }
 
         val start = Instant.now()
         for (i in 0..<ITERATIONS) {
             val engine = CqlEngine(environment, engineOptions)
-            val results =
-                engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime)
+            engine
+                .evaluate {
+                    library(libraryId)
+                    evaluationDateTime = evaluationZonedDateTime
+                }
+                .onlyResultOrThrow
         }
         val finish = Instant.now()
 

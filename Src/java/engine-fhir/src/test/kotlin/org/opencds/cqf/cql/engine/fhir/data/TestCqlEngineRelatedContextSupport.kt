@@ -4,7 +4,6 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.util.*
-import org.apache.commons.lang3.tuple.Pair
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.hl7.fhir.r4.model.HumanName
@@ -33,7 +32,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         )
         cqlEngine.cache.setExpressionCaching(true)
 
-        val initialContext = Pair.of<String?, Any?>(PATIENT, _PATIENT_123)
+        val initialContext = PATIENT to _PATIENT_123
 
         val resultPatient = evaluate(cqlEngine, PATIENT, initialContext)
 
@@ -92,11 +91,16 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
     private fun evaluate(
         cqlEngine: CqlEngine,
         expression: String,
-        initialContext: Pair<String?, Any?>?,
+        initialContext: Pair<String, Any>?,
     ): Any? {
         val evaluateResult =
-            cqlEngine.evaluate(library!!.identifier!!, mutableSetOf(expression), initialContext)
-        return evaluateResult.forExpression(expression)!!.value()
+            cqlEngine
+                .evaluate {
+                    library(library!!.identifier!!) { expressions(expression) }
+                    contextParameter = initialContext
+                }
+                .onlyResultOrThrow
+        return evaluateResult[expression]!!.value
     }
 
     companion object {

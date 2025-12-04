@@ -14,7 +14,9 @@ internal class InvalidCqlLibraryIdentifierMismatchTest : CqlTestBase() {
     @MethodSource("evaluateWithMatchedLibraryIdsParams")
     fun evaluateWithMismatchedLibraryIds(libraryIdentifierToSearch: VersionedIdentifier) {
         // We're simply asserting that we do not fail
-        Assertions.assertNotNull(engine.evaluate(libraryIdentifierToSearch))
+        Assertions.assertNotNull(
+            engine.evaluate { library(libraryIdentifierToSearch) }.onlyResultOrThrow
+        )
     }
 
     @ParameterizedTest
@@ -25,7 +27,7 @@ internal class InvalidCqlLibraryIdentifierMismatchTest : CqlTestBase() {
     ) {
         val exception =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                engine.evaluate(libraryIdentifierToSearch)
+                engine.evaluate { library(libraryIdentifierToSearch) }.onlyResultOrThrow
             }
 
         assertEquals(expectedExceptionMessage, exception.message)

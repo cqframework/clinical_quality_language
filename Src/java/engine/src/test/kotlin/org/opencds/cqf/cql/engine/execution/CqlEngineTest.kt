@@ -15,7 +15,13 @@ internal class CqlEngineTest : CqlTestBase() {
 
         val debugMap = DebugMap()
         debugMap.isLoggingEnabled = true
-        val results = engine.evaluate(toElmIdentifier("CqlEngineTest"), null, null, null, debugMap)
+        val results =
+            engine
+                .evaluate {
+                    library("CqlEngineTest")
+                    this@evaluate.debugMap = debugMap
+                }
+                .onlyResultOrThrow
 
         val libraryDebug = results.debugResult!!.libraryResults["CqlEngineTest"]!!.results
 
@@ -37,7 +43,7 @@ internal class CqlEngineTest : CqlTestBase() {
         val versionedIdentifier = toElmIdentifier("Invalid")
         val exception =
             Assertions.assertThrows(CqlException::class.java) {
-                engine.evaluate(versionedIdentifier)
+                engine.evaluate { library(versionedIdentifier) }.onlyResultOrThrow
             }
         MatcherAssert.assertThat<String?>(
             exception.message,
@@ -51,55 +57,56 @@ internal class CqlEngineTest : CqlTestBase() {
             toElmIdentifier("LibraryWithVersion").withVersion("1.0.0")
         val versionedIdentifierNoVersion = toElmIdentifier("LibraryWithVersion")
 
-        val singleLibResult = engine.evaluate(versionedIdentifierWithVersion)
+        val singleLibResult =
+            engine.evaluate { library(versionedIdentifierWithVersion) }.onlyResultOrThrow
         Assertions.assertNotNull(singleLibResult)
 
-        val multiLibResults = engine.evaluate(listOf(versionedIdentifierWithVersion))
+        val multiLibResults = engine.evaluate { library(versionedIdentifierWithVersion) }
         Assertions.assertNotNull(multiLibResults)
         Assertions.assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion))
     }
 
     @Test
     fun hedisCompatibility() {
-        var libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"))
-        var result = libraryResult.expressionResults["QuantityListIncludes"]!!.value()
+        var libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
+        var result = libraryResult["QuantityListIncludes"]!!.value
         Assertions.assertFalse((result as Boolean?)!!)
 
-        result = libraryResult.expressionResults["ReturnUnspecified"]!!.value()
+        result = libraryResult["ReturnUnspecified"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(2, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnAll"]!!.value()
+        result = libraryResult["ReturnAll"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnDistinct"]!!.value()
+        result = libraryResult["ReturnDistinct"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(2, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["Test Null Tuple"]!!.value()
+        result = libraryResult["Test Null Tuple"]!!.value
         Assertions.assertNull(result)
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableHedisCompatibilityMode)
-        libraryResult = engine.evaluate(toElmIdentifier("HedisCompatibilityTest"))
+        libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
         // equivalent semantics for lists
-        result = libraryResult.expressionResults["QuantityListIncludes"]!!.value()
+        result = libraryResult["QuantityListIncludes"]!!.value
         Assertions.assertTrue((result as Boolean?)!!)
 
         // no "distinct" behavior for lists
-        result = libraryResult.expressionResults["ReturnUnspecified"]!!.value()
+        result = libraryResult["ReturnUnspecified"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnAll"]!!.value()
+        result = libraryResult["ReturnAll"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["ReturnDistinct"]!!.value()
+        result = libraryResult["ReturnDistinct"]!!.value
         Assertions.assertInstanceOf(MutableList::class.java, result)
         Assertions.assertEquals(5, (result as MutableList<*>).size)
 
-        result = libraryResult.expressionResults["Test Null Tuple"]!!.value()
+        result = libraryResult["Test Null Tuple"]!!.value
         Assertions.assertNull(result)
     }
 }

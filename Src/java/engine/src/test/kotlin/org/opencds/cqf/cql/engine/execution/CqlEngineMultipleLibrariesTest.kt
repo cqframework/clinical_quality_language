@@ -41,14 +41,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
 
         val exceptionMessage =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                    cqlEngineWithNoOptions!!.evaluate(
-                        versionedIdentifiers,
-                        null,
-                        null,
-                        null,
-                        newDebugMap,
-                        null,
-                    )
+                    cqlEngineWithNoOptions!!.evaluate {
+                        for (id in versionedIdentifiers) {
+                            library(id)
+                        }
+                        debugMap = newDebugMap
+                    }
                 }
                 .message
 
@@ -71,14 +69,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         // with the new multiple library evaluation.
         val exceptionMessage =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                    cqlEngineWithOptions!!.evaluate(
-                        versionedIdentifiers,
-                        null,
-                        null,
-                        null,
-                        newDebugMap,
-                        null,
-                    )
+                    cqlEngineWithOptions!!.evaluate {
+                        for (id in versionedIdentifiers) {
+                            library(id)
+                        }
+                        debugMap = newDebugMap
+                    }
                 }
                 .message
 
@@ -92,14 +88,10 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     @MethodSource("libraryWithVersionQueriesParams")
     fun libraryWithVersionQueries(libraryIdentifier: VersionedIdentifier) {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(libraryIdentifier),
-                null,
-                null,
-                null,
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                library(libraryIdentifier)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         val libraryResults = evalResultsForMultiLib.results
@@ -107,11 +99,8 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         Assertions.assertFalse(evalResultsForMultiLib.hasExceptions())
 
         val evaluationResult = findResultsByLibId(LIBRARY_WITH_VERSION, libraryResults)
-        Assertions.assertEquals(5, evaluationResult.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(
-            _2031_01_01_TO_2032_01_01,
-            evaluationResult.expressionResults["Period"]!!.value(),
-        )
+        Assertions.assertEquals(5, evaluationResult["Number"]!!.value)
+        Assertions.assertEquals(_2031_01_01_TO_2032_01_01, evaluationResult["Period"]!!.value)
     }
 
     // Various bespoke assertions to increase test coverage
@@ -122,7 +111,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val versionedIdents = listOf(versionedIdent)
 
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(versionedIdents, null, null, null, debugMap, null)
+            cqlEngineWithOptions!!.evaluate {
+                for (id in versionedIdents) {
+                    library(id)
+                }
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         Assertions.assertNull(evalResultsForMultiLib.getExceptionFor(versionedIdent))
@@ -145,14 +139,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     @Test
     fun multipleLibrariesSimple() {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
-                null,
-                null,
-                null,
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                library(MULTI_LIBRARY_1)
+                library(MULTI_LIBRARY_2)
+                library(MULTI_LIBRARY_3)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         val libraryResults = evalResultsForMultiLib.results
@@ -163,22 +155,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value())
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _2021_01_01_TO_2022_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _2022_01_01_TO_2023_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _2023_01_01_TO_2024_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value(),
-        )
+        Assertions.assertEquals(_2021_01_01_TO_2022_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_2022_01_01_TO_2023_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_2023_01_01_TO_2024_01_01, evaluationResult3["Period"]!!.value)
     }
 
     @Test
@@ -191,14 +174,12 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
 
         val exception =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                cqlEngineWithOptions!!.evaluate(
-                    versionedIdentifiers,
-                    null,
-                    null,
-                    null,
-                    debugMap,
-                    null,
-                )
+                cqlEngineWithOptions!!.evaluate {
+                    for (id in versionedIdentifiers) {
+                        library(id)
+                    }
+                    debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+                }
             }
 
         assertThat(
@@ -212,14 +193,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     @Test
     fun multipleLibrariesWithParameters() {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3),
-                null,
-                null,
-                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                library(MULTI_LIBRARY_1)
+                library(MULTI_LIBRARY_2)
+                library(MULTI_LIBRARY_3)
+                parameters = mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_1)
         sanityCheckForMultiLib(evalResultsForMultiLib, MULTI_LIBRARY_2)
@@ -237,72 +217,41 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value())
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals("Uno", evaluationResult1.expressionResults["Name"]!!.value())
-        Assertions.assertEquals("Dos", evaluationResult2.expressionResults["Name"]!!.value())
-        Assertions.assertEquals("Tres", evaluationResult3.expressionResults["Name"]!!.value())
+        Assertions.assertEquals("Uno", evaluationResult1["Name"]!!.value)
+        Assertions.assertEquals("Dos", evaluationResult2["Name"]!!.value)
+        Assertions.assertEquals("Tres", evaluationResult3["Name"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value(),
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
 
         // Expressions unique to the libraries in question
-        Assertions.assertEquals(
-            "MultiLibrary1",
-            evaluationResult1.expressionResults["MultiLibraryIdent1"]!!.value(),
-        )
-        Assertions.assertEquals(
-            "One",
-            evaluationResult1.expressionResults["MultiLibraryValue1"]!!.value(),
-        )
+        Assertions.assertEquals("MultiLibrary1", evaluationResult1["MultiLibraryIdent1"]!!.value)
+        Assertions.assertEquals("One", evaluationResult1["MultiLibraryValue1"]!!.value)
 
-        Assertions.assertEquals(
-            "MultiLibrary2",
-            evaluationResult2.expressionResults["MultiLibraryIdent2"]!!.value(),
-        )
-        Assertions.assertEquals(
-            "Two",
-            evaluationResult2.expressionResults["MultiLibraryValue2"]!!.value(),
-        )
+        Assertions.assertEquals("MultiLibrary2", evaluationResult2["MultiLibraryIdent2"]!!.value)
+        Assertions.assertEquals("Two", evaluationResult2["MultiLibraryValue2"]!!.value)
 
-        Assertions.assertEquals(
-            "MultiLibrary3",
-            evaluationResult3.expressionResults["MultiLibraryIdent3"]!!.value(),
-        )
-        Assertions.assertEquals(
-            "Three",
-            evaluationResult3.expressionResults["MultiLibraryValue3"]!!.value(),
-        )
+        Assertions.assertEquals("MultiLibrary3", evaluationResult3["MultiLibraryIdent3"]!!.value)
+        Assertions.assertEquals("Three", evaluationResult3["MultiLibraryValue3"]!!.value)
     }
 
     @Test
     fun multipleLibrariesWithExpressionUniqueToASingleLib() {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(
-                    MULTI_LIBRARY_1,
-                    MULTI_LIBRARY_2,
-                    MULTI_LIBRARY_3,
-                ), // One expression common to all libraries, one each unique to a different single
+            cqlEngineWithOptions!!.evaluate {
+                // One expression common to all libraries, one each unique to a different single
                 // library
-                mutableSetOf("Number", "MultiLibraryIdent1", "MultiLibraryValue2"),
-                null,
-                null,
-                debugMap,
-                null,
-            )
+                val expressions = listOf("Number", "MultiLibraryIdent1", "MultiLibraryValue2")
+                library(MULTI_LIBRARY_1) { expressions(expressions) }
+                library(MULTI_LIBRARY_2) { expressions(expressions) }
+                library(MULTI_LIBRARY_3) { expressions(expressions) }
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         val libraryResults = evalResultsForMultiLib.results
@@ -333,18 +282,15 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     @Test
     fun multipleLibrariesWithSubsetOfAllCommonExpressions() {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(
-                    MULTI_LIBRARY_1,
-                    MULTI_LIBRARY_2,
-                    MULTI_LIBRARY_3,
-                ), // We're leaving out "Name" here
-                mutableSetOf("Number", "Period"),
-                null,
-                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                // We're leaving out "Name" here
+                val expressions = listOf("Number", "Period")
+                library(MULTI_LIBRARY_1) { expressions(expressions) }
+                library(MULTI_LIBRARY_2) { expressions(expressions) }
+                library(MULTI_LIBRARY_3) { expressions(expressions) }
+                parameters = mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         val libraryResults = evalResultsForMultiLib.results
@@ -357,39 +303,27 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value())
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value(),
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
 
-        Assertions.assertNull(evaluationResult1.expressionResults["Name"])
-        Assertions.assertNull(evaluationResult2.expressionResults["Name"])
-        Assertions.assertNull(evaluationResult3.expressionResults["Name"])
+        Assertions.assertNull(evaluationResult1["Name"])
+        Assertions.assertNull(evaluationResult2["Name"])
+        Assertions.assertNull(evaluationResult3["Name"])
     }
 
     @Test
     fun singleLibraryInvalid() {
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(toElmIdentifier("MultiLibraryBad", "0.1")),
-                null,
-                null,
-                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                library(toElmIdentifier("MultiLibraryBad", "0.1"))
+                parameters = mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         val exception =
             Assertions.assertThrows(CqlException::class.java) {
@@ -407,14 +341,14 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
     fun multipleLibrariesOneInvalid() {
         val versionedIdentifierBad = toElmIdentifier("MultiLibraryBad", "0.1")
         val evalResultsForMultiLib =
-            cqlEngineWithOptions!!.evaluate(
-                listOf(MULTI_LIBRARY_1, MULTI_LIBRARY_2, MULTI_LIBRARY_3, versionedIdentifierBad),
-                null,
-                null,
-                mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01),
-                debugMap,
-                null,
-            )
+            cqlEngineWithOptions!!.evaluate {
+                library(MULTI_LIBRARY_1)
+                library(MULTI_LIBRARY_2)
+                library(MULTI_LIBRARY_3)
+                library(versionedIdentifierBad)
+                parameters = mapOf("Measurement Period" to _1900_01_01_TO_1901_01_01)
+                debugMap = this@CqlEngineMultipleLibrariesTest.debugMap
+            }
 
         Assertions.assertNotNull(evalResultsForMultiLib)
         Assertions.assertFalse(evalResultsForMultiLib.exceptions.isEmpty())
@@ -450,22 +384,13 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         val evaluationResult2 = findResultsByLibId("MultiLibrary2", libraryResults)
         val evaluationResult3 = findResultsByLibId("MultiLibrary3", libraryResults)
 
-        Assertions.assertEquals(1, evaluationResult1.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(2, evaluationResult2.expressionResults["Number"]!!.value())
-        Assertions.assertEquals(3, evaluationResult3.expressionResults["Number"]!!.value())
+        Assertions.assertEquals(1, evaluationResult1["Number"]!!.value)
+        Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
+        Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult1.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult2.expressionResults["Period"]!!.value(),
-        )
-        Assertions.assertEquals(
-            _1900_01_01_TO_1901_01_01,
-            evaluationResult3.expressionResults["Period"]!!.value(),
-        )
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult1["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult2["Period"]!!.value)
+        Assertions.assertEquals(_1900_01_01_TO_1901_01_01, evaluationResult3["Period"]!!.value)
     }
 
     private fun findResultsByLibId(
