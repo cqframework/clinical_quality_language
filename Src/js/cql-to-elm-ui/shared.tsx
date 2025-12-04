@@ -4,6 +4,13 @@ export type TElmContentType = "json" | "xml";
 
 export type TLibrarySource = "local" | "remote";
 
+export type TMountedDir = {
+  handle: FileSystemDirectoryHandle;
+  files: {
+    handle: FileSystemFileHandle;
+  }[];
+};
+
 export const compilerOptions = [
   {
     value: "EnableDateRangeOptimization",
@@ -75,7 +82,7 @@ export const compilerOptions = [
 
 export const signatureLevels = ["None", "Differing", "Overloads", "All"];
 
-export type TCompileCqlArgs = {
+export type TCqlToElmArgs = {
   cql: string;
   useWasm: boolean;
   compilerOptions: string[];
@@ -83,12 +90,7 @@ export type TCompileCqlArgs = {
   outputContentType: TElmContentType;
   librarySource: TLibrarySource;
   baseUrl: string;
-  mountedDir: {
-    handle: FileSystemDirectoryHandle;
-    files: {
-      handle: FileSystemFileHandle;
-    }[];
-  } | null;
+  mountedDir: TMountedDir | null;
   useWorker: boolean;
 };
 
@@ -102,3 +104,4 @@ export type TOutput =
       contentType: TElmContentType;
       elm: string;
     };
+
