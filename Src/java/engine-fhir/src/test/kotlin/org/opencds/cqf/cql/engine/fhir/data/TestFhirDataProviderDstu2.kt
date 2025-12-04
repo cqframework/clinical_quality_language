@@ -12,7 +12,7 @@ class TestFhirDataProviderDstu2 : FhirExecutionTestBase() {
     @BeforeEach
     fun before() {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", dstu2Provider)
-        results = engine.evaluate(library!!.identifier!!)
+        results = engine.evaluate { library(library!!.identifier!!) }.onlyResultOrThrow
         // BaseFhirDataProvider provider = new
         // FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
         //        FhirDataProviderDstu2 primitiveProvider = new
@@ -55,31 +55,31 @@ class TestFhirDataProviderDstu2 : FhirExecutionTestBase() {
 
     // @Test
     fun testDstu2ProviderString() {
-        val value = results!!.forExpression("testString")!!.value()
+        val value = results!!["testString"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderCode() {
-        val value = results!!.forExpression("testCode")!!.value()
+        val value = results!!["testCode"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderDate() {
-        val value = results!!.forExpression("testDate")!!.value()
+        val value = results!!["testDate"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderDecimal() {
-        val value = results!!.forExpression("testDecimal")!!.value()
+        val value = results!!["testDecimal"]!!.value
         Assertions.assertNotNull(value)
     }
 
     // @Test
     fun testDstu2ProviderID() {
-        val value = results!!.forExpression("testID")!!.value()
+        val value = results!!["testID"]!!.value
         Assertions.assertNotNull(value)
     }
 }

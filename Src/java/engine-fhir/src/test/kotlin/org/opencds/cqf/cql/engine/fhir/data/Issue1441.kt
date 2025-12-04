@@ -48,9 +48,9 @@ internal class Issue1441 : FhirExecutionTestBase() {
             "http://hl7.org/fhir",
             CompositeDataProvider(r4ModelResolver, r),
         )
-        val result = engine.evaluate("Issue1441")
-        val x = result.forExpression("x")!!.value() as Iterable<*>?
-        val y = result.forExpression("y")!!.value() as Iterable<*>?
+        val result = engine.evaluate { library("Issue1441") }.onlyResultOrThrow
+        val x = result["x"]!!.value as Iterable<*>?
+        val y = result["y"]!!.value as Iterable<*>?
 
         Assertions.assertIterableEquals(x, y)
     }

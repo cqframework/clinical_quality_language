@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.CqlEngine
-import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib
 
 internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibTestBase() {
     @ParameterizedTest
@@ -28,7 +27,8 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val engine = getCqlEngineForFhirNewLibMgr(expressionCaching)
 
         // Old single-lib API
-        val singleResult = engine.evaluate(libId, setOf(expressionName))
+        val singleResult =
+            engine.evaluate { library(libId) { expressions(expressionName) } }.onlyResultOrThrow
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
             singleResult,
@@ -38,7 +38,8 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         // Old multi-lib API passing a single lib
-        val multiResults = engine.evaluate(listOf(libId), setOf(expressionName))
+        val multiResults = engine.evaluate { library(libId) { expressions(expressionName) } }
+
         Assertions.assertTrue(multiResults.containsResultsFor(libId))
         Assertions.assertFalse(multiResults.containsExceptionsFor(libId))
         val multiResultFor = multiResults.getResultFor(libId)
@@ -67,7 +68,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         // Old single-lib API
         val singleLibException =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                engine.evaluate(versionedIdentifier)
+                engine.evaluate { library(versionedIdentifier) }.onlyResultOrThrow
             }
 
         assertThat(
@@ -79,7 +80,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         // Old multi-lib API passing a single lib
         val multiLibException =
             Assertions.assertThrows(CqlIncludeException::class.java) {
-                engine.evaluate(versionedIdentifiers, null)
+                engine.evaluate {
+                    for (id in versionedIdentifiers) {
+                        library(id)
+                    }
+                }
             }
 
         assertThat(
@@ -93,10 +98,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val engine = getCqlEngineForFhirNewLibMgr(true)
 
         val multiLibResults =
-            engine.evaluate(
-                listOf(LIB_1, LIB_WARNING_HIDING, LIB_ERROR_INVALID_CAST_EXPRESSION),
-                null,
-            )
+            engine.evaluate {
+                library(LIB_1)
+                library(LIB_WARNING_HIDING)
+                library(LIB_ERROR_INVALID_CAST_EXPRESSION)
+            }
 
         Assertions.assertTrue(multiLibResults.hasExceptions())
         Assertions.assertTrue(multiLibResults.hasWarnings())
@@ -159,8 +165,12 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
     ) {
         val engine = getCqlEngineForFhirNewLibMgr(expressionCaching)
 
-        val results: EvaluationResultsForMultiLib =
-            engine.evaluate(ALL_LIB_IDS, setOf(expressionName))
+        val results =
+            engine.evaluate {
+                for (id in ALL_LIB_IDS) {
+                    library(id) { expressions(expressionName) }
+                }
+            }
 
         val evaluationResultForIdentifier = results.getResultFor(libId)
 
@@ -178,7 +188,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         val engine = getCqlEngineForFhirNewLibMgr(expressionCaching)
 
         // Compile only one library:  it will be cached
-        val resultsSingleLib = engine.evaluate(listOf(LIB_1), ALL_EXPRESSIONS)
+        val resultsSingleLib = engine.evaluate { library(LIB_1) { expressions(ALL_EXPRESSIONS) } }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
             resultsSingleLib,
@@ -205,8 +215,12 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         engine.state.clearEvaluatedResources()
 
         // Using the same engine, evaluate three libraries, two of which are not cached
-        val resultsMultiLib: EvaluationResultsForMultiLib =
-            engine.evaluate(ALL_LIB_IDS, ALL_EXPRESSIONS)
+        val resultsMultiLib =
+            engine.evaluate {
+                for (id in ALL_LIB_IDS) {
+                    library(id) { expressions(ALL_EXPRESSIONS) }
+                }
+            }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
             resultsMultiLib,
@@ -279,7 +293,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
 
         // Now use the same engine, but pass the identifiers in a different order
         val resultsMultiLibDifferentOrder =
-            engine.evaluate(listOf(LIB_3, LIB_2, LIB_1), ALL_EXPRESSIONS)
+            engine.evaluate {
+                library(LIB_3) { expressions(ALL_EXPRESSIONS) }
+                library(LIB_2) { expressions(ALL_EXPRESSIONS) }
+                library(LIB_1) { expressions(ALL_EXPRESSIONS) }
+            }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
             resultsMultiLibDifferentOrder,

@@ -38,7 +38,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
         return null
     }
 
-    val onlyResultOrThrow: EvaluationResult?
+    val onlyResultOrThrow: EvaluationResult
         get() {
             check(!(results.size > 1 || exceptions.size > 1)) {
                 "Did you run an evaluation for multiple libraries?  Expected exactly one result or error, but found results: ${results.size} errors: ${exceptions.size}: "
@@ -50,7 +50,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
                 throw firstException
             }
 
-            return this.firstResult
+            return this.firstResult!!
         }
 
     fun getExceptionFor(libraryIdentifier: VersionedIdentifier): RuntimeException? {

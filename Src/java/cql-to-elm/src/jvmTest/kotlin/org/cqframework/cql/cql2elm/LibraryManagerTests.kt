@@ -60,10 +60,7 @@ internal class LibraryManagerTests {
         MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(1))
         MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
         Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(
-            results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1),
-        )
+        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
         val compiledLibraryFirst = compiledLibraries[0]
@@ -93,10 +90,7 @@ internal class LibraryManagerTests {
         MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(2))
         MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
         Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(
-            results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(2),
-        )
+        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(2))
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
         for (compiledLibrary in compiledLibraries) {
@@ -135,10 +129,7 @@ internal class LibraryManagerTests {
         MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(2))
         MatcherAssert.assertThat(results.allErrors(), Matchers.not(Matchers.empty()))
         Assertions.assertTrue(results.hasErrors())
-        MatcherAssert.assertThat(
-            results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1),
-        )
+        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
         val library = results.getCompiledLibraryFor(BASE_LIBRARY_ELM_IDENT)
@@ -263,10 +254,7 @@ internal class LibraryManagerTests {
         MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(1))
         MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
         Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(
-            results.allLibrariesWithoutErrorSeverity().size,
-            Matchers.equalTo(1),
-        )
+        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
 
         val resolvedLibrary = results.onlyResult.compiledLibrary

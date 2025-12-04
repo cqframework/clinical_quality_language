@@ -122,7 +122,7 @@ internal class BacktraceTest : CqlTestBase() {
     @Test
     fun backtrace_smoke() {
         try {
-            engine.evaluate("BacktraceTest")
+            engine.evaluate { library("BacktraceTest") }.onlyResultOrThrow
             Assertions.fail<Any?>("Expected exception but none was thrown")
         } catch (e: CqlException) {
             MatcherAssert.assertThat(e.backtrace, Matchers.notNullValue())

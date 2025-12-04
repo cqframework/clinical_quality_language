@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlTranslator.Companion.fromText
@@ -90,6 +91,25 @@ open class CqlTestBase {
 
     private fun getBigDecimalZoneOffset(zoneOffset: ZoneOffset): BigDecimal {
         return TemporalHelper.zoneToOffset(zoneOffset)
+    }
+
+    /**
+     * @param libraryIdentifier the library where the expression is defined
+     * @param expressionName the name of the expression to evaluate
+     * @param evaluationDateTime the value for "Now()"
+     * @return the result of the expression
+     */
+    protected fun CqlEngine.expression(
+        libraryIdentifier: VersionedIdentifier,
+        expressionName: String,
+        evaluationDateTime: ZonedDateTime? = null,
+    ): Any? {
+        return evaluate {
+                library(libraryIdentifier) { expressions(expressionName) }
+                this.evaluationDateTime = evaluationDateTime
+            }
+            .onlyResultOrThrow[expressionName]!!
+            .value
     }
 
     companion object {

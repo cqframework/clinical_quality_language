@@ -30,13 +30,18 @@ internal class CqlMainSuiteTest : CqlTestBase() {
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
-        val result: EvaluationResult = e.evaluate(toElmIdentifier("CqlTestSuite"), evalTime)
+        val result =
+            e.evaluate {
+                    library("CqlTestSuite")
+                    evaluationDateTime = evalTime
+                }
+                .onlyResultOrThrow
 
         for (entry in result.expressionResults.entries) {
             if (entry.key.toString().startsWith("test")) {
-                if ((entry.value as ExpressionResult).value() != null) {
+                if ((entry.value as ExpressionResult).value != null) {
                     Assertions.assertEquals(
-                        (entry.value as ExpressionResult).value() as String?,
+                        (entry.value as ExpressionResult).value as String?,
                         entry.key.toString().replace("test_".toRegex(), "") + " TEST PASSED",
                     )
                 }
@@ -51,13 +56,18 @@ internal class CqlMainSuiteTest : CqlTestBase() {
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
-        val result: EvaluationResult = e.evaluate(toElmIdentifier("CqlTimeZoneTestSuite"), evalTime)
+        val result =
+            e.evaluate {
+                    library("CqlTimeZoneTestSuite")
+                    evaluationDateTime = evalTime
+                }
+                .onlyResultOrThrow
 
         for (entry in result.expressionResults.entries) {
             if (entry.key.toString().startsWith("test")) {
-                if ((entry.value as ExpressionResult).value() != null) {
+                if ((entry.value as ExpressionResult).value != null) {
                     Assertions.assertEquals(
-                        (entry.value as ExpressionResult).value() as String?,
+                        (entry.value as ExpressionResult).value as String?,
                         entry.key.toString().replace("test_".toRegex(), "") + " TEST PASSED",
                     )
                 }

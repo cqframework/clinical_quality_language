@@ -23,7 +23,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
     //            results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"), set, null,
     // null, null,
     // null);
-    //            Object value = results.forExpression("InvalidIntegerIntervalA").value();
+    //            Object value = results["InvalidIntegerIntervalA"].value;
     //            Assertions.fail();
     //
     //
@@ -36,171 +36,171 @@ internal class IntervalOperatorsTest : CqlTestBase() {
     fun all_interval_operators() {
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
-        val results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"))
-        var value = results.forExpression("IntegerIntervalAfterTrue")!!.value()
+        val results = engine.evaluate { library("CqlIntervalOperatorsTest") }.onlyResultOrThrow
+        var value = results["IntegerIntervalAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalAfterTrue")!!.value()
+        value = results["IntegerIntervalAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalAfterFalse")!!.value()
+        value = results["IntegerIntervalAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalPointAfterTrue")!!.value()
+        value = results["IntegerIntervalPointAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalPointAfterFalse")!!.value()
+        value = results["IntegerIntervalPointAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalAfterPointTrue")!!.value()
+        value = results["IntegerIntervalAfterPointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalAfterPointFalse")!!.value()
+        value = results["IntegerIntervalAfterPointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalAfterTrue")!!.value()
+        value = results["DecimalIntervalAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalAfterFalse")!!.value()
+        value = results["DecimalIntervalAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalPointAfterTrue")!!.value()
+        value = results["DecimalIntervalPointAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalPointAfterFalse")!!.value()
+        value = results["DecimalIntervalPointAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalAfterPointTrue")!!.value()
+        value = results["DecimalIntervalAfterPointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalAfterPointFalse")!!.value()
+        value = results["DecimalIntervalAfterPointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalAfterTrue")!!.value()
+        value = results["QuantityIntervalAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalAfterFalse")!!.value()
+        value = results["QuantityIntervalAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalPointAfterTrue")!!.value()
+        value = results["QuantityIntervalPointAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalPointAfterFalse")!!.value()
+        value = results["QuantityIntervalPointAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalAfterPointTrue")!!.value()
+        value = results["QuantityIntervalAfterPointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalAfterPointFalse")!!.value()
+        value = results["QuantityIntervalAfterPointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeAfterTrue")!!.value()
+        value = results["DateTimeAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeAfterFalse")!!.value()
+        value = results["DateTimeAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeAfterTrue")!!.value()
+        value = results["TimeAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeAfterFalse")!!.value()
+        value = results["TimeAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestBeforeNull")!!.value()
+        value = results["TestBeforeNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalBeforeFalse")!!.value()
+        value = results["IntegerIntervalBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalBeforeTrue")!!.value()
+        value = results["IntegerIntervalBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalPointBeforeTrue")!!.value()
+        value = results["IntegerIntervalPointBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalPointBeforeFalse")!!.value()
+        value = results["IntegerIntervalPointBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalBeforePointTrue")!!.value()
+        value = results["IntegerIntervalBeforePointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalBeforePointFalse")!!.value()
+        value = results["IntegerIntervalBeforePointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalBeforeFalse")!!.value()
+        value = results["DecimalIntervalBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalBeforeTrue")!!.value()
+        value = results["DecimalIntervalBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalPointBeforeTrue")!!.value()
+        value = results["DecimalIntervalPointBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalPointBeforeFalse")!!.value()
+        value = results["DecimalIntervalPointBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalBeforePointTrue")!!.value()
+        value = results["DecimalIntervalBeforePointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalBeforePointFalse")!!.value()
+        value = results["DecimalIntervalBeforePointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalBeforeTrue")!!.value()
+        value = results["QuantityIntervalBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalBeforeFalse")!!.value()
+        value = results["QuantityIntervalBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalPointBeforeTrue")!!.value()
+        value = results["QuantityIntervalPointBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalPointBeforeFalse")!!.value()
+        value = results["QuantityIntervalPointBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalBeforePointTrue")!!.value()
+        value = results["QuantityIntervalBeforePointTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalBeforePointFalse")!!.value()
+        value = results["QuantityIntervalBeforePointFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeBeforeTrue")!!.value()
+        value = results["DateTimeBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeBeforeFalse")!!.value()
+        value = results["DateTimeBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeBeforeTrue")!!.value()
+        value = results["TimeBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeBeforeFalse")!!.value()
+        value = results["TimeBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestCollapseNull")!!.value()
+        value = results["TestCollapseNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalCollapse")!!.value()
+        value = results["IntegerIntervalCollapse"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(Interval(1, true, 10, true)) == true
         )
         Assertions.assertTrue((value[1] as Interval).equal(Interval(12, true, 19, true)) == true)
 
-        value = results.forExpression("IntegerIntervalCollapse2")!!.value()
+        value = results["IntegerIntervalCollapse2"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(Interval(1, true, 19, true)) == true
         )
 
-        value = results.forExpression("IntegerIntervalCollapse3")!!.value()
+        value = results["IntegerIntervalCollapse3"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(Interval(4, true, 8, true)) == true
         )
 
-        value = results.forExpression("IntegerIntervalCollapse4")!!.value()
+        value = results["IntegerIntervalCollapse4"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(Interval(4, true, 6, true)) == true
         )
         Assertions.assertTrue((value[1] as Interval).equal(Interval(8, true, 10, true)) == true)
 
-        value = results.forExpression("DecimalIntervalCollapse")!!.value()
+        value = results["DecimalIntervalCollapse"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(
                 Interval(BigDecimal("1.0"), true, BigDecimal("10.0"), true)
@@ -212,14 +212,14 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("DecimalIntervalCollapse2")!!.value()
+        value = results["DecimalIntervalCollapse2"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(
                 Interval(BigDecimal("4.0"), true, BigDecimal("8.0"), true)
             ) == true
         )
 
-        value = results.forExpression("QuantityIntervalCollapse")!!.value()
+        value = results["QuantityIntervalCollapse"]!!.value
         Assertions.assertTrue(
             ((value as MutableList<*>)[0] as Interval).equal(
                 Interval(
@@ -241,7 +241,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("DateTimeCollapse")!!.value()
+        value = results["DateTimeCollapse"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -268,7 +268,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("DateTimeCollapse2")!!.value()
+        value = results["DateTimeCollapse2"]!!.value
 
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
@@ -284,7 +284,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
 
-        value = results.forExpression("DateTimeCollapse3")!!.value()
+        value = results["DateTimeCollapse3"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -311,7 +311,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("DateTimeCollapse4")!!.value()
+        value = results["DateTimeCollapse4"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -328,7 +328,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true
         )
 
-        value = results.forExpression("DateTimeCollapse5")!!.value()
+        value = results["DateTimeCollapse5"]!!.value
         println(value)
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
@@ -346,7 +346,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true
         )
 
-        value = results.forExpression("DateTimeCollapse6")!!.value()
+        value = results["DateTimeCollapse6"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -357,7 +357,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent((value[0] as Interval).end, Date(2018, 10, 15)) == true
         )
 
-        value = results.forExpression("TimeCollapse")!!.value()
+        value = results["TimeCollapse"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -378,7 +378,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
-        value = results.forExpression("TimeCollapse2")!!.value()
+        value = results["TimeCollapse2"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 ((value as MutableList<*>)[0] as Interval).start,
@@ -390,65 +390,65 @@ internal class IntervalOperatorsTest : CqlTestBase() {
                 true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
-        value = results.forExpression("TestContainsNull")!!.value()
+        value = results["TestContainsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TestNullElement1")!!.value()
+        value = results["TestNullElement1"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestNullElement2")!!.value()
+        value = results["TestNullElement2"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestNullElementTrue")!!.value()
+        value = results["TestNullElementTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalContainsTrue")!!.value()
+        value = results["IntegerIntervalContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalContainsFalse")!!.value()
+        value = results["IntegerIntervalContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalContainsTrue")!!.value()
+        value = results["DecimalIntervalContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalContainsFalse")!!.value()
+        value = results["DecimalIntervalContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalContainsTrue")!!.value()
+        value = results["QuantityIntervalContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalContainsFalse")!!.value()
+        value = results["QuantityIntervalContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        //        value = results.forExpression("DateTimeContainsNull")!!.value();
+        //        value = results["DateTimeContainsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeContainsTrue")!!.value()
+        value = results["DateTimeContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeContainsFalse")!!.value()
+        value = results["DateTimeContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        //        value = results.forExpression("TimeContainsNull")!!.value();
+        //        value = results["TimeContainsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("TimeContainsTrue")!!.value()
+        value = results["TimeContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeContainsFalse")!!.value()
+        value = results["TimeContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalEnd")!!.value()
+        value = results["IntegerIntervalEnd"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(10))
 
-        value = results.forExpression("DecimalIntervalEnd")!!.value()
+        value = results["DecimalIntervalEnd"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("10.0")))
 
-        value = results.forExpression("QuantityIntervalEnd")!!.value()
+        value = results["QuantityIntervalEnd"]!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal("10.0")).withUnit("g")) ==
                 true
         )
 
-        value = results.forExpression("DateTimeIntervalEnd")!!.value()
+        value = results["DateTimeIntervalEnd"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value,
@@ -456,100 +456,100 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("TimeIntervalEnd")!!.value()
+        value = results["TimeIntervalEnd"]!!.value
         Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(23, 59, 59, 599)) == true)
 
-        //        value = results.forExpression("TestEndsNull")!!.value();
+        //        value = results["TestEndsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("IntegerIntervalEndsTrue")!!.value()
+        value = results["IntegerIntervalEndsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalEndsFalse")!!.value()
+        value = results["IntegerIntervalEndsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalEndsTrue")!!.value()
+        value = results["DecimalIntervalEndsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalEndsFalse")!!.value()
+        value = results["DecimalIntervalEndsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalEndsTrue")!!.value()
+        value = results["QuantityIntervalEndsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalEndsFalse")!!.value()
+        value = results["QuantityIntervalEndsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeEndsTrue")!!.value()
+        value = results["DateTimeEndsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeEndsNull")!!.value();
+        //        value = results["DateTimeEndsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeEndsFalse")!!.value()
+        value = results["DateTimeEndsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeEndsTrue")!!.value()
+        value = results["TimeEndsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeEndsFalse")!!.value()
+        value = results["TimeEndsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        //        value = results.forExpression("TestEqualNull")!!.value();
+        //        value = results["TestEqualNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("IntegerIntervalEqualTrue")!!.value()
+        value = results["IntegerIntervalEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalEqualFalse")!!.value()
+        value = results["IntegerIntervalEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalEqualTrue")!!.value()
+        value = results["DecimalIntervalEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalEqualFalse")!!.value()
+        value = results["DecimalIntervalEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalEqualTrue")!!.value()
+        value = results["QuantityIntervalEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalEqualFalse")!!.value()
+        value = results["QuantityIntervalEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeEqualTrue")!!.value()
+        value = results["DateTimeEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeEqualFalse")!!.value()
+        value = results["DateTimeEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeEqualTrue")!!.value()
+        value = results["TimeEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeEqualFalse")!!.value()
+        value = results["TimeEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        //        value = results.forExpression("TestExceptNull")!!.value();
+        //        value = results["TestExceptNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("IntegerIntervalExcept1to3")!!.value()
+        value = results["IntegerIntervalExcept1to3"]!!.value
         Assertions.assertTrue((value as Interval).equal(Interval(1, true, 3, true)) == true)
 
-        value = results.forExpression("IntegerIntervalExcept4to6")!!.value()
+        value = results["IntegerIntervalExcept4to6"]!!.value
         Assertions.assertTrue((value as Interval).equal(Interval(-4, false, 6, false)) == true)
 
-        value = results.forExpression("IntegerIntervalExceptNullOutNull")!!.value()
+        value = results["IntegerIntervalExceptNullOutNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalExceptNull")!!.value()
+        value = results["IntegerIntervalExceptNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DecimalIntervalExcept1to3")!!.value()
+        value = results["DecimalIntervalExcept1to3"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(BigDecimal("1.0"), true, BigDecimal("3.99999999"), true)
             ) == true
         )
 
-        value = results.forExpression("DecimalIntervalExceptNull")!!.value()
+        value = results["DecimalIntervalExceptNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("QuantityIntervalExcept1to4")!!.value()
+        value = results["QuantityIntervalExcept1to4"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(
@@ -561,10 +561,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("Except12")!!.value()
+        value = results["Except12"]!!.value
         Assertions.assertTrue((value as Interval).equal(Interval(1, true, 2, true)) == true)
 
-        value = results.forExpression("ExceptDateTimeInterval")!!.value()
+        value = results["ExceptDateTimeInterval"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as Interval).start,
@@ -576,7 +576,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
                 true
         )
 
-        value = results.forExpression("ExceptDateTime2")!!.value()
+        value = results["ExceptDateTime2"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as Interval).start,
@@ -590,7 +590,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("ExceptTimeInterval")!!.value()
+        value = results["ExceptTimeInterval"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true
         )
@@ -598,7 +598,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent(value.end, Time(8, 59, 59, 998)) == true
         )
 
-        value = results.forExpression("ExceptTime2")!!.value()
+        value = results["ExceptTime2"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent((value as Interval).start, Time(11, 0, 0, 0)) == true
         )
@@ -606,177 +606,177 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent(value.end, Time(11, 59, 59, 999)) == true
         )
 
-        value = results.forExpression("TestInNull")!!.value()
+        value = results["TestInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestInNullEnd")!!.value()
+        value = results["TestInNullEnd"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestNullIn")!!.value()
+        value = results["TestNullIn"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalInTrue")!!.value()
+        value = results["IntegerIntervalInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalInFalse")!!.value()
+        value = results["IntegerIntervalInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalInTrue")!!.value()
+        value = results["DecimalIntervalInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalInFalse")!!.value()
+        value = results["DecimalIntervalInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalInTrue")!!.value()
+        value = results["QuantityIntervalInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalInFalse")!!.value()
+        value = results["QuantityIntervalInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeInTrue")!!.value()
+        value = results["DateTimeInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeInNullPrecision")!!.value();
+        //        value = results["DateTimeInNullPrecision"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeInFalse")!!.value()
+        value = results["DateTimeInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeInNullTrue")!!.value()
+        value = results["DateTimeInNullTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeInTrue")!!.value()
+        value = results["TimeInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeInFalse")!!.value()
+        value = results["TimeInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeInNull")!!.value()
+        value = results["TimeInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("Issue32Interval")!!.value()
+        value = results["Issue32Interval"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
-        value = results.forExpression("TestIncludesNull")!!.value()
+        value = results["TestIncludesNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalIncludesTrue")!!.value()
+        value = results["IntegerIntervalIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalIncludesFalse")!!.value()
+        value = results["IntegerIntervalIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalIncludesTrue")!!.value()
+        value = results["DecimalIntervalIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalIncludesFalse")!!.value()
+        value = results["DecimalIntervalIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalIncludesTrue")!!.value()
+        value = results["QuantityIntervalIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalIncludesFalse")!!.value()
+        value = results["QuantityIntervalIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeIncludesTrue")!!.value()
+        value = results["DateTimeIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeIncludesFalse")!!.value()
+        value = results["DateTimeIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeIncludesTrue")!!.value()
+        value = results["TimeIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeIncludesFalse")!!.value()
+        value = results["TimeIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
-        value = results.forExpression("IntegerIntervalIncludedInTrue")!!.value()
+        value = results["IntegerIntervalIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalIncludedInFalse")!!.value()
+        value = results["IntegerIntervalIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalIncludedInTrue")!!.value()
+        value = results["DecimalIntervalIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalIncludedInFalse")!!.value()
+        value = results["DecimalIntervalIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalIncludedInTrue")!!.value()
+        value = results["QuantityIntervalIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalIncludedInFalse")!!.value()
+        value = results["QuantityIntervalIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeIncludedInTrue")!!.value()
+        value = results["DateTimeIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeIncludedInFalse")!!.value()
+        value = results["DateTimeIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeIncludedInTrue")!!.value()
+        value = results["TimeIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeIncludedInFalse")!!.value()
+        value = results["TimeIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeIncludedInNull")!!.value()
+        value = results["DateTimeIncludedInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DateTimeIncludedInPrecisionTrue")!!.value()
+        value = results["DateTimeIncludedInPrecisionTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeIncludedInPrecisionNull")!!.value()
+        value = results["DateTimeIncludedInPrecisionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TestIntersectNullRightStart")!!.value()
+        value = results["TestIntersectNullRightStart"]!!.value
         // Because of how nulls work, equivalence, not equality, is the relevant test here (equality
         // just gives null).
         Assertions.assertTrue(
             (value as Interval).equivalent(Interval(null, false, 5, true)) == true
         )
 
-        value = results.forExpression("TestIntersectNullRightEnd")!!.value()
+        value = results["TestIntersectNullRightEnd"]!!.value
         Assertions.assertTrue(
             (value as Interval).equivalent(Interval(5, true, null, false)) == true
         )
 
-        value = results.forExpression("TestIntersectNullLeftStart")!!.value()
+        value = results["TestIntersectNullLeftStart"]!!.value
         Assertions.assertTrue(
             (value as Interval).equivalent(Interval(null, false, 5, true)) == true
         )
 
-        value = results.forExpression("TestIntersectNullLeftEnd")!!.value()
+        value = results["TestIntersectNullLeftEnd"]!!.value
         Assertions.assertTrue(
             (value as Interval).equivalent(Interval(5, true, null, false)) == true
         )
 
-        value = results.forExpression("TestIntersectNull1")!!.value()
+        value = results["TestIntersectNull1"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
 
-        value = results.forExpression("TestIntersectNull2")!!.value()
+        value = results["TestIntersectNull2"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
 
-        value = results.forExpression("TestIntersectNull3")!!.value()
+        value = results["TestIntersectNull3"]!!.value
         Assertions.assertFalse((value as Boolean?)!!)
 
-        value = results.forExpression("TestIntersectNull4")!!.value()
+        value = results["TestIntersectNull4"]!!.value
         Assertions.assertFalse((value as Boolean?)!!)
 
-        value = results.forExpression("IntegerIntervalIntersectTest4to10")!!.value()
+        value = results["IntegerIntervalIntersectTest4to10"]!!.value
         Assertions.assertTrue((value as Interval).equal(Interval(4, true, 10, true)) == true)
 
-        value = results.forExpression("IntegerIntervalIntersectTestNull")!!.value()
+        value = results["IntegerIntervalIntersectTestNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DecimalIntervalIntersectTest4to10")!!.value()
+        value = results["DecimalIntervalIntersectTest4to10"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(BigDecimal("4.0"), true, BigDecimal("10.0"), true)
             ) == true
         )
 
-        value = results.forExpression("IntegerIntervalIntersectTestNull")!!.value()
+        value = results["IntegerIntervalIntersectTestNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("QuantityIntervalIntersectTest5to10")!!.value()
+        value = results["QuantityIntervalIntersectTest5to10"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(
@@ -788,10 +788,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("QuantityIntervalIntersectTestNull")!!.value()
+        value = results["QuantityIntervalIntersectTestNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DateTimeIntersect")!!.value()
+        value = results["DateTimeIntersect"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as Interval).start,
@@ -805,7 +805,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("TimeIntersect")!!.value()
+        value = results["TimeIntersect"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent((value as Interval).start, Time(4, 59, 59, 999)) == true
         )
@@ -813,465 +813,465 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent(value.end, Time(6, 59, 59, 999)) == true
         )
 
-        value = results.forExpression("IntegerIntervalEquivalentTrue")!!.value()
+        value = results["IntegerIntervalEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalEquivalentFalse")!!.value()
+        value = results["IntegerIntervalEquivalentFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalEquivalentTrue")!!.value()
+        value = results["DecimalIntervalEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalEquivalentFalse")!!.value()
+        value = results["DecimalIntervalEquivalentFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalEquivalentTrue")!!.value()
+        value = results["QuantityIntervalEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalEquivalentFalse")!!.value()
+        value = results["QuantityIntervalEquivalentFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeEquivalentTrue")!!.value()
+        value = results["DateTimeEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeEquivalentFalse")!!.value()
+        value = results["DateTimeEquivalentFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeEquivalentTrue")!!.value()
+        value = results["TimeEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeEquivalentFalse")!!.value()
+        value = results["TimeEquivalentFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestMeetsNull")!!.value()
+        value = results["TestMeetsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalMeetsTrue")!!.value()
+        value = results["IntegerIntervalMeetsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalMeetsFalse")!!.value()
+        value = results["IntegerIntervalMeetsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalMeetsTrue")!!.value()
+        value = results["DecimalIntervalMeetsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalMeetsFalse")!!.value()
+        value = results["DecimalIntervalMeetsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalMeetsTrue")!!.value()
+        value = results["QuantityIntervalMeetsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalMeetsFalse")!!.value()
+        value = results["QuantityIntervalMeetsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeMeetsTrue")!!.value()
+        value = results["DateTimeMeetsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsNull")!!.value()
+        value = results["DateTimeMeetsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsFalse")!!.value()
+        value = results["DateTimeMeetsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeMeetsTrue")!!.value()
+        value = results["TimeMeetsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeMeetsFalse")!!.value()
+        value = results["TimeMeetsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestMeetsBeforeNull")!!.value()
+        value = results["TestMeetsBeforeNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalMeetsBeforeTrue")!!.value()
+        value = results["IntegerIntervalMeetsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalMeetsBeforeFalse")!!.value()
+        value = results["IntegerIntervalMeetsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalMeetsBeforeTrue")!!.value()
+        value = results["DecimalIntervalMeetsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalMeetsBeforeFalse")!!.value()
+        value = results["DecimalIntervalMeetsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalMeetsBeforeTrue")!!.value()
+        value = results["QuantityIntervalMeetsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalMeetsBeforeFalse")!!.value()
+        value = results["QuantityIntervalMeetsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeMeetsBeforeTrue")!!.value()
+        value = results["DateTimeMeetsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsBeforeNull")!!.value()
+        value = results["DateTimeMeetsBeforeNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsBeforeFalse")!!.value()
+        value = results["DateTimeMeetsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeMeetsBeforeTrue")!!.value()
+        value = results["TimeMeetsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeMeetsBeforeFalse")!!.value()
+        value = results["TimeMeetsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestMeetsAfterNull")!!.value()
+        value = results["TestMeetsAfterNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalMeetsAfterTrue")!!.value()
+        value = results["IntegerIntervalMeetsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalMeetsAfterFalse")!!.value()
+        value = results["IntegerIntervalMeetsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalMeetsAfterTrue")!!.value()
+        value = results["DecimalIntervalMeetsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalMeetsAfterFalse")!!.value()
+        value = results["DecimalIntervalMeetsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalMeetsAfterTrue")!!.value()
+        value = results["QuantityIntervalMeetsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalMeetsAfterFalse")!!.value()
+        value = results["QuantityIntervalMeetsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeMeetsAfterTrue")!!.value()
+        value = results["DateTimeMeetsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsAfterNull")!!.value()
+        value = results["DateTimeMeetsAfterNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeMeetsAfterFalse")!!.value()
+        value = results["DateTimeMeetsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeMeetsAfterTrue")!!.value()
+        value = results["TimeMeetsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeMeetsAfterFalse")!!.value()
+        value = results["TimeMeetsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("IntegerIntervalNotEqualTrue")!!.value()
+        value = results["IntegerIntervalNotEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalNotEqualFalse")!!.value()
+        value = results["IntegerIntervalNotEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalNotEqualTrue")!!.value()
+        value = results["DecimalIntervalNotEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalNotEqualFalse")!!.value()
+        value = results["DecimalIntervalNotEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalNotEqualTrue")!!.value()
+        value = results["QuantityIntervalNotEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalNotEqualFalse")!!.value()
+        value = results["QuantityIntervalNotEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeNotEqualTrue")!!.value()
+        value = results["DateTimeNotEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeNotEqualFalse")!!.value()
+        value = results["DateTimeNotEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeNotEqualTrue")!!.value()
+        value = results["TimeNotEqualTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeNotEqualFalse")!!.value()
+        value = results["TimeNotEqualFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrAfterNull")!!.value()
+        value = results["TestOnOrAfterNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TestOnOrAfterDateTrue")!!.value()
+        value = results["TestOnOrAfterDateTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrAfterDateFalse")!!.value()
+        value = results["TestOnOrAfterDateFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrAfterTimeTrue")!!.value()
+        value = results["TestOnOrAfterTimeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrAfterTimeFalse")!!.value()
+        value = results["TestOnOrAfterTimeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrAfterIntegerTrue")!!.value()
+        value = results["TestOnOrAfterIntegerTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrAfterDecimalFalse")!!.value()
+        value = results["TestOnOrAfterDecimalFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrAfterQuantityTrue")!!.value()
+        value = results["TestOnOrAfterQuantityTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrBeforeNull")!!.value()
+        value = results["TestOnOrBeforeNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TestOnOrBeforeDateTrue")!!.value()
+        value = results["TestOnOrBeforeDateTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrBeforeDateFalse")!!.value()
+        value = results["TestOnOrBeforeDateFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrBeforeTimeTrue")!!.value()
+        value = results["TestOnOrBeforeTimeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrBeforeTimeFalse")!!.value()
+        value = results["TestOnOrBeforeTimeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrBeforeIntegerTrue")!!.value()
+        value = results["TestOnOrBeforeIntegerTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOnOrBeforeDecimalFalse")!!.value()
+        value = results["TestOnOrBeforeDecimalFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOnOrBeforeQuantityTrue")!!.value()
+        value = results["TestOnOrBeforeQuantityTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TestOverlapsNull")!!.value()
+        value = results["TestOverlapsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalOverlapsTrue")!!.value()
+        value = results["IntegerIntervalOverlapsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalOverlapsFalse")!!.value()
+        value = results["IntegerIntervalOverlapsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalOverlapsTrue")!!.value()
+        value = results["DecimalIntervalOverlapsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalOverlapsFalse")!!.value()
+        value = results["DecimalIntervalOverlapsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalOverlapsTrue")!!.value()
+        value = results["QuantityIntervalOverlapsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalOverlapsFalse")!!.value()
+        value = results["QuantityIntervalOverlapsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeOverlapsTrue")!!.value()
+        value = results["DateTimeOverlapsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeOverlapsNull")!!.value();
+        //        value = results["DateTimeOverlapsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeOverlapsFalse")!!.value()
+        value = results["DateTimeOverlapsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeOverlapsTrue")!!.value()
+        value = results["TimeOverlapsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeOverlapsFalse")!!.value()
+        value = results["TimeOverlapsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOverlapsBeforeNull")!!.value()
+        value = results["TestOverlapsBeforeNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalOverlapsBeforeTrue")!!.value()
+        value = results["IntegerIntervalOverlapsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalOverlapsBeforeFalse")!!.value()
+        value = results["IntegerIntervalOverlapsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalOverlapsBeforeTrue")!!.value()
+        value = results["DecimalIntervalOverlapsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalOverlapsBeforeFalse")!!.value()
+        value = results["DecimalIntervalOverlapsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalOverlapsBeforeTrue")!!.value()
+        value = results["QuantityIntervalOverlapsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalOverlapsBeforeFalse")!!.value()
+        value = results["QuantityIntervalOverlapsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeOverlapsBeforeTrue")!!.value()
+        value = results["DateTimeOverlapsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeOverlapsBeforeNull")!!.value();
+        //        value = results["DateTimeOverlapsBeforeNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeOverlapsBeforeFalse")!!.value()
+        value = results["DateTimeOverlapsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeOverlapsBeforeTrue")!!.value()
+        value = results["TimeOverlapsBeforeTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeOverlapsBeforeFalse")!!.value()
+        value = results["TimeOverlapsBeforeFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestOverlapsAfterNull")!!.value()
+        value = results["TestOverlapsAfterNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalOverlapsAfterTrue")!!.value()
+        value = results["IntegerIntervalOverlapsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalOverlapsAfterFalse")!!.value()
+        value = results["IntegerIntervalOverlapsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalOverlapsAfterTrue")!!.value()
+        value = results["DecimalIntervalOverlapsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalOverlapsAfterFalse")!!.value()
+        value = results["DecimalIntervalOverlapsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalOverlapsAfterTrue")!!.value()
+        value = results["QuantityIntervalOverlapsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalOverlapsAfterFalse")!!.value()
+        value = results["QuantityIntervalOverlapsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeOverlapsAfterTrue")!!.value()
+        value = results["DateTimeOverlapsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeOverlapsAfterNull")!!.value();
+        //        value = results["DateTimeOverlapsAfterNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeOverlapsAfterFalse")!!.value()
+        value = results["DateTimeOverlapsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeOverlapsAfterTrue")!!.value()
+        value = results["TimeOverlapsAfterTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeOverlapsAfterFalse")!!.value()
+        value = results["TimeOverlapsAfterFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestPointFromNull")!!.value()
+        value = results["TestPointFromNull"]!!.value
         Assertions.assertTrue(value == null)
 
-        value = results.forExpression("TestPointFromInteger")!!.value()
+        value = results["TestPointFromInteger"]!!.value
         Assertions.assertTrue(value as Int? == 1)
 
-        value = results.forExpression("TestPointFromDecimal")!!.value()
+        value = results["TestPointFromDecimal"]!!.value
         Assertions.assertEquals(0, (value as BigDecimal).compareTo(BigDecimal("1.0")))
 
-        value = results.forExpression("TestPointFromQuantity")!!.value()
+        value = results["TestPointFromQuantity"]!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal("1.0")).withUnit("cm")) ==
                 true
         )
 
-        value = results.forExpression("TestProperlyIncludesNull")!!.value()
+        value = results["TestProperlyIncludesNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalProperlyIncludesTrue")!!.value()
+        value = results["IntegerIntervalProperlyIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalProperlyIncludesFalse")!!.value()
+        value = results["IntegerIntervalProperlyIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalProperlyIncludesTrue")!!.value()
+        value = results["DecimalIntervalProperlyIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalProperlyIncludesFalse")!!.value()
+        value = results["DecimalIntervalProperlyIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalProperlyIncludesTrue")!!.value()
+        value = results["QuantityIntervalProperlyIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalProperlyIncludesFalse")!!.value()
+        value = results["QuantityIntervalProperlyIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeProperlyIncludesTrue")!!.value()
+        value = results["DateTimeProperlyIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeProperlyIncludesFalse")!!.value()
+        value = results["DateTimeProperlyIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperlyIncludesTrue")!!.value()
+        value = results["TimeProperlyIncludesTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperlyIncludesFalse")!!.value()
+        value = results["TimeProperlyIncludesFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperContainsTrue")!!.value()
+        value = results["TimeProperContainsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperContainsFalse")!!.value()
+        value = results["TimeProperContainsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperContainsNull")!!.value()
+        value = results["TimeProperContainsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TimeProperContainsPrecisionTrue")!!.value()
+        value = results["TimeProperContainsPrecisionTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperContainsPrecisionFalse")!!.value()
+        value = results["TimeProperContainsPrecisionFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperContainsPrecisionNull")!!.value()
+        value = results["TimeProperContainsPrecisionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TimeProperInTrue")!!.value()
+        value = results["TimeProperInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperInFalse")!!.value()
+        value = results["TimeProperInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperInNull")!!.value()
+        value = results["TimeProperInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TimeProperInPrecisionTrue")!!.value()
+        value = results["TimeProperInPrecisionTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperInPrecisionFalse")!!.value()
+        value = results["TimeProperInPrecisionFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperInPrecisionNull")!!.value()
+        value = results["TimeProperInPrecisionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TestProperlyIncludedInNull")!!.value()
+        value = results["TestProperlyIncludedInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalProperlyIncludedInTrue")!!.value()
+        value = results["IntegerIntervalProperlyIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalProperlyIncludedInFalse")!!.value()
+        value = results["IntegerIntervalProperlyIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalProperlyIncludedInTrue")!!.value()
+        value = results["DecimalIntervalProperlyIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalProperlyIncludedInFalse")!!.value()
+        value = results["DecimalIntervalProperlyIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalProperlyIncludedInTrue")!!.value()
+        value = results["QuantityIntervalProperlyIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalProperlyIncludedInFalse")!!.value()
+        value = results["QuantityIntervalProperlyIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeProperlyIncludedInTrue")!!.value()
+        value = results["DateTimeProperlyIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DateTimeProperlyIncludedInFalse")!!.value()
+        value = results["DateTimeProperlyIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeProperlyIncludedInTrue")!!.value()
+        value = results["TimeProperlyIncludedInTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeProperlyIncludedInFalse")!!.value()
+        value = results["TimeProperlyIncludedInFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("SizeTest")!!.value()
+        value = results["SizeTest"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(5))
 
-        value = results.forExpression("SizeTestEquivalent")!!.value()
+        value = results["SizeTestEquivalent"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(5))
 
-        value = results.forExpression("SizeIsNull")!!.value()
+        value = results["SizeIsNull"]!!.value
         Assertions.assertNull(value)
 
-        value = results.forExpression("IntegerIntervalStart")!!.value()
+        value = results["IntegerIntervalStart"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(1))
 
-        value = results.forExpression("DecimalIntervalStart")!!.value()
+        value = results["DecimalIntervalStart"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("1.0")))
 
-        value = results.forExpression("QuantityIntervalStart")!!.value()
+        value = results["QuantityIntervalStart"]!!.value
         Assertions.assertTrue(
             (value as Quantity).equal(Quantity().withValue(BigDecimal("1.0")).withUnit("g")) == true
         )
 
-        value = results.forExpression("DateTimeIntervalStart")!!.value()
+        value = results["DateTimeIntervalStart"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 value,
@@ -1279,64 +1279,64 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("TimeIntervalStart")!!.value()
+        value = results["TimeIntervalStart"]!!.value
         Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(0, 0, 0, 0)) == true)
 
-        value = results.forExpression("TestStartsNull")!!.value()
+        value = results["TestStartsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalStartsTrue")!!.value()
+        value = results["IntegerIntervalStartsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("IntegerIntervalStartsFalse")!!.value()
+        value = results["IntegerIntervalStartsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DecimalIntervalStartsTrue")!!.value()
+        value = results["DecimalIntervalStartsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("DecimalIntervalStartsFalse")!!.value()
+        value = results["DecimalIntervalStartsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("QuantityIntervalStartsTrue")!!.value()
+        value = results["QuantityIntervalStartsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("QuantityIntervalStartsFalse")!!.value()
+        value = results["QuantityIntervalStartsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("DateTimeStartsTrue")!!.value()
+        value = results["DateTimeStartsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        //        value = results.forExpression("DateTimeStartsNull")!!.value();
+        //        value = results["DateTimeStartsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
-        value = results.forExpression("DateTimeStartsFalse")!!.value()
+        value = results["DateTimeStartsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TimeStartsTrue")!!.value()
+        value = results["TimeStartsTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
 
-        value = results.forExpression("TimeStartsFalse")!!.value()
+        value = results["TimeStartsFalse"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
 
-        value = results.forExpression("TestUnionNull")!!.value()
+        value = results["TestUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("IntegerIntervalUnion1To15")!!.value()
+        value = results["IntegerIntervalUnion1To15"]!!.value
         Assertions.assertTrue((value as Interval).equal(Interval(1, true, 15, true)) == true)
 
-        value = results.forExpression("IntegerIntervalUnionNull")!!.value()
+        value = results["IntegerIntervalUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DecimalIntervalUnion1To15")!!.value()
+        value = results["DecimalIntervalUnion1To15"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(BigDecimal("1.0"), true, BigDecimal("15.0"), true)
             ) == true
         )
 
-        value = results.forExpression("DecimalIntervalUnionNull")!!.value()
+        value = results["DecimalIntervalUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("QuantityIntervalUnion1To15")!!.value()
+        value = results["QuantityIntervalUnion1To15"]!!.value
         Assertions.assertTrue(
             (value as Interval).equal(
                 Interval(
@@ -1348,10 +1348,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("QuantityIntervalUnionNull")!!.value()
+        value = results["QuantityIntervalUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("DateTimeUnion")!!.value()
+        value = results["DateTimeUnion"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent(
                 (value as Interval).start,
@@ -1365,10 +1365,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             ) == true
         )
 
-        value = results.forExpression("DateTimeUnionNull")!!.value()
+        value = results["DateTimeUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
-        value = results.forExpression("TimeUnion")!!.value()
+        value = results["TimeUnion"]!!.value
         Assertions.assertTrue(
             EquivalentEvaluator.equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true
         )
@@ -1376,7 +1376,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
             EquivalentEvaluator.equivalent(value.end, Time(20, 59, 59, 999)) == true
         )
 
-        value = results.forExpression("TimeUnionNull")!!.value()
+        value = results["TimeUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
     }
 }

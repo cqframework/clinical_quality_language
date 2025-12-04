@@ -100,11 +100,12 @@ class DataRequirementsProcessor {
     }
 
     @JvmOverloads
+    @Suppress("LongParameterList")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
+        expressions: Set<String>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean = true,
     ): Library {
@@ -120,12 +121,13 @@ class DataRequirementsProcessor {
         )
     }
 
+    @Suppress("LongParameterList")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
-        parameters: MutableMap<String?, Any?>?,
+        expressions: Set<String>?,
+        parameters: MutableMap<String, Any?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
     ): Library {
@@ -161,12 +163,13 @@ class DataRequirementsProcessor {
      * @param recursive True to indicate the data requirements gather should be recursive
      * @return
      */
+    @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
     fun gatherDataRequirements(
         libraryManager: LibraryManager,
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
-        expressions: MutableSet<String?>?,
-        parameters: MutableMap<String?, Any?>?,
+        expressions: Set<String>?,
+        parameters: MutableMap<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -197,20 +200,18 @@ class DataRequirementsProcessor {
                 }
 
                 for (expression in expressions) {
-                    if (expression != null) {
-                        val ed = translatedLibrary.resolveExpressionRef(expression)
-                        if (ed != null) {
-                            expressionDefs.add(ed)
-                            visitor.visitElement(ed, context)
-                        } else {
-                            // If the expression is the name of any functions, include those in the
-                            // gather
-                            // TODO: Provide a mechanism to specify a function def (need signature)
-                            val fds = translatedLibrary.resolveFunctionRef(expression)
-                            for (fd in fds) {
-                                expressionDefs.add(fd)
-                                visitor.visitElement(fd, context)
-                            }
+                    val ed = translatedLibrary.resolveExpressionRef(expression)
+                    if (ed != null) {
+                        expressionDefs.add(ed)
+                        visitor.visitElement(ed, context)
+                    } else {
+                        // If the expression is the name of any functions, include those in the
+                        // gather
+                        // TODO: Provide a mechanism to specify a function def (need signature)
+                        val fds = translatedLibrary.resolveFunctionRef(expression)
+                        for (fd in fds) {
+                            expressionDefs.add(fd)
+                            visitor.visitElement(fd, context)
                         }
                     }
                 }
@@ -393,12 +394,13 @@ class DataRequirementsProcessor {
         }
     }
 
+    @Suppress("LongParameterList")
     private fun createLibrary(
         context: ElmRequirementsContext,
         requirements: ElmRequirements,
         libraryIdentifier: VersionedIdentifier,
         expressionDefs: Iterable<ExpressionDef?>,
-        parameters: MutableMap<String?, Any?>?,
+        parameters: Map<String, Any?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {

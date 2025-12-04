@@ -108,7 +108,13 @@ abstract class TestFhirPath {
 
         var result: EvaluationResult?
         try {
-            result = engine.evaluate(libraryId, engine.state.parameters)
+            result =
+                engine
+                    .evaluate {
+                        library(libraryId)
+                        parameters = engine.state.parameters
+                    }
+                    .onlyResultOrThrow
         } catch (e: CqlException) {
             if (testCase is Pass) {
                 throw failWithContext(
@@ -142,7 +148,7 @@ abstract class TestFhirPath {
             return
         }
 
-        val testValue = result.forExpression("Test")!!.value()
+        val testValue = result["Test"]!!.value
         val actualList =
             testValue as? MutableList<*>
                 ?: if (testValue == null) mutableListOf() else listOf<Any?>(testValue)

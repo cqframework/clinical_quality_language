@@ -49,9 +49,9 @@ internal class Issue1226 : FhirExecutionTestBase() {
 
         val result =
             engine
-                .evaluate("Issue1226")
-                .forExpression("Most Recent Medication Request reference")!!
-                .value()
+                .evaluate { library("Issue1226") }
+                .onlyResultOrThrow["Most Recent Medication Request reference"]!!
+                .value
 
         Assertions.assertEquals("Medication/456", result)
     }
