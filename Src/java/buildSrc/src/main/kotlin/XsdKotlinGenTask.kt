@@ -756,7 +756,6 @@ fun FileSpec.Builder.addSerializers(
     addFunction(
         FunSpec.builder("toXmlElement")
             .receiver(className)
-            .addModifiers(KModifier.INTERNAL)
             .addParameter("tagName", qNameClassName)
             .addParameter("withXsiType", Boolean::class)
             .addParameter(
@@ -1022,7 +1021,6 @@ fun FileSpec.Builder.addSerializers(
     addFunction(
         FunSpec.builder("toJsonObject")
             .receiver(className)
-            .addModifiers(KModifier.INTERNAL)
             .addParameter("withType", Boolean::class)
             .returns(jsonObjectClassName)
             .apply {
@@ -1043,12 +1041,7 @@ fun FileSpec.Builder.addSerializers(
 
                 // Write the `type` field if required
                 addStatement(
-                    """
-                        if (withType) {
-                          entries["type"] = %T(%S)
-                        }
-                    """
-                        .trimIndent(),
+                    "if (withType) { entries[\"type\"] = %T(%S) }",
                     jsonPrimitiveClassName,
                     complexType.name ?: "null",
                 )
