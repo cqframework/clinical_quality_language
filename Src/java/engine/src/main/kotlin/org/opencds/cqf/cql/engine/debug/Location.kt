@@ -1,8 +1,9 @@
 package org.opencds.cqf.cql.engine.debug
 
-/*
-Identifies a location in a source file
- */
+import kotlinx.serialization.Serializable
+
+/** Identifies a location in a source file */
+@Serializable
 class Location(val startLine: Int, val startChar: Int, val endLine: Int, val endChar: Int) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -30,8 +31,9 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
         return true
     }
 
-    /*
-    Returns true if this location includes the other location (i.e. starts on or before and ends on or after)
+    /**
+     * Returns true if this location includes the other location (i.e. starts on or before and ends
+     * on or after)
      */
     @Suppress("ReturnCount")
     fun includes(other: Location): Boolean {

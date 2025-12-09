@@ -1,8 +1,10 @@
 package org.opencds.cqf.cql.engine.debug
 
+import kotlinx.serialization.Serializable
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library
 
+@Serializable
 class SourceLocator(
     val librarySystemId: String?,
     val libraryName: String?,
