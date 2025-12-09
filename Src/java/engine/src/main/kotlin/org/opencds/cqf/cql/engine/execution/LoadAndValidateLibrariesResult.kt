@@ -9,7 +9,7 @@ import org.opencds.cqf.cql.engine.exception.CqlException
  * Track results and exceptions for multiple libraries in a single load operation, to support
  * partial successes and partial failures across libraries.
  */
-class LoadMultiLibResult(builder: Builder) {
+class LoadAndValidateLibrariesResult(builder: Builder) {
     private val results = builder.results.toMap()
     val exceptions = builder.exceptions.toMap()
     val warnings = builder.warnings.toMap()
@@ -90,8 +90,8 @@ class LoadMultiLibResult(builder: Builder) {
             }
         }
 
-        fun build(): LoadMultiLibResult {
-            return LoadMultiLibResult(this)
+        fun build(): LoadAndValidateLibrariesResult {
+            return LoadAndValidateLibrariesResult(this)
         }
 
         companion object {
