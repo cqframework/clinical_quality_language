@@ -1,10 +1,13 @@
 package org.hl7.cql.model
 
-import kotlinx.io.asSource
-import kotlinx.io.buffered
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm_modelinfo.r1.ModelInfo
 import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class SystemModelInfoProvider : ModelInfoProvider {
     private var namespaceManager: NamespaceManager? = null
 
@@ -23,10 +26,9 @@ class SystemModelInfoProvider : ModelInfoProvider {
 
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         return if (modelIdentifier.isSystemModelIdentifier()) {
-            val stream =
-                this::class.java.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")
-            checkNotNull(stream) { "Could not find system model info" }
-            stream.asSource().use { parseModelInfoXml(it.buffered()) }
+            return parseModelInfoXml(getSystemModelInfoXml())
         } else null
     }
 }
+
+expect fun getSystemModelInfoXml(): String

@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import CodeMirror, {
   Decoration,
-  EditorState,
   Extension,
   ReactCodeMirrorRef,
   StateEffect,
@@ -14,19 +13,17 @@ import { githubLight } from "@uiw/codemirror-theme-github";
 export const Editor = forwardRef<
   ReactCodeMirrorRef,
   {
-    gridArea: string;
     value: string;
     onChange: (nextValue: string) => void;
     editable: boolean;
     lineNumbers: boolean;
     extensions: Extension[];
   }
->(({ gridArea, value, onChange, editable, lineNumbers, extensions }, ref) => {
+>(({ value, onChange, editable, lineNumbers, extensions }, ref) => {
   return (
     <CodeMirror
       ref={ref}
       style={{
-        gridArea: gridArea,
         minWidth: 0,
         minHeight: 0,
         fontSize: "90%",
@@ -55,8 +52,8 @@ export const Editor = forwardRef<
             padding: "0 10px",
           },
           ".custom-highlights": {
-            boxShadow: "0 0 0 2px #eee",
-            background: "#eee",
+            boxShadow: "0 0 0 2px #e8e8e8",
+            background: "#e8e8e8",
             mixBlendMode: "darken",
             boxDecorationBreak: "clone",
           },
@@ -81,32 +78,6 @@ export const Editor = forwardRef<
     />
   );
 });
-
-export function getCursorLineAndCol(editorState: EditorState) {
-  const pos = editorState.selection.main.head;
-  const line = editorState.doc.lineAt(pos);
-  return { line: line.number, col: pos - line.from + 1 };
-}
-
-export function getRangeFromLinesAndCols(
-  editorState: EditorState,
-  {
-    lineFrom,
-    colFrom,
-    lineTo,
-    colTo,
-  }: {
-    lineFrom: number;
-    colFrom: number;
-    lineTo: number;
-    colTo: number;
-  },
-) {
-  return {
-    start: editorState.doc.line(lineFrom).from + colFrom - 1,
-    end: editorState.doc.line(lineTo).from + colTo,
-  };
-}
 
 export const customHighlightsEffectType =
   StateEffect.define<{ start: number; end: number }[]>();
