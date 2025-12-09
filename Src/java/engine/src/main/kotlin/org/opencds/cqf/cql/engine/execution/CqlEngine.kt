@@ -81,7 +81,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         get() = this.state.cache
 
     /** Evaluates expressions and/or functions from multiple libraries. */
-    fun evaluate(block: EvaluationParams.Builder.() -> Unit): EvaluationResultsForMultiLib {
+    fun evaluate(block: EvaluationParams.Builder.() -> Unit): EvaluationResults {
         return evaluate(EvaluationParams.Builder().apply(block).build())
     }
 
@@ -93,15 +93,16 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @return A result object containing the evaluation results and any exceptions encountered
      *   during the process.
      */
-    fun evaluate(evaluationParams: EvaluationParams): EvaluationResultsForMultiLib {
+    fun evaluate(evaluationParams: EvaluationParams): EvaluationResults {
         require(evaluationParams.expressions.isNotEmpty()) { "expressions can not be empty." }
 
-        val loadMultiLibResult = this.loadAndValidate(evaluationParams.expressions.keys.toList())
+        val loadAndValidateLibrariesResult =
+            this.loadAndValidate(evaluationParams.expressions.keys.toList())
 
         initializeEvalTime(evaluationParams.evaluationDateTime)
 
         // here we initialize all libraries without emptying the cache for each library
-        this.state.init(loadMultiLibResult.allLibraries)
+        this.state.init(loadAndValidateLibrariesResult.allLibraries)
 
         // We must do this only once per library evaluation otherwise, we may clear the cache
         // prematurely
@@ -112,7 +113,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             )
         }
 
-        loadMultiLibResult.allLibraries.forEach { library ->
+        loadAndValidateLibrariesResult.allLibraries.forEach { library ->
             state.setParameters(library, evaluationParams.parameters)
         }
 
@@ -120,13 +121,14 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
 
         // We need to reverse the order of Libraries since the CQL engine state has the last library
         // first
-        val reversedOrderLibraryIdentifiers = loadMultiLibResult.allLibraryIds.reversed()
+        val reversedOrderLibraryIdentifiers =
+            loadAndValidateLibrariesResult.allLibraryIds.reversed()
 
-        val resultBuilder: EvaluationResultsForMultiLib.Builder =
-            EvaluationResultsForMultiLib.builder(loadMultiLibResult)
+        val resultBuilder: EvaluationResults.Builder =
+            EvaluationResults.builder(loadAndValidateLibrariesResult)
 
         for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
-            val library = loadMultiLibResult.retrieveLibrary(libraryIdentifier)
+            val library = loadAndValidateLibrariesResult.retrieveLibrary(libraryIdentifier)
             val expressions =
                 evaluationParams.expressions[libraryIdentifier] ?: this.getExpressions(library!!)
 
@@ -307,13 +309,17 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @return A result object containing the evaluation results and any exceptions encountered
      *   during the process.
      */
-    private fun loadAndValidate(libraryIdentifiers: List<VersionedIdentifier>): LoadMultiLibResult {
+    @Suppress("NestedBlockDepth")
+    private fun loadAndValidate(
+        libraryIdentifiers: List<VersionedIdentifier>
+    ): LoadAndValidateLibrariesResult {
         val resolvedLibraryResults =
             this.environment.libraryManager!!.resolveLibraries(libraryIdentifiers)
 
         // The results, exceptions, and warnings are keyed by identifiers from the provided
         // `libraryIdentifiers` list.
-        val resultBuilder: LoadMultiLibResult.Builder = LoadMultiLibResult.builder()
+        val resultBuilder: LoadAndValidateLibrariesResult.Builder =
+            LoadAndValidateLibrariesResult.builder()
 
         for (libraryResult in resolvedLibraryResults.allResults()) {
             if (!libraryResult.errors.isEmpty()) {

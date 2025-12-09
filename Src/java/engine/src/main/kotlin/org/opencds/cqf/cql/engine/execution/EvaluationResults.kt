@@ -6,7 +6,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  * Track evaluation results and exceptions for multiple libraries in a single evaluation, to support
  * partial successes and partial failures across libraries.
  */
-class EvaluationResultsForMultiLib private constructor(builder: Builder) {
+class EvaluationResults private constructor(builder: Builder) {
     val results = builder.results.toMap()
     val exceptions = builder.exceptions.toMap()
     val warnings = builder.warnings.toMap()
@@ -23,6 +23,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
         return getWarningFor(libraryIdentifier) != null
     }
 
+    @Suppress("ReturnCount")
     fun getResultFor(libraryIdentifier: VersionedIdentifier?): EvaluationResult? {
         if (results.containsKey(libraryIdentifier)) {
             return results[libraryIdentifier]
@@ -41,6 +42,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
     val onlyResultOrThrow: EvaluationResult
         get() {
             check(!(results.size > 1 || exceptions.size > 1)) {
+                @Suppress("MaxLineLength")
                 "Did you run an evaluation for multiple libraries?  Expected exactly one result or error, but found results: ${results.size} errors: ${exceptions.size}: "
             }
 
@@ -53,6 +55,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
             return this.firstResult!!
         }
 
+    @Suppress("ReturnCount")
     fun getExceptionFor(libraryIdentifier: VersionedIdentifier): RuntimeException? {
         if (exceptions.containsKey(libraryIdentifier)) {
             return exceptions[libraryIdentifier]
@@ -68,6 +71,7 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
         return null
     }
 
+    @Suppress("ReturnCount")
     fun getWarningFor(libraryIdentifier: VersionedIdentifier): RuntimeException? {
         if (warnings.containsKey(libraryIdentifier)) {
             return warnings[libraryIdentifier]
@@ -117,14 +121,14 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
         return !warnings.isEmpty()
     }
 
-    class Builder(loadMultiLibResult: LoadMultiLibResult) {
+    class Builder(loadAndValidateLibrariesResult: LoadAndValidateLibrariesResult) {
         val results = mutableMapOf<VersionedIdentifier, EvaluationResult>()
         val exceptions = mutableMapOf<VersionedIdentifier, RuntimeException>()
         val warnings = mutableMapOf<VersionedIdentifier, RuntimeException>()
 
         init {
-            exceptions.putAll(loadMultiLibResult.exceptions)
-            warnings.putAll(loadMultiLibResult.warnings)
+            exceptions.putAll(loadAndValidateLibrariesResult.exceptions)
+            warnings.putAll(loadAndValidateLibrariesResult.warnings)
         }
 
         fun addResult(libraryId: VersionedIdentifier, evaluationResult: EvaluationResult) {
@@ -135,8 +139,8 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
             exceptions[withIdOnly(libraryId)] = exception
         }
 
-        fun build(): EvaluationResultsForMultiLib {
-            return EvaluationResultsForMultiLib(this)
+        fun build(): EvaluationResults {
+            return EvaluationResults(this)
         }
 
         private fun withIdOnly(libraryId: VersionedIdentifier): VersionedIdentifier {
@@ -145,8 +149,8 @@ class EvaluationResultsForMultiLib private constructor(builder: Builder) {
     }
 
     companion object {
-        fun builder(loadMultiLibResult: LoadMultiLibResult): Builder {
-            return Builder(loadMultiLibResult)
+        fun builder(loadAndValidateLibrariesResult: LoadAndValidateLibrariesResult): Builder {
+            return Builder(loadAndValidateLibrariesResult)
         }
     }
 }

@@ -97,27 +97,27 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
     fun ensureWarningsAreSeparateFromErrors() {
         val engine = getCqlEngineForFhirNewLibMgr(true)
 
-        val multiLibResults =
+        val evaluationResults =
             engine.evaluate {
                 library(LIB_1)
                 library(LIB_WARNING_HIDING)
                 library(LIB_ERROR_INVALID_CAST_EXPRESSION)
             }
 
-        Assertions.assertTrue(multiLibResults.hasExceptions())
-        Assertions.assertTrue(multiLibResults.hasWarnings())
-        Assertions.assertFalse(multiLibResults.warnings.isEmpty())
-        Assertions.assertFalse(multiLibResults.exceptions.isEmpty())
+        Assertions.assertTrue(evaluationResults.hasExceptions())
+        Assertions.assertTrue(evaluationResults.hasWarnings())
+        Assertions.assertFalse(evaluationResults.warnings.isEmpty())
+        Assertions.assertFalse(evaluationResults.exceptions.isEmpty())
 
-        Assertions.assertTrue(multiLibResults.containsResultsFor(LIB_1))
-        Assertions.assertFalse(multiLibResults.containsWarningsFor(LIB_1))
-        Assertions.assertFalse(multiLibResults.containsExceptionsFor(LIB_1))
+        Assertions.assertTrue(evaluationResults.containsResultsFor(LIB_1))
+        Assertions.assertFalse(evaluationResults.containsWarningsFor(LIB_1))
+        Assertions.assertFalse(evaluationResults.containsExceptionsFor(LIB_1))
 
-        Assertions.assertTrue(multiLibResults.containsResultsFor(LIB_WARNING_HIDING))
-        Assertions.assertTrue(multiLibResults.containsWarningsFor(LIB_WARNING_HIDING))
-        Assertions.assertFalse(multiLibResults.containsExceptionsFor(LIB_WARNING_HIDING))
+        Assertions.assertTrue(evaluationResults.containsResultsFor(LIB_WARNING_HIDING))
+        Assertions.assertTrue(evaluationResults.containsWarningsFor(LIB_WARNING_HIDING))
+        Assertions.assertFalse(evaluationResults.containsExceptionsFor(LIB_WARNING_HIDING))
 
-        val warning = multiLibResults.getWarningFor(LIB_WARNING_HIDING)
+        val warning = evaluationResults.getWarningFor(LIB_WARNING_HIDING)
         Assertions.assertInstanceOf(CqlException::class.java, warning)
         Assertions.assertTrue(
             warning!!
@@ -128,16 +128,16 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         Assertions.assertFalse(
-            multiLibResults.containsResultsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
+            evaluationResults.containsResultsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
         )
         Assertions.assertFalse(
-            multiLibResults.containsWarningsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
+            evaluationResults.containsWarningsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
         )
         Assertions.assertTrue(
-            multiLibResults.containsExceptionsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
+            evaluationResults.containsExceptionsFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
         )
 
-        val error = multiLibResults.getExceptionFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
+        val error = evaluationResults.getExceptionFor(LIB_ERROR_INVALID_CAST_EXPRESSION)
         Assertions.assertInstanceOf(CqlException::class.java, error)
         Assertions.assertTrue(
             error!!
@@ -215,7 +215,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         engine.state.clearEvaluatedResources()
 
         // Using the same engine, evaluate three libraries, two of which are not cached
-        val resultsMultiLib =
+        val evaluationResults =
             engine.evaluate {
                 for (id in ALL_LIB_IDS) {
                     library(id) { expressions(ALL_EXPRESSIONS) }
@@ -223,7 +223,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
             }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLib,
+            evaluationResults,
             LIB_1,
             mapOf(
                 UNION_EXPRESSION to
@@ -246,7 +246,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLib,
+            evaluationResults,
             LIB_2,
             mapOf(
                 UNION_EXPRESSION to
@@ -269,7 +269,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLib,
+            evaluationResults,
             LIB_3,
             mapOf(
                 UNION_EXPRESSION to
@@ -292,7 +292,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         // Now use the same engine, but pass the identifiers in a different order
-        val resultsMultiLibDifferentOrder =
+        val evaluationResultsDifferentOrder =
             engine.evaluate {
                 library(LIB_3) { expressions(ALL_EXPRESSIONS) }
                 library(LIB_2) { expressions(ALL_EXPRESSIONS) }
@@ -300,7 +300,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
             }
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLibDifferentOrder,
+            evaluationResultsDifferentOrder,
             LIB_1,
             mapOf(
                 UNION_EXPRESSION to
@@ -323,7 +323,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLibDifferentOrder,
+            evaluationResultsDifferentOrder,
             LIB_2,
             mapOf(
                 UNION_EXPRESSION to
@@ -346,7 +346,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         )
 
         EvaluatedResourceTestUtils.assertEntireEvaluationResult(
-            resultsMultiLibDifferentOrder,
+            evaluationResultsDifferentOrder,
             LIB_3,
             mapOf(
                 UNION_EXPRESSION to
