@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
     id("org.openrewrite.rewrite")
+    kotlin("plugin.serialization")
 }
 
 repositories {
@@ -39,6 +40,7 @@ kotlin {
 
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.13")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
     testImplementation("uk.co.datumedge:hamcrest-json:0.2")
     testImplementation(platform("org.junit:junit-bom:5.10.2"))

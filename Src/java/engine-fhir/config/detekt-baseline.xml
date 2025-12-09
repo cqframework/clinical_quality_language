@@ -247,7 +247,6 @@
     <ID>TooManyFunctions:Dstu2FhirTypeConverter.kt$Dstu2FhirTypeConverter : BaseFhirTypeConverter</ID>
     <ID>TooManyFunctions:Dstu3FhirModelResolver.kt$Dstu3FhirModelResolver : FhirModelResolver</ID>
     <ID>TooManyFunctions:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter : BaseFhirTypeConverter</ID>
-    <ID>TooManyFunctions:FhirModelResolver.kt$FhirModelResolver&lt;BaseType, BaseDateTimeType, TimeType, SimpleQuantityType, IdType, ResourceType, EnumerationType : IBaseEnumeration&lt;*>, EnumFactoryType : IBaseEnumFactory&lt;*>> : ModelResolver</ID>
     <ID>TooManyFunctions:FhirTypeConverter.kt$FhirTypeConverter</ID>
     <ID>TooManyFunctions:R4FhirModelResolver.kt$R4FhirModelResolver : FhirModelResolver</ID>
     <ID>TooManyFunctions:R4FhirTypeConverter.kt$R4FhirTypeConverter : BaseFhirTypeConverter</ID>

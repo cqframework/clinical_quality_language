@@ -3,7 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>ComplexCondition:CalculateAgeAtEvaluator.kt$CalculateAgeAtEvaluator$(birthDate is Date &amp;&amp; asOf is Date) || (birthDate is DateTime &amp;&amp; asOf is DateTime)</ID>
-    <ID>ComplexCondition:ChildrenEvaluator.kt$ChildrenEvaluator$source is Int || source is BigDecimal || source is String || source is Boolean</ID>
     <ID>ComplexCondition:Code.kt$Code$codeIsEqual == null || systemIsEqual == null || versionIsEqual == null || displayIsEqual == null</ID>
     <ID>ComplexCondition:ConvertsToQuantityEvaluator.kt$ConvertsToQuantityEvaluator$argument is String || argument is Ratio || argument is BigDecimal || argument is Int</ID>
     <ID>ComplexCondition:ConvertsToStringEvaluator.kt$ConvertsToStringEvaluator$argument is Boolean || argument is Int || argument is Long || argument is BigDecimal || argument is Quantity || argument is Ratio || argument is Date || argument is DateTime || argument is String || argument is Time</ID>
@@ -55,7 +54,6 @@
     <ID>ForbiddenComment:CachingModelResolverDecoratorTest.kt$CachingModelResolverDecoratorTest$// TODO: Extend testing to cover more of the CachedModelResolver</ID>
     <ID>ForbiddenComment:ChildrenEvaluator.kt$ChildrenEvaluator$// TODO: Intervals and Tuples?</ID>
     <ID>ForbiddenComment:CqlDateTimeOperatorsTest.kt$CqlDateTimeOperatorsTest$// TODO: uncomment once Time(x,x,x,x,x) format is fixed</ID>
-    <ID>ForbiddenComment:CqlEngine.kt$CqlEngine$// TODO: Add debugging info as a parameter.</ID>
     <ID>ForbiddenComment:CqlEngine.kt$CqlEngine$// TODO: Smarter validation would be to checkout and see if any retrieves</ID>
     <ID>ForbiddenComment:CqlEngine.kt$CqlEngine$// TODO: Validate Expressions as well?</ID>
     <ID>ForbiddenComment:CqlEngine.kt$CqlEngine$// TODO: What we actually need here is a check of the actual retrieves, based on data</ID>
@@ -93,7 +91,6 @@
     <ID>ImplicitDefaultLocale:CqlEngine.kt$CqlEngine$String.format( "Library %s has terminology requirements and no terminology provider is registered.", this.getLibraryDescription(library.identifier!!), )</ID>
     <ID>ImplicitDefaultLocale:CqlEngine.kt$CqlEngine$String.format( "Unable to load library %s", libraryIdentifier.id + (if (libraryIdentifier.version != null) "-" + libraryIdentifier.version else ""), )</ID>
     <ID>ImplicitDefaultLocale:CqlEngine.kt$CqlEngine$String.format( "library %s loaded, but had errors: %s", libraryIdentifier.id + (if (libraryIdentifier.version != null) "-" + libraryIdentifier.version else ""), errors.joinToString(",") { obj -> obj.message ?: "" }, )</ID>
-    <ID>ImplicitDefaultLocale:CqlEngine.kt$CqlEngine$String.format("Error evaluating expression %s: %s", expression, e.message)</ID>
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format( "400: This source should be redacted%n%s", RedactingPHIObfuscator.REDACTED_MESSAGE, )</ID>
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message%n")</ID>
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message%nnull")</ID>
@@ -116,7 +113,6 @@
     <ID>LongMethod:BacktraceTest.kt$BacktraceTest$@Test fun backtrace_smoke()</ID>
     <ID>LongMethod:CollapseEvaluator.kt$CollapseEvaluator$fun collapse(list: Iterable&lt;Interval?>?, per: Quantity?, state: State?): List&lt;Interval?>?</ID>
     <ID>LongMethod:CqlClinicalOperatorsTest.kt$CqlClinicalOperatorsTest$@Test fun all_clinical_operators_tests()</ID>
-    <ID>LongMethod:CqlEngineMultipleLibrariesTest.kt$CqlEngineMultipleLibrariesTest$@Test fun multipleLibrariesWithParameters()</ID>
     <ID>LongMethod:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$@Test fun message()</ID>
     <ID>LongMethod:CqlInternalTypeRepresentationSuiteTest.kt$CqlInternalTypeRepresentationSuiteTest$@ParameterizedTest @MethodSource("timeZones") fun all_internal_type_representation(zoneId: ZoneId, now: LocalDateTime)</ID>
     <ID>LongMethod:CqlLogicalOperatorsTest.kt$CqlLogicalOperatorsTest$@Test fun all_logical_operators()</ID>
@@ -146,9 +142,6 @@
     <ID>LongMethod:SubtractEvaluator.kt$SubtractEvaluator$@JvmStatic fun subtract(left: Any?, right: Any?): Any?</ID>
     <ID>LongMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
     <ID>LongMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
-    <ID>LongParameterList:Backtrace.kt$Backtrace$( containingDefinition: ExpressionDef?, definitionFrame: ActivationFrame?, stack: Deque&lt;ActivationFrame>, contextName: String?, contextValue: Any?, expression: Expression?, )</ID>
-    <ID>LongParameterList:CqlEngine.kt$CqlEngine$( libraryIdentifier: VersionedIdentifier, expressions: Set&lt;String>? = null, contextParameter: Pair&lt;String?, Any?>? = null, parameters: Map&lt;String?, Any?>? = null, debugMap: DebugMap? = null, evaluationDateTime: ZonedDateTime? = null, )</ID>
-    <ID>LongParameterList:CqlEngine.kt$CqlEngine$( libraryIdentifiers: List&lt;VersionedIdentifier>, expressions: Set&lt;String>? = null, contextParameter: Pair&lt;String?, Any?>? = null, parameters: Map&lt;String?, Any?>? = null, debugMap: DebugMap? = null, nullableEvaluationDateTime: ZonedDateTime? = null, )</ID>
     <ID>LongParameterList:DateTimeEvaluator.kt$DateTimeEvaluator$( year: Int?, month: Int?, day: Int?, hour: Int?, minute: Int?, second: Int?, milliSecond: Int?, timeZoneOffset: BigDecimal?, )</ID>
     <ID>LongParameterList:MessageEvaluator.kt$MessageEvaluator$( state: State?, sourceLocator: SourceLocator?, source: Any?, condition: Boolean?, code: String?, severity: String?, message: String?, )</ID>
     <ID>LongParameterList:Profile.kt$Profile.Node$( writer: Writer, i: Int, x: Double, depth: Int, scaleX: Double, scaleY: Double, )</ID>
@@ -213,7 +206,6 @@
     <ID>MaxLineLength:EndsEvaluator.kt$EndsEvaluator$/* ends _precision_ (left Interval&lt;T>, right Interval&lt;T>) Boolean The ends operator returns true if the first interval ends the second. More precisely, if the starting point of the first interval is greater than or equal to the starting point of the second, and the ending point of the first interval is equal to the ending point of the second. This operator uses the semantics described in the start and end operators to determine interval boundaries. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision. If either argument is null, the result is null. */</ID>
     <ID>MaxLineLength:EqualEvaluator.kt$EqualEvaluator$/* *** NOTES FOR CLINICAL OPERATORS *** =(left Code, right Code) Boolean =(left Concept, right Concept) Boolean The equal (=) operator for Codes and Concepts uses tuple equality semantics. This means that the operator will return true if and only if the values for each element by name are equal. If either argument is null, or contains any null components, the result is null. *** NOTES FOR INTERVAL *** =(left Interval&lt;T>, right Interval&lt;T>) Boolean The equal (=) operator for intervals returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the intervals as determined by the Start and End operators. If either argument is null, the result is null. *** NOTES FOR LIST *** =(left List&lt;T>, right List&lt;T>) Boolean The equal (=) operator for lists returns true if and only if the lists have the same element type, and have the same elements by value, in the same order. If either argument is null, or contains null elements, the result is null. */</ID>
     <ID>MaxLineLength:EquivalentEvaluator.kt$EquivalentEvaluator$/* https://cql.hl7.org/09-b-cqlreference.html#equivalent *** NOTES FOR CLINICAL OPERATORS *** ~(left Code, right Code) Boolean The ~ operator for Code values returns true if the code, system, and version elements are equivalent. The display element is ignored for the purposes of determining Code equivalence. For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept. The display element is ignored for the purposes of determining Concept equivalence. Note that this operator will always return true or false, even if either or both of its arguments are null, or contain null components. Note carefully that this notion of equivalence is not the same as the notion of equivalence used in terminology: "these codes represent the same concept." CQL specifically avoids defining terminological equivalence. The notion of equivalence defined here is used to provide consistent and intuitive semantics when dealing with missing information in membership contexts. *** NOTES FOR INTERVAL *** ~(left Interval&lt;T>, right Interval&lt;T>) Boolean The ~ operator for intervals returns true if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent. *** NOTES FOR LIST *** ~(left List&lt;T>, right List&lt;T>) Boolean The ~ operator for lists returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equivalent. *** NOTES FOR DECIMAL *** For decimals, equivalent means the values are the same with the comparison done on values rounded to the precision of the least precise operand; trailing zeroes after the decimal are ignored in determining precision for equivalent comparison. */</ID>
-    <ID>MaxLineLength:EvaluationResultsForMultiLib.kt$EvaluationResultsForMultiLib$"Did you run an evaluation for multiple libraries? Expected exactly one result or error, but found results: ${results.size} errors: ${exceptions.size}: "</ID>
     <ID>MaxLineLength:ExceptEvaluator.kt$ExceptEvaluator$"The following interval values led to an undefined Except result: leftStart: ${leftStart.toString()}, leftEnd: ${leftEnd.toString()}, rightStart: ${rightStart.toString()}, rightEnd: ${rightEnd.toString()}"</ID>
     <ID>MaxLineLength:ExceptEvaluator.kt$ExceptEvaluator$/* except(left Interval&lt;T>, right Interval&lt;T>) Interval&lt;T> The except operator for intervals returns the set difference of two intervals. More precisely, this operator returns the portion of the first interval that does not overlap with the second. Note that to avoid returning an improper interval, if the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null. except(left List&lt;T>, right List&lt;T>) List&lt;T> The except operator returns the set difference of two lists. More precisely, the operator returns a list with the elements that appear in the first operand that do not appear in the second operand. This operator uses equality semantics to determine whether two elements are the same for the purposes of computing the difference. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results. If either argument is null, the result is null. */</ID>
     <ID>MaxLineLength:FirstEvaluator.kt$FirstEvaluator$/* First(argument List&lt;T>) T The First operator returns the first element in a list. The operator is equivalent to invoking the indexer with an index of 0. If the argument is null, the result is null. */</ID>
@@ -303,14 +295,11 @@
     <ID>NestedBlockDepth:AvgEvaluator.kt$AvgEvaluator$@JvmStatic fun avg(source: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:CoalesceEvaluator.kt$CoalesceEvaluator$fun coalesce(operands: List&lt;Any?>): Any?</ID>
     <ID>NestedBlockDepth:CombineEvaluator.kt$CombineEvaluator$@JvmStatic fun combine(source: Any?, separator: String?): Any?</ID>
-    <ID>NestedBlockDepth:CqlEngine.kt$CqlEngine$private fun evaluateExpressions(expressions: Set&lt;String>): EvaluationResult</ID>
-    <ID>NestedBlockDepth:CqlEngine.kt$CqlEngine$private fun loadAndValidate(libraryIdentifiers: List&lt;VersionedIdentifier>): LoadMultiLibResult</ID>
     <ID>NestedBlockDepth:DebugLibraryMapEntry.kt$DebugLibraryMapEntry$@Suppress("ReturnCount") fun shouldDebug(node: Element?): DebugAction?</ID>
     <ID>NestedBlockDepth:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>NestedBlockDepth:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>NestedBlockDepth:FilterEvaluator.kt$FilterEvaluator$@JvmStatic fun filter(elm: Filter?, source: Any?, condition: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:FlattenEvaluator.kt$FlattenEvaluator$@JvmStatic fun flatten(operand: Any?): List&lt;Any?>?</ID>
-    <ID>NestedBlockDepth:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun internalEvaluate( functionRef: FunctionRef?, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>NestedBlockDepth:InCodeSystemEvaluator.kt$InCodeSystemEvaluator$@JvmStatic fun inCodeSystem(code: Any?, codeSystem: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:InValueSetEvaluator.kt$InValueSetEvaluator$@JvmStatic fun inValueSet(code: Any?, valueset: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:IndexerEvaluator.kt$IndexerEvaluator$@JvmStatic fun indexer(left: Any?, right: Any?): Any?</ID>
@@ -393,9 +382,6 @@
     <ID>ReturnCount:Environment.kt$Environment$fun resolveType(value: Any?): Class&lt;*>?</ID>
     <ID>ReturnCount:EqualEvaluator.kt$EqualEvaluator$@JvmStatic @JvmOverloads fun equal(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
     <ID>ReturnCount:EquivalentEvaluator.kt$EquivalentEvaluator$@JvmStatic @JvmOverloads fun equivalent(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
-    <ID>ReturnCount:EvaluationResultsForMultiLib.kt$EvaluationResultsForMultiLib$fun getExceptionFor(libraryIdentifier: VersionedIdentifier): RuntimeException?</ID>
-    <ID>ReturnCount:EvaluationResultsForMultiLib.kt$EvaluationResultsForMultiLib$fun getResultFor(libraryIdentifier: VersionedIdentifier?): EvaluationResult?</ID>
-    <ID>ReturnCount:EvaluationResultsForMultiLib.kt$EvaluationResultsForMultiLib$fun getWarningFor(libraryIdentifier: VersionedIdentifier): RuntimeException?</ID>
     <ID>ReturnCount:EvaluationVisitor.kt$EvaluationVisitor$override fun visitCase(elm: Case, context: State?): Any?</ID>
     <ID>ReturnCount:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$@JvmStatic fun expand(listOrInterval: Any?, per: Quantity?, state: State?): Any?</ID>
@@ -403,7 +389,6 @@
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$private fun expandIntervalsIntoIntervals( list: Iterable&lt;Interval?>, per: Quantity?, state: State?, ): List&lt;Interval?>?</ID>
     <ID>ReturnCount:FirstEvaluator.kt$FirstEvaluator$@JvmStatic fun first(source: Any?): Any?</ID>
     <ID>ReturnCount:FloorEvaluator.kt$FloorEvaluator$@JvmStatic fun floor(operand: Any?): Any?</ID>
-    <ID>ReturnCount:FunctionRefEvaluator.kt$FunctionRefEvaluator$@JvmStatic fun operandDefTypeSpecifierEqual( operandDef: OperandDef, typeSpecifier: TypeSpecifier?, ): kotlin.Boolean</ID>
     <ID>ReturnCount:GreaterEvaluator.kt$GreaterEvaluator$@JvmStatic fun greater(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>ReturnCount:GreaterOrEqualEvaluator.kt$GreaterOrEqualEvaluator$@JvmStatic fun greaterOrEqual(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>ReturnCount:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Any?, precision: Any?): Any?</ID>
@@ -603,7 +588,6 @@
     <ID>UnusedPrivateProperty:CqlArithmeticFunctionsTest.kt$CqlArithmeticFunctionsTest$val value = AbsEvaluator.abs("This is an error")</ID>
     <ID>UnusedPrivateProperty:CqlArithmeticFunctionsTest.kt$CqlArithmeticFunctionsTest$val value = AddEvaluator.add("This is an error", 404)</ID>
     <ID>UnusedPrivateProperty:CqlPerformanceIT.kt$CqlPerformanceIT$i</ID>
-    <ID>UnusedPrivateProperty:CqlPerformanceIT.kt$CqlPerformanceIT$val results = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime)</ID>
     <ID>UnusedPrivateProperty:GreaterEvaluator.kt$GreaterEvaluator$private val logger: Logger? = LoggerFactory.getLogger(GreaterEvaluator::class.java)</ID>
     <ID>UnusedPrivateProperty:QueryIterator.kt$QueryIterator$state: State?</ID>
     <ID>UseCheckOrError:DateTime.kt$DateTime$throw IllegalStateException("There must be a non-null offset!")</ID>
@@ -617,7 +601,6 @@
     <ID>VariableNaming:CompositeDataProviderTest.kt$CompositeDataProviderTest$val `object` = "object"</ID>
     <ID>VariableNaming:CompositeDataProviderTest.kt$CompositeDataProviderTest$val `object` = 1L</ID>
     <ID>VariableNaming:CompositeDataProviderTest.kt$CompositeDataProviderTest$val `object` = Date()</ID>
-    <ID>VariableNaming:CqlEngine.kt$CqlEngine$val `object` = this.evaluationVisitor.visitExpressionDef(def, this.state)</ID>
     <ID>VariableNaming:EvaluationVisitor.kt$EvaluationVisitor$val `when` = visitExpression(caseItem.`when`!!, context)</ID>
     <ID>VariableNaming:EvaluationVisitor.kt$EvaluationVisitor$val `when` = visitExpression(caseItem.`when`!!, context) as Boolean? ?: continue</ID>
   </CurrentIssues>

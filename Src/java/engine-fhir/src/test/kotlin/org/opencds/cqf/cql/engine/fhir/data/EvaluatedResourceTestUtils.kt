@@ -28,7 +28,7 @@ import org.hl7.fhir.r4.model.ResourceType
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.EvaluationResult
-import org.opencds.cqf.cql.engine.execution.EvaluationResultsForMultiLib
+import org.opencds.cqf.cql.engine.execution.EvaluationResults
 import org.opencds.cqf.cql.engine.execution.ExpressionResult
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
@@ -207,16 +207,16 @@ internal object EvaluatedResourceTestUtils {
     }
 
     fun assertEntireEvaluationResult(
-        evaluationResultsForMultiLib: EvaluationResultsForMultiLib?,
+        evaluationResults: EvaluationResults?,
         libraryIdentifier: VersionedIdentifier?,
         expectedEvaluatedResources: Map<String, Collection<IBaseResource>>,
         expectedValues: Map<String, Collection<IBaseResource>>,
     ) {
-        MatcherAssert.assertThat<EvaluationResultsForMultiLib?>(
-            evaluationResultsForMultiLib,
+        MatcherAssert.assertThat<EvaluationResults?>(
+            evaluationResults,
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
-        val evaluationResult = evaluationResultsForMultiLib!!.getResultFor(libraryIdentifier)
+        val evaluationResult = evaluationResults!!.getResultFor(libraryIdentifier)
 
         if (evaluationResult == null) {
             MatcherAssert.assertThat(
@@ -258,17 +258,14 @@ internal object EvaluatedResourceTestUtils {
     }
 
     fun assertEvaluationResult(
-        evaluationResultsForMultiLib: EvaluationResultsForMultiLib?,
+        evaluationResults: EvaluationResults?,
         libraryIdentifier: VersionedIdentifier?,
         expressionName: String,
         expectedEvaluatedResources: Collection<IBaseResource>,
         expectedValue: Collection<IBaseResource>,
     ) {
-        MatcherAssert.assertThat(
-            evaluationResultsForMultiLib,
-            CoreMatchers.`is`(Matchers.notNullValue()),
-        )
-        val evaluationResult = evaluationResultsForMultiLib!!.getResultFor(libraryIdentifier)
+        MatcherAssert.assertThat(evaluationResults, CoreMatchers.`is`(Matchers.notNullValue()))
+        val evaluationResult = evaluationResults!!.getResultFor(libraryIdentifier)
         val expressionResult = evaluationResult!![expressionName]
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
