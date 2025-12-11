@@ -19,9 +19,14 @@ class EvaluationResult {
         return expressionResults[name]
     }
 
-    /** Returns the ExpressionResult for the given expression name. */
+    /** Returns the ExpressionResult for the given expression reference. */
     operator fun get(ref: EvaluationExpressionRef): ExpressionResult? {
         return results[ref]
+    }
+
+    /** Sets the ExpressionResult for the given expression reference. */
+    operator fun set(ref: EvaluationExpressionRef, result: ExpressionResult) {
+        results[ref] = result
     }
 
     var debugResult: DebugResult? = null
