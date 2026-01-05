@@ -41,14 +41,18 @@ class EvaluationParams(
             expressions[id] = libraryParams.expressions
         }
 
+        /** Shorthand for adding a library by name. */
+        fun library(libraryName: String, libraryParams: LibraryParams) {
+            library(VersionedIdentifier().apply { id = libraryName }, libraryParams)
+        }
+
         /** Adds a library to the evaluation. */
         fun library(id: VersionedIdentifier, block: (LibraryParams.Builder.() -> Unit)? = null) {
-            if (block == null) {
-                expressions[id] = null
-            } else {
-                val libraryParams = LibraryParams.Builder().apply(block).build()
-                expressions[id] = libraryParams.expressions
+            val builder = LibraryParams.Builder()
+            if (block != null) {
+                builder.apply(block)
             }
+            library(id, builder.build())
         }
 
         /** Shorthand for adding a library by name. */
@@ -67,27 +71,41 @@ class EvaluationParams(
         }
     }
 
-    /** Parameters for a specific library's evaluation. */
-    class LibraryParams(val expressions: List<EvaluationExpressionRef>) {
+    /**
+     * Parameters for a specific library's evaluation.
+     *
+     * @property expressions The list of expression refs to evaluate for this library. If the value
+     *   is null, all expressions in the library will be evaluated.
+     */
+    class LibraryParams(val expressions: List<EvaluationExpressionRef>?) {
         class Builder {
-            private val expressions = mutableListOf<EvaluationExpressionRef>()
+            private var expressions: MutableList<EvaluationExpressionRef>? = null
 
             /** Adds expression refs to be evaluated. */
             fun expressions(vararg refs: EvaluationExpressionRef) {
-                expressions.addAll(refs)
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
+                expressions!!.addAll(refs)
             }
 
             /** Adds expressions by name. */
             fun expressions(names: Iterable<String>) {
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
                 for (name in names) {
-                    expressions.add(EvaluationExpressionRef(name))
+                    expressions!!.add(EvaluationExpressionRef(name))
                 }
             }
 
             /** Adds expressions by name. */
             fun expressions(vararg names: String) {
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
                 for (name in names) {
-                    expressions.add(EvaluationExpressionRef(name))
+                    expressions!!.add(EvaluationExpressionRef(name))
                 }
             }
 
