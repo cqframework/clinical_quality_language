@@ -833,12 +833,14 @@ define Equivalent_ADefined_BNull: 5 ~ null
 define Equivalent_ANull_BNull: null as Integer ~ null
 define Equivalent_ADefined_BDefined: 3 ~ 3
 define Equivalent_CaseInsensitiveStrings: 'FOO' ~ 'foo'
+define Equivalent_Ratio: 1 : 10 ~ 10 : 100
 
 define test_Equivalent_ANull_BDefined: TestMessage(not Equivalent_ANull_BDefined, 'Equivalent_ANull_BDefined', toString(false), toString(Equivalent_ANull_BDefined))
 define test_Equivalent_ADefined_BNull: TestMessage(not Equivalent_ADefined_BNull, 'Equivalent_ADefined_BNull', toString(false), toString(Equivalent_ADefined_BNull))
 define test_Equivalent_ANull_BNull: TestMessage(Equivalent_ANull_BNull, 'Equivalent_ANull_BNull', toString(true), toString(Equivalent_ANull_BNull))
 define test_Equivalent_ADefined_BDefined: TestMessage(Equivalent_ADefined_BDefined, 'Equivalent_ADefined_BDefined', toString(true), toString(Equivalent_ADefined_BDefined))
 define test_Equivalent_CaseInsensitiveStrings: TestMessage(Equivalent_CaseInsensitiveStrings, 'Equivalent_CaseInsensitiveStrings', toString(true), toString(Equivalent_CaseInsensitiveStrings))
+define test_Equivalent_Ratio: TestMessage(Equivalent_Ratio, 'Equivalent_Ratio', toString(true), toString(Equivalent_Ratio))
 
 // Tuple Equivalence
 define Equivalent_EmptyTuples: { : } ~ { : }
