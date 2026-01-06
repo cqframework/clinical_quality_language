@@ -116,6 +116,10 @@ public class Environment {
             return null;
         }
 
+        if (Iterable.class.isAssignableFrom(type) && operand instanceof Iterable) {
+            return operand;
+        }
+
         if (type.isAssignableFrom(operand.getClass())) {
             return operand;
         }
@@ -174,6 +178,10 @@ public class Environment {
     public Boolean is(Object operand, Class<?> type) {
         if (operand == null) {
             return null;
+        }
+
+        if (Iterable.class.isAssignableFrom(type) && operand instanceof Iterable) {
+            return true;
         }
 
         if (type.isAssignableFrom(operand.getClass())) {
