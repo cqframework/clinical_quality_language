@@ -1,6 +1,5 @@
 package org.cqframework.fhir.npm;
 
-import jakarta.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +7,7 @@ import java.util.List;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
@@ -49,11 +49,14 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                     Library l = reader.readLibrary(s);
                     for (org.hl7.fhir.r5.model.Attachment a : l.getContent()) {
                         if (a.getContentType() != null && a.getContentType().equals("application/xml")) {
-                            if (modelIdentifier.getSystem() == null) {
-                                modelIdentifier.setSystem(identifier.getSystem());
-                            }
                             InputStream is = new ByteArrayInputStream(a.getData());
-                            return JAXB.unmarshal(is, ModelInfo.class);
+                            ModelInfo mi = ModelInfoReaderFactory.getReader("application/xml").read(is);
+                            // Set the identifier system to the url of the loaded model info, not the package canonical
+                            // since the library with the model info may not be in the same package as the ig
+                            if (mi != null && mi.getUrl() != null && modelIdentifier.getSystem() == null) {
+                                modelIdentifier.setSystem(mi.getUrl());
+                            }
+                            return mi;
                         }
                     }
                 }
