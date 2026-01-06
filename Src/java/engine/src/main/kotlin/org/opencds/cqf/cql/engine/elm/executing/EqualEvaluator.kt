@@ -3,9 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 import java.math.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
-import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.*
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -57,6 +55,26 @@ object EqualEvaluator {
             return left == right
         } else if (left is BigDecimal && right is BigDecimal) {
             return left.compareTo(right) == 0
+        } else if (left is Quantity && right is Quantity) {
+            // Try the Quantity.equal method which implements "simple" rules such as the equality of
+            // alternate
+            // spellings for "week" or "month".
+            val simpleResult = left.equal(right)
+            if (simpleResult != null) {
+                return simpleResult // true or false
+            } else {
+                // The simple method indicated that the units are not comparable, try to convert the
+                // value of
+                // rightQuantity to the unit of leftQuantity and check for equality again if the
+                // conversion is
+                // possible.
+                return computeWithConvertedUnits(
+                    left,
+                    right,
+                    { _, leftValue, rightValue -> equal(leftValue, rightValue) },
+                    state!!,
+                )
+            }
         } else if (left is CqlType && right is CqlType) {
             return left.equal(right)
         }

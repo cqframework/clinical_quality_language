@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
+import org.opencds.cqf.cql.engine.execution.State
 
 class Ratio : CqlType {
     var numerator: Quantity? = null
@@ -24,10 +25,14 @@ class Ratio : CqlType {
      * (e.g. 1:100 ~ 10:1000).
      */
     override fun equivalent(other: Any?): Boolean? {
-        val otherRatio = other as Ratio
+        return fullEquivalent(other as Ratio, null)
+    }
+
+    fun fullEquivalent(other: Ratio, state: State?): Boolean? {
         return equivalent(
-            multiply(this.numerator, otherRatio.denominator),
-            multiply(otherRatio.numerator, this.denominator),
+            multiply(this.numerator, other.denominator),
+            multiply(other.numerator, this.denominator),
+            state,
         )
     }
 
