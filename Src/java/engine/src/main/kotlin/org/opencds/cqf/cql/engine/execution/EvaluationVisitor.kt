@@ -223,7 +223,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        return add(left, right)
+        return add(left, right, context)
     }
 
     override fun visitAbs(elm: Abs, context: State?): Any? {
@@ -314,7 +314,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitWidth(elm: Width, context: State?): Any? {
         val operand = visitExpression(elm.operand!!, context)
-        return width(operand)
+        return width(operand, context)
     }
 
     override fun visitVariance(elm: Variance, context: State?): Any? {
@@ -443,7 +443,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitSize(elm: Size, context: State?): Any? {
         val argument = visitExpression(elm.operand!!, context)
-        return size(argument)
+        return size(argument, context)
     }
 
     override fun visitSlice(elm: Slice, context: State?): Any? {
@@ -505,7 +505,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     override fun visitSubtract(elm: Subtract, context: State?): Any? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
-        return subtract(left, right)
+        return subtract(left, right, context)
     }
 
     override fun visitSuccessor(elm: Successor, context: State?): Any? {
@@ -515,7 +515,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitSum(elm: Sum, context: State?): Any? {
         val source = visitExpression(elm.source!!, context)
-        return sum(source)
+        return sum(source, context)
     }
 
     override fun visitTime(elm: Time, context: State?): Any? {

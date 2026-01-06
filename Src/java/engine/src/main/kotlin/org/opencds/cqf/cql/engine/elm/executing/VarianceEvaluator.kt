@@ -35,8 +35,8 @@ object VarianceEvaluator {
                     if (element is BigDecimal || element is Quantity) {
                         newVals.add(
                             MultiplyEvaluator.multiply(
-                                SubtractEvaluator.subtract(element, mean),
-                                SubtractEvaluator.subtract(element, mean),
+                                SubtractEvaluator.subtract(element, mean, state),
+                                SubtractEvaluator.subtract(element, mean, state),
                             )
                         )
                     } else {
@@ -49,7 +49,7 @@ object VarianceEvaluator {
             }
 
             return DivideEvaluator.divide(
-                SumEvaluator.sum(newVals),
+                SumEvaluator.sum(newVals, state),
                 BigDecimal(newVals.size - 1),
                 state,
             ) // slight variation to Avg

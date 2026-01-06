@@ -171,13 +171,13 @@ constructor(
     }
 
     companion object {
-        fun getSize(start: Any?, end: Any?): Any? {
+        fun getSize(start: Any?, end: Any?, state: State?): Any? {
             if (start == null || end == null) {
                 return null
             }
 
             if (start is Int || start is BigDecimal || start is Quantity) {
-                return subtract(end, start)
+                return subtract(end, start, state)
             }
 
             throw InvalidOperatorArgument(

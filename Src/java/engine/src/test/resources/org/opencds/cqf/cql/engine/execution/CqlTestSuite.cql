@@ -203,11 +203,9 @@ define test_Sum_not_null: TestMessage(Sum_not_null = 15, 'Sum_not_null', toStrin
 define test_Sum_has_null: TestMessage(Sum_has_null = 3, 'Sum_has_null', toString(3), toString(Sum_has_null))
 define test_Sum_not_null_q: TestMessage(Sum_not_null_q = 15'ml', 'Sum_not_null_q', toString(15'ml'), toString(Sum_not_null_q))
 define test_Sum_has_null_q: TestMessage(Sum_has_null_q = 3'ml', 'Sum_has_null_q', toString(3'ml'), toString(Sum_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Sum_unmatched_units_q: TestMessage(Sum_unmatched_units_q is null, 'Sum_unmatched_units_q', 'null', toString(Sum_unmatched_units_q))
+define test_Sum_unmatched_units_q: TestMessage(Sum_unmatched_units_q = 2.013 'L', 'Sum_unmatched_units_q', toString(2.013 'L'), toString(Sum_unmatched_units_q))
 define test_Sum_empty: TestMessage(Sum_empty is null, 'Sum_empty', 'null', toString(Sum_empty))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Sum_q_diff_units: TestMessage(Sum_q_diff_units = 15'ml', 'Sum_q_diff_units', toString(15'ml'), toString(Sum_q_diff_units))
+define test_Sum_q_diff_units: TestMessage(Sum_q_diff_units = 15'ml', 'Sum_q_diff_units', toString(15'ml'), toString(Sum_q_diff_units))
 
 // Min
 define Min_not_null: Min({1,2,3,4,5,0})
@@ -625,8 +623,8 @@ define Quantity_sub_d_q : Quantity_Jan1_2000 - Quantity_days_10
 // define Quantity_mul_q_q_diff : 2 'm' * 10 '/d'
 // define Quantity_MultiplyUcum: (5 'm' * 25 'km') = 125000 'm2'
 // define Quantity_DivideUcum: (20 'm2' / 5 'm') = 4 'm'
-// define Quantity_AddUcum: (5 'm' + 5 'km') = 5005 'm'
-// define Quantity_SubtractUcum: (25 'km' - 5 'm') = 24995 'm'
+define Quantity_AddUcum: (5 'm' + 5 'km')
+define Quantity_SubtractUcum: (25 'km' - 5 'm')
 define Quantity_div_q_d : Quantity_days_10 / 2
 define Quantity_mul_q_d : Quantity_days_10 * 2
 define Quantity_mul_d_q : 2 * Quantity_QL10Days
@@ -642,7 +640,8 @@ define test_Quantity_mul_q_d: TestMessage(Quantity_mul_q_d = 20 days, 'Quantity_
 define test_Quantity_mul_d_q: TestMessage(Quantity_mul_d_q = 20 days, 'Quantity_mul_d_q', toString(20 days), toString(Quantity_mul_d_q))
 define test_Quantity_neg: TestMessage(Quantity_neg = -10 days, 'Quantity_neg', toString(-10 days), toString(Quantity_neg))
 define test_Quantity_abs: TestMessage(Quantity_abs = 10 days, 'Quantity_abs', toString(10 days), toString(Quantity_abs))
-
+define test_Quantity_AddUcum: TestMessage(Quantity_AddUcum = 5005 'm', 'Quantity_AddUcum', toString(5005 'm'), toString(Quantity_AddUcum))
+define test_Quantity_SubtractUcum: TestMessage(Quantity_SubtractUcum = 24995 'm', 'Quantity_SubtractUcum', toString(24995 'm'), toString(Quantity_SubtractUcum))
 
 /*
 ************************
@@ -3792,8 +3791,9 @@ define test_QtyIvlCollapse_CollapseSeparatedQuantityPer3: TestMessage(QtyIvlColl
 define QuantityMeterIntervalList: { Interval[ToQuantity('1 \'m\''), ToQuantity('1.995 \'m\'')], Interval[ToQuantity('2 \'m\''), ToQuantity('3 \'m\'')] }
 define QtyIvlCollapse_CollapseDisjointQuantityUnits: collapse QuantityMeterIntervalList
 define QtyIvlCollapse_ExpectedQuantityUnitsCollapse: { Interval[ToQuantity('1 \'m\''), ToQuantity('3 \'m\'')] }
-define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
-define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
+// TODO(jmoringe): must be skipped until Quantity comparison operators respect units
+// define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
+// define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
 
 // Null test cases
 define NullLowIntervalList: { Interval[null, 4], Interval[3, 5] }

@@ -52,6 +52,10 @@
 			<expression>1'g/cm3' + 1'g/cm3'</expression>
 			<output>2.0'g/cm3'</output>
 		</test>
+		<test name="Add1Q1QDifferentUnits">
+			<expression>1'kg/m3' + 1'g/cm3'</expression>
+			<output>1001.0'kg/m3'</output>
+		</test>
 		<test name="AddIAndD">
 			<expression>1 + 2.0</expression>
 			<output>3.0</output>

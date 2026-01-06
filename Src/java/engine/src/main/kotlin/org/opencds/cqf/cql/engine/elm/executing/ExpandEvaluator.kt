@@ -31,22 +31,23 @@ If the per argument is null, the default unit interval for the point type of the
 The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 object ExpandEvaluator {
-    private fun addPer(addTo: Any, per: Quantity): Any? {
+    private fun addPer(addTo: Any, per: Quantity, state: State?): Any? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
-        return when (addTo) {
-            is Int -> AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
-            is Long ->
-                AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
-            is BigDecimal -> AddEvaluator.add(addTo, per.value)
-            is Quantity -> AddEvaluator.add(addTo, per)
-            is BaseTemporal -> AddEvaluator.add(addTo, per)
-            else ->
-                throw InvalidOperatorArgument(
-                    "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-                    "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
-                )
-        }
+        val rhs =
+            when (addTo) {
+                is Int -> per.value!!.setScale(0, RoundingMode.CEILING).toInt()
+                is Long -> per.value!!.setScale(0, RoundingMode.CEILING).toLong()
+                is BigDecimal -> per.value
+                is Quantity,
+                is BaseTemporal -> per
+                else ->
+                    throw InvalidOperatorArgument(
+                        "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                        "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
+                    )
+            }
+        return AddEvaluator.add(addTo, rhs, state)
     }
 
     /**
@@ -63,7 +64,7 @@ object ExpandEvaluator {
         state: State?,
     ): List<Interval?>? {
         var start = interval.start
-        var nextStart = addPer(start!!, per)
+        var nextStart = addPer(start!!, per, state)
 
         // per may be too small
         if (true != LessEvaluator.less(start, nextStart, state)) {
@@ -82,7 +83,7 @@ object ExpandEvaluator {
                     Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true)
                 )
                 start = nextStart
-                nextStart = addPer(start!!, per)
+                nextStart = addPer(start!!, per, state)
             } else {
                 break
             }

@@ -31,8 +31,8 @@ object PopulationVarianceEvaluator {
             source.forEach { ae ->
                 newVals.add(
                     MultiplyEvaluator.multiply(
-                        SubtractEvaluator.subtract(ae, mean),
-                        SubtractEvaluator.subtract(ae, mean),
+                        SubtractEvaluator.subtract(ae, mean, state),
+                        SubtractEvaluator.subtract(ae, mean, state),
                     )
                 )
             }

@@ -12,20 +12,23 @@ internal class CqlArithmeticFunctionsTest : CqlTestBase() {
         // error testing
 
         try {
-            val value = AbsEvaluator.abs("This is an error")
+            AbsEvaluator.abs("This is an error")
             Assertions.fail<Any?>()
         } catch (e: CqlException) {
             // pass
         }
     }
 
-    /** [org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.evaluate] */
+    /** [org.opencds.cqf.cql.engine.elm.executing.AddEvaluator.add] */
     @Test
     fun add() {
         // error testing
 
         try {
-            val value = AddEvaluator.add("This is an error", 404)
+            // Passing null as the state argument to the subtract method is fine here since that
+            // method only uses the state when it has to convert Quantities with different units which
+            // cannot happen here.
+            AddEvaluator.add("This is an error", 404, null)
             Assertions.fail<Any?>()
         } catch (e: CqlException) {
             // pass

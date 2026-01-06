@@ -38,19 +38,22 @@ object CollapseEvaluator {
     ): Interval {
         if (per.value == BigDecimal("0")) {
             return interval
-        }
-
-        if (interval.pointType!!.getTypeName().contains("Integer")) {
+        } else if (interval.pointType!!.getTypeName().contains("Integer")) {
             return Interval(
                 interval.start,
                 true,
-                AddEvaluator.add(interval.end, per.value!!.toInt()),
+                AddEvaluator.add(interval.end, per.value!!.toInt(), state),
                 true,
             )
         } else if (interval.pointType!!.getTypeName().contains("BigDecimal")) {
-            return Interval(interval.start, true, AddEvaluator.add(interval.end, per.value), true)
+            return Interval(
+                interval.start,
+                true,
+                AddEvaluator.add(interval.end, per.value, state),
+                true,
+            )
         } else {
-            return Interval(interval.start, true, AddEvaluator.add(interval.end, per), true)
+            return Interval(interval.start, true, AddEvaluator.add(interval.end, per, state), true)
         }
     }
 

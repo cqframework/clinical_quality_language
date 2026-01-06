@@ -2,25 +2,31 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 
 object AddEvaluator {
     @JvmStatic
-    fun add(left: Any?, right: Any?): Any? {
+    fun add(left: Any?, right: Any?, state: State?): Any? {
         if (left == null || right == null) {
             return null
         }
 
         if (left is Int && right is Int) {
             return left + right
-        }
-
-        if (left is Long && right is Long) {
+        } else if (left is Long && right is Long) {
             return left + right
         } else if (left is BigDecimal && right is BigDecimal) {
             return Value.verifyPrecision(left.add(right), null)
         } else if (left is Quantity && right is Quantity) {
-            return Quantity().withValue((left.value)!!.add(right.value)).withUnit(left.unit)
+            return computeWithConvertedUnits(
+                left,
+                right,
+                { commonUnit, leftValue, rightValue ->
+                    Quantity().withUnit(commonUnit).withValue(leftValue.add(rightValue))
+                },
+                state!!,
+            )
         } else if (left is BaseTemporal && right is Quantity) {
             var valueToAddPrecision = Precision.fromString(right.unit!!)
             var precision = Precision.fromString(BaseTemporal.getLowestPrecision(left))
@@ -69,12 +75,10 @@ object AddEvaluator {
                 )
             }
         } else if (left is Interval && right is Interval) {
-            val leftInterval = left
-            val rightInterval = right
             return Interval(
-                add(leftInterval.start, rightInterval.start),
+                add(left.start, right.start, state),
                 true,
-                add(leftInterval.end, rightInterval.end),
+                add(left.end, right.end, state),
                 true,
             )
         } else if (left is String && right is String) {
