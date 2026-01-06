@@ -50,7 +50,8 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                     for (org.hl7.fhir.r5.model.Attachment a : l.getContent()) {
                         if (a.getContentType() != null && a.getContentType().equals("application/xml")) {
                             InputStream is = new ByteArrayInputStream(a.getData());
-                            ModelInfo mi = ModelInfoReaderFactory.getReader("application/xml").read(is);
+                            ModelInfo mi = ModelInfoReaderFactory.getReader("application/xml")
+                                    .read(is);
                             // Set the identifier system to the url of the loaded model info, not the package canonical
                             // since the library with the model info may not be in the same package as the ig
                             if (mi != null && mi.getUrl() != null && modelIdentifier.getSystem() == null) {
