@@ -40,7 +40,7 @@ object MedianEvaluator {
                 return null
             }
 
-            values.sortWith(CqlList().valueSort)
+            values.sortWith(CqlList(state).valueSort)
 
             if (values.size % 2 != 0) {
                 return values[values.size / 2]

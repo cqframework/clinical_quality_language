@@ -137,21 +137,13 @@ class CQLOperationsR4Test : TestFhirPath() {
         }
 
         var SKIP: MutableSet<String> =
-            Sets.newHashSet<String>(
+            Sets.newHashSet(
                 "cql/CqlAggregateTest/AggregateTests/RolledOutIntervals",
                 "cql/CqlArithmeticFunctionsTest/Divide/Divide1Q1Q",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000",
                 "cql/CqlArithmeticFunctionsTest/MinValue/LongMinValue",
                 "cql/CqlArithmeticFunctionsTest/Multiply/Multiply1CMBy2CM",
-                "cql/CqlComparisonOperatorsTest/Greater/GreaterM1CM1",
-                "cql/CqlComparisonOperatorsTest/Greater/GreaterM1CM10",
-                "cql/CqlComparisonOperatorsTest/Greater Or Equal/GreaterOrEqualM1CM1",
-                "cql/CqlComparisonOperatorsTest/Greater Or Equal/GreaterOrEqualM1CM10",
-                "cql/CqlComparisonOperatorsTest/Less/LessM1CM1",
-                "cql/CqlComparisonOperatorsTest/Less/LessM1CM10",
-                "cql/CqlComparisonOperatorsTest/Less Or Equal/LessOrEqualM1CM1",
-                "cql/CqlComparisonOperatorsTest/Less Or Equal/LessOrEqualM1CM10",
                 "cql/CqlDateTimeOperatorsTest/Duration/DateTimeDurationBetweenYear",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainAdd",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainInterval",
@@ -254,7 +246,6 @@ class CQLOperationsR4Test : TestFhirPath() {
                 "r4/tests-fhir-r4/testNEquality/testNEquality15",
                 "r4/tests-fhir-r4/testNEquality/testNEquality16",
                 "r4/tests-fhir-r4/testNEquality/testNEquality17",
-                "r4/tests-fhir-r4/testNEquality/testNEquality24",
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent13",
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent17",
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent21",

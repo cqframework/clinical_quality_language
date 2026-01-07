@@ -44,6 +44,7 @@ object CollapseEvaluator {
                 true,
                 AddEvaluator.add(interval.end, per.value!!.toInt(), state),
                 true,
+                state,
             )
         } else if (interval.pointType!!.getTypeName().contains("BigDecimal")) {
             return Interval(
@@ -51,43 +52,42 @@ object CollapseEvaluator {
                 true,
                 AddEvaluator.add(interval.end, per.value, state),
                 true,
+                state,
             )
         } else {
-            return Interval(interval.start, true, AddEvaluator.add(interval.end, per, state), true)
+            return Interval(
+                interval.start,
+                true,
+                AddEvaluator.add(interval.end, per, state),
+                true,
+                state,
+            )
         }
     }
 
     fun collapse(list: Iterable<Interval?>?, per: Quantity?, state: State?): List<Interval?>? {
-        var per = per
         if (list == null) {
             return null
         }
-
-        var intervals = CqlList.toList(list, false)
-
+        val intervals = CqlList.toList(list, false)
         if (intervals.size == 1 || intervals.isEmpty()) {
             return intervals
         }
+        val first = intervals[0]!!
+        val isTemporal = first.start is BaseTemporal || first.end is BaseTemporal
 
-        val isTemporal =
-            intervals.get(0)!!.start is BaseTemporal || intervals.get(0)!!.end is BaseTemporal
-
-        intervals.sortWith(CqlList().valueSort)
-
-        if (per == null) {
-            per = Quantity().withValue(BigDecimal(0)).withDefaultUnit()
-        }
-
-        var precision = if (per.unit == "1") null else per.unit
+        intervals.sortWith(CqlList(state).valueSort)
+        val effectivePer = per ?: Quantity().withValue(BigDecimal(0)).withDefaultUnit()
+        var precision = if (effectivePer.unit == "1") null else effectivePer.unit
 
         var i = 0
         while (i < intervals.size - 1) {
-            var applyPer = getIntervalWithPerApplied(intervals.get(i)!!, per, state)
+            var applyPer = getIntervalWithPerApplied(intervals[i]!!, effectivePer, state)
 
             if (isTemporal) {
                 if (
-                    per.value!!.compareTo(BigDecimal.ONE) == 0 ||
-                        per.value!!.compareTo(BigDecimal.ZERO) == 0
+                    effectivePer.value!!.compareTo(BigDecimal.ONE) == 0 ||
+                        effectivePer.value!!.compareTo(BigDecimal.ZERO) == 0
                 ) {
                     // Temporal DataTypes already receive the precision adjustments at the
                     // OverlapsEvaluator and
@@ -95,7 +95,7 @@ object CollapseEvaluator {
                     // But they can only do full units (ms, seconds, days): They cannot do "4 days"
                     // of precision.
                     // The getIntervalWithPerApplied takes that into account.
-                    applyPer = intervals.get(i)!!
+                    applyPer = intervals[i]!!
                 } else {
                     precision = "millisecond"
                 }
@@ -103,14 +103,9 @@ object CollapseEvaluator {
 
             val doMerge =
                 AnyTrueEvaluator.anyTrue(
-                    listOf<Boolean?>(
-                        OverlapsEvaluator.overlaps(
-                            applyPer,
-                            intervals.get(i + 1),
-                            precision,
-                            state,
-                        ),
-                        MeetsEvaluator.meets(applyPer, intervals.get(i + 1), precision, state),
+                    listOf(
+                        OverlapsEvaluator.overlaps(applyPer, intervals[i + 1], precision, state),
+                        MeetsEvaluator.meets(applyPer, intervals[i + 1], precision, state),
                     )
                 )
 
@@ -122,25 +117,18 @@ object CollapseEvaluator {
             if (doMerge) {
                 val isNextEndGreater =
                     if (isTemporal)
-                        AfterEvaluator.after(
-                            (intervals.get(i + 1))!!.end,
-                            applyPer.end,
-                            precision,
-                            state,
-                        )
-                    else GreaterEvaluator.greater((intervals.get(i + 1))!!.end, applyPer.end, state)
+                        AfterEvaluator.after(intervals[i + 1]!!.end, applyPer.end, precision, state)
+                    else GreaterEvaluator.greater(intervals[i + 1]!!.end, applyPer.end, state)
 
-                intervals.set(
-                    i,
+                intervals[i] =
                     Interval(
                         applyPer.start,
                         true,
-                        if (isNextEndGreater != null && isNextEndGreater)
-                            (intervals.get(i + 1))!!.end
+                        if (isNextEndGreater != null && isNextEndGreater) (intervals[i + 1])!!.end
                         else applyPer.end,
                         true,
-                    ),
-                )
+                        state,
+                    )
                 intervals.removeAt(i + 1)
                 i -= 1
             }

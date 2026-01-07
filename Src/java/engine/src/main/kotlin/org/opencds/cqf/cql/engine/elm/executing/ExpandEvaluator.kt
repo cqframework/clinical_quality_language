@@ -80,7 +80,13 @@ object ExpandEvaluator {
             }
             if (lessOrEqual) {
                 returnedIntervals.add(
-                    Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true)
+                    Interval(
+                        start,
+                        true,
+                        PredecessorEvaluator.predecessor(nextStart, per),
+                        true,
+                        state,
+                    )
                 )
                 start = nextStart
                 nextStart = addPer(start!!, per, state)
@@ -152,7 +158,7 @@ object ExpandEvaluator {
         }
 
         // Sort the intervals so that the expansion results are returned in order
-        intervals = intervals.sortedWith(CqlList().valueSort)
+        intervals = intervals.sortedWith(CqlList(state).valueSort)
 
         return intervals
     }

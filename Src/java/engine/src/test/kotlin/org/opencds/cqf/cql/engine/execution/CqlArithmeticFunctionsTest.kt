@@ -26,8 +26,8 @@ internal class CqlArithmeticFunctionsTest : CqlTestBase() {
 
         try {
             // Passing null as the state argument to the subtract method is fine here since that
-            // method only uses the state when it has to convert Quantities with different units which
-            // cannot happen here.
+            // method only uses the state when it has to convert Quantities with different units
+            // which cannot happen here.
             AddEvaluator.add("This is an error", 404, null)
             Assertions.fail<Any?>()
         } catch (e: CqlException) {

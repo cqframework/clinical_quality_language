@@ -220,8 +220,7 @@ define test_Min_has_null: TestMessage(Min_has_null = -1, 'Min_has_null', toStrin
 define test_Min_empty: TestMessage(Min_empty is null, 'Min_empty', 'null', toString(Min_empty))
 define test_Min_not_null_q: TestMessage(Min_not_null_q = 0 'ml', 'Min_not_null_q', toString(0 'ml'), toString(Min_not_null_q))
 define test_Min_has_null_q: TestMessage(Min_has_null_q = -1 'ml', 'Min_has_null_q', toString(-1 'ml'), toString(Min_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity - this test will succeed by accident
-// define test_Min_q_diff_units: TestMessage(Min_q_diff_units = 0 'ml', 'Min_q_diff_units', toString(0 'ml'), toString(Min_q_diff_units))
+define test_Min_q_diff_units: TestMessage(Min_q_diff_units = 0 'ml', 'Min_q_diff_units', toString(0 'ml'), toString(Min_q_diff_units))
 
 // Max
 define Max_not_null: Max({10,1,2,3,4,5})
@@ -236,8 +235,7 @@ define test_Max_has_null: TestMessage(Max_has_null = 2, 'Max_has_null', toString
 define test_Max_empty: TestMessage(Max_empty is null, 'Max_empty', 'null', toString(Max_empty))
 define test_Max_not_null_q: TestMessage(Max_not_null_q = 10 'ml', 'Max_not_null_q', toString(10 'ml'), toString(Max_not_null_q))
 define test_Max_has_null_q: TestMessage(Max_has_null_q = 2 'ml', 'Max_has_null_q', toString(2 'ml'), toString(Max_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Max_q_diff_units: TestMessage(Max_q_diff_units = 5000 'ml', 'Max_q_diff_units', toString(5000 'ml'), toString(Max_q_diff_units))
+define test_Max_q_diff_units: TestMessage(Max_q_diff_units = 5000 'ml', 'Max_q_diff_units', toString(5000 'ml'), toString(Max_q_diff_units))
 
 // Avg
 define Avg_not_null: Avg({1,2,3,4,5})
@@ -282,8 +280,7 @@ define test_Median_dup_vals_odd: TestMessage(Median_dup_vals_odd = 3.0, 'Median_
 define test_Median_has_null_q: TestMessage(Median_has_null_q = 1.5 'ml', 'Median_has_null_q', toString(1.5 'ml'), toString(Median_has_null_q))
 define test_Median_dup_vals_even_q: TestMessage(Median_dup_vals_even_q = 2.5 'ml', 'Median_dup_vals_even_q', toString(2.5 'ml'), toString(Median_dup_vals_even_q))
 define test_Median_dup_vals_odd_q: TestMessage(Median_dup_vals_odd_q = 3 'ml', 'Median_dup_vals_odd_q', toString(3 'ml'), toString(Median_dup_vals_odd_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Median_q_diff_units: TestMessage(Median_q_diff_units = 3.5 'ml', 'Median_q_diff_units', toString(3.5 'ml'), toString(Median_q_diff_units))
+define test_Median_q_diff_units: TestMessage(Median_q_diff_units = 3.5 'ml', 'Median_q_diff_units', toString(3.5 'ml'), toString(Median_q_diff_units))
 
 // Mode
 define Mode_not_null: Mode({1,2,2,2,3,4,5})
@@ -724,10 +721,9 @@ define Equal_DateTimeAndDateUncertainEqual: DateTime(2000, 3, 13, 2, 4, 23) = Da
 define Equal_AGtB_Quantity: 5 'm' = 4 'm'
 define Equal_AEqB_Quantity: 5 'm' = 5 'm'
 define Equal_ALtB_Quantity: 5 'm' = 6 'm'
-// TODO - implement for Quantity
-// define Equal_AGtB_Quantity_diff: 5 'm' = 5 'cm'
-// define Equal_AEqB_Quantity_diff: 5 'm' = 500 'cm'
-// define Equal_ALtB_Quantity_diff: 5 'm' = 5 'km'
+define Equal_AGtB_Quantity_diff: 5 'm' = 5 'cm'
+define Equal_AEqB_Quantity_diff: 5 'm' = 500 'cm'
+define Equal_ALtB_Quantity_diff: 5 'm' = 5 'km'
 
 define test_Equal_AGtB_Int: TestMessage(not Equal_AGtB_Int, 'Equal_AGtB_Int', toString(false), toString(Equal_AGtB_Int))
 define test_Equal_AEqB_Int: TestMessage(Equal_AEqB_Int, 'Equal_AEqB_Int', toString(true), toString(Equal_AEqB_Int))
@@ -758,6 +754,9 @@ define test_Equal_DateTimeAndDateUncertainEqual: TestMessage(Equal_DateTimeAndDa
 define test_Equal_AGtB_Quantity: TestMessage(not Equal_AGtB_Quantity, 'Equal_AGtB_Quantity', toString(false), toString(Equal_AGtB_Quantity))
 define test_Equal_AEqB_Quantity: TestMessage(Equal_AEqB_Quantity, 'Equal_AEqB_Quantity', toString(true), toString(Equal_AEqB_Quantity))
 define test_Equal_ALtB_Quantity: TestMessage(not Equal_ALtB_Quantity, 'Equal_ALtB_Quantity', toString(false), toString(Equal_ALtB_Quantity))
+define test_Equal_AGtB_Quantity_diff: TestMessage(not Equal_AGtB_Quantity_diff, 'Equal_AGtB_Quantity_diff', toString(false), toString(Equal_AGtB_Quantity_diff))
+define test_Equal_AEqB_Quantity_diff: TestMessage(Equal_AEqB_Quantity_diff, 'Equal_AEqB_Quantity_diff', toString(true), toString(Equal_AEqB_Quantity_diff))
+define test_Equal_ALtB_Quantity_diff: TestMessage(not Equal_ALtB_Quantity_diff, 'Equal_ALtB_Quantity_diff', toString(false), toString(Equal_ALtB_Quantity_diff))
 
 // NotEqual
 define NotEqual_AGtB_Int: 5 != 4
@@ -791,7 +790,6 @@ define NotEqual_DateTimeAndDateUncertainEqual: DateTime(2000, 3, 13, 2, 4, 23) !
 define NotEqual_AGtB_Quantity: 5 'm' != 4 'm'
 define NotEqual_AEqB_Quantity: 5 'm' != 5 'm'
 define NotEqual_ALtB_Quantity: 5 'm' != 6 'm'
-// TODO - implement for Quantity
 define NotEqual_AGtB_Quantity_diff: 5 'm' != 5 'cm'
 define NotEqual_AEqB_Quantity_diff: 5 'm' != 500 'cm'
 define NotEqual_ALtB_Quantity_diff: 5 'm' != 5 'km'
@@ -825,6 +823,9 @@ define test_NotEqual_DateTimeAndDateUncertainEqual: TestMessage(NotEqual_DateTim
 define test_NotEqual_AGtB_Quantity: TestMessage(NotEqual_AGtB_Quantity, 'NotEqual_AGtB_Quantity', toString(true), toString(NotEqual_AGtB_Quantity))
 define test_NotEqual_AEqB_Quantity: TestMessage(not NotEqual_AEqB_Quantity, 'NotEqual_AEqB_Quantity', toString(false), toString(NotEqual_AEqB_Quantity))
 define test_NotEqual_ALtB_Quantity: TestMessage(NotEqual_ALtB_Quantity, 'NotEqual_ALtB_Quantity', toString(true), toString(NotEqual_ALtB_Quantity))
+define test_NotEqual_AGtB_Quantity_diff: TestMessage(NotEqual_AGtB_Quantity_diff, 'NotEqual_AGtB_Quantity_diff', toString(true), toString(NotEqual_AGtB_Quantity_diff))
+define test_NotEqual_AEqB_Quantity_diff: TestMessage(not NotEqual_AEqB_Quantity_diff, 'NotEqual_AEqB_Quantity_diff', toString(false), toString(NotEqual_AEqB_Quantity_diff))
+define test_NotEqual_ALtB_Quantity_diff: TestMessage(NotEqual_ALtB_Quantity_diff, 'NotEqual_ALtB_Quantity_diff', toString(true), toString(NotEqual_ALtB_Quantity_diff))
 
 // Equivalent
 define Equivalent_ANull_BDefined: null ~ 4
@@ -897,10 +898,9 @@ define Less_ALtB_Int: 5 < 6
 define Less_AGtB_Quantity: 5 'm' < 4 'm'
 define Less_AEqB_Quantity: 5 'm' < 5 'm'
 define Less_ALtB_Quantity: 5 'm' < 6 'm'
-// TODO - implement for Quantity
-// define Less_AGtB_Quantity_diff: 5 'm' < 5 'cm'
-// define Less_AEqB_Quantity_diff: 5 'm' < 500 'cm'
-// define Less_ALtB_Quantity_diff: 5 'm' < 5 'km'
+define Less_AGtB_Quantity_diff: 5 'm' < 5 'cm'
+define Less_AEqB_Quantity_diff: 5 'm' < 500 'cm'
+define Less_ALtB_Quantity_diff: 5 'm' < 5 'km'
 
 define test_Less_AGtB_Int: TestMessage(not Less_AGtB_Int, 'Less_AGtB_Int', toString(false), toString(Less_AGtB_Int))
 define test_Less_AEqB_Int: TestMessage(not Less_AEqB_Int, 'Less_AEqB_Int', toString(false), toString(Less_AEqB_Int))
@@ -908,6 +908,9 @@ define test_Less_ALtB_Int: TestMessage(Less_ALtB_Int, 'Less_ALtB_Int', toString(
 define test_Less_AGtB_Quantity: TestMessage(not Less_AGtB_Quantity, 'Less_AGtB_Quantity', toString(false), toString(Less_AGtB_Quantity))
 define test_Less_AEqB_Quantity: TestMessage(not Less_AEqB_Quantity, 'Less_AEqB_Quantity', toString(false), toString(Less_AEqB_Quantity))
 define test_Less_ALtB_Quantity: TestMessage(Less_ALtB_Quantity, 'Less_ALtB_Quantity', toString(true), toString(Less_ALtB_Quantity))
+define test_Less_AGtB_Quantity_diff: TestMessage(not Less_AGtB_Quantity_diff, 'Less_AGtB_Quantity_diff', toString(false), toString(Less_AGtB_Quantity_diff))
+define test_Less_AEqB_Quantity_diff: TestMessage(not Less_AEqB_Quantity_diff, 'Less_AEqB_Quantity_diff', toString(false), toString(Less_AEqB_Quantity_diff))
+define test_Less_ALtB_Quantity_diff: TestMessage(Less_ALtB_Quantity_diff, 'Less_ALtB_Quantity_diff', toString(true), toString(Less_ALtB_Quantity_diff))
 
 // LessOrEqual
 define LessOrEqual_AGtB_Int: 5 <= 4
@@ -916,10 +919,9 @@ define LessOrEqual_ALtB_Int: 5 <= 6
 define LessOrEqual_AGtB_Quantity: 5 'm' <= 4 'm'
 define LessOrEqual_AEqB_Quantity: 5 'm' <= 5 'm'
 define LessOrEqual_ALtB_Quantity: 5 'm' <= 6 'm'
-// TODO - implement for Quantity
-// define AGtB_Quantity_diff: 5 'm' <= 4 'm'
-// define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
-// define ALtB_Quantity_diff: 5 'm' <= 5 'km'
+define LessOrEqual_AGtB_Quantity_diff: 5 'm' <= 4 'm'
+define LessOrEqual_AEqB_Quantity_diff: 5 'm' <= 500 'cm'
+define LessOrEqual_ALtB_Quantity_diff: 5 'm' <= 5 'km'
 
 define test_LessOrEqual_AGtB_Int: TestMessage(not LessOrEqual_AGtB_Int, 'LessOrEqual_AGtB_Int', toString(false), toString(LessOrEqual_AGtB_Int))
 define test_LessOrEqual_AEqB_Int: TestMessage(LessOrEqual_AEqB_Int, 'LessOrEqual_AEqB_Int', toString(true), toString(LessOrEqual_AEqB_Int))
@@ -927,6 +929,9 @@ define test_LessOrEqual_ALtB_Int: TestMessage(LessOrEqual_ALtB_Int, 'LessOrEqual
 define test_LessOrEqual_AGtB_Quantity: TestMessage(not LessOrEqual_AGtB_Quantity, 'LessOrEqual_AGtB_Quantity', toString(false), toString(LessOrEqual_AGtB_Quantity))
 define test_LessOrEqual_AEqB_Quantity: TestMessage(LessOrEqual_AEqB_Quantity, 'LessOrEqual_AEqB_Quantity', toString(true), toString(LessOrEqual_AEqB_Quantity))
 define test_LessOrEqual_ALtB_Quantity: TestMessage(LessOrEqual_ALtB_Quantity, 'LessOrEqual_ALtB_Quantity', toString(true), toString(LessOrEqual_ALtB_Quantity))
+define test_LessOrEqual_AGtB_Quantity_diff: TestMessage(not LessOrEqual_AGtB_Quantity_diff, 'LessOrEqual_AGtB_Quantity_diff', toString(false), toString(LessOrEqual_AGtB_Quantity_diff))
+define test_LessOrEqual_AEqB_Quantity_diff: TestMessage(LessOrEqual_AEqB_Quantity_diff, 'LessOrEqual_AEqB_Quantity_diff', toString(true), toString(LessOrEqual_AEqB_Quantity_diff))
+define test_LessOrEqual_ALtB_Quantity_diff: TestMessage(LessOrEqual_ALtB_Quantity_diff, 'LessOrEqual_ALtB_Quantity_diff', toString(true), toString(LessOrEqual_ALtB_Quantity_diff))
 
 // Greater
 define Greater_AGtB_Int: 5 > 4
@@ -935,10 +940,9 @@ define Greater_ALtB_Int: 5 > 6
 define Greater_AGtB_Quantity: 5 'm' > 4 'm'
 define Greater_AEqB_Quantity: 5 'm' > 5 'm'
 define Greater_ALtB_Quantity: 5 'm' > 6 'm'
-// TODO - implement for Quantity
-// define Greater_AGtB_Quantity_diff: 5 'm' > 5 'cm'
-// define Greater_AEqB_Quantity_diff: 5 'm' > 500 'cm'
-// define Greater_ALtB_Quantity_diff: 5 'm' > 5 'km'
+define Greater_AGtB_Quantity_diff: 5 'm' > 5 'cm'
+define Greater_AEqB_Quantity_diff: 5 'm' > 500 'cm'
+define Greater_ALtB_Quantity_diff: 5 'm' > 5 'km'
 // TODO - implement and add to error tests
 // define Greater_AGtB_Quantity_incompatible: 5 'Cel' > 4 'm'
 // define Greater_AEqB_Quantity_incompatible: 5 'Cel' > 5 'm'
@@ -950,6 +954,9 @@ define test_Greater_ALtB_Int: TestMessage(not Greater_ALtB_Int, 'Greater_ALtB_In
 define test_Greater_AGtB_Quantity: TestMessage(Greater_AGtB_Quantity, 'Greater_AGtB_Quantity', toString(true), toString(Greater_AGtB_Quantity))
 define test_Greater_AEqB_Quantity: TestMessage(not Greater_AEqB_Quantity, 'Greater_AEqB_Quantity', toString(false), toString(Greater_AEqB_Quantity))
 define test_Greater_ALtB_Quantity: TestMessage(not Greater_ALtB_Quantity, 'Greater_ALtB_Quantity', toString(false), toString(Greater_ALtB_Quantity))
+define test_Greater_AGtB_Quantity_diff: TestMessage(Greater_AGtB_Quantity_diff, 'Greater_AGtB_Quantity_diff', toString(true), toString(Greater_AGtB_Quantity_diff))
+define test_Greater_AEqB_Quantity_diff: TestMessage(not Greater_AEqB_Quantity_diff, 'Greater_AEqB_Quantity_diff', toString(false), toString(Greater_AEqB_Quantity_diff))
+define test_Greater_ALtB_Quantity_diff: TestMessage(not Greater_ALtB_Quantity_diff, 'Greater_ALtB_Quantity_diff', toString(false), toString(Greater_ALtB_Quantity_diff))
 
 // GreaterOrEqual
 define GreaterOrEqual_AGtB_Int: 5 >= 4
@@ -958,11 +965,10 @@ define GreaterOrEqual_ALtB_Int: 5 >= 6
 define GreaterOrEqual_AGtB_Quantity: 5 'm' >= 4 'm'
 define GreaterOrEqual_AEqB_Quantity: 5 'm' >= 5 'm'
 define GreaterOrEqual_ALtB_Quantity: 5 'm' >= 6 'm'
-// TODO - implement for Quantity
-// define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
-// define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
-// define ALtB_Quantity_diff: 5 'm' >= 5 'km'
-// define DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
+define GreaterOrEqual_AGtB_Quantity_diff: 5 'm' >= 5 'cm'
+define GreaterOrEqual_AEqB_Quantity_diff: 5 'm' >= 500 'cm'
+define GreaterOrEqual_ALtB_Quantity_diff: 5 'm' >= 5 'km'
+//define GreaterOrEqual_DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
 
 define test_GreaterOrEqual_AGtB_Int: TestMessage(GreaterOrEqual_AGtB_Int, 'GreaterOrEqual_AGtB_Int', toString(true), toString(GreaterOrEqual_AGtB_Int))
 define test_GreaterOrEqual_AEqB_Int: TestMessage(GreaterOrEqual_AEqB_Int, 'GreaterOrEqual_AEqB_Int', toString(true), toString(GreaterOrEqual_AEqB_Int))
@@ -970,6 +976,9 @@ define test_GreaterOrEqual_ALtB_Int: TestMessage(not GreaterOrEqual_ALtB_Int, 'G
 define test_GreaterOrEqual_AGtB_Quantity: TestMessage(GreaterOrEqual_AGtB_Quantity, 'GreaterOrEqual_AGtB_Quantity', toString(true), toString(GreaterOrEqual_AGtB_Quantity))
 define test_GreaterOrEqual_AEqB_Quantity: TestMessage(GreaterOrEqual_AEqB_Quantity, 'GreaterOrEqual_AEqB_Quantity', toString(true), toString(GreaterOrEqual_AEqB_Quantity))
 define test_GreaterOrEqual_ALtB_Quantity: TestMessage(not GreaterOrEqual_ALtB_Quantity, 'GreaterOrEqual_ALtB_Quantity', toString(false), toString(GreaterOrEqual_ALtB_Quantity))
+define test_GreaterOrEqual_AGtB_Quantity_diff: TestMessage(GreaterOrEqual_AGtB_Quantity_diff, 'GreaterOrEqual_AGtB_Quantity_diff', toString(true), toString(GreaterOrEqual_AGtB_Quantity_diff))
+define test_GreaterOrEqual_AEqB_Quantity_diff: TestMessage(GreaterOrEqual_AEqB_Quantity_diff, 'GreaterOrEqual_AEqB_Quantity_diff', toString(true), toString(GreaterOrEqual_AEqB_Quantity_diff))
+define test_GreaterOrEqual_ALtB_Quantity_diff: TestMessage(not GreaterOrEqual_ALtB_Quantity_diff, 'GreaterOrEqual_ALtB_Quantity_diff', toString(false), toString(GreaterOrEqual_ALtB_Quantity_diff))
 
 
 /*
@@ -3791,9 +3800,8 @@ define test_QtyIvlCollapse_CollapseSeparatedQuantityPer3: TestMessage(QtyIvlColl
 define QuantityMeterIntervalList: { Interval[ToQuantity('1 \'m\''), ToQuantity('1.995 \'m\'')], Interval[ToQuantity('2 \'m\''), ToQuantity('3 \'m\'')] }
 define QtyIvlCollapse_CollapseDisjointQuantityUnits: collapse QuantityMeterIntervalList
 define QtyIvlCollapse_ExpectedQuantityUnitsCollapse: { Interval[ToQuantity('1 \'m\''), ToQuantity('3 \'m\'')] }
-// TODO(jmoringe): must be skipped until Quantity comparison operators respect units
-// define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
-// define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
+define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
+define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
 
 // Null test cases
 define NullLowIntervalList: { Interval[null, 4], Interval[3, 5] }

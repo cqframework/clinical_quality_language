@@ -1,13 +1,16 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.math.BigDecimal
+import org.cqframework.cql.cql2elm.LibraryManager
+import org.cqframework.cql.cql2elm.ModelManager
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.debug.Location
 import org.opencds.cqf.cql.engine.debug.SourceLocator
-import org.opencds.cqf.cql.engine.exception.InvalidInterval
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.WidthEvaluator
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Tuple
@@ -30,10 +33,26 @@ internal class RuntimeTests {
 
     @Test
     fun intervalOfQuantityWithDifferentUOM() {
+        val modelManager = ModelManager()
+        val libraryManager = LibraryManager(modelManager)
+        val environment = Environment(libraryManager)
+        val state = State(environment)
+
+        // To spellings of the mass per volume quantity so we can assert that the width of the
+        // interval is 0.
         val s = Quantity().withValue(BigDecimal(10)).withUnit("mg/mL")
         val e = Quantity().withValue(BigDecimal(10)).withUnit("kg/m3")
-
-        Assertions.assertThrows(InvalidInterval::class.java) { Interval(s, true, e, true) }
+        val interval = Interval(s, true, e, true, state)
+        Assertions.assertEquals(s, interval.start)
+        Assertions.assertEquals(e, interval.end)
+        Assertions.assertEquals(
+            true,
+            EqualEvaluator.equal(
+                Quantity().withValue(BigDecimal(0)).withUnit("kg/m3"),
+                WidthEvaluator.width(interval, state),
+                state,
+            ),
+        )
     }
 
     @Test

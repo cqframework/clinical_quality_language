@@ -59,22 +59,17 @@ object EqualEvaluator {
             // Try the Quantity.equal method which implements "simple" rules such as the equality of
             // alternate
             // spellings for "week" or "month".
-            val simpleResult = left.equal(right)
-            if (simpleResult != null) {
-                return simpleResult // true or false
-            } else {
+            return left.equal(right) // true or false
+            ?:
                 // The simple method indicated that the units are not comparable, try to convert the
-                // value of
-                // rightQuantity to the unit of leftQuantity and check for equality again if the
-                // conversion is
-                // possible.
-                return computeWithConvertedUnits(
+                // value of rightQuantity to the unit of leftQuantity and check for equality
+                // again if the conversion is possible.
+                computeWithConvertedUnits(
                     left,
                     right,
                     { _, leftValue, rightValue -> equal(leftValue, rightValue) },
-                    state!!,
+                    state,
                 )
-            }
         } else if (left is CqlType && right is CqlType) {
             return left.equal(right)
         }
