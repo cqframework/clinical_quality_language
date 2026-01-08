@@ -139,11 +139,9 @@ class CQLOperationsR4Test : TestFhirPath() {
         var SKIP: MutableSet<String> =
             Sets.newHashSet(
                 "cql/CqlAggregateTest/AggregateTests/RolledOutIntervals",
-                "cql/CqlArithmeticFunctionsTest/Divide/Divide1Q1Q",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000",
                 "cql/CqlArithmeticFunctionsTest/MinValue/LongMinValue",
-                "cql/CqlArithmeticFunctionsTest/Multiply/Multiply1CMBy2CM",
                 "cql/CqlDateTimeOperatorsTest/Duration/DateTimeDurationBetweenYear",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainAdd",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainInterval",
@@ -256,9 +254,6 @@ class CQLOperationsR4Test : TestFhirPath() {
                 "r4/tests-fhir-r4/testQuantity/testQuantity6",
                 "r4/tests-fhir-r4/testQuantity/testQuantity7",
                 "r4/tests-fhir-r4/testQuantity/testQuantity8",
-                "r4/tests-fhir-r4/testQuantity/testQuantity9",
-                "r4/tests-fhir-r4/testQuantity/testQuantity10",
-                "r4/tests-fhir-r4/testQuantity/testQuantity11",
                 "r4/tests-fhir-r4/testRepeat/testRepeat1",
                 "r4/tests-fhir-r4/testRepeat/testRepeat2",
                 "r4/tests-fhir-r4/testRepeat/testRepeat3",

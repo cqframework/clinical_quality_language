@@ -250,8 +250,7 @@ define test_Avg_has_null: TestMessage(Avg_has_null = 1.5, 'Avg_has_null', toStri
 define test_Avg_empty: TestMessage(Avg_empty is null, 'Avg_empty', 'null', toString(Avg_empty))
 define test_Avg_not_null_q: TestMessage(Avg_not_null_q = 3.0 'ml', 'Avg_not_null_q', toString(3.0 'ml'), toString(Avg_not_null_q))
 define test_Avg_has_null_q: TestMessage(Avg_has_null_q = 1.5 'ml', 'Avg_has_null_q', toString(1.5 'ml'), toString(Avg_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Avg_q_diff_units: TestMessage(Avg_q_diff_units = 3.0 'ml', 'Avg_q_diff_units', toString(3.0 'ml'), toString(Avg_q_diff_units))
+define test_Avg_q_diff_units: TestMessage(Avg_q_diff_units = 3.0 'ml', 'Avg_q_diff_units', toString(3.0 'ml'), toString(Avg_q_diff_units))
 
 // Median
 define Median_odd: Median({5,1,2,3,4})
@@ -298,11 +297,15 @@ define test_Mode_empty: TestMessage(Mode_empty is null, 'Mode_empty', 'null', to
 define Variance_v: Variance({1,2,3,4,5})
 define Variance_v_q: Variance({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 define Variance_q_diff_units: Variance({1.0 'ml',0.002 'l',0.003 'l',0.04 'dl',5.0 'ml'})
+define Variance_q2: Variance({1 'm',2 'm',3 'm',4 'm',5 'm'})
 
 define test_Variance_v: TestMessage(Variance_v = 2.5, 'Variance_v', toString(2.5), toString(Variance_v))
-define test_Variance_v_q: TestMessage(Variance_v_q = 2.5 'ml', 'Variance_v_q', toString(2.5 'ml'), toString(Variance_v_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 2.5 'ml', 'Variance_q_diff_units', toString(2.5 'ml'), toString(Variance_q_diff_units))
+// The unit of the variance is the unit of the sequence elements squared. In this case, UCUM uses m^6 instead of L^2.
+// The unit changes (ml -> L -> m^3 -> m^6) repeatedly scale the value by 1/1000 so that the result is 0 within
+// the restricted precision of this reference implementation.
+define test_Variance_v_q: TestMessage(Variance_v_q = 0 'm6', 'Variance_v_q', toString(0 'm6'), toString(Variance_v_q))
+define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 0 'm6', 'Variance_q_diff_units', toString(0 'm6'), toString(Variance_q_diff_units))
+define test_Variance_q2: TestMessage(Variance_q2 = 2.5 'm2', 'Variance_q2', toString(10 'm2'), toString(Variance_q2))
 
 // PopulationVariance
 define PopulationVariance_v: PopulationVariance({1.0,2.0,3.0,4.0,5.0})
@@ -310,9 +313,11 @@ define PopulationVariance_v_q: PopulationVariance({1.0 'ml',2.0 'ml',3.0 'ml',4.
 define PopulationVariance_q_diff_units: PopulationVariance({1.0 'ml',0.002 'l',0.003 'l',0.04 'dl',5.0 'ml'})
 
 define test_PopulationVariance_v: TestMessage(PopulationVariance_v = 2.0, 'PopulationVariance_v', toString(2.0), toString(PopulationVariance_v))
-define test_PopulationVariance_v_q: TestMessage(PopulationVariance_v_q = 2.0 'ml', 'PopulationVariance_v_q', toString(2.0 'ml'), toString(PopulationVariance_v_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 2.0 'ml', 'PopulationVariance_q_diff_units', toString(2.0 'ml'), toString(PopulationVariance_q_diff_units))
+// The unit of the variance is the unit of the sequence elements squared. In this case, UCUM uses m^6 instead of L^2.
+// The unit changes (ml -> L -> m^3 -> m^6) repeatedly scale the value by 1/1000 so that the result is 0 within
+// the restricted precision of this reference implementation.
+define test_PopulationVariance_v_q: TestMessage(PopulationVariance_v_q = 0 'm6', 'PopulationVariance_v_q', toString(0 'm6'), toString(PopulationVariance_v_q))
+define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 0 'm6', 'PopulationVariance_q_diff_units', toString(0 'm6'), toString(PopulationVariance_q_diff_units))
 
 // StdDev
 define Std: StdDev({1,2,3,4,5})
@@ -321,8 +326,7 @@ define Std_q_diff_units: StdDev({1 'ml', 0.002 'l',3 'ml',4 'ml', 0.05 'dl'})
 
 define test_Std: TestMessage(Std = 1.58113883, 'Std', toString(1.58113883), toString(Std))
 define test_Std_q: TestMessage(Std_q = 1.58113883 'ml', 'Std_q', toString(1.58113883 'ml'), toString(Std_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Std_q_diff_units: TestMessage(Std_q_diff_units = 1.58113883 'ml', 'Std_q_diff_units', toString(1.58113883 'ml'), toString(Std_q_diff_units))
+define test_Std_q_diff_units: TestMessage(Std_q_diff_units = 0.00158113883 'l', 'Std_q_diff_units', toString(0.00158113883 'l'), toString(Std_q_diff_units))
 
 // PopulationStdDev
 define PopulationStd: PopulationStdDev({1,2,3,4,5})
@@ -331,8 +335,7 @@ define PopulationStd_q_diff_units: PopulationStdDev({1 'ml', 0.002 'l',3 'ml',4 
 
 define test_PopulationStd: TestMessage(PopulationStd = 1.41421356, 'PopulationStd', toString(1.41421356), toString(PopulationStd))
 define test_PopulationStd_q: TestMessage(PopulationStd_q = 1.41421356 'ml', 'PopulationStd_q', toString(1.41421356 'ml'), toString(PopulationStd_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_PopulationStd_q_diff_units: TestMessage(PopulationStd_q_diff_units = 1.41421356 'ml', 'PopulationStd_q_diff_units', toString(1.41421356 'ml'), toString(PopulationStd_q_diff_units))
+define test_PopulationStd_q_diff_units: TestMessage(PopulationStd_q_diff_units = 0.00141421356 'l', 'PopulationStd_q_diff_units', toString(0.00141421356 'l'), toString(PopulationStd_q_diff_units))
 
 // Product
 define Product_Decimal: Product({1.0, 2.0, 3.0, 4.0})
@@ -616,10 +619,10 @@ define Quantity_sub_d_q : Quantity_Jan1_2000 - Quantity_days_10
 // define Quantity_add_q_q_diff : Quantity_QL10Days + Quantity_QL10Min
 // define Quantity_sub_q_q_diff : Quantity_QL10Days - Quantity_QL10Min
 // define Quantity_div_q_q : Quantity_days_10 / QL10Days
-// define Quantity_mul_q_q : 2 'm' * 10 'm'
-// define Quantity_mul_q_q_diff : 2 'm' * 10 '/d'
-// define Quantity_MultiplyUcum: (5 'm' * 25 'km') = 125000 'm2'
-// define Quantity_DivideUcum: (20 'm2' / 5 'm') = 4 'm'
+define Quantity_mul_q_q : 2 'm' * 10 'm'
+define Quantity_mul_q_q_diff : 2 'm' * 10 '/d'
+define Quantity_MultiplyUcum: (5 'm' * 25 'km')
+define Quantity_DivideUcum: (20 'm2' / 5 'm')
 define Quantity_AddUcum: (5 'm' + 5 'km')
 define Quantity_SubtractUcum: (25 'km' - 5 'm')
 define Quantity_div_q_d : Quantity_days_10 / 2
@@ -637,6 +640,10 @@ define test_Quantity_mul_q_d: TestMessage(Quantity_mul_q_d = 20 days, 'Quantity_
 define test_Quantity_mul_d_q: TestMessage(Quantity_mul_d_q = 20 days, 'Quantity_mul_d_q', toString(20 days), toString(Quantity_mul_d_q))
 define test_Quantity_neg: TestMessage(Quantity_neg = -10 days, 'Quantity_neg', toString(-10 days), toString(Quantity_neg))
 define test_Quantity_abs: TestMessage(Quantity_abs = 10 days, 'Quantity_abs', toString(10 days), toString(Quantity_abs))
+define test_Quantity_mul_q_q: TestMessage(Quantity_mul_q_q = 20 'm2', 'Quantity_mul_q_q', toString(20 'm2'), toString(Quantity_mul_q_q))
+define test_Quantity_mul_q_q_diff: TestMessage(Quantity_mul_q_q_diff = 0.00023148 'm.s-1', 'Quantity_mul_q_q_diff', toString(0.00023148 'm.s-1'), toString(Quantity_mul_q_q_diff))
+define test_Quantity_MultiplyUcum: TestMessage(Quantity_MultiplyUcum = 125000 'm2', 'Quantity_MultiplyUcum', toString(125000 'm2'), toString(Quantity_MultiplyUcum))
+define test_Quantity_DivideUcum: TestMessage(Quantity_DivideUcum = 4 'm', 'Quantity_DivideUcum', toString(4 'm'), toString(Quantity_DivideUcum))
 define test_Quantity_AddUcum: TestMessage(Quantity_AddUcum = 5005 'm', 'Quantity_AddUcum', toString(5005 'm'), toString(Quantity_AddUcum))
 define test_Quantity_SubtractUcum: TestMessage(Quantity_SubtractUcum = 24995 'm', 'Quantity_SubtractUcum', toString(24995 'm'), toString(Quantity_SubtractUcum))
 
@@ -968,7 +975,7 @@ define GreaterOrEqual_ALtB_Quantity: 5 'm' >= 6 'm'
 define GreaterOrEqual_AGtB_Quantity_diff: 5 'm' >= 5 'cm'
 define GreaterOrEqual_AEqB_Quantity_diff: 5 'm' >= 500 'cm'
 define GreaterOrEqual_ALtB_Quantity_diff: 5 'm' >= 5 'km'
-//define GreaterOrEqual_DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
+define GreaterOrEqual_DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
 
 define test_GreaterOrEqual_AGtB_Int: TestMessage(GreaterOrEqual_AGtB_Int, 'GreaterOrEqual_AGtB_Int', toString(true), toString(GreaterOrEqual_AGtB_Int))
 define test_GreaterOrEqual_AEqB_Int: TestMessage(GreaterOrEqual_AEqB_Int, 'GreaterOrEqual_AEqB_Int', toString(true), toString(GreaterOrEqual_AEqB_Int))
@@ -979,6 +986,7 @@ define test_GreaterOrEqual_ALtB_Quantity: TestMessage(not GreaterOrEqual_ALtB_Qu
 define test_GreaterOrEqual_AGtB_Quantity_diff: TestMessage(GreaterOrEqual_AGtB_Quantity_diff, 'GreaterOrEqual_AGtB_Quantity_diff', toString(true), toString(GreaterOrEqual_AGtB_Quantity_diff))
 define test_GreaterOrEqual_AEqB_Quantity_diff: TestMessage(GreaterOrEqual_AEqB_Quantity_diff, 'GreaterOrEqual_AEqB_Quantity_diff', toString(true), toString(GreaterOrEqual_AEqB_Quantity_diff))
 define test_GreaterOrEqual_ALtB_Quantity_diff: TestMessage(not GreaterOrEqual_ALtB_Quantity_diff, 'GreaterOrEqual_ALtB_Quantity_diff', toString(false), toString(GreaterOrEqual_ALtB_Quantity_diff))
+define test_GreaterOrEqual_DivideUcum: TestMessage(GreaterOrEqual_DivideUcum, 'GreaterOrEqual_DivideUcum', toString(true), toString(GreaterOrEqual_DivideUcum))
 
 
 /*

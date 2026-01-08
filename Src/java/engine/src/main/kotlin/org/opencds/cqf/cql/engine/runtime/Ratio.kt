@@ -30,13 +30,13 @@ class Ratio : CqlType {
 
     fun fullEquivalent(other: Ratio, state: State?): Boolean? {
         return equivalent(
-            multiply(this.numerator, other.denominator),
-            multiply(other.numerator, this.denominator),
+            multiply(this.numerator, other.denominator, state),
+            multiply(other.numerator, this.denominator, state),
             state,
         )
     }
 
-    override fun equal(other: Any?): Boolean? {
+    override fun equal(other: Any?): Boolean {
         return equal(this.numerator, (other as Ratio).numerator) == true &&
             equal(this.denominator, other.denominator) == true
     }

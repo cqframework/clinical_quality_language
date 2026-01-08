@@ -746,6 +746,14 @@
 			<expression>1'cm':2'cm' ~ 1'cm':3'cm'</expression>
 			<output>false</output>
 		</test>
+		<test name="RatioEquivalentWithDifferentUnits">
+			<expression>1'cm':0.02'm' ~ 30'mm':6'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEquivalentWithDifferentUnits">
+			<expression>1'cm':0.02'm' ~ 10'mm':3'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivTupleJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>

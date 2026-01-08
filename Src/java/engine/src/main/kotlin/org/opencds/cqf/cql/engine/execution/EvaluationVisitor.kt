@@ -1198,7 +1198,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        return multiply(left, right)
+        return multiply(left, right, context)
     }
 
     override fun visitNegate(elm: Negate, context: State?): Any? {
@@ -1298,7 +1298,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitProduct(elm: Product, context: State?): Any? {
         val source = visitExpression(elm.source!!, context)
-        return product(source)
+        return product(source, context)
     }
 
     override fun visitProperContains(elm: ProperContains, context: State?): Any? {
