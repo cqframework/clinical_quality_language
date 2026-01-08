@@ -4238,18 +4238,21 @@ define test_TimeIvlExpand_HourPrecPerMillisecond: TestMessage(not exists TimeIvl
 define QuantityEmptyIntervalList: List<Interval<Time>>{}
 define ClosedSingleGPerGExpected: { Interval[2 'g', 2 'g'], Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
 define ClosedSingleGPerGDecimalExpected: { Interval[3 'g', 3 'g'], Interval[4 'g', 4 'g'] }
+define ClosedSingleGPerMGExpected: { Interval[2 'g', 2.0009 'g'], Interval[2.0010 'g', 2.0019 'g'], Interval[2.0020 'g', 2.0029 'g'] }
+define ClosedSingleMGPerGTruncExpected: { Interval[2999 'mg', 3998 'mg'] }
 define ClosedSingleMGPerMGTruncExpected: { Interval[2000 'mg', 2799 'mg'], Interval[2800 'mg', 3599 'mg'], Interval[3600 'mg', 4399 'mg'] }
 define ClosedSingleMGPerMGDecimalExpected: { Interval[2001 'mg', 2800 'mg'], Interval[2801 'mg', 3600 'mg'], Interval[3601 'mg', 4400 'mg'] }
 define QtyIvlExpand_ClosedSingleGPerG: expand { Interval[2 'g', 4 'g'] } per 1 'g'
 define QtyIvlExpand_ClosedSingleGPerGDecimal: expand { Interval[2.1 'g', 4.1 'g'] } per 1 'g'
-// TODO: uncomment once UCUM service is implemented
-//define QtyIvlExpand_ClosedSingleGPerMG: expand { Interval[2 'g', 2.003 'g'] } per 1 'mg'
-//define QtyIvlExpand_ClosedSingleMGPerGTrunc: expand { Interval[2999 'mg', 4200 'mg'] } per 1 'g'
+define QtyIvlExpand_ClosedSingleGPerMG: expand { Interval[2 'g', 2.003 'g'] } per 1 'mg'
+define QtyIvlExpand_ClosedSingleMGPerGTrunc: expand { Interval[2999 'mg', 4200 'mg'] } per 1 'g'
 define QtyIvlExpand_ClosedSingleMGPerMGTrunc: expand { Interval[2000 'mg', 4500 'mg'] } per 800 'mg'
 define QtyIvlExpand_ClosedSingleMGPerMGDecimal: expand { Interval[2000.01 'mg', 4500 'mg'] } per 800 'mg'
 
 define test_QtyIvlExpand_ClosedSingleGPerG: TestMessage(QtyIvlExpand_ClosedSingleGPerG = ClosedSingleGPerGExpected, 'QtyIvlExpand_ClosedSingleGPerG', toString(ClosedSingleGPerGExpected), toString(QtyIvlExpand_ClosedSingleGPerG))
 define test_QtyIvlExpand_ClosedSingleGPerGDecimal: TestMessage(QtyIvlExpand_ClosedSingleGPerGDecimal = ClosedSingleGPerGDecimalExpected, 'QtyIvlExpand_ClosedSingleGPerGDecimal', toString(ClosedSingleGPerGDecimalExpected), toString(QtyIvlExpand_ClosedSingleGPerGDecimal))
+define test_QtyIvlExpand_ClosedSingleGPerMG: TestMessage(QtyIvlExpand_ClosedSingleGPerMG = ClosedSingleGPerMGExpected, 'QtyIvlExpand_ClosedSingleGPerMG', toString(ClosedSingleGPerMGExpected), toString(QtyIvlExpand_ClosedSingleGPerMG))
+define test_QtyIvlExpand_ClosedSingleMGPerGTrunc: TestMessage(QtyIvlExpand_ClosedSingleMGPerGTrunc = ClosedSingleMGPerGTruncExpected, 'QtyIvlExpand_ClosedSingleMGPerGTrunc', toString(ClosedSingleMGPerGTruncExpected), toString(QtyIvlExpand_ClosedSingleMGPerGTrunc))
 define test_QtyIvlExpand_ClosedSingleMGPerMGTrunc: TestMessage(QtyIvlExpand_ClosedSingleMGPerMGTrunc = ClosedSingleMGPerMGTruncExpected, 'QtyIvlExpand_ClosedSingleMGPerMGTrunc', toString(ClosedSingleMGPerMGTruncExpected), toString(QtyIvlExpand_ClosedSingleMGPerMGTrunc))
 define test_QtyIvlExpand_ClosedSingleMGPerMGDecimal: TestMessage(QtyIvlExpand_ClosedSingleMGPerMGDecimal = ClosedSingleMGPerMGDecimalExpected, 'QtyIvlExpand_ClosedSingleMGPerMGDecimal', toString(ClosedSingleMGPerMGDecimalExpected), toString(QtyIvlExpand_ClosedSingleMGPerMGDecimal))
 

@@ -1,7 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import java.math.BigDecimal
 import java.math.RoundingMode
+import org.cqframework.cql.shared.BigDecimal
+import org.fhir.ucum.UcumException
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
@@ -184,18 +185,39 @@ object ExpandEvaluator {
 
         // Infer the per quantity from the intervals if it is not provided
         val perOrDefault =
-            if (per == null) IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-            else per
+            per ?: IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
 
         // Make sure the per quantity is compatible with the boundaries of the intervals
-        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
-            return null
-        }
+        val convertedPerOrDefault =
+            if (IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
+                perOrDefault
+            } else {
+                val boundary = IntervalHelper.findNonNullBoundary(intervals)
+                if (boundary is Quantity) {
+                    val ucumService = state?.environment?.libraryManager?.ucumService!!
+                    try {
+                        Quantity()
+                            .withValue(
+                                ucumService.convert(
+                                    perOrDefault.value!!,
+                                    perOrDefault.unit!!,
+                                    boundary.unit!!,
+                                )
+                            )
+                            .withUnit(boundary.unit)
+                    } catch (_: UcumException) {
+                        return null
+                    }
+                } else {
+                    return null
+                }
+            }
 
-        intervals = prepareIntervals(intervals, perOrDefault, state)!!
+        intervals = prepareIntervals(intervals, convertedPerOrDefault, state)!!
 
         return intervals.filterNotNull().flatMap { interval ->
-            val returnedIntervals = expandIntervalIntoIntervals(interval, perOrDefault, state)
+            val returnedIntervals =
+                expandIntervalIntoIntervals(interval, convertedPerOrDefault, state)
             returnedIntervals ?: listOf()
         }
     }
