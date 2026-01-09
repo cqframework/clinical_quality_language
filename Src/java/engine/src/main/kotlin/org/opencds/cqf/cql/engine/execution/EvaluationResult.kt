@@ -30,4 +30,7 @@ class EvaluationResult {
     }
 
     var debugResult: DebugResult? = null
+
+    /** Trace information collected during evaluation. Only used when tracing is enabled. */
+    var trace: Trace? = null
 }

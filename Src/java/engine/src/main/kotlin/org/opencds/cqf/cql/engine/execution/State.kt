@@ -15,6 +15,7 @@ import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Retrieve
+import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
@@ -32,13 +33,16 @@ constructor(
     val environment: Environment,
     val engineOptions: MutableSet<CqlEngine.Options> = HashSet<CqlEngine.Options>(),
 ) {
-    class ActivationFrame( // The expression that is being evaluated in this activation
-        // frame. Either null for the "root" activation frame, an ExpressionDef (which can be a
-        // FunctionDef)
-        // or a Retrieve.
+    class ActivationFrame(
+        /**
+         * The expression that is being evaluated in this activation frame. Either null for the
+         * "root" activation frame, an ExpressionDef (which can be a FunctionDef) or a Retrieve.
+         */
         var element: Element?,
-        var contextName: String?, // The times at which the evaluation to which this activation
-        // frame belongs started and ended.
+        /** The library containing the element being evaluated. */
+        var library: VersionedIdentifier?,
+        var contextName: String?,
+        /** The time at which the evaluation to which this activation frame belongs started. */
         var startTime: Long,
     ) {
         // Arguments and/or local variables of the active function
@@ -48,6 +52,7 @@ constructor(
         // and profiling.
         var variables: Deque<Variable> = ArrayDeque<Variable>(4)
 
+        /** The time at which the evaluation to which this activation frame belongs ended. */
         var endTime: Long = 0
 
         // If the activation frame belongs to an ExpressionDef that is
@@ -55,6 +60,18 @@ constructor(
         // evaluation result was computed for this activation frame or
         // taken from the cache.
         var isCached: Boolean = false
+
+        /**
+         * The result of the expression evaluation for this frame. Only used when tracing is
+         * enabled.
+         */
+        var result: Any? = null
+
+        /**
+         * Frames representing nested expressions, function calls, and retrieves. Only used when
+         * tracing is enabled.
+         */
+        var innerActivationFrames: MutableList<ActivationFrame> = mutableListOf()
 
         override fun toString(): String {
             val result = StringBuilder().append("Frame{element=")
@@ -243,11 +260,19 @@ constructor(
         pushActivationFrame(null)
     }
 
-    fun endEvaluation() {
+    fun endEvaluation(): Trace? {
         assert(this.stack.size == 1)
+
+        val trace =
+            if (engineOptions.contains(Options.EnableTracing))
+                Trace.fromActivationFrames(this.stack.peek().innerActivationFrames)
+            else null
+
         // TODO(jmoringe): maybe assert this.stack.getLast().variables.isEmpty();
         // Pop (and possibly process) the root activation frame.
         popActivationFrame()
+
+        return trace
     }
 
     fun resolveVariable(name: String?): Variable? {
@@ -277,7 +302,11 @@ constructor(
         contextName: String?,
         startTime: Long = System.nanoTime(),
     ) {
-        val newActivationFrame = ActivationFrame(element, contextName, startTime)
+        val newActivationFrame =
+            ActivationFrame(element, this.getCurrentLibrary()?.identifier, contextName, startTime)
+        if (engineOptions.contains(Options.EnableTracing) && this.stack.isNotEmpty()) {
+            topActivationFrame.innerActivationFrames.add(newActivationFrame)
+        }
         this.stack.push(newActivationFrame)
         if (this.debugResult != null) {
             val profile = this.debugResult!!.profile
@@ -309,6 +338,13 @@ constructor(
             }
         }
         this.stack.pop()
+    }
+
+    /** Stores the intermediate result in the activation frame. */
+    fun storeIntermediateResultForTracing(result: Any?) {
+        if (engineOptions.contains(Options.EnableTracing)) {
+            topActivationFrame.result = result
+        }
     }
 
     val topActivationFrame: ActivationFrame
