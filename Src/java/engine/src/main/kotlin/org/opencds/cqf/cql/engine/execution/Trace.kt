@@ -5,7 +5,7 @@ import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
 
-/** Captures expression and function calls involved in evaluation. */
+/** Captures expression and function calls involved in evaluation with intermediate values. */
 class Trace(val frames: List<Frame>) {
 
     /** Represents an expression or function call. */
@@ -77,12 +77,10 @@ class Trace(val frames: List<Frame>) {
                 innerFrames.forEach { append(it.toIndentedString(indentLevel + 1)) }
             }
         }
-
-        override fun toString(): String = toIndentedString(0)
     }
 
     companion object {
-        /** Creates a Trace from a list of activation frames. */
+        /** Creates a [Trace] from a list of activation frames. */
         fun fromActivationFrames(activationFrames: List<ActivationFrame>): Trace {
             return Trace(Frame.fromActivationFrames(activationFrames))
         }

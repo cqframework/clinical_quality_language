@@ -1,12 +1,66 @@
 package org.opencds.cqf.cql.engine.execution
 
 import kotlin.test.assertEquals
+import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.OperandDef
+import org.hl7.elm.r1.Retrieve
+import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
 
 class TraceTest : CqlTestBase() {
 
+    /**
+     * Generates a trace from a tree of activation frames that conceptually represents the
+     * evaluation of the following CQL:
+     *
+     *     library Lib1
+     *     context Patient
+     *     define function func1(a Integer): a + 1
+     *     define expr1: func1(Length([Encounter]) + 2) * 3
+     *
+     * Activation frames are also created for retrieves, but these should not appear in the trace.
+     */
     @Test
-    fun traceOutput() {
+    fun traceGeneration() {
+        val libraryIdentifier = VersionedIdentifier().withId("Lib1")
+
+        val retrieveActivationFrame = ActivationFrame(Retrieve(), libraryIdentifier, null, 0)
+        // Starting with a patient with 4 encounters
+        retrieveActivationFrame.result = listOf(1, 2, 3, 4)
+
+        val func1ActivationFrame =
+            ActivationFrame(
+                FunctionDef().withName("func1").withOperand(listOf(OperandDef().withName("a"))),
+                libraryIdentifier,
+                null,
+                0,
+            )
+        func1ActivationFrame.variables.push(Variable("a").withValue(6))
+        func1ActivationFrame.result = 7
+
+        val expr1ActivationFrame =
+            ActivationFrame(ExpressionDef().withName("expr1"), libraryIdentifier, null, 0)
+        expr1ActivationFrame.innerActivationFrames.add(retrieveActivationFrame)
+        expr1ActivationFrame.innerActivationFrames.add(func1ActivationFrame)
+        expr1ActivationFrame.result = 21
+
+        val trace = Trace.fromActivationFrames(listOf(expr1ActivationFrame))
+
+        assertEquals(
+            """
+                "Lib1.expr1" = 21
+                  "Lib1.func1"(a = 6) = 7
+
+            """
+                .trimIndent(),
+            trace.toString(),
+        )
+    }
+
+    @Test
+    fun engineOption() {
         engine.state.engineOptions.add(CqlEngine.Options.EnableTracing)
         val result = engine.evaluate { library("TraceTest") }.onlyResultOrThrow
         assertEquals(
