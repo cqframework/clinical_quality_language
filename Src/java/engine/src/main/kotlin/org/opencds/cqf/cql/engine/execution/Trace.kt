@@ -21,14 +21,14 @@ class Trace(val frames: List<Frame>) {
         /** Result of evaluating the expression or function. */
         val result: Any?,
         /** Inner expression and function calls. */
-        val innerFrames: List<Frame>,
+        val subframes: List<Frame>,
     ) {
         companion object {
 
             /** Recursively converts activation frames to trace frames. */
             fun fromActivationFrames(activationFrames: List<ActivationFrame>): List<Frame> {
                 return activationFrames.flatMap { activationFrame ->
-                    val innerFrames = fromActivationFrames(activationFrame.innerActivationFrames)
+                    val subframes = fromActivationFrames(activationFrame.innerActivationFrames)
 
                     val element = activationFrame.element
 
@@ -48,11 +48,11 @@ class Trace(val frames: List<Frame>) {
                                 element,
                                 arguments,
                                 activationFrame.result,
-                                innerFrames,
+                                subframes,
                             )
                         )
                     }
-                    innerFrames
+                    subframes
                 }
             }
         }
@@ -61,7 +61,7 @@ class Trace(val frames: List<Frame>) {
         fun toIndentedString(indentLevel: Int): String {
             return buildString {
                 append("  ".repeat(indentLevel))
-                append("\"${library?.id ?: "?"}.${expressionDef.name}\"")
+                append("${library?.id ?: "?"}.${expressionDef.name}")
                 if (expressionDef is FunctionDef) {
                     append("(")
                     append(
@@ -74,7 +74,7 @@ class Trace(val frames: List<Frame>) {
                 append(" = ${result?.toString() ?: "null"}")
                 appendLine()
 
-                innerFrames.forEach { append(it.toIndentedString(indentLevel + 1)) }
+                subframes.forEach { append(it.toIndentedString(indentLevel + 1)) }
             }
         }
     }

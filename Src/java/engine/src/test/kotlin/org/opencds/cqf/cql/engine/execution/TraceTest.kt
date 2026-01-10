@@ -50,10 +50,10 @@ class TraceTest : CqlTestBase() {
 
         assertEquals(
             """
-                "Lib1.expr1" = 21
-                  "Lib1.func1"(a = 6) = 7
+            Lib1.expr1 = 21
+              Lib1.func1(a = 6) = 7
 
-            """
+                        """
                 .trimIndent(),
             trace.toString(),
         )
@@ -65,14 +65,14 @@ class TraceTest : CqlTestBase() {
         val result = engine.evaluate { library("TraceTest") }.onlyResultOrThrow
         assertEquals(
             """
-                "TraceTest.expr1" = 2
-                "TraceTest.expr2" = 19
-                  "TraceTest.func2"(b = 5) = 19
-                    "TraceTest.func1"(a = 7) = 8
-                    "TraceTest.func1"(a = 8) = 9
-                    "TraceTest.expr1" = 2
+            TraceTest.expr1 = 2
+            TraceTest.expr2 = 19
+              TraceTest.func2(b = 5) = 19
+                TraceTest.func1(a = 7) = 8
+                TraceTest.func1(a = 8) = 9
+                TraceTest.expr1 = 2
 
-            """
+                        """
                 .trimIndent(),
             result.trace.toString(),
         )
