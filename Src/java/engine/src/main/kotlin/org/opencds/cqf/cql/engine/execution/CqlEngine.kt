@@ -233,7 +233,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     ) {
         try {
             val action = this.state.shouldDebug(def)
-            state.pushActivationFrame(def, def.context)
+            state.pushActivationFrame(def, def.context!!)
             try {
                 val value = eval()
                 result.results[expression] = ExpressionResult(value, this.state.evaluatedResources)

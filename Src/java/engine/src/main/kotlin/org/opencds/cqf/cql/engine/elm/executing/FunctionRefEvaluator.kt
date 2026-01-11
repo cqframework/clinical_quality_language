@@ -48,7 +48,7 @@ object FunctionRefEvaluator {
         } else {
             // Establish activation frame with the function
             // definition being evaluated.
-            state.pushActivationFrame(functionDef, functionDef.context)
+            state.pushActivationFrame(functionDef, functionDef.context!!)
             try {
                 for (i in arguments.indices) {
                     state.push(Variable(functionDef.operand[i].name!!).withValue(arguments[i]))

@@ -23,6 +23,7 @@ import org.opencds.cqf.cql.engine.debug.SourceLocator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
 import org.opencds.cqf.cql.engine.execution.CqlEngine.Options
+import org.opencds.cqf.cql.engine.execution.trace.Trace
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
@@ -71,7 +72,7 @@ constructor(
          * Frames representing nested expressions, function calls, and retrieves. Only used when
          * tracing is enabled.
          */
-        var innerActivationFrames: MutableList<ActivationFrame> = mutableListOf()
+        val innerActivationFrames: MutableList<ActivationFrame> = mutableListOf()
 
         override fun toString(): String {
             val result = StringBuilder().append("Frame{element=")
@@ -98,7 +99,7 @@ constructor(
 
     val cache: Cache = Cache()
 
-    private val currentContext = ArrayDeque<String?>()
+    private val currentContext = ArrayDeque<String>()
 
     private val currentLibrary = ArrayDeque<Library?>()
 
@@ -107,7 +108,7 @@ constructor(
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
     val parameters = mutableMapOf<String, Any?>()
-    var contextValues = mutableMapOf<String?, Any?>()
+    var contextValues = mutableMapOf<String, Any?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
         private set
@@ -265,7 +266,10 @@ constructor(
 
         val trace =
             if (engineOptions.contains(Options.EnableTracing))
-                Trace.fromActivationFrames(this.stack.peek().innerActivationFrames)
+                Trace.fromActivationFrames(
+                    this.stack.peek().innerActivationFrames,
+                    this.contextValues,
+                )
             else null
 
         // TODO(jmoringe): maybe assert this.stack.getLast().variables.isEmpty();
@@ -317,7 +321,7 @@ constructor(
     }
 
     fun pushActivationFrame(element: Element?) {
-        val contextName: String? = this.currentContext.peekFirst()
+        val contextName = this.currentContext.peekFirst()
         pushActivationFrame(element, contextName)
     }
 
@@ -356,13 +360,13 @@ constructor(
             return topActivationFrame
         }
 
-    fun setContextValue(context: String?, contextValue: Any) {
+    fun setContextValue(context: String, contextValue: Any?) {
         val containsKey = contextValues.containsKey(context)
         val valueFromContextValues = contextValues[context]
         val valuesAreEqual = contextValue == valueFromContextValues
 
         if (!containsKey || !valuesAreEqual) {
-            contextValues.put(context, contextValue)
+            contextValues[context] = contextValue
             clearCacheExpressions()
         }
     }

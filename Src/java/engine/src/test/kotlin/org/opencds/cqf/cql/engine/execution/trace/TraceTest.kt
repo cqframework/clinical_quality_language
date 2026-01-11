@@ -1,4 +1,4 @@
-package org.opencds.cqf.cql.engine.execution
+package org.opencds.cqf.cql.engine.execution.trace
 
 import kotlin.test.assertEquals
 import org.hl7.elm.r1.ExpressionDef
@@ -7,7 +7,10 @@ import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
+import org.opencds.cqf.cql.engine.execution.CqlEngine
+import org.opencds.cqf.cql.engine.execution.CqlTestBase
+import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.execution.Variable
 
 class TraceTest : CqlTestBase() {
 
@@ -23,30 +26,38 @@ class TraceTest : CqlTestBase() {
      * Activation frames are also created for retrieves, but these should not appear in the trace.
      */
     @Test
-    fun traceGeneration() {
+    fun traceOutput() {
         val libraryIdentifier = VersionedIdentifier().withId("Lib1")
+        val contextName = "Patient"
 
-        val retrieveActivationFrame = ActivationFrame(Retrieve(), libraryIdentifier, null, 0)
+        val retrieveActivationFrame =
+            State.ActivationFrame(Retrieve(), libraryIdentifier, contextName, 0)
         // Starting with a patient with 4 encounters
         retrieveActivationFrame.result = listOf(1, 2, 3, 4)
 
         val func1ActivationFrame =
-            ActivationFrame(
+            State.ActivationFrame(
                 FunctionDef().withName("func1").withOperand(listOf(OperandDef().withName("a"))),
                 libraryIdentifier,
-                null,
+                contextName,
                 0,
             )
         func1ActivationFrame.variables.push(Variable("a").withValue(6))
         func1ActivationFrame.result = 7
 
         val expr1ActivationFrame =
-            ActivationFrame(ExpressionDef().withName("expr1"), libraryIdentifier, null, 0)
+            State.ActivationFrame(
+                ExpressionDef().withName("expr1"),
+                libraryIdentifier,
+                contextName,
+                0,
+            )
         expr1ActivationFrame.innerActivationFrames.add(retrieveActivationFrame)
         expr1ActivationFrame.innerActivationFrames.add(func1ActivationFrame)
         expr1ActivationFrame.result = 21
 
-        val trace = Trace.fromActivationFrames(listOf(expr1ActivationFrame))
+        val trace =
+            Trace.fromActivationFrames(listOf(expr1ActivationFrame), mapOf("Patient" to null))
 
         assertEquals(
             """
@@ -62,7 +73,8 @@ class TraceTest : CqlTestBase() {
     @Test
     fun engineOption() {
         engine.state.engineOptions.add(CqlEngine.Options.EnableTracing)
-        val result = engine.evaluate { library("TraceTest") }.onlyResultOrThrow
+        val rv = engine.evaluate { library("TraceTest") }
+        val result = rv.results.values.first()
         assertEquals(
             """
             TraceTest.expr1 = 2
