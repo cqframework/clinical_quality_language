@@ -15,9 +15,11 @@ object ExpressionRefEvaluator {
         try {
             val def =
                 Libraries.resolveExpressionRef(expressionRef.name, state.getCurrentLibrary()!!)
-            state.pushActivationFrame(def, def.context)
+            state.pushActivationFrame(def, def.context!!)
             try {
-                return visitor.visitExpressionDef(def, state)
+                val result = visitor.visitExpressionDef(def, state)
+                state.storeIntermediateResultForTracing(result)
+                return result
             } finally {
                 state.popActivationFrame()
             }

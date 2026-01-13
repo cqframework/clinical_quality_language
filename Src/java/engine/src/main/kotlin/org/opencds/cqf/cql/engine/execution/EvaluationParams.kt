@@ -17,7 +17,7 @@ import org.opencds.cqf.cql.engine.debug.DebugMap
  */
 class EvaluationParams(
     val expressions: Map<VersionedIdentifier, List<EvaluationExpressionRef>?>,
-    val contextParameter: Pair<String, Any>? = null,
+    val contextParameter: Pair<String, Any?>? = null,
     val parameters: Map<String, Any?>? = null,
     val debugMap: DebugMap? = null,
     val evaluationDateTime: ZonedDateTime? = null,
@@ -26,7 +26,7 @@ class EvaluationParams(
         private val expressions =
             mutableMapOf<VersionedIdentifier, List<EvaluationExpressionRef>?>()
 
-        var contextParameter: Pair<String, Any>? = null
+        var contextParameter: Pair<String, Any?>? = null
         var parameters: Map<String, Any?>? = null
         var debugMap: DebugMap? = null
         var evaluationDateTime: ZonedDateTime? = null
