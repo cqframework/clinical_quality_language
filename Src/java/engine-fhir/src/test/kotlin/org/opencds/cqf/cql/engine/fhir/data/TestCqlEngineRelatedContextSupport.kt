@@ -91,7 +91,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
     private fun evaluate(
         cqlEngine: CqlEngine,
         expression: String,
-        initialContext: Pair<String, Any>?,
+        initialContext: Pair<String, Any?>?,
     ): Any? {
         val evaluateResult =
             cqlEngine
