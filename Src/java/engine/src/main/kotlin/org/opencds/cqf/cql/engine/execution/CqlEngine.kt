@@ -49,6 +49,10 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // definitions and retrieves.
         EnableProfiling,
 
+        // Collect trace information during evaluation (expressions and function
+        // calls with intermediate results). Trace data can be exported after evaluation.
+        EnableTracing,
+
         // Collect coverage information during execution. Coverage
         // data can be exported in LCOV format after execution.
         EnableCoverageCollection,
@@ -209,7 +213,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
                 }
             }
         } finally {
-            this.state.endEvaluation()
+            result.trace = this.state.endEvaluation()
             // We are moving the evaluated resources off the stack so we can work on the next ones
             this.state.clearEvaluatedResources()
             // We are moving the library off the stack so we can work on the next one
@@ -229,11 +233,12 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     ) {
         try {
             val action = this.state.shouldDebug(def)
-            state.pushActivationFrame(def, def.context)
+            state.pushActivationFrame(def, def.context!!)
             try {
                 val value = eval()
                 result.results[expression] = ExpressionResult(value, this.state.evaluatedResources)
                 this.state.logDebugResult(def, value, action)
+                state.storeIntermediateResultForTracing(value)
             } finally {
                 this.state.popActivationFrame()
                 // this avoids spill over of evaluatedResources from previous/next

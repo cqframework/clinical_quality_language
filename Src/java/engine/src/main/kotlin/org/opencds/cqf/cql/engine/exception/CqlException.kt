@@ -32,7 +32,7 @@ constructor(
 
     @Transient var sourceLocator: SourceLocator? = null
 
-    val backtrace: Backtrace = Backtrace()
+    var backtrace: Backtrace? = null
 
     init {
         this.sourceLocator = sourceLocator

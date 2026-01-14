@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.execution
 
 import org.opencds.cqf.cql.engine.debug.DebugResult
+import org.opencds.cqf.cql.engine.execution.trace.Trace
 
 class EvaluationResult {
     /** Includes both expression results and function evaluation results. */
@@ -30,4 +31,7 @@ class EvaluationResult {
     }
 
     var debugResult: DebugResult? = null
+
+    /** Trace information collected during evaluation. Only used when tracing is enabled. */
+    var trace: Trace? = null
 }
