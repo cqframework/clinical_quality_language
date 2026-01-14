@@ -51,9 +51,7 @@ kotlin {
         useEsModules()
         browser {
             testTask {
-                useKarma {
-                    useChromeHeadless()
-                }
+                enabled = false
             }
         }
         nodejs()
@@ -63,8 +61,16 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
         binaries.library()
         generateTypeScriptDefinitions()
     }

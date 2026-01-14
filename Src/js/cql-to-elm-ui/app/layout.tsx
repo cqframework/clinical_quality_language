@@ -8,8 +8,8 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "CQL Compiler in Kotlin/JS - Demo",
-  description: "CQL Compiler in Kotlin/JS - Demo",
+  title: "CQL Playground",
+  description: "CQL Playground",
 };
 
 export default function RootLayout({

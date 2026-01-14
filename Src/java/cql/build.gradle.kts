@@ -7,6 +7,26 @@ plugins {
     id("com.strumenta.antlr-kotlin") version "1.0.3"
 }
 
+val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
+    dependsOn("cleanGenerateKotlinGrammarSource")
+    source = fileTree("../../grammar") {
+        include("**/*.g4")
+    }
+    packageName = "org.cqframework.cql.gen"
+    arguments = listOf("-visitor")
+    outputDirectory = file("build/generated/sources/antlr/commonMain/kotlin/${packageName!!.replace(".", "/")}")
+    outputs.dirs(outputDirectory)
+}
+
+val inlineModelInfoXmlsTask = tasks.register<FilesToStringsTask>("inlineModelInfoXmls") {
+    inputFiles = mapOf(
+        file("src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml") to "systemModelInfoXml"
+    )
+    outputDir = file("build/generated/sources/inlineModelInfoXmls/commonMain/kotlin")
+    packageName = "org.hl7.cql.model"
+    fileName = "ModelInfoXmls.kt"
+}
+
 kotlin {
     js {
         outputModuleName = "cql"
@@ -20,7 +40,8 @@ kotlin {
     sourceSets {
         commonMain {
             kotlin {
-                srcDir("build/generated/sources/antlr/commonMain/kotlin")
+                srcDir(generateKotlinGrammarSource)
+                srcDir(inlineModelInfoXmlsTask)
             }
             dependencies {
                 api(project(":shared"))
@@ -41,41 +62,37 @@ kotlin {
     }
 }
 
-val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
-    dependsOn("cleanGenerateKotlinGrammarSource")
-    source = fileTree("../../grammar") {
-        include("**/*.g4")
-    }
-    packageName = "org.cqframework.cql.gen"
-    arguments = listOf("-visitor")
-    outputDirectory = file("build/generated/sources/antlr/commonMain/kotlin/${packageName!!.replace(".", "/")}")
-    outputs.dirs(outputDirectory)
-}
-
 tasks.named("jvmSourcesJar") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.named("jsSourcesJar") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.named("wasmJsSourcesJar") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.named("sourcesJar") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.withType<AbstractKotlinCompile<*>> {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.named("dokkaJavadocJar") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
 
 tasks.named("dokkaHtml") {
     dependsOn(generateKotlinGrammarSource)
+    dependsOn(inlineModelInfoXmlsTask)
 }
