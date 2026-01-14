@@ -15,6 +15,7 @@ include(
     "cqf-fhir",
     "cqf-fhir-npm",
     "cql",
+    "docs",
     "elm",
     "shared",
     "engine",
