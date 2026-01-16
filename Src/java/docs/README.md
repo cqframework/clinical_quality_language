@@ -15,10 +15,13 @@
   * Github can render Mermaid diagrams natively in markdown files.
   * See [Mermaid Live Editor](https://mermaid.live/) for previewing diagrams.
   * See [Diagrams](#Diagrams) for an example.
-* Module-specific documentation: in their respective module directories, typically in a `README.md` file.
+* Module-specific design/dev documentation: in their respective module directories, typically in a `README.md` file.
   * Use `README.md` as the entry point for module docs.
   * Use specific markdown files for larger topics as needed. E.g., `ARCHITECTURE.md`, `INSTALLATION.md`, etc.
   * These files will be copied into the assembled docs site under `modules/`.
+* API/Code documentation: generated Javadoc/KDoc
+  * public classes and methods should have comprehensive Javadoc/KDoc comments.
+  * private/internal classes and methods should have concise comments explaining non-obvious logic.
 
 ## Site Build
 
