@@ -46,9 +46,10 @@ object IntervalEvaluator {
 
         return org.opencds.cqf.cql.engine.runtime.Interval(
             low,
-            if (lowClosed == null) true else lowClosed,
+            lowClosed ?: true,
             high,
-            if (highClosed == null) true else highClosed,
+            highClosed ?: true,
+            state,
         )
     }
 }

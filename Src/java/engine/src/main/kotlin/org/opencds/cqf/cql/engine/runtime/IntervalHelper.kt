@@ -161,8 +161,8 @@ class IntervalHelper private constructor() {
                     val truncatedStart = Value.roundToScale(start, quantityScale, true)
                     val truncatedEnd = Value.roundToScale(end, quantityScale, false)
 
-                    if (truncatedStart.compareTo(truncatedEnd) <= 0) {
-                        return Interval(truncatedStart, true, truncatedEnd, true)
+                    if (truncatedStart <= truncatedEnd) {
+                        return Interval(truncatedStart, true, truncatedEnd, true, state)
                     }
 
                     return null
@@ -179,8 +179,8 @@ class IntervalHelper private constructor() {
                             .withValue(Value.roundToScale(end.value!!, quantityScale, false))
                             .withUnit(end.unit)
 
-                    if (truncatedStart.compareTo(truncatedEnd) <= 0) {
-                        return Interval(truncatedStart, true, truncatedEnd, true)
+                    if (truncatedStart <= truncatedEnd) {
+                        return Interval(truncatedStart, true, truncatedEnd, true, state)
                     }
 
                     return null

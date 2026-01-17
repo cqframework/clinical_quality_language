@@ -52,6 +52,10 @@
 			<expression>1'g/cm3' + 1'g/cm3'</expression>
 			<output>2.0'g/cm3'</output>
 		</test>
+		<test name="Add1Q1QDifferentUnits">
+			<expression>1'kg/m3' + 1'g/cm3'</expression>
+			<output>1001.0'kg/m3'</output>
+		</test>
 		<test name="AddIAndD">
 			<expression>1 + 2.0</expression>
 			<output>3.0</output>
@@ -137,7 +141,6 @@
 			should state clearly that the expected UCUM unit would be the
 			default unit (`1`). -->
 			<!-- See https://github.com/cqframework/clinical_quality_language/issues/193 -->
-			<!-- TODO: make Translator recognize unit changes on Divide() -->
 		</test>
 		<test name="Divide10I5D">
 			<expression>10 / 5.0</expression>
@@ -155,6 +158,7 @@
 			<expression>10.0 'g' / 0</expression>
 			<output>null</output>
 		</test>
+                <!-- TODO -->
 	</group>
 	<group name="Floor">
 		<test name="FloorNull">

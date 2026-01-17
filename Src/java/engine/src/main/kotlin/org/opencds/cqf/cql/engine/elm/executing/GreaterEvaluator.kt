@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.compareQuantities
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -61,7 +62,7 @@ object GreaterEvaluator {
             if (left.value == null || right.value == null) {
                 return null
             }
-            val nullableCompareTo = left.nullableCompareTo(right)
+            val nullableCompareTo = compareQuantities(left, right, state)
             return if (nullableCompareTo == null) null else nullableCompareTo > 0
         } else if (left is BaseTemporal && right is BaseTemporal) {
             val i = left.compare(right, false)

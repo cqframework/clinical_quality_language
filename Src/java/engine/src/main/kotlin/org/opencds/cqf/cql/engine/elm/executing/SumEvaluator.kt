@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 
 /*
 Sum(argument List<Integer>) Integer
@@ -15,24 +16,24 @@ Return types: Integer, BigDecimal & Quantity
 */
 object SumEvaluator {
     @JvmStatic
-    fun sum(source: Any?): Any? {
+    fun sum(source: Any?, state: State?): Any? {
         if (source == null) {
             return null
         }
 
         if (source is Iterable<*>) {
-            val elements = source
             var sum: Any? = null
-            for (element in elements) {
+            for (element in source) {
                 if (element == null) {
                     continue
                 }
 
-                if (sum == null) {
-                    sum = element
-                } else {
-                    sum = AddEvaluator.add(sum, element)
-                }
+                sum =
+                    if (sum == null) {
+                        element
+                    } else {
+                        AddEvaluator.add(sum, element, state)
+                    }
             }
 
             return sum

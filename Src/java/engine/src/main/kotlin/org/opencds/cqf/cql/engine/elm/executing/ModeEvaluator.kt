@@ -38,7 +38,7 @@ object ModeEvaluator {
                 return null
             }
 
-            values.sortWith(CqlList().valueSort)
+            values.sortWith(CqlList(state).valueSort)
 
             var max = 0
             var mode: Any? = Any()

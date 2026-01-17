@@ -22,6 +22,16 @@ interface UcumService {
      * @return null if valid, error message if invalid
      */
     fun validate(unit: String): String?
+
+    fun multiply(
+        left: Pair<BigDecimal, String>,
+        right: Pair<BigDecimal, String>,
+    ): Pair<BigDecimal, String>
+
+    fun divideBy(
+        left: Pair<BigDecimal, String>,
+        right: Pair<BigDecimal, String>,
+    ): Pair<BigDecimal, String>
 }
 
 expect val defaultLazyUcumService: Lazy<UcumService>
@@ -40,6 +50,8 @@ expect val defaultLazyUcumService: Lazy<UcumService>
 fun createUcumService(
     convertUnit: (value: String, sourceUnit: String, destUnit: String) -> String,
     validateUnit: (unit: String) -> String?,
+    multiply: (Pair<BigDecimal, String>, Pair<BigDecimal, String>) -> Pair<BigDecimal, String>,
+    divideBy: (Pair<BigDecimal, String>, Pair<BigDecimal, String>) -> Pair<BigDecimal, String>,
 ): Lazy<UcumService> {
     return lazy {
         object : UcumService {
@@ -54,6 +66,20 @@ fun createUcumService(
 
             override fun validate(unit: String): String? {
                 return validateUnit(unit)
+            }
+
+            override fun multiply(
+                left: Pair<BigDecimal, String>,
+                right: Pair<BigDecimal, String>,
+            ): Pair<BigDecimal, String> {
+                return multiply(left, right)
+            }
+
+            override fun divideBy(
+                left: Pair<BigDecimal, String>,
+                right: Pair<BigDecimal, String>,
+            ): Pair<BigDecimal, String> {
+                return divideBy(left, right)
             }
         }
     }

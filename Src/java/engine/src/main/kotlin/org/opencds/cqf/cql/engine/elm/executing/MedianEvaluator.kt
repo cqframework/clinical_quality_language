@@ -22,8 +22,7 @@ object MedianEvaluator {
         }
 
         if (source is Iterable<*>) {
-            val element = source
-            val itr = element.iterator()
+            val itr = source.iterator()
 
             if (!itr.hasNext()) { // empty
                 return null
@@ -41,25 +40,27 @@ object MedianEvaluator {
                 return null
             }
 
-            values.sortWith(CqlList().valueSort)
+            values.sortWith(CqlList(state).valueSort)
 
             if (values.size % 2 != 0) {
-                return values.get(values.size / 2)
+                return values[values.size / 2]
             } else {
-                if (values.get(0) is Int) { // size of list is even
+                if (values[0] is Int) { // size of list is even
                     return TruncatedDivideEvaluator.div(
                         AddEvaluator.add(
-                            values.get(values.size / 2),
-                            values.get((values.size / 2) - 1),
+                            values[values.size / 2],
+                            values[(values.size / 2) - 1],
+                            state,
                         ),
                         2,
                         state,
                     )
-                } else if (values.get(0) is BigDecimal || values.get(0) is Quantity) {
+                } else if (values[0] is BigDecimal || values[0] is Quantity) {
                     return DivideEvaluator.divide(
                         AddEvaluator.add(
-                            values.get(values.size / 2),
-                            values.get((values.size / 2) - 1),
+                            values[values.size / 2],
+                            values[(values.size / 2) - 1],
+                            state,
                         ),
                         BigDecimal("2.0"),
                         state,

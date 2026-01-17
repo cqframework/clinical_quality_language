@@ -2,13 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.*
 import kotlin.math.min
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
-import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.*
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -77,9 +75,29 @@ object EquivalentEvaluator {
                     .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP)) == 0)
             }
             return leftDecimal.compareTo(rightDecimal) == 0
-        }
-
-        if (left is Iterable<*>) {
+        } else if (left is Quantity && right is Quantity) {
+            // Try the Quantity.equivalent method which implements "simple" rules such as the
+            // equality of alternate
+            // spellings for "week" or "month".
+            val simpleResult = left.equivalent(right)
+            if (!Objects.equals(simpleResult, false)) {
+                return simpleResult // true or null
+            } else {
+                // The simple method indicated that the units are not comparable, try to convert the
+                // value of rightQuantity to the unit of leftQuantity and check for equivalence
+                // again if the conversion is possible.
+                val fullResult =
+                    computeWithConvertedUnits(
+                        left,
+                        right,
+                        { _, leftValue, rightValue -> equivalent(leftValue, rightValue) },
+                        state!!,
+                    )
+                return fullResult ?: false
+            }
+        } else if (left is Ratio && right is Ratio) {
+            return left.fullEquivalent(right, state)
+        } else if (left is Iterable<*>) {
             return CqlList.equivalent(left, right as Iterable<*>, state)
         } else if (left is CqlType) {
             return left.equivalent(right)

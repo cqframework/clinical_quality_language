@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Quantity
 
 /*
@@ -20,7 +21,7 @@ If the source is null, the result is null.
 */
 object ProductEvaluator {
     @JvmStatic
-    fun product(source: Any?): Any? {
+    fun product(source: Any?, state: State?): Any? {
         if (source == null) {
             return null
         }
@@ -38,13 +39,13 @@ object ProductEvaluator {
                         (element is Long && result is Long) ||
                         (element is BigDecimal && result is BigDecimal)
                 ) {
-                    result = MultiplyEvaluator.multiply(result, element)
+                    result = MultiplyEvaluator.multiply(result, element, state)
                 } else if (element is Quantity && result is Quantity) {
                     require(element.unit == result.unit) {
                         "Found different units during Quantity product evaluation: ${element.unit} and ${result.unit}"
                     }
                     result.value =
-                        MultiplyEvaluator.multiply(result.value, element.value) as BigDecimal
+                        MultiplyEvaluator.multiply(result.value, element.value, state) as BigDecimal
                 } else {
                     throw InvalidOperatorArgument(
                         "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",

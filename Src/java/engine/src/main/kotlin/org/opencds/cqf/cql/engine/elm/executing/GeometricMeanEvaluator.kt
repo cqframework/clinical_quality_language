@@ -40,7 +40,7 @@ object GeometricMeanEvaluator {
             }
         }
         return PowerEvaluator.power(
-            ProductEvaluator.product(cleanSource),
+            ProductEvaluator.product(cleanSource, state),
             DivideEvaluator.divide(
                 BigDecimal(1),
                 ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)),

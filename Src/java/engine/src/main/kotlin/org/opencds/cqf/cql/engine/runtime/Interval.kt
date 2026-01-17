@@ -92,10 +92,15 @@ constructor(
         the point type of the interval.
          */
         get() {
-            if (!lowClosed) {
-                return successor(low)
+            return if (!lowClosed) {
+                successor(low)
+            } else if (low != null) {
+                low
+            } else if (high is Quantity) {
+                val highQuantity = high as Quantity
+                Quantity().withValue(Value.MIN_DECIMAL).withUnit(highQuantity.unit)
             } else {
-                return if (low == null) minValue(pointType!!.getTypeName()) else low
+                minValue(pointType!!.typeName)
             }
         }
 
@@ -111,15 +116,20 @@ constructor(
         the point type of the interval.
          */
         get() {
-            if (!highClosed) {
-                return predecessor(high)
+            return if (!highClosed) {
+                predecessor(high)
+            } else if (high != null) {
+                high
+            } else if (low is Quantity) {
+                val lowQuantity = low as Quantity
+                Quantity().withValue(Value.MAX_DECIMAL).withUnit(lowQuantity.unit)
             } else {
-                return if (high == null) maxValue(pointType!!.getTypeName()) else high
+                maxValue(pointType!!.typeName)
             }
         }
 
     override fun compareTo(other: Interval): Int {
-        val cqlList = CqlList()
+        val cqlList = CqlList(state)
         if (cqlList.compareTo(this.start, other.start) == 0) {
             return cqlList.compareTo(this.end, other.end)
         }
@@ -171,13 +181,13 @@ constructor(
     }
 
     companion object {
-        fun getSize(start: Any?, end: Any?): Any? {
+        fun getSize(start: Any?, end: Any?, state: State?): Any? {
             if (start == null || end == null) {
                 return null
             }
 
             if (start is Int || start is BigDecimal || start is Quantity) {
-                return subtract(end, start)
+                return subtract(end, start, state)
             }
 
             throw InvalidOperatorArgument(

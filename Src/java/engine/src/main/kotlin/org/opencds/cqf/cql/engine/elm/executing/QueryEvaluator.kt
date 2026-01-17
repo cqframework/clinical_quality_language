@@ -125,7 +125,7 @@ object QueryEvaluator {
 
                     is ByColumn -> result.sortWith(CqlList(state, byItem.path).columnSort)
 
-                    else -> result.sortWith(CqlList().valueSort)
+                    else -> result.sortWith(CqlList(state).valueSort)
                 }
 
                 val direction = byItem.direction!!.value()

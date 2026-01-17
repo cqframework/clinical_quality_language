@@ -1,6 +1,7 @@
 package org.cqframework.cql.ucum
 
 import org.cqframework.cql.cql2elm.ucum.UcumService
+import org.cqframework.cql.shared.BigDecimal
 import org.fhir.ucum.Decimal
 import org.fhir.ucum.UcumEssenceService
 
@@ -27,6 +28,42 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
 
                             override fun validate(unit: String): String? {
                                 return u.validate(unit)
+                            }
+
+                            override fun multiply(
+                                left: Pair<BigDecimal, String>,
+                                right: Pair<BigDecimal, String>,
+                            ): Pair<BigDecimal, String> {
+                                val result =
+                                    u.multiply(
+                                        org.fhir.ucum.Pair(
+                                            Decimal(left.first.toString()),
+                                            left.second,
+                                        ),
+                                        org.fhir.ucum.Pair(
+                                            Decimal(right.first.toString()),
+                                            right.second,
+                                        ),
+                                    )
+                                return Pair(BigDecimal(result.value.asDecimal()), result.code)
+                            }
+
+                            override fun divideBy(
+                                left: Pair<BigDecimal, String>,
+                                right: Pair<BigDecimal, String>,
+                            ): Pair<BigDecimal, String> {
+                                val result =
+                                    u.divideBy(
+                                        org.fhir.ucum.Pair(
+                                            Decimal(left.first.toString()),
+                                            left.second,
+                                        ),
+                                        org.fhir.ucum.Pair(
+                                            Decimal(right.first.toString()),
+                                            right.second,
+                                        ),
+                                    )
+                                return Pair(BigDecimal(result.value.asDecimal()), result.code)
                             }
                         }
                     }

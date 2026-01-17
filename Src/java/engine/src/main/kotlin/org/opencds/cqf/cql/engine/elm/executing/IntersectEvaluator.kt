@@ -92,7 +92,7 @@ object IntersectEvaluator {
                     else if (leftEndLtRightEnd) leftEnd else rightEnd
             }
 
-            return Interval(max, max != null, min, min != null)
+            return Interval(max, max != null, min, min != null, state)
         } else if (left is Iterable<*>) {
             val leftArr = left
             val rightArr = right as Iterable<*>
