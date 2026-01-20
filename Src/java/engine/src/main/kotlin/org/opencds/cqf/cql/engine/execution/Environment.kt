@@ -87,6 +87,7 @@ constructor(
         }
 
         // Special case for Iterable instances being cast to CQL Lists.
+        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
         if (Iterable::class.java.isAssignableFrom(type) && operand is Iterable<*>) {
             return operand
         }
@@ -150,6 +151,12 @@ constructor(
     fun `is`(operand: Any?, type: Class<*>): Boolean? {
         if (operand == null) {
             return null
+        }
+
+        // Special case for Iterable instances being checked against CQL List type.
+        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
+        if (Iterable::class.java.isAssignableFrom(type) && operand is Iterable<*>) {
+            return true
         }
 
         if (type.isAssignableFrom(operand.javaClass)) {

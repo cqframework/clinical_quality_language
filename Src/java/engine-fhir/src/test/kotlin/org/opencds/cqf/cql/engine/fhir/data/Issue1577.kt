@@ -1,7 +1,8 @@
-package org.opencds.cqf.cql.engine.fhir
+package org.opencds.cqf.cql.engine.fhir.data
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.Observation
@@ -13,16 +14,21 @@ import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
 
+/**
+ * Tests the implementation of [org.opencds.cqf.cql.engine.execution.Environment.is] and
+ * [org.opencds.cqf.cql.engine.execution.Environment.as] for lists.
+ */
 class Issue1577 {
     @Test
-    fun union() {
+    fun listTypeOperators() {
         val engine =
             TranslatorHelper.getEngine(
                 """
                     library Issue1577
                     using FHIR version '4.0.1'
                     context Patient
-                    define expr1: [Condition] union [Observation]
+                    define expr1: [Condition] is List<Any>
+                    define expr2: [Condition] union [Observation]
                 """
                     .trimIndent()
             )
@@ -66,10 +72,14 @@ class Issue1577 {
             "http://hl7.org/fhir",
             CompositeDataProvider(CachedR4FhirModelResolver(), retrieveProvider),
         )
-        val evaluationResult =
-            engine.evaluate { library("Issue1577") { expressions("expr1") } }.onlyResultOrThrow
-        val expressionResult = evaluationResult["expr1"]!!.value
-        assertTrue(expressionResult is Iterable<*>)
-        assertEquals(2, expressionResult.toList().size)
+        val evaluationResult = engine.evaluate { library("Issue1577") }.onlyResultOrThrow
+
+        val expr1Result = evaluationResult["expr1"]!!.value
+        assertIs<Boolean>(expr1Result)
+        assertTrue(expr1Result)
+
+        val expr2Result = evaluationResult["expr2"]!!.value
+        assertIs<Iterable<*>>(expr2Result)
+        assertEquals(2, expr2Result.toList().size)
     }
 }
