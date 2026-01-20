@@ -16,7 +16,7 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 
 /**
  * Tests the implementation of [org.opencds.cqf.cql.engine.execution.Environment.is] and
- * [org.opencds.cqf.cql.engine.execution.Environment.as] for lists.
+ * [org.opencds.cqf.cql.engine.execution.Environment.as] for Java Iterables.
  */
 class Issue1577 {
     @Test
