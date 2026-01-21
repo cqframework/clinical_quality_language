@@ -14,14 +14,7 @@ kotlin {
 dependencies {
     // For compiling code snippets in tests
     testImplementation(project(":cql-to-elm"))
-    testImplementation(platform("org.junit:junit-bom:5.10.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(kotlin("test"))
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 // Assembles the documentation site into build/site/
