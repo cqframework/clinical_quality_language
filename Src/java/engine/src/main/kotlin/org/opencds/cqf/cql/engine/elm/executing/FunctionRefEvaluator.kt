@@ -48,12 +48,14 @@ object FunctionRefEvaluator {
         } else {
             // Establish activation frame with the function
             // definition being evaluated.
-            state.pushActivationFrame(functionDef, functionDef.context)
+            state.pushActivationFrame(functionDef, functionDef.context!!)
             try {
                 for (i in arguments.indices) {
                     state.push(Variable(functionDef.operand[i].name!!).withValue(arguments[i]))
                 }
-                return visitor.visitExpression(functionDef.expression!!, state)
+                val result = visitor.visitExpression(functionDef.expression!!, state)
+                state.storeIntermediateResultForTracing(result)
+                return result
             } finally {
                 state.popActivationFrame()
             }

@@ -165,6 +165,7 @@ import org.opencds.cqf.cql.engine.elm.executing.ValueSetRefEvaluator.internalEva
 import org.opencds.cqf.cql.engine.elm.executing.VarianceEvaluator.variance
 import org.opencds.cqf.cql.engine.elm.executing.WidthEvaluator.width
 import org.opencds.cqf.cql.engine.elm.executing.XorEvaluator.xor
+import org.opencds.cqf.cql.engine.exception.Backtrace
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -179,7 +180,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         try {
             return super.visitExpression(elm, context)
         } catch (e: CqlException) {
-            maybeExtendBacktrace(e, context, elm)
+            maybeExtendBacktrace(e, context!!, elm)
             throw e
         } catch (e: Exception) {
             val exception =
@@ -194,27 +195,15 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         }
     }
 
+    /** Builds a backtrace for the exception if it does not already have one. */
     private fun maybeExtendBacktrace(
         exception: CqlException,
-        context: State?,
-        expression: Expression?,
+        context: State,
+        expression: Expression,
     ) {
-        // If the top of the stack in state is call-like
-        // ActivationFrame (that is an ActivationFrame for an
-        // expression definition or a function definition), try to
-        // extend the backtrace object of exception to include that
-        // call.
-        val frame = context!!.topActivationFrame
-        if (frame.element is ExpressionDef) {
-            exception.backtrace.maybeAddFrame(
-                frame.element as ExpressionDef,
-                frame,
-                context.stack,
-                context.getCurrentContext(),
-                context.currentContextValue,
-                context.getCurrentLibrary()?.identifier,
-                expression,
-            )
+        if (exception.backtrace == null) {
+            exception.backtrace =
+                Backtrace.fromActivationFrames(context.stack, expression, context.contextValues)
         }
     }
 

@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
-class Variable(val name: String?) {
+data class Variable(val name: String?) {
 
     var value: Any? = null
 
@@ -10,9 +10,5 @@ class Variable(val name: String?) {
     fun withValue(value: Any?): Variable {
         this.value = value
         return this
-    }
-
-    override fun toString(): String {
-        return "Variable{name=${name}, value=${value}, isList=${isList}}"
     }
 }
