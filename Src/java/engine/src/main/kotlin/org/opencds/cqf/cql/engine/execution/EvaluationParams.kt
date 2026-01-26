@@ -35,20 +35,28 @@ class EvaluationParams(
          * Adds a library to the evaluation.
          *
          * @param id The VersionedIdentifier of the library.
-         * @param block A DSL block to define specific expressions.
+         * @param libraryParams Library parameters containing expressions to evaluate.
          */
-        fun library(id: VersionedIdentifier, block: (LibraryScope.() -> Unit)? = null) = apply {
-            if (block == null) {
-                expressions[id] = null
-            } else {
-                val scope = LibraryScope()
-                scope.block()
-                expressions[id] = scope.build()
-            }
+        fun library(id: VersionedIdentifier, libraryParams: LibraryParams) {
+            expressions[id] = libraryParams.expressions
         }
 
         /** Shorthand for adding a library by name. */
-        fun library(libraryName: String, block: (LibraryScope.() -> Unit)? = null) {
+        fun library(libraryName: String, libraryParams: LibraryParams) {
+            library(VersionedIdentifier().apply { id = libraryName }, libraryParams)
+        }
+
+        /** Adds a library to the evaluation. */
+        fun library(id: VersionedIdentifier, block: (LibraryParams.Builder.() -> Unit)? = null) {
+            val builder = LibraryParams.Builder()
+            if (block != null) {
+                builder.apply(block)
+            }
+            library(id, builder.build())
+        }
+
+        /** Shorthand for adding a library by name. */
+        fun library(libraryName: String, block: (LibraryParams.Builder.() -> Unit)? = null) {
             library(VersionedIdentifier().apply { id = libraryName }, block)
         }
 
@@ -63,29 +71,47 @@ class EvaluationParams(
         }
     }
 
-    /** Scopes expression calls within a library block. */
-    class LibraryScope {
-        private val expressions = mutableListOf<EvaluationExpressionRef>()
+    /**
+     * Parameters for a specific library's evaluation.
+     *
+     * @property expressions The list of expression refs to evaluate for this library. If the value
+     *   is null, all expressions in the library will be evaluated.
+     */
+    class LibraryParams(val expressions: List<EvaluationExpressionRef>?) {
+        class Builder {
+            private var expressions: MutableList<EvaluationExpressionRef>? = null
 
-        /** Adds expression refs to be evaluated. */
-        fun expressions(vararg refs: EvaluationExpressionRef) {
-            expressions.addAll(refs)
-        }
+            /** Adds expression refs to be evaluated. */
+            fun expressions(vararg refs: EvaluationExpressionRef) {
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
+                expressions!!.addAll(refs)
+            }
 
-        /** Adds expressions by name. */
-        fun expressions(names: Iterable<String>) {
-            for (name in names) {
-                expressions.add(EvaluationExpressionRef(name))
+            /** Adds expressions by name. */
+            fun expressions(names: Iterable<String>) {
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
+                for (name in names) {
+                    expressions!!.add(EvaluationExpressionRef(name))
+                }
+            }
+
+            /** Adds expressions by name. */
+            fun expressions(vararg names: String) {
+                if (expressions == null) {
+                    expressions = mutableListOf()
+                }
+                for (name in names) {
+                    expressions!!.add(EvaluationExpressionRef(name))
+                }
+            }
+
+            fun build(): LibraryParams {
+                return LibraryParams(expressions)
             }
         }
-
-        /** Adds expressions by name. */
-        fun expressions(vararg names: String) {
-            for (name in names) {
-                expressions.add(EvaluationExpressionRef(name))
-            }
-        }
-
-        fun build(): List<EvaluationExpressionRef> = expressions
     }
 }
