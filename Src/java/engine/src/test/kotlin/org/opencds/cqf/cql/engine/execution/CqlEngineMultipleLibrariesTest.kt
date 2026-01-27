@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.debug.DebugMap
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -100,7 +101,10 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
 
         val evaluationResult = findResultsByLibId(LIBRARY_WITH_VERSION, libraryResults)
         Assertions.assertEquals(5, evaluationResult["Number"]!!.value)
-        Assertions.assertEquals(_2031_01_01_TO_2032_01_01, evaluationResult["Period"]!!.value)
+        Assertions.assertEquals(
+            true,
+            equivalent(_2031_01_01_TO_2032_01_01, evaluationResult["Period"]!!.value),
+        )
     }
 
     // Various bespoke assertions to increase test coverage
@@ -159,9 +163,18 @@ internal class CqlEngineMultipleLibrariesTest : CqlTestBase() {
         Assertions.assertEquals(2, evaluationResult2["Number"]!!.value)
         Assertions.assertEquals(3, evaluationResult3["Number"]!!.value)
 
-        Assertions.assertEquals(_2021_01_01_TO_2022_01_01, evaluationResult1["Period"]!!.value)
-        Assertions.assertEquals(_2022_01_01_TO_2023_01_01, evaluationResult2["Period"]!!.value)
-        Assertions.assertEquals(_2023_01_01_TO_2024_01_01, evaluationResult3["Period"]!!.value)
+        Assertions.assertEquals(
+            true,
+            equivalent(_2021_01_01_TO_2022_01_01, evaluationResult1["Period"]!!.value),
+        )
+        Assertions.assertEquals(
+            true,
+            equivalent(_2022_01_01_TO_2023_01_01, evaluationResult2["Period"]!!.value),
+        )
+        Assertions.assertEquals(
+            true,
+            equivalent(_2023_01_01_TO_2024_01_01, evaluationResult3["Period"]!!.value),
+        )
     }
 
     @Test

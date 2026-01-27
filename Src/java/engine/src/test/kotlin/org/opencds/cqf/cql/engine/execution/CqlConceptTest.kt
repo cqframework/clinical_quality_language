@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution
 import java.io.IOException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.CqlType
@@ -34,7 +35,7 @@ internal class CqlConceptTest : CqlTestBase() {
         }
 
         fun assertEqual(expected: CqlType, actual: CqlType?) {
-            if (expected.equal(actual) != true) {
+            if (equal(expected, actual) != true) {
                 val message = "Expected $expected but got $actual"
                 Assertions.fail<Any?>(message)
             }

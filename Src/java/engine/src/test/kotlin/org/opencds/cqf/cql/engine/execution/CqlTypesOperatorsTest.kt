@@ -7,7 +7,8 @@ import java.util.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.DateTime
@@ -31,20 +32,17 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
             val results = engine.evaluate { library("CqlTypeOperatorsTest") }.onlyResultOrThrow
             var value = results["AsQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("45.5")).withUnit("g")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("45.5")).withUnit("g")) == true
             )
 
             value = results["CastAsQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("45.5")).withUnit("g")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("45.5")).withUnit("g")) == true
             )
 
             value = results["AsDateTime"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
-                    true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) == true
             )
 
             value = results["IntegerToDecimal"]!!.value
@@ -55,27 +53,20 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
 
             value = results["StringToDateTime"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
-                    true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) == true
             )
 
             value = results["StringToTime"]!!.value
-            Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(14, 30, 0, 0)) == true)
+            Assertions.assertTrue(equivalent(value, Time(14, 30, 0, 0)) == true)
 
             value = results["ConvertQuantity"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    Quantity().withValue(BigDecimal("0.005")).withUnit("g"),
-                ) == true
+                equivalent(value, Quantity().withValue(BigDecimal("0.005")).withUnit("g")) == true
             )
 
             value = results["ConvertSyntax"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    Quantity().withValue(BigDecimal("0.005")).withUnit("g"),
-                ) == true
+                equivalent(value, Quantity().withValue(BigDecimal("0.005")).withUnit("g")) == true
             )
 
             value = results["ConvertsToBooleanTrue"]!!.value
@@ -206,62 +197,46 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
 
             value = results["CodeToConcept1"]!!.value
             Assertions.assertTrue(
-                (value as Concept).equivalent(Concept().withCode(Code().withCode("8480-6"))) == true
+                equivalent(value, Concept().withCode(Code().withCode("8480-6"))) == true
             )
 
             value = results["ToDateTime0"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1)) ==
-                    true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1)) == true
             )
 
             value = results["ToDateTime1"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) ==
-                    true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1)) == true
             )
 
             value = results["ToDateTime2"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5),
-                ) == true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5)) == true
             )
 
             value = results["ToDateTime3"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955),
-                ) == true
+                equivalent(value, DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)) == true
             )
 
             value = results["ToDateTime4"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    DateTime(BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955),
-                ) == true,
+                equivalent(value, DateTime(BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)) == true,
                 "ToDateTime4 vs. new DateTime(-1.5)",
             )
 
             value = results["ToDateTime5"]!!.value
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    DateTime(BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955),
-                ) == true,
+                equivalent(value, DateTime(BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)) == true,
                 "ToDateTime5 vs. new DateTime(-1.25)",
             )
 
             value = results["ToDateTime6"]!!.value
             val bigDecimalOffsetForUtc = getBigDecimalZoneOffset(ZoneId.of("UTC"))
             Assertions.assertTrue(
-                EquivalentEvaluator.equivalent(
-                    value,
-                    DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955),
-                ) == true
+                equivalent(value, DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)) ==
+                    true
             )
 
             value = results["ToDateTimeMalformed"]!!.value
@@ -278,8 +253,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
 
             value = results["String5D5CMToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("5.5")).withUnit("cm")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("5.5")).withUnit("cm")) == true
             )
 
             value = results["StringInvalidToQuantityNull"]!!.value
@@ -287,76 +261,65 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
 
             value = results["String100PerMinPerSqMeterToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(
-                    Quantity().withValue(BigDecimal("100")).withUnit("daL/min/m2")
-                ) == true
+                equal(value, Quantity().withValue(BigDecimal("100")).withUnit("daL/min/m2")) == true
             )
 
             value = results["String100UnitPer10BillionToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(
-                    Quantity().withValue(BigDecimal("100")).withUnit("U/10*10{cells}")
-                ) == true
+                equal(value, Quantity().withValue(BigDecimal("100")).withUnit("U/10*10{cells}")) ==
+                    true
             )
 
             value = results["String60DayPer7DayToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(
-                    Quantity().withValue(BigDecimal("60")).withUnit("d/(7.d)")
-                ) == true
+                equal(value, Quantity().withValue(BigDecimal("60")).withUnit("d/(7.d)")) == true
             )
 
             value = results["String60EhrlichPer100gmToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(
-                    Quantity().withValue(BigDecimal("60")).withUnit("{EhrlichU}/100.g")
-                ) == true
+                equal(value, Quantity().withValue(BigDecimal("60")).withUnit("{EhrlichU}/100.g")) ==
+                    true
             )
 
             value = results["StringPercentToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("60")).withUnit("%")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("60")).withUnit("%")) == true
             )
 
             value = results["StringPercentWithoutQuoteToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("70")).withUnit("%")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("70")).withUnit("%")) == true
             )
 
             value = results["StringPercentWithTabToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("80")).withUnit("%")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("80")).withUnit("%")) == true
             )
 
             value = results["StringPercentWithMultiSpacesToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("90")).withUnit("%")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("90")).withUnit("%")) == true
             )
 
             value = results["StringPercentWithSpacesUnitToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("10")).withUnit("ml")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("10")).withUnit("ml")) == true
             )
 
             value = results["StringPercentWithQuoteUnitToQuantity"]!!.value
             Assertions.assertTrue(
-                (value as Quantity).equal(Quantity().withValue(BigDecimal("20")).withUnit("ml")) ==
-                    true
+                equal(value, Quantity().withValue(BigDecimal("20")).withUnit("ml")) == true
             )
 
             value = results["ToRatioIsValid"]!!.value
             Assertions.assertTrue(
-                (value as Ratio)
-                    .numerator!!
-                    .equal(Quantity().withValue(BigDecimal("1.0")).withUnit("mg")) == true
+                equal(
+                    (value as Ratio).numerator,
+                    Quantity().withValue(BigDecimal("1.0")).withUnit("mg"),
+                ) == true
             )
             Assertions.assertTrue(
-                value.denominator!!.equal(Quantity().withValue(BigDecimal("2.0")).withUnit("mg")) ==
+                equal(value.denominator, Quantity().withValue(BigDecimal("2.0")).withUnit("mg")) ==
                     true
             )
 
@@ -379,7 +342,7 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
             Assertions.assertEquals("true", value)
 
             value = results["ToTime1"]!!.value
-            Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(14, 30, 0, 0)) == true)
+            Assertions.assertTrue(equivalent(value, Time(14, 30, 0, 0)) == true)
 
             value = results["ToTimeMalformed"]!!.value
             Assertions.assertNull(value)
