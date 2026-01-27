@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 /*
@@ -22,7 +23,7 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 */
 object SizeEvaluator {
     @JvmStatic
-    fun size(argument: Any?): Any? {
+    fun size(argument: Any?, state: State?): Any? {
         if (argument == null) {
             return null
         }
@@ -31,6 +32,7 @@ object SizeEvaluator {
             return SubtractEvaluator.subtract(
                 SuccessorEvaluator.successor(argument.end),
                 argument.start,
+                state,
             )
         }
 

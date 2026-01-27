@@ -125,10 +125,14 @@ class R4FhirQueryGenerator(
                                     .withValue(dateFilterAsDuration.getValue())
                                     .withUnit(dateFilterAsDuration.getUnit())
 
+                            // Passing null as the state argument to the subtract method is fine
+                            // here since that method only uses the state when it has to convert
+                            // Quantities with different units which cannot happen here.
                             val diff =
                                 (SubtractEvaluator.subtract(
                                     evaluationDateTime,
                                     dateFilterDurationAsCQLQuantity,
+                                    null,
                                 ) as DateTime?)
 
                             dateRange = Interval(diff, true, evaluationDateTime, true)

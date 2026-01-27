@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Quantity
 
@@ -20,31 +19,19 @@ object StdDevEvaluator {
         if (source == null) {
             return null
         }
-
-        if (source is Iterable<*>) {
-            if ((source as MutableList<*>).isEmpty()) {
-                return null
-            }
-
-            val variance = VarianceEvaluator.variance(source, state)
+        return when (val variance = VarianceEvaluator.variance(source, state, true, "StdDev")) {
             // The cases in which Variance returns null are the same as those where StdDev does.
-            if (variance == null) {
-                return null
+            null -> return null
+            is BigDecimal -> PowerEvaluator.power(variance, BigDecimal("0.5"))
+            else -> {
+                // If variance is a Quantity, we made sure that the unit part was not squared during
+                // the variance computation. As a result, we can take the square root of the value
+                // but keep the unit as it is.
+                val value =
+                    PowerEvaluator.power((variance as Quantity).value, BigDecimal("0.5"))
+                        as BigDecimal
+                Quantity().withValue(value).withUnit(variance.unit)
             }
-
-            return if (variance is BigDecimal) PowerEvaluator.power(variance, BigDecimal("0.5"))
-            else
-                Quantity()
-                    .withValue(
-                        PowerEvaluator.power((variance as Quantity).value, BigDecimal("0.5"))
-                            as BigDecimal
-                    )
-                    .withUnit(variance.unit)
         }
-
-        throw InvalidOperatorArgument(
-            "StdDev(List<Decimal>) or StdDev(List<Quantity>)",
-            "StdDev(${source.javaClass.name})",
-        )
     }
 }

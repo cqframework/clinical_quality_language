@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 /*
@@ -14,16 +15,12 @@ If the argument is null, the result is null.
 */
 object WidthEvaluator {
     @JvmStatic
-    fun width(operand: Any?): Any? {
+    fun width(operand: Any?, state: State?): Any? {
         if (operand == null) {
             return null
         }
-
         if (operand is Interval) {
-            val start = operand.start
-            val end = operand.end
-
-            return Interval.getSize(start, end)
+            return Interval.getSize(operand.start, operand.end, state)
         }
 
         throw InvalidOperatorArgument("Width(Interval<T>)", "Width(${operand.javaClass.name})")
