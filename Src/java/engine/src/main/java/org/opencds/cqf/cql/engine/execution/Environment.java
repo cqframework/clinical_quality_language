@@ -116,6 +116,8 @@ public class Environment {
             return null;
         }
 
+        // Special case for Iterable instances being cast to CQL Lists.
+        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
         if (Iterable.class.isAssignableFrom(type) && operand instanceof Iterable) {
             return operand;
         }
@@ -180,6 +182,8 @@ public class Environment {
             return null;
         }
 
+        // Special case for Iterable instances being checked against CQL List type.
+        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
         if (Iterable.class.isAssignableFrom(type) && operand instanceof Iterable) {
             return true;
         }
