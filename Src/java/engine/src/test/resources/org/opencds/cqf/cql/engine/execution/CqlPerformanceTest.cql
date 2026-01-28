@@ -203,11 +203,9 @@ define test_Sum_not_null: TestMessage(Sum_not_null = 15, 'Sum_not_null', toStrin
 define test_Sum_has_null: TestMessage(Sum_has_null = 3, 'Sum_has_null', toString(3), toString(Sum_has_null))
 define test_Sum_not_null_q: TestMessage(Sum_not_null_q = 15'ml', 'Sum_not_null_q', toString(15'ml'), toString(Sum_not_null_q))
 define test_Sum_has_null_q: TestMessage(Sum_has_null_q = 3'ml', 'Sum_has_null_q', toString(3'ml'), toString(Sum_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Sum_unmatched_units_q: TestMessage(Sum_unmatched_units_q is null, 'Sum_unmatched_units_q', 'null', toString(Sum_unmatched_units_q))
+define test_Sum_unmatched_units_q: TestMessage(Sum_unmatched_units_q is null, 'Sum_unmatched_units_q', 'null', toString(Sum_unmatched_units_q))
 define test_Sum_empty: TestMessage(Sum_empty is null, 'Sum_empty', 'null', toString(Sum_empty))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Sum_q_diff_units: TestMessage(Sum_q_diff_units = 15'ml', 'Sum_q_diff_units', toString(15'ml'), toString(Sum_q_diff_units))
+define test_Sum_q_diff_units: TestMessage(Sum_q_diff_units = 15'ml', 'Sum_q_diff_units', toString(15'ml'), toString(Sum_q_diff_units))
 
 // Min
 define Min_not_null: Min({1,2,3,4,5,0})
@@ -215,15 +213,14 @@ define Min_has_null: Min({1,null,-1,null,2})
 define Min_empty: Min(List<Integer>{})
 define Min_not_null_q: Min({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml',0 'ml'})
 define Min_has_null_q: Min({1 'ml',null,-1 'ml',null,2 'ml'})
-define Min_q_diff_units: Min({1 'ml',2 'dl',3 'l',4 'l',5 'l',0 'ml'})
+define Min_q_diff_units: Min({1 'L',2 'dl',3 'l',4 'l',5 'l',5 'ml'})
 
 define test_Min_not_null: TestMessage(Min_not_null = 0, 'Min_not_null', toString(0), toString(Min_not_null))
 define test_Min_has_null: TestMessage(Min_has_null = -1, 'Min_has_null', toString(-1), toString(Min_has_null))
 define test_Min_empty: TestMessage(Min_empty is null, 'Min_empty', 'null', toString(Min_empty))
 define test_Min_not_null_q: TestMessage(Min_not_null_q = 0 'ml', 'Min_not_null_q', toString(0 'ml'), toString(Min_not_null_q))
 define test_Min_has_null_q: TestMessage(Min_has_null_q = -1 'ml', 'Min_has_null_q', toString(-1 'ml'), toString(Min_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity - this test will succeed by accident
-// define test_Min_q_diff_units: TestMessage(Min_q_diff_units = 0 'ml', 'Min_q_diff_units', toString(0 'ml'), toString(Min_q_diff_units))
+define test_Min_q_diff_units: TestMessage(Min_q_diff_units = 5 'ml', 'Min_q_diff_units', toString(5 'ml'), toString(Min_q_diff_units))
 
 // Max
 define Max_not_null: Max({10,1,2,3,4,5})
@@ -238,8 +235,8 @@ define test_Max_has_null: TestMessage(Max_has_null = 2, 'Max_has_null', toString
 define test_Max_empty: TestMessage(Max_empty is null, 'Max_empty', 'null', toString(Max_empty))
 define test_Max_not_null_q: TestMessage(Max_not_null_q = 10 'ml', 'Max_not_null_q', toString(10 'ml'), toString(Max_not_null_q))
 define test_Max_has_null_q: TestMessage(Max_has_null_q = 2 'ml', 'Max_has_null_q', toString(2 'ml'), toString(Max_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Max_q_diff_units: TestMessage(Max_q_diff_units = 5000 'ml', 'Max_q_diff_units', toString(5000 'ml'), toString(Max_q_diff_units))
+// TODO(jmoringe): the expected value used to be 5000 'ml' but I don't think Max should return a value that is not in the list of provided values
+define test_Max_q_diff_units: TestMessage(Max_q_diff_units = 5 'l', 'Max_q_diff_units', toString(5 'l'), toString(Max_q_diff_units))
 
 // Avg
 define Avg_not_null: Avg({1,2,3,4,5})
@@ -254,8 +251,8 @@ define test_Avg_has_null: TestMessage(Avg_has_null = 1.5, 'Avg_has_null', toStri
 define test_Avg_empty: TestMessage(Avg_empty is null, 'Avg_empty', 'null', toString(Avg_empty))
 define test_Avg_not_null_q: TestMessage(Avg_not_null_q = 3.0 'ml', 'Avg_not_null_q', toString(3.0 'ml'), toString(Avg_not_null_q))
 define test_Avg_has_null_q: TestMessage(Avg_has_null_q = 1.5 'ml', 'Avg_has_null_q', toString(1.5 'ml'), toString(Avg_has_null_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Avg_q_diff_units: TestMessage(Avg_q_diff_units = 3.0 'ml', 'Avg_q_diff_units', toString(3.0 'ml'), toString(Avg_q_diff_units))
+// TODO(jmoringe): the expected value used to be 3.0 'ml'; not sure which one is correct
+define test_Avg_q_diff_units: TestMessage(Avg_q_diff_units = 3 'ml', 'Avg_q_diff_units', toString(3 'ml'), toString(Avg_q_diff_units))
 
 // Median
 define Median_odd: Median({5,1,2,3,4})
@@ -284,8 +281,7 @@ define test_Median_dup_vals_odd: TestMessage(Median_dup_vals_odd = 3.0, 'Median_
 define test_Median_has_null_q: TestMessage(Median_has_null_q = 1.5 'ml', 'Median_has_null_q', toString(1.5 'ml'), toString(Median_has_null_q))
 define test_Median_dup_vals_even_q: TestMessage(Median_dup_vals_even_q = 2.5 'ml', 'Median_dup_vals_even_q', toString(2.5 'ml'), toString(Median_dup_vals_even_q))
 define test_Median_dup_vals_odd_q: TestMessage(Median_dup_vals_odd_q = 3 'ml', 'Median_dup_vals_odd_q', toString(3 'ml'), toString(Median_dup_vals_odd_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Median_q_diff_units: TestMessage(Median_q_diff_units = 3.5 'ml', 'Median_q_diff_units', toString(3.5 'ml'), toString(Median_q_diff_units))
+define test_Median_q_diff_units: TestMessage(Median_q_diff_units = 3.5 'ml', 'Median_q_diff_units', toString(3.5 'ml'), toString(Median_q_diff_units))
 
 // Mode
 define Mode_not_null: Mode({1,2,2,2,3,4,5})
@@ -306,8 +302,7 @@ define Variance_q_diff_units: Variance({1.0 'ml',0.002 'l',0.003 'l',0.04 'dl',5
 
 define test_Variance_v: TestMessage(Variance_v = 2.5, 'Variance_v', toString(2.5), toString(Variance_v))
 define test_Variance_v_q: TestMessage(Variance_v_q = 2.5 'ml', 'Variance_v_q', toString(2.5 'ml'), toString(Variance_v_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 2.5 'ml', 'Variance_q_diff_units', toString(2.5 'ml'), toString(Variance_q_diff_units))
+define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 2.5 'ml', 'Variance_q_diff_units', toString(2.5 'ml'), toString(Variance_q_diff_units))
 
 // PopulationVariance
 define PopulationVariance_v: PopulationVariance({1.0,2.0,3.0,4.0,5.0})
@@ -316,8 +311,7 @@ define PopulationVariance_q_diff_units: PopulationVariance({1.0 'ml',0.002 'l',0
 
 define test_PopulationVariance_v: TestMessage(PopulationVariance_v = 2.0, 'PopulationVariance_v', toString(2.0), toString(PopulationVariance_v))
 define test_PopulationVariance_v_q: TestMessage(PopulationVariance_v_q = 2.0 'ml', 'PopulationVariance_v_q', toString(2.0 'ml'), toString(PopulationVariance_v_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 2.0 'ml', 'PopulationVariance_q_diff_units', toString(2.0 'ml'), toString(PopulationVariance_q_diff_units))
+define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 2.0 'ml', 'PopulationVariance_q_diff_units', toString(2.0 'ml'), toString(PopulationVariance_q_diff_units))
 
 // StdDev
 define Std: StdDev({1,2,3,4,5})
@@ -326,8 +320,7 @@ define Std_q_diff_units: StdDev({1 'ml', 0.002 'l',3 'ml',4 'ml', 0.05 'dl'})
 
 define test_Std: TestMessage(Std = 1.58113883, 'Std', toString(1.58113883), toString(Std))
 define test_Std_q: TestMessage(Std_q = 1.58113883 'ml', 'Std_q', toString(1.58113883 'ml'), toString(Std_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_Std_q_diff_units: TestMessage(Std_q_diff_units = 1.58113883 'ml', 'Std_q_diff_units', toString(1.58113883 'ml'), toString(Std_q_diff_units))
+define test_Std_q_diff_units: TestMessage(Std_q_diff_units = 1.58113883 'ml', 'Std_q_diff_units', toString(1.58113883 'ml'), toString(Std_q_diff_units))
 
 // PopulationStdDev
 define PopulationStd: PopulationStdDev({1,2,3,4,5})
@@ -336,8 +329,7 @@ define PopulationStd_q_diff_units: PopulationStdDev({1 'ml', 0.002 'l',3 'ml',4 
 
 define test_PopulationStd: TestMessage(PopulationStd = 1.41421356, 'PopulationStd', toString(1.41421356), toString(PopulationStd))
 define test_PopulationStd_q: TestMessage(PopulationStd_q = 1.41421356 'ml', 'PopulationStd_q', toString(1.41421356 'ml'), toString(PopulationStd_q))
-// TODO - this behavior has yet to be implemented for Quantity
-// define test_PopulationStd_q_diff_units: TestMessage(PopulationStd_q_diff_units = 1.41421356 'ml', 'PopulationStd_q_diff_units', toString(1.41421356 'ml'), toString(PopulationStd_q_diff_units))
+define test_PopulationStd_q_diff_units: TestMessage(PopulationStd_q_diff_units = 1.41421356 'ml', 'PopulationStd_q_diff_units', toString(1.41421356 'ml'), toString(PopulationStd_q_diff_units))
 
 // Product
 define Product_Decimal: Product({1.0, 2.0, 3.0, 4.0})
@@ -617,7 +609,7 @@ define Quantity_add_q_q : Quantity_days_10 + Quantity_QL10Days
 define Quantity_add_d_q : Quantity_Jan1_2000 + Quantity_days_10
 define Quantity_sub_q_q : Quantity_days_10 - Quantity_QL10Days
 define Quantity_sub_d_q : Quantity_Jan1_2000 - Quantity_days_10
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define Quantity_add_q_q_diff : Quantity_QL10Days + Quantity_QL10Min
 // define Quantity_sub_q_q_diff : Quantity_QL10Days - Quantity_QL10Min
 // define Quantity_div_q_q : Quantity_days_10 / QL10Days
@@ -625,8 +617,8 @@ define Quantity_sub_d_q : Quantity_Jan1_2000 - Quantity_days_10
 // define Quantity_mul_q_q_diff : 2 'm' * 10 '/d'
 // define Quantity_MultiplyUcum: (5 'm' * 25 'km') = 125000 'm2'
 // define Quantity_DivideUcum: (20 'm2' / 5 'm') = 4 'm'
-// define Quantity_AddUcum: (5 'm' + 5 'km') = 5005 'm'
-// define Quantity_SubtractUcum: (25 'km' - 5 'm') = 24995 'm'
+define Quantity_AddUcum: (5 'm' + 5 'km') = 5005 'm'
+define Quantity_SubtractUcum: (25 'km' - 5 'm') = 24995 'm'
 define Quantity_div_q_d : Quantity_days_10 / 2
 define Quantity_mul_q_d : Quantity_days_10 * 2
 define Quantity_mul_d_q : 2 * Quantity_QL10Days
@@ -725,7 +717,7 @@ define Equal_DateTimeAndDateUncertainEqual: DateTime(2000, 3, 13, 2, 4, 23) = Da
 define Equal_AGtB_Quantity: 5 'm' = 4 'm'
 define Equal_AEqB_Quantity: 5 'm' = 5 'm'
 define Equal_ALtB_Quantity: 5 'm' = 6 'm'
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define Equal_AGtB_Quantity_diff: 5 'm' = 5 'cm'
 // define Equal_AEqB_Quantity_diff: 5 'm' = 500 'cm'
 // define Equal_ALtB_Quantity_diff: 5 'm' = 5 'km'
@@ -792,7 +784,6 @@ define NotEqual_DateTimeAndDateUncertainEqual: DateTime(2000, 3, 13, 2, 4, 23) !
 define NotEqual_AGtB_Quantity: 5 'm' != 4 'm'
 define NotEqual_AEqB_Quantity: 5 'm' != 5 'm'
 define NotEqual_ALtB_Quantity: 5 'm' != 6 'm'
-// TODO - implement for Quantity
 define NotEqual_AGtB_Quantity_diff: 5 'm' != 5 'cm'
 define NotEqual_AEqB_Quantity_diff: 5 'm' != 500 'cm'
 define NotEqual_ALtB_Quantity_diff: 5 'm' != 5 'km'
@@ -833,12 +824,14 @@ define Equivalent_ADefined_BNull: 5 ~ null
 define Equivalent_ANull_BNull: null as Integer ~ null
 define Equivalent_ADefined_BDefined: 3 ~ 3
 define Equivalent_CaseInsensitiveStrings: 'FOO' ~ 'foo'
+define Equivalent_Ratio: 1 : 10 ~ 10 : 100
 
 define test_Equivalent_ANull_BDefined: TestMessage(not Equivalent_ANull_BDefined, 'Equivalent_ANull_BDefined', toString(false), toString(Equivalent_ANull_BDefined))
 define test_Equivalent_ADefined_BNull: TestMessage(not Equivalent_ADefined_BNull, 'Equivalent_ADefined_BNull', toString(false), toString(Equivalent_ADefined_BNull))
 define test_Equivalent_ANull_BNull: TestMessage(Equivalent_ANull_BNull, 'Equivalent_ANull_BNull', toString(true), toString(Equivalent_ANull_BNull))
 define test_Equivalent_ADefined_BDefined: TestMessage(Equivalent_ADefined_BDefined, 'Equivalent_ADefined_BDefined', toString(true), toString(Equivalent_ADefined_BDefined))
 define test_Equivalent_CaseInsensitiveStrings: TestMessage(Equivalent_CaseInsensitiveStrings, 'Equivalent_CaseInsensitiveStrings', toString(true), toString(Equivalent_CaseInsensitiveStrings))
+define test_Equivalent_Ratio: TestMessage(Equivalent_Ratio, 'Equivalent_Ratio', toString(true), toString(Equivalent_Ratio))
 
 // Tuple Equivalence
 define Equivalent_EmptyTuples: { : } ~ { : }
@@ -898,7 +891,7 @@ define Less_ALtB_Int: 5 < 6
 define Less_AGtB_Quantity: 5 'm' < 4 'm'
 define Less_AEqB_Quantity: 5 'm' < 5 'm'
 define Less_ALtB_Quantity: 5 'm' < 6 'm'
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define Less_AGtB_Quantity_diff: 5 'm' < 5 'cm'
 // define Less_AEqB_Quantity_diff: 5 'm' < 500 'cm'
 // define Less_ALtB_Quantity_diff: 5 'm' < 5 'km'
@@ -917,7 +910,7 @@ define LessOrEqual_ALtB_Int: 5 <= 6
 define LessOrEqual_AGtB_Quantity: 5 'm' <= 4 'm'
 define LessOrEqual_AEqB_Quantity: 5 'm' <= 5 'm'
 define LessOrEqual_ALtB_Quantity: 5 'm' <= 6 'm'
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define AGtB_Quantity_diff: 5 'm' <= 4 'm'
 // define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
 // define ALtB_Quantity_diff: 5 'm' <= 5 'km'
@@ -936,7 +929,7 @@ define Greater_ALtB_Int: 5 > 6
 define Greater_AGtB_Quantity: 5 'm' > 4 'm'
 define Greater_AEqB_Quantity: 5 'm' > 5 'm'
 define Greater_ALtB_Quantity: 5 'm' > 6 'm'
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define Greater_AGtB_Quantity_diff: 5 'm' > 5 'cm'
 // define Greater_AEqB_Quantity_diff: 5 'm' > 500 'cm'
 // define Greater_ALtB_Quantity_diff: 5 'm' > 5 'km'
@@ -959,7 +952,7 @@ define GreaterOrEqual_ALtB_Int: 5 >= 6
 define GreaterOrEqual_AGtB_Quantity: 5 'm' >= 4 'm'
 define GreaterOrEqual_AEqB_Quantity: 5 'm' >= 5 'm'
 define GreaterOrEqual_ALtB_Quantity: 5 'm' >= 6 'm'
-// TODO - implement for Quantity
+// TODO(jmoringe): activate
 // define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
 // define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
 // define ALtB_Quantity_diff: 5 'm' >= 5 'km'

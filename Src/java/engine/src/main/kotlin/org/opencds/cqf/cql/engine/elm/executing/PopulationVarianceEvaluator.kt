@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 
 /*
@@ -14,35 +13,15 @@ Return types: BigDecimal & Quantity
 */
 object PopulationVarianceEvaluator {
     @JvmStatic
-    fun popVariance(source: Any?, state: State?): Any? {
-        if (source == null) {
-            return null
-        }
-
-        if (source is Iterable<*>) {
-            if ((source as MutableList<*>).isEmpty()) {
-                return null
-            }
-
-            val mean = AvgEvaluator.avg(source, state)
-
-            val newVals = mutableListOf<Any?>()
-
-            source.forEach { ae ->
-                newVals.add(
-                    MultiplyEvaluator.multiply(
-                        SubtractEvaluator.subtract(ae, mean),
-                        SubtractEvaluator.subtract(ae, mean),
-                    )
-                )
-            }
-
-            return AvgEvaluator.avg(newVals, state)
-        }
-
-        throw InvalidOperatorArgument(
-            "PopulationVariance(List<Decimal>) or PopulationVariance(List<Quantity>)",
-            "PopulationVariance(${source.javaClass.name})",
-        )
+    fun popVariance(
+        source: Any?,
+        state: State?,
+        stripSquareFromUnit: Boolean = false,
+        context: String = "PopulationVariance",
+    ): Any? {
+        val sumOfSquaredDifferences =
+            VarianceEvaluator.sumOfSquaredDifferences(source, state, stripSquareFromUnit, context)
+        return if (sumOfSquaredDifferences != null) AvgEvaluator.avg(sumOfSquaredDifferences, state)
+        else null
     }
 }

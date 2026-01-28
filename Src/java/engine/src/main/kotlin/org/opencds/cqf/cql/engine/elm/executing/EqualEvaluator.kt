@@ -4,17 +4,8 @@ import java.math.BigDecimal
 import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator.or
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CodeSystem
-import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEqual
-import org.opencds.cqf.cql.engine.runtime.Ratio
-import org.opencds.cqf.cql.engine.runtime.Tuple
-import org.opencds.cqf.cql.engine.runtime.ValueSet
-import org.opencds.cqf.cql.engine.runtime.Vocabulary
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -83,11 +74,11 @@ object EqualEvaluator {
         }
 
         if (left is Quantity && right is Quantity) {
-            return quantitiesEqual(left, right)
+            return quantitiesEqual(left, right, state)
         }
 
         if (left is Ratio && right is Ratio) {
-            return ratiosEqual(left, right)
+            return ratiosEqual(left, right, state)
         }
 
         if (left is BaseTemporal && right is BaseTemporal) {
@@ -129,16 +120,26 @@ object EqualEvaluator {
         )
     }
 
-    fun quantitiesEqual(left: Quantity, right: Quantity): Boolean? {
+    fun quantitiesEqual(left: Quantity, right: Quantity, state: State?): Boolean? {
+        // Try the "simple" rule (equality of alternate spellings for "week" or "month")
         if (unitsEqual(left.unit, right.unit)) {
             return equal(left.value, right.value)
         }
-        return null
+
+        // The simple rule indicated that the units are not comparable, try to convert the value of
+        // right Quantity to the unit of left Quantity and check for equality again if the
+        // conversion is possible.
+        return computeWithConvertedUnits(
+            left,
+            right,
+            { _, leftValue, rightValue -> equal(leftValue, rightValue) },
+            state,
+        )
     }
 
-    fun ratiosEqual(left: Ratio, right: Ratio): Boolean {
-        return equal(left.numerator, right.numerator) == true &&
-            equal(left.denominator, right.denominator) == true
+    fun ratiosEqual(left: Ratio, right: Ratio, state: State?): Boolean {
+        return equal(left.numerator, right.numerator, state) == true &&
+            equal(left.denominator, right.denominator, state) == true
     }
 
     fun baseTemporalsEqual(left: BaseTemporal, right: BaseTemporal): Boolean? {

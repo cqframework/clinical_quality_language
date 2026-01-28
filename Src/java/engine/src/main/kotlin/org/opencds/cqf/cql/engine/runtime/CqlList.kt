@@ -15,6 +15,10 @@ class CqlList {
 
     constructor()
 
+    constructor(state: State?) {
+        this.state = state
+    }
+
     constructor(
         state: State?,
         visitor: ElmLibraryVisitor<Any?, State?>,
@@ -65,12 +69,27 @@ class CqlList {
         if (left == null && right == null) return 0
         else if (left == null) return -1 else if (right == null) return 1
 
+        // TODO(jmoringe): test is something like
+        // ({5 'ml',0.001 'l',0.02 'dl',3 'ml',4 'ml',6 'ml'}) l sort desc
+        if (left is Quantity && right is Quantity) {
+            val nullableCompareTo = compareQuantities(left, right, state)
+            if (nullableCompareTo != null) {
+                return nullableCompareTo
+            } else {
+                throw InvalidComparison("Quantity $left is not comparable to quantity $right")
+            }
+        }
+
+        if (left is Interval && right is Interval) {
+            return left.compareTo(right, state)
+        }
+
         try {
             // The exception handling below handles the case where left is not Comparable
             @Suppress("UNCHECKED_CAST")
             return (left as Comparable<Any?>).compareTo(right)
         } catch (_: ClassCastException) {
-            throw InvalidComparison("Type " + left.javaClass.getName() + " is not comparable")
+            throw InvalidComparison("Type ${left.javaClass.name} is not comparable")
         }
     }
 

@@ -22,11 +22,10 @@ object AvgEvaluator {
         }
 
         if (source is Iterable<*>) {
-            val elements = source
             var avg: Any? = null
             var size = 1
 
-            for (element in elements) {
+            for (element in source) {
                 if (element == null) {
                     continue
                 }
@@ -36,7 +35,7 @@ object AvgEvaluator {
                         avg = element
                     } else {
                         ++size
-                        avg = AddEvaluator.add(avg, element)
+                        avg = AddEvaluator.add(avg, element, state)
                     }
                 } else {
                     throw InvalidOperatorArgument(

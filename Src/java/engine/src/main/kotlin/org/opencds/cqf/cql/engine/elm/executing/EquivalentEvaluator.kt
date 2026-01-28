@@ -6,18 +6,8 @@ import kotlin.math.min
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CodeSystem
-import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEquivalent
-import org.opencds.cqf.cql.engine.runtime.Ratio
-import org.opencds.cqf.cql.engine.runtime.Tuple
-import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.runtime.ValueSet
-import org.opencds.cqf.cql.engine.runtime.Vocabulary
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -108,11 +98,11 @@ object EquivalentEvaluator {
         }
 
         if (left is Quantity && right is Quantity) {
-            return quantitiesEquivalent(left, right)
+            return quantitiesEquivalent(left, right, state)
         }
 
         if (left is Ratio && right is Ratio) {
-            return ratiosEquivalent(left, right)
+            return ratiosEquivalent(left, right, state)
         }
 
         if (left is BaseTemporal && right is BaseTemporal) {
@@ -154,21 +144,37 @@ object EquivalentEvaluator {
         )
     }
 
-    fun quantitiesEquivalent(left: Quantity, right: Quantity): Boolean? {
-        if (unitsEquivalent(left.unit, right.unit)) {
-            return equivalent(left.value, right.value)
+    fun quantitiesEquivalent(left: Quantity, right: Quantity, state: State?): Boolean? {
+        // Try the "simple" rule (equality of alternate spellings for "week" or "month").
+        val simpleResult =
+            if (unitsEquivalent(left.unit, right.unit)) equivalent(left.value, right.value)
+            else false
+        if (simpleResult != false) {
+            return simpleResult // true or null
+        } else {
+            // The simple rule indicated that the units are not comparable, try to convert the value
+            // of right Quantity to the unit of left Quantity and check for equivalence again if the
+            // conversion is possible.
+            val fullResult =
+                computeWithConvertedUnits(
+                    left,
+                    right,
+                    { _, leftValue, rightValue -> equivalent(leftValue, rightValue) },
+                    state!!,
+                )
+            return fullResult ?: false
         }
-        return false
     }
 
     /**
      * For ratios, equivalent means that the numerator and denominator represent the same ratio
      * (e.g. 1:100 ~ 10:1000).
      */
-    fun ratiosEquivalent(left: Ratio, right: Ratio): Boolean? {
+    fun ratiosEquivalent(left: Ratio, right: Ratio, state: State?): Boolean? {
         return equivalent(
-            multiply(left.numerator, right.denominator),
-            multiply(right.numerator, left.denominator),
+            multiply(left.numerator, right.denominator, state),
+            multiply(right.numerator, left.denominator, state),
+            state,
         )
     }
 

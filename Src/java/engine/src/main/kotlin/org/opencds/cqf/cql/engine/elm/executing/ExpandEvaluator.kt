@@ -1,7 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import java.math.BigDecimal
 import java.math.RoundingMode
+import org.cqframework.cql.shared.BigDecimal
+import org.fhir.ucum.UcumException
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
@@ -31,22 +32,23 @@ If the per argument is null, the default unit interval for the point type of the
 The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 object ExpandEvaluator {
-    private fun addPer(addTo: Any, per: Quantity): Any? {
+    private fun addPer(addTo: Any, per: Quantity, state: State?): Any? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
-        return when (addTo) {
-            is Int -> AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toInt())
-            is Long ->
-                AddEvaluator.add(addTo, per.value!!.setScale(0, RoundingMode.CEILING).toLong())
-            is BigDecimal -> AddEvaluator.add(addTo, per.value)
-            is Quantity -> AddEvaluator.add(addTo, per)
-            is BaseTemporal -> AddEvaluator.add(addTo, per)
-            else ->
-                throw InvalidOperatorArgument(
-                    "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-                    "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
-                )
-        }
+        val rhs =
+            when (addTo) {
+                is Int -> per.value!!.setScale(0, RoundingMode.CEILING).toInt()
+                is Long -> per.value!!.setScale(0, RoundingMode.CEILING).toLong()
+                is BigDecimal -> per.value
+                is Quantity,
+                is BaseTemporal -> per
+                else ->
+                    throw InvalidOperatorArgument(
+                        "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
+                        "Expand(${addTo.javaClass.name}, ${per.javaClass.name})",
+                    )
+            }
+        return AddEvaluator.add(addTo, rhs, state)
     }
 
     /**
@@ -63,7 +65,7 @@ object ExpandEvaluator {
         state: State?,
     ): List<Interval?>? {
         var start = interval.start
-        var nextStart = addPer(start!!, per)
+        var nextStart = addPer(start!!, per, state)
 
         // per may be too small
         if (true != LessEvaluator.less(start, nextStart, state)) {
@@ -79,10 +81,16 @@ object ExpandEvaluator {
             }
             if (lessOrEqual) {
                 returnedIntervals.add(
-                    Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true)
+                    Interval(
+                        start,
+                        true,
+                        PredecessorEvaluator.predecessor(nextStart, per),
+                        true,
+                        state,
+                    )
                 )
                 start = nextStart
-                nextStart = addPer(start!!, per)
+                nextStart = addPer(start!!, per, state)
             } else {
                 break
             }
@@ -151,7 +159,7 @@ object ExpandEvaluator {
         }
 
         // Sort the intervals so that the expansion results are returned in order
-        intervals = intervals.sortedWith(CqlList().valueSort)
+        intervals = intervals.sortedWith(CqlList(state).valueSort)
 
         return intervals
     }
@@ -177,18 +185,39 @@ object ExpandEvaluator {
 
         // Infer the per quantity from the intervals if it is not provided
         val perOrDefault =
-            if (per == null) IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
-            else per
+            per ?: IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
 
         // Make sure the per quantity is compatible with the boundaries of the intervals
-        if (!IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
-            return null
-        }
+        val convertedPerOrDefault =
+            if (IntervalHelper.isQuantityCompatibleWithBoundaries(perOrDefault, intervals)) {
+                perOrDefault
+            } else {
+                val boundary = IntervalHelper.findNonNullBoundary(intervals)
+                if (boundary is Quantity) {
+                    val ucumService = state?.environment?.libraryManager?.ucumService!!
+                    try {
+                        Quantity()
+                            .withValue(
+                                ucumService.convert(
+                                    perOrDefault.value!!,
+                                    perOrDefault.unit!!,
+                                    boundary.unit!!,
+                                )
+                            )
+                            .withUnit(boundary.unit)
+                    } catch (_: UcumException) {
+                        return null
+                    }
+                } else {
+                    return null
+                }
+            }
 
-        intervals = prepareIntervals(intervals, perOrDefault, state)!!
+        intervals = prepareIntervals(intervals, convertedPerOrDefault, state)!!
 
         return intervals.filterNotNull().flatMap { interval ->
-            val returnedIntervals = expandIntervalIntoIntervals(interval, perOrDefault, state)
+            val returnedIntervals =
+                expandIntervalIntoIntervals(interval, convertedPerOrDefault, state)
             returnedIntervals ?: listOf()
         }
     }
