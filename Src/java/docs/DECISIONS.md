@@ -28,8 +28,8 @@ Template:
 - Consequences: Editor tooling and analysis features can leverage the AST for more accurate diagnostics and refactorings. Future extensions to CQL (e.g. CQL 2.0) can be accommodated by modifying the AST structure without impacting parsing or ELM generation logic. Replacing ANTLR as the parser becomes possible. Initial development effort is required to design and implement the AST and refactor existing code to use it. Potential performance impact due to additional processing step, though this is mitigated by improved maintainability and extensibility.
 - Alternatives: 
    - Continue using parse tree directly: Rejected due to maintenance challenges and difficulty in building editor tooling due to the lossy nature of ELM
-   - Maintain multiple branches of the compiler for different ver**sions of CQL: Rejected due to increased complexity and maintenance burden.
-   - Use an existing intermediate representation (IR) framework (e.g. Apache Calcite): Rejected because existing IRs did not align well with CQL sema**ntics and would require significant adaptation; loss of KMP compatibility.
+   - Maintain multiple branches of the compiler for different versions of CQL: Rejected due to increased complexity and maintenance burden.
+   - Use an existing intermediate representation (IR) framework (e.g. Apache Calcite): Rejected because existing IRs did not align well with CQL semantics and would require significant adaptation; loss of KMP compatibility.
 - References: See the [AST](../cql/AST.md) design docs for more details. 
 
 ## ADR 002: Developer Documentation
