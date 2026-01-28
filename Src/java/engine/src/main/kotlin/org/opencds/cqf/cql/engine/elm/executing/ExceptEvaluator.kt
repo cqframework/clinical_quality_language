@@ -116,7 +116,7 @@ object ExceptEvaluator {
                     )
                         PredecessorEvaluator.predecessor(rightStart)
                     else leftEnd
-                return Interval(leftStart, true, min, true)
+                return Interval(leftStart, true, min, true, state)
             } else if (
                 AndEvaluator.and(
                     GreaterEvaluator.greater(leftEnd, rightEnd, state),
@@ -133,19 +133,19 @@ object ExceptEvaluator {
                     )
                         SuccessorEvaluator.successor(rightEnd)
                     else leftStart
-                return Interval(max, true, leftEnd, true)
+                return Interval(max, true, leftEnd, true, state)
             }
 
             throw UndefinedResult(
-                "The following interval values led to an undefined Except result: leftStart: ${leftStart.toString()}, leftEnd: ${leftEnd.toString()}, rightStart: ${rightStart.toString()}, rightEnd: ${rightEnd.toString()}"
+                @Suppress("MaxLineLength")
+                "The following interval values led to an undefined Except result: leftStart: $leftStart, leftEnd: $leftEnd, rightStart: $rightStart, rightEnd: $rightEnd"
             )
         } else if (left is Iterable<*>) {
-            val leftArr = left
             val rightArr = right as Iterable<*>?
 
-            val result: MutableList<Any?> = ArrayList<Any?>()
+            val result: MutableList<Any?> = ArrayList()
             var `in`: Boolean?
-            for (leftItem in leftArr) {
+            for (leftItem in left) {
                 `in` = InEvaluator.`in`(leftItem, rightArr, null, state)
                 if (`in` != null && !`in`) {
                     result.add(leftItem)

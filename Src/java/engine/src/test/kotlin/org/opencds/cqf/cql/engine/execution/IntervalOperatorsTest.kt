@@ -5,7 +5,8 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -179,216 +180,157 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
         value = results["IntegerIntervalCollapse"]!!.value
-        Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(Interval(1, true, 10, true)) == true
-        )
-        Assertions.assertTrue((value[1] as Interval).equal(Interval(12, true, 19, true)) == true)
+        Assertions.assertTrue(equal((value as List<*>)[0], Interval(1, true, 10, true)) == true)
+        Assertions.assertTrue(equal(value[1], Interval(12, true, 19, true)) == true)
 
         value = results["IntegerIntervalCollapse2"]!!.value
-        Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(Interval(1, true, 19, true)) == true
-        )
+        Assertions.assertTrue(equal((value as List<*>)[0], Interval(1, true, 19, true)) == true)
 
         value = results["IntegerIntervalCollapse3"]!!.value
-        Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(Interval(4, true, 8, true)) == true
-        )
+        Assertions.assertTrue(equal((value as List<*>)[0], Interval(4, true, 8, true)) == true)
 
         value = results["IntegerIntervalCollapse4"]!!.value
-        Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(Interval(4, true, 6, true)) == true
-        )
-        Assertions.assertTrue((value[1] as Interval).equal(Interval(8, true, 10, true)) == true)
+        Assertions.assertTrue(equal((value as List<*>)[0], Interval(4, true, 6, true)) == true)
+        Assertions.assertTrue(equal(value[1], Interval(8, true, 10, true)) == true)
 
         value = results["DecimalIntervalCollapse"]!!.value
         Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(
-                Interval(BigDecimal("1.0"), true, BigDecimal("10.0"), true)
+            equal(
+                (value as List<*>)[0],
+                Interval(BigDecimal("1.0"), true, BigDecimal("10.0"), true),
             ) == true
         )
         Assertions.assertTrue(
-            (value[1] as Interval).equal(
-                Interval(BigDecimal("12.0"), true, BigDecimal("19.0"), true)
-            ) == true
+            equal(value[1], Interval(BigDecimal("12.0"), true, BigDecimal("19.0"), true)) == true
         )
 
         value = results["DecimalIntervalCollapse2"]!!.value
         Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(
-                Interval(BigDecimal("4.0"), true, BigDecimal("8.0"), true)
+            equal(
+                (value as List<*>)[0],
+                Interval(BigDecimal("4.0"), true, BigDecimal("8.0"), true),
             ) == true
         )
 
         value = results["QuantityIntervalCollapse"]!!.value
         Assertions.assertTrue(
-            ((value as MutableList<*>)[0] as Interval).equal(
+            equal(
+                (value as List<*>)[0],
                 Interval(
                     Quantity().withValue(BigDecimal("1.0")).withUnit("g"),
                     true,
                     Quantity().withValue(BigDecimal("10.0")).withUnit("g"),
                     true,
-                )
+                ),
             ) == true
         )
         Assertions.assertTrue(
-            (value[1] as Interval).equal(
+            equal(
+                value[1],
                 Interval(
                     Quantity().withValue(BigDecimal("12.0")).withUnit("g"),
                     true,
                     Quantity().withValue(BigDecimal("19.0")).withUnit("g"),
                     true,
-                )
+                ),
             ) == true
         )
 
         value = results["DateTimeCollapse"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
+            equivalent(
+                ((value as List<*>)[0] as Interval).start,
                 DateTime(bigDecimalZoneOffset, 2012, 1, 1),
             ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[0] as Interval).end,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 25),
-            ) == true
+            equivalent((value[0] as Interval).end, DateTime(bigDecimalZoneOffset, 2012, 1, 25)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[1] as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2012, 5, 10),
-            ) == true
+            equivalent((value[1] as Interval).start, DateTime(bigDecimalZoneOffset, 2012, 5, 10)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[1] as Interval).end,
-                DateTime(bigDecimalZoneOffset, 2012, 5, 30),
-            ) == true
+            equivalent((value[1] as Interval).end, DateTime(bigDecimalZoneOffset, 2012, 5, 30)) ==
+                true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
         value = results["DateTimeCollapse2"]!!.value
 
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
+            equivalent(
+                ((value as List<*>)[0] as Interval).start,
                 DateTime(bigDecimalZoneOffset, 2012, 1, 1),
             ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[0] as Interval).end,
-                DateTime(bigDecimalZoneOffset, 2012, 5, 25),
-            ) == true
+            equivalent((value[0] as Interval).end, DateTime(bigDecimalZoneOffset, 2012, 5, 25)) ==
+                true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
 
         value = results["DateTimeCollapse3"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
+            equivalent(
+                ((value as List<*>)[0] as Interval).start,
                 DateTime(bigDecimalZoneOffset, 2018, 1, 1),
             ) == true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[0] as Interval).end,
-                DateTime(bigDecimalZoneOffset, 2018, 8, 28),
-            ) == true
+            equivalent((value[0] as Interval).end, DateTime(bigDecimalZoneOffset, 2018, 8, 28)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[1] as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2018, 8, 30),
-            ) == true
+            equivalent((value[1] as Interval).start, DateTime(bigDecimalZoneOffset, 2018, 8, 30)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value[1] as Interval).end,
-                DateTime(bigDecimalZoneOffset, 2018, 10, 15),
-            ) == true
+            equivalent((value[1] as Interval).end, DateTime(bigDecimalZoneOffset, 2018, 10, 15)) ==
+                true
         )
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
         value = results["DateTimeCollapse4"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
-                Date(2018, 1, 1),
-            ) == true
+            equivalent(((value as List<*>)[0] as Interval).start, Date(2018, 1, 1)) == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[0] as Interval).end, Date(2018, 8, 28)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).start, Date(2018, 8, 30)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true
-        )
+        Assertions.assertTrue(equivalent((value[0] as Interval).end, Date(2018, 8, 28)) == true)
+        Assertions.assertTrue(equivalent((value[1] as Interval).start, Date(2018, 8, 30)) == true)
+        Assertions.assertTrue(equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true)
 
         value = results["DateTimeCollapse5"]!!.value
         println(value)
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
-                Date(2018, 1, 1),
-            ) == true
+            equivalent(((value as MutableList<*>)[0] as Interval).start, Date(2018, 1, 1)) == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[0] as Interval).end, Date(2018, 8, 28)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).start, Date(2018, 8, 30)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true
-        )
+        Assertions.assertTrue(equivalent((value[0] as Interval).end, Date(2018, 8, 28)) == true)
+        Assertions.assertTrue(equivalent((value[1] as Interval).start, Date(2018, 8, 30)) == true)
+        Assertions.assertTrue(equivalent((value[1] as Interval).end, Date(2018, 10, 15)) == true)
 
         value = results["DateTimeCollapse6"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
-                Date(2018, 1, 1),
-            ) == true
+            equivalent(((value as List<*>)[0] as Interval).start, Date(2018, 1, 1)) == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[0] as Interval).end, Date(2018, 10, 15)) == true
-        )
+        Assertions.assertTrue(equivalent((value[0] as Interval).end, Date(2018, 10, 15)) == true)
 
         value = results["TimeCollapse"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
-                Time(1, 59, 59, 999),
-            ) == true
+            equivalent(((value as List<*>)[0] as Interval).start, Time(1, 59, 59, 999)) == true
         )
+        Assertions.assertTrue(equivalent((value[0] as Interval).end, Time(15, 59, 59, 999)) == true)
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[0] as Interval).end, Time(15, 59, 59, 999)) ==
-                true
+            equivalent((value[1] as Interval).start, Time(17, 59, 59, 999)) == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).start, Time(17, 59, 59, 999)) ==
-                true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[1] as Interval).end, Time(22, 59, 59, 999)) ==
-                true
-        )
+        Assertions.assertTrue(equivalent((value[1] as Interval).end, Time(22, 59, 59, 999)) == true)
         MatcherAssert.assertThat(value.size, Matchers.`is`(2))
 
         value = results["TimeCollapse2"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                ((value as MutableList<*>)[0] as Interval).start,
-                Time(1, 59, 59, 999),
-            ) == true
+            equivalent(((value as List<*>)[0] as Interval).start, Time(1, 59, 59, 999)) == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value[0] as Interval).end, Time(15, 59, 59, 999)) ==
-                true
-        )
+        Assertions.assertTrue(equivalent((value[0] as Interval).end, Time(15, 59, 59, 999)) == true)
         MatcherAssert.assertThat(value.size, Matchers.`is`(1))
         value = results["TestContainsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
@@ -444,20 +386,16 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["QuantityIntervalEnd"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal("10.0")).withUnit("g")) ==
-                true
+            equal(value, Quantity().withValue(BigDecimal("10.0")).withUnit("g")) == true
         )
 
         value = results["DateTimeIntervalEnd"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value,
-                DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0),
-            ) == true
+            equivalent(value, DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0)) == true
         )
 
         value = results["TimeIntervalEnd"]!!.value
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(23, 59, 59, 599)) == true)
+        Assertions.assertTrue(equivalent(value, Time(23, 59, 59, 599)) == true)
 
         //        value = results["TestEndsNull"]!!.value;
         //        assertThat(value, is(nullValue()));
@@ -528,10 +466,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         //        value = results["TestExceptNull"]!!.value;
         //        assertThat(value, is(nullValue()));
         value = results["IntegerIntervalExcept1to3"]!!.value
-        Assertions.assertTrue((value as Interval).equal(Interval(1, true, 3, true)) == true)
+        Assertions.assertTrue(equal(value, Interval(1, true, 3, true)) == true)
 
         value = results["IntegerIntervalExcept4to6"]!!.value
-        Assertions.assertTrue((value as Interval).equal(Interval(-4, false, 6, false)) == true)
+        Assertions.assertTrue(equal(value, Interval(-4, false, 6, false)) == true)
 
         value = results["IntegerIntervalExceptNullOutNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
@@ -541,9 +479,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["DecimalIntervalExcept1to3"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
-                Interval(BigDecimal("1.0"), true, BigDecimal("3.99999999"), true)
-            ) == true
+            equal(value, Interval(BigDecimal("1.0"), true, BigDecimal("3.99999999"), true)) == true
         )
 
         value = results["DecimalIntervalExceptNull"]!!.value
@@ -551,60 +487,45 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["QuantityIntervalExcept1to4"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
+            equal(
+                value,
                 Interval(
                     Quantity().withValue(BigDecimal("1.0")).withUnit("g"),
                     true,
                     Quantity().withValue(BigDecimal("4.99999999")).withUnit("g"),
                     true,
-                )
+                ),
             ) == true
         )
 
         value = results["Except12"]!!.value
-        Assertions.assertTrue((value as Interval).equal(Interval(1, true, 2, true)) == true)
+        Assertions.assertTrue(equal(value, Interval(1, true, 2, true)) == true)
 
         value = results["ExceptDateTimeInterval"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 5),
-            ) == true
+            equivalent((value as Interval).start, DateTime(bigDecimalZoneOffset, 2012, 1, 5)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value.end, DateTime(bigDecimalZoneOffset, 2012, 1, 6)) ==
-                true
+            equivalent(value.end, DateTime(bigDecimalZoneOffset, 2012, 1, 6)) == true
         )
 
         value = results["ExceptDateTime2"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 13),
-            ) == true
+            equivalent((value as Interval).start, DateTime(bigDecimalZoneOffset, 2012, 1, 13)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value.end,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 16),
-            ) == true
+            equivalent(value.end, DateTime(bigDecimalZoneOffset, 2012, 1, 16)) == true
         )
 
         value = results["ExceptTimeInterval"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value.end, Time(8, 59, 59, 998)) == true
-        )
+        Assertions.assertTrue(equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true)
+        Assertions.assertTrue(equivalent(value.end, Time(8, 59, 59, 998)) == true)
 
         value = results["ExceptTime2"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as Interval).start, Time(11, 0, 0, 0)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value.end, Time(11, 59, 59, 999)) == true
-        )
+        Assertions.assertTrue(equivalent((value as Interval).start, Time(11, 0, 0, 0)) == true)
+        Assertions.assertTrue(equivalent(value.end, Time(11, 59, 59, 999)) == true)
 
         value = results["TestInNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(false))
@@ -729,24 +650,16 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         value = results["TestIntersectNullRightStart"]!!.value
         // Because of how nulls work, equivalence, not equality, is the relevant test here (equality
         // just gives null).
-        Assertions.assertTrue(
-            (value as Interval).equivalent(Interval(null, false, 5, true)) == true
-        )
+        Assertions.assertTrue(equivalent(value, Interval(null, false, 5, true)) == true)
 
         value = results["TestIntersectNullRightEnd"]!!.value
-        Assertions.assertTrue(
-            (value as Interval).equivalent(Interval(5, true, null, false)) == true
-        )
+        Assertions.assertTrue(equivalent(value, Interval(5, true, null, false)) == true)
 
         value = results["TestIntersectNullLeftStart"]!!.value
-        Assertions.assertTrue(
-            (value as Interval).equivalent(Interval(null, false, 5, true)) == true
-        )
+        Assertions.assertTrue(equivalent(value, Interval(null, false, 5, true)) == true)
 
         value = results["TestIntersectNullLeftEnd"]!!.value
-        Assertions.assertTrue(
-            (value as Interval).equivalent(Interval(5, true, null, false)) == true
-        )
+        Assertions.assertTrue(equivalent(value, Interval(5, true, null, false)) == true)
 
         value = results["TestIntersectNull1"]!!.value
         Assertions.assertTrue((value as Boolean?)!!)
@@ -761,16 +674,14 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         Assertions.assertFalse((value as Boolean?)!!)
 
         value = results["IntegerIntervalIntersectTest4to10"]!!.value
-        Assertions.assertTrue((value as Interval).equal(Interval(4, true, 10, true)) == true)
+        Assertions.assertTrue(equal(value, Interval(4, true, 10, true)) == true)
 
         value = results["IntegerIntervalIntersectTestNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
         value = results["DecimalIntervalIntersectTest4to10"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
-                Interval(BigDecimal("4.0"), true, BigDecimal("10.0"), true)
-            ) == true
+            equal(value, Interval(BigDecimal("4.0"), true, BigDecimal("10.0"), true)) == true
         )
 
         value = results["IntegerIntervalIntersectTestNull"]!!.value
@@ -778,13 +689,14 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["QuantityIntervalIntersectTest5to10"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
+            equal(
+                value,
                 Interval(
                     Quantity().withValue(BigDecimal("5.0")).withUnit("g"),
                     true,
                     Quantity().withValue(BigDecimal("10.0")).withUnit("g"),
                     true,
-                )
+                ),
             ) == true
         )
 
@@ -793,25 +705,16 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["DateTimeIntersect"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 7),
-            ) == true
+            equivalent((value as Interval).start, DateTime(bigDecimalZoneOffset, 2012, 1, 7)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value.end,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 10),
-            ) == true
+            equivalent(value.end, DateTime(bigDecimalZoneOffset, 2012, 1, 10)) == true
         )
 
         value = results["TimeIntersect"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as Interval).start, Time(4, 59, 59, 999)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value.end, Time(6, 59, 59, 999)) == true
-        )
+        Assertions.assertTrue(equivalent((value as Interval).start, Time(4, 59, 59, 999)) == true)
+        Assertions.assertTrue(equivalent(value.end, Time(6, 59, 59, 999)) == true)
 
         value = results["IntegerIntervalEquivalentTrue"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(true))
@@ -1145,8 +1048,7 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["TestPointFromQuantity"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal("1.0")).withUnit("cm")) ==
-                true
+            equal(value, Quantity().withValue(BigDecimal("1.0")).withUnit("cm")) == true
         )
 
         value = results["TestProperlyIncludesNull"]!!.value
@@ -1268,19 +1170,16 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["QuantityIntervalStart"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal("1.0")).withUnit("g")) == true
+            equal(value, Quantity().withValue(BigDecimal("1.0")).withUnit("g")) == true
         )
 
         value = results["DateTimeIntervalStart"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value,
-                DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0),
-            ) == true
+            equivalent(value, DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0)) == true
         )
 
         value = results["TimeIntervalStart"]!!.value
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, Time(0, 0, 0, 0)) == true)
+        Assertions.assertTrue(equivalent(value, Time(0, 0, 0, 0)) == true)
 
         value = results["TestStartsNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
@@ -1321,16 +1220,14 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
         value = results["IntegerIntervalUnion1To15"]!!.value
-        Assertions.assertTrue((value as Interval).equal(Interval(1, true, 15, true)) == true)
+        Assertions.assertTrue(equal(value, Interval(1, true, 15, true)) == true)
 
         value = results["IntegerIntervalUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
         value = results["DecimalIntervalUnion1To15"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
-                Interval(BigDecimal("1.0"), true, BigDecimal("15.0"), true)
-            ) == true
+            equal(value, Interval(BigDecimal("1.0"), true, BigDecimal("15.0"), true)) == true
         )
 
         value = results["DecimalIntervalUnionNull"]!!.value
@@ -1338,13 +1235,14 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["QuantityIntervalUnion1To15"]!!.value
         Assertions.assertTrue(
-            (value as Interval).equal(
+            equal(
+                value,
                 Interval(
                     Quantity().withValue(BigDecimal("1.0")).withUnit("g"),
                     true,
                     Quantity().withValue(BigDecimal("15.0")).withUnit("g"),
                     true,
-                )
+                ),
             ) == true
         )
 
@@ -1353,28 +1251,19 @@ internal class IntervalOperatorsTest : CqlTestBase() {
 
         value = results["DateTimeUnion"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                (value as Interval).start,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 5),
-            ) == true
+            equivalent((value as Interval).start, DateTime(bigDecimalZoneOffset, 2012, 1, 5)) ==
+                true
         )
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value.end,
-                DateTime(bigDecimalZoneOffset, 2012, 1, 28),
-            ) == true
+            equivalent(value.end, DateTime(bigDecimalZoneOffset, 2012, 1, 28)) == true
         )
 
         value = results["DateTimeUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
 
         value = results["TimeUnion"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true
-        )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value.end, Time(20, 59, 59, 999)) == true
-        )
+        Assertions.assertTrue(equivalent((value as Interval).start, Time(5, 59, 59, 999)) == true)
+        Assertions.assertTrue(equivalent(value.end, Time(20, 59, 59, 999)) == true)
 
         value = results["TimeUnionNull"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))

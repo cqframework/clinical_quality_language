@@ -2,13 +2,8 @@ package org.opencds.cqf.cql.engine.runtime
 
 import java.math.BigDecimal
 import java.util.Date
-import kotlin.hashCode
 import kotlin.toString
-import org.opencds.cqf.cql.engine.elm.executing.AndEvaluator.and
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater
-import org.opencds.cqf.cql.engine.elm.executing.IntersectEvaluator.intersect
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
 import org.opencds.cqf.cql.engine.elm.executing.MinValueEvaluator.minValue
 import org.opencds.cqf.cql.engine.elm.executing.PredecessorEvaluator.predecessor
@@ -25,8 +20,8 @@ constructor(
     val lowClosed: Boolean,
     var high: Any?,
     val highClosed: Boolean,
-    val state: State? = null,
-) : CqlType, Comparable<Interval> {
+    state: State? = null,
+) : CqlType {
     var pointType: Class<*>? = null
 
     var isUncertain: Boolean = false
@@ -45,7 +40,7 @@ constructor(
 
         if (
             !(CqlType::class.java.isAssignableFrom(pointType) ||
-                pointType!!.getName().startsWith("java")) && this.state == null
+                pointType!!.getName().startsWith("java")) && state == null
         ) {
             throw InvalidInterval(
                 "Boundary values that are not CQL Types require Context to evaluate."
@@ -66,7 +61,7 @@ constructor(
                 )
             }
         } else if (low != null && high != null) {
-            val isStartGreater = greater(this.start, this.end, this.state)
+            val isStartGreater = greater(this.start, this.end, state)
             if (isStartGreater == null || isStartGreater) {
                 throw InvalidInterval(
                     "Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."
@@ -92,10 +87,15 @@ constructor(
         the point type of the interval.
          */
         get() {
-            if (!lowClosed) {
-                return successor(low)
+            return if (!lowClosed) {
+                successor(low)
+            } else if (low != null) {
+                low
+            } else if (high is Quantity) {
+                val highQuantity = high as Quantity
+                Quantity().withValue(Value.MIN_DECIMAL).withUnit(highQuantity.unit)
             } else {
-                return if (low == null) minValue(pointType!!.getTypeName()) else low
+                minValue(pointType!!.typeName)
             }
         }
 
@@ -111,59 +111,24 @@ constructor(
         the point type of the interval.
          */
         get() {
-            if (!highClosed) {
-                return predecessor(high)
+            return if (!highClosed) {
+                predecessor(high)
+            } else if (high != null) {
+                high
+            } else if (low is Quantity) {
+                val lowQuantity = low as Quantity
+                Quantity().withValue(Value.MAX_DECIMAL).withUnit(lowQuantity.unit)
             } else {
-                return if (high == null) maxValue(pointType!!.getTypeName()) else high
+                maxValue(pointType!!.typeName)
             }
         }
 
-    override fun compareTo(other: Interval): Int {
-        val cqlList = CqlList()
+    fun compareTo(other: Interval, state: State?): Int {
+        val cqlList = CqlList(state)
         if (cqlList.compareTo(this.start, other.start) == 0) {
             return cqlList.compareTo(this.end, other.end)
         }
         return cqlList.compareTo(this.start, other.start)
-    }
-
-    override fun equivalent(other: Any?): Boolean? {
-        return equivalent(this.start, (other as Interval).start, this.state) == true &&
-            equivalent(this.end, other.end, this.state) == true
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        if (other is Interval) {
-            if (this.isUncertain) {
-                if (intersect(this, other, this.state) != null) {
-                    return null
-                }
-            }
-
-            val otherInterval = other
-            return and(
-                equal(this.start, otherInterval.start, this.state),
-                equal(this.end, otherInterval.end, this.state),
-            )
-        }
-
-        if (other is Int) {
-            return equal(Interval(other, true, other, true, this.state))
-        }
-
-        throw InvalidOperatorArgument(
-            "Cannot perform equal operation on types: '${this.javaClass.getName()}' and '${other?.javaClass?.getName()}'"
-        )
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is Interval) equivalent(other) == true else false
-    }
-
-    override fun hashCode(): Int {
-        return ((31 * (if (lowClosed) 1 else 0)) +
-            (47 * (if (highClosed) 1 else 0)) +
-            (13 * (if (low != null) low.hashCode() else 0)) +
-            (89 * (if (high != null) high.hashCode() else 0)))
     }
 
     override fun toString(): String {
@@ -171,13 +136,13 @@ constructor(
     }
 
     companion object {
-        fun getSize(start: Any?, end: Any?): Any? {
+        fun getSize(start: Any?, end: Any?, state: State?): Any? {
             if (start == null || end == null) {
                 return null
             }
 
             if (start is Int || start is BigDecimal || start is Quantity) {
-                return subtract(end, start)
+                return subtract(end, start, state)
             }
 
             throw InvalidOperatorArgument(

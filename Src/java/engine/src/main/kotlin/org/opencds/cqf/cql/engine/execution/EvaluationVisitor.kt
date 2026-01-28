@@ -156,7 +156,6 @@ import org.opencds.cqf.cql.engine.elm.executing.ToTimeEvaluator.toTime
 import org.opencds.cqf.cql.engine.elm.executing.TodayEvaluator.today
 import org.opencds.cqf.cql.engine.elm.executing.TruncateEvaluator.truncate
 import org.opencds.cqf.cql.engine.elm.executing.TruncatedDivideEvaluator.div
-import org.opencds.cqf.cql.engine.elm.executing.TupleEvaluator.internalEvaluate
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.union
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.unionInterval
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.unionIterable
@@ -223,7 +222,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        return add(left, right)
+        return add(left, right, context)
     }
 
     override fun visitAbs(elm: Abs, context: State?): Any? {
@@ -314,7 +313,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitWidth(elm: Width, context: State?): Any? {
         val operand = visitExpression(elm.operand!!, context)
-        return width(operand)
+        return width(operand, context)
     }
 
     override fun visitVariance(elm: Variance, context: State?): Any? {
@@ -443,7 +442,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitSize(elm: Size, context: State?): Any? {
         val argument = visitExpression(elm.operand!!, context)
-        return size(argument)
+        return size(argument, context)
     }
 
     override fun visitSlice(elm: Slice, context: State?): Any? {
@@ -505,7 +504,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     override fun visitSubtract(elm: Subtract, context: State?): Any? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
-        return subtract(left, right)
+        return subtract(left, right, context)
     }
 
     override fun visitSuccessor(elm: Successor, context: State?): Any? {
@@ -515,7 +514,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitSum(elm: Sum, context: State?): Any? {
         val source = visitExpression(elm.source!!, context)
-        return sum(source)
+        return sum(source, context)
     }
 
     override fun visitTime(elm: Time, context: State?): Any? {
@@ -644,7 +643,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         for (element in elm.element) {
             ret[element.name!!] = visitExpression(element.value!!, context)
         }
-        return internalEvaluate(ret, context)
+        return TupleEvaluator.internalEvaluate(ret)
     }
 
     override fun visitAnyTrue(elm: AnyTrue, context: State?): Any? {
@@ -1198,7 +1197,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        return multiply(left, right)
+        return multiply(left, right, context)
     }
 
     override fun visitNegate(elm: Negate, context: State?): Any? {
@@ -1298,7 +1297,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
     override fun visitProduct(elm: Product, context: State?): Any? {
         val source = visitExpression(elm.source!!, context)
-        return product(source)
+        return product(source, context)
     }
 
     override fun visitProperContains(elm: ProperContains, context: State?): Any? {

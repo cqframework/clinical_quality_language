@@ -15,18 +15,4 @@ class CodeSystem : Vocabulary() {
         this.name = name
         return this
     }
-
-    override fun equivalent(other: Any?): Boolean? {
-        if (other !is CodeSystem) {
-            return false
-        }
-        return super.equivalent(other)
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        if (other !is CodeSystem) {
-            return false
-        }
-        return super.equal(other)
-    }
 }

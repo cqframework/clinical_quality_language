@@ -241,10 +241,6 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             return false
         }
 
-        if (left is CqlType) {
-            return left.equivalent(right)
-        }
-
         return left == right
     }
 

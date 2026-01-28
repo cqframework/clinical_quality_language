@@ -34,7 +34,7 @@ class ValueSetInfo {
     companion object {
         fun fromValueSet(vs: ValueSet): ValueSetInfo {
             val vsi = ValueSetInfo().withId(vs.id).withVersion(vs.version)
-            for (cs in vs.getCodeSystems()) {
+            for (cs in vs.codeSystems) {
                 vsi.withCodeSystem(CodeSystemInfo.fromCodeSystem(cs))
             }
             return vsi

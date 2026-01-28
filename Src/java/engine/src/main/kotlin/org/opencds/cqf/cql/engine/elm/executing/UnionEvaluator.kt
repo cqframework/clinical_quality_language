@@ -65,7 +65,7 @@ object UnionEvaluator {
         val max =
             if (GreaterEvaluator.greater(leftEnd, rightEnd, state) == true) leftEnd else rightEnd
 
-        return Interval(min, true, max, true)
+        return Interval(min, true, max, true, state)
     }
 
     fun unionIterable(left: Iterable<*>?, right: Iterable<*>?, state: State?): Iterable<*>? {

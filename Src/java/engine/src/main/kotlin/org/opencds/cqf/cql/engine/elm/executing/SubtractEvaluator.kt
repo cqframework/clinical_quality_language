@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 
 /*
@@ -50,9 +51,10 @@ If either argument is null, the result is null.
 NOTE: see note in AddEvaluator
 
 */
+@Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object SubtractEvaluator {
     @JvmStatic
-    fun subtract(left: Any?, right: Any?): Any? {
+    fun subtract(left: Any?, right: Any?, state: State?): Any? {
         if (left == null || right == null) {
             return null
         }
@@ -60,16 +62,20 @@ object SubtractEvaluator {
         // -(Integer, Integer)
         if (left is Int) {
             return left - right as Int
-        }
-
-        if (left is Long) {
+        } else if (left is Long) {
             return left - right as Long
         } else if (left is BigDecimal) {
             return left.subtract(right as BigDecimal)
         } else if (left is Quantity) {
-            return Quantity()
-                .withValue((left.value)!!.subtract((right as Quantity).value))
-                .withUnit(left.unit)
+            right as Quantity
+            return computeWithConvertedUnits(
+                left,
+                right,
+                { commonUnit, leftValue, rightValue ->
+                    Quantity().withUnit(commonUnit).withValue(leftValue.subtract(rightValue))
+                },
+                state!!,
+            )
         } else if (left is BaseTemporal && right is Quantity) {
             var valueToSubtractPrecision = Precision.fromString(right.unit!!)
             val precision = Precision.fromString(BaseTemporal.getLowestPrecision(left))
@@ -121,9 +127,9 @@ object SubtractEvaluator {
             val leftInterval = left
             val rightInterval = right
             return Interval(
-                subtract(leftInterval.start, rightInterval.start),
+                subtract(leftInterval.start, rightInterval.start, state),
                 true,
-                subtract(leftInterval.end, rightInterval.end),
+                subtract(leftInterval.end, rightInterval.end, state),
                 true,
             )
         }

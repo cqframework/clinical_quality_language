@@ -1,11 +1,8 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator.toString
-import org.opencds.cqf.cql.engine.execution.State
 
-class Tuple @JvmOverloads constructor(val state: State? = null) : CqlType {
+class Tuple : CqlType {
     var elements = mutableMapOf<String, Any?>()
         set(value) {
             field = value.toMutableMap()
@@ -18,49 +15,6 @@ class Tuple @JvmOverloads constructor(val state: State? = null) : CqlType {
     fun withElements(elements: MutableMap<String, Any?>): Tuple {
         this.elements = elements
         return this
-    }
-
-    override fun equivalent(other: Any?): Boolean? {
-        if (this.elements.size != (other as Tuple).elements.size) {
-            return false
-        }
-
-        for (key in other.elements.keys) {
-            if (this.elements.containsKey(key)) {
-                val areKeyValsSame =
-                    equivalent(other.elements[key], this.elements[key], state) == true
-                if (!areKeyValsSame) {
-                    return false
-                }
-            } else {
-                return false
-            }
-        }
-        return true
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        if (this.elements.size != (other as Tuple).elements.size) {
-            return false
-        }
-
-        for (key in other.elements.keys) {
-            if (this.elements.containsKey(key)) {
-                if (other.elements[key] == null && this.elements[key] == null) {
-                    continue
-                }
-                val equal = equal(other.elements[key], this.elements[key], state)
-                if (equal == null) {
-                    return null
-                } else if (!equal) {
-                    return false
-                }
-            } else {
-                return false
-            }
-        }
-
-        return true
     }
 
     override fun toString(): String {

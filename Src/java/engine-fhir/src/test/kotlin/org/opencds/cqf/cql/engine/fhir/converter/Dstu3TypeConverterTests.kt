@@ -43,6 +43,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
 import org.opencds.cqf.cql.engine.fhir.converter.ConverterTestUtils.YYYY_MM_DD
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
@@ -904,26 +905,26 @@ internal class Dstu3TypeConverterTests {
         var expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019-02-03")
         var actualDate: org.opencds.cqf.cql.engine.runtime.Date? =
             typeConverter.toCqlDate(DateType("2019-02-03"))
-        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
+        Assertions.assertTrue(equal(expectedDate, actualDate) == true)
 
         expectedDate = org.opencds.cqf.cql.engine.runtime.Date("2019")
         actualDate = typeConverter.toCqlDate(DateType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
+        Assertions.assertTrue(equal(expectedDate, actualDate) == true)
     }
 
     @Test
     fun dateTimeToCqlType() {
         var expectedDate = DateTime("2019-02-03", ZoneOffset.UTC)
         var actualDate: DateTime? = typeConverter.toCqlDateTime(DateTimeType("2019-02-03"))
-        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
+        Assertions.assertTrue(equal(expectedDate, actualDate) == true)
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
         actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
+        Assertions.assertTrue(equal(expectedDate, actualDate) == true)
 
         expectedDate = DateTime("2019", ZoneOffset.UTC)
         actualDate = typeConverter.toCqlDateTime(DateTimeType("2019"))
-        Assertions.assertTrue(expectedDate.equal(actualDate) == true)
+        Assertions.assertTrue(equal(expectedDate, actualDate) == true)
     }
 
     @Test
@@ -940,7 +941,7 @@ internal class Dstu3TypeConverterTests {
                     .setUnit("ml")
                     .setSystem("http://unitsofmeasure.org")
             )
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
     }
 
     @Test
@@ -971,7 +972,7 @@ internal class Dstu3TypeConverterTests {
         val test = Ratio().setNumerator(testNumerator).setDenominator(testDenominator)
 
         val actual: org.opencds.cqf.cql.engine.runtime.Ratio? = typeConverter.toCqlRatio(test)
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
     }
 
     @Test
@@ -1002,7 +1003,7 @@ internal class Dstu3TypeConverterTests {
                     .setDisplay("system-test")
                     .setVersion("1.5")
             )
-        Assertions.assertTrue(expected!!.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         expected = typeConverter.toCqlCode(null)
         Assertions.assertNull(expected)
@@ -1032,7 +1033,7 @@ internal class Dstu3TypeConverterTests {
                     .setText("additional-text")
             )
 
-        Assertions.assertTrue(expected!!.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         expected = typeConverter.toCqlConcept(null)
         Assertions.assertNull(expected)
@@ -1053,7 +1054,7 @@ internal class Dstu3TypeConverterTests {
                     .setStartElement(DateTimeType("2019-02-03"))
                     .setEndElement(DateTimeType("2019-02-05"))
             )
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         expected =
             Interval(
@@ -1066,7 +1067,7 @@ internal class Dstu3TypeConverterTests {
             typeConverter.toCqlInterval(
                 Period().setStartElement(DateTimeType("2019")).setEndElement(DateTimeType("2020"))
             )
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         expected =
             Interval(
@@ -1081,7 +1082,7 @@ internal class Dstu3TypeConverterTests {
                     .setStartElement(DateTimeType("2020-09-18T19:35:53+00:00"))
                     .setEndElement(DateTimeType("2020-09-18T19:37:00+00:00"))
             )
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)
@@ -1118,7 +1119,7 @@ internal class Dstu3TypeConverterTests {
                             .setSystem("http://unitsofmeasure.org") as SimpleQuantity?
                     )
             )
-        Assertions.assertTrue(expected.equal(actual) == true)
+        Assertions.assertTrue(equal(expected, actual) == true)
 
         actual = typeConverter.toCqlInterval(null)
         Assertions.assertNull(actual)

@@ -92,6 +92,10 @@
 			<expression>2.0'cm' = 2.00'cm'</expression>
 			<output>true</output>
 		</test>
+		<test name="QuantityEqNotComparable">
+			<expression>1'm' = 1's'</expression>
+			<output>null</output>
+		</test>
 		<test name="RatioEqual">
 			<expression>1'cm':2'cm' = 1'cm':2'cm'</expression>
 			<output>true</output>
@@ -670,6 +674,10 @@
 			<expression>1 ~ 2</expression>
 			<output>false</output>
 		</test>
+		<test name="EquivInt1Int2Long">
+			<expression>10L ~ 20L</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivStringAStringA">
 			<expression>'a' ~ 'a'</expression>
 			<output>true</output>
@@ -714,13 +722,17 @@
 			<expression>1.0 ~ 2</expression>
 			<output>false</output>
 		</test>
-		<test name="EquivEqCM1CM1">
+		<test name="EquivQuantityCM1CM1">
 			<expression>1'cm' ~ 1'cm'</expression>
 			<output>true</output>
 		</test>
-		<test name="EquivEqCM1M01">
+		<test name="EquivQuantityCM1M01">
 			<expression>1'cm' ~ 0.01'm'</expression>
 			<output>true</output>
+		</test>
+		<test name="EquivQuantityNotComparable">
+			<expression>1'm' ~ 1's'</expression>
+			<output>false</output>
 		</test>
 		<test name="RatioEquivalent">
 			<expression>1'cm':2'cm' ~ 1'cm':2'cm'</expression>
@@ -736,6 +748,14 @@
 		</test>
 		<test name="RatioNotEquivalent">
 			<expression>1'cm':2'cm' ~ 1'cm':3'cm'</expression>
+			<output>false</output>
+		</test>
+		<test name="RatioEquivalentWithDifferentUnits">
+			<expression>1'cm':0.02'm' ~ 30'mm':6'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEquivalentWithDifferentUnits">
+			<expression>1'cm':0.02'm' ~ 10'mm':3'cm'</expression>
 			<output>false</output>
 		</test>
 		<test name="EquivTupleJohnJohn">

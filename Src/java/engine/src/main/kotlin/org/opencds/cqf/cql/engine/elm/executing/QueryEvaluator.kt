@@ -98,13 +98,13 @@ object QueryEvaluator {
         return mutableListOf(AggregateClauseEvaluator.aggregate(elm, state, visitor, elements))
     }
 
-    private fun constructTuple(state: State?, variables: MutableList<Variable>): Tuple {
+    private fun constructTuple(variables: MutableList<Variable>): Tuple {
         val elementMap = mutableMapOf<String, Any?>()
         for (v in variables) {
             elementMap[v.name!!] = v.value
         }
 
-        return Tuple(state).withElements(elementMap)
+        return Tuple().withElements(elementMap)
     }
 
     fun sortResult(
@@ -125,7 +125,7 @@ object QueryEvaluator {
 
                     is ByColumn -> result.sortWith(CqlList(state, byItem.path).columnSort)
 
-                    else -> result.sortWith(CqlList().valueSort)
+                    else -> result.sortWith(CqlList(state).valueSort)
                 }
 
                 val direction = byItem.direction!!.value()
@@ -196,7 +196,7 @@ object QueryEvaluator {
                 if (elm.`return` != null) {
                     result.add(visitor.visitExpression(elm.`return`!!.expression!!, state))
                 } else if (elm.aggregate != null || variables.size > 1) {
-                    result.add(constructTuple(state, variables))
+                    result.add(constructTuple(variables))
                 } else {
                     result.add(elements[0])
                 }

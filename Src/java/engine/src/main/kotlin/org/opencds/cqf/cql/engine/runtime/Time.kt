@@ -196,16 +196,6 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun equivalent(other: Any?): Boolean {
-        val comparison = compare((other as BaseTemporal?)!!, false)
-        return comparison != null && comparison == 0
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        val comparison = compare((other as BaseTemporal?)!!, false)
-        return if (comparison == null) null else comparison == 0
-    }
-
     override fun toString(): String {
         return when (precision) {
             Precision.HOUR -> String.format(Locale.US, "%02d", time.hour)
