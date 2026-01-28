@@ -137,6 +137,7 @@ object ExceptEvaluator {
             }
 
             throw UndefinedResult(
+                @Suppress("MaxLineLength")
                 "The following interval values led to an undefined Except result: leftStart: $leftStart, leftEnd: $leftEnd, rightStart: $rightStart, rightEnd: $rightEnd"
             )
         } else if (left is Iterable<*>) {

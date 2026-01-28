@@ -5,6 +5,7 @@ import org.cqframework.cql.shared.BigDecimal
 import org.fhir.ucum.UcumException
 import org.opencds.cqf.cql.engine.execution.State
 
+@Suppress("ReturnCount")
 fun <R> computeWithConvertedUnits(
     left: Quantity,
     right: Quantity,

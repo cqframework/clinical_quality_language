@@ -19,6 +19,7 @@ If the source contains no non-null elements, null is returned.
 If the source is null, the result is null.
 
 */
+@Suppress("CyclomaticComplexMethod", "ReturnCount")
 object ProductEvaluator {
     @JvmStatic
     fun product(source: Any?, state: State?): Any? {

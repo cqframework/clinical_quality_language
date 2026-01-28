@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import java.math.BigDecimal
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 
 class Quantity : CqlType, Comparable<Quantity> {
     var value: BigDecimal? = BigDecimal("0.0")
@@ -34,20 +32,6 @@ class Quantity : CqlType, Comparable<Quantity> {
     fun nullableCompareTo(other: Quantity): Int? {
         if (unitsEqual(this.unit, other.unit)) {
             return this.value!!.compareTo(other.value)
-        }
-        return null
-    }
-
-    override fun equivalent(other: Any?): Boolean? {
-        if (unitsEquivalent(this.unit, (other as Quantity).unit)) {
-            return equivalent(this.value, other.value)
-        }
-        return false
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        if (unitsEqual(this.unit, (other as Quantity).unit)) {
-            return equal(this.value, other.value)
         }
         return null
     }

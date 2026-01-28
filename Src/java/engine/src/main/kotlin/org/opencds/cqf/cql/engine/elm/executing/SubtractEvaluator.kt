@@ -51,6 +51,7 @@ If either argument is null, the result is null.
 NOTE: see note in AddEvaluator
 
 */
+@Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object SubtractEvaluator {
     @JvmStatic
     fun subtract(left: Any?, right: Any?, state: State?): Any? {

@@ -24,6 +24,7 @@ For multiplication operations involving quantities, the resulting quantity will 
 In this example, the first result will have a unit of 'cm2', and the second result will have a unit of 'cm3'.
 If either argument is null, the result is null.
 */
+@Suppress("CyclomaticComplexMethod", "ReturnCount")
 object MultiplyEvaluator {
     @JvmStatic
     fun multiply(left: Any?, right: Any?, state: State?): Any? {
@@ -62,7 +63,7 @@ object MultiplyEvaluator {
                     val rawResultUnit = result.second
                     resultUnit = rawResultUnit.ifEmpty { "1" }
                 } catch (e: UcumException) {
-                    throw RuntimeException(e)
+                    @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }
             }
             val resultValue = Value.verifyPrecision(unverifiedResultValue, null)

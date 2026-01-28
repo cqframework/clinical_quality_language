@@ -16,11 +16,8 @@ class ValueSet : Vocabulary() {
         return this
     }
 
-    private var codeSystems = mutableListOf<CodeSystem>()
-
-    fun getCodeSystems(): Iterable<CodeSystem> {
-        return codeSystems
-    }
+    var codeSystems = mutableListOf<CodeSystem>()
+        private set
 
     fun setCodeSystems(codeSystems: MutableList<CodeSystem?>?) {
         this.codeSystems = mutableListOf()
@@ -77,39 +74,5 @@ class ValueSet : Vocabulary() {
         }
 
         return null
-    }
-
-    override fun equivalent(other: Any?): Boolean? {
-        if (other !is ValueSet) {
-            return false
-        }
-        val otherV = other
-        val equivalent =
-            super.equivalent(other) == true && codeSystems.size == otherV.codeSystems.size
-        if (equivalent) {
-            for (cs in codeSystems) {
-                val otherC = otherV.getCodeSystem(cs.id)
-                if (otherC == null) {
-                    return false
-                }
-            }
-        }
-        return equivalent
-    }
-
-    override fun equal(other: Any?): Boolean? {
-        if (other !is ValueSet) {
-            return false
-        }
-        val equal = super.equal(other) == true && codeSystems.size == other.codeSystems.size
-        if (equal) {
-            for (cs in codeSystems) {
-                val otherC = other.getCodeSystem(cs.id, cs.version)
-                if (otherC == null) {
-                    return false
-                }
-            }
-        }
-        return equal
     }
 }

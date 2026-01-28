@@ -22,6 +22,7 @@ For division operations involving quantities, the resulting quantity will have t
 In this example, the result will have a unit of 'cm'.
 If either argument is null, the result is null.
 */
+@Suppress("CyclomaticComplexMethod")
 object DivideEvaluator {
     private fun divideHelper(left: BigDecimal, right: BigDecimal?, state: State?): BigDecimal? {
         if (EqualEvaluator.equal(right, BigDecimal("0.0"), state) == true) {
@@ -66,7 +67,7 @@ object DivideEvaluator {
                     val rawResultUnit = result.second
                     resultUnit = rawResultUnit.ifEmpty { "1" }
                 } catch (e: UcumException) {
-                    throw RuntimeException(e)
+                    @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }
             }
             return Quantity().withValue(resultValue).withUnit(resultUnit)

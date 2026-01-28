@@ -5,7 +5,8 @@ import java.time.OffsetDateTime
 import java.util.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.DateTime
@@ -35,29 +36,24 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["AnyQuantity"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(Quantity().withValue(BigDecimal("5.0")).withUnit("g")) ==
-                true,
+            equal(value, Quantity().withValue(BigDecimal("5.0")).withUnit("g")) == true,
             "AnyQuantity",
         )
 
         value = results["AnyDateTime"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 4, 4)) ==
-                true,
+            equivalent(value, DateTime(bigDecimalZoneOffset, 2012, 4, 4)) == true,
             "AnyDateTime",
         )
 
         value = results["AnyTime"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, Time(9, 0, 0, 0)) == true,
-            "AnyTime",
-        )
+        Assertions.assertTrue(equivalent(value, Time(9, 0, 0, 0)) == true, "AnyTime")
 
         value = results["AnyInterval"]!!.value
-        Assertions.assertEquals((value as Interval?), Interval(2, true, 7, true), "AnyInterval")
+        Assertions.assertEquals(true, equivalent(value, Interval(2, true, 7, true)), "AnyInterval")
 
         value = results["AnyList"]!!.value
-        Assertions.assertEquals(value, mutableListOf<Int?>(1, 2, 3), "AnyList")
+        Assertions.assertEquals(value, listOf(1, 2, 3), "AnyList")
 
         value = results["AnyTuple"]!!.value
         Assertions.assertEquals(
@@ -81,34 +77,37 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["CodeLiteral"]!!.value
         Assertions.assertTrue(
-            (value as Code).equal(
+            equal(
+                value,
                 Code()
                     .withCode("8480-6")
                     .withSystem("http://loinc.org")
                     .withVersion("1.0")
-                    .withDisplay("Systolic blood pressure")
+                    .withDisplay("Systolic blood pressure"),
             ) == true,
             "CodeLiteral",
         )
 
         value = results["CodeLiteral2"]!!.value
         Assertions.assertTrue(
-            (value as Code).equal(
+            equal(
+                value,
                 Code()
                     .withCode("1234-5")
                     .withSystem("http://example.org")
                     .withVersion("1.05")
-                    .withDisplay("Test Code")
+                    .withDisplay("Test Code"),
             ) == true,
             "CodeLiteral2",
         )
 
         value = results["ConceptTest"]!!.value
         Assertions.assertTrue(
-            (value as Concept).equal(
+            equal(
+                value,
                 Concept()
                     .withCodes(
-                        listOf<Code?>(
+                        listOf(
                             Code()
                                 .withCode("8480-6")
                                 .withSystem("http://loinc.org")
@@ -121,7 +120,7 @@ internal class CqlTypesTest : CqlTestBase() {
                                 .withDisplay("Test Code"),
                         )
                     )
-                    .withDisplay("Type B viral hepatitis")
+                    .withDisplay("Type B viral hepatitis"),
             ) == true,
             "ConceptTest",
         )
@@ -131,17 +130,13 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["DateTimeProper"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value,
-                DateTime(bigDecimalZoneOffset, 2016, 7, 7, 6, 25, 33, 910),
-            ) == true,
+            equivalent(value, DateTime(bigDecimalZoneOffset, 2016, 7, 7, 6, 25, 33, 910)) == true,
             "DateTimeProper",
         )
 
         value = results["DateTimeIncomplete"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, DateTime(bigDecimalZoneOffset, 2015, 2, 10)) ==
-                true,
+            equivalent(value, DateTime(bigDecimalZoneOffset, 2015, 2, 10)) == true,
             "DateTimeIncomplete",
         )
 
@@ -151,7 +146,7 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["DateTimeMin"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
+            equivalent(
                 value,
                 DateTime(OffsetDateTime.of(1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().offset)),
             ) == true
@@ -159,10 +154,7 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["DateTimeMax"]!!.value
         Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(
-                value,
-                DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999),
-            ) == true
+            equivalent(value, DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999)) == true
         )
 
         value = results["DecimalUpperBoundExcept"]!!.value
@@ -191,35 +183,32 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["QuantityTest"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(
-                Quantity().withValue(BigDecimal("150.2")).withUnit("[lb_av]")
-            ) == true
+            equal(value, Quantity().withValue(BigDecimal("150.2")).withUnit("[lb_av]")) == true
         )
 
         value = results["QuantityTest2"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(
-                Quantity().withValue(BigDecimal("2.5589")).withUnit("{eskimo kisses}")
-            ) == true
+            equal(value, Quantity().withValue(BigDecimal("2.5589")).withUnit("{eskimo kisses}")) ==
+                true
         )
 
         // NOTE: This should also return an error as the fractional precision is greater than 8
         value = results["QuantityFractionalTooBig"]!!.value
         Assertions.assertTrue(
-            (value as Quantity).equal(
-                Quantity().withValue(BigDecimal("5.99999999")).withUnit("g")
-            ) == true
+            equal(value, Quantity().withValue(BigDecimal("5.99999999")).withUnit("g")) == true
         )
 
         value = results["RatioTest"]!!.value
         Assertions.assertTrue(
-            (value as Ratio)
-                .numerator!!
-                .equal(Quantity().withValue(BigDecimal("150.2")).withUnit("[lb_av]")) == true
+            equal(
+                (value as Ratio).numerator,
+                Quantity().withValue(BigDecimal("150.2")).withUnit("[lb_av]"),
+            ) == true
         )
         Assertions.assertTrue(
-            value.denominator!!.equal(
-                Quantity().withValue(BigDecimal("2.5589")).withUnit("{eskimo kisses}")
+            equal(
+                value.denominator,
+                Quantity().withValue(BigDecimal("2.5589")).withUnit("{eskimo kisses}"),
             ) == true
         )
 
@@ -231,21 +220,12 @@ internal class CqlTypesTest : CqlTestBase() {
         )
 
         value = results["TimeProper"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, Time(10, 25, 12, 863)) == true,
-            "TimeProper",
-        )
+        Assertions.assertTrue(equivalent(value, Time(10, 25, 12, 863)) == true, "TimeProper")
 
         value = results["TimeAllMax"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, Time(23, 59, 59, 999)) == true,
-            "TimeAllMax",
-        )
+        Assertions.assertTrue(equivalent(value, Time(23, 59, 59, 999)) == true, "TimeAllMax")
 
         value = results["TimeAllMin"]!!.value
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(value, Time(0, 0, 0, 0)) == true,
-            "TimeAllMin",
-        )
+        Assertions.assertTrue(equivalent(value, Time(0, 0, 0, 0)) == true, "TimeAllMin")
     }
 }

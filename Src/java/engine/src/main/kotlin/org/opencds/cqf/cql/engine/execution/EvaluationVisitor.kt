@@ -156,7 +156,6 @@ import org.opencds.cqf.cql.engine.elm.executing.ToTimeEvaluator.toTime
 import org.opencds.cqf.cql.engine.elm.executing.TodayEvaluator.today
 import org.opencds.cqf.cql.engine.elm.executing.TruncateEvaluator.truncate
 import org.opencds.cqf.cql.engine.elm.executing.TruncatedDivideEvaluator.div
-import org.opencds.cqf.cql.engine.elm.executing.TupleEvaluator.internalEvaluate
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.union
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.unionInterval
 import org.opencds.cqf.cql.engine.elm.executing.UnionEvaluator.unionIterable
@@ -644,7 +643,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         for (element in elm.element) {
             ret[element.name!!] = visitExpression(element.value!!, context)
         }
-        return internalEvaluate(ret, context)
+        return TupleEvaluator.internalEvaluate(ret)
     }
 
     override fun visitAnyTrue(elm: AnyTrue, context: State?): Any? {

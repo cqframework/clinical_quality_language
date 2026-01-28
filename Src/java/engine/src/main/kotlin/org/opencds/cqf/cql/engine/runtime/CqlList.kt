@@ -2,8 +2,6 @@ package org.opencds.cqf.cql.engine.runtime
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.Expression
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.exception.InvalidComparison
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
@@ -80,71 +78,22 @@ class CqlList {
             } else {
                 throw InvalidComparison("Quantity $left is not comparable to quantity $right")
             }
-        } else {
-            try {
-                // The exception handling below handles the case where left is not Comparable
-                @Suppress("UNCHECKED_CAST")
-                return (left as Comparable<Any?>).compareTo(right)
-            } catch (_: ClassCastException) {
-                throw InvalidComparison("Type ${left.javaClass.name} is not comparable")
-            }
+        }
+
+        if (left is Interval && right is Interval) {
+            return left.compareTo(right, state)
+        }
+
+        try {
+            // The exception handling below handles the case where left is not Comparable
+            @Suppress("UNCHECKED_CAST")
+            return (left as Comparable<Any?>).compareTo(right)
+        } catch (_: ClassCastException) {
+            throw InvalidComparison("Type ${left.javaClass.name} is not comparable")
         }
     }
 
     companion object {
-        fun equivalent(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean {
-            val leftIterator = left.iterator()
-            val rightIterator = right.iterator()
-
-            while (leftIterator.hasNext()) {
-                val leftObject = leftIterator.next()
-                if (rightIterator.hasNext()) {
-                    val rightObject = rightIterator.next()
-                    val elementEquivalent = equivalent(leftObject, rightObject, state)
-                    if (!elementEquivalent!!) {
-                        return false
-                    }
-                } else {
-                    return false
-                }
-            }
-
-            return !rightIterator.hasNext()
-        }
-
-        fun equal(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean? {
-            val leftIterator = left.iterator()
-            val rightIterator = right.iterator()
-
-            if (!leftIterator.hasNext() || !rightIterator.hasNext()) {
-                return null
-            }
-
-            while (leftIterator.hasNext()) {
-                val leftObject = leftIterator.next()
-                if (rightIterator.hasNext()) {
-                    val rightObject = rightIterator.next()
-                    if (leftObject == null && rightObject == null) {
-                        continue
-                    }
-                    val elementEquals = equal(leftObject, rightObject, state)
-                    if (elementEquals == null || !elementEquals) {
-                        return elementEquals
-                    }
-                } else if (leftObject == null) {
-                    return null
-                } else {
-                    return false
-                }
-            }
-
-            if (rightIterator.hasNext()) {
-                return if (rightIterator.next() == null) null else false
-            }
-
-            return true
-        }
-
         fun <T> toList(iterable: Iterable<T>, includeNullElements: Boolean): MutableList<T> {
             val ret = mutableListOf<T>()
             for (element in iterable) {

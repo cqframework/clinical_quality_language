@@ -5,6 +5,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 
+@Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object AddEvaluator {
     @JvmStatic
     fun add(left: Any?, right: Any?, state: State?): Any? {

@@ -18,6 +18,7 @@ stripSquareFromUnit is needed because we have no way of taking the square root o
 ultimately correct units for computation that involve the square root of a quantity (mainly standard deviation-like
 operations) is to avoid squared units in the intermediate results.
 */
+@Suppress("ReturnCount")
 object VarianceEvaluator {
     @JvmStatic
     fun sumOfSquaredDifferences(
