@@ -674,6 +674,10 @@
 			<expression>1 ~ 2</expression>
 			<output>false</output>
 		</test>
+		<test name="EquivInt1Int2Long">
+			<expression>10L ~ 20L</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivStringAStringA">
 			<expression>'a' ~ 'a'</expression>
 			<output>true</output>
