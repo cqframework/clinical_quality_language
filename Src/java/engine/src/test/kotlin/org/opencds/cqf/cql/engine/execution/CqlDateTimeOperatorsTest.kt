@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.hl7.elm.r1.VersionedIdentifier
@@ -97,7 +96,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     fun defaultTimezoneOffset() {
         // Disable expression caching so that we can re-evaluate the same expression in different
         // time zones
-        val engine = CqlEngine(environment!!, EnumSet.noneOf(CqlEngine.Options::class.java))
+        val engine = CqlEngine(environment!!, mutableSetOf())
 
         for (zoneId in
             mutableListOf<String?>("America/New_York", "Europe/London", "Pacific/Auckland")) {

@@ -24,6 +24,7 @@ object TranslatorHelper {
         options.options.remove(CqlCompilerOptions.Options.DisableListDemotion)
         options.options.remove(CqlCompilerOptions.Options.DisableListPromotion)
         options.options.add(CqlCompilerOptions.Options.EnableDateRangeOptimization)
+        options.options.add(CqlCompilerOptions.Options.EnableResultTypes)
         return getLibraryManager(options)
     }
 
@@ -57,7 +58,7 @@ object TranslatorHelper {
     }
 
     fun getEngine(environment: Environment?): CqlEngine {
-        return CqlEngine(environment!!)
+        return CqlEngine(environment!!, mutableSetOf(CqlEngine.Options.EnableTypeChecking))
     }
 
     @JvmStatic
