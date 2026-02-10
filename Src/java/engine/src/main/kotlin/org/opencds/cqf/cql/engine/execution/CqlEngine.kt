@@ -492,8 +492,8 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         initializeEvalTime(evaluationDateTime)
         state.init(library)
         state.beginEvaluation()
-        try {
-            return evaluationVisitor.visitExpression(parameterDef.default!!, state)
+        return try {
+            evaluationVisitor.visitExpression(parameterDef.default!!, state)
         } catch (ce: CqlException) {
             processException(ce, parameterDef.default!!)
         } catch (e: Exception) {
@@ -507,8 +507,6 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             state.clearEvaluatedResources()
             state.exitLibrary(true)
         }
-
-        return null // unreachable — processException always throws
     }
 
     companion object {
