@@ -457,6 +457,65 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         throw ce
     }
 
+    /**
+     * Resolves the default value of a named parameter in a CQL library.
+     *
+     * This method evaluates the `default` expression of the given parameter definition within the
+     * specified library. It uses the standard engine lifecycle — initializing the library on the
+     * state stack, beginning an evaluation, and cleaning up afterward — so that the evaluation
+     * visitor has the full context it needs (current library, evaluated resource stack, activation
+     * frames, evaluation time).
+     *
+     * If the parameter has no default expression, this method returns `null`.
+     *
+     * **Typical usage** — resolving a CQL-defined default `Measurement Period` before measure
+     * evaluation, so that callers do not need to manipulate the library stack themselves:
+     * ```kotlin
+     * val defaultPeriod = engine.resolveParameterDefault(libraryId, "Measurement Period")
+     * ```
+     *
+     * @param libraryIdentifier the versioned identifier of the library containing the parameter
+     * @param parameterName the name of the parameter whose default to resolve
+     * @param evaluationDateTime the evaluation timestamp; defaults to `ZonedDateTime.now()`
+     * @return the evaluated default value, or `null` if the parameter has no default
+     * @throws CqlException if the library or parameter cannot be resolved, or if the default
+     *   expression evaluation fails
+     */
+    @JvmOverloads
+    fun resolveParameterDefault(
+        libraryIdentifier: VersionedIdentifier,
+        parameterName: String,
+        evaluationDateTime: ZonedDateTime? = null,
+    ): Any? {
+        val library =
+            environment.resolveLibrary(libraryIdentifier)
+                ?: throw CqlException("Unable to resolve library: ${libraryIdentifier.id}")
+
+        val parameterDef = Libraries.resolveParameterRef(parameterName, library)
+        if (parameterDef.default == null) {
+            return null
+        }
+
+        initializeEvalTime(evaluationDateTime)
+        state.init(library)
+        state.beginEvaluation()
+        return try {
+            evaluationVisitor.visitExpression(parameterDef.default!!, state)
+        } catch (ce: CqlException) {
+            processException(ce, parameterDef.default!!)
+        } catch (e: Exception) {
+            processException(
+                e,
+                parameterDef.default!!,
+                "Error resolving default for parameter $parameterName: ${e.message}",
+            )
+        } finally {
+            state.endEvaluation()
+            state.clearEvaluatedResources()
+            state.exitLibrary(true)
+        }
+    }
+
     companion object {
         private val log: Logger = LoggerFactory.getLogger(CqlEngine::class.java)
     }
