@@ -20,6 +20,18 @@ Template:
 
 # Architecture Decision Record
 
+## ADR 003: CQL AST Representation
+- Status: Proposed
+- Date: 2025-01-21
+- Context: The existing CQL-to-ELM compiler coverts CQL to ELM directly from the parse tree in a single pass without an intermediate AST. This intermingles parsing concerns with semantic processing (such as type inference, duplicate detection, etc.). The makes maintenance and extension more difficult, as changes to parsing logic can have unintended side effects on semantic processing and ELM generation. An explicit AST would separate these concerns, allowing for clearer, more modular code.
+- Decision: Create an explicit AST representation of CQL. The AST will be constructed from the parse tree in a dedicated parsing phase, isolating syntactic concerns. Subsequent semantic analysis and ELM generation phases will operate on the AST, allowing for cleaner separation of responsibilities. The AST will be designed to capture all necessary syntactic and semantic information required for accurate ELM generation.
+- Consequences: Editor tooling and analysis features can leverage the AST for more accurate diagnostics and refactorings. Future extensions to CQL (e.g. CQL 2.0) can be accommodated by modifying the AST structure without impacting parsing or ELM generation logic. Replacing ANTLR as the parser becomes possible. Initial development effort is required to design and implement the AST and refactor existing code to use it. Potential performance impact due to additional processing step, though this is mitigated by improved maintainability and extensibility.
+- Alternatives: 
+   - Continue using parse tree directly: Rejected due to maintenance challenges and difficulty in building editor tooling due to the lossy nature of ELM
+   - Maintain multiple branches of the compiler for different versions of CQL: Rejected due to increased complexity and maintenance burden.
+   - Use an existing intermediate representation (IR) framework (e.g. Apache Calcite): Rejected because existing IRs did not align well with CQL semantics and would require significant adaptation; loss of KMP compatibility.
+- References: See the [AST](../cql/AST.md) design docs for more details. 
+
 ## ADR 002: Developer Documentation
 - Status: Proposed
 - Date: 2025-01-14
