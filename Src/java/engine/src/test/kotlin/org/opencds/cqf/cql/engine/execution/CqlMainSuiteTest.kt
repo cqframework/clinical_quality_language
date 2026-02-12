@@ -82,6 +82,8 @@ internal class CqlMainSuiteTest : CqlTestBase() {
         options.options.remove(CqlCompilerOptions.Options.DisableListDemotion)
         options.options.remove(CqlCompilerOptions.Options.DisableListPromotion)
 
+        options.options.add(CqlCompilerOptions.Options.EnableResultTypes)
+
         // When called with the null argument, the toString function in the CqlTestSuite
         // library can only be unambiguously resolved at runtime if the library is
         // compiled with signature level set to Overloads or All.

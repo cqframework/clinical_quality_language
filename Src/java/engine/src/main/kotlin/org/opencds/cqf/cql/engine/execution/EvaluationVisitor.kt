@@ -177,7 +177,9 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         context?.markElementAsVisitedForCoverageReport(elm)
 
         try {
-            return super.visitExpression(elm, context)
+            val value = super.visitExpression(elm, context)
+            context?.checkType(elm, value)
+            return value
         } catch (e: CqlException) {
             maybeExtendBacktrace(e, context!!, elm)
             throw e
