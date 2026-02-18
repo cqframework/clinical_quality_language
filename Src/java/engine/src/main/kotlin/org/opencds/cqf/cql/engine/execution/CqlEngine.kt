@@ -453,6 +453,35 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     /**
      * Resolves the default value of a named parameter in a CQL library.
      *
+     * Checks whether the given library can be resolved by this engine's environment.
+     *
+     * @param libraryIdentifier the versioned identifier of the library to check
+     * @return `true` if the library can be resolved, `false` otherwise
+     */
+    fun hasLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
+        return try {
+            environment.resolveLibrary(libraryIdentifier) != null
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Checks whether the given library contains a parameter with the specified name.
+     *
+     * @param libraryIdentifier the versioned identifier of the library to check
+     * @param parameterName the name of the parameter to look for
+     * @return `true` if the library contains the named parameter, `false` otherwise
+     * @throws CqlException if the library cannot be resolved
+     */
+    fun hasParameter(libraryIdentifier: VersionedIdentifier, parameterName: String): Boolean {
+        val library =
+            environment.resolveLibrary(libraryIdentifier)
+                ?: throw CqlException("Unable to resolve library: ${libraryIdentifier.id}")
+        return Libraries.hasParameterDef(parameterName, library)
+    }
+
+    /**
      * This method evaluates the `default` expression of the given parameter definition within the
      * specified library. It uses the standard engine lifecycle — initializing the library on the
      * state stack, beginning an evaluation, and cleaning up afterward — so that the evaluation
