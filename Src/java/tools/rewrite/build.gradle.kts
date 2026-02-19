@@ -15,6 +15,6 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-//tasks.test {
-//    useJUnitPlatform()
-//}
+tasks.test {
+    failOnNoDiscoveredTests = false
+}
