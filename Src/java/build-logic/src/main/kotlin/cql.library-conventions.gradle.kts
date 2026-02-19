@@ -8,6 +8,6 @@ dependencies {
     signature("com.toasttab.android:gummy-bears-api-${project.findProperty("android.api.level")}:0.12.0@signature")
 }
 
-tasks.animalsnifferTest {
-    enabled = false
+animalsniffer {
+    checkTestSources = false
 }
