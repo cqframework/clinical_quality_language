@@ -11,7 +11,7 @@ import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.VersionedIdentifier
 
-@Suppress("LargeClass", "LongMethod")
+@Suppress("LargeClass", "LongMethod", "ForbiddenComment")
 object SystemLibraryHelper {
     @JvmStatic
     fun load(systemModel: SystemModel, tb: TypeBuilder): CompiledLibrary {
@@ -1155,6 +1155,7 @@ object SystemLibraryHelper {
             Operator("Predecessor", Signature(systemModel.quantity), systemModel.quantity),
         )
 
+        // TODO: If the exponent is a negative integer, the result may be a decimal.
         add(
             system,
             tb,
@@ -1609,6 +1610,9 @@ object SystemLibraryHelper {
             tb,
             Operator("DateTimeComponentFrom", Signature(systemModel.time), systemModel.integer),
         )
+
+        // TODO: The result of DifferenceBetween and DurationBetween may be an uncertainty
+        // (implemented as an interval in the engine).
         add(
             system,
             tb,
@@ -2684,6 +2688,8 @@ object SystemLibraryHelper {
         add(system, tb, codesToConcept)
         add(system, tb, Conversion(codesToConcept, false))
 
+        // TODO: The result of CalculateAge and CalculateAgeAt may be an uncertainty over the range
+        // of possible values (implemented as an interval in the engine).
         add(
             system,
             tb,

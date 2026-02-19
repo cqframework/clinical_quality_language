@@ -41,7 +41,8 @@ abstract class FhirExecutionTestBase {
     val engine: CqlEngine
         get() {
             if (_engine == null) {
-                _engine = CqlEngine(this.environment)
+                _engine =
+                    CqlEngine(this.environment, mutableSetOf(CqlEngine.Options.EnableTypeChecking))
             }
             return _engine!!
         }
