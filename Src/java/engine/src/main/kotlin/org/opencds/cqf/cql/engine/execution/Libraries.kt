@@ -24,11 +24,15 @@ object Libraries {
         )
 
     @JvmStatic
+    @Suppress("ReturnCount")
     fun resolveAllExpressionRef(name: String?, relativeTo: Library): MutableList<ExpressionDef> {
         // Assumption: List of defs is sorted.
         val defs = relativeTo.statements?.def ?: return mutableListOf()
         val index =
-            defs.binarySearch(name, { x, k -> (x as ExpressionDef).name!!.compareTo(k as String) })
+            relativeTo.statements
+                ?.def
+                ?.binarySearch(name, { x, k -> (x as ExpressionDef).name!!.compareTo(k as String) })
+                ?: -1
 
         if (index < 0) {
             return mutableListOf()
