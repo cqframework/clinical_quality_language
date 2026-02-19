@@ -62,7 +62,7 @@ open class CqlTestBase {
 
     fun getEngine(cqlCompilerOptions: CqlCompilerOptions): CqlEngine {
         val env = Environment(getLibraryManager(cqlCompilerOptions))
-        return CqlEngine(env)
+        return CqlEngine(env, mutableSetOf(CqlEngine.Options.EnableTypeChecking))
     }
 
     var environment: Environment? = null
@@ -71,7 +71,11 @@ open class CqlTestBase {
     val engine: CqlEngine
         get() {
             if (_engine == null) {
-                _engine = CqlEngine(Environment(libraryManager))
+                _engine =
+                    CqlEngine(
+                        Environment(libraryManager),
+                        mutableSetOf(CqlEngine.Options.EnableTypeChecking),
+                    )
             }
             return _engine!!
         }

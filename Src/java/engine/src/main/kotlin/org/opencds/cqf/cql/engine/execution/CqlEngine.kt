@@ -32,30 +32,37 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         EnableExpressionCaching,
         EnableValidation,
 
-        // HEDIS Compatibility Mode changes the behavior of the CQL
-        // engine to match some expected behavior of the HEDIS
-        // content that is not standards-complaint.
-        // Currently, this includes:
-        //  1. Making the default comparison semantics for lists to be "equivalent"
-        //      (the standard behavior is to use "equal" semantics - note that this is
-        //      expected to be the standard behavior in a future version of the CQL spec)
-        //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always
-        // return all elements
-        //      (the standard behavior is to return distinct elements)
+        /**
+         * HEDIS Compatibility Mode changes the behavior of the CQL engine to match some expected
+         * behavior of the HEDIS content that is not standards-complaint. Currently, this includes:
+         * 1. Making the default comparison semantics for lists to be "equivalent" (the standard
+         *    behavior is to use "equal" semantics - note that this is expected to be the standard
+         *    behavior in a future version of the CQL spec)
+         * 2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always
+         *    return all elements (the standard behavior is to return distinct elements)
+         */
         EnableHedisCompatibilityMode,
 
-        // Collect data on evaluation counts, timing and cache hit
-        // ratio for certain elements such as expression and function
-        // definitions and retrieves.
+        /**
+         * Collect data on evaluation counts, timing and cache hit ratio for certain elements such
+         * as expression and function definitions and retrieves.
+         */
         EnableProfiling,
 
-        // Collect trace information during evaluation (expressions and function
-        // calls with intermediate results). Trace data can be exported after evaluation.
+        /**
+         * Collect trace information during evaluation (expressions and function calls with
+         * intermediate results). Trace data can be exported after evaluation.
+         */
         EnableTracing,
 
-        // Collect coverage information during execution. Coverage
-        // data can be exported in LCOV format after execution.
+        /**
+         * Collect coverage information during execution. Coverage data can be exported in LCOV
+         * format after execution.
+         */
         EnableCoverageCollection,
+
+        /** Check runtime types against declared ELM result types and log any type mismatches. */
+        EnableTypeChecking,
     }
 
     val state: State
