@@ -13,19 +13,15 @@ object Libraries {
         return library.identifier?.id ?: "unknown"
     }
 
-    @JvmStatic
-    fun resolveLibraryRef(libraryName: String?, relativeTo: Library): IncludeDef {
-        val defs = relativeTo.includes?.def
-        if (defs != null) {
-            for (includeDef in defs) {
-                if (includeDef.localIdentifier.equals(libraryName)) {
-                    return includeDef
-                }
-            }
-        }
+    fun <T> Collection<T>.firstOrThrow(predicate: (T) -> Boolean, message: String): T =
+        firstOrNull(predicate) ?: throw CqlException(message)
 
-        throw CqlException("Could not resolve library reference '${libraryName}' in library '${libraryId(relativeTo)}'.")
-    }
+    @JvmStatic
+    fun resolveLibraryRef(libraryName: String?, relativeTo: Library): IncludeDef =
+        (relativeTo.includes?.def ?: emptyList()).firstOrThrow(
+            { it.localIdentifier == libraryName },
+            "Could not resolve library reference '${libraryName}' in library '${libraryId(relativeTo)}'.",
+        )
 
     @JvmStatic
     fun resolveAllExpressionRef(name: String?, relativeTo: Library): MutableList<ExpressionDef> {
@@ -58,80 +54,48 @@ object Libraries {
         val defs = relativeTo.statements?.def
         if (defs != null) {
             val result =
-                defs.binarySearch(name, { x, k -> (x as ExpressionDef).name!!.compareTo(k as String) })
+                defs.binarySearch(
+                    name,
+                    { x, k -> (x as ExpressionDef).name!!.compareTo(k as String) },
+                )
             if (result >= 0) {
                 return defs[result]
             }
         }
 
+        @Suppress("MaxLineLength")
         throw CqlException(
             "Could not resolve expression reference '${name}' in library '${libraryId(relativeTo)}'."
         )
     }
 
     @JvmStatic
-    fun resolveCodeSystemRef(name: String?, relativeTo: Library): CodeSystemDef {
-        val defs = relativeTo.codeSystems?.def
-        if (defs != null) {
-            for (codeSystemDef in defs) {
-                if (codeSystemDef.name.equals(name)) {
-                    return codeSystemDef
-                }
-            }
-        }
-
-        throw CqlException(
-            "Could not resolve code system reference '${name}' in library '${libraryId(relativeTo)}'."
+    fun resolveCodeSystemRef(name: String?, relativeTo: Library): CodeSystemDef =
+        (relativeTo.codeSystems?.def ?: emptyList()).firstOrThrow(
+            { it.name == name },
+            "Could not resolve code system reference '${name}' in library '${libraryId(relativeTo)}'.",
         )
-    }
 
     @JvmStatic
-    fun resolveValueSetRef(name: String?, relativeTo: Library): ValueSetDef {
-        val defs = relativeTo.valueSets?.def
-        if (defs != null) {
-            for (valueSetDef in defs) {
-                if (valueSetDef.name.equals(name)) {
-                    return valueSetDef
-                }
-            }
-        }
-
-        throw CqlException(
-            "Could not resolve value set reference '${name}' in library '${libraryId(relativeTo)}'."
+    fun resolveValueSetRef(name: String?, relativeTo: Library): ValueSetDef =
+        (relativeTo.valueSets?.def ?: emptyList()).firstOrThrow(
+            { it.name == name },
+            "Could not resolve value set reference '${name}' in library '${libraryId(relativeTo)}'.",
         )
-    }
 
     @JvmStatic
-    fun resolveCodeRef(name: String?, relativeTo: Library): CodeDef {
-        val defs = relativeTo.codes?.def
-        if (defs != null) {
-            for (codeDef in defs) {
-                if (codeDef.name.equals(name)) {
-                    return codeDef
-                }
-            }
-        }
-
-        throw CqlException(
-            "Could not resolve code reference '${name}' in library '${libraryId(relativeTo)}'."
+    fun resolveCodeRef(name: String?, relativeTo: Library): CodeDef =
+        (relativeTo.codes?.def ?: emptyList()).firstOrThrow(
+            { it.name == name },
+            "Could not resolve code reference '${name}' in library '${libraryId(relativeTo)}'.",
         )
-    }
 
     @JvmStatic
-    fun resolveParameterRef(name: String?, relativeTo: Library): ParameterDef {
-        val defs = relativeTo.parameters?.def
-        if (defs != null) {
-            for (parameterDef in defs) {
-                if (parameterDef.name.equals(name)) {
-                    return parameterDef
-                }
-            }
-        }
-
-        throw CqlException(
-            "Could not resolve parameter reference '${name}' in library '${libraryId(relativeTo)}'."
+    fun resolveParameterRef(name: String?, relativeTo: Library): ParameterDef =
+        (relativeTo.parameters?.def ?: emptyList()).firstOrThrow(
+            { it.name == name },
+            "Could not resolve parameter reference '${name}' in library '${libraryId(relativeTo)}'.",
         )
-    }
 
     @JvmStatic
     fun hasParameterDef(name: String?, relativeTo: Library): Boolean {
@@ -140,20 +104,11 @@ object Libraries {
     }
 
     @JvmStatic
-    fun resolveConceptRef(name: String?, relativeTo: Library): ConceptDef {
-        val defs = relativeTo.concepts?.def
-        if (defs != null) {
-            for (conceptDef in defs) {
-                if (conceptDef.name.equals(name)) {
-                    return conceptDef
-                }
-            }
-        }
-
-        throw CqlException(
-            "Could not resolve concept reference '${name}' in library '${libraryId(relativeTo)}'."
+    fun resolveConceptRef(name: String?, relativeTo: Library): ConceptDef =
+        (relativeTo.concepts?.def ?: emptyList()).firstOrThrow(
+            { it.name == name },
+            "Could not resolve concept reference '${name}' in library '${libraryId(relativeTo)}'.",
         )
-    }
 
     @JvmStatic
     fun getFunctionDefs(name: String?, relativeTo: Library): List<FunctionDef> {
