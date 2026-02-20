@@ -16,24 +16,58 @@ import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 object TranslatorHelper {
-    private val modelManager = ModelManager()
-    private var libraryManager: LibraryManager? = null
+    // Shared model cache — thread-safe (ConcurrentHashMap)
+    private val globalModelCache =
+        org.cqframework.cql.cql2elm.utils.createConcurrentHashMap<
+            org.hl7.cql.model.ModelIdentifier,
+            org.cqframework.cql.cql2elm.model.Model,
+        >()
 
-    private fun getLibraryManager(): LibraryManager {
+    private fun defaultCompilerOptions(): CqlCompilerOptions {
         val options = defaultOptions()
         options.options.remove(CqlCompilerOptions.Options.DisableListDemotion)
         options.options.remove(CqlCompilerOptions.Options.DisableListPromotion)
         options.options.add(CqlCompilerOptions.Options.EnableDateRangeOptimization)
         options.options.add(CqlCompilerOptions.Options.EnableResultTypes)
-        return getLibraryManager(options)
+        return options
     }
 
-    private fun getLibraryManager(cqlCompilerOptions: CqlCompilerOptions): LibraryManager {
-        libraryManager = LibraryManager(modelManager, cqlCompilerOptions)
-        libraryManager!!.librarySourceLoader.clearProviders()
-        libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
-        libraryManager!!.librarySourceLoader.registerProvider(FhirLibrarySourceProvider())
-        return libraryManager!!
+    // Pre-compile FHIRHelpers and other shared libraries once, then reuse the cache.
+    private val sharedLibraryCache:
+        Map<VersionedIdentifier, org.cqframework.cql.cql2elm.model.CompiledLibrary> by lazy {
+        val warmupManager = newLibraryManagerInternal(defaultCompilerOptions(), emptyMap())
+        warmupManager.librarySourceLoader.registerProvider(
+            StringLibrarySourceProvider(
+                listOf(
+                    "library Warmup using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' define X: 1"
+                )
+            )
+        )
+        val compiler = CqlCompiler(libraryManager = warmupManager)
+        compiler.run(
+            "library Warmup using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' define X: 1"
+        )
+        // Return only the shared dependency libraries (not the warmup library itself)
+        warmupManager.compiledLibraries.filter { it.key.id != "Warmup" }
+    }
+
+    private fun newLibraryManagerInternal(
+        cqlCompilerOptions: CqlCompilerOptions,
+        precompiledLibraries:
+            Map<VersionedIdentifier, org.cqframework.cql.cql2elm.model.CompiledLibrary>,
+    ): LibraryManager {
+        val modelManager = ModelManager(globalCache = globalModelCache)
+        val libraryCache = HashMap(precompiledLibraries)
+        val libraryManager =
+            LibraryManager(modelManager, cqlCompilerOptions, libraryCache = libraryCache)
+        libraryManager.librarySourceLoader.clearProviders()
+        libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
+        libraryManager.librarySourceLoader.registerProvider(FhirLibrarySourceProvider())
+        return libraryManager
+    }
+
+    private fun newLibraryManager(): LibraryManager {
+        return newLibraryManagerInternal(defaultCompilerOptions(), sharedLibraryCache)
     }
 
     @JvmStatic
@@ -43,7 +77,6 @@ object TranslatorHelper {
 
     fun getEnvironment(cql: String): Environment {
         val env = getEnvironment(null as TerminologyProvider?)
-        env.libraryManager!!.compiledLibraries.clear()
         env.libraryManager!!
             .librarySourceLoader
             .registerProvider(StringLibrarySourceProvider(listOf(cql)))
@@ -54,7 +87,7 @@ object TranslatorHelper {
         get() = getEnvironment(null as TerminologyProvider?)
 
     fun getEnvironment(terminologyProvider: TerminologyProvider?): Environment {
-        return Environment(getLibraryManager(), null, terminologyProvider)
+        return Environment(newLibraryManager(), null, terminologyProvider)
     }
 
     fun getEngine(environment: Environment?): CqlEngine {

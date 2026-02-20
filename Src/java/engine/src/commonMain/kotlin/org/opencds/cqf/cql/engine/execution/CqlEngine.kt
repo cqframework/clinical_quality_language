@@ -29,6 +29,7 @@ import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 class CqlEngine
 @JvmOverloads
 constructor(val environment: Environment, engineOptions: MutableSet<Options>? = mutableSetOf()) {
+
     enum class Options {
         EnableExpressionCaching,
         EnableValidation,

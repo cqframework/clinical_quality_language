@@ -19,4 +19,4 @@ And open `http://localhost:3000/clinical_quality_language/playground` in your br
 
 ## Deployment
 
-This project is deployed to GitHub Pages (the `gh-pages` branch) automatically from the `master` branch.
+This project is deployed to GitHub Pages (the `gh-pages` branch) automatically from the `main` branch.

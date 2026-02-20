@@ -118,15 +118,18 @@ tasks.withType<Test> {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    dependsOn(tasks.named("dokkaGeneratePublicationHtml"))
+    from(tasks.named("dokkaGeneratePublicationHtml").map { it.outputs.files })
     archiveClassifier.set("html-docs")
 }
 
-tasks.register<Jar>("dokkaJavadocJar") {
-    dependsOn(tasks.dokkaJavadoc)
-    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
+// Dokka exposes consumable configurations with attributes that loosely match java-runtime,
+// which causes Gradle to select them instead of the actual JVM runtime variant in composite
+// builds (KT-52172 workaround). Mark them as non-consumable.
+afterEvaluate {
+    configurations.matching { it.name.startsWith("dokka") && it.isCanBeConsumed }.configureEach {
+        isCanBeConsumed = false
+    }
 }
 
 // JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build config is needed.

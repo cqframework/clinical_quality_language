@@ -2,9 +2,15 @@ import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
+buildscript {
+    dependencies {
+        classpath("org.slf4j:slf4j-simple:1.7.36")
+    }
+}
+
 plugins {
     id("cql.xsd-kotlin-multiplatform-gen-conventions")
-    id("com.strumenta.antlr-kotlin") version "1.0.3"
+    id("com.strumenta.antlr-kotlin") version "1.0.9"
 }
 
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
@@ -87,12 +93,7 @@ tasks.withType<AbstractKotlinCompile<*>> {
     dependsOn(inlineModelInfoXmlsTask)
 }
 
-tasks.named("dokkaJavadocJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("dokkaHtml") {
+tasks.named("dokkaGeneratePublicationHtml") {
     dependsOn(generateKotlinGrammarSource)
     dependsOn(inlineModelInfoXmlsTask)
 }

@@ -1176,7 +1176,7 @@ internal class R5TypeConverterTests {
     }
 
     companion object {
-        private var typeConverter: R5FhirTypeConverter = R5FhirTypeConverter()
+        private val typeConverter = R5FhirTypeConverter()
 
         @JvmStatic
         private fun nowsAndEvaluationTimes(): Array<Array<Any?>?> {
