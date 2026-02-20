@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import kotlin.reflect.cast
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidConversion
