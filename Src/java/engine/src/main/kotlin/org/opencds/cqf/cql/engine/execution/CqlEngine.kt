@@ -414,10 +414,10 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // TODO: Smarter validation would be to checkout and see if any retrieves
         // Use terminology, and to check for any codesystem lookups.
         require(
-            !((library.codeSystems != null && !library.codeSystems!!.def.isEmpty()) ||
+            !(((library.codeSystems != null && !library.codeSystems!!.def.isEmpty()) ||
                 (library.codes != null && !library.codes!!.def.isEmpty()) ||
-                (library.valueSets != null && !library.valueSets!!.def.isEmpty()) &&
-                    this.environment.terminologyProvider == null)
+                (library.valueSets != null && !library.valueSets!!.def.isEmpty())) &&
+                this.environment.terminologyProvider == null)
         ) {
             String.format(
                 "Library %s has terminology requirements and no terminology provider is registered.",
