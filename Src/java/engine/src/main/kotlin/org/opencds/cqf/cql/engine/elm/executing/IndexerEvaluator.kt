@@ -28,7 +28,7 @@ object IndexerEvaluator {
 
         if (left is String) {
             if (right is Int) {
-                if ((right as Int) < 0 || right >= left.length) {
+                if (right < 0 || right >= left.length) {
                     return null
                 }
 

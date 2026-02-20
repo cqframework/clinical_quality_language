@@ -38,11 +38,11 @@ internal class CqlMainSuiteTest : CqlTestBase() {
                 .onlyResultOrThrow
 
         for (entry in result.expressionResults.entries) {
-            if (entry.key.toString().startsWith("test")) {
-                if ((entry.value as ExpressionResult).value != null) {
+            if (entry.key.startsWith("test")) {
+                if (entry.value.value != null) {
                     Assertions.assertEquals(
-                        (entry.value as ExpressionResult).value as String?,
-                        entry.key.toString().replace("test_".toRegex(), "") + " TEST PASSED",
+                        entry.value.value as String?,
+                        entry.key.replace("test_".toRegex(), "") + " TEST PASSED",
                     )
                 }
             }
@@ -64,11 +64,11 @@ internal class CqlMainSuiteTest : CqlTestBase() {
                 .onlyResultOrThrow
 
         for (entry in result.expressionResults.entries) {
-            if (entry.key.toString().startsWith("test")) {
-                if ((entry.value as ExpressionResult).value != null) {
+            if (entry.key.startsWith("test")) {
+                if (entry.value.value != null) {
                     Assertions.assertEquals(
-                        (entry.value as ExpressionResult).value as String?,
-                        entry.key.toString().replace("test_".toRegex(), "") + " TEST PASSED",
+                        entry.value.value as String?,
+                        entry.key.replace("test_".toRegex(), "") + " TEST PASSED",
                     )
                 }
             }

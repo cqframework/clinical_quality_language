@@ -48,7 +48,7 @@ class Tuple : CqlType {
             // If the field value is itself a nested Tuple, recurse
             if (fieldValue is Tuple) {
                 // Recursively build nested representation
-                sb.append(fieldValue.toPrettyString(fieldValue.elements!!, indentLevel + 1))
+                sb.append(fieldValue.toPrettyString(fieldValue.elements, indentLevel + 1))
             } else {
                 // Otherwise, use a function that handles quoting, escaping, etc.
                 sb.append(toString(entry.value))

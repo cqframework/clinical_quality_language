@@ -23,17 +23,17 @@ object PowerEvaluator {
 
         if (left is Int) {
             if ((right as Int) < 0) {
-                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right as Int)))
+                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right)))
             }
-            return BigDecimal(left).pow(right as Int).toInt()
+            return BigDecimal(left).pow(right).toInt()
         }
 
         if (left is Long) {
             if ((right as Long) < 0) {
-                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right as Int)))
+                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right.toInt())))
             }
 
-            return BigDecimal(left).pow(((right as kotlin.Long).toInt() as kotlin.Int?)!!).toLong()
+            return BigDecimal(left).pow((right.toInt() as Int?)!!).toLong()
         }
 
         if (left is BigDecimal) {

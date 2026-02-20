@@ -22,11 +22,9 @@ object DistinctEvaluator {
                 continue
             }
 
-            val `in` = InEvaluator.`in`(element, result, null, state)
+            val `in` = InEvaluator.`in`(element, result, null, state) ?: continue
 
-            if (`in` == null) continue
-
-            if (!(`in` as Boolean)) result.add(element)
+            if (!`in`) result.add(element)
         }
 
         return result
