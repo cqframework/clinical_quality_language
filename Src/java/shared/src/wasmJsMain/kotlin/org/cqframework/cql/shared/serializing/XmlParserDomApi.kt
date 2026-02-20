@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package org.cqframework.cql.shared.serializing
 
+import kotlin.js.ExperimentalWasmJsInterop
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.parsing.DOMParser

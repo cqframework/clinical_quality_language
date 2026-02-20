@@ -134,7 +134,7 @@ object SuccessorEvaluator {
      * @return the successor of the value
      */
     @JvmStatic
-    fun successor(value: Any?, quantity: Quantity??): Any? {
+    fun successor(value: Any?, quantity: Quantity?): Any? {
         if (value is BigDecimal) {
             if (quantity!!.value!!.scale() > 0) {
                 return checkMaxDecimal(value.add(ONE.scaleByPowerOfTen(-quantity.value!!.scale())))

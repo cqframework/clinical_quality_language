@@ -4,18 +4,13 @@ import org.hl7.elm.r1.Element
 import org.opencds.cqf.cql.engine.debug.DebugLocator.DebugLocatorType
 
 class DebugLibraryMapEntry(val libraryName: String?) {
-    private val nodeEntries: MutableMap<String?, org.opencds.cqf.cql.engine.debug.DebugMapEntry?>
-    private val locationEntries: MutableMap<String?, org.opencds.cqf.cql.engine.debug.DebugMapEntry>
-
-    init {
-        nodeEntries = HashMap<String?, DebugMapEntry?>()
-        locationEntries = HashMap<String?, DebugMapEntry>()
-    }
+    private val nodeEntries: MutableMap<String?, DebugMapEntry?> = HashMap()
+    private val locationEntries: MutableMap<String?, DebugMapEntry> = HashMap()
 
     @Suppress("ReturnCount")
     fun shouldDebug(node: Element?): DebugAction? {
         if (node != null) {
-            val nodeEntry = nodeEntries.get(node.localId)
+            val nodeEntry = nodeEntries[node.localId]
             if (nodeEntry != null && nodeEntry.action != DebugAction.NONE) {
                 return nodeEntry.action
             }
@@ -24,7 +19,7 @@ class DebugLibraryMapEntry(val libraryName: String?) {
                 if (node.locator != null) {
                     val nodeLocation: Location = Location.fromLocator(node.locator!!)
                     if (
-                        entry.locator!!.location!!.includes(nodeLocation) &&
+                        entry.locator.location!!.includes(nodeLocation) &&
                             entry.action != DebugAction.NONE
                     ) {
                         return entry.action
@@ -42,8 +37,8 @@ class DebugLibraryMapEntry(val libraryName: String?) {
 
     fun addEntry(entry: DebugMapEntry) {
         when (entry.locator.locatorType) {
-            DebugLocatorType.NODE_ID -> nodeEntries.put(entry.locator.locator, entry)
-            DebugLocatorType.LOCATION -> locationEntries.put(entry.locator.locator, entry)
+            DebugLocatorType.NODE_ID -> nodeEntries[entry.locator.locator] = entry
+            DebugLocatorType.LOCATION -> locationEntries[entry.locator.locator] = entry
             else ->
                 throw IllegalArgumentException(
                     "Library debug map entry can only contain node id or location debug entries"

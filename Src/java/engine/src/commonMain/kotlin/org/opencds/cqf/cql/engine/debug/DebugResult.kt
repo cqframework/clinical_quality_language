@@ -6,15 +6,10 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Profile
 
 class DebugResult {
-    val libraryResults: MutableMap<String?, DebugLibraryResultEntry?>
-    private val messages: ArrayList<CqlException?>
+    val libraryResults: MutableMap<String?, DebugLibraryResultEntry?> = HashMap()
+    private val messages: ArrayList<CqlException?> = ArrayList()
     var profile: Profile? = null
         private set
-
-    init {
-        libraryResults = HashMap<String?, DebugLibraryResultEntry?>()
-        messages = ArrayList<CqlException?>()
-    }
 
     fun logDebugResult(node: Element, currentLibrary: Library, result: Any?, action: DebugAction?) {
         if (action == DebugAction.NONE) {
@@ -22,15 +17,15 @@ class DebugResult {
         }
 
         try {
-            var libraryResultEntry = libraryResults.get(currentLibrary.identifier!!.id)
+            var libraryResultEntry = libraryResults[currentLibrary.identifier!!.id]
             if (libraryResultEntry == null) {
                 libraryResultEntry = DebugLibraryResultEntry(currentLibrary.identifier!!.id)
-                libraryResults.put(libraryResultEntry.libraryName, libraryResultEntry)
+                libraryResults[libraryResultEntry.libraryName] = libraryResultEntry
             }
             libraryResultEntry.logDebugResultEntry(node, result)
 
             if (action == DebugAction.LOG) {
-                DebugUtilities.logDebugResult(node!!, currentLibrary, result)
+                DebugUtilities.logDebugResult(node, currentLibrary, result)
             }
         } catch (e: Exception) {
             // do nothing, an exception logging debug helps no one

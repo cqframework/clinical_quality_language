@@ -91,8 +91,8 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
                     .operation()
                     .onType(CodeSystem::class.java)
                     .named("lookup")
-                    .withParameter(Parameters::class.java, "code", CodeType(code!!.code))
-                    .andParameter("system", UriType(codeSystem!!.id))
+                    .withParameter(Parameters::class.java, "code", CodeType(code.code))
+                    .andParameter("system", UriType(codeSystem.id))
                     .execute()
 
             val display =

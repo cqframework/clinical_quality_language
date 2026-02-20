@@ -14,7 +14,7 @@ class InValueSetEvaluatorTest {
         val valueSet = ValueSet()
 
         val actual = InValueSetEvaluator.inValueSet(null, valueSet, state)
-        Assertions.assertInstanceOf(java.lang.Boolean::class.java, actual)
+        Assertions.assertInstanceOf(Boolean.Companion::class.java, actual)
         Assertions.assertFalse(actual as Boolean)
     }
 }
