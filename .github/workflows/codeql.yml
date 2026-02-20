@@ -2,11 +2,11 @@ name: "CodeQL Advanced"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
       - "Src/java/**"
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
       - "Src/java/**"
   schedule:
