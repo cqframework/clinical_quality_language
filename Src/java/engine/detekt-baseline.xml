@@ -435,7 +435,7 @@
     <ID>ReturnCount:StdDevEvaluator.kt$StdDevEvaluator$@JvmStatic fun stdDev(source: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:SubstringEvaluator.kt$SubstringEvaluator$@JvmStatic fun substring(stringValue: Any?, startIndexValue: Any?, lengthValue: Any?): Any?</ID>
     <ID>ReturnCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
-    <ID>ReturnCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?, quantity: Quantity??): Any?</ID>
+    <ID>ReturnCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?, quantity: Quantity?): Any?</ID>
     <ID>ReturnCount:SystemDataProvider.kt$SystemDataProvider$override fun objectEqual(left: Any?, right: Any?): Boolean?</ID>
     <ID>ReturnCount:SystemDataProvider.kt$SystemDataProvider$override fun objectEquivalent(left: Any?, right: Any?): Boolean?</ID>
     <ID>ReturnCount:SystemDataProvider.kt$SystemDataProvider$override fun resolvePath(target: Any?, path: String?): Any?</ID>
