@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     api(project(":engine"))
+    api(project(":ucum"))
     testImplementation("org.wiremock:wiremock:3.9.1")
     testImplementation(project(":cql-to-elm"))
     testImplementation(project(":quick"))
