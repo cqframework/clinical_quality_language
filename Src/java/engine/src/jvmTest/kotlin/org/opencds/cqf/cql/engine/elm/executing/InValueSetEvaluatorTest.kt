@@ -1,7 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.ValueSet
@@ -14,7 +15,7 @@ class InValueSetEvaluatorTest {
         val valueSet = ValueSet()
 
         val actual = InValueSetEvaluator.inValueSet(null, valueSet, state)
-        Assertions.assertInstanceOf(Boolean.Companion::class.java, actual)
-        Assertions.assertFalse(actual as Boolean)
+        assertIs<Boolean>(actual)
+        assertFalse(actual)
     }
 }
