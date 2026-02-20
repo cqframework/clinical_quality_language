@@ -14,6 +14,7 @@ import kotlin.text.StringBuilder
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Retrieve
@@ -568,6 +569,12 @@ constructor(
                     "No current library available when marking element for coverage report"
                 }
             globalCoverage.markElementAsVisitedForCoverageReport(elm, library)
+        }
+    }
+
+    fun checkType(expressionWithExpectedResultType: Expression, actualValue: Any?) {
+        if (engineOptions.contains(Options.EnableTypeChecking)) {
+            TypeChecker.checkType(expressionWithExpectedResultType, actualValue)
         }
     }
 }

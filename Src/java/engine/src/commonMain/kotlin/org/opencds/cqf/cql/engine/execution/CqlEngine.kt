@@ -33,30 +33,37 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         EnableExpressionCaching,
         EnableValidation,
 
-        // HEDIS Compatibility Mode changes the behavior of the CQL
-        // engine to match some expected behavior of the HEDIS
-        // content that is not standards-complaint.
-        // Currently, this includes:
-        //  1. Making the default comparison semantics for lists to be "equivalent"
-        //      (the standard behavior is to use "equal" semantics - note that this is
-        //      expected to be the standard behavior in a future version of the CQL spec)
-        //  2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always
-        // return all elements
-        //      (the standard behavior is to return distinct elements)
+        /**
+         * HEDIS Compatibility Mode changes the behavior of the CQL engine to match some expected
+         * behavior of the HEDIS content that is not standards-complaint. Currently, this includes:
+         * 1. Making the default comparison semantics for lists to be "equivalent" (the standard
+         *    behavior is to use "equal" semantics - note that this is expected to be the standard
+         *    behavior in a future version of the CQL spec)
+         * 2. Ignoring the "all" / "distinct" modifiers for the "return" clause of queries, always
+         *    return all elements (the standard behavior is to return distinct elements)
+         */
         EnableHedisCompatibilityMode,
 
-        // Collect data on evaluation counts, timing and cache hit
-        // ratio for certain elements such as expression and function
-        // definitions and retrieves.
+        /**
+         * Collect data on evaluation counts, timing and cache hit ratio for certain elements such
+         * as expression and function definitions and retrieves.
+         */
         EnableProfiling,
 
-        // Collect trace information during evaluation (expressions and function
-        // calls with intermediate results). Trace data can be exported after evaluation.
+        /**
+         * Collect trace information during evaluation (expressions and function calls with
+         * intermediate results). Trace data can be exported after evaluation.
+         */
         EnableTracing,
 
-        // Collect coverage information during execution. Coverage
-        // data can be exported in LCOV format after execution.
+        /**
+         * Collect coverage information during execution. Coverage data can be exported in LCOV
+         * format after execution.
+         */
         EnableCoverageCollection,
+
+        /** Check runtime types against declared ELM result types and log any type mismatches. */
+        EnableTypeChecking,
     }
 
     val state: State
@@ -397,10 +404,10 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // TODO: Smarter validation would be to checkout and see if any retrieves
         // Use terminology, and to check for any codesystem lookups.
         require(
-            !((library.codeSystems != null && !library.codeSystems!!.def.isEmpty()) ||
+            !(((library.codeSystems != null && !library.codeSystems!!.def.isEmpty()) ||
                 (library.codes != null && !library.codes!!.def.isEmpty()) ||
-                (library.valueSets != null && !library.valueSets!!.def.isEmpty()) &&
-                    this.environment.terminologyProvider == null)
+                (library.valueSets != null && !library.valueSets!!.def.isEmpty())) &&
+                this.environment.terminologyProvider == null)
         ) {
             "Library ${this.getLibraryDescription(library.identifier!!)} has terminology requirements and no terminology provider is registered."
         }
@@ -440,6 +447,35 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     /**
      * Resolves the default value of a named parameter in a CQL library.
      *
+     * Checks whether the given library can be resolved by this engine's environment.
+     *
+     * @param libraryIdentifier the versioned identifier of the library to check
+     * @return `true` if the library can be resolved, `false` otherwise
+     */
+    fun hasLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
+        return try {
+            environment.resolveLibrary(libraryIdentifier) != null
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Checks whether the given library contains a parameter with the specified name.
+     *
+     * @param libraryIdentifier the versioned identifier of the library to check
+     * @param parameterName the name of the parameter to look for
+     * @return `true` if the library contains the named parameter, `false` otherwise
+     * @throws CqlException if the library cannot be resolved
+     */
+    fun hasParameter(libraryIdentifier: VersionedIdentifier, parameterName: String): Boolean {
+        val library =
+            environment.resolveLibrary(libraryIdentifier)
+                ?: throw CqlException("Unable to resolve library: ${libraryIdentifier.id}")
+        return Libraries.hasParameterDef(parameterName, library)
+    }
+
+    /**
      * This method evaluates the `default` expression of the given parameter definition within the
      * specified library. It uses the standard engine lifecycle — initializing the library on the
      * state stack, beginning an evaluation, and cleaning up afterward — so that the evaluation

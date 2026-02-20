@@ -123,12 +123,13 @@
     <ID>LoopWithTooManyJumpStatements:TestDstu3ModelResolver.kt$TestDstu3ModelResolver$for</ID>
     <ID>LoopWithTooManyJumpStatements:TestR4ModelResolver.kt$TestR4ModelResolver$for</ID>
     <ID>MaxLineLength:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$"Expand value sets cannot be used without a terminology provider and no terminology provider is set."</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$$</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testDistinct(Questionnaire.descendants().linkId.select(substring(0,1)).isDistinct().not())</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime').exists())</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime1').empty())</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testSelect(Patient.name.select(given | family) = 'Peter' | 'James' | 'Chalmers' | 'Jim')</ID>
-    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$stu3/tests-fhir-r3/testVariables(%</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$"stu3/tests-fhir-r3/testDistinct(Questionnaire.descendants().linkId.select(substring(0,1)).isDistinct().not())"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$"stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime').exists())"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$"stu3/tests-fhir-r3/testExtension(Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime1').empty())"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$"stu3/tests-fhir-r3/testSelect(Patient.name.select(given | family) = 'Peter' | 'James' | 'Chalmers' | 'Jim')"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$"stu3/tests-fhir-r3/testVariables(%\"vs-administrative-gender\" = 'http://hl7.org/fhir/ValueSet/administrative-gender')"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$$$"stu3/tests-fhir-r3/Dollar/testDollarThis1(Patient.name.given.where(substring($this.length()-3) = 'out'))"</ID>
+    <ID>MaxLineLength:CQLOperationsDstu3Test.kt$CQLOperationsDstu3Test.Companion$$$"stu3/tests-fhir-r3/Dollar/testDollarThis2(Patient.name.given.where(substring($this.length()-3) = 'ter'))"</ID>
     <ID>MaxLineLength:CQLOperationsR4Test.kt$CQLOperationsR4Test.Companion$"r4/tests-fhir-r4/testInvariants/extension('http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-scoring').exists() and extension('http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-scoring').value = 'ratio' implies group.population.where(code.coding.where(system = 'http://terminology.hl7.org/CodeSystem/measure-population').code = 'initial-population').count() in (1 | 2)"</ID>
     <ID>MaxLineLength:Dstu3FhirTerminologyProvider.kt$Dstu3FhirTerminologyProvider$"Could not expand value set ${valueSet.id}; version and code system bindings are not supported at this time."</ID>
     <ID>MaxLineLength:FhirModelResolver.kt$FhirModelResolver$"Could not resolve type $typeName. Primary package(s) for this resolver are ${this.packageNames.joinToString(",")}"</ID>
