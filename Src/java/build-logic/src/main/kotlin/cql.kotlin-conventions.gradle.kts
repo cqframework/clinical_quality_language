@@ -67,8 +67,8 @@ tasks.jar {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    dependsOn(tasks.named("dokkaGeneratePublicationHtml"))
+    from(tasks.named("dokkaGeneratePublicationHtml").map { it.outputs.files })
     archiveClassifier.set("html-docs")
 }
 

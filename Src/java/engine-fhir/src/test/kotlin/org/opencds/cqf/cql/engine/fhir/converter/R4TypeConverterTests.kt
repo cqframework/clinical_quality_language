@@ -1149,7 +1149,7 @@ internal class R4TypeConverterTests {
     }
 
     companion object {
-        private var typeConverter: R4FhirTypeConverter = R4FhirTypeConverter()
+        private val typeConverter = R4FhirTypeConverter()
 
         @JvmStatic
         private fun nowsAndEvaluationTimes(): Array<Array<Any?>?> {

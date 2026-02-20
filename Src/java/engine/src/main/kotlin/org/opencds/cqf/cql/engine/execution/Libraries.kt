@@ -13,21 +13,22 @@ object Libraries {
         return library.identifier?.id ?: "unknown"
     }
 
-    fun <T> Collection<T>.firstOrThrow(predicate: (T) -> Boolean, message: String): T =
-        firstOrNull(predicate) ?: throw CqlException(message)
+    fun <T> Collection<T>?.firstOrThrow(message: String, predicate: (T) -> Boolean): T =
+        (this ?: emptyList()).firstOrNull(predicate) ?: throw CqlException(message)
 
     @JvmStatic
     fun resolveLibraryRef(libraryName: String?, relativeTo: Library): IncludeDef =
-        (relativeTo.includes?.def ?: emptyList()).firstOrThrow(
-            { it.localIdentifier == libraryName },
-            "Could not resolve library reference '${libraryName}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.includes?.def.firstOrThrow(
+            "Could not resolve library reference '${libraryName}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.localIdentifier == libraryName
+        }
 
     @JvmStatic
     @Suppress("ReturnCount")
     fun resolveAllExpressionRef(name: String?, relativeTo: Library): MutableList<ExpressionDef> {
         // Assumption: List of defs is sorted.
-        val defs = relativeTo.statements?.def ?: return mutableListOf()
+        val defs = relativeTo.statements?.def ?: mutableListOf()
         val index =
             relativeTo.statements
                 ?.def
@@ -75,31 +76,35 @@ object Libraries {
 
     @JvmStatic
     fun resolveCodeSystemRef(name: String?, relativeTo: Library): CodeSystemDef =
-        (relativeTo.codeSystems?.def ?: emptyList()).firstOrThrow(
-            { it.name == name },
-            "Could not resolve code system reference '${name}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.codeSystems?.def.firstOrThrow(
+            "Could not resolve code system reference '${name}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.name == name
+        }
 
     @JvmStatic
     fun resolveValueSetRef(name: String?, relativeTo: Library): ValueSetDef =
-        (relativeTo.valueSets?.def ?: emptyList()).firstOrThrow(
-            { it.name == name },
-            "Could not resolve value set reference '${name}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.valueSets?.def.firstOrThrow(
+            "Could not resolve value set reference '${name}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.name == name
+        }
 
     @JvmStatic
     fun resolveCodeRef(name: String?, relativeTo: Library): CodeDef =
-        (relativeTo.codes?.def ?: emptyList()).firstOrThrow(
-            { it.name == name },
-            "Could not resolve code reference '${name}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.codes?.def.firstOrThrow(
+            "Could not resolve code reference '${name}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.name == name
+        }
 
     @JvmStatic
     fun resolveParameterRef(name: String?, relativeTo: Library): ParameterDef =
-        (relativeTo.parameters?.def ?: emptyList()).firstOrThrow(
-            { it.name == name },
-            "Could not resolve parameter reference '${name}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.parameters?.def.firstOrThrow(
+            "Could not resolve parameter reference '${name}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.name == name
+        }
 
     @JvmStatic
     fun hasParameterDef(name: String?, relativeTo: Library): Boolean {
@@ -109,16 +114,17 @@ object Libraries {
 
     @JvmStatic
     fun resolveConceptRef(name: String?, relativeTo: Library): ConceptDef =
-        (relativeTo.concepts?.def ?: emptyList()).firstOrThrow(
-            { it.name == name },
-            "Could not resolve concept reference '${name}' in library '${libraryId(relativeTo)}'.",
-        )
+        relativeTo.concepts?.def.firstOrThrow(
+            "Could not resolve concept reference '${name}' in library '${libraryId(relativeTo)}'."
+        ) {
+            it.name == name
+        }
 
     @JvmStatic
     fun getFunctionDefs(name: String?, relativeTo: Library): List<FunctionDef> {
         val defs = resolveAllExpressionRef(name, relativeTo)
 
-        return defs.filter { obj -> obj is FunctionDef }.map { obj -> obj as FunctionDef }
+        return defs.filterIsInstance<FunctionDef>().map { obj -> obj }
     }
 
     @JvmStatic

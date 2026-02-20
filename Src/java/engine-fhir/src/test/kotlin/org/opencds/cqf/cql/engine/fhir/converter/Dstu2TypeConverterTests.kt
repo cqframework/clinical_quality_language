@@ -1153,7 +1153,7 @@ internal class Dstu2TypeConverterTests {
     }
 
     companion object {
-        private var typeConverter: Dstu2FhirTypeConverter = Dstu2FhirTypeConverter()
+        private val typeConverter = Dstu2FhirTypeConverter()
 
         @JvmStatic
         private fun nowsAndEvaluationTimes(): Array<Array<Any?>?> {

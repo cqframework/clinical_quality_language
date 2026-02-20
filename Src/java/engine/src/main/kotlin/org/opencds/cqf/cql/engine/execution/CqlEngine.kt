@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory
 class CqlEngine
 @JvmOverloads
 constructor(val environment: Environment, engineOptions: MutableSet<Options>? = mutableSetOf()) {
+
     enum class Options {
         EnableExpressionCaching,
         EnableValidation,
