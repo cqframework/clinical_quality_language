@@ -82,12 +82,12 @@
     <ID>FunctionOnlyReturningConstant:NullEvaluator.kt$NullEvaluator$@JvmStatic fun internalEvaluate(state: State?): Any?</ID>
     <ID>FunctionParameterNaming:AsEvaluator.kt$AsEvaluator$`as`: As</ID>
     <ID>FunctionParameterNaming:IsEvaluator.kt$IsEvaluator$`is`: Is?</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format( "400: This source should be redacted%n%s", RedactingPHIObfuscator.REDACTED_MESSAGE, )</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message%n")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message%nnull")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: null%n")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("400: This is an error!%n")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("This is a message%n")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format( "400: This source should be redacted\n%s", RedactingPHIObfuscator.REDACTED_MESSAGE, )</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message\n")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message\nnull")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: null\n")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("400: This is an error!\n")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("This is a message\n")</ID>
     <ID>ImplicitDefaultLocale:CqlMainSuiteTest.kt$CqlMainSuiteTest$String.format( "Test library compiled with the following errors : %s", this.toString(errors), )</ID>
     <ID>ImplicitDefaultLocale:CqlPerformanceIT.kt$CqlPerformanceIT$String.format( "%s took longer per iteration than allowed. max: %3.2f, actual: %3.2f", libraryId.id, maxPerIterationMs, perIteration, )</ID>
     <ID>ImplicitDefaultLocale:ListOperatorsTest.kt$ListOperatorsTest$String.format( "Test library compiled with the following errors : %s", this.toString(errors), )</ID>
@@ -324,8 +324,8 @@
     <ID>ReturnCount:BaseModelResolver.kt$BaseModelResolver$fun `as`(value: Any?, type: KClass&lt;*>?, isStrict: Boolean): Any?</ID>
     <ID>ReturnCount:BeforeEvaluator.kt$BeforeEvaluator$@JvmStatic fun before(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveKType(typeName: String?): KClass&lt;*>?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveKType(value: Any?): KClass&lt;*>?</ID>
+    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
+    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(value: Any?): Class&lt;*>?</ID>
     <ID>ReturnCount:CeilingEvaluator.kt$CeilingEvaluator$@JvmStatic fun ceiling(operand: Any?): Any?</ID>
     <ID>ReturnCount:CoalesceEvaluator.kt$CoalesceEvaluator$fun coalesce(operands: List&lt;Any?>): Any?</ID>
     <ID>ReturnCount:CollapseEvaluator.kt$CollapseEvaluator$fun collapse(list: Iterable&lt;Interval?>?, per: Quantity?, state: State?): List&lt;Interval?>?</ID>
@@ -516,7 +516,7 @@
     <ID>TooGenericExceptionThrown:State.kt$State$throw RuntimeException("Stack underflow")</ID>
     <ID>TooGenericExceptionThrown:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$throw RuntimeException( "Error when executing function [" + staticFunctionName + "]: \n" + e.toString() )</ID>
     <ID>TooManyFunctions:BaseModelResolver.kt$BaseModelResolver</ID>
-    <ID>TooManyFunctions:CachingModelResolverDecorator.kt$CachingModelResolverDecorator : BaseModelResolver</ID>
+    <ID>TooManyFunctions:CachingModelResolverDecorator.kt$CachingModelResolverDecorator : ModelResolver</ID>
     <ID>TooManyFunctions:CompositeDataProvider.kt$CompositeDataProvider : DataProvider</ID>
     <ID>TooManyFunctions:CqlEngine.kt$CqlEngine</ID>
     <ID>TooManyFunctions:Date.kt$Date : BaseTemporal</ID>

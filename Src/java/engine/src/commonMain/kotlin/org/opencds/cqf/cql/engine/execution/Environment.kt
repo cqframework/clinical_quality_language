@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.*
-import org.opencds.cqf.cql.engine.data.DataProvider
+import org.opencds.cqf.cql.engine.data.BaseDataProvider
 import org.opencds.cqf.cql.engine.data.ExternalFunctionProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
@@ -26,12 +26,12 @@ class Environment
 @JvmOverloads
 constructor(
     val libraryManager: LibraryManager?,
-    dataProviders: MutableMap<String?, DataProvider?>? = null,
+    dataProviders: MutableMap<String?, BaseDataProvider?>? = null,
     val terminologyProvider: TerminologyProvider? = null,
 ) {
-    val dataProviders = mutableMapOf<String?, DataProvider?>()
+    val dataProviders = mutableMapOf<String?, BaseDataProvider?>()
 
-    private val packageMap = mutableMapOf<String?, DataProvider?>()
+    private val packageMap = mutableMapOf<String?, BaseDataProvider?>()
 
     // -- ExternalFunctionProviders -- TODO the registration of these... Should be
     // part of the LibraryManager?
@@ -178,18 +178,18 @@ constructor(
     }
 
     // -- DataProvider resolution
-    fun registerDataProvider(modelUri: String?, dataProvider: DataProvider?) {
+    fun registerDataProvider(modelUri: String?, dataProvider: BaseDataProvider?) {
         dataProviders[modelUri] = dataProvider
         dataProvider!!.packageNames.forEach { pn -> packageMap[pn] = dataProvider }
     }
 
-    fun resolveDataProvider(dataType: QName): DataProvider {
+    fun resolveDataProvider(dataType: QName): BaseDataProvider {
         var dataType = dataType
         dataType = fixupQName(dataType)
         return resolveDataProviderByModelUri(dataType.getNamespaceURI())
     }
 
-    fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
+    fun resolveDataProviderByModelUri(modelUri: String?): BaseDataProvider {
         val dataProvider =
             dataProviders[modelUri]
                 ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
@@ -198,7 +198,7 @@ constructor(
     }
 
     @JvmOverloads
-    fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): DataProvider? {
+    fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): BaseDataProvider? {
         val dataProvider = packageMap[packageName]
         if (dataProvider == null && mustResolve) {
             throw CqlException("Could not resolve data provider for package '${packageName}'.")

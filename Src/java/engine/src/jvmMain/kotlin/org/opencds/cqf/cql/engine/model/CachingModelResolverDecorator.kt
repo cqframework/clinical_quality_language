@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.model
 
-import kotlin.reflect.KClass
 import org.opencds.cqf.cql.engine.util.createConcurrentHashMap
 
-open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) : BaseModelResolver {
+open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
     @Suppress("deprecation")
     @Deprecated("use packageNames instead")
     override var packageName: String?
@@ -41,7 +40,7 @@ open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) :
         return null
     }
 
-    override fun resolveKType(typeName: String?): KClass<*>? {
+    override fun resolveType(typeName: String?): Class<*>? {
         if (typeName == null) {
             return null
         }
@@ -52,7 +51,7 @@ open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) :
 
             val result =
                 packageTypeResolutions.getOrPut(typeName) {
-                    this.innerResolver.resolveKType(typeName)
+                    this.innerResolver.resolveType(typeName)
                 }
 
             if (result != null) {
@@ -63,19 +62,19 @@ open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) :
         return null
     }
 
-    override fun resolveKType(value: Any?): KClass<*>? {
+    override fun resolveType(value: Any?): Class<*>? {
         if (value == null) {
             return null
         }
 
-        val valueClass = value::class
+        val valueClass = value.javaClass
         for (pn in this.packageNames) {
             val packageTypeResolutions =
                 perPackageTypeResolutionsByClass.getOrPut(pn) { createConcurrentHashMap() }
 
             val result =
                 packageTypeResolutions.getOrPut(valueClass) {
-                    this.innerResolver.resolveKType(value)
+                    this.innerResolver.resolveType(value)
                 }
 
             if (result != null) {
@@ -106,11 +105,11 @@ open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) :
         return innerResolver.resolveId(target)
     }
 
-    override fun `is`(value: Any?, type: KClass<*>?): Boolean? {
+    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
         return this.innerResolver.`is`(value, type)
     }
 
-    override fun `as`(value: Any?, type: KClass<*>?, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
         return this.innerResolver.`as`(value, type, isStrict)
     }
 
@@ -118,8 +117,8 @@ open class CachingModelResolverDecorator(val innerResolver: BaseModelResolver) :
         private val perPackageContextResolutions =
             createConcurrentHashMap<String?, MutableMap<String, MutableMap<String?, Any?>>>()
         private val perPackageTypeResolutionsByTypeName =
-            createConcurrentHashMap<String?, MutableMap<String, KClass<*>?>>()
+            createConcurrentHashMap<String?, MutableMap<String, Class<*>?>>()
         private val perPackageTypeResolutionsByClass =
-            createConcurrentHashMap<String?, MutableMap<KClass<*>, KClass<*>?>>()
+            createConcurrentHashMap<String?, MutableMap<Class<*>, Class<*>?>>()
     }
 }

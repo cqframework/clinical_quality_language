@@ -15,7 +15,7 @@ import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 
 // TODO: Extend testing to cover more of the CachedModelResolver
 internal class CachingModelResolverDecoratorTest {
-    @Mock private val mockModelResolver: BaseModelResolver? = null
+    @Mock private val mockModelResolver: ModelResolver? = null
 
     @Mock private val mockRetrieveProvider: RetrieveProvider? = null
 
@@ -35,7 +35,7 @@ internal class CachingModelResolverDecoratorTest {
     @Test
     @Suppress("deprecation")
     fun context_path_resolved_only_once() {
-        val m = Mockito.mock(BaseModelResolver::class.java)
+        val m = Mockito.mock(ModelResolver::class.java)
         Mockito.`when`(m.packageName).thenReturn("test.package")
         Mockito.`when`(m.getContextPath("Patient", "Patient")).thenReturn("id")
 
@@ -50,18 +50,19 @@ internal class CachingModelResolverDecoratorTest {
     @Test
     @Suppress("deprecation")
     fun type_resolved_only_once() {
-        val m = Mockito.mock(BaseModelResolver::class.java)
+        val m = Mockito.mock(ModelResolver::class.java)
         Mockito.`when`(m.packageName).thenReturn("test.package")
-        Mockito.`when`(m.resolveKType(ArgumentMatchers.isA(Int::class.java))).thenReturn(Int::class)
-        Mockito.`when`(m.resolveKType(ArgumentMatchers.isA(Class::class.java)))
+        Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Int::class.java)))
+            .thenReturn(Int::class.java)
+        Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Class::class.java)))
             .thenThrow(RuntimeException("Can't get a class of a class"))
 
         val cache = CachingModelResolverDecorator(m)
-        cache.resolveKType(5)
-        val result = cache.resolveKType(5)
+        cache.resolveType(5)
+        val result = cache.resolveType(5)
 
-        Assertions.assertEquals(Int::class, result)
-        Mockito.verify(m, Mockito.times(1)).resolveKType(5)
+        Assertions.assertEquals(Int::class.java, result)
+        Mockito.verify(m, Mockito.times(1)).resolveType(5)
     }
 
     @Test

@@ -5,7 +5,7 @@ import org.hamcrest.Matchers
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.data.DataProvider
+import org.opencds.cqf.cql.engine.data.BaseDataProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.PHIObfuscator
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.RedactingPHIObfuscator
@@ -31,7 +31,7 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
         try {
             value = engine.expression(library, "TestMessageError")
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("400: This is an error!%n"))
+            Assertions.assertEquals(re.message, String.format("400: This is an error!\n"))
         }
 
         value = engine.expression(library, "TestMessageWithNullSeverity")
@@ -77,34 +77,34 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
             value = engine.expression(library, "TestErrorWithNullSource")
             MatcherAssert.assertThat(value == null, Matchers.`is`(true))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("1: This is a message%nnull"))
+            Assertions.assertEquals(re.message, String.format("1: This is a message\nnull"))
         }
 
         try {
             value = engine.expression(library, "TestErrorWithNullCondition")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("1: This is a message%n"))
+            Assertions.assertEquals(re.message, String.format("1: This is a message\n"))
         }
 
         try {
             value = engine.expression(library, "TestErrorWithNullCode")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("This is a message%n"))
+            Assertions.assertEquals(re.message, String.format("This is a message\n"))
         }
 
         try {
             value = engine.expression(library, "TestErrorWithNullMessage")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("1: null%n"))
+            Assertions.assertEquals(re.message, String.format("1: null\n"))
         }
     }
 
     @Test
     fun obfuscation() {
-        val dataProviders: MutableMap<String?, DataProvider?> = HashMap()
+        val dataProviders: MutableMap<String?, BaseDataProvider?> = HashMap()
         dataProviders["urn:hl7-org:elm-types:r1"] = CustomSystemDataProvider()
         val environment = Environment(libraryManager, dataProviders, null)
 
@@ -115,7 +115,7 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
             Assertions.assertEquals(
                 result.message,
                 String.format(
-                    "400: This source should be redacted%n%s",
+                    "400: This source should be redacted\n%s",
                     RedactingPHIObfuscator.REDACTED_MESSAGE,
                 ),
             )

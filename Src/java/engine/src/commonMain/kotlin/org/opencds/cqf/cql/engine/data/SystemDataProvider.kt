@@ -2,12 +2,11 @@ package org.opencds.cqf.cql.engine.data
 
 import kotlin.reflect.KClass
 import org.cqframework.cql.shared.BigDecimal
-import org.opencds.cqf.cql.engine.model.BaseModelResolver
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.util.javaClassName
 
-open class SystemDataProvider : BaseModelResolver, DataProvider {
+open class SystemDataProvider : BaseDataProvider {
     override fun retrieve(
         context: String?,
         contextPath: String?,

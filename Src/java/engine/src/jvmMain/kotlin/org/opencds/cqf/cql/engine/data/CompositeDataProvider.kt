@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.data
 
-import kotlin.reflect.KClass
-import org.opencds.cqf.cql.engine.model.BaseModelResolver
+import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 open class CompositeDataProvider(
-    protected var modelResolver: BaseModelResolver?,
+    protected var modelResolver: ModelResolver?,
     protected var retrieveProvider: RetrieveProvider?,
 ) : DataProvider {
     @Deprecated("Use packageNames instead")
@@ -31,19 +30,19 @@ open class CompositeDataProvider(
         return this.modelResolver!!.getContextPath(contextType, targetType)
     }
 
-    override fun resolveKType(typeName: String?): KClass<*>? {
-        return this.modelResolver!!.resolveKType(typeName)
+    override fun resolveType(typeName: String?): Class<*>? {
+        return this.modelResolver!!.resolveType(typeName)
     }
 
-    override fun resolveKType(value: Any?): KClass<*>? {
-        return this.modelResolver!!.resolveKType(value)
+    override fun resolveType(value: Any?): Class<*>? {
+        return this.modelResolver!!.resolveType(value)
     }
 
-    override fun `is`(value: Any?, type: KClass<*>?): Boolean? {
+    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
         return this.modelResolver!!.`is`(value, type)
     }
 
-    override fun `as`(value: Any?, type: KClass<*>?, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
         return this.modelResolver!!.`as`(value, type, isStrict)
     }
 
