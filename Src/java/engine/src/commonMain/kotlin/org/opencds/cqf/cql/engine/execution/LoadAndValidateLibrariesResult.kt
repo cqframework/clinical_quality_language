@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution
 
-import kotlin.reflect.cast
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
@@ -74,10 +73,7 @@ class LoadAndValidateLibrariesResult(builder: Builder) {
                 }
 
             val exceptionsBySeverity =
-                exceptions
-                    .filter { obj -> CqlCompilerException::class.isInstance(obj) }
-                    .map { obj -> CqlCompilerException::class.cast(obj) }
-                    .groupBy { obj -> obj.severity }
+                exceptions.filterIsInstance<CqlCompilerException>().groupBy { obj -> obj.severity }
 
             for (exceptionsGroupedBySeverity in exceptionsBySeverity.entries) {
                 val wrappedExceptions: CqlException =
