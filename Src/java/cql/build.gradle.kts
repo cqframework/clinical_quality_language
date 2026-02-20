@@ -87,12 +87,7 @@ tasks.withType<AbstractKotlinCompile<*>> {
     dependsOn(inlineModelInfoXmlsTask)
 }
 
-tasks.named("dokkaJavadocJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("dokkaHtml") {
+tasks.named("dokkaGeneratePublicationHtml") {
     dependsOn(generateKotlinGrammarSource)
     dependsOn(inlineModelInfoXmlsTask)
 }
