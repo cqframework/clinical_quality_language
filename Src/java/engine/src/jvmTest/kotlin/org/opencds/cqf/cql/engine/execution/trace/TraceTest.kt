@@ -42,7 +42,6 @@ class TraceTest : CqlTestBase() {
                 contextName,
                 0,
             )
-        // func1ActivationFrame.variables.push(Variable("a").withValue(6))
         func1ActivationFrame.variables.addFirst(Variable("a").withValue(6))
         func1ActivationFrame.result = 7
 

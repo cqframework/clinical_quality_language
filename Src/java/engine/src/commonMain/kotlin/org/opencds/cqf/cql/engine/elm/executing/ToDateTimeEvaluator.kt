@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-// import java.time.format.DateTimeParseException
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State

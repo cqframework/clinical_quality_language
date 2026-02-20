@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-// import org.apache.commons.lang3.ArrayUtils
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
@@ -46,8 +45,6 @@ object ConvertsToBooleanEvaluator {
         if (argument is String) {
             return validTrueValues.contains(argument.lowercase()) ||
                 validFalseValues.contains(argument.lowercase())
-            //            return ArrayUtils.contains(validTrueValues, argument.lowercase()) ||
-            //                ArrayUtils.contains(validFalseValues, argument.lowercase())
         }
 
         throw InvalidOperatorArgument(

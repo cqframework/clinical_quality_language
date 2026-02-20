@@ -85,8 +85,6 @@ interface BaseModelResolver {
         }
 
         return type!!.isInstance(value)
-
-        //        return type!!.isAssignableFrom(value.javaClass)
     }
 
     /**
@@ -107,10 +105,6 @@ interface BaseModelResolver {
         if (type!!.isInstance(value)) {
             return value
         }
-
-        //        if (type!!.isAssignableFrom(value.javaClass)) {
-        //            return value
-        //        }
 
         if (isStrict) {
             throw InvalidCast(

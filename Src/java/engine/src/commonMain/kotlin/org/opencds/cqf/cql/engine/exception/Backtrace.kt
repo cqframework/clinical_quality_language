@@ -28,7 +28,6 @@ class Backtrace(
             expression: Expression,
             contextValues: Map<String, Any?>,
         ): Backtrace {
-            // val topActivationFrame = activationFrameStack.peek()
             val topActivationFrame = activationFrameStack.first()
 
             var frame =

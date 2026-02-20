@@ -1,11 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-// import java.math.BigDecimal
-// import java.time.OffsetDateTime
-// import java.time.ZoneOffset
-// import java.time.format.DateTimeFormatter
-// import java.util.*
-// import java.util.Date
 import kotlin.math.abs
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.ONE
@@ -389,21 +383,6 @@ class DateTime : BaseTemporal {
                 }:${
                     ((abs(offsetSeconds) % 3600) / 60).toString().padStart(2, '0')
                 }"
-
-                //                String.format(
-                //                    Locale.US,
-                //                    "%04d-%02d-%02dT%02d:%02d:%02d.%03d%s%02d:%02d",
-                //                    dateTime!!.year,
-                //                    dateTime!!.monthValue,
-                //                    dateTime!!.dayOfMonth,
-                //                    dateTime!!.hour,
-                //                    dateTime!!.minute,
-                //                    dateTime!!.second,
-                //                    dateTime!!.get(precision!!.toChronoField()),
-                //                    if (offsetSeconds >= 0) "+" else "-",
-                //                    abs(offsetSeconds) / 3600,
-                //                    (abs(offsetSeconds) % 3600) / 60,
-                //                )
             }
         }
     }

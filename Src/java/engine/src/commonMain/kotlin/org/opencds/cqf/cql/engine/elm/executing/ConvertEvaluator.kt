@@ -59,23 +59,8 @@ object ConvertEvaluator {
 
         try {
             if (type.isInstance(operand)) {
-                //                val cls: Class<*> = operand.javaClass
-                //                return cls.getDeclaredConstructor().newInstance()
                 return type.cast(operand)
             }
-            //        } catch (e: InstantiationException) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        } catch (e: InvocationTargetException) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        } catch (e: ExceptionInInitializerError) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        } catch (e: IllegalAccessException) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        } catch (e: SecurityException) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        } catch (e: NoSuchMethodException) {
-            //            throw InvalidConversion("Error during conversion: " + e.message)
-            //        }
         } catch (e: Exception) {
             throw InvalidConversion("Error during conversion: " + e.message)
         }

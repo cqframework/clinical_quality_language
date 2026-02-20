@@ -1,8 +1,5 @@
 package org.opencds.cqf.cql.engine.execution
 
-// import java.time.ZonedDateTime
-// import java.util.*
-// import java.util.function.Consumer
 import kotlin.Deprecated
 import kotlin.Exception
 import kotlin.IllegalStateException
@@ -126,7 +123,6 @@ constructor(
     val globalCoverage by lazy { GlobalCoverage() }
 
     fun getCurrentLibrary(): Library? {
-        //        return currentLibrary.peek()
         return currentLibrary.firstOrNull()
     }
 
@@ -160,7 +156,6 @@ constructor(
             // environment from state.
             val library = this.environment.resolveLibrary(identifier)
 
-            // currentLibrary.push(library)
             currentLibrary.addFirst(library)
 
             return true
@@ -171,7 +166,6 @@ constructor(
 
     fun exitLibrary(enteredLibrary: Boolean) {
         if (enteredLibrary) {
-            // currentLibrary.pop()
             currentLibrary.removeFirst()
         }
     }
@@ -181,9 +175,7 @@ constructor(
     var windows: ArrayDeque<ArrayDeque<Variable>?>?
         get() {
             val result = ArrayDeque<ArrayDeque<Variable>?>()
-            this.stack.forEach { frame ->
-                result.addFirst(frame!!.variables) /*result.push(frame!!.variables)*/
-            }
+            this.stack.forEach { frame -> result.addFirst(frame!!.variables) }
             return result
         }
         set(windows) {
@@ -228,7 +220,6 @@ constructor(
     fun init(library: Library?) {
         check(this.stack.isEmpty())
 
-        // currentLibrary.push(library)
         currentLibrary.addFirst(library)
 
         this.pushEvaluatedResourceStack()
@@ -248,7 +239,6 @@ constructor(
             // stack,
             // so that we can exit each together to evaluate the next library
 
-            // currentLibrary.push(library)
             currentLibrary.addFirst(library)
 
             this.pushEvaluatedResourceStack()
@@ -256,22 +246,18 @@ constructor(
     }
 
     fun pop() {
-        // val topActivationFrame = this.stack.peek()
         val topActivationFrame = this.stack.firstOrNull()
 
         checkNotNull(topActivationFrame) { "Stack underflow" }
 
-        // topActivationFrame.variables.pop()
         topActivationFrame.variables.removeFirst()
     }
 
     fun push(variable: Variable?) {
-        // val topActivationFrame = this.stack.peek()
         val topActivationFrame = this.stack.firstOrNull()
 
         checkNotNull(topActivationFrame) { "Stack underflow: No activation frame available." }
 
-        // topActivationFrame.variables.push(variable)
         topActivationFrame.variables.addFirst(variable!!)
     }
 
@@ -290,9 +276,7 @@ constructor(
         val trace =
             if (engineOptions.contains(Options.EnableTracing))
                 Trace.fromActivationFrames(
-                    this.stack
-                        .first()
-                        .innerActivationFrames, // this.stack.peek().innerActivationFrames,
+                    this.stack.first().innerActivationFrames,
                     this.contextValues,
                 )
             else null
@@ -330,7 +314,7 @@ constructor(
     fun pushActivationFrame(
         element: Element?,
         contextName: String?,
-        startTime: Long = Clock.System.now().toEpochMilliseconds(), // System.nanoTime()
+        startTime: Long = Clock.System.now().toEpochMilliseconds(),
     ) {
         val newActivationFrame =
             ActivationFrame(element, this.getCurrentLibrary()?.identifier, contextName, startTime)
@@ -338,7 +322,6 @@ constructor(
             topActivationFrame.innerActivationFrames.add(newActivationFrame)
         }
 
-        // this.stack.push(newActivationFrame)
         this.stack.addFirst(newActivationFrame)
 
         if (this.debugResult != null) {
@@ -350,7 +333,6 @@ constructor(
     }
 
     fun pushActivationFrame(element: Element?) {
-        // val contextName = this.currentContext.peekFirst()
         val contextName = this.currentContext.firstOrNull()
 
         pushActivationFrame(element, contextName)
@@ -358,7 +340,6 @@ constructor(
 
     @OptIn(ExperimentalTime::class)
     fun popActivationFrame() {
-        // val topActivationFrame = this.stack.peek()
         val topActivationFrame = this.stack.firstOrNull()
 
         if (topActivationFrame == null) {
@@ -371,13 +352,11 @@ constructor(
         if (this.debugResult != null) {
             val profile = this.debugResult!!.profile
             if (profile != null) {
-                topActivationFrame.endTime =
-                    Clock.System.now().toEpochMilliseconds() // System.nanoTime()
+                topActivationFrame.endTime = Clock.System.now().toEpochMilliseconds()
                 profile.leave(topActivationFrame)
             }
         }
 
-        // this.stack.pop()
         this.stack.removeFirst()
     }
 
@@ -390,7 +369,6 @@ constructor(
 
     val topActivationFrame: ActivationFrame
         get() {
-            // val topActivationFrame = this.stack.peek()
             val topActivationFrame = this.stack.firstOrNull()
 
             if (topActivationFrame == null) {
@@ -416,7 +394,6 @@ constructor(
 
     fun enterContext(context: String?): Boolean {
         if (context != null) {
-            // currentContext.push(context)
             currentContext.addFirst(context)
 
             return true
@@ -427,7 +404,6 @@ constructor(
 
     fun exitContext(isEnteredContext: Boolean) {
         if (isEnteredContext) {
-            // currentContext.pop()
             currentContext.removeFirst()
         }
     }
@@ -437,7 +413,6 @@ constructor(
             return null
         }
 
-        // return currentContext.peekFirst()
         return currentContext.firstOrNull()
     }
 
@@ -457,7 +432,6 @@ constructor(
                 "Attempted to get the evaluatedResource stack when it's empty"
             }
 
-            // return this.evaluatedResourceStack.peek()
             return this.evaluatedResourceStack.firstOrNull()
         }
 
@@ -467,7 +441,6 @@ constructor(
     }
 
     fun pushEvaluatedResourceStack() {
-        // evaluatedResourceStack.push(HashSet<Any?>())
         evaluatedResourceStack.addFirst(HashSet<Any?>())
     }
 
@@ -489,10 +462,8 @@ constructor(
     }
 
     private fun carryOverEvaluatedResourcesUpCallStack() {
-        val previousStackEvaluatedResources =
-            evaluatedResourceStack.removeFirst() // evaluatedResourceStack.pop()
-        val currentStackEvaluatedResources =
-            evaluatedResourceStack.firstOrNull() // evaluatedResourceStack.peek()
+        val previousStackEvaluatedResources = evaluatedResourceStack.removeFirst()
+        val currentStackEvaluatedResources = evaluatedResourceStack.firstOrNull()
 
         checkNotNull(currentStackEvaluatedResources) {
             "Attempted to carry over evaluated resources when the current stack is empty"

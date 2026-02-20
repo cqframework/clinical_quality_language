@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-// import org.fhir.ucum.UcumException
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.execution.State
@@ -72,6 +71,5 @@ private fun convertIfLessGranular(
             return convertedDecimal
         }
     } catch (ignored: Exception) {}
-    //  } catch (ignored: UcumException) {}
     return null
 }

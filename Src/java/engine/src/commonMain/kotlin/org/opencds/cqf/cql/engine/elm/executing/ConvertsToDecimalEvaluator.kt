@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-// import java.math.BigDecimal
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument

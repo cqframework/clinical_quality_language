@@ -27,7 +27,6 @@ class TimesIterator(private val left: Iterator<Any?>, right: Iterator<Any?>) : I
             leftNeeded = false
         }
 
-        //        return AbstractMap.SimpleEntry<Any?, Any?>(leftElement, right.next())
         return mutableMapOf(leftElement to right.next()).entries.first()
     }
 }

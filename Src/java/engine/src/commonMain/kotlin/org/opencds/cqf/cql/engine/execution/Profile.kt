@@ -167,8 +167,6 @@ class Profile
             val sorted =
                 this.children.values
                     .flatMap { contextMap -> contextMap!!.values }
-                    //                    .sortedWith(Comparator.comparing<Node?, Long> { node ->
-                    // -node!!.time })
                     .sortedBy { node -> -node!!.time }
             var xc = x
             for (child in sorted) {
@@ -228,7 +226,6 @@ class Profile
      * @param frame An activation frame that the evaluator has just entered or is about to enter.
      */
     fun enter(frame: ActivationFrame) {
-        //        val topNode = this.stack.peek()
         val topNode = this.stack.firstOrNull()
         val newNode: Node
         if (topNode == null) {
@@ -238,7 +235,6 @@ class Profile
         } else {
             newNode = topNode.ensureChild(frame.element, frame.contextName)
         }
-        //        this.stack.push(newNode)
         this.stack.addFirst(newNode)
     }
 
@@ -252,12 +248,10 @@ class Profile
      * @param frame An activation frame that the evaluator has just left or is about to leave.
      */
     fun leave(frame: ActivationFrame) {
-        // val topNode = checkNotNull(this.stack.peek())
         val topNode = this.stack.first()
         check(topNode.expression === frame.element)
         check(topNode.context == frame.contextName)
         topNode.addInvocation(frame.startTime, frame.endTime, frame.isCached)
-        // this.stack.pop()
         this.stack.removeFirst()
     }
 
@@ -302,7 +296,6 @@ class Profile
      * @param outputFile The file to which the flamegraph-SVG representation should be written.
      */
     fun render(outputFile: Path) {
-        //        FileOutputStream(outputFile.toFile()).use { stream -> render(stream) }
         SystemFileSystem.sink(outputFile).buffered().use { sink -> render(sink) }
     }
 

@@ -1,10 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-// import java.time.LocalDate
-// import java.time.OffsetDateTime
-// import java.time.ZonedDateTime
-// import java.util.*
-// import java.util.Date
 import kotlin.jvm.JvmOverloads
 import org.opencds.cqf.cql.engine.exception.InvalidDate
 import org.opencds.cqf.cql.engine.execution.State
@@ -223,14 +218,6 @@ class Date : BaseTemporal {
             }-${
                 date!!.getMonthValue().toString().padStart(2, '0')
             }-${date!!.getDayOfMonth().toString().padStart(2, '0')}"
-
-        // else -> String.format(
-        //                    Locale.US,
-        //                    "%04d-%02d-%02d",
-        //                    date!!.year,
-        //                    date!!.monthValue,
-        //                    date!!.dayOfMonth,
-        //                )
         }
     }
 

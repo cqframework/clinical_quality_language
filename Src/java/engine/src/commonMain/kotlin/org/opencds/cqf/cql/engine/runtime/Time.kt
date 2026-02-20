@@ -206,16 +206,6 @@ class Time : BaseTemporal {
                 time.getSecond().toString().padStart(2, '0')
             }"
 
-            //            else ->
-            //                String.format(
-            //                    Locale.US,
-            //                    "%02d:%02d:%02d.%03d",
-            //                    time.hour,
-            //                    time.minute,
-            //                    time.second,
-            //                    time.get(precision!!.toChronoField()),
-            //                )
-
             else ->
                 "${time.getHour().toString().padStart(2, '0')}:${time.getMinute().toString().padStart(2, '0')}:${
                 time.getSecond().toString().padStart(2, '0')
