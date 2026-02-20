@@ -1,22 +1,20 @@
 package org.opencds.cqf.cql.engine.execution
 
 import kotlin.jvm.JvmOverloads
-import kotlin.reflect.KClass
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.*
-import org.opencds.cqf.cql.engine.data.BaseDataProvider
+import org.opencds.cqf.cql.engine.data.DataProvider
 import org.opencds.cqf.cql.engine.data.ExternalFunctionProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
-import org.opencds.cqf.cql.engine.util.isAssignableFrom
-import org.opencds.cqf.cql.engine.util.isIterable
+import org.opencds.cqf.cql.engine.util.JavaClass
+import org.opencds.cqf.cql.engine.util.javaClass
 import org.opencds.cqf.cql.engine.util.javaClassPackageName
-import org.opencds.cqf.cql.engine.util.javaPackageName
-import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClassName
+import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClass
 
 /**
  * The Environment class represents the current CQL execution environment. Meaning, things that are
@@ -26,12 +24,12 @@ class Environment
 @JvmOverloads
 constructor(
     val libraryManager: LibraryManager?,
-    dataProviders: MutableMap<String?, BaseDataProvider?>? = null,
+    dataProviders: MutableMap<String?, DataProvider?>? = null,
     val terminologyProvider: TerminologyProvider? = null,
 ) {
-    val dataProviders = mutableMapOf<String?, BaseDataProvider?>()
+    val dataProviders = mutableMapOf<String?, DataProvider?>()
 
-    private val packageMap = mutableMapOf<String?, BaseDataProvider?>()
+    private val packageMap = mutableMapOf<String?, DataProvider?>()
 
     // -- ExternalFunctionProviders -- TODO the registration of these... Should be
     // part of the LibraryManager?
@@ -75,26 +73,28 @@ constructor(
 
         // TODO: Path may include .'s and []'s.
         // For now, assume no qualifiers or indexers...
-        val clazz: KClass<*> = target::class
+        val clazz: JavaClass<*> = target.javaClass
 
-        if (clazz.javaPackageName.startsWith("java.lang")) {
+        if (clazz.getPackageName().startsWith("java.lang")) {
             throw CqlException(
-                "Invalid path: $path for type: ${kotlinClassToJavaClassName(clazz)} - this is likely an issue with the data model."
+                "Invalid path: $path for type: ${clazz.getName()} - this is likely an issue with the data model."
             )
         }
 
-        val dataProvider = resolveDataProvider(clazz.javaPackageName)
+        val dataProvider = resolveDataProvider(clazz.getPackageName())
         return dataProvider!!.resolvePath(target, path)
     }
 
-    fun `as`(operand: Any?, type: KClass<*>, isStrict: Boolean): Any? {
+    fun `as`(operand: Any?, type: JavaClass<*>, isStrict: Boolean): Any? {
         if (operand == null) {
             return null
         }
 
         // Special case for Iterable instances being cast to CQL Lists.
         // See https://github.com/cqframework/clinical_quality_language/issues/1577.
-        if (isIterable(type) && operand is Iterable<*>) {
+        if (
+            kotlinClassToJavaClass(Iterable::class).isAssignableFrom(type) && operand is Iterable<*>
+        ) {
             return operand
         }
 
@@ -102,7 +102,7 @@ constructor(
             return operand
         }
 
-        val provider = resolveDataProvider(type.javaPackageName, false)
+        val provider = resolveDataProvider(type.getPackageName(), false)
         if (provider != null) {
             return provider.`as`(operand, type, isStrict)
         }
@@ -115,9 +115,9 @@ constructor(
             return null
         }
 
-        val clazz: KClass<*> = left::class
+        val clazz: JavaClass<*> = left.javaClass
 
-        val dataProvider = resolveDataProvider(clazz.javaPackageName)
+        val dataProvider = resolveDataProvider(clazz.getPackageName())
         return dataProvider!!.objectEqual(left, right)
     }
 
@@ -130,9 +130,9 @@ constructor(
             return false
         }
 
-        val clazz: KClass<*> = left::class
+        val clazz: JavaClass<*> = left.javaClass
 
-        val dataProvider = resolveDataProvider(clazz.javaPackageName)
+        val dataProvider = resolveDataProvider(clazz.getPackageName())
         return dataProvider!!.objectEquivalent(left, right)
     }
 
@@ -148,20 +148,22 @@ constructor(
             return
         }
 
-        val clazz: KClass<*> = target::class
+        val clazz: JavaClass<*> = target.javaClass
 
-        val dataProvider = resolveDataProvider(clazz.javaPackageName)
+        val dataProvider = resolveDataProvider(clazz.getPackageName())
         dataProvider!!.setValue(target, path, value)
     }
 
-    fun `is`(operand: Any?, type: KClass<*>): Boolean? {
+    fun `is`(operand: Any?, type: JavaClass<*>): Boolean? {
         if (operand == null) {
             return null
         }
 
         // Special case for Iterable instances being checked against CQL List type.
         // See https://github.com/cqframework/clinical_quality_language/issues/1577.
-        if (isIterable(type) && operand is Iterable<*>) {
+        if (
+            kotlinClassToJavaClass(Iterable::class).isAssignableFrom(type) && operand is Iterable<*>
+        ) {
             return true
         }
 
@@ -169,7 +171,7 @@ constructor(
             return true
         }
 
-        val provider = resolveDataProvider(type.javaPackageName, false)
+        val provider = resolveDataProvider(type.getPackageName(), false)
         if (provider != null) {
             return provider.`is`(operand, type)
         }
@@ -178,18 +180,18 @@ constructor(
     }
 
     // -- DataProvider resolution
-    fun registerDataProvider(modelUri: String?, dataProvider: BaseDataProvider?) {
+    fun registerDataProvider(modelUri: String?, dataProvider: DataProvider?) {
         dataProviders[modelUri] = dataProvider
         dataProvider!!.packageNames.forEach { pn -> packageMap[pn] = dataProvider }
     }
 
-    fun resolveDataProvider(dataType: QName): BaseDataProvider {
+    fun resolveDataProvider(dataType: QName): DataProvider {
         var dataType = dataType
         dataType = fixupQName(dataType)
         return resolveDataProviderByModelUri(dataType.getNamespaceURI())
     }
 
-    fun resolveDataProviderByModelUri(modelUri: String?): BaseDataProvider {
+    fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
         val dataProvider =
             dataProviders[modelUri]
                 ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
@@ -198,7 +200,7 @@ constructor(
     }
 
     @JvmOverloads
-    fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): BaseDataProvider? {
+    fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): DataProvider? {
         val dataProvider = packageMap[packageName]
         if (dataProvider == null && mustResolve) {
             throw CqlException("Could not resolve data provider for package '${packageName}'.")
@@ -207,33 +209,33 @@ constructor(
         return dataProvider
     }
 
-    fun resolveType(typeName: QName?): KClass<*>? {
+    fun resolveType(typeName: QName?): JavaClass<*>? {
         var typeName = typeName
         typeName = fixupQName(typeName!!)
         val dataProvider = resolveDataProvider(typeName)
-        return dataProvider.resolveKType(typeName.getLocalPart())
+        return dataProvider.resolveType(typeName.getLocalPart())
     }
 
-    fun resolveType(typeSpecifier: TypeSpecifier?): KClass<*>? {
+    fun resolveType(typeSpecifier: TypeSpecifier?): JavaClass<*>? {
         return when (typeSpecifier) {
             is NamedTypeSpecifier -> resolveType(typeSpecifier.name)
             is ListTypeSpecifier ->
                 // TODO: This doesn't allow for list-distinguished overloads...
-                MutableList::class
+                kotlinClassToJavaClass(MutableList::class)
             // return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
             is IntervalTypeSpecifier ->
                 // TODO: This doesn't allow for interval-distinguished overloads
-                Interval::class
+                kotlinClassToJavaClass(Interval::class)
             is ChoiceTypeSpecifier ->
                 // TODO: This doesn't allow for choice-distinguished overloads...
-                Any::class
+                kotlinClassToJavaClass(Any::class)
             else ->
                 // TODO: This doesn't allow for tuple-distinguished overloads....
-                Tuple::class
+                kotlinClassToJavaClass(Tuple::class)
         }
     }
 
-    fun resolveType(value: Any?): KClass<*>? {
+    fun resolveType(value: Any?): JavaClass<*>? {
         if (value == null) {
             return null
         }
@@ -247,25 +249,25 @@ constructor(
         // May not be necessary, idea is to sync with the use of List.class for
         // ListTypeSpecifiers in the resolveType above
         if (value is Iterable<*>) {
-            return MutableList::class
+            return kotlinClassToJavaClass(MutableList::class)
         }
 
         if (value is Tuple) {
-            return Tuple::class
+            return kotlinClassToJavaClass(Tuple::class)
         }
 
         // Primitives should just use the type
         // BTR: Well, we should probably be explicit about all and only the types we
         // expect
         if (packageName.startsWith("java")) {
-            return value::class
+            return value.javaClass
         }
 
         val dataProvider = resolveDataProvider(value.javaClassPackageName)
-        return dataProvider!!.resolveKType(value)
+        return dataProvider!!.resolveType(value)
     }
 
-    fun resolveOperandType(operandDef: OperandDef): KClass<*>? {
+    fun resolveOperandType(operandDef: OperandDef): JavaClass<*>? {
         return if (operandDef.operandTypeSpecifier != null) {
             resolveType(operandDef.operandTypeSpecifier)
         } else {
@@ -273,7 +275,7 @@ constructor(
         }
     }
 
-    fun isType(argumentType: KClass<*>?, operandType: KClass<*>): Boolean {
+    fun isType(argumentType: JavaClass<*>?, operandType: JavaClass<*>): Boolean {
         return argumentType == null || operandType.isAssignableFrom(argumentType)
     }
 

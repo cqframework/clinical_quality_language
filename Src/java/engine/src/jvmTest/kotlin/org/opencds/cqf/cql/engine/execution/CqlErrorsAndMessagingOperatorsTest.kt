@@ -5,7 +5,7 @@ import org.hamcrest.Matchers
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.data.BaseDataProvider
+import org.opencds.cqf.cql.engine.data.DataProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.PHIObfuscator
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.RedactingPHIObfuscator
@@ -104,7 +104,7 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
 
     @Test
     fun obfuscation() {
-        val dataProviders: MutableMap<String?, BaseDataProvider?> = HashMap()
+        val dataProviders: MutableMap<String?, DataProvider?> = HashMap()
         dataProviders["urn:hl7-org:elm-types:r1"] = CustomSystemDataProvider()
         val environment = Environment(libraryManager, dataProviders, null)
 

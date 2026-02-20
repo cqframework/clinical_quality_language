@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.model
 
+import org.opencds.cqf.cql.engine.util.JavaClass
 import org.opencds.cqf.cql.engine.util.createConcurrentHashMap
+import org.opencds.cqf.cql.engine.util.javaClass
 
 open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
     @Suppress("deprecation")
@@ -40,7 +42,7 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         return null
     }
 
-    override fun resolveType(typeName: String?): Class<*>? {
+    override fun resolveType(typeName: String?): JavaClass<*>? {
         if (typeName == null) {
             return null
         }
@@ -62,7 +64,7 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         return null
     }
 
-    override fun resolveType(value: Any?): Class<*>? {
+    override fun resolveType(value: Any?): JavaClass<*>? {
         if (value == null) {
             return null
         }
@@ -105,11 +107,11 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         return innerResolver.resolveId(target)
     }
 
-    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
+    override fun `is`(value: Any?, type: JavaClass<*>?): Boolean? {
         return this.innerResolver.`is`(value, type)
     }
 
-    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: JavaClass<*>?, isStrict: Boolean): Any? {
         return this.innerResolver.`as`(value, type, isStrict)
     }
 
@@ -117,8 +119,8 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         private val perPackageContextResolutions =
             createConcurrentHashMap<String?, MutableMap<String, MutableMap<String?, Any?>>>()
         private val perPackageTypeResolutionsByTypeName =
-            createConcurrentHashMap<String?, MutableMap<String, Class<*>?>>()
+            createConcurrentHashMap<String?, MutableMap<String, JavaClass<*>?>>()
         private val perPackageTypeResolutionsByClass =
-            createConcurrentHashMap<String?, MutableMap<Class<*>, Class<*>?>>()
+            createConcurrentHashMap<String?, MutableMap<JavaClass<*>, JavaClass<*>?>>()
     }
 }

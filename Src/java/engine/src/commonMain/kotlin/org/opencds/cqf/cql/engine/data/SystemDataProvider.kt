@@ -1,12 +1,15 @@
 package org.opencds.cqf.cql.engine.data
 
-import kotlin.reflect.KClass
 import org.cqframework.cql.shared.BigDecimal
+import org.opencds.cqf.cql.engine.model.BaseModelResolver
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.util.JavaClass
+import org.opencds.cqf.cql.engine.util.javaClass
 import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClass
 
-open class SystemDataProvider : BaseDataProvider {
+open class SystemDataProvider : BaseModelResolver(), DataProvider {
     override fun retrieve(
         context: String?,
         contextPath: String?,
@@ -134,35 +137,39 @@ open class SystemDataProvider : BaseDataProvider {
         }
     }
 
-    override fun resolveKType(value: Any?): KClass<*> {
+    override fun resolveType(value: Any?): JavaClass<*> {
         if (value == null) {
-            return Any::class
+            return kotlinClassToJavaClass(Any::class)
         }
 
-        return value::class
+        return value.javaClass
     }
 
-    override fun resolveKType(typeName: String?): KClass<*> {
-        return when (typeName) {
-            "Boolean" -> Boolean::class
-            "Integer" -> Int::class
-            "Long" -> Long::class
-            "Decimal" -> BigDecimal::class
-            "String" -> String::class
-            "Date" -> Date::class
-            "DateTime" -> DateTime::class
-            "Time" -> Time::class
-            "Quantity" -> Quantity::class
-            "Ratio" -> Ratio::class
-            "Code" -> Code::class
-            "Concept" -> Concept::class
-            "CodeSystem" -> CodeSystem::class
-            "ValueSet" -> ValueSet::class
-            "Interval" -> Interval::class
-            "Tuple" -> Tuple::class
-            else ->
-                throw IllegalArgumentException("Could not resolve type ${packageName}.${typeName}.")
-        }
+    override fun resolveType(typeName: String?): JavaClass<*> {
+        return kotlinClassToJavaClass(
+            when (typeName) {
+                "Boolean" -> Boolean::class
+                "Integer" -> Int::class
+                "Long" -> Long::class
+                "Decimal" -> BigDecimal::class
+                "String" -> String::class
+                "Date" -> Date::class
+                "DateTime" -> DateTime::class
+                "Time" -> Time::class
+                "Quantity" -> Quantity::class
+                "Ratio" -> Ratio::class
+                "Code" -> Code::class
+                "Concept" -> Concept::class
+                "CodeSystem" -> CodeSystem::class
+                "ValueSet" -> ValueSet::class
+                "Interval" -> Interval::class
+                "Tuple" -> Tuple::class
+                else ->
+                    throw IllegalArgumentException(
+                        "Could not resolve type ${packageName}.${typeName}."
+                    )
+            }
+        )
     }
 
     override fun createInstance(typeName: String?): Any? {

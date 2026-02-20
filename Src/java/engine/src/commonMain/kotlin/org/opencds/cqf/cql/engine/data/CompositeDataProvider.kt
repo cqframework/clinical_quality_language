@@ -4,6 +4,7 @@ import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.util.JavaClass
 
 open class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
@@ -30,19 +31,19 @@ open class CompositeDataProvider(
         return this.modelResolver!!.getContextPath(contextType, targetType)
     }
 
-    override fun resolveType(typeName: String?): Class<*>? {
+    override fun resolveType(typeName: String?): JavaClass<*>? {
         return this.modelResolver!!.resolveType(typeName)
     }
 
-    override fun resolveType(value: Any?): Class<*>? {
+    override fun resolveType(value: Any?): JavaClass<*>? {
         return this.modelResolver!!.resolveType(value)
     }
 
-    override fun `is`(value: Any?, type: Class<*>?): Boolean? {
+    override fun `is`(value: Any?, type: JavaClass<*>?): Boolean? {
         return this.modelResolver!!.`is`(value, type)
     }
 
-    override fun `as`(value: Any?, type: Class<*>?, isStrict: Boolean): Any? {
+    override fun `as`(value: Any?, type: JavaClass<*>?, isStrict: Boolean): Any? {
         return this.modelResolver!!.`as`(value, type, isStrict)
     }
 

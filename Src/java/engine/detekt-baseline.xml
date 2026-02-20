@@ -40,8 +40,8 @@
     <ID>CyclomaticComplexMethod:QueryEvaluator.kt$QueryEvaluator$fun internalEvaluate( elm: Query, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>CyclomaticComplexMethod:SameAsEvaluator.kt$SameAsEvaluator$@JvmStatic fun sameAs(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
-    <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolveKType(typeName: String?): KClass&lt;*></ID>
     <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolvePath(target: Any?, path: String?): Any?</ID>
+    <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolveType(typeName: String?): JavaClass&lt;*></ID>
     <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun setValue(target: Any?, path: String?, value: Any?)</ID>
     <ID>CyclomaticComplexMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
     <ID>CyclomaticComplexMethod:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Any?): Any?</ID>
@@ -71,13 +71,11 @@
     <ID>ForbiddenComment:RetrieveEvaluator.kt$RetrieveEvaluator$// TODO: We probably shouldn't eagerly load this, but we need to track</ID>
     <ID>ForbiddenComment:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$// TODO: Support adding more functions to an existing provider object.</ID>
     <ID>ForbiddenComment:TerminologyAwareRetrieveProvider.kt$TerminologyAwareRetrieveProvider$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
-    <ID>FunctionNaming:BaseModelResolver.kt$BaseModelResolver$fun `as`(value: Any?, type: KClass&lt;*>?, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:BaseModelResolver.kt$BaseModelResolver$fun `is`(value: Any?, type: KClass&lt;*>?): Boolean?</ID>
-    <ID>FunctionNaming:Environment.kt$Environment$fun `as`(operand: Any?, type: KClass&lt;*>, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:Environment.kt$Environment$fun `is`(operand: Any?, type: KClass&lt;*>): Boolean?</ID>
+    <ID>FunctionNaming:Environment.kt$Environment$fun `as`(operand: Any?, type: JavaClass&lt;*>, isStrict: Boolean): Any?</ID>
+    <ID>FunctionNaming:Environment.kt$Environment$fun `is`(operand: Any?, type: JavaClass&lt;*>): Boolean?</ID>
     <ID>FunctionNaming:InEvaluator.kt$InEvaluator$fun `in`(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
-    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `as`(value: Any?, type: Class&lt;*>?, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(value: Any?, type: Class&lt;*>?): Boolean?</ID>
+    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `as`(value: Any?, type: JavaClass&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(value: Any?, type: JavaClass&lt;*>?): Boolean?</ID>
     <ID>FunctionNaming:TerminologyProvider.kt$TerminologyProvider$fun `in`(code: Code, valueSet: ValueSetInfo): Boolean</ID>
     <ID>FunctionOnlyReturningConstant:NullEvaluator.kt$NullEvaluator$@JvmStatic fun internalEvaluate(state: State?): Any?</ID>
     <ID>FunctionParameterNaming:AsEvaluator.kt$AsEvaluator$`as`: As</ID>
@@ -195,7 +193,6 @@
     <ID>MaxLineLength:DateTimeEvaluator.kt$DateTimeEvaluator$/* simple type DateTime The DateTime type represents date and time values with potential uncertainty within CQL. CQL supports date and time values in the range @0001-01-01T00:00:00.0 to @9999-12-31T23:59:59.999 with a 1 millisecond step size. */</ID>
     <ID>MaxLineLength:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$/* difference in _precision_ between(low Date, high Date) Integer difference in _precision_ between(low DateTime, high DateTime) Integer difference in _precision_ between(low Time, high Time) Integer The difference-between operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped. As with all date/time calculations, difference calculations are performed respecting the timezone offset depending on the precision. For Date values, precision must be one of: years, months, weeks, or days. For DateTime values, precision must be one of: years, months, weeks, days, hours, minutes, seconds, or milliseconds. For Time values, precision must be one of: hours, minutes, seconds, or milliseconds. For calculations involving weeks, Sunday is considered to be the first day of the week for the purposes of determining the number of boundaries crossed. When this operator is called with both Date and DateTime inputs, the Date values will be implicitly converted to DateTime as defined by the ToDateTime operator. If either argument is null, the result is null. Additional Complexity: precision elements above the specified precision must also be accounted for. For example: days between DateTime(2011, 5, 1) and DateTime(2012, 5, 6) = 365 + 5 = 370 days NOTE: This is the same operation as DurationBetween, but the precision after the specified precision is truncated to get the number of boundaries crossed instead of whole calendar periods. For Example: difference in days between DateTime(2014, 5, 12, 12, 10) and DateTime(2014, 5, 25, 15, 55) will truncate the DateTimes to: DateTime(2014, 5, 12) and DateTime(2014, 5, 25) respectively */</ID>
     <ID>MaxLineLength:EndsEvaluator.kt$EndsEvaluator$/* ends _precision_ (left Interval&lt;T>, right Interval&lt;T>) Boolean The ends operator returns true if the first interval ends the second. More precisely, if the starting point of the first interval is greater than or equal to the starting point of the second, and the ending point of the first interval is equal to the ending point of the second. This operator uses the semantics described in the start and end operators to determine interval boundaries. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision. If either argument is null, the result is null. */</ID>
-    <ID>MaxLineLength:Environment.kt$Environment$"Invalid path: $path for type: ${kotlinClassToJavaClassName(clazz)} - this is likely an issue with the data model."</ID>
     <ID>MaxLineLength:EqualEvaluator.kt$EqualEvaluator$/* *** NOTES FOR CLINICAL OPERATORS *** =(left Code, right Code) Boolean =(left Concept, right Concept) Boolean The equal (=) operator for Codes and Concepts uses tuple equality semantics. This means that the operator will return true if and only if the values for each element by name are equal. If either argument is null, or contains any null components, the result is null. *** NOTES FOR INTERVAL *** =(left Interval&lt;T>, right Interval&lt;T>) Boolean The equal (=) operator for intervals returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the intervals as determined by the Start and End operators. If either argument is null, the result is null. *** NOTES FOR LIST *** =(left List&lt;T>, right List&lt;T>) Boolean The equal (=) operator for lists returns true if and only if the lists have the same element type, and have the same elements by value, in the same order. If either argument is null, or contains null elements, the result is null. */</ID>
     <ID>MaxLineLength:EquivalentEvaluator.kt$EquivalentEvaluator$/* https://cql.hl7.org/09-b-cqlreference.html#equivalent *** NOTES FOR CLINICAL OPERATORS *** ~(left Code, right Code) Boolean The ~ operator for Code values returns true if the code, system, and version elements are equivalent. The display element is ignored for the purposes of determining Code equivalence. For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept. The display element is ignored for the purposes of determining Concept equivalence. Note that this operator will always return true or false, even if either or both of its arguments are null, or contain null components. Note carefully that this notion of equivalence is not the same as the notion of equivalence used in terminology: "these codes represent the same concept." CQL specifically avoids defining terminological equivalence. The notion of equivalence defined here is used to provide consistent and intuitive semantics when dealing with missing information in membership contexts. *** NOTES FOR INTERVAL *** ~(left Interval&lt;T>, right Interval&lt;T>) Boolean The ~ operator for intervals returns true if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent. *** NOTES FOR LIST *** ~(left List&lt;T>, right List&lt;T>) Boolean The ~ operator for lists returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equivalent. *** NOTES FOR DECIMAL *** For decimals, equivalent means the values are the same with the comparison done on values rounded to the precision of the least precise operand; trailing zeroes after the decimal are ignored in determining precision for equivalent comparison. */</ID>
     <ID>MaxLineLength:ExceptEvaluator.kt$ExceptEvaluator$/* except(left Interval&lt;T>, right Interval&lt;T>) Interval&lt;T> The except operator for intervals returns the set difference of two intervals. More precisely, this operator returns the portion of the first interval that does not overlap with the second. Note that to avoid returning an improper interval, if the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null. except(left List&lt;T>, right List&lt;T>) List&lt;T> The except operator returns the set difference of two lists. More precisely, the operator returns a list with the elements that appear in the first operand that do not appear in the second operand. This operator uses equality semantics to determine whether two elements are the same for the purposes of computing the difference. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results. If either argument is null, the result is null. */</ID>
@@ -321,11 +318,11 @@
     <ID>ReturnCount:AnyInCodeSystemEvaluator.kt$AnyInCodeSystemEvaluator$@JvmStatic fun internalEvaluate( codes: Any?, codeSystemRef: CodeSystemRef?, codeSystem: Any?, state: State?, ): Any?</ID>
     <ID>ReturnCount:AnyInValueSetEvaluator.kt$AnyInValueSetEvaluator$@JvmStatic fun internalEvaluate( codes: Any?, valueSetRef: ValueSetRef?, valueset: Any?, state: State?, ): Any?</ID>
     <ID>ReturnCount:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Any?): Boolean?</ID>
-    <ID>ReturnCount:BaseModelResolver.kt$BaseModelResolver$fun `as`(value: Any?, type: KClass&lt;*>?, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:BaseModelResolver.kt$BaseModelResolver$override fun `as`(value: Any?, type: JavaClass&lt;*>?, isStrict: Boolean): Any?</ID>
     <ID>ReturnCount:BeforeEvaluator.kt$BeforeEvaluator$@JvmStatic fun before(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(value: Any?): Class&lt;*>?</ID>
+    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(typeName: String?): JavaClass&lt;*>?</ID>
+    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(value: Any?): JavaClass&lt;*>?</ID>
     <ID>ReturnCount:CeilingEvaluator.kt$CeilingEvaluator$@JvmStatic fun ceiling(operand: Any?): Any?</ID>
     <ID>ReturnCount:CoalesceEvaluator.kt$CoalesceEvaluator$fun coalesce(operands: List&lt;Any?>): Any?</ID>
     <ID>ReturnCount:CollapseEvaluator.kt$CollapseEvaluator$fun collapse(list: Iterable&lt;Interval?>?, per: Quantity?, state: State?): List&lt;Interval?>?</ID>
@@ -356,10 +353,10 @@
     <ID>ReturnCount:DivideEvaluator.kt$DivideEvaluator$@JvmStatic fun divide(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>ReturnCount:EndsEvaluator.kt$EndsEvaluator$@JvmStatic fun ends(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun `as`(operand: Any?, type: KClass&lt;*>, isStrict: Boolean): Any?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun `is`(operand: Any?, type: KClass&lt;*>): Boolean?</ID>
+    <ID>ReturnCount:Environment.kt$Environment$fun `as`(operand: Any?, type: JavaClass&lt;*>, isStrict: Boolean): Any?</ID>
+    <ID>ReturnCount:Environment.kt$Environment$fun `is`(operand: Any?, type: JavaClass&lt;*>): Boolean?</ID>
     <ID>ReturnCount:Environment.kt$Environment$fun objectEquivalent(left: Any?, right: Any?): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun resolveType(value: Any?): KClass&lt;*>?</ID>
+    <ID>ReturnCount:Environment.kt$Environment$fun resolveType(value: Any?): JavaClass&lt;*>?</ID>
     <ID>ReturnCount:EvaluationVisitor.kt$EvaluationVisitor$override fun visitCase(elm: Case, context: State?): Any?</ID>
     <ID>ReturnCount:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$@JvmStatic fun expand(listOrInterval: Any?, per: Quantity?, state: State?): Any?</ID>
@@ -515,7 +512,6 @@
     <ID>TooGenericExceptionThrown:State.kt$State$throw RuntimeException("Not supported")</ID>
     <ID>TooGenericExceptionThrown:State.kt$State$throw RuntimeException("Stack underflow")</ID>
     <ID>TooGenericExceptionThrown:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$throw RuntimeException( "Error when executing function [" + staticFunctionName + "]: \n" + e.toString() )</ID>
-    <ID>TooManyFunctions:BaseModelResolver.kt$BaseModelResolver</ID>
     <ID>TooManyFunctions:CachingModelResolverDecorator.kt$CachingModelResolverDecorator : ModelResolver</ID>
     <ID>TooManyFunctions:CompositeDataProvider.kt$CompositeDataProvider : DataProvider</ID>
     <ID>TooManyFunctions:CqlEngine.kt$CqlEngine</ID>
@@ -523,6 +519,7 @@
     <ID>TooManyFunctions:DateTime.kt$DateTime : BaseTemporal</ID>
     <ID>TooManyFunctions:Environment.kt$Environment</ID>
     <ID>TooManyFunctions:EvaluationVisitor.kt$EvaluationVisitor : BaseElmLibraryVisitor</ID>
+    <ID>TooManyFunctions:ModelResolver.kt$ModelResolver</ID>
     <ID>TooManyFunctions:Precision.kt$Precision$Companion</ID>
     <ID>TooManyFunctions:State.kt$State</ID>
     <ID>TooManyFunctions:TemporalHelper.kt$TemporalHelper</ID>

@@ -1,12 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import kotlin.reflect.KClass
 import kotlin.reflect.cast
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidConversion
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.util.JavaClass
 
 /*
 convert to<T>(argument Any) T
@@ -45,14 +45,14 @@ object ConvertEvaluator {
         toType: QName?,
         typeSpecifier: TypeSpecifier?,
         state: State?,
-    ): KClass<*> {
+    ): JavaClass<*> {
         if (typeSpecifier != null) {
             return state!!.environment.resolveType(typeSpecifier)!!
         }
         return state!!.environment.resolveType(toType)!!
     }
 
-    private fun convert(operand: Any?, type: KClass<*>): Any? {
+    private fun convert(operand: Any?, type: JavaClass<*>): Any? {
         if (operand == null) {
             return null
         }

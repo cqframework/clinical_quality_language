@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import kotlin.reflect.KClass
 import org.hl7.elm.r1.As
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.util.JavaClass
 
 /*
 as<T>(argument Any) T
@@ -25,7 +25,7 @@ define RuntimeError:
     return cast P as Observation
 */
 object AsEvaluator {
-    private fun resolveType(`as`: As, state: State?): KClass<*>? {
+    private fun resolveType(`as`: As, state: State?): JavaClass<*>? {
         if (`as`.asTypeSpecifier != null) {
             return state!!.environment.resolveType(`as`.asTypeSpecifier)
         }

@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import kotlin.reflect.KClass
 import org.hl7.elm.r1.Is
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.util.JavaClass
 
 /*
 is<T>(argument Any) Boolean
@@ -13,7 +13,7 @@ If the run-time type of the argument is of the type being tested, the result of 
   otherwise, the result is false.
 */
 object IsEvaluator {
-    private fun resolveType(`is`: Is?, state: State?): KClass<*>? {
+    private fun resolveType(`is`: Is?, state: State?): JavaClass<*>? {
         if (`is`!!.isTypeSpecifier != null) {
             return state!!.environment.resolveType(`is`.isTypeSpecifier)
         }

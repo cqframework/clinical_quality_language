@@ -10,7 +10,6 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
-import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClassName
 
 object FunctionRefEvaluator {
     private val logger = KotlinLogging.logger("FunctionRefEvaluator")
@@ -181,7 +180,7 @@ object FunctionRefEvaluator {
             arguments.forEach { a ->
                 argStr.append(if (argStr.isNotEmpty()) ", " else "")
                 val type = state!!.environment.resolveType(a)
-                argStr.append(if (type == null) "null" else kotlinClassToJavaClassName(type))
+                argStr.append(if (type == null) "null" else type.getName())
             }
         }
 
