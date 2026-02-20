@@ -217,7 +217,20 @@ class Date : BaseTemporal {
             Precision.MONTH ->
                 "${date!!.getYear().toString().padStart(4, '0')}-${date!!.getMonthValue().toString().padStart(2, '0')}"
 
-            else -> date.toString()
+            else ->
+                "${
+                date!!.getYear().toString().padStart(4, '0')
+            }-${
+                date!!.getMonthValue().toString().padStart(2, '0')
+            }-${date!!.getDayOfMonth().toString().padStart(2, '0')}"
+
+        // else -> String.format(
+        //                    Locale.US,
+        //                    "%04d-%02d-%02d",
+        //                    date!!.year,
+        //                    date!!.monthValue,
+        //                    date!!.dayOfMonth,
+        //                )
         }
     }
 
