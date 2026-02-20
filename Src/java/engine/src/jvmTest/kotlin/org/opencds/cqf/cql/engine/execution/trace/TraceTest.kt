@@ -64,7 +64,7 @@ class TraceTest : CqlTestBase() {
             Lib1.expr1 = 21
               Lib1.func1(a = 6) = 7
 
-                        """
+            """
                 .trimIndent(),
             trace.toString(),
         )
@@ -84,7 +84,7 @@ class TraceTest : CqlTestBase() {
                 TraceTest.func1(a = 8) = 9
                 TraceTest.expr1 = 2
 
-                        """
+            """
                 .trimIndent(),
             result.trace.toString(),
         )
