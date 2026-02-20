@@ -57,7 +57,7 @@ abstract class TestFhirPath {
         using FHIR version '4.0.1'
         include FHIRHelpers version '4.0.1' called FHIRHelpers
 
-        
+
 
         """
             .trimIndent()
@@ -69,7 +69,7 @@ abstract class TestFhirPath {
         parameter "%%resource" %s
         parameter "%%rootResource" %s context %s
 
-        
+
 
         """
             .trimIndent()
@@ -77,7 +77,7 @@ abstract class TestFhirPath {
     private val definesTemplate =
         """
         define Test: %s
-        
+
         """
             .trimIndent()
 
@@ -269,7 +269,7 @@ abstract class TestFhirPath {
             - Expected: %s
             - Actual: %s
             - CQL:%n%n%s
-            
+
             """
                 .trimIndent()
         return RuntimeException(

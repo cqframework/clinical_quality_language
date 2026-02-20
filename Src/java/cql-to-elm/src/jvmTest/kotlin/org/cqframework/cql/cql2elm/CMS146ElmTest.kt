@@ -85,7 +85,7 @@ class CMS146ElmTest {
 
     @Test
     fun clinicalRequests() {
-        val v = from<MutableList<Retrieve>, Unit>({ elm, acc -> if (elm is Retrieve) acc.add(elm) })
+        val v = from<MutableList<Retrieve>, Unit> { elm, acc -> if (elm is Retrieve) acc.add(elm) }
         val actualCR = mutableListOf<Retrieve>()
         v.visitLibrary(library!!, actualCR)
 
@@ -203,12 +203,12 @@ class CMS146ElmTest {
     @Test
     @Disabled
     fun trackBacks() {
-        val v = from<MutableList<Retrieve>, Unit>({ elm, acc -> if (elm is Retrieve) acc.add(elm) })
+        val v = from<MutableList<Retrieve>, Unit> { elm, acc -> if (elm is Retrieve) acc.add(elm) }
         val retrieves = mutableListOf<Retrieve>()
         v.visitLibrary(library!!, retrieves)
         for (dc in retrieves) {
             var expectedNumbers: IntArray? = IntArray(4)
-            when ((dc!!.codes as ValueSetRef).name) {
+            when ((dc.codes as ValueSetRef).name) {
                 "Acute Pharyngitis" -> expectedNumbers = intArrayOf(19, 6, 19, 37)
                 "Acute Tonsillitis" -> expectedNumbers = intArrayOf(19, 47, 19, 77)
                 "Antibiotic Medications" -> expectedNumbers = intArrayOf(22, 5, 22, 58)

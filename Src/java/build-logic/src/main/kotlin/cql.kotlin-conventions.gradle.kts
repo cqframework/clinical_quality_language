@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
     kotlin("jvm")
@@ -109,5 +110,5 @@ tasks.withType<JavaCompile> {
 }
 
 mavenPublishing {
-    configure(JavaLibrary(JavadocJar.Javadoc(), true))
+    configure(JavaLibrary(JavadocJar.Javadoc(), SourcesJar.Sources()))
 }

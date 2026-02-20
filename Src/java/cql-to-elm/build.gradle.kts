@@ -1,10 +1,15 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
 }
 
 val loadTestResourcesTask = tasks.register<LoadTestResourcesTask>("loadTestResources")
+
+tasks.withType<AbstractKotlinCompile<*>>().configureEach {
+    dependsOn(loadTestResourcesTask)
+}
 
 kotlin {
     js {

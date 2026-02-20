@@ -33,6 +33,12 @@ val inlineModelInfoXmlsTask = tasks.register<FilesToStringsTask>("inlineModelInf
     fileName = "ModelInfoXmls.kt"
 }
 
+// Wire ANTLR generation into the shared suppressGeneratedWarnings task
+tasks.named("suppressGeneratedWarnings") {
+    dependsOn(generateKotlinGrammarSource)
+    mustRunAfter(generateKotlinGrammarSource)
+}
+
 kotlin {
     js {
         outputModuleName = "cql"

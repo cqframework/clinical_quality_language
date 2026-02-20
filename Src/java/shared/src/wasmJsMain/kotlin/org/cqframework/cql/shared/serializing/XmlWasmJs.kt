@@ -1,9 +1,13 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 /*
  * This file contains the implementation of XML parsing and serialization
  * for the WASM/JS target.
  */
 
 package org.cqframework.cql.shared.serializing
+
+import kotlin.js.ExperimentalWasmJsInterop
 
 /**
  * Returns true if the DOM API is available in the current environment for XML parsing and

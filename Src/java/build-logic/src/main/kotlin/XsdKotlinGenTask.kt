@@ -790,9 +790,9 @@ fun FileSpec.Builder.addSerializers(
                 // Write the `xsi:type` attribute if required
                 addStatement(
                     """
-                        if (withXsiType) {
-                          attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
-                        }
+                    if (withXsiType) {
+                      attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
+                    }
                     """
                         .trimIndent(),
                     qNameToXmlString,
@@ -841,14 +841,14 @@ fun FileSpec.Builder.addSerializers(
                                 beginControlFlow("this.%N?.let", "_${elementDecl.name}")
                                 addStatement(
                                     """
-                                        it.forEach {
-                                          children.add(it.%M(
-                                            %T(%S, %S),
-                                            false,
-                                            namespaces,
-                                            defaultNamespaces
-                                          ))
-                                        }
+                                    it.forEach {
+                                      children.add(it.%M(
+                                        %T(%S, %S),
+                                        false,
+                                        namespaces,
+                                        defaultNamespaces
+                                      ))
+                                    }
                                     """
                                         .trimIndent(),
                                     MemberName(
@@ -865,12 +865,12 @@ fun FileSpec.Builder.addSerializers(
                                 beginControlFlow("this.%N?.let", elementDecl.name)
                                 addStatement(
                                     """
-                                        children.add(it.%M(
-                                          %T(%S, %S),
-                                          false,
-                                          namespaces,
-                                          defaultNamespaces
-                                        ))
+                                    children.add(it.%M(
+                                      %T(%S, %S),
+                                      false,
+                                      namespaces,
+                                      defaultNamespaces
+                                    ))
                                     """
                                         .trimIndent(),
                                     MemberName(
@@ -969,13 +969,13 @@ fun FileSpec.Builder.addSerializers(
                                 if (particle.isRepeated) {
                                     addStatement(
                                         """
+                                        if (it is %T) {
+                                          it.forEach {
                                             if (it is %T) {
-                                              it.forEach {
-                                                if (it is %T) {
-                                                  instance.%N.add(%T.%M(it))
-                                                }
-                                              }
+                                              instance.%N.add(%T.%M(it))
                                             }
+                                          }
+                                        }
                                         """
                                             .trimIndent(),
                                         jsonArrayClassName,
@@ -991,9 +991,9 @@ fun FileSpec.Builder.addSerializers(
                                 } else {
                                     addStatement(
                                         """
-                                            if (it is %T) {
-                                              instance.%N = %T.%M(it)
-                                            }
+                                        if (it is %T) {
+                                          instance.%N = %T.%M(it)
+                                        }
                                         """
                                             .trimIndent(),
                                         jsonObjectClassName,
@@ -1181,12 +1181,12 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                 .returns(typeName)
                                                 .addCode(
                                                     """
-                                                        for (c in entries) {
-                                                          if (c.value == %N) {
-                                                            return c
-                                                          }
-                                                        }
-                                                        throw IllegalArgumentException(%N)
+                                                    for (c in entries) {
+                                                      if (c.value == %N) {
+                                                        return c
+                                                      }
+                                                    }
+                                                    throw IllegalArgumentException(%N)
                                                     """
                                                         .trimIndent(),
                                                     valueParameter,
