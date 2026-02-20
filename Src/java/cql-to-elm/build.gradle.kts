@@ -26,9 +26,7 @@ kotlin {
 
         // Add source sets with TestResource implementations
         matching { it.name.endsWith("Test") }.configureEach {
-            kotlin.srcDir(loadTestResourcesTask.flatMap {
-                it.getSrcDirForSourceSet(name)
-            })
+            kotlin.srcDir(layout.buildDirectory.dir("generated/sources/testResources/$name"))
         }
 
         jvmTest {
