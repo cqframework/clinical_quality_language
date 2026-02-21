@@ -11,6 +11,7 @@ import org.opencds.cqf.cql.engine.util.ZoneOffset
 import org.opencds.cqf.cql.engine.util.dateFrom
 import org.opencds.cqf.cql.engine.util.dateTimeFormatterIsoOffsetDateTimeFormat
 import org.opencds.cqf.cql.engine.util.offsetDateTimeParse
+import org.opencds.cqf.cql.engine.util.toPaddedString
 import org.opencds.cqf.cql.engine.util.zoneOffsetOfHoursMinutes
 
 class DateTime : BaseTemporal {
@@ -311,77 +312,77 @@ class DateTime : BaseTemporal {
 
     override fun toString(): String {
         when (precision) {
-            Precision.YEAR -> return dateTime!!.getYear().toString().padStart(4, '0')
+            Precision.YEAR -> return dateTime!!.getYear().toPaddedString(4)
             Precision.MONTH ->
                 return "${
-                    dateTime!!.getYear().toString().padStart(4, '0')
+                    dateTime!!.getYear().toPaddedString(4)
                 }-${
-                    dateTime!!.getMonthValue().toString().padStart(2, '0')
+                    dateTime!!.getMonthValue().toPaddedString(2)
                 }"
             Precision.DAY ->
                 return "${
-                    dateTime!!.getYear().toString().padStart(4, '0')
+                    dateTime!!.getYear().toPaddedString(4)
                 }-${
-                    dateTime!!.getMonthValue().toString().padStart(2, '0')
+                    dateTime!!.getMonthValue().toPaddedString(2)
                 }-${
-                    dateTime!!.getDayOfMonth().toString().padStart(2, '0')
+                    dateTime!!.getDayOfMonth().toPaddedString(2)
                 }"
             Precision.HOUR ->
                 return "${
-                dateTime!!.getYear().toString().padStart(4, '0')
+                dateTime!!.getYear().toPaddedString(4)
             }-${
-                dateTime!!.getMonthValue().toString().padStart(2, '0')
+                dateTime!!.getMonthValue().toPaddedString(2)
             }-${
-                dateTime!!.getDayOfMonth().toString().padStart(2, '0')
+                dateTime!!.getDayOfMonth().toPaddedString(2)
             }T${
-                dateTime!!.getHour().toString().padStart(2, '0')
+                dateTime!!.getHour().toPaddedString(2)
             }"
             Precision.MINUTE ->
                 return "${
-                    dateTime!!.getYear().toString().padStart(4, '0')
+                    dateTime!!.getYear().toPaddedString(4)
                 }-${
-                    dateTime!!.getMonthValue().toString().padStart(2, '0')
+                    dateTime!!.getMonthValue().toPaddedString(2)
                 }-${
-                    dateTime!!.getDayOfMonth().toString().padStart(2, '0')
+                    dateTime!!.getDayOfMonth().toPaddedString(2)
                 }T${
-                    dateTime!!.getHour().toString().padStart(2, '0')
+                    dateTime!!.getHour().toPaddedString(2)
                 }:${
-                    dateTime!!.getMinute().toString().padStart(2, '0')
+                    dateTime!!.getMinute().toPaddedString(2)
                 }"
             Precision.SECOND ->
                 return "${
-                    dateTime!!.getYear().toString().padStart(4, '0')
+                    dateTime!!.getYear().toPaddedString(4)
                 }-${
-                    dateTime!!.getMonthValue().toString().padStart(2, '0')
+                    dateTime!!.getMonthValue().toPaddedString(2)
                 }-${
-                    dateTime!!.getDayOfMonth().toString().padStart(2, '0')
+                    dateTime!!.getDayOfMonth().toPaddedString(2)
                 }T${
-                    dateTime!!.getHour().toString().padStart(2, '0')
+                    dateTime!!.getHour().toPaddedString(2)
                 }:${
-                    dateTime!!.getMinute().toString().padStart(2, '0')
+                    dateTime!!.getMinute().toPaddedString(2)
                 }:${
-                    dateTime!!.getSecond().toString().padStart(2, '0')
+                    dateTime!!.getSecond().toPaddedString(2)
                 }"
             else -> {
                 val offsetSeconds = this.zoneOffset.getTotalSeconds()
                 return "${
-                    dateTime!!.getYear().toString().padStart(4, '0')
+                    dateTime!!.getYear().toPaddedString(4)
                 }-${
-                    dateTime!!.getMonthValue().toString().padStart(2, '0')
+                    dateTime!!.getMonthValue().toPaddedString(2)
                 }-${
-                    dateTime!!.getDayOfMonth().toString().padStart(2, '0')
+                    dateTime!!.getDayOfMonth().toPaddedString(2)
                 }T${
-                    dateTime!!.getHour().toString().padStart(2, '0')
+                    dateTime!!.getHour().toPaddedString(2)
                 }:${
-                    dateTime!!.getMinute().toString().padStart(2, '0')
+                    dateTime!!.getMinute().toPaddedString(2)
                 }:${
-                    dateTime!!.getSecond().toString().padStart(2, '0')
+                    dateTime!!.getSecond().toPaddedString(2)
                 }.${
-                    dateTime!!.get(precision!!.toChronoField()).toString().padStart(3, '0')
+                    dateTime!!.get(precision!!.toChronoField()).toPaddedString(3)
                 }${if (offsetSeconds >= 0) "+" else "-"}${
-                    (abs(offsetSeconds) / 3600).toString().padStart(2, '0')
+                    (abs(offsetSeconds) / 3600).toPaddedString(2)
                 }:${
-                    ((abs(offsetSeconds) % 3600) / 60).toString().padStart(2, '0')
+                    ((abs(offsetSeconds) % 3600) / 60).toPaddedString(2)
                 }"
             }
         }

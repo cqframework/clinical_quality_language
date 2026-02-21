@@ -37,10 +37,6 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
             return null
         }
 
-        if (target is Tuple) {
-            return target.getElement(path)
-        }
-
         return when (target) {
             is Quantity -> {
                 when (path) {
@@ -72,6 +68,23 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
                     else -> null
                 }
             }
+            is CodeSystem -> {
+                when (path) {
+                    "id" -> target.id
+                    "version" -> target.version
+                    "name" -> target.name
+                    else -> null
+                }
+            }
+            is ValueSet -> {
+                when (path) {
+                    "id" -> target.id
+                    "version" -> target.version
+                    "name" -> target.name
+                    "codesystems" -> target.codeSystems
+                    else -> null
+                }
+            }
             is Interval -> {
                 when (path) {
                     "low" -> target.low
@@ -81,6 +94,7 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
                     else -> null
                 }
             }
+            is Tuple -> target.getElement(path)
             else -> null
         }
     }
@@ -115,12 +129,31 @@ open class SystemDataProvider : BaseModelResolver(), DataProvider {
                 }
             }
             is Concept -> {
-
                 when (path) {
                     "display" -> target.display = value as String?
                     "codes" ->
                         target.codes = @Suppress("UNCHECKED_CAST") (value as MutableList<Code?>?)
                     else -> throw IllegalArgumentException("Could not set ${path} on Concept.")
+                }
+            }
+            is CodeSystem -> {
+                when (path) {
+                    "id" -> target.id = value as String?
+                    "version" -> target.version = value as String?
+                    "name" -> target.name = value as String?
+                    else -> throw IllegalArgumentException("Could not set ${path} on CodeSystem.")
+                }
+            }
+            is ValueSet -> {
+                when (path) {
+                    "id" -> target.id = value as String?
+                    "version" -> target.version = value as String?
+                    "name" -> target.name = value as String?
+                    "codesystems" ->
+                        target.setCodeSystems(
+                            @Suppress("UNCHECKED_CAST") (value as MutableList<CodeSystem?>?)
+                        )
+                    else -> throw IllegalArgumentException("Could not set ${path} on ValueSet.")
                 }
             }
             is Interval -> {
