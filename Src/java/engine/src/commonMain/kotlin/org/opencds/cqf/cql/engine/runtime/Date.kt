@@ -12,6 +12,7 @@ import org.opencds.cqf.cql.engine.util.localDateOf
 import org.opencds.cqf.cql.engine.util.localDateParse
 import org.opencds.cqf.cql.engine.util.offsetDateTimeOfInstant
 import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
+import org.opencds.cqf.cql.engine.util.toPaddedString
 
 class Date : BaseTemporal {
     var date: LocalDate? = null
@@ -208,16 +209,15 @@ class Date : BaseTemporal {
 
     override fun toString(): String {
         return when (precision) {
-            Precision.YEAR -> date!!.getYear().toString().padStart(4, '0')
+            Precision.YEAR -> date!!.getYear().toPaddedString(4)
             Precision.MONTH ->
-                "${date!!.getYear().toString().padStart(4, '0')}-${date!!.getMonthValue().toString().padStart(2, '0')}"
-
+                "${date!!.getYear().toPaddedString(4)}-${date!!.getMonthValue().toPaddedString(2)}"
             else ->
                 "${
-                date!!.getYear().toString().padStart(4, '0')
+                date!!.getYear().toPaddedString(4)
             }-${
-                date!!.getMonthValue().toString().padStart(2, '0')
-            }-${date!!.getDayOfMonth().toString().padStart(2, '0')}"
+                date!!.getMonthValue().toPaddedString(2)
+            }-${date!!.getDayOfMonth().toPaddedString(2)}"
         }
     }
 

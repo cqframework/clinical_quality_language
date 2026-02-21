@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 import org.opencds.cqf.cql.engine.exception.InvalidTime
 import org.opencds.cqf.cql.engine.util.LocalTime
 import org.opencds.cqf.cql.engine.util.localTimeParse
+import org.opencds.cqf.cql.engine.util.toPaddedString
 
 class Time : BaseTemporal {
     var time: LocalTime
@@ -198,18 +199,17 @@ class Time : BaseTemporal {
 
     override fun toString(): String {
         return when (precision) {
-            Precision.HOUR -> time.getHour().toString().padStart(2, '0')
+            Precision.HOUR -> time.getHour().toPaddedString(2)
             Precision.MINUTE ->
-                "${time.getHour().toString().padStart(2, '0')}:${time.getMinute().toString().padStart(2, '0')}"
+                "${time.getHour().toPaddedString(2)}:${time.getMinute().toPaddedString(2)}"
             Precision.SECOND ->
-                "${time.getHour().toString().padStart(2, '0')}:${time.getMinute().toString().padStart(2, '0')}:${
-                time.getSecond().toString().padStart(2, '0')
+                "${time.getHour().toPaddedString(2)}:${time.getMinute().toPaddedString(2)}:${
+                time.getSecond().toPaddedString(2)
             }"
-
             else ->
-                "${time.getHour().toString().padStart(2, '0')}:${time.getMinute().toString().padStart(2, '0')}:${
-                time.getSecond().toString().padStart(2, '0')
-                }.${time.get(precision!!.toChronoField()).toString().padStart(3, '0')}"
+                "${time.getHour().toPaddedString(2)}:${time.getMinute().toPaddedString(2)}:${
+                time.getSecond().toPaddedString(2)
+                }.${time.get(precision!!.toChronoField()).toPaddedString(3)}"
         }
     }
 }
