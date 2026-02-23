@@ -1,4 +1,8 @@
 import React, { Fragment } from "react";
+import * as cqlToElmJs from "cql-to-elm-js";
+import * as cqlToElmWasmJs from "cql-to-elm-wasm-js";
+
+export type Nullable<T> = cqlToElmJs.Nullable<T> | cqlToElmWasmJs.Nullable<T>;
 
 export type TElmContentType = "json" | "xml";
 
@@ -105,3 +109,6 @@ export type TOutput =
       elm: string;
     };
 
+export function unsupportedOperation(): never {
+  throw new Error("Unsupported operation");
+}

@@ -19,7 +19,7 @@ class DebugLibraryResultEntry(val libraryName: String?) {
     }
 
     fun logDebugResultEntry(node: Element, result: Any?) {
-        if (node!!.localId != null) {
+        if (node.localId != null) {
             val locator = DebugLocator(DebugLocatorType.NODE_ID, node.localId!!)
             logDebugResult(locator, result)
         }

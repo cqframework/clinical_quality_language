@@ -175,7 +175,7 @@ constructor(
     var windows: ArrayDeque<ArrayDeque<Variable>?>?
         get() {
             val result = ArrayDeque<ArrayDeque<Variable>?>()
-            this.stack.forEach { frame -> result.addFirst(frame!!.variables) }
+            this.stack.forEach { frame -> result.addFirst(frame.variables) }
             return result
         }
         set(windows) {
