@@ -167,7 +167,7 @@ class Profile
             val sorted =
                 this.children.values
                     .flatMap { contextMap -> contextMap!!.values }
-                    .sortedBy { node -> -node!!.time }
+                    .sortedBy { node -> -node.time }
             var xc = x
             for (child in sorted) {
                 xc = child.renderStep(sink, i++, xc, depth + 1, scaleX, scaleY)

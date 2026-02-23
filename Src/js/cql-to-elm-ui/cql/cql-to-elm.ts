@@ -2,7 +2,13 @@
 import * as ucum from "@lhncbc/ucum-lhc";
 import * as cqlToElmJs from "cql-to-elm-js";
 import * as cqlToElmWasmJs from "cql-to-elm-wasm-js";
-import { compilerOptions, TCqlToElmArgs, TOutput } from "@/shared";
+import {
+  compilerOptions,
+  Nullable,
+  TCqlToElmArgs,
+  TOutput,
+  unsupportedOperation,
+} from "@/shared";
 import { supportedModels } from "@/cql/supported-models";
 import { fetchSync, readFile } from "@/cql/utils";
 
@@ -17,24 +23,30 @@ export function createStatefulCompiler(sync: boolean) {
       return result.msg[0];
     }
   };
-  const ucumServiceJs = cqlToElmJs.createUcumService(() => {
-    throw new Error("Unsupported operation");
-  }, validateUnit);
-  const ucumServiceWasmJs = cqlToElmWasmJs.createUcumService(() => {
-    throw new Error("Unsupported operation");
-  }, validateUnit);
+  const ucumServiceJs = cqlToElmJs.createUcumService(
+    unsupportedOperation,
+    validateUnit,
+    unsupportedOperation,
+    unsupportedOperation,
+  );
+  const ucumServiceWasmJs = cqlToElmWasmJs.createUcumService(
+    unsupportedOperation,
+    validateUnit,
+    unsupportedOperation,
+    unsupportedOperation,
+  );
 
   const fetchedModels: {
     id: string;
-    system: string | null;
-    version: string | null;
+    system: Nullable<string>;
+    version: Nullable<string>;
     xml: string | null;
   }[] = [];
 
   const fetchedLibraries: {
     id: string;
-    system: string | null;
-    version: string | null;
+    system: Nullable<string>;
+    version: Nullable<string>;
     cql: string | null;
   }[] = [];
 
@@ -60,8 +72,8 @@ export function createStatefulCompiler(sync: boolean) {
   ) => {
     const getModelXml = (
       id: string,
-      system: string | null,
-      version: string | null,
+      system: Nullable<string>,
+      version: Nullable<string>,
     ) => {
       const fetchedModel = fetchedModels.find(
         (_) => _.id === id && _.system === system && _.version === version,
@@ -140,8 +152,8 @@ export function createStatefulCompiler(sync: boolean) {
 
     const getLibraryCql = (
       id: string,
-      system: string | null,
-      version: string | null,
+      system: Nullable<string>,
+      version: Nullable<string>,
     ) => {
       const fetchedLibrary = fetchedLibraries.find(
         (_) => _.id === id && _.system === system && _.version === version,
@@ -264,7 +276,7 @@ export function createStatefulCompiler(sync: boolean) {
     };
 
     const modelInfoProviderJs = cqlToElmJs.createModelInfoProvider(
-      (id: string, system: string | null, version: string | null) => {
+      (id, system, version) => {
         const xml = getModelXml(id, system, version);
         if (xml === null) {
           return null;
@@ -273,7 +285,7 @@ export function createStatefulCompiler(sync: boolean) {
       },
     );
     const modelInfoProviderWasmJs = cqlToElmWasmJs.createModelInfoProvider(
-      (id: string, system: string | null, version: string | null) => {
+      (id, system, version) => {
         const xml = getModelXml(id, system, version);
         if (xml === null) {
           return null;
@@ -283,7 +295,7 @@ export function createStatefulCompiler(sync: boolean) {
     );
 
     const librarySourceProviderJs = cqlToElmJs.createLibrarySourceProvider(
-      (id: string, system: string | null, version: string | null) => {
+      (id, system, version) => {
         const cql = getLibraryCql(id, system, version);
         if (cql === null) {
           return null;
@@ -292,25 +304,19 @@ export function createStatefulCompiler(sync: boolean) {
       },
     );
     const librarySourceProviderWasmJs =
-      cqlToElmWasmJs.createLibrarySourceProvider(
-        (id: string, system: string | null, version: string | null) => {
-          const cql = getLibraryCql(id, system, version);
-          if (cql === null) {
-            return null;
-          }
-          return cqlToElmWasmJs.stringAsSource(cql);
-        },
-      );
+      cqlToElmWasmJs.createLibrarySourceProvider((id, system, version) => {
+        const cql = getLibraryCql(id, system, version);
+        if (cql === null) {
+          return null;
+        }
+        return cqlToElmWasmJs.stringAsSource(cql);
+      });
 
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.clearModelInfoProviders();
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.registerModelInfoProvider(
       modelInfoProviderJs,
     );
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.clearProviders();
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.registerProvider(
       librarySourceProviderJs,
     );
@@ -334,20 +340,22 @@ export function createStatefulCompiler(sync: boolean) {
 
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
-        libraryManagerJs.cqlCompilerOptions.options.asJsSetView().add(
-          // @ts-expect-error TypeScript error
-          cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
-        );
+        libraryManagerJs.cqlCompilerOptions.options
+          .asJsSetView()
+          .add(
+            cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
+          );
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerAddCompilerOption(
           libraryManagerWasmJs,
           compilerOption.value,
         );
       } else {
-        libraryManagerJs.cqlCompilerOptions.options.asJsSetView().delete(
-          // @ts-expect-error TypeScript error
-          cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
-        );
+        libraryManagerJs.cqlCompilerOptions.options
+          .asJsSetView()
+          .delete(
+            cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
+          );
         // @ts-expect-error TypeScript error
         cqlToElmWasmJs.libraryManagerRemoveCompilerOption(
           libraryManagerWasmJs,
@@ -356,7 +364,7 @@ export function createStatefulCompiler(sync: boolean) {
       }
     }
 
-    libraryManagerJs.cqlCompilerOptions.signatureLevel = // @ts-expect-error TypeScript error
+    libraryManagerJs.cqlCompilerOptions.signatureLevel =
       cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
     // @ts-expect-error TypeScript error
     cqlToElmWasmJs.libraryManagerSetSignatureLevel(
