@@ -1,5 +1,9 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
@@ -15,6 +19,9 @@ import org.opencds.cqf.cql.engine.util.ZonedDateTime
  * @property debugMap Captures debug information during evaluation.
  * @property evaluationDateTime Represents the evaluation date and time.
  */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class EvaluationParams(
     val expressions: Map<VersionedIdentifier, List<EvaluationExpressionRef>?>,
     val contextParameter: Pair<String, Any?>? = null,
@@ -42,11 +49,13 @@ class EvaluationParams(
         }
 
         /** Shorthand for adding a library by name. */
+        @JsName("libraryByName")
         fun library(libraryName: String, libraryParams: LibraryParams) {
             library(VersionedIdentifier().apply { id = libraryName }, libraryParams)
         }
 
         /** Adds a library to the evaluation. */
+        @JsExport.Ignore
         fun library(id: VersionedIdentifier, block: (LibraryParams.Builder.() -> Unit)? = null) {
             val builder = LibraryParams.Builder()
             if (block != null) {
@@ -56,6 +65,7 @@ class EvaluationParams(
         }
 
         /** Shorthand for adding a library by name. */
+        @JsExport.Ignore
         fun library(libraryName: String, block: (LibraryParams.Builder.() -> Unit)? = null) {
             library(VersionedIdentifier().apply { id = libraryName }, block)
         }
@@ -90,6 +100,7 @@ class EvaluationParams(
             }
 
             /** Adds expressions by name. */
+            @JsExport.Ignore
             fun expressions(names: Iterable<String>) {
                 if (expressions == null) {
                     expressions = mutableListOf()
@@ -100,6 +111,7 @@ class EvaluationParams(
             }
 
             /** Adds expressions by name. */
+            @JsName("expressionsByName")
             fun expressions(vararg names: String) {
                 if (expressions == null) {
                     expressions = mutableListOf()

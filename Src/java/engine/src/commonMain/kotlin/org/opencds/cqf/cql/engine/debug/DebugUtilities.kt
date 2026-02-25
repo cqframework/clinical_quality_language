@@ -10,12 +10,9 @@ object DebugUtilities {
     fun logDebugResult(node: Element, currentLibrary: Library?, result: Any?) {
         val debugLocation = toDebugLocation(node)
         val debugString = toDebugString(result)
-        logger.debug(
-            "{}.{}: {}",
-            if (currentLibrary != null) currentLibrary.identifier!!.id else "unknown",
-            debugLocation,
-            debugString,
-        )
+        logger.debug {
+            "${if (currentLibrary != null) currentLibrary.identifier!!.id else "unknown"}.$debugLocation: $debugString"
+        }
     }
 
     fun toDebugLocation(node: Element): String {

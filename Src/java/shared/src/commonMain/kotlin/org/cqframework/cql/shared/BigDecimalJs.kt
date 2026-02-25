@@ -6,7 +6,7 @@ import com.ionspin.kotlin.bignum.decimal.RoundingMode as KtRoundingMode
 
 /** A minimal pure-Kotlin implementation of BigDecimal for non-Java environments. */
 @Suppress("TooManyFunctions")
-class BigDecimalJs(private val value: KtBigDecimal) {
+data class BigDecimalJs(private val value: KtBigDecimal) {
     constructor(value: Int) : this(KtBigDecimal.fromInt(value))
 
     constructor(value: Long) : this(KtBigDecimal.fromLong(value))
@@ -104,6 +104,10 @@ class BigDecimalJs(private val value: KtBigDecimal) {
 
     fun toLong(): Long {
         return this.value.longValue()
+    }
+
+    override fun toString(): String {
+        return this.value.toString()
     }
 }
 

@@ -1,4 +1,4 @@
-import { inspectCqlAst } from "cql-to-elm-js/kotlin/cql.mjs";
+import { inspectCqlAst } from "cql-js/kotlin/cql.mjs";
 
 export function cqlToAst(cql: string) {
   return JSON.parse(inspectCqlAst(cql));

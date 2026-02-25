@@ -55,9 +55,9 @@ object TypeChecker {
             return additionalCheck(this)
         }
         if (logMismatch) {
-            logger.warn(
+            logger.warn {
                 "Type mismatch: expected ${T::class.simpleName}, got ${this::class.simpleName}"
-            )
+            }
         }
         return TypeCheckResult.MISMATCH
     }
@@ -175,9 +175,9 @@ object TypeChecker {
                     for (elementDefinition in expectedTypeSpecifier.element) {
                         if (!actualTuple.elements.containsKey(elementDefinition.name)) {
                             if (logMismatch) {
-                                logger.warn(
+                                logger.warn {
                                     "Type mismatch: Tuple is missing expected element: ${elementDefinition.name}"
-                                )
+                                }
                             }
                             return@tupleCheck TypeCheckResult.MISMATCH
                         }
@@ -208,9 +208,9 @@ object TypeChecker {
                     return TypeCheckResult.MATCH
                 }
                 if (logMismatch) {
-                    logger.warn(
+                    logger.warn {
                         "Type mismatch: Value does not match any type in choice type specifier."
-                    )
+                    }
                 }
                 return TypeCheckResult.MISMATCH
             }

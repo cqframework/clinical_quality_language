@@ -1,7 +1,10 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.LibraryManager
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.*
 import org.opencds.cqf.cql.engine.data.DataProvider
@@ -20,6 +23,9 @@ import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClass
  * The Environment class represents the current CQL execution environment. Meaning, things that are
  * set up outside of the CQL engine
  */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class Environment
 @JvmOverloads
 constructor(
@@ -185,6 +191,7 @@ constructor(
         dataProvider!!.packageNames.forEach { pn -> packageMap[pn] = dataProvider }
     }
 
+    @JsName("resolveDataProviderByQName")
     fun resolveDataProvider(dataType: QName): DataProvider {
         var dataType = dataType
         dataType = fixupQName(dataType)
@@ -209,6 +216,7 @@ constructor(
         return dataProvider
     }
 
+    @JsName("resolveTypeByQName")
     fun resolveType(typeName: QName?): JavaClass<*>? {
         var typeName = typeName
         typeName = fixupQName(typeName!!)
@@ -216,6 +224,7 @@ constructor(
         return dataProvider.resolveType(typeName.getLocalPart())
     }
 
+    @JsName("resolveTypeByTypeSpecifier")
     fun resolveType(typeSpecifier: TypeSpecifier?): JavaClass<*>? {
         return when (typeSpecifier) {
             is NamedTypeSpecifier -> resolveType(typeSpecifier.name)

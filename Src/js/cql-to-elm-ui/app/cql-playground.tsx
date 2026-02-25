@@ -18,6 +18,8 @@ import { CqlToAstResult, CqlToAstSettings } from "@/ui/cql-to-ast";
 import { CqlToElmResult, CqlToElmSettings } from "@/ui/cql-to-elm";
 import { Caption } from "@/ui/caption";
 import { CqlEditor } from "@/ui/cql-editor";
+import { CqlEngineResult, CqlEngineSettings } from "@/ui/cql-engine";
+import { compilerOptions, signatureLevels, TLibrarySource } from "@/shared";
 
 const tabs = [
   {
@@ -37,6 +39,12 @@ const tabs = [
     label: "ELM",
     result: CqlToElmResult,
     settings: CqlToElmSettings,
+  },
+  {
+    key: "cql-engine",
+    label: "Expression results",
+    result: CqlEngineResult,
+    settings: CqlEngineSettings,
   },
 ];
 
@@ -230,124 +238,304 @@ export function CqlPlayground() {
           <div
             style={{
               display: "grid",
-              gap: 10,
-              margin: "0 0 30px 0",
-            }}
-          >
-            <div>
-              <button
-                type={"button"}
-                style={{
-                  ...buttonStyle,
-                  flex: "0 0 auto",
-                  padding: "4px 12px",
-                  alignSelf: "center",
-                  maxWidth: "100%",
-                }}
-                onClick={async () => {
-                  const dirHandle: FileSystemDirectoryHandle =
-                    await // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (window as any).showDirectoryPicker({
-                      mode: "read",
-                    });
-                  const dirScan: FileSystemHandle[] = await Array.fromAsync(
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (dirHandle as any).values(),
-                  );
-                  const files = dirScan
-                    .filter(
-                      (handle): handle is FileSystemFileHandle =>
-                        handle.kind === "file",
-                    )
-                    .map((handle) => ({
-                      handle: handle,
-                    }));
-
-                  setState((prevState) => ({
-                    ...prevState,
-                    common: {
-                      ...prevState.common,
-                      mountedDir: {
-                        handle: dirHandle,
-                        files: files,
-                      },
-                    },
-                  }));
-                }}
-              >
-                {state.common.mountedDir ? (
-                  <Fragment>
-                    <b>{state.common.mountedDir.handle.name}</b> folder selected
-                  </Fragment>
-                ) : (
-                  "Mount directory..."
-                )}
-              </button>
-              <Caption>
-                Mount a local directory to load CQL files from your computer.
-              </Caption>
-            </div>
-
-            <div>
-              <select
-                disabled={!state.common.mountedDir}
-                style={{
-                  flex: "0 0 auto",
-                  alignSelf: "center",
-                  width: "100%",
-                  padding: "4px 12px 4px 8px",
-                  border: "var(--border)",
-                  borderRadius: "var(--border-radius)",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  fontFamily: "inherit",
-                }}
-                defaultValue={""}
-                onChange={async (event) => {
-                  const fileName = event.target.value;
-
-                  if (state.common.mountedDir) {
-                    const content = await readFile(
-                      state.common.mountedDir.files.find(
-                        (_) => _.handle.name === fileName,
-                      )!.handle,
-                    );
-                    if (content !== null) {
-                      setState((prevState) => ({
-                        ...prevState,
-                        common: {
-                          ...prevState.common,
-                          cql: content,
-                        },
-                      }));
-                    }
-                  }
-                }}
-              >
-                <option value={""}>Import CQL from file...</option>
-                {state.common.mountedDir &&
-                  state.common.mountedDir.files.map((file, fileIndex) => (
-                    <option key={fileIndex} value={file.handle.name}>
-                      {file.handle.name}
-                    </option>
-                  ))}
-              </select>
-              <Caption>
-                Editing CQL content does not modify the file on disk.
-              </Caption>
-            </div>
-          </div>
-
-          <Heading>Settings</Heading>
-
-          <div
-            style={{
-              display: "grid",
               gap: 25,
               margin: "0 0 30px 0",
             }}
           >
+            <div
+              style={{
+                display: "grid",
+                gap: 10,
+              }}
+            >
+              <div>
+                <button
+                  type={"button"}
+                  style={{
+                    ...buttonStyle,
+                    flex: "0 0 auto",
+                    padding: "4px 12px",
+                    alignSelf: "center",
+                    maxWidth: "100%",
+                  }}
+                  onClick={async () => {
+                    const dirHandle: FileSystemDirectoryHandle =
+                      await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (window as any).showDirectoryPicker({
+                        mode: "read",
+                      });
+                    const dirScan: FileSystemHandle[] = await Array.fromAsync(
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (dirHandle as any).values(),
+                    );
+                    const files = dirScan
+                      .filter(
+                        (handle): handle is FileSystemFileHandle =>
+                          handle.kind === "file",
+                      )
+                      .map((handle) => ({
+                        handle: handle,
+                      }));
+
+                    setState((prevState) => ({
+                      ...prevState,
+                      common: {
+                        ...prevState.common,
+                        mountedDir: {
+                          handle: dirHandle,
+                          files: files,
+                        },
+                      },
+                    }));
+                  }}
+                >
+                  {state.common.mountedDir ? (
+                    <Fragment>
+                      <b>{state.common.mountedDir.handle.name}</b> folder
+                      selected
+                    </Fragment>
+                  ) : (
+                    "Mount directory..."
+                  )}
+                </button>
+                <Caption>
+                  Mount a local directory to load CQL files from your computer.
+                </Caption>
+              </div>
+
+              <div>
+                <select
+                  disabled={!state.common.mountedDir}
+                  style={{
+                    flex: "0 0 auto",
+                    alignSelf: "center",
+                    width: "100%",
+                    padding: "4px 12px 4px 8px",
+                    border: "var(--border)",
+                    borderRadius: "var(--border-radius)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontFamily: "inherit",
+                  }}
+                  defaultValue={""}
+                  onChange={async (event) => {
+                    const fileName = event.target.value;
+
+                    if (state.common.mountedDir) {
+                      const content = await readFile(
+                        state.common.mountedDir.files.find(
+                          (_) => _.handle.name === fileName,
+                        )!.handle,
+                      );
+                      if (content !== null) {
+                        setState((prevState) => ({
+                          ...prevState,
+                          common: {
+                            ...prevState.common,
+                            cql: content,
+                          },
+                        }));
+                      }
+                    }
+                  }}
+                >
+                  <option value={""}>Import CQL from file...</option>
+                  {state.common.mountedDir &&
+                    state.common.mountedDir.files.map((file, fileIndex) => (
+                      <option key={fileIndex} value={file.handle.name}>
+                        {file.handle.name}
+                      </option>
+                    ))}
+                </select>
+                <Caption>
+                  Changing CQL content in the playground editor does not modify
+                  the file on disk.
+                </Caption>
+              </div>
+            </div>
+
+            {(state.common.selectedTab === "cql-to-elm" ||
+              state.common.selectedTab === "cql-engine") && (
+              <Fragment>
+                <div>
+                  <Label>Library sources</Label>
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: 10,
+                    }}
+                  >
+                    {[
+                      {
+                        value: "local" as TLibrarySource,
+                        label: "Mounted directory",
+                        content: (
+                          <Fragment>
+                            <Caption>
+                              Included libraries are loaded from files in the
+                              local directory (library ID + .cql).
+                            </Caption>
+                          </Fragment>
+                        ),
+                      },
+                      {
+                        value: "remote" as TLibrarySource,
+                        label: "Remote URL",
+                        content: (
+                          <Fragment>
+                            <input
+                              placeholder={
+                                "E.g. https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/"
+                              }
+                              value={state.common.baseUrl}
+                              onChange={(event) => {
+                                const nextBaseUrl = event.target.value;
+                                setState((prevState) => ({
+                                  ...prevState,
+                                  common: {
+                                    ...prevState.common,
+                                    baseUrl: nextBaseUrl,
+                                  },
+                                }));
+                              }}
+                              style={{
+                                width: "100%",
+                                padding: "6px 12px",
+                                border: "var(--border)",
+                                borderRadius: "var(--border-radius)",
+                                fontFamily: "inherit",
+                              }}
+                            />
+                            <Caption>
+                              Included libraries are fetched from this base URL
+                              + library ID + .cql.
+                            </Caption>
+                          </Fragment>
+                        ),
+                      },
+                    ].map((librarySourceOption, librarySourceOptionIndex) => (
+                      <div key={librarySourceOptionIndex}>
+                        <label
+                          style={{
+                            display: "flex",
+                            gap: 5,
+                            margin: "0 0 5px 0",
+                          }}
+                        >
+                          <input
+                            type={"radio"}
+                            style={{
+                              margin: 0,
+                            }}
+                            checked={
+                              state.common.librarySource ===
+                              librarySourceOption.value
+                            }
+                            onChange={() => {
+                              setState((prevState) => ({
+                                ...prevState,
+                                common: {
+                                  ...prevState.common,
+                                  librarySource: librarySourceOption.value,
+                                },
+                              }));
+                            }}
+                          />
+                          {librarySourceOption.label}
+                        </label>
+                        {librarySourceOption.content}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Compiler options</Label>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: 3,
+                      margin: "0 0 12px 0",
+                    }}
+                  >
+                    {compilerOptions.map(
+                      (compilerOption, compilerOptionIndex) => (
+                        <label
+                          key={compilerOptionIndex}
+                          style={{ display: "flex", gap: 5 }}
+                        >
+                          <input
+                            type={"checkbox"}
+                            style={{
+                              margin: 0,
+                            }}
+                            checked={state.common.compilerOptions.includes(
+                              compilerOption.value,
+                            )}
+                            onChange={(event) => {
+                              const nextChecked = event.target.checked;
+                              setState((prevState) => ({
+                                ...prevState,
+                                common: {
+                                  ...prevState.common,
+                                  compilerOptions: nextChecked
+                                    ? [
+                                        ...prevState.common.compilerOptions,
+                                        compilerOption.value,
+                                      ]
+                                    : prevState.common.compilerOptions.filter(
+                                        (_) => _ !== compilerOption.value,
+                                      ),
+                                },
+                              }));
+                            }}
+                          />
+                          <div>{compilerOption.label}</div>
+                        </label>
+                      ),
+                    )}
+                  </div>
+
+                  <div>
+                    <div style={{ margin: "0 0 5px 0" }}>Signature level</div>
+                    <select
+                      value={state.common.signatureLevel}
+                      onChange={(event) => {
+                        const nextSignatureLevel = event.target.value;
+                        setState((prevState) => ({
+                          ...prevState,
+                          common: {
+                            ...prevState.common,
+                            signatureLevel: nextSignatureLevel,
+                          },
+                        }));
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "6px 12px 6px 8px",
+                        border: "var(--border)",
+                        borderRadius: "var(--border-radius)",
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      {signatureLevels.map(
+                        (signatureLevel, signatureLevelIndex) => (
+                          <option
+                            key={signatureLevelIndex}
+                            value={signatureLevel}
+                          >
+                            {signatureLevel}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                </div>
+              </Fragment>
+            )}
+
             <selectedTab.settings state={state} setState={setState} />
 
             <div>
@@ -372,7 +560,8 @@ export function CqlPlayground() {
             </div>
           </div>
 
-          {state.common.selectedTab === "cql-to-elm" && (
+          {(state.common.selectedTab === "cql-to-elm" ||
+            state.common.selectedTab === "cql-engine") && (
             <Fragment>
               <Heading>Supported models</Heading>
 

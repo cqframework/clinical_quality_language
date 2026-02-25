@@ -1,5 +1,15 @@
 package org.opencds.cqf.cql.engine.util
 
+import kotlin.time.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.UtcOffset
+import kotlinx.datetime.asTimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.number
+import kotlinx.datetime.offsetAt
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+
 class DateJs {
     fun after(that: Date): Boolean {
         TODO()
@@ -38,6 +48,18 @@ enum class ChronoUnitJs : TemporalUnitJs {
 
     fun between(start: Temporal, end: Temporal): Long {
         TODO()
+    }
+
+    fun toDateTimeUnit(): DateTimeUnit {
+        return when (this) {
+            YEARS -> DateTimeUnit.YEAR
+            MONTHS -> DateTimeUnit.MONTH
+            DAYS -> DateTimeUnit.DAY
+            HOURS -> DateTimeUnit.HOUR
+            MINUTES -> DateTimeUnit.MINUTE
+            SECONDS -> DateTimeUnit.SECOND
+            MILLIS -> DateTimeUnit.MILLISECOND
+        }
     }
 }
 
@@ -109,7 +131,7 @@ fun localDateParseJs(text: String): LocalDate {
     TODO()
 }
 
-class ZoneOffsetJs {
+class ZoneOffsetJs(private val offset: UtcOffset) {
     fun getTotalSeconds(): Int {
         TODO()
     }
@@ -155,49 +177,73 @@ fun calendarGetInstanceJs(): Calendar {
     TODO()
 }
 
-class OffsetDateTimeJs : TemporalJs {
+class OffsetDateTimeJs(
+    private val instant: kotlinx.datetime.Instant,
+    private val offset: UtcOffset,
+) : TemporalJs {
+    val localDateTime: kotlinx.datetime.LocalDateTime
+        get() = instant.toLocalDateTime(offset.asTimeZone())
+
     fun getYear(): Int {
-        TODO()
+        return localDateTime.year
     }
 
     fun getMonthValue(): Int {
-        TODO()
+        return localDateTime.month.number
     }
 
     fun getDayOfMonth(): Int {
-        TODO()
+        return localDateTime.dayOfMonth
     }
 
     fun getHour(): Int {
-        TODO()
+        return localDateTime.hour
     }
 
     fun getMinute(): Int {
-        TODO()
+        return localDateTime.minute
     }
 
     fun getSecond(): Int {
-        TODO()
+        return localDateTime.second
     }
 
-    fun getOffset(): ZoneOffset {
-        TODO()
+    fun getOffset(): ZoneOffsetJs {
+        return ZoneOffsetJs(offset)
     }
 
-    fun get(field: TemporalField): Int {
-        TODO()
+    fun get(field: TemporalFieldJs): Int {
+        require(field is ChronoFieldJs) { "Unsupported field type: ${field::class}" }
+        return when (field) {
+            ChronoFieldJs.YEAR -> localDateTime.year
+            ChronoFieldJs.MONTH_OF_YEAR -> localDateTime.month.number
+            ChronoFieldJs.DAY_OF_MONTH -> localDateTime.dayOfMonth
+            ChronoFieldJs.HOUR_OF_DAY -> localDateTime.hour
+            ChronoFieldJs.MINUTE_OF_HOUR -> localDateTime.minute
+            ChronoFieldJs.SECOND_OF_MINUTE -> localDateTime.second
+            ChronoFieldJs.MILLI_OF_SECOND -> localDateTime.nanosecond / 1_000_000
+            ChronoFieldJs.OFFSET_SECONDS -> offset.totalSeconds
+        }
     }
 
-    fun plus(amountToAdd: Long, unit: TemporalUnit): OffsetDateTime {
-        TODO()
+    fun plus(amountToAdd: Long, unit: TemporalUnitJs): OffsetDateTimeJs {
+        require(unit is ChronoUnitJs) { "Unsupported unit type: ${unit::class}" }
+        return OffsetDateTimeJs(
+            instant.plus(amountToAdd, DateTimeUnit.YEAR, offset.asTimeZone()),
+            offset,
+        )
     }
 
-    fun plusYears(years: Long): OffsetDateTime {
-        TODO()
+    fun plusYears(years: Long): OffsetDateTimeJs {
+        return plus(years, ChronoUnitJs.YEARS)
     }
 
-    fun minus(amountToSubtract: Long, unit: TemporalUnit): OffsetDateTime {
-        TODO()
+    fun minus(amountToSubtract: Long, unit: TemporalUnitJs): OffsetDateTimeJs {
+        require(unit is ChronoUnitJs) { "Unsupported unit type: ${unit::class}" }
+        return OffsetDateTimeJs(
+            instant.minus(amountToSubtract, unit.toDateTimeUnit(), offset.asTimeZone()),
+            offset,
+        )
     }
 
     fun with(field: TemporalField, newValue: Long): OffsetDateTime {
@@ -220,8 +266,8 @@ class OffsetDateTimeJs : TemporalJs {
         TODO()
     }
 
-    fun toInstant(): Instant {
-        TODO()
+    fun toInstant(): InstantJs {
+        return InstantJs(instant)
     }
 
     fun range(field: TemporalField): ValueRange {
@@ -239,13 +285,13 @@ class OffsetDateTimeJs : TemporalJs {
 
 class LocalDateTimeJs : TemporalJs
 
-class InstantJs
+class InstantJs(private val instant: kotlinx.datetime.Instant)
 
 fun offsetDateTimeParseJs(text: String): OffsetDateTime {
     TODO()
 }
 
-fun offsetDateTimeOfInstantJs(instant: Instant, offset: ZoneId): OffsetDateTime {
+fun offsetDateTimeOfInstantJs(instant: Instant, offset: ZoneId): OffsetDateTimeJs {
     TODO()
 }
 
@@ -253,28 +299,31 @@ fun dateTimeFormatterIsoOffsetDateTimeFormatJs(dateTime: OffsetDateTime): String
     TODO()
 }
 
-public abstract class ZoneIdJs
+public abstract class ZoneIdJs(private val zone: kotlinx.datetime.TimeZone)
 
-class ZonedDateTimeJs {
-    fun getZone(): ZoneId {
-        TODO()
+class ZonedDateTimeJs(
+    private val instant: kotlinx.datetime.Instant,
+    private val zone: kotlinx.datetime.TimeZone,
+) {
+    fun getZone(): ZoneIdJs {
+        return object : ZoneIdJs(zone) {}
     }
 
-    fun getOffset(): ZoneOffset {
-        TODO()
+    fun getOffset(): ZoneOffsetJs {
+        return ZoneOffsetJs(zone.offsetAt(instant))
     }
 
-    fun toInstant(): Instant {
-        TODO()
+    fun toInstant(): InstantJs {
+        return InstantJs(instant)
     }
 
-    fun toOffsetDateTime(): OffsetDateTime {
-        TODO()
+    fun toOffsetDateTime(): OffsetDateTimeJs {
+        return OffsetDateTimeJs(instant, zone.offsetAt(instant))
     }
 }
 
-fun zonedDateTimeNowJs(): ZonedDateTime {
-    TODO()
+fun zonedDateTimeNowJs(): ZonedDateTimeJs {
+    return ZonedDateTimeJs(Clock.System.now(), kotlinx.datetime.TimeZone.currentSystemDefault())
 }
 
 class LocalTimeJs : TemporalJs {

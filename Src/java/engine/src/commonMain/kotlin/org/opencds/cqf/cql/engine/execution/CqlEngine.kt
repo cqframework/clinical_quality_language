@@ -1,9 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.CompiledLibraryResult
 import org.cqframework.cql.cql2elm.CqlCompilerException
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.Element
@@ -26,6 +29,8 @@ import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a
  * potential maintenance issue.
  */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class CqlEngine
 @JvmOverloads
 constructor(val environment: Environment, engineOptions: MutableSet<Options>? = mutableSetOf()) {
@@ -67,11 +72,12 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         EnableTypeChecking,
     }
 
-    val state: State
+    @JsExport.Ignore val state: State
     private val engineOptions: MutableSet<Options> =
         engineOptions ?: mutableSetOf(Options.EnableExpressionCaching)
 
     /** @return the internal engine visitor */
+    @JsExport.Ignore
     @get:Deprecated(
         """this is a temporary arrangement until we further refine the relationship
       between the engine, the environment, and the state
@@ -90,10 +96,12 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         }
     }
 
+    @JsExport.Ignore
     val cache: Cache
         get() = this.state.cache
 
     /** Evaluates expressions and/or functions from multiple libraries. */
+    @JsExport.Ignore
     fun evaluate(block: EvaluationParams.Builder.() -> Unit): EvaluationResults {
         return evaluate(EvaluationParams.Builder().apply(block).build())
     }
@@ -146,18 +154,16 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
                 evaluationParams.expressions[libraryIdentifier] ?: this.getExpressions(library!!)
 
             val joinedExpressions = expressions.joinToString(", ", transform = { it.name })
-            log.debug(
-                "Evaluating library: {} with expressions/functions: [{}]",
-                libraryIdentifier.id,
-                joinedExpressions,
-            )
+            log.debug {
+                "Evaluating library: ${libraryIdentifier.id} with expressions/functions: [$joinedExpressions]"
+            }
             try {
                 val evaluationResult = this.evaluateExpressions(expressions)
                 resultBuilder.addResult(libraryIdentifier, evaluationResult)
             } catch (exception: RuntimeException) {
-                val error =
+                log.error {
                     "Exception for Library: ${libraryIdentifier.id}, Message: ${exception.message}"
-                log.error(error)
+                }
 
                 resultBuilder.addException(libraryIdentifier, exception)
             }
@@ -424,6 +430,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
             ?: emptyList()
     }
 
+    @JsExport.Ignore
     fun processException(e: CqlException, element: Element) {
         if (e.sourceLocator == null) {
             e.sourceLocator = fromNode(element, this.state.getCurrentLibrary())
@@ -436,6 +443,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         throw e
     }
 
+    @JsExport.Ignore
     fun processException(e: Exception?, element: Element, message: String?) {
         val ce = CqlException(message, e, fromNode(element, this.state.getCurrentLibrary()))
         val action = state.shouldDebug(ce)
@@ -453,6 +461,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @param libraryIdentifier the versioned identifier of the library to check
      * @return `true` if the library can be resolved, `false` otherwise
      */
+    @JsExport.Ignore
     fun hasLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
         return try {
             environment.resolveLibrary(libraryIdentifier) != null
@@ -469,6 +478,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @return `true` if the library contains the named parameter, `false` otherwise
      * @throws CqlException if the library cannot be resolved
      */
+    @JsExport.Ignore
     fun hasParameter(libraryIdentifier: VersionedIdentifier, parameterName: String): Boolean {
         val library =
             environment.resolveLibrary(libraryIdentifier)
@@ -498,6 +508,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
      * @throws CqlException if the library or parameter cannot be resolved, or if the default
      *   expression evaluation fails
      */
+    @JsExport.Ignore
     @JvmOverloads
     fun resolveParameterDefault(
         libraryIdentifier: VersionedIdentifier,
