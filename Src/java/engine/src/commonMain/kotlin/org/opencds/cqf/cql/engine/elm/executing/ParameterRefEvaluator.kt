@@ -28,11 +28,9 @@ object ParameterRefEvaluator {
             }
 
             if (state.parameters.containsKey(parameterDef.name)) {
-                log.debug(
-                    "Using global value for parameter \"{}\" while evaluating in library \"{}\"",
-                    parameterDef.name,
-                    state.getCurrentLibrary()!!.identifier!!.id,
-                )
+                log.debug {
+                    "Using global value for parameter \"${parameterDef.name}\" while evaluating in library \"${state.getCurrentLibrary()!!.identifier!!.id}\""
+                }
                 return state.parameters.get(parameterDef.name)
             }
 

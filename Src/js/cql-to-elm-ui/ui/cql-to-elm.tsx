@@ -1,10 +1,4 @@
-import {
-  compilerOptions,
-  signatureLevels,
-  TCqlToElmArgs,
-  TLibrarySource,
-  TOutput,
-} from "@/shared";
+import { TCqlToElmArgs, TOutput } from "@/shared";
 import { TSetState, TState } from "@/state";
 import { Fragment, useEffect, useRef } from "react";
 import { createStatefulCompiler } from "@/cql/cql-to-elm";
@@ -13,7 +7,7 @@ import { xml } from "@codemirror/lang-xml";
 import { Editor } from "@/ui/editor/editor";
 import { Label } from "@/ui/label";
 import { Caption } from "@/ui/caption";
-import { Check } from "@/ui/icons/check";
+import { Spinner } from "@/ui/spinner";
 
 export function CqlToElmResult({
   state,
@@ -108,11 +102,11 @@ export function CqlToElmResult({
       },
     }));
   }, [
-    state.tabs["cql-to-elm"].cqlToElmArgs.librarySource,
+    state.common.librarySource,
     state.common.mountedDir,
-    state.tabs["cql-to-elm"].cqlToElmArgs.baseUrl,
-    state.tabs["cql-to-elm"].cqlToElmArgs.compilerOptions,
-    state.tabs["cql-to-elm"].cqlToElmArgs.signatureLevel,
+    state.common.baseUrl,
+    state.common.compilerOptions,
+    state.common.signatureLevel,
   ]);
 
   useEffect(() => {
@@ -138,6 +132,10 @@ export function CqlToElmResult({
       const cqlToElmArgs: TCqlToElmArgs = {
         cql: state.common.cql,
         mountedDir: state.common.mountedDir,
+        librarySource: state.common.librarySource,
+        baseUrl: state.common.baseUrl,
+        compilerOptions: state.common.compilerOptions,
+        signatureLevel: state.common.signatureLevel,
         ...state.tabs["cql-to-elm"].cqlToElmArgs,
       };
 
@@ -198,6 +196,10 @@ export function CqlToElmResult({
   }, [
     state.common.cql,
     state.common.mountedDir,
+    state.common.librarySource,
+    state.common.baseUrl,
+    state.common.compilerOptions,
+    state.common.signatureLevel,
     state.tabs["cql-to-elm"].cqlToElmArgs,
   ]);
 
@@ -212,7 +214,16 @@ export function CqlToElmResult({
       }}
     >
       <Editor
-        value={state.tabs["cql-to-elm"].elm.content}
+        value={(() => {
+          if (state.tabs["cql-to-elm"].elm.contentType === "json") {
+            if (state.tabs["cql-to-elm"].prettyPrintJson) {
+              return prettyPrintJsonIfPossible(
+                state.tabs["cql-to-elm"].elm.content,
+              );
+            }
+          }
+          return state.tabs["cql-to-elm"].elm.content;
+        })()}
         onChange={() => {}}
         editable={false}
         lineNumbers={true}
@@ -224,15 +235,25 @@ export function CqlToElmResult({
         style={{
           position: "absolute",
           top: 5,
-          right: 15,
-          opacity: state.tabs["cql-to-elm"].isBusy ? 0 : 1,
+          right: 5,
+          opacity: state.tabs["cql-to-elm"].isBusy ? 1 : 0,
           transition: "opacity 0.2s",
+          pointerEvents: "none",
         }}
       >
-        <Check style={{ width: 20 }} />
+        <Spinner />
       </div>
     </div>
   );
+}
+
+function prettyPrintJsonIfPossible(json: string): string {
+  try {
+    return JSON.stringify(JSON.parse(json), null, 2);
+  } catch (e) {
+    console.error(e);
+  }
+  return json;
 }
 
 export function CqlToElmSettings({
@@ -244,196 +265,6 @@ export function CqlToElmSettings({
 }) {
   return (
     <Fragment>
-      <div>
-        <Label>Library sources</Label>
-        <div
-          style={{
-            display: "grid",
-            gap: 10,
-          }}
-        >
-          {[
-            {
-              value: "local" as TLibrarySource,
-              label: "Mounted directory",
-              content: (
-                <Fragment>
-                  <Caption>
-                    Included libraries are loaded from files in the local
-                    directory (library ID + .cql).
-                  </Caption>
-                </Fragment>
-              ),
-            },
-            {
-              value: "remote" as TLibrarySource,
-              label: "Remote URL",
-              content: (
-                <Fragment>
-                  <input
-                    placeholder={
-                      "E.g. https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/"
-                    }
-                    value={state.tabs["cql-to-elm"].cqlToElmArgs.baseUrl}
-                    onChange={(event) => {
-                      const nextBaseUrl = event.target.value;
-                      setState((prevState) => ({
-                        ...prevState,
-                        tabs: {
-                          ...prevState.tabs,
-                          "cql-to-elm": {
-                            ...prevState.tabs["cql-to-elm"],
-                            cqlToElmArgs: {
-                              ...prevState.tabs["cql-to-elm"].cqlToElmArgs,
-                              baseUrl: nextBaseUrl,
-                            },
-                          },
-                        },
-                      }));
-                    }}
-                    style={{
-                      width: "100%",
-                      padding: "6px 12px",
-                      border: "var(--border)",
-                      borderRadius: "var(--border-radius)",
-                      fontFamily: "inherit",
-                    }}
-                  />
-                  <Caption>
-                    Included libraries are fetched from this base URL + library
-                    ID + .cql.
-                  </Caption>
-                </Fragment>
-              ),
-            },
-          ].map((librarySourceOption, librarySourceOptionIndex) => (
-            <div key={librarySourceOptionIndex}>
-              <label style={{ display: "flex", gap: 5, margin: "0 0 5px 0" }}>
-                <input
-                  type={"radio"}
-                  style={{
-                    margin: 0,
-                  }}
-                  checked={
-                    state.tabs["cql-to-elm"].cqlToElmArgs.librarySource ===
-                    librarySourceOption.value
-                  }
-                  onChange={() => {
-                    setState((prevState) => ({
-                      ...prevState,
-                      tabs: {
-                        ...prevState.tabs,
-                        "cql-to-elm": {
-                          ...prevState.tabs["cql-to-elm"],
-                          cqlToElmArgs: {
-                            ...prevState.tabs["cql-to-elm"].cqlToElmArgs,
-                            librarySource: librarySourceOption.value,
-                          },
-                        },
-                      },
-                    }));
-                  }}
-                />
-                {librarySourceOption.label}
-              </label>
-              {librarySourceOption.content}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <Label>Compiler options</Label>
-
-        <div
-          style={{
-            display: "grid",
-            gap: 3,
-            margin: "0 0 12px 0",
-          }}
-        >
-          {compilerOptions.map((compilerOption, compilerOptionIndex) => (
-            <label
-              key={compilerOptionIndex}
-              style={{ display: "flex", gap: 5 }}
-            >
-              <input
-                type={"checkbox"}
-                style={{
-                  margin: 0,
-                }}
-                checked={state.tabs[
-                  "cql-to-elm"
-                ].cqlToElmArgs.compilerOptions.includes(compilerOption.value)}
-                onChange={(event) => {
-                  const nextChecked = event.target.checked;
-                  setState((prevState) => ({
-                    ...prevState,
-                    tabs: {
-                      ...prevState.tabs,
-                      "cql-to-elm": {
-                        ...prevState.tabs["cql-to-elm"],
-                        cqlToElmArgs: {
-                          ...prevState.tabs["cql-to-elm"].cqlToElmArgs,
-                          compilerOptions: nextChecked
-                            ? [
-                                ...prevState.tabs["cql-to-elm"].cqlToElmArgs
-                                  .compilerOptions,
-                                compilerOption.value,
-                              ]
-                            : prevState.tabs[
-                                "cql-to-elm"
-                              ].cqlToElmArgs.compilerOptions.filter(
-                                (_) => _ !== compilerOption.value,
-                              ),
-                        },
-                      },
-                    },
-                  }));
-                }}
-              />
-              <div>{compilerOption.label}</div>
-            </label>
-          ))}
-        </div>
-
-        <div>
-          <div style={{ margin: "0 0 5px 0" }}>Signature level</div>
-          <select
-            value={state.tabs["cql-to-elm"].cqlToElmArgs.signatureLevel}
-            onChange={(event) => {
-              const nextSignatureLevel = event.target.value;
-              setState((prevState) => ({
-                ...prevState,
-                tabs: {
-                  ...prevState.tabs,
-                  "cql-to-elm": {
-                    ...prevState.tabs["cql-to-elm"],
-                    cqlToElmArgs: {
-                      ...prevState.tabs["cql-to-elm"].cqlToElmArgs,
-                      signatureLevel: nextSignatureLevel,
-                    },
-                  },
-                },
-              }));
-            }}
-            style={{
-              width: "100%",
-              padding: "6px 12px 6px 8px",
-              border: "var(--border)",
-              borderRadius: "var(--border-radius)",
-              fontFamily: "inherit",
-            }}
-          >
-            {signatureLevels.map((signatureLevel, signatureLevelIndex) => (
-              <option key={signatureLevelIndex} value={signatureLevel}>
-                {signatureLevel}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
       <div>
         <Label>Output content type</Label>
         <div
@@ -479,6 +310,33 @@ export function CqlToElmSettings({
           )}
         </div>
       </div>
+
+      {state.tabs["cql-to-elm"].cqlToElmArgs.outputContentType === "json" && (
+        <label style={{ display: "flex", gap: 5 }}>
+          <input
+            type={"checkbox"}
+            style={{
+              margin: 0,
+            }}
+            checked={state.tabs["cql-to-elm"].prettyPrintJson}
+            onChange={(event) => {
+              const nextChecked = event.target.checked;
+              setState((prevState) => ({
+                ...prevState,
+                tabs: {
+                  ...prevState.tabs,
+                  "cql-to-elm": {
+                    ...prevState.tabs["cql-to-elm"],
+                    prettyPrintJson: nextChecked,
+                  },
+                },
+              }));
+            }}
+          />
+          <div>Pretty print JSON output</div>
+        </label>
+      )}
+
       <div>
         <Label>Compiler run configuration</Label>
         <div style={{ margin: "0 0 10px 0" }}>

@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
-import * as cqlToElmJs from "cql-to-elm-js";
-import * as cqlToElmWasmJs from "cql-to-elm-wasm-js";
+import * as cqlJs from "cql-js";
+import * as cqlWasmJs from "cql-wasm-js";
 
-export type Nullable<T> = cqlToElmJs.Nullable<T> | cqlToElmWasmJs.Nullable<T>;
+export type Nullable<T> = cqlJs.Nullable<T> | cqlWasmJs.Nullable<T>;
 
 export type TElmContentType = "json" | "xml";
 
@@ -112,3 +112,64 @@ export type TOutput =
 export function unsupportedOperation(): never {
   throw new Error("Unsupported operation");
 }
+
+export const engineOptions = [
+  {
+    value: "EnableExpressionCaching",
+    label: "Enable expression caching",
+  },
+  {
+    value: "EnableValidation",
+    label: "Enable validation",
+  },
+  {
+    value: "EnableHedisCompatibilityMode",
+    label: "Enable HEDIS compatibility mode",
+  },
+  {
+    value: "EnableProfiling",
+    label: "Enable profiling",
+  },
+  {
+    value: "EnableTracing",
+    label: "Enable tracing",
+  },
+  {
+    value: "EnableCoverageCollection",
+    label: "Enable coverage collection",
+  },
+  {
+    value: "EnableTypeChecking",
+    label: "Enable type checking",
+  },
+];
+
+export type TCqlEngineArgs = {
+  cql: string;
+  compilerOptions: string[];
+  signatureLevel: string;
+  librarySource: TLibrarySource;
+  baseUrl: string;
+  mountedDir: TMountedDir | null;
+  engineOptions: string[];
+};
+
+export type TCqlEngineOutput =
+  | {
+      type: "log";
+      log: string;
+    }
+  | {
+      type: "expressionResults";
+      expressionResults: {
+        expressionName: string;
+        expressionResult: string;
+      }[];
+    }
+  | {
+      type: "evaluationException";
+      message: string;
+      stack: string;
+    };
+
+export const playgroundLibraryName = "Playground";

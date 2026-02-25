@@ -35,12 +35,12 @@ object MessageEvaluator {
                 "message" -> {
                     val finalMessage = messageBuilder.append(message).toString()
                     state!!.logDebugMessage(sourceLocator, finalMessage)
-                    logger.info(finalMessage)
+                    logger.info { finalMessage }
                 }
                 "warning" -> {
                     val finalMessage = messageBuilder.append(message).toString()
                     state!!.logDebugWarning(sourceLocator, finalMessage)
-                    logger.warn(finalMessage)
+                    logger.warn { finalMessage }
                 }
                 "trace" -> {
                     val finalMessage =
@@ -50,7 +50,7 @@ object MessageEvaluator {
                             .append(stripPHI(state, source))
                             .toString()
                     state!!.logDebugTrace(sourceLocator, finalMessage)
-                    logger.debug(finalMessage)
+                    logger.debug { finalMessage }
                 }
                 "error" -> {
                     val finalMessage =
@@ -60,7 +60,7 @@ object MessageEvaluator {
                             .append(stripPHI(state, source))
                             .toString()
                     // NOTE: debug logging happens through exception-handling
-                    logger.error(finalMessage)
+                    logger.error { finalMessage }
                     throw CqlException(finalMessage)
                 }
             }

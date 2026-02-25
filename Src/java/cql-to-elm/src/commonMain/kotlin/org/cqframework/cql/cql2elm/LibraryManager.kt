@@ -358,7 +358,7 @@ constructor(
 
             return compiledLibrary
         } catch (e: IllegalArgumentException) {
-            logger.error("Error generating compiled library", e)
+            logger.error(e) { "Error generating compiled library" }
             return null
         }
     }

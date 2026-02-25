@@ -1,11 +1,16 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Track evaluation results and exceptions for multiple libraries in a single evaluation, to support
  * partial successes and partial failures across libraries.
  */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class EvaluationResults private constructor(builder: Builder) {
     val results = builder.results.toMap()
     val exceptions = builder.exceptions.toMap()

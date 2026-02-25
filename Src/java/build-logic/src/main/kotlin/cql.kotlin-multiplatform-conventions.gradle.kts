@@ -81,18 +81,13 @@ kotlin {
                 api("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-io:1.9.0")
-                implementation("io.github.oshai:kotlin-logging:7.0.3")
+                implementation("io.github.oshai:kotlin-logging:8.0.01")
             }
         }
 
         jvmMain {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.0")
-            }
-        }
-
-        jsMain {
-            dependencies {
             }
         }
 

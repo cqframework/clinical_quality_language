@@ -113,10 +113,9 @@ object FunctionRefEvaluator {
             return namedDefs.filter { x -> functionDefOperandsSignatureEqual(x, signature) }
         }
 
-        logger.debug(
-            "Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM",
-            name,
-        )
+        logger.debug {
+            "Using runtime function resolution for '$name'. It's recommended to always include signatures in ELM"
+        }
 
         return namedDefs.filter { x -> state.environment.matchesTypes(x, arguments) }
     }

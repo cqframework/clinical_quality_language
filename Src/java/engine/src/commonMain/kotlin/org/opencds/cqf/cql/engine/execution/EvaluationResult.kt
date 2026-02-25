@@ -1,8 +1,14 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.debug.DebugResult
 import org.opencds.cqf.cql.engine.execution.trace.Trace
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class EvaluationResult {
     /** Includes both expression results and function evaluation results. */
     internal val results = mutableMapOf<EvaluationExpressionRef, ExpressionResult>()
@@ -16,6 +22,7 @@ class EvaluationResult {
         }
 
     /** Returns the ExpressionResult for the given expression name. */
+    @JsName("getByName")
     operator fun get(name: String): ExpressionResult? {
         return expressionResults[name]
     }
