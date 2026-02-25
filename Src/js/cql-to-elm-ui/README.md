@@ -1,14 +1,13 @@
-# CQL-to-ELM UI
+# CQL Playground
 
 **Live URL:** https://www.cqframework.org/clinical_quality_language/playground/
 
-A front end for the Kotlin/JS-based CQL compiler.
+A playground for the Kotlin/JS-based CQL compiler and engine.
 
 ## Local development
 
-Build the CQL compiler locally by running the `:cql-to-elm:build` task in the `../../java` project.
-This will output the cql-all-cql-to-elm and cql-all-cql-to-elm-wasm-js packages to the
-`../../java/build/js/packages` directory.
+Build the CQL engine and its dependencies locally by running the `:engine:build` task in the `../../java` project.
+This will output the JS and WASM/JS packages to `../../java/build/(js|wasm)/packages/engine`.
 
 Run:
 
