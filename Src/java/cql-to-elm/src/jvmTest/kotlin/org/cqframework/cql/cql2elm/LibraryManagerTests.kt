@@ -211,6 +211,30 @@ internal class LibraryManagerTests {
     }
 
     @Test
+    fun basicElmTestSkipVersionCheck() {
+        // Skip version check when requesting a library without a version but the library has a
+        // version
+        Assertions.assertNotNull(
+            libraryManagerVersionAgnostic!!.resolveLibrary(
+                VersionedIdentifier().apply {
+                    id = "BaseLibraryElm" // has version 1.0.0
+                }
+            )
+        )
+
+        // Skip version check when requesting a library with a version but the library does not have
+        // a version
+        Assertions.assertNotNull(
+            libraryManagerVersionAgnostic!!.resolveLibrary(
+                VersionedIdentifier().apply {
+                    id = "BaseLibraryElmWithoutVersion" // does not have a version
+                    version = "1.2.3"
+                }
+            )
+        )
+    }
+
+    @Test
     fun testResolveLibraryIdentifierIdNull() {
         val versionedIdentifier = VersionedIdentifier().withId(null)
         Assertions.assertThrows(IllegalArgumentException::class.java) {
