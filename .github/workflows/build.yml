@@ -46,9 +46,9 @@ jobs:
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    - name: Compile Kotlin/JS cql-to-elm library for the playground
+    - name: Compile engine-js for the CQL playground
       working-directory: ./Src/java
-      run: ./gradlew cql-to-elm:compileProductionLibraryKotlinJs cql-to-elm:compileProductionLibraryKotlinWasmJs
+      run: ./gradlew engine:compileProductionLibraryKotlinJs engine:compileProductionLibraryKotlinWasmJs
     - name: Install Node.js
       uses: actions/setup-node@v5
       with:
