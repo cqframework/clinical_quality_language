@@ -208,13 +208,11 @@ class TraceTest : CqlTestBase() {
         )
     }
 
-    /** Verify the unit test for fromActivationFrames with detailed=true. */
-    @Test
-    fun traceOutputDetailed() {
+    /** Builds a sample activation frame tree for unit tests of fromActivationFrames. */
+    private fun buildDetailedActivationFrames(): State.ActivationFrame {
         val libraryIdentifier = VersionedIdentifier().withId("Lib1")
         val contextName = "Patient"
 
-        // Simulate sub-expression frames in the activation frame tree
         val addFrame =
             State.ActivationFrame(Add().withLocator("1:18-1:22"), libraryIdentifier, contextName, 0)
         addFrame.result = 5
@@ -239,8 +237,6 @@ class TraceTest : CqlTestBase() {
         func1ActivationFrame.variables.addFirst(Variable("a").withValue(5))
         func1ActivationFrame.result = 6
 
-        // Multiply contains FunctionRef (sub-expression) which in turn contains func1
-        // (activation frame)
         val funcRefFrame =
             State.ActivationFrame(
                 org.hl7.elm.r1.FunctionRef().withLocator("1:15-1:24"),
@@ -251,24 +247,24 @@ class TraceTest : CqlTestBase() {
         funcRefFrame.innerActivationFrames.add(func1ActivationFrame)
         funcRefFrame.result = 6
 
-        val expr1ActivationFrame =
+        val expr1 =
             State.ActivationFrame(
                 ExpressionDef().withName("expr1"),
                 libraryIdentifier,
                 contextName,
                 0,
             )
-        expr1ActivationFrame.innerActivationFrames.add(funcRefFrame)
-        expr1ActivationFrame.innerActivationFrames.add(multiplyFrame)
-        expr1ActivationFrame.result = 15
+        expr1.innerActivationFrames.add(funcRefFrame)
+        expr1.innerActivationFrames.add(multiplyFrame)
+        expr1.result = 15
+        return expr1
+    }
 
-        // Test with detailed=false (backward compatible)
-        val basicTrace =
-            Trace.fromActivationFrames(
-                listOf(expr1ActivationFrame),
-                mapOf("Patient" to null),
-                detailed = false,
-            )
+    /** Verify fromActivationFrames with detailed=false skips sub-expression nodes. */
+    @Test
+    fun traceOutputDetailedFalse() {
+        val frames = listOf(buildDetailedActivationFrames())
+        val trace = Trace.fromActivationFrames(frames, mapOf("Patient" to null), detailed = false)
         assertEquals(
             """
             Lib1.expr1 = 15
@@ -276,16 +272,15 @@ class TraceTest : CqlTestBase() {
 
             """
                 .trimIndent(),
-            basicTrace.toString(),
+            trace.toString(),
         )
+    }
 
-        // Test with detailed=true
-        val detailedTrace =
-            Trace.fromActivationFrames(
-                listOf(expr1ActivationFrame),
-                mapOf("Patient" to null),
-                detailed = true,
-            )
+    /** Verify fromActivationFrames with detailed=true includes sub-expression nodes. */
+    @Test
+    fun traceOutputDetailedTrue() {
+        val frames = listOf(buildDetailedActivationFrames())
+        val trace = Trace.fromActivationFrames(frames, mapOf("Patient" to null), detailed = true)
         assertEquals(
             """
             Lib1.expr1 = 15
@@ -296,11 +291,12 @@ class TraceTest : CqlTestBase() {
 
             """
                 .trimIndent(),
-            detailedTrace.toString(),
+            trace.toString(),
         )
     }
 
     /** Recursively searches for a frame matching the predicate. */
+    @Suppress("ReturnCount")
     private fun findFrameRecursive(
         frames: List<TraceFrame>,
         predicate: (TraceFrame) -> Boolean,
