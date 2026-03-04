@@ -121,9 +121,9 @@ class TraceTest : CqlTestBase() {
         assertNotNull(trace)
 
         // Find the expr1 frame
-        val expr1Frame = trace.frames.find {
-            it is ExpressionDefTraceFrame && it.element.name == "expr1"
-        } as ExpressionDefTraceFrame
+        val expr1Frame =
+            trace.frames.find { it is ExpressionDefTraceFrame && it.element.name == "expr1" }
+                as ExpressionDefTraceFrame
         assertEquals(18, expr1Frame.result)
 
         // expr1 should have sub-expression frames (Multiply at minimum)
@@ -133,23 +133,25 @@ class TraceTest : CqlTestBase() {
         )
 
         // Find the Multiply sub-expression frame
-        val multiplyFrame = expr1Frame.subframes.find {
-            it is SubExpressionTraceFrame && it.element is Multiply
-        } as? SubExpressionTraceFrame
+        val multiplyFrame =
+            expr1Frame.subframes.find { it is SubExpressionTraceFrame && it.element is Multiply }
+                as? SubExpressionTraceFrame
         assertNotNull(multiplyFrame, "Should have a Multiply sub-expression frame")
         assertEquals(18, multiplyFrame.result)
 
         // Inside the Multiply, there should be a FunctionRef sub-expression and within it
         // an ExpressionDef for func1
-        val funcRefFrame = multiplyFrame.subframes.find {
-            it is SubExpressionTraceFrame
-        } as? SubExpressionTraceFrame
+        val funcRefFrame =
+            multiplyFrame.subframes.find { it is SubExpressionTraceFrame }
+                as? SubExpressionTraceFrame
         assertNotNull(funcRefFrame, "Multiply should contain a sub-expression frame")
 
         // The FunctionRef sub-expression should contain a nested ExpressionDefTraceFrame for func1
-        val func1Frame = findFrameRecursive(multiplyFrame.subframes) {
-            it is ExpressionDefTraceFrame && it.element.name == "func1"
-        } as? ExpressionDefTraceFrame
+        val func1Frame =
+            findFrameRecursive(multiplyFrame.subframes) {
+                it is ExpressionDefTraceFrame && it.element.name == "func1"
+            }
+                as? ExpressionDefTraceFrame
         assertNotNull(func1Frame, "Should have a func1 ExpressionDef frame nested under expr1")
         assertEquals(6, func1Frame.result)
     }
@@ -169,13 +171,14 @@ class TraceTest : CqlTestBase() {
         assertNotNull(trace)
 
         // Find the expr1 frame and look for Literal frames
-        val expr1Frame = trace.frames.find {
-            it is ExpressionDefTraceFrame && it.element.name == "expr1"
-        } as ExpressionDefTraceFrame
+        val expr1Frame =
+            trace.frames.find { it is ExpressionDefTraceFrame && it.element.name == "expr1" }
+                as ExpressionDefTraceFrame
 
-        val hasLiteral = containsFrameRecursive(expr1Frame.subframes) {
-            it is SubExpressionTraceFrame && it.element is Literal
-        }
+        val hasLiteral =
+            containsFrameRecursive(expr1Frame.subframes) {
+                it is SubExpressionTraceFrame && it.element is Literal
+            }
         assertTrue(hasLiteral, "With filter override, Literal nodes should appear in trace")
     }
 
@@ -192,9 +195,9 @@ class TraceTest : CqlTestBase() {
         assertNotNull(trace)
 
         // expr3 is a simple literal definition, it should have an ExpressionDefTraceFrame
-        val expr3Frame = trace.frames.find {
-            it is ExpressionDefTraceFrame && it.element.name == "expr3"
-        } as? ExpressionDefTraceFrame
+        val expr3Frame =
+            trace.frames.find { it is ExpressionDefTraceFrame && it.element.name == "expr3" }
+                as? ExpressionDefTraceFrame
         assertNotNull(expr3Frame)
         assertEquals(2, expr3Frame.result)
 
