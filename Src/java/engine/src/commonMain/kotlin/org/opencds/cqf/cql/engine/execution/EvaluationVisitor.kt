@@ -176,9 +176,27 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     override fun visitExpression(elm: Expression, context: State?): Any? {
         context?.markElementAsVisitedForCoverageReport(elm)
 
+        // Capture the non-null state for detailed tracing to allow smart-cast
+        val detailedState =
+            if (
+                context != null &&
+                    context.engineOptions.contains(CqlEngine.Options.EnableDetailedTracing) &&
+                    !context.isFilteredExpression(elm)
+            )
+                context
+            else null
+
+        if (detailedState != null) {
+            detailedState.pushSubExpressionFrame(elm)
+        }
+
         try {
             val value = super.visitExpression(elm, context)
             context?.checkType(elm, value)
+
+            if (detailedState != null) {
+                detailedState.storeSubExpressionResult(value)
+            }
             return value
         } catch (e: CqlException) {
             maybeExtendBacktrace(e, context!!, elm)
@@ -193,6 +211,10 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
                 )
             maybeExtendBacktrace(exception, context, elm)
             throw exception
+        } finally {
+            if (detailedState != null) {
+                detailedState.popSubExpressionFrame()
+            }
         }
     }
 
