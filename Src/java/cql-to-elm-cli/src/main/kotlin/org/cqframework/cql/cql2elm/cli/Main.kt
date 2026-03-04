@@ -123,6 +123,8 @@ object Main {
 
             if (!packageId.isNullOrBlank() && !canonicalBase.isNullOrBlank()) {
                 namespaceInfo = NamespaceInfo(packageId, canonicalBase)
+                // TODO: Almost certain this used to happen in the compiler, not sure why it is not happening there still?
+                namespaceManager.ensureNamespaceRegistered(namespaceInfo);
             }
         }
 
