@@ -1,0 +1,268 @@
+name: PR-to-Issue Matcher
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  pull-requests: write
+  issues: read
+
+concurrency:
+  group: issue-matcher-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  match-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find related issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # ── Fetch PR data ──────────────────────────────────────────────
+          pr_json=$(gh pr view "$PR_NUMBER" --json title,body,files)
+          pr_title=$(echo "$pr_json" | jq -r '.title // ""')
+          pr_body=$(echo "$pr_json" | jq -r '.body // ""')
+          pr_files=$(echo "$pr_json" | jq -r '.files[].path // empty')
+
+          # ── Collect issue numbers already referenced in the PR body ───
+          declare -A referenced_issues
+          while IFS= read -r num; do
+            [[ -n "$num" ]] && referenced_issues["$num"]=1
+          done < <(echo "$pr_body" | grep -oP '(?<=#)\d+' || true)
+
+          # ── Build PR tokens ────────────────────────────────────────────
+          # Stop words to filter out
+          stop_words="the and for are but not you all any can had her was one our out day get has him his how its may new now old see way who did"
+          stop_words+=" also been from have just more most only than that them then this very what when will with does done each even goes into"
+          stop_words+=" like make many must over same some such take than that these they this those used were which would your about after being"
+          stop_words+=" could every first found given great into known large later least never other place point right since small still their there"
+          stop_words+=" think using where which while close closes closed refs ref fix fixes fixed should issue pull request merge merged"
+          declare -A stop_map
+          for w in $stop_words; do stop_map["$w"]=1; done
+
+          # Split camelCase / PascalCase into individual words
+          split_camel() {
+            echo "$1" | sed -E 's/([a-z])([A-Z])/\1 \2/g; s/([A-Z]+)([A-Z][a-z])/\1 \2/g' | tr '[:upper:]' '[:lower:]'
+          }
+
+          # Tokenize text: lowercase, strip non-alpha, filter stop words and short tokens
+          tokenize() {
+            local text="$1"
+            echo "$text" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' ' ' | tr ' ' '\n' | while read -r word; do
+              [[ ${#word} -ge 3 && -z "${stop_map[$word]:-}" ]] && echo "$word"
+            done
+          }
+
+          # Extract path components from file paths, splitting camelCase
+          path_tokens() {
+            echo "$1" | tr '/' '\n' | sed 's/\.[^.]*$//' | while read -r component; do
+              split_camel "$component" | tr ' ' '\n' | while read -r word; do
+                word=$(echo "$word" | tr -cd 'a-z0-9')
+                [[ ${#word} -ge 3 && -z "${stop_map[$word]:-}" ]] && echo "$word"
+              done
+            done
+          }
+
+          # Collect all PR tokens
+          declare -A pr_keywords
+          while IFS= read -r token; do
+            [[ -n "$token" ]] && pr_keywords["$token"]=1
+          done < <(tokenize "$pr_title"; tokenize "$pr_body")
+
+          # Collect path component tokens separately
+          declare -A pr_path_tokens
+          while IFS= read -r token; do
+            [[ -n "$token" ]] && pr_path_tokens["$token"]=1
+          done < <(echo "$pr_files" | while IFS= read -r f; do [[ -n "$f" ]] && path_tokens "$f"; done)
+
+          # Also add path tokens to keywords for bigram matching
+          for token in "${!pr_path_tokens[@]}"; do
+            pr_keywords["$token"]=1
+          done
+
+          # Build PR bigrams from title + body
+          pr_text_tokens=()
+          while IFS= read -r token; do
+            [[ -n "$token" ]] && pr_text_tokens+=("$token")
+          done < <(tokenize "$pr_title"; tokenize "$pr_body")
+
+          declare -A pr_bigrams
+          for ((i=0; i<${#pr_text_tokens[@]}-1; i++)); do
+            bigram="${pr_text_tokens[$i]}_${pr_text_tokens[$((i+1))]}"
+            pr_bigrams["$bigram"]=1
+          done
+
+          # Exit early if PR has almost no content to match on
+          total_tokens=$(( ${#pr_keywords[@]} + ${#pr_bigrams[@]} ))
+          if [[ $total_tokens -lt 2 ]]; then
+            echo "PR has insufficient content for matching. Skipping."
+            exit 0
+          fi
+
+          # ── Fetch open issues ──────────────────────────────────────────
+          issues_json=$(gh issue list --state open --limit 500 --json number,title,body,labels)
+          issue_count=$(echo "$issues_json" | jq 'length')
+
+          if [[ "$issue_count" -eq 0 ]]; then
+            echo "No open issues found. Skipping."
+            exit 0
+          fi
+
+          # ── Score each issue ───────────────────────────────────────────
+          declare -A issue_scores
+          declare -A issue_titles
+          declare -A issue_matched_terms
+
+          for ((idx=0; idx<issue_count; idx++)); do
+            issue_num=$(echo "$issues_json" | jq -r ".[$idx].number")
+            issue_title=$(echo "$issues_json" | jq -r ".[$idx].title // \"\"")
+            issue_body=$(echo "$issues_json" | jq -r ".[$idx].body // \"\"" | head -c 2000)
+            issue_labels=$(echo "$issues_json" | jq -r ".[$idx].labels[].name // empty" 2>/dev/null || true)
+
+            # Skip if already referenced
+            [[ -n "${referenced_issues[$issue_num]:-}" ]] && continue
+
+            issue_titles["$issue_num"]="$issue_title"
+
+            # Tokenize issue content
+            issue_tokens=()
+            while IFS= read -r token; do
+              [[ -n "$token" ]] && issue_tokens+=("$token")
+            done < <(tokenize "$issue_title"; tokenize "$issue_body"; tokenize "$issue_labels")
+
+            # Build issue bigrams
+            declare -A issue_bigram_map
+            for ((i=0; i<${#issue_tokens[@]}-1; i++)); do
+              bigram="${issue_tokens[$i]}_${issue_tokens[$((i+1))]}"
+              issue_bigram_map["$bigram"]=1
+            done
+
+            # Build issue keyword set
+            declare -A issue_kw_map
+            for token in "${issue_tokens[@]}"; do
+              issue_kw_map["$token"]=1
+            done
+
+            score=0
+            matched=""
+
+            # Bigram matches (×3)
+            for bigram in "${!pr_bigrams[@]}"; do
+              if [[ -n "${issue_bigram_map[$bigram]:-}" ]]; then
+                score=$((score + 3))
+                display_bigram="${bigram/_/ }"
+                matched="${matched:+$matched, }\"$display_bigram\""
+              fi
+            done
+
+            # Keyword matches (×1)
+            for kw in "${!pr_keywords[@]}"; do
+              if [[ -n "${issue_kw_map[$kw]:-}" && -z "${pr_path_tokens[$kw]:-}" ]]; then
+                score=$((score + 1))
+                matched="${matched:+$matched, }$kw"
+              fi
+            done
+
+            # Path component matches (×0.5 → use integer math: count and add half at end)
+            path_match_count=0
+            for pt in "${!pr_path_tokens[@]}"; do
+              if [[ -n "${issue_kw_map[$pt]:-}" ]]; then
+                path_match_count=$((path_match_count + 1))
+                matched="${matched:+$matched, }$pt (path)"
+              fi
+            done
+            # Multiply by 0.5 using integer math (round down, add 1 per 2 matches)
+            score=$((score + path_match_count / 2))
+            # Handle odd counts: use a flag to track half-points
+            if [[ $((path_match_count % 2)) -eq 1 ]]; then
+              # Store as score*10 to handle decimal, then divide at the end
+              score=$((score * 10 + 5))
+            else
+              score=$((score * 10))
+            fi
+
+            unset issue_bigram_map
+            unset issue_kw_map
+
+            if [[ $score -ge 30 ]]; then  # threshold is 3.0 → 30 in ×10 scale
+              issue_scores["$issue_num"]=$score
+              issue_matched_terms["$issue_num"]="$matched"
+            fi
+          done
+
+          # ── Sort and pick top 5 ────────────────────────────────────────
+          sorted_issues=()
+          while IFS= read -r line; do
+            [[ -n "$line" ]] && sorted_issues+=("$line")
+          done < <(
+            for num in "${!issue_scores[@]}"; do
+              echo "${issue_scores[$num]} $num"
+            done | sort -rn | head -5
+          )
+
+          # ── Build comment body ─────────────────────────────────────────
+          marker="<!-- pr-issue-matcher -->"
+
+          if [[ ${#sorted_issues[@]} -eq 0 ]]; then
+            comment_body="${marker}
+          ### Related Issues
+
+          No strongly related open issues were found for this PR.
+
+          > **Tip:** If this PR addresses an existing issue, please link it using \`Closes #NNN\` or \`Refs #NNN\` in the PR description."
+          else
+            table_rows=""
+            for entry in "${sorted_issues[@]}"; do
+              score_raw=$(echo "$entry" | awk '{print $1}')
+              num=$(echo "$entry" | awk '{print $2}')
+              # Convert ×10 score back to display value
+              score_int=$((score_raw / 10))
+              score_frac=$((score_raw % 10))
+              if [[ $score_frac -gt 0 ]]; then
+                display_score="${score_int}.${score_frac}"
+              else
+                display_score="${score_int}"
+              fi
+              title="${issue_titles[$num]}"
+              # Escape pipe characters in title
+              title="${title//|/\\|}"
+              matched="${issue_matched_terms[$num]}"
+              table_rows="${table_rows}
+          | #${num} | ${title} | ${display_score} | ${matched} |"
+            done
+
+            comment_body="${marker}
+          ### Related Issues
+
+          The following open issues may be related to this PR:
+
+          | Issue | Title | Score | Matched Terms |
+          |-------|-------|------:|---------------|${table_rows}
+
+          > **Tip:** If this PR addresses any of these issues, please link them using \`Closes #NNN\` or \`Refs #NNN\` in the PR description."
+          fi
+
+          # ── Upsert comment ─────────────────────────────────────────────
+          existing_comment_id=$(gh api \
+            "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+            --paginate \
+            --jq ".[] | select(.body | contains(\"$marker\")) | .id" \
+            | head -1 || true)
+
+          if [[ -n "$existing_comment_id" ]]; then
+            gh api \
+              --method PATCH \
+              "repos/${GH_REPO}/issues/comments/${existing_comment_id}" \
+              -f body="$comment_body" \
+              --silent
+            echo "Updated existing comment $existing_comment_id"
+          else
+            gh pr comment "$PR_NUMBER" --body "$comment_body"
+            echo "Posted new comment"
+          fi
