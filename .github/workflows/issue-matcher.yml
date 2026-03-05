@@ -122,7 +122,7 @@ jobs:
           for ((idx=0; idx<issue_count; idx++)); do
             issue_num=$(echo "$issues_json" | jq -r ".[$idx].number")
             issue_title=$(echo "$issues_json" | jq -r ".[$idx].title // \"\"")
-            issue_body=$(echo "$issues_json" | jq -r ".[$idx].body // \"\"" | head -c 2000)
+            issue_body=$(echo "$issues_json" | jq -r ".[$idx].body // \"\" | .[:2000]")
             issue_labels=$(echo "$issues_json" | jq -r ".[$idx].labels[].name // empty" 2>/dev/null || true)
 
             # Skip if already referenced
@@ -252,8 +252,8 @@ jobs:
           existing_comment_id=$(gh api \
             "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
             --paginate \
-            --jq ".[] | select(.body | contains(\"$marker\")) | .id" \
-            | head -1 || true)
+            --jq "[.[] | select(.body | contains(\"$marker\")) | .id] | first // empty" \
+            2>/dev/null || true)
 
           if [[ -n "$existing_comment_id" ]]; then
             gh api \
