@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.execution.trace
 
+import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.VersionedIdentifier
@@ -56,14 +57,19 @@ class ExpressionDefTraceFrame(
         fun fromActivationFrames(
             activationFrames: List<ActivationFrame>,
             contextValues: Map<String, Any?>,
-        ): List<ExpressionDefTraceFrame> {
+            detailed: Boolean = false,
+        ): List<TraceFrame> {
             return activationFrames.flatMap { activationFrame ->
                 val subframes =
-                    fromActivationFrames(activationFrame.innerActivationFrames, contextValues)
+                    fromActivationFrames(
+                        activationFrame.innerActivationFrames,
+                        contextValues,
+                        detailed,
+                    )
 
                 val element = activationFrame.element
 
-                // Only create trace frames for expressions and function calls
+                // ExpressionDef (and FunctionDef) always get ExpressionDefTraceFrame
                 if (element is ExpressionDef) {
                     return@flatMap listOf(
                         ExpressionDefTraceFrame(
@@ -77,6 +83,23 @@ class ExpressionDefTraceFrame(
                         )
                     )
                 }
+
+                // In detailed mode, other Expression elements get SubExpressionTraceFrame
+                if (detailed && element is Expression) {
+                    return@flatMap listOf(
+                        SubExpressionTraceFrame(
+                            activationFrame.library,
+                            element,
+                            activationFrame.variables.toList().reversed(),
+                            activationFrame.contextName!! to
+                                contextValues[activationFrame.contextName],
+                            activationFrame.result,
+                            subframes,
+                        )
+                    )
+                }
+
+                // Non-Expression elements (e.g. Retrieve): hoist children
                 subframes
             }
         }

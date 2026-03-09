@@ -260,13 +260,13 @@ constructor(
         val libraryIdentifierVersion = libraryIdentifier.version
         val resultIdentifierVersion = resultIdentifier.version
 
-        // If the library VersionedIdentifier used to query is null, then don't compare to the
-        // result library version, since we're doing a broader search
+        // Skip version check if the requested version is null or if the resolved library does not
+        // have a version.
         val areIdentifiersValid: Boolean
-        if (libraryIdentifierVersion == null) {
+        if (libraryIdentifierVersion == null || resultIdentifierVersion == null) {
             areIdentifiersValid = areIdsEqual
         } else {
-            val areVersionsEqual = libraryIdentifierVersion == resultIdentifier.version
+            val areVersionsEqual = libraryIdentifierVersion == resultIdentifierVersion
             areIdentifiersValid = areIdsEqual && areVersionsEqual
         }
 

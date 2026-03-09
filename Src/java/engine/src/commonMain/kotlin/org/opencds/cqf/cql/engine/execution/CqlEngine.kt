@@ -63,6 +63,14 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         EnableTracing,
 
         /**
+         * Collect detailed trace information during evaluation, including sub-expression level
+         * results. This option implies [EnableTracing]. A configurable filter controls which
+         * sub-expressions are traced (trivial leaf nodes like Literal and OperandRef are skipped by
+         * default).
+         */
+        EnableDetailedTracing,
+
+        /**
          * Collect coverage information during execution. Coverage data can be exported in LCOV
          * format after execution.
          */
@@ -86,6 +94,10 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     val evaluationVisitor: EvaluationVisitor = EvaluationVisitor()
 
     init {
+        if (this.engineOptions.contains(Options.EnableDetailedTracing)) {
+            this.engineOptions.add(Options.EnableTracing)
+        }
+
         this.state = State(environment, this.engineOptions)
 
         if (this.engineOptions.contains(Options.EnableExpressionCaching)) {

@@ -29,12 +29,14 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
             val contextTypeResolutions =
                 packageContextResolutions.getOrPut(contextType) { createConcurrentHashMap() }
 
-            val result =
-                contextTypeResolutions.getOrPut(targetType) {
-                    this.innerResolver.getContextPath(contextType, targetType)
-                }
+            val cached = contextTypeResolutions[targetType]
+            if (cached != null) {
+                return cached
+            }
 
+            val result = this.innerResolver.getContextPath(contextType, targetType)
             if (result != null) {
+                contextTypeResolutions[targetType] = result
                 return result
             }
         }
@@ -51,12 +53,14 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
             val packageTypeResolutions =
                 perPackageTypeResolutionsByTypeName.getOrPut(pn) { createConcurrentHashMap() }
 
-            val result =
-                packageTypeResolutions.getOrPut(typeName) {
-                    this.innerResolver.resolveType(typeName)
-                }
+            val cached = packageTypeResolutions[typeName]
+            if (cached != null) {
+                return cached
+            }
 
+            val result = this.innerResolver.resolveType(typeName)
             if (result != null) {
+                packageTypeResolutions[typeName] = result
                 return result
             }
         }
@@ -74,12 +78,14 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
             val packageTypeResolutions =
                 perPackageTypeResolutionsByClass.getOrPut(pn) { createConcurrentHashMap() }
 
-            val result =
-                packageTypeResolutions.getOrPut(valueClass) {
-                    this.innerResolver.resolveType(value)
-                }
+            val cached = packageTypeResolutions[valueClass]
+            if (cached != null) {
+                return cached
+            }
 
+            val result = this.innerResolver.resolveType(value)
             if (result != null) {
+                packageTypeResolutions[valueClass] = result
                 return result
             }
         }

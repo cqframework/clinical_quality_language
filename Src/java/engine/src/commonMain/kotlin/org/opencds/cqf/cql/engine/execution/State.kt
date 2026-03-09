@@ -10,11 +10,19 @@ import kotlin.jvm.JvmOverloads
 import kotlin.text.StringBuilder
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import org.hl7.elm.r1.AliasRef
+import org.hl7.elm.r1.Current
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.Iteration
 import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.Literal
+import org.hl7.elm.r1.Null
+import org.hl7.elm.r1.OperandRef
+import org.hl7.elm.r1.QueryLetRef
 import org.hl7.elm.r1.Retrieve
+import org.hl7.elm.r1.Total
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
@@ -107,6 +115,18 @@ constructor(
 
     val stack = ArrayDeque<ActivationFrame>()
 
+    /**
+     * Separate stack for sub-expression activation frames used by detailed tracing. This is kept
+     * separate from [stack] because [stack] is used for variable resolution.
+     */
+    val subExpressionStack = ArrayDeque<ActivationFrame>()
+
+    /**
+     * Filter that determines which sub-expressions are traced during detailed tracing. Returns
+     * `true` to filter (skip) an expression. When `null`, the [defaultTraceFilter] is used.
+     */
+    var traceExpressionFilter: ((Expression) -> Boolean)? = null
+
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
     val parameters = mutableMapOf<String, Any?>()
@@ -121,6 +141,48 @@ constructor(
     var debugMap: DebugMap? = null
 
     val globalCoverage by lazy { GlobalCoverage() }
+
+    /** Returns `true` if any form of tracing (basic or detailed) is enabled. */
+    val isTracingEnabled: Boolean
+        get() =
+            engineOptions.contains(Options.EnableTracing) ||
+                engineOptions.contains(Options.EnableDetailedTracing)
+
+    /**
+     * Returns the current trace parent frame. When detailed tracing is active and there are
+     * sub-expression frames, returns the top of [subExpressionStack]. Otherwise returns
+     * [topActivationFrame].
+     */
+    val currentTraceParent: ActivationFrame
+        get() = subExpressionStack.firstOrNull() ?: topActivationFrame
+
+    /** Returns `true` if the expression should be filtered (skipped) during detailed tracing. */
+    fun isFilteredExpression(elm: Expression): Boolean {
+        return traceExpressionFilter?.invoke(elm) ?: defaultTraceFilter(elm)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun pushSubExpressionFrame(expression: Expression) {
+        val frame =
+            ActivationFrame(
+                expression,
+                this.getCurrentLibrary()?.identifier,
+                this.currentContext.firstOrNull(),
+                Clock.System.now().toEpochMilliseconds(),
+            )
+        currentTraceParent.innerActivationFrames.add(frame)
+        subExpressionStack.addFirst(frame)
+    }
+
+    fun storeSubExpressionResult(result: Any?) {
+        subExpressionStack.first().result = result
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun popSubExpressionFrame() {
+        val frame = subExpressionStack.removeFirst()
+        frame.endTime = Clock.System.now().toEpochMilliseconds()
+    }
 
     fun getCurrentLibrary(): Library? {
         return currentLibrary.firstOrNull()
@@ -274,10 +336,11 @@ constructor(
         check(this.stack.size == 1)
 
         val trace =
-            if (engineOptions.contains(Options.EnableTracing))
+            if (isTracingEnabled)
                 Trace.fromActivationFrames(
                     this.stack.first().innerActivationFrames,
                     this.contextValues,
+                    detailed = engineOptions.contains(Options.EnableDetailedTracing),
                 )
             else null
 
@@ -318,8 +381,8 @@ constructor(
     ) {
         val newActivationFrame =
             ActivationFrame(element, this.getCurrentLibrary()?.identifier, contextName, startTime)
-        if (engineOptions.contains(Options.EnableTracing) && this.stack.isNotEmpty()) {
-            topActivationFrame.innerActivationFrames.add(newActivationFrame)
+        if (isTracingEnabled && this.stack.isNotEmpty()) {
+            currentTraceParent.innerActivationFrames.add(newActivationFrame)
         }
 
         this.stack.addFirst(newActivationFrame)
@@ -362,7 +425,7 @@ constructor(
 
     /** Stores the intermediate result in the activation frame. */
     fun storeIntermediateResultForTracing(result: Any?) {
-        if (engineOptions.contains(Options.EnableTracing)) {
+        if (isTracingEnabled) {
             topActivationFrame.result = result
         }
     }
@@ -546,6 +609,23 @@ constructor(
     fun checkType(expressionWithExpectedResultType: Expression, actualValue: Any?) {
         if (engineOptions.contains(Options.EnableTypeChecking)) {
             TypeChecker.checkType(expressionWithExpectedResultType, actualValue)
+        }
+    }
+
+    companion object {
+        /**
+         * Default filter for sub-expression tracing. Skips trivial terminal nodes whose values are
+         * self-evident from context.
+         */
+        fun defaultTraceFilter(elm: Expression): Boolean {
+            return elm is Literal ||
+                elm is Null ||
+                elm is OperandRef ||
+                elm is AliasRef ||
+                elm is QueryLetRef ||
+                elm is Current ||
+                elm is Iteration ||
+                elm is Total
         }
     }
 }
