@@ -50,7 +50,22 @@ actual fun calendarGetInstance(): Calendar {
 
 actual typealias OffsetDateTime = java.time.OffsetDateTime
 
+actual fun offsetDateTimeOf(localDateTime: LocalDateTime, zoneOffset: ZoneOffset): OffsetDateTime {
+    return OffsetDateTime.of(localDateTime, zoneOffset)
+}
+
 actual typealias LocalDateTime = java.time.LocalDateTime
+
+actual fun localDateTimeOf(
+    year: Int,
+    month: Int,
+    dayOfMonth: Int,
+    hour: Int,
+    minute: Int,
+    second: Int,
+): LocalDateTime {
+    return LocalDateTime.of(year, month, dayOfMonth, hour, minute, second)
+}
 
 actual typealias Instant = java.time.Instant
 
@@ -67,6 +82,14 @@ actual fun dateTimeFormatterIsoOffsetDateTimeFormat(dateTime: OffsetDateTime): S
 }
 
 actual typealias ZoneId = java.time.ZoneId
+
+actual fun zoneIdOf(zoneId: String): ZoneId {
+    return ZoneId.of(zoneId)
+}
+
+actual fun zoneIdToZoneOffset(zoneId: ZoneId, localDateTime: LocalDateTime): ZoneOffset {
+    return zoneId.rules.getOffset(localDateTime)
+}
 
 actual typealias ZonedDateTime = java.time.ZonedDateTime
 

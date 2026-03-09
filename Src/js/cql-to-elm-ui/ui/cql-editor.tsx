@@ -78,22 +78,34 @@ export function CqlEditor({
   const editorRef = useRef<ReactCodeMirrorRef>(null);
 
   useEffect(() => {
-    if (editorRef.current?.view && cqlToAstOutput) {
-      if (cqlToAstOutput.ok) {
-        const ranges = findRangesForCqlPos(
-          cqlToAstOutput.ast,
-          state.common.cursorPos,
-        );
-        editorRef.current.view.dispatch({
-          effects: [customHighlightsEffectType.of(ranges)],
-        });
+    if (editorRef.current?.view) {
+      if (state.common.highlightActiveStatement) {
+        if (cqlToAstOutput) {
+          if (cqlToAstOutput.ok) {
+            const ranges = findRangesForCqlPos(
+              cqlToAstOutput.ast,
+              state.common.cursorPos,
+            );
+            editorRef.current.view.dispatch({
+              effects: [customHighlightsEffectType.of(ranges)],
+            });
+          } else {
+            editorRef.current.view.dispatch({
+              effects: [customHighlightsEffectType.of([])],
+            });
+          }
+        }
       } else {
         editorRef.current.view.dispatch({
           effects: [customHighlightsEffectType.of([])],
         });
       }
     }
-  }, [cqlToAstOutput, state.common.cursorPos]);
+  }, [
+    cqlToAstOutput,
+    state.common.cursorPos,
+    state.common.highlightActiveStatement,
+  ]);
 
   return (
     <Editor

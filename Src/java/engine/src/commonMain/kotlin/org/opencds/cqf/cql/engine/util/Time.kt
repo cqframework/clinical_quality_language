@@ -71,7 +71,7 @@ expect fun localDateOf(year: Int, month: Int, dayOfMonth: Int): LocalDate
 
 expect fun localDateParse(text: String): LocalDate
 
-expect class ZoneOffset {
+expect class ZoneOffset : ZoneId {
     fun getTotalSeconds(): Int
 
     fun get(field: TemporalField): Int
@@ -139,7 +139,32 @@ expect class OffsetDateTime : Temporal {
     fun toLocalDateTime(): LocalDateTime
 }
 
-expect class LocalDateTime : Temporal
+expect fun offsetDateTimeOf(localDateTime: LocalDateTime, zoneOffset: ZoneOffset): OffsetDateTime
+
+expect class LocalDateTime : Temporal {
+    fun getYear(): Int
+
+    fun getMonthValue(): Int
+
+    fun getDayOfMonth(): Int
+
+    fun getHour(): Int
+
+    fun getMinute(): Int
+
+    fun getSecond(): Int
+
+    fun minusSeconds(seconds: Long): LocalDateTime
+}
+
+expect fun localDateTimeOf(
+    year: Int,
+    month: Int,
+    dayOfMonth: Int,
+    hour: Int,
+    minute: Int,
+    second: Int,
+): LocalDateTime
 
 expect class Instant
 
@@ -150,6 +175,10 @@ expect fun offsetDateTimeOfInstant(instant: Instant, offset: ZoneId): OffsetDate
 expect fun dateTimeFormatterIsoOffsetDateTimeFormat(dateTime: OffsetDateTime): String
 
 expect abstract class ZoneId
+
+expect fun zoneIdOf(zoneId: String): ZoneId
+
+expect fun zoneIdToZoneOffset(zoneId: ZoneId, localDateTime: LocalDateTime): ZoneOffset
 
 expect class ZonedDateTime {
     fun getZone(): ZoneId

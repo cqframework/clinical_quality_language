@@ -5,6 +5,7 @@ import {
   TElmContentType,
   TLibrarySource,
   TMountedDir,
+  TOutput,
 } from "@/shared";
 import { TCqlToAstOutput } from "@/cql/cql-to-ast";
 
@@ -40,6 +41,8 @@ define "Inpatient Encounter":
     librarySource: "remote" as TLibrarySource,
     baseUrl:
       "https://raw.githubusercontent.com/cqframework/cqf-exercises/refs/heads/master/input/cql/",
+    highlightActiveStatement: false,
+    showLog: false,
     log: [] as string[],
   },
 
@@ -54,10 +57,11 @@ define "Inpatient Encounter":
         useWorker: true,
         outputContentType: "json" as TElmContentType,
       },
-      elm: {
-        contentType: "json" as TElmContentType,
-        content: "",
-      },
+      elm: null as
+        | null
+        | (TOutput & {
+            type: "elm";
+          }),
       isBusy: true,
       prettyPrintJson: false,
     },

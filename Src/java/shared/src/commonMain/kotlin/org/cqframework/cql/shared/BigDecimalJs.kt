@@ -11,7 +11,19 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
 
     constructor(value: Long) : this(KtBigDecimal.fromLong(value))
 
-    constructor(value: String) : this(KtBigDecimal.parseString(value))
+    constructor(
+        value: String
+    ) : this(
+        KtBigDecimal.parseStringWithMode(
+            value,
+            DecimalMode(
+                roundingMode = KtRoundingMode.TOWARDS_ZERO,
+                // Explicitly setting the scale to make it consistent with the Java
+                // BigDecimal(String) constructor
+                scale = getScale(value),
+            ),
+        )
+    )
 
     constructor(value: Double) : this(KtBigDecimal.fromDouble(value))
 
@@ -39,7 +51,7 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
         return BigDecimalJs(
             KtBigDecimal.parseStringWithMode(
                 this.value.toPlainString(),
-                DecimalMode(roundingMode = roundingMode.toKtRoundingMode(), scale = scale.toLong()),
+                DecimalMode(roundingMode = KtRoundingMode.TOWARDS_ZERO, scale = scale.toLong()),
             )
         )
     }
@@ -129,4 +141,27 @@ enum class RoundingModeJs {
             DOWN -> KtRoundingMode.TOWARDS_ZERO
         }
     }
+}
+
+/**
+ * Determines the scale of the given stringified BigDecimal.
+ *
+ * @param value stringified BigDecimal that may contain a decimal point and/or `e`/`E`
+ * @return the number of digits to the right of the decimal point minus the exponent if present
+ */
+private fun getScale(value: String): Long {
+    val exponentIndex = value.indexOf('e', ignoreCase = true)
+    val exponent =
+        if (exponentIndex < 0) 0
+        else {
+            value.substring(exponentIndex + 1).toLongOrNull() ?: 0
+        }
+    val decimalPointIndex = value.indexOf('.')
+    if (decimalPointIndex < 0) {
+        return -exponent
+    }
+    if (exponentIndex < 0) {
+        return (value.length - decimalPointIndex - 1).toLong()
+    }
+    return exponentIndex - decimalPointIndex - 1 - exponent
 }
