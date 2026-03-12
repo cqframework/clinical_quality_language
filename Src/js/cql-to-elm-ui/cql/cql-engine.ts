@@ -195,8 +195,5 @@ export function createStatefulEngine() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function prettyPrintValue(value: Nullable<any>): string {
-  if (typeof value === "string") {
-    return `'${value}'`;
-  }
   return String(value);
 }

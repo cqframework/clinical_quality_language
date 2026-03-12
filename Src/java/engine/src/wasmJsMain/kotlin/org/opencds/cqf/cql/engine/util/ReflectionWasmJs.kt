@@ -3,40 +3,16 @@ package org.opencds.cqf.cql.engine.util
 import kotlin.reflect.KClass
 
 actual val Any.javaClassName: String
-    get() = TODO()
+    get() = kotlinClassToJavaClass(this::class).getTypeName()
 
 actual val Any.javaClassPackageName: String
-    get() = TODO()
+    get() = kotlinClassToJavaClass(this::class).getPackageName()
 
-actual class JavaClass<T> {
-    actual fun getTypeName(): String {
-        TODO()
-    }
-
-    actual fun getName(): String {
-        TODO()
-    }
-
-    actual fun getPackageName(): String {
-        TODO()
-    }
-
-    actual fun isInstance(value: Any?): Boolean {
-        TODO()
-    }
-
-    actual fun cast(value: Any?): T {
-        TODO()
-    }
-
-    actual fun isAssignableFrom(clazz: JavaClass<*>): Boolean {
-        TODO()
-    }
-}
+actual typealias JavaClass<T> = JavaClassJs<T>
 
 actual val Any.javaClass: JavaClass<*>
-    get() = TODO()
+    get() = kotlinClassToJavaClass(this::class)
 
 actual fun kotlinClassToJavaClass(kClass: KClass<*>): JavaClass<*> {
-    TODO()
+    return JavaClass(kClass)
 }
