@@ -19,6 +19,11 @@
   resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-3.2.0.tgz#3e61e21b7b2b8a6be746df1335cf91d70db2a273"
   integrity sha512-PMqgJ0sw5B7FKb2d5bWYIoxjri+QlW/Pys7+Rw82jSH0QN3rB05jZ/VrrsUdh1w4+i2kw9JOejXGq/KhDOX7Kg==
 
+"@js-joda/timezone@2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@js-joda/timezone/-/timezone-2.23.0.tgz#70558a12036b070772083ccfef1d4270ccde9c10"
+  integrity sha512-33rPV8ORT66Httd/IHQaymTZ//MbjF0WRB58JOUT0G04/a9cB5Q0RFTV1+T4XjIjHr+nY5QkO6KppqgogsJs+Q==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"

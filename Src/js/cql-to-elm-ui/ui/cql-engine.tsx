@@ -168,18 +168,7 @@ export function CqlEngineResult({
           <CqlEngineResultInner state={state} />
         </div>
       </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 5,
-          right: 5,
-          opacity: state.tabs["cql-engine"].isBusy ? 1 : 0,
-          transition: "opacity 0.2s",
-          pointerEvents: "none",
-        }}
-      >
-        <Spinner />
-      </div>
+      <Spinner active={state.tabs["cql-engine"].isBusy} />
     </div>
   );
 }
