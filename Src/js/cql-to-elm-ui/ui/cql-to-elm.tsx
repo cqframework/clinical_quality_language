@@ -66,10 +66,7 @@ export function CqlToElmResult({
                 ...prevState.tabs,
                 "cql-to-elm": {
                   ...prevState.tabs["cql-to-elm"],
-                  elm: {
-                    contentType: output.contentType,
-                    content: output.elm,
-                  },
+                  elm: output,
                   isBusy: false,
                 },
               },
@@ -180,10 +177,7 @@ export function CqlToElmResult({
                   ...prevState.tabs,
                   "cql-to-elm": {
                     ...prevState.tabs["cql-to-elm"],
-                    elm: {
-                      contentType: output.contentType,
-                      content: output.elm,
-                    },
+                    elm: output,
                     isBusy: false,
                   },
                 },
@@ -213,36 +207,29 @@ export function CqlToElmResult({
         position: "relative",
       }}
     >
-      <Editor
-        value={(() => {
-          if (state.tabs["cql-to-elm"].elm.contentType === "json") {
-            if (state.tabs["cql-to-elm"].prettyPrintJson) {
-              return prettyPrintJsonIfPossible(
-                state.tabs["cql-to-elm"].elm.content,
-              );
+      {state.tabs["cql-to-elm"].elm && (
+        <Editor
+          value={(() => {
+            if (state.tabs["cql-to-elm"].elm.contentType === "json") {
+              if (state.tabs["cql-to-elm"].prettyPrintJson) {
+                return prettyPrintJsonIfPossible(
+                  state.tabs["cql-to-elm"].elm.elm,
+                );
+              }
             }
-          }
-          return state.tabs["cql-to-elm"].elm.content;
-        })()}
-        onChange={() => {}}
-        editable={false}
-        lineNumbers={true}
-        extensions={[
-          state.tabs["cql-to-elm"].elm.contentType === "json" ? json() : xml(),
-        ]}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: 5,
-          right: 5,
-          opacity: state.tabs["cql-to-elm"].isBusy ? 1 : 0,
-          transition: "opacity 0.2s",
-          pointerEvents: "none",
-        }}
-      >
-        <Spinner />
-      </div>
+            return state.tabs["cql-to-elm"].elm.elm;
+          })()}
+          onChange={() => {}}
+          editable={false}
+          lineNumbers={true}
+          extensions={[
+            state.tabs["cql-to-elm"].elm.contentType === "json"
+              ? json()
+              : xml(),
+          ]}
+        />
+      )}
+      <Spinner active={state.tabs["cql-to-elm"].isBusy} />
     </div>
   );
 }

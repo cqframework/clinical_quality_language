@@ -44,7 +44,9 @@
     <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolveType(typeName: String?): JavaClass&lt;*></ID>
     <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun setValue(target: Any?, path: String?, value: Any?)</ID>
     <ID>CyclomaticComplexMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
+    <ID>CyclomaticComplexMethod:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>CyclomaticComplexMethod:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Any?): Any?</ID>
+    <ID>DestructuringDeclarationWithTooManyEntries:DateTimeTest.kt$DateTimeTest$( localDateTime, zoneOffsetInit, zonedOffsetGetNormalized, precision, )</ID>
     <ID>EmptyIfBlock:PropertyEvaluator.kt$PropertyEvaluator${}</ID>
     <ID>ForbiddenComment:CachingModelResolverDecoratorTest.kt$CachingModelResolverDecoratorTest$// TODO: Extend testing to cover more of the CachedModelResolver</ID>
     <ID>ForbiddenComment:ChildrenEvaluator.kt$ChildrenEvaluator$// TODO: Intervals and Tuples?</ID>
@@ -107,10 +109,10 @@
     <ID>LongMethod:CqlTypesTest.kt$CqlTypesTest$@Test fun all_types()</ID>
     <ID>LongMethod:CqlValueLiteralsAndSelectorsTest.kt$CqlValueLiteralsAndSelectorsTest$@Test fun all_value_literals_and_selectors()</ID>
     <ID>LongMethod:DateTime.kt$DateTime$override fun toString(): String</ID>
-    <ID>LongMethod:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun bigDecimals(): Array&lt;Array&lt;Any?>?></ID>
-    <ID>LongMethod:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun dateStrings(): Array&lt;Array&lt;Any>></ID>
-    <ID>LongMethod:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun dateStringsOtherZoneId(): Array&lt;Array&lt;Any>></ID>
-    <ID>LongMethod:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun offsetPrecisions(): Array&lt;Array&lt;Any>></ID>
+    <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun bigDecimal()</ID>
+    <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun dateStringsOtherZoneIdTest()</ID>
+    <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun dateStringsTest()</ID>
+    <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun offsetPrecisionsTest()</ID>
     <ID>LongMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>LongMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>LongMethod:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
@@ -133,6 +135,9 @@
     <ID>LongParameterList:MessageEvaluator.kt$MessageEvaluator$( state: State?, sourceLocator: SourceLocator?, source: Any?, condition: Boolean?, code: String?, severity: String?, message: String?, )</ID>
     <ID>LongParameterList:Profile.kt$Profile.Node$( sink: Sink, i: Int, x: Double, depth: Int, scaleX: Double, scaleY: Double, )</ID>
     <ID>LongParameterList:RetrieveProvider.kt$RetrieveProvider$( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, )</ID>
+    <ID>LongParameterList:Time.kt$( year: Int, month: Int, dayOfMonth: Int, hour: Int, minute: Int, second: Int, )</ID>
+    <ID>LongParameterList:TimeJs.kt$( year: Int, month: Int, dayOfMonth: Int, hour: Int, minute: Int, second: Int, )</ID>
+    <ID>LongParameterList:TimeJvm.kt$( year: Int, month: Int, dayOfMonth: Int, hour: Int, minute: Int, second: Int, )</ID>
     <ID>LoopWithTooManyJumpStatements:DistinctEvaluator.kt$DistinctEvaluator$for</ID>
     <ID>LoopWithTooManyJumpStatements:ProperContainsEvaluator.kt$ProperContainsEvaluator$for</ID>
     <ID>LoopWithTooManyJumpStatements:QueryEvaluator.kt$QueryEvaluator$while</ID>
@@ -163,8 +168,38 @@
     <ID>MagicNumber:SuccessorEvaluator.kt$SuccessorEvaluator$59</ID>
     <ID>MagicNumber:SuccessorEvaluator.kt$SuccessorEvaluator$999</ID>
     <ID>MagicNumber:Time.kt$Time$3</ID>
+    <ID>MagicNumber:TimeJs.kt$100</ID>
+    <ID>MagicNumber:TimeJs.kt$11</ID>
+    <ID>MagicNumber:TimeJs.kt$28</ID>
+    <ID>MagicNumber:TimeJs.kt$29</ID>
+    <ID>MagicNumber:TimeJs.kt$30</ID>
+    <ID>MagicNumber:TimeJs.kt$31</ID>
+    <ID>MagicNumber:TimeJs.kt$4</ID>
+    <ID>MagicNumber:TimeJs.kt$400</ID>
+    <ID>MagicNumber:TimeJs.kt$6</ID>
+    <ID>MagicNumber:TimeJs.kt$9</ID>
+    <ID>MagicNumber:TimeJs.kt$ChronoUnitJs$1_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$ChronoUnitJs$1_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$ChronoUnitJs$3600_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$ChronoUnitJs$60_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalDateJs$12</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$1_000_000</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$1_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$1_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$23</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$3600_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$59</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$60_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$86400_000_000_000L</ID>
+    <ID>MagicNumber:TimeJs.kt$LocalTimeJs$999</ID>
+    <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$12</ID>
     <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$1_000_000</ID>
+    <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$23</ID>
+    <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$59</ID>
+    <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$64800</ID>
+    <ID>MagicNumber:TimeJs.kt$OffsetDateTimeJs$999</ID>
     <ID>MagicNumber:Value.kt$Value$8</ID>
+    <ID>MatchingDeclarationName:TimeJs.kt$JsJodaTimeZoneModule</ID>
     <ID>MaxLineLength:AddEvaluator.kt$AddEvaluator$"Add(Integer, Integer), Add(Long, Long), Add(Decimal, Decimal), Add(Quantity, Quantity), Add(Date, Quantity), Add(DateTime, Quantity) or Add(Time, Quantity)"</ID>
     <ID>MaxLineLength:AfterEvaluator.kt$AfterEvaluator$/* *** NOTES FOR INTERVAL *** after(left Interval&lt;T>, right Interval&lt;T>) Boolean after(left T, right Interval&lt;T>) Boolean after(left Interval&lt;T>, right T) Boolean The after operator for intervals returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval. For the point-interval overload, the operator returns true if the given point is greater than the end of the interval. For the interval-point overload, the operator returns true if the given interval starts after the given point. This operator uses the semantics described in the Start and End operators to determine interval boundaries. If either argument is null, the result is null. *** NOTES FOR DATETIME *** after _precision_ of(left Date, right Date) Boolean after _precision_ of(left DateTime, right DateTime) Boolean after _precision_ of(left Time, right Time) Boolean The after-precision-of operator compares two date/time values to the specified precision to determine whether the first argument is the after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is false. If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input. For Date values, precision must be one of: year, month, or day. For DateTime values, precision must be one of: year, month, day, hour, minute, second, or millisecond. For Time values, precision must be one of: hour, minute, second, or millisecond. Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported. When this operator is called with both Date and DateTime inputs, the Date values will be implicitly converted to DateTime values as defined by the ToDateTime operator. As with all date/time calculations, comparisons are performed respecting the timezone offset. If either or both arguments are null, the result is null. */</ID>
     <ID>MaxLineLength:AndEvaluator.kt$AndEvaluator$"And(${if (left == null) "Null" else left.javaClassName}, ${if (right == null) "Null" else right.javaClassName})"</ID>
@@ -194,6 +229,8 @@
     <ID>MaxLineLength:CqlEngineMultipleLibrariesTest.kt$CqlEngineMultipleLibrariesTest$"Library NameMismatch was included with version null, but id: MismatchName and version null of the library was found."</ID>
     <ID>MaxLineLength:DateTimeComponentFromEvaluator.kt$DateTimeComponentFromEvaluator$/* _precision_ from(argument Date) Integer _precision_ from(argument DateTime) Integer _precision_ from(argument Time) Integer timezoneoffset from(argument DateTime) Decimal date from(argument DateTime) Date time from(argument DateTime) Time The component-from operator returns the specified component of the argument. For Date values, precision must be one of: year, month, or day. For DateTime values, precision must be one of: year, month, day, hour, minute, second, or millisecond. For Time values, precision must be one of: hour, minute, second, or millisecond. Note specifically that due to variability in the way week numbers are determined, extraction of a week component is not supported. When extracting the Time from a DateTime value, implementations should normalize to the timezone offset of the evaluation request timestamp. If the argument is null, or is not specified to the level of precision being extracted, the result is null. The following examples illustrate the behavior of the component-from operator: define MonthFrom: month from DateTime(2012, 1, 1, 12, 30, 0, 0, -7) // 1 define TimeZoneOffsetFrom: timezoneoffset from DateTime(2012, 1, 1, 12, 30, 0, 0, -7) // -7.0 define DateFrom: date from DateTime(2012, 1, 1, 12, 30, 0, 0, -7) // @2012-01-01 define TimeFrom: time from DateTime(2012, 1, 1, 12, 30, 0, 0, -7) // @T12:30:00.000-07:00 define MonthFromIsNull: month from DateTime(2012) */</ID>
     <ID>MaxLineLength:DateTimeEvaluator.kt$DateTimeEvaluator$/* simple type DateTime The DateTime type represents date and time values with potential uncertainty within CQL. CQL supports date and time values in the range @0001-01-01T00:00:00.0 to @9999-12-31T23:59:59.999 with a 1 millisecond step size. */</ID>
+    <ID>MaxLineLength:DateTimeTest.kt$DateTimeTest$"TEST: ${dateTime.dateTime == normalizedDateTime}, offset: $offset, precision: $precision, dateElements: $dateElements, actualDateTime: $normalizedDateTime, expectedDateTime: ${dateTime.dateTime}"</ID>
+    <ID>MaxLineLength:DateTimeTest.kt$DateTimeTest.Companion$return "${localDateTime.getYear().toPaddedString(4)}-${localDateTime.getMonthValue().toPaddedString(2)}-${localDateTime.getDayOfMonth().toPaddedString(2)}T${localDateTime.getHour().toPaddedString(2)}:${localDateTime.getMinute().toPaddedString(2)}:${localDateTime.getSecond().toPaddedString(2)}"</ID>
     <ID>MaxLineLength:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$/* difference in _precision_ between(low Date, high Date) Integer difference in _precision_ between(low DateTime, high DateTime) Integer difference in _precision_ between(low Time, high Time) Integer The difference-between operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped. As with all date/time calculations, difference calculations are performed respecting the timezone offset depending on the precision. For Date values, precision must be one of: years, months, weeks, or days. For DateTime values, precision must be one of: years, months, weeks, days, hours, minutes, seconds, or milliseconds. For Time values, precision must be one of: hours, minutes, seconds, or milliseconds. For calculations involving weeks, Sunday is considered to be the first day of the week for the purposes of determining the number of boundaries crossed. When this operator is called with both Date and DateTime inputs, the Date values will be implicitly converted to DateTime as defined by the ToDateTime operator. If either argument is null, the result is null. Additional Complexity: precision elements above the specified precision must also be accounted for. For example: days between DateTime(2011, 5, 1) and DateTime(2012, 5, 6) = 365 + 5 = 370 days NOTE: This is the same operation as DurationBetween, but the precision after the specified precision is truncated to get the number of boundaries crossed instead of whole calendar periods. For Example: difference in days between DateTime(2014, 5, 12, 12, 10) and DateTime(2014, 5, 25, 15, 55) will truncate the DateTimes to: DateTime(2014, 5, 12) and DateTime(2014, 5, 25) respectively */</ID>
     <ID>MaxLineLength:EndsEvaluator.kt$EndsEvaluator$/* ends _precision_ (left Interval&lt;T>, right Interval&lt;T>) Boolean The ends operator returns true if the first interval ends the second. More precisely, if the starting point of the first interval is greater than or equal to the starting point of the second, and the ending point of the first interval is equal to the ending point of the second. This operator uses the semantics described in the start and end operators to determine interval boundaries. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision. If either argument is null, the result is null. */</ID>
     <ID>MaxLineLength:EqualEvaluator.kt$EqualEvaluator$/* *** NOTES FOR CLINICAL OPERATORS *** =(left Code, right Code) Boolean =(left Concept, right Concept) Boolean The equal (=) operator for Codes and Concepts uses tuple equality semantics. This means that the operator will return true if and only if the values for each element by name are equal. If either argument is null, or contains any null components, the result is null. *** NOTES FOR INTERVAL *** =(left Interval&lt;T>, right Interval&lt;T>) Boolean The equal (=) operator for intervals returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the intervals as determined by the Start and End operators. If either argument is null, the result is null. *** NOTES FOR LIST *** =(left List&lt;T>, right List&lt;T>) Boolean The equal (=) operator for lists returns true if and only if the lists have the same element type, and have the same elements by value, in the same order. If either argument is null, or contains null elements, the result is null. */</ID>
@@ -446,6 +483,7 @@
     <ID>ReturnCount:Time.kt$Time$override fun compare(other: BaseTemporal, forSort: Boolean): Int?</ID>
     <ID>ReturnCount:Time.kt$Time$override fun compareToPrecision(other: BaseTemporal, p: Precision): Int?</ID>
     <ID>ReturnCount:TimeFromEvaluator.kt$TimeFromEvaluator$@JvmStatic fun timeFrom(operand: Any?): Any?</ID>
+    <ID>ReturnCount:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>ReturnCount:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Any?): Any?</ID>
     <ID>ReturnCount:ToConceptEvaluator.kt$ToConceptEvaluator$@JvmStatic fun toConcept(operand: Any?): Any?</ID>
     <ID>ReturnCount:ToDateEvaluator.kt$ToDateEvaluator$@JvmStatic fun toDate(operand: Any?): Any?</ID>
@@ -494,6 +532,7 @@
     <ID>ThrowsCount:LnEvaluator.kt$LnEvaluator$@JvmStatic fun ln(operand: Any?): Any?</ID>
     <ID>ThrowsCount:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Any?): Any?</ID>
     <ID>ThrowsCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
+    <ID>ThrowsCount:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>TooGenericExceptionCaught:ConvertEvaluator.kt$ConvertEvaluator$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertQuantityEvaluator.kt$ConvertQuantityEvaluator$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertsToDateEvaluator.kt$ConvertsToDateEvaluator$e: Exception</ID>
@@ -534,6 +573,8 @@
     <ID>TooManyFunctions:TimeJs.kt$OffsetDateTimeJs : TemporalJs</ID>
     <ID>TooManyFunctions:TimeJs.kt$org.opencds.cqf.cql.engine.util.TimeJs.kt</ID>
     <ID>TooManyFunctions:TimeJvm.kt$org.opencds.cqf.cql.engine.util.TimeJvm.kt</ID>
+    <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownPackageName = "unknown"</ID>
+    <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownSimpleName = "Unknown"</ID>
     <ID>UnusedParameter:LengthEvaluator.kt$LengthEvaluator$state: State?</ID>
     <ID>UnusedParameter:NullEvaluator.kt$NullEvaluator$state: State?</ID>
     <ID>UnusedParameter:QuantityEvaluator.kt$QuantityEvaluator$state: State?</ID>
@@ -542,50 +583,9 @@
     <ID>UnusedParameter:RepeatEvaluator.kt$RepeatEvaluator$source: Any?</ID>
     <ID>UnusedParameter:RepeatEvaluator.kt$RepeatEvaluator$state: State?</ID>
     <ID>UnusedParameter:State.kt$State$library: Library?</ID>
-    <ID>UnusedParameter:TimeJs.kt$CalendarJs$date: Date</ID>
-    <ID>UnusedParameter:TimeJs.kt$ChronoUnitJs$end: Temporal</ID>
-    <ID>UnusedParameter:TimeJs.kt$ChronoUnitJs$start: Temporal</ID>
-    <ID>UnusedParameter:TimeJs.kt$DateJs$that: Date</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$amountToAdd: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$amountToSubtract: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$dayOfMonth: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$dayOfYear: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$field: TemporalField</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$field: TemporalUnit</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$newValue: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$years: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalDateJs$zone: ZoneId</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$amountToAdd: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$amountToSubtract: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$field: TemporalField</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$hours: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$newValue: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$LocalTimeJs$unit: TemporalUnit</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$dayOfMonth: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$dayOfYear: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$field: TemporalField</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$newValue: Long</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$offset: ZoneOffset</ID>
-    <ID>UnusedParameter:TimeJs.kt$OffsetDateTimeJs$unit: TemporalUnit</ID>
-    <ID>UnusedParameter:TimeJs.kt$ZoneOffsetJs$field: TemporalField</ID>
-    <ID>UnusedParameter:TimeJs.kt$dateTime: OffsetDateTime</ID>
-    <ID>UnusedParameter:TimeJs.kt$dayOfMonth: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$hours: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$instant: Instant</ID>
-    <ID>UnusedParameter:TimeJs.kt$minutes: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$month: Int</ID>
-    <ID>UnusedParameter:TimeJs.kt$offset: ZoneId</ID>
-    <ID>UnusedParameter:TimeJs.kt$s: String</ID>
-    <ID>UnusedParameter:TimeJs.kt$text: String</ID>
-    <ID>UnusedParameter:TimeJs.kt$year: Int</ID>
     <ID>UnusedPrivateMember:CqlEngineMultipleLibrariesTest.kt$CqlEngineMultipleLibrariesTest.Companion$@JvmStatic private fun libraryWithVersionQueriesParams(): Stream&lt;Arguments></ID>
     <ID>UnusedPrivateMember:CqlInternalTypeRepresentationSuiteTest.kt$CqlInternalTypeRepresentationSuiteTest.Companion$@JvmStatic private fun timeZones(): Array&lt;Array&lt;Any>></ID>
     <ID>UnusedPrivateMember:CqlPerformanceIT.kt$CqlPerformanceIT.Companion$@JvmStatic private fun engineOptionCombinations(): Stream&lt;MutableSet&lt;CqlEngine.Options>></ID>
-    <ID>UnusedPrivateMember:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun bigDecimals(): Array&lt;Array&lt;Any?>?></ID>
-    <ID>UnusedPrivateMember:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun dateStrings(): Array&lt;Array&lt;Any>></ID>
-    <ID>UnusedPrivateMember:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun dateStringsOtherZoneId(): Array&lt;Array&lt;Any>></ID>
-    <ID>UnusedPrivateMember:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun offsetPrecisions(): Array&lt;Array&lt;Any>></ID>
-    <ID>UnusedPrivateMember:DateTimeTest.kt$DateTimeTest.Companion$@JvmStatic private fun timeZones(): Array&lt;Array&lt;Any>></ID>
     <ID>UnusedPrivateMember:DebugMap.kt$DebugMap$private fun ensureLibraryMap(libraryName: String?): DebugLibraryMapEntry</ID>
     <ID>UnusedPrivateMember:InvalidCqlLibraryIdentifierMismatchTest.kt$InvalidCqlLibraryIdentifierMismatchTest.Companion$@JvmStatic private fun evaluateWithMatchedLibraryIdsParams(): Stream&lt;Arguments></ID>
     <ID>UnusedPrivateMember:InvalidCqlLibraryIdentifierMismatchTest.kt$InvalidCqlLibraryIdentifierMismatchTest.Companion$@JvmStatic private fun evaluateWithMismatchedLibraryIdsParams(): Stream&lt;Arguments></ID>

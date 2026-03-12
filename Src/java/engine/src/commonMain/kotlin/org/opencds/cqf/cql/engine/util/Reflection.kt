@@ -10,7 +10,7 @@ expect val Any.javaClassName: String
 
 expect val Any.javaClassPackageName: String
 
-expect class JavaClass<T> {
+expect class JavaClass<T : Any> {
     fun getTypeName(): String
 
     fun getName(): String

@@ -160,7 +160,9 @@ export function CqlPlayground() {
             display: "grid",
             gridTemplateColumns: "1fr",
             gridTemplateRows: "4fr 1fr",
-            gridTemplateAreas: '"editors" "log"',
+            gridTemplateAreas: state.common.showLog
+              ? '"editors" "log"'
+              : '"editors" "editors"',
             minHeight: 0,
             background: "white",
           }}
@@ -196,34 +198,36 @@ export function CqlPlayground() {
               {<selectedTab.result state={state} setState={setState} />}
             </div>
           </div>
-          <div
-            style={{
-              gridArea: "log",
-              display: "grid",
-              minHeight: 0,
-              borderTop: "var(--border)",
-            }}
-          >
-            <Editor
-              value={state.common.log.join("\n")}
-              onChange={() => {}}
-              editable={false}
-              lineNumbers={false}
-              extensions={[
-                logLanguage,
-                EditorView.updateListener.of((update) => {
-                  if (update.docChanged) {
-                    update.view.dispatch({
-                      effects: EditorView.scrollIntoView(
-                        update.state.doc.length,
-                        { y: "end" },
-                      ),
-                    });
-                  }
-                }),
-              ]}
-            />
-          </div>
+          {state.common.showLog && (
+            <div
+              style={{
+                gridArea: "log",
+                display: "grid",
+                minHeight: 0,
+                borderTop: "var(--border)",
+              }}
+            >
+              <Editor
+                value={state.common.log.join("\n")}
+                onChange={() => {}}
+                editable={false}
+                lineNumbers={false}
+                extensions={[
+                  logLanguage,
+                  EditorView.updateListener.of((update) => {
+                    if (update.docChanged) {
+                      update.view.dispatch({
+                        effects: EditorView.scrollIntoView(
+                          update.state.doc.length,
+                          { y: "end" },
+                        ),
+                      });
+                    }
+                  }),
+                ]}
+              />
+            </div>
+          )}
         </div>
 
         <div
@@ -539,7 +543,51 @@ export function CqlPlayground() {
             <selectedTab.settings state={state} setState={setState} />
 
             <div>
+              <Label>CQL Editor</Label>
+              <label style={{ display: "flex", gap: 5 }}>
+                <input
+                  type={"checkbox"}
+                  style={{
+                    margin: 0,
+                  }}
+                  checked={state.common.highlightActiveStatement}
+                  onChange={(event) => {
+                    const nextChecked = event.target.checked;
+                    setState((prevState) => ({
+                      ...prevState,
+                      common: {
+                        ...prevState.common,
+                        highlightActiveStatement: nextChecked,
+                      },
+                    }));
+                  }}
+                />
+                <div>Highlight active statement</div>
+              </label>
+            </div>
+
+            <div>
               <Label>Tool logging</Label>
+              <label style={{ display: "flex", gap: 5, margin: "0 0 10px 0" }}>
+                <input
+                  type={"checkbox"}
+                  style={{
+                    margin: 0,
+                  }}
+                  checked={state.common.showLog}
+                  onChange={(event) => {
+                    const nextChecked = event.target.checked;
+                    setState((prevState) => ({
+                      ...prevState,
+                      common: {
+                        ...prevState.common,
+                        showLog: nextChecked,
+                      },
+                    }));
+                  }}
+                />
+                <div>Show log</div>
+              </label>
               <button
                 type={"button"}
                 style={{

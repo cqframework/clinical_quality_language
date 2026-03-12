@@ -26,6 +26,16 @@ kotlin {
                 api("org.apache.commons:commons-text:1.10.0")
             }
         }
+        jsMain {
+            dependencies {
+                implementation(npm("@js-joda/timezone", "2.23.0"))
+            }
+        }
+        wasmJsMain {
+            dependencies {
+                implementation(npm("@js-joda/timezone", "2.23.0"))
+            }
+        }
         jvmTest {
             dependencies {
                 implementation(project(":ucum"))

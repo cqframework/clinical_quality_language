@@ -54,7 +54,13 @@ kotlin {
                 enabled = false
             }
         }
-        nodejs()
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "30s"
+                }
+            }
+        }
         binaries.library()
         generateTypeScriptDefinitions()
     }
