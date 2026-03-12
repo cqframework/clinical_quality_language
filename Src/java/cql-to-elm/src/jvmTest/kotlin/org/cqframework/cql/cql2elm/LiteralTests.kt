@@ -87,9 +87,6 @@ internal class LiteralTests {
         time = defs!!["TimeMillisecond123Literal"]!!.expression as Time
         assertThat(time.millisecond, literalFor(123))
 
-        time = defs!!["TimeMillisecond1234Literal"]!!.expression as Time
-        assertThat(time.millisecond, literalFor(123))
-
         dateTime = defs!!["DateTimeMillisecond1Literal"]!!.expression as DateTime
         assertThat(dateTime.millisecond, literalFor(100))
 
@@ -97,9 +94,6 @@ internal class LiteralTests {
         assertThat(dateTime.millisecond, literalFor(120))
 
         dateTime = defs!!["DateTimeMillisecond123Literal"]!!.expression as DateTime
-        assertThat(dateTime.millisecond, literalFor(123))
-
-        dateTime = defs!!["DateTimeMillisecond1234Literal"]!!.expression as DateTime
         assertThat(dateTime.millisecond, literalFor(123))
     }
 

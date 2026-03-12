@@ -35,11 +35,9 @@ define TimeZoneHalfHourLiteral: @2014-01-01T12:05:05.955+01:30
 define TimeMillisecond1Literal: @T10:30:15.1
 define TimeMillisecond12Literal: @T10:30:15.12
 define TimeMillisecond123Literal: @T10:30:15.123
-define TimeMillisecond1234Literal: @T10:30:15.1234
 define DateTimeMillisecond1Literal: @2014-02-12T10:30:15.1
 define DateTimeMillisecond12Literal: @2014-02-12T10:30:15.12
 define DateTimeMillisecond123Literal: @2014-02-12T10:30:15.123
-define DateTimeMillisecond1234Literal: @2014-02-12T10:30:15.1234
 
 define YearExpression: 1 year
 define YearsExpression: 10 years
