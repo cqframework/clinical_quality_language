@@ -820,7 +820,7 @@ class Cql2ElmVisitor(
                     result.second = libraryBuilder.createLiteral(second)
                 }
                 if (matcher.groups[7] != null) {
-                    millisecond = matcher.groups[7]!!.value.padEnd(3, '0').substring(0, 3).toInt()
+                    millisecond = matcher.groups[7]!!.value.padEnd(3, '0').toInt()
                     require(hour == 24 && millisecond == 0 || millisecond >= 0) {
                         "Invalid millisecond in time literal ($millisecond)."
                     }
@@ -947,7 +947,7 @@ class Cql2ElmVisitor(
                     result.second = libraryBuilder.createLiteral(second)
                 }
                 if (matcher.groups[19] != null) {
-                    millisecond = matcher.groups[19]!!.value.padEnd(3, '0').substring(0, 3).toInt()
+                    millisecond = matcher.groups[19]!!.value.padEnd(3, '0').toInt()
                     require(millisecond >= 0 && !(hour == 24 && millisecond > 0)) {
                         "Invalid millisecond in date/time literal ($input)."
                     }
