@@ -793,7 +793,7 @@ class Cql2ElmVisitor(
         if (input.startsWith("@")) {
             input = input.substring(1)
         }
-        val timePattern = Regex("T(\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d{1,3}))?)?)?")
+        val timePattern = Regex("T(\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?")
         // -1-------2---3-------4---5-------6---7-----------
         val matcher = timePattern.matchEntire(input)
         return if (matcher != null) {
@@ -820,7 +820,7 @@ class Cql2ElmVisitor(
                     result.second = libraryBuilder.createLiteral(second)
                 }
                 if (matcher.groups[7] != null) {
-                    millisecond = matcher.groups[7]!!.value.padEnd(3, '0').toInt()
+                    millisecond = matcher.groups[7]!!.value.padEnd(3, '0').substring(0, 3).toInt()
                     require(hour == 24 && millisecond == 0 || millisecond >= 0) {
                         "Invalid millisecond in time literal ($millisecond)."
                     }
@@ -865,7 +865,7 @@ class Cql2ElmVisitor(
          */
         val dateTimePattern =
             Regex(
-                "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d{1,3}))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(:(\\d{2}))))?"
+                "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(:(\\d{2}))))?"
             )
         // 1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
         // ----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
@@ -947,7 +947,7 @@ class Cql2ElmVisitor(
                     result.second = libraryBuilder.createLiteral(second)
                 }
                 if (matcher.groups[19] != null) {
-                    millisecond = matcher.groups[19]!!.value.padEnd(3, '0').toInt()
+                    millisecond = matcher.groups[19]!!.value.padEnd(3, '0').substring(0, 3).toInt()
                     require(millisecond >= 0 && !(hour == 24 && millisecond > 0)) {
                         "Invalid millisecond in date/time literal ($input)."
                     }
