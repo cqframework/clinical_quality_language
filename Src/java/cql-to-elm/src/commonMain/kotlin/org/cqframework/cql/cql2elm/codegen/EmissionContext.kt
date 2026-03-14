@@ -14,7 +14,9 @@ import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
 import org.hl7.cql.ast.DateTimeComponentExpression
 import org.hl7.cql.ast.DifferenceBetweenExpression
+import org.hl7.cql.ast.DifferenceOfExpression
 import org.hl7.cql.ast.DurationBetweenExpression
+import org.hl7.cql.ast.DurationOfExpression
 import org.hl7.cql.ast.ElementExtractorExpression
 import org.hl7.cql.ast.ExistsExpression
 import org.hl7.cql.ast.Expression
@@ -122,6 +124,8 @@ class EmissionContext(
                 is DateTimeComponentExpression -> emitDateTimeComponent(expression)
                 is DurationBetweenExpression -> emitDurationBetween(expression)
                 is DifferenceBetweenExpression -> emitDifferenceBetween(expression)
+                is DurationOfExpression -> emitDurationOf(expression)
+                is DifferenceOfExpression -> emitDifferenceOf(expression)
                 is TimeBoundaryExpression -> emitTimeBoundary(expression)
                 is WidthExpression -> emitWidth(expression)
                 is ElementExtractorExpression -> emitElementExtractor(expression)

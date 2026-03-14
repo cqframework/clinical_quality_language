@@ -43,9 +43,6 @@ define MaximumTime: maximum Time
 // Exists
 define ExistsList: exists { 1, 2, 3 }
 
-// Between
-define BetweenExpression: 5 between 1 and 10
-
 // Interval operators
 define ContainsExpression: Interval[1, 10] contains 5
 define InExpression: 5 in Interval[1, 10]

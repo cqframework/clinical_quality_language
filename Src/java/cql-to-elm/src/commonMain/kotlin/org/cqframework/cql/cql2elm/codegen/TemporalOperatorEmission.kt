@@ -3,7 +3,9 @@ package org.cqframework.cql.cql2elm.codegen
 import org.hl7.cql.ast.DateTimeComponent
 import org.hl7.cql.ast.DateTimeComponentExpression
 import org.hl7.cql.ast.DifferenceBetweenExpression
+import org.hl7.cql.ast.DifferenceOfExpression
 import org.hl7.cql.ast.DurationBetweenExpression
+import org.hl7.cql.ast.DurationOfExpression
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TimeBoundaryKind
 import org.hl7.elm.r1.DateFrom
@@ -56,6 +58,34 @@ internal fun EmissionContext.emitDifferenceBetween(
     return DifferenceBetween().apply {
         precision = precisionStringToEnum(expression.precision)
         operand = mutableListOf(lowerElm, upperElm)
+    }
+}
+
+/**
+ * Emit a [DurationOfExpression] (`duration in days of X`) as DurationBetween(Start(X), End(X)). The
+ * legacy translator wraps the interval operand in Start/End and emits DurationBetween.
+ */
+internal fun EmissionContext.emitDurationOf(expression: DurationOfExpression): ElmExpression {
+    val operandElm = emitExpression(expression.operand)
+    val start = org.hl7.elm.r1.Start().apply { operand = operandElm }
+    val end = org.hl7.elm.r1.End().apply { operand = operandElm }
+    return DurationBetween().apply {
+        precision = precisionStringToEnum(expression.precision)
+        operand = mutableListOf(start, end)
+    }
+}
+
+/**
+ * Emit a [DifferenceOfExpression] (`difference in days of X`) as DifferenceBetween(Start(X),
+ * End(X)).
+ */
+internal fun EmissionContext.emitDifferenceOf(expression: DifferenceOfExpression): ElmExpression {
+    val operandElm = emitExpression(expression.operand)
+    val start = org.hl7.elm.r1.Start().apply { operand = operandElm }
+    val end = org.hl7.elm.r1.End().apply { operand = operandElm }
+    return DifferenceBetween().apply {
+        precision = precisionStringToEnum(expression.precision)
+        operand = mutableListOf(start, end)
     }
 }
 
