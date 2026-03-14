@@ -117,4 +117,56 @@ class TypeResolverTest {
         assertNotNull(type)
         assertEquals(registry.type("Quantity"), type)
     }
+
+    @Test
+    fun `implies operator resolves to Boolean`() {
+        val type =
+            resolveAndGetExprType("library Test using System\ndefine X: true implies false", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is null resolves to Boolean`() {
+        val type = resolveAndGetExprType("library Test using System\ndefine X: 1 is null", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is true resolves to Boolean`() {
+        val type = resolveAndGetExprType("library Test using System\ndefine X: true is true", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is false resolves to Boolean`() {
+        val type = resolveAndGetExprType("library Test using System\ndefine X: false is false", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is not null resolves to Boolean`() {
+        val type = resolveAndGetExprType("library Test using System\ndefine X: 1 is not null", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is not true resolves to Boolean`() {
+        val type =
+            resolveAndGetExprType("library Test using System\ndefine X: true is not true", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
+
+    @Test
+    fun `is not false resolves to Boolean`() {
+        val type =
+            resolveAndGetExprType("library Test using System\ndefine X: false is not false", "X")
+        assertNotNull(type)
+        assertEquals(registry.type("Boolean"), type)
+    }
 }

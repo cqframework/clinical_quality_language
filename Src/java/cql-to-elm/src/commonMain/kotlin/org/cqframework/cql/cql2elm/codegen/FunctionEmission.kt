@@ -47,7 +47,19 @@ internal fun EmissionContext.emitIndexExpression(expression: IndexExpression): E
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression): ElmExpression {
     val functionName = expression.function.value
-    val args = expression.arguments.map { emitExpression(it) }
+    val rawArgs = expression.arguments.map { emitExpression(it) }
+
+    // Apply implicit conversions from the operator resolution, matching binary/unary operator
+    // emission behavior. This ensures type conversions (e.g., Integer -> Decimal) are applied.
+    val args = rawArgs.toMutableList()
+    val resolution = lookupResolution(expression)
+    if (resolution != null) {
+        applyConversions(resolution) { index, convName ->
+            if (index in args.indices) {
+                args[index] = wrapConversion(args[index], convName)
+            }
+        }
+    }
 
     return when (functionName) {
         // Nullological
