@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm.frontend
 
-import org.cqframework.cql.cql2elm.ast.OperatorRegistry
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanLiteral

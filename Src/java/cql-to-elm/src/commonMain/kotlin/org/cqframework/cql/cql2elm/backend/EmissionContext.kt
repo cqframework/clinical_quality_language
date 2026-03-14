@@ -1,5 +1,6 @@
-package org.cqframework.cql.cql2elm.ast
+package org.cqframework.cql.cql2elm.backend
 
+import org.cqframework.cql.cql2elm.frontend.OperatorRegistry
 import org.cqframework.cql.cql2elm.frontend.SymbolTable
 import org.cqframework.cql.cql2elm.frontend.TypeTable
 import org.cqframework.cql.cql2elm.model.OperatorResolution

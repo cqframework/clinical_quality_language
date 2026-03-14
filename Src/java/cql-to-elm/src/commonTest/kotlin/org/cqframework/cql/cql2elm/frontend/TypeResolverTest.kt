@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import org.cqframework.cql.cql2elm.ast.OperatorRegistry
 import org.hl7.cql.ast.Builder
 
 class TypeResolverTest {
