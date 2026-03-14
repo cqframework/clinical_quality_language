@@ -14,7 +14,9 @@ import org.hl7.cql.ast.DateTimeComponentExpression
 import org.hl7.cql.ast.DateTimeLiteral
 import org.hl7.cql.ast.DecimalLiteral
 import org.hl7.cql.ast.DifferenceBetweenExpression
+import org.hl7.cql.ast.DifferenceOfExpression
 import org.hl7.cql.ast.DurationBetweenExpression
+import org.hl7.cql.ast.DurationOfExpression
 import org.hl7.cql.ast.ElementExtractorExpression
 import org.hl7.cql.ast.ExistsExpression
 import org.hl7.cql.ast.Expression
@@ -189,6 +191,9 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
                     inferDurationBetweenType(expression, typeTable, symbolTable)
                 is DifferenceBetweenExpression ->
                     inferDifferenceBetweenType(expression, typeTable, symbolTable)
+                is DurationOfExpression -> inferDurationOfType(expression, typeTable, symbolTable)
+                is DifferenceOfExpression ->
+                    inferDifferenceOfType(expression, typeTable, symbolTable)
                 is TimeBoundaryExpression ->
                     inferTimeBoundaryType(expression, typeTable, symbolTable)
                 is WidthExpression -> inferWidthType(expression, typeTable, symbolTable)
@@ -550,6 +555,24 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         inferType(expression.left, typeTable, symbolTable)
         inferType(expression.right, typeTable, symbolTable)
         return operatorRegistry.type("Boolean")
+    }
+
+    private fun inferDurationOfType(
+        expression: DurationOfExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        return operatorRegistry.type("Integer")
+    }
+
+    private fun inferDifferenceOfType(
+        expression: DifferenceOfExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        return operatorRegistry.type("Integer")
     }
 
     private fun inferIntervalRelationType(
