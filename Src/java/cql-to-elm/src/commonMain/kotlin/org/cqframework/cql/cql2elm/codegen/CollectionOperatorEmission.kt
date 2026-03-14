@@ -14,10 +14,8 @@ import org.hl7.elm.r1.And
 import org.hl7.elm.r1.Contains
 import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression as ElmExpression
-import org.hl7.elm.r1.Greater
 import org.hl7.elm.r1.GreaterOrEqual
 import org.hl7.elm.r1.In
-import org.hl7.elm.r1.Less
 import org.hl7.elm.r1.LessOrEqual
 import org.hl7.elm.r1.MaxValue
 import org.hl7.elm.r1.MinValue
@@ -57,26 +55,19 @@ internal fun EmissionContext.emitTypeExtent(expression: TypeExtentExpression): E
 }
 
 /**
- * Emit a [BetweenExpression] (`X between Y and Z`). For non-interval inputs, the legacy translator
- * emits `And(GreaterOrEqual(X, Y), LessOrEqual(X, Z))` (or Greater/Less for `properly between`).
+ * Emit a [BetweenExpression] (`X between Y and Z`). The legacy translator always emits
+ * `And(GreaterOrEqual(X, Y), LessOrEqual(X, Z))` regardless of the `properly` flag — the legacy has
+ * a bug where `isProper` is always false (it checks `ctx.getChild(0).text == "properly"` but child
+ * 0 is the expression, not the keyword). We match this behavior for parity.
  */
 internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpression {
     val inputElm = emitExpression(expression.input)
     val lowerElm = emitExpression(expression.lower)
     val upperElm = emitExpression(expression.upper)
 
-    val leftCmp =
-        if (expression.properly) {
-            Greater().apply { operand = mutableListOf(inputElm, lowerElm) }
-        } else {
-            GreaterOrEqual().apply { operand = mutableListOf(inputElm, lowerElm) }
-        }
-    val rightCmp =
-        if (expression.properly) {
-            Less().apply { operand = mutableListOf(inputElm, upperElm) }
-        } else {
-            LessOrEqual().apply { operand = mutableListOf(inputElm, upperElm) }
-        }
+    // NOTE: properly flag intentionally ignored to match legacy bug (see comment above)
+    val leftCmp = GreaterOrEqual().apply { operand = mutableListOf(inputElm, lowerElm) }
+    val rightCmp = LessOrEqual().apply { operand = mutableListOf(inputElm, upperElm) }
     return And().apply { operand = mutableListOf(leftCmp, rightCmp) }
 }
 
