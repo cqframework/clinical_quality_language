@@ -1660,12 +1660,75 @@ class Builder(private val sourceId: String? = null) {
             column = this.charPositionInLine,
         )
 
-    private fun String.unquote(): String =
-        when {
-            length >= 2 && startsWith("'") && endsWith("'") -> substring(1, length - 1)
-            length >= 2 && startsWith("\"") && endsWith("\"") -> substring(1, length - 1)
-            else -> this
+    private fun String.unquote(): String {
+        val stripped =
+            when {
+                length >= 2 && startsWith("'") && endsWith("'") -> substring(1, length - 1)
+                length >= 2 && startsWith("\"") && endsWith("\"") -> substring(1, length - 1)
+                else -> return this
+            }
+        return stripped.unescapeCql()
+    }
+
+    /**
+     * Unescape CQL escape sequences in a string. CQL supports: `\'` `\"` `` \` `` `\\` `\/` `\f`
+     * `\n` `\r` `\t` `\uXXXX`
+     */
+    @Suppress("MagicNumber")
+    private fun String.unescapeCql(): String {
+        if (!contains('\\')) return this
+        val sb = StringBuilder(length)
+        var i = 0
+        while (i < length) {
+            val c = this[i]
+            if (c == '\\' && i + 1 < length) {
+                val next = this[i + 1]
+                when (next) {
+                    '\'',
+                    '"',
+                    '`',
+                    '\\',
+                    '/' -> {
+                        sb.append(next)
+                        i += 2
+                    }
+                    'f' -> {
+                        sb.append('\u000c')
+                        i += 2
+                    }
+                    'n' -> {
+                        sb.append('\n')
+                        i += 2
+                    }
+                    'r' -> {
+                        sb.append('\r')
+                        i += 2
+                    }
+                    't' -> {
+                        sb.append('\t')
+                        i += 2
+                    }
+                    'u' ->
+                        if (i + 5 < length) {
+                            val hex = substring(i + 2, i + 6)
+                            sb.append(hex.toInt(16).toChar())
+                            i += 6
+                        } else {
+                            sb.append(c)
+                            i++
+                        }
+                    else -> {
+                        sb.append(c)
+                        i++
+                    }
+                }
+            } else {
+                sb.append(c)
+                i++
+            }
         }
+        return sb.toString()
+    }
 
     private fun String.removeTickEscapes(): String =
         when {

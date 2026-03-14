@@ -47,3 +47,6 @@ define ConvertsToDateTest: ConvertsToDate('2014-01-01')
 define ConvertsToDateTimeTest: ConvertsToDateTime('2014-01-01T00:00:00.0')
 define ConvertsToTimeTest: ConvertsToTime('T00:00:00.0')
 define ConvertsToQuantityTest: ConvertsToQuantity(1)
+
+define StringToQuantity: convert '3.0 \'m\'' to Quantity
+define StringToQuantityFun: ToQuantity('3.0 \'m\'')
