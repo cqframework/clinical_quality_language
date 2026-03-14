@@ -1,8 +1,10 @@
 package org.cqframework.cql.cql2elm.ast
 
-import org.cqframework.cql.cql2elm.ast.ElmEmitter.UnsupportedNodeException
 import org.cqframework.cql.cql2elm.frontend.SymbolTable
+import org.cqframework.cql.cql2elm.frontend.TypeResolver
 import org.cqframework.cql.cql2elm.frontend.TypeTable
+import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
@@ -46,8 +48,10 @@ import org.hl7.elm.r1.Code
 import org.hl7.elm.r1.CodeSystemRef
 import org.hl7.elm.r1.Concatenate
 import org.hl7.elm.r1.Concept
+import org.hl7.elm.r1.Date as ElmDate
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.Divide
+import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Equal
 import org.hl7.elm.r1.Equivalent
 import org.hl7.elm.r1.Expression as ElmExpression
@@ -85,18 +89,17 @@ import org.hl7.elm.r1.VersionedIdentifier
 import org.hl7.elm.r1.Xor
 
 /**
- * Converts the CQL AST into an equivalent ELM representation. The emitter focuses on structural
- * parity with the legacy parse-tree visitor and will grow to cover the full language surface area.
+ * Converts the CQL AST into an equivalent ELM representation. The emitter reads types from the
+ * [TypeTable] (populated by [TypeResolver]) and sets `resultType`, `resultTypeName`, and
+ * `resultTypeSpecifier` on emitted ELM nodes to match the legacy translator output.
  */
-@Suppress("UnusedPrivateProperty", "TooManyFunctions", "LargeClass")
+@Suppress("TooManyFunctions", "LargeClass")
 class ElmEmitter(
-    private val symbolTable: SymbolTable = SymbolTable(),
+    @Suppress("UnusedPrivateProperty") private val symbolTable: SymbolTable = SymbolTable(),
     private val typeTable: TypeTable = TypeTable(),
+    private val operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
 ) {
     private val typesNamespace = "urn:hl7-org:elm-types:r1"
-
-    /** Operator registry for resolving arithmetic and comparison operators. */
-    private val operatorRegistry = OperatorRegistry.createSystemRegistry()
 
     @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 
@@ -247,109 +250,59 @@ class ElmEmitter(
                     currentContext?.let { context = it }
                     expression = emitExpression(definition.expression)
                 }
+            // Set result type on the ExpressionDef from the expression's type
+            val exprType = typeTable[definition.expression]
+            if (exprType != null) {
+                decorate(expressionDef, exprType)
+            }
             return expressionDef
         }
     }
 
+    /**
+     * Set resultType on an ELM element via the Trackable extension property. This sets the internal
+     * resultType for downstream consumers but does NOT set resultTypeName or resultTypeSpecifier on
+     * the serialized output, matching the legacy translator's default behavior (which strips those
+     * unless EnableResultTypes is set).
+     */
+    private fun decorate(element: Element, type: DataType) {
+        element.resultType = type
+    }
+
     private fun emitExpression(expression: Expression): ElmExpression {
-        return when (expression) {
-            is LiteralExpression -> emitLiteral(expression.literal)
-            is OperatorBinaryExpression -> emitBinaryOperator(expression)
-            is OperatorUnaryExpression -> emitUnaryOperator(expression)
-            is IdentifierExpression ->
-                throw UnsupportedNodeException("Identifier expressions are not yet supported.")
-            else ->
-                throw UnsupportedNodeException(
-                    "Expression '${expression::class.simpleName}' is not supported yet."
-                )
+        val elmExpr =
+            when (expression) {
+                is LiteralExpression -> emitLiteral(expression.literal)
+                is OperatorBinaryExpression -> emitBinaryOperator(expression)
+                is OperatorUnaryExpression -> emitUnaryOperator(expression)
+                is IdentifierExpression ->
+                    throw UnsupportedNodeException("Identifier expressions are not yet supported.")
+                else ->
+                    throw UnsupportedNodeException(
+                        "Expression '${expression::class.simpleName}' is not supported yet."
+                    )
+            }
+
+        // Set result type from the TypeTable
+        val type = typeTable[expression]
+        if (type != null) {
+            decorate(elmExpr, type)
         }
+
+        return elmExpr
     }
 
     // ---- Operator emission ----
 
-    /**
-     * Infer the system type name for an expression based on its structure. For literals this is
-     * straightforward; for operators we recursively resolve.
-     */
-    @Suppress("CyclomaticComplexMethod", "ReturnCount")
-    private fun inferType(expression: Expression): DataType? {
-        return when (expression) {
-            is LiteralExpression -> inferLiteralType(expression.literal)
-            is OperatorBinaryExpression -> {
-                val leftType = inferType(expression.left) ?: return null
-                val rightType = inferType(expression.right) ?: return null
-                val opName = binaryOperatorToSystemName(expression.operator)
-                val resolution = operatorRegistry.resolveBinary(opName, leftType, rightType)
-                resolution?.resultType
-            }
-            is OperatorUnaryExpression -> {
-                val operandType = inferType(expression.operand) ?: return null
-                val opName = unaryOperatorToSystemName(expression.operator)
-                val resolution = operatorRegistry.resolveUnary(opName, operandType)
-                resolution?.resultType
-            }
-            else -> null
-        }
-    }
-
-    private fun inferLiteralType(literal: Literal): DataType? {
-        return when (literal) {
-            is IntLiteral -> operatorRegistry.type("Integer")
-            is LongLiteral -> operatorRegistry.type("Long")
-            is DecimalLiteral -> operatorRegistry.type("Decimal")
-            is StringLiteral -> operatorRegistry.type("String")
-            is BooleanLiteral -> operatorRegistry.type("Boolean")
-            is QuantityLiteral -> operatorRegistry.type("Quantity")
-            is DateTimeLiteral -> operatorRegistry.type("DateTime")
-            is TimeLiteral -> operatorRegistry.type("Time")
-            is NullLiteral -> null
-            else -> null
-        }
-    }
-
-    @Suppress("CyclomaticComplexMethod")
-    private fun binaryOperatorToSystemName(op: BinaryOperator): String {
-        return when (op) {
-            BinaryOperator.ADD -> "Add"
-            BinaryOperator.SUBTRACT -> "Subtract"
-            BinaryOperator.MULTIPLY -> "Multiply"
-            BinaryOperator.DIVIDE -> "Divide"
-            BinaryOperator.MODULO -> "Modulo"
-            BinaryOperator.POWER -> "Power"
-            BinaryOperator.CONCAT -> "Concatenate"
-            BinaryOperator.EQUALS -> "Equal"
-            BinaryOperator.NOT_EQUALS -> "Equal" // NotEqual is Not(Equal(...))
-            BinaryOperator.EQUIVALENT -> "Equivalent"
-            BinaryOperator.NOT_EQUIVALENT -> "Equivalent" // Not(Equivalent(...))
-            BinaryOperator.LT -> "Less"
-            BinaryOperator.LTE -> "LessOrEqual"
-            BinaryOperator.GT -> "Greater"
-            BinaryOperator.GTE -> "GreaterOrEqual"
-            BinaryOperator.AND -> "And"
-            BinaryOperator.OR -> "Or"
-            BinaryOperator.XOR -> "Xor"
-            BinaryOperator.IMPLIES -> "Implies"
-            else ->
-                throw UnsupportedNodeException("Binary operator '${op.name}' is not yet supported.")
-        }
-    }
-
-    private fun unaryOperatorToSystemName(op: UnaryOperator): String {
-        return when (op) {
-            UnaryOperator.NEGATE -> "Negate"
-            UnaryOperator.NOT -> "Not"
-            UnaryOperator.SUCCESSOR -> "Successor"
-            UnaryOperator.PREDECESSOR -> "Predecessor"
-            UnaryOperator.POSITIVE -> "Positive" // identity, no operator needed
-        }
-    }
+    /** Look up the operator resolution for an AST expression from the TypeTable. */
+    private fun lookupResolution(expression: Expression): OperatorResolution? =
+        typeTable.getOperatorResolution(expression)
 
     @Suppress("CyclomaticComplexMethod", "ReturnCount", "NestedBlockDepth")
     private fun emitBinaryOperator(expression: OperatorBinaryExpression): ElmExpression {
         val op = expression.operator
 
         // Handle Concatenate (&) specially - it wraps each operand in Coalesce(operand, '')
-        // in the legacy translator, but for now we handle it as a simple binary Concatenate
         if (op == BinaryOperator.CONCAT) {
             return emitConcatenate(expression)
         }
@@ -362,31 +315,31 @@ class ElmEmitter(
             return emitNotWrapper(expression, "Equivalent")
         }
 
-        val systemOpName = binaryOperatorToSystemName(op)
-        val leftType = inferType(expression.left)
-        val rightType = inferType(expression.right)
+        val systemOpName =
+            TypeResolver.binaryOperatorToSystemName(op)
+                ?: throw UnsupportedNodeException(
+                    "Binary operator '${op.name}' is not yet supported."
+                )
 
         var leftElm = emitExpression(expression.left)
         var rightElm = emitExpression(expression.right)
 
-        // Resolve operator with potential type conversions
-        if (leftType != null && rightType != null) {
-            val resolution = operatorRegistry.resolveBinary(systemOpName, leftType, rightType)
-            if (resolution != null) {
-                resolution.conversions[0]?.let { convName ->
-                    leftElm = wrapConversion(leftElm, convName)
+        // Use the pre-computed operator resolution from TypeTable
+        val resolution = lookupResolution(expression)
+        if (resolution != null) {
+            applyConversions(resolution) { index, convName ->
+                when (index) {
+                    0 -> leftElm = wrapConversion(leftElm, convName)
+                    1 -> rightElm = wrapConversion(rightElm, convName)
                 }
-                resolution.conversions[1]?.let { convName ->
-                    rightElm = wrapConversion(rightElm, convName)
-                }
+            }
 
-                // Special case: Add on strings becomes Concatenate
-                if (
-                    systemOpName == "Add" &&
-                        resolution.resultType == operatorRegistry.type("String")
-                ) {
-                    return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
-                }
+            // Special case: Add on strings becomes Concatenate
+            if (
+                systemOpName == "Add" &&
+                    resolution.operator.resultType == operatorRegistry.type("String")
+            ) {
+                return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
             }
         }
 
@@ -397,27 +350,46 @@ class ElmEmitter(
         expression: OperatorBinaryExpression,
         innerOpName: String,
     ): ElmExpression {
-        // Build the inner Equal/Equivalent
-        val leftType = inferType(expression.left)
-        val rightType = inferType(expression.right)
-
         var leftElm = emitExpression(expression.left)
         var rightElm = emitExpression(expression.right)
 
-        if (leftType != null && rightType != null) {
-            val resolution = operatorRegistry.resolveBinary(innerOpName, leftType, rightType)
-            if (resolution != null) {
-                resolution.conversions[0]?.let { convName ->
-                    leftElm = wrapConversion(leftElm, convName)
-                }
-                resolution.conversions[1]?.let { convName ->
-                    rightElm = wrapConversion(rightElm, convName)
+        // Use the pre-computed operator resolution from TypeTable
+        val resolution = lookupResolution(expression)
+        if (resolution != null) {
+            applyConversions(resolution) { index, convName ->
+                when (index) {
+                    0 -> leftElm = wrapConversion(leftElm, convName)
+                    1 -> rightElm = wrapConversion(rightElm, convName)
                 }
             }
         }
 
         val inner = createBinaryElm(innerOpName, leftElm, rightElm)
+        // Decorate the inner expression with the Boolean result type from the resolution
+        if (resolution != null && resolution.operator.resultType != null) {
+            decorate(inner, resolution.operator.resultType!!)
+        }
         return Not().apply { operand = inner }
+    }
+
+    /**
+     * Apply conversions from an [OperatorResolution]. Calls [handler] for each conversion with the
+     * operand index and the conversion operator name.
+     */
+    private inline fun applyConversions(
+        resolution: OperatorResolution,
+        handler: (Int, String) -> Unit,
+    ) {
+        if (resolution.hasConversions()) {
+            resolution.conversions.forEachIndexed { index, conversion ->
+                if (conversion != null) {
+                    val convName = operatorRegistry.conversionOperatorName(conversion)
+                    if (convName != null) {
+                        handler(index, convName)
+                    }
+                }
+            }
+        }
     }
 
     private fun emitConcatenate(expression: OperatorBinaryExpression): ElmExpression {
@@ -425,7 +397,6 @@ class ElmEmitter(
         val rightElm = emitExpression(expression.right)
 
         // Legacy translator wraps each operand in Coalesce(operand, '') for & operator
-        // For now, we emit a simple Concatenate with Coalesce wrapping
         return Concatenate().apply {
             operand = mutableListOf(wrapCoalesce(leftElm), wrapCoalesce(rightElm))
         }
@@ -444,17 +415,19 @@ class ElmEmitter(
             return emitExpression(expression.operand)
         }
 
-        val systemOpName = unaryOperatorToSystemName(op)
-        val operandType = inferType(expression.operand)
+        val systemOpName =
+            TypeResolver.unaryOperatorToSystemName(op)
+                ?: throw UnsupportedNodeException(
+                    "Unary operator '${op.name}' is not yet supported."
+                )
 
         var operandElm = emitExpression(expression.operand)
 
-        if (operandType != null) {
-            val resolution = operatorRegistry.resolveUnary(systemOpName, operandType)
-            if (resolution != null) {
-                resolution.conversions[0]?.let { convName ->
-                    operandElm = wrapConversion(operandElm, convName)
-                }
+        // Use the pre-computed operator resolution from TypeTable
+        val resolution = lookupResolution(expression)
+        if (resolution != null) {
+            applyConversions(resolution) { _, convName ->
+                operandElm = wrapConversion(operandElm, convName)
             }
         }
 
@@ -568,7 +541,7 @@ class ElmEmitter(
         return ratio
     }
 
-    @Suppress("MagicNumber", "MaxLineLength")
+    @Suppress("MagicNumber", "MaxLineLength", "CyclomaticComplexMethod")
     private fun emitDateTime(literal: DateTimeLiteral): ElmExpression {
         val input = literal.text
         val dateTimePattern =
@@ -578,6 +551,22 @@ class ElmEmitter(
         val matcher =
             dateTimePattern.matchEntire(input)
                 ?: throw UnsupportedNodeException("Invalid date/time literal: ${literal.text}")
+
+        // Determine if this is a date-only literal (no T component)
+        val isDateOnly = !input.contains('T')
+
+        if (isDateOnly) {
+            // Emit a Date node for date-only literals
+            val result = ElmDate()
+            result.year = createIntLiteral(matcher.groups[1]!!.value.toInt())
+            if (matcher.groups[5] != null) {
+                result.month = createIntLiteral(matcher.groups[5]!!.value.toInt())
+            }
+            if (matcher.groups[9] != null) {
+                result.day = createIntLiteral(matcher.groups[9]!!.value.toInt())
+            }
+            return result
+        }
 
         val result = DateTime()
         result.year = createIntLiteral(matcher.groups[1]!!.value.toInt())
@@ -597,7 +586,7 @@ class ElmEmitter(
             result.second = createIntLiteral(matcher.groups[17]!!.value.toInt())
         }
         if (matcher.groups[19] != null) {
-            result.millisecond = createIntLiteral(matcher.groups[19]!!.value.toInt())
+            result.millisecond = createIntLiteral(normalizeMilliseconds(matcher.groups[19]!!.value))
         }
         if (matcher.groups[23] != null) {
             result.timezoneOffset = createDecimalLiteral(BigDecimal("0"))
@@ -629,9 +618,19 @@ class ElmEmitter(
             result.second = createIntLiteral(matcher.groups[5]!!.value.toInt())
         }
         if (matcher.groups[7] != null) {
-            result.millisecond = createIntLiteral(matcher.groups[7]!!.value.toInt())
+            result.millisecond = createIntLiteral(normalizeMilliseconds(matcher.groups[7]!!.value))
         }
         return result
+    }
+
+    /**
+     * Normalize a millisecond string to an integer value. The string is padded or truncated to 3
+     * digits: ".1" -> 100, ".12" -> 120, ".123" -> 123, ".1234" -> 123.
+     */
+    @Suppress("MagicNumber")
+    private fun normalizeMilliseconds(msString: String): Int {
+        val padded = msString.take(3).padEnd(3, '0')
+        return padded.toInt()
     }
 
     private fun emitInterval(literal: IntervalLiteral): Interval {
