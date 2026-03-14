@@ -48,5 +48,10 @@ define ConvertsToDateTimeTest: ConvertsToDateTime('2014-01-01T00:00:00.0')
 define ConvertsToTimeTest: ConvertsToTime('T00:00:00.0')
 define ConvertsToQuantityTest: ConvertsToQuantity(1)
 
+define LongToString: convert 3L to String
+define LongToStringFun: ToString(3L)
+define LongToDecimal: convert 1L to Decimal
+define LongToDecimalFun: ToDecimal(1L)
+
 define StringToQuantity: convert '3.0 \'m\'' to Quantity
 define StringToQuantityFun: ToQuantity('3.0 \'m\'')
