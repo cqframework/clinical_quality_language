@@ -99,6 +99,29 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "Substring" -> emitSubstringFunction(args)
         "ReplaceMatches" -> emitReplaceMatchesFunction(args)
 
+        // Type conversion and ConvertsTo operators
+        "ToString",
+        "ToBoolean",
+        "ToInteger",
+        "ToLong",
+        "ToDecimal",
+        "ToDate",
+        "ToDateTime",
+        "ToTime",
+        "ToQuantity",
+        "ToRatio",
+        "ToConcept",
+        "ConvertsToString",
+        "ConvertsToBoolean",
+        "ConvertsToInteger",
+        "ConvertsToLong",
+        "ConvertsToDecimal",
+        "ConvertsToDate",
+        "ConvertsToDateTime",
+        "ConvertsToTime",
+        "ConvertsToQuantity",
+        "ConvertsToRatio" -> emitUnaryFunction(args) { createConversionElm(functionName, it) }
+
         else -> emitUserDefinedFunctionCall(functionName, args)
     }
 }
