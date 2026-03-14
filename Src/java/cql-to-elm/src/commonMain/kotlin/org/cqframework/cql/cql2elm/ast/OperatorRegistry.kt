@@ -14,7 +14,6 @@ import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.SystemModelInfoProvider
-import org.hl7.elm.r1.TypeSpecifier
 
 /**
  * Operator resolution backed by the existing [OperatorMap], [ConversionMap], and
@@ -53,17 +52,6 @@ class OperatorRegistry(
     fun type(name: String): DataType =
         systemModel.resolveTypeName(name)
             ?: throw IllegalArgumentException("Unknown system type: $name")
-
-    /** Convert a [DataType] to a QName suitable for setting on ELM elements' `resultTypeName`. */
-    fun dataTypeToQName(type: DataType): org.cqframework.cql.shared.QName =
-        typeBuilder.dataTypeToQName(type)
-
-    /**
-     * Convert a [DataType] to a [TypeSpecifier] suitable for setting on ELM elements'
-     * `resultTypeSpecifier`.
-     */
-    fun dataTypeToTypeSpecifier(type: DataType): TypeSpecifier =
-        typeBuilder.dataTypeToTypeSpecifier(type)
 
     /**
      * Find the conversion operator name for a given [Conversion], if any. Returns the operator name
