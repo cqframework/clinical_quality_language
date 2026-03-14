@@ -39,7 +39,7 @@ class CompilerFrontend(
         val library: Library,
         val symbolTable: SymbolTable,
         val typeTable: TypeTable = TypeTable(),
-        val operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
+        val operatorRegistry: OperatorRegistry,
         val diagnostics: kotlin.collections.List<Diagnostic> = emptyList(),
     )
 
