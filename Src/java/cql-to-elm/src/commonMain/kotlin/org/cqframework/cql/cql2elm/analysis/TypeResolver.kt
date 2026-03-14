@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package org.cqframework.cql.cql2elm.analysis
 
 import org.hl7.cql.ast.BinaryOperator
@@ -7,7 +9,10 @@ import org.hl7.cql.ast.BooleanTestKind
 import org.hl7.cql.ast.DateTimeLiteral
 import org.hl7.cql.ast.DecimalLiteral
 import org.hl7.cql.ast.Expression
+import org.hl7.cql.ast.ExpressionFunctionBody
 import org.hl7.cql.ast.FunctionCallExpression
+import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntLiteral
@@ -15,6 +20,7 @@ import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
+import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.NullLiteral
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
@@ -27,47 +33,126 @@ import org.hl7.cql.model.ListType
 
 /**
  * Walks the AST and infers types for all expressions, populating the [TypeTable]. Uses the
- * [OperatorRegistry] to resolve operator types and store
- * [org.cqframework.cql.cql2elm.model.OperatorResolution] results.
+ * [OperatorRegistry] to resolve operator types and store operator resolution results.
  */
 class TypeResolver(private val operatorRegistry: OperatorRegistry) {
+
+    /** Tracks expressions currently being resolved to detect circular references. */
+    private val inProgress = mutableSetOf<String>()
+
+    /** Per-scope operand types for function body resolution. */
+    private var operandScope: Map<String, DataType> = emptyMap()
+
+    /** Type cache for resolved function definitions. */
+    private val functionResultTypes = HashMap<FunctionDefinition, DataType>()
 
     fun resolve(library: Library, symbolTable: SymbolTable): TypeTable {
         val typeTable = TypeTable()
 
         // Resolve types for parameter defaults
         for ((_, paramDef) in symbolTable.parameterDefinitions) {
-            paramDef.default?.let { inferType(it, typeTable) }
+            paramDef.default?.let { inferType(it, typeTable, symbolTable) }
         }
 
         // Resolve types for expression definition bodies
         for ((_, exprDef) in symbolTable.expressionDefinitions) {
-            inferType(exprDef.expression, typeTable)
+            resolveExpressionDef(exprDef.name.value, typeTable, symbolTable)
+        }
+
+        // Resolve types for function definition bodies
+        for ((_, funcDefs) in symbolTable.functionDefinitions) {
+            for (funcDef in funcDefs) {
+                resolveFunctionDef(funcDef, typeTable, symbolTable)
+            }
         }
 
         return typeTable
     }
 
+    @Suppress("ReturnCount")
+    private fun resolveExpressionDef(
+        name: String,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        if (name in inProgress) return null // Circular reference
+        val exprDef = symbolTable.expressionDefinitions[name] ?: return null
+        // Already resolved?
+        typeTable[exprDef.expression]?.let {
+            return it
+        }
+        inProgress.add(name)
+        try {
+            return inferType(exprDef.expression, typeTable, symbolTable)
+        } finally {
+            inProgress.remove(name)
+        }
+    }
+
+    @Suppress("ReturnCount")
+    private fun resolveFunctionDef(
+        funcDef: FunctionDefinition,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        functionResultTypes[funcDef]?.let {
+            return it
+        }
+        val body = funcDef.body
+        if (body !is ExpressionFunctionBody) return null
+
+        // Build operand scope
+        val scope = mutableMapOf<String, DataType>()
+        for (operand in funcDef.operands) {
+            val type = resolveTypeSpecifier(operand.type) ?: continue
+            scope[operand.name.value] = type
+        }
+
+        val previousScope = operandScope
+        operandScope = scope
+        try {
+            val resultType = inferType(body.expression, typeTable, symbolTable)
+            if (resultType != null) {
+                functionResultTypes[funcDef] = resultType
+            }
+            return resultType
+        } finally {
+            operandScope = previousScope
+        }
+    }
+
+    private fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType? {
+        return when (typeSpec) {
+            is NamedTypeSpecifier -> operatorRegistry.type(typeSpec.name.simpleName)
+            else -> null
+        }
+    }
+
     /**
      * Infer the type of an expression and store it in the [TypeTable]. Returns the inferred type,
-     * or null if the type cannot be determined (e.g., null literals).
+     * or null if the type cannot be determined.
      */
     @Suppress("CyclomaticComplexMethod")
-    private fun inferType(expression: Expression, typeTable: TypeTable): DataType? {
-        // Check if already resolved
+    internal fun inferType(
+        expression: Expression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
         typeTable[expression]?.let {
             return it
         }
 
         val type =
             when (expression) {
-                is LiteralExpression -> inferLiteralType(expression.literal, typeTable)
-                is OperatorBinaryExpression -> inferBinaryType(expression, typeTable)
-                is OperatorUnaryExpression -> inferUnaryType(expression, typeTable)
-                is BooleanTestExpression -> inferBooleanTestType(expression, typeTable)
-                is IfExpression -> inferIfType(expression, typeTable)
-                is FunctionCallExpression -> inferFunctionCallType(expression, typeTable)
-                is IndexExpression -> inferIndexType(expression, typeTable)
+                is LiteralExpression -> inferLiteralType(expression.literal)
+                is OperatorBinaryExpression -> inferBinaryType(expression, typeTable, symbolTable)
+                is OperatorUnaryExpression -> inferUnaryType(expression, typeTable, symbolTable)
+                is BooleanTestExpression -> inferBooleanTestType(expression, typeTable, symbolTable)
+                is IfExpression -> inferIfType(expression, typeTable, symbolTable)
+                is FunctionCallExpression ->
+                    inferFunctionCallType(expression, typeTable, symbolTable)
+                is IndexExpression -> inferIndexType(expression, typeTable, symbolTable)
+                is IdentifierExpression -> inferIdentifierType(expression, typeTable, symbolTable)
                 else -> null
             }
 
@@ -77,7 +162,48 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         return type
     }
 
-    private fun inferLiteralType(literal: Literal, typeTable: TypeTable): DataType? {
+    @Suppress("ReturnCount")
+    private fun inferIdentifierType(
+        expression: IdentifierExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        val name = expression.name.simpleName
+
+        // Check operand scope first (for function body resolution)
+        operandScope[name]?.let { type ->
+            typeTable.setIdentifierResolution(expression, Resolution.OperandRef(name, type))
+            return type
+        }
+
+        // Check expression definitions (with forward reference support)
+        symbolTable.resolveExpression(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return resolveExpressionDef(name, typeTable, symbolTable)
+        }
+
+        // Check parameter definitions
+        symbolTable.resolveParameter(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            val paramDef = resolution.definition
+            // Try declared type first
+            paramDef.type?.let { typeSpec ->
+                resolveTypeSpecifier(typeSpec)?.let {
+                    return it
+                }
+            }
+            // Fall back to default expression type
+            paramDef.default?.let {
+                return inferType(it, typeTable, symbolTable)
+            }
+            return null
+        }
+
+        return null
+    }
+
+    @Suppress("CyclomaticComplexMethod")
+    private fun inferLiteralType(literal: Literal): DataType? {
         return when (literal) {
             is IntLiteral -> operatorRegistry.type("Integer")
             is LongLiteral -> operatorRegistry.type("Long")
@@ -86,8 +212,7 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             is BooleanLiteral -> operatorRegistry.type("Boolean")
             is QuantityLiteral -> operatorRegistry.type("Quantity")
             is DateTimeLiteral -> {
-                // Date-only literals (no time component) have type Date
-                if (isDateOnly(literal.text)) operatorRegistry.type("Date")
+                if (!literal.text.contains('T')) operatorRegistry.type("Date")
                 else operatorRegistry.type("DateTime")
             }
             is TimeLiteral -> operatorRegistry.type("Time")
@@ -96,22 +221,14 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         }
     }
 
-    /**
-     * Determine whether a date/time literal string represents a date-only value (no time
-     * components).
-     */
-    private fun isDateOnly(text: String): Boolean {
-        // A date-only literal has the form @YYYY, @YYYY-MM, or @YYYY-MM-DD without any T component
-        return !text.contains('T')
-    }
-
     @Suppress("ReturnCount")
     private fun inferBinaryType(
         expression: OperatorBinaryExpression,
         typeTable: TypeTable,
+        symbolTable: SymbolTable,
     ): DataType? {
-        val leftType = inferType(expression.left, typeTable) ?: return null
-        val rightType = inferType(expression.right, typeTable) ?: return null
+        val leftType = inferType(expression.left, typeTable, symbolTable) ?: return null
+        val rightType = inferType(expression.right, typeTable, symbolTable) ?: return null
         val opName = binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
             operatorRegistry.resolve(opName, listOf(leftType, rightType)) ?: return null
@@ -119,16 +236,13 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         return resolution.operator.resultType
     }
 
-    /**
-     * Infer the type for boolean test expressions: `is null`, `is true`, `is false`. These resolve
-     * as unary system operators (IsNull, IsTrue, IsFalse).
-     */
     @Suppress("ReturnCount")
     private fun inferBooleanTestType(
         expression: BooleanTestExpression,
         typeTable: TypeTable,
+        symbolTable: SymbolTable,
     ): DataType? {
-        val operandType = inferType(expression.operand, typeTable) ?: return null
+        val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
         val opName =
             when (expression.kind) {
                 BooleanTestKind.IS_NULL -> "IsNull"
@@ -144,13 +258,11 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
     private fun inferUnaryType(
         expression: OperatorUnaryExpression,
         typeTable: TypeTable,
+        symbolTable: SymbolTable,
     ): DataType? {
-        val operandType = inferType(expression.operand, typeTable) ?: return null
+        val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
         val opName = unaryOperatorToSystemName(expression.operator) ?: return null
-        if (opName == "Positive") {
-            // Positive is identity - propagate operand type
-            return operandType
-        }
+        if (opName == "Positive") return operandType
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
@@ -161,11 +273,14 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
      * then and else branches.
      */
     @Suppress("ReturnCount")
-    private fun inferIfType(expression: IfExpression, typeTable: TypeTable): DataType? {
-        inferType(expression.condition, typeTable)
-        val thenType = inferType(expression.thenBranch, typeTable)
-        val elseType = inferType(expression.elseBranch, typeTable)
-        // Result type is the common supertype of both branches
+    private fun inferIfType(
+        expression: IfExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.condition, typeTable, symbolTable)
+        val thenType = inferType(expression.thenBranch, typeTable, symbolTable)
+        val elseType = inferType(expression.elseBranch, typeTable, symbolTable)
         return when {
             thenType == null -> elseType
             elseType == null -> thenType
@@ -173,20 +288,16 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         }
     }
 
-    /**
-     * Infer the type for a function call expression by resolving the function name as a system
-     * operator.
-     */
-    @Suppress("ReturnCount")
+    @Suppress("ReturnCount", "CyclomaticComplexMethod")
     private fun inferFunctionCallType(
         expression: FunctionCallExpression,
         typeTable: TypeTable,
+        symbolTable: SymbolTable,
     ): DataType? {
         val functionName = expression.function.value
-        val argTypes = expression.arguments.map { inferType(it, typeTable) }
+        val argTypes = expression.arguments.map { inferType(it, typeTable, symbolTable) }
 
-        // For Coalesce, special handling: Coalesce with a single list argument
-        // should resolve as Coalesce<T>(List<T>) -> T
+        // Coalesce special handling
         if (functionName == "Coalesce" && argTypes.size == 1) {
             val singleArgType = argTypes[0]
             if (singleArgType is ListType) {
@@ -198,10 +309,10 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             }
         }
 
-        // Try to resolve as a system operator
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
 
+        // Try system operator first
         val resolution =
             operatorRegistry.resolve(
                 functionName,
@@ -212,16 +323,31 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             typeTable.setOperatorResolution(expression, resolution)
             return resolution.operator.resultType
         }
+
+        // Try user-defined functions
+        val candidates = symbolTable.resolveFunctions(functionName)
+        for (funcDef in candidates) {
+            if (funcDef.operands.size != nonNullArgTypes.size) continue
+            val operandTypes = funcDef.operands.map { resolveTypeSpecifier(it.type) }
+            if (operandTypes.any { it == null }) continue
+            // Simple type matching (exact match)
+            val matches =
+                operandTypes.zip(nonNullArgTypes).all { (expected, actual) -> expected == actual }
+            if (matches) {
+                return resolveFunctionDef(funcDef, typeTable, symbolTable)
+            }
+        }
         return null
     }
 
-    /**
-     * Infer the type for an index expression (e.g., 'John'[1]). Resolves as the Indexer operator.
-     */
     @Suppress("ReturnCount")
-    private fun inferIndexType(expression: IndexExpression, typeTable: TypeTable): DataType? {
-        val targetType = inferType(expression.target, typeTable) ?: return null
-        val indexType = inferType(expression.index, typeTable) ?: return null
+    private fun inferIndexType(
+        expression: IndexExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        val targetType = inferType(expression.target, typeTable, symbolTable) ?: return null
+        val indexType = inferType(expression.index, typeTable, symbolTable) ?: return null
         val resolution =
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)

@@ -6,6 +6,8 @@ import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
+import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.model.DataType
@@ -45,6 +47,7 @@ class CompilerFrontend(
 class TypeTable {
     private val types = HashMap<Expression, DataType>()
     private val operatorResolutions = HashMap<Expression, OperatorResolution>()
+    private val identifierResolutions = HashMap<IdentifierExpression, Resolution>()
 
     operator fun get(expression: Expression): DataType? = types[expression]
 
@@ -60,6 +63,13 @@ class TypeTable {
     fun setOperatorResolution(expression: Expression, resolution: OperatorResolution) {
         operatorResolutions[expression] = resolution
     }
+
+    fun getIdentifierResolution(expression: IdentifierExpression): Resolution? =
+        identifierResolutions[expression]
+
+    fun setIdentifierResolution(expression: IdentifierExpression, resolution: Resolution) {
+        identifierResolutions[expression] = resolution
+    }
 }
 
 /** Describes a resolved reference to a declaration. */
@@ -69,6 +79,8 @@ sealed interface Resolution {
     data class ParameterRef(val definition: ParameterDefinition) : Resolution
 
     data class ContextRef(val definition: ContextDefinition) : Resolution
+
+    data class OperandRef(val name: String, val type: DataType) : Resolution
 }
 
 /**
@@ -78,12 +90,16 @@ data class SymbolTable(
     val expressionDefinitions: Map<String, ExpressionDefinition> = emptyMap(),
     val parameterDefinitions: Map<String, ParameterDefinition> = emptyMap(),
     val contextDefinitions: List<ContextDefinition> = emptyList(),
+    val functionDefinitions: Map<String, List<FunctionDefinition>> = emptyMap(),
 ) {
     fun resolveExpression(name: String): Resolution.ExpressionRef? =
         expressionDefinitions[name]?.let { Resolution.ExpressionRef(it) }
 
     fun resolveParameter(name: String): Resolution.ParameterRef? =
         parameterDefinitions[name]?.let { Resolution.ParameterRef(it) }
+
+    fun resolveFunctions(name: String): List<FunctionDefinition> =
+        functionDefinitions[name] ?: emptyList()
 }
 
 /** Represents a diagnostic message produced during compilation. */
@@ -100,6 +116,7 @@ class SymbolCollector {
         val expressionDefs = mutableMapOf<String, ExpressionDefinition>()
         val parameterDefs = mutableMapOf<String, ParameterDefinition>()
         val contextDefs = mutableListOf<ContextDefinition>()
+        val functionDefs = mutableMapOf<String, MutableList<FunctionDefinition>>()
 
         // Collect parameter definitions from library definitions
         for (definition in library.definitions) {
@@ -111,7 +128,7 @@ class SymbolCollector {
             }
         }
 
-        // Collect context and expression definitions from statements
+        // Collect context, expression, and function definitions from statements
         for (statement in library.statements) {
             when (statement) {
                 is ContextDefinition -> {
@@ -120,7 +137,10 @@ class SymbolCollector {
                 is ExpressionDefinition -> {
                     expressionDefs[statement.name.value] = statement
                 }
-                else -> {} // Function definitions etc. are not collected yet
+                is FunctionDefinition -> {
+                    functionDefs.getOrPut(statement.name.value) { mutableListOf() }.add(statement)
+                }
+                else -> {}
             }
         }
 
@@ -128,6 +148,7 @@ class SymbolCollector {
             expressionDefinitions = expressionDefs,
             parameterDefinitions = parameterDefs,
             contextDefinitions = contextDefs,
+            functionDefinitions = functionDefs,
         )
     }
 }

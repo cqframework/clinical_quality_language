@@ -123,6 +123,28 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "StringOperators.cql")
     }
 
+    // ---- Milestone 4 tests ----
+
+    @Test
+    fun `ExpressionReferences - expression references match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ExpressionReferences.cql")
+    }
+
+    @Test
+    fun `ParameterReferences - parameter references match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ParameterReferences.cql")
+    }
+
+    @Test
+    fun `ForwardReferences - forward references match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ForwardReferences.cql")
+    }
+
+    @Test
+    fun `FunctionDefs - function definitions match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "FunctionDefs.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)

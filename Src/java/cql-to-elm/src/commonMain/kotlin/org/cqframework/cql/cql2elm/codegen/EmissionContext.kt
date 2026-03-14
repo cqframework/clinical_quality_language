@@ -108,10 +108,7 @@ class EmissionContext(
                 is IfExpression -> emitIfExpression(expression)
                 is FunctionCallExpression -> emitFunctionCall(expression)
                 is IndexExpression -> emitIndexExpression(expression)
-                is IdentifierExpression ->
-                    throw ElmEmitter.UnsupportedNodeException(
-                        "Identifier expressions are not yet supported."
-                    )
+                is IdentifierExpression -> emitIdentifierExpression(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Expression '${expression::class.simpleName}' is not supported yet."
