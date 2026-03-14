@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalJsExport::class)
+@file:OptIn(ExperimentalJsExport::class, ExperimentalWasmJsInterop::class)
 
 package org.cqframework.cql.cql2elm.ucum
 

@@ -70,7 +70,7 @@ class GenericClassSignatureParser(
                         val myElement =
                             ClassTypeElement(
                                 name,
-                                boundType!!,
+                                boundType,
                                 prohibited = false,
                                 oneBased = false,
                                 target = null,

@@ -10,13 +10,13 @@ const supportedModels = [
     id: "System",
     system: null,
     version: null,
-    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/cql/src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml",
+    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/main/Src/java/cql/src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml",
   },
   {
     id: "FHIR",
     system: null,
     version: "4.0.1",
-    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/quick/src/main/resources/org/hl7/fhir/fhir-modelinfo-4.0.1.xml",
+    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/main/Src/java/quick/src/main/resources/org/hl7/fhir/fhir-modelinfo-4.0.1.xml",
   },
 ];
 
@@ -44,7 +44,7 @@ const supportedLibraries = [
     id: "FHIRHelpers",
     system: null,
     version: "4.0.1",
-    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/master/Src/java/quick/src/main/resources/org/hl7/fhir/FHIRHelpers-4.0.1.cql",
+    url: "https://raw.githubusercontent.com/cqframework/clinical_quality_language/refs/heads/main/Src/java/quick/src/main/resources/org/hl7/fhir/FHIRHelpers-4.0.1.cql",
   },
 ];
 

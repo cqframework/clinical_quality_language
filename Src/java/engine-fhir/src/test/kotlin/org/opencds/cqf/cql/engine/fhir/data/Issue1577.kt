@@ -24,11 +24,11 @@ class Issue1577 {
         val engine =
             TranslatorHelper.getEngine(
                 """
-                    library Issue1577
-                    using FHIR version '4.0.1'
-                    context Patient
-                    define expr1: [Condition] is List<Any>
-                    define expr2: [Condition] union [Observation]
+                library Issue1577
+                using FHIR version '4.0.1'
+                context Patient
+                define expr1: [Condition] is List<Any>
+                define expr2: [Condition] union [Observation]
                 """
                     .trimIndent()
             )

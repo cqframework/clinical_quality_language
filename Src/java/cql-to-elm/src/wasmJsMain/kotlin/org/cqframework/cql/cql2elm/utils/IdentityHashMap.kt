@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package org.cqframework.cql.cql2elm.utils
 
 @JsName("Map")

@@ -17,7 +17,7 @@ coverage:
         base: auto
         # advanced
         branches:
-          - master
+          - main
         if_ci_failed: error #success, failure, error, ignore
         only_pulls: false
         paths:

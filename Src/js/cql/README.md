@@ -37,7 +37,7 @@ so the types may not be perfect.
 ## Project status
 
 This package is built from the Kotlin
-Multiplatform [source](https://github.com/cqframework/clinical_quality_language/tree/master/Src/java) which itself
+Multiplatform [source](https://github.com/cqframework/clinical_quality_language/tree/main/Src/java) which itself
 evolved from the reference Java implementation. The KMP project targets the JVM and JavaScript environments with
 the goal of maintaining a single, shared codebase for both platforms.
 

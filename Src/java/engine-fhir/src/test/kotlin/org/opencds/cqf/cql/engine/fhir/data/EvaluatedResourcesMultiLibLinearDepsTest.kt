@@ -49,7 +49,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
         // Sanity check:  the single result and the multi-lib result should be the same
         Assertions.assertEquals(
             multiResultFor!!.expressionResults.size,
-            multiResult!!.expressionResults.size,
+            multiResult.expressionResults.size,
         )
 
         EvaluatedResourceTestUtils.assertEvaluationResult(
