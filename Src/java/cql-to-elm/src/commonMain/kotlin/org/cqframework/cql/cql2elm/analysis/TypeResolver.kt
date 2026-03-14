@@ -2,9 +2,12 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BooleanLiteral
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.BooleanTestKind
+import org.hl7.cql.ast.CastExpression
+import org.hl7.cql.ast.ConversionExpression
 import org.hl7.cql.ast.DateTimeLiteral
 import org.hl7.cql.ast.DecimalLiteral
 import org.hl7.cql.ast.Expression
@@ -15,6 +18,7 @@ import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntLiteral
+import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
@@ -162,6 +166,10 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
                     inferFunctionCallType(expression, typeTable, symbolTable)
                 is IndexExpression -> inferIndexType(expression, typeTable, symbolTable)
                 is IdentifierExpression -> inferIdentifierType(expression, typeTable, symbolTable)
+                is IsExpression -> inferIsType(expression, typeTable, symbolTable)
+                is AsExpression -> inferAsType(expression, typeTable, symbolTable)
+                is CastExpression -> inferCastType(expression, typeTable, symbolTable)
+                is ConversionExpression -> inferConversionType(expression, typeTable, symbolTable)
                 else -> null
             }
 
@@ -366,5 +374,43 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
+    }
+
+    private fun inferIsType(
+        expression: IsExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        return operatorRegistry.type("Boolean")
+    }
+
+    private fun inferAsType(
+        expression: AsExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        return resolveTypeSpecifier(expression.type)
+    }
+
+    private fun inferCastType(
+        expression: CastExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        return resolveTypeSpecifier(expression.type)
+    }
+
+    @Suppress("ReturnCount")
+    private fun inferConversionType(
+        expression: ConversionExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        inferType(expression.operand, typeTable, symbolTable)
+        val destType = expression.destinationType ?: return null
+        return resolveTypeSpecifier(destType)
     }
 }

@@ -7,12 +7,16 @@ import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
+import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BooleanTestExpression
+import org.hl7.cql.ast.CastExpression
+import org.hl7.cql.ast.ConversionExpression
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
@@ -20,8 +24,6 @@ import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Literal as ElmLiteral
-import org.hl7.elm.r1.ToDecimal
-import org.hl7.elm.r1.ToLong
 
 /**
  * Shared state and helpers used by all emission extension functions. Acts as the central hub for
@@ -61,14 +63,7 @@ class EmissionContext(
 
     /** Wrap an expression in a conversion operator (e.g., ToDecimal, ToLong). */
     fun wrapConversion(expression: ElmExpression, conversionName: String): ElmExpression {
-        return when (conversionName) {
-            "ToDecimal" -> ToDecimal().apply { operand = expression }
-            "ToLong" -> ToLong().apply { operand = expression }
-            else ->
-                throw ElmEmitter.UnsupportedNodeException(
-                    "Conversion '$conversionName' is not yet supported."
-                )
-        }
+        return createConversionElm(conversionName, expression)
     }
 
     /** Wrap an expression in a Coalesce with an empty string fallback. */
@@ -109,6 +104,10 @@ class EmissionContext(
                 is FunctionCallExpression -> emitFunctionCall(expression)
                 is IndexExpression -> emitIndexExpression(expression)
                 is IdentifierExpression -> emitIdentifierExpression(expression)
+                is IsExpression -> emitIsExpression(expression)
+                is AsExpression -> emitAsExpression(expression)
+                is CastExpression -> emitCastExpression(expression)
+                is ConversionExpression -> emitConversionExpression(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Expression '${expression::class.simpleName}' is not supported yet."

@@ -150,6 +150,13 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "ExternalFunctions.cql")
     }
 
+    // ---- Milestone 5 tests ----
+
+    @Test
+    fun `TypeOperators - type operators and conversions match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "TypeOperators.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)
