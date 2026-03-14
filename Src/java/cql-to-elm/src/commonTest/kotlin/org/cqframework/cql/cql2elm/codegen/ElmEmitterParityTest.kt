@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.ast
+package org.cqframework.cql.cql2elm.codegen
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.frontend.CompilerFrontend
+import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.cqframework.cql.shared.TestResource
 import org.hl7.cql.ast.Builder
@@ -21,9 +21,12 @@ class ElmEmitterParityTest {
 
     private val json = Json { prettyPrint = false }
 
-    @Test
-    fun `literal expression matches legacy translator`() {
-        val cql = TestResource("org/cqframework/cql/cql2elm/ast/Simple.cql").readText()
+    /**
+     * Parameterized parity check: parses the CQL with the new AST pipeline and the legacy
+     * translator, then asserts that the normalized JSON output matches.
+     */
+    private fun assertParity(resourcePath: String) {
+        val cql = TestResource(resourcePath).readText()
 
         val astResult = Builder().parseLibrary(cql)
         assertTrue(
@@ -32,7 +35,14 @@ class ElmEmitterParityTest {
         )
 
         val frontendResult = CompilerFrontend().analyze(astResult.library)
-        val emittedLibrary = ElmEmitter().emit(frontendResult.library).library
+        val emittedLibrary =
+            ElmEmitter(
+                    frontendResult.symbolTable,
+                    frontendResult.typeTable,
+                    frontendResult.operatorRegistry,
+                )
+                .emit(frontendResult.library)
+                .library
 
         val legacyTranslator =
             CqlTranslator.fromText(
@@ -54,9 +64,46 @@ class ElmEmitterParityTest {
         assertEquals(
             normalizedLegacy,
             normalizedEmitted,
-            @Suppress("MaxLineLength")
-            "Emitter output differed from the legacy translator.\nEmitter: $normalizedEmitted\nLegacy: $normalizedLegacy",
+            buildString {
+                append("Emitter output differed from the legacy translator for $resourcePath.\n")
+                append("Emitter: $normalizedEmitted\n")
+                append("Legacy: $normalizedLegacy")
+            },
         )
+    }
+
+    // ---- Milestone 0+1 tests ----
+
+    @Test
+    fun `Simple - literal expression matches legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "Simple.cql")
+    }
+
+    @Test
+    fun `AllLiterals - all literal types match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "AllLiterals.cql")
+    }
+
+    @Test
+    fun `ParameterDefs - parameter definitions match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ParameterDefs.cql")
+    }
+
+    @Test
+    fun `ContextAndAccess - context and access modifiers match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ContextAndAccess.cql")
+    }
+
+    // ---- Milestone 2 tests ----
+
+    @Test
+    fun `ArithmeticOperators - arithmetic operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ArithmeticOperators.cql")
+    }
+
+    @Test
+    fun `ComparisonOperators - comparison operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ComparisonOperators.cql")
     }
 
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
@@ -82,6 +129,15 @@ class ElmEmitterParityTest {
     }
 
     private companion object {
-        private val IGNORED_KEYS = setOf("annotation", "localId", "locator")
+        private const val TEST_RESOURCE_BASE = "org/cqframework/cql/cql2elm/ast/"
+        private val IGNORED_KEYS =
+            setOf(
+                "annotation",
+                "localId",
+                "locator",
+                // Signature is set based on SignatureLevel options, which are not yet configured
+                // in the new pipeline. System operators don't need signatures for disambiguation.
+                "signature",
+            )
     }
 }
