@@ -401,7 +401,7 @@ class BuilderExpressionTest {
             typeIs(operand = { int(1) }, type = namedType("Integer"))
         }
         assertExpression("1 is not null") {
-            binary(BinaryOperator.EQUALS, left = { int(1) }, right = { nullValue() })
+            booleanTest(BooleanTestKind.IS_NULL, operand = { int(1) }, negated = true)
         }
         assertExpression("1 as Integer") {
             typeAs(operand = { int(1) }, type = namedType("Integer"))

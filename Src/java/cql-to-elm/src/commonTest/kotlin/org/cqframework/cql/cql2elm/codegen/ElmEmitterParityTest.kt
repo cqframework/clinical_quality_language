@@ -106,6 +106,23 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "ComparisonOperators.cql")
     }
 
+    // ---- Milestone 3 tests ----
+
+    @Test
+    fun `LogicalOperators - logical operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "LogicalOperators.cql")
+    }
+
+    @Test
+    fun `NullologicalOperators - nullological operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "NullologicalOperators.cql")
+    }
+
+    @Test
+    fun `StringOperators - string operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "StringOperators.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)

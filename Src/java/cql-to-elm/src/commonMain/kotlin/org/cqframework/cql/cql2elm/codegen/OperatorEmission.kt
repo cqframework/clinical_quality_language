@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.cql2elm.analysis.TypeResolver
 import org.hl7.cql.ast.BinaryOperator
+import org.hl7.cql.ast.BooleanTestExpression
+import org.hl7.cql.ast.BooleanTestKind
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.UnaryOperator
@@ -16,6 +18,9 @@ import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Greater
 import org.hl7.elm.r1.GreaterOrEqual
 import org.hl7.elm.r1.Implies
+import org.hl7.elm.r1.IsFalse
+import org.hl7.elm.r1.IsNull
+import org.hl7.elm.r1.IsTrue
 import org.hl7.elm.r1.Less
 import org.hl7.elm.r1.LessOrEqual
 import org.hl7.elm.r1.Modulo
@@ -197,4 +202,33 @@ internal fun EmissionContext.createUnaryElm(
                 "Unary operator '$operatorName' ELM emission is not yet supported."
             )
     return constructor().apply { this.operand = operand }
+}
+
+/**
+ * Emit a boolean test expression: `x is null`, `x is true`, `x is false` (and their negated
+ * variants `x is not null`, etc.). These emit as IsNull/IsTrue/IsFalse unary operators, wrapped in
+ * Not for negated variants.
+ */
+internal fun EmissionContext.emitBooleanTest(expression: BooleanTestExpression): ElmExpression {
+    val operandElm = emitExpression(expression.operand)
+
+    val innerElm: ElmExpression =
+        when (expression.kind) {
+            BooleanTestKind.IS_NULL -> IsNull().apply { operand = operandElm }
+            BooleanTestKind.IS_TRUE -> IsTrue().apply { operand = operandElm }
+            BooleanTestKind.IS_FALSE -> IsFalse().apply { operand = operandElm }
+        }
+
+    // Set result type on the inner expression from the resolution
+    val resolution = lookupResolution(expression)
+    if (resolution != null && resolution.operator.resultType != null) {
+        decorate(innerElm, resolution.operator.resultType!!)
+    }
+
+    // For `is not null`, `is not true`, `is not false`, wrap in Not
+    return if (expression.negated) {
+        Not().apply { operand = innerElm }
+    } else {
+        innerElm
+    }
 }

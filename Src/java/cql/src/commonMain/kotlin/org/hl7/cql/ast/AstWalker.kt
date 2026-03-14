@@ -113,6 +113,7 @@ open class AstWalker {
             is LiteralExpression -> visitLiteralExpression(expression)
             is OperatorBinaryExpression -> visitOperatorBinaryExpression(expression)
             is OperatorUnaryExpression -> visitOperatorUnaryExpression(expression)
+            is BooleanTestExpression -> visitBooleanTestExpression(expression)
             is ExternalConstantExpression -> visitExternalConstantExpression(expression)
             is DateTimeComponentExpression -> visitDateTimeComponentExpression(expression)
             is UnsupportedExpression -> visitUnsupportedExpression(expression)
@@ -288,6 +289,10 @@ open class AstWalker {
     }
 
     open fun visitCastExpression(expression: CastExpression) {
+        visitExpression(expression.operand)
+    }
+
+    open fun visitBooleanTestExpression(expression: BooleanTestExpression) {
         visitExpression(expression.operand)
     }
 
