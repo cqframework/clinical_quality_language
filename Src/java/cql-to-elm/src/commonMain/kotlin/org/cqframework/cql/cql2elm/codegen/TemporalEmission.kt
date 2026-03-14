@@ -10,7 +10,7 @@ import org.hl7.elm.r1.Time
 
 @Suppress("MagicNumber", "MaxLineLength", "CyclomaticComplexMethod")
 internal fun EmissionContext.emitDateTime(literal: DateTimeLiteral): ElmExpression {
-    val input = literal.text
+    val input = literal.text.removePrefix("@")
     val dateTimePattern =
         Regex(
             "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(:(\\d{2}))))?"
@@ -71,7 +71,7 @@ internal fun EmissionContext.emitDateTime(literal: DateTimeLiteral): ElmExpressi
 
 @Suppress("MagicNumber")
 internal fun EmissionContext.emitTime(literal: TimeLiteral): Time {
-    val input = literal.text
+    val input = literal.text.removePrefix("@")
     val timePattern = Regex("T(\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?")
     val matcher =
         timePattern.matchEntire(input)

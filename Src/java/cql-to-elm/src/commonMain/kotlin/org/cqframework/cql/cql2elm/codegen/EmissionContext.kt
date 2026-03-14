@@ -8,18 +8,29 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AsExpression
+import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
+import org.hl7.cql.ast.DateTimeComponentExpression
+import org.hl7.cql.ast.DifferenceBetweenExpression
+import org.hl7.cql.ast.DurationBetweenExpression
+import org.hl7.cql.ast.ElementExtractorExpression
+import org.hl7.cql.ast.ExistsExpression
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.LiteralExpression
+import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
+import org.hl7.cql.ast.TimeBoundaryExpression
+import org.hl7.cql.ast.TypeExtentExpression
+import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression as ElmExpression
@@ -108,6 +119,17 @@ class EmissionContext(
                 is AsExpression -> emitAsExpression(expression)
                 is CastExpression -> emitCastExpression(expression)
                 is ConversionExpression -> emitConversionExpression(expression)
+                is DateTimeComponentExpression -> emitDateTimeComponent(expression)
+                is DurationBetweenExpression -> emitDurationBetween(expression)
+                is DifferenceBetweenExpression -> emitDifferenceBetween(expression)
+                is TimeBoundaryExpression -> emitTimeBoundary(expression)
+                is WidthExpression -> emitWidth(expression)
+                is ElementExtractorExpression -> emitElementExtractor(expression)
+                is TypeExtentExpression -> emitTypeExtent(expression)
+                is ExistsExpression -> emitExists(expression)
+                is BetweenExpression -> emitBetween(expression)
+                is MembershipExpression -> emitMembership(expression)
+                is IntervalRelationExpression -> emitIntervalRelation(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Expression '${expression::class.simpleName}' is not supported yet."

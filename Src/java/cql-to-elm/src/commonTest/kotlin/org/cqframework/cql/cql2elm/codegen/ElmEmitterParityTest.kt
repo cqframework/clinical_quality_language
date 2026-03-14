@@ -157,6 +157,13 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "TypeOperators.cql")
     }
 
+    // ---- Milestone 6 tests ----
+
+    @Test
+    fun `DateTimeAndIntervals - date time and interval operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "DateTimeAndIntervals.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)
