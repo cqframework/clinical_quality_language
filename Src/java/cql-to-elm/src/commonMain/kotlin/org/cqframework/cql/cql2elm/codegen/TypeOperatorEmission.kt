@@ -34,10 +34,17 @@ import org.hl7.elm.r1.ToTime
 /** Emit an [IsExpression] as an ELM [Is] node with isTypeSpecifier set. */
 internal fun EmissionContext.emitIsExpression(expression: IsExpression): ElmExpression {
     val operandElm = emitExpression(expression.operand)
-    return Is().apply {
-        operand = operandElm
-        isTypeSpecifier = emitTypeSpecifier(expression.type)
+    val isNode =
+        Is().apply {
+            operand = operandElm
+            isTypeSpecifier = emitTypeSpecifier(expression.type)
+        }
+    // The `negated` field is not produced by the grammar for type tests (`is not null/true/false`
+    // is handled by BooleanTestExpression), but handle it defensively.
+    if (expression.negated) {
+        return org.hl7.elm.r1.Not().apply { operand = isNode }
     }
+    return isNode
 }
 
 /** Emit an [AsExpression] as an ELM [As] node with strict = false. */
@@ -68,6 +75,11 @@ internal fun EmissionContext.emitCastExpression(expression: CastExpression): Elm
 internal fun EmissionContext.emitConversionExpression(
     expression: ConversionExpression
 ): ElmExpression {
+    if (expression.destinationUnit != null) {
+        throw ElmEmitter.UnsupportedNodeException(
+            "Unit conversions (convert to '${expression.destinationUnit}') are not yet supported."
+        )
+    }
     val operandElm = emitExpression(expression.operand)
     val destType = expression.destinationType
     if (destType is NamedTypeSpecifier) {
