@@ -145,6 +145,11 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "FunctionDefs.cql")
     }
 
+    @Test
+    fun `ExternalFunctions - external function definitions match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ExternalFunctions.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)

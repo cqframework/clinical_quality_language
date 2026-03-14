@@ -2,12 +2,14 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
+import org.hl7.cql.ast.AstWalker
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Definition
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.ExpressionFunctionBody
 import org.hl7.cql.ast.ExternalFunctionBody
 import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.Statement
@@ -79,9 +81,10 @@ internal fun EmissionContext.emitParameter(definition: ParameterDefinition): Par
 }
 
 /**
- * Emits statement-level constructs (context definitions, expression definitions). Tracks current
- * context for expression definitions. Handles forward references by emitting referenced definitions
- * before the referencing definition, matching the legacy translator's output order.
+ * Emits statement-level constructs (context definitions, expression definitions, function
+ * definitions). Tracks current context for expression definitions. Handles forward references by
+ * emitting referenced definitions before the referencing definition, matching the legacy
+ * translator's output order.
  */
 internal class StatementEmitter(private val ctx: EmissionContext) {
     val expressions = mutableListOf<ExpressionDef>()
@@ -141,8 +144,8 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         val definition = expressionDefsByName[name] ?: return
         emittedExpressions.add(name) // Mark early to prevent cycles
 
-        // Collect identifier references from the expression
-        val refs = collectIdentifierRefs(definition.expression)
+        // Collect identifier references from the expression and emit dependencies first
+        val refs = IdentifierRefCollector.collect(definition.expression)
         for (ref in refs) {
             if (ref in expressionDefsByName) {
                 ensureEmitted(ref)
@@ -156,6 +159,17 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     }
 
     private fun emitFunctionDef(definition: FunctionDefinition) {
+        // Ensure any expression definitions referenced by the function body are emitted first
+        val body = definition.body
+        if (body is ExpressionFunctionBody) {
+            val refs = IdentifierRefCollector.collect(body.expression)
+            for (ref in refs) {
+                if (ref in expressionDefsByName) {
+                    ensureEmitted(ref)
+                }
+            }
+        }
+
         val savedContext = currentContext
         statementContexts[definition.name.value]?.let { currentContext = it }
         expressions += ctx.emitFunctionDefinition(definition, currentContext)
@@ -183,44 +197,23 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         }
         return expressionDef
     }
+}
 
-    companion object {
-        /** Collect all identifier reference names from an expression tree. */
-        private fun collectIdentifierRefs(expression: org.hl7.cql.ast.Expression): Set<String> {
-            val refs = mutableSetOf<String>()
-            collectIdentifierRefsRecursive(expression, refs)
-            return refs
-        }
-
-        @Suppress("CyclomaticComplexMethod")
-        private fun collectIdentifierRefsRecursive(
-            expression: org.hl7.cql.ast.Expression,
-            refs: MutableSet<String>,
-        ) {
-            when (expression) {
-                is org.hl7.cql.ast.IdentifierExpression -> refs.add(expression.name.simpleName)
-                is org.hl7.cql.ast.OperatorBinaryExpression -> {
-                    collectIdentifierRefsRecursive(expression.left, refs)
-                    collectIdentifierRefsRecursive(expression.right, refs)
+/**
+ * Collects all [IdentifierExpression] names from an expression tree using [AstWalker]. This ensures
+ * complete coverage of all AST expression types as new ones are added.
+ */
+private object IdentifierRefCollector {
+    fun collect(expression: org.hl7.cql.ast.Expression): Set<String> {
+        val refs = mutableSetOf<String>()
+        val walker =
+            object : AstWalker() {
+                override fun visitIdentifierExpression(expression: IdentifierExpression) {
+                    refs.add(expression.name.simpleName)
                 }
-                is org.hl7.cql.ast.OperatorUnaryExpression ->
-                    collectIdentifierRefsRecursive(expression.operand, refs)
-                is org.hl7.cql.ast.IfExpression -> {
-                    collectIdentifierRefsRecursive(expression.condition, refs)
-                    collectIdentifierRefsRecursive(expression.thenBranch, refs)
-                    collectIdentifierRefsRecursive(expression.elseBranch, refs)
-                }
-                is org.hl7.cql.ast.FunctionCallExpression ->
-                    expression.arguments.forEach { collectIdentifierRefsRecursive(it, refs) }
-                is org.hl7.cql.ast.BooleanTestExpression ->
-                    collectIdentifierRefsRecursive(expression.operand, refs)
-                is org.hl7.cql.ast.IndexExpression -> {
-                    collectIdentifierRefsRecursive(expression.target, refs)
-                    collectIdentifierRefsRecursive(expression.index, refs)
-                }
-                else -> {}
             }
-        }
+        walker.visitExpression(expression)
+        return refs
     }
 }
 
@@ -275,6 +268,15 @@ internal fun EmissionContext.emitFunctionDefinition(
         }
         is ExternalFunctionBody -> {
             functionDef.external = true
+            // For external functions, set result type from declared return type
+            definition.returnType?.let { typeSpec ->
+                if (typeSpec is NamedTypeSpecifier) {
+                    val resolvedType = operatorRegistry.type(typeSpec.name.simpleName)
+                    if (resolvedType != null) {
+                        decorate(functionDef, resolvedType)
+                    }
+                }
+            }
         }
     }
 

@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
-import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanLiteral
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.BooleanTestKind
@@ -27,18 +26,24 @@ import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.QuantityLiteral
 import org.hl7.cql.ast.StringLiteral
 import org.hl7.cql.ast.TimeLiteral
-import org.hl7.cql.ast.UnaryOperator
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 
 /**
  * Walks the AST and infers types for all expressions, populating the [TypeTable]. Uses the
  * [OperatorRegistry] to resolve operator types and store operator resolution results.
+ *
+ * **Not thread-safe.** Each instance maintains mutable state (`inProgress`, `operandScope`,
+ * `functionResultTypes`) and must not be shared across threads or reused after [resolve] returns. A
+ * fresh instance is created per [CompilerFrontend.analyze] call.
  */
 class TypeResolver(private val operatorRegistry: OperatorRegistry) {
 
-    /** Tracks expressions currently being resolved to detect circular references. */
-    private val inProgress = mutableSetOf<String>()
+    /** Tracks expression definitions currently being resolved to detect circular references. */
+    private val inProgressExpressions = mutableSetOf<String>()
+
+    /** Tracks function definitions currently being resolved to detect circular references. */
+    private val inProgressFunctions = mutableSetOf<FunctionDefinition>()
 
     /** Per-scope operand types for function body resolution. */
     private var operandScope: Map<String, DataType> = emptyMap()
@@ -75,17 +80,17 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         typeTable: TypeTable,
         symbolTable: SymbolTable,
     ): DataType? {
-        if (name in inProgress) return null // Circular reference
+        if (name in inProgressExpressions) return null // Circular reference — illegal in CQL
         val exprDef = symbolTable.expressionDefinitions[name] ?: return null
         // Already resolved?
         typeTable[exprDef.expression]?.let {
             return it
         }
-        inProgress.add(name)
+        inProgressExpressions.add(name)
         try {
             return inferType(exprDef.expression, typeTable, symbolTable)
         } finally {
-            inProgress.remove(name)
+            inProgressExpressions.remove(name)
         }
     }
 
@@ -98,8 +103,11 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         functionResultTypes[funcDef]?.let {
             return it
         }
+        if (funcDef in inProgressFunctions) return null // Circular reference — illegal in CQL
         val body = funcDef.body
         if (body !is ExpressionFunctionBody) return null
+
+        inProgressFunctions.add(funcDef)
 
         // Build operand scope
         val scope = mutableMapOf<String, DataType>()
@@ -118,10 +126,11 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             return resultType
         } finally {
             operandScope = previousScope
+            inProgressFunctions.remove(funcDef)
         }
     }
 
-    private fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType? {
+    internal fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType? {
         return when (typeSpec) {
             is NamedTypeSpecifier -> operatorRegistry.type(typeSpec.name.simpleName)
             else -> null
@@ -229,7 +238,7 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
     ): DataType? {
         val leftType = inferType(expression.left, typeTable, symbolTable) ?: return null
         val rightType = inferType(expression.right, typeTable, symbolTable) ?: return null
-        val opName = binaryOperatorToSystemName(expression.operator) ?: return null
+        val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
             operatorRegistry.resolve(opName, listOf(leftType, rightType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
@@ -261,7 +270,7 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         symbolTable: SymbolTable,
     ): DataType? {
         val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
-        val opName = unaryOperatorToSystemName(expression.operator) ?: return null
+        val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
         if (opName == "Positive") return operandType
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
@@ -294,6 +303,10 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         typeTable: TypeTable,
         symbolTable: SymbolTable,
     ): DataType? {
+        // Infer target type for fluent calls (not yet used for resolution, but ensures
+        // the target expression is typed for future milestones)
+        expression.target?.let { inferType(it, typeTable, symbolTable) }
+
         val functionName = expression.function.value
         val argTypes = expression.arguments.map { inferType(it, typeTable, symbolTable) }
 
@@ -324,15 +337,16 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             return resolution.operator.resultType
         }
 
-        // Try user-defined functions
+        // Try user-defined functions with subtype matching
         val candidates = symbolTable.resolveFunctions(functionName)
         for (funcDef in candidates) {
             if (funcDef.operands.size != nonNullArgTypes.size) continue
             val operandTypes = funcDef.operands.map { resolveTypeSpecifier(it.type) }
             if (operandTypes.any { it == null }) continue
-            // Simple type matching (exact match)
             val matches =
-                operandTypes.zip(nonNullArgTypes).all { (expected, actual) -> expected == actual }
+                operandTypes.zip(nonNullArgTypes).all { (expected, actual) ->
+                    expected == actual || actual.isSubTypeOf(expected!!)
+                }
             if (matches) {
                 return resolveFunctionDef(funcDef, typeTable, symbolTable)
             }
@@ -352,43 +366,5 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
-    }
-
-    companion object {
-        @Suppress("CyclomaticComplexMethod")
-        fun binaryOperatorToSystemName(op: BinaryOperator): String? {
-            return when (op) {
-                BinaryOperator.ADD -> "Add"
-                BinaryOperator.SUBTRACT -> "Subtract"
-                BinaryOperator.MULTIPLY -> "Multiply"
-                BinaryOperator.DIVIDE -> "Divide"
-                BinaryOperator.MODULO -> "Modulo"
-                BinaryOperator.POWER -> "Power"
-                BinaryOperator.CONCAT -> "Concatenate"
-                BinaryOperator.EQUALS -> "Equal"
-                BinaryOperator.NOT_EQUALS -> "Equal" // NotEqual is Not(Equal(...))
-                BinaryOperator.EQUIVALENT -> "Equivalent"
-                BinaryOperator.NOT_EQUIVALENT -> "Equivalent" // Not(Equivalent(...))
-                BinaryOperator.LT -> "Less"
-                BinaryOperator.LTE -> "LessOrEqual"
-                BinaryOperator.GT -> "Greater"
-                BinaryOperator.GTE -> "GreaterOrEqual"
-                BinaryOperator.AND -> "And"
-                BinaryOperator.OR -> "Or"
-                BinaryOperator.XOR -> "Xor"
-                BinaryOperator.IMPLIES -> "Implies"
-                else -> null
-            }
-        }
-
-        fun unaryOperatorToSystemName(op: UnaryOperator): String? {
-            return when (op) {
-                UnaryOperator.NEGATE -> "Negate"
-                UnaryOperator.NOT -> "Not"
-                UnaryOperator.SUCCESSOR -> "Successor"
-                UnaryOperator.PREDECESSOR -> "Predecessor"
-                UnaryOperator.POSITIVE -> "Positive"
-            }
-        }
     }
 }

@@ -47,6 +47,14 @@ internal fun EmissionContext.emitIndexExpression(expression: IndexExpression): E
  */
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression): ElmExpression {
+    // Fluent calls have a target expression (e.g., x.doSomething()). Not yet used for
+    // resolution, but emit it so the expression tree is complete.
+    if (expression.target != null) {
+        throw ElmEmitter.UnsupportedNodeException(
+            "Fluent function calls (target.${expression.function.value}()) are not yet supported."
+        )
+    }
+
     val functionName = expression.function.value
     val rawArgs = expression.arguments.map { emitExpression(it) }
 

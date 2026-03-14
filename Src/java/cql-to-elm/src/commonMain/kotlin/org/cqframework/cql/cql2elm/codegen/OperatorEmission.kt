@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.analysis.TypeResolver
+import org.cqframework.cql.cql2elm.analysis.OperatorNames
 import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.BooleanTestKind
@@ -85,7 +85,7 @@ internal fun EmissionContext.emitBinaryOperator(
     }
 
     val systemOpName =
-        TypeResolver.binaryOperatorToSystemName(op)
+        OperatorNames.binaryOperatorToSystemName(op)
             ?: throw ElmEmitter.UnsupportedNodeException(
                 "Binary operator '${op.name}' is not yet supported."
             )
@@ -160,7 +160,7 @@ internal fun EmissionContext.emitUnaryOperator(expression: OperatorUnaryExpressi
     }
 
     val systemOpName =
-        TypeResolver.unaryOperatorToSystemName(op)
+        OperatorNames.unaryOperatorToSystemName(op)
             ?: throw ElmEmitter.UnsupportedNodeException(
                 "Unary operator '${op.name}' is not yet supported."
             )
