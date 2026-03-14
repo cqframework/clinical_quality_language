@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.frontend
+package org.cqframework.cql.cql2elm.analysis
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

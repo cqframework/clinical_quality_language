@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.frontend
+package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.ModelResolver
 import org.cqframework.cql.cql2elm.TypeBuilder

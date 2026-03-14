@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.backend
+package org.cqframework.cql.cql2elm.codegen
 
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
 import org.hl7.cql.ast.ContextDefinition

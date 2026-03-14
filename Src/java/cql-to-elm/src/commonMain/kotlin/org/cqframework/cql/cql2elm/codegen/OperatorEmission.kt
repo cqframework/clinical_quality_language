@@ -1,6 +1,6 @@
-package org.cqframework.cql.cql2elm.backend
+package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.frontend.TypeResolver
+import org.cqframework.cql.cql2elm.analysis.TypeResolver
 import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
