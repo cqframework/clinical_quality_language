@@ -36,7 +36,11 @@ class ElmEmitterParityTest {
 
         val frontendResult = CompilerFrontend().analyze(astResult.library)
         val emittedLibrary =
-            ElmEmitter(frontendResult.symbolTable, frontendResult.typeTable)
+            ElmEmitter(
+                    frontendResult.symbolTable,
+                    frontendResult.typeTable,
+                    frontendResult.operatorRegistry,
+                )
                 .emit(frontendResult.library)
                 .library
 
@@ -131,10 +135,9 @@ class ElmEmitterParityTest {
                 "annotation",
                 "localId",
                 "locator",
-                // Signature and result type require full type resolution (future milestone)
+                // Signature is set based on SignatureLevel options, which are not yet configured
+                // in the new pipeline. System operators don't need signatures for disambiguation.
                 "signature",
-                "resultTypeName",
-                "resultTypeSpecifier",
             )
     }
 }
