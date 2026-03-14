@@ -271,6 +271,7 @@ private fun Expression.withUnknownLocator(): Expression =
         is LiteralExpression -> copy(locator = Locator.UNKNOWN)
         is OperatorBinaryExpression -> copy(locator = Locator.UNKNOWN)
         is OperatorUnaryExpression -> copy(locator = Locator.UNKNOWN)
+        is BooleanTestExpression -> copy(locator = Locator.UNKNOWN)
     }
 
 @Suppress("CyclomaticComplexMethod")

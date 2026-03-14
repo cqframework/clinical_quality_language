@@ -7,8 +7,12 @@ import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
+import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.Expression
+import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
+import org.hl7.cql.ast.IfExpression
+import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
@@ -100,6 +104,10 @@ class EmissionContext(
                 is LiteralExpression -> emitLiteral(expression.literal)
                 is OperatorBinaryExpression -> emitBinaryOperator(expression)
                 is OperatorUnaryExpression -> emitUnaryOperator(expression)
+                is BooleanTestExpression -> emitBooleanTest(expression)
+                is IfExpression -> emitIfExpression(expression)
+                is FunctionCallExpression -> emitFunctionCall(expression)
+                is IndexExpression -> emitIndexExpression(expression)
                 is IdentifierExpression ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Identifier expressions are not yet supported."

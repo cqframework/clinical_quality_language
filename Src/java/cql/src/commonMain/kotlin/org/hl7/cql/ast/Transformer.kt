@@ -121,6 +121,7 @@ open class Transformer {
             is LiteralExpression -> visitLiteralExpression(expression)
             is OperatorBinaryExpression -> visitOperatorBinaryExpression(expression)
             is OperatorUnaryExpression -> visitOperatorUnaryExpression(expression)
+            is BooleanTestExpression -> visitBooleanTestExpression(expression)
         }
 
     open fun visitIdentifierExpression(expression: IdentifierExpression): Expression = expression
@@ -284,6 +285,9 @@ open class Transformer {
         )
 
     open fun visitOperatorUnaryExpression(expression: OperatorUnaryExpression): Expression =
+        expression.copy(operand = visitExpression(expression.operand))
+
+    open fun visitBooleanTestExpression(expression: BooleanTestExpression): Expression =
         expression.copy(operand = visitExpression(expression.operand))
 
     @Suppress("CyclomaticComplexMethod")

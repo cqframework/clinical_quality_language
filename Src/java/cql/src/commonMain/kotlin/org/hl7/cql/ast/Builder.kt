@@ -338,21 +338,18 @@ class Builder(private val sourceId: String? = null) {
                 ?.firstOrNull {
                     it.equals("null", true) || it.equals("true", true) || it.equals("false", true)
                 }
-        val literal =
+        val kind =
             when (keyword?.lowercase()) {
-                "null" -> NullLiteral(ctx.toLocator())
-                "true" -> BooleanLiteral(true, ctx.toLocator())
-                "false" -> BooleanLiteral(false, ctx.toLocator())
+                "null" -> BooleanTestKind.IS_NULL
+                "true" -> BooleanTestKind.IS_TRUE
+                "false" -> BooleanTestKind.IS_FALSE
                 else -> return unsupportedExpression("booleanExpression", ctx)
             }
-        val op =
-            if (ctx.text.contains("is not", ignoreCase = true)) BinaryOperator.NOT_EQUALS
-            else BinaryOperator.EQUALS
-        val right = LiteralExpression(literal, ctx.toLocator())
-        return OperatorBinaryExpression(
-            operator = op,
-            left = left,
-            right = right,
+        val negated = ctx.children?.any { it.text.equals("not", true) } == true
+        return BooleanTestExpression(
+            kind = kind,
+            negated = negated,
+            operand = left,
             locator = ctx.toLocator(),
         )
     }

@@ -170,6 +170,28 @@ data class CastExpression(
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression
 
+/**
+ * Represents a boolean test expression: `x is null`, `x is true`, `x is false`, and their negated
+ * variants `x is not null`, `x is not true`, `x is not false`.
+ *
+ * This is distinct from equality comparison (`x = null`) which uses [OperatorBinaryExpression].
+ */
+@Serializable
+enum class BooleanTestKind {
+    @SerialName("isNull") IS_NULL,
+    @SerialName("isTrue") IS_TRUE,
+    @SerialName("isFalse") IS_FALSE,
+}
+
+@Serializable
+@SerialName("booleanTest")
+data class BooleanTestExpression(
+    val kind: BooleanTestKind,
+    val negated: Boolean,
+    override val operand: Expression,
+    override val locator: Locator = Locator.UNKNOWN,
+) : UnaryExpression
+
 @Serializable
 @SerialName("unknown")
 data class UnsupportedExpression(
