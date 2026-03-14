@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.backend
+package org.cqframework.cql.cql2elm.codegen
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.frontend.CompilerFrontend
+import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.cqframework.cql.shared.TestResource
 import org.hl7.cql.ast.Builder

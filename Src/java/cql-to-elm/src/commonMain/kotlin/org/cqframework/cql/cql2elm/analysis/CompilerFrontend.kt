@@ -1,6 +1,6 @@
 @file:Suppress("UnusedParameter")
 
-package org.cqframework.cql.cql2elm.frontend
+package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.BinaryOperator

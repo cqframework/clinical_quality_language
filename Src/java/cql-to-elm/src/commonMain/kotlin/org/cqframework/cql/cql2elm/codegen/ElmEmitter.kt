@@ -1,14 +1,14 @@
-package org.cqframework.cql.cql2elm.backend
+package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.frontend.OperatorRegistry
-import org.cqframework.cql.cql2elm.frontend.SymbolTable
-import org.cqframework.cql.cql2elm.frontend.TypeTable
+import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
+import org.cqframework.cql.cql2elm.analysis.SymbolTable
+import org.cqframework.cql.cql2elm.analysis.TypeTable
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Converts the CQL AST into an equivalent ELM representation. The emitter reads types from the
- * [TypeTable] (populated by [org.cqframework.cql.cql2elm.frontend.TypeResolver]) and sets
+ * [TypeTable] (populated by [org.cqframework.cql.cql2elm.analysis.TypeResolver]) and sets
  * `resultType`, `resultTypeName`, and `resultTypeSpecifier` on emitted ELM nodes to match the
  * legacy translator output.
  *

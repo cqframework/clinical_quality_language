@@ -1,8 +1,8 @@
-package org.cqframework.cql.cql2elm.backend
+package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.frontend.OperatorRegistry
-import org.cqframework.cql.cql2elm.frontend.SymbolTable
-import org.cqframework.cql.cql2elm.frontend.TypeTable
+import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
+import org.cqframework.cql.cql2elm.analysis.SymbolTable
+import org.cqframework.cql.cql2elm.analysis.TypeTable
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
