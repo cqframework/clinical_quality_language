@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
 import org.hl7.cql.ast.AstWalker
 import org.hl7.cql.ast.ContextDefinition
@@ -71,11 +70,7 @@ internal fun EmissionContext.emitParameter(definition: ParameterDefinition): Par
     definition.default?.let { defaultExpr -> paramDef.default = emitExpression(defaultExpr) }
     // Emit parameterTypeSpecifier for declared type
     definition.type?.let { typeSpec ->
-        if (typeSpec is NamedTypeSpecifier) {
-            val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
-            elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
-            paramDef.parameterTypeSpecifier = elmTypeSpec
-        }
+        paramDef.parameterTypeSpecifier = emitTypeSpecifier(typeSpec)
     }
     return paramDef
 }
@@ -242,11 +237,7 @@ internal fun EmissionContext.emitFunctionDefinition(
         val operandDef = OperandDef()
         operandDef.name = operand.name.value
         val typeSpec = operand.type
-        if (typeSpec is NamedTypeSpecifier) {
-            val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
-            elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
-            operandDef.operandTypeSpecifier = elmTypeSpec
-        }
+        operandDef.operandTypeSpecifier = emitTypeSpecifier(typeSpec)
         // Set result type on operand from registry
         val resolvedType =
             operatorRegistry.type((typeSpec as? NamedTypeSpecifier)?.name?.simpleName ?: "")
