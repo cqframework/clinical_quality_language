@@ -747,7 +747,10 @@ class Builder(private val sourceId: String? = null) {
             is cqlParser.LongNumberLiteralContext ->
                 LiteralExpression(
                     literal =
-                        LongLiteral(ctx.LONGNUMBER().text.toLong(), locator = ctx.toLocator()),
+                        LongLiteral(
+                            ctx.LONGNUMBER().text.removeSuffix("L").toLong(),
+                            locator = ctx.toLocator(),
+                        ),
                     locator = ctx.toLocator(),
                 )
 
