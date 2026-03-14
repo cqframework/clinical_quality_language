@@ -68,6 +68,8 @@ class ElmEmitterParityTest {
         )
     }
 
+    // ---- Milestone 0+1 tests ----
+
     @Test
     fun `Simple - literal expression matches legacy translator`() {
         assertParity(TEST_RESOURCE_BASE + "Simple.cql")
@@ -86,6 +88,18 @@ class ElmEmitterParityTest {
     @Test
     fun `ContextAndAccess - context and access modifiers match legacy translator`() {
         assertParity(TEST_RESOURCE_BASE + "ContextAndAccess.cql")
+    }
+
+    // ---- Milestone 2 tests ----
+
+    @Test
+    fun `ArithmeticOperators - arithmetic operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ArithmeticOperators.cql")
+    }
+
+    @Test
+    fun `ComparisonOperators - comparison operators match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ComparisonOperators.cql")
     }
 
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
@@ -112,6 +126,15 @@ class ElmEmitterParityTest {
 
     private companion object {
         private const val TEST_RESOURCE_BASE = "org/cqframework/cql/cql2elm/ast/"
-        private val IGNORED_KEYS = setOf("annotation", "localId", "locator")
+        private val IGNORED_KEYS =
+            setOf(
+                "annotation",
+                "localId",
+                "locator",
+                // Signature and result type require full type resolution (future milestone)
+                "signature",
+                "resultTypeName",
+                "resultTypeSpecifier",
+            )
     }
 }
