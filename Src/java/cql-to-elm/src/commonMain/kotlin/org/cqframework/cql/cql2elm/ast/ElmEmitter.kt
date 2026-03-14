@@ -6,6 +6,7 @@ import org.cqframework.cql.cql2elm.frontend.TypeTable
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
+import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanLiteral
 import org.hl7.cql.ast.CodeLiteral
 import org.hl7.cql.ast.ConceptLiteral
@@ -25,6 +26,8 @@ import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
 import org.hl7.cql.ast.NullLiteral
+import org.hl7.cql.ast.OperatorBinaryExpression
+import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.QuantityLiteral
 import org.hl7.cql.ast.RatioLiteral
@@ -32,40 +35,68 @@ import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.StringLiteral
 import org.hl7.cql.ast.TimeLiteral
 import org.hl7.cql.ast.TupleLiteral
+import org.hl7.cql.ast.UnaryOperator
 import org.hl7.cql.ast.UnsupportedStatement
 import org.hl7.cql.ast.UsingDefinition
+import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
+import org.hl7.elm.r1.Add
+import org.hl7.elm.r1.And
 import org.hl7.elm.r1.Code
 import org.hl7.elm.r1.CodeSystemRef
+import org.hl7.elm.r1.Concatenate
 import org.hl7.elm.r1.Concept
 import org.hl7.elm.r1.DateTime
+import org.hl7.elm.r1.Divide
+import org.hl7.elm.r1.Equal
+import org.hl7.elm.r1.Equivalent
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.Greater
+import org.hl7.elm.r1.GreaterOrEqual
+import org.hl7.elm.r1.Implies
 import org.hl7.elm.r1.Instance
 import org.hl7.elm.r1.InstanceElement
 import org.hl7.elm.r1.Interval
+import org.hl7.elm.r1.Less
+import org.hl7.elm.r1.LessOrEqual
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal as ElmLiteral
+import org.hl7.elm.r1.Modulo
+import org.hl7.elm.r1.Multiply
+import org.hl7.elm.r1.Negate
+import org.hl7.elm.r1.Not
 import org.hl7.elm.r1.Null
+import org.hl7.elm.r1.Or
 import org.hl7.elm.r1.ParameterDef
+import org.hl7.elm.r1.Power
+import org.hl7.elm.r1.Predecessor
 import org.hl7.elm.r1.Quantity
 import org.hl7.elm.r1.Ratio
+import org.hl7.elm.r1.Subtract
+import org.hl7.elm.r1.Successor
 import org.hl7.elm.r1.Time
+import org.hl7.elm.r1.ToDecimal
+import org.hl7.elm.r1.ToLong
 import org.hl7.elm.r1.Tuple
 import org.hl7.elm.r1.TupleElement
 import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.VersionedIdentifier
+import org.hl7.elm.r1.Xor
 
 /**
  * Converts the CQL AST into an equivalent ELM representation. The emitter focuses on structural
  * parity with the legacy parse-tree visitor and will grow to cover the full language surface area.
  */
-@Suppress("UnusedPrivateProperty", "TooManyFunctions")
+@Suppress("UnusedPrivateProperty", "TooManyFunctions", "LargeClass")
 class ElmEmitter(
     private val symbolTable: SymbolTable = SymbolTable(),
     private val typeTable: TypeTable = TypeTable(),
 ) {
     private val typesNamespace = "urn:hl7-org:elm-types:r1"
+
+    /** Operator registry for resolving arithmetic and comparison operators. */
+    private val operatorRegistry = OperatorRegistry.createSystemRegistry()
 
     @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 
@@ -223,6 +254,8 @@ class ElmEmitter(
     private fun emitExpression(expression: Expression): ElmExpression {
         return when (expression) {
             is LiteralExpression -> emitLiteral(expression.literal)
+            is OperatorBinaryExpression -> emitBinaryOperator(expression)
+            is OperatorUnaryExpression -> emitUnaryOperator(expression)
             is IdentifierExpression ->
                 throw UnsupportedNodeException("Identifier expressions are not yet supported.")
             else ->
@@ -231,6 +264,260 @@ class ElmEmitter(
                 )
         }
     }
+
+    // ---- Operator emission ----
+
+    /**
+     * Infer the system type name for an expression based on its structure. For literals this is
+     * straightforward; for operators we recursively resolve.
+     */
+    @Suppress("CyclomaticComplexMethod", "ReturnCount")
+    private fun inferType(expression: Expression): DataType? {
+        return when (expression) {
+            is LiteralExpression -> inferLiteralType(expression.literal)
+            is OperatorBinaryExpression -> {
+                val leftType = inferType(expression.left) ?: return null
+                val rightType = inferType(expression.right) ?: return null
+                val opName = binaryOperatorToSystemName(expression.operator)
+                val resolution = operatorRegistry.resolveBinary(opName, leftType, rightType)
+                resolution?.resultType
+            }
+            is OperatorUnaryExpression -> {
+                val operandType = inferType(expression.operand) ?: return null
+                val opName = unaryOperatorToSystemName(expression.operator)
+                val resolution = operatorRegistry.resolveUnary(opName, operandType)
+                resolution?.resultType
+            }
+            else -> null
+        }
+    }
+
+    private fun inferLiteralType(literal: Literal): DataType? {
+        return when (literal) {
+            is IntLiteral -> operatorRegistry.type("Integer")
+            is LongLiteral -> operatorRegistry.type("Long")
+            is DecimalLiteral -> operatorRegistry.type("Decimal")
+            is StringLiteral -> operatorRegistry.type("String")
+            is BooleanLiteral -> operatorRegistry.type("Boolean")
+            is QuantityLiteral -> operatorRegistry.type("Quantity")
+            is DateTimeLiteral -> operatorRegistry.type("DateTime")
+            is TimeLiteral -> operatorRegistry.type("Time")
+            is NullLiteral -> null
+            else -> null
+        }
+    }
+
+    @Suppress("CyclomaticComplexMethod")
+    private fun binaryOperatorToSystemName(op: BinaryOperator): String {
+        return when (op) {
+            BinaryOperator.ADD -> "Add"
+            BinaryOperator.SUBTRACT -> "Subtract"
+            BinaryOperator.MULTIPLY -> "Multiply"
+            BinaryOperator.DIVIDE -> "Divide"
+            BinaryOperator.MODULO -> "Modulo"
+            BinaryOperator.POWER -> "Power"
+            BinaryOperator.CONCAT -> "Concatenate"
+            BinaryOperator.EQUALS -> "Equal"
+            BinaryOperator.NOT_EQUALS -> "Equal" // NotEqual is Not(Equal(...))
+            BinaryOperator.EQUIVALENT -> "Equivalent"
+            BinaryOperator.NOT_EQUIVALENT -> "Equivalent" // Not(Equivalent(...))
+            BinaryOperator.LT -> "Less"
+            BinaryOperator.LTE -> "LessOrEqual"
+            BinaryOperator.GT -> "Greater"
+            BinaryOperator.GTE -> "GreaterOrEqual"
+            BinaryOperator.AND -> "And"
+            BinaryOperator.OR -> "Or"
+            BinaryOperator.XOR -> "Xor"
+            BinaryOperator.IMPLIES -> "Implies"
+            else ->
+                throw UnsupportedNodeException("Binary operator '${op.name}' is not yet supported.")
+        }
+    }
+
+    private fun unaryOperatorToSystemName(op: UnaryOperator): String {
+        return when (op) {
+            UnaryOperator.NEGATE -> "Negate"
+            UnaryOperator.NOT -> "Not"
+            UnaryOperator.SUCCESSOR -> "Successor"
+            UnaryOperator.PREDECESSOR -> "Predecessor"
+            UnaryOperator.POSITIVE -> "Positive" // identity, no operator needed
+        }
+    }
+
+    @Suppress("CyclomaticComplexMethod", "ReturnCount", "NestedBlockDepth")
+    private fun emitBinaryOperator(expression: OperatorBinaryExpression): ElmExpression {
+        val op = expression.operator
+
+        // Handle Concatenate (&) specially - it wraps each operand in Coalesce(operand, '')
+        // in the legacy translator, but for now we handle it as a simple binary Concatenate
+        if (op == BinaryOperator.CONCAT) {
+            return emitConcatenate(expression)
+        }
+
+        // For NotEqual and NotEquivalent, we emit Not(Equal/Equivalent(...))
+        if (op == BinaryOperator.NOT_EQUALS) {
+            return emitNotWrapper(expression, "Equal")
+        }
+        if (op == BinaryOperator.NOT_EQUIVALENT) {
+            return emitNotWrapper(expression, "Equivalent")
+        }
+
+        val systemOpName = binaryOperatorToSystemName(op)
+        val leftType = inferType(expression.left)
+        val rightType = inferType(expression.right)
+
+        var leftElm = emitExpression(expression.left)
+        var rightElm = emitExpression(expression.right)
+
+        // Resolve operator with potential type conversions
+        if (leftType != null && rightType != null) {
+            val resolution = operatorRegistry.resolveBinary(systemOpName, leftType, rightType)
+            if (resolution != null) {
+                resolution.conversions[0]?.let { convName ->
+                    leftElm = wrapConversion(leftElm, convName)
+                }
+                resolution.conversions[1]?.let { convName ->
+                    rightElm = wrapConversion(rightElm, convName)
+                }
+
+                // Special case: Add on strings becomes Concatenate
+                if (
+                    systemOpName == "Add" &&
+                        resolution.resultType == operatorRegistry.type("String")
+                ) {
+                    return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
+                }
+            }
+        }
+
+        return createBinaryElm(systemOpName, leftElm, rightElm)
+    }
+
+    private fun emitNotWrapper(
+        expression: OperatorBinaryExpression,
+        innerOpName: String,
+    ): ElmExpression {
+        // Build the inner Equal/Equivalent
+        val leftType = inferType(expression.left)
+        val rightType = inferType(expression.right)
+
+        var leftElm = emitExpression(expression.left)
+        var rightElm = emitExpression(expression.right)
+
+        if (leftType != null && rightType != null) {
+            val resolution = operatorRegistry.resolveBinary(innerOpName, leftType, rightType)
+            if (resolution != null) {
+                resolution.conversions[0]?.let { convName ->
+                    leftElm = wrapConversion(leftElm, convName)
+                }
+                resolution.conversions[1]?.let { convName ->
+                    rightElm = wrapConversion(rightElm, convName)
+                }
+            }
+        }
+
+        val inner = createBinaryElm(innerOpName, leftElm, rightElm)
+        return Not().apply { operand = inner }
+    }
+
+    private fun emitConcatenate(expression: OperatorBinaryExpression): ElmExpression {
+        val leftElm = emitExpression(expression.left)
+        val rightElm = emitExpression(expression.right)
+
+        // Legacy translator wraps each operand in Coalesce(operand, '') for & operator
+        // For now, we emit a simple Concatenate with Coalesce wrapping
+        return Concatenate().apply {
+            operand = mutableListOf(wrapCoalesce(leftElm), wrapCoalesce(rightElm))
+        }
+    }
+
+    private fun wrapCoalesce(expression: ElmExpression): ElmExpression {
+        val emptyString = ElmLiteral().withValueType(QName(typesNamespace, "String")).withValue("")
+        return org.hl7.elm.r1.Coalesce().apply { operand = mutableListOf(expression, emptyString) }
+    }
+
+    private fun emitUnaryOperator(expression: OperatorUnaryExpression): ElmExpression {
+        val op = expression.operator
+
+        // Positive is identity - just return the operand
+        if (op == UnaryOperator.POSITIVE) {
+            return emitExpression(expression.operand)
+        }
+
+        val systemOpName = unaryOperatorToSystemName(op)
+        val operandType = inferType(expression.operand)
+
+        var operandElm = emitExpression(expression.operand)
+
+        if (operandType != null) {
+            val resolution = operatorRegistry.resolveUnary(systemOpName, operandType)
+            if (resolution != null) {
+                resolution.conversions[0]?.let { convName ->
+                    operandElm = wrapConversion(operandElm, convName)
+                }
+            }
+        }
+
+        return createUnaryElm(systemOpName, operandElm)
+    }
+
+    /** Wrap an expression in a conversion operator (e.g., ToDecimal, ToLong). */
+    private fun wrapConversion(expression: ElmExpression, conversionName: String): ElmExpression {
+        return when (conversionName) {
+            "ToDecimal" -> ToDecimal().apply { operand = expression }
+            "ToLong" -> ToLong().apply { operand = expression }
+            else ->
+                throw UnsupportedNodeException("Conversion '$conversionName' is not yet supported.")
+        }
+    }
+
+    /** Create the appropriate ELM binary expression node for the given system operator name. */
+    @Suppress("CyclomaticComplexMethod")
+    private fun createBinaryElm(
+        operatorName: String,
+        left: ElmExpression,
+        right: ElmExpression,
+    ): ElmExpression {
+        val operands = mutableListOf(left, right)
+        return when (operatorName) {
+            "Add" -> Add().apply { operand = operands }
+            "Subtract" -> Subtract().apply { operand = operands }
+            "Multiply" -> Multiply().apply { operand = operands }
+            "Divide" -> Divide().apply { operand = operands }
+            "Modulo" -> Modulo().apply { operand = operands }
+            "Power" -> Power().apply { operand = operands }
+            "Equal" -> Equal().apply { operand = operands }
+            "Equivalent" -> Equivalent().apply { operand = operands }
+            "Less" -> Less().apply { operand = operands }
+            "LessOrEqual" -> LessOrEqual().apply { operand = operands }
+            "Greater" -> Greater().apply { operand = operands }
+            "GreaterOrEqual" -> GreaterOrEqual().apply { operand = operands }
+            "And" -> And().apply { operand = operands }
+            "Or" -> Or().apply { operand = operands }
+            "Xor" -> Xor().apply { operand = operands }
+            "Implies" -> Implies().apply { operand = operands }
+            else ->
+                throw UnsupportedNodeException(
+                    "Binary operator '$operatorName' ELM emission is not yet supported."
+                )
+        }
+    }
+
+    /** Create the appropriate ELM unary expression node for the given system operator name. */
+    private fun createUnaryElm(operatorName: String, operand: ElmExpression): ElmExpression {
+        return when (operatorName) {
+            "Negate" -> Negate().apply { this.operand = operand }
+            "Not" -> Not().apply { this.operand = operand }
+            "Successor" -> Successor().apply { this.operand = operand }
+            "Predecessor" -> Predecessor().apply { this.operand = operand }
+            else ->
+                throw UnsupportedNodeException(
+                    "Unary operator '$operatorName' ELM emission is not yet supported."
+                )
+        }
+    }
+
+    // ---- Literal emission ----
 
     @Suppress("CyclomaticComplexMethod")
     private fun emitLiteral(literal: Literal): ElmExpression {
