@@ -10,6 +10,7 @@ import org.hl7.elm.r1.Combine
 import org.hl7.elm.r1.Concatenate
 import org.hl7.elm.r1.EndsWith
 import org.hl7.elm.r1.Expression as ElmExpression
+import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.If
 import org.hl7.elm.r1.Indexer
 import org.hl7.elm.r1.LastPositionOf
@@ -90,10 +91,7 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "Substring" -> emitSubstringFunction(args)
         "ReplaceMatches" -> emitReplaceMatchesFunction(args)
 
-        else ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "Function '$functionName' is not yet supported."
-            )
+        else -> emitUserDefinedFunctionCall(functionName, args)
     }
 }
 
@@ -172,4 +170,15 @@ private fun emitSubstringFunction(args: List<ElmExpression>): ElmExpression {
 private fun emitReplaceMatchesFunction(args: List<ElmExpression>): ElmExpression {
     require(args.size == 3) { "Expected 3 arguments for ReplaceMatches" }
     return ReplaceMatches().apply { operand = args.toMutableList() }
+}
+
+/** Emit a call to a user-defined function as a [FunctionRef]. */
+private fun emitUserDefinedFunctionCall(
+    functionName: String,
+    args: List<ElmExpression>,
+): ElmExpression {
+    return FunctionRef().apply {
+        name = functionName
+        operand = args.toMutableList()
+    }
 }

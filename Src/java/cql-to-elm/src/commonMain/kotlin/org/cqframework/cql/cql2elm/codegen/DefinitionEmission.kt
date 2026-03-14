@@ -1,16 +1,22 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Definition
 import org.hl7.cql.ast.ExpressionDefinition
+import org.hl7.cql.ast.ExpressionFunctionBody
+import org.hl7.cql.ast.ExternalFunctionBody
 import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.UnsupportedStatement
 import org.hl7.cql.ast.UsingDefinition
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
 import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.UsingDef
 
@@ -61,32 +67,63 @@ internal fun EmissionContext.emitParameter(definition: ParameterDefinition): Par
             }
     }
     definition.default?.let { defaultExpr -> paramDef.default = emitExpression(defaultExpr) }
-    // parameterType and parameterTypeSpecifier are set during type resolution
-    // which requires model resolution - not yet supported
+    // Emit parameterTypeSpecifier for declared type
+    definition.type?.let { typeSpec ->
+        if (typeSpec is NamedTypeSpecifier) {
+            val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
+            elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
+            paramDef.parameterTypeSpecifier = elmTypeSpec
+        }
+    }
     return paramDef
 }
 
 /**
  * Emits statement-level constructs (context definitions, expression definitions). Tracks current
- * context for expression definitions.
+ * context for expression definitions. Handles forward references by emitting referenced definitions
+ * before the referencing definition, matching the legacy translator's output order.
  */
 internal class StatementEmitter(private val ctx: EmissionContext) {
     val expressions = mutableListOf<ExpressionDef>()
 
     private var currentContext: String? = null
+    private val emittedExpressions = mutableSetOf<String>()
+    private val statementContexts = mutableMapOf<String, String?>()
+    private val expressionDefsByName = mutableMapOf<String, ExpressionDefinition>()
+    private val functionDefsByName = mutableMapOf<String, MutableList<FunctionDefinition>>()
 
     fun emit(statements: List<Statement>) {
-        statements.forEach { emit(it) }
+        // First pass: collect all definitions and track contexts
+        var ctx: String? = null
+        for (statement in statements) {
+            when (statement) {
+                is ContextDefinition -> ctx = statement.context.value
+                is ExpressionDefinition -> {
+                    expressionDefsByName[statement.name.value] = statement
+                    statementContexts[statement.name.value] = ctx
+                }
+                is FunctionDefinition -> {
+                    functionDefsByName
+                        .getOrPut(statement.name.value) { mutableListOf() }
+                        .add(statement)
+                    statementContexts[statement.name.value] = ctx
+                }
+                else -> {}
+            }
+        }
+
+        // Second pass: emit in order, resolving forward references
+        currentContext = null
+        for (statement in statements) {
+            emit(statement)
+        }
     }
 
     private fun emit(statement: Statement) {
         when (statement) {
             is ContextDefinition -> handleContext(statement)
-            is ExpressionDefinition -> expressions += emitExpressionDefinition(statement)
-            is FunctionDefinition ->
-                throw ElmEmitter.UnsupportedNodeException(
-                    "Function definitions are not supported yet."
-                )
+            is ExpressionDefinition -> ensureEmitted(statement.name.value)
+            is FunctionDefinition -> emitFunctionDef(statement)
             is UnsupportedStatement ->
                 throw ElmEmitter.UnsupportedNodeException(
                     "Unsupported statement encountered: ${statement.grammarRule}"
@@ -96,6 +133,33 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 
     private fun handleContext(contextDefinition: ContextDefinition) {
         currentContext = contextDefinition.context.value
+    }
+
+    /** Ensure an expression definition is emitted, resolving dependencies first. */
+    private fun ensureEmitted(name: String) {
+        if (name in emittedExpressions) return
+        val definition = expressionDefsByName[name] ?: return
+        emittedExpressions.add(name) // Mark early to prevent cycles
+
+        // Collect identifier references from the expression
+        val refs = collectIdentifierRefs(definition.expression)
+        for (ref in refs) {
+            if (ref in expressionDefsByName) {
+                ensureEmitted(ref)
+            }
+        }
+
+        val savedContext = currentContext
+        statementContexts[name]?.let { currentContext = it }
+        expressions += emitExpressionDefinition(definition)
+        currentContext = savedContext
+    }
+
+    private fun emitFunctionDef(definition: FunctionDefinition) {
+        val savedContext = currentContext
+        statementContexts[definition.name.value]?.let { currentContext = it }
+        expressions += ctx.emitFunctionDefinition(definition, currentContext)
+        currentContext = savedContext
     }
 
     private fun emitExpressionDefinition(definition: ExpressionDefinition): ExpressionDef {
@@ -113,11 +177,106 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
                 currentContext?.let { context = it }
                 expression = ctx.emitExpression(definition.expression)
             }
-        // Set result type on the ExpressionDef from the expression's type
         val exprType = ctx.typeTable[definition.expression]
         if (exprType != null) {
             ctx.decorate(expressionDef, exprType)
         }
         return expressionDef
     }
+
+    companion object {
+        /** Collect all identifier reference names from an expression tree. */
+        private fun collectIdentifierRefs(expression: org.hl7.cql.ast.Expression): Set<String> {
+            val refs = mutableSetOf<String>()
+            collectIdentifierRefsRecursive(expression, refs)
+            return refs
+        }
+
+        @Suppress("CyclomaticComplexMethod")
+        private fun collectIdentifierRefsRecursive(
+            expression: org.hl7.cql.ast.Expression,
+            refs: MutableSet<String>,
+        ) {
+            when (expression) {
+                is org.hl7.cql.ast.IdentifierExpression -> refs.add(expression.name.simpleName)
+                is org.hl7.cql.ast.OperatorBinaryExpression -> {
+                    collectIdentifierRefsRecursive(expression.left, refs)
+                    collectIdentifierRefsRecursive(expression.right, refs)
+                }
+                is org.hl7.cql.ast.OperatorUnaryExpression ->
+                    collectIdentifierRefsRecursive(expression.operand, refs)
+                is org.hl7.cql.ast.IfExpression -> {
+                    collectIdentifierRefsRecursive(expression.condition, refs)
+                    collectIdentifierRefsRecursive(expression.thenBranch, refs)
+                    collectIdentifierRefsRecursive(expression.elseBranch, refs)
+                }
+                is org.hl7.cql.ast.FunctionCallExpression ->
+                    expression.arguments.forEach { collectIdentifierRefsRecursive(it, refs) }
+                is org.hl7.cql.ast.BooleanTestExpression ->
+                    collectIdentifierRefsRecursive(expression.operand, refs)
+                is org.hl7.cql.ast.IndexExpression -> {
+                    collectIdentifierRefsRecursive(expression.target, refs)
+                    collectIdentifierRefsRecursive(expression.index, refs)
+                }
+                else -> {}
+            }
+        }
+    }
+}
+
+/** Emit a [FunctionDefinition] as an ELM [FunctionDef]. */
+internal fun EmissionContext.emitFunctionDefinition(
+    definition: FunctionDefinition,
+    currentContext: String?,
+): FunctionDef {
+    val functionDef = FunctionDef()
+    functionDef.name = definition.name.value
+    functionDef.accessLevel = ElmAccessModifier.PUBLIC
+    definition.access?.let { access ->
+        functionDef.accessLevel =
+            when (access) {
+                AstAccessModifier.PUBLIC -> ElmAccessModifier.PUBLIC
+                AstAccessModifier.PRIVATE -> ElmAccessModifier.PRIVATE
+            }
+    }
+    currentContext?.let { functionDef.context = it }
+    if (definition.fluent) {
+        functionDef.fluent = true
+    }
+
+    // Emit operand definitions
+    for (operand in definition.operands) {
+        val operandDef = OperandDef()
+        operandDef.name = operand.name.value
+        val typeSpec = operand.type
+        if (typeSpec is NamedTypeSpecifier) {
+            val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
+            elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
+            operandDef.operandTypeSpecifier = elmTypeSpec
+        }
+        // Set result type on operand from registry
+        val resolvedType =
+            operatorRegistry.type((typeSpec as? NamedTypeSpecifier)?.name?.simpleName ?: "")
+        if (resolvedType != null) {
+            decorate(operandDef, resolvedType)
+        }
+        functionDef.operand.add(operandDef)
+    }
+
+    // Emit body
+    when (val body = definition.body) {
+        is ExpressionFunctionBody -> {
+            functionDef.expression = emitExpression(body.expression)
+            // Set result type from body expression
+            val bodyType = typeTable[body.expression]
+            if (bodyType != null) {
+                decorate(functionDef, bodyType)
+            }
+        }
+        is ExternalFunctionBody -> {
+            functionDef.external = true
+        }
+    }
+
+    return functionDef
 }
