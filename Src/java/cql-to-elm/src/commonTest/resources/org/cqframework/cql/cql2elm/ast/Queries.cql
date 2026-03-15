@@ -12,6 +12,9 @@ define SimpleQuery: IntList X where X > 3
 // Query with return
 define QueryWithReturn: ShortList X return X + 1
 
+// Query with return and sort
+define QueryWithReturnAndSort: ShortList X return X + 1 sort desc
+
 // Query with let
 define QueryWithLet: ShortList X let Y: X + 1 return Y
 
