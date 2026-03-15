@@ -4,6 +4,9 @@ package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.hl7.cql.ast.CodeDefinition
+import org.hl7.cql.ast.CodeSystemDefinition
+import org.hl7.cql.ast.ConceptDefinition
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
@@ -11,6 +14,7 @@ import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ParameterDefinition
+import org.hl7.cql.ast.ValueSetDefinition
 import org.hl7.cql.model.DataType
 
 /**
@@ -87,6 +91,14 @@ sealed interface Resolution {
     data class AliasRef(val name: String, val type: DataType) : Resolution
 
     data class QueryLetRef(val name: String, val type: DataType) : Resolution
+
+    data class CodeSystemRef(val definition: CodeSystemDefinition) : Resolution
+
+    data class ValueSetRef(val definition: ValueSetDefinition) : Resolution
+
+    data class CodeRef(val definition: CodeDefinition) : Resolution
+
+    data class ConceptRef(val definition: ConceptDefinition) : Resolution
 }
 
 /**
@@ -97,6 +109,10 @@ data class SymbolTable(
     val parameterDefinitions: Map<String, ParameterDefinition> = emptyMap(),
     val contextDefinitions: List<ContextDefinition> = emptyList(),
     val functionDefinitions: Map<String, List<FunctionDefinition>> = emptyMap(),
+    val codeSystemDefinitions: Map<String, CodeSystemDefinition> = emptyMap(),
+    val valueSetDefinitions: Map<String, ValueSetDefinition> = emptyMap(),
+    val codeDefinitions: Map<String, CodeDefinition> = emptyMap(),
+    val conceptDefinitions: Map<String, ConceptDefinition> = emptyMap(),
 ) {
     fun resolveExpression(name: String): Resolution.ExpressionRef? =
         expressionDefinitions[name]?.let { Resolution.ExpressionRef(it) }
@@ -106,6 +122,18 @@ data class SymbolTable(
 
     fun resolveFunctions(name: String): List<FunctionDefinition> =
         functionDefinitions[name] ?: emptyList()
+
+    fun resolveCodeSystem(name: String): Resolution.CodeSystemRef? =
+        codeSystemDefinitions[name]?.let { Resolution.CodeSystemRef(it) }
+
+    fun resolveValueSet(name: String): Resolution.ValueSetRef? =
+        valueSetDefinitions[name]?.let { Resolution.ValueSetRef(it) }
+
+    fun resolveCode(name: String): Resolution.CodeRef? =
+        codeDefinitions[name]?.let { Resolution.CodeRef(it) }
+
+    fun resolveConcept(name: String): Resolution.ConceptRef? =
+        conceptDefinitions[name]?.let { Resolution.ConceptRef(it) }
 }
 
 /** Represents a diagnostic message produced during compilation. */
@@ -123,29 +151,30 @@ class SymbolCollector {
         val parameterDefs = mutableMapOf<String, ParameterDefinition>()
         val contextDefs = mutableListOf<ContextDefinition>()
         val functionDefs = mutableMapOf<String, MutableList<FunctionDefinition>>()
+        val codeSystemDefs = mutableMapOf<String, CodeSystemDefinition>()
+        val valueSetDefs = mutableMapOf<String, ValueSetDefinition>()
+        val codeDefs = mutableMapOf<String, CodeDefinition>()
+        val conceptDefs = mutableMapOf<String, ConceptDefinition>()
 
-        // Collect parameter definitions from library definitions
+        // Collect definitions from library definitions
         for (definition in library.definitions) {
             when (definition) {
-                is ParameterDefinition -> {
-                    parameterDefs[definition.name.value] = definition
-                }
-                else -> {} // Other definition types (using, include, etc.) are not collected yet
+                is ParameterDefinition -> parameterDefs[definition.name.value] = definition
+                is CodeSystemDefinition -> codeSystemDefs[definition.name.value] = definition
+                is ValueSetDefinition -> valueSetDefs[definition.name.value] = definition
+                is CodeDefinition -> codeDefs[definition.name.value] = definition
+                is ConceptDefinition -> conceptDefs[definition.name.value] = definition
+                else -> {}
             }
         }
 
         // Collect context, expression, and function definitions from statements
         for (statement in library.statements) {
             when (statement) {
-                is ContextDefinition -> {
-                    contextDefs.add(statement)
-                }
-                is ExpressionDefinition -> {
-                    expressionDefs[statement.name.value] = statement
-                }
-                is FunctionDefinition -> {
+                is ContextDefinition -> contextDefs.add(statement)
+                is ExpressionDefinition -> expressionDefs[statement.name.value] = statement
+                is FunctionDefinition ->
                     functionDefs.getOrPut(statement.name.value) { mutableListOf() }.add(statement)
-                }
                 else -> {}
             }
         }
@@ -155,6 +184,10 @@ class SymbolCollector {
             parameterDefinitions = parameterDefs,
             contextDefinitions = contextDefs,
             functionDefinitions = functionDefs,
+            codeSystemDefinitions = codeSystemDefs,
+            valueSetDefinitions = valueSetDefs,
+            codeDefinitions = codeDefs,
+            conceptDefinitions = conceptDefs,
         )
     }
 }
