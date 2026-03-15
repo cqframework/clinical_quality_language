@@ -32,6 +32,7 @@ import org.hl7.elm.r1.Power
 import org.hl7.elm.r1.Predecessor
 import org.hl7.elm.r1.Subtract
 import org.hl7.elm.r1.Successor
+import org.hl7.elm.r1.TruncatedDivide
 import org.hl7.elm.r1.UnaryExpression
 import org.hl7.elm.r1.Xor
 
@@ -42,6 +43,7 @@ private val binaryConstructors: Map<String, () -> BinaryExpression> =
         "Subtract" to { Subtract() },
         "Multiply" to { Multiply() },
         "Divide" to { Divide() },
+        "TruncatedDivide" to { TruncatedDivide() },
         "Modulo" to { Modulo() },
         "Power" to { Power() },
         "Equal" to { Equal() },

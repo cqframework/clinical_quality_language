@@ -35,20 +35,16 @@ class ElmEmitter(
     fun emit(astLibrary: org.hl7.cql.ast.Library): Result {
         val elmLibrary = Library()
         elmLibrary.schemaIdentifier = defaultSchemaIdentifier()
+        // The legacy translator always emits an identifier, even if no library declaration exists.
+        val identifier = VersionedIdentifier()
         astLibrary.name?.let {
-            elmLibrary.identifier =
-                VersionedIdentifier().apply {
-                    id = it.simpleName
-                    if (it.parts.size > 1) {
-                        system = it.parts.dropLast(1).joinToString(".")
-                    }
-                }
+            identifier.id = it.simpleName
+            if (it.parts.size > 1) {
+                identifier.system = it.parts.dropLast(1).joinToString(".")
+            }
         }
-        astLibrary.version?.let { version ->
-            val identifier = elmLibrary.identifier ?: VersionedIdentifier()
-            identifier.version = version.value
-            elmLibrary.identifier = identifier
-        }
+        astLibrary.version?.let { version -> identifier.version = version.value }
+        elmLibrary.identifier = identifier
 
         val usingDefs = ctx.emitUsings(astLibrary.definitions)
         if (usingDefs.isNotEmpty()) {

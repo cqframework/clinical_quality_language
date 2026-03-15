@@ -26,11 +26,10 @@ internal fun EmissionContext.emitUsings(definitions: List<Definition>): List<Usi
                 else -> null
             }
         }
-    // The legacy translator always emits the System using first. When the CQL has non-System
-    // usings (e.g., FHIR) without an explicit `using System`, we prepend the implicit one.
+    // The legacy translator always emits the System using first, even when there are no
+    // explicit using declarations in the CQL.
     val hasSystem = usingDefs.any { it.localIdentifier == "System" }
-    val hasNonSystem = usingDefs.any { it.localIdentifier != "System" }
-    if (hasNonSystem && !hasSystem) {
+    if (!hasSystem) {
         val systemUsing = UsingDef()
         systemUsing.localIdentifier = "System"
         systemUsing.uri = typesNamespace
