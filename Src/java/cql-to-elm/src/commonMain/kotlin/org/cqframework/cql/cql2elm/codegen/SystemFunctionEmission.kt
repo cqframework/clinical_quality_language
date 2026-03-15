@@ -4,6 +4,8 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.hl7.elm.r1.Abs
 import org.hl7.elm.r1.Ceiling
+import org.hl7.elm.r1.Date
+import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.Exp
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Floor
@@ -15,9 +17,11 @@ import org.hl7.elm.r1.Message
 import org.hl7.elm.r1.Now
 import org.hl7.elm.r1.PopulationStdDev
 import org.hl7.elm.r1.PopulationVariance
+import org.hl7.elm.r1.Precision
 import org.hl7.elm.r1.Product
 import org.hl7.elm.r1.Round
 import org.hl7.elm.r1.StdDev
+import org.hl7.elm.r1.Time
 import org.hl7.elm.r1.TimeOfDay
 import org.hl7.elm.r1.Today
 import org.hl7.elm.r1.Truncate
@@ -44,6 +48,7 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         "Truncate" -> emitUnaryArg(args) { Truncate().apply { operand = it } }
         "Ln" -> emitUnaryArg(args) { Ln().apply { operand = it } }
         "Exp" -> emitUnaryArg(args) { Exp().apply { operand = it } }
+        "Precision" -> emitUnaryArg(args) { Precision().apply { operand = it } }
 
         // Arithmetic binary functions
         "Log" -> emitBinaryArgs(args) { a, b -> Log().apply { operand = mutableListOf(a, b) } }
@@ -60,10 +65,49 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         "Today" -> emitNullaryArg(args) { Today() }
         "TimeOfDay" -> emitNullaryArg(args) { TimeOfDay() }
 
+        // Date/time constructor functions
+        "DateTime" -> emitDateTimeConstructor(args)
+        "Date" -> emitDateConstructor(args)
+        "Time" -> emitTimeConstructor(args)
+
         // Message (5 args)
         "Message" -> emitMessage(args)
 
         else -> null
+    }
+}
+
+@Suppress("CyclomaticComplexMethod")
+private fun emitDateTimeConstructor(args: List<ElmExpression>): ElmExpression {
+    require(args.size in 1..8) { "Expected 1 to 8 arguments for DateTime" }
+    return DateTime().apply {
+        year = args[0]
+        if (args.size > 1) month = args[1]
+        if (args.size > 2) day = args[2]
+        if (args.size > 3) hour = args[3]
+        if (args.size > 4) minute = args[4]
+        if (args.size > 5) second = args[5]
+        if (args.size > 6) millisecond = args[6]
+        if (args.size > 7) timezoneOffset = args[7]
+    }
+}
+
+private fun emitDateConstructor(args: List<ElmExpression>): ElmExpression {
+    require(args.size in 1..3) { "Expected 1 to 3 arguments for Date" }
+    return Date().apply {
+        year = args[0]
+        if (args.size > 1) month = args[1]
+        if (args.size > 2) day = args[2]
+    }
+}
+
+private fun emitTimeConstructor(args: List<ElmExpression>): ElmExpression {
+    require(args.size in 1..4) { "Expected 1 to 4 arguments for Time" }
+    return Time().apply {
+        hour = args[0]
+        if (args.size > 1) minute = args[1]
+        if (args.size > 2) second = args[2]
+        if (args.size > 3) millisecond = args[3]
     }
 }
 

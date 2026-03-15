@@ -16,7 +16,9 @@ class BuilderExpressionTest {
         assertExpression("1 - 2") { binary(BinaryOperator.SUBTRACT, { int(1) }, { int(2) }) }
         assertExpression("2 * 3") { binary(BinaryOperator.MULTIPLY, { int(2) }, { int(3) }) }
         assertExpression("4 / 2") { binary(BinaryOperator.DIVIDE, { int(4) }, { int(2) }) }
-        assertExpression("5 div 2") { binary(BinaryOperator.DIVIDE, { int(5) }, { int(2) }) }
+        assertExpression("5 div 2") {
+            binary(BinaryOperator.TRUNCATED_DIVIDE, { int(5) }, { int(2) })
+        }
         assertExpression("5 mod 2") { binary(BinaryOperator.MODULO, { int(5) }, { int(2) }) }
         assertExpression("2 ^ 3") { binary(BinaryOperator.POWER, { int(2) }, { int(3) }) }
         assertExpression("'foo' & 'bar'") {

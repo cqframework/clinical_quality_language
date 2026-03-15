@@ -5,6 +5,7 @@ import org.hl7.cql.ast.AstWalker
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.ExpressionFunctionBody
+import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.Statement
@@ -23,9 +24,15 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 
     private var currentContext: String? = null
     private val emittedExpressions = mutableSetOf<String>()
+    private val emittedFunctions = mutableSetOf<String>()
     private val statementContexts = mutableMapOf<String, String?>()
     private val expressionDefsByName = mutableMapOf<String, ExpressionDefinition>()
     private val functionDefsByName = mutableMapOf<String, MutableList<FunctionDefinition>>()
+
+    companion object {
+        /** Default context used by the legacy translator when no explicit context is declared. */
+        const val DEFAULT_CONTEXT = "Unfiltered"
+    }
 
     fun emit(statements: List<Statement>) {
         // First pass: collect all definitions and track contexts
@@ -47,8 +54,9 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
             }
         }
 
+        // The legacy translator defaults to "Unfiltered" context when no explicit context is set
+        currentContext = DEFAULT_CONTEXT
         // Second pass: emit in order, resolving forward references
-        currentContext = null
         for (statement in statements) {
             emit(statement)
         }
@@ -104,10 +112,15 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 
         // Collect identifier references from the expression and emit dependencies first
         val refs = IdentifierRefCollector.collect(definition.expression)
+        val funcRefs = FunctionRefCollector.collect(definition.expression)
         for (ref in refs) {
             if (ref in expressionDefsByName) {
                 ensureEmitted(ref)
             }
+        }
+        // Emit function definitions referenced by this expression before the expression itself
+        for (funcName in funcRefs) {
+            ensureFunctionEmitted(funcName)
         }
 
         val savedContext = currentContext
@@ -116,22 +129,31 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         currentContext = savedContext
     }
 
-    private fun emitFunctionDef(definition: FunctionDefinition) {
-        // Ensure any expression definitions referenced by the function body are emitted first
-        val body = definition.body
-        if (body is ExpressionFunctionBody) {
-            val refs = IdentifierRefCollector.collect(body.expression)
-            for (ref in refs) {
-                if (ref in expressionDefsByName) {
-                    ensureEmitted(ref)
+    /** Ensure a function definition is emitted (for forward-reference ordering). */
+    private fun ensureFunctionEmitted(name: String) {
+        if (name in emittedFunctions) return
+        val defs = functionDefsByName[name] ?: return
+        emittedFunctions.add(name)
+        for (funcDef in defs) {
+            // Emit dependencies of this function first
+            val body = funcDef.body
+            if (body is ExpressionFunctionBody) {
+                val refs = IdentifierRefCollector.collect(body.expression)
+                for (ref in refs) {
+                    if (ref in expressionDefsByName) {
+                        ensureEmitted(ref)
+                    }
                 }
             }
+            val savedContext = currentContext
+            statementContexts[funcDef.name.value]?.let { currentContext = it }
+            expressions += ctx.emitFunctionDefinition(funcDef, currentContext)
+            currentContext = savedContext
         }
+    }
 
-        val savedContext = currentContext
-        statementContexts[definition.name.value]?.let { currentContext = it }
-        expressions += ctx.emitFunctionDefinition(definition, currentContext)
-        currentContext = savedContext
+    private fun emitFunctionDef(definition: FunctionDefinition) {
+        ensureFunctionEmitted(definition.name.value)
     }
 
     private fun emitExpressionDefinition(definition: ExpressionDefinition): ExpressionDef {
@@ -168,6 +190,23 @@ internal object IdentifierRefCollector {
             object : AstWalker() {
                 override fun visitIdentifierExpression(expression: IdentifierExpression) {
                     refs.add(expression.name.simpleName)
+                }
+            }
+        walker.visitExpression(expression)
+        return refs
+    }
+}
+
+/** Collects function names referenced via [FunctionCallExpression] in an expression tree. */
+internal object FunctionRefCollector {
+    fun collect(expression: org.hl7.cql.ast.Expression): Set<String> {
+        val refs = mutableSetOf<String>()
+        val walker =
+            object : AstWalker() {
+                override fun visitFunctionCallExpression(expression: FunctionCallExpression) {
+                    refs.add(expression.function.value)
+                    // Still visit sub-expressions (arguments, target)
+                    super.visitFunctionCallExpression(expression)
                 }
             }
         walker.visitExpression(expression)

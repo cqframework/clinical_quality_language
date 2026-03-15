@@ -69,7 +69,7 @@ internal fun EmissionContext.emitLiteral(literal: Literal): ElmExpression {
 internal fun EmissionContext.emitQuantity(literal: QuantityLiteral): Quantity {
     val quantity = Quantity()
     quantity.value = BigDecimal(literal.value)
-    quantity.unit = literal.unit
+    quantity.unit = literal.unit?.trim('\'')
     return quantity
 }
 

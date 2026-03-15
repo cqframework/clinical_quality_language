@@ -13,6 +13,7 @@ object OperatorNames {
             BinaryOperator.SUBTRACT -> "Subtract"
             BinaryOperator.MULTIPLY -> "Multiply"
             BinaryOperator.DIVIDE -> "Divide"
+            BinaryOperator.TRUNCATED_DIVIDE -> "TruncatedDivide"
             BinaryOperator.MODULO -> "Modulo"
             BinaryOperator.POWER -> "Power"
             BinaryOperator.CONCAT -> "Concatenate"
