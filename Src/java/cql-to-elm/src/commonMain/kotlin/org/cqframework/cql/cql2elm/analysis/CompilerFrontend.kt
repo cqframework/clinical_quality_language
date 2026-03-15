@@ -12,6 +12,7 @@ import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
+import org.hl7.cql.ast.IncludeDefinition
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.ValueSetDefinition
@@ -109,6 +110,7 @@ data class SymbolTable(
     val parameterDefinitions: Map<String, ParameterDefinition> = emptyMap(),
     val contextDefinitions: List<ContextDefinition> = emptyList(),
     val functionDefinitions: Map<String, List<FunctionDefinition>> = emptyMap(),
+    val includeDefinitions: Map<String, IncludeDefinition> = emptyMap(),
     val codeSystemDefinitions: Map<String, CodeSystemDefinition> = emptyMap(),
     val valueSetDefinitions: Map<String, ValueSetDefinition> = emptyMap(),
     val codeDefinitions: Map<String, CodeDefinition> = emptyMap(),
@@ -151,6 +153,7 @@ class SymbolCollector {
         val parameterDefs = mutableMapOf<String, ParameterDefinition>()
         val contextDefs = mutableListOf<ContextDefinition>()
         val functionDefs = mutableMapOf<String, MutableList<FunctionDefinition>>()
+        val includeDefs = mutableMapOf<String, IncludeDefinition>()
         val codeSystemDefs = mutableMapOf<String, CodeSystemDefinition>()
         val valueSetDefs = mutableMapOf<String, ValueSetDefinition>()
         val codeDefs = mutableMapOf<String, CodeDefinition>()
@@ -160,6 +163,10 @@ class SymbolCollector {
         for (definition in library.definitions) {
             when (definition) {
                 is ParameterDefinition -> parameterDefs[definition.name.value] = definition
+                is IncludeDefinition -> {
+                    val alias = definition.alias?.value ?: definition.libraryIdentifier.simpleName
+                    includeDefs[alias] = definition
+                }
                 is CodeSystemDefinition -> codeSystemDefs[definition.name.value] = definition
                 is ValueSetDefinition -> valueSetDefs[definition.name.value] = definition
                 is CodeDefinition -> codeDefs[definition.name.value] = definition
@@ -184,6 +191,7 @@ class SymbolCollector {
             parameterDefinitions = parameterDefs,
             contextDefinitions = contextDefs,
             functionDefinitions = functionDefs,
+            includeDefinitions = includeDefs,
             codeSystemDefinitions = codeSystemDefs,
             valueSetDefinitions = valueSetDefs,
             codeDefinitions = codeDefs,
