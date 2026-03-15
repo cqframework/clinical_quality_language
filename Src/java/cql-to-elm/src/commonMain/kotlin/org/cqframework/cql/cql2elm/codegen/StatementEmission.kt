@@ -78,21 +78,10 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
         val contextName = contextDefinition.context.value
         if (contextName in emittedExpressions) return
-        val mm = ctx.modelManager ?: return
-        if (ctx.loadedModelNames.isEmpty()) return
+        if (ctx.modelManager == null || ctx.loadedModelNames.isEmpty()) return
 
-        // Resolve the context type from loaded models
-        for (modelName in ctx.loadedModelNames) {
-            val model = mm.resolveModel(modelName)
-            val contextType = model.resolveContextName(contextName, mustResolve = false) ?: continue
-            val classType = contextType.type as? org.hl7.cql.model.ClassType ?: continue
-
-            val modelInfo = model.modelInfo
-            val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
-            val retrieve = org.hl7.elm.r1.Retrieve()
-            retrieve.dataType = org.cqframework.cql.shared.QName(modelUrl, contextName)
-            classType.identifier?.let { retrieve.templateId = it }
-
+        try {
+            val retrieve = ctx.buildRetrieveForType(contextName)
             val singletonFrom = org.hl7.elm.r1.SingletonFrom()
             singletonFrom.operand = retrieve
 
@@ -102,7 +91,8 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
             exprDef.expression = singletonFrom
             expressions += exprDef
             emittedExpressions.add(contextName)
-            return
+        } catch (_: ElmEmitter.UnsupportedNodeException) {
+            // Context type not found in any model — skip implicit definition
         }
     }
 
