@@ -76,6 +76,13 @@ internal fun EmissionContext.emitBinaryOperator(
         return emitConcatenate(expression)
     }
 
+    // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
+    if (
+        op == BinaryOperator.UNION || op == BinaryOperator.INTERSECT || op == BinaryOperator.EXCEPT
+    ) {
+        return emitSetOperator(expression)
+    }
+
     // For NotEqual and NotEquivalent, we emit Not(Equal/Equivalent(...))
     if (op == BinaryOperator.NOT_EQUALS) {
         return emitNotWrapper(expression, "Equal")

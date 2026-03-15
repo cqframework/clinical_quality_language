@@ -30,6 +30,8 @@ import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ListLiteral
+import org.hl7.cql.ast.ListTransformExpression
+import org.hl7.cql.ast.ListTransformKind
 import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
@@ -222,6 +224,9 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) {
                 is MembershipExpression -> inferMembershipType(expression, typeTable, symbolTable)
                 is IntervalRelationExpression ->
                     inferIntervalRelationType(expression, typeTable, symbolTable)
+                // List operators
+                is ListTransformExpression ->
+                    inferListTransformType(expression, typeTable, symbolTable)
                 // Queries (QueryTypeInference.kt)
                 is QueryExpression -> inferQueryType(expression, typeTable, symbolTable)
                 else -> null
@@ -443,6 +448,23 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) {
         val indexType = inferType(expression.index, typeTable, symbolTable) ?: return null
         val resolution =
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
+        typeTable.setOperatorResolution(expression, resolution)
+        return resolution.operator.resultType
+    }
+
+    @Suppress("ReturnCount")
+    private fun inferListTransformType(
+        expression: ListTransformExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
+        val opName =
+            when (expression.listTransformKind) {
+                ListTransformKind.DISTINCT -> "Distinct"
+                ListTransformKind.FLATTEN -> "Flatten"
+            }
+        val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
     }

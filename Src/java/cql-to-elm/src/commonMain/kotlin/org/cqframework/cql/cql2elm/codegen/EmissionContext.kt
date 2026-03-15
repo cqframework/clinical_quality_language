@@ -26,6 +26,7 @@ import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
+import org.hl7.cql.ast.ListTransformExpression
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
@@ -135,6 +136,7 @@ class EmissionContext(
                 is BetweenExpression -> emitBetween(expression)
                 is MembershipExpression -> emitMembership(expression)
                 is IntervalRelationExpression -> emitIntervalRelation(expression)
+                is ListTransformExpression -> emitListTransform(expression)
                 is QueryExpression -> emitQuery(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(

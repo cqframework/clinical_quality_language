@@ -5,24 +5,38 @@ package org.cqframework.cql.cql2elm.codegen
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.elm.r1.AllTrue
+import org.hl7.elm.r1.AnyTrue
+import org.hl7.elm.r1.Avg
 import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Combine
 import org.hl7.elm.r1.Concatenate
+import org.hl7.elm.r1.Count
+import org.hl7.elm.r1.Distinct
 import org.hl7.elm.r1.EndsWith
 import org.hl7.elm.r1.Expression as ElmExpression
+import org.hl7.elm.r1.First
+import org.hl7.elm.r1.Flatten
 import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.If
+import org.hl7.elm.r1.IndexOf
 import org.hl7.elm.r1.Indexer
+import org.hl7.elm.r1.Last
 import org.hl7.elm.r1.LastPositionOf
 import org.hl7.elm.r1.Length
 import org.hl7.elm.r1.Lower
 import org.hl7.elm.r1.Matches
+import org.hl7.elm.r1.Max
+import org.hl7.elm.r1.Median
+import org.hl7.elm.r1.Min
+import org.hl7.elm.r1.Mode
 import org.hl7.elm.r1.PositionOf
 import org.hl7.elm.r1.ReplaceMatches
 import org.hl7.elm.r1.Split
 import org.hl7.elm.r1.SplitOnMatches
 import org.hl7.elm.r1.StartsWith
 import org.hl7.elm.r1.Substring
+import org.hl7.elm.r1.Sum
 import org.hl7.elm.r1.Upper
 
 /** Emit an if-then-else expression as an ELM If node. */
@@ -98,6 +112,26 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "LastPositionOf" -> emitLastPositionOfFunction(args)
         "Substring" -> emitSubstringFunction(args)
         "ReplaceMatches" -> emitReplaceMatchesFunction(args)
+
+        // Aggregate functions (source-based)
+        "First" -> emitUnaryFunction(args) { First().apply { source = it } }
+        "Last" -> emitUnaryFunction(args) { Last().apply { source = it } }
+        "Count" -> emitUnaryFunction(args) { Count().apply { source = it } }
+        "Sum" -> emitUnaryFunction(args) { Sum().apply { source = it } }
+        "Min" -> emitUnaryFunction(args) { Min().apply { source = it } }
+        "Max" -> emitUnaryFunction(args) { Max().apply { source = it } }
+        "Avg" -> emitUnaryFunction(args) { Avg().apply { source = it } }
+        "Median" -> emitUnaryFunction(args) { Median().apply { source = it } }
+        "Mode" -> emitUnaryFunction(args) { Mode().apply { source = it } }
+        "AllTrue" -> emitUnaryFunction(args) { AllTrue().apply { source = it } }
+        "AnyTrue" -> emitUnaryFunction(args) { AnyTrue().apply { source = it } }
+
+        // IndexOf has source + element
+        "IndexOf" -> emitIndexOfFunction(args)
+
+        // List transform functions (operand-based)
+        "Flatten" -> emitUnaryFunction(args) { Flatten().apply { operand = it } }
+        "Distinct" -> emitUnaryFunction(args) { Distinct().apply { operand = it } }
 
         // Type conversion and ConvertsTo operators
         "ToString",
@@ -195,6 +229,14 @@ private fun emitSubstringFunction(args: List<ElmExpression>): ElmExpression {
         if (args.size > 2) {
             length = args[2]
         }
+    }
+}
+
+private fun emitIndexOfFunction(args: List<ElmExpression>): ElmExpression {
+    require(args.size == 2) { "Expected 2 arguments for IndexOf" }
+    return IndexOf().apply {
+        source = args[0]
+        element = args[1]
     }
 }
 
