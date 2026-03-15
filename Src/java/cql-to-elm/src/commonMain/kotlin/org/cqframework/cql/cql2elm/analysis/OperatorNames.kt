@@ -28,7 +28,9 @@ object OperatorNames {
             BinaryOperator.OR -> "Or"
             BinaryOperator.XOR -> "Xor"
             BinaryOperator.IMPLIES -> "Implies"
-            else -> null
+            BinaryOperator.UNION -> "Union"
+            BinaryOperator.INTERSECT -> "Intersect"
+            BinaryOperator.EXCEPT -> "Except"
         }
     }
 
