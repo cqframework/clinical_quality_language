@@ -656,29 +656,35 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
 
             // Resolve aggregate
             expression.aggregate?.let { agg ->
-                return inferAggregateType(agg, expression, scope, typeTable, symbolTable)
+                val aggType = inferAggregateType(agg, expression, scope, typeTable, symbolTable)
+                resolveSortItems(expression, typeTable, symbolTable)
+                return aggType
             }
 
             // Resolve return
-            expression.result?.let { ret ->
-                val retType = inferType(ret.expression, typeTable, symbolTable) ?: return null
-                return ListType(retType)
-            }
-
-            // No return clause: result is List<sourceType>
-            val sourceType =
-                expression.sources.firstOrNull()?.let {
-                    inferSourceElementType(it, typeTable, symbolTable)
-                } ?: return null
-
-            // Resolve sort (after determining result element type)
-            expression.sort?.let { sort ->
-                for (item in sort.items) {
-                    inferType(item.expression, typeTable, symbolTable)
+            val resultType =
+                expression.result?.let { ret ->
+                    val retType = inferType(ret.expression, typeTable, symbolTable) ?: return null
+                    ListType(retType)
                 }
-            }
+                    ?: run {
+                        // No return clause: result is List<sourceType>
+                        if (expression.sources.size > 1) {
+                            throw UnsupportedOperationException(
+                                "Multi-source queries without return clause are not yet supported."
+                            )
+                        }
+                        val sourceType =
+                            expression.sources.firstOrNull()?.let {
+                                inferSourceElementType(it, typeTable, symbolTable)
+                            } ?: return null
+                        ListType(sourceType)
+                    }
 
-            return ListType(sourceType)
+            // Resolve sort (runs regardless of whether return clause is present)
+            resolveSortItems(expression, typeTable, symbolTable)
+
+            return resultType
         } finally {
             queryScopes.removeAt(queryScopes.lastIndex)
         }
@@ -705,36 +711,30 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         typeTable: TypeTable,
         symbolTable: SymbolTable,
     ) {
-        when (inclusion) {
-            is org.hl7.cql.ast.WithClause -> {
-                val elementType =
-                    inferSourceElementType(inclusion.source, typeTable, symbolTable) ?: return
-                val innerScope =
-                    mapOf(
-                        inclusion.source.alias.value to
-                            Resolution.AliasRef(inclusion.source.alias.value, elementType)
-                    )
-                queryScopes.add(innerScope)
-                try {
-                    inferType(inclusion.condition, typeTable, symbolTable)
-                } finally {
-                    queryScopes.removeAt(queryScopes.lastIndex)
-                }
+        val (source, condition) =
+            when (inclusion) {
+                is org.hl7.cql.ast.WithClause -> inclusion.source to inclusion.condition
+                is org.hl7.cql.ast.WithoutClause -> inclusion.source to inclusion.condition
             }
-            is org.hl7.cql.ast.WithoutClause -> {
-                val elementType =
-                    inferSourceElementType(inclusion.source, typeTable, symbolTable) ?: return
-                val innerScope =
-                    mapOf(
-                        inclusion.source.alias.value to
-                            Resolution.AliasRef(inclusion.source.alias.value, elementType)
-                    )
-                queryScopes.add(innerScope)
-                try {
-                    inferType(inclusion.condition, typeTable, symbolTable)
-                } finally {
-                    queryScopes.removeAt(queryScopes.lastIndex)
-                }
+        val elementType = inferSourceElementType(source, typeTable, symbolTable) ?: return
+        val innerScope =
+            mapOf(source.alias.value to Resolution.AliasRef(source.alias.value, elementType))
+        queryScopes.add(innerScope)
+        try {
+            inferType(condition, typeTable, symbolTable)
+        } finally {
+            queryScopes.removeAt(queryScopes.lastIndex)
+        }
+    }
+
+    private fun resolveSortItems(
+        expression: QueryExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ) {
+        expression.sort?.let { sort ->
+            for (item in sort.items) {
+                inferType(item.expression, typeTable, symbolTable)
             }
         }
     }
@@ -752,9 +752,9 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             agg.starting?.let { inferType(it, typeTable, symbolTable) }
                 ?: operatorRegistry.type("Any")
 
-        // Add accumulator to scope
+        // Add accumulator to scope — legacy uses AliasRef for the accumulator identifier
         if (startingType != null) {
-            scope[agg.identifier.value] = Resolution.QueryLetRef(agg.identifier.value, startingType)
+            scope[agg.identifier.value] = Resolution.AliasRef(agg.identifier.value, startingType)
         }
 
         val aggType = inferType(agg.expression, typeTable, symbolTable)
