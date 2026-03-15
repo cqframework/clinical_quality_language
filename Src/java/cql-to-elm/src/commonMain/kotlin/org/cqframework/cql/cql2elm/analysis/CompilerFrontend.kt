@@ -2,6 +2,7 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Expression
@@ -20,6 +21,7 @@ class CompilerFrontend(
     private val symbolCollector: SymbolCollector = SymbolCollector(),
     private val operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
     private val semanticValidator: SemanticValidator = SemanticValidator(),
+    val modelManager: ModelManager? = null,
 ) {
     data class Result(
         val library: Library,

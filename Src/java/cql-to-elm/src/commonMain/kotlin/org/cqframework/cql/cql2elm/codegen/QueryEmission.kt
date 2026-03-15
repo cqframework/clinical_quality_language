@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.codegen
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.ast.ExpressionQuerySource
 import org.hl7.cql.ast.QueryExpression
+import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.SortDirection as AstSortDirection
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WithClause as AstWithClause
@@ -67,10 +68,9 @@ private fun EmissionContext.emitAliasedQuerySource(
         is ExpressionQuerySource -> {
             elmSource.expression = emitExpression(querySource.expression)
         }
-        else ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "Query source type '${querySource::class.simpleName}' not yet supported."
-            )
+        is RetrieveExpression -> {
+            elmSource.expression = emitExpression(querySource)
+        }
     }
     // Set resultType on the source — the legacy sets it to the source expression type
     val exprType = elmSource.expression?.resultType
@@ -122,10 +122,7 @@ private fun EmissionContext.emitQuerySourceExpression(
     val querySource = source.source
     return when (querySource) {
         is ExpressionQuerySource -> emitExpression(querySource.expression)
-        else ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "Query source type '${querySource::class.simpleName}' not yet supported."
-            )
+        is RetrieveExpression -> emitExpression(querySource)
     }
 }
 

@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SymbolTable
 import org.cqframework.cql.cql2elm.analysis.TypeTable
@@ -31,7 +32,9 @@ import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
+import org.hl7.cql.ast.PropertyAccessExpression
 import org.hl7.cql.ast.QueryExpression
+import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.WidthExpression
@@ -48,8 +51,15 @@ class EmissionContext(
     val typeTable: TypeTable,
     val symbolTable: SymbolTable,
     val operatorRegistry: OperatorRegistry,
+    val modelManager: ModelManager? = null,
 ) {
     val typesNamespace = "urn:hl7-org:elm-types:r1"
+
+    /**
+     * Model names loaded via using definitions. Populated during [emitUsings] and used by
+     * [emitRetrieve] to resolve types against loaded models.
+     */
+    val loadedModelNames = mutableListOf<String>()
 
     /**
      * Set resultType on an ELM element via the Trackable extension property. This sets the internal
@@ -138,6 +148,8 @@ class EmissionContext(
                 is IntervalRelationExpression -> emitIntervalRelation(expression)
                 is ListTransformExpression -> emitListTransform(expression)
                 is QueryExpression -> emitQuery(expression)
+                is PropertyAccessExpression -> emitPropertyAccess(expression)
+                is RetrieveExpression -> emitRetrieve(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Expression '${expression::class.simpleName}' is not supported yet."
