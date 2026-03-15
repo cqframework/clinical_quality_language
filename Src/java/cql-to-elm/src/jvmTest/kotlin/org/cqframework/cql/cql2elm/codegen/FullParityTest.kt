@@ -24,11 +24,12 @@ import org.junit.jupiter.api.TestFactory
  * Files that fail to parse with the AST Builder or throw [ElmEmitter.UnsupportedNodeException] are
  * skipped (shown as "skipped" in test output) rather than failed.
  *
- * ## Results Summary (Milestone 12)
- * - **Passed (6):** ArithmeticOperators, ComparisonOperators (pending 1 diff), ForwardReferences,
- *   LogicalOperators, MessageOperators, NullologicalOperators, StringOperators
+ * ## Results Summary
+ * - **Passed (9):** ArithmeticOperators, ComparisonOperators, CqlComparisonOperators,
+ *   ForwardReferences, LogicalOperators, MessageOperators, NullologicalOperators, StringOperators,
+ *   TimeOperators
  * - **Skipped (16):** Files requiring models, unsupported features, or advanced type inference
- * - **Known skips (10):** Error recovery tests and files with type-inference differences
+ * - **Known skips (7):** Error recovery tests and files with type-inference differences
  */
 class FullParityTest {
 
@@ -183,26 +184,18 @@ class FullParityTest {
                 "RecursiveFunctions" to
                     "Error recovery: legacy replaces recursive function body with Null",
                 // Null type-casting: legacy wraps null operands in As(ListTypeSpecifier)
-                // for list operations; requires type-inference enhancements
+                // for list operations and wraps lists in As for union choice types;
+                // also wraps heterogeneous Flatten in implicit Query
                 "ListOperators" to
-                    "Null type inference: legacy wraps null in As(List<Any>) for list operators",
-                // Aggregate query wrapping: legacy wraps list args to aggregates in
-                // implicit queries with ToDecimal conversions
+                    "Null type inference: legacy wraps null in As(List<Any>), choice union As, Flatten query",
+                // Aggregate query wrapping: legacy wraps integer list args to
+                // Avg/Median/StdDev/Variance/etc. in implicit queries with ToDecimal conversions
                 "AggregateOperators" to
-                    "Aggregate wrapping: legacy wraps list args in implicit Query with conversions",
-                // Interval between: legacy emits IncludedIn, our pipeline emits And(>=, <)
-                "ComparisonOperators" to
-                    "Interval between: 1 diff where legacy emits IncludedIn vs And(>=, <)",
+                    "Aggregate wrapping: legacy wraps integer list args in implicit Query with ToDecimal",
                 // DateTime/Date/Time constructor files: legacy only emits 1 of 71 statements
                 // due to internal resolution failures without proper library setup
                 "DateTimeOperators" to
                     "Legacy translator drops most statements due to Date/DateTime resolution issues",
-                // Time literal formatting: legacy preserves 00 vs 0 for time components
-                "TimeOperators" to
-                    "Literal formatting: legacy preserves '00' vs our '0' for time components",
-                // CqlComparisonOperators: null type casting in DateTime(null) args
-                "CqlComparisonOperators" to
-                    "Null type inference: legacy wraps null DateTime args in As(Integer)",
             )
     }
 }

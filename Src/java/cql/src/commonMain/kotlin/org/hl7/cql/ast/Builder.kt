@@ -737,8 +737,15 @@ class Builder(private val sourceId: String? = null) {
                                 value = BigDecimal(ctx.NUMBER().text),
                                 locator = ctx.toLocator(),
                             )
-                        else ->
-                            IntLiteral(value = ctx.NUMBER().text.toInt(), locator = ctx.toLocator())
+                        else -> {
+                            val numText = ctx.NUMBER().text
+                            val intVal = numText.toInt()
+                            IntLiteral(
+                                value = intVal,
+                                text = if (numText != intVal.toString()) numText else null,
+                                locator = ctx.toLocator(),
+                            )
+                        }
                     }
 
                 LiteralExpression(literal = literal, locator = ctx.toLocator())
@@ -1568,7 +1575,12 @@ class Builder(private val sourceId: String? = null) {
                     if (isDecimal) {
                         DecimalLiteral(BigDecimal(value), ctx.toLocator())
                     } else if (value.toIntOrNull() != null) {
-                        IntLiteral(value.toInt(), ctx.toLocator())
+                        val intVal = value.toInt()
+                        IntLiteral(
+                            intVal,
+                            text = if (value != intVal.toString()) value else null,
+                            locator = ctx.toLocator(),
+                        )
                     } else {
                         LongLiteral(value.toLong())
                     }

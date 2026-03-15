@@ -5,6 +5,8 @@ import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.ElementExtractorExpression
 import org.hl7.cql.ast.ElementExtractorKind
 import org.hl7.cql.ast.ExistsExpression
+import org.hl7.cql.ast.IntervalLiteral
+import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.MembershipOperator
 import org.hl7.cql.ast.TypeExtentExpression
@@ -16,6 +18,8 @@ import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.GreaterOrEqual
 import org.hl7.elm.r1.In
+import org.hl7.elm.r1.IncludedIn
+import org.hl7.elm.r1.Interval
 import org.hl7.elm.r1.LessOrEqual
 import org.hl7.elm.r1.MaxValue
 import org.hl7.elm.r1.MinValue
@@ -55,15 +59,32 @@ internal fun EmissionContext.emitTypeExtent(expression: TypeExtentExpression): E
 }
 
 /**
- * Emit a [BetweenExpression] (`X between Y and Z`). The legacy translator always emits
- * `And(GreaterOrEqual(X, Y), LessOrEqual(X, Z))` regardless of the `properly` flag — the legacy has
- * a bug where `isProper` is always false (it checks `ctx.getChild(0).text == "properly"` but child
- * 0 is the expression, not the keyword). We match this behavior for parity.
+ * Emit a [BetweenExpression] (`X between Y and Z`). When the input is an interval-typed expression,
+ * the legacy translator emits `IncludedIn(input, Interval[lower, upper])`. For scalar inputs, it
+ * emits `And(GreaterOrEqual(X, Y), LessOrEqual(X, Z))`.
+ *
+ * The legacy has a bug where `isProper` is always false (it checks `ctx.getChild(0).text ==
+ * "properly"` but child 0 is the expression, not the keyword). We match this behavior for parity.
  */
 internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpression {
     val inputElm = emitExpression(expression.input)
     val lowerElm = emitExpression(expression.lower)
     val upperElm = emitExpression(expression.upper)
+
+    // If input is an Interval, emit IncludedIn(input, Interval[lower, upper])
+    val inputIsInterval =
+        expression.input is LiteralExpression &&
+            (expression.input as LiteralExpression).literal is IntervalLiteral
+    if (inputIsInterval) {
+        val boundsInterval =
+            Interval().apply {
+                low = lowerElm
+                high = upperElm
+                lowClosed = true
+                highClosed = true
+            }
+        return IncludedIn().apply { operand = mutableListOf(inputElm, boundsInterval) }
+    }
 
     // NOTE: properly flag intentionally ignored to match legacy bug (see comment above)
     val leftCmp = GreaterOrEqual().apply { operand = mutableListOf(inputElm, lowerElm) }

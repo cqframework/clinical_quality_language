@@ -43,7 +43,7 @@ internal fun EmissionContext.emitLiteral(literal: Literal): ElmExpression {
         is IntLiteral ->
             ElmLiteral()
                 .withValueType(QName(typesNamespace, "Integer"))
-                .withValue(literal.value.toString())
+                .withValue(literal.text ?: literal.value.toString())
         is LongLiteral ->
             ElmLiteral()
                 .withValueType(QName(typesNamespace, "Long"))

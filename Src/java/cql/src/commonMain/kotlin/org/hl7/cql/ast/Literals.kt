@@ -23,7 +23,12 @@ data class LongLiteral(val value: Long, override val locator: Locator = Locator.
 
 @Serializable
 @SerialName("int")
-data class IntLiteral(val value: Int, override val locator: Locator = Locator.UNKNOWN) : Literal
+data class IntLiteral(
+    val value: Int,
+    /** Original source text when it differs from [value].toString() (e.g., "00" for value 0). */
+    val text: String? = null,
+    override val locator: Locator = Locator.UNKNOWN,
+) : Literal
 
 @Serializable
 @SerialName("decimal")

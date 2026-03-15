@@ -2,24 +2,31 @@
 
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.Abs
+import org.hl7.elm.r1.As
 import org.hl7.elm.r1.Ceiling
+import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.Exp
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Floor
+import org.hl7.elm.r1.GeometricMean
 import org.hl7.elm.r1.HighBoundary
+import org.hl7.elm.r1.Literal as ElmLiteral
 import org.hl7.elm.r1.Ln
 import org.hl7.elm.r1.Log
 import org.hl7.elm.r1.LowBoundary
 import org.hl7.elm.r1.Message
 import org.hl7.elm.r1.Now
+import org.hl7.elm.r1.Null
 import org.hl7.elm.r1.PopulationStdDev
 import org.hl7.elm.r1.PopulationVariance
 import org.hl7.elm.r1.Precision
 import org.hl7.elm.r1.Product
 import org.hl7.elm.r1.Round
+import org.hl7.elm.r1.Slice
 import org.hl7.elm.r1.StdDev
 import org.hl7.elm.r1.Time
 import org.hl7.elm.r1.TimeOfDay
@@ -40,6 +47,7 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         "StdDev" -> emitUnaryArg(args) { StdDev().apply { source = it } }
         "Variance" -> emitUnaryArg(args) { Variance().apply { source = it } }
         "Product" -> emitUnaryArg(args) { Product().apply { source = it } }
+        "GeometricMean" -> emitUnaryArg(args) { GeometricMean().apply { source = it } }
 
         // Arithmetic unary functions
         "Abs" -> emitUnaryArg(args) { Abs().apply { operand = it } }
@@ -73,41 +81,74 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         // Message (5 args)
         "Message" -> emitMessage(args)
 
+        // List functions -> Slice
+        "Skip" -> emitSkip(args)
+        "Take" -> emitTake(args)
+        "Tail" -> emitTail(args)
+
         else -> null
     }
+}
+
+/**
+ * Wrap a null argument in `As(Integer)` to match legacy translator behavior. DateTime/Date/Time
+ * constructor arguments are expected to be Integer, so the legacy wraps null values with an
+ * explicit type cast.
+ */
+private fun wrapNullAsInteger(arg: ElmExpression): ElmExpression {
+    if (arg is Null) {
+        return As().apply {
+            asType = QName("urn:hl7-org:elm-types:r1", "Integer")
+            operand = arg
+        }
+    }
+    return arg
+}
+
+/**
+ * Wrap a null argument in `As(Decimal)` — used for the timezoneOffset argument which is Decimal.
+ */
+private fun wrapNullAsDecimal(arg: ElmExpression): ElmExpression {
+    if (arg is Null) {
+        return As().apply {
+            asType = QName("urn:hl7-org:elm-types:r1", "Decimal")
+            operand = arg
+        }
+    }
+    return arg
 }
 
 @Suppress("CyclomaticComplexMethod")
 private fun emitDateTimeConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..8) { "Expected 1 to 8 arguments for DateTime" }
     return DateTime().apply {
-        year = args[0]
-        if (args.size > 1) month = args[1]
-        if (args.size > 2) day = args[2]
-        if (args.size > 3) hour = args[3]
-        if (args.size > 4) minute = args[4]
-        if (args.size > 5) second = args[5]
-        if (args.size > 6) millisecond = args[6]
-        if (args.size > 7) timezoneOffset = args[7]
+        year = wrapNullAsInteger(args[0])
+        if (args.size > 1) month = wrapNullAsInteger(args[1])
+        if (args.size > 2) day = wrapNullAsInteger(args[2])
+        if (args.size > 3) hour = wrapNullAsInteger(args[3])
+        if (args.size > 4) minute = wrapNullAsInteger(args[4])
+        if (args.size > 5) second = wrapNullAsInteger(args[5])
+        if (args.size > 6) millisecond = wrapNullAsInteger(args[6])
+        if (args.size > 7) timezoneOffset = wrapNullAsDecimal(args[7])
     }
 }
 
 private fun emitDateConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..3) { "Expected 1 to 3 arguments for Date" }
     return Date().apply {
-        year = args[0]
-        if (args.size > 1) month = args[1]
-        if (args.size > 2) day = args[2]
+        year = wrapNullAsInteger(args[0])
+        if (args.size > 1) month = wrapNullAsInteger(args[1])
+        if (args.size > 2) day = wrapNullAsInteger(args[2])
     }
 }
 
 private fun emitTimeConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..4) { "Expected 1 to 4 arguments for Time" }
     return Time().apply {
-        hour = args[0]
-        if (args.size > 1) minute = args[1]
-        if (args.size > 2) second = args[2]
-        if (args.size > 3) millisecond = args[3]
+        hour = wrapNullAsInteger(args[0])
+        if (args.size > 1) minute = wrapNullAsInteger(args[1])
+        if (args.size > 2) second = wrapNullAsInteger(args[2])
+        if (args.size > 3) millisecond = wrapNullAsInteger(args[3])
     }
 }
 
@@ -127,5 +168,40 @@ private fun emitMessage(args: List<ElmExpression>): ElmExpression {
         code = args[2]
         severity = args[3]
         message = args[4]
+    }
+}
+
+/** Legacy translates `Skip(list, n)` to `Slice(source=list, startIndex=n, endIndex=Null)`. */
+private fun emitSkip(args: List<ElmExpression>): ElmExpression {
+    require(args.size == 2) { "Expected 2 arguments for Skip" }
+    return Slice().apply {
+        source = args[0]
+        startIndex = args[1]
+        endIndex = Null()
+    }
+}
+
+/**
+ * Legacy translates `Take(list, n)` to `Slice(source=list, startIndex=0, endIndex=Coalesce(n, 0))`.
+ */
+private fun emitTake(args: List<ElmExpression>): ElmExpression {
+    require(args.size == 2) { "Expected 2 arguments for Take" }
+    fun intZero() =
+        ElmLiteral().withValueType(QName("urn:hl7-org:elm-types:r1", "Integer")).withValue("0")
+    return Slice().apply {
+        source = args[0]
+        startIndex = intZero()
+        endIndex = Coalesce().apply { operand = mutableListOf(args[1], intZero()) }
+    }
+}
+
+/** Legacy translates `Tail(list)` to `Slice(source=list, startIndex=1, endIndex=Null)`. */
+private fun emitTail(args: List<ElmExpression>): ElmExpression {
+    require(args.size == 1) { "Expected 1 argument for Tail" }
+    return Slice().apply {
+        source = args[0]
+        startIndex =
+            ElmLiteral().withValueType(QName("urn:hl7-org:elm-types:r1", "Integer")).withValue("1")
+        endIndex = Null()
     }
 }

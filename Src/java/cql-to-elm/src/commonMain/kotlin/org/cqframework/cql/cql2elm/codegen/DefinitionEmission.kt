@@ -69,14 +69,31 @@ internal fun EmissionContext.emitContextDefs(
     statements: List<Statement>,
     definitions: List<Definition>,
 ): List<ContextDef> {
-    if (modelManager == null) return emptyList()
-    // Check if there are any non-System using definitions (i.e., real models loaded)
-    val hasNonSystemUsings =
-        definitions.any { it is UsingDefinition && it.modelIdentifier.simpleName != "System" }
-    if (!hasNonSystemUsings) return emptyList()
-    return statements.filterIsInstance<ContextDefinition>().map { ctx ->
-        ContextDef().withName(ctx.context.value)
-    }
+    val contextDefs = statements.filterIsInstance<ContextDefinition>()
+    if (contextDefs.isEmpty()) return emptyList()
+
+    // Unfiltered is a built-in context that is always emitted regardless of model state
+    val unfilteredDefs =
+        contextDefs
+            .filter { it.context.value == "Unfiltered" }
+            .map { ctx -> ContextDef().withName(ctx.context.value) }
+
+    // Model-dependent contexts require a model manager and non-System usings
+    val modelDependentDefs =
+        if (
+            modelManager != null &&
+                definitions.any {
+                    it is UsingDefinition && it.modelIdentifier.simpleName != "System"
+                }
+        ) {
+            contextDefs
+                .filter { it.context.value != "Unfiltered" }
+                .map { ctx -> ContextDef().withName(ctx.context.value) }
+        } else {
+            emptyList()
+        }
+
+    return unfilteredDefs + modelDependentDefs
 }
 
 internal fun EmissionContext.emitParameters(definitions: List<Definition>): List<ParameterDef> {
