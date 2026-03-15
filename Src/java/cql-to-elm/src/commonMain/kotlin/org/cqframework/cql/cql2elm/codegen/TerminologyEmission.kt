@@ -24,6 +24,9 @@ internal fun EmissionContext.emitInclude(definition: IncludeDefinition): Include
     val includeDef = IncludeDef()
     val name = definition.libraryIdentifier.simpleName
     includeDef.localIdentifier = definition.alias?.value ?: name
+    // TODO: For namespaced libraries, the legacy uses NamespaceManager.getPath(namespaceUri, name)
+    // to produce a URI-based path. For now we use the simple name, which is correct for
+    // non-namespaced libraries.
     includeDef.path = name
     includeDef.version = definition.version?.value
     return includeDef
