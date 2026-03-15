@@ -55,10 +55,36 @@ class ElmEmitter(
             elmLibrary.usings = Library.Usings().apply { def = usingDefs.toMutableList() }
         }
 
+        val includeDefs = ctx.emitIncludes(astLibrary.definitions)
+        if (includeDefs.isNotEmpty()) {
+            elmLibrary.includes = Library.Includes().apply { def = includeDefs.toMutableList() }
+        }
+
         val parameterDefs = ctx.emitParameters(astLibrary.definitions)
         if (parameterDefs.isNotEmpty()) {
             elmLibrary.parameters =
                 Library.Parameters().apply { def = parameterDefs.toMutableList() }
+        }
+
+        val codeSystemDefs = ctx.emitCodeSystemDefs(astLibrary.definitions)
+        if (codeSystemDefs.isNotEmpty()) {
+            elmLibrary.codeSystems =
+                Library.CodeSystems().apply { def = codeSystemDefs.toMutableList() }
+        }
+
+        val valueSetDefs = ctx.emitValueSetDefs(astLibrary.definitions)
+        if (valueSetDefs.isNotEmpty()) {
+            elmLibrary.valueSets = Library.ValueSets().apply { def = valueSetDefs.toMutableList() }
+        }
+
+        val codeDefs = ctx.emitCodeDefs(astLibrary.definitions)
+        if (codeDefs.isNotEmpty()) {
+            elmLibrary.codes = Library.Codes().apply { def = codeDefs.toMutableList() }
+        }
+
+        val conceptDefs = ctx.emitConceptDefs(astLibrary.definitions)
+        if (conceptDefs.isNotEmpty()) {
+            elmLibrary.concepts = Library.Concepts().apply { def = conceptDefs.toMutableList() }
         }
 
         val statementEmitter = StatementEmitter(ctx)

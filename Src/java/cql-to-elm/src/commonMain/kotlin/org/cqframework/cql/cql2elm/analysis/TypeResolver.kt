@@ -285,6 +285,24 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) {
             return null
         }
 
+        // Check terminology definitions
+        symbolTable.resolveCodeSystem(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return type("CodeSystem")
+        }
+        symbolTable.resolveValueSet(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return type("ValueSet")
+        }
+        symbolTable.resolveCode(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return type("Code")
+        }
+        symbolTable.resolveConcept(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return type("Concept")
+        }
+
         return null
     }
 

@@ -178,6 +178,13 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "ListOperators.cql")
     }
 
+    // ---- Milestone 10 tests ----
+
+    @Test
+    fun `TerminologyDefs - terminology definitions and references match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "TerminologyDefs.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)

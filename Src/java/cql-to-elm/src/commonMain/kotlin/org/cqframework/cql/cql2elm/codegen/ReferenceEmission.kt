@@ -3,16 +3,21 @@ package org.cqframework.cql.cql2elm.codegen
 import org.cqframework.cql.cql2elm.analysis.Resolution
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.elm.r1.AliasRef
+import org.hl7.elm.r1.CodeRef
+import org.hl7.elm.r1.CodeSystemRef
+import org.hl7.elm.r1.ConceptRef
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.ExpressionRef
 import org.hl7.elm.r1.OperandRef
 import org.hl7.elm.r1.ParameterRef
 import org.hl7.elm.r1.QueryLetRef
+import org.hl7.elm.r1.ValueSetRef
 
 /**
  * Emit an [IdentifierExpression] by looking up its resolution in the TypeTable and producing the
- * appropriate ELM reference node: [ExpressionRef], [ParameterRef], [OperandRef], [AliasRef], or
- * [QueryLetRef].
+ * appropriate ELM reference node: [ExpressionRef], [ParameterRef], [OperandRef], [AliasRef],
+ * [QueryLetRef], or a terminology reference ([CodeSystemRef], [ValueSetRef], [CodeRef],
+ * [ConceptRef]).
  */
 internal fun EmissionContext.emitIdentifierExpression(
     expression: IdentifierExpression
@@ -24,6 +29,11 @@ internal fun EmissionContext.emitIdentifierExpression(
         is Resolution.OperandRef -> OperandRef().withName(resolution.name)
         is Resolution.AliasRef -> AliasRef().withName(resolution.name)
         is Resolution.QueryLetRef -> QueryLetRef().withName(resolution.name)
+        is Resolution.CodeSystemRef -> CodeSystemRef().withName(resolution.definition.name.value)
+        is Resolution.ValueSetRef ->
+            ValueSetRef().withName(resolution.definition.name.value).apply { preserve = true }
+        is Resolution.CodeRef -> CodeRef().withName(resolution.definition.name.value)
+        is Resolution.ConceptRef -> ConceptRef().withName(resolution.definition.name.value)
         is Resolution.ContextRef ->
             throw ElmEmitter.UnsupportedNodeException("Context references are not yet supported.")
         null ->
