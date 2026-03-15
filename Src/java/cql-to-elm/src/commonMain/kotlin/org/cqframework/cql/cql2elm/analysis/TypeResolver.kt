@@ -2,6 +2,7 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.hl7.cql.ast.AliasedQuerySource
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanLiteral
@@ -21,6 +22,7 @@ import org.hl7.cql.ast.ElementExtractorExpression
 import org.hl7.cql.ast.ExistsExpression
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionFunctionBody
+import org.hl7.cql.ast.ExpressionQuerySource
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
@@ -30,6 +32,7 @@ import org.hl7.cql.ast.IntLiteral
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
+import org.hl7.cql.ast.ListLiteral
 import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
@@ -39,6 +42,7 @@ import org.hl7.cql.ast.NullLiteral
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.QuantityLiteral
+import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.StringLiteral
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TimeLiteral
@@ -66,6 +70,9 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
 
     /** Per-scope operand types for function body resolution. */
     private var operandScope: Map<String, DataType> = emptyMap()
+
+    /** Query scope stack: maps alias/let names to their Resolution within a query. */
+    private val queryScopes = mutableListOf<Map<String, Resolution>>()
 
     /** Type cache for resolved function definitions. */
     private val functionResultTypes = HashMap<FunctionDefinition, DataType>()
@@ -172,7 +179,7 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
 
         val type =
             when (expression) {
-                is LiteralExpression -> inferLiteralType(expression.literal)
+                is LiteralExpression -> inferLiteralType(expression.literal, typeTable, symbolTable)
                 is OperatorBinaryExpression -> inferBinaryType(expression, typeTable, symbolTable)
                 is OperatorUnaryExpression -> inferUnaryType(expression, typeTable, symbolTable)
                 is BooleanTestExpression -> inferBooleanTestType(expression, typeTable, symbolTable)
@@ -205,6 +212,7 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
                 is MembershipExpression -> inferMembershipType(expression, typeTable, symbolTable)
                 is IntervalRelationExpression ->
                     inferIntervalRelationType(expression, typeTable, symbolTable)
+                is QueryExpression -> inferQueryType(expression, typeTable, symbolTable)
                 else -> null
             }
 
@@ -222,7 +230,19 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
     ): DataType? {
         val name = expression.name.simpleName
 
-        // Check operand scope first (for function body resolution)
+        // Check query scope first (innermost scope wins)
+        for (i in queryScopes.indices.reversed()) {
+            queryScopes[i][name]?.let { resolution ->
+                typeTable.setIdentifierResolution(expression, resolution)
+                return when (resolution) {
+                    is Resolution.AliasRef -> resolution.type
+                    is Resolution.QueryLetRef -> resolution.type
+                    else -> null
+                }
+            }
+        }
+
+        // Check operand scope (for function body resolution)
         operandScope[name]?.let { type ->
             typeTable.setIdentifierResolution(expression, Resolution.OperandRef(name, type))
             return type
@@ -255,7 +275,11 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
     }
 
     @Suppress("CyclomaticComplexMethod")
-    private fun inferLiteralType(literal: Literal): DataType? {
+    private fun inferLiteralType(
+        literal: Literal,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
         return when (literal) {
             is IntLiteral -> operatorRegistry.type("Integer")
             is LongLiteral -> operatorRegistry.type("Long")
@@ -269,8 +293,20 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
             }
             is TimeLiteral -> operatorRegistry.type("Time")
             is NullLiteral -> null
+            is ListLiteral -> inferListLiteralType(literal, typeTable, symbolTable)
             else -> null
         }
+    }
+
+    private fun inferListLiteralType(
+        literal: ListLiteral,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        val elementTypes = literal.elements.mapNotNull { inferType(it, typeTable, symbolTable) }
+        if (elementTypes.isEmpty()) return ListType(operatorRegistry.type("Any") ?: return null)
+        val commonType = elementTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        return ListType(commonType)
     }
 
     @Suppress("ReturnCount")
@@ -583,5 +619,145 @@ class TypeResolver(private val operatorRegistry: OperatorRegistry) {
         inferType(expression.left, typeTable, symbolTable)
         inferType(expression.right, typeTable, symbolTable)
         return operatorRegistry.type("Boolean")
+    }
+
+    @Suppress("ReturnCount")
+    private fun inferQueryType(
+        expression: QueryExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        // Build scope from sources
+        val scope = mutableMapOf<String, Resolution>()
+        for (source in expression.sources) {
+            val elementType = inferSourceElementType(source, typeTable, symbolTable) ?: continue
+            scope[source.alias.value] = Resolution.AliasRef(source.alias.value, elementType)
+        }
+
+        // Push scope for lets, where, inclusions, return, aggregate
+        queryScopes.add(scope)
+        try {
+            // Resolve let clause types and add to scope
+            for (letItem in expression.lets) {
+                val letType = inferType(letItem.expression, typeTable, symbolTable)
+                if (letType != null) {
+                    scope[letItem.identifier.value] =
+                        Resolution.QueryLetRef(letItem.identifier.value, letType)
+                }
+            }
+
+            // Resolve inclusion clauses
+            for (inclusion in expression.inclusions) {
+                inferInclusionType(inclusion, typeTable, symbolTable)
+            }
+
+            // Resolve where
+            expression.where?.let { inferType(it, typeTable, symbolTable) }
+
+            // Resolve aggregate
+            expression.aggregate?.let { agg ->
+                return inferAggregateType(agg, expression, scope, typeTable, symbolTable)
+            }
+
+            // Resolve return
+            expression.result?.let { ret ->
+                val retType = inferType(ret.expression, typeTable, symbolTable) ?: return null
+                return ListType(retType)
+            }
+
+            // No return clause: result is List<sourceType>
+            val sourceType =
+                expression.sources.firstOrNull()?.let {
+                    inferSourceElementType(it, typeTable, symbolTable)
+                } ?: return null
+
+            // Resolve sort (after determining result element type)
+            expression.sort?.let { sort ->
+                for (item in sort.items) {
+                    inferType(item.expression, typeTable, symbolTable)
+                }
+            }
+
+            return ListType(sourceType)
+        } finally {
+            queryScopes.removeAt(queryScopes.lastIndex)
+        }
+    }
+
+    private fun inferSourceElementType(
+        source: AliasedQuerySource,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        val querySource = source.source
+        val sourceType =
+            when (querySource) {
+                is ExpressionQuerySource ->
+                    inferType(querySource.expression, typeTable, symbolTable)
+                else -> null
+            } ?: return null
+        // Unwrap ListType to get element type
+        return if (sourceType is ListType) sourceType.elementType else sourceType
+    }
+
+    private fun inferInclusionType(
+        inclusion: org.hl7.cql.ast.QueryInclusionClause,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ) {
+        when (inclusion) {
+            is org.hl7.cql.ast.WithClause -> {
+                val elementType =
+                    inferSourceElementType(inclusion.source, typeTable, symbolTable) ?: return
+                val innerScope =
+                    mapOf(
+                        inclusion.source.alias.value to
+                            Resolution.AliasRef(inclusion.source.alias.value, elementType)
+                    )
+                queryScopes.add(innerScope)
+                try {
+                    inferType(inclusion.condition, typeTable, symbolTable)
+                } finally {
+                    queryScopes.removeAt(queryScopes.lastIndex)
+                }
+            }
+            is org.hl7.cql.ast.WithoutClause -> {
+                val elementType =
+                    inferSourceElementType(inclusion.source, typeTable, symbolTable) ?: return
+                val innerScope =
+                    mapOf(
+                        inclusion.source.alias.value to
+                            Resolution.AliasRef(inclusion.source.alias.value, elementType)
+                    )
+                queryScopes.add(innerScope)
+                try {
+                    inferType(inclusion.condition, typeTable, symbolTable)
+                } finally {
+                    queryScopes.removeAt(queryScopes.lastIndex)
+                }
+            }
+        }
+    }
+
+    @Suppress("ReturnCount")
+    private fun inferAggregateType(
+        agg: org.hl7.cql.ast.AggregateClause,
+        query: QueryExpression,
+        scope: MutableMap<String, Resolution>,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        // Resolve starting expression type
+        val startingType =
+            agg.starting?.let { inferType(it, typeTable, symbolTable) }
+                ?: operatorRegistry.type("Any")
+
+        // Add accumulator to scope
+        if (startingType != null) {
+            scope[agg.identifier.value] = Resolution.QueryLetRef(agg.identifier.value, startingType)
+        }
+
+        val aggType = inferType(agg.expression, typeTable, symbolTable)
+        return aggType
     }
 }

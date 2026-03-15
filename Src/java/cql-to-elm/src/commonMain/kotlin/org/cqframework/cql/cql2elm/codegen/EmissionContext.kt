@@ -30,6 +30,7 @@ import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
+import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.WidthExpression
@@ -134,6 +135,7 @@ class EmissionContext(
                 is BetweenExpression -> emitBetween(expression)
                 is MembershipExpression -> emitMembership(expression)
                 is IntervalRelationExpression -> emitIntervalRelation(expression)
+                is QueryExpression -> emitQuery(expression)
                 else ->
                     throw ElmEmitter.UnsupportedNodeException(
                         "Expression '${expression::class.simpleName}' is not supported yet."

@@ -1276,6 +1276,15 @@ class Builder(private val sourceId: String? = null) {
         val items =
             if (ctx.sortByItem().isNotEmpty()) {
                 ctx.sortByItem().map { buildSortByItem(it) }
+            } else if (ctx.sortDirection() != null) {
+                // Bare `sort asc`/`sort desc` — produce a direction-only item
+                listOf(
+                    SortByItem(
+                        expression = UnsupportedExpression("$\$directionOnly", ctx.toLocator()),
+                        direction = buildSortDirection(ctx.sortDirection()!!),
+                        locator = ctx.toLocator(),
+                    )
+                )
             } else {
                 emptyList()
             }
