@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.analysis
 import org.hl7.cql.ast.AliasedQuerySource
 import org.hl7.cql.ast.ExpressionQuerySource
 import org.hl7.cql.ast.QueryExpression
+import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 
@@ -84,7 +85,7 @@ internal fun TypeResolver.inferSourceElementType(
     val sourceType =
         when (querySource) {
             is ExpressionQuerySource -> inferType(querySource.expression, typeTable, symbolTable)
-            else -> null
+            is RetrieveExpression -> inferType(querySource, typeTable, symbolTable)
         } ?: return null
     // Unwrap ListType to get element type
     return if (sourceType is ListType) sourceType.elementType else sourceType

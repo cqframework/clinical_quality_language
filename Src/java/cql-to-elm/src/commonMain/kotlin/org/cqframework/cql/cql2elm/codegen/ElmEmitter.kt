@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SymbolTable
 import org.cqframework.cql.cql2elm.analysis.TypeTable
@@ -23,8 +24,9 @@ class ElmEmitter(
     symbolTable: SymbolTable = SymbolTable(),
     typeTable: TypeTable = TypeTable(),
     operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
+    modelManager: ModelManager? = null,
 ) {
-    private val ctx = EmissionContext(typeTable, symbolTable, operatorRegistry)
+    private val ctx = EmissionContext(typeTable, symbolTable, operatorRegistry, modelManager)
 
     @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 
@@ -62,10 +64,10 @@ class ElmEmitter(
         val statementEmitter = StatementEmitter(ctx)
         statementEmitter.emit(astLibrary.statements)
 
-        // Note: ContextDefs are not emitted here because the legacy translator only emits them
-        // when models with real context types are loaded (e.g., FHIR Patient). For System-only
-        // libraries, the context resolution fails silently in the legacy translator and no
-        // ContextDef is added. Once model resolution is implemented, ContextDefs will be emitted.
+        val contextDefs = ctx.emitContextDefs(astLibrary.statements, astLibrary.definitions)
+        if (contextDefs.isNotEmpty()) {
+            elmLibrary.contexts = Library.Contexts().apply { def = contextDefs.toMutableList() }
+        }
 
         val expressionDefs = statementEmitter.expressions
         if (expressionDefs.isNotEmpty()) {
