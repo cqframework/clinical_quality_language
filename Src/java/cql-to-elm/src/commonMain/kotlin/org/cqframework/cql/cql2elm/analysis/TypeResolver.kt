@@ -7,6 +7,7 @@ import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanLiteral
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.BooleanTestKind
+import org.hl7.cql.ast.CaseExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
 import org.hl7.cql.ast.DateTimeComponentExpression
@@ -193,6 +194,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) {
                 is OperatorBinaryExpression -> inferBinaryType(expression, typeTable, symbolTable)
                 is OperatorUnaryExpression -> inferUnaryType(expression, typeTable, symbolTable)
                 is BooleanTestExpression -> inferBooleanTestType(expression, typeTable, symbolTable)
+                is CaseExpression -> inferCaseType(expression, typeTable, symbolTable)
                 is IfExpression -> inferIfType(expression, typeTable, symbolTable)
                 is FunctionCallExpression ->
                     inferFunctionCallType(expression, typeTable, symbolTable)
@@ -402,6 +404,23 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) {
             elseType == null -> thenType
             else -> thenType.getCommonSuperTypeOf(elseType)
         }
+    }
+
+    private fun inferCaseType(
+        expression: CaseExpression,
+        typeTable: TypeTable,
+        symbolTable: SymbolTable,
+    ): DataType? {
+        expression.comparand?.let { inferType(it, typeTable, symbolTable) }
+        val branchTypes =
+            expression.cases.mapNotNull { caseItem ->
+                inferType(caseItem.condition, typeTable, symbolTable)
+                inferType(caseItem.result, typeTable, symbolTable)
+            }
+        val elseType = inferType(expression.elseResult, typeTable, symbolTable)
+        val allTypes = branchTypes + listOfNotNull(elseType)
+        if (allTypes.isEmpty()) return null
+        return allTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
     }
 
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
