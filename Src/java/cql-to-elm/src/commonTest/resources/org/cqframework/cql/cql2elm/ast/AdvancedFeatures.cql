@@ -23,9 +23,11 @@ define AbsTest: Abs(-1)
 define CeilingTest: Ceiling(1.1)
 define FloorTest: Floor(1.9)
 define TruncateTest: Truncate(1.9)
-define RoundTest: Round(1.5, 0)
+define RoundTest2: Round(1.5, 0)
+define RoundTest1: Round(1.5)
 define LnTest: Ln(1.0)
 define ExpTest: Exp(0.0)
+define LogTest: Log(1.0, 10.0)
 
 // Date/time functions
 define NowTest: Now()

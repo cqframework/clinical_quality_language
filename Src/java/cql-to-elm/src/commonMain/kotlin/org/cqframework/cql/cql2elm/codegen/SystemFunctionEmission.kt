@@ -31,34 +31,34 @@ import org.hl7.elm.r1.Variance
 internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>): ElmExpression? {
     return when (functionName) {
         // Aggregate functions (source-based) — additional
-        "PopulationStdDev" -> requireUnary(args) { PopulationStdDev().apply { source = it } }
-        "PopulationVariance" -> requireUnary(args) { PopulationVariance().apply { source = it } }
-        "StdDev" -> requireUnary(args) { StdDev().apply { source = it } }
-        "Variance" -> requireUnary(args) { Variance().apply { source = it } }
-        "Product" -> requireUnary(args) { Product().apply { source = it } }
+        "PopulationStdDev" -> emitUnaryArg(args) { PopulationStdDev().apply { source = it } }
+        "PopulationVariance" -> emitUnaryArg(args) { PopulationVariance().apply { source = it } }
+        "StdDev" -> emitUnaryArg(args) { StdDev().apply { source = it } }
+        "Variance" -> emitUnaryArg(args) { Variance().apply { source = it } }
+        "Product" -> emitUnaryArg(args) { Product().apply { source = it } }
 
         // Arithmetic unary functions
-        "Abs" -> requireUnary(args) { Abs().apply { operand = it } }
-        "Ceiling" -> requireUnary(args) { Ceiling().apply { operand = it } }
-        "Floor" -> requireUnary(args) { Floor().apply { operand = it } }
-        "Truncate" -> requireUnary(args) { Truncate().apply { operand = it } }
-        "Ln" -> requireUnary(args) { Ln().apply { operand = it } }
-        "Exp" -> requireUnary(args) { Exp().apply { operand = it } }
+        "Abs" -> emitUnaryArg(args) { Abs().apply { operand = it } }
+        "Ceiling" -> emitUnaryArg(args) { Ceiling().apply { operand = it } }
+        "Floor" -> emitUnaryArg(args) { Floor().apply { operand = it } }
+        "Truncate" -> emitUnaryArg(args) { Truncate().apply { operand = it } }
+        "Ln" -> emitUnaryArg(args) { Ln().apply { operand = it } }
+        "Exp" -> emitUnaryArg(args) { Exp().apply { operand = it } }
 
         // Arithmetic binary functions
-        "Log" -> requireBinary(args) { a, b -> Log().apply { operand = mutableListOf(a, b) } }
+        "Log" -> emitBinaryArgs(args) { a, b -> Log().apply { operand = mutableListOf(a, b) } }
         "HighBoundary" ->
-            requireBinary(args) { a, b -> HighBoundary().apply { operand = mutableListOf(a, b) } }
+            emitBinaryArgs(args) { a, b -> HighBoundary().apply { operand = mutableListOf(a, b) } }
         "LowBoundary" ->
-            requireBinary(args) { a, b -> LowBoundary().apply { operand = mutableListOf(a, b) } }
+            emitBinaryArgs(args) { a, b -> LowBoundary().apply { operand = mutableListOf(a, b) } }
 
         // Round (1 or 2 args)
         "Round" -> emitRound(args)
 
         // Date/time zero-arg functions
-        "Now" -> Now()
-        "Today" -> Today()
-        "TimeOfDay" -> TimeOfDay()
+        "Now" -> emitNullaryArg(args) { Now() }
+        "Today" -> emitNullaryArg(args) { Today() }
+        "TimeOfDay" -> emitNullaryArg(args) { TimeOfDay() }
 
         // Message (5 args)
         "Message" -> emitMessage(args)
@@ -67,29 +67,11 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
     }
 }
 
-private fun requireUnary(
-    args: List<ElmExpression>,
-    factory: (ElmExpression) -> ElmExpression,
-): ElmExpression {
-    require(args.size == 1) { "Expected 1 argument" }
-    return factory(args[0])
-}
-
-private fun requireBinary(
-    args: List<ElmExpression>,
-    factory: (ElmExpression, ElmExpression) -> ElmExpression,
-): ElmExpression {
-    require(args.size == 2) { "Expected 2 arguments" }
-    return factory(args[0], args[1])
-}
-
 private fun emitRound(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..2) { "Expected 1 or 2 arguments for Round" }
     return Round().apply {
         operand = args[0]
-        if (args.size > 1) {
-            precision = args[1]
-        }
+        if (args.size > 1) precision = args[1]
     }
 }
 

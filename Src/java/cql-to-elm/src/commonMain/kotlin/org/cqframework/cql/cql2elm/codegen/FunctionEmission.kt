@@ -89,16 +89,17 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "Coalesce" -> Coalesce().apply { operand = args.toMutableList() }
 
         // String unary operators
-        "Length" -> emitUnary(args) { Length().apply { operand = it } }
-        "Upper" -> emitUnary(args) { Upper().apply { operand = it } }
-        "Lower" -> emitUnary(args) { Lower().apply { operand = it } }
+        "Length" -> emitUnaryArg(args) { Length().apply { operand = it } }
+        "Upper" -> emitUnaryArg(args) { Upper().apply { operand = it } }
+        "Lower" -> emitUnaryArg(args) { Lower().apply { operand = it } }
 
         // String binary operators
         "StartsWith" ->
-            emitBinary(args) { a, b -> StartsWith().apply { operand = mutableListOf(a, b) } }
+            emitBinaryArgs(args) { a, b -> StartsWith().apply { operand = mutableListOf(a, b) } }
         "EndsWith" ->
-            emitBinary(args) { a, b -> EndsWith().apply { operand = mutableListOf(a, b) } }
-        "Matches" -> emitBinary(args) { a, b -> Matches().apply { operand = mutableListOf(a, b) } }
+            emitBinaryArgs(args) { a, b -> EndsWith().apply { operand = mutableListOf(a, b) } }
+        "Matches" ->
+            emitBinaryArgs(args) { a, b -> Matches().apply { operand = mutableListOf(a, b) } }
         "Concatenate" -> Concatenate().apply { operand = args.toMutableList() }
 
         // String special-form operators
@@ -111,22 +112,22 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "ReplaceMatches" -> ReplaceMatches().apply { operand = args.toMutableList() }
 
         // Aggregate functions (source-based)
-        "First" -> emitUnary(args) { First().apply { source = it } }
-        "Last" -> emitUnary(args) { Last().apply { source = it } }
-        "Count" -> emitUnary(args) { Count().apply { source = it } }
-        "Sum" -> emitUnary(args) { Sum().apply { source = it } }
-        "Min" -> emitUnary(args) { Min().apply { source = it } }
-        "Max" -> emitUnary(args) { Max().apply { source = it } }
-        "Avg" -> emitUnary(args) { Avg().apply { source = it } }
-        "Median" -> emitUnary(args) { Median().apply { source = it } }
-        "Mode" -> emitUnary(args) { Mode().apply { source = it } }
-        "AllTrue" -> emitUnary(args) { AllTrue().apply { source = it } }
-        "AnyTrue" -> emitUnary(args) { AnyTrue().apply { source = it } }
+        "First" -> emitUnaryArg(args) { First().apply { source = it } }
+        "Last" -> emitUnaryArg(args) { Last().apply { source = it } }
+        "Count" -> emitUnaryArg(args) { Count().apply { source = it } }
+        "Sum" -> emitUnaryArg(args) { Sum().apply { source = it } }
+        "Min" -> emitUnaryArg(args) { Min().apply { source = it } }
+        "Max" -> emitUnaryArg(args) { Max().apply { source = it } }
+        "Avg" -> emitUnaryArg(args) { Avg().apply { source = it } }
+        "Median" -> emitUnaryArg(args) { Median().apply { source = it } }
+        "Mode" -> emitUnaryArg(args) { Mode().apply { source = it } }
+        "AllTrue" -> emitUnaryArg(args) { AllTrue().apply { source = it } }
+        "AnyTrue" -> emitUnaryArg(args) { AnyTrue().apply { source = it } }
         "IndexOf" -> emitIndexOf(args)
 
         // List transform functions (operand-based)
-        "Flatten" -> emitUnary(args) { Flatten().apply { operand = it } }
-        "Distinct" -> emitUnary(args) { Distinct().apply { operand = it } }
+        "Flatten" -> emitUnaryArg(args) { Flatten().apply { operand = it } }
+        "Distinct" -> emitUnaryArg(args) { Distinct().apply { operand = it } }
 
         // Type conversion and ConvertsTo operators
         "ToString",
@@ -149,7 +150,7 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "ConvertsToDateTime",
         "ConvertsToTime",
         "ConvertsToQuantity",
-        "ConvertsToRatio" -> emitUnary(args) { createConversionElm(functionName, it) }
+        "ConvertsToRatio" -> emitUnaryArg(args) { createConversionElm(functionName, it) }
 
         else ->
             FunctionRef().apply {
@@ -157,22 +158,6 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
                 operand = args.toMutableList()
             }
     }
-}
-
-private fun emitUnary(
-    args: List<ElmExpression>,
-    factory: (ElmExpression) -> ElmExpression,
-): ElmExpression {
-    require(args.size == 1) { "Expected 1 argument" }
-    return factory(args[0])
-}
-
-private fun emitBinary(
-    args: List<ElmExpression>,
-    factory: (ElmExpression, ElmExpression) -> ElmExpression,
-): ElmExpression {
-    require(args.size == 2) { "Expected 2 arguments" }
-    return factory(args[0], args[1])
 }
 
 private fun emitCombine(args: List<ElmExpression>): ElmExpression {
