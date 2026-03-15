@@ -11,41 +11,41 @@ import org.hl7.elm.r1.Retrieve
  * [org.cqframework.cql.cql2elm.ModelManager] to determine the correct QName and templateId.
  */
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
-    val retrieve = Retrieve()
-    val typeName = expression.typeSpecifier.name.simpleName
+    return buildRetrieveForType(expression.typeSpecifier.name.simpleName)
+}
+
+/**
+ * Build an ELM [Retrieve] node for a given type name, resolving the model URL and templateId. This
+ * is shared by [emitRetrieve] (explicit retrieves) and implicit context expression definitions
+ * (e.g., `Patient = SingletonFrom([Patient])`).
+ */
+internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve {
+    val model = resolveModelForType(typeName)
+    val modelInfo = model.modelInfo
+    val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
+
+    val dataType = model.resolveTypeName(typeName)
+    val classType = dataType as? ClassType
+
+    return Retrieve().apply {
+        this.dataType = QName(modelUrl, typeName)
+        classType?.identifier?.let { templateId = it }
+    }
+}
+
+/**
+ * Resolve which model provides a given type name. Iterates through loaded model names to find the
+ * model that can resolve the type.
+ */
+private fun EmissionContext.resolveModelForType(
+    typeName: String
+): org.cqframework.cql.cql2elm.model.Model {
     val mm =
         modelManager
             ?: throw ElmEmitter.UnsupportedNodeException(
                 "RetrieveExpression requires a ModelManager to resolve type '$typeName'."
             )
-
-    // Find the model that defines this type by checking loaded models
-    val model = resolveModelForType(typeName)
-    val modelInfo = model.modelInfo
-    val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
-
-    // Resolve the type to get its ClassType identifier (templateId)
-    val dataType = model.resolveTypeName(typeName)
-    val classType = dataType as? ClassType
-
-    retrieve.dataType = QName(modelUrl, typeName)
-    classType?.identifier?.let { retrieve.templateId = it }
-
-    return retrieve
-}
-
-/**
- * Resolve which model provides a given type name. Iterates through all using definitions to find
- * the model that can resolve the type name.
- */
-private fun EmissionContext.resolveModelForType(
-    typeName: String
-): org.cqframework.cql.cql2elm.model.Model {
-    val mm = modelManager!!
-    // Try resolving from any loaded model. The model manager caches models after first load,
-    // so we try well-known models in order.
-    val modelNames = loadedModelNames
-    for (modelName in modelNames) {
+    for (modelName in loadedModelNames) {
         val model = mm.resolveModel(modelName)
         if (model.resolveTypeName(typeName) != null) {
             return model

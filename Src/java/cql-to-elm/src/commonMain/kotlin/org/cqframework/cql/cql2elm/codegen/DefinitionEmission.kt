@@ -54,7 +54,7 @@ internal fun EmissionContext.emitUsing(definition: UsingDefinition): UsingDef {
                     val model =
                         mm.resolveModel(ModelIdentifier(modelName, null, definition.version?.value))
                     loadedModelNames.add(modelName)
-                    model.modelInfo.url
+                    model.modelInfo.targetUrl ?: model.modelInfo.url
                 } else {
                     throw ElmEmitter.UnsupportedNodeException(
                         "Model '$modelName' requires a ModelManager."

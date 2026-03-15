@@ -57,9 +57,9 @@ class EmissionContext(
 
     /**
      * Model names loaded via using definitions. Populated during [emitUsings] and used by
-     * [emitRetrieve] to resolve types against loaded models.
+     * [buildRetrieveForType] to resolve types against loaded models.
      */
-    val loadedModelNames = mutableListOf<String>()
+    internal val loadedModelNames = mutableListOf<String>()
 
     /**
      * Set resultType on an ELM element via the Trackable extension property. This sets the internal
