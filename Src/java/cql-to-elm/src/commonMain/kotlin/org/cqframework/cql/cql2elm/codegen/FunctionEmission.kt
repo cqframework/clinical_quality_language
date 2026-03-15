@@ -61,8 +61,6 @@ internal fun EmissionContext.emitIndexExpression(expression: IndexExpression): E
  */
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression): ElmExpression {
-    // Fluent calls have a target expression (e.g., x.doSomething()). Not yet used for
-    // resolution, but emit it so the expression tree is complete.
     if (expression.target != null) {
         throw ElmEmitter.UnsupportedNodeException(
             "Fluent function calls (target.${expression.function.value}()) are not yet supported."
@@ -72,8 +70,6 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
     val functionName = expression.function.value
     val rawArgs = expression.arguments.map { emitExpression(it) }
 
-    // Apply implicit conversions from the operator resolution, matching binary/unary operator
-    // emission behavior. This ensures type conversions (e.g., Integer -> Decimal) are applied.
     val args = rawArgs.toMutableList()
     val resolution = lookupResolution(expression)
     if (resolution != null) {
@@ -84,54 +80,53 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         }
     }
 
+    // Try system function emission (math, date/time, message)
+    emitSystemFunction(functionName, args)?.let {
+        return it
+    }
+
     return when (functionName) {
-        // Nullological
-        "Coalesce" -> emitCoalesce(args)
+        "Coalesce" -> Coalesce().apply { operand = args.toMutableList() }
 
         // String unary operators
-        "Length" -> emitUnaryFunction(args) { Length().apply { operand = it } }
-        "Upper" -> emitUnaryFunction(args) { Upper().apply { operand = it } }
-        "Lower" -> emitUnaryFunction(args) { Lower().apply { operand = it } }
+        "Length" -> emitUnary(args) { Length().apply { operand = it } }
+        "Upper" -> emitUnary(args) { Upper().apply { operand = it } }
+        "Lower" -> emitUnary(args) { Lower().apply { operand = it } }
 
         // String binary operators
         "StartsWith" ->
-            emitBinaryFunction(args) { a, b ->
-                StartsWith().apply { operand = mutableListOf(a, b) }
-            }
+            emitBinary(args) { a, b -> StartsWith().apply { operand = mutableListOf(a, b) } }
         "EndsWith" ->
-            emitBinaryFunction(args) { a, b -> EndsWith().apply { operand = mutableListOf(a, b) } }
-        "Matches" ->
-            emitBinaryFunction(args) { a, b -> Matches().apply { operand = mutableListOf(a, b) } }
+            emitBinary(args) { a, b -> EndsWith().apply { operand = mutableListOf(a, b) } }
+        "Matches" -> emitBinary(args) { a, b -> Matches().apply { operand = mutableListOf(a, b) } }
         "Concatenate" -> Concatenate().apply { operand = args.toMutableList() }
 
         // String special-form operators
-        "Combine" -> emitCombineFunction(args)
-        "Split" -> emitSplitFunction(args)
-        "SplitOnMatches" -> emitSplitOnMatchesFunction(args)
-        "PositionOf" -> emitPositionOfFunction(args)
-        "LastPositionOf" -> emitLastPositionOfFunction(args)
-        "Substring" -> emitSubstringFunction(args)
-        "ReplaceMatches" -> emitReplaceMatchesFunction(args)
+        "Combine" -> emitCombine(args)
+        "Split" -> emitSplit(args)
+        "SplitOnMatches" -> emitSplitOnMatches(args)
+        "PositionOf" -> emitPositionOf(args)
+        "LastPositionOf" -> emitLastPositionOf(args)
+        "Substring" -> emitSubstring(args)
+        "ReplaceMatches" -> ReplaceMatches().apply { operand = args.toMutableList() }
 
         // Aggregate functions (source-based)
-        "First" -> emitUnaryFunction(args) { First().apply { source = it } }
-        "Last" -> emitUnaryFunction(args) { Last().apply { source = it } }
-        "Count" -> emitUnaryFunction(args) { Count().apply { source = it } }
-        "Sum" -> emitUnaryFunction(args) { Sum().apply { source = it } }
-        "Min" -> emitUnaryFunction(args) { Min().apply { source = it } }
-        "Max" -> emitUnaryFunction(args) { Max().apply { source = it } }
-        "Avg" -> emitUnaryFunction(args) { Avg().apply { source = it } }
-        "Median" -> emitUnaryFunction(args) { Median().apply { source = it } }
-        "Mode" -> emitUnaryFunction(args) { Mode().apply { source = it } }
-        "AllTrue" -> emitUnaryFunction(args) { AllTrue().apply { source = it } }
-        "AnyTrue" -> emitUnaryFunction(args) { AnyTrue().apply { source = it } }
-
-        // IndexOf has source + element
-        "IndexOf" -> emitIndexOfFunction(args)
+        "First" -> emitUnary(args) { First().apply { source = it } }
+        "Last" -> emitUnary(args) { Last().apply { source = it } }
+        "Count" -> emitUnary(args) { Count().apply { source = it } }
+        "Sum" -> emitUnary(args) { Sum().apply { source = it } }
+        "Min" -> emitUnary(args) { Min().apply { source = it } }
+        "Max" -> emitUnary(args) { Max().apply { source = it } }
+        "Avg" -> emitUnary(args) { Avg().apply { source = it } }
+        "Median" -> emitUnary(args) { Median().apply { source = it } }
+        "Mode" -> emitUnary(args) { Mode().apply { source = it } }
+        "AllTrue" -> emitUnary(args) { AllTrue().apply { source = it } }
+        "AnyTrue" -> emitUnary(args) { AnyTrue().apply { source = it } }
+        "IndexOf" -> emitIndexOf(args)
 
         // List transform functions (operand-based)
-        "Flatten" -> emitUnaryFunction(args) { Flatten().apply { operand = it } }
-        "Distinct" -> emitUnaryFunction(args) { Distinct().apply { operand = it } }
+        "Flatten" -> emitUnary(args) { Flatten().apply { operand = it } }
+        "Distinct" -> emitUnary(args) { Distinct().apply { operand = it } }
 
         // Type conversion and ConvertsTo operators
         "ToString",
@@ -154,13 +149,17 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "ConvertsToDateTime",
         "ConvertsToTime",
         "ConvertsToQuantity",
-        "ConvertsToRatio" -> emitUnaryFunction(args) { createConversionElm(functionName, it) }
+        "ConvertsToRatio" -> emitUnary(args) { createConversionElm(functionName, it) }
 
-        else -> emitUserDefinedFunctionCall(functionName, args)
+        else ->
+            FunctionRef().apply {
+                name = functionName
+                operand = args.toMutableList()
+            }
     }
 }
 
-private fun emitUnaryFunction(
+private fun emitUnary(
     args: List<ElmExpression>,
     factory: (ElmExpression) -> ElmExpression,
 ): ElmExpression {
@@ -168,7 +167,7 @@ private fun emitUnaryFunction(
     return factory(args[0])
 }
 
-private fun emitBinaryFunction(
+private fun emitBinary(
     args: List<ElmExpression>,
     factory: (ElmExpression, ElmExpression) -> ElmExpression,
 ): ElmExpression {
@@ -176,20 +175,14 @@ private fun emitBinaryFunction(
     return factory(args[0], args[1])
 }
 
-private fun EmissionContext.emitCoalesce(args: List<ElmExpression>): ElmExpression {
-    return Coalesce().apply { operand = args.toMutableList() }
-}
-
-private fun emitCombineFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitCombine(args: List<ElmExpression>): ElmExpression {
     return Combine().apply {
         source = args[0]
-        if (args.size > 1) {
-            separator = args[1]
-        }
+        if (args.size > 1) separator = args[1]
     }
 }
 
-private fun emitSplitFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitSplit(args: List<ElmExpression>): ElmExpression {
     require(args.size == 2) { "Expected 2 arguments for Split" }
     return Split().apply {
         stringToSplit = args[0]
@@ -197,7 +190,7 @@ private fun emitSplitFunction(args: List<ElmExpression>): ElmExpression {
     }
 }
 
-private fun emitSplitOnMatchesFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitSplitOnMatches(args: List<ElmExpression>): ElmExpression {
     require(args.size == 2) { "Expected 2 arguments for SplitOnMatches" }
     return SplitOnMatches().apply {
         stringToSplit = args[0]
@@ -205,7 +198,7 @@ private fun emitSplitOnMatchesFunction(args: List<ElmExpression>): ElmExpression
     }
 }
 
-private fun emitPositionOfFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitPositionOf(args: List<ElmExpression>): ElmExpression {
     require(args.size == 2) { "Expected 2 arguments for PositionOf" }
     return PositionOf().apply {
         pattern = args[0]
@@ -213,7 +206,7 @@ private fun emitPositionOfFunction(args: List<ElmExpression>): ElmExpression {
     }
 }
 
-private fun emitLastPositionOfFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitLastPositionOf(args: List<ElmExpression>): ElmExpression {
     require(args.size == 2) { "Expected 2 arguments for LastPositionOf" }
     return LastPositionOf().apply {
         pattern = args[0]
@@ -221,37 +214,19 @@ private fun emitLastPositionOfFunction(args: List<ElmExpression>): ElmExpression
     }
 }
 
-private fun emitSubstringFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitSubstring(args: List<ElmExpression>): ElmExpression {
     require(args.size in 2..3) { "Expected 2 or 3 arguments for Substring" }
     return Substring().apply {
         stringToSub = args[0]
         startIndex = args[1]
-        if (args.size > 2) {
-            length = args[2]
-        }
+        if (args.size > 2) length = args[2]
     }
 }
 
-private fun emitIndexOfFunction(args: List<ElmExpression>): ElmExpression {
+private fun emitIndexOf(args: List<ElmExpression>): ElmExpression {
     require(args.size == 2) { "Expected 2 arguments for IndexOf" }
     return IndexOf().apply {
         source = args[0]
         element = args[1]
-    }
-}
-
-private fun emitReplaceMatchesFunction(args: List<ElmExpression>): ElmExpression {
-    require(args.size == 3) { "Expected 3 arguments for ReplaceMatches" }
-    return ReplaceMatches().apply { operand = args.toMutableList() }
-}
-
-/** Emit a call to a user-defined function as a [FunctionRef]. */
-private fun emitUserDefinedFunctionCall(
-    functionName: String,
-    args: List<ElmExpression>,
-): ElmExpression {
-    return FunctionRef().apply {
-        name = functionName
-        operand = args.toMutableList()
     }
 }

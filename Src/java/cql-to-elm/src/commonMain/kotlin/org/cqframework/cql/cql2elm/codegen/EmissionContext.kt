@@ -11,6 +11,7 @@ import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanTestExpression
+import org.hl7.cql.ast.CaseExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
 import org.hl7.cql.ast.DateTimeComponentExpression
@@ -125,6 +126,7 @@ class EmissionContext(
                 is OperatorBinaryExpression -> emitBinaryOperator(expression)
                 is OperatorUnaryExpression -> emitUnaryOperator(expression)
                 is BooleanTestExpression -> emitBooleanTest(expression)
+                is CaseExpression -> emitCaseExpression(expression)
                 is IfExpression -> emitIfExpression(expression)
                 is FunctionCallExpression -> emitFunctionCall(expression)
                 is IndexExpression -> emitIndexExpression(expression)
