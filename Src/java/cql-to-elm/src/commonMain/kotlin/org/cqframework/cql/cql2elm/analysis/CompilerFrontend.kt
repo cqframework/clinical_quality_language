@@ -81,6 +81,10 @@ sealed interface Resolution {
     data class ContextRef(val definition: ContextDefinition) : Resolution
 
     data class OperandRef(val name: String, val type: DataType) : Resolution
+
+    data class AliasRef(val name: String, val type: DataType) : Resolution
+
+    data class QueryLetRef(val name: String, val type: DataType) : Resolution
 }
 
 /**
