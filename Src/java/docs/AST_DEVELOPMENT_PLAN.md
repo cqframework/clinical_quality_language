@@ -128,8 +128,11 @@ CQL Source + CqlCompilerOptions
   semantic validation), `codegen` (mechanical ELM emission), and
   `post-processing` (output annotation per compiler options). Each phase
   has a dedicated package.
-- **Side tables, not node mutation.** Semantic data is keyed by AST node
+- **SemanticModel, not node mutation.** Analysis produces a `SemanticModel`
+  (currently split across `SymbolTable` and `TypeTable`) keyed by AST node
   identity (`IdentityHashMap`). The AST stays immutable and serializable.
+  The SemanticModel is the single artifact passed from analysis to codegen
+  and post-processing.
 - **Reuse existing type system.** The `org.hl7.cql.model` package (`DataType`,
   `ClassType`, `ListType`, etc.) is shared with the legacy compiler and is
   already correct.
@@ -889,27 +892,68 @@ resolution and type inference.
 (unsupported features), 4 error recovery (intentional difference),
 3 type inference gaps. See `FullParityTest.kt` and `LEGACY_ISSUES.md`.
 
-**Remaining work — feature gaps:**
+**Remaining work — feature gaps (recommended priority order):**
+
+*Small / independent (do first):*
 - [ ] `$this` / `$index` special identifiers in queries.
-- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)` ).
+- [ ] `expand` / `collapse` interval operators (AST node exists, needs
+  emission + type inference).
+- [ ] TupleLiteral / InstanceLiteral type inference (currently falls to
+  null in TypeResolver).
+
+*Medium / high-impact:*
+- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)`) — target
+  already captured on `FunctionCallExpression`; needs method resolution
+  in TypeResolver.
 - [ ] `ListTypeSpecifier` / `IntervalTypeSpecifier` / `ChoiceTypeSpecifier`
   in type operator emission (needed for null wrapping).
 - [ ] Implicit aggregate query wrapping (`Avg({1,2,3})` → query with
-  `ToDecimal` conversion).
+  `ToDecimal` conversion). **Note:** this creates synthetic ELM with no
+  corresponding AST node — consider implementing as AST Transformer.
 - [ ] Choice type union wrapping for heterogeneous lists.
-- [ ] `expand` / `collapse` interval operators.
 - [ ] Multi-source query tuple type construction.
-- [ ] Cross-library reference resolution (qualified `"Lib"."Def"` refs).
-- [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`).
-- [ ] Property path collapsing (`P.medication.reference`).
+- [ ] `case` comparand equality resolution (comparand type should drive
+  overload resolution in case conditions).
+- [ ] User-defined function overload resolution via scoring (current
+  ad-hoc exact+subtype matching; should reuse OperatorRegistry scoring).
+
+*Large / gate-keeping (critical path for FHIR):*
+- [ ] Cross-library reference resolution (qualified `"Lib"."Def"` refs) —
+  requires LibraryManager integration, symbol merging.
+- [ ] FHIRHelpers bootstrapping strategy — auto-generated CQL library
+  that the translator compiles and loads transparently. New pipeline
+  needs to either compile through its own pipeline or load pre-compiled
+  ELM.
+- [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`) — depends
+  on cross-library + model loading.
+- [ ] Property path collapsing and list traversal (`P.medication.reference`,
+  `patient.name` returning `List<HumanName>`).
 - [ ] FHIR implicit conversions (`.value` accessor stripping).
 
+*Low priority / deprioritize:*
+- [ ] `repeat` expressions (not in test suite).
+- [ ] UnsupportedExpression audit — eliminate remaining Builder fallbacks.
+
 **Remaining work — architecture:**
-- [ ] Extract `resultType` decoration from codegen into post-processing.
+- [ ] Unify `SymbolTable` + `TypeTable` into `SemanticModel` — single
+  artifact from analysis to codegen/post-processing.
+- [ ] Switch `TypeTable` from `HashMap` to `IdentityHashMap` —
+  `Locator.UNKNOWN` default causes collisions for structurally
+  identical expressions without locators.
+- [ ] Post-processing phase: add serialized `resultTypeName` /
+  `resultTypeSpecifier` fields when `EnableResultTypes` is on. **Note:**
+  internal `resultType` (set via `decorate()`) stays in codegen — it's
+  needed by the ELM object model. Post-processing adds the *serialized
+  representation* only. Defer this until after more parity.
 - [ ] Accept `CqlCompilerOptions` and route semantic flags to analysis,
   output flags to post-processing.
 - [ ] Implement compatibility level gating (`isCompatibleWith`).
 - [ ] Error recovery in `SemanticValidator` (replace errors with Null).
+- [ ] Document synthetic ELM cases (break from mechanical codegen
+  principle): aggregate query wrapping, null As wrapping,
+  Skip/Take/Tail → Slice. Consider AST Transformer passes.
+- [ ] `EnableDateRangeOptimization` as optimization pass or AST
+  Transformer between analysis and codegen, not in TypeResolver.
 
 **Remaining work — integration:**
 - [ ] Run full parity suite across all 358 CQL test files.
