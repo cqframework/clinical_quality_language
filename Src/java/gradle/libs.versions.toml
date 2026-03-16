@@ -1,0 +1,96 @@
+[versions]
+# ── Runtime / compile dependencies ───────────────────────────────────────────
+hapi                  = "8.8.0"
+junit                 = "5.14.3"
+slf4j                 = "2.0.17"
+hamcrest              = "3.0"
+mockito               = "5.21.0"
+equalsverifier        = "4.3.1"
+kotlinx-serialization = "1.9.0"
+kotlinx-io            = "0.8.0"
+kotlin-logging        = "7.0.3"
+
+# ── JAXB / XJC ───────────────────────────────────────────────────────────────
+jaxb2-basics    = "3.0.0"
+jaxb-api        = "4.0.1"
+jaxb-xjc        = "3.0.2"
+jaxb-runtime    = "4.0.3"
+eclipse-moxy    = "4.0.2"
+eclipse-parsson = "1.1.5"
+ant             = "1.10.14"
+
+# ── Build-tool versions (read by convention plugins at execution time) ────────
+jacoco      = "0.8.14"
+gummy-bears = "0.12.0"
+
+# ── Plugin versions used directly in root build.gradle.kts ───────────────────
+# Versions for build-logic-managed plugins (kotlin, vanniktech) appear here
+# *only* because the root build applies them via alias(libs.plugins.xxx).
+# The canonical version declarations live in build-logic/gradle/libs.versions.toml;
+# keep these two in sync when upgrading.
+kotlin             = "2.3.10"
+spotless           = "8.2.1"
+vanniktech-publish = "0.36.0"
+sonarqube          = "7.2.2.6593"
+task-tree          = "4.0.1"
+
+[libraries]
+# ── JUnit ────────────────────────────────────────────────────────────────────
+junit-bom                = { module = "org.junit:junit-bom",                                version.ref = "junit" }
+junit-jupiter            = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher  = { module = "org.junit.platform:junit-platform-launcher" }
+
+# ── SLF4J ────────────────────────────────────────────────────────────────────
+slf4j-api    = { module = "org.slf4j:slf4j-api",    version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+hamcrest              = { module = "org.hamcrest:hamcrest",                           version.ref = "hamcrest" }
+hamcrest-json         = { module = "uk.co.datumedge:hamcrest-json",                  version = "0.2" }
+mockito-core          = { module = "org.mockito:mockito-core",                        version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter",               version.ref = "mockito" }
+equalsverifier        = { module = "nl.jqno.equalsverifier:equalsverifier",           version.ref = "equalsverifier" }
+
+# ── HAPI FHIR (BOM + individual artifacts) ───────────────────────────────────
+hapi-fhir-bom                     = { module = "ca.uhn.hapi.fhir:hapi-fhir-bom",                      version.ref = "hapi" }
+hapi-fhir-base                    = { module = "ca.uhn.hapi.fhir:hapi-fhir-base" }
+hapi-fhir-converter               = { module = "ca.uhn.hapi.fhir:hapi-fhir-converter" }
+hapi-fhir-structures-hl7org-dstu2 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-hl7org-dstu2" }
+hapi-fhir-structures-dstu2        = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2" }
+hapi-fhir-structures-dstu3        = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3" }
+hapi-fhir-structures-r4           = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4" }
+hapi-fhir-structures-r5           = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r5" }
+
+# ── Kotlinx ───────────────────────────────────────────────────────────────────
+kotlinx-serialization-json    = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json",     version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json-io = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-io",  version.ref = "kotlinx-serialization" }
+kotlinx-io-core               = { module = "org.jetbrains.kotlinx:kotlinx-io-core",                version.ref = "kotlinx-io" }
+kotlinx-io-core-jvm           = { module = "org.jetbrains.kotlinx:kotlinx-io-core-jvm",            version.ref = "kotlinx-io" }
+kotlin-logging                = { module = "io.github.oshai:kotlin-logging",                       version.ref = "kotlin-logging" }
+
+# ── JAXB / XJC ───────────────────────────────────────────────────────────────
+jaxb2-basics-ant     = { module = "codes.rafael.jaxb2_commons:jaxb2-basics-ant",     version.ref = "jaxb2-basics" }
+jaxb2-basics         = { module = "codes.rafael.jaxb2_commons:jaxb2-basics",         version.ref = "jaxb2-basics" }
+jaxb2-basics-runtime = { module = "codes.rafael.jaxb2_commons:jaxb2-basics-runtime", version.ref = "jaxb2-basics" }
+jaxb2-fluent-api     = { module = "codes.rafael.jaxb2_commons:jaxb2-fluent-api",     version.ref = "jaxb2-basics" }
+jakarta-jaxb-api     = { module = "jakarta.xml.bind:jakarta.xml.bind-api",           version.ref = "jaxb-api" }
+jaxb-xjc             = { module = "org.glassfish.jaxb:jaxb-xjc",                    version.ref = "jaxb-xjc" }
+jaxb-runtime         = { module = "org.glassfish.jaxb:jaxb-runtime",                version.ref = "jaxb-runtime" }
+eclipse-moxy         = { module = "org.eclipse.persistence:org.eclipse.persistence.moxy", version.ref = "eclipse-moxy" }
+eclipse-parsson      = { module = "org.eclipse.parsson:parsson",                     version.ref = "eclipse-parsson" }
+ant                  = { module = "org.apache.ant:ant",                              version.ref = "ant" }
+
+# ── FHIR / xpp3 ──────────────────────────────────────────────────────────────
+xpp3 = { module = "org.ogce:xpp3", version = "1.1.6" }
+
+# ── Android API-level signature (animalsniffer) ───────────────────────────────
+# API level 34 is hardcoded in the module name; the version is the artifact version.
+gummy-bears = { module = "com.toasttab.android:gummy-bears-api-34", version.ref = "gummy-bears" }
+
+[plugins]
+# ── Applied directly in root build.gradle.kts via alias(libs.plugins.xxx) ────
+kotlin-jvm         = { id = "org.jetbrains.kotlin.jvm",     version.ref = "kotlin" }
+spotless           = { id = "com.diffplug.spotless",         version.ref = "spotless" }
+vanniktech-publish = { id = "com.vanniktech.maven.publish",  version.ref = "vanniktech-publish" }
+sonarqube          = { id = "org.sonarqube",                 version.ref = "sonarqube" }
+task-tree          = { id = "com.dorongold.task-tree",       version.ref = "task-tree" }

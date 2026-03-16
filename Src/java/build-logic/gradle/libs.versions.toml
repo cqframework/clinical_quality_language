@@ -1,0 +1,34 @@
+# Version catalog for the build-logic project itself.
+# These are the Gradle plugins and libraries that build-logic puts on its own
+# compilation classpath. Convention plugins (*.gradle.kts) use this catalog
+# when resolving plugin IDs at compile time (via the asDep() helper in
+# build-logic/build.gradle.kts).
+#
+# Runtime dependency versions (junit, slf4j, hapi, etc.) live in the
+# *consuming project's* gradle/libs.versions.toml and are accessed by
+# convention plugins at execution time via versionCatalogs.named("libs").
+
+[versions]
+animalsniffer      = "2.0.1"
+buildconfig        = "6.0.7"
+detekt             = "1.23.8"
+dokka              = "2.1.0"
+kotlin             = "2.3.10"
+openrewrite        = "7.26.0"
+vanniktech-publish = "0.36.0"
+
+[plugins]
+animalsniffer        = { id = "ru.vyarus.animalsniffer",                   version.ref = "animalsniffer" }
+buildconfig          = { id = "com.github.gmazzo.buildconfig",             version.ref = "buildconfig" }
+detekt               = { id = "io.gitlab.arturbosch.detekt",               version.ref = "detekt" }
+dokka                = { id = "org.jetbrains.dokka",                       version.ref = "dokka" }
+kotlin-jvm           = { id = "org.jetbrains.kotlin.jvm",                  version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform",        version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+openrewrite          = { id = "org.openrewrite.rewrite",                   version.ref = "openrewrite" }
+vanniktech-publish   = { id = "com.vanniktech.maven.publish",              version.ref = "vanniktech-publish" }
+
+[libraries]
+# Non-plugin libraries used by custom Gradle tasks (XjcTask, XsdKotlinGenTask)
+xsom       = { module = "org.glassfish.jaxb:xsom",  version = "4.0.6" }
+kotlinpoet = { module = "com.squareup:kotlinpoet",  version = "2.2.0" }

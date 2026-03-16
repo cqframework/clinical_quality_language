@@ -16,10 +16,12 @@ import org.hl7.elm.r1.And
 import org.hl7.elm.r1.Contains
 import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression as ElmExpression
+import org.hl7.elm.r1.Greater
 import org.hl7.elm.r1.GreaterOrEqual
 import org.hl7.elm.r1.In
 import org.hl7.elm.r1.IncludedIn
 import org.hl7.elm.r1.Interval
+import org.hl7.elm.r1.Less
 import org.hl7.elm.r1.LessOrEqual
 import org.hl7.elm.r1.MaxValue
 import org.hl7.elm.r1.MinValue
@@ -60,11 +62,8 @@ internal fun EmissionContext.emitTypeExtent(expression: TypeExtentExpression): E
 
 /**
  * Emit a [BetweenExpression] (`X between Y and Z`). When the input is an interval-typed expression,
- * the legacy translator emits `IncludedIn(input, Interval[lower, upper])`. For scalar inputs, it
- * emits `And(GreaterOrEqual(X, Y), LessOrEqual(X, Z))`.
- *
- * The legacy has a bug where `isProper` is always false (it checks `ctx.getChild(0).text ==
- * "properly"` but child 0 is the expression, not the keyword). We match this behavior for parity.
+ * emit `IncludedIn(input, Interval[lower, upper])`. For scalar inputs, emit `And(GreaterOrEqual(X,
+ * Y), LessOrEqual(X, Z))` or `And(Greater(X, Y), Less(X, Z))` for `properly between`.
  */
 internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpression {
     val inputElm = emitExpression(expression.input)
@@ -86,9 +85,12 @@ internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpr
         return IncludedIn().apply { operand = mutableListOf(inputElm, boundsInterval) }
     }
 
-    // NOTE: properly flag intentionally ignored to match legacy bug (see comment above)
-    val leftCmp = GreaterOrEqual().apply { operand = mutableListOf(inputElm, lowerElm) }
-    val rightCmp = LessOrEqual().apply { operand = mutableListOf(inputElm, upperElm) }
+    val leftCmp =
+        if (expression.properly) Greater().apply { operand = mutableListOf(inputElm, lowerElm) }
+        else GreaterOrEqual().apply { operand = mutableListOf(inputElm, lowerElm) }
+    val rightCmp =
+        if (expression.properly) Less().apply { operand = mutableListOf(inputElm, upperElm) }
+        else LessOrEqual().apply { operand = mutableListOf(inputElm, upperElm) }
     return And().apply { operand = mutableListOf(leftCmp, rightCmp) }
 }
 
