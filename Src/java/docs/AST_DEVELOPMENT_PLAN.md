@@ -892,86 +892,137 @@ resolution and type inference.
 - `LibraryTests/TestFluent*.cql`
 - All remaining test files.
 
-### Milestone 12: Full Parity and Legacy Deprecation Path
+### Milestone 12: Architecture Refactor + DateTimeOperators
 
-**Goal:** 100% parity with legacy translator across the entire test suite.
+**Goal:** Clean up the pipeline architecture before adding more features.
+Enable DateTimeOperators parity (chunk bug now fixed on main).
 
-**Current status:** 9 of 32 OperatorTests files at parity. 16 auto-skip
-(unsupported features), 4 error recovery (intentional difference),
-3 type inference gaps. See `FullParityTest.kt` and `LEGACY_ISSUES.md`.
+**Status:** Complete (M12 branch). 9 of 32 OperatorTests at parity.
+Batch `FullParityTest` created. `LEGACY_ISSUES.md` documents all known
+translator behaviors.
 
-**Remaining work — feature gaps (recommended priority order):**
-
-*Small / independent (do first):*
-- [ ] `$this` / `$index` special identifiers in queries.
-- [ ] `expand` / `collapse` interval operators (AST node exists, needs
-  emission + type inference).
-- [ ] TupleLiteral / InstanceLiteral type inference (currently falls to
-  null in TypeResolver).
-
-*Medium / high-impact:*
-- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)`) — target
-  already captured on `FunctionCallExpression`; needs method resolution
-  in TypeResolver.
-- [ ] `ListTypeSpecifier` / `IntervalTypeSpecifier` / `ChoiceTypeSpecifier`
-  in type operator emission (needed for null wrapping).
-- [ ] Implicit aggregate query wrapping (`Avg({1,2,3})` → query with
-  `ToDecimal` conversion). **Note:** this creates synthetic ELM with no
-  corresponding AST node — consider implementing as AST Transformer.
-- [ ] Choice type union wrapping for heterogeneous lists.
-- [ ] Multi-source query tuple type construction.
-- [ ] `case` comparand equality resolution (comparand type should drive
-  overload resolution in case conditions).
-- [ ] User-defined function overload resolution via scoring (current
-  ad-hoc exact+subtype matching; should reuse OperatorRegistry scoring).
-
-*Large / gate-keeping (critical path for FHIR):*
-- [ ] Cross-library reference resolution (qualified `"Lib"."Def"` refs) —
-  requires LibraryManager integration, symbol merging.
-- [ ] FHIRHelpers bootstrapping strategy — auto-generated CQL library
-  that the translator compiles and loads transparently. New pipeline
-  needs to either compile through its own pipeline or load pre-compiled
-  ELM.
-- [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`) — depends
-  on cross-library + model loading.
-- [ ] Property path collapsing and list traversal (`P.medication.reference`,
-  `patient.name` returning `List<HumanName>`).
-- [ ] FHIR implicit conversions (`.value` accessor stripping).
-
-*Low priority / deprioritize:*
-- [ ] `repeat` expressions (not in test suite).
-- [ ] UnsupportedExpression audit — eliminate remaining Builder fallbacks.
-
-**Remaining work — architecture:**
+**Work items:**
 - [ ] Unify `SymbolTable` + `TypeTable` into `SemanticModel` — single
   artifact from analysis to codegen/post-processing.
 - [ ] Switch `TypeTable` from `HashMap` to `IdentityHashMap` —
   `Locator.UNKNOWN` default causes collisions for structurally
   identical expressions without locators.
-- [ ] Post-processing phase: add serialized `resultTypeName` /
-  `resultTypeSpecifier` fields when `EnableResultTypes` is on. **Note:**
-  internal `resultType` (set via `decorate()`) stays in codegen — it's
-  needed by the ELM object model. Post-processing adds the *serialized
-  representation* only. Defer this until after more parity.
-- [ ] Accept `CqlCompilerOptions` and route semantic flags to analysis,
-  output flags to post-processing.
-- [ ] Implement compatibility level gating (`isCompatibleWith`).
-- [ ] Error recovery in `SemanticValidator` (replace errors with Null).
-- [ ] Document synthetic ELM cases (break from mechanical codegen
-  principle): aggregate query wrapping, null As wrapping,
-  Skip/Take/Tail → Slice. Consider AST Transformer passes.
-- [ ] `EnableDateRangeOptimization` as optimization pass or AST
-  Transformer between analysis and codegen, not in TypeResolver.
-- [ ] Replace manual `when` dispatch in TypeResolver and EmissionContext
-  with AST fold. Define algebra (one function per AST node type),
-  automatic traversal, compile-time exhaustiveness via sealed classes.
+- [ ] Accept `CqlCompilerOptions` in `CompilerFrontend` and route
+  semantic flags to analysis. Minimum viable: `compatibilityLevel`.
+- [ ] Re-enable DateTimeOperators in FullParityTest (chunk bug fixed
+  on main via PR #1706).
+- [ ] Begin AST fold prototype — replace manual `when` dispatch in
+  TypeResolver and EmissionContext with algebra + automatic traversal.
+  Sealed class exhaustiveness ensures new nodes are compile-time errors.
 
-**Remaining work — integration:**
+**Target:** 10/32 OperatorTests passing (+DateTimeOperators).
+
+### Milestone 13: Identifier Scoping + Quick Wins
+
+**Goal:** Fix the dominant blocker (6 files blocked by unresolved
+identifiers) and add missing expression/type specifier handlers.
+
+**Work items — identifier scoping (unblocks 6 files):**
+- [ ] Fix query alias resolution in sort-by expressions (unblocks
+  Sorting, InvalidSortClauses, Aggregate).
+- [ ] Fix query alias resolution in where clauses for inline queries
+  like `{...} X where (X as String) = 'A'` (unblocks TypeOperators).
+- [ ] Fix function operand resolution in property access contexts
+  like `c.codes` where `c` is a function parameter (unblocks Functions).
+- [ ] `$this` / `$index` special identifiers in queries.
+
+**Work items — missing handlers (unblocks 5 files):**
+- [ ] `ExpandCollapseExpression` emission + type inference (unblocks
+  CqlIntervalOperators, IntervalOperators).
+- [ ] `ListTypeSpecifier` / `IntervalTypeSpecifier` / `ChoiceTypeSpecifier`
+  in `emitTypeSpecifier` (unblocks CqlListOperators, ImplicitConversions,
+  NameHiding).
+- [ ] TupleLiteral / InstanceLiteral type inference.
+
+**Work items — test infrastructure:**
+- [ ] Add ModelManager to FullParityTest for model-dependent files
+  (unblocks AgeOperators, TerminologyReferences, TupleAndClassConversions
+  at the parse/emit level — they may still fail at parity comparison).
+
+**Target:** ~19/32 OperatorTests passing.
+
+### Milestone 14: Multi-source Queries + Interval Phrases + Type Gaps
+
+**Goal:** Close remaining OperatorTests gaps that don't require
+cross-library resolution.
+
+**Work items:**
+- [ ] Multi-source query tuple type construction (unblocks
+  MultiSourceQuery, Query).
+- [ ] Quantity offsets on before/after temporal phrases (unblocks
+  IntervalOperatorPhrases).
+- [ ] Implicit aggregate query wrapping (`Avg({1,2,3})` → query with
+  `ToDecimal` conversion). Consider AST Transformer approach.
+- [ ] Null type wrapping with `ListTypeSpecifier` for list operators.
+- [ ] Choice type union wrapping for heterogeneous lists.
+- [ ] `case` comparand equality resolution.
+- [ ] User-defined function overload resolution via OperatorRegistry
+  scoring (replace ad-hoc exact+subtype matching).
+- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)`) —
+  target already on `FunctionCallExpression`; needs method resolution.
+
+**Target:** ~26/32 OperatorTests passing (remaining 6: 4 error
+recovery + AgeOperators/TerminologyReferences needing model integration).
+
+### Milestone 15: Post-processing + Compiler Options
+
+**Goal:** Implement the post-processing phase and full compiler
+options support.
+
+**Work items:**
+- [ ] Post-processing phase: add serialized `resultTypeName` /
+  `resultTypeSpecifier` when `EnableResultTypes` is on. **Note:**
+  internal `resultType` (via `decorate()`) stays in codegen — it's
+  needed by the ELM object model. Post-processing adds the *serialized
+  representation* only.
+- [ ] Signature annotator (signatureLevel: None/Differing/Overloads/All).
+  Needs access to OperatorResolution from SemanticModel.
+- [ ] Locator annotator (`EnableLocators`).
+- [ ] Annotation/narrative annotator (`EnableAnnotations`).
+- [ ] Implement compatibility level gating (`isCompatibleWith`) for
+  `ValueSetRef.preserve`, default context name, etc.
+- [ ] `EnableDateRangeOptimization` as optimization pass or AST
+  Transformer between analysis and codegen.
+- [ ] Error recovery in `SemanticValidator` (replace errors with Null).
+- [ ] Document synthetic ELM cases (aggregate wrapping, null As
+  wrapping, Skip/Take/Tail → Slice). Consider AST Transformer passes
+  to keep emitter purely mechanical.
+
+### Milestone 16: Cross-Library + Terminology
+
+**Goal:** Multi-library compilation and terminology-based retrieves.
+
+**Work items:**
+- [ ] LibraryManager integration for include resolution.
+- [ ] FHIRHelpers bootstrapping strategy — compile through new pipeline
+  or load pre-compiled ELM.
+- [ ] Qualified cross-library references (`"LibAlias"."DefName"`).
+- [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`).
+- [ ] Property path collapsing and list traversal.
+
+**Target:** Unblocks TerminologyReferences.cql, all LibraryTests,
+begins unlocking FHIR/QICore tests.
+
+### Milestone 17: FHIR Deep Integration + Full Parity Sweep
+
+**Goal:** 100% parity with legacy translator across the entire test
+suite.
+
+**Work items:**
+- [ ] FHIR implicit conversions (`.value` accessor stripping).
+- [ ] FHIR-specific property resolution and type mapping.
 - [ ] Run full parity suite across all 358 CQL test files.
 - [ ] Fix remaining divergences.
 - [ ] Document intentional differences in `LEGACY_ISSUES.md`.
 - [ ] Add compiler option to select pipeline (`legacy` vs `ast`).
 - [ ] Performance benchmarks.
+- [ ] `repeat` expressions (if needed by test suite).
+- [ ] UnsupportedExpression audit — eliminate remaining Builder fallbacks.
 - [ ] Deprecation plan for `Cql2ElmVisitor` path.
 
 ---
