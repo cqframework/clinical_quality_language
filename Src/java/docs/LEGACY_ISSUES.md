@@ -39,92 +39,129 @@ accommodate the child rather than failing.
 
 ---
 
-## Quirks (intentional or debatable behavior)
+## Translator behaviors with rationale
 
 ### 4. Null arguments to DateTime/Date/Time constructors wrapped in `As`
 
-The legacy wraps null arguments to temporal constructors in explicit type
-casts: `DateTime(null)` becomes `DateTime(As(Integer, null))`. The null
-literal has no inherent type, so the legacy inserts `As` to satisfy the
-constructor's expected parameter type. The new pipeline matches this
-behavior for parity.
+**Rationale:** Type safety for ELM consumers.
+
+The null literal in CQL has no inherent type. DateTime/Date/Time
+constructor parameters expect `Integer` (or `Decimal` for timezone
+offset). The translator wraps null args in `As(Integer, null)` so the
+ELM is fully typed for downstream consumers. This is a general pattern
+in the translator: null operands to typed parameters get explicit casts.
 
 ### 5. `Skip`/`Take`/`Tail` transformed to `Slice`
 
-The legacy translator transforms these system functions:
+**Rationale:** ELM normalization — `Slice` is the canonical ELM node.
+
+`Skip`, `Take`, and `Tail` are CQL convenience functions that the ELM
+spec represents as `Slice` (a more general operation). The translator
+rewrites them:
 - `Skip(list, n)` → `Slice(source=list, startIndex=n, endIndex=null)`
 - `Take(list, n)` → `Slice(source=list, startIndex=0, endIndex=Coalesce(n, 0))`
 - `Tail(list)` → `Slice(source=list, startIndex=1, endIndex=null)`
 
-These are semantic rewrites, not simple function-to-ELM mappings. The
-new pipeline matches this behavior for parity.
+This is done in `SystemFunctionResolver` and is the intended mapping
+per the ELM specification.
 
 ### 6. Aggregate accumulator resolves as `AliasRef`
 
-In `aggregate` clauses, the accumulator variable (e.g., `acc` in
-`aggregate acc starting 0: acc + X`) resolves as an `AliasRef` in the
-ELM output, not a `QueryLetRef`. This is arguably a misnomer since the
-accumulator is not a query alias, but the new pipeline matches it.
+**Rationale:** Implementation simplification.
+
+The accumulator in an `aggregate` clause is pushed to the identifier
+scope the same way query aliases are, producing `AliasRef` in ELM. A
+dedicated `AggregateRef` node doesn't exist in the ELM schema, so
+`AliasRef` is the closest match. The accumulator is scoped to the
+aggregate expression body, same as a query alias is scoped to a query.
 
 ### 7. `ValueSetRef` always has `preserve = true`
 
-Since CQL 1.5, `ValueSetRef` nodes include `preserve = true` to
-indicate the reference should be treated as a `System.ValueSet` type
-rather than being expanded to `List<Code>`. The legacy always sets this.
+**Rationale:** CQL 1.5+ specification requirement.
+
+CQL 1.5 introduced first-class `ValueSet` types. `preserve = true`
+tells ELM consumers to treat the reference as a `System.ValueSet`
+rather than expanding it to `List<Code>`. The translator checks
+`isCompatibleWith("1.5")` before setting this flag. Since all current
+CQL is 1.5+, this is always set.
 
 ### 8. Implicit `using System` always emitted
 
-Even when a CQL library has no explicit `using System` declaration, the
-legacy translator always emits it in the ELM output. When a non-System
-model is declared (e.g., FHIR), both `using System` and the model's
-using definition appear.
+**Rationale:** Spec-compliant — the System model is implicitly
+available.
+
+The CQL spec (Developer's Guide) states: *"when the System model
+declaration is implicit, it is not considered as part of determining
+ambiguity"* — confirming the System model is always available without
+an explicit `using System` declaration. The translator emits it in ELM
+as a side-effect of `LibraryBuilder.beginTranslation()` loading the
+System library's operators and types.
 
 ### 9. Empty library identifier always emitted
 
-The legacy always creates a `VersionedIdentifier` element in the ELM
-output, even when the CQL has no `library` declaration. This results in
-an empty `identifier: {}` in the JSON output.
+**Rationale:** Implementation artifact — not spec-required.
+
+The CQL spec states: *"the library declaration is optional in a CQL
+document, but if it is omitted, it is not possible to reference the
+library from any other CQL library."* The `Library` ELM object is
+created with an empty `identifier` field during `LibraryBuilder`
+initialization. The ELM schema has `identifier` as optional, but the
+translator always creates it.
 
 ### 10. Default context is `Unfiltered`
 
-When no explicit `context` declaration appears in the CQL, the legacy
-defaults all expression definitions to `context: "Unfiltered"`.
+**Rationale:** CQL specification requirement.
+
+The CQL spec (Author's Guide) states: *"When no context is specified
+in the library, and the model has not declared a default context, the
+default context is Unfiltered."* The translator initializes
+`currentContext = "Unfiltered"` in `CqlPreprocessorElmCommonVisitor`.
+(In CQL compatibility level 3, `Population` was the equivalent name.)
 
 ### 11. Model URI uses `targetUrl` over `url`
 
-For models that define both `url` and `targetUrl` in their ModelInfo
-(e.g., QICore has `url="http://hl7.org/fhir/us/qicore"` and
-`targetUrl="http://hl7.org/fhir"`), the legacy uses `targetUrl` for
-the UsingDef URI and Retrieve dataType QName namespace. The
-`targetVersion` field similarly overrides `version` when present.
+**Rationale:** FHIR profile mapping.
+
+Models like QICore are FHIR profiles with their own URL
+(`http://hl7.org/fhir/us/qicore`) but their types map to base FHIR
+types (`http://hl7.org/fhir`). The `targetUrl` field in ModelInfo tells
+the translator to use the base FHIR URL for ELM type QNames and
+UsingDef URIs, so that ELM consumers can resolve types against the base
+FHIR model. Applied in `LibraryBuilder.applyTargetModelMaps()`.
 
 ### 12. Quantity unit strings have quotes stripped
 
-Quantity literal units in the AST include surrounding single quotes
-(e.g., `'mg'`). The legacy strips these before emitting the ELM
-Quantity node, producing `unit: "mg"` rather than `unit: "'mg'"`.
+**Rationale:** UCUM convention — units are identifiers, not quoted
+strings.
+
+CQL grammar requires quotes around unit strings (`10 'mg'`), but UCUM
+units in ELM are bare identifiers. The translator strips the enclosing
+single quotes to produce the canonical UCUM representation.
 
 ### 13. Integer literal text preserved for time components
 
-Time literal components like `@T10:00:00` require the original text
-(`"00"`) rather than the parsed integer value (`0`) to achieve parity.
-The legacy preserves the source text representation. The new pipeline
-added an optional `text` field to `IntLiteral` to support this.
+**Rationale:** Source fidelity in ELM literal values.
+
+When the CQL source has `@T10:00:00`, the `00` components are parsed
+as integer 0, but the ELM literal value should preserve `"00"` to
+match the source representation. The translator emits the original
+text rather than `Integer.toString()`. The new pipeline handles this
+via an optional `text` field on `IntLiteral`.
 
 ---
 
 ## Error recovery differences
 
-The legacy translator has error recovery behavior that the new pipeline
-does not implement:
+The translator has error recovery behavior that the new pipeline does
+not yet implement:
 
-- **Invalid casts**: Legacy replaces invalid cast expressions with `Null`
-- **Undeclared forward references**: Legacy replaces unresolved function
+- **Invalid casts**: Replaces invalid cast expressions with `Null`
+- **Undeclared forward references**: Replaces unresolved function
   references with `Null`
-- **Undeclared signatures**: Legacy replaces unmatched function calls
-  with `Null`
-- **Recursive functions**: Legacy replaces recursive function bodies
-  with `Null` (recursion is illegal in CQL)
+- **Undeclared signatures**: Replaces unmatched function calls with
+  `Null`
+- **Recursive functions**: Replaces recursive function bodies with
+  `Null` (recursion is illegal in CQL)
 
 The new pipeline either throws `UnsupportedNodeException` or returns
 null types for these cases. Proper error recovery will be implemented
@@ -134,27 +171,30 @@ via the `SemanticValidator` pass.
 
 ## Type inference gaps
 
-These are areas where the legacy performs more sophisticated type
-inference that the new pipeline does not yet replicate:
+Areas where the translator performs more sophisticated type inference
+that the new pipeline does not yet replicate:
 
 ### Null wrapping with `ListTypeSpecifier`
 
-For list operators that receive null arguments, the legacy wraps null in
-`As(ListTypeSpecifier(...))` to provide type context. For example,
-`{1, 2} union null` becomes `Union({1, 2}, As(List<Integer>, null))`.
-This requires inferring the expected list element type from context.
+For list operators that receive null arguments, the translator wraps
+null in `As(ListTypeSpecifier(...))` to provide type context. For
+example, `{1, 2} union null` becomes
+`Union({1, 2}, As(List<Integer>, null))`. This requires inferring the
+expected list element type from context.
 
 ### Implicit aggregate query wrapping
 
 For aggregate functions like `Avg` and `Median` applied to integer
-lists, the legacy wraps the source in an implicit `Query` with a
+lists, the translator wraps the source in an implicit `Query` with a
 `ToDecimal` conversion in the return clause. For example,
-`Avg({1, 2, 3})` becomes `Avg(Query(source={1,2,3}, return ToDecimal(X)))`.
-This ensures the aggregate operates on decimal values.
+`Avg({1, 2, 3})` becomes
+`Avg(Query(source={1,2,3}, return ToDecimal(X)))`. This ensures the
+aggregate operates on decimal values per the spec (these aggregates
+are defined over decimal).
 
 ### Choice type union wrapping
 
 For union/intersect operations on lists with different element types,
-the legacy wraps operands in `As(List<Choice<T1, T2>>)` to create a
-unified choice type. This requires computing choice types from the
+the translator wraps operands in `As(List<Choice<T1, T2>>)` to create
+a unified choice type. This requires computing choice types from the
 operand types.
