@@ -8,15 +8,11 @@ import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 
 @Suppress("ReturnCount")
-internal fun TypeResolver.inferQueryType(
-    expression: QueryExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
+internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType? {
     // Build scope from sources
     val scope = mutableMapOf<String, Resolution>()
     for (source in expression.sources) {
-        val elementType = inferSourceElementType(source, typeTable, symbolTable) ?: continue
+        val elementType = inferSourceElementType(source) ?: continue
         scope[source.alias.value] = Resolution.AliasRef(source.alias.value, elementType)
     }
 
@@ -25,7 +21,7 @@ internal fun TypeResolver.inferQueryType(
     try {
         // Resolve let clause types and add to scope
         for (letItem in expression.lets) {
-            val letType = inferType(letItem.expression, typeTable, symbolTable)
+            val letType = inferType(letItem.expression)
             if (letType != null) {
                 scope[letItem.identifier.value] =
                     Resolution.QueryLetRef(letItem.identifier.value, letType)
@@ -34,23 +30,23 @@ internal fun TypeResolver.inferQueryType(
 
         // Resolve inclusion clauses
         for (inclusion in expression.inclusions) {
-            inferInclusionType(inclusion, typeTable, symbolTable)
+            inferInclusionType(inclusion)
         }
 
         // Resolve where
-        expression.where?.let { inferType(it, typeTable, symbolTable) }
+        expression.where?.let { inferType(it) }
 
         // Resolve aggregate
         expression.aggregate?.let { agg ->
-            val aggType = inferAggregateType(agg, scope, typeTable, symbolTable)
-            resolveSortItems(expression, typeTable, symbolTable)
+            val aggType = inferAggregateType(agg, scope)
+            resolveSortItems(expression)
             return aggType
         }
 
         // Resolve return
         val resultType =
             expression.result?.let { ret ->
-                val retType = inferType(ret.expression, typeTable, symbolTable) ?: return null
+                val retType = inferType(ret.expression) ?: return null
                 ListType(retType)
             }
                 ?: run {
@@ -61,14 +57,13 @@ internal fun TypeResolver.inferQueryType(
                         )
                     }
                     val sourceType =
-                        expression.sources.firstOrNull()?.let {
-                            inferSourceElementType(it, typeTable, symbolTable)
-                        } ?: return null
+                        expression.sources.firstOrNull()?.let { inferSourceElementType(it) }
+                            ?: return null
                     ListType(sourceType)
                 }
 
         // Resolve sort (runs regardless of whether return clause is present)
-        resolveSortItems(expression, typeTable, symbolTable)
+        resolveSortItems(expression)
 
         return resultType
     } finally {
@@ -76,50 +71,38 @@ internal fun TypeResolver.inferQueryType(
     }
 }
 
-internal fun TypeResolver.inferSourceElementType(
-    source: AliasedQuerySource,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
+internal fun TypeResolver.inferSourceElementType(source: AliasedQuerySource): DataType? {
     val querySource = source.source
     val sourceType =
         when (querySource) {
-            is ExpressionQuerySource -> inferType(querySource.expression, typeTable, symbolTable)
-            is RetrieveExpression -> inferType(querySource, typeTable, symbolTable)
+            is ExpressionQuerySource -> inferType(querySource.expression)
+            is RetrieveExpression -> inferType(querySource)
         } ?: return null
     // Unwrap ListType to get element type
     return if (sourceType is ListType) sourceType.elementType else sourceType
 }
 
-private fun TypeResolver.inferInclusionType(
-    inclusion: org.hl7.cql.ast.QueryInclusionClause,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-) {
+private fun TypeResolver.inferInclusionType(inclusion: org.hl7.cql.ast.QueryInclusionClause) {
     val (source, condition) =
         when (inclusion) {
             is org.hl7.cql.ast.WithClause -> inclusion.source to inclusion.condition
             is org.hl7.cql.ast.WithoutClause -> inclusion.source to inclusion.condition
         }
-    val elementType = inferSourceElementType(source, typeTable, symbolTable) ?: return
+    val elementType = inferSourceElementType(source) ?: return
     val innerScope =
         mapOf(source.alias.value to Resolution.AliasRef(source.alias.value, elementType))
     pushQueryScope(innerScope)
     try {
-        inferType(condition, typeTable, symbolTable)
+        inferType(condition)
     } finally {
         popQueryScope()
     }
 }
 
-private fun TypeResolver.resolveSortItems(
-    expression: QueryExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-) {
+private fun TypeResolver.resolveSortItems(expression: QueryExpression) {
     expression.sort?.let { sort ->
         for (item in sort.items) {
-            inferType(item.expression, typeTable, symbolTable)
+            inferType(item.expression)
         }
     }
 }
@@ -128,16 +111,14 @@ private fun TypeResolver.resolveSortItems(
 private fun TypeResolver.inferAggregateType(
     agg: org.hl7.cql.ast.AggregateClause,
     scope: MutableMap<String, Resolution>,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
 ): DataType? {
     // Resolve starting expression type
-    val startingType = agg.starting?.let { inferType(it, typeTable, symbolTable) } ?: type("Any")
+    val startingType = agg.starting?.let { inferType(it) } ?: type("Any")
 
     // Add accumulator to scope — legacy uses AliasRef for the accumulator identifier
     if (startingType != null) {
         scope[agg.identifier.value] = Resolution.AliasRef(agg.identifier.value, startingType)
     }
 
-    return inferType(agg.expression, typeTable, symbolTable)
+    return inferType(agg.expression)
 }

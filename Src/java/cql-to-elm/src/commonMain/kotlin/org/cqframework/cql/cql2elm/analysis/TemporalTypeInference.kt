@@ -20,11 +20,9 @@ import org.hl7.cql.model.ListType
 
 @Suppress("CyclomaticComplexMethod")
 internal fun TypeResolver.inferDateTimeComponentType(
-    expression: DateTimeComponentExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
+    expression: DateTimeComponentExpression
 ): DataType? {
-    inferType(expression.operand, typeTable, symbolTable)
+    inferType(expression.operand)
     return when (expression.component) {
         DateTimeComponent.DATE -> type("Date")
         DateTimeComponent.TIME -> type("Time")
@@ -34,72 +32,50 @@ internal fun TypeResolver.inferDateTimeComponentType(
 }
 
 internal fun TypeResolver.inferDurationBetweenType(
-    expression: DurationBetweenExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
+    expression: DurationBetweenExpression
 ): DataType? {
-    inferType(expression.lower, typeTable, symbolTable)
-    inferType(expression.upper, typeTable, symbolTable)
+    inferType(expression.lower)
+    inferType(expression.upper)
     return type("Integer")
 }
 
 internal fun TypeResolver.inferDifferenceBetweenType(
-    expression: DifferenceBetweenExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
+    expression: DifferenceBetweenExpression
 ): DataType? {
-    inferType(expression.lower, typeTable, symbolTable)
-    inferType(expression.upper, typeTable, symbolTable)
+    inferType(expression.lower)
+    inferType(expression.upper)
     return type("Integer")
 }
 
-internal fun TypeResolver.inferDurationOfType(
-    expression: DurationOfExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    inferType(expression.operand, typeTable, symbolTable)
+internal fun TypeResolver.inferDurationOfType(expression: DurationOfExpression): DataType? {
+    inferType(expression.operand)
     return type("Integer")
 }
 
-internal fun TypeResolver.inferDifferenceOfType(
-    expression: DifferenceOfExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    inferType(expression.operand, typeTable, symbolTable)
+internal fun TypeResolver.inferDifferenceOfType(expression: DifferenceOfExpression): DataType? {
+    inferType(expression.operand)
     return type("Integer")
 }
 
 @Suppress("ReturnCount")
-internal fun TypeResolver.inferTimeBoundaryType(
-    expression: TimeBoundaryExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
+internal fun TypeResolver.inferTimeBoundaryType(expression: TimeBoundaryExpression): DataType? {
+    val operandType = inferType(expression.operand) ?: return null
     if (operandType is IntervalType) return operandType.pointType
     return operandType
 }
 
 @Suppress("ReturnCount")
-internal fun TypeResolver.inferWidthType(
-    expression: WidthExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
+internal fun TypeResolver.inferWidthType(expression: WidthExpression): DataType? {
+    val operandType = inferType(expression.operand) ?: return null
     if (operandType is IntervalType) return operandType.pointType
     return operandType
 }
 
 @Suppress("ReturnCount")
 internal fun TypeResolver.inferElementExtractorType(
-    expression: ElementExtractorExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
+    expression: ElementExtractorExpression
 ): DataType? {
-    val operandType = inferType(expression.operand, typeTable, symbolTable) ?: return null
+    val operandType = inferType(expression.operand) ?: return null
     return when (expression.elementExtractorKind) {
         org.hl7.cql.ast.ElementExtractorKind.SINGLETON -> {
             if (operandType is ListType) operandType.elementType else operandType
@@ -114,42 +90,28 @@ internal fun TypeResolver.inferTypeExtentType(expression: TypeExtentExpression):
     return resolveTypeSpecifier(expression.type)
 }
 
-internal fun TypeResolver.inferExistsType(
-    expression: ExistsExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    inferType(expression.operand, typeTable, symbolTable)
+internal fun TypeResolver.inferExistsType(expression: ExistsExpression): DataType? {
+    inferType(expression.operand)
     return type("Boolean")
 }
 
-internal fun TypeResolver.inferBetweenType(
-    expression: BetweenExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    inferType(expression.input, typeTable, symbolTable)
-    inferType(expression.lower, typeTable, symbolTable)
-    inferType(expression.upper, typeTable, symbolTable)
+internal fun TypeResolver.inferBetweenType(expression: BetweenExpression): DataType? {
+    inferType(expression.input)
+    inferType(expression.lower)
+    inferType(expression.upper)
     return type("Boolean")
 }
 
-internal fun TypeResolver.inferMembershipType(
-    expression: MembershipExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
-): DataType? {
-    inferType(expression.left, typeTable, symbolTable)
-    inferType(expression.right, typeTable, symbolTable)
+internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType? {
+    inferType(expression.left)
+    inferType(expression.right)
     return type("Boolean")
 }
 
 internal fun TypeResolver.inferIntervalRelationType(
-    expression: IntervalRelationExpression,
-    typeTable: TypeTable,
-    symbolTable: SymbolTable,
+    expression: IntervalRelationExpression
 ): DataType? {
-    inferType(expression.left, typeTable, symbolTable)
-    inferType(expression.right, typeTable, symbolTable)
+    inferType(expression.left)
+    inferType(expression.right)
     return type("Boolean")
 }
