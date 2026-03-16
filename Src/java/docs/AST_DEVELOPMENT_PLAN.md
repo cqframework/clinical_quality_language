@@ -133,6 +133,14 @@ CQL Source + CqlCompilerOptions
   identity (`IdentityHashMap`). The AST stays immutable and serializable.
   The SemanticModel is the single artifact passed from analysis to codegen
   and post-processing.
+- **AST fold over visitor.** The current `TypeResolver.inferType()` and
+  `EmissionContext.emitExpression()` use manual `when` dispatch (~30 cases
+  each). Adding a new AST node requires updating every dispatch. The
+  target architecture is an **AST fold** (catamorphism) where the algebra
+  is defined once per node type and the traversal is automatic. Kotlin's
+  sealed class exhaustiveness checking ensures new nodes are handled at
+  compile time. The fold eliminates boilerplate and makes the pipeline
+  extensible without shotgun surgery.
 - **Reuse existing type system.** The `org.hl7.cql.model` package (`DataType`,
   `ClassType`, `ListType`, etc.) is shared with the legacy compiler and is
   already correct.
@@ -954,6 +962,9 @@ resolution and type inference.
   Skip/Take/Tail → Slice. Consider AST Transformer passes.
 - [ ] `EnableDateRangeOptimization` as optimization pass or AST
   Transformer between analysis and codegen, not in TypeResolver.
+- [ ] Replace manual `when` dispatch in TypeResolver and EmissionContext
+  with AST fold. Define algebra (one function per AST node type),
+  automatic traversal, compile-time exhaustiveness via sealed classes.
 
 **Remaining work — integration:**
 - [ ] Run full parity suite across all 358 CQL test files.
