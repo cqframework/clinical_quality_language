@@ -1,46 +1,41 @@
-# Legacy Translator Issues
+# Translator Issues
 
-Issues discovered in the legacy `Cql2ElmVisitor`/`LibraryBuilder` translator
+Issues discovered in the `Cql2ElmVisitor`/`LibraryBuilder` translator
 during development of the AST-based compilation pipeline.
 
 ---
 
-## Bugs
+## Bugs (fixed)
 
 ### 1. `properly between` always behaves as plain `between`
 
 **Location:** `Cql2ElmVisitor.kt:1403`
-**Severity:** Bug — incorrect ELM output
-**Status:** Fix submitted as PR #1704
+**Status:** Fixed — PR #1704, merged to main
 
-`visitBetweenExpression` checks `ctx.getChild(0).text == "properly"` but
-child 0 is always the expression per the grammar rule
-`expression 'properly'? 'between' expressionTerm 'and' expressionTerm`.
-The keyword is at child index 1 when present, so `isProper` is always
-false. Both `between` and `properly between` emit
-`And(GreaterOrEqual, LessOrEqual)` instead of `And(Greater, Less)` for
-the proper variant.
+`visitBetweenExpression` checked `ctx.getChild(0).text == "properly"`
+but child 0 is always the expression per the grammar rule. The keyword
+is at child index 1 when present, so `isProper` was always false.
 
-### 2. `div` operator mapped to wrong ELM node
+### 2. `div` operator mapped to wrong ELM node in AST Builder
 
-**Location:** AST `Builder.kt` (pre-existing, fixed in M12)
-**Severity:** Bug — incorrect ELM output
+**Location:** AST `Builder.kt`
+**Status:** Fixed — PR #1705, merged to main
 
 The CQL `div` operator (truncated integer division) was mapped to
-`DIVIDE` (same as `/`), producing a `Divide` ELM node instead of
-`TruncatedDivide`. Fixed by adding `TRUNCATED_DIVIDE` to the
+`DIVIDE` (same as `/`). Fixed by adding `TRUNCATED_DIVIDE` to the
 `BinaryOperator` enum.
 
-### 3. `DateTimeOperators.cql` — legacy drops 70 of 71 statements
+### 3. Chunk-tracking error silently drops statements
 
-**Location:** `Cql2ElmVisitor.kt` / `LibraryBuilder.kt`
-**Severity:** Bug — test file unusable
+**Location:** `Chunk.kt` / `CqlPreprocessorElmCommonVisitor.kt`
+**Status:** Fixed — PR #1706, merged to main
 
-When compiling the `OperatorTests/DateTimeOperators.cql` file with only
-the System model (no FHIR), the legacy translator silently drops most
-expression definitions. Only 1 of 71 statements appears in the output.
-This appears to be an internal resolution failure in `LibraryBuilder`
-related to Date/DateTime type handling without a model context.
+When a CQL file has no `library` declaration and uses DateTime
+constructors, `Chunk.addChunk()` threw `IllegalArgumentException`
+because the child chunk's source interval fell outside the parent's
+bounds. The exception was caught by the generic error handler, which
+silently dropped the statement. Fix: expand the parent interval to
+accommodate the child rather than failing.
 
 ---
 
