@@ -1400,7 +1400,7 @@ class Cql2ElmVisitor(
         val first = parseExpression(ctx.expression())!!
         val second = parseExpression(ctx.expressionTerm(0))!!
         val third = parseExpression(ctx.expressionTerm(1))
-        val isProper = ctx.getChild(0)!!.text == "properly"
+        val isProper = ctx.getChild(1)!!.text == "properly"
         return if (first.resultType is IntervalType) {
             val result =
                 if (isProper) of.createProperIncludedIn()
