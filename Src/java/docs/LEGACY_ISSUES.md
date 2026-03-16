@@ -204,28 +204,63 @@ operand types.
 
 ## Architecture notes
 
-### Result type annotation should be post-processing, not codegen
+### Compiler flag classification
 
-The current new pipeline bakes `resultType` decoration into the
+The existing `CqlCompilerOptions` has flags that fall into two distinct
+categories. The new pipeline should separate these cleanly:
+
+#### Semantic flags (affect analysis / CQL interpretation)
+
+These change how CQL is interpreted and what ELM is produced. They
+belong in the analysis phase (TypeResolver / SemanticValidator):
+
+| Flag | Effect |
+|------|--------|
+| `DisableListPromotion` | Don't implicitly promote `T` → `List<T>` |
+| `DisableListDemotion` | Don't implicitly demote `List<T>` → `T` |
+| `EnableIntervalPromotion` | Allow implicit `T` → `Interval<T>` |
+| `EnableIntervalDemotion` | Allow implicit `Interval<T>` → `T` |
+| `DisableListTraversal` | Don't auto-traverse list-valued properties |
+| `DisableMethodInvocation` | Don't resolve fluent-style function calls |
+| `RequireFromKeyword` | Require `from` in queries (CQL syntax variant) |
+| `compatibilityLevel` | CQL version (1.3, 1.4, 1.5) — gates `ValueSetRef.preserve`, default context name, etc. |
+| `validateUnits` | Whether to validate UCUM units |
+| `enableCqlOnly` | Restrict to CQL-only features (no FHIRPath extensions) |
+| `EnableDateRangeOptimization` | Rewrite date-range filters on retrieves |
+
+#### Output flags (affect ELM shape / post-processing)
+
+These change how the ELM is annotated or serialized, without changing
+its semantic content. They belong in a post-processing step, not in
+codegen:
+
+| Flag | Effect |
+|------|--------|
+| `EnableResultTypes` | Add `resultTypeName`/`resultTypeSpecifier` to ELM nodes |
+| `EnableAnnotations` | Include source narrative annotations |
+| `EnableLocators` | Include source location (`locator`) on ELM nodes |
+| `signatureLevel` | `None`/`Differing`/`Overloads`/`All` — controls `signature` on operator invocations |
+| `EnableDetailedErrors` | Include detailed error information |
+
+#### Orchestration flags (affect the compilation pipeline itself)
+
+| Flag | Effect |
+|------|--------|
+| `verifyOnly` | Parse and validate but don't emit ELM |
+| `DisableDefaultModelInfoLoad` | Don't auto-load model info from classpath |
+| `analyzeDataRequirements` | Run data requirements analysis pass |
+| `collapseDataRequirements` | Collapse redundant data requirements |
+| `errorLevel` | Minimum severity to report (`Info`/`Warning`/`Error`) |
+
+### Current pipeline concern
+
+The new pipeline currently bakes `resultType` decoration into the
 codegen phase via `EmissionContext.decorate()`, called from
 `emitExpression()`. The translator implements this as a separate
-post-processing step that can be toggled via options
-(`DetailedReturnType` / `resultTypeName` / `resultTypeSpecifier`).
+post-processing step that can be toggled.
 
-This is the better architecture: codegen should produce the ELM
-structure mechanically, and a separate pass should annotate nodes with
-type information based on compiler options. The new pipeline should
-refactor `decorate()` out of `EmissionContext.emitExpression()` and
-into a post-processing step.
-
-### Compatibility level flags
-
-The translator checks `isCompatibleWith("1.5")` (and other versions)
-to gate behavior. CQL 1.3 and 1.4 libraries exist in the wild. The
-new pipeline will need to accept a compatibility level parameter and
-respect it for:
-
-- `ValueSetRef.preserve` (1.5+ only)
-- `Population` vs `Unfiltered` default context (compat level 3)
-- Signature output levels
-- Other version-dependent behaviors
+The right architecture: codegen produces the ELM structure
+mechanically, then a separate pass annotates nodes with type
+information, locators, annotations, and signatures based on the
+output flags. This keeps codegen simple and makes output options
+composable.
