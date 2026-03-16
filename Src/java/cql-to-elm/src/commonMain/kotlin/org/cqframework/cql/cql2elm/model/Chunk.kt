@@ -33,8 +33,14 @@ class Chunk(var interval: Interval, val isHeaderChunk: Boolean) {
     }
 
     fun addChunk(chunk: Chunk) {
-        require(chunk.interval.a >= interval.a && chunk.interval.b <= interval.b) {
-            "Child chunk cannot be added because it is not contained within the parent chunk."
+        if (chunk.interval.a < interval.a || chunk.interval.b > interval.b) {
+            // Child chunk falls outside parent bounds. This can happen when forward references
+            // or function resolution cause out-of-order processing (e.g., CQL without a library
+            // declaration that uses DateTime constructors). Expand the parent interval to
+            // accommodate the child rather than failing, since the annotation/narrative system
+            // should be best-effort rather than blocking compilation.
+            interval =
+                Interval(minOf(interval.a, chunk.interval.a), maxOf(interval.b, chunk.interval.b))
         }
 
         ensureChunks()
