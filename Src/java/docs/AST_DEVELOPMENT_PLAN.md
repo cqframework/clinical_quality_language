@@ -54,7 +54,7 @@ Emitter. Each pass reads the immutable AST and populates or consumes **side
 tables** rather than mutating nodes.
 
 ```
-CQL Source
+CQL Source + CqlCompilerOptions
   │
   ▼
 ┌──────────────────────────────────────────────────────┐
@@ -70,6 +70,7 @@ CQL Source
 ┌──────────────────────────────────────────────────────┐
 │                   ANALYSIS                            │
 │  (cql-to-elm/.../analysis/)                          │
+│  Reads: semantic flags from CqlCompilerOptions       │
 │                                                      │
 │  Pass 1 ─ SymbolCollector                            │
 │     Walks AST, populates SymbolTable                 │
@@ -79,6 +80,8 @@ CQL Source
 │     Walks AST + SymbolTable, populates TypeTable     │
 │     (inferred types, resolved overloads,             │
 │      implicit conversions)                           │
+│     Respects: list promotion/demotion, interval      │
+│      promotion/demotion, compatibility level          │
 │                                                      │
 │  Pass 3 ─ SemanticValidator                          │
 │     Walks AST + SymbolTable + TypeTable              │
@@ -97,7 +100,21 @@ CQL Source
 │  Extension files: LiteralEmission, OperatorEmission, │
 │    TemporalEmission, DefinitionEmission, ...         │
 │                                                      │
-│  Output: ELM Library (fully typed)                   │
+│  Pure mechanical translation — no compiler options.  │
+│  Output: ELM Library (structure only)                │
+└──────────────────────┬───────────────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────────────┐
+│                 POST-PROCESSING                       │
+│  Reads: output flags from CqlCompilerOptions         │
+│                                                      │
+│  - ResultType annotator (EnableResultTypes)           │
+│  - Locator annotator (EnableLocators)                │
+│  - Annotation/narrative (EnableAnnotations)          │
+│  - Signature annotator (signatureLevel)              │
+│                                                      │
+│  Output: ELM Library (annotated per options)         │
 └──────────────────────┬───────────────────────────────┘
                        │
                        ▼
@@ -106,10 +123,11 @@ CQL Source
 
 ### Guiding Principles
 
-- **Three-phase pipeline.** The compiler is organized into `parse` (grammar
+- **Four-phase pipeline.** The compiler is organized into `parse` (grammar
   and AST construction), `analysis` (symbol collection, type inference,
-  semantic validation), and `codegen` (ELM emission). Each phase has a
-  dedicated package.
+  semantic validation), `codegen` (mechanical ELM emission), and
+  `post-processing` (output annotation per compiler options). Each phase
+  has a dedicated package.
 - **Side tables, not node mutation.** Semantic data is keyed by AST node
   identity (`IdentityHashMap`). The AST stays immutable and serializable.
 - **Reuse existing type system.** The `org.hl7.cql.model` package (`DataType`,
@@ -120,6 +138,48 @@ CQL Source
 - **Incremental, testable milestones.** Each milestone adds a language subset,
   and its acceptance criterion is JSON parity with the legacy translator on a
   defined set of CQL inputs.
+- **Clean option separation.** Compiler options are classified into three
+  categories; each is handled by the appropriate phase:
+
+### Compiler Option Classification
+
+Flags from `CqlCompilerOptions` belong to specific pipeline phases:
+
+**Semantic flags → Analysis phase** (change CQL interpretation):
+
+| Flag | Effect |
+|------|--------|
+| `DisableListPromotion` | Don't implicitly promote `T` → `List<T>` |
+| `DisableListDemotion` | Don't implicitly demote `List<T>` → `T` |
+| `EnableIntervalPromotion` | Allow implicit `T` → `Interval<T>` |
+| `EnableIntervalDemotion` | Allow implicit `Interval<T>` → `T` |
+| `DisableListTraversal` | Don't auto-traverse list-valued properties |
+| `DisableMethodInvocation` | Don't resolve fluent-style function calls |
+| `RequireFromKeyword` | Require `from` keyword in queries |
+| `compatibilityLevel` | CQL version (1.3, 1.4, 1.5) |
+| `validateUnits` | Validate UCUM units |
+| `enableCqlOnly` | Restrict to CQL-only features |
+| `EnableDateRangeOptimization` | Rewrite date-range filters on retrieves |
+
+**Output flags → Post-processing phase** (change ELM shape):
+
+| Flag | Effect |
+|------|--------|
+| `EnableResultTypes` | Add `resultTypeName`/`resultTypeSpecifier` |
+| `EnableAnnotations` | Include source narrative annotations |
+| `EnableLocators` | Include source location on ELM nodes |
+| `signatureLevel` | `None`/`Differing`/`Overloads`/`All` |
+| `EnableDetailedErrors` | Detailed error information |
+
+**Orchestration flags → Pipeline control:**
+
+| Flag | Effect |
+|------|--------|
+| `verifyOnly` | Parse and validate, don't emit ELM |
+| `DisableDefaultModelInfoLoad` | Don't auto-load model info |
+| `analyzeDataRequirements` | Run data requirements analysis |
+| `collapseDataRequirements` | Collapse redundant requirements |
+| `errorLevel` | Minimum severity to report |
 
 ---
 
@@ -825,13 +885,39 @@ resolution and type inference.
 
 **Goal:** 100% parity with legacy translator across the entire test suite.
 
-**Work items:**
+**Current status:** 9 of 32 OperatorTests files at parity. 16 auto-skip
+(unsupported features), 4 error recovery (intentional difference),
+3 type inference gaps. See `FullParityTest.kt` and `LEGACY_ISSUES.md`.
+
+**Remaining work — feature gaps:**
+- [ ] `$this` / `$index` special identifiers in queries.
+- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)` ).
+- [ ] `ListTypeSpecifier` / `IntervalTypeSpecifier` / `ChoiceTypeSpecifier`
+  in type operator emission (needed for null wrapping).
+- [ ] Implicit aggregate query wrapping (`Avg({1,2,3})` → query with
+  `ToDecimal` conversion).
+- [ ] Choice type union wrapping for heterogeneous lists.
+- [ ] `expand` / `collapse` interval operators.
+- [ ] Multi-source query tuple type construction.
+- [ ] Cross-library reference resolution (qualified `"Lib"."Def"` refs).
+- [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`).
+- [ ] Property path collapsing (`P.medication.reference`).
+- [ ] FHIR implicit conversions (`.value` accessor stripping).
+
+**Remaining work — architecture:**
+- [ ] Extract `resultType` decoration from codegen into post-processing.
+- [ ] Accept `CqlCompilerOptions` and route semantic flags to analysis,
+  output flags to post-processing.
+- [ ] Implement compatibility level gating (`isCompatibleWith`).
+- [ ] Error recovery in `SemanticValidator` (replace errors with Null).
+
+**Remaining work — integration:**
 - [ ] Run full parity suite across all 358 CQL test files.
-- [ ] Fix all divergences.
-- [ ] Document any intentional differences (bug fixes in the new path).
+- [ ] Fix remaining divergences.
+- [ ] Document intentional differences in `LEGACY_ISSUES.md`.
 - [ ] Add compiler option to select pipeline (`legacy` vs `ast`).
-- [ ] Performance benchmarks comparing the two pipelines.
-- [ ] Plan for deprecation of legacy `Cql2ElmVisitor` path.
+- [ ] Performance benchmarks.
+- [ ] Deprecation plan for `Cql2ElmVisitor` path.
 
 ---
 
@@ -989,36 +1075,78 @@ or improvements). These must be:
 
 ## Appendix: Key File Locations
 
-The new pipeline is organized into three phases with corresponding packages:
+The new pipeline is organized into four phases with corresponding packages:
 
 | Phase | Package | Purpose |
 |-------|---------|---------|
 | **Parse** | `org.hl7.cql.ast` (in `cql` module) | Grammar, AST nodes, Builder |
 | **Analysis** | `org.cqframework.cql.cql2elm.analysis` | SymbolCollector, TypeResolver, OperatorRegistry |
 | **Codegen** | `org.cqframework.cql.cql2elm.codegen` | ElmEmitter, EmissionContext, *Emission.kt files |
+| **Post-processing** | (TODO) | ResultType, locator, annotation, signature annotation |
+
+**Analysis phase:**
+
+| Component | Path |
+|-----------|------|
+| CompilerFrontend | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
+| SymbolCollector | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
+| TypeResolver (core) | `cql-to-elm/.../analysis/TypeResolver.kt` |
+| Type operator inference | `cql-to-elm/.../analysis/TypeOperatorInference.kt` |
+| Temporal type inference | `cql-to-elm/.../analysis/TemporalTypeInference.kt` |
+| Query type inference | `cql-to-elm/.../analysis/QueryTypeInference.kt` |
+| OperatorRegistry | `cql-to-elm/.../analysis/OperatorRegistry.kt` |
+| OperatorNames | `cql-to-elm/.../analysis/OperatorNames.kt` |
+
+**Codegen phase:**
+
+| Component | Path |
+|-----------|------|
+| ElmEmitter | `cql-to-elm/.../codegen/ElmEmitter.kt` |
+| EmissionContext | `cql-to-elm/.../codegen/EmissionContext.kt` |
+| EmissionHelpers | `cql-to-elm/.../codegen/EmissionHelpers.kt` |
+| Literal emission | `cql-to-elm/.../codegen/LiteralEmission.kt` |
+| Temporal (literal) emission | `cql-to-elm/.../codegen/TemporalEmission.kt` |
+| Operator emission | `cql-to-elm/.../codegen/OperatorEmission.kt` |
+| Definition emission | `cql-to-elm/.../codegen/DefinitionEmission.kt` |
+| Statement emission | `cql-to-elm/.../codegen/StatementEmission.kt` |
+| Reference emission | `cql-to-elm/.../codegen/ReferenceEmission.kt` |
+| Function emission | `cql-to-elm/.../codegen/FunctionEmission.kt` |
+| System function emission | `cql-to-elm/.../codegen/SystemFunctionEmission.kt` |
+| Type operator emission | `cql-to-elm/.../codegen/TypeOperatorEmission.kt` |
+| Temporal operator emission | `cql-to-elm/.../codegen/TemporalOperatorEmission.kt` |
+| Collection operator emission | `cql-to-elm/.../codegen/CollectionOperatorEmission.kt` |
+| Interval operator emission | `cql-to-elm/.../codegen/IntervalOperatorEmission.kt` |
+| List operator emission | `cql-to-elm/.../codegen/ListOperatorEmission.kt` |
+| Query emission | `cql-to-elm/.../codegen/QueryEmission.kt` |
+| Retrieve emission | `cql-to-elm/.../codegen/RetrieveEmission.kt` |
+| Property access emission | `cql-to-elm/.../codegen/PropertyAccessEmission.kt` |
+| Case emission | `cql-to-elm/.../codegen/CaseEmission.kt` |
+| Terminology emission | `cql-to-elm/.../codegen/TerminologyEmission.kt` |
+
+**Shared infrastructure:**
 
 | Component | Path |
 |-----------|------|
 | AST nodes | `cql/src/commonMain/kotlin/org/hl7/cql/ast/` |
 | AST Builder | `cql/.../ast/Builder.kt` |
-| CompilerFrontend | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
-| SymbolCollector | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
-| TypeResolver | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
-| OperatorRegistry | `cql-to-elm/.../analysis/OperatorRegistry.kt` |
-| ElmEmitter | `cql-to-elm/.../codegen/ElmEmitter.kt` |
-| EmissionContext | `cql-to-elm/.../codegen/EmissionContext.kt` |
-| Literal emission | `cql-to-elm/.../codegen/LiteralEmission.kt` |
-| Operator emission | `cql-to-elm/.../codegen/OperatorEmission.kt` |
-| Temporal emission | `cql-to-elm/.../codegen/TemporalEmission.kt` |
-| Definition emission | `cql-to-elm/.../codegen/DefinitionEmission.kt` |
-| Parity tests | `cql-to-elm/src/commonTest/.../codegen/ElmEmitterParityTest.kt` |
-| Legacy translator | `cql-to-elm/.../Cql2ElmVisitor.kt` |
-| Legacy builder | `cql-to-elm/.../LibraryBuilder.kt` |
-| Operator model | `cql-to-elm/.../model/Operator.kt`, `OperatorMap.kt`, `CallContext.kt` |
+| CQL type system | `cql/src/commonMain/kotlin/org/hl7/cql/model/` |
+| Current translator | `cql-to-elm/.../Cql2ElmVisitor.kt` |
+| LibraryBuilder | `cql-to-elm/.../LibraryBuilder.kt` |
+| Operator model | `cql-to-elm/.../model/Operator.kt`, `OperatorMap.kt` |
 | Conversion model | `cql-to-elm/.../model/Conversion.kt`, `ConversionMap.kt` |
 | System operators | `cql-to-elm/.../model/SystemLibraryHelper.kt` |
-| CQL type system | `cql/src/commonMain/kotlin/org/hl7/cql/model/` |
-| Model loading | `cql-to-elm/.../ModelManager.kt`, `DefaultModelInfoProvider.kt` |
+| Model loading | `cql-to-elm/.../ModelManager.kt` |
+| Compiler options | `cql-to-elm/.../CqlCompilerOptions.kt` |
+
+**Tests and docs:**
+
+| Component | Path |
+|-----------|------|
+| Parity tests (common) | `cql-to-elm/src/commonTest/.../codegen/ElmEmitterParityTest.kt` |
+| FHIR parity tests (JVM) | `cql-to-elm/src/jvmTest/.../codegen/FhirParityTest.kt` |
+| Full parity suite (JVM) | `cql-to-elm/src/jvmTest/.../codegen/FullParityTest.kt` |
+| TypeResolver unit tests | `cql-to-elm/src/commonTest/.../analysis/TypeResolverTest.kt` |
 | Test CQL files | `cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/` |
+| Translator issues | `docs/LEGACY_ISSUES.md` |
 | AST design doc | `cql/AST.md` |
 | ADR log | `docs/DECISIONS.md` |
