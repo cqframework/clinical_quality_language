@@ -75,15 +75,16 @@ dedicated `AggregateRef` node doesn't exist in the ELM schema, so
 `AliasRef` is the closest match. The accumulator is scoped to the
 aggregate expression body, same as a query alias is scoped to a query.
 
-### 7. `ValueSetRef` always has `preserve = true`
+### 7. `ValueSetRef` has `preserve = true` for CQL 1.5+
 
-**Rationale:** CQL 1.5+ specification requirement.
+**Rationale:** CQL 1.5 specification requirement.
 
 CQL 1.5 introduced first-class `ValueSet` types. `preserve = true`
 tells ELM consumers to treat the reference as a `System.ValueSet`
 rather than expanding it to `List<Code>`. The translator checks
-`isCompatibleWith("1.5")` before setting this flag. Since all current
-CQL is 1.5+, this is always set.
+`isCompatibleWith("1.5")` before setting this flag. Note that CQL
+1.3 and 1.4 libraries exist in the wild — the new pipeline will need
+to respect the compatibility level and only set `preserve` for 1.5+.
 
 ### 8. Implicit `using System` always emitted
 
@@ -198,3 +199,33 @@ For union/intersect operations on lists with different element types,
 the translator wraps operands in `As(List<Choice<T1, T2>>)` to create
 a unified choice type. This requires computing choice types from the
 operand types.
+
+---
+
+## Architecture notes
+
+### Result type annotation should be post-processing, not codegen
+
+The current new pipeline bakes `resultType` decoration into the
+codegen phase via `EmissionContext.decorate()`, called from
+`emitExpression()`. The translator implements this as a separate
+post-processing step that can be toggled via options
+(`DetailedReturnType` / `resultTypeName` / `resultTypeSpecifier`).
+
+This is the better architecture: codegen should produce the ELM
+structure mechanically, and a separate pass should annotate nodes with
+type information based on compiler options. The new pipeline should
+refactor `decorate()` out of `EmissionContext.emitExpression()` and
+into a post-processing step.
+
+### Compatibility level flags
+
+The translator checks `isCompatibleWith("1.5")` (and other versions)
+to gate behavior. CQL 1.3 and 1.4 libraries exist in the wild. The
+new pipeline will need to accept a compatibility level parameter and
+respect it for:
+
+- `ValueSetRef.preserve` (1.5+ only)
+- `Population` vs `Unfiltered` default context (compat level 3)
+- Signature output levels
+- Other version-dependent behaviors
