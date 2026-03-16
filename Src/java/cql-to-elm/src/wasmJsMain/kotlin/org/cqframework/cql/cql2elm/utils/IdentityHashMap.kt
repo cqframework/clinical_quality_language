@@ -8,6 +8,8 @@ private external class JsMap {
 
     fun set(key: JsAny, value: JsAny)
 
+    fun has(key: JsAny): Boolean
+
     fun entries(): JsMapIterator
 }
 
@@ -29,6 +31,10 @@ internal actual class IdentityHashMap<K : Any, V : Any> {
 
     actual operator fun set(key: K, value: V) {
         backingMap.set(key.toJsReference(), value.toJsReference())
+    }
+
+    actual operator fun contains(key: K): Boolean {
+        return backingMap.has(key.toJsReference())
     }
 
     actual operator fun iterator(): Iterator<Map.Entry<K, V>> {

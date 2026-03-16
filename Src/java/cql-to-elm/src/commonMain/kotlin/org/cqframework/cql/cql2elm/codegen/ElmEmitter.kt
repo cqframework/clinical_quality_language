@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
+import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.analysis.SymbolTable
 import org.cqframework.cql.cql2elm.analysis.TypeTable
 import org.hl7.elm.r1.Library
@@ -20,13 +21,16 @@ import org.hl7.elm.r1.VersionedIdentifier
  * - [TemporalEmission.kt][emitDateTime] -- date/time parsing
  * - [DefinitionEmission.kt][emitUsings] -- definition and statement emission
  */
-class ElmEmitter(
-    symbolTable: SymbolTable = SymbolTable(),
-    typeTable: TypeTable = TypeTable(),
-    operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
-    modelManager: ModelManager? = null,
-) {
-    private val ctx = EmissionContext(typeTable, symbolTable, operatorRegistry, modelManager)
+class ElmEmitter(semanticModel: SemanticModel, modelManager: ModelManager? = null) {
+    /** Backward-compatible constructor accepting individual components. */
+    constructor(
+        symbolTable: SymbolTable = SymbolTable(),
+        typeTable: TypeTable = TypeTable(),
+        operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
+        modelManager: ModelManager? = null,
+    ) : this(SemanticModel(symbolTable, typeTable, operatorRegistry), modelManager)
+
+    private val ctx = EmissionContext(semanticModel, modelManager)
 
     @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 

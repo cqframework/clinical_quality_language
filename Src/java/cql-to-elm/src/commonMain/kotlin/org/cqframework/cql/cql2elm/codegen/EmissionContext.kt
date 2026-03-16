@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
+import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.analysis.SymbolTable
 import org.cqframework.cql.cql2elm.analysis.TypeTable
 import org.cqframework.cql.cql2elm.model.OperatorResolution
@@ -48,12 +49,16 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  * Shared state and helpers used by all emission extension functions. Acts as the central hub for
  * recursive expression emission.
  */
-class EmissionContext(
-    val typeTable: TypeTable,
-    val symbolTable: SymbolTable,
-    val operatorRegistry: OperatorRegistry,
-    val modelManager: ModelManager? = null,
-) {
+class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) {
+    val typeTable: TypeTable
+        get() = semanticModel.typeTable
+
+    val symbolTable: SymbolTable
+        get() = semanticModel.symbolTable
+
+    val operatorRegistry: OperatorRegistry
+        get() = semanticModel.operatorRegistry
+
     val typesNamespace = "urn:hl7-org:elm-types:r1"
 
     /**

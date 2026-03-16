@@ -72,13 +72,7 @@ class FullParityTest {
         val emittedLibrary =
             try {
                 val frontendResult = CompilerFrontend().analyze(astResult.library)
-                ElmEmitter(
-                        frontendResult.symbolTable,
-                        frontendResult.typeTable,
-                        frontendResult.operatorRegistry,
-                    )
-                    .emit(frontendResult.library)
-                    .library
+                ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
             } catch (e: ElmEmitter.UnsupportedNodeException) {
                 assumeTrue(false, "Unsupported AST node: ${e.message}")
                 return
@@ -192,10 +186,6 @@ class FullParityTest {
                 // Avg/Median/StdDev/Variance/etc. in implicit queries with ToDecimal conversions
                 "AggregateOperators" to
                     "Aggregate wrapping: legacy wraps integer list args in implicit Query with ToDecimal",
-                // DateTime/Date/Time constructor files: legacy only emits 1 of 71 statements
-                // due to internal resolution failures without proper library setup
-                "DateTimeOperators" to
-                    "Legacy translator drops most statements due to Date/DateTime resolution issues",
             )
     }
 }

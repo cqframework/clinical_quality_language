@@ -36,13 +36,7 @@ class ElmEmitterParityTest {
 
         val frontendResult = CompilerFrontend().analyze(astResult.library)
         val emittedLibrary =
-            ElmEmitter(
-                    frontendResult.symbolTable,
-                    frontendResult.typeTable,
-                    frontendResult.operatorRegistry,
-                )
-                .emit(frontendResult.library)
-                .library
+            ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
 
         val legacyTranslator =
             CqlTranslator.fromText(

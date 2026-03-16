@@ -13,6 +13,10 @@ internal actual class IdentityHashMap<K : Any, V : Any> {
         backingMap[key] = value
     }
 
+    actual operator fun contains(key: K): Boolean {
+        return backingMap.containsKey(key)
+    }
+
     actual operator fun iterator(): Iterator<Map.Entry<K, V>> {
         return backingMap.entries.iterator()
     }

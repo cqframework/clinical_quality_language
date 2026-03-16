@@ -39,12 +39,7 @@ class FhirParityTest {
         val frontend = CompilerFrontend(modelManager = modelManager)
         val frontendResult = frontend.analyze(astResult.library)
         val emittedLibrary =
-            ElmEmitter(
-                    frontendResult.symbolTable,
-                    frontendResult.typeTable,
-                    frontendResult.operatorRegistry,
-                    modelManager,
-                )
+            ElmEmitter(frontendResult.semanticModel, modelManager)
                 .emit(frontendResult.library)
                 .library
 

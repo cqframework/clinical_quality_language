@@ -2,8 +2,10 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.hl7.cql.ast.CodeDefinition
 import org.hl7.cql.ast.CodeSystemDefinition
 import org.hl7.cql.ast.ConceptDefinition
@@ -27,34 +29,45 @@ class CompilerFrontend(
     private val operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
     private val semanticValidator: SemanticValidator = SemanticValidator(),
     val modelManager: ModelManager? = null,
+    val options: CqlCompilerOptions? = null,
 ) {
     data class Result(
         val library: Library,
-        val symbolTable: SymbolTable,
-        val typeTable: TypeTable = TypeTable(),
-        val operatorRegistry: OperatorRegistry,
+        val semanticModel: SemanticModel,
         val diagnostics: kotlin.collections.List<Diagnostic> = emptyList(),
-    )
+    ) {
+        /** Convenience accessor for backward compatibility. */
+        val symbolTable: SymbolTable
+            get() = semanticModel.symbolTable
+
+        /** Convenience accessor for backward compatibility. */
+        val typeTable: TypeTable
+            get() = semanticModel.typeTable
+
+        /** Convenience accessor for backward compatibility. */
+        val operatorRegistry: OperatorRegistry
+            get() = semanticModel.operatorRegistry
+    }
 
     fun analyze(library: Library): Result {
         val symbols = symbolCollector.collect(library)
         val typeResolver = TypeResolver(operatorRegistry)
         val typeTable = typeResolver.resolve(library, symbols)
         semanticValidator.validate(library, symbols)
-        return Result(library, symbols, typeTable, operatorRegistry)
+        val semanticModel = SemanticModel(symbols, typeTable, operatorRegistry, options)
+        return Result(library, semanticModel)
     }
 }
 
 /**
- * Maps AST [Expression] nodes to their inferred [DataType]. Uses a plain [HashMap] keyed by AST
- * node identity. Since AST nodes are data classes that include [org.hl7.cql.ast.Locator] in their
- * fields, structurally identical expressions at different source positions have different locators
- * and thus different equals/hashCode values, avoiding collisions.
+ * Maps AST [Expression] nodes to their inferred [DataType]. Uses an [IdentityHashMap] keyed by
+ * reference identity so that structurally identical nodes at different positions never collide —
+ * even when they share the same [org.hl7.cql.ast.Locator].
  */
 class TypeTable {
-    private val types = HashMap<Expression, DataType>()
-    private val operatorResolutions = HashMap<Expression, OperatorResolution>()
-    private val identifierResolutions = HashMap<IdentifierExpression, Resolution>()
+    private val types = IdentityHashMap<Expression, DataType>()
+    private val operatorResolutions = IdentityHashMap<Expression, OperatorResolution>()
+    private val identifierResolutions = IdentityHashMap<IdentifierExpression, Resolution>()
 
     operator fun get(expression: Expression): DataType? = types[expression]
 

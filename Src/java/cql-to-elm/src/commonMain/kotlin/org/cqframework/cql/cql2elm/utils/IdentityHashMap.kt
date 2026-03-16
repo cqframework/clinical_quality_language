@@ -6,6 +6,8 @@ internal expect class IdentityHashMap<K : Any, V : Any>() {
 
     operator fun set(key: K, value: V)
 
+    operator fun contains(key: K): Boolean
+
     operator fun iterator(): Iterator<Map.Entry<K, V>>
 
     fun getOrPut(key: K, defaultValue: () -> V): V
