@@ -1,18 +1,53 @@
 package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
+import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.hl7.cql.ast.Expression
+import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.IdentifierExpression
+import org.hl7.cql.model.DataType
 
 /**
- * Aggregates the results of semantic analysis into a single object. Wraps the [SymbolTable],
- * [TypeTable], and [OperatorRegistry] so that downstream phases (code generation, validation) can
- * receive a single dependency instead of three separate parameters.
+ * The unified result of semantic analysis. Provides a single API for codegen and post-processing to
+ * query types, resolutions, and symbol information without knowing about the internal
+ * [SymbolTable]/[TypeTable] split.
  *
- * An optional [CqlCompilerOptions] is threaded through for phases that need to inspect compiler
- * settings (e.g., compatibility level, signature level).
+ * During analysis, [SymbolTable] and [TypeTable] are built by separate passes. Once analysis is
+ * complete, they are wrapped in a [SemanticModel] and become the single artifact passed downstream.
  */
 class SemanticModel(
-    val symbolTable: SymbolTable,
-    val typeTable: TypeTable,
+    internal val symbolTable: SymbolTable,
+    internal val typeTable: TypeTable,
     val operatorRegistry: OperatorRegistry,
     val options: CqlCompilerOptions? = null,
-)
+) {
+    // --- Type queries (delegated to TypeTable) ---
+
+    /** Look up the inferred type of an expression. */
+    operator fun get(expression: Expression): DataType? = typeTable[expression]
+
+    /** Look up the operator resolution for an expression. */
+    fun getOperatorResolution(expression: Expression): OperatorResolution? =
+        typeTable.getOperatorResolution(expression)
+
+    /** Look up how an identifier expression was resolved. */
+    fun getIdentifierResolution(expression: IdentifierExpression): Resolution? =
+        typeTable.getIdentifierResolution(expression)
+
+    // --- Symbol queries (delegated to SymbolTable) ---
+
+    fun resolveExpression(name: String) = symbolTable.resolveExpression(name)
+
+    fun resolveParameter(name: String) = symbolTable.resolveParameter(name)
+
+    fun resolveFunctions(name: String): List<FunctionDefinition> =
+        symbolTable.resolveFunctions(name)
+
+    fun resolveCodeSystem(name: String) = symbolTable.resolveCodeSystem(name)
+
+    fun resolveValueSet(name: String) = symbolTable.resolveValueSet(name)
+
+    fun resolveCode(name: String) = symbolTable.resolveCode(name)
+
+    fun resolveConcept(name: String) = symbolTable.resolveConcept(name)
+}

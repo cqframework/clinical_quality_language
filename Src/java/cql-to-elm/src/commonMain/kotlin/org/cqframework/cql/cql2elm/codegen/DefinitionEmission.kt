@@ -164,7 +164,7 @@ internal fun EmissionContext.emitFunctionDefinition(
         is ExpressionFunctionBody -> {
             functionDef.expression = emitExpression(body.expression)
             // Set result type from body expression
-            val bodyType = typeTable[body.expression]
+            val bodyType = semanticModel[body.expression]
             if (bodyType != null) {
                 decorate(functionDef, bodyType)
             }

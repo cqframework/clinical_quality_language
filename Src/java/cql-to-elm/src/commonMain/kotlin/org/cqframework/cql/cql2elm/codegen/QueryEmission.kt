@@ -84,7 +84,7 @@ private fun EmissionContext.emitLetClause(letItem: org.hl7.cql.ast.LetClauseItem
     val elmLet = ElmLetClause()
     elmLet.identifier = letItem.identifier.value
     elmLet.expression = emitExpression(letItem.expression)
-    val letType = typeTable[letItem.expression]
+    val letType = semanticModel[letItem.expression]
     if (letType != null) {
         decorate(elmLet, letType)
     }
@@ -138,7 +138,7 @@ private fun EmissionContext.emitReturnClause(ret: org.hl7.cql.ast.ReturnClause):
         elmReturn.distinct = true
     }
     // Set resultType on return clause
-    val retExprType = typeTable[ret.expression]
+    val retExprType = semanticModel[ret.expression]
     if (retExprType != null) {
         decorate(elmReturn, ListType(retExprType))
     }
@@ -180,7 +180,7 @@ private fun EmissionContext.emitAggregateClause(
     elmAgg.distinct = agg.distinct
     elmAgg.expression = emitExpression(agg.expression)
     agg.starting?.let { elmAgg.starting = emitExpression(it) }
-    val aggType = typeTable[agg.expression]
+    val aggType = semanticModel[agg.expression]
     if (aggType != null) {
         decorate(elmAgg, aggType)
     }

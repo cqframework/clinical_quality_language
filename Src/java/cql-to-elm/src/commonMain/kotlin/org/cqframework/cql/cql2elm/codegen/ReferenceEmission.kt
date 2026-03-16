@@ -22,7 +22,7 @@ import org.hl7.elm.r1.ValueSetRef
 internal fun EmissionContext.emitIdentifierExpression(
     expression: IdentifierExpression
 ): ElmExpression {
-    val resolution = typeTable.getIdentifierResolution(expression)
+    val resolution = semanticModel.getIdentifierResolution(expression)
     return when (resolution) {
         is Resolution.ExpressionRef -> ExpressionRef().withName(resolution.definition.name.value)
         is Resolution.ParameterRef -> ParameterRef().withName(resolution.definition.name.value)

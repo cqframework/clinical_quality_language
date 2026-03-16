@@ -21,7 +21,7 @@ internal fun EmissionContext.emitPropertyAccess(
 
     val target = expression.target
     if (target is IdentifierExpression) {
-        val resolution = typeTable.getIdentifierResolution(target)
+        val resolution = semanticModel.getIdentifierResolution(target)
         if (resolution is Resolution.AliasRef) {
             property.scope = resolution.name
             return property

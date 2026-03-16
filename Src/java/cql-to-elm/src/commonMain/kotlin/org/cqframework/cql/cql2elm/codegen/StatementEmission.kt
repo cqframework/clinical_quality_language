@@ -171,7 +171,7 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
                 currentContext?.let { context = it }
                 expression = ctx.emitExpression(definition.expression)
             }
-        val exprType = ctx.typeTable[definition.expression]
+        val exprType = ctx.semanticModel[definition.expression]
         if (exprType != null) {
             ctx.decorate(expressionDef, exprType)
         }

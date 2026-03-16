@@ -3,8 +3,6 @@ package org.cqframework.cql.cql2elm.codegen
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SemanticModel
-import org.cqframework.cql.cql2elm.analysis.SymbolTable
-import org.cqframework.cql.cql2elm.analysis.TypeTable
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
@@ -50,12 +48,6 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  * recursive expression emission.
  */
 class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) {
-    val typeTable: TypeTable
-        get() = semanticModel.typeTable
-
-    val symbolTable: SymbolTable
-        get() = semanticModel.symbolTable
-
     val operatorRegistry: OperatorRegistry
         get() = semanticModel.operatorRegistry
 
@@ -88,9 +80,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
             .withValue(value.toString())
     }
 
-    /** Look up the operator resolution for an AST expression from the TypeTable. */
+    /** Look up the operator resolution for an AST expression. */
     fun lookupResolution(expression: Expression): OperatorResolution? =
-        typeTable.getOperatorResolution(expression)
+        semanticModel.getOperatorResolution(expression)
 
     /** Wrap an expression in a conversion operator (e.g., ToDecimal, ToLong). */
     fun wrapConversion(expression: ElmExpression, conversionName: String): ElmExpression {
@@ -163,8 +155,8 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     )
             }
 
-        // Set result type from the TypeTable
-        val type = typeTable[expression]
+        // Set result type from the SemanticModel
+        val type = semanticModel[expression]
         if (type != null) {
             decorate(elmExpr, type)
         }
