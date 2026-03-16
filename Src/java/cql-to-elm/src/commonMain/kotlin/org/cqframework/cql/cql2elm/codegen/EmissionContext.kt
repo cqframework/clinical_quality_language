@@ -20,7 +20,10 @@ import org.hl7.cql.ast.DurationBetweenExpression
 import org.hl7.cql.ast.DurationOfExpression
 import org.hl7.cql.ast.ElementExtractorExpression
 import org.hl7.cql.ast.ExistsExpression
+import org.hl7.cql.ast.ExpandCollapseExpression
 import org.hl7.cql.ast.Expression
+import org.hl7.cql.ast.ExpressionFold
+import org.hl7.cql.ast.ExternalConstantExpression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
@@ -37,6 +40,7 @@ import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
+import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Element
@@ -44,10 +48,13 @@ import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Literal as ElmLiteral
 
 /**
- * Shared state and helpers used by all emission extension functions. Acts as the central hub for
- * recursive expression emission.
+ * Shared state and helpers used by all emission extension functions. Implements [ExpressionFold] to
+ * provide compile-time exhaustive dispatch over the AST — adding a new Expression subtype without a
+ * handler is a compile error.
  */
-class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) {
+@Suppress("TooManyFunctions")
+class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) :
+    ExpressionFold<ElmExpression> {
     val operatorRegistry: OperatorRegistry
         get() = semanticModel.operatorRegistry
 
@@ -113,47 +120,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
-     * Recursively emit an AST [Expression] into an ELM expression. This is the main dispatch point
-     * that all emission extension functions call for sub-expressions.
+     * Recursively emit an AST [Expression] into an ELM expression. Dispatches via [fold] for
+     * compile-time exhaustiveness, then decorates with result type from the [SemanticModel].
      */
     fun emitExpression(expression: Expression): ElmExpression {
-        val elmExpr =
-            when (expression) {
-                is LiteralExpression -> emitLiteral(expression.literal)
-                is OperatorBinaryExpression -> emitBinaryOperator(expression)
-                is OperatorUnaryExpression -> emitUnaryOperator(expression)
-                is BooleanTestExpression -> emitBooleanTest(expression)
-                is CaseExpression -> emitCaseExpression(expression)
-                is IfExpression -> emitIfExpression(expression)
-                is FunctionCallExpression -> emitFunctionCall(expression)
-                is IndexExpression -> emitIndexExpression(expression)
-                is IdentifierExpression -> emitIdentifierExpression(expression)
-                is IsExpression -> emitIsExpression(expression)
-                is AsExpression -> emitAsExpression(expression)
-                is CastExpression -> emitCastExpression(expression)
-                is ConversionExpression -> emitConversionExpression(expression)
-                is DateTimeComponentExpression -> emitDateTimeComponent(expression)
-                is DurationBetweenExpression -> emitDurationBetween(expression)
-                is DifferenceBetweenExpression -> emitDifferenceBetween(expression)
-                is DurationOfExpression -> emitDurationOf(expression)
-                is DifferenceOfExpression -> emitDifferenceOf(expression)
-                is TimeBoundaryExpression -> emitTimeBoundary(expression)
-                is WidthExpression -> emitWidth(expression)
-                is ElementExtractorExpression -> emitElementExtractor(expression)
-                is TypeExtentExpression -> emitTypeExtent(expression)
-                is ExistsExpression -> emitExists(expression)
-                is BetweenExpression -> emitBetween(expression)
-                is MembershipExpression -> emitMembership(expression)
-                is IntervalRelationExpression -> emitIntervalRelation(expression)
-                is ListTransformExpression -> emitListTransform(expression)
-                is QueryExpression -> emitQuery(expression)
-                is PropertyAccessExpression -> emitPropertyAccess(expression)
-                is RetrieveExpression -> emitRetrieve(expression)
-                else ->
-                    throw ElmEmitter.UnsupportedNodeException(
-                        "Expression '${expression::class.simpleName}' is not supported yet."
-                    )
-            }
+        val elmExpr = fold(expression)
 
         // Set result type from the SemanticModel
         val type = semanticModel[expression]
@@ -163,4 +134,81 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
 
         return elmExpr
     }
+
+    // --- ExpressionFold implementation ---
+
+    override fun onLiteral(expr: LiteralExpression) = emitLiteral(expr.literal)
+
+    override fun onIdentifier(expr: IdentifierExpression) = emitIdentifierExpression(expr)
+
+    override fun onExternalConstant(expr: ExternalConstantExpression): ElmExpression =
+        throw ElmEmitter.UnsupportedNodeException(
+            "ExternalConstantExpression (%${expr.name}) is not yet supported."
+        )
+
+    override fun onBinaryOperator(expr: OperatorBinaryExpression) = emitBinaryOperator(expr)
+
+    override fun onUnaryOperator(expr: OperatorUnaryExpression) = emitUnaryOperator(expr)
+
+    override fun onBooleanTest(expr: BooleanTestExpression) = emitBooleanTest(expr)
+
+    override fun onIf(expr: IfExpression) = emitIfExpression(expr)
+
+    override fun onCase(expr: CaseExpression) = emitCaseExpression(expr)
+
+    override fun onIs(expr: IsExpression) = emitIsExpression(expr)
+
+    override fun onAs(expr: AsExpression) = emitAsExpression(expr)
+
+    override fun onCast(expr: CastExpression) = emitCastExpression(expr)
+
+    override fun onConversion(expr: ConversionExpression) = emitConversionExpression(expr)
+
+    override fun onFunctionCall(expr: FunctionCallExpression) = emitFunctionCall(expr)
+
+    override fun onPropertyAccess(expr: PropertyAccessExpression) = emitPropertyAccess(expr)
+
+    override fun onIndex(expr: IndexExpression) = emitIndexExpression(expr)
+
+    override fun onExists(expr: ExistsExpression) = emitExists(expr)
+
+    override fun onMembership(expr: MembershipExpression) = emitMembership(expr)
+
+    override fun onListTransform(expr: ListTransformExpression) = emitListTransform(expr)
+
+    override fun onExpandCollapse(expr: ExpandCollapseExpression): ElmExpression =
+        throw ElmEmitter.UnsupportedNodeException("ExpandCollapseExpression is not yet supported.")
+
+    override fun onDateTimeComponent(expr: DateTimeComponentExpression) =
+        emitDateTimeComponent(expr)
+
+    override fun onDurationBetween(expr: DurationBetweenExpression) = emitDurationBetween(expr)
+
+    override fun onDifferenceBetween(expr: DifferenceBetweenExpression) =
+        emitDifferenceBetween(expr)
+
+    override fun onDurationOf(expr: DurationOfExpression) = emitDurationOf(expr)
+
+    override fun onDifferenceOf(expr: DifferenceOfExpression) = emitDifferenceOf(expr)
+
+    override fun onTimeBoundary(expr: TimeBoundaryExpression) = emitTimeBoundary(expr)
+
+    override fun onWidth(expr: WidthExpression) = emitWidth(expr)
+
+    override fun onElementExtractor(expr: ElementExtractorExpression) = emitElementExtractor(expr)
+
+    override fun onTypeExtent(expr: TypeExtentExpression) = emitTypeExtent(expr)
+
+    override fun onBetween(expr: BetweenExpression) = emitBetween(expr)
+
+    override fun onIntervalRelation(expr: IntervalRelationExpression) = emitIntervalRelation(expr)
+
+    override fun onQuery(expr: QueryExpression) = emitQuery(expr)
+
+    override fun onRetrieve(expr: RetrieveExpression) = emitRetrieve(expr)
+
+    override fun onUnsupported(expr: UnsupportedExpression): ElmExpression =
+        throw ElmEmitter.UnsupportedNodeException(
+            "UnsupportedExpression '${expr.description}' is not supported."
+        )
 }
