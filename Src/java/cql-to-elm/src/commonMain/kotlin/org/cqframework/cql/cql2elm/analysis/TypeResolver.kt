@@ -64,7 +64,7 @@ import org.hl7.cql.model.TupleTypeElement
  * [OperatorRegistry] to resolve operator types and store operator resolution results.
  *
  * **Not thread-safe.** Each instance maintains mutable state and must not be shared across threads
- * or reused after [resolve] returns. A fresh instance is created per [CompilerFrontend.analyze]
+ * or reused after [resolve] returns. A fresh instance is created per [SemanticAnalyzer.analyze]
  * call.
  *
  * Type inference for specific expression categories is split into extension function files:

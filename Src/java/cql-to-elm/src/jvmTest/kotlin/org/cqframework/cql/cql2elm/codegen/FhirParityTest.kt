@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
+import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.cqframework.cql.shared.TestResource
@@ -36,7 +36,7 @@ class FhirParityTest {
             "AST builder reported issues: ${astResult.problems}",
         )
 
-        val frontend = CompilerFrontend(modelManager = modelManager)
+        val frontend = SemanticAnalyzer(modelManager = modelManager)
         val frontendResult = frontend.analyze(astResult.library)
         val emittedLibrary =
             ElmEmitter(frontendResult.semanticModel, modelManager)

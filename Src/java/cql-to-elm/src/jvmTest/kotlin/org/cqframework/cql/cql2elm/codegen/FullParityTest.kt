@@ -9,7 +9,7 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
+import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
@@ -70,12 +70,12 @@ class FullParityTest {
             return
         }
 
-        // Step 2: Run through CompilerFrontend + ElmEmitter
+        // Step 2: Run through SemanticAnalyzer + ElmEmitter
         val emittedLibrary =
             try {
                 val modelManager = createModelManager()
                 val frontendResult =
-                    CompilerFrontend(modelManager = modelManager).analyze(astResult.library)
+                    SemanticAnalyzer(modelManager = modelManager).analyze(astResult.library)
                 ElmEmitter(frontendResult.semanticModel, modelManager)
                     .emit(frontendResult.library)
                     .library

@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
+import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.cqframework.cql.shared.TestResource
 import org.hl7.cql.ast.Builder
@@ -34,7 +34,7 @@ class ElmEmitterParityTest {
             "AST builder reported issues: ${astResult.problems}",
         )
 
-        val frontendResult = CompilerFrontend().analyze(astResult.library)
+        val frontendResult = SemanticAnalyzer().analyze(astResult.library)
         val emittedLibrary =
             ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
 
