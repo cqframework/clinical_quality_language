@@ -20,7 +20,17 @@ class SemanticModel(
     internal val typeTable: TypeTable,
     val operatorRegistry: OperatorRegistry,
     val options: CqlCompilerOptions? = null,
+    /** Expressions flagged with semantic errors. Codegen emits Null for these. */
+    internal val errors: MutableSet<Expression> = mutableSetOf(),
 ) {
+    /** Check if an expression has a semantic error (codegen should emit Null). */
+    fun hasError(expression: Expression): Boolean = expression in errors
+
+    /** Flag an expression as having a semantic error. */
+    fun addError(expression: Expression) {
+        errors.add(expression)
+    }
+
     // --- Type queries (delegated to TypeTable) ---
 
     /** Look up the inferred type of an expression. */

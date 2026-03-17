@@ -174,15 +174,6 @@ class FullParityTest {
          */
         private val KNOWN_SKIPS =
             mapOf(
-                // Error recovery tests: legacy replaces semantic errors with Null expressions,
-                // our pipeline emits the AST as-is since we don't do error recovery yet
-                "InvalidCastExpression" to "Error recovery: legacy replaces invalid cast with Null",
-                "UndeclaredForward" to
-                    "Error recovery: legacy replaces undeclared function ref with Null",
-                "UndeclaredSignature" to
-                    "Error recovery: legacy replaces unmatched function call with Null",
-                "RecursiveFunctions" to
-                    "Error recovery: legacy replaces recursive function body with Null",
                 // shouldNotBeAllowed: legacy replaces Includes on non-list type with Null
                 "MultiSourceQuery" to
                     "Error recovery: legacy replaces type-invalid Includes with Null",

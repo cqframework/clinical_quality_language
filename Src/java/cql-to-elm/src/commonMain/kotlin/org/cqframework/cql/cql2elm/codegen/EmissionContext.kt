@@ -285,8 +285,16 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     /**
      * Recursively emit an AST [Expression] into an ELM expression. Dispatches via [fold] for
      * compile-time exhaustiveness, then decorates with result type from the [SemanticModel].
+     *
+     * If the expression was flagged with a semantic error by the [SemanticValidator], emits `Null`
+     * instead. This is a mechanical transformation driven by analysis data, not error handling.
      */
     fun emitExpression(expression: Expression): ElmExpression {
+        // Semantic error → emit Null (analysis decided this expression is invalid)
+        if (semanticModel.hasError(expression)) {
+            return org.hl7.elm.r1.Null()
+        }
+
         val elmExpr = fold(expression)
 
         // Set result type from the SemanticModel
