@@ -201,6 +201,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         typeTable[expression]?.let {
             return it
         }
+        typeTable.expressionCount++
 
         // QueryExpression needs special handling: its children must be folded within scoping
         // context (aliases, lets) that the catamorphism cannot provide (it pre-folds all

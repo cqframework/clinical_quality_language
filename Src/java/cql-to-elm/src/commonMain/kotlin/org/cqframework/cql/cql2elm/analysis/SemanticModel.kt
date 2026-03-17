@@ -23,6 +23,10 @@ class SemanticModel(
     /** Expressions flagged with semantic errors. Codegen emits Null for these. */
     internal val errors: MutableSet<Expression> = mutableSetOf(),
 ) {
+    /** Metrics collected during analysis. Populated by [SemanticAnalyzer]. */
+    var metrics: AnalysisMetrics = AnalysisMetrics()
+        internal set
+
     /** Check if an expression has a semantic error (codegen should emit Null). */
     fun hasError(expression: Expression): Boolean = expression in errors
 

@@ -47,6 +47,19 @@ class SemanticAnalyzer(
         val typeTable = typeResolver.resolve(library, symbols)
         val semanticModel = SemanticModel(symbols, typeTable, operatorRegistry, options)
         semanticValidator.validate(library, symbols, semanticModel)
+
+        // Collect metrics
+        semanticModel.metrics =
+            AnalysisMetrics(
+                definitionCount = library.definitions.size,
+                statementCount = library.statements.size,
+                expressionCount = typeTable.expressionCount,
+                typedCount = typeTable.typedCount,
+                unresolvedCount = typeTable.expressionCount - typeTable.typedCount,
+                operatorResolutionCount = typeTable.operatorResolutionCount,
+                identifierResolutionCount = typeTable.identifierResolutionCount,
+                errorCount = semanticModel.errors.size,
+            )
         return Result(library, semanticModel)
     }
 }
@@ -65,9 +78,26 @@ class TypeTable {
     private val operatorResolutions = IdentityHashMap<Expression, OperatorResolution>()
     private val identifierResolutions = IdentityHashMap<IdentifierExpression, Resolution>()
 
+    /** Total expressions that had type inference attempted. */
+    var expressionCount: Int = 0
+        internal set
+
+    /** Expressions that have a non-null inferred type. */
+    var typedCount: Int = 0
+        internal set
+
+    /** Number of operator resolutions recorded. */
+    var operatorResolutionCount: Int = 0
+        internal set
+
+    /** Number of identifier resolutions recorded. */
+    var identifierResolutionCount: Int = 0
+        internal set
+
     operator fun get(expression: Expression): DataType? = types[expression]
 
     operator fun set(expression: Expression, type: DataType) {
+        if (types[expression] == null) typedCount++
         types[expression] = type
     }
 
@@ -78,6 +108,7 @@ class TypeTable {
 
     fun setOperatorResolution(expression: Expression, resolution: OperatorResolution) {
         operatorResolutions[expression] = resolution
+        operatorResolutionCount++
     }
 
     fun getIdentifierResolution(expression: IdentifierExpression): Resolution? =
@@ -85,6 +116,7 @@ class TypeTable {
 
     fun setIdentifierResolution(expression: IdentifierExpression, resolution: Resolution) {
         identifierResolutions[expression] = resolution
+        identifierResolutionCount++
     }
 }
 

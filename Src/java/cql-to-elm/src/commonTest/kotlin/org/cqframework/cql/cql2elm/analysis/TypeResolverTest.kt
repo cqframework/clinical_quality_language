@@ -271,3 +271,24 @@ class TypeResolverTest {
         assertEquals(registry.type("Integer"), type)
     }
 }
+
+@Test
+fun `analysis metrics are populated`() {
+    val cql = "library Test using System\ndefine A: 1 + 2\ndefine B: A"
+    val astResult = Builder().parseLibrary(cql)
+    require(astResult.problems.isEmpty())
+    val result = SemanticAnalyzer().analyze(astResult.library)
+    val m = result.semanticModel.metrics
+    assertTrue(m.expressionCount > 0, "expressionCount should be > 0, was ${m.expressionCount}")
+    assertTrue(m.typedCount > 0, "typedCount should be > 0, was ${m.typedCount}")
+    assertTrue(
+        m.operatorResolutionCount > 0,
+        "operatorResolutionCount should be > 0, was ${m.operatorResolutionCount}",
+    )
+    assertTrue(
+        m.identifierResolutionCount > 0,
+        "identifierResolutionCount should be > 0, was ${m.identifierResolutionCount}",
+    )
+    assertEquals(0, m.errorCount)
+    assertEquals(2, m.statementCount)
+}
