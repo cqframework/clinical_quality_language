@@ -22,7 +22,7 @@ import org.hl7.cql.model.ListType
 internal fun TypeResolver.inferDateTimeComponentType(
     expression: DateTimeComponentExpression
 ): DataType? {
-    inferType(expression.operand)
+    // operand pre-folded by catamorphism; type available from typeTable if needed
     return when (expression.component) {
         DateTimeComponent.DATE -> type("Date")
         DateTimeComponent.TIME -> type("Time")
@@ -34,48 +34,53 @@ internal fun TypeResolver.inferDateTimeComponentType(
 internal fun TypeResolver.inferDurationBetweenType(
     expression: DurationBetweenExpression
 ): DataType? {
-    inferType(expression.lower)
-    inferType(expression.upper)
+    // lower and upper pre-folded by catamorphism
     return type("Integer")
 }
 
 internal fun TypeResolver.inferDifferenceBetweenType(
     expression: DifferenceBetweenExpression
 ): DataType? {
-    inferType(expression.lower)
-    inferType(expression.upper)
+    // lower and upper pre-folded by catamorphism
     return type("Integer")
 }
 
 internal fun TypeResolver.inferDurationOfType(expression: DurationOfExpression): DataType? {
-    inferType(expression.operand)
+    // operand pre-folded by catamorphism
     return type("Integer")
 }
 
 internal fun TypeResolver.inferDifferenceOfType(expression: DifferenceOfExpression): DataType? {
-    inferType(expression.operand)
+    // operand pre-folded by catamorphism
     return type("Integer")
 }
 
 @Suppress("ReturnCount")
-internal fun TypeResolver.inferTimeBoundaryType(expression: TimeBoundaryExpression): DataType? {
-    val operandType = inferType(expression.operand) ?: return null
+internal fun TypeResolver.inferTimeBoundaryType(
+    expression: TimeBoundaryExpression,
+    operandType: DataType?,
+): DataType? {
+    if (operandType == null) return null
     if (operandType is IntervalType) return operandType.pointType
     return operandType
 }
 
 @Suppress("ReturnCount")
-internal fun TypeResolver.inferWidthType(expression: WidthExpression): DataType? {
-    val operandType = inferType(expression.operand) ?: return null
+internal fun TypeResolver.inferWidthType(
+    expression: WidthExpression,
+    operandType: DataType?,
+): DataType? {
+    if (operandType == null) return null
     if (operandType is IntervalType) return operandType.pointType
     return operandType
 }
 
 @Suppress("ReturnCount")
 internal fun TypeResolver.inferElementExtractorType(
-    expression: ElementExtractorExpression
+    expression: ElementExtractorExpression,
+    operandType: DataType?,
 ): DataType? {
-    val operandType = inferType(expression.operand) ?: return null
+    if (operandType == null) return null
     return when (expression.elementExtractorKind) {
         org.hl7.cql.ast.ElementExtractorKind.SINGLETON -> {
             if (operandType is ListType) operandType.elementType else operandType
@@ -91,28 +96,25 @@ internal fun TypeResolver.inferTypeExtentType(expression: TypeExtentExpression):
 }
 
 internal fun TypeResolver.inferExistsType(expression: ExistsExpression): DataType? {
-    inferType(expression.operand)
+    // operand pre-folded by catamorphism
     return type("Boolean")
 }
 
 internal fun TypeResolver.inferBetweenType(expression: BetweenExpression): DataType? {
-    inferType(expression.input)
-    inferType(expression.lower)
-    inferType(expression.upper)
+    // input, lower, upper pre-folded by catamorphism
     return type("Boolean")
 }
 
 internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType? {
-    inferType(expression.left)
-    inferType(expression.right)
+    // left, right pre-folded by catamorphism
     return type("Boolean")
 }
 
 internal fun TypeResolver.inferExpandCollapseType(
-    expression: org.hl7.cql.ast.ExpandCollapseExpression
+    expression: org.hl7.cql.ast.ExpandCollapseExpression,
+    operandType: DataType?,
 ): DataType? {
-    val operandType = inferType(expression.operand) ?: return null
-    expression.perExpression?.let { inferType(it) }
+    // per expression pre-folded by catamorphism
     // Expand/Collapse return the same type as their operand (list of intervals)
     return operandType
 }
@@ -120,7 +122,6 @@ internal fun TypeResolver.inferExpandCollapseType(
 internal fun TypeResolver.inferIntervalRelationType(
     expression: IntervalRelationExpression
 ): DataType? {
-    inferType(expression.left)
-    inferType(expression.right)
+    // left, right pre-folded by catamorphism
     return type("Boolean")
 }

@@ -69,28 +69,30 @@ private val unaryConstructors: Map<String, () -> UnaryExpression> =
 
 @Suppress("CyclomaticComplexMethod", "ReturnCount", "NestedBlockDepth")
 internal fun EmissionContext.emitBinaryOperator(
-    expression: OperatorBinaryExpression
+    expression: OperatorBinaryExpression,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
 ): ElmExpression {
     val op = expression.operator
 
     // Handle Concatenate (&) specially - it wraps each operand in Coalesce(operand, '')
     if (op == BinaryOperator.CONCAT) {
-        return emitConcatenate(expression)
+        return emitConcatenate(leftElm, rightElm)
     }
 
     // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
     if (
         op == BinaryOperator.UNION || op == BinaryOperator.INTERSECT || op == BinaryOperator.EXCEPT
     ) {
-        return emitSetOperator(expression)
+        return emitSetOperator(expression, leftElm, rightElm)
     }
 
     // For NotEqual and NotEquivalent, we emit Not(Equal/Equivalent(...))
     if (op == BinaryOperator.NOT_EQUALS) {
-        return emitNotWrapper(expression, "Equal")
+        return emitNotWrapper(expression, "Equal", leftElm, rightElm)
     }
     if (op == BinaryOperator.NOT_EQUIVALENT) {
-        return emitNotWrapper(expression, "Equivalent")
+        return emitNotWrapper(expression, "Equivalent", leftElm, rightElm)
     }
 
     val systemOpName =
@@ -99,7 +101,7 @@ internal fun EmissionContext.emitBinaryOperator(
                 "Binary operator '${op.name}' is not yet supported."
             )
 
-    val operands = mutableListOf(emitExpression(expression.left), emitExpression(expression.right))
+    val operands = mutableListOf(leftElm, rightElm)
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
@@ -121,8 +123,10 @@ internal fun EmissionContext.emitBinaryOperator(
 internal fun EmissionContext.emitNotWrapper(
     expression: OperatorBinaryExpression,
     innerOpName: String,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
 ): ElmExpression {
-    val operands = mutableListOf(emitExpression(expression.left), emitExpression(expression.right))
+    val operands = mutableListOf(leftElm, rightElm)
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
@@ -138,22 +142,25 @@ internal fun EmissionContext.emitNotWrapper(
     return Not().apply { operand = inner }
 }
 
-internal fun EmissionContext.emitConcatenate(expression: OperatorBinaryExpression): ElmExpression {
-    val leftElm = emitExpression(expression.left)
-    val rightElm = emitExpression(expression.right)
-
+internal fun EmissionContext.emitConcatenate(
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
+): ElmExpression {
     // Legacy translator wraps each operand in Coalesce(operand, '') for & operator
     return Concatenate().apply {
         operand = mutableListOf(wrapCoalesce(leftElm), wrapCoalesce(rightElm))
     }
 }
 
-internal fun EmissionContext.emitUnaryOperator(expression: OperatorUnaryExpression): ElmExpression {
+internal fun EmissionContext.emitUnaryOperator(
+    expression: OperatorUnaryExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     val op = expression.operator
 
     // Positive is identity - just return the operand
     if (op == UnaryOperator.POSITIVE) {
-        return emitExpression(expression.operand)
+        return operandElm
     }
 
     val systemOpName =
@@ -162,7 +169,7 @@ internal fun EmissionContext.emitUnaryOperator(expression: OperatorUnaryExpressi
                 "Unary operator '${op.name}' is not yet supported."
             )
 
-    val operands = mutableListOf(emitExpression(expression.operand))
+    val operands = mutableListOf(operandElm)
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
@@ -204,9 +211,10 @@ internal fun EmissionContext.createUnaryElm(
  * variants `x is not null`, etc.). These emit as IsNull/IsTrue/IsFalse unary operators, wrapped in
  * Not for negated variants.
  */
-internal fun EmissionContext.emitBooleanTest(expression: BooleanTestExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
-
+internal fun EmissionContext.emitBooleanTest(
+    expression: BooleanTestExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     val innerElm: ElmExpression =
         when (expression.kind) {
             BooleanTestKind.IS_NULL -> IsNull().apply { operand = operandElm }

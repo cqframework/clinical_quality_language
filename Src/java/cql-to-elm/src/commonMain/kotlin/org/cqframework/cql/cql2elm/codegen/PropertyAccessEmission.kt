@@ -7,14 +7,15 @@ import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Property
 
 /**
- * Emit a [PropertyAccessExpression] as an ELM [Property].
+ * Emit a [PropertyAccessExpression] as an ELM [Property]. Target is pre-folded.
  *
  * When the target is an identifier that resolves to a query alias, the Property uses a `scope`
  * reference (e.g., `P.gender` becomes `Property(scope="P", path="gender")`). Otherwise the target
  * is emitted as a `source` expression.
  */
 internal fun EmissionContext.emitPropertyAccess(
-    expression: PropertyAccessExpression
+    expression: PropertyAccessExpression,
+    targetElm: ElmExpression,
 ): ElmExpression {
     val property = Property()
     property.path = expression.property.value
@@ -27,6 +28,6 @@ internal fun EmissionContext.emitPropertyAccess(
             return property
         }
     }
-    property.source = emitExpression(target)
+    property.source = targetElm
     return property
 }

@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.hl7.cql.ast.CaseChildren
 import org.hl7.cql.ast.CaseExpression
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
@@ -15,8 +16,15 @@ import org.hl7.elm.r1.Expression as ElmExpression
  * - Null-As wrapping for null branches
  * - Choice type wrapping when branches have incompatible types
  * - Comparand-style when-clause conversions
+ *
+ * Children (comparand, case conditions/results, elseResult) are pre-folded by the catamorphism.
  */
-internal fun EmissionContext.emitCaseExpression(expression: CaseExpression): ElmExpression {
+internal fun EmissionContext.emitCaseExpression(
+    expression: CaseExpression,
+    comparandElm: ElmExpression?,
+    casesElm: List<CaseChildren<ElmExpression>>,
+    elseElm: ElmExpression,
+): ElmExpression {
     val choiceType = computeCaseChoiceType(expression)
     val anyType = operatorRegistry.type("Any")
 
@@ -29,14 +37,14 @@ internal fun EmissionContext.emitCaseExpression(expression: CaseExpression): Elm
     val comparandType = expression.comparand?.let { semanticModel[it] }
 
     return Case().apply {
-        expression.comparand?.let { comparand = emitExpression(it) }
+        comparandElm?.let { comparand = it }
 
         caseItem =
             expression.cases
-                .map { item ->
+                .mapIndexed { index, item ->
                     CaseItem().apply {
-                        var whenElm = emitExpression(item.condition)
-                        val thenElm = emitExpression(item.result)
+                        var whenElm = casesElm[index].condition
+                        val thenElm = casesElm[index].result
 
                         // Comparand when-clause: convert when value to comparand type
                         if (comparandType != null) {
@@ -67,7 +75,6 @@ internal fun EmissionContext.emitCaseExpression(expression: CaseExpression): Elm
                 }
                 .toMutableList()
 
-        val elseElm = emitExpression(expression.elseResult)
         `else` =
             if (choiceType != null) {
                 wrapCaseAs(elseElm, choiceType)

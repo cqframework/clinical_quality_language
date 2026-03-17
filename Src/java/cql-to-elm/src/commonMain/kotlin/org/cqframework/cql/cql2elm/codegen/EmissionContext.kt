@@ -11,6 +11,7 @@ import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanTestExpression
+import org.hl7.cql.ast.CaseChildren
 import org.hl7.cql.ast.CaseExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
@@ -32,11 +33,13 @@ import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.ListTransformExpression
+import org.hl7.cql.ast.LiteralChildren
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.MembershipExpression
 import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.PropertyAccessExpression
+import org.hl7.cql.ast.QueryChildren
 import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.TimeBoundaryExpression
@@ -53,6 +56,10 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  * Shared state and helpers used by all emission extension functions. Implements [ExpressionFold] to
  * provide compile-time exhaustive dispatch over the AST — adding a new Expression subtype without a
  * handler is a compile error.
+ *
+ * The [fold]/[emitExpression] override pattern ensures that when the catamorphism pre-folds
+ * children via `fold(child)`, it goes through [emitExpression] which adds decoration and error
+ * checking. The `on*` handlers receive fully decorated ELM expressions as pre-folded children.
  */
 @Suppress("TooManyFunctions")
 class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) :
@@ -295,7 +302,14 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
             return org.hl7.elm.r1.Null()
         }
 
-        val elmExpr = fold(expression)
+        // QueryExpression needs special handling: emitQuery manages source/scope iteration
+        // internally and cannot use the catamorphism's default child pre-folding.
+        val elmExpr =
+            if (expression is QueryExpression) {
+                emitQuery(expression)
+            } else {
+                super<ExpressionFold>.fold(expression)
+            }
 
         // Set result type from the SemanticModel
         val type = semanticModel[expression]
@@ -306,9 +320,21 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         return elmExpr
     }
 
-    // --- ExpressionFold implementation ---
+    /**
+     * Override [fold] to route through [emitExpression] for decoration and error checking. When the
+     * catamorphism's default `fold()` body calls `fold(child)`, it goes through
+     * `emitExpression(child)` which adds resultType decoration and semantic error handling.
+     */
+    override fun fold(expr: Expression): ElmExpression = emitExpression(expr)
 
-    override fun onLiteral(expr: LiteralExpression): ElmExpression {
+    // --- ExpressionFold implementation ---
+    // Children are pre-folded by the catamorphism through fold() → emitExpression(), so they
+    // are fully decorated ELM expressions. The on* handlers use them directly.
+
+    override fun onLiteral(
+        expr: LiteralExpression,
+        children: LiteralChildren<ElmExpression>,
+    ): ElmExpression {
         // For list literals, pass the inferred list type for null element wrapping
         if (expr.literal is org.hl7.cql.ast.ListLiteral) {
             val listType = semanticModel[expr]
@@ -333,64 +359,125 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
             "ExternalConstantExpression (%${expr.name}) is not yet supported."
         )
 
-    override fun onBinaryOperator(expr: OperatorBinaryExpression) = emitBinaryOperator(expr)
+    override fun onBinaryOperator(
+        expr: OperatorBinaryExpression,
+        left: ElmExpression,
+        right: ElmExpression,
+    ) = emitBinaryOperator(expr, left, right)
 
-    override fun onUnaryOperator(expr: OperatorUnaryExpression) = emitUnaryOperator(expr)
+    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: ElmExpression) =
+        emitUnaryOperator(expr, operand)
 
-    override fun onBooleanTest(expr: BooleanTestExpression) = emitBooleanTest(expr)
+    override fun onBooleanTest(expr: BooleanTestExpression, operand: ElmExpression) =
+        emitBooleanTest(expr, operand)
 
-    override fun onIf(expr: IfExpression) = emitIfExpression(expr)
+    override fun onIf(
+        expr: IfExpression,
+        condition: ElmExpression,
+        thenBranch: ElmExpression,
+        elseBranch: ElmExpression,
+    ) = emitIfExpression(expr, condition, thenBranch, elseBranch)
 
-    override fun onCase(expr: CaseExpression) = emitCaseExpression(expr)
+    override fun onCase(
+        expr: CaseExpression,
+        comparand: ElmExpression?,
+        cases: List<CaseChildren<ElmExpression>>,
+        elseResult: ElmExpression,
+    ) = emitCaseExpression(expr, comparand, cases, elseResult)
 
-    override fun onIs(expr: IsExpression) = emitIsExpression(expr)
+    override fun onIs(expr: IsExpression, operand: ElmExpression) = emitIsExpression(expr, operand)
 
-    override fun onAs(expr: AsExpression) = emitAsExpression(expr)
+    override fun onAs(expr: AsExpression, operand: ElmExpression) = emitAsExpression(expr, operand)
 
-    override fun onCast(expr: CastExpression) = emitCastExpression(expr)
+    override fun onCast(expr: CastExpression, operand: ElmExpression) =
+        emitCastExpression(expr, operand)
 
-    override fun onConversion(expr: ConversionExpression) = emitConversionExpression(expr)
+    override fun onConversion(expr: ConversionExpression, operand: ElmExpression) =
+        emitConversionExpression(expr, operand)
 
-    override fun onFunctionCall(expr: FunctionCallExpression) = emitFunctionCall(expr)
+    override fun onFunctionCall(
+        expr: FunctionCallExpression,
+        target: ElmExpression?,
+        arguments: List<ElmExpression>,
+    ) = emitFunctionCall(expr, target, arguments)
 
-    override fun onPropertyAccess(expr: PropertyAccessExpression) = emitPropertyAccess(expr)
+    override fun onPropertyAccess(expr: PropertyAccessExpression, target: ElmExpression) =
+        emitPropertyAccess(expr, target)
 
-    override fun onIndex(expr: IndexExpression) = emitIndexExpression(expr)
+    override fun onIndex(expr: IndexExpression, target: ElmExpression, index: ElmExpression) =
+        emitIndexExpression(expr, target, index)
 
-    override fun onExists(expr: ExistsExpression) = emitExists(expr)
+    override fun onExists(expr: ExistsExpression, operand: ElmExpression) =
+        emitExists(expr, operand)
 
-    override fun onMembership(expr: MembershipExpression) = emitMembership(expr)
+    override fun onMembership(
+        expr: MembershipExpression,
+        left: ElmExpression,
+        right: ElmExpression,
+    ) = emitMembership(expr, left, right)
 
-    override fun onListTransform(expr: ListTransformExpression) = emitListTransform(expr)
+    override fun onListTransform(expr: ListTransformExpression, operand: ElmExpression) =
+        emitListTransform(expr, operand)
 
-    override fun onExpandCollapse(expr: ExpandCollapseExpression): ElmExpression =
-        emitExpandCollapse(expr)
+    override fun onExpandCollapse(
+        expr: ExpandCollapseExpression,
+        operand: ElmExpression,
+        per: ElmExpression?,
+    ): ElmExpression = emitExpandCollapse(expr, operand, per)
 
-    override fun onDateTimeComponent(expr: DateTimeComponentExpression) =
-        emitDateTimeComponent(expr)
+    override fun onDateTimeComponent(expr: DateTimeComponentExpression, operand: ElmExpression) =
+        emitDateTimeComponent(expr, operand)
 
-    override fun onDurationBetween(expr: DurationBetweenExpression) = emitDurationBetween(expr)
+    override fun onDurationBetween(
+        expr: DurationBetweenExpression,
+        lower: ElmExpression,
+        upper: ElmExpression,
+    ) = emitDurationBetween(expr, lower, upper)
 
-    override fun onDifferenceBetween(expr: DifferenceBetweenExpression) =
-        emitDifferenceBetween(expr)
+    override fun onDifferenceBetween(
+        expr: DifferenceBetweenExpression,
+        lower: ElmExpression,
+        upper: ElmExpression,
+    ) = emitDifferenceBetween(expr, lower, upper)
 
-    override fun onDurationOf(expr: DurationOfExpression) = emitDurationOf(expr)
+    override fun onDurationOf(expr: DurationOfExpression, operand: ElmExpression) =
+        emitDurationOf(expr, operand)
 
-    override fun onDifferenceOf(expr: DifferenceOfExpression) = emitDifferenceOf(expr)
+    override fun onDifferenceOf(expr: DifferenceOfExpression, operand: ElmExpression) =
+        emitDifferenceOf(expr, operand)
 
-    override fun onTimeBoundary(expr: TimeBoundaryExpression) = emitTimeBoundary(expr)
+    override fun onTimeBoundary(expr: TimeBoundaryExpression, operand: ElmExpression) =
+        emitTimeBoundary(expr, operand)
 
-    override fun onWidth(expr: WidthExpression) = emitWidth(expr)
+    override fun onWidth(expr: WidthExpression, operand: ElmExpression) = emitWidth(expr, operand)
 
-    override fun onElementExtractor(expr: ElementExtractorExpression) = emitElementExtractor(expr)
+    override fun onElementExtractor(expr: ElementExtractorExpression, operand: ElmExpression) =
+        emitElementExtractor(expr, operand)
 
     override fun onTypeExtent(expr: TypeExtentExpression) = emitTypeExtent(expr)
 
-    override fun onBetween(expr: BetweenExpression) = emitBetween(expr)
+    override fun onBetween(
+        expr: BetweenExpression,
+        input: ElmExpression,
+        lower: ElmExpression,
+        upper: ElmExpression,
+    ) = emitBetween(expr, input, lower, upper)
 
-    override fun onIntervalRelation(expr: IntervalRelationExpression) = emitIntervalRelation(expr)
+    override fun onIntervalRelation(
+        expr: IntervalRelationExpression,
+        left: ElmExpression,
+        right: ElmExpression,
+    ) = emitIntervalRelation(expr, left, right)
 
-    override fun onQuery(expr: QueryExpression) = emitQuery(expr)
+    override fun onQuery(
+        expr: QueryExpression,
+        children: QueryChildren<ElmExpression>,
+    ): ElmExpression {
+        // Query emission is handled by emitExpression() which short-circuits to emitQuery().
+        // This handler is only here for compile-time exhaustiveness; it should not be reached
+        // in normal flow since fold() → emitExpression() bypasses the catamorphism for queries.
+        return emitQuery(expr)
+    }
 
     override fun onRetrieve(expr: RetrieveExpression) = emitRetrieve(expr)
 

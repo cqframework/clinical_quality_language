@@ -14,10 +14,17 @@ import org.hl7.elm.r1.Flatten
 import org.hl7.elm.r1.Intersect
 import org.hl7.elm.r1.Union
 
-/** Emit a set operator (union/intersect/except) as the corresponding ELM NaryExpression. */
-internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpression): ElmExpression {
-    var leftElm = emitExpression(expression.left)
-    var rightElm = emitExpression(expression.right)
+/**
+ * Emit a set operator (union/intersect/except) as the corresponding ELM NaryExpression. Children
+ * are pre-folded.
+ */
+internal fun EmissionContext.emitSetOperator(
+    expression: OperatorBinaryExpression,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
+): ElmExpression {
+    var left = leftElm
+    var right = rightElm
 
     // Apply operator resolution conversions for set operators
     // For union/intersect/except with empty list operands, the resolution
@@ -33,14 +40,14 @@ internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpressio
                         conversion.conversion!!.isCast
                 ) {
                     // List demotion: wrap in Query with As cast on elements
-                    val target = if (index == 0) leftElm else rightElm
+                    val target = if (index == 0) left else right
                     val wrapped = wrapListConversion(target, conversion.conversion!!)
-                    if (index == 0) leftElm = wrapped else rightElm = wrapped
+                    if (index == 0) left = wrapped else right = wrapped
                 } else {
                     // Other conversions (operator-based): use standard path
-                    val target = if (index == 0) leftElm else rightElm
+                    val target = if (index == 0) left else right
                     val wrapped = applyConversion(target, conversion)
-                    if (index == 0) leftElm = wrapped else rightElm = wrapped
+                    if (index == 0) left = wrapped else right = wrapped
                 }
             }
         }
@@ -72,13 +79,13 @@ internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpressio
                 val sortedTypes = listOf(leftElem, rightElem).distinct().sortedBy { it.toString() }
                 val choiceElem = ChoiceType(sortedTypes)
                 val choiceListType = ListType(choiceElem)
-                leftElm = wrapAsListChoice(leftElm, choiceListType)
-                rightElm = wrapAsListChoice(rightElm, choiceListType)
+                left = wrapAsListChoice(left, choiceListType)
+                right = wrapAsListChoice(right, choiceListType)
             }
         }
     }
 
-    val operands = mutableListOf(leftElm, rightElm)
+    val operands = mutableListOf(left, right)
     return when (expression.operator) {
         BinaryOperator.UNION -> Union().apply { operand = operands }
         BinaryOperator.INTERSECT -> Intersect().apply { operand = operands }
@@ -101,19 +108,25 @@ private fun EmissionContext.wrapAsListChoice(
     }
 }
 
-/** Emit a [ListTransformExpression] (distinct/flatten) as the corresponding ELM unary node. */
-internal fun EmissionContext.emitListTransform(expression: ListTransformExpression): ElmExpression {
-    var operandElm = emitExpression(expression.operand)
+/**
+ * Emit a [ListTransformExpression] (distinct/flatten) as the corresponding ELM unary node. Operand
+ * is pre-folded.
+ */
+internal fun EmissionContext.emitListTransform(
+    expression: ListTransformExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
+    var result = operandElm
 
     // Null-As wrapping for null operands
     if (isNullLiteralExpr(expression.operand)) {
         val anyType = operatorRegistry.type("Any")
-        operandElm =
+        result =
             when (expression.listTransformKind) {
                 // distinct null → As(List<Any>)
-                ListTransformKind.DISTINCT -> wrapNullAs(operandElm, ListType(anyType))
+                ListTransformKind.DISTINCT -> wrapNullAs(result, ListType(anyType))
                 // flatten null → As(List<List<Any>>)
-                ListTransformKind.FLATTEN -> wrapNullAs(operandElm, ListType(ListType(anyType)))
+                ListTransformKind.FLATTEN -> wrapNullAs(result, ListType(ListType(anyType)))
             }
     }
 
@@ -125,14 +138,14 @@ internal fun EmissionContext.emitListTransform(expression: ListTransformExpressi
     ) {
         val flattenListType = detectHeterogeneousFlatten(expression.operand)
         if (flattenListType != null) {
-            val queryWrapped = wrapFlattenHeterogeneous(operandElm, flattenListType)
+            val queryWrapped = wrapFlattenHeterogeneous(result, flattenListType)
             return Flatten().apply { operand = queryWrapped }
         }
     }
 
     return when (expression.listTransformKind) {
-        ListTransformKind.DISTINCT -> Distinct().apply { operand = operandElm }
-        ListTransformKind.FLATTEN -> Flatten().apply { operand = operandElm }
+        ListTransformKind.DISTINCT -> Distinct().apply { operand = result }
+        ListTransformKind.FLATTEN -> Flatten().apply { operand = result }
     }
 }
 

@@ -7,6 +7,7 @@ import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanLiteral
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.BooleanTestKind
+import org.hl7.cql.ast.CaseChildren
 import org.hl7.cql.ast.CaseExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
@@ -37,6 +38,7 @@ import org.hl7.cql.ast.ListLiteral
 import org.hl7.cql.ast.ListTransformExpression
 import org.hl7.cql.ast.ListTransformKind
 import org.hl7.cql.ast.Literal
+import org.hl7.cql.ast.LiteralChildren
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
 import org.hl7.cql.ast.MembershipExpression
@@ -46,6 +48,7 @@ import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.ast.OperatorUnaryExpression
 import org.hl7.cql.ast.PropertyAccessExpression
 import org.hl7.cql.ast.QuantityLiteral
+import org.hl7.cql.ast.QueryChildren
 import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.StringLiteral
@@ -199,7 +202,16 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
             return it
         }
 
-        val type = fold(expression)
+        // QueryExpression needs special handling: its children must be folded within scoping
+        // context (aliases, lets) that the catamorphism cannot provide (it pre-folds all
+        // children before calling onQuery). So we short-circuit to inferQueryType() which
+        // manages scopes and calls inferType() on children with proper context.
+        val type =
+            if (expression is QueryExpression) {
+                inferQueryType(expression)
+            } else {
+                super<ExpressionFold>.fold(expression)
+            }
 
         if (type != null) {
             typeTable[expression] = type
@@ -207,83 +219,146 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         return type
     }
 
-    // --- ExpressionFold<DataType?> implementation ---
+    /**
+     * Override [fold] to route through [inferType] for caching. When the catamorphism's default
+     * `fold()` body calls `fold(child)`, it goes through `inferType(child)` which checks the cache
+     * first, avoiding redundant computation.
+     */
+    override fun fold(expr: Expression): DataType? = inferType(expr)
 
-    override fun onLiteral(expr: LiteralExpression): DataType? = inferLiteralType(expr.literal)
+    // --- ExpressionFold<DataType?> implementation ---
+    // Children are pre-folded by the catamorphism. The pre-folded child results are the cached
+    // types from inferType(). Extension functions that previously called inferType() on children
+    // directly no longer need to — the child types are available via the typeTable or the
+    // pre-folded parameters.
+
+    override fun onLiteral(
+        expr: LiteralExpression,
+        children: LiteralChildren<DataType?>,
+    ): DataType? = inferLiteralType(expr.literal)
 
     override fun onIdentifier(expr: IdentifierExpression): DataType? = inferIdentifierType(expr)
 
     override fun onExternalConstant(expr: ExternalConstantExpression): DataType? = null
 
-    override fun onBinaryOperator(expr: OperatorBinaryExpression): DataType? = inferBinaryType(expr)
+    override fun onBinaryOperator(
+        expr: OperatorBinaryExpression,
+        left: DataType?,
+        right: DataType?,
+    ): DataType? = inferBinaryType(expr, left, right)
 
-    override fun onUnaryOperator(expr: OperatorUnaryExpression): DataType? = inferUnaryType(expr)
+    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: DataType?): DataType? =
+        inferUnaryType(expr, operand)
 
-    override fun onBooleanTest(expr: BooleanTestExpression): DataType? = inferBooleanTestType(expr)
+    override fun onBooleanTest(expr: BooleanTestExpression, operand: DataType?): DataType? =
+        inferBooleanTestType(expr, operand)
 
-    override fun onIf(expr: IfExpression): DataType? = inferIfType(expr)
+    override fun onIf(
+        expr: IfExpression,
+        condition: DataType?,
+        thenBranch: DataType?,
+        elseBranch: DataType?,
+    ): DataType? = inferIfType(expr, thenBranch, elseBranch)
 
-    override fun onCase(expr: CaseExpression): DataType? = inferCaseType(expr)
+    override fun onCase(
+        expr: CaseExpression,
+        comparand: DataType??,
+        cases: List<CaseChildren<DataType?>>,
+        elseResult: DataType?,
+    ): DataType? = inferCaseType(expr, cases, elseResult)
 
-    override fun onIs(expr: IsExpression): DataType? = inferIsType(expr)
+    override fun onIs(expr: IsExpression, operand: DataType?): DataType? = inferIsType(expr)
 
-    override fun onAs(expr: AsExpression): DataType? = inferAsType(expr)
+    override fun onAs(expr: AsExpression, operand: DataType?): DataType? = inferAsType(expr)
 
-    override fun onCast(expr: CastExpression): DataType? = inferCastType(expr)
+    override fun onCast(expr: CastExpression, operand: DataType?): DataType? = inferCastType(expr)
 
-    override fun onConversion(expr: ConversionExpression): DataType? = inferConversionType(expr)
+    override fun onConversion(expr: ConversionExpression, operand: DataType?): DataType? =
+        inferConversionType(expr)
 
-    override fun onFunctionCall(expr: FunctionCallExpression): DataType? =
-        inferFunctionCallType(expr)
+    override fun onFunctionCall(
+        expr: FunctionCallExpression,
+        target: DataType??,
+        arguments: List<DataType?>,
+    ): DataType? = inferFunctionCallType(expr, arguments)
 
-    override fun onPropertyAccess(expr: PropertyAccessExpression): DataType? {
-        // Recursively infer the target type so identifiers within get resolved
-        inferType(expr.target)
+    override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
+        // Target already pre-folded (identifiers within resolved); nothing more to do
         return null
     }
 
-    override fun onIndex(expr: IndexExpression): DataType? = inferIndexType(expr)
+    override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =
+        inferIndexType(expr, target, index)
 
-    override fun onExists(expr: ExistsExpression): DataType? = inferExistsType(expr)
+    override fun onExists(expr: ExistsExpression, operand: DataType?): DataType? =
+        inferExistsType(expr)
 
-    override fun onMembership(expr: MembershipExpression): DataType? = inferMembershipType(expr)
+    override fun onMembership(
+        expr: MembershipExpression,
+        left: DataType?,
+        right: DataType?,
+    ): DataType? = inferMembershipType(expr)
 
-    override fun onListTransform(expr: ListTransformExpression): DataType? =
-        inferListTransformType(expr)
+    override fun onListTransform(expr: ListTransformExpression, operand: DataType?): DataType? =
+        inferListTransformType(expr, operand)
 
-    override fun onExpandCollapse(expr: ExpandCollapseExpression): DataType? =
-        inferExpandCollapseType(expr)
+    override fun onExpandCollapse(
+        expr: ExpandCollapseExpression,
+        operand: DataType?,
+        per: DataType??,
+    ): DataType? = inferExpandCollapseType(expr, operand)
 
-    override fun onDateTimeComponent(expr: DateTimeComponentExpression): DataType? =
-        inferDateTimeComponentType(expr)
+    override fun onDateTimeComponent(
+        expr: DateTimeComponentExpression,
+        operand: DataType?,
+    ): DataType? = inferDateTimeComponentType(expr)
 
-    override fun onDurationBetween(expr: DurationBetweenExpression): DataType? =
-        inferDurationBetweenType(expr)
+    override fun onDurationBetween(
+        expr: DurationBetweenExpression,
+        lower: DataType?,
+        upper: DataType?,
+    ): DataType? = inferDurationBetweenType(expr)
 
-    override fun onDifferenceBetween(expr: DifferenceBetweenExpression): DataType? =
-        inferDifferenceBetweenType(expr)
+    override fun onDifferenceBetween(
+        expr: DifferenceBetweenExpression,
+        lower: DataType?,
+        upper: DataType?,
+    ): DataType? = inferDifferenceBetweenType(expr)
 
-    override fun onDurationOf(expr: DurationOfExpression): DataType? = inferDurationOfType(expr)
+    override fun onDurationOf(expr: DurationOfExpression, operand: DataType?): DataType? =
+        inferDurationOfType(expr)
 
-    override fun onDifferenceOf(expr: DifferenceOfExpression): DataType? =
+    override fun onDifferenceOf(expr: DifferenceOfExpression, operand: DataType?): DataType? =
         inferDifferenceOfType(expr)
 
-    override fun onTimeBoundary(expr: TimeBoundaryExpression): DataType? =
-        inferTimeBoundaryType(expr)
+    override fun onTimeBoundary(expr: TimeBoundaryExpression, operand: DataType?): DataType? =
+        inferTimeBoundaryType(expr, operand)
 
-    override fun onWidth(expr: WidthExpression): DataType? = inferWidthType(expr)
+    override fun onWidth(expr: WidthExpression, operand: DataType?): DataType? =
+        inferWidthType(expr, operand)
 
-    override fun onElementExtractor(expr: ElementExtractorExpression): DataType? =
-        inferElementExtractorType(expr)
+    override fun onElementExtractor(
+        expr: ElementExtractorExpression,
+        operand: DataType?,
+    ): DataType? = inferElementExtractorType(expr, operand)
 
     override fun onTypeExtent(expr: TypeExtentExpression): DataType? = inferTypeExtentType(expr)
 
-    override fun onBetween(expr: BetweenExpression): DataType? = inferBetweenType(expr)
+    override fun onBetween(
+        expr: BetweenExpression,
+        input: DataType?,
+        lower: DataType?,
+        upper: DataType?,
+    ): DataType? = inferBetweenType(expr)
 
-    override fun onIntervalRelation(expr: IntervalRelationExpression): DataType? =
-        inferIntervalRelationType(expr)
+    override fun onIntervalRelation(
+        expr: IntervalRelationExpression,
+        left: DataType?,
+        right: DataType?,
+    ): DataType? = inferIntervalRelationType(expr)
 
-    override fun onQuery(expr: QueryExpression): DataType? = inferQueryType(expr)
+    override fun onQuery(expr: QueryExpression, children: QueryChildren<DataType?>): DataType? =
+        inferQueryType(expr)
 
     override fun onRetrieve(expr: RetrieveExpression): DataType? = null
 
@@ -450,9 +525,11 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferBinaryType(expression: OperatorBinaryExpression): DataType? {
-        val leftType = inferType(expression.left)
-        val rightType = inferType(expression.right)
+    private fun inferBinaryType(
+        expression: OperatorBinaryExpression,
+        leftType: DataType?,
+        rightType: DataType?,
+    ): DataType? {
         if (leftType == null || rightType == null) return null
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
@@ -462,8 +539,11 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferBooleanTestType(expression: BooleanTestExpression): DataType? {
-        val operandType = inferType(expression.operand) ?: return null
+    private fun inferBooleanTestType(
+        expression: BooleanTestExpression,
+        operandType: DataType?,
+    ): DataType? {
+        if (operandType == null) return null
         val opName =
             when (expression.kind) {
                 BooleanTestKind.IS_NULL -> "IsNull"
@@ -476,8 +556,11 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferUnaryType(expression: OperatorUnaryExpression): DataType? {
-        val operandType = inferType(expression.operand) ?: return null
+    private fun inferUnaryType(
+        expression: OperatorUnaryExpression,
+        operandType: DataType?,
+    ): DataType? {
+        if (operandType == null) return null
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
         if (opName == "Positive") return operandType
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
@@ -486,11 +569,13 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferIfType(expression: IfExpression): DataType? {
+    private fun inferIfType(
+        expression: IfExpression,
+        thenType: DataType?,
+        elseType: DataType?,
+    ): DataType? {
         val anyType = operatorRegistry.type("Any")
-        inferType(expression.condition)
-        val thenType = inferType(expression.thenBranch)
-        val elseType = inferType(expression.elseBranch)
+        // condition type is pre-folded but unused here
         return when {
             thenType == null -> elseType
             elseType == null -> thenType
@@ -501,15 +586,14 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         }
     }
 
-    private fun inferCaseType(expression: CaseExpression): DataType? {
+    private fun inferCaseType(
+        expression: CaseExpression,
+        cases: List<CaseChildren<DataType?>>,
+        elseType: DataType?,
+    ): DataType? {
         val anyType = operatorRegistry.type("Any")
-        expression.comparand?.let { inferType(it) }
-        val branchTypes =
-            expression.cases.mapNotNull { caseItem ->
-                inferType(caseItem.condition)
-                inferType(caseItem.result)
-            }
-        val elseType = inferType(expression.elseResult)
+        // comparand pre-folded but unused; case conditions pre-folded but unused
+        val branchTypes = cases.mapNotNull { it.result }
         val allTypes = branchTypes + listOfNotNull(elseType)
         if (allTypes.isEmpty()) return null
         // Filter out Any (null) types for common type computation
@@ -519,11 +603,13 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
-    private fun inferFunctionCallType(expression: FunctionCallExpression): DataType? {
-        expression.target?.let { inferType(it) }
+    private fun inferFunctionCallType(
+        expression: FunctionCallExpression,
+        argTypes: List<DataType?>,
+    ): DataType? {
+        // target pre-folded but unused
 
         val functionName = expression.function.value
-        val argTypes = expression.arguments.map { inferType(it) }
 
         if (functionName == "Coalesce" && argTypes.size == 1) {
             val singleArgType = argTypes[0]
@@ -567,9 +653,12 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferIndexType(expression: IndexExpression): DataType? {
-        val targetType = inferType(expression.target) ?: return null
-        val indexType = inferType(expression.index) ?: return null
+    private fun inferIndexType(
+        expression: IndexExpression,
+        targetType: DataType?,
+        indexType: DataType?,
+    ): DataType? {
+        if (targetType == null || indexType == null) return null
         val resolution =
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
@@ -577,8 +666,11 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     }
 
     @Suppress("ReturnCount")
-    private fun inferListTransformType(expression: ListTransformExpression): DataType? {
-        val operandType = inferType(expression.operand) ?: return null
+    private fun inferListTransformType(
+        expression: ListTransformExpression,
+        operandType: DataType?,
+    ): DataType? {
+        if (operandType == null) return null
         val opName =
             when (expression.listTransformKind) {
                 ListTransformKind.DISTINCT -> "Distinct"

@@ -31,9 +31,11 @@ import org.hl7.elm.r1.ToRatio
 import org.hl7.elm.r1.ToString
 import org.hl7.elm.r1.ToTime
 
-/** Emit an [IsExpression] as an ELM [Is] node with isTypeSpecifier set. */
-internal fun EmissionContext.emitIsExpression(expression: IsExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+/** Emit an [IsExpression] as an ELM [Is] node with isTypeSpecifier set. Operand is pre-folded. */
+internal fun EmissionContext.emitIsExpression(
+    expression: IsExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     val isNode =
         Is().apply {
             operand = operandElm
@@ -47,9 +49,11 @@ internal fun EmissionContext.emitIsExpression(expression: IsExpression): ElmExpr
     return isNode
 }
 
-/** Emit an [AsExpression] as an ELM [As] node with strict = false. */
-internal fun EmissionContext.emitAsExpression(expression: AsExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+/** Emit an [AsExpression] as an ELM [As] node with strict = false. Operand is pre-folded. */
+internal fun EmissionContext.emitAsExpression(
+    expression: AsExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     return As().apply {
         operand = operandElm
         asTypeSpecifier = emitTypeSpecifier(expression.type)
@@ -57,9 +61,11 @@ internal fun EmissionContext.emitAsExpression(expression: AsExpression): ElmExpr
     }
 }
 
-/** Emit a [CastExpression] as an ELM [As] node with strict = true. */
-internal fun EmissionContext.emitCastExpression(expression: CastExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+/** Emit a [CastExpression] as an ELM [As] node with strict = true. Operand is pre-folded. */
+internal fun EmissionContext.emitCastExpression(
+    expression: CastExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     return As().apply {
         operand = operandElm
         asTypeSpecifier = emitTypeSpecifier(expression.type)
@@ -70,17 +76,17 @@ internal fun EmissionContext.emitCastExpression(expression: CastExpression): Elm
 /**
  * Emit a [ConversionExpression] (`convert X to Y`) as the appropriate ELM conversion function node
  * (e.g., ToString, ToDecimal). The legacy translator resolves the conversion via the ConversionMap
- * and emits the corresponding function operator.
+ * and emits the corresponding function operator. Operand is pre-folded.
  */
 internal fun EmissionContext.emitConversionExpression(
-    expression: ConversionExpression
+    expression: ConversionExpression,
+    operandElm: ElmExpression,
 ): ElmExpression {
     if (expression.destinationUnit != null) {
         throw ElmEmitter.UnsupportedNodeException(
             "Unit conversions (convert to '${expression.destinationUnit}') are not yet supported."
         )
     }
-    val operandElm = emitExpression(expression.operand)
     val destType = expression.destinationType
     if (destType is NamedTypeSpecifier) {
         val conversionName = typeNameToConversionOperator(destType.name.simpleName)

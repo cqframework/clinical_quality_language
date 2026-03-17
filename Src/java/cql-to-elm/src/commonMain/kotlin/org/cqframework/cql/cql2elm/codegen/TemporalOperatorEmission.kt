@@ -19,12 +19,12 @@ import org.hl7.elm.r1.Start
 import org.hl7.elm.r1.TimeFrom
 import org.hl7.elm.r1.TimezoneOffsetFrom
 
-/** Emit a [DateTimeComponentExpression] to the appropriate ELM node. */
+/** Emit a [DateTimeComponentExpression] to the appropriate ELM node. Operand is pre-folded. */
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitDateTimeComponent(
-    expression: DateTimeComponentExpression
+    expression: DateTimeComponentExpression,
+    operandElm: ElmExpression,
 ): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
     return when (expression.component) {
         DateTimeComponent.DATE -> DateFrom().apply { operand = operandElm }
         DateTimeComponent.TIME -> TimeFrom().apply { operand = operandElm }
@@ -37,24 +37,26 @@ internal fun EmissionContext.emitDateTimeComponent(
     }
 }
 
-/** Emit a [DurationBetweenExpression] as an ELM DurationBetween node. */
+/** Emit a [DurationBetweenExpression] as an ELM DurationBetween node. Children are pre-folded. */
 internal fun EmissionContext.emitDurationBetween(
-    expression: DurationBetweenExpression
+    expression: DurationBetweenExpression,
+    lowerElm: ElmExpression,
+    upperElm: ElmExpression,
 ): ElmExpression {
-    val lowerElm = emitExpression(expression.lower)
-    val upperElm = emitExpression(expression.upper)
     return DurationBetween().apply {
         precision = precisionStringToEnum(expression.precision)
         operand = mutableListOf(lowerElm, upperElm)
     }
 }
 
-/** Emit a [DifferenceBetweenExpression] as an ELM DifferenceBetween node. */
+/**
+ * Emit a [DifferenceBetweenExpression] as an ELM DifferenceBetween node. Children are pre-folded.
+ */
 internal fun EmissionContext.emitDifferenceBetween(
-    expression: DifferenceBetweenExpression
+    expression: DifferenceBetweenExpression,
+    lowerElm: ElmExpression,
+    upperElm: ElmExpression,
 ): ElmExpression {
-    val lowerElm = emitExpression(expression.lower)
-    val upperElm = emitExpression(expression.upper)
     return DifferenceBetween().apply {
         precision = precisionStringToEnum(expression.precision)
         operand = mutableListOf(lowerElm, upperElm)
@@ -63,10 +65,13 @@ internal fun EmissionContext.emitDifferenceBetween(
 
 /**
  * Emit a [DurationOfExpression] (`duration in days of X`) as DurationBetween(Start(X), End(X)). The
- * legacy translator wraps the interval operand in Start/End and emits DurationBetween.
+ * legacy translator wraps the interval operand in Start/End and emits DurationBetween. Operand is
+ * pre-folded.
  */
-internal fun EmissionContext.emitDurationOf(expression: DurationOfExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+internal fun EmissionContext.emitDurationOf(
+    expression: DurationOfExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     val start = org.hl7.elm.r1.Start().apply { operand = operandElm }
     val end = org.hl7.elm.r1.End().apply { operand = operandElm }
     return DurationBetween().apply {
@@ -77,10 +82,12 @@ internal fun EmissionContext.emitDurationOf(expression: DurationOfExpression): E
 
 /**
  * Emit a [DifferenceOfExpression] (`difference in days of X`) as DifferenceBetween(Start(X),
- * End(X)).
+ * End(X)). Operand is pre-folded.
  */
-internal fun EmissionContext.emitDifferenceOf(expression: DifferenceOfExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+internal fun EmissionContext.emitDifferenceOf(
+    expression: DifferenceOfExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     val start = org.hl7.elm.r1.Start().apply { operand = operandElm }
     val end = org.hl7.elm.r1.End().apply { operand = operandElm }
     return DifferenceBetween().apply {
@@ -89,9 +96,14 @@ internal fun EmissionContext.emitDifferenceOf(expression: DifferenceOfExpression
     }
 }
 
-/** Emit a [TimeBoundaryExpression] (start of / end of) as ELM Start or End node. */
-internal fun EmissionContext.emitTimeBoundary(expression: TimeBoundaryExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+/**
+ * Emit a [TimeBoundaryExpression] (start of / end of) as ELM Start or End node. Operand is
+ * pre-folded.
+ */
+internal fun EmissionContext.emitTimeBoundary(
+    expression: TimeBoundaryExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
     return when (expression.timeBoundaryKind) {
         TimeBoundaryKind.START -> Start().apply { operand = operandElm }
         TimeBoundaryKind.END -> End().apply { operand = operandElm }

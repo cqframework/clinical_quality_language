@@ -42,13 +42,17 @@ import org.hl7.elm.r1.SameOrBefore
 import org.hl7.elm.r1.Start
 import org.hl7.elm.r1.Starts
 
-/** Emit an [IntervalRelationExpression] by dispatching on the phrase type. */
+/**
+ * Emit an [IntervalRelationExpression] by dispatching on the phrase type. Children are pre-folded.
+ */
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitIntervalRelation(
-    expression: IntervalRelationExpression
+    expression: IntervalRelationExpression,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
 ): ElmExpression {
-    var leftElm = emitExpression(expression.left)
-    var rightElm = emitExpression(expression.right)
+    var left = leftElm
+    var right = rightElm
 
     // Null-As wrapping for interval relation operands
     val leftIsNull = isNullLiteralExpr(expression.left)
@@ -58,10 +62,10 @@ internal fun EmissionContext.emitIntervalRelation(
 
     if (rightIsNull && leftType is IntervalType) {
         // Right operand is null, left is an interval → wrap null as point type
-        rightElm = wrapNullAs(rightElm, leftType.pointType)
+        right = wrapNullAs(right, leftType.pointType)
     } else if (leftIsNull && rightType is IntervalType) {
         // Left operand is null, right is an interval → wrap null as point type
-        leftElm = wrapNullAs(leftElm, rightType.pointType)
+        left = wrapNullAs(left, rightType.pointType)
     }
 
     // Interval<Any> expansion: when the RIGHT operand is Interval<Any> and the LEFT is
@@ -74,19 +78,18 @@ internal fun EmissionContext.emitIntervalRelation(
             rightType.pointType.toString() == "System.Any" &&
             leftType.pointType.toString() != "System.Any"
     ) {
-        rightElm = expandIntervalToType(rightElm, leftType.pointType)
+        right = expandIntervalToType(right, leftType.pointType)
     }
 
     return when (val phrase = expression.phrase) {
-        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
-        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
-        is BeforeOrAfterIntervalPhrase ->
-            emitBeforeOrAfterPhrase(phrase, expression, leftElm, rightElm)
-        is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, leftElm, rightElm)
-        is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, leftElm, rightElm)
-        is StartsIntervalPhrase -> emitStartsPhrase(phrase, leftElm, rightElm)
-        is EndsIntervalPhrase -> emitEndsPhrase(phrase, leftElm, rightElm)
-        is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, leftElm, rightElm)
+        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, left, right)
+        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, left, right)
+        is BeforeOrAfterIntervalPhrase -> emitBeforeOrAfterPhrase(phrase, expression, left, right)
+        is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, left, right)
+        is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, left, right)
+        is StartsIntervalPhrase -> emitStartsPhrase(phrase, left, right)
+        is EndsIntervalPhrase -> emitEndsPhrase(phrase, left, right)
+        is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, left, right)
         is WithinIntervalPhrase ->
             throw ElmEmitter.UnsupportedNodeException(
                 "WithinIntervalPhrase ('within N days of') is not yet supported."

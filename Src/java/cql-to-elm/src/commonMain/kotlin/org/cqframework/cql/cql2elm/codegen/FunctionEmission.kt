@@ -60,17 +60,21 @@ import org.hl7.elm.r1.Union
 import org.hl7.elm.r1.Upper
 import org.hl7.elm.r1.Variance
 
-/** Emit an if-then-else expression as an ELM If node. */
-internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpression {
-    val conditionElm = emitExpression(expression.condition)
-    var thenElm = emitExpression(expression.thenBranch)
-    var elseElm = emitExpression(expression.elseBranch)
+/** Emit an if-then-else expression as an ELM If node. Children are pre-folded. */
+internal fun EmissionContext.emitIfExpression(
+    expression: IfExpression,
+    conditionElm: ElmExpression,
+    thenElm: ElmExpression,
+    elseElm: ElmExpression,
+): ElmExpression {
+    var thenResult = thenElm
+    var elseResult = elseElm
 
     // Check if branches need choice type wrapping
     val choiceType = computeChoiceType(expression.thenBranch, expression.elseBranch)
     if (choiceType != null) {
-        thenElm = wrapInAs(thenElm, choiceType)
-        elseElm = wrapInAs(elseElm, choiceType)
+        thenResult = wrapInAs(thenResult, choiceType)
+        elseResult = wrapInAs(elseResult, choiceType)
     } else {
         val thenType = semanticModel[expression.thenBranch]
         val elseType = semanticModel[expression.elseBranch]
@@ -84,22 +88,22 @@ internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpr
                 thenType != anyType &&
                 elseType != anyType
         ) {
-            thenElm = applyImplicitConversion(thenElm, thenType, elseType)
-            elseElm = applyImplicitConversion(elseElm, elseType, thenType)
+            thenResult = applyImplicitConversion(thenResult, thenType, elseType)
+            elseResult = applyImplicitConversion(elseResult, elseType, thenType)
         }
         // Null-As wrapping: when one branch is null and the other has a known type,
         // wrap the null in As(thatType) to match legacy behavior
         if (isNullBranch(expression.elseBranch) && thenType != null) {
-            elseElm = wrapNullAs(elseElm, thenType)
+            elseResult = wrapNullAs(elseResult, thenType)
         } else if (isNullBranch(expression.thenBranch) && elseType != null) {
-            thenElm = wrapNullAs(thenElm, elseType)
+            thenResult = wrapNullAs(thenResult, elseType)
         }
     }
 
     return If().apply {
         condition = conditionElm
-        then = thenElm
-        `else` = elseElm
+        then = thenResult
+        `else` = elseResult
     }
 }
 
@@ -161,27 +165,32 @@ private fun isNumericPromotion(from: DataType, to: DataType): Boolean {
         (fromName == "System.Long" && toName == "System.Decimal")
 }
 
-/** Emit an index expression (e.g., 'John'[1]) as an ELM Indexer node. */
-internal fun EmissionContext.emitIndexExpression(expression: IndexExpression): ElmExpression {
-    val targetElm = emitExpression(expression.target)
-    val indexElm = emitExpression(expression.index)
+/** Emit an index expression (e.g., 'John'[1]) as an ELM Indexer node. Children are pre-folded. */
+internal fun EmissionContext.emitIndexExpression(
+    expression: IndexExpression,
+    targetElm: ElmExpression,
+    indexElm: ElmExpression,
+): ElmExpression {
     return Indexer().apply { operand = mutableListOf(targetElm, indexElm) }
 }
 
 /**
  * Emit a function call expression. System functions are mapped to their dedicated ELM node types
- * rather than generic FunctionRef nodes.
+ * rather than generic FunctionRef nodes. Children (target, arguments) are pre-folded.
  */
 @Suppress("CyclomaticComplexMethod")
-internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression): ElmExpression {
-    if (expression.target != null) {
+internal fun EmissionContext.emitFunctionCall(
+    expression: FunctionCallExpression,
+    targetElm: ElmExpression?,
+    rawArgs: List<ElmExpression>,
+): ElmExpression {
+    if (targetElm != null) {
         throw ElmEmitter.UnsupportedNodeException(
             "Fluent function calls (target.${expression.function.value}()) are not yet supported."
         )
     }
 
     val functionName = expression.function.value
-    val rawArgs = expression.arguments.map { emitExpression(it) }
 
     val args = rawArgs.toMutableList()
     val resolution = lookupResolution(expression)

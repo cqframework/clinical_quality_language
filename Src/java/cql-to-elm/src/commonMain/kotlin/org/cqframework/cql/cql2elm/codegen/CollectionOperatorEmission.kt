@@ -29,33 +29,37 @@ import org.hl7.elm.r1.PointFrom
 import org.hl7.elm.r1.SingletonFrom
 import org.hl7.elm.r1.Width
 
-/** Emit an [ExistsExpression] as an ELM Exists node. */
-internal fun EmissionContext.emitExists(expression: ExistsExpression): ElmExpression {
-    var operandElm = emitExpression(expression.operand)
+/** Emit an [ExistsExpression] as an ELM Exists node. Operand is pre-folded. */
+internal fun EmissionContext.emitExists(
+    expression: ExistsExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
+    var result = operandElm
     // Null-As wrapping: exists null → wrap null as List<Any>
     if (isNullLiteral(expression.operand)) {
-        operandElm =
-            wrapNullAs(operandElm, org.hl7.cql.model.ListType(operatorRegistry.type("Any")))
+        result = wrapNullAs(result, org.hl7.cql.model.ListType(operatorRegistry.type("Any")))
     }
-    return Exists().apply { operand = operandElm }
+    return Exists().apply { operand = result }
 }
 
-/** Emit a [WidthExpression] as an ELM Width node. */
-internal fun EmissionContext.emitWidth(expression: WidthExpression): ElmExpression {
-    var operandElm = emitExpression(expression.operand)
+/** Emit a [WidthExpression] as an ELM Width node. Operand is pre-folded. */
+internal fun EmissionContext.emitWidth(
+    expression: WidthExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
+    var result = operandElm
     // Null-As wrapping: width of null → wrap null as Interval<Any>
     if (isNullLiteral(expression.operand)) {
-        operandElm =
-            wrapNullAs(operandElm, org.hl7.cql.model.IntervalType(operatorRegistry.type("Any")))
+        result = wrapNullAs(result, org.hl7.cql.model.IntervalType(operatorRegistry.type("Any")))
     }
-    return Width().apply { operand = operandElm }
+    return Width().apply { operand = result }
 }
 
-/** Emit an [ElementExtractorExpression] as PointFrom or SingletonFrom. */
+/** Emit an [ElementExtractorExpression] as PointFrom or SingletonFrom. Operand is pre-folded. */
 internal fun EmissionContext.emitElementExtractor(
-    expression: ElementExtractorExpression
+    expression: ElementExtractorExpression,
+    operandElm: ElmExpression,
 ): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
     return when (expression.elementExtractorKind) {
         ElementExtractorKind.POINT -> PointFrom().apply { operand = operandElm }
         ElementExtractorKind.SINGLETON -> SingletonFrom().apply { operand = operandElm }
@@ -75,13 +79,15 @@ internal fun EmissionContext.emitTypeExtent(expression: TypeExtentExpression): E
 /**
  * Emit a [BetweenExpression] (`X between Y and Z`). When the input is an interval-typed expression,
  * emit `IncludedIn(input, Interval[lower, upper])`. For scalar inputs, emit `And(GreaterOrEqual(X,
- * Y), LessOrEqual(X, Z))` or `And(Greater(X, Y), Less(X, Z))` for `properly between`.
+ * Y), LessOrEqual(X, Z))` or `And(Greater(X, Y), Less(X, Z))` for `properly between`. Children are
+ * pre-folded.
  */
-internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpression {
-    val inputElm = emitExpression(expression.input)
-    val lowerElm = emitExpression(expression.lower)
-    val upperElm = emitExpression(expression.upper)
-
+internal fun EmissionContext.emitBetween(
+    expression: BetweenExpression,
+    inputElm: ElmExpression,
+    lowerElm: ElmExpression,
+    upperElm: ElmExpression,
+): ElmExpression {
     // If input is an Interval, emit IncludedIn(input, Interval[lower, upper])
     val inputIsInterval =
         expression.input is LiteralExpression &&
@@ -109,12 +115,14 @@ internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpr
 /**
  * Emit an [ExpandCollapseExpression] as an ELM [Expand] or [Collapse] binary expression. The legacy
  * translator always emits two operands: [source, per]. When no per is specified, per defaults to
- * `null as System.Quantity`.
+ * `null as System.Quantity`. Children are pre-folded.
  */
 internal fun EmissionContext.emitExpandCollapse(
-    expression: org.hl7.cql.ast.ExpandCollapseExpression
+    expression: org.hl7.cql.ast.ExpandCollapseExpression,
+    sourceElm: ElmExpression,
+    perElm: ElmExpression?,
 ): ElmExpression {
-    var sourceElm = emitExpression(expression.operand)
+    var source = sourceElm
 
     // Null-As wrapping: when the source is null, wrap in As(List<Interval<Any>>)
     if (
@@ -122,17 +130,17 @@ internal fun EmissionContext.emitExpandCollapse(
             (expression.operand as org.hl7.cql.ast.LiteralExpression).literal is
                 org.hl7.cql.ast.NullLiteral
     ) {
-        sourceElm =
+        source =
             wrapNullAs(
-                sourceElm,
+                source,
                 org.hl7.cql.model.ListType(
                     org.hl7.cql.model.IntervalType(operatorRegistry.type("Any"))
                 ),
             )
     }
 
-    val perElm = buildPerOperand(expression)
-    val operands = mutableListOf(sourceElm, perElm)
+    val per = buildPerOperand(expression, perElm)
+    val operands = mutableListOf(source, per)
     return when (expression.expandCollapseKind) {
         org.hl7.cql.ast.ExpandCollapseKind.EXPAND ->
             org.hl7.elm.r1.Expand().apply { operand = operands }
@@ -142,7 +150,8 @@ internal fun EmissionContext.emitExpandCollapse(
 }
 
 private fun EmissionContext.buildPerOperand(
-    expression: org.hl7.cql.ast.ExpandCollapseExpression
+    expression: org.hl7.cql.ast.ExpandCollapseExpression,
+    perElm: ElmExpression?,
 ): ElmExpression {
     // Explicit precision keyword: `expand X per day` → Quantity(1.0, "day")
     expression.perPrecision?.let { precision ->
@@ -151,26 +160,31 @@ private fun EmissionContext.buildPerOperand(
             unit = precision
         }
     }
-    // Explicit per expression: `expand X per 1 '1'`
-    expression.perExpression?.let { perExpr ->
-        val emitted = emitExpression(perExpr)
+    // Explicit per expression: `expand X per 1 '1'` — use the pre-folded ELM
+    if (perElm != null) {
         // Legacy converts integer/decimal literals to Quantity(value, "1")
-        if (emitted is org.hl7.elm.r1.Literal) {
+        if (perElm is org.hl7.elm.r1.Literal) {
             return org.hl7.elm.r1.Quantity().apply {
-                value = org.cqframework.cql.shared.BigDecimal(emitted.value!!)
+                value = org.cqframework.cql.shared.BigDecimal(perElm.value!!)
                 unit = "1"
             }
         }
-        return emitted
+        return perElm
     }
     // Default: null (the legacy uses `buildNull(Quantity)` which produces a typed Null)
     return org.hl7.elm.r1.Null()
 }
 
-/** Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. */
-internal fun EmissionContext.emitMembership(expression: MembershipExpression): ElmExpression {
-    var leftElm = emitExpression(expression.left)
-    var rightElm = emitExpression(expression.right)
+/**
+ * Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. Children are pre-folded.
+ */
+internal fun EmissionContext.emitMembership(
+    expression: MembershipExpression,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
+): ElmExpression {
+    var left = leftElm
+    var right = rightElm
 
     // Null-As wrapping for membership operators
     val leftType = semanticModel[expression.left]
@@ -182,23 +196,23 @@ internal fun EmissionContext.emitMembership(expression: MembershipExpression): E
             if (isNullLiteral(expression.right)) {
                 val elemType = elementTypeOf(leftType)
                 if (elemType != null) {
-                    rightElm = wrapNullAs(rightElm, elemType)
+                    right = wrapNullAs(right, elemType)
                 }
             }
             // Contains(null, element) - wrap null collection based on element type
             if (isNullLiteral(expression.left) && rightType != null) {
-                leftElm = wrapNullAs(leftElm, org.hl7.cql.model.ListType(rightType))
+                left = wrapNullAs(left, org.hl7.cql.model.ListType(rightType))
             }
         }
         MembershipOperator.IN -> {
             // In(element, interval) - wrap null element based on interval's point type
             // Only wrap for interval context, not list context
             if (isNullLiteral(expression.left) && rightType is org.hl7.cql.model.IntervalType) {
-                leftElm = wrapNullAs(leftElm, rightType.pointType)
+                left = wrapNullAs(left, rightType.pointType)
             }
             // In(element, null) - wrap null collection as interval based on element type
             if (isNullLiteral(expression.right) && leftType != null) {
-                rightElm = wrapNullAs(rightElm, org.hl7.cql.model.IntervalType(leftType))
+                right = wrapNullAs(right, org.hl7.cql.model.IntervalType(leftType))
             }
         }
     }
@@ -212,26 +226,26 @@ internal fun EmissionContext.emitMembership(expression: MembershipExpression): E
             rightType.pointType.toString() == "System.Any" &&
             leftType != null
     ) {
-        rightElm = expandIntervalToPointType(rightElm, leftType)
+        right = expandIntervalToPointType(right, leftType)
     } else if (
         expression.operator == MembershipOperator.CONTAINS &&
             leftType is org.hl7.cql.model.IntervalType &&
             leftType.pointType.toString() == "System.Any" &&
             rightType != null
     ) {
-        leftElm = expandIntervalToPointType(leftElm, rightType)
+        left = expandIntervalToPointType(left, rightType)
     }
 
     val precision = expression.precision?.let { precisionStringToEnum(it) }
     return when (expression.operator) {
         MembershipOperator.IN ->
             In().apply {
-                operand = mutableListOf(leftElm, rightElm)
+                operand = mutableListOf(left, right)
                 precision?.let { this.precision = it }
             }
         MembershipOperator.CONTAINS ->
             Contains().apply {
-                operand = mutableListOf(leftElm, rightElm)
+                operand = mutableListOf(left, right)
                 precision?.let { this.precision = it }
             }
     }
