@@ -209,8 +209,7 @@ class FullParityTest {
                 // "Aggregate" — testing
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
                 // interval-point comparisons
-                "IntervalOperators" to
-                    "Null safety wrapping: legacy wraps point operands in If(IsNull)",
+                // "IntervalOperators" — testing
                 "CqlIntervalOperators" to "Null safety wrapping and collapse null coercion",
                 // Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion
                 "ImplicitConversions" to

@@ -53,7 +53,8 @@ internal fun EmissionContext.emitIntervalRelation(
     return when (val phrase = expression.phrase) {
         is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
         is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
-        is BeforeOrAfterIntervalPhrase -> emitBeforeOrAfterPhrase(phrase, leftElm, rightElm)
+        is BeforeOrAfterIntervalPhrase ->
+            emitBeforeOrAfterPhrase(phrase, expression, leftElm, rightElm)
         is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, leftElm, rightElm)
         is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, leftElm, rightElm)
         is StartsIntervalPhrase -> emitStartsPhrase(phrase, leftElm, rightElm)
@@ -161,8 +162,9 @@ private fun EmissionContext.emitIncludedInPhrase(
     }
 }
 
-private fun emitBeforeOrAfterPhrase(
+private fun EmissionContext.emitBeforeOrAfterPhrase(
     phrase: BeforeOrAfterIntervalPhrase,
+    expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
@@ -172,8 +174,19 @@ private fun emitBeforeOrAfterPhrase(
         )
     }
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    val left = applyBoundary(leftElm, phrase.leftBoundary)
-    val right = applyBoundary(rightElm, phrase.rightBoundary)
+    var left = applyBoundary(leftElm, phrase.leftBoundary)
+    var right = applyBoundary(rightElm, phrase.rightBoundary)
+
+    // Point-interval promotion: when one operand is a point and the other is an interval,
+    // wrap the point in If(IsNull(point), Null, Interval[point, point])
+    val leftType = semanticModel[expression.left]
+    val rightType = semanticModel[expression.right]
+    if (leftType != null && leftType !is IntervalType && rightType is IntervalType) {
+        left = promotePointToInterval(left)
+    } else if (rightType != null && rightType !is IntervalType && leftType is IntervalType) {
+        right = promotePointToInterval(right)
+    }
+
     val ops = mutableListOf(left, right)
 
     val inclusive = phrase.relationship.inclusive
@@ -318,4 +331,22 @@ private fun emitEndsPhrase(
 private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression): Boolean {
     val type = semanticModel[expression] ?: return false
     return type !is ListType && type !is IntervalType
+}
+
+/**
+ * Promote a point expression to a degenerate interval: If(IsNull(point), Null, Interval[point,
+ * point]). This matches legacy behavior for point-interval comparisons.
+ */
+private fun promotePointToInterval(point: ElmExpression): ElmExpression {
+    return org.hl7.elm.r1.If().apply {
+        condition = org.hl7.elm.r1.IsNull().apply { operand = point }
+        then = org.hl7.elm.r1.Null()
+        `else` =
+            org.hl7.elm.r1.Interval().apply {
+                low = point
+                high = point
+                lowClosed = true
+                highClosed = true
+            }
+    }
 }

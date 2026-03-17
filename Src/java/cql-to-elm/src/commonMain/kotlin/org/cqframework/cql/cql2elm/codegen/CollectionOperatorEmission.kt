@@ -102,7 +102,23 @@ internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpr
 internal fun EmissionContext.emitExpandCollapse(
     expression: org.hl7.cql.ast.ExpandCollapseExpression
 ): ElmExpression {
-    val sourceElm = emitExpression(expression.operand)
+    var sourceElm = emitExpression(expression.operand)
+
+    // Null-As wrapping: when the source is null, wrap in As(List<Interval<Any>>)
+    if (
+        expression.operand is org.hl7.cql.ast.LiteralExpression &&
+            (expression.operand as org.hl7.cql.ast.LiteralExpression).literal
+                is org.hl7.cql.ast.NullLiteral
+    ) {
+        sourceElm =
+            wrapNullAs(
+                sourceElm,
+                org.hl7.cql.model.ListType(
+                    org.hl7.cql.model.IntervalType(operatorRegistry.type("Any"))
+                ),
+            )
+    }
+
     val perElm = buildPerOperand(expression)
     val operands = mutableListOf(sourceElm, perElm)
     return when (expression.expandCollapseKind) {
