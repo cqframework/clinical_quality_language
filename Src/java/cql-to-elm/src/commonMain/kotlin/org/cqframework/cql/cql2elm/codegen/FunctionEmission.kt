@@ -71,6 +71,16 @@ internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpr
     if (choiceType != null) {
         thenElm = wrapInAs(thenElm, choiceType)
         elseElm = wrapInAs(elseElm, choiceType)
+    } else {
+        // Null-As wrapping: when one branch is null and the other has a known type,
+        // wrap the null in As(thatType) to match legacy behavior
+        val thenType = semanticModel[expression.thenBranch]
+        val elseType = semanticModel[expression.elseBranch]
+        if (isNullBranch(expression.elseBranch) && thenType != null) {
+            elseElm = wrapNullAs(elseElm, thenType)
+        } else if (isNullBranch(expression.thenBranch) && elseType != null) {
+            thenElm = wrapNullAs(thenElm, elseType)
+        }
     }
 
     return If().apply {
@@ -78,6 +88,12 @@ internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpr
         then = thenElm
         `else` = elseElm
     }
+}
+
+/** Check if an AST expression is a null literal. */
+private fun isNullBranch(expr: org.hl7.cql.ast.Expression): Boolean {
+    return expr is org.hl7.cql.ast.LiteralExpression &&
+        expr.literal is org.hl7.cql.ast.NullLiteral
 }
 
 /**
