@@ -20,6 +20,35 @@ internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpressio
     var leftElm = emitExpression(expression.left)
     var rightElm = emitExpression(expression.right)
 
+    // Apply operator resolution conversions for set operators
+    // For union/intersect/except with empty list operands, the resolution
+    // provides list demotion conversions (List<Any> → List<T>) that must be
+    // applied as implicit Query wrapping with As cast
+    val resolution = lookupResolution(expression)
+    if (resolution != null && resolution.hasConversions()) {
+        resolution.conversions.forEachIndexed { index, conversion ->
+            if (conversion != null) {
+                if (
+                    conversion.isListConversion &&
+                        conversion.conversion != null &&
+                        conversion.conversion!!.isCast
+                ) {
+                    // List demotion: wrap in Query with As cast on elements
+                    val target =
+                        if (index == 0) leftElm else rightElm
+                    val wrapped = wrapListConversion(target, conversion.conversion!!)
+                    if (index == 0) leftElm = wrapped else rightElm = wrapped
+                } else {
+                    // Other conversions (operator-based): use standard path
+                    val target =
+                        if (index == 0) leftElm else rightElm
+                    val wrapped = applyConversion(target, conversion)
+                    if (index == 0) leftElm = wrapped else rightElm = wrapped
+                }
+            }
+        }
+    }
+
     // For union, wrap operands in As when element types differ (choice type promotion)
     if (expression.operator == BinaryOperator.UNION) {
         val leftType = semanticModel[expression.left]

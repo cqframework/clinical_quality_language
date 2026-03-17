@@ -213,10 +213,6 @@ class FullParityTest {
                     "ToDecimal promotion in if/case/interval, null-As in case",
                 // Name hiding: QDM model interval resolution and out-of-scope error recovery
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
-                // CqlListOperators: Exists/Contains/In/Includes function-to-ELM mapping,
-                // union empty list wrapping, remaining null As wrapping
-                "CqlListOperators" to
-                    "List includes/contains disambiguation and empty list wrapping",
                 // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes
                 "AgeOperators" to
                     "System function mapping: legacy maps age functions to CalculateAge ELM nodes",

@@ -107,9 +107,12 @@ private fun EmissionContext.emitIncludesPhrase(
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
     val right = applyBoundary(rightElm, phrase.rightBoundary)
     // Determine if the right operand is a point (not a list/interval)
+    // Empty list literals ({}) are treated as element type by legacy operator resolution
+    // when the left operand has a concrete (non-Any) element type
     val isPointRight =
         (phrase.rightBoundary != null && phrase.rightBoundary != IntervalBoundarySelector.OCCURS) ||
-            isElementType(expression.right)
+            isElementType(expression.right) ||
+            (isEmptyListLiteral(expression.right) && hasConcreteListElementType(expression.left))
     return if (phrase.proper) {
         if (isPointRight) {
             ProperContains().apply {
@@ -351,6 +354,27 @@ private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression
 internal fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
     if (expr !is org.hl7.cql.ast.LiteralExpression) return false
     return expr.literal is org.hl7.cql.ast.NullLiteral
+}
+
+/** Check if an AST expression is an empty list literal (`{}`). */
+internal fun isEmptyListLiteral(expr: org.hl7.cql.ast.Expression): Boolean {
+    if (expr !is org.hl7.cql.ast.LiteralExpression) return false
+    val literal = expr.literal
+    return literal is org.hl7.cql.ast.ListLiteral && literal.elements.isEmpty()
+}
+
+/**
+ * Check if an expression's type is a List with a concrete (non-Any) element type. Used to
+ * determine whether an empty list on the other side of `includes` should be treated as an element.
+ */
+private fun EmissionContext.hasConcreteListElementType(
+    expression: org.hl7.cql.ast.Expression
+): Boolean {
+    val type = semanticModel[expression] ?: return false
+    if (type !is ListType) return false
+    val elemType = type.elementType
+    // "Any" is the default for untyped empty lists - a concrete type means the list has elements
+    return elemType.toString() != "System.Any"
 }
 
 /**
