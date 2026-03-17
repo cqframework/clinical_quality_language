@@ -158,6 +158,10 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         ) {
             return wrapListConversion(expression, conversion.conversion!!)
         }
+        // Interval conversion: expand into Interval with Property access on low/high/lowClosed/highClosed
+        if (conversion.isIntervalConversion && conversion.conversion != null) {
+            return wrapIntervalConversion(expression, conversion)
+        }
         // List/interval promotions and demotions not yet handled
         return expression
     }
@@ -206,6 +210,40 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                 asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
             } else {
                 asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+            }
+        }
+    }
+
+    /**
+     * Expand an interval expression by extracting Property paths on low/high/lowClosed/highClosed
+     * and applying the inner conversion to the low and high values. This matches the legacy
+     * translator's `convertIntervalExpression` behavior for interval type demotion (e.g.,
+     * `Interval<Any>` → `Interval<Integer>`).
+     */
+    fun wrapIntervalConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
+        val innerConversion = conversion.conversion!!
+        return org.hl7.elm.r1.Interval().apply {
+            low = applyConversion(
+                org.hl7.elm.r1.Property().apply {
+                    path = "low"
+                    source = expression
+                },
+                innerConversion,
+            )
+            lowClosedExpression = org.hl7.elm.r1.Property().apply {
+                path = "lowClosed"
+                source = expression
+            }
+            high = applyConversion(
+                org.hl7.elm.r1.Property().apply {
+                    path = "high"
+                    source = expression
+                },
+                innerConversion,
+            )
+            highClosedExpression = org.hl7.elm.r1.Property().apply {
+                path = "highClosed"
+                source = expression
             }
         }
     }

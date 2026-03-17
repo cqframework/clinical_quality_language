@@ -214,6 +214,25 @@ internal fun EmissionContext.emitMembership(expression: MembershipExpression): E
         }
     }
 
+    // Interval<Any> expansion for membership operators:
+    // In(T, Interval<Any>) → expand Interval<Any> to Interval<T>
+    // Contains(Interval<Any>, T) → expand Interval<Any> to Interval<T>
+    if (
+        expression.operator == MembershipOperator.IN &&
+            rightType is org.hl7.cql.model.IntervalType &&
+            rightType.pointType.toString() == "System.Any" &&
+            leftType != null
+    ) {
+        rightElm = expandIntervalToPointType(rightElm, leftType)
+    } else if (
+        expression.operator == MembershipOperator.CONTAINS &&
+            leftType is org.hl7.cql.model.IntervalType &&
+            leftType.pointType.toString() == "System.Any" &&
+            rightType != null
+    ) {
+        leftElm = expandIntervalToPointType(leftElm, rightType)
+    }
+
     val precision = expression.precision?.let { precisionStringToEnum(it) }
     return when (expression.operator) {
         MembershipOperator.IN ->
@@ -225,6 +244,47 @@ internal fun EmissionContext.emitMembership(expression: MembershipExpression): E
             Contains().apply {
                 operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
+            }
+    }
+}
+
+/**
+ * Expand an `Interval<Any>` expression by extracting Property paths and casting to the target
+ * point type, producing Interval(As(T, low), lowClosed, As(T, high), highClosed).
+ */
+private fun EmissionContext.expandIntervalToPointType(
+    intervalExpr: ElmExpression,
+    targetPointType: org.hl7.cql.model.DataType,
+): ElmExpression {
+    val asQName = operatorRegistry.typeBuilder.dataTypeToQName(targetPointType)
+    return org.hl7.elm.r1.Interval().apply {
+        low =
+            org.hl7.elm.r1.As().apply {
+                asType = asQName
+                operand =
+                    org.hl7.elm.r1.Property().apply {
+                        path = "low"
+                        source = intervalExpr
+                    }
+            }
+        lowClosedExpression =
+            org.hl7.elm.r1.Property().apply {
+                path = "lowClosed"
+                source = intervalExpr
+            }
+        high =
+            org.hl7.elm.r1.As().apply {
+                asType = asQName
+                operand =
+                    org.hl7.elm.r1.Property().apply {
+                        path = "high"
+                        source = intervalExpr
+                    }
+            }
+        highClosedExpression =
+            org.hl7.elm.r1.Property().apply {
+                path = "highClosed"
+                source = intervalExpr
             }
     }
 }

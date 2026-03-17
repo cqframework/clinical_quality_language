@@ -64,6 +64,19 @@ internal fun EmissionContext.emitIntervalRelation(
         leftElm = wrapNullAs(leftElm, rightType.pointType)
     }
 
+    // Interval<Any> expansion: when the RIGHT operand is Interval<Any> and the LEFT is
+    // a concrete Interval<T>, expand the right to match. This mirrors the legacy behavior
+    // where operator resolution binds T from the left operand and converts the right.
+    // (When the LEFT is Interval<Any>, the legacy uses T=Any and no conversion occurs.)
+    if (
+        leftType is IntervalType &&
+            rightType is IntervalType &&
+            rightType.pointType.toString() == "System.Any" &&
+            leftType.pointType.toString() != "System.Any"
+    ) {
+        rightElm = expandIntervalToType(rightElm, leftType.pointType)
+    }
+
     return when (val phrase = expression.phrase) {
         is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
         is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
@@ -108,11 +121,16 @@ private fun EmissionContext.emitIncludesPhrase(
     val right = applyBoundary(rightElm, phrase.rightBoundary)
     // Determine if the right operand is a point (not a list/interval)
     // Empty list literals ({}) are treated as element type by legacy operator resolution
-    // when the left operand has a concrete (non-Any) element type
+    // when the left operand has a concrete (non-Any) element type.
+    // When the left is Interval<Any>, the right (any type) is treated as element (Contains).
+    val leftType = semanticModel[expression.left]
+    val leftIsAnyInterval =
+        leftType is IntervalType && leftType.pointType.toString() == "System.Any"
     val isPointRight =
         (phrase.rightBoundary != null && phrase.rightBoundary != IntervalBoundarySelector.OCCURS) ||
             isElementType(expression.right) ||
-            (isEmptyListLiteral(expression.right) && hasConcreteListElementType(expression.left))
+            (isEmptyListLiteral(expression.right) && hasConcreteListElementType(expression.left)) ||
+            leftIsAnyInterval
     return if (phrase.proper) {
         if (isPointRight) {
             ProperContains().apply {
@@ -375,6 +393,47 @@ private fun EmissionContext.hasConcreteListElementType(
     val elemType = type.elementType
     // "Any" is the default for untyped empty lists - a concrete type means the list has elements
     return elemType.toString() != "System.Any"
+}
+
+/**
+ * Expand an `Interval<Any>` expression by extracting Property paths and casting to the target point
+ * type. Produces: `Interval(As(T, low), lowClosed, As(T, high), highClosed)`.
+ */
+private fun EmissionContext.expandIntervalToType(
+    intervalExpr: ElmExpression,
+    targetPointType: org.hl7.cql.model.DataType,
+): ElmExpression {
+    val asQName = operatorRegistry.typeBuilder.dataTypeToQName(targetPointType)
+    return org.hl7.elm.r1.Interval().apply {
+        low =
+            org.hl7.elm.r1.As().apply {
+                asType = asQName
+                operand =
+                    org.hl7.elm.r1.Property().apply {
+                        path = "low"
+                        source = intervalExpr
+                    }
+            }
+        lowClosedExpression =
+            org.hl7.elm.r1.Property().apply {
+                path = "lowClosed"
+                source = intervalExpr
+            }
+        high =
+            org.hl7.elm.r1.As().apply {
+                asType = asQName
+                operand =
+                    org.hl7.elm.r1.Property().apply {
+                        path = "high"
+                        source = intervalExpr
+                    }
+            }
+        highClosedExpression =
+            org.hl7.elm.r1.Property().apply {
+                path = "highClosed"
+                source = intervalExpr
+            }
+    }
 }
 
 /**

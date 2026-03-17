@@ -385,7 +385,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         // Exclude Any (from null) for point type computation
         val nonNullTypes = listOfNotNull(lowType, highType).filter { it != anyType }
         val pointType =
-            if (nonNullTypes.isEmpty()) return null
+            if (nonNullTypes.isEmpty()) anyType
             else nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
         return org.hl7.cql.model.IntervalType(pointType)
     }
