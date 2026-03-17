@@ -56,6 +56,8 @@ import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
+import org.hl7.cql.model.TupleType
+import org.hl7.cql.model.TupleTypeElement
 
 /**
  * Walks the AST and infers types for all expressions, populating the [TypeTable]. Uses the
@@ -370,6 +372,8 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
             is NullLiteral -> operatorRegistry.type("Any")
             is ListLiteral -> inferListLiteralType(literal)
             is org.hl7.cql.ast.IntervalLiteral -> inferIntervalLiteralType(literal)
+            is org.hl7.cql.ast.TupleLiteral -> inferTupleLiteralType(literal)
+            is org.hl7.cql.ast.InstanceLiteral -> inferInstanceLiteralType(literal)
             else -> null
         }
     }
@@ -395,6 +399,22 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         if (nonNullTypes.isEmpty()) return ListType(anyType)
         val commonType = nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
         return ListType(commonType)
+    }
+
+    private fun inferTupleLiteralType(literal: org.hl7.cql.ast.TupleLiteral): DataType? {
+        val elements =
+            literal.elements.map { elem ->
+                val elemType = inferType(elem.expression) ?: return null
+                TupleTypeElement(elem.name.value, elemType)
+            }
+        return TupleType(elements)
+    }
+
+    private fun inferInstanceLiteralType(literal: org.hl7.cql.ast.InstanceLiteral): DataType? {
+        // Resolve element expressions for side effects (e.g., identifier resolution)
+        literal.elements.forEach { inferType(it.expression) }
+        val typeName = literal.type?.name?.simpleName ?: return null
+        return operatorRegistry.type(typeName)
     }
 
     @Suppress("ReturnCount")

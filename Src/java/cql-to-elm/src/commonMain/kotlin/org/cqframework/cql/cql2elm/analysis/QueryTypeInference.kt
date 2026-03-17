@@ -6,6 +6,8 @@ import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
+import org.hl7.cql.model.TupleType
+import org.hl7.cql.model.TupleTypeElement
 
 @Suppress("ReturnCount")
 internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType? {
@@ -53,16 +55,22 @@ internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?
                 ListType(retType)
             }
                 ?: run {
-                    // No return clause: result is List<sourceType>
                     if (expression.sources.size > 1) {
-                        throw UnsupportedOperationException(
-                            "Multi-source queries without return clause are not yet supported."
-                        )
+                        // Multi-source query without return: synthesize Tuple type from aliases
+                        val elements =
+                            expression.sources.mapNotNull { src ->
+                                val elemType = inferSourceElementType(src) ?: return@mapNotNull null
+                                TupleTypeElement(src.alias.value, elemType)
+                            }
+                        if (elements.size != expression.sources.size) return null
+                        ListType(TupleType(elements))
+                    } else {
+                        // Single-source: result is List<sourceType>
+                        val sourceType =
+                            expression.sources.firstOrNull()?.let { inferSourceElementType(it) }
+                                ?: return null
+                        ListType(sourceType)
                     }
-                    val sourceType =
-                        expression.sources.firstOrNull()?.let { inferSourceElementType(it) }
-                            ?: return null
-                    ListType(sourceType)
                 }
 
         // Resolve sort (runs regardless of whether return clause is present)

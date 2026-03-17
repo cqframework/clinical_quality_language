@@ -11,6 +11,7 @@ import org.hl7.cql.ast.WithClause as AstWithClause
 import org.hl7.cql.ast.WithoutClause as AstWithoutClause
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.AggregateClause as ElmAggregateClause
+import org.hl7.elm.r1.AliasRef
 import org.hl7.elm.r1.AliasedQuerySource as ElmAliasedQuerySource
 import org.hl7.elm.r1.ByColumn
 import org.hl7.elm.r1.ByDirection
@@ -23,6 +24,8 @@ import org.hl7.elm.r1.ReturnClause as ElmReturnClause
 import org.hl7.elm.r1.SortByItem as ElmSortByItem
 import org.hl7.elm.r1.SortClause as ElmSortClause
 import org.hl7.elm.r1.SortDirection as ElmSortDirection
+import org.hl7.elm.r1.Tuple as ElmTuple
+import org.hl7.elm.r1.TupleElement as ElmTupleElement
 import org.hl7.elm.r1.With
 import org.hl7.elm.r1.Without
 
@@ -51,13 +54,51 @@ internal fun EmissionContext.emitQuery(expression: QueryExpression): ElmExpressi
     // Aggregate
     expression.aggregate?.let { query.aggregate = emitAggregateClause(it) }
 
-    // Return
-    expression.result?.let { query.`return` = emitReturnClause(it) }
+    // Return — synthesize a Tuple return for multi-source queries without explicit return
+    if (expression.result != null) {
+        query.`return` = emitReturnClause(expression.result!!)
+    } else if (expression.sources.size > 1 && expression.aggregate == null) {
+        query.`return` = synthesizeMultiSourceReturn(expression)
+    }
 
     // Sort
     expression.sort?.let { query.sort = emitSortClause(it) }
 
     return query
+}
+
+/**
+ * Synthesize a return clause with a Tuple of AliasRefs for multi-source queries that have no
+ * explicit return clause. This matches legacy translator behavior which creates a Tuple with one
+ * element per source alias.
+ */
+private fun EmissionContext.synthesizeMultiSourceReturn(
+    expression: QueryExpression
+): ElmReturnClause {
+    val tuple = ElmTuple()
+    for (source in expression.sources) {
+        val alias = source.alias.value
+        val element = ElmTupleElement().withName(alias)
+        val aliasRef = AliasRef().withName(alias)
+        // Set resultType on aliasRef from the source expression type
+        val sourceExpr =
+            when (val qs = source.source) {
+                is ExpressionQuerySource -> qs.expression
+                is RetrieveExpression -> qs
+            }
+        val sourceExprType = semanticModel[sourceExpr]
+        if (sourceExprType != null) {
+            val elementType =
+                if (sourceExprType is ListType) sourceExprType.elementType else sourceExprType
+            decorate(aliasRef, elementType)
+        }
+        element.value = aliasRef
+        tuple.element.add(element)
+    }
+    val ret = ElmReturnClause()
+    ret.distinct = true
+    ret.expression = tuple
+    return ret
 }
 
 private fun EmissionContext.emitAliasedQuerySource(

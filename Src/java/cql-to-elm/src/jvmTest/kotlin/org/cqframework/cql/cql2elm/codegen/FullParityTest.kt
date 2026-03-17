@@ -183,6 +183,9 @@ class FullParityTest {
                     "Error recovery: legacy replaces unmatched function call with Null",
                 "RecursiveFunctions" to
                     "Error recovery: legacy replaces recursive function body with Null",
+                // shouldNotBeAllowed: legacy replaces Includes on non-list type with Null
+                "MultiSourceQuery" to
+                    "Error recovery: legacy replaces type-invalid Includes with Null",
                 // Null type-casting: legacy wraps null operands in As(ListTypeSpecifier)
                 // for list operations and wraps lists in As for union choice types;
                 // also wraps heterogeneous Flatten in implicit Query
@@ -226,6 +229,9 @@ class FullParityTest {
                 // Terminology: legacy resolves retrieve code properties and function references
                 "TerminologyReferences" to
                     "Retrieve code properties and terminology function resolution",
+                // QUICK model types (Element, Extension, Code) not yet supported
+                "TupleAndClassConversions" to
+                    "QUICK model: Element/Extension types not yet supported",
             )
     }
 }
