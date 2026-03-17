@@ -348,7 +348,7 @@ private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression
 }
 
 /** Check if an AST expression is a null literal. */
-private fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
+internal fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
     if (expr !is org.hl7.cql.ast.LiteralExpression) return false
     return expr.literal is org.hl7.cql.ast.NullLiteral
 }

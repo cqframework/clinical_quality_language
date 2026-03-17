@@ -92,14 +92,76 @@ internal fun EmissionContext.emitListTransform(expression: ListTransformExpressi
             }
     }
 
+    // For Flatten with heterogeneous list (mixed List<T> and T elements),
+    // wrap in implicit Query that casts each element to List<T>
+    if (expression.listTransformKind == ListTransformKind.FLATTEN && !isNullLiteralExpr(expression.operand)) {
+        val flattenListType = detectHeterogeneousFlatten(expression.operand)
+        if (flattenListType != null) {
+            val queryWrapped = wrapFlattenHeterogeneous(operandElm, flattenListType)
+            return Flatten().apply { operand = queryWrapped }
+        }
+    }
+
     return when (expression.listTransformKind) {
         ListTransformKind.DISTINCT -> Distinct().apply { operand = operandElm }
         ListTransformKind.FLATTEN -> Flatten().apply { operand = operandElm }
     }
 }
 
-/** Check if an AST expression is a null literal. */
-private fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
-    if (expr !is org.hl7.cql.ast.LiteralExpression) return false
-    return expr.literal is org.hl7.cql.ast.NullLiteral
+/**
+ * Detect if a flatten operand is a heterogeneous list (contains both List<T> and T elements).
+ * Returns the List<T> type to cast to, or null if not heterogeneous.
+ */
+private fun EmissionContext.detectHeterogeneousFlatten(
+    operand: org.hl7.cql.ast.Expression
+): ListType? {
+    // Check if the operand is a list literal with mixed element types
+    if (operand !is org.hl7.cql.ast.LiteralExpression) return null
+    val literal = operand.literal
+    if (literal !is org.hl7.cql.ast.ListLiteral) return null
+
+    val elemTypes = literal.elements.mapNotNull { semanticModel[it] }
+    if (elemTypes.isEmpty()) return null
+
+    val hasListType = elemTypes.any { it is ListType }
+    val hasNonListType = elemTypes.any { it !is ListType }
+
+    if (hasListType && hasNonListType) {
+        // Find the list element type
+        val listTypes = elemTypes.filterIsInstance<ListType>()
+        val elementType = listTypes.first().elementType
+        return ListType(elementType)
+    }
+    return null
+}
+
+/**
+ * Wrap a heterogeneous list in an implicit Query that casts each element to the target list type.
+ * Produces: Query(source=[X from list], return=As(X, targetListType))
+ */
+private fun EmissionContext.wrapFlattenHeterogeneous(
+    listExpr: ElmExpression,
+    targetListType: ListType,
+): ElmExpression {
+    return org.hl7.elm.r1.Query().apply {
+        source =
+            mutableListOf(
+                org.hl7.elm.r1.AliasedQuerySource().apply {
+                    alias = "X"
+                    expression = listExpr
+                }
+            )
+        `let` = mutableListOf()
+        relationship = mutableListOf()
+        `return` =
+            org.hl7.elm.r1.ReturnClause().apply {
+                distinct = false
+                expression =
+                    org.hl7.elm.r1.As().apply {
+                        operand = org.hl7.elm.r1.AliasRef().apply { name = "X" }
+                        asTypeSpecifier =
+                            operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetListType)
+                    }
+            }
+    }
 }
