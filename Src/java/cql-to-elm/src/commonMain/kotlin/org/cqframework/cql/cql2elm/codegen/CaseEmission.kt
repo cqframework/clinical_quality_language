@@ -12,10 +12,9 @@ import org.hl7.elm.r1.Expression as ElmExpression
 /**
  * Emit a CaseExpression as an ELM Case node. Supports both condition-style (no comparand) and
  * comparand-style case expressions. Handles:
- * - Implicit type promotion (Integer→Decimal) across branches
- * - Null-As wrapping for null branches
- * - Choice type wrapping when branches have incompatible types
- * - Comparand-style when-clause conversions
+ * - Choice type wrapping when branches have incompatible types (emission-level)
+ *
+ * Null-As wrapping and implicit type promotion are inserted by ConversionInserter before emission.
  *
  * Children (comparand, case conditions/results, elseResult) are pre-folded by the catamorphism.
  */
@@ -26,50 +25,20 @@ internal fun EmissionContext.emitCaseExpression(
     elseElm: ElmExpression,
 ): ElmExpression {
     val choiceType = computeCaseChoiceType(expression)
-    val anyType = operatorRegistry.type("Any")
-
-    // Compute the result type from non-null branches for null-As wrapping and type promotion
-    // Use the overall expression type (which considers implicit conversions) rather than
-    // just the first branch type
-    val resultType = semanticModel[expression]?.let { if (it == anyType) null else it }
-
-    // For comparand-style cases, determine comparand type for when-clause conversions
-    val comparandType = expression.comparand?.let { semanticModel[it] }
 
     return Case().apply {
         comparandElm?.let { comparand = it }
 
         caseItem =
             expression.cases
-                .mapIndexed { index, item ->
+                .mapIndexed { index, _ ->
                     CaseItem().apply {
-                        var whenElm = casesElm[index].condition
-                        val thenElm = casesElm[index].result
-
-                        // Comparand when-clause: convert when value to comparand type
-                        if (comparandType != null) {
-                            val whenType = semanticModel[item.condition]
-                            if (
-                                whenType != null && whenType != comparandType && whenType != anyType
-                            ) {
-                                whenElm = applyImplicitConversion(whenElm, whenType, comparandType)
-                            } else if (whenType == anyType) {
-                                // Null when in comparand case: wrap in As(comparandType)
-                                whenElm = wrapNullAs(whenElm, comparandType)
-                            }
-                        }
-
-                        `when` = whenElm
+                        `when` = casesElm[index].condition
                         then =
                             if (choiceType != null) {
-                                wrapCaseAs(thenElm, choiceType)
+                                wrapCaseAs(casesElm[index].result, choiceType)
                             } else {
-                                wrapCaseBranch(
-                                    thenElm,
-                                    semanticModel[item.result],
-                                    resultType,
-                                    anyType,
-                                )
+                                casesElm[index].result
                             }
                     }
                 }
@@ -79,28 +48,9 @@ internal fun EmissionContext.emitCaseExpression(
             if (choiceType != null) {
                 wrapCaseAs(elseElm, choiceType)
             } else {
-                wrapCaseBranch(elseElm, semanticModel[expression.elseResult], resultType, anyType)
+                elseElm
             }
     }
-}
-
-/** Wrap a case branch expression: apply null-As wrapping or implicit type promotion as needed. */
-private fun EmissionContext.wrapCaseBranch(
-    expression: ElmExpression,
-    branchType: DataType?,
-    resultType: DataType?,
-    anyType: DataType,
-): ElmExpression {
-    if (resultType == null) return expression
-    // Null branch: wrap in As(resultType)
-    if (branchType == anyType) {
-        return wrapNullAs(expression, resultType)
-    }
-    // Type promotion: apply implicit conversion (e.g., Integer→Decimal)
-    if (branchType != null && branchType != resultType) {
-        return applyImplicitConversion(expression, branchType, resultType)
-    }
-    return expression
 }
 
 private fun EmissionContext.computeCaseChoiceType(expression: CaseExpression): ChoiceType? {
