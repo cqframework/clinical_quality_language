@@ -78,9 +78,28 @@ private fun EmissionContext.wrapAsListChoice(
 
 /** Emit a [ListTransformExpression] (distinct/flatten) as the corresponding ELM unary node. */
 internal fun EmissionContext.emitListTransform(expression: ListTransformExpression): ElmExpression {
-    val operandElm = emitExpression(expression.operand)
+    var operandElm = emitExpression(expression.operand)
+
+    // Null-As wrapping for null operands
+    if (isNullLiteralExpr(expression.operand)) {
+        val anyType = operatorRegistry.type("Any")
+        operandElm =
+            when (expression.listTransformKind) {
+                // distinct null → As(List<Any>)
+                ListTransformKind.DISTINCT -> wrapNullAs(operandElm, ListType(anyType))
+                // flatten null → As(List<List<Any>>)
+                ListTransformKind.FLATTEN -> wrapNullAs(operandElm, ListType(ListType(anyType)))
+            }
+    }
+
     return when (expression.listTransformKind) {
         ListTransformKind.DISTINCT -> Distinct().apply { operand = operandElm }
         ListTransformKind.FLATTEN -> Flatten().apply { operand = operandElm }
     }
+}
+
+/** Check if an AST expression is a null literal. */
+private fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
+    if (expr !is org.hl7.cql.ast.LiteralExpression) return false
+    return expr.literal is org.hl7.cql.ast.NullLiteral
 }

@@ -190,7 +190,7 @@ class FullParityTest {
                 // for list operations and wraps lists in As for union choice types;
                 // also wraps heterogeneous Flatten in implicit Query
                 "ListOperators" to
-                    "Null type inference: legacy wraps null in As(List<Any>), choice union As, Flatten query",
+                    "Heterogeneous Flatten: legacy wraps mixed list/element in implicit Query",
                 // TestAliasSort: alias sort now handled (replaced with Null)
                 // Error recovery: legacy replaces all invalid sort clauses with Null
                 "InvalidSortClauses" to

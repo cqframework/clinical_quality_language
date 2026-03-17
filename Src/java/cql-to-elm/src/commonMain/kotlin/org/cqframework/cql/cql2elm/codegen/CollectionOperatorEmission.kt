@@ -31,7 +31,16 @@ import org.hl7.elm.r1.Width
 
 /** Emit an [ExistsExpression] as an ELM Exists node. */
 internal fun EmissionContext.emitExists(expression: ExistsExpression): ElmExpression {
-    return Exists().apply { operand = emitExpression(expression.operand) }
+    var operandElm = emitExpression(expression.operand)
+    // Null-As wrapping: exists null → wrap null as List<Any>
+    if (isNullLiteral(expression.operand)) {
+        operandElm =
+            wrapNullAs(
+                operandElm,
+                org.hl7.cql.model.ListType(operatorRegistry.type("Any")),
+            )
+    }
+    return Exists().apply { operand = operandElm }
 }
 
 /** Emit a [WidthExpression] as an ELM Width node. */
