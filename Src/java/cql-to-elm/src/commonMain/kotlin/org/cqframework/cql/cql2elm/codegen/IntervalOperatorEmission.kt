@@ -47,8 +47,22 @@ import org.hl7.elm.r1.Starts
 internal fun EmissionContext.emitIntervalRelation(
     expression: IntervalRelationExpression
 ): ElmExpression {
-    val leftElm = emitExpression(expression.left)
-    val rightElm = emitExpression(expression.right)
+    var leftElm = emitExpression(expression.left)
+    var rightElm = emitExpression(expression.right)
+
+    // Null-As wrapping for interval relation operands
+    val leftIsNull = isNullLiteralExpr(expression.left)
+    val rightIsNull = isNullLiteralExpr(expression.right)
+    val leftType = semanticModel[expression.left]
+    val rightType = semanticModel[expression.right]
+
+    if (rightIsNull && leftType is IntervalType) {
+        // Right operand is null, left is an interval → wrap null as point type
+        rightElm = wrapNullAs(rightElm, leftType.pointType)
+    } else if (leftIsNull && rightType is IntervalType) {
+        // Left operand is null, right is an interval → wrap null as point type
+        leftElm = wrapNullAs(leftElm, rightType.pointType)
+    }
 
     return when (val phrase = expression.phrase) {
         is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
@@ -331,6 +345,12 @@ private fun emitEndsPhrase(
 private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression): Boolean {
     val type = semanticModel[expression] ?: return false
     return type !is ListType && type !is IntervalType
+}
+
+/** Check if an AST expression is a null literal. */
+private fun isNullLiteralExpr(expr: org.hl7.cql.ast.Expression): Boolean {
+    if (expr !is org.hl7.cql.ast.LiteralExpression) return false
+    return expr.literal is org.hl7.cql.ast.NullLiteral
 }
 
 /**

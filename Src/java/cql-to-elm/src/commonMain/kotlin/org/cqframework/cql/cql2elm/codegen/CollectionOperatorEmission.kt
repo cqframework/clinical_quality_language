@@ -36,7 +36,16 @@ internal fun EmissionContext.emitExists(expression: ExistsExpression): ElmExpres
 
 /** Emit a [WidthExpression] as an ELM Width node. */
 internal fun EmissionContext.emitWidth(expression: WidthExpression): ElmExpression {
-    return Width().apply { operand = emitExpression(expression.operand) }
+    var operandElm = emitExpression(expression.operand)
+    // Null-As wrapping: width of null → wrap null as Interval<Any>
+    if (isNullLiteral(expression.operand)) {
+        operandElm =
+            wrapNullAs(
+                operandElm,
+                org.hl7.cql.model.IntervalType(operatorRegistry.type("Any")),
+            )
+    }
+    return Width().apply { operand = operandElm }
 }
 
 /** Emit an [ElementExtractorExpression] as PointFrom or SingletonFrom. */
@@ -157,8 +166,45 @@ private fun EmissionContext.buildPerOperand(
 
 /** Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. */
 internal fun EmissionContext.emitMembership(expression: MembershipExpression): ElmExpression {
-    val leftElm = emitExpression(expression.left)
-    val rightElm = emitExpression(expression.right)
+    var leftElm = emitExpression(expression.left)
+    var rightElm = emitExpression(expression.right)
+
+    // Null-As wrapping for membership operators
+    val leftType = semanticModel[expression.left]
+    val rightType = semanticModel[expression.right]
+
+    when (expression.operator) {
+        MembershipOperator.CONTAINS -> {
+            // Contains(collection, element) - wrap null element based on collection's element type
+            if (isNullLiteral(expression.right)) {
+                val elemType = elementTypeOf(leftType)
+                if (elemType != null) {
+                    rightElm = wrapNullAs(rightElm, elemType)
+                }
+            }
+            // Contains(null, element) - wrap null collection based on element type
+            if (isNullLiteral(expression.left) && rightType != null) {
+                leftElm =
+                    wrapNullAs(leftElm, org.hl7.cql.model.ListType(rightType))
+            }
+        }
+        MembershipOperator.IN -> {
+            // In(element, interval) - wrap null element based on interval's point type
+            // Only wrap for interval context, not list context
+            if (isNullLiteral(expression.left) && rightType is org.hl7.cql.model.IntervalType) {
+                leftElm = wrapNullAs(leftElm, rightType.pointType)
+            }
+            // In(element, null) - wrap null collection as interval based on element type
+            if (isNullLiteral(expression.right) && leftType != null) {
+                rightElm =
+                    wrapNullAs(
+                        rightElm,
+                        org.hl7.cql.model.IntervalType(leftType),
+                    )
+            }
+        }
+    }
+
     val precision = expression.precision?.let { precisionStringToEnum(it) }
     return when (expression.operator) {
         MembershipOperator.IN ->
@@ -173,3 +219,16 @@ internal fun EmissionContext.emitMembership(expression: MembershipExpression): E
             }
     }
 }
+
+/** Check if an AST expression is a null literal. */
+private fun isNullLiteral(expr: org.hl7.cql.ast.Expression): Boolean =
+    expr is org.hl7.cql.ast.LiteralExpression &&
+        expr.literal is org.hl7.cql.ast.NullLiteral
+
+/** Get the element type of a list or the point type of an interval. */
+private fun elementTypeOf(type: org.hl7.cql.model.DataType?): org.hl7.cql.model.DataType? =
+    when (type) {
+        is org.hl7.cql.model.ListType -> type.elementType
+        is org.hl7.cql.model.IntervalType -> type.pointType
+        else -> null
+    }
