@@ -88,15 +88,15 @@ internal fun EmissionContext.emitIfExpression(
                 thenType != anyType &&
                 elseType != anyType
         ) {
-            thenResult = applyImplicitConversion(thenResult, thenType, elseType)
-            elseResult = applyImplicitConversion(elseResult, elseType, thenType)
+            thenResult = applyIfImplicitConversion(thenResult, thenType, elseType)
+            elseResult = applyIfImplicitConversion(elseResult, elseType, thenType)
         }
         // Null-As wrapping: when one branch is null and the other has a known type,
         // wrap the null in As(thatType) to match legacy behavior
         if (isNullBranch(expression.elseBranch) && thenType != null) {
-            elseResult = wrapNullAs(elseResult, thenType)
+            elseResult = wrapIfBranchNullAs(elseResult, thenType)
         } else if (isNullBranch(expression.thenBranch) && elseType != null) {
-            thenResult = wrapNullAs(thenResult, elseType)
+            thenResult = wrapIfBranchNullAs(thenResult, elseType)
         }
     }
 
@@ -108,8 +108,48 @@ internal fun EmissionContext.emitIfExpression(
 }
 
 /** Check if an AST expression is a null literal. */
-private fun isNullBranch(expr: org.hl7.cql.ast.Expression): Boolean {
-    return expr is org.hl7.cql.ast.LiteralExpression && expr.literal is org.hl7.cql.ast.NullLiteral
+private fun isNullBranch(expr: org.hl7.cql.ast.Expression): Boolean =
+    expr is org.hl7.cql.ast.LiteralExpression && expr.literal is org.hl7.cql.ast.NullLiteral
+
+/** Apply an implicit type promotion (Integer→Decimal etc.) to an ELM branch expression. */
+private fun EmissionContext.applyIfImplicitConversion(
+    expression: ElmExpression,
+    fromType: org.hl7.cql.model.DataType,
+    toType: org.hl7.cql.model.DataType,
+): ElmExpression {
+    val convName =
+        when {
+            fromType.toString() == "System.Integer" && toType.toString() == "System.Long" ->
+                "ToLong"
+            fromType.toString() == "System.Integer" && toType.toString() == "System.Decimal" ->
+                "ToDecimal"
+            fromType.toString() == "System.Long" && toType.toString() == "System.Decimal" ->
+                "ToDecimal"
+            fromType.toString() == "System.Code" && toType.toString() == "System.Concept" ->
+                "ToConcept"
+            else -> null
+        }
+    return if (convName != null) wrapConversion(expression, convName) else expression
+}
+
+/**
+ * Wrap a null ELM expression in an As node for the given target type, matching legacy behavior for
+ * if/else null branches.
+ */
+private fun EmissionContext.wrapIfBranchNullAs(
+    expression: ElmExpression,
+    targetType: org.hl7.cql.model.DataType,
+): ElmExpression {
+    return org.hl7.elm.r1.As().apply {
+        operand = expression
+        if (
+            targetType is org.hl7.cql.model.SimpleType || targetType is org.hl7.cql.model.ClassType
+        ) {
+            asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
+        } else {
+            asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+        }
+    }
 }
 
 /**

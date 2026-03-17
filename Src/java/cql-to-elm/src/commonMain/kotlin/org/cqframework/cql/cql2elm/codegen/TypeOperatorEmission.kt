@@ -51,10 +51,9 @@ internal fun EmissionContext.emitIsExpression(
 
 /**
  * Emit an [AsExpression] as an ELM [As] node.
- *
- * - Implicit casts (inserted by ConversionInserter for null wrapping): emit with `asType` (a
- *   QName) for named types or `asTypeSpecifier` for complex types. No `strict` field. This matches
- *   legacy behavior for internally generated null-As nodes.
+ * - Implicit casts (inserted by ConversionInserter for null wrapping): emit with `asType` (a QName)
+ *   for named types or `asTypeSpecifier` for complex types. No `strict` field. This matches legacy
+ *   behavior for internally generated null-As nodes.
  * - Explicit casts (user-written `x as T`): emit with `asTypeSpecifier` and `strict = false`.
  */
 internal fun EmissionContext.emitAsExpression(

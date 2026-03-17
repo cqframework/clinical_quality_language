@@ -250,35 +250,6 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
-     * Apply an implicit conversion from [fromType] to [toType] if one exists. Checks type names for
-     * known implicit conversion operators (e.g., Integer→Decimal via ToDecimal, Code→Concept via
-     * ToConcept). Used for element-level type promotion in lists, intervals, if/case branches.
-     */
-    fun applyImplicitConversion(
-        expression: ElmExpression,
-        fromType: DataType,
-        toType: DataType,
-    ): ElmExpression {
-        if (fromType == toType) return expression
-        // Known implicit conversion operators based on type names
-        val convName = implicitConversionName(fromType.toString(), toType.toString())
-        if (convName != null) {
-            return wrapConversion(expression, convName)
-        }
-        return expression
-    }
-
-    /** Map known implicit conversion type pairs to their operator names. */
-    private fun implicitConversionName(fromTypeName: String, toTypeName: String): String? =
-        when {
-            fromTypeName == "System.Integer" && toTypeName == "System.Long" -> "ToLong"
-            fromTypeName == "System.Integer" && toTypeName == "System.Decimal" -> "ToDecimal"
-            fromTypeName == "System.Long" && toTypeName == "System.Decimal" -> "ToDecimal"
-            fromTypeName == "System.Code" && toTypeName == "System.Concept" -> "ToConcept"
-            else -> null
-        }
-
-    /**
      * Recursively emit an AST [Expression] into an ELM expression. Dispatches via [fold] for
      * compile-time exhaustiveness, then decorates with result type from the [SemanticModel].
      *

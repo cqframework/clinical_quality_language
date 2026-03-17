@@ -111,6 +111,8 @@ private fun EmissionContext.wrapAsListChoice(
 /**
  * Emit a [ListTransformExpression] (distinct/flatten) as the corresponding ELM unary node. Operand
  * is pre-folded.
+ *
+ * Null-As wrapping is handled by ConversionInserter before emission.
  */
 internal fun EmissionContext.emitListTransform(
     expression: ListTransformExpression,
@@ -118,24 +120,9 @@ internal fun EmissionContext.emitListTransform(
 ): ElmExpression {
     var result = operandElm
 
-    // Null-As wrapping for null operands
-    if (isNullLiteralExpr(expression.operand)) {
-        val anyType = operatorRegistry.type("Any")
-        result =
-            when (expression.listTransformKind) {
-                // distinct null → As(List<Any>)
-                ListTransformKind.DISTINCT -> wrapNullAs(result, ListType(anyType))
-                // flatten null → As(List<List<Any>>)
-                ListTransformKind.FLATTEN -> wrapNullAs(result, ListType(ListType(anyType)))
-            }
-    }
-
     // For Flatten with heterogeneous list (mixed List<T> and T elements),
     // wrap in implicit Query that casts each element to List<T>
-    if (
-        expression.listTransformKind == ListTransformKind.FLATTEN &&
-            !isNullLiteralExpr(expression.operand)
-    ) {
+    if (expression.listTransformKind == ListTransformKind.FLATTEN) {
         val flattenListType = detectHeterogeneousFlatten(expression.operand)
         if (flattenListType != null) {
             val queryWrapped = wrapFlattenHeterogeneous(result, flattenListType)

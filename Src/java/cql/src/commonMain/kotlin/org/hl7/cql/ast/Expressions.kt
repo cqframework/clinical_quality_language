@@ -163,8 +163,8 @@ data class AsExpression(
      * When true, this is an implicitly-inserted cast (e.g., null wrapping in list/interval
      * contexts). Implicit casts serialize to `asType` (no `strict` field) in ELM, matching the
      * legacy translator's behavior for internally generated casts. User-written `x as T`
-     * expressions are explicit (`implicit = false`) and serialize to `asTypeSpecifier` +
-     * `strict = false`.
+     * expressions are explicit (`implicit = false`) and serialize to `asTypeSpecifier` + `strict =
+     * false`.
      */
     val implicit: Boolean = false,
     override val locator: Locator = Locator.UNKNOWN,

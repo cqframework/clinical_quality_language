@@ -107,26 +107,6 @@ internal fun EmissionContext.emitList(literal: ListLiteral): org.hl7.elm.r1.List
     return list
 }
 
-/**
- * Wrap a Null expression in an As node for the given target type. Used when a null literal appears
- * in a context where the expected type is known (e.g., list elements, interval bounds).
- */
-internal fun EmissionContext.wrapNullAs(
-    expression: ElmExpression,
-    targetType: org.hl7.cql.model.DataType,
-): ElmExpression {
-    return org.hl7.elm.r1.As().apply {
-        operand = expression
-        if (
-            targetType is org.hl7.cql.model.SimpleType || targetType is org.hl7.cql.model.ClassType
-        ) {
-            asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
-        } else {
-            asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
-        }
-    }
-}
-
 internal fun EmissionContext.emitTuple(literal: TupleLiteral): Tuple {
     val tuple = Tuple()
     if (literal.elements.isNotEmpty()) {

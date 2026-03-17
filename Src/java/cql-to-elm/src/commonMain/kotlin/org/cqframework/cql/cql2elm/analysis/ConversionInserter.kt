@@ -176,11 +176,18 @@ class ConversionInserter(
                 locator = expr.locator,
             )
         }
-        // Cast conversion: deferred to emission because the ELM As node for implicit casts
-        // must NOT set strict (matching legacy), but user-written AsExpression nodes DO set
-        // strict=false. Keeping casts in emission avoids needing an implicit/explicit flag.
+        // Cast conversion: insert AsExpression(implicit=true) so the emitter knows to use
+        // asType (no strict field), matching legacy behavior for internally-generated casts.
         if (conversion.isCast) {
-            return expr
+            val typeSpec = dataTypeToAstTypeSpecifier(conversion.toType) ?: return expr
+            conversionsInserted++
+            conversionKindCounts["cast"] = (conversionKindCounts["cast"] ?: 0) + 1
+            return AsExpression(
+                operand = expr,
+                type = typeSpec,
+                implicit = true,
+                locator = expr.locator,
+            )
         }
         // List conversion with element-level conversion: deferred to emission because it
         // requires generating an implicit Query with alias/return, which is an ELM-level concern
@@ -226,7 +233,12 @@ class ConversionInserter(
         val typeSpec = dataTypeToAstTypeSpecifier(targetType) ?: return expr
         conversionsInserted++
         conversionKindCounts["nullAs"] = (conversionKindCounts["nullAs"] ?: 0) + 1
-        return AsExpression(operand = expr, type = typeSpec, implicit = true, locator = expr.locator)
+        return AsExpression(
+            operand = expr,
+            type = typeSpec,
+            implicit = true,
+            locator = expr.locator,
+        )
     }
 
     /**
@@ -240,8 +252,8 @@ class ConversionInserter(
         toType: DataType,
     ): Expression {
         if (fromType == toType) return expr
-        val convName = implicitConversionNameForTypes(fromType.toString(), toType.toString())
-            ?: return expr
+        val convName =
+            implicitConversionNameForTypes(fromType.toString(), toType.toString()) ?: return expr
         val typeName = conversionOperatorToTypeName(convName) ?: return expr
         conversionsInserted++
         conversionKindCounts["implicit"] = (conversionKindCounts["implicit"] ?: 0) + 1
@@ -273,7 +285,6 @@ class ConversionInserter(
      * Apply null-As or implicit conversion wrapping to an expression if its type differs from
      * [targetType]. Returns a (possibly wrapped) expression and records whether a wrapping was
      * applied.
-     *
      * - If [originalExpr] is a null literal and [targetType] != Any → wrap in AsExpression
      * - If [fromType] != null and [fromType] != [targetType] → wrap in ConversionExpression
      */
@@ -384,6 +395,8 @@ class ConversionInserter(
         fun wrapNullArgAs(index: Int, targetType: DataType): Expression {
             val original = originalArgs[index]
             val folded = foldedArgs[index]
+            // Skip if already wrapped (e.g., by applyConversions cast handling above)
+            if (folded !== original) return folded
             return if (isNullLiteralExpr(original) && targetType != operatorRegistry.type("Any")) {
                 wrapNullAsAst(folded, targetType)
             } else {
@@ -399,8 +412,7 @@ class ConversionInserter(
                 // arg 7 (index 7): timezoneOffset → Decimal
                 for (i in result.indices) {
                     result[i] =
-                        if (i == 7) wrapNullArgAs(i, decimalType)
-                        else wrapNullArgAs(i, integerType)
+                        if (i == 7) wrapNullArgAs(i, decimalType) else wrapNullArgAs(i, integerType)
                 }
                 result
             }
@@ -443,6 +455,8 @@ class ConversionInserter(
         var changed = false
         val result = foldedArgs.toMutableList()
         expr.arguments.forEachIndexed { i, originalArg ->
+            // Skip if already wrapped (e.g., by applyConversions cast handling above)
+            if (result[i] !== originalArg && isNullLiteralExpr(originalArg)) return@forEachIndexed
             if (isNullLiteralExpr(originalArg)) {
                 result[i] = wrapNullAsAst(result[i], resultType)
                 changed = true
@@ -470,7 +484,11 @@ class ConversionInserter(
                 val newElements =
                     if (elementType != null) {
                         literal.elements.indices.map { i ->
-                            maybeWrapForTargetType(children.elements[i], literal.elements[i], elementType)
+                            maybeWrapForTargetType(
+                                children.elements[i],
+                                literal.elements[i],
+                                elementType,
+                            )
                         }
                     } else {
                         children.elements
@@ -614,7 +632,9 @@ class ConversionInserter(
                 if (condChanged || resChanged) {
                     changed = true
                     originalItem.copy(condition = newCondition, result = newResult)
-                } else if (c.condition !== originalItem.condition || c.result !== originalItem.result) {
+                } else if (
+                    c.condition !== originalItem.condition || c.result !== originalItem.result
+                ) {
                     changed = true
                     originalItem.copy(condition = c.condition, result = c.result)
                 } else {
@@ -689,7 +709,8 @@ class ConversionInserter(
 
         when (expr.operator) {
             org.hl7.cql.ast.MembershipOperator.CONTAINS -> {
-                // Contains(collection, element) - wrap null element based on collection's element type
+                // Contains(collection, element) - wrap null element based on collection's element
+                // type
                 if (isNullLiteralExpr(expr.right)) {
                     val elemType = elementTypeOfDataType(leftType)
                     if (elemType != null && elemType != anyType) {
@@ -846,13 +867,17 @@ class ConversionInserter(
         val rightType = typeTable[expr.right]
         val anyType = operatorRegistry.type("Any")
 
-        if (isNullLiteralExpr(expr.right) && leftType is IntervalType &&
-            leftType.pointType != anyType
+        if (
+            isNullLiteralExpr(expr.right) &&
+                leftType is IntervalType &&
+                leftType.pointType != anyType
         ) {
             // Right operand is null, left is an interval → wrap null as point type
             r = wrapNullAsAst(r, leftType.pointType)
-        } else if (isNullLiteralExpr(expr.left) && rightType is IntervalType &&
-            rightType.pointType != anyType
+        } else if (
+            isNullLiteralExpr(expr.left) &&
+                rightType is IntervalType &&
+                rightType.pointType != anyType
         ) {
             // Left operand is null, right is an interval → wrap null as point type
             l = wrapNullAsAst(l, rightType.pointType)
