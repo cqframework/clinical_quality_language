@@ -188,10 +188,9 @@ class FullParityTest {
                 // also wraps heterogeneous Flatten in implicit Query
                 "ListOperators" to
                     "Null type inference: legacy wraps null in As(List<Any>), choice union As, Flatten query",
-                // Sort direction form: AST loses short/long distinction (desc vs descending),
-                // plus TestAliasSort is error recovery (legacy emits Null for alias sort)
+                // TestAliasSort: legacy replaces alias sort with Null (error recovery)
                 "Sorting" to
-                    "Sort direction form lost in AST (desc vs descending) and alias sort error recovery",
+                    "Error recovery: legacy replaces alias sort (sort by X desc) with Null",
                 // Error recovery: legacy replaces all invalid sort clauses with Null
                 "InvalidSortClauses" to
                     "Error recovery: legacy replaces invalid sort expressions with Null",
@@ -200,25 +199,27 @@ class FullParityTest {
                 "AggregateOperators" to
                     "Aggregate wrapping: legacy wraps integer list args in implicit Query with ToDecimal",
                 // Type coercion: legacy wraps if/case branches in As for choice types,
-                // wraps union operands in As for choice list types, wraps Coalesce in As
+                // wraps union operands in As for choice list types
                 "TypeOperators" to
                     "Choice type coercion: legacy wraps if/case/union branches in As",
+                // Aggregate coercion: Coalesce As wrapping, QueryLetRef in nested queries,
+                // ToQuantity wrapping on DurationBetween
                 "Aggregate" to
-                    "Aggregate coercion: legacy wraps accumulator Coalesce in As, typed starting default",
+                    "Aggregate coercion: legacy wraps Coalesce in As, nested QueryLetRef, ToQuantity",
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
-                // interval-point comparisons; expand/collapse per operand differences
+                // interval-point comparisons
                 "IntervalOperators" to
                     "Null safety wrapping: legacy wraps point operands in If(IsNull)",
                 "CqlIntervalOperators" to "Null safety wrapping and collapse null coercion",
-                // Null type casting: legacy wraps null list elements in As
-                "CqlListOperators" to
-                    "Null type casting: legacy wraps null in As for list operations",
-                // Implicit conversions: legacy wraps operands in conversion operators
+                // Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion
                 "ImplicitConversions" to
                     "Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion",
-                // Name hiding: legacy resolves parameter interval types; error recovery for
-                // out-of-scope variable access
-                "NameHiding" to "Parameter interval resolution and out-of-scope error recovery",
+                // Name hiding: QDM model interval resolution and out-of-scope error recovery
+                "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
+                // CqlListOperators: Exists/Contains/In/Includes function-to-ELM mapping,
+                // union empty list wrapping, remaining null As wrapping
+                "CqlListOperators" to
+                    "Function-to-ELM mapping: Exists/Contains/In/Includes, union empty list wrapping",
                 // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes
                 "AgeOperators" to
                     "System function mapping: legacy maps age functions to CalculateAge ELM nodes",

@@ -88,21 +88,80 @@ private fun EmissionContext.emitRatioQuantity(literal: QuantityLiteral): Quantit
     return quantity
 }
 
-internal fun EmissionContext.emitInterval(literal: IntervalLiteral): Interval {
+internal fun EmissionContext.emitInterval(
+    literal: IntervalLiteral,
+    pointType: org.hl7.cql.model.DataType? = null,
+): Interval {
     val interval = Interval()
-    interval.low = emitExpression(literal.lower)
-    interval.high = emitExpression(literal.upper)
+    interval.low = emitIntervalBound(literal.lower, pointType)
+    interval.high = emitIntervalBound(literal.upper, pointType)
     interval.lowClosed = literal.lowerClosed
     interval.highClosed = literal.upperClosed
     return interval
 }
 
-internal fun EmissionContext.emitList(literal: ListLiteral): org.hl7.elm.r1.List {
+/** Emit an interval bound, wrapping null in As(pointType) if the point type is known. */
+private fun EmissionContext.emitIntervalBound(
+    expr: org.hl7.cql.ast.Expression,
+    pointType: org.hl7.cql.model.DataType?,
+): ElmExpression {
+    val emitted = emitExpression(expr)
+    if (
+        expr is org.hl7.cql.ast.LiteralExpression &&
+            expr.literal is NullLiteral &&
+            pointType != null &&
+            pointType != operatorRegistry.type("Any")
+    ) {
+        return wrapNullAs(emitted, pointType)
+    }
+    return emitted
+}
+
+internal fun EmissionContext.emitList(
+    literal: ListLiteral,
+    elementType: org.hl7.cql.model.DataType? = null,
+): org.hl7.elm.r1.List {
     val list = org.hl7.elm.r1.List()
     if (literal.elements.isNotEmpty()) {
-        list.element = literal.elements.map { emitExpression(it) }.toMutableList()
+        list.element =
+            literal.elements
+                .map { elem ->
+                    val emitted = emitExpression(elem)
+                    // Wrap null elements in As(elementType) to match legacy behavior
+                    if (
+                        elem is org.hl7.cql.ast.LiteralExpression &&
+                            elem.literal is NullLiteral &&
+                            elementType != null &&
+                            elementType != operatorRegistry.type("Any")
+                    ) {
+                        wrapNullAs(emitted, elementType)
+                    } else {
+                        emitted
+                    }
+                }
+                .toMutableList()
     }
     return list
+}
+
+/**
+ * Wrap a Null expression in an As node for the given target type. Used when a null literal appears
+ * in a context where the expected type is known (e.g., list elements, interval bounds).
+ */
+internal fun EmissionContext.wrapNullAs(
+    expression: ElmExpression,
+    targetType: org.hl7.cql.model.DataType,
+): ElmExpression {
+    return org.hl7.elm.r1.As().apply {
+        operand = expression
+        if (
+            targetType is org.hl7.cql.model.SimpleType || targetType is org.hl7.cql.model.ClassType
+        ) {
+            asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
+        } else {
+            asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+        }
+    }
 }
 
 internal fun EmissionContext.emitTuple(literal: TupleLiteral): Tuple {

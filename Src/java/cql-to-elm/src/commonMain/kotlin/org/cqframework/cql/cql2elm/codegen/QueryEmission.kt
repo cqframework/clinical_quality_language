@@ -176,8 +176,10 @@ private fun EmissionContext.emitSortByItem(item: org.hl7.cql.ast.SortByItem): El
 
 private fun mapSortDirection(direction: AstSortDirection): ElmSortDirection {
     return when (direction) {
-        AstSortDirection.ASCENDING -> ElmSortDirection.ASC
-        AstSortDirection.DESCENDING -> ElmSortDirection.DESC
+        AstSortDirection.ASC -> ElmSortDirection.ASC
+        AstSortDirection.ASCENDING -> ElmSortDirection.ASCENDING
+        AstSortDirection.DESC -> ElmSortDirection.DESC
+        AstSortDirection.DESCENDING -> ElmSortDirection.DESCENDING
     }
 }
 
@@ -190,7 +192,12 @@ private fun EmissionContext.emitAggregateClause(
         elmAgg.distinct = true
     }
     elmAgg.expression = emitExpression(agg.expression)
-    agg.starting?.let { elmAgg.starting = emitExpression(it) }
+    if (agg.starting != null) {
+        elmAgg.starting = emitExpression(agg.starting!!)
+    } else {
+        // Legacy always emits a Null starting value when none is specified
+        elmAgg.starting = org.hl7.elm.r1.Null()
+    }
     val aggType = semanticModel[agg.expression]
     if (aggType != null) {
         decorate(elmAgg, aggType)

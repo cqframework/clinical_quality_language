@@ -11,16 +11,24 @@ import org.hl7.elm.r1.Avg
 import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Combine
 import org.hl7.elm.r1.Concatenate
+import org.hl7.elm.r1.Contains
 import org.hl7.elm.r1.Count
 import org.hl7.elm.r1.Distinct
 import org.hl7.elm.r1.EndsWith
+import org.hl7.elm.r1.Except
+import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.First
 import org.hl7.elm.r1.Flatten
 import org.hl7.elm.r1.FunctionRef
+import org.hl7.elm.r1.GeometricMean
 import org.hl7.elm.r1.If
+import org.hl7.elm.r1.In
+import org.hl7.elm.r1.IncludedIn
+import org.hl7.elm.r1.Includes
 import org.hl7.elm.r1.IndexOf
 import org.hl7.elm.r1.Indexer
+import org.hl7.elm.r1.Intersect
 import org.hl7.elm.r1.Last
 import org.hl7.elm.r1.LastPositionOf
 import org.hl7.elm.r1.Length
@@ -30,14 +38,24 @@ import org.hl7.elm.r1.Max
 import org.hl7.elm.r1.Median
 import org.hl7.elm.r1.Min
 import org.hl7.elm.r1.Mode
+import org.hl7.elm.r1.PopulationStdDev
+import org.hl7.elm.r1.PopulationVariance
 import org.hl7.elm.r1.PositionOf
+import org.hl7.elm.r1.Product
+import org.hl7.elm.r1.ProperContains
+import org.hl7.elm.r1.ProperIncludedIn
+import org.hl7.elm.r1.ProperIncludes
 import org.hl7.elm.r1.ReplaceMatches
+import org.hl7.elm.r1.SingletonFrom
 import org.hl7.elm.r1.Split
 import org.hl7.elm.r1.SplitOnMatches
 import org.hl7.elm.r1.StartsWith
+import org.hl7.elm.r1.StdDev
 import org.hl7.elm.r1.Substring
 import org.hl7.elm.r1.Sum
+import org.hl7.elm.r1.Union
 import org.hl7.elm.r1.Upper
+import org.hl7.elm.r1.Variance
 
 /** Emit an if-then-else expression as an ELM If node. */
 internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpression {
@@ -73,11 +91,7 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
     val args = rawArgs.toMutableList()
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyConversions(resolution) { index, convName ->
-            if (index in args.indices) {
-                args[index] = wrapConversion(args[index], convName)
-            }
-        }
+        applyAllConversions(resolution, args)
     }
 
     // Try system function emission (math, date/time, message)
@@ -123,11 +137,47 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
         "Mode" -> emitUnaryArg(args) { Mode().apply { source = it } }
         "AllTrue" -> emitUnaryArg(args) { AllTrue().apply { source = it } }
         "AnyTrue" -> emitUnaryArg(args) { AnyTrue().apply { source = it } }
+        "StdDev" -> emitUnaryArg(args) { StdDev().apply { source = it } }
+        "PopulationStdDev" -> emitUnaryArg(args) { PopulationStdDev().apply { source = it } }
+        "Variance" -> emitUnaryArg(args) { Variance().apply { source = it } }
+        "PopulationVariance" -> emitUnaryArg(args) { PopulationVariance().apply { source = it } }
+        "GeometricMean" -> emitUnaryArg(args) { GeometricMean().apply { source = it } }
+        "Product" -> emitUnaryArg(args) { Product().apply { source = it } }
         "IndexOf" -> emitIndexOf(args)
 
         // List transform functions (operand-based)
         "Flatten" -> emitUnaryArg(args) { Flatten().apply { operand = it } }
         "Distinct" -> emitUnaryArg(args) { Distinct().apply { operand = it } }
+
+        // Set operations (function-call form)
+        "Except" ->
+            emitBinaryArgs(args) { a, b -> Except().apply { operand = mutableListOf(a, b) } }
+        "Union" -> emitBinaryArgs(args) { a, b -> Union().apply { operand = mutableListOf(a, b) } }
+        "Intersect" ->
+            emitBinaryArgs(args) { a, b -> Intersect().apply { operand = mutableListOf(a, b) } }
+
+        // List/collection query functions (function-call form)
+        "Exists" -> emitUnaryArg(args) { Exists().apply { operand = it } }
+        "Contains" ->
+            emitBinaryArgs(args) { a, b -> Contains().apply { operand = mutableListOf(a, b) } }
+        "In" -> emitBinaryArgs(args) { a, b -> In().apply { operand = mutableListOf(a, b) } }
+        "Includes" ->
+            emitBinaryArgs(args) { a, b -> Includes().apply { operand = mutableListOf(a, b) } }
+        "IncludedIn" ->
+            emitBinaryArgs(args) { a, b -> IncludedIn().apply { operand = mutableListOf(a, b) } }
+        "ProperContains" ->
+            emitBinaryArgs(args) { a, b ->
+                ProperContains().apply { operand = mutableListOf(a, b) }
+            }
+        "ProperIncludes" ->
+            emitBinaryArgs(args) { a, b ->
+                ProperIncludes().apply { operand = mutableListOf(a, b) }
+            }
+        "ProperIncludedIn" ->
+            emitBinaryArgs(args) { a, b ->
+                ProperIncludedIn().apply { operand = mutableListOf(a, b) }
+            }
+        "SingletonFrom" -> emitUnaryArg(args) { SingletonFrom().apply { operand = it } }
 
         // Type conversion and ConvertsTo operators
         "ToString",

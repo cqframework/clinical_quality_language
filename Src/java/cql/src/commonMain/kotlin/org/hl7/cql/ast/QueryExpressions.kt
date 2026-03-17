@@ -115,12 +115,14 @@ data class SortClause(
 @Serializable
 data class SortByItem(
     val expression: Expression,
-    val direction: SortDirection = SortDirection.ASCENDING,
+    val direction: SortDirection = SortDirection.ASC,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 
 @Serializable
 enum class SortDirection {
-    @SerialName("asc") ASCENDING,
-    @SerialName("desc") DESCENDING,
+    @SerialName("asc") ASC,
+    @SerialName("ascending") ASCENDING,
+    @SerialName("desc") DESC,
+    @SerialName("descending") DESCENDING,
 }

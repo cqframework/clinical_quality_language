@@ -1301,16 +1301,17 @@ class Builder(private val sourceId: String? = null) {
     private fun buildSortByItem(ctx: cqlParser.SortByItemContext): SortByItem =
         SortByItem(
             expression = buildExpressionTerm(ctx.expressionTerm()),
-            direction =
-                ctx.sortDirection()?.let { buildSortDirection(it) } ?: SortDirection.ASCENDING,
+            direction = ctx.sortDirection()?.let { buildSortDirection(it) } ?: SortDirection.ASC,
             locator = ctx.toLocator(),
         )
 
     private fun buildSortDirection(ctx: cqlParser.SortDirectionContext): SortDirection =
         when (ctx.text.lowercase()) {
-            "desc",
+            "desc" -> SortDirection.DESC
             "descending" -> SortDirection.DESCENDING
-            else -> SortDirection.ASCENDING
+            "asc" -> SortDirection.ASC
+            "ascending" -> SortDirection.ASCENDING
+            else -> SortDirection.ASC
         }
 
     private fun buildIntervalOperatorPhrase(

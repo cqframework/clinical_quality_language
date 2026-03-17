@@ -64,9 +64,10 @@ class TypeResolverTest {
     }
 
     @Test
-    fun `null literal has null type`() {
+    fun `null literal has Any type`() {
         val type = analyzeAndGetExprType("library Test using System\ndefine X: null", "X")
-        assertNull(type)
+        assertNotNull(type)
+        assertEquals(registry.type("Any"), type)
     }
 
     @Test

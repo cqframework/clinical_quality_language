@@ -367,16 +367,33 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
                 else operatorRegistry.type("DateTime")
             }
             is TimeLiteral -> operatorRegistry.type("Time")
-            is NullLiteral -> null
+            is NullLiteral -> operatorRegistry.type("Any")
             is ListLiteral -> inferListLiteralType(literal)
+            is org.hl7.cql.ast.IntervalLiteral -> inferIntervalLiteralType(literal)
             else -> null
         }
     }
 
+    private fun inferIntervalLiteralType(literal: org.hl7.cql.ast.IntervalLiteral): DataType? {
+        val anyType = operatorRegistry.type("Any")
+        val lowType = inferType(literal.lower)
+        val highType = inferType(literal.upper)
+        // Exclude Any (from null) for point type computation
+        val nonNullTypes = listOfNotNull(lowType, highType).filter { it != anyType }
+        val pointType =
+            if (nonNullTypes.isEmpty()) return null
+            else nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        return org.hl7.cql.model.IntervalType(pointType)
+    }
+
     private fun inferListLiteralType(literal: ListLiteral): DataType? {
+        val anyType = operatorRegistry.type("Any")
+        // Infer all element types, then exclude Any (from null literals) for common type
+        // computation
         val elementTypes = literal.elements.mapNotNull { inferType(it) }
-        if (elementTypes.isEmpty()) return ListType(operatorRegistry.type("Any") ?: return null)
-        val commonType = elementTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        val nonNullTypes = elementTypes.filter { it != anyType }
+        if (nonNullTypes.isEmpty()) return ListType(anyType)
+        val commonType = nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
         return ListType(commonType)
     }
 

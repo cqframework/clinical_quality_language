@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.codegen
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SemanticModel
+import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.shared.BigDecimal
@@ -43,6 +44,7 @@ import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
+import org.hl7.elm.r1.As
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Literal as ElmLiteral
@@ -120,6 +122,57 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
+     * Apply conversions from an [OperatorResolution], handling both operator-based conversions
+     * (e.g., ToDecimal) and cast conversions (wrapping in As). The [operands] list is mutated in
+     * place with wrapped expressions.
+     */
+    fun applyAllConversions(resolution: OperatorResolution, operands: MutableList<ElmExpression>) {
+        if (!resolution.hasConversions()) return
+        resolution.conversions.forEachIndexed { index, conversion ->
+            if (conversion != null && index < operands.size) {
+                operands[index] = applyConversion(operands[index], conversion)
+            }
+        }
+    }
+
+    /**
+     * Apply a single [Conversion] to an ELM expression, returning the wrapped expression. Handles
+     * both operator-based conversions (ToDecimal, etc.) and cast conversions (As wrapping).
+     */
+    fun applyConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
+        val convName = operatorRegistry.conversionOperatorName(conversion)
+        if (convName != null) {
+            return wrapConversion(expression, convName)
+        }
+        // Cast conversion: wrap in As
+        if (conversion.isCast) {
+            return wrapAsConversion(expression, conversion)
+        }
+        // List/interval promotions and demotions are not yet handled
+        return expression
+    }
+
+    /**
+     * Wrap an expression in an ELM [As] node based on a cast [Conversion]. Uses `asType` for simple
+     * named types and `asTypeSpecifier` for complex types (list, interval, choice).
+     */
+    fun wrapAsConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
+        val targetType = conversion.toType
+        return As().apply {
+            operand = expression
+            // Simple named types use asType (QName), complex types use asTypeSpecifier
+            if (
+                targetType is org.hl7.cql.model.SimpleType ||
+                    targetType is org.hl7.cql.model.ClassType
+            ) {
+                asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
+            } else {
+                asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+            }
+        }
+    }
+
+    /**
      * Recursively emit an AST [Expression] into an ELM expression. Dispatches via [fold] for
      * compile-time exhaustiveness, then decorates with result type from the [SemanticModel].
      */
@@ -137,7 +190,23 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
 
     // --- ExpressionFold implementation ---
 
-    override fun onLiteral(expr: LiteralExpression) = emitLiteral(expr.literal)
+    override fun onLiteral(expr: LiteralExpression): ElmExpression {
+        // For list literals, pass the inferred list type for null element wrapping
+        if (expr.literal is org.hl7.cql.ast.ListLiteral) {
+            val listType = semanticModel[expr]
+            val elementType =
+                if (listType is org.hl7.cql.model.ListType) listType.elementType else null
+            return emitList(expr.literal as org.hl7.cql.ast.ListLiteral, elementType)
+        }
+        // For interval literals, pass the inferred point type for null bound wrapping
+        if (expr.literal is org.hl7.cql.ast.IntervalLiteral) {
+            val intervalType = semanticModel[expr]
+            val pointType =
+                if (intervalType is org.hl7.cql.model.IntervalType) intervalType.pointType else null
+            return emitInterval(expr.literal as org.hl7.cql.ast.IntervalLiteral, pointType)
+        }
+        return emitLiteral(expr.literal)
+    }
 
     override fun onIdentifier(expr: IdentifierExpression) = emitIdentifierExpression(expr)
 

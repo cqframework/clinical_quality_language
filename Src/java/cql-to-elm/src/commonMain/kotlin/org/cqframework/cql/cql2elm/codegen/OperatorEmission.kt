@@ -99,50 +99,38 @@ internal fun EmissionContext.emitBinaryOperator(
                 "Binary operator '${op.name}' is not yet supported."
             )
 
-    var leftElm = emitExpression(expression.left)
-    var rightElm = emitExpression(expression.right)
+    val operands = mutableListOf(emitExpression(expression.left), emitExpression(expression.right))
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyConversions(resolution) { index, convName ->
-            when (index) {
-                0 -> leftElm = wrapConversion(leftElm, convName)
-                1 -> rightElm = wrapConversion(rightElm, convName)
-            }
-        }
+        applyAllConversions(resolution, operands)
 
         // Special case: Add on strings becomes Concatenate
         if (
             systemOpName == "Add" &&
                 resolution.operator.resultType == operatorRegistry.type("String")
         ) {
-            return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
+            return Concatenate().apply { operand = operands }
         }
     }
 
-    return createBinaryElm(systemOpName, mutableListOf(leftElm, rightElm))
+    return createBinaryElm(systemOpName, operands)
 }
 
 internal fun EmissionContext.emitNotWrapper(
     expression: OperatorBinaryExpression,
     innerOpName: String,
 ): ElmExpression {
-    var leftElm = emitExpression(expression.left)
-    var rightElm = emitExpression(expression.right)
+    val operands = mutableListOf(emitExpression(expression.left), emitExpression(expression.right))
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyConversions(resolution) { index, convName ->
-            when (index) {
-                0 -> leftElm = wrapConversion(leftElm, convName)
-                1 -> rightElm = wrapConversion(rightElm, convName)
-            }
-        }
+        applyAllConversions(resolution, operands)
     }
 
-    val inner = createBinaryElm(innerOpName, mutableListOf(leftElm, rightElm))
+    val inner = createBinaryElm(innerOpName, operands)
     // Decorate the inner expression with the Boolean result type from the resolution
     if (resolution != null && resolution.operator.resultType != null) {
         decorate(inner, resolution.operator.resultType!!)
@@ -174,17 +162,15 @@ internal fun EmissionContext.emitUnaryOperator(expression: OperatorUnaryExpressi
                 "Unary operator '${op.name}' is not yet supported."
             )
 
-    var operandElm = emitExpression(expression.operand)
+    val operands = mutableListOf(emitExpression(expression.operand))
 
     // Use the pre-computed operator resolution from TypeTable
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyConversions(resolution) { _, convName ->
-            operandElm = wrapConversion(operandElm, convName)
-        }
+        applyAllConversions(resolution, operands)
     }
 
-    return createUnaryElm(systemOpName, operandElm)
+    return createUnaryElm(systemOpName, operands[0])
 }
 
 /** Create the appropriate ELM binary expression node using the table-driven constructor map. */
