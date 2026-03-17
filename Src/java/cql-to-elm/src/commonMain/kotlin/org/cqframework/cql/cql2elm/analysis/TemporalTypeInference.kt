@@ -108,6 +108,15 @@ internal fun TypeResolver.inferMembershipType(expression: MembershipExpression):
     return type("Boolean")
 }
 
+internal fun TypeResolver.inferExpandCollapseType(
+    expression: org.hl7.cql.ast.ExpandCollapseExpression
+): DataType? {
+    val operandType = inferType(expression.operand) ?: return null
+    expression.perExpression?.let { inferType(it) }
+    // Expand/Collapse return the same type as their operand (list of intervals)
+    return operandType
+}
+
 internal fun TypeResolver.inferIntervalRelationType(
     expression: IntervalRelationExpression
 ): DataType? {

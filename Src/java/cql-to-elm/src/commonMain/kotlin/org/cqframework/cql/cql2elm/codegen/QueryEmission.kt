@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.ast.ExpressionQuerySource
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.SortDirection as AstSortDirection
@@ -11,6 +12,7 @@ import org.hl7.cql.ast.WithoutClause as AstWithoutClause
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.AggregateClause as ElmAggregateClause
 import org.hl7.elm.r1.AliasedQuerySource as ElmAliasedQuerySource
+import org.hl7.elm.r1.ByColumn
 import org.hl7.elm.r1.ByDirection
 import org.hl7.elm.r1.ByExpression
 import org.hl7.elm.r1.Expression as ElmExpression
@@ -156,12 +158,19 @@ private fun EmissionContext.emitSortClause(sort: org.hl7.cql.ast.SortClause): El
 private fun EmissionContext.emitSortByItem(item: org.hl7.cql.ast.SortByItem): ElmSortByItem {
     val direction = mapSortDirection(item.direction)
     // The Builder uses an UnsupportedExpression sentinel for bare `sort asc/desc`.
-    return if (item.expression is UnsupportedExpression) {
-        ByDirection().withDirection(direction) as ElmSortByItem
-    } else {
-        val byExpr = ByExpression().withDirection(direction)
-        byExpr.expression = emitExpression(item.expression)
-        byExpr as ElmSortByItem
+    return when {
+        item.expression is UnsupportedExpression ->
+            ByDirection().withDirection(direction) as ElmSortByItem
+        // Simple identifier sort (e.g., `sort by id`) → ByColumn with path
+        item.expression is IdentifierExpression -> {
+            val name = (item.expression as IdentifierExpression).name.simpleName
+            ByColumn().withPath(name).withDirection(direction) as ElmSortByItem
+        }
+        else -> {
+            val byExpr = ByExpression().withDirection(direction)
+            byExpr.expression = emitExpression(item.expression)
+            byExpr as ElmSortByItem
+        }
     }
 }
 
@@ -177,7 +186,9 @@ private fun EmissionContext.emitAggregateClause(
 ): ElmAggregateClause {
     val elmAgg = ElmAggregateClause()
     elmAgg.identifier = agg.identifier.value
-    elmAgg.distinct = agg.distinct
+    if (agg.distinct) {
+        elmAgg.distinct = true
+    }
     elmAgg.expression = emitExpression(agg.expression)
     agg.starting?.let { elmAgg.starting = emitExpression(it) }
     val aggType = semanticModel[agg.expression]

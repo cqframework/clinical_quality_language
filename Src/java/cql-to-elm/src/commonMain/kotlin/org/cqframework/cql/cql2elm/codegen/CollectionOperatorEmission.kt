@@ -94,6 +94,51 @@ internal fun EmissionContext.emitBetween(expression: BetweenExpression): ElmExpr
     return And().apply { operand = mutableListOf(leftCmp, rightCmp) }
 }
 
+/**
+ * Emit an [ExpandCollapseExpression] as an ELM [Expand] or [Collapse] binary expression. The legacy
+ * translator always emits two operands: [source, per]. When no per is specified, per defaults to
+ * `null as System.Quantity`.
+ */
+internal fun EmissionContext.emitExpandCollapse(
+    expression: org.hl7.cql.ast.ExpandCollapseExpression
+): ElmExpression {
+    val sourceElm = emitExpression(expression.operand)
+    val perElm = buildPerOperand(expression)
+    val operands = mutableListOf(sourceElm, perElm)
+    return when (expression.expandCollapseKind) {
+        org.hl7.cql.ast.ExpandCollapseKind.EXPAND ->
+            org.hl7.elm.r1.Expand().apply { operand = operands }
+        org.hl7.cql.ast.ExpandCollapseKind.COLLAPSE ->
+            org.hl7.elm.r1.Collapse().apply { operand = operands }
+    }
+}
+
+private fun EmissionContext.buildPerOperand(
+    expression: org.hl7.cql.ast.ExpandCollapseExpression
+): ElmExpression {
+    // Explicit precision keyword: `expand X per day` → Quantity(1.0, "day")
+    expression.perPrecision?.let { precision ->
+        return org.hl7.elm.r1.Quantity().apply {
+            value = org.cqframework.cql.shared.BigDecimal("1.0")
+            unit = precision
+        }
+    }
+    // Explicit per expression: `expand X per 1 '1'`
+    expression.perExpression?.let { perExpr ->
+        val emitted = emitExpression(perExpr)
+        // Legacy converts integer/decimal literals to Quantity(value, "1")
+        if (emitted is org.hl7.elm.r1.Literal) {
+            return org.hl7.elm.r1.Quantity().apply {
+                value = org.cqframework.cql.shared.BigDecimal(emitted.value!!)
+                unit = "1"
+            }
+        }
+        return emitted
+    }
+    // Default: null (the legacy uses `buildNull(Quantity)` which produces a typed Null)
+    return org.hl7.elm.r1.Null()
+}
+
 /** Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. */
 internal fun EmissionContext.emitMembership(expression: MembershipExpression): ElmExpression {
     val leftElm = emitExpression(expression.left)

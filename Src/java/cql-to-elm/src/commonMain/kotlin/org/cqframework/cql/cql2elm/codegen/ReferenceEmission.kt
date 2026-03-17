@@ -37,8 +37,9 @@ internal fun EmissionContext.emitIdentifierExpression(
         is Resolution.ContextRef ->
             throw ElmEmitter.UnsupportedNodeException("Context references are not yet supported.")
         null ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "Unresolved identifier: '${expression.name.simpleName}'"
-            )
+            // Unresolved identifiers become IdentifierRef — the legacy translator emits these
+            // for sort-by property paths and other contexts where the identifier refers to a
+            // property of the implicit result element.
+            org.hl7.elm.r1.IdentifierRef().withName(expression.name.simpleName)
     }
 }

@@ -75,9 +75,17 @@ internal fun EmissionContext.emitQuantity(literal: QuantityLiteral): Quantity {
 
 internal fun EmissionContext.emitRatio(literal: RatioLiteral): Ratio {
     val ratio = Ratio()
-    ratio.numerator = emitQuantity(literal.numerator)
-    ratio.denominator = emitQuantity(literal.denominator)
+    ratio.numerator = emitRatioQuantity(literal.numerator)
+    ratio.denominator = emitRatioQuantity(literal.denominator)
     return ratio
+}
+
+/** Emit a quantity within a ratio. Legacy adds unit "1" to bare ratio quantities. */
+private fun EmissionContext.emitRatioQuantity(literal: QuantityLiteral): Quantity {
+    val quantity = Quantity()
+    quantity.value = BigDecimal(literal.value)
+    quantity.unit = literal.unit?.trim('\'') ?: "1"
+    return quantity
 }
 
 internal fun EmissionContext.emitInterval(literal: IntervalLiteral): Interval {

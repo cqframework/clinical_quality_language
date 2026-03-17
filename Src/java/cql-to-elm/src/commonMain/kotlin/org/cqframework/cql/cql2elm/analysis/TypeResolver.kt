@@ -176,6 +176,14 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     internal fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType? {
         return when (typeSpec) {
             is NamedTypeSpecifier -> operatorRegistry.type(typeSpec.name.simpleName)
+            is org.hl7.cql.ast.ListTypeSpecifier -> {
+                val elementType = resolveTypeSpecifier(typeSpec.elementType) ?: return null
+                ListType(elementType)
+            }
+            is org.hl7.cql.ast.IntervalTypeSpecifier -> {
+                val pointType = resolveTypeSpecifier(typeSpec.pointType) ?: return null
+                org.hl7.cql.model.IntervalType(pointType)
+            }
             else -> null
         }
     }
@@ -226,7 +234,11 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     override fun onFunctionCall(expr: FunctionCallExpression): DataType? =
         inferFunctionCallType(expr)
 
-    override fun onPropertyAccess(expr: PropertyAccessExpression): DataType? = null
+    override fun onPropertyAccess(expr: PropertyAccessExpression): DataType? {
+        // Recursively infer the target type so identifiers within get resolved
+        inferType(expr.target)
+        return null
+    }
 
     override fun onIndex(expr: IndexExpression): DataType? = inferIndexType(expr)
 
@@ -237,7 +249,8 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     override fun onListTransform(expr: ListTransformExpression): DataType? =
         inferListTransformType(expr)
 
-    override fun onExpandCollapse(expr: ExpandCollapseExpression): DataType? = null
+    override fun onExpandCollapse(expr: ExpandCollapseExpression): DataType? =
+        inferExpandCollapseType(expr)
 
     override fun onDateTimeComponent(expr: DateTimeComponentExpression): DataType? =
         inferDateTimeComponentType(expr)
@@ -369,8 +382,9 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
 
     @Suppress("ReturnCount")
     private fun inferBinaryType(expression: OperatorBinaryExpression): DataType? {
-        val leftType = inferType(expression.left) ?: return null
-        val rightType = inferType(expression.right) ?: return null
+        val leftType = inferType(expression.left)
+        val rightType = inferType(expression.right)
+        if (leftType == null || rightType == null) return null
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
             operatorRegistry.resolve(opName, listOf(leftType, rightType)) ?: return null

@@ -10,6 +10,8 @@ import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.CompilerFrontend
+import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider
+import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.hl7.cql.ast.Builder
 import org.hl7.cql.model.SystemModelInfoProvider
@@ -71,8 +73,12 @@ class FullParityTest {
         // Step 2: Run through CompilerFrontend + ElmEmitter
         val emittedLibrary =
             try {
-                val frontendResult = CompilerFrontend().analyze(astResult.library)
-                ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
+                val modelManager = createModelManager()
+                val frontendResult =
+                    CompilerFrontend(modelManager = modelManager).analyze(astResult.library)
+                ElmEmitter(frontendResult.semanticModel, modelManager)
+                    .emit(frontendResult.library)
+                    .library
             } catch (e: ElmEmitter.UnsupportedNodeException) {
                 assumeTrue(false, "Unsupported AST node: ${e.message}")
                 return
@@ -85,14 +91,7 @@ class FullParityTest {
         val legacyLibrary =
             try {
                 val legacyTranslator =
-                    CqlTranslator.fromText(
-                        cql,
-                        LibraryManager(
-                            ModelManager().apply {
-                                modelInfoLoader.registerModelInfoProvider(SystemModelInfoProvider())
-                            }
-                        ),
-                    )
+                    CqlTranslator.fromText(cql, LibraryManager(createModelManager()))
                 requireNotNull(legacyTranslator.toELM())
             } catch (e: Exception) {
                 assumeTrue(false, "Legacy translator failed: ${e.message}")
@@ -118,6 +117,13 @@ class FullParityTest {
             },
         )
     }
+
+    private fun createModelManager(): ModelManager =
+        ModelManager().apply {
+            modelInfoLoader.registerModelInfoProvider(SystemModelInfoProvider())
+            modelInfoLoader.registerModelInfoProvider(FhirModelInfoProvider())
+            modelInfoLoader.registerModelInfoProvider(QdmModelInfoProvider())
+        }
 
     private fun listCqlFiles(resourceDir: String): List<String> {
         val url =
@@ -182,10 +188,43 @@ class FullParityTest {
                 // also wraps heterogeneous Flatten in implicit Query
                 "ListOperators" to
                     "Null type inference: legacy wraps null in As(List<Any>), choice union As, Flatten query",
+                // Sort direction form: AST loses short/long distinction (desc vs descending),
+                // plus TestAliasSort is error recovery (legacy emits Null for alias sort)
+                "Sorting" to
+                    "Sort direction form lost in AST (desc vs descending) and alias sort error recovery",
+                // Error recovery: legacy replaces all invalid sort clauses with Null
+                "InvalidSortClauses" to
+                    "Error recovery: legacy replaces invalid sort expressions with Null",
                 // Aggregate query wrapping: legacy wraps integer list args to
                 // Avg/Median/StdDev/Variance/etc. in implicit queries with ToDecimal conversions
                 "AggregateOperators" to
                     "Aggregate wrapping: legacy wraps integer list args in implicit Query with ToDecimal",
+                // Type coercion: legacy wraps if/case branches in As for choice types,
+                // wraps union operands in As for choice list types, wraps Coalesce in As
+                "TypeOperators" to
+                    "Choice type coercion: legacy wraps if/case/union branches in As",
+                "Aggregate" to
+                    "Aggregate coercion: legacy wraps accumulator Coalesce in As, typed starting default",
+                // Null safety wrapping: legacy wraps point operands in If(IsNull) for
+                // interval-point comparisons; expand/collapse per operand differences
+                "IntervalOperators" to
+                    "Null safety wrapping: legacy wraps point operands in If(IsNull)",
+                "CqlIntervalOperators" to "Null safety wrapping and collapse null coercion",
+                // Null type casting: legacy wraps null list elements in As
+                "CqlListOperators" to
+                    "Null type casting: legacy wraps null in As for list operations",
+                // Implicit conversions: legacy wraps operands in conversion operators
+                "ImplicitConversions" to
+                    "Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion",
+                // Name hiding: legacy resolves parameter interval types; error recovery for
+                // out-of-scope variable access
+                "NameHiding" to "Parameter interval resolution and out-of-scope error recovery",
+                // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes
+                "AgeOperators" to
+                    "System function mapping: legacy maps age functions to CalculateAge ELM nodes",
+                // Terminology: legacy resolves retrieve code properties and function references
+                "TerminologyReferences" to
+                    "Retrieve code properties and terminology function resolution",
             )
     }
 }

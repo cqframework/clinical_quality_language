@@ -12,8 +12,11 @@ internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?
     // Build scope from sources
     val scope = mutableMapOf<String, Resolution>()
     for (source in expression.sources) {
-        val elementType = inferSourceElementType(source) ?: continue
-        scope[source.alias.value] = Resolution.AliasRef(source.alias.value, elementType)
+        val elementType = inferSourceElementType(source)
+        // Always add alias to scope even without a resolved type, so inner expressions
+        // can resolve identifiers (e.g., for property access and sort-by)
+        val aliasType = elementType ?: (type("Any") ?: continue)
+        scope[source.alias.value] = Resolution.AliasRef(source.alias.value, aliasType)
     }
 
     // Push scope for lets, where, inclusions, return, aggregate
@@ -115,9 +118,9 @@ private fun TypeResolver.inferAggregateType(
     // Resolve starting expression type
     val startingType = agg.starting?.let { inferType(it) } ?: type("Any")
 
-    // Add accumulator to scope — legacy uses AliasRef for the accumulator identifier
+    // Add accumulator to scope — legacy uses QueryLetRef for the accumulator identifier
     if (startingType != null) {
-        scope[agg.identifier.value] = Resolution.AliasRef(agg.identifier.value, startingType)
+        scope[agg.identifier.value] = Resolution.QueryLetRef(agg.identifier.value, startingType)
     }
 
     return inferType(agg.expression)

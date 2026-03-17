@@ -103,10 +103,30 @@ internal fun EmissionContext.emitTypeSpecifier(
             elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
             elmTypeSpec
         }
-        else ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "TypeSpecifier '${typeSpec::class.simpleName}' is not yet supported."
-            )
+        is org.hl7.cql.ast.ListTypeSpecifier ->
+            org.hl7.elm.r1.ListTypeSpecifier().apply {
+                elementType = emitTypeSpecifier(typeSpec.elementType)
+            }
+        is org.hl7.cql.ast.IntervalTypeSpecifier ->
+            org.hl7.elm.r1.IntervalTypeSpecifier().apply {
+                pointType = emitTypeSpecifier(typeSpec.pointType)
+            }
+        is org.hl7.cql.ast.ChoiceTypeSpecifier ->
+            org.hl7.elm.r1.ChoiceTypeSpecifier().apply {
+                choice = typeSpec.choices.map { emitTypeSpecifier(it) }.toMutableList()
+            }
+        is org.hl7.cql.ast.TupleTypeSpecifier ->
+            org.hl7.elm.r1.TupleTypeSpecifier().apply {
+                element =
+                    typeSpec.elements
+                        .map { elem ->
+                            org.hl7.elm.r1.TupleElementDefinition().apply {
+                                name = elem.name.value
+                                elementType = emitTypeSpecifier(elem.type)
+                            }
+                        }
+                        .toMutableList()
+            }
     }
 }
 

@@ -177,7 +177,7 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     override fun onListTransform(expr: ListTransformExpression) = emitListTransform(expr)
 
     override fun onExpandCollapse(expr: ExpandCollapseExpression): ElmExpression =
-        throw ElmEmitter.UnsupportedNodeException("ExpandCollapseExpression is not yet supported.")
+        emitExpandCollapse(expr)
 
     override fun onDateTimeComponent(expr: DateTimeComponentExpression) =
         emitDateTimeComponent(expr)
