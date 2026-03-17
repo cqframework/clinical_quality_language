@@ -112,37 +112,6 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
-     * Apply conversions from an [OperatorResolution]. Calls [handler] for each conversion with the
-     * operand index and the conversion operator name.
-     */
-    inline fun applyConversions(resolution: OperatorResolution, handler: (Int, String) -> Unit) {
-        if (resolution.hasConversions()) {
-            resolution.conversions.forEachIndexed { index, conversion ->
-                if (conversion != null) {
-                    val convName = operatorRegistry.conversionOperatorName(conversion)
-                    if (convName != null) {
-                        handler(index, convName)
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Apply conversions from an [OperatorResolution], handling both operator-based conversions
-     * (e.g., ToDecimal) and cast conversions (wrapping in As). The [operands] list is mutated in
-     * place with wrapped expressions.
-     */
-    fun applyAllConversions(resolution: OperatorResolution, operands: MutableList<ElmExpression>) {
-        if (!resolution.hasConversions()) return
-        resolution.conversions.forEachIndexed { index, conversion ->
-            if (conversion != null && index < operands.size) {
-                operands[index] = applyConversion(operands[index], conversion)
-            }
-        }
-    }
-
-    /**
      * Apply only non-operator conversions from an [OperatorResolution], skipping operator-based
      * conversions (ToDecimal, ToLong, etc.) which are already handled by ConversionInserter in the
      * AST phase. Cast, list, and interval conversions are still applied here. The [operands] list
