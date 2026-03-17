@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.Abs
-import org.hl7.elm.r1.As
 import org.hl7.elm.r1.Ceiling
 import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Date
@@ -90,65 +89,39 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
     }
 }
 
-/**
- * Wrap a null argument in `As(Integer)` to match legacy translator behavior. DateTime/Date/Time
- * constructor arguments are expected to be Integer, so the legacy wraps null values with an
- * explicit type cast.
- */
-private fun wrapNullAsInteger(arg: ElmExpression): ElmExpression {
-    if (arg is Null) {
-        return As().apply {
-            asType = QName("urn:hl7-org:elm-types:r1", "Integer")
-            operand = arg
-        }
-    }
-    return arg
-}
-
-/**
- * Wrap a null argument in `As(Decimal)` — used for the timezoneOffset argument which is Decimal.
- */
-private fun wrapNullAsDecimal(arg: ElmExpression): ElmExpression {
-    if (arg is Null) {
-        return As().apply {
-            asType = QName("urn:hl7-org:elm-types:r1", "Decimal")
-            operand = arg
-        }
-    }
-    return arg
-}
+// Null wrapping for DateTime/Date/Time constructor arguments is handled by ConversionInserter.
 
 @Suppress("CyclomaticComplexMethod")
 private fun emitDateTimeConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..8) { "Expected 1 to 8 arguments for DateTime" }
     return DateTime().apply {
-        year = wrapNullAsInteger(args[0])
-        if (args.size > 1) month = wrapNullAsInteger(args[1])
-        if (args.size > 2) day = wrapNullAsInteger(args[2])
-        if (args.size > 3) hour = wrapNullAsInteger(args[3])
-        if (args.size > 4) minute = wrapNullAsInteger(args[4])
-        if (args.size > 5) second = wrapNullAsInteger(args[5])
-        if (args.size > 6) millisecond = wrapNullAsInteger(args[6])
-        if (args.size > 7) timezoneOffset = wrapNullAsDecimal(args[7])
+        year = args[0]
+        if (args.size > 1) month = args[1]
+        if (args.size > 2) day = args[2]
+        if (args.size > 3) hour = args[3]
+        if (args.size > 4) minute = args[4]
+        if (args.size > 5) second = args[5]
+        if (args.size > 6) millisecond = args[6]
+        if (args.size > 7) timezoneOffset = args[7]
     }
 }
 
 private fun emitDateConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..3) { "Expected 1 to 3 arguments for Date" }
     return Date().apply {
-        year = wrapNullAsInteger(args[0])
-        if (args.size > 1) month = wrapNullAsInteger(args[1])
-        if (args.size > 2) day = wrapNullAsInteger(args[2])
+        year = args[0]
+        if (args.size > 1) month = args[1]
+        if (args.size > 2) day = args[2]
     }
 }
 
 private fun emitTimeConstructor(args: List<ElmExpression>): ElmExpression {
     require(args.size in 1..4) { "Expected 1 to 4 arguments for Time" }
     return Time().apply {
-        hour = wrapNullAsInteger(args[0])
-        if (args.size > 1) minute = wrapNullAsInteger(args[1])
-        if (args.size > 2) second = wrapNullAsInteger(args[2])
-        if (args.size > 3) millisecond = wrapNullAsInteger(args[3])
+        hour = args[0]
+        if (args.size > 1) minute = args[1]
+        if (args.size > 2) second = args[2]
+        if (args.size > 3) millisecond = args[3]
     }
 }
 
