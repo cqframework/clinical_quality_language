@@ -207,8 +207,7 @@ class FullParityTest {
                     "Choice type coercion: legacy wraps if/case/union branches in As",
                 // Aggregate coercion: Coalesce As wrapping, QueryLetRef in nested queries,
                 // ToQuantity wrapping on DurationBetween
-                "Aggregate" to
-                    "Aggregate coercion: legacy wraps Coalesce in As, nested QueryLetRef, ToQuantity",
+                // "Aggregate" — testing
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
                 // interval-point comparisons
                 "IntervalOperators" to
@@ -221,8 +220,7 @@ class FullParityTest {
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
                 // CqlListOperators: Exists/Contains/In/Includes function-to-ELM mapping,
                 // union empty list wrapping, remaining null As wrapping
-                "CqlListOperators" to
-                    "Function-to-ELM mapping: Exists/Contains/In/Includes, union empty list wrapping",
+                "CqlListOperators" to "Null As wrapping and empty list query wrapping",
                 // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes
                 "AgeOperators" to
                     "System function mapping: legacy maps age functions to CalculateAge ELM nodes",

@@ -15,6 +15,8 @@ import org.hl7.cql.ast.OverlapsIntervalPhrase
 import org.hl7.cql.ast.StartsIntervalPhrase
 import org.hl7.cql.ast.TemporalRelationshipDirection
 import org.hl7.cql.ast.WithinIntervalPhrase
+import org.hl7.cql.model.IntervalType
+import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.After
 import org.hl7.elm.r1.Before
 import org.hl7.elm.r1.Contains
@@ -49,8 +51,8 @@ internal fun EmissionContext.emitIntervalRelation(
     val rightElm = emitExpression(expression.right)
 
     return when (val phrase = expression.phrase) {
-        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, leftElm, rightElm)
-        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, leftElm, rightElm)
+        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
+        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
         is BeforeOrAfterIntervalPhrase -> emitBeforeOrAfterPhrase(phrase, leftElm, rightElm)
         is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, leftElm, rightElm)
         is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, leftElm, rightElm)
@@ -81,17 +83,18 @@ private fun applyBoundary(
     }
 }
 
-private fun emitIncludesPhrase(
+private fun EmissionContext.emitIncludesPhrase(
     phrase: IncludesIntervalPhrase,
+    expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
     val right = applyBoundary(rightElm, phrase.rightBoundary)
-    // When the right operand has a boundary selector (making it a point), switch to
-    // Contains/ProperContains
+    // Determine if the right operand is a point (not a list/interval)
     val isPointRight =
-        phrase.rightBoundary != null && phrase.rightBoundary != IntervalBoundarySelector.OCCURS
+        (phrase.rightBoundary != null && phrase.rightBoundary != IntervalBoundarySelector.OCCURS) ||
+            isElementType(expression.right)
     return if (phrase.proper) {
         if (isPointRight) {
             ProperContains().apply {
@@ -119,16 +122,18 @@ private fun emitIncludesPhrase(
     }
 }
 
-private fun emitIncludedInPhrase(
+private fun EmissionContext.emitIncludedInPhrase(
     phrase: IncludedInIntervalPhrase,
+    expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
     val left = applyBoundary(leftElm, phrase.leftBoundary)
-    // When the left operand has a boundary selector (making it a point), switch to In/ProperIn
+    // Determine if the left operand is a point (not a list/interval)
     val isPointLeft =
-        phrase.leftBoundary != null && phrase.leftBoundary != IntervalBoundarySelector.OCCURS
+        (phrase.leftBoundary != null && phrase.leftBoundary != IntervalBoundarySelector.OCCURS) ||
+            isElementType(expression.left)
     return if (phrase.proper) {
         if (isPointLeft) {
             ProperIn().apply {
@@ -303,4 +308,14 @@ private fun emitEndsPhrase(
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
     }
+}
+
+/**
+ * Returns true if the expression's resolved type is an element type (not a list or interval). Used
+ * to determine whether `includes` should emit as `Contains` (element) vs. `Includes` (collection)
+ * and similarly for `included in` → `In` vs. `IncludedIn`.
+ */
+private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression): Boolean {
+    val type = semanticModel[expression] ?: return false
+    return type !is ListType && type !is IntervalType
 }

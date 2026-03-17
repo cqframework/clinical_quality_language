@@ -47,6 +47,7 @@ import org.hl7.elm.r1.ProperIncludedIn
 import org.hl7.elm.r1.ProperIncludes
 import org.hl7.elm.r1.ReplaceMatches
 import org.hl7.elm.r1.SingletonFrom
+import org.hl7.elm.r1.Size
 import org.hl7.elm.r1.Split
 import org.hl7.elm.r1.SplitOnMatches
 import org.hl7.elm.r1.StartsWith
@@ -178,6 +179,9 @@ internal fun EmissionContext.emitFunctionCall(expression: FunctionCallExpression
                 ProperIncludedIn().apply { operand = mutableListOf(a, b) }
             }
         "SingletonFrom" -> emitUnaryArg(args) { SingletonFrom().apply { operand = it } }
+
+        // Interval functions
+        "Size" -> emitUnaryArg(args) { Size().apply { operand = it } }
 
         // Type conversion and ConvertsTo operators
         "ToString",
