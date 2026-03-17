@@ -103,7 +103,9 @@ internal fun EmissionContext.emitBinaryOperator(
 
     val operands = mutableListOf(leftElm, rightElm)
 
-    // Use the pre-computed operator resolution from TypeTable
+    // Use the pre-computed operator resolution from TypeTable.
+    // ConversionInserter handles simple operator conversions in the AST; applyAllConversions
+    // is kept here as a safety net for complex conversions not yet migrated.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
         applyAllConversions(resolution, operands)

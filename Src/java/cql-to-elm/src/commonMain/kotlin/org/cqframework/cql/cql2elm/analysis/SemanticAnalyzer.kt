@@ -45,14 +45,23 @@ class SemanticAnalyzer(
         val symbols = symbolCollector.collect(library)
         val typeResolver = TypeResolver(operatorRegistry)
         val typeTable = typeResolver.resolve(library, symbols)
+
+        // Insert explicit conversion nodes into the AST based on operator resolutions.
+        // The ConversionInserter reads the TypeTable to find which operands need wrapping
+        // and creates ConversionExpression/AsExpression nodes in the AST. We do NOT re-infer
+        // types afterward — the original TypeTable remains valid for all unchanged nodes, and
+        // new conversion nodes are emitted via their own emission handlers.
+        val converter = ConversionInserter(typeTable, operatorRegistry)
+        val convertedLibrary = converter.convertLibrary(library)
+
         val semanticModel = SemanticModel(symbols, typeTable, operatorRegistry, options)
-        semanticValidator.validate(library, symbols, semanticModel)
+        semanticValidator.validate(convertedLibrary, symbols, semanticModel)
 
         // Collect metrics
         semanticModel.metrics =
             AnalysisMetrics(
-                definitionCount = library.definitions.size,
-                statementCount = library.statements.size,
+                definitionCount = convertedLibrary.definitions.size,
+                statementCount = convertedLibrary.statements.size,
                 expressionCount = typeTable.expressionCount,
                 typedCount = typeTable.typedCount,
                 unresolvedCount = typeTable.expressionCount - typeTable.typedCount,
@@ -60,7 +69,7 @@ class SemanticAnalyzer(
                 identifierResolutionCount = typeTable.identifierResolutionCount,
                 errorCount = semanticModel.errors.size,
             )
-        return Result(library, semanticModel)
+        return Result(convertedLibrary, semanticModel)
     }
 }
 
