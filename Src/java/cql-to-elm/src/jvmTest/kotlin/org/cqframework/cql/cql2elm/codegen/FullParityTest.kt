@@ -199,8 +199,7 @@ class FullParityTest {
                     "Error recovery: legacy replaces invalid sort expressions with Null",
                 // Aggregate query wrapping: legacy wraps integer list args to
                 // Avg/Median/StdDev/Variance/etc. in implicit queries with ToDecimal conversions
-                "AggregateOperators" to
-                    "Aggregate wrapping: legacy wraps integer list args in implicit Query with ToDecimal",
+                // "AggregateOperators" — testing
                 // Type coercion: legacy wraps if/case branches in As for choice types,
                 // wraps union operands in As for choice list types
                 // "TypeOperators" — testing

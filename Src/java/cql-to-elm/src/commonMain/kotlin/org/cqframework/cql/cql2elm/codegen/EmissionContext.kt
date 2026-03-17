@@ -148,8 +148,46 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         if (conversion.isCast) {
             return wrapAsConversion(expression, conversion)
         }
-        // List/interval promotions and demotions are not yet handled
+        // List conversion: wrap in implicit Query with element-level conversion
+        // Only apply for operator-based conversions (ToDecimal, ToLong, etc.)
+        // not for cast conversions (As wrapping)
+        if (
+            conversion.isListConversion &&
+                conversion.conversion != null &&
+                conversion.conversion!!.operator != null
+        ) {
+            return wrapListConversion(expression, conversion.conversion!!)
+        }
+        // List/interval promotions and demotions not yet handled
         return expression
+    }
+
+    /**
+     * Wrap a list expression in an implicit Query that applies an element-level conversion.
+     * Produces: Query(source=[alias "X" from list], return=Return(conversion(AliasRef("X"))))
+     */
+    fun wrapListConversion(
+        listExpression: ElmExpression,
+        elementConversion: Conversion,
+    ): ElmExpression {
+        val aliasRef = org.hl7.elm.r1.AliasRef().apply { name = "X" }
+        val convertedElement = applyConversion(aliasRef, elementConversion)
+        return org.hl7.elm.r1.Query().apply {
+            source =
+                mutableListOf(
+                    org.hl7.elm.r1.AliasedQuerySource().apply {
+                        alias = "X"
+                        expression = listExpression
+                    }
+                )
+            `let` = mutableListOf()
+            relationship = mutableListOf()
+            `return` =
+                org.hl7.elm.r1.ReturnClause().apply {
+                    distinct = false
+                    expression = convertedElement
+                }
+        }
     }
 
     /**
