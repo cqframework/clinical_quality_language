@@ -72,10 +72,23 @@ internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpr
         thenElm = wrapInAs(thenElm, choiceType)
         elseElm = wrapInAs(elseElm, choiceType)
     } else {
-        // Null-As wrapping: when one branch is null and the other has a known type,
-        // wrap the null in As(thatType) to match legacy behavior
         val thenType = semanticModel[expression.thenBranch]
         val elseType = semanticModel[expression.elseBranch]
+        val anyType = operatorRegistry.type("Any")
+        // Implicit type promotion: when branch types differ and there's an implicit conversion
+        // (e.g., Integer→Decimal), apply the conversion to the narrower branch
+        if (
+            thenType != null &&
+                elseType != null &&
+                thenType != elseType &&
+                thenType != anyType &&
+                elseType != anyType
+        ) {
+            thenElm = applyImplicitConversion(thenElm, thenType, elseType)
+            elseElm = applyImplicitConversion(elseElm, elseType, thenType)
+        }
+        // Null-As wrapping: when one branch is null and the other has a known type,
+        // wrap the null in As(thatType) to match legacy behavior
         if (isNullBranch(expression.elseBranch) && thenType != null) {
             elseElm = wrapNullAs(elseElm, thenType)
         } else if (isNullBranch(expression.thenBranch) && elseType != null) {
@@ -92,8 +105,7 @@ internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpr
 
 /** Check if an AST expression is a null literal. */
 private fun isNullBranch(expr: org.hl7.cql.ast.Expression): Boolean {
-    return expr is org.hl7.cql.ast.LiteralExpression &&
-        expr.literal is org.hl7.cql.ast.NullLiteral
+    return expr is org.hl7.cql.ast.LiteralExpression && expr.literal is org.hl7.cql.ast.NullLiteral
 }
 
 /**
@@ -112,6 +124,14 @@ private fun EmissionContext.computeChoiceType(
     if (distinct.all { t -> distinct.any { other -> other != t && other.isSuperTypeOf(t) } }) {
         return null
     }
+    // Check if there exists a numeric promotion between types (e.g., Integer→Decimal)
+    if (
+        distinct.any { candidate ->
+            distinct.all { t -> t == candidate || isNumericPromotion(t, candidate) }
+        }
+    ) {
+        return null
+    }
     // Check if there exists a common non-Any supertype
     val common = distinct.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
     if (common != anyType && common != DataType.ANY) return null
@@ -127,6 +147,18 @@ private fun EmissionContext.wrapInAs(
         operand = expression
         asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(choiceType)
     }
+}
+
+/**
+ * Check if [from] can be promoted to [to] via a numeric widening conversion (Integer→Long,
+ * Integer→Decimal, Long→Decimal). This is distinct from arbitrary implicit conversions.
+ */
+private fun isNumericPromotion(from: DataType, to: DataType): Boolean {
+    val fromName = from.toString()
+    val toName = to.toString()
+    return (fromName == "System.Integer" && toName == "System.Long") ||
+        (fromName == "System.Integer" && toName == "System.Decimal") ||
+        (fromName == "System.Long" && toName == "System.Decimal")
 }
 
 /** Emit an index expression (e.g., 'John'[1]) as an ELM Indexer node. */

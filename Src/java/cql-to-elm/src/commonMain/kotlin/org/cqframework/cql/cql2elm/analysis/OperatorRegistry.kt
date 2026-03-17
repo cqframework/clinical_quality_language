@@ -59,6 +59,34 @@ class OperatorRegistry(
      */
     fun conversionOperatorName(conversion: Conversion): String? = conversion.operator?.name
 
+    /**
+     * Find the name of a conversion operator from [fromType] to [toType] (e.g., "ToDecimal" for
+     * Integer→Decimal). Returns null if no operator-based conversion exists.
+     */
+    fun findConversionOperatorName(fromType: DataType, toType: DataType): String? {
+        // Try known conversion operator names
+        val candidateNames = listOf("To${toType.toString().removePrefix("System.")}")
+        for (name in candidateNames) {
+            val resolution = resolve(name, listOf(fromType))
+            if (resolution != null && resolution.operator.resultType == toType) {
+                return name
+            }
+        }
+        return null
+    }
+
+    /**
+     * Find an implicit conversion from [fromType] to [toType], if one exists in the conversion map.
+     */
+    fun findConversion(fromType: DataType, toType: DataType): Conversion? =
+        conversionMap.findConversion(
+            fromType,
+            toType,
+            isImplicit = true,
+            allowPromotionAndDemotion = false,
+            operatorMap = systemOperators,
+        )
+
     companion object {
         /**
          * Create an OperatorRegistry pre-loaded with the System library operators and conversions.

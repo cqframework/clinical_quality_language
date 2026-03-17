@@ -382,8 +382,8 @@ internal fun isEmptyListLiteral(expr: org.hl7.cql.ast.Expression): Boolean {
 }
 
 /**
- * Check if an expression's type is a List with a concrete (non-Any) element type. Used to
- * determine whether an empty list on the other side of `includes` should be treated as an element.
+ * Check if an expression's type is a List with a concrete (non-Any) element type. Used to determine
+ * whether an empty list on the other side of `includes` should be treated as an element.
  */
 private fun EmissionContext.hasConcreteListElementType(
     expression: org.hl7.cql.ast.Expression

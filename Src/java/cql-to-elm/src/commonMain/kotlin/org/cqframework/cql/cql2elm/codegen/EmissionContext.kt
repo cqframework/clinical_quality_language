@@ -158,7 +158,8 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         ) {
             return wrapListConversion(expression, conversion.conversion!!)
         }
-        // Interval conversion: expand into Interval with Property access on low/high/lowClosed/highClosed
+        // Interval conversion: expand into Interval with Property access on
+        // low/high/lowClosed/highClosed
         if (conversion.isIntervalConversion && conversion.conversion != null) {
             return wrapIntervalConversion(expression, conversion)
         }
@@ -223,30 +224,63 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     fun wrapIntervalConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
         val innerConversion = conversion.conversion!!
         return org.hl7.elm.r1.Interval().apply {
-            low = applyConversion(
+            low =
+                applyConversion(
+                    org.hl7.elm.r1.Property().apply {
+                        path = "low"
+                        source = expression
+                    },
+                    innerConversion,
+                )
+            lowClosedExpression =
                 org.hl7.elm.r1.Property().apply {
-                    path = "low"
+                    path = "lowClosed"
                     source = expression
-                },
-                innerConversion,
-            )
-            lowClosedExpression = org.hl7.elm.r1.Property().apply {
-                path = "lowClosed"
-                source = expression
-            }
-            high = applyConversion(
+                }
+            high =
+                applyConversion(
+                    org.hl7.elm.r1.Property().apply {
+                        path = "high"
+                        source = expression
+                    },
+                    innerConversion,
+                )
+            highClosedExpression =
                 org.hl7.elm.r1.Property().apply {
-                    path = "high"
+                    path = "highClosed"
                     source = expression
-                },
-                innerConversion,
-            )
-            highClosedExpression = org.hl7.elm.r1.Property().apply {
-                path = "highClosed"
-                source = expression
-            }
+                }
         }
     }
+
+    /**
+     * Apply an implicit conversion from [fromType] to [toType] if one exists. Checks type names for
+     * known implicit conversion operators (e.g., Integer→Decimal via ToDecimal, Code→Concept via
+     * ToConcept). Used for element-level type promotion in lists, intervals, if/case branches.
+     */
+    fun applyImplicitConversion(
+        expression: ElmExpression,
+        fromType: DataType,
+        toType: DataType,
+    ): ElmExpression {
+        if (fromType == toType) return expression
+        // Known implicit conversion operators based on type names
+        val convName = implicitConversionName(fromType.toString(), toType.toString())
+        if (convName != null) {
+            return wrapConversion(expression, convName)
+        }
+        return expression
+    }
+
+    /** Map known implicit conversion type pairs to their operator names. */
+    private fun implicitConversionName(fromTypeName: String, toTypeName: String): String? =
+        when {
+            fromTypeName == "System.Integer" && toTypeName == "System.Long" -> "ToLong"
+            fromTypeName == "System.Integer" && toTypeName == "System.Decimal" -> "ToDecimal"
+            fromTypeName == "System.Long" && toTypeName == "System.Decimal" -> "ToDecimal"
+            fromTypeName == "System.Code" && toTypeName == "System.Concept" -> "ToConcept"
+            else -> null
+        }
 
     /**
      * Recursively emit an AST [Expression] into an ELM expression. Dispatches via [fold] for

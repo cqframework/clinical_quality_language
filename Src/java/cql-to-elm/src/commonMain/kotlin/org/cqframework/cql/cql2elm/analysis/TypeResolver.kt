@@ -385,8 +385,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         // Exclude Any (from null) for point type computation
         val nonNullTypes = listOfNotNull(lowType, highType).filter { it != anyType }
         val pointType =
-            if (nonNullTypes.isEmpty()) anyType
-            else nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+            if (nonNullTypes.isEmpty()) anyType else findCommonTypeWithConversions(nonNullTypes)
         return org.hl7.cql.model.IntervalType(pointType)
     }
 
@@ -397,7 +396,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         val elementTypes = literal.elements.mapNotNull { inferType(it) }
         val nonNullTypes = elementTypes.filter { it != anyType }
         if (nonNullTypes.isEmpty()) return ListType(anyType)
-        val commonType = nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        val commonType = findCommonTypeWithConversions(nonNullTypes)
         return ListType(commonType)
     }
 
@@ -408,6 +407,39 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
                 TupleTypeElement(elem.name.value, elemType)
             }
         return TupleType(elements)
+    }
+
+    /**
+     * Find the common type among a list of types, considering implicit conversions. Falls back to
+     * [DataType.getCommonSuperTypeOf] first, and if the result is `Any`, checks for implicit
+     * conversions (e.g., Integer→Decimal promotes to Decimal).
+     */
+    private fun findCommonTypeWithConversions(types: List<DataType>): DataType {
+        if (types.size == 1) return types[0]
+        val basic = types.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        if (basic != DataType.ANY && basic.toString() != "System.Any") return basic
+        // Check if all types can be converted to any one of the distinct types
+        val distinct = types.distinct()
+        for (candidate in distinct) {
+            if (distinct.all { it == candidate || canImplicitlyConvert(it, candidate) }) {
+                return candidate
+            }
+        }
+        return basic
+    }
+
+    /** Check if there's an implicit conversion from [from] to [to]. */
+    private fun canImplicitlyConvert(from: DataType, to: DataType): Boolean {
+        if (from.isSuperTypeOf(to) || to.isSuperTypeOf(from)) return true
+        val conversion =
+            operatorRegistry.conversionMap.findConversion(
+                from,
+                to,
+                isImplicit = true,
+                allowPromotionAndDemotion = false,
+                operatorMap = operatorRegistry.systemOperators,
+            )
+        return conversion != null
     }
 
     private fun inferInstanceLiteralType(literal: org.hl7.cql.ast.InstanceLiteral): DataType? {
@@ -465,7 +497,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
             // When one branch is Any (null), use the other branch's type
             thenType == anyType -> elseType
             elseType == anyType -> thenType
-            else -> thenType.getCommonSuperTypeOf(elseType)
+            else -> findCommonTypeWithConversions(listOf(thenType, elseType))
         }
     }
 
@@ -483,7 +515,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         // Filter out Any (null) types for common type computation
         val nonNullTypes = allTypes.filter { it != anyType }
         if (nonNullTypes.isEmpty()) return anyType
-        return nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        return findCommonTypeWithConversions(nonNullTypes)
     }
 
     @Suppress("ReturnCount", "CyclomaticComplexMethod")

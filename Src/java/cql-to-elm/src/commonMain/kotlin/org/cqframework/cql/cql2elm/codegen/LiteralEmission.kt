@@ -100,7 +100,7 @@ internal fun EmissionContext.emitInterval(
     return interval
 }
 
-/** Emit an interval bound, wrapping null in As(pointType) if the point type is known. */
+/** Emit an interval bound, wrapping null in As(pointType) or applying implicit conversion. */
 private fun EmissionContext.emitIntervalBound(
     expr: org.hl7.cql.ast.Expression,
     pointType: org.hl7.cql.model.DataType?,
@@ -113,6 +113,13 @@ private fun EmissionContext.emitIntervalBound(
             pointType != operatorRegistry.type("Any")
     ) {
         return wrapNullAs(emitted, pointType)
+    }
+    // Apply implicit conversion when bound type differs from point type (e.g., Integer→Decimal)
+    if (pointType != null) {
+        val boundType = semanticModel[expr]
+        if (boundType != null && boundType != pointType) {
+            return applyImplicitConversion(emitted, boundType, pointType)
+        }
     }
     return emitted
 }
@@ -127,6 +134,7 @@ internal fun EmissionContext.emitList(
             literal.elements
                 .map { elem ->
                     val emitted = emitExpression(elem)
+                    val elemType = semanticModel[elem]
                     // Wrap null elements in As(elementType) to match legacy behavior
                     if (
                         elem is org.hl7.cql.ast.LiteralExpression &&
@@ -135,6 +143,9 @@ internal fun EmissionContext.emitList(
                             elementType != operatorRegistry.type("Any")
                     ) {
                         wrapNullAs(emitted, elementType)
+                    } else if (elementType != null && elemType != null && elemType != elementType) {
+                        // Apply implicit conversion when element type differs from list type
+                        applyImplicitConversion(emitted, elemType, elementType)
                     } else {
                         emitted
                     }

@@ -206,9 +206,9 @@ class FullParityTest {
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
                 // interval-point comparisons
                 // "IntervalOperators" — testing
-                // Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion
+                // ImplicitConversions: Code→Concept/ToConcept conversion and error recovery
                 "ImplicitConversions" to
-                    "ToDecimal promotion in if/case/interval, null-As in case",
+                    "Code→Concept conversion (ToConcept) and CodesToConcept error recovery",
                 // Name hiding: QDM model interval resolution and out-of-scope error recovery
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
                 // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes

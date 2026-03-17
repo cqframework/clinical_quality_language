@@ -7,7 +7,6 @@ import org.hl7.cql.ast.OperatorBinaryExpression
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
-import org.hl7.cql.model.SimpleType
 import org.hl7.elm.r1.Distinct
 import org.hl7.elm.r1.Except
 import org.hl7.elm.r1.Expression as ElmExpression
@@ -34,14 +33,12 @@ internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpressio
                         conversion.conversion!!.isCast
                 ) {
                     // List demotion: wrap in Query with As cast on elements
-                    val target =
-                        if (index == 0) leftElm else rightElm
+                    val target = if (index == 0) leftElm else rightElm
                     val wrapped = wrapListConversion(target, conversion.conversion!!)
                     if (index == 0) leftElm = wrapped else rightElm = wrapped
                 } else {
                     // Other conversions (operator-based): use standard path
-                    val target =
-                        if (index == 0) leftElm else rightElm
+                    val target = if (index == 0) leftElm else rightElm
                     val wrapped = applyConversion(target, conversion)
                     if (index == 0) leftElm = wrapped else rightElm = wrapped
                 }
@@ -72,8 +69,7 @@ internal fun EmissionContext.emitSetOperator(expression: OperatorBinaryExpressio
                     !rightElem.isSuperTypeOf(leftElem)
             ) {
                 // Sort types to match legacy ordering (alphabetical by toString)
-                val sortedTypes =
-                    listOf(leftElem, rightElem).distinct().sortedBy { it.toString() }
+                val sortedTypes = listOf(leftElem, rightElem).distinct().sortedBy { it.toString() }
                 val choiceElem = ChoiceType(sortedTypes)
                 val choiceListType = ListType(choiceElem)
                 leftElm = wrapAsListChoice(leftElm, choiceListType)
@@ -123,7 +119,10 @@ internal fun EmissionContext.emitListTransform(expression: ListTransformExpressi
 
     // For Flatten with heterogeneous list (mixed List<T> and T elements),
     // wrap in implicit Query that casts each element to List<T>
-    if (expression.listTransformKind == ListTransformKind.FLATTEN && !isNullLiteralExpr(expression.operand)) {
+    if (
+        expression.listTransformKind == ListTransformKind.FLATTEN &&
+            !isNullLiteralExpr(expression.operand)
+    ) {
         val flattenListType = detectHeterogeneousFlatten(expression.operand)
         if (flattenListType != null) {
             val queryWrapped = wrapFlattenHeterogeneous(operandElm, flattenListType)
