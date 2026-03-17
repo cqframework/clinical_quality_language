@@ -26,67 +26,63 @@ CQL Source
                    │
                    ▼
 ┌────────────────────────────────────────────────┐
-│  INFER + UNIFY                                 │
-│  TypeResolver walks AST + SymbolTable          │
-│                                                │
-│  For each expression (bottom-up):              │
-│    1. Infer operand types                      │
-│    2. Resolve operator/function overload        │
-│       (scoring via OperatorRegistry)           │
-│    3. Record:                                  │
-│       - inferred type → TypeTable              │
-│       - operator resolution → TypeTable        │
-│       - needed conversions → TypeTable         │
-│                                                │
-│  Output: TypeTable (types, resolutions,        │
-│          conversion requirements)              │
-└──────────────────┬─────────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────────┐
-│  CONVERT (AST Transform)                       │
-│  ConversionInserter walks AST + TypeTable      │
-│  Uses ExpressionFold<Expression> (catamorphism │
-│  where R = Expression, i.e., AST → AST)       │
-│                                                │
-│  For each expression:                          │
-│    - If TypeTable says operand N needs          │
-│      conversion C, wrap it:                    │
-│      Add(int1, dec2)                           │
-│        → Add(ToDecimal(int1), dec2)            │
-│    - If TypeTable says null needs As(T),       │
-│      wrap it:                                  │
-│      Coalesce(expr, null)                      │
-│        → Coalesce(expr, As(Integer, null))     │
-│    - If list elements need promotion:          │
-│      List(int1, dec2)                          │
-│        → List(ToDecimal(int1), dec2)           │
-│    - If aggregate needs query wrapping:        │
-│      Avg(intList)                              │
-│        → Avg(Query(intList, return ToDecimal)) │
-│                                                │
-│  Output: converted AST (new tree, same types)  │
-│          All conversions are explicit nodes.    │
-└──────────────────┬─────────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────────┐
-│  RE-INFER (conditional)                        │
-│  TypeResolver walks converted AST              │
-│                                                │
-│  Why: inserted conversions change types.       │
-│  ToDecimal(1) has type Decimal, not Integer.   │
-│  This may affect parent operators.             │
-│                                                │
-│  In practice, CQL's type system is simple      │
-│  enough that one conversion pass suffices —    │
-│  conversions don't trigger new conversions.    │
-│  But the architecture supports re-running.     │
-│                                                │
-│  Convergence check: if TypeTable is unchanged, │
-│  stop. Otherwise, go back to CONVERT.          │
-│                                                │
-│  Output: final TypeTable (post-conversion)     │
+│  ┌──────────────────────────────────────────┐  │
+│  │  INFER + UNIFY                           │  │
+│  │  TypeResolver walks AST + SymbolTable    │  │
+│  │                                          │  │
+│  │  For each expression (bottom-up):        │  │
+│  │    1. Infer operand types                │  │
+│  │    2. Resolve operator/function overload  │  │
+│  │       (scoring via OperatorRegistry)     │  │
+│  │    3. Record:                            │  │
+│  │       - inferred type → TypeTable        │  │
+│  │       - operator resolution → TypeTable  │  │
+│  │       - needed conversions → TypeTable   │  │
+│  │                                          │  │
+│  │  Output: TypeTable (types, resolutions,  │  │
+│  │          conversion requirements)        │  │
+│  │  Metrics: expressionCount, resolvedCount │  │
+│  └──────────────────┬───────────────────────┘  │
+│                     │                          │
+│                     ▼                          │
+│  ┌──────────────────────────────────────────┐  │
+│  │  CONVERT (AST Transform)                 │  │
+│  │  ConversionInserter walks AST + TypeTable│  │
+│  │  ExpressionFold<Expression> catamorphism │  │
+│  │                                          │  │
+│  │  Inserts explicit conversion nodes:      │  │
+│  │    Add(int1, dec2)                       │  │
+│  │      → Add(ToDecimal(int1), dec2)        │  │
+│  │    Coalesce(expr, null)                  │  │
+│  │      → Coalesce(expr, As(Integer, null)) │  │
+│  │    List(int1, dec2)                      │  │
+│  │      → List(ToDecimal(int1), dec2)       │  │
+│  │    Avg(intList)                          │  │
+│  │      → Avg(Query(intList, ToDecimal))    │  │
+│  │                                          │  │
+│  │  Output: converted AST (new tree)        │  │
+│  │  Metrics: conversionsInserted            │  │
+│  └──────────────────┬───────────────────────┘  │
+│                     │                          │
+│                     ▼                          │
+│  ┌──────────────────────────────────────────┐  │
+│  │  CONVERGENCE CHECK                       │  │
+│  │                                          │  │
+│  │  Re-run INFER on the converted AST.      │  │
+│  │  Compare: did any NEW conversions appear │  │
+│  │  that weren't in the previous TypeTable? │  │
+│  │                                          │  │
+│  │  If yes → loop back to CONVERT           │  │
+│  │  If no  → converged, exit loop           │  │
+│  │                                          │  │
+│  │  Safety: max iterations (e.g., 3).       │  │
+│  │  If exceeded, report internal error.     │  │
+│  │                                          │  │
+│  │  Metrics: iterationCount,                │  │
+│  │           newConversionsPerIteration      │  │
+│  └──────────────────┬───────────────────────┘  │
+│                     │                          │
+│  INFER → CONVERT → CHECK loop                  │
 └──────────────────┬─────────────────────────────┘
                    │
                    ▼
@@ -304,3 +300,67 @@ won't find new work.
 This is incremental: start with the simplest conversions (operator
 argument promotion), verify parity, then move more conversion logic
 over until emission is purely mechanical.
+
+---
+
+## Observability
+
+The analysis pipeline should emit metrics and diagnostics so we can
+detect unexpected behavior, especially around the INFER→CONVERT loop.
+
+### Per-pass metrics
+
+```kotlin
+data class AnalysisMetrics(
+    // COLLECT
+    val definitionCount: Int,          // total definitions collected
+    val scopeCount: Int,               // scopes created
+
+    // INFER
+    val expressionCount: Int,          // total expressions walked
+    val typedCount: Int,               // expressions with non-null type
+    val unresolvedCount: Int,          // expressions with null type
+    val operatorResolutionCount: Int,  // operator overloads resolved
+    val identifierResolutionCount: Int, // identifiers resolved
+
+    // CONVERT
+    val conversionsInserted: Int,      // conversion nodes added
+    val conversionsByKind: Map<String, Int>, // e.g., "ToDecimal" → 5
+
+    // Loop
+    val inferConvertIterations: Int,   // how many INFER→CONVERT cycles
+    val newConversionsPerIteration: List<Int>, // [5, 0] = converged on 2nd
+
+    // VALIDATE
+    val errorCount: Int,               // errors flagged
+    val warningCount: Int,             // warnings flagged
+)
+```
+
+### Convergence monitoring
+
+The INFER→CONVERT→CHECK loop should log at each iteration:
+
+```
+[analysis] INFER pass 1: 142 expressions, 138 typed, 4 unresolved, 12 conversions needed
+[analysis] CONVERT pass 1: 12 conversions inserted (ToDecimal: 5, As: 4, ToLong: 2, ToConcept: 1)
+[analysis] INFER pass 2: 154 expressions, 150 typed, 4 unresolved, 0 new conversions
+[analysis] Converged after 2 iterations
+```
+
+If the loop exceeds max iterations:
+
+```
+[analysis] WARNING: INFER→CONVERT loop did not converge after 3 iterations
+[analysis]   Iteration 1: 12 conversions inserted
+[analysis]   Iteration 2: 3 new conversions inserted
+[analysis]   Iteration 3: 1 new conversion inserted
+[analysis]   Reporting as internal error — please file a bug
+```
+
+### Where metrics are stored
+
+`SemanticModel` gets an `AnalysisMetrics` field populated by the
+`SemanticAnalyzer` orchestrator. Tests can assert on metrics
+(e.g., "this CQL should have 0 unresolved identifiers"). Diagnostic
+output can include them for debugging.
