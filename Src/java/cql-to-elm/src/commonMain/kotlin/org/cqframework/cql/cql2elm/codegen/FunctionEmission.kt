@@ -5,6 +5,8 @@ package org.cqframework.cql.cql2elm.codegen
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.model.ChoiceType
+import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.AllTrue
 import org.hl7.elm.r1.AnyTrue
 import org.hl7.elm.r1.Avg
@@ -60,10 +62,54 @@ import org.hl7.elm.r1.Variance
 
 /** Emit an if-then-else expression as an ELM If node. */
 internal fun EmissionContext.emitIfExpression(expression: IfExpression): ElmExpression {
+    val conditionElm = emitExpression(expression.condition)
+    var thenElm = emitExpression(expression.thenBranch)
+    var elseElm = emitExpression(expression.elseBranch)
+
+    // Check if branches need choice type wrapping
+    val choiceType = computeChoiceType(expression.thenBranch, expression.elseBranch)
+    if (choiceType != null) {
+        thenElm = wrapInAs(thenElm, choiceType)
+        elseElm = wrapInAs(elseElm, choiceType)
+    }
+
     return If().apply {
-        condition = emitExpression(expression.condition)
-        then = emitExpression(expression.thenBranch)
-        `else` = emitExpression(expression.elseBranch)
+        condition = conditionElm
+        then = thenElm
+        `else` = elseElm
+    }
+}
+
+/**
+ * Check if two branch expressions need choice type wrapping. Returns a [ChoiceType] if the branch
+ * types are known, different, and neither is a subtype of the other.
+ */
+private fun EmissionContext.computeChoiceType(
+    vararg branches: org.hl7.cql.ast.Expression
+): ChoiceType? {
+    val anyType = operatorRegistry.type("Any")
+    val types = branches.mapNotNull { semanticModel[it] }.filter { it != anyType }
+    if (types.size < 2) return null
+    val distinct = types.distinct()
+    if (distinct.size < 2) return null
+    // Check if any pair is already sub/super type compatible
+    if (distinct.all { t -> distinct.any { other -> other != t && other.isSuperTypeOf(t) } }) {
+        return null
+    }
+    // Check if there exists a common non-Any supertype
+    val common = distinct.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+    if (common != anyType && common != DataType.ANY) return null
+    return ChoiceType(distinct)
+}
+
+/** Wrap an emitted ELM expression in an As(ChoiceTypeSpecifier). */
+private fun EmissionContext.wrapInAs(
+    expression: ElmExpression,
+    choiceType: ChoiceType,
+): ElmExpression {
+    return org.hl7.elm.r1.As().apply {
+        operand = expression
+        asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(choiceType)
     }
 }
 

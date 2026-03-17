@@ -204,7 +204,7 @@ class FullParityTest {
                 // Type coercion: legacy wraps if/case branches in As for choice types,
                 // wraps union operands in As for choice list types
                 "TypeOperators" to
-                    "Choice type coercion: legacy wraps if/case/union branches in As",
+                    "Choice type coercion: null-As wrapping and union choice-list As",
                 // Aggregate coercion: Coalesce As wrapping, QueryLetRef in nested queries,
                 // ToQuantity wrapping on DurationBetween
                 // "Aggregate" — testing

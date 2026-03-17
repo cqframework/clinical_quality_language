@@ -455,17 +455,22 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
 
     @Suppress("ReturnCount")
     private fun inferIfType(expression: IfExpression): DataType? {
+        val anyType = operatorRegistry.type("Any")
         inferType(expression.condition)
         val thenType = inferType(expression.thenBranch)
         val elseType = inferType(expression.elseBranch)
         return when {
             thenType == null -> elseType
             elseType == null -> thenType
+            // When one branch is Any (null), use the other branch's type
+            thenType == anyType -> elseType
+            elseType == anyType -> thenType
             else -> thenType.getCommonSuperTypeOf(elseType)
         }
     }
 
     private fun inferCaseType(expression: CaseExpression): DataType? {
+        val anyType = operatorRegistry.type("Any")
         expression.comparand?.let { inferType(it) }
         val branchTypes =
             expression.cases.mapNotNull { caseItem ->
@@ -475,7 +480,10 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         val elseType = inferType(expression.elseResult)
         val allTypes = branchTypes + listOfNotNull(elseType)
         if (allTypes.isEmpty()) return null
-        return allTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
+        // Filter out Any (null) types for common type computation
+        val nonNullTypes = allTypes.filter { it != anyType }
+        if (nonNullTypes.isEmpty()) return anyType
+        return nonNullTypes.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
     }
 
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
