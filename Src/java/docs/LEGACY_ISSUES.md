@@ -202,6 +202,110 @@ operand types.
 
 ---
 
+## Synthetic ELM constructions
+
+These are cases where the translator creates ELM structures that don't
+correspond to anything in the CQL source. They are semantic rewrites
+performed during compilation.
+
+### 14. Aggregate query wrapping for numeric promotion
+
+**Rationale:** Spec-correct — `Avg`, `Median`, `StdDev`, `Variance`
+are defined only over `List<Decimal>` and `List<Quantity>` in the
+System library. There is no `Avg(List<Integer>)` signature.
+
+When these functions receive a `List<Integer>`, the operator
+resolution finds that `List<Integer>` can be promoted to
+`List<Decimal>` via implicit Integer→Decimal conversion. The
+translator expresses this list-level conversion as a synthetic Query:
+
+```
+Avg({1, 2, 3})
+  → Avg(Query(source=[{1,2,3} as "X"], return=Return(ToDecimal(AliasRef("X")))))
+```
+
+This is the correct ELM representation of "promote each element of
+this integer list to decimal." The Query is synthesized — it doesn't
+exist in the source CQL — but it's semantically required by the type
+system.
+
+### 15. Interval type expansion for `Interval<Any>`
+
+**Rationale:** Type coercion — when `Interval<Any>` (typically from a
+null interval) is passed to an operator expecting `Interval<Integer>`,
+the translator must express the conversion in ELM. Since ELM has no
+"cast interval" operator, it expands the interval by extracting
+components and wrapping the bounds:
+
+```
+Interval(null, null)  -- typed as Interval<Any>
+  → Interval(
+      low = As(Integer, Property(source=expr, path="low")),
+      high = As(Integer, Property(source=expr, path="high")),
+      lowClosed = Property(source=expr, path="lowClosed"),
+      highClosed = Property(source=expr, path="highClosed"),
+    )
+```
+
+This is the ELM representation of "reinterpret this interval's bounds
+as Integer." The AST should have interval properties (`low`, `high`,
+`lowClosed`, `highClosed`) available for this transformation. The
+synthetic Property accesses don't exist in the source CQL but are
+required by the ELM type system.
+
+### 16. Concatenation Coalesce wrapping
+
+**Rationale:** Spec-correct — the CQL spec defines `&` as treating
+null operands as empty string: *"To treat null as the empty string
+(''), use the & operator."* This is distinct from `+` which propagates
+null.
+
+The translator implements this by wrapping each operand in Coalesce:
+
+```
+'foo' & 'bar'
+  → Concatenate(Coalesce('foo', ''), Coalesce('bar', ''))
+```
+
+This synthesizes `FunctionCallExpression("Coalesce", [operand, ""])`
+nodes that don't exist in the source CQL, but they correctly implement
+the spec-defined null-to-empty-string behavior.
+
+### Need for an IR
+
+These three cases are all **spec-correct semantic transformations** —
+they're required by CQL's type system and operator definitions, not
+engine accommodations or translator quirks. Together with
+`Skip`/`Take`/`Tail` → `Slice` (item 5), they show a pattern: the
+compiler must express constructions in ELM that don't have direct
+source CQL counterparts.
+
+The current ConversionInserter synthesizes AST nodes (QueryExpression,
+FunctionCallExpression, AsExpression) to represent these. This works
+but muddies the AST — it's no longer a pure source representation.
+
+A cleaner architecture would introduce a lightweight **Intermediate
+Representation (IR)** between the analyzed AST and ELM emission:
+
+```
+CQL Source → AST (pure source) → IR (AST + conversions + synthetics) → ELM
+```
+
+The IR would be "analyzed AST + explicit conversions + synthetic
+constructions" — richer than the source AST but not yet ELM. This
+would:
+
+- Keep the AST pure (source representation only, useful for IDE
+  features like go-to-definition, refactoring, formatting)
+- Keep emission purely mechanical (IR → ELM 1:1)
+- Give synthesized constructions a proper home
+- Make the ConversionInserter produce IR, not mutated AST
+
+This is a future architectural improvement. For now, synthesizing AST
+nodes is pragmatic and correct.
+
+---
+
 ## Architecture notes
 
 ### Compiler flag classification

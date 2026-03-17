@@ -902,52 +902,41 @@ resolution and type inference.
 **M16:** Includes/contains disambiguation, interval expansion (→20/32).
 **M17:** SemanticValidator, error recovery, SemanticAnalyzer rename,
 catamorphism migration, AnalysisMetrics (→24/32).
-**M18:** ConversionInserter step 1 — operator argument conversions
-inserted in analysis phase. Dual-path safety with emission.
+**M18:** ConversionInserter — operator/function/null/literal/case/
+interval/collection conversions moved from emission to analysis.
+Remaining in emission: aggregate query wrapping, interval expansion,
+concatenation Coalesce wrapping (synthetic ELM constructions).
 
-### Milestone 19: Conversion Migration (emission cleanup)
+### Milestone 19: Remaining Synthetic Constructions + IR Design
 
-**Goal:** Incrementally move ALL conversion logic from emission into
-the `ConversionInserter` analysis pass, making emission purely
-mechanical.
+**Goal:** Handle the remaining synthetic ELM constructions and design
+the IR step for long-term cleanliness.
 
-Each step: verify the inserter handles the category, remove the
-emission code, test parity.
+**Remaining conversion logic in emission:**
+- [ ] **Aggregate query wrapping** — synthesize `QueryExpression` in
+  ConversionInserter for `Avg`/`Median`/etc. on integer lists.
+  Document as legacy construction (LEGACY_ISSUES.md #14).
+- [ ] **Concatenation Coalesce wrapping** — synthesize
+  `FunctionCallExpression("Coalesce", ...)` in ConversionInserter.
+  Document as legacy construction (LEGACY_ISSUES.md #16).
+- [ ] **Interval type expansion** — synthesize interval reconstruction
+  with Property extraction. Requires AST interval property access.
+  Document as legacy construction (LEGACY_ISSUES.md #15).
+- [ ] **Set operator remaining conversions** — list/interval cast
+  conversions in ListOperatorEmission.kt.
+- [ ] **Re-infer convergence loop** — wire INFER→CONVERT→CHECK with
+  max iterations and AnalysisMetrics tracking.
+- [ ] **Clean up EmissionContext** — remove remaining conversion
+  helpers (`applyConversion`, `wrapConversion`, `wrapAsConversion`,
+  `wrapListConversion`, `wrapIntervalConversion`, `wrapCoalesce`).
 
-**Work items (in order):**
-- [ ] **Operator argument conversions** — remove `applyAllConversions`
-  from OperatorEmission.kt. Verify ConversionInserter handles all
-  operator/unary/membership/interval-relation conversions.
-- [ ] **Function call argument conversions** — remove conversion logic
-  from FunctionEmission.kt for system function calls.
-- [ ] **Null-As wrapping** — remove `wrapNullAs` from LiteralEmission,
-  ListOperatorEmission, CollectionOperatorEmission. Verify inserter
-  wraps null literals with typed As nodes.
-- [ ] **List element promotion** — remove `applyImplicitConversion`
-  for list elements from LiteralEmission.kt.
-- [ ] **Interval bound promotion** — remove implicit conversion of
-  interval bounds from LiteralEmission.kt.
-- [ ] **If/Case branch promotion** — remove choice type wrapping and
-  implicit conversion from CaseEmission.kt and FunctionEmission.kt.
-- [ ] **Aggregate query wrapping** — move `wrapListConversion`
-  (implicit Query + ToDecimal) from ListOperatorEmission.kt.
-- [ ] **Concatenation Coalesce wrapping** — move `wrapCoalesce` for
-  `&` operator from OperatorEmission.kt.
-- [ ] **DateTime null wrapping** — move `wrapNullAsInteger`/
-  `wrapNullAsDecimal` from SystemFunctionEmission.kt.
-- [ ] **Interval expansion** — move `wrapIntervalConversion` from
-  IntervalOperatorEmission.kt.
-- [ ] **Re-infer convergence check** — after all conversions moved,
-  add RE-INFER pass and verify convergence. Wire into AnalysisMetrics.
-
-**Verification:** After each removal, all 24/32 OperatorTests must
-still pass. If a removal breaks parity, the ConversionInserter needs
-to handle that case before the emission code is removed.
-
-**Target:** Emission files contain zero conversion logic. `lookupResolution`,
-`applyAllConversions`, `applyConversion`, `wrapNullAs`, `wrapAsConversion`,
-`wrapIntervalConversion`, `wrapListConversion`, `applyImplicitConversion`,
-`wrapCoalesce` all removed from codegen.
+**IR design (future):**
+The synthetic constructions (aggregate Query, Coalesce wrapping,
+interval expansion, Skip/Take/Tail→Slice) show the need for an
+Intermediate Representation between analyzed AST and ELM. The IR
+would be "AST + explicit conversions + synthetic nodes" — keeping
+the source AST pure and emission mechanical. For now, synthesizing
+AST nodes is pragmatic; the IR is a future milestone.
 
 ### Milestone 20: Post-processing + Compiler Options
 
