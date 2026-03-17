@@ -892,137 +892,102 @@ resolution and type inference.
 - `LibraryTests/TestFluent*.cql`
 - All remaining test files.
 
-### Milestone 12: Architecture Refactor + DateTimeOperators
+### Milestones 12–18 (completed)
 
-**Goal:** Clean up the pipeline architecture before adding more features.
-Enable DateTimeOperators parity (chunk bug now fixed on main).
+**M12:** Batch FullParityTest, initial parity fixes (9→10/32).
+**M12b:** SemanticModel, IdentityHashMap, ExpressionFold catamorphism.
+**M13:** Expand/collapse, type specifiers, identifier scoping (→11/32).
+**M14:** Null-As wrapping, sort direction, function-to-ELM mapping.
+**M15:** Type coercion grind — list/interval/choice wrapping (→19/32).
+**M16:** Includes/contains disambiguation, interval expansion (→20/32).
+**M17:** SemanticValidator, error recovery, SemanticAnalyzer rename,
+catamorphism migration, AnalysisMetrics (→24/32).
+**M18:** ConversionInserter step 1 — operator argument conversions
+inserted in analysis phase. Dual-path safety with emission.
 
-**Status:** Complete (M12 branch). 9 of 32 OperatorTests at parity.
-Batch `FullParityTest` created. `LEGACY_ISSUES.md` documents all known
-translator behaviors.
+### Milestone 19: Conversion Migration (emission cleanup)
 
-**Work items:**
-- [ ] Unify `SymbolTable` + `TypeTable` into `SemanticModel` — single
-  artifact from analysis to codegen/post-processing.
-- [ ] Switch `TypeTable` from `HashMap` to `IdentityHashMap` —
-  `Locator.UNKNOWN` default causes collisions for structurally
-  identical expressions without locators.
-- [ ] Accept `CqlCompilerOptions` in `CompilerFrontend` and route
-  semantic flags to analysis. Minimum viable: `compatibilityLevel`.
-- [ ] Re-enable DateTimeOperators in FullParityTest (chunk bug fixed
-  on main via PR #1706).
-- [ ] Begin AST fold prototype — replace manual `when` dispatch in
-  TypeResolver and EmissionContext with algebra + automatic traversal.
-  Sealed class exhaustiveness ensures new nodes are compile-time errors.
+**Goal:** Incrementally move ALL conversion logic from emission into
+the `ConversionInserter` analysis pass, making emission purely
+mechanical.
 
-**Target:** 10/32 OperatorTests passing (+DateTimeOperators).
+Each step: verify the inserter handles the category, remove the
+emission code, test parity.
 
-### Milestone 13: Identifier Scoping + Quick Wins
+**Work items (in order):**
+- [ ] **Operator argument conversions** — remove `applyAllConversions`
+  from OperatorEmission.kt. Verify ConversionInserter handles all
+  operator/unary/membership/interval-relation conversions.
+- [ ] **Function call argument conversions** — remove conversion logic
+  from FunctionEmission.kt for system function calls.
+- [ ] **Null-As wrapping** — remove `wrapNullAs` from LiteralEmission,
+  ListOperatorEmission, CollectionOperatorEmission. Verify inserter
+  wraps null literals with typed As nodes.
+- [ ] **List element promotion** — remove `applyImplicitConversion`
+  for list elements from LiteralEmission.kt.
+- [ ] **Interval bound promotion** — remove implicit conversion of
+  interval bounds from LiteralEmission.kt.
+- [ ] **If/Case branch promotion** — remove choice type wrapping and
+  implicit conversion from CaseEmission.kt and FunctionEmission.kt.
+- [ ] **Aggregate query wrapping** — move `wrapListConversion`
+  (implicit Query + ToDecimal) from ListOperatorEmission.kt.
+- [ ] **Concatenation Coalesce wrapping** — move `wrapCoalesce` for
+  `&` operator from OperatorEmission.kt.
+- [ ] **DateTime null wrapping** — move `wrapNullAsInteger`/
+  `wrapNullAsDecimal` from SystemFunctionEmission.kt.
+- [ ] **Interval expansion** — move `wrapIntervalConversion` from
+  IntervalOperatorEmission.kt.
+- [ ] **Re-infer convergence check** — after all conversions moved,
+  add RE-INFER pass and verify convergence. Wire into AnalysisMetrics.
 
-**Goal:** Fix the dominant blocker (6 files blocked by unresolved
-identifiers) and add missing expression/type specifier handlers.
+**Verification:** After each removal, all 24/32 OperatorTests must
+still pass. If a removal breaks parity, the ConversionInserter needs
+to handle that case before the emission code is removed.
 
-**Work items — identifier scoping (unblocks 6 files):**
-- [ ] Fix query alias resolution in sort-by expressions (unblocks
-  Sorting, InvalidSortClauses, Aggregate).
-- [ ] Fix query alias resolution in where clauses for inline queries
-  like `{...} X where (X as String) = 'A'` (unblocks TypeOperators).
-- [ ] Fix function operand resolution in property access contexts
-  like `c.codes` where `c` is a function parameter (unblocks Functions).
-- [ ] `$this` / `$index` special identifiers in queries.
+**Target:** Emission files contain zero conversion logic. `lookupResolution`,
+`applyAllConversions`, `applyConversion`, `wrapNullAs`, `wrapAsConversion`,
+`wrapIntervalConversion`, `wrapListConversion`, `applyImplicitConversion`,
+`wrapCoalesce` all removed from codegen.
 
-**Work items — missing handlers (unblocks 5 files):**
-- [ ] `ExpandCollapseExpression` emission + type inference (unblocks
-  CqlIntervalOperators, IntervalOperators).
-- [ ] `ListTypeSpecifier` / `IntervalTypeSpecifier` / `ChoiceTypeSpecifier`
-  in `emitTypeSpecifier` (unblocks CqlListOperators, ImplicitConversions,
-  NameHiding).
-- [ ] TupleLiteral / InstanceLiteral type inference.
-
-**Work items — test infrastructure:**
-- [ ] Add ModelManager to FullParityTest for model-dependent files
-  (unblocks AgeOperators, TerminologyReferences, TupleAndClassConversions
-  at the parse/emit level — they may still fail at parity comparison).
-
-**Target:** ~19/32 OperatorTests passing.
-
-### Milestone 14: Multi-source Queries + Interval Phrases + Type Gaps
-
-**Goal:** Close remaining OperatorTests gaps that don't require
-cross-library resolution.
-
-**Work items:**
-- [ ] Multi-source query tuple type construction (unblocks
-  MultiSourceQuery, Query).
-- [ ] Quantity offsets on before/after temporal phrases (unblocks
-  IntervalOperatorPhrases).
-- [ ] Implicit aggregate query wrapping (`Avg({1,2,3})` → query with
-  `ToDecimal` conversion). Consider AST Transformer approach.
-- [ ] Null type wrapping with `ListTypeSpecifier` for list operators.
-- [ ] Choice type union wrapping for heterogeneous lists.
-- [ ] `case` comparand equality resolution.
-- [ ] User-defined function overload resolution via OperatorRegistry
-  scoring (replace ad-hoc exact+subtype matching).
-- [ ] Fluent function calls (`x.contains(y)`, `x.where(...)`) —
-  target already on `FunctionCallExpression`; needs method resolution.
-
-**Target:** ~26/32 OperatorTests passing (remaining 6: 4 error
-recovery + AgeOperators/TerminologyReferences needing model integration).
-
-### Milestone 15: Post-processing + Compiler Options
+### Milestone 20: Post-processing + Compiler Options
 
 **Goal:** Implement the post-processing phase and full compiler
 options support.
 
 **Work items:**
 - [ ] Post-processing phase: add serialized `resultTypeName` /
-  `resultTypeSpecifier` when `EnableResultTypes` is on. **Note:**
-  internal `resultType` (via `decorate()`) stays in codegen — it's
-  needed by the ELM object model. Post-processing adds the *serialized
-  representation* only.
-- [ ] Signature annotator (signatureLevel: None/Differing/Overloads/All).
-  Needs access to OperatorResolution from SemanticModel.
+  `resultTypeSpecifier` when `EnableResultTypes` is on.
+- [ ] Signature annotator (`signatureLevel`). Needs SemanticModel
+  access for OperatorResolution.
 - [ ] Locator annotator (`EnableLocators`).
 - [ ] Annotation/narrative annotator (`EnableAnnotations`).
-- [ ] Implement compatibility level gating (`isCompatibleWith`) for
+- [ ] Compatibility level gating (`isCompatibleWith`) for
   `ValueSetRef.preserve`, default context name, etc.
-- [ ] `EnableDateRangeOptimization` as optimization pass or AST
-  Transformer between analysis and codegen.
-- [ ] Error recovery in `SemanticValidator` (replace errors with Null).
-- [ ] Document synthetic ELM cases (aggregate wrapping, null As
-  wrapping, Skip/Take/Tail → Slice). Consider AST Transformer passes
-  to keep emitter purely mechanical.
+- [ ] `EnableDateRangeOptimization` as AST Transformer pass.
 
-### Milestone 16: Cross-Library + Terminology
+### Milestone 21: Cross-Library + Terminology
 
 **Goal:** Multi-library compilation and terminology-based retrieves.
 
 **Work items:**
 - [ ] LibraryManager integration for include resolution.
-- [ ] FHIRHelpers bootstrapping strategy — compile through new pipeline
-  or load pre-compiled ELM.
+- [ ] FHIRHelpers bootstrapping strategy.
 - [ ] Qualified cross-library references (`"LibAlias"."DefName"`).
 - [ ] Terminology-based retrieves (`[Condition: "Diabetes"]`).
 - [ ] Property path collapsing and list traversal.
 
-**Target:** Unblocks TerminologyReferences.cql, all LibraryTests,
-begins unlocking FHIR/QICore tests.
+**Target:** Unblocks TerminologyReferences.cql, all LibraryTests.
 
-### Milestone 17: FHIR Deep Integration + Full Parity Sweep
+### Milestone 22: FHIR Deep Integration + Full Parity Sweep
 
-**Goal:** 100% parity with legacy translator across the entire test
-suite.
+**Goal:** 100% parity across the entire test suite.
 
 **Work items:**
 - [ ] FHIR implicit conversions (`.value` accessor stripping).
 - [ ] FHIR-specific property resolution and type mapping.
-- [ ] Run full parity suite across all 358 CQL test files.
-- [ ] Fix remaining divergences.
-- [ ] Document intentional differences in `LEGACY_ISSUES.md`.
-- [ ] Add compiler option to select pipeline (`legacy` vs `ast`).
+- [ ] Full 358-file parity suite.
+- [ ] Pipeline selection option (`legacy` vs `ast`).
 - [ ] Performance benchmarks.
-- [ ] `repeat` expressions (if needed by test suite).
-- [ ] UnsupportedExpression audit — eliminate remaining Builder fallbacks.
 - [ ] Deprecation plan for `Cql2ElmVisitor` path.
 
 ---
@@ -1149,7 +1114,7 @@ Each milestone is accepted when:
 5. **Multiplatform:** Code compiles and basic tests pass on JVM, JS, and WASM
    targets.
 
-### Final Acceptance (Milestone 12)
+### Final Acceptance (Milestone 22)
 
 The AST pipeline is considered complete when:
 
@@ -1186,7 +1151,7 @@ The new pipeline is organized into four phases with corresponding packages:
 | Phase | Package | Purpose |
 |-------|---------|---------|
 | **Parse** | `org.hl7.cql.ast` (in `cql` module) | Grammar, AST nodes, Builder |
-| **Analysis** | `org.cqframework.cql.cql2elm.analysis` | SymbolCollector, TypeResolver, OperatorRegistry |
+| **Analysis** | `org.cqframework.cql.cql2elm.analysis` | SemanticAnalyzer, TypeResolver, ConversionInserter, SemanticValidator |
 | **Codegen** | `org.cqframework.cql.cql2elm.codegen` | ElmEmitter, EmissionContext, *Emission.kt files |
 | **Post-processing** | (TODO) | ResultType, locator, annotation, signature annotation |
 
@@ -1194,8 +1159,11 @@ The new pipeline is organized into four phases with corresponding packages:
 
 | Component | Path |
 |-----------|------|
-| CompilerFrontend | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
-| SymbolCollector | `cql-to-elm/.../analysis/CompilerFrontend.kt` |
+| SemanticAnalyzer | `cql-to-elm/.../analysis/SemanticAnalyzer.kt` |
+| SemanticModel | `cql-to-elm/.../analysis/SemanticModel.kt` |
+| SemanticValidator | `cql-to-elm/.../analysis/SemanticValidator.kt` |
+| AnalysisMetrics | `cql-to-elm/.../analysis/AnalysisMetrics.kt` |
+| ConversionInserter | `cql-to-elm/.../analysis/ConversionInserter.kt` |
 | TypeResolver (core) | `cql-to-elm/.../analysis/TypeResolver.kt` |
 | Type operator inference | `cql-to-elm/.../analysis/TypeOperatorInference.kt` |
 | Temporal type inference | `cql-to-elm/.../analysis/TemporalTypeInference.kt` |
