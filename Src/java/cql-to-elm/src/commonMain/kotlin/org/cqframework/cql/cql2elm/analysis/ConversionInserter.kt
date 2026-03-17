@@ -21,6 +21,7 @@ import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.ExpressionFold
 import org.hl7.cql.ast.ExpressionFunctionBody
+import org.hl7.cql.ast.ExpressionQuerySource
 import org.hl7.cql.ast.ExternalConstantExpression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
@@ -48,6 +49,8 @@ import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.ast.WithClause
+import org.hl7.cql.ast.WithoutClause
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
@@ -71,6 +74,13 @@ class ConversionInserter(
     private val typeTable: TypeTable,
     private val operatorRegistry: OperatorRegistry,
 ) : ExpressionFold<Expression> {
+
+    /** Number of conversion nodes inserted during this pass. */
+    var conversionsInserted: Int = 0
+        private set
+
+    /** Counts by conversion kind (operator, cast, list, interval). */
+    val conversionKindCounts: MutableMap<String, Int> = mutableMapOf()
 
     /**
      * Convert all expressions in a [Library], returning a new Library with conversion nodes
@@ -157,6 +167,8 @@ class ConversionInserter(
         // Operator-based conversion (e.g., ToDecimal, ToLong)
         val operatorName = operatorRegistry.conversionOperatorName(conversion)
         if (operatorName != null) {
+            conversionsInserted++
+            conversionKindCounts["operator"] = (conversionKindCounts["operator"] ?: 0) + 1
             val typeName = conversionOperatorToTypeName(operatorName) ?: return expr
             return ConversionExpression(
                 operand = expr,
@@ -164,27 +176,23 @@ class ConversionInserter(
                 locator = expr.locator,
             )
         }
-        // Cast conversion: defer to emission for now. The emission's wrapAsConversion
-        // creates As nodes without setting strict=false, which matches legacy behavior.
-        // Step 3 will migrate cast conversions here.
+        // Cast conversion: deferred to emission because the ELM As node for implicit casts
+        // must NOT set strict (matching legacy), but user-written AsExpression nodes DO set
+        // strict=false. Keeping casts in emission avoids needing an implicit/explicit flag.
         if (conversion.isCast) {
             return expr
         }
-        // List conversion with element-level operator conversion
-        if (
-            conversion.isListConversion &&
-                conversion.conversion != null &&
-                conversion.conversion!!.operator != null
-        ) {
-            // For list conversions, we'd need to wrap in a query — defer to emission for now
+        // List conversion with element-level conversion: deferred to emission because it
+        // requires generating an implicit Query with alias/return, which is an ELM-level concern
+        if (conversion.isListConversion && conversion.conversion != null) {
             return expr
         }
-        // Interval conversion
+        // Interval conversion: deferred to emission because it produces Property access on
+        // low/high/lowClosed/highClosed, which is an ELM-level concern
         if (conversion.isIntervalConversion && conversion.conversion != null) {
-            // Defer complex interval conversions to emission for now
             return expr
         }
-        // Not yet handled (list/interval promotion/demotion)
+        // List/interval promotions and demotions not yet handled
         return expr
     }
 
@@ -240,14 +248,17 @@ class ConversionInserter(
         val operands = applyConversions(resolution, listOf(left, right))
         val l = operands[0]
         val r = operands[1]
-        return if (l === left && r === right) expr else expr.copy(left = l, right = r)
+        // Compare against the ORIGINAL expression's children (not the pre-folded `left`/`right`
+        // params) so that changes made by the recursive fold are also propagated.
+        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
     }
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Expression): Expression {
         val resolution = typeTable.getOperatorResolution(expr)
         val operands = applyConversions(resolution, listOf(operand))
         val op = operands[0]
-        return if (op === operand) expr else expr.copy(operand = op)
+        // Compare against original operand so recursive-fold changes are propagated.
+        return if (op === expr.operand) expr else expr.copy(operand = op)
     }
 
     override fun onFunctionCall(
@@ -255,9 +266,9 @@ class ConversionInserter(
         target: Expression?,
         arguments: List<Expression>,
     ): Expression {
-        // Function call conversions remain in the emission phase for now because some
-        // functions (DateTime, Date, Time) map conversions to named ELM fields that
-        // require special handling. Step 2 will migrate function call conversions here.
+        // Function call conversions are handled in emission (FunctionEmission.kt) for now.
+        // The identity check below ensures we return the original expression if no children
+        // changed during the recursive fold, preserving TypeTable lookup capability.
         return if (
             target === expr.target && arguments.indices.all { arguments[it] === expr.arguments[it] }
         ) {
@@ -272,7 +283,79 @@ class ConversionInserter(
     override fun onLiteral(
         expr: LiteralExpression,
         children: LiteralChildren<Expression>,
-    ): Expression = expr // Literals have no operator resolutions
+    ): Expression {
+        // Reconstruct list/interval/tuple literals with pre-folded children so that
+        // conversions inserted inside nested expressions (e.g., queries inside list
+        // elements) are properly propagated.
+        val literal = expr.literal
+        return when (literal) {
+            is org.hl7.cql.ast.ListLiteral -> {
+                if (
+                    children.elements.indices.all { children.elements[it] === literal.elements[it] }
+                ) {
+                    expr
+                } else {
+                    expr.copy(literal = literal.copy(elements = children.elements))
+                }
+            }
+            is org.hl7.cql.ast.IntervalLiteral -> {
+                val newLow = children.intervalLow
+                val newHigh = children.intervalHigh
+                if (newLow === literal.lower && newHigh === literal.upper) {
+                    expr
+                } else {
+                    expr.copy(
+                        literal =
+                            literal.copy(
+                                lower = newLow ?: literal.lower,
+                                upper = newHigh ?: literal.upper,
+                            )
+                    )
+                }
+            }
+            is org.hl7.cql.ast.TupleLiteral -> {
+                if (
+                    children.tupleElements.indices.all {
+                        children.tupleElements[it] === literal.elements[it].expression
+                    }
+                ) {
+                    expr
+                } else {
+                    expr.copy(
+                        literal =
+                            literal.copy(
+                                elements =
+                                    literal.elements.mapIndexed { i, elem ->
+                                        if (children.tupleElements[i] === elem.expression) elem
+                                        else elem.copy(expression = children.tupleElements[i])
+                                    }
+                            )
+                    )
+                }
+            }
+            is org.hl7.cql.ast.InstanceLiteral -> {
+                if (
+                    children.tupleElements.indices.all {
+                        children.tupleElements[it] === literal.elements[it].expression
+                    }
+                ) {
+                    expr
+                } else {
+                    expr.copy(
+                        literal =
+                            literal.copy(
+                                elements =
+                                    literal.elements.mapIndexed { i, elem ->
+                                        if (children.tupleElements[i] === elem.expression) elem
+                                        else elem.copy(expression = children.tupleElements[i])
+                                    }
+                            )
+                    )
+                }
+            }
+            else -> expr // Simple literals have no expression children
+        }
+    }
 
     override fun onIdentifier(expr: IdentifierExpression): Expression = expr
 
@@ -363,7 +446,7 @@ class ConversionInserter(
         val operands = applyConversions(resolution, listOf(left, right))
         val l = operands[0]
         val r = operands[1]
-        return if (l === left && r === right) expr else expr.copy(left = l, right = r)
+        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
     }
 
     override fun onListTransform(expr: ListTransformExpression, operand: Expression): Expression {
@@ -448,11 +531,155 @@ class ConversionInserter(
         val operands = applyConversions(resolution, listOf(left, right))
         val l = operands[0]
         val r = operands[1]
-        return if (l === left && r === right) expr else expr.copy(left = l, right = r)
+        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
     }
 
-    override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>): Expression =
-        expr // Query conversion insertion deferred to later steps
+    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
+    override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>): Expression {
+        // Reconstruct query with converted children from the catamorphism.
+        // The fold already pre-converted all child expressions via fold() calls.
+        var changed = false
+
+        val newSources =
+            expr.sources.mapIndexed { i, src ->
+                val newSourceExpr = children.sourceExpressions[i]
+                val source = src.source
+                if (
+                    newSourceExpr != null &&
+                        source is ExpressionQuerySource &&
+                        newSourceExpr !== source.expression
+                ) {
+                    changed = true
+                    src.copy(source = source.copy(expression = newSourceExpr))
+                } else {
+                    src
+                }
+            }
+
+        val newLets =
+            expr.lets.mapIndexed { i, let ->
+                val newExpr = children.letExpressions[i]
+                if (newExpr !== let.expression) {
+                    changed = true
+                    let.copy(expression = newExpr)
+                } else {
+                    let
+                }
+            }
+
+        val newInclusions =
+            expr.inclusions.mapIndexed { i, inc ->
+                val newCondition = children.inclusionConditions[i]
+                val newSourceExpr = children.inclusionSourceExpressions[i]
+                when (inc) {
+                    is WithClause -> {
+                        val source = inc.source.source
+                        val srcChanged =
+                            newSourceExpr != null &&
+                                source is ExpressionQuerySource &&
+                                newSourceExpr !== source.expression
+                        val condChanged = newCondition !== inc.condition
+                        if (srcChanged || condChanged) {
+                            changed = true
+                            val newSrc =
+                                if (srcChanged) {
+                                    inc.source.copy(
+                                        source =
+                                            (source as ExpressionQuerySource).copy(
+                                                expression = newSourceExpr!!
+                                            )
+                                    )
+                                } else {
+                                    inc.source
+                                }
+                            inc.copy(
+                                source = newSrc,
+                                condition = if (condChanged) newCondition else inc.condition,
+                            )
+                        } else {
+                            inc
+                        }
+                    }
+                    is WithoutClause -> {
+                        val source = inc.source.source
+                        val srcChanged =
+                            newSourceExpr != null &&
+                                source is ExpressionQuerySource &&
+                                newSourceExpr !== source.expression
+                        val condChanged = newCondition !== inc.condition
+                        if (srcChanged || condChanged) {
+                            changed = true
+                            val newSrc =
+                                if (srcChanged) {
+                                    inc.source.copy(
+                                        source =
+                                            (source as ExpressionQuerySource).copy(
+                                                expression = newSourceExpr!!
+                                            )
+                                    )
+                                } else {
+                                    inc.source
+                                }
+                            inc.copy(
+                                source = newSrc,
+                                condition = if (condChanged) newCondition else inc.condition,
+                            )
+                        } else {
+                            inc
+                        }
+                    }
+                }
+            }
+
+        val newWhere = children.where
+        val whereChanged = newWhere !== expr.where
+
+        val newResult =
+            if (children.returnExpression != null && expr.result != null) {
+                if (children.returnExpression !== expr.result!!.expression) {
+                    changed = true
+                    expr.result!!.copy(expression = children.returnExpression!!)
+                } else {
+                    expr.result
+                }
+            } else {
+                expr.result
+            }
+
+        val newAggregate =
+            if (expr.aggregate != null) {
+                val newAggExpr = children.aggregateExpression
+                val newStarting = children.aggregateStarting
+                val aggExprChanged = newAggExpr !== expr.aggregate!!.expression
+                val startingChanged = newStarting !== expr.aggregate!!.starting
+                if (aggExprChanged || startingChanged) {
+                    changed = true
+                    expr.aggregate!!.copy(
+                        expression = newAggExpr ?: expr.aggregate!!.expression,
+                        starting = if (startingChanged) newStarting else expr.aggregate!!.starting,
+                    )
+                } else {
+                    expr.aggregate
+                }
+            } else {
+                expr.aggregate
+            }
+
+        if (whereChanged) changed = true
+
+        return if (!changed) {
+            expr
+        } else {
+            expr.copy(
+                sources = newSources,
+                lets = newLets,
+                inclusions = newInclusions,
+                where = newWhere,
+                result = newResult ?: expr.result,
+                aggregate = newAggregate,
+            )
+        }
+    }
 
     override fun onRetrieve(expr: RetrieveExpression): Expression = expr
 

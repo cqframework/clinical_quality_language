@@ -143,6 +143,26 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
+     * Apply only non-operator conversions from an [OperatorResolution], skipping operator-based
+     * conversions (ToDecimal, ToLong, etc.) which are already handled by ConversionInserter in the
+     * AST phase. Cast, list, and interval conversions are still applied here. The [operands] list
+     * is mutated in place with wrapped expressions.
+     */
+    fun applyRemainingConversions(
+        resolution: OperatorResolution,
+        operands: MutableList<ElmExpression>,
+    ) {
+        if (!resolution.hasConversions()) return
+        resolution.conversions.forEachIndexed { index, conversion ->
+            if (conversion != null && index < operands.size) {
+                // Skip operator-based conversions (handled by ConversionInserter)
+                if (conversion.operator != null) return@forEachIndexed
+                operands[index] = applyConversion(operands[index], conversion)
+            }
+        }
+    }
+
+    /**
      * Apply a single [Conversion] to an ELM expression, returning the wrapped expression. Handles
      * both operator-based conversions (ToDecimal, etc.) and cast conversions (As wrapping).
      */

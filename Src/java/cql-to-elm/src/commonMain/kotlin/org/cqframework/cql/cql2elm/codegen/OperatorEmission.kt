@@ -103,12 +103,12 @@ internal fun EmissionContext.emitBinaryOperator(
 
     val operands = mutableListOf(leftElm, rightElm)
 
-    // Use the pre-computed operator resolution from TypeTable.
-    // ConversionInserter handles simple operator conversions in the AST; applyAllConversions
-    // is kept here as a safety net for complex conversions not yet migrated.
+    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
+    // List/interval conversions are still applied here since they produce ELM-level
+    // structures (Query, Interval with Property access) that don't map to AST nodes.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyAllConversions(resolution, operands)
+        applyRemainingConversions(resolution, operands)
 
         // Special case: Add on strings becomes Concatenate
         if (
@@ -130,10 +130,10 @@ internal fun EmissionContext.emitNotWrapper(
 ): ElmExpression {
     val operands = mutableListOf(leftElm, rightElm)
 
-    // Use the pre-computed operator resolution from TypeTable
+    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyAllConversions(resolution, operands)
+        applyRemainingConversions(resolution, operands)
     }
 
     val inner = createBinaryElm(innerOpName, operands)
@@ -173,10 +173,11 @@ internal fun EmissionContext.emitUnaryOperator(
 
     val operands = mutableListOf(operandElm)
 
-    // Use the pre-computed operator resolution from TypeTable
+    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
+    // List/interval conversions are still applied here.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyAllConversions(resolution, operands)
+        applyRemainingConversions(resolution, operands)
     }
 
     return createUnaryElm(systemOpName, operands[0])

@@ -193,10 +193,10 @@ internal fun EmissionContext.emitFunctionCall(
     val functionName = expression.function.value
 
     val args = rawArgs.toMutableList()
-    // Keep function call conversions in emission for now — ConversionInserter handles
-    // binary/unary operators, but DateTime/Date/Time constructors need emission-side
-    // conversions because the resolution's conversion list maps to positional args that
-    // get assigned to named ELM fields (timezoneOffset, etc.).
+    // Keep function call conversions in emission for now. Since ConversionInserter may
+    // also insert operator-based conversions for function args (if the function call
+    // expression has a TypeTable entry), applyAllConversions handles all conversion types.
+    // The dual-path guard (identity check) prevents double-wrapping for copied nodes.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
         applyAllConversions(resolution, args)
