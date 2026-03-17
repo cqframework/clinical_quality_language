@@ -49,11 +49,32 @@ internal fun EmissionContext.emitIsExpression(
     return isNode
 }
 
-/** Emit an [AsExpression] as an ELM [As] node with strict = false. Operand is pre-folded. */
+/**
+ * Emit an [AsExpression] as an ELM [As] node.
+ *
+ * - Implicit casts (inserted by ConversionInserter for null wrapping): emit with `asType` (a
+ *   QName) for named types or `asTypeSpecifier` for complex types. No `strict` field. This matches
+ *   legacy behavior for internally generated null-As nodes.
+ * - Explicit casts (user-written `x as T`): emit with `asTypeSpecifier` and `strict = false`.
+ */
 internal fun EmissionContext.emitAsExpression(
     expression: AsExpression,
     operandElm: ElmExpression,
 ): ElmExpression {
+    if (expression.implicit) {
+        // Implicit null-wrapping: use asType for named types (matching legacy wrapNullAs behavior)
+        val typeSpec = expression.type
+        return As().apply {
+            operand = operandElm
+            if (typeSpec is NamedTypeSpecifier) {
+                asType = QName(typesNamespace, typeSpec.name.simpleName)
+            } else {
+                asTypeSpecifier = emitTypeSpecifier(typeSpec)
+            }
+            // No strict field for implicit casts (matching legacy)
+        }
+    }
+    // Explicit user-written as expression
     return As().apply {
         operand = operandElm
         asTypeSpecifier = emitTypeSpecifier(expression.type)

@@ -186,6 +186,13 @@ class ElmEmitterParityTest {
         assertParity(TEST_RESOURCE_BASE + "AdvancedFeatures.cql")
     }
 
+    // ---- Milestone 18 tests ----
+
+    @Test
+    fun `ImplicitConversions - implicit type conversions match legacy translator`() {
+        assertParity(TEST_RESOURCE_BASE + "ImplicitConversions.cql")
+    }
+
     private fun serialize(library: org.hl7.elm.r1.Library): JsonObject {
         val writer = ElmJsonLibraryWriter()
         val raw = writer.writeAsString(library)

@@ -88,69 +88,21 @@ private fun EmissionContext.emitRatioQuantity(literal: QuantityLiteral): Quantit
     return quantity
 }
 
-internal fun EmissionContext.emitInterval(
-    literal: IntervalLiteral,
-    pointType: org.hl7.cql.model.DataType? = null,
-): Interval {
+internal fun EmissionContext.emitInterval(literal: IntervalLiteral): Interval {
     val interval = Interval()
-    interval.low = emitIntervalBound(literal.lower, pointType)
-    interval.high = emitIntervalBound(literal.upper, pointType)
+    // Null wrapping and implicit conversions are inserted by ConversionInserter before emission
+    interval.low = emitExpression(literal.lower)
+    interval.high = emitExpression(literal.upper)
     interval.lowClosed = literal.lowerClosed
     interval.highClosed = literal.upperClosed
     return interval
 }
 
-/** Emit an interval bound, wrapping null in As(pointType) or applying implicit conversion. */
-private fun EmissionContext.emitIntervalBound(
-    expr: org.hl7.cql.ast.Expression,
-    pointType: org.hl7.cql.model.DataType?,
-): ElmExpression {
-    val emitted = emitExpression(expr)
-    if (
-        expr is org.hl7.cql.ast.LiteralExpression &&
-            expr.literal is NullLiteral &&
-            pointType != null &&
-            pointType != operatorRegistry.type("Any")
-    ) {
-        return wrapNullAs(emitted, pointType)
-    }
-    // Apply implicit conversion when bound type differs from point type (e.g., Integer→Decimal)
-    if (pointType != null) {
-        val boundType = semanticModel[expr]
-        if (boundType != null && boundType != pointType) {
-            return applyImplicitConversion(emitted, boundType, pointType)
-        }
-    }
-    return emitted
-}
-
-internal fun EmissionContext.emitList(
-    literal: ListLiteral,
-    elementType: org.hl7.cql.model.DataType? = null,
-): org.hl7.elm.r1.List {
+internal fun EmissionContext.emitList(literal: ListLiteral): org.hl7.elm.r1.List {
     val list = org.hl7.elm.r1.List()
+    // Null wrapping and implicit conversions are inserted by ConversionInserter before emission
     if (literal.elements.isNotEmpty()) {
-        list.element =
-            literal.elements
-                .map { elem ->
-                    val emitted = emitExpression(elem)
-                    val elemType = semanticModel[elem]
-                    // Wrap null elements in As(elementType) to match legacy behavior
-                    if (
-                        elem is org.hl7.cql.ast.LiteralExpression &&
-                            elem.literal is NullLiteral &&
-                            elementType != null &&
-                            elementType != operatorRegistry.type("Any")
-                    ) {
-                        wrapNullAs(emitted, elementType)
-                    } else if (elementType != null && elemType != null && elemType != elementType) {
-                        // Apply implicit conversion when element type differs from list type
-                        applyImplicitConversion(emitted, elemType, elementType)
-                    } else {
-                        emitted
-                    }
-                }
-                .toMutableList()
+        list.element = literal.elements.map { emitExpression(it) }.toMutableList()
     }
     return list
 }

@@ -324,20 +324,6 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         expr: LiteralExpression,
         children: LiteralChildren<ElmExpression>,
     ): ElmExpression {
-        // For list literals, pass the inferred list type for null element wrapping
-        if (expr.literal is org.hl7.cql.ast.ListLiteral) {
-            val listType = semanticModel[expr]
-            val elementType =
-                if (listType is org.hl7.cql.model.ListType) listType.elementType else null
-            return emitList(expr.literal as org.hl7.cql.ast.ListLiteral, elementType)
-        }
-        // For interval literals, pass the inferred point type for null bound wrapping
-        if (expr.literal is org.hl7.cql.ast.IntervalLiteral) {
-            val intervalType = semanticModel[expr]
-            val pointType =
-                if (intervalType is org.hl7.cql.model.IntervalType) intervalType.pointType else null
-            return emitInterval(expr.literal as org.hl7.cql.ast.IntervalLiteral, pointType)
-        }
         return emitLiteral(expr.literal)
     }
 

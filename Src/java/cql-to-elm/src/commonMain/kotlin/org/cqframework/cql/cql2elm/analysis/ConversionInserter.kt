@@ -218,6 +218,84 @@ class ConversionInserter(
             else -> null
         }
 
+    /**
+     * Wrap an expression in an [AsExpression] targeting [targetType]. Used to insert null-As
+     * wrapping (for null literals in typed contexts) into the AST before emission.
+     */
+    private fun wrapNullAsAst(expr: Expression, targetType: DataType): Expression {
+        val typeSpec = dataTypeToAstTypeSpecifier(targetType) ?: return expr
+        conversionsInserted++
+        conversionKindCounts["nullAs"] = (conversionKindCounts["nullAs"] ?: 0) + 1
+        return AsExpression(operand = expr, type = typeSpec, implicit = true, locator = expr.locator)
+    }
+
+    /**
+     * Wrap an expression in a [ConversionExpression] to apply an implicit type conversion from
+     * [fromType] to [toType]. Used for element-level type promotion (e.g., Integer→Decimal) in
+     * lists, intervals, and case branches.
+     */
+    private fun applyImplicitConversionAst(
+        expr: Expression,
+        fromType: DataType,
+        toType: DataType,
+    ): Expression {
+        if (fromType == toType) return expr
+        val convName = implicitConversionNameForTypes(fromType.toString(), toType.toString())
+            ?: return expr
+        val typeName = conversionOperatorToTypeName(convName) ?: return expr
+        conversionsInserted++
+        conversionKindCounts["implicit"] = (conversionKindCounts["implicit"] ?: 0) + 1
+        return ConversionExpression(
+            operand = expr,
+            destinationType = NamedTypeSpecifier(name = QualifiedIdentifier(listOf(typeName))),
+            locator = expr.locator,
+        )
+    }
+
+    /** Map known implicit conversion type name pairs to their operator names. */
+    private fun implicitConversionNameForTypes(fromTypeName: String, toTypeName: String): String? =
+        when {
+            fromTypeName == "System.Integer" && toTypeName == "System.Long" -> "ToLong"
+            fromTypeName == "System.Integer" && toTypeName == "System.Decimal" -> "ToDecimal"
+            fromTypeName == "System.Long" && toTypeName == "System.Decimal" -> "ToDecimal"
+            fromTypeName == "System.Code" && toTypeName == "System.Concept" -> "ToConcept"
+            else -> null
+        }
+
+    /**
+     * Determine whether an expression is a null literal. Used to decide whether to apply null-As
+     * wrapping.
+     */
+    private fun isNullLiteralExpr(expr: Expression): Boolean =
+        expr is org.hl7.cql.ast.LiteralExpression && expr.literal is org.hl7.cql.ast.NullLiteral
+
+    /**
+     * Apply null-As or implicit conversion wrapping to an expression if its type differs from
+     * [targetType]. Returns a (possibly wrapped) expression and records whether a wrapping was
+     * applied.
+     *
+     * - If [originalExpr] is a null literal and [targetType] != Any → wrap in AsExpression
+     * - If [fromType] != null and [fromType] != [targetType] → wrap in ConversionExpression
+     */
+    private fun maybeWrapForTargetType(
+        foldedExpr: Expression,
+        originalExpr: Expression,
+        targetType: DataType,
+    ): Expression {
+        val anyType = operatorRegistry.type("Any")
+        if (targetType == anyType) return foldedExpr
+        // Null literal: wrap in AsExpression(null, targetType)
+        if (isNullLiteralExpr(originalExpr)) {
+            return wrapNullAsAst(foldedExpr, targetType)
+        }
+        // Type mismatch: apply implicit conversion (e.g., Integer→Decimal)
+        val fromType = typeTable[originalExpr]
+        if (fromType != null && fromType != targetType) {
+            return applyImplicitConversionAst(foldedExpr, fromType, targetType)
+        }
+        return foldedExpr
+    }
+
     /** Map conversion operator name to simple type name for ConversionExpression destination. */
     private fun conversionOperatorToTypeName(operatorName: String): String? =
         when (operatorName) {
@@ -270,7 +348,14 @@ class ConversionInserter(
         // Cast, list, and interval conversions remain in FunctionEmission.kt (emission phase)
         // because they produce ELM-level structures (As, Query, Interval) not AST nodes.
         val resolution = typeTable.getOperatorResolution(expr)
-        val convertedArgs = applyConversions(resolution, arguments)
+        var convertedArgs = applyConversions(resolution, arguments)
+
+        // DateTime/Date/Time constructor null arguments: wrap null args in AsExpression
+        // to match legacy behavior where null args are typed as Integer (or Decimal for offset).
+        val functionName = expr.function.value
+        convertedArgs = applyDateTimeNullArgConversions(functionName, convertedArgs, expr.arguments)
+        convertedArgs = applyCoalesceNullArgConversions(expr, functionName, convertedArgs)
+
         // Compare against the ORIGINAL expression's children so that changes made by the
         // recursive fold are also propagated.
         val argsChanged = convertedArgs.indices.any { convertedArgs[it] !== expr.arguments[it] }
@@ -282,6 +367,90 @@ class ConversionInserter(
         }
     }
 
+    /**
+     * For DateTime/Date/Time constructor functions, wrap null arguments in AsExpression to match
+     * legacy behavior. Integer args get As(Integer), the timezoneOffset (last arg of DateTime) gets
+     * As(Decimal).
+     */
+    @Suppress("CyclomaticComplexMethod")
+    private fun applyDateTimeNullArgConversions(
+        functionName: String,
+        foldedArgs: List<Expression>,
+        originalArgs: List<Expression>,
+    ): List<Expression> {
+        val integerType = operatorRegistry.type("Integer")
+        val decimalType = operatorRegistry.type("Decimal")
+
+        fun wrapNullArgAs(index: Int, targetType: DataType): Expression {
+            val original = originalArgs[index]
+            val folded = foldedArgs[index]
+            return if (isNullLiteralExpr(original) && targetType != operatorRegistry.type("Any")) {
+                wrapNullAsAst(folded, targetType)
+            } else {
+                folded
+            }
+        }
+
+        return when (functionName) {
+            "DateTime" -> {
+                if (foldedArgs.isEmpty()) return foldedArgs
+                val result = foldedArgs.toMutableList()
+                // args: year, month, day, hour, minute, second, millisecond → Integer
+                // arg 7 (index 7): timezoneOffset → Decimal
+                for (i in result.indices) {
+                    result[i] =
+                        if (i == 7) wrapNullArgAs(i, decimalType)
+                        else wrapNullArgAs(i, integerType)
+                }
+                result
+            }
+            "Date" -> {
+                if (foldedArgs.isEmpty()) return foldedArgs
+                val result = foldedArgs.toMutableList()
+                for (i in result.indices) {
+                    result[i] = wrapNullArgAs(i, integerType)
+                }
+                result
+            }
+            "Time" -> {
+                if (foldedArgs.isEmpty()) return foldedArgs
+                val result = foldedArgs.toMutableList()
+                for (i in result.indices) {
+                    result[i] = wrapNullArgAs(i, integerType)
+                }
+                result
+            }
+            else -> foldedArgs
+        }
+    }
+
+    /**
+     * For Coalesce function calls, wrap null arguments in AsExpression(resultType) to match legacy
+     * translator behavior. The legacy wraps each null arg with an implicit As cast to the overall
+     * Coalesce result type.
+     */
+    private fun applyCoalesceNullArgConversions(
+        expr: FunctionCallExpression,
+        functionName: String,
+        foldedArgs: List<Expression>,
+    ): List<Expression> {
+        if (functionName != "Coalesce") return foldedArgs
+        // Look up the result type of the Coalesce expression
+        val resultType = typeTable[expr] ?: return foldedArgs
+        val anyType = operatorRegistry.type("Any")
+        if (resultType == anyType) return foldedArgs
+
+        var changed = false
+        val result = foldedArgs.toMutableList()
+        expr.arguments.forEachIndexed { i, originalArg ->
+            if (isNullLiteralExpr(originalArg)) {
+                result[i] = wrapNullAsAst(result[i], resultType)
+                changed = true
+            }
+        }
+        return if (changed) result else foldedArgs
+    }
+
     // --- Identity handlers: reconstruct with pre-folded children ---
 
     override fun onLiteral(
@@ -290,29 +459,50 @@ class ConversionInserter(
     ): Expression {
         // Reconstruct list/interval/tuple literals with pre-folded children so that
         // conversions inserted inside nested expressions (e.g., queries inside list
-        // elements) are properly propagated.
+        // elements) are properly propagated. Also insert null-As and implicit type-promotion
+        // wrappers for list elements and interval bounds when needed.
         val literal = expr.literal
         return when (literal) {
             is org.hl7.cql.ast.ListLiteral -> {
-                if (
-                    children.elements.indices.all { children.elements[it] === literal.elements[it] }
-                ) {
+                // Determine the list's inferred element type from the type table
+                val listType = typeTable[expr]
+                val elementType = if (listType is ListType) listType.elementType else null
+                val newElements =
+                    if (elementType != null) {
+                        literal.elements.indices.map { i ->
+                            maybeWrapForTargetType(children.elements[i], literal.elements[i], elementType)
+                        }
+                    } else {
+                        children.elements
+                    }
+                if (newElements.indices.all { newElements[it] === literal.elements[it] }) {
                     expr
                 } else {
-                    expr.copy(literal = literal.copy(elements = children.elements))
+                    expr.copy(literal = literal.copy(elements = newElements))
                 }
             }
             is org.hl7.cql.ast.IntervalLiteral -> {
                 val newLow = children.intervalLow
                 val newHigh = children.intervalHigh
-                if (newLow === literal.lower && newHigh === literal.upper) {
+                // Determine the interval's inferred point type from the type table
+                val intervalType = typeTable[expr]
+                val pointType = if (intervalType is IntervalType) intervalType.pointType else null
+                val wrappedLow =
+                    if (newLow != null && pointType != null) {
+                        maybeWrapForTargetType(newLow, literal.lower, pointType)
+                    } else newLow
+                val wrappedHigh =
+                    if (newHigh != null && pointType != null) {
+                        maybeWrapForTargetType(newHigh, literal.upper, pointType)
+                    } else newHigh
+                if (wrappedLow === literal.lower && wrappedHigh === literal.upper) {
                     expr
                 } else {
                     expr.copy(
                         literal =
                             literal.copy(
-                                lower = newLow ?: literal.lower,
-                                upper = newHigh ?: literal.upper,
+                                lower = wrappedLow ?: literal.lower,
+                                upper = wrappedHigh ?: literal.upper,
                             )
                     )
                 }
@@ -392,24 +582,57 @@ class ConversionInserter(
         cases: List<CaseChildren<Expression>>,
         elseResult: Expression,
     ): Expression {
+        // Determine the case expression's overall result type for branch type-promotion
+        val anyType = operatorRegistry.type("Any")
+        val resultType = typeTable[expr]?.let { if (it == anyType) null else it }
+
+        // For comparand-style cases, determine comparand type for when-clause conversions
+        val comparandType = expr.comparand?.let { typeTable[it] }
+
         var changed = comparand !== expr.comparand || elseResult !== expr.elseResult
+
+        // Apply null-wrapping and type-promotion to when-clauses and branch results
         val newCases =
-            if (
-                !changed &&
-                    cases.indices.all {
-                        cases[it].condition === expr.cases[it].condition &&
-                            cases[it].result === expr.cases[it].result
+            cases.mapIndexed { i, c ->
+                val originalItem = expr.cases[i]
+                // Comparand when-clause: convert when value to comparand type
+                val newCondition =
+                    if (comparandType != null && comparandType != anyType) {
+                        maybeWrapForTargetType(c.condition, originalItem.condition, comparandType)
+                    } else {
+                        c.condition
                     }
-            ) {
-                expr.cases
-            } else {
-                changed = true
-                cases.mapIndexed { i, c ->
-                    expr.cases[i].copy(condition = c.condition, result = c.result)
+                // Branch result: apply null-wrapping or type-promotion toward resultType
+                val newResult =
+                    if (resultType != null) {
+                        maybeWrapForTargetType(c.result, originalItem.result, resultType)
+                    } else {
+                        c.result
+                    }
+                val condChanged = newCondition !== originalItem.condition
+                val resChanged = newResult !== originalItem.result
+                if (condChanged || resChanged) {
+                    changed = true
+                    originalItem.copy(condition = newCondition, result = newResult)
+                } else if (c.condition !== originalItem.condition || c.result !== originalItem.result) {
+                    changed = true
+                    originalItem.copy(condition = c.condition, result = c.result)
+                } else {
+                    originalItem
                 }
             }
+
+        // Apply null-wrapping or type-promotion to else branch
+        val newElse =
+            if (resultType != null) {
+                maybeWrapForTargetType(elseResult, expr.elseResult, resultType)
+            } else {
+                elseResult
+            }
+        if (newElse !== expr.elseResult) changed = true
+
         return if (!changed) expr
-        else expr.copy(comparand = comparand, cases = newCases, elseResult = elseResult)
+        else expr.copy(comparand = comparand, cases = newCases, elseResult = newElse)
     }
 
     override fun onIs(expr: IsExpression, operand: Expression): Expression {
@@ -438,7 +661,15 @@ class ConversionInserter(
     }
 
     override fun onExists(expr: ExistsExpression, operand: Expression): Expression {
-        return if (operand === expr.operand) expr else expr.copy(operand = operand)
+        // Null-As wrapping: exists null → wrap null as List<Any>
+        val wrappedOperand =
+            if (isNullLiteralExpr(expr.operand)) {
+                val anyType = operatorRegistry.type("Any")
+                wrapNullAsAst(operand, ListType(anyType))
+            } else {
+                operand
+            }
+        return if (wrappedOperand === expr.operand) expr else expr.copy(operand = wrappedOperand)
     }
 
     override fun onMembership(
@@ -448,13 +679,71 @@ class ConversionInserter(
     ): Expression {
         val resolution = typeTable.getOperatorResolution(expr)
         val operands = applyConversions(resolution, listOf(left, right))
-        val l = operands[0]
-        val r = operands[1]
+        var l = operands[0]
+        var r = operands[1]
+
+        // Null-As wrapping for membership operators (mirrors CollectionOperatorEmission logic)
+        val leftType = typeTable[expr.left]
+        val rightType = typeTable[expr.right]
+        val anyType = operatorRegistry.type("Any")
+
+        when (expr.operator) {
+            org.hl7.cql.ast.MembershipOperator.CONTAINS -> {
+                // Contains(collection, element) - wrap null element based on collection's element type
+                if (isNullLiteralExpr(expr.right)) {
+                    val elemType = elementTypeOfDataType(leftType)
+                    if (elemType != null && elemType != anyType) {
+                        r = wrapNullAsAst(r, elemType)
+                    }
+                }
+                // Contains(null, element) - wrap null collection based on element type
+                if (isNullLiteralExpr(expr.left) && rightType != null && rightType != anyType) {
+                    l = wrapNullAsAst(l, ListType(rightType))
+                }
+            }
+            org.hl7.cql.ast.MembershipOperator.IN -> {
+                // In(element, interval) - wrap null element based on interval's point type
+                if (isNullLiteralExpr(expr.left) && rightType is IntervalType) {
+                    val pointType = rightType.pointType
+                    if (pointType != anyType) {
+                        l = wrapNullAsAst(l, pointType)
+                    }
+                }
+                // In(element, null) - wrap null collection as interval based on element type
+                if (isNullLiteralExpr(expr.right) && leftType != null && leftType != anyType) {
+                    r = wrapNullAsAst(r, IntervalType(leftType))
+                }
+            }
+        }
+
         return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
     }
 
+    /** Get the element type of a list or the point type of an interval. */
+    private fun elementTypeOfDataType(type: DataType?): DataType? =
+        when (type) {
+            is ListType -> type.elementType
+            is IntervalType -> type.pointType
+            else -> null
+        }
+
     override fun onListTransform(expr: ListTransformExpression, operand: Expression): Expression {
-        return if (operand === expr.operand) expr else expr.copy(operand = operand)
+        // Null-As wrapping for null operands
+        val anyType = operatorRegistry.type("Any")
+        val wrappedOperand =
+            if (isNullLiteralExpr(expr.operand)) {
+                when (expr.listTransformKind) {
+                    // distinct null → As(List<Any>)
+                    org.hl7.cql.ast.ListTransformKind.DISTINCT ->
+                        wrapNullAsAst(operand, ListType(anyType))
+                    // flatten null → As(List<List<Any>>)
+                    org.hl7.cql.ast.ListTransformKind.FLATTEN ->
+                        wrapNullAsAst(operand, ListType(ListType(anyType)))
+                }
+            } else {
+                operand
+            }
+        return if (wrappedOperand === expr.operand) expr else expr.copy(operand = wrappedOperand)
     }
 
     override fun onExpandCollapse(
@@ -462,8 +751,16 @@ class ConversionInserter(
         operand: Expression,
         per: Expression?,
     ): Expression {
-        return if (operand === expr.operand && per === expr.perExpression) expr
-        else expr.copy(operand = operand, perExpression = per)
+        // Null-As wrapping: when the source is null, wrap in As(List<Interval<Any>>)
+        val wrappedOperand =
+            if (isNullLiteralExpr(expr.operand)) {
+                val anyType = operatorRegistry.type("Any")
+                wrapNullAsAst(operand, ListType(IntervalType(anyType)))
+            } else {
+                operand
+            }
+        return if (wrappedOperand === expr.operand && per === expr.perExpression) expr
+        else expr.copy(operand = wrappedOperand, perExpression = per)
     }
 
     override fun onDateTimeComponent(
@@ -504,7 +801,15 @@ class ConversionInserter(
     }
 
     override fun onWidth(expr: WidthExpression, operand: Expression): Expression {
-        return if (operand === expr.operand) expr else expr.copy(operand = operand)
+        // Null-As wrapping: width of null → wrap null as Interval<Any>
+        val wrappedOperand =
+            if (isNullLiteralExpr(expr.operand)) {
+                val anyType = operatorRegistry.type("Any")
+                wrapNullAsAst(operand, IntervalType(anyType))
+            } else {
+                operand
+            }
+        return if (wrappedOperand === expr.operand) expr else expr.copy(operand = wrappedOperand)
     }
 
     override fun onElementExtractor(
@@ -533,8 +838,26 @@ class ConversionInserter(
     ): Expression {
         val resolution = typeTable.getOperatorResolution(expr)
         val operands = applyConversions(resolution, listOf(left, right))
-        val l = operands[0]
-        val r = operands[1]
+        var l = operands[0]
+        var r = operands[1]
+
+        // Null-As wrapping for interval relation operands (mirrors IntervalOperatorEmission logic)
+        val leftType = typeTable[expr.left]
+        val rightType = typeTable[expr.right]
+        val anyType = operatorRegistry.type("Any")
+
+        if (isNullLiteralExpr(expr.right) && leftType is IntervalType &&
+            leftType.pointType != anyType
+        ) {
+            // Right operand is null, left is an interval → wrap null as point type
+            r = wrapNullAsAst(r, leftType.pointType)
+        } else if (isNullLiteralExpr(expr.left) && rightType is IntervalType &&
+            rightType.pointType != anyType
+        ) {
+            // Left operand is null, right is an interval → wrap null as point type
+            l = wrapNullAsAst(l, rightType.pointType)
+        }
+
         return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
     }
 
