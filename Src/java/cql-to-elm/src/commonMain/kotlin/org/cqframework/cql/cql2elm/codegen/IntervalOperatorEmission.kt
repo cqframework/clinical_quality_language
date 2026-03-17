@@ -44,6 +44,8 @@ import org.hl7.elm.r1.Starts
 
 /**
  * Emit an [IntervalRelationExpression] by dispatching on the phrase type. Children are pre-folded.
+ *
+ * Null-As wrapping is handled by ConversionInserter before emission.
  */
 @Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitIntervalRelation(
@@ -54,19 +56,8 @@ internal fun EmissionContext.emitIntervalRelation(
     var left = leftElm
     var right = rightElm
 
-    // Null-As wrapping for interval relation operands
-    val leftIsNull = isNullLiteralExpr(expression.left)
-    val rightIsNull = isNullLiteralExpr(expression.right)
     val leftType = semanticModel[expression.left]
     val rightType = semanticModel[expression.right]
-
-    if (rightIsNull && leftType is IntervalType) {
-        // Right operand is null, left is an interval → wrap null as point type
-        right = wrapNullAs(right, leftType.pointType)
-    } else if (leftIsNull && rightType is IntervalType) {
-        // Left operand is null, right is an interval → wrap null as point type
-        left = wrapNullAs(left, rightType.pointType)
-    }
 
     // Interval<Any> expansion: when the RIGHT operand is Interval<Any> and the LEFT is
     // a concrete Interval<T>, expand the right to match. This mirrors the legacy behavior
