@@ -191,9 +191,7 @@ class FullParityTest {
                 // also wraps heterogeneous Flatten in implicit Query
                 "ListOperators" to
                     "Null type inference: legacy wraps null in As(List<Any>), choice union As, Flatten query",
-                // TestAliasSort: legacy replaces alias sort with Null (error recovery)
-                "Sorting" to
-                    "Error recovery: legacy replaces alias sort (sort by X desc) with Null",
+                // TestAliasSort: alias sort now handled (replaced with Null)
                 // Error recovery: legacy replaces all invalid sort clauses with Null
                 "InvalidSortClauses" to
                     "Error recovery: legacy replaces invalid sort expressions with Null",
@@ -213,7 +211,7 @@ class FullParityTest {
                     "Interval null expansion and property access wrapping",
                 // Implicit conversions: legacy wraps operands in ToDecimal/As for type promotion
                 "ImplicitConversions" to
-                    "Implicit conversions: ToDecimal wrapping, null-As in case/if, interval selector",
+                    "ToDecimal promotion in if/case/interval, null-As in case",
                 // Name hiding: QDM model interval resolution and out-of-scope error recovery
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
                 // CqlListOperators: Exists/Contains/In/Includes function-to-ELM mapping,

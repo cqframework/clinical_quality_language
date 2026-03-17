@@ -31,6 +31,12 @@ import org.hl7.elm.r1.Without
 
 /** Emit a [QueryExpression] as an ELM [Query] node. */
 internal fun EmissionContext.emitQuery(expression: QueryExpression): ElmExpression {
+    // Error recovery: if a sort clause references a query alias, emit Null
+    // (the legacy translator replaces the whole expression with Null in this case)
+    if (hasSortByAliasReference(expression)) {
+        return org.hl7.elm.r1.Null()
+    }
+
     val query = Query()
 
     // Sources
@@ -212,6 +218,19 @@ private fun EmissionContext.emitSortByItem(item: org.hl7.cql.ast.SortByItem): El
             byExpr.expression = emitExpression(item.expression)
             byExpr as ElmSortByItem
         }
+    }
+}
+
+/**
+ * Check if any sort-by item references a query source alias. This is an error condition — the
+ * legacy translator replaces the entire expression with Null.
+ */
+private fun hasSortByAliasReference(expression: QueryExpression): Boolean {
+    val sort = expression.sort ?: return false
+    val aliasNames = expression.sources.map { it.alias.value }.toSet()
+    return sort.items.any { item ->
+        item.expression is IdentifierExpression &&
+            (item.expression as IdentifierExpression).name.simpleName in aliasNames
     }
 }
 
