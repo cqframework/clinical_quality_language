@@ -266,15 +266,19 @@ class ConversionInserter(
         target: Expression?,
         arguments: List<Expression>,
     ): Expression {
-        // Function call conversions are handled in emission (FunctionEmission.kt) for now.
-        // The identity check below ensures we return the original expression if no children
-        // changed during the recursive fold, preserving TypeTable lookup capability.
-        return if (
-            target === expr.target && arguments.indices.all { arguments[it] === expr.arguments[it] }
-        ) {
+        // Insert operator-based conversions (ToDecimal, ToLong, etc.) for function arguments.
+        // Cast, list, and interval conversions remain in FunctionEmission.kt (emission phase)
+        // because they produce ELM-level structures (As, Query, Interval) not AST nodes.
+        val resolution = typeTable.getOperatorResolution(expr)
+        val convertedArgs = applyConversions(resolution, arguments)
+        // Compare against the ORIGINAL expression's children so that changes made by the
+        // recursive fold are also propagated.
+        val argsChanged = convertedArgs.indices.any { convertedArgs[it] !== expr.arguments[it] }
+        val targetChanged = target !== expr.target
+        return if (!targetChanged && !argsChanged) {
             expr
         } else {
-            expr.copy(target = target, arguments = arguments)
+            expr.copy(target = target, arguments = convertedArgs)
         }
     }
 

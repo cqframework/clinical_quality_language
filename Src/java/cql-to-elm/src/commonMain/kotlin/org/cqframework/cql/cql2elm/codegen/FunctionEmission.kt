@@ -193,13 +193,12 @@ internal fun EmissionContext.emitFunctionCall(
     val functionName = expression.function.value
 
     val args = rawArgs.toMutableList()
-    // Keep function call conversions in emission for now. Since ConversionInserter may
-    // also insert operator-based conversions for function args (if the function call
-    // expression has a TypeTable entry), applyAllConversions handles all conversion types.
-    // The dual-path guard (identity check) prevents double-wrapping for copied nodes.
+    // Operator-based conversions (ToDecimal, ToLong, etc.) are inserted at the AST level by
+    // ConversionInserter and emitted via onConversion handlers. Only apply remaining (cast,
+    // list, interval) conversions here.
     val resolution = lookupResolution(expression)
     if (resolution != null) {
-        applyAllConversions(resolution, args)
+        applyRemainingConversions(resolution, args)
     }
 
     // Try system function emission (math, date/time, message)
