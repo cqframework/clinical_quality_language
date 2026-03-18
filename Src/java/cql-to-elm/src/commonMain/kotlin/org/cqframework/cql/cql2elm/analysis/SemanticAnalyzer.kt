@@ -45,42 +45,51 @@ class SemanticAnalyzer(
     fun analyze(library: Library): Result {
         val symbols = symbolCollector.collect(library)
 
-        // INFER → CONVERT → CHECK convergence loop.
-        // Each iteration: infer types, insert conversions, check if new conversions appeared.
-        // Converges when CONVERT inserts nothing new (or max iterations reached).
-        var currentLibrary = library
+        // INFER → RECORD convergence loop.
+        // Each iteration: infer types (using effective types from synthetics), then record
+        // all conversion kinds in the SyntheticTable. No AST mutation — the AST stays immutable.
+        // Converges when no new synthetics are recorded (or max iterations reached).
         var currentTypeTable: TypeTable
         var totalConversions = 0
         val conversionsPerIteration = mutableListOf<Int>()
         val maxIterations = 3
+        val syntheticTable = SyntheticTable()
 
         for (iteration in 1..maxIterations) {
-            // INFER: type resolution + overload resolution
-            val resolver = TypeResolver(operatorRegistry)
-            currentTypeTable = resolver.resolve(currentLibrary, symbols)
+            // INFER: type resolution + overload resolution (reads synthetics for effective types)
+            val resolver = TypeResolver(operatorRegistry, syntheticTable)
+            currentTypeTable = resolver.resolve(library, symbols)
 
-            // CONVERT: insert explicit conversion/As nodes into AST
-            val converter = ConversionInserter(currentTypeTable, operatorRegistry)
-            currentLibrary = converter.convertLibrary(currentLibrary)
-            val inserted = converter.conversionsInserted
+            // RECORD: all conversions in side table (no AST mutation)
+            val analyzer = ConversionAnalyzer(currentTypeTable, operatorRegistry, syntheticTable)
+            analyzer.analyzeLibrary(library)
+
+            val inserted = analyzer.newSyntheticsInserted
             conversionsPerIteration.add(inserted)
             totalConversions += inserted
 
-            // CHECK: converged if no new conversions inserted
+            // CHECK: converged if no new synthetics recorded
             if (inserted == 0) break
         }
 
-        // Final type table is from the last INFER pass
-        val finalResolver = TypeResolver(operatorRegistry)
-        val finalTypeTable = finalResolver.resolve(currentLibrary, symbols)
+        // Final pass: re-infer types with all synthetics applied
+        val finalResolver = TypeResolver(operatorRegistry, syntheticTable)
+        val finalTypeTable = finalResolver.resolve(library, symbols)
 
-        val semanticModel = SemanticModel(symbols, finalTypeTable, operatorRegistry, options)
-        semanticValidator.validate(currentLibrary, symbols, semanticModel)
+        val semanticModel =
+            SemanticModel(
+                symbols,
+                finalTypeTable,
+                operatorRegistry,
+                options,
+                syntheticTable = syntheticTable,
+            )
+        semanticValidator.validate(library, symbols, semanticModel)
 
         semanticModel.metrics =
             AnalysisMetrics(
-                definitionCount = currentLibrary.definitions.size,
-                statementCount = currentLibrary.statements.size,
+                definitionCount = library.definitions.size,
+                statementCount = library.statements.size,
                 expressionCount = finalTypeTable.expressionCount,
                 typedCount = finalTypeTable.typedCount,
                 unresolvedCount = finalTypeTable.expressionCount - finalTypeTable.typedCount,
@@ -91,7 +100,7 @@ class SemanticAnalyzer(
                 newConversionsPerIteration = conversionsPerIteration,
                 errorCount = semanticModel.errors.size,
             )
-        return Result(currentLibrary, semanticModel)
+        return Result(library, semanticModel)
     }
 }
 

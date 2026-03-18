@@ -153,6 +153,13 @@ class ConversionInserter(
         var changed = false
         resolution.conversions.forEachIndexed { index, conversion ->
             if (conversion != null && index < result.size) {
+                // Pure operator conversions (ToDecimal, ToLong, etc.) are handled by
+                // the SyntheticTable — skip AST mutation for these at the top level.
+                // List/interval conversions with inner operator conversions still need
+                // the full insertConversion path for their structural wrapping.
+                val operatorName = operatorRegistry.conversionOperatorName(conversion)
+                if (operatorName != null) return@forEachIndexed
+
                 val wrapped = insertConversion(result[index], conversion)
                 if (wrapped !== result[index]) {
                     result[index] = wrapped
@@ -202,9 +209,6 @@ class ConversionInserter(
         // List conversion with operator-based element-level conversion: build a synthetic
         // QueryExpression that applies the inner conversion to each element.
         // Produces: (X in list return <innerConversion>(X))
-        // Only handles operator-based inner conversions (ToDecimal, ToLong, etc.);
-        // cast-inner list conversions (List<Any>→List<T> via As) are deferred to
-        // the set-operator emission path (emitSetOperator) which applies them directly.
         if (
             conversion.isListConversion &&
                 conversion.conversion != null &&
@@ -300,6 +304,68 @@ class ConversionInserter(
             )
         // Register the result type so the emitter can determine element types for
         // union/intersect/except choice-type wrapping (semanticModel[queryExpr]).
+        typeTable[queryExpr] = resultListType
+        return queryExpr
+    }
+
+    /**
+     * Build a synthetic [QueryExpression] that applies an As cast to each element of [listExpr].
+     * Used for list demotion (e.g., List<Any> → List<Integer> in union with empty list). Produces:
+     * (X in listExpr return As(X, targetElementType))
+     */
+    private fun buildListCastQuery(
+        listExpr: Expression,
+        targetElementType: DataType,
+        resultListType: DataType,
+    ): Expression {
+        val aliasName = "X"
+        // Element type from the source list (e.g., Any for empty lists)
+        val anyType = operatorRegistry.type("Any") ?: return listExpr
+        val sourceElementType = (typeTable[listExpr] as? ListType)?.elementType ?: anyType
+
+        val aliasRefExpr =
+            IdentifierExpression(
+                name = QualifiedIdentifier(listOf(aliasName)),
+                locator = listExpr.locator,
+            )
+        typeTable.setIdentifierResolution(
+            aliasRefExpr,
+            Resolution.AliasRef(aliasName, sourceElementType),
+        )
+
+        val targetTypeSpec = dataTypeToAstTypeSpecifier(targetElementType) ?: return listExpr
+        val castExpr =
+            AsExpression(
+                operand = aliasRefExpr,
+                type = targetTypeSpec,
+                implicit = true,
+                locator = listExpr.locator,
+            )
+
+        conversionsInserted++
+        conversionKindCounts["listCast"] = (conversionKindCounts["listCast"] ?: 0) + 1
+
+        val queryExpr =
+            QueryExpression(
+                sources =
+                    listOf(
+                        AliasedQuerySource(
+                            source = ExpressionQuerySource(expression = listExpr),
+                            alias = Identifier(aliasName),
+                            locator = listExpr.locator,
+                        )
+                    ),
+                lets = emptyList(),
+                inclusions = emptyList(),
+                result =
+                    ReturnClause(
+                        all = true,
+                        distinct = false,
+                        expression = castExpr,
+                        locator = listExpr.locator,
+                    ),
+                locator = listExpr.locator,
+            )
         typeTable[queryExpr] = resultListType
         return queryExpr
     }
@@ -493,46 +559,59 @@ class ConversionInserter(
             op = BinaryOperator.CONCAT
         }
 
-        // Union/intersect/except: wrap operands in As(List<Choice>) when element types differ
+        // Union/intersect/except: wrap operands when element types differ
         if (
             op == BinaryOperator.UNION ||
                 op == BinaryOperator.INTERSECT ||
                 op == BinaryOperator.EXCEPT
         ) {
+            val anyType = operatorRegistry.type("Any")
             val leftType = typeTable[expr.left]
             val rightType = typeTable[expr.right]
             if (leftType is ListType && rightType is ListType) {
                 val leftElem = leftType.elementType
                 val rightElem = rightType.elementType
-                if (
-                    leftElem != rightElem &&
+                if (leftElem != rightElem) {
+                    // Case 1: One operand is List<Any> (empty list) — wrap in cast Query
+                    // to match the other operand's element type (legacy list demotion)
+                    if (rightElem == anyType && leftElem != anyType) {
+                        val wrapped = buildListCastQuery(r, leftElem, leftType)
+                        if (wrapped !== r) r = wrapped
+                    } else if (leftElem == anyType && rightElem != anyType) {
+                        val wrapped = buildListCastQuery(l, rightElem, rightType)
+                        if (wrapped !== l) l = wrapped
+                    }
+                    // Case 2: Different concrete types — wrap both in As(List<Choice>)
+                    else if (
                         leftElem !is org.hl7.cql.model.ChoiceType &&
-                        rightElem !is org.hl7.cql.model.ChoiceType &&
-                        !leftElem.isSuperTypeOf(rightElem) &&
-                        !rightElem.isSuperTypeOf(leftElem)
-                ) {
-                    val choiceElem =
-                        org.hl7.cql.model.ChoiceType(listOf(leftElem, rightElem).distinct())
-                    val choiceListType = ListType(choiceElem)
-                    val typeSpec = dataTypeToAstTypeSpecifier(choiceListType)
-                    if (typeSpec != null) {
-                        l =
-                            AsExpression(
-                                operand = l,
-                                type = typeSpec,
-                                implicit = true,
-                                locator = expr.locator,
-                            )
-                        r =
-                            AsExpression(
-                                operand = r,
-                                type = typeSpec,
-                                implicit = true,
-                                locator = expr.locator,
-                            )
-                        conversionsInserted += 2
-                        conversionKindCounts["choiceListAs"] =
-                            (conversionKindCounts["choiceListAs"] ?: 0) + 2
+                            rightElem !is org.hl7.cql.model.ChoiceType &&
+                            !leftElem.isSuperTypeOf(rightElem) &&
+                            !rightElem.isSuperTypeOf(leftElem)
+                    ) {
+                        // ChoiceType sorts alphabetically internally
+                        val choiceElem =
+                            org.hl7.cql.model.ChoiceType(listOf(leftElem, rightElem).distinct())
+                        val choiceListType = ListType(choiceElem)
+                        val typeSpec = dataTypeToAstTypeSpecifier(choiceListType)
+                        if (typeSpec != null) {
+                            l =
+                                AsExpression(
+                                    operand = l,
+                                    type = typeSpec,
+                                    implicit = true,
+                                    locator = expr.locator,
+                                )
+                            r =
+                                AsExpression(
+                                    operand = r,
+                                    type = typeSpec,
+                                    implicit = true,
+                                    locator = expr.locator,
+                                )
+                            conversionsInserted += 2
+                            conversionKindCounts["choiceListAs"] =
+                                (conversionKindCounts["choiceListAs"] ?: 0) + 2
+                        }
                     }
                 }
             }

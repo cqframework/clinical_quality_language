@@ -63,15 +63,16 @@ internal fun EmissionContext.emitIntervalRelation(
     val leftType = semanticModel[expression.left]
     val rightType = semanticModel[expression.right]
 
-    // Interval<Any> expansion: when the RIGHT operand is Interval<Any> and the LEFT is
-    // a concrete Interval<T>, expand the right to match. This mirrors the legacy behavior
-    // where operator resolution binds T from the left operand and converts the right.
-    // (When the LEFT is Interval<Any>, the legacy uses T=Any and no conversion occurs.)
+    // Interval<Any> expansion: for non-literal intervals that the ConversionInserter couldn't
+    // constant-fold, expand via Property extraction at emission time. Literal intervals are
+    // handled by ConversionInserter.buildIntervalConversion — skip if already constant-folded
+    // (the emitted ELM Interval will have lowClosed/highClosed set).
     if (
         leftType is IntervalType &&
             rightType is IntervalType &&
             rightType.pointType.toString() == "System.Any" &&
-            leftType.pointType.toString() != "System.Any"
+            leftType.pointType.toString() != "System.Any" &&
+            right !is org.hl7.elm.r1.Interval
     ) {
         right = expandIntervalToType(right, leftType.pointType)
     }

@@ -36,26 +36,33 @@ import org.hl7.elm.r1.TruncatedDivide
 import org.hl7.elm.r1.UnaryExpression
 import org.hl7.elm.r1.Xor
 
-/** Table-driven map from operator name to ELM binary expression constructor. */
-private val binaryConstructors: Map<String, () -> BinaryExpression> =
+/**
+ * Unified table-driven map from operator name to ELM expression factory. Covers both
+ * [BinaryExpression] and [org.hl7.elm.r1.NaryExpression] subtypes — both accept an operand list.
+ * Each factory receives its operands and returns a fully wired ELM node.
+ */
+private val operandListConstructors: Map<String, (MutableList<ElmExpression>) -> ElmExpression> =
     mapOf(
-        "Add" to { Add() },
-        "Subtract" to { Subtract() },
-        "Multiply" to { Multiply() },
-        "Divide" to { Divide() },
-        "TruncatedDivide" to { TruncatedDivide() },
-        "Modulo" to { Modulo() },
-        "Power" to { Power() },
-        "Equal" to { Equal() },
-        "Equivalent" to { Equivalent() },
-        "Less" to { Less() },
-        "LessOrEqual" to { LessOrEqual() },
-        "Greater" to { Greater() },
-        "GreaterOrEqual" to { GreaterOrEqual() },
-        "And" to { And() },
-        "Or" to { Or() },
-        "Xor" to { Xor() },
-        "Implies" to { Implies() },
+        // Binary operators
+        "Add" to { ops -> Add().apply { operand = ops } },
+        "Subtract" to { ops -> Subtract().apply { operand = ops } },
+        "Multiply" to { ops -> Multiply().apply { operand = ops } },
+        "Divide" to { ops -> Divide().apply { operand = ops } },
+        "TruncatedDivide" to { ops -> TruncatedDivide().apply { operand = ops } },
+        "Modulo" to { ops -> Modulo().apply { operand = ops } },
+        "Power" to { ops -> Power().apply { operand = ops } },
+        "Equal" to { ops -> Equal().apply { operand = ops } },
+        "Equivalent" to { ops -> Equivalent().apply { operand = ops } },
+        "Less" to { ops -> Less().apply { operand = ops } },
+        "LessOrEqual" to { ops -> LessOrEqual().apply { operand = ops } },
+        "Greater" to { ops -> Greater().apply { operand = ops } },
+        "GreaterOrEqual" to { ops -> GreaterOrEqual().apply { operand = ops } },
+        "And" to { ops -> And().apply { operand = ops } },
+        "Or" to { ops -> Or().apply { operand = ops } },
+        "Xor" to { ops -> Xor().apply { operand = ops } },
+        "Implies" to { ops -> Implies().apply { operand = ops } },
+        // Nary operators (same operand-list interface)
+        "Concatenate" to { ops -> Concatenate().apply { operand = ops } },
     )
 
 /** Table-driven map from operator name to ELM unary expression constructor. */
@@ -75,10 +82,10 @@ internal fun EmissionContext.emitBinaryOperator(
 ): ElmExpression {
     val op = expression.operator
 
-    // Handle Concatenate (&): Coalesce wrapping is inserted by ConversionInserter at the AST
-    // level, so operands are already coalesced. Just emit as Concatenate.
+    // Handle Concatenate (&): CoalesceWrap synthetics are applied by onBinaryOperator,
+    // so operands are already coalesced.
     if (op == BinaryOperator.CONCAT) {
-        return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
+        return createOperandListElm("Concatenate", mutableListOf(leftElm, rightElm))
     }
 
     // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
@@ -102,11 +109,19 @@ internal fun EmissionContext.emitBinaryOperator(
                 "Binary operator '${op.name}' is not yet supported."
             )
 
-    // Add→Concatenate rewrite is handled by ConversionInserter (rewrites ADD to CONCAT
-    // when operator resolution determines string addition). No semantic logic here.
     val operands = mutableListOf(leftElm, rightElm)
-    return createBinaryElm(systemOpName, operands)
+    return createOperandListElm(systemOpName, operands)
 }
+
+/**
+ * Emit a binary operator that has been rewritten by an [OperatorRewrite] synthetic. Looks up
+ * [targetOperator] in [operandListConstructors]. Operands already have slot synthetics applied.
+ */
+internal fun EmissionContext.emitRewrittenBinaryOperator(
+    targetOperator: String,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
+): ElmExpression = createOperandListElm(targetOperator, mutableListOf(leftElm, rightElm))
 
 internal fun EmissionContext.emitNotWrapper(
     expression: OperatorBinaryExpression,
@@ -119,7 +134,7 @@ internal fun EmissionContext.emitNotWrapper(
     // Look up resolution to decorate the inner expression with the Boolean result type
     val resolution = lookupResolution(expression)
 
-    val inner = createBinaryElm(innerOpName, operands)
+    val inner = createOperandListElm(innerOpName, operands)
     // Decorate the inner expression with the Boolean result type from the resolution
     if (resolution != null && resolution.operator.resultType != null) {
         decorate(inner, resolution.operator.resultType!!)
@@ -147,17 +162,17 @@ internal fun EmissionContext.emitUnaryOperator(
     return createUnaryElm(systemOpName, operandElm)
 }
 
-/** Create the appropriate ELM binary expression node using the table-driven constructor map. */
-internal fun EmissionContext.createBinaryElm(
+/** Create the appropriate ELM expression node using the unified [operandListConstructors] table. */
+internal fun createOperandListElm(
     operatorName: String,
     operands: MutableList<ElmExpression>,
 ): ElmExpression {
     val constructor =
-        binaryConstructors[operatorName]
+        operandListConstructors[operatorName]
             ?: throw ElmEmitter.UnsupportedNodeException(
-                "Binary operator '$operatorName' ELM emission is not yet supported."
+                "Operator '$operatorName' ELM emission is not yet supported."
             )
-    return constructor().apply { operand = operands }
+    return constructor(operands)
 }
 
 /** Create the appropriate ELM unary expression node using the table-driven constructor map. */

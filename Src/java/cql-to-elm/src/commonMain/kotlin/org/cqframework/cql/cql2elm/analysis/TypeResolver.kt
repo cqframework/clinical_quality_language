@@ -75,7 +75,10 @@ import org.hl7.cql.model.TupleTypeElement
  * - [TemporalTypeInference.kt] — date/time, interval, collection operators
  * - [QueryTypeInference.kt] — query expressions with scoping
  */
-class TypeResolver(internal val operatorRegistry: OperatorRegistry) : ExpressionFold<DataType?> {
+class TypeResolver(
+    internal val operatorRegistry: OperatorRegistry,
+    private val syntheticTable: SyntheticTable? = null,
+) : ExpressionFold<DataType?> {
 
     /** Tracks expression definitions currently being resolved to detect circular references. */
     private val inProgressExpressions = mutableSetOf<String>()
@@ -370,7 +373,6 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
     @Suppress("ReturnCount")
     private fun inferIdentifierType(expression: IdentifierExpression): DataType? {
         val name = expression.name.simpleName
-
         // Check query scope first (innermost scope wins)
         for (i in queryScopes.indices.reversed()) {
             queryScopes[i][name]?.let { resolution ->
@@ -502,7 +504,7 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
             }
         }
         // Type unification: produce ChoiceType when types can't be unified via conversion.
-        // The ConversionInserter will wrap each child in As(ChoiceType).
+        // ChoiceType sorts alphabetically internally (deterministic ordering).
         if (distinct.size > 1) {
             return org.hl7.cql.model.ChoiceType(distinct)
         }
@@ -537,9 +539,15 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         rightType: DataType?,
     ): DataType? {
         if (leftType == null || rightType == null) return null
+        val effectiveLeft =
+            syntheticTable?.effectiveType(expression, Slot.Left, leftType, operatorRegistry)
+                ?: leftType
+        val effectiveRight =
+            syntheticTable?.effectiveType(expression, Slot.Right, rightType, operatorRegistry)
+                ?: rightType
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
-            operatorRegistry.resolve(opName, listOf(leftType, rightType)) ?: return null
+            operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
     }
@@ -567,9 +575,12 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         operandType: DataType?,
     ): DataType? {
         if (operandType == null) return null
+        val effectiveOperand =
+            syntheticTable?.effectiveType(expression, Slot.Operand, operandType, operatorRegistry)
+                ?: operandType
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
-        if (opName == "Positive") return operandType
-        val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
+        if (opName == "Positive") return effectiveOperand
+        val resolution = operatorRegistry.resolve(opName, listOf(effectiveOperand)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
     }
@@ -631,10 +642,25 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
 
+        // Apply effective types from synthetic table
+        val effectiveArgTypes =
+            if (syntheticTable != null) {
+                nonNullArgTypes.mapIndexed { index, type ->
+                    syntheticTable.effectiveType(
+                        expression,
+                        Slot.Argument(index),
+                        type,
+                        operatorRegistry,
+                    ) ?: type
+                }
+            } else {
+                nonNullArgTypes
+            }
+
         val resolution =
             operatorRegistry.resolve(
                 functionName,
-                nonNullArgTypes,
+                effectiveArgTypes,
                 allowPromotionAndDemotion = true,
             )
         if (resolution != null) {

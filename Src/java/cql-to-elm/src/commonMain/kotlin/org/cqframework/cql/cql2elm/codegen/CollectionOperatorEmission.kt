@@ -158,9 +158,8 @@ internal fun EmissionContext.emitMembership(
     val leftType = semanticModel[expression.left]
     val rightType = semanticModel[expression.right]
 
-    // Interval<Any> expansion for membership operators:
-    // In(T, Interval<Any>) → expand Interval<Any> to Interval<T>
-    // Contains(Interval<Any>, T) → expand Interval<Any> to Interval<T>
+    // Interval<Any> expansion for non-literal intervals that ConversionInserter couldn't
+    // constant-fold. Literal intervals are handled by CI.buildIntervalConversion.
     if (
         expression.operator == MembershipOperator.IN &&
             rightType is org.hl7.cql.model.IntervalType &&

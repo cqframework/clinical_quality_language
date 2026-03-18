@@ -343,23 +343,27 @@ CQL source. Currently they're split between the ConversionInserter
 (which synthesizes AST nodes) and the emitter (which constructs ELM
 directly).
 
-A cleaner architecture: a lightweight **Intermediate Representation
-(IR)** between the analyzed AST and ELM emission:
+A cleaner architecture: a **side-table IR** that keeps the AST immutable:
 
 ```
-CQL Source → AST (pure source) → IR (AST + conversions + synthetics) → ELM
+CQL Source → AST (pure source) → IR (AST + SyntheticTable) → ELM
 ```
 
-The IR would:
+The IR is not a new tree. It's the original AST plus a
+`SyntheticTable` (`IdentityHashMap<Expression, List<Synthetic>>`)
+describing transformations to apply during emission. The AST never
+changes — SymbolTable collected once, identity stable, no idempotency
+guards needed.
 
-- Keep the AST pure (source representation — useful for IDE features
-  like go-to-definition, refactoring, formatting)
-- Keep emission purely mechanical (IR → ELM 1:1)
-- Give synthesized constructions a proper home with typed nodes
-- Make the ConversionInserter produce IR, not mutated AST
+The convergence loop stays (type inference depends on conversion
+effects — e.g., `Avg({1,2,3})` needs to know `List<Integer>` converts
+to `List<Decimal>` to resolve the overload). What changes is the
+representation: `TypeResolver` reads "effective types" from the
+SyntheticTable instead of re-inferring on a mutated AST.
 
-This is a future architectural improvement. For now, synthesizing AST
-nodes is pragmatic and correct.
+See `AST_DEVELOPMENT_PLAN.md` Milestone 19 for the full design
+including the `Synthetic` sealed hierarchy, convergence loop, and
+migration path.
 
 ---
 

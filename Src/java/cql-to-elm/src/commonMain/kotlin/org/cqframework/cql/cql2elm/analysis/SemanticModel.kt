@@ -22,6 +22,8 @@ class SemanticModel(
     val options: CqlCompilerOptions? = null,
     /** Expressions flagged with semantic errors. Codegen emits Null for these. */
     internal val errors: MutableSet<Expression> = mutableSetOf(),
+    /** Side table of synthetic conversions keyed by parent expression + slot. */
+    val syntheticTable: SyntheticTable = SyntheticTable(),
 ) {
     /** Metrics collected during analysis. Populated by [SemanticAnalyzer]. */
     var metrics: AnalysisMetrics = AnalysisMetrics()

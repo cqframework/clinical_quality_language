@@ -930,13 +930,72 @@ the IR step for long-term cleanliness.
   helpers (`applyConversion`, `wrapConversion`, `wrapAsConversion`,
   `wrapListConversion`, `wrapIntervalConversion`, `wrapCoalesce`).
 
-**IR design (future):**
-The synthetic constructions (aggregate Query, Coalesce wrapping,
-interval expansion, Skip/Take/Tail→Slice) show the need for an
-Intermediate Representation between analyzed AST and ELM. The IR
-would be "AST + explicit conversions + synthetic nodes" — keeping
-the source AST pure and emission mechanical. For now, synthesizing
-AST nodes is pragmatic; the IR is a future milestone.
+**IR design (side-table approach):**
+
+The current ConversionInserter mutates the AST, which causes:
+- SymbolTable going stale (must re-collect each iteration)
+- Identity tracking bugs (IdentityHashMap keys change when AST is copied)
+- Idempotency guards needed to prevent double-wrapping on re-iteration
+- Synthetic Query nodes need alias registration and scope handling
+
+A side-table IR keeps the AST immutable. The IR is not a new tree — it's
+the original AST plus a `SyntheticTable` keyed by expression identity:
+
+```
+AST (immutable, pure source)  +  SyntheticTable (IdentityHashMap<Expression, List<Synthetic>>)  =  IR
+```
+
+`Synthetic` is a sealed hierarchy describing transformations to apply
+during emission:
+
+```kotlin
+sealed interface Synthetic {
+    data class OperatorConversion(val operatorName: String, val position: Int) : Synthetic
+    data class AsCast(val targetType: DataType, val implicit: Boolean, val position: Int) : Synthetic
+    data class ListConversion(val elementConversion: Synthetic, val position: Int) : Synthetic
+    data class CoalesceWrap(val position: Int) : Synthetic
+    data class OperatorRewrite(val newOperator: BinaryOperator) : Synthetic
+    data class IntervalBoundConversion(val innerConversion: Synthetic) : Synthetic
+}
+```
+
+**The convergence loop stays** — type inference depends on knowing the
+effect of conversions (e.g., `Avg({1,2,3})`: TypeResolver must know the
+list converts from `List<Integer>` to `List<Decimal>` to resolve the
+overload and compute return type Decimal). What changes is the
+representation, not the iteration:
+
+```kotlin
+var synthetics = SyntheticTable()
+repeat {
+    typeTable = TypeResolver(synthetics).resolve(library, symbols)
+    newSynthetics = ConversionAnalyzer(typeTable).analyze(library)
+    if (newSynthetics.isEmpty()) break
+    synthetics.addAll(newSynthetics)
+}
+// typeTable + synthetics = complete IR
+```
+
+TypeResolver consults the SyntheticTable to compute "effective types":
+
+```kotlin
+override fun onFunctionCall(expr: ..., args: List<DataType?>): DataType? {
+    val effectiveArgs = args.mapIndexed { i, type ->
+        synthetics.effectiveType(expr, position = i, sourceType = type)
+    }
+    return resolveOverload(expr, effectiveArgs)
+}
+```
+
+Benefits: AST never changes → SymbolTable collected once → identity
+stable → no idempotency guards → editor gets both source types
+(`typeTable[expr]`) and post-conversion types
+(`synthetics.effectiveType(expr)`).
+
+**Migration path:** Start with one synthetic kind (operator conversions:
+ToDecimal, ToLong). ConversionAnalyzer writes entries, TypeResolver reads
+via `effectiveType`, emitter reads to wrap operands. Delete that code path
+from ConversionInserter. If it works, the rest is mechanical.
 
 ### Milestone 20: Post-processing + Compiler Options
 

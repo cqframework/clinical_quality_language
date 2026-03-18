@@ -11,9 +11,45 @@ and the categories of semantic errors they detect.
 1. COLLECT   (SymbolCollector)
 2. INFER     (TypeResolver — bottom-up type inference + overload resolution)
 3. CONVERT   (ConversionInserter — AST rewrite with explicit conversions)
-4. RE-INFER  (TypeResolver on converted AST — verify convergence)
+4. CHECK     (convergence test — if new conversions inserted, loop to INFER)
 5. VALIDATE  (SemanticValidator — detect errors on final AST)
 ```
+
+Steps 2–4 form the **INFER→CONVERT→CHECK convergence loop**. The loop
+repeats (max 3 iterations) until CONVERT inserts zero new conversions.
+After convergence, a final INFER pass produces the TypeTable used by
+VALIDATE and codegen.
+
+### Convergence loop detail
+
+```
+symbols = SymbolCollector.collect(library)
+
+for iteration in 1..maxIterations:
+    typeTable = TypeResolver(operatorRegistry).resolve(library, symbols)
+    library   = ConversionInserter(typeTable, operatorRegistry).convertLibrary(library)
+    if conversionsInserted == 0: break
+    symbols   = SymbolCollector.collect(library)   // re-collect: AST changed
+
+finalSymbols  = SymbolCollector.collect(library)
+finalTypeTable = TypeResolver(operatorRegistry).resolve(library, finalSymbols)
+semanticModel = SemanticModel(finalSymbols, finalTypeTable, ...)
+SemanticValidator.validate(library, finalSymbols, semanticModel)
+```
+
+**Why re-collect SymbolTable?** ConversionInserter creates new AST nodes
+(synthetic QueryExpressions for list conversions, ConversionExpression
+wrappers, etc.). The SymbolTable holds references to expression
+definitions — if those expressions were replaced by the CI, the
+SymbolTable has stale references and the next TypeResolver pass would
+traverse the old AST, missing CI-generated nodes.
+
+**Why a convergence loop?** Inserting a conversion can change the type
+of an expression, which may trigger additional conversions upstream.
+Example: `Avg({1,2,3})` — the list conversion `List<Integer>` →
+`List<Decimal>` changes the argument type, which the TypeResolver needs
+to see to resolve the Avg overload and compute the return type as
+Decimal.
 
 ### Ordering constraints
 
@@ -22,10 +58,10 @@ and the categories of semantic errors they detect.
 | COLLECT | Parse | Needs AST |
 | INFER | COLLECT | Needs SymbolTable for identifier resolution |
 | CONVERT | INFER | Needs TypeTable + OperatorResolutions to know what conversions to insert |
-| RE-INFER | CONVERT | Needs converted AST to verify post-conversion types |
-| VALIDATE | RE-INFER | Needs final types to detect type errors accurately |
+| CHECK | CONVERT | Needs to know if new conversions were inserted |
+| VALIDATE | Final INFER | Needs final types to detect type errors accurately |
 
-VALIDATE must run AFTER CONVERT because:
+VALIDATE must run AFTER the convergence loop because:
 - An expression might look like an error pre-conversion but be valid
   after conversion (e.g., `1 + 2.0` — Integer + Decimal doesn't match
   directly, but after conversion it's `ToDecimal(1) + 2.0` which is
@@ -44,8 +80,51 @@ VALIDATE must run AFTER CONVERT because:
 - INFER + CONVERT could be a single pass if the type resolver inserted
   conversions as it resolved them. But this makes the resolver more
   complex and mixes concerns. Keeping them separate is cleaner.
-- RE-INFER might be skippable if we can prove convergence statically
-  (CQL's conversion DAG doesn't cycle). But it's cheap insurance.
+
+---
+
+## Future: Side-Table IR (eliminates AST mutation)
+
+The current ConversionInserter mutates the AST, which forces
+SymbolTable re-collection each iteration and creates identity-tracking
+issues (IdentityHashMap keys change when AST nodes are copied). A
+side-table IR keeps the AST immutable:
+
+```
+AST (immutable)  +  SyntheticTable  =  IR
+```
+
+The `SyntheticTable` (`IdentityHashMap<Expression, List<Synthetic>>`)
+stores conversion/wrapping directives keyed by expression identity.
+TypeResolver consults it to compute "effective types" (source type +
+applied synthetics):
+
+```kotlin
+override fun onFunctionCall(expr: ..., args: List<DataType?>): DataType? {
+    val effectiveArgs = args.mapIndexed { i, type ->
+        synthetics.effectiveType(expr, position = i, sourceType = type)
+    }
+    return resolveOverload(expr, effectiveArgs)
+}
+```
+
+**The convergence loop stays** — type inference still depends on
+conversion effects. What changes is the representation:
+
+```
+synthetics = empty
+repeat {
+    typeTable = TypeResolver(synthetics).resolve(library, symbols)
+    newSynthetics = ConversionAnalyzer(typeTable).analyze(library)
+    if (newSynthetics.isEmpty()) break
+    synthetics.addAll(newSynthetics)
+}
+```
+
+Benefits: AST stable → SymbolTable collected once → no identity bugs →
+no idempotency guards → editor gets both source types and
+post-conversion types. See `AST_DEVELOPMENT_PLAN.md` M19 for full
+design.
 
 ---
 
@@ -83,11 +162,11 @@ them and their severity.
 | No valid conversion | Error | Operator resolution requires a conversion that doesn't exist |
 | Incompatible cast | Error | `as` expression where source type can't be cast to target (e.g., List → scalar) |
 
-### Phase 4: RE-INFER errors
+### Phase 4: CHECK errors
 
 | Error | Severity | Description |
 |-------|----------|-------------|
-| Non-convergence | Internal | Conversions triggered new type conflicts (should not happen in CQL) |
+| Non-convergence | Internal | Max iterations reached with conversions still being inserted |
 
 ### Phase 5: VALIDATE errors
 
@@ -123,9 +202,10 @@ Type inference needs the SymbolTable from COLLECT to:
 - Find terminology definitions (CodeSystem, ValueSet, etc.)
 - Load model types via OperatorRegistry (which uses ModelManager)
 
-No conflict — COLLECT is read-only after it runs.
+No conflict — COLLECT is read-only after it runs (but must be re-run
+when the AST changes in the convergence loop).
 
-### INFER ↔ CONVERT
+### INFER ↔ CONVERT (convergence loop)
 
 INFER produces:
 - `TypeTable[expression] = DataType` — the pre-conversion type
@@ -137,26 +217,21 @@ CONVERT reads:
 - The pre-conversion types to construct the right conversion nodes
 
 CONVERT produces:
-- A new AST with explicit ConversionExpression/AsExpression nodes
-- The new AST replaces the original for all downstream phases
+- A modified AST with explicit ConversionExpression/AsExpression nodes
+- Synthetic QueryExpression nodes for list conversions
+- Coalesce wrapping for CONCAT operands
+- ChoiceType As-wrapping for if/case branches and union operands
 
-### CONVERT ↔ RE-INFER
-
-RE-INFER runs on the converted AST. It should find:
-- ConversionExpression nodes now have the correct post-conversion type
-- Parent operators now see the correct operand types
-- No new conversions are needed (convergence)
-
-If RE-INFER finds new conversion requirements, that's a bug in CONVERT
-(it missed something) or a pathological conversion chain (shouldn't
-happen in CQL).
+CHECK tests convergence: if CONVERT inserted zero new nodes, the loop
+terminates. Otherwise, SymbolTable is re-collected from the modified
+AST and INFER runs again on the updated tree.
 
 ### VALIDATE ↔ everything
 
 VALIDATE reads from:
 - The final (converted) AST
-- The final TypeTable (post-RE-INFER)
-- The SymbolTable (unchanged since COLLECT)
+- The final TypeTable (post-convergence)
+- The SymbolTable (re-collected from final AST)
 - Compiler options (compatibility level, etc.)
 
 VALIDATE produces:
@@ -172,31 +247,23 @@ Codegen reads:
 
 ## How this maps to the current code
 
-### Currently implemented
+### Implemented
 
 | Phase | Code | Status |
 |-------|------|--------|
 | COLLECT | `SymbolCollector` | Done |
 | INFER | `TypeResolver` + extension files | Done (bottom-up inference + overload resolution) |
+| CONVERT | `ConversionInserter` | Done (operator/function/null/literal/case/interval/collection/ChoiceType conversions) |
+| CHECK | Convergence loop in `SemanticAnalyzer` | Done (max 3 iterations, SymbolTable re-collection) |
 | VALIDATE | `SemanticValidator` | Partial (unresolved identifiers, invalid casts, recursive functions) |
-| EMIT | `ElmEmitter` + `EmissionContext` + 20 emission files | Done but contains conversion logic that should move to CONVERT |
+| EMIT | `ElmEmitter` + `EmissionContext` + 20 emission files | Done — mostly mechanical, remaining conversion logic being migrated |
 
 ### Not yet implemented
 
 | Phase | Code | Status |
 |-------|------|--------|
-| CONVERT | `ConversionInserter` | Not started — conversion logic currently in emission |
-| RE-INFER | Second pass of `TypeResolver` | Not started |
 | VALIDATE: name hiding | — | Not started |
 | VALIDATE: invalid context references | — | Not started |
 | VALIDATE: invalid sort expressions | Partial (sort items skipped) |
 | VALIDATE: retrieve validation | — | Not started |
-
-### Migration path
-
-1. Build `ConversionInserter` as `ExpressionFold<Expression>`
-2. Move conversion logic from emission files into `ConversionInserter`
-3. Wire into `SemanticAnalyzer` between INFER and VALIDATE
-4. Simplify emission — remove conversion lookups
-5. Add RE-INFER convergence check
-6. Expand VALIDATE with remaining error categories
+| Side-table IR | — | Designed, not started (see M19 in AST_DEVELOPMENT_PLAN.md) |
