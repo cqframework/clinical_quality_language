@@ -349,37 +349,6 @@ class ConversionInserter(
         toType: DataType,
     ): Expression {
         if (fromType == toType) return expr
-
-        // ChoiceType unification: wrap in implicit AsExpression(ChoiceTypeSpecifier)
-        if (toType is org.hl7.cql.model.ChoiceType) {
-            val typeSpec = buildChoiceTypeSpecifier(toType)
-            conversionsInserted++
-            conversionKindCounts["choiceAs"] = (conversionKindCounts["choiceAs"] ?: 0) + 1
-            return AsExpression(
-                operand = expr,
-                type = typeSpec,
-                implicit = true,
-                locator = expr.locator,
-            )
-        }
-
-        // List<T> → List<Choice<...>> for union operands
-        if (
-            toType is ListType &&
-                toType.elementType is org.hl7.cql.model.ChoiceType &&
-                fromType is ListType
-        ) {
-            val typeSpec = buildListTypeSpecifier(toType)
-            conversionsInserted++
-            conversionKindCounts["choiceListAs"] = (conversionKindCounts["choiceListAs"] ?: 0) + 1
-            return AsExpression(
-                operand = expr,
-                type = typeSpec,
-                implicit = true,
-                locator = expr.locator,
-            )
-        }
-
         val convName =
             implicitConversionNameForTypes(fromType.toString(), toType.toString()) ?: return expr
         val typeName = conversionOperatorToTypeName(convName) ?: return expr
@@ -390,34 +359,6 @@ class ConversionInserter(
             destinationType = NamedTypeSpecifier(name = QualifiedIdentifier(listOf(typeName))),
             locator = expr.locator,
         )
-    }
-
-    /** Build a ChoiceTypeSpecifier AST node from a ChoiceType. */
-    private fun buildChoiceTypeSpecifier(
-        choiceType: org.hl7.cql.model.ChoiceType
-    ): org.hl7.cql.ast.ChoiceTypeSpecifier {
-        val choices =
-            choiceType.types.map { type ->
-                dataTypeToAstTypeSpecifier(type)
-                    ?: NamedTypeSpecifier(
-                        name = QualifiedIdentifier(listOf(type.toString().removePrefix("System.")))
-                    )
-            }
-        return org.hl7.cql.ast.ChoiceTypeSpecifier(choices = choices)
-    }
-
-    /** Build a ListTypeSpecifier AST node from a ListType. */
-    private fun buildListTypeSpecifier(listType: ListType): org.hl7.cql.ast.ListTypeSpecifier {
-        val elemType = listType.elementType
-        val elemSpec =
-            if (elemType is org.hl7.cql.model.ChoiceType) buildChoiceTypeSpecifier(elemType)
-            else
-                dataTypeToAstTypeSpecifier(elemType)
-                    ?: NamedTypeSpecifier(
-                        name =
-                            QualifiedIdentifier(listOf(elemType.toString().removePrefix("System.")))
-                    )
-        return org.hl7.cql.ast.ListTypeSpecifier(elementType = elemSpec)
     }
 
     /** Map known implicit conversion type name pairs to their operator names. */
@@ -769,20 +710,14 @@ class ConversionInserter(
         thenBranch: Expression,
         elseBranch: Expression,
     ): Expression {
-        var t = thenBranch
-        var e = elseBranch
-
-        // If the result type is a ChoiceType (from type unification), wrap branches
-        val resultType = typeTable[expr]
-        if (resultType != null) {
-            t = maybeWrapForTargetType(t, expr.thenBranch, resultType)
-            e = maybeWrapForTargetType(e, expr.elseBranch, resultType)
-        }
-
-        return if (condition === expr.condition && t === expr.thenBranch && e === expr.elseBranch) {
+        return if (
+            condition === expr.condition &&
+                thenBranch === expr.thenBranch &&
+                elseBranch === expr.elseBranch
+        ) {
             expr
         } else {
-            expr.copy(condition = condition, thenBranch = t, elseBranch = e)
+            expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch)
         }
     }
 

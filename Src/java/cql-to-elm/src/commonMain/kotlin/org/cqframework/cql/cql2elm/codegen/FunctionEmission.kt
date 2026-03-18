@@ -67,12 +67,43 @@ internal fun EmissionContext.emitIfExpression(
     thenElm: ElmExpression,
     elseElm: ElmExpression,
 ): ElmExpression {
-    // Choice type wrapping, implicit conversions, and null-As wrapping are all handled
-    // by ConversionInserter in the analysis phase. Emission is purely mechanical.
+    var thenResult = thenElm
+    var elseResult = elseElm
+
+    // Check if branches need choice type wrapping
+    val choiceType = computeChoiceType(expression.thenBranch, expression.elseBranch)
+    if (choiceType != null) {
+        thenResult = wrapInAs(thenResult, choiceType)
+        elseResult = wrapInAs(elseResult, choiceType)
+    } else {
+        val thenType = semanticModel[expression.thenBranch]
+        val elseType = semanticModel[expression.elseBranch]
+        val anyType = operatorRegistry.type("Any")
+        // Implicit type promotion: when branch types differ and there's an implicit conversion
+        // (e.g., Integer→Decimal), apply the conversion to the narrower branch
+        if (
+            thenType != null &&
+                elseType != null &&
+                thenType != elseType &&
+                thenType != anyType &&
+                elseType != anyType
+        ) {
+            thenResult = applyIfImplicitConversion(thenResult, thenType, elseType)
+            elseResult = applyIfImplicitConversion(elseResult, elseType, thenType)
+        }
+        // Null-As wrapping: when one branch is null and the other has a known type,
+        // wrap the null in As(thatType) to match legacy behavior
+        if (isNullBranch(expression.elseBranch) && thenType != null) {
+            elseResult = wrapIfBranchNullAs(elseResult, thenType)
+        } else if (isNullBranch(expression.thenBranch) && elseType != null) {
+            thenResult = wrapIfBranchNullAs(thenResult, elseType)
+        }
+    }
+
     return If().apply {
         condition = conditionElm
-        then = thenElm
-        `else` = elseElm
+        then = thenResult
+        `else` = elseResult
     }
 }
 

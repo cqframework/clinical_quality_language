@@ -501,11 +501,6 @@ class TypeResolver(internal val operatorRegistry: OperatorRegistry) : Expression
                 return candidate
             }
         }
-        // No single common type — produce ChoiceType (type unification).
-        // The ConversionInserter will wrap each child in As(ChoiceType).
-        if (distinct.size > 1) {
-            return org.hl7.cql.model.ChoiceType(distinct)
-        }
         return basic
     }
 
