@@ -326,31 +326,12 @@ class ConversionAnalyzer(
         target: Unit?,
         arguments: List<Unit>,
     ) {
-        val functionName = expr.function.value
         val resolution = typeTable.getOperatorResolution(expr)
         val slots = arguments.indices.map { Slot.Argument(it) }
         recordResolutionConversions(expr, resolution, slots)
 
-        // Multi-arg Coalesce: the resolution was computed with Any/null args replaced by the
-        // result type, so it won't have casts for null args. When the resolution has conversions
-        // (i.e., type promotion occurred), wrap null args with the result type.
-        if (
-            functionName == "Coalesce" &&
-                arguments.size > 1 &&
-                resolution != null &&
-                resolution.hasConversions()
-        ) {
-            val resultType = typeTable[expr]
-            if (resultType != null) {
-                for (i in expr.arguments.indices) {
-                    if (isNullLiteralExpr(expr.arguments[i])) {
-                        recordIfNew(expr, Slot.Argument(i), Synthetic.ImplicitCast(resultType))
-                    }
-                }
-            }
-        }
-
         // DateTime/Date/Time null arg wrapping
+        val functionName = expr.function.value
         recordDateTimeNullArgConversions(functionName, expr)
     }
 

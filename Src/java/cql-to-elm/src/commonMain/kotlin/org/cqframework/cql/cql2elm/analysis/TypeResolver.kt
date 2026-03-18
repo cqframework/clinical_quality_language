@@ -2,6 +2,8 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.model.Conversion
+import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BooleanLiteral
@@ -624,8 +626,10 @@ class TypeResolver(
      * (non-Any) arguments, filtering out null/Any types. This matches the legacy translator which
      * computes the result from the concrete args rather than using the generic overload result.
      *
-     * A resolution is still recorded (with `allowPromotionAndDemotion`) so the ConversionAnalyzer
-     * can read conversions from it and the emitter can look it up.
+     * The resolution is computed with Any/null args replaced by the result type (to prevent Any
+     * from polluting generic type parameter unification), then patched to include cast conversions
+     * at the null-arg positions so the ConversionAnalyzer's generic `recordResolutionConversions`
+     * picks them up without Coalesce-specific code.
      */
     @Suppress("ReturnCount")
     private fun inferMultiArgCoalesceType(
@@ -646,7 +650,30 @@ class TypeResolver(
         val resolution =
             operatorRegistry.resolve("Coalesce", resolveTypes, allowPromotionAndDemotion = true)
         if (resolution != null) {
-            typeTable.setOperatorResolution(expression, resolution)
+            // Patch the resolution: inject cast conversions at null-arg positions when the
+            // resolution has other conversions (i.e., type promotion occurred). This lets the
+            // ConversionAnalyzer handle null wrapping generically via recordResolutionConversions.
+            val patched =
+                if (resolution.hasConversions() && resultType != anyType) {
+                    val patchedConversions =
+                        argTypes.mapIndexed { i, t ->
+                            if ((t == null || t == anyType) && t != resultType) {
+                                Conversion(anyType, resultType)
+                            } else {
+                                resolution.conversions.getOrNull(i)
+                            }
+                        }
+                    OperatorResolution(resolution.operator, patchedConversions).also {
+                        it.score = resolution.score
+                        it.allowFluent = resolution.allowFluent
+                        it.libraryIdentifier = resolution.libraryIdentifier
+                        it.libraryName = resolution.libraryName
+                        it.operatorHasOverloads = resolution.operatorHasOverloads
+                    }
+                } else {
+                    resolution
+                }
+            typeTable.setOperatorResolution(expression, patched)
         }
         return resultType
     }
