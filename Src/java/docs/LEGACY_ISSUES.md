@@ -204,101 +204,158 @@ operand types.
 
 ## Synthetic ELM constructions
 
-These are cases where the translator creates ELM structures that don't
-correspond to anything in the CQL source. They are semantic rewrites
-performed during compilation.
+Cases where the translator creates ELM structures that don't
+correspond 1:1 to anything in the CQL source. All are spec-correct
+semantic transformations required by CQL's type system, operator
+definitions, or language semantics.
+
+These constructions are the primary motivation for introducing an IR
+between the AST and ELM (see "Need for an IR" below).
 
 ### 14. Aggregate query wrapping for numeric promotion
 
-**Rationale:** Spec-correct — `Avg`, `Median`, `StdDev`, `Variance`
-are defined only over `List<Decimal>` and `List<Quantity>` in the
-System library. There is no `Avg(List<Integer>)` signature.
-
-When these functions receive a `List<Integer>`, the operator
-resolution finds that `List<Integer>` can be promoted to
-`List<Decimal>` via implicit Integer→Decimal conversion. The
-translator expresses this list-level conversion as a synthetic Query:
+**Rationale:** `Avg`, `Median`, `StdDev`, `Variance` are defined only
+over `List<Decimal>` and `List<Quantity>` in the System library.
+`List<Integer>` is promoted via a synthetic Query with element-level
+`ToDecimal` conversion.
 
 ```
 Avg({1, 2, 3})
   → Avg(Query(source=[{1,2,3} as "X"], return=Return(ToDecimal(AliasRef("X")))))
 ```
 
-This is the correct ELM representation of "promote each element of
-this integer list to decimal." The Query is synthesized — it doesn't
-exist in the source CQL — but it's semantically required by the type
-system.
+### 15. Interval type expansion
 
-### 15. Interval type expansion for `Interval<Any>`
-
-**Rationale:** Type coercion — when `Interval<Any>` (typically from a
-null interval) is passed to an operator expecting `Interval<Integer>`,
-the translator must express the conversion in ELM. Since ELM has no
-"cast interval" operator, it expands the interval by extracting
-components and wrapping the bounds:
+When `Interval<Any>` needs to match `Interval<Integer>`, ELM has no
+"cast interval" operator. The translator expands by extracting bounds
+as properties and wrapping in `As`:
 
 ```
-Interval(null, null)  -- typed as Interval<Any>
+Interval(null, null)  -- Interval<Any>
   → Interval(
       low = As(Integer, Property(source=expr, path="low")),
       high = As(Integer, Property(source=expr, path="high")),
       lowClosed = Property(source=expr, path="lowClosed"),
-      highClosed = Property(source=expr, path="highClosed"),
-    )
+      highClosed = Property(source=expr, path="highClosed"))
 ```
-
-This is the ELM representation of "reinterpret this interval's bounds
-as Integer." The AST should have interval properties (`low`, `high`,
-`lowClosed`, `highClosed`) available for this transformation. The
-synthetic Property accesses don't exist in the source CQL but are
-required by the ELM type system.
 
 ### 16. Concatenation Coalesce wrapping
 
-**Rationale:** Spec-correct — the CQL spec defines `&` as treating
-null operands as empty string: *"To treat null as the empty string
-(''), use the & operator."* This is distinct from `+` which propagates
-null.
-
-The translator implements this by wrapping each operand in Coalesce:
+CQL spec: `&` treats null as empty string. `+` propagates null.
+Implemented by wrapping each operand in `Coalesce`:
 
 ```
 'foo' & 'bar'
   → Concatenate(Coalesce('foo', ''), Coalesce('bar', ''))
 ```
 
-This synthesizes `FunctionCallExpression("Coalesce", [operand, ""])`
-nodes that don't exist in the source CQL, but they correctly implement
-the spec-defined null-to-empty-string behavior.
+### 17. Skip/Take/Tail → Slice
+
+CQL convenience functions rewritten to the canonical ELM `Slice`
+operator (see item 5 for details).
+
+### 18. Timing offset arithmetic
+
+`A starts 3 days before B` is a complex rewrite: extract Start/End
+from intervals, apply arithmetic, compose into a comparison:
+
+```
+A starts 3 days before start B
+  → SameAs(Start(A), Subtract(Start(B), Quantity(3, 'day')))
+```
+
+Variations with `or more`/`or less`/`more than`/`less than` qualifiers
+produce `In(point, Interval[...])` constructions with synthetic
+interval bounds computed from arithmetic.
+
+### 19. Within interval construction
+
+`A within 3 days of B` constructs a synthetic interval by applying
+arithmetic to the right operand's bounds:
+
+```
+A within 3 days of B
+  → In(A, Interval[Subtract(Start(B), Quantity(3, 'day')),
+                    Add(End(B), Quantity(3, 'day'))])
+```
+
+### 20. Context definition implicit retrieve
+
+`context Patient` synthesizes an expression definition:
+
+```
+context Patient
+  → define Patient: SingletonFrom([Patient])
+```
+
+The `Retrieve` and `SingletonFrom` don't exist in the source.
+
+### 21. CalculateAge from birth date
+
+`AgeInYears()` resolves the patient's birth date property from the
+model and synthesizes:
+
+```
+AgeInYears()
+  → CalculateAge(Property(Patient, "birthDate"), Today(), years)
+```
+
+The Property access and Today() call are synthesized.
+
+### 22. Between rewrite
+
+`X between Y and Z` is rewritten based on the input type:
+
+```
+-- scalar:
+5 between 1 and 10
+  → And(GreaterOrEqual(5, 1), LessOrEqual(5, 10))
+
+-- interval:
+Interval[1,5] between Interval[1,3] and Interval[3,5]
+  → IncludedIn(Interval[1,5], Interval[Interval[1,3], Interval[3,5]])
+```
+
+### 23. Point-interval promotion
+
+When a point value is compared to an interval, the point is promoted
+to a degenerate interval:
+
+```
+5 before Interval[6, 10]
+  → If(IsNull(5), Null, Interval[5, 5]) before Interval[6, 10]
+```
+
+### 24. Convert unit
+
+`convert X to 'unit'` synthesizes a Quantity literal for the unit:
+
+```
+convert 1 to 'mg'
+  → ConvertQuantity(1, Quantity(1, 'mg'))
+```
 
 ### Need for an IR
 
-These three cases are all **spec-correct semantic transformations** —
-they're required by CQL's type system and operator definitions, not
-engine accommodations or translator quirks. Together with
-`Skip`/`Take`/`Tail` → `Slice` (item 5), they show a pattern: the
-compiler must express constructions in ELM that don't have direct
-source CQL counterparts.
+All of the above are **spec-correct semantic transformations**. The
+compiler must express them in ELM even though they don't exist in the
+CQL source. Currently they're split between the ConversionInserter
+(which synthesizes AST nodes) and the emitter (which constructs ELM
+directly).
 
-The current ConversionInserter synthesizes AST nodes (QueryExpression,
-FunctionCallExpression, AsExpression) to represent these. This works
-but muddies the AST — it's no longer a pure source representation.
-
-A cleaner architecture would introduce a lightweight **Intermediate
-Representation (IR)** between the analyzed AST and ELM emission:
+A cleaner architecture: a lightweight **Intermediate Representation
+(IR)** between the analyzed AST and ELM emission:
 
 ```
 CQL Source → AST (pure source) → IR (AST + conversions + synthetics) → ELM
 ```
 
-The IR would be "analyzed AST + explicit conversions + synthetic
-constructions" — richer than the source AST but not yet ELM. This
-would:
+The IR would:
 
-- Keep the AST pure (source representation only, useful for IDE
-  features like go-to-definition, refactoring, formatting)
+- Keep the AST pure (source representation — useful for IDE features
+  like go-to-definition, refactoring, formatting)
 - Keep emission purely mechanical (IR → ELM 1:1)
-- Give synthesized constructions a proper home
+- Give synthesized constructions a proper home with typed nodes
 - Make the ConversionInserter produce IR, not mutated AST
 
 This is a future architectural improvement. For now, synthesizing AST
