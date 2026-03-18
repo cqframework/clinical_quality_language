@@ -619,6 +619,33 @@ class TypeResolver(
         return findCommonTypeWithConversions(nonNullTypes)
     }
 
+    /**
+     * Infer the result type for multi-arg Coalesce by computing the common type of concrete
+     * (non-Any) arguments, filtering out null/Any types. This matches the legacy translator which
+     * does not apply operator overload conversions to Coalesce arguments. A resolution is still
+     * recorded (without conversions) so the emitter can look it up.
+     */
+    @Suppress("ReturnCount")
+    private fun inferMultiArgCoalesceType(
+        expression: FunctionCallExpression,
+        argTypes: List<DataType?>,
+    ): DataType? {
+        val anyType = operatorRegistry.type("Any")
+        val concreteTypes = argTypes.filterNotNull().filter { it != anyType }
+        val resultType =
+            if (concreteTypes.isEmpty()) {
+                anyType
+            } else {
+                findCommonTypeWithConversions(concreteTypes)
+            }
+        // Resolve with the result type to record a resolution for the emitter
+        val resolution = operatorRegistry.resolve("Coalesce", argTypes.filterNotNull())
+        if (resolution != null) {
+            typeTable.setOperatorResolution(expression, resolution)
+        }
+        return resultType
+    }
+
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
     private fun inferFunctionCallType(
         expression: FunctionCallExpression,
@@ -637,6 +664,12 @@ class TypeResolver(
                     return resolution.operator.resultType
                 }
             }
+        }
+
+        // Multi-arg Coalesce: result type is the common type of concrete (non-Any) arguments,
+        // matching the legacy translator which doesn't apply operator overload conversions.
+        if (functionName == "Coalesce" && argTypes.size > 1) {
+            return inferMultiArgCoalesceType(expression, argTypes)
         }
 
         val nonNullArgTypes = argTypes.filterNotNull()

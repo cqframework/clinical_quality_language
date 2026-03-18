@@ -326,16 +326,38 @@ class ConversionAnalyzer(
         target: Unit?,
         arguments: List<Unit>,
     ) {
+        val functionName = expr.function.value
+
+        // Multi-arg Coalesce: treat args like list elements — promote each to the common
+        // result type. Skip resolution conversions (they're artifacts of generic overload
+        // matching that the legacy translator ignores).
+        if (functionName == "Coalesce" && arguments.size > 1) {
+            val resultType = typeTable[expr] ?: return
+            val anyType = operatorRegistry.type("Any")
+            // Only wrap null args when there's actual type promotion (i.e., the result type
+            // differs from the concrete arg types). When all concrete args already match the
+            // result type, null args don't need typing.
+            val concreteTypes = expr.arguments.mapNotNull { typeTable[it] }.filter { it != anyType }
+            val needsNullWrapping = concreteTypes.any { it != resultType }
+            for (i in expr.arguments.indices) {
+                val arg = expr.arguments[i]
+                if (isNullLiteralExpr(arg)) {
+                    if (needsNullWrapping) {
+                        recordIfNew(expr, Slot.Argument(i), Synthetic.ImplicitCast(resultType))
+                    }
+                } else {
+                    recordTargetTypeConversion(expr, Slot.Argument(i), arg, resultType)
+                }
+            }
+            return
+        }
+
         val resolution = typeTable.getOperatorResolution(expr)
         val slots = arguments.indices.map { Slot.Argument(it) }
         recordResolutionConversions(expr, resolution, slots)
 
         // DateTime/Date/Time null arg wrapping
-        val functionName = expr.function.value
         recordDateTimeNullArgConversions(functionName, expr)
-
-        // Coalesce null arg wrapping
-        recordCoalesceNullArgConversions(functionName, expr)
     }
 
     /** Record NullAs synthetics for DateTime/Date/Time null arguments. */
@@ -370,23 +392,6 @@ class ConversionAnalyzer(
                         }
                     }
                 }
-            }
-        }
-    }
-
-    /** Record NullAs synthetics for Coalesce null arguments. */
-    private fun recordCoalesceNullArgConversions(
-        functionName: String,
-        expr: FunctionCallExpression,
-    ) {
-        if (functionName != "Coalesce") return
-        val resultType = typeTable[expr] ?: return
-        val anyType = operatorRegistry.type("Any")
-        if (resultType == anyType) return
-
-        expr.arguments.forEachIndexed { i, arg ->
-            if (isNullLiteralExpr(arg)) {
-                recordIfNew(expr, Slot.Argument(i), Synthetic.ImplicitCast(resultType))
             }
         }
     }
