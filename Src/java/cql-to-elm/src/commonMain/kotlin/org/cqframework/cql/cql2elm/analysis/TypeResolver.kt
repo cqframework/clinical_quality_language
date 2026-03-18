@@ -622,8 +622,10 @@ class TypeResolver(
     /**
      * Infer the result type for multi-arg Coalesce by computing the common type of concrete
      * (non-Any) arguments, filtering out null/Any types. This matches the legacy translator which
-     * does not apply operator overload conversions to Coalesce arguments. A resolution is still
-     * recorded (without conversions) so the emitter can look it up.
+     * computes the result from the concrete args rather than using the generic overload result.
+     *
+     * A resolution is still recorded (with `allowPromotionAndDemotion`) so the ConversionAnalyzer
+     * can read conversions from it and the emitter can look it up.
      */
     @Suppress("ReturnCount")
     private fun inferMultiArgCoalesceType(
@@ -638,8 +640,11 @@ class TypeResolver(
             } else {
                 findCommonTypeWithConversions(concreteTypes)
             }
-        // Resolve with the result type to record a resolution for the emitter
-        val resolution = operatorRegistry.resolve("Coalesce", argTypes.filterNotNull())
+        // Resolve with Any/null args replaced by the result type so the resolution matches
+        // the correct overload without Any polluting generic type unification.
+        val resolveTypes = argTypes.map { if (it == null || it == anyType) resultType else it }
+        val resolution =
+            operatorRegistry.resolve("Coalesce", resolveTypes, allowPromotionAndDemotion = true)
         if (resolution != null) {
             typeTable.setOperatorResolution(expression, resolution)
         }
