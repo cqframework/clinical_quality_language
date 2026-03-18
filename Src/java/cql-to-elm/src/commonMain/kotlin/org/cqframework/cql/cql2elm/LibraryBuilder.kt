@@ -1879,6 +1879,25 @@ class LibraryBuilder(
     ): Expression {
         val fromType: IntervalType = conversion.fromType as IntervalType
         val toType: IntervalType = conversion.toType as IntervalType
+
+        // Optimization: when the expression is an Interval literal, directly convert the bounds
+        // and preserve the lowClosed/highClosed booleans. This avoids unnecessary runtime Property
+        // extraction for values known at compile time (constant folding).
+        if (expression is org.hl7.elm.r1.Interval) {
+            val low = expression.low
+            val high = expression.high
+            return objectFactory
+                .createInterval()
+                .withLow(if (low != null) convertExpression(low, conversion.conversion!!) else null)
+                .withLowClosed(expression.lowClosed)
+                .withHigh(
+                    if (high != null) convertExpression(high, conversion.conversion!!) else null
+                )
+                .withHighClosed(expression.highClosed)
+                .withResultType(toType)
+        }
+
+        // For non-literal intervals, extract bounds via Property access at runtime
         return objectFactory
             .createInterval()
             .withLow(
