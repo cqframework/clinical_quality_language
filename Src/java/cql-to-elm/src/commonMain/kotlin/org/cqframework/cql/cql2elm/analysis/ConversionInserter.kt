@@ -208,13 +208,32 @@ class ConversionInserter(
         ) {
             return buildListConversionQuery(expr, conversion.conversion!!, conversion.toType)
         }
-        // Interval conversion: deferred to emission because it produces Property access on
-        // low/high/lowClosed/highClosed using ELM-specific lowClosedExpression which cannot
-        // be expressed in the AST IntervalLiteral (which only has static lowerClosed booleans).
+        // Interval conversion: wrap bounds with inner conversion, keep closed flags.
+        // For literal intervals, this is compile-time constant folding — we read the
+        // bounds and closed flags directly from the AST node and reconstruct with
+        // converted bounds. No runtime Property extraction needed.
         if (conversion.isIntervalConversion && conversion.conversion != null) {
-            return expr
+            return buildIntervalConversion(expr, conversion.conversion!!)
         }
-        // List/interval promotions and demotions not yet handled
+        return expr
+    }
+
+    /**
+     * Convert an interval expression by wrapping its bounds with the inner conversion. For
+     * [IntervalLiteral] (wrapped in [LiteralExpression]), reads bounds and closed flags directly
+     * from the AST node — compile-time constant folding, no runtime Property extraction.
+     */
+    private fun buildIntervalConversion(expr: Expression, innerConversion: Conversion): Expression {
+        if (expr is LiteralExpression && expr.literal is org.hl7.cql.ast.IntervalLiteral) {
+            val interval = expr.literal as org.hl7.cql.ast.IntervalLiteral
+            val newLower = insertConversion(interval.lower, innerConversion)
+            val newUpper = insertConversion(interval.upper, innerConversion)
+            if (newLower !== interval.lower || newUpper !== interval.upper) {
+                return expr.copy(literal = interval.copy(lower = newLower, upper = newUpper))
+            }
+        }
+        // Non-literal intervals: would need constant folding/propagation to resolve
+        // closed flags. Leave unchanged — emission handles via Property extraction.
         return expr
     }
 

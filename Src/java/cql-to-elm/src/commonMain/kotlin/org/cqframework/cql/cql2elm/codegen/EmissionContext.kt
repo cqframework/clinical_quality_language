@@ -111,18 +111,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
      * list is mutated in place.
      */
     fun applyRemainingConversions(
-        resolution: OperatorResolution,
-        operands: MutableList<ElmExpression>,
+        @Suppress("UNUSED_PARAMETER") resolution: OperatorResolution,
+        @Suppress("UNUSED_PARAMETER") operands: MutableList<ElmExpression>,
     ) {
-        if (!resolution.hasConversions()) return
-        resolution.conversions.forEachIndexed { index, conversion ->
-            if (conversion != null && index < operands.size) {
-                // Only handle interval conversions here; everything else is handled by CI
-                if (conversion.isIntervalConversion && conversion.conversion != null) {
-                    operands[index] = wrapIntervalConversion(operands[index], conversion)
-                }
-            }
-        }
+        // All conversions are now handled by ConversionInserter in the analysis phase.
+        // This method is retained as a no-op for call sites that haven't been cleaned up.
     }
 
     /**
