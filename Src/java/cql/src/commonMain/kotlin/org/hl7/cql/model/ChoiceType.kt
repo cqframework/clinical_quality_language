@@ -91,6 +91,7 @@ private constructor(
     companion object {
         // The Iterable is flattened recursively
         private fun Iterable<DataType>.flattenChoices(): List<DataType> =
-            flatMap { (it as? ChoiceType)?.types?.flattenChoices() ?: listOf(it) }.toList()
+            flatMap { (it as? ChoiceType)?.types?.flattenChoices() ?: listOf(it) }
+                .sortedBy { it.toString() }
     }
 }

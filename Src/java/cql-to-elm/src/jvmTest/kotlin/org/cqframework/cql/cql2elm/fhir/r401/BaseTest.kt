@@ -271,7 +271,7 @@ internal class BaseTest {
         assertThat(
             resultType.toString(),
             Matchers.equalTo(
-                "choice<System.String,System.Boolean,System.Date,System.DateTime,System.Decimal,System.Integer,System.Time,System.Quantity,System.Concept,System.Code,interval<System.Quantity>,interval<System.DateTime>,System.Ratio,FHIR.Address,FHIR.Annotation,FHIR.Attachment,FHIR.ContactPoint,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.ContactDetail,FHIR.Contributor,FHIR.DataRequirement,FHIR.Expression,FHIR.ParameterDefinition,FHIR.RelatedArtifact,FHIR.TriggerDefinition,FHIR.UsageContext,FHIR.Dosage,FHIR.Meta>"
+                "choice<FHIR.Address,FHIR.Annotation,FHIR.Attachment,FHIR.ContactDetail,FHIR.ContactPoint,FHIR.Contributor,FHIR.DataRequirement,FHIR.Dosage,FHIR.Expression,FHIR.HumanName,FHIR.Identifier,FHIR.Meta,FHIR.Money,FHIR.ParameterDefinition,FHIR.Reference,FHIR.RelatedArtifact,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.TriggerDefinition,FHIR.UsageContext,System.Boolean,System.Code,System.Concept,System.Date,System.DateTime,System.Decimal,System.Integer,System.Quantity,System.Ratio,System.String,System.Time,interval<System.DateTime>,interval<System.Quantity>>"
             ),
         )
     }
