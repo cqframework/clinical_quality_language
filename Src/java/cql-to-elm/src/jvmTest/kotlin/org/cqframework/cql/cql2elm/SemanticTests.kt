@@ -206,10 +206,10 @@ class SemanticTests {
             if (type == null) {
                 type = dt
                 assertThat(dt, Matchers.instanceOf(NamedType::class.java))
-                assertThat((dt as NamedType).name, Matchers.equalTo("System.String"))
+                assertThat((dt as NamedType).name, Matchers.equalTo("System.Boolean"))
             } else {
                 assertThat(dt, Matchers.instanceOf(NamedType::class.java))
-                assertThat((dt as NamedType).name, Matchers.equalTo("System.Boolean"))
+                assertThat((dt as NamedType).name, Matchers.equalTo("System.String"))
             }
         }
 
@@ -222,10 +222,10 @@ class SemanticTests {
             if (type == null) {
                 type = dt
                 assertThat(dt, Matchers.instanceOf(NamedType::class.java))
-                assertThat((dt as NamedType).name, Matchers.equalTo("System.String"))
+                assertThat((dt as NamedType).name, Matchers.equalTo("System.Boolean"))
             } else {
                 assertThat(dt, Matchers.instanceOf(NamedType::class.java))
-                assertThat((dt as NamedType).name, Matchers.equalTo("System.Boolean"))
+                assertThat((dt as NamedType).name, Matchers.equalTo("System.String"))
             }
         }
     }
