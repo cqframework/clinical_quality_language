@@ -2,8 +2,10 @@ package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.hl7.cql.ast.AliasedQuerySource
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
+import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanTestExpression
 import org.hl7.cql.ast.CaseChildren
 import org.hl7.cql.ast.CaseExpression
@@ -25,6 +27,7 @@ import org.hl7.cql.ast.ExpressionQuerySource
 import org.hl7.cql.ast.ExternalConstantExpression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.Identifier
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
@@ -44,7 +47,9 @@ import org.hl7.cql.ast.QualifiedIdentifier
 import org.hl7.cql.ast.QueryChildren
 import org.hl7.cql.ast.QueryExpression
 import org.hl7.cql.ast.RetrieveExpression
+import org.hl7.cql.ast.ReturnClause
 import org.hl7.cql.ast.Statement
+import org.hl7.cql.ast.StringLiteral
 import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
@@ -162,6 +167,7 @@ class ConversionInserter(
      * Wrap an expression in the appropriate AST conversion node based on the [Conversion] type.
      * - Operator conversions (ToDecimal, ToLong, etc.) produce [ConversionExpression]
      * - Cast conversions produce [AsExpression]
+     * - List conversions (element-level conversion) produce a synthetic [QueryExpression]
      */
     private fun insertConversion(expr: Expression, conversion: Conversion): Expression {
         // Operator-based conversion (e.g., ToDecimal, ToLong)
@@ -189,18 +195,90 @@ class ConversionInserter(
                 locator = expr.locator,
             )
         }
-        // List conversion with element-level conversion: deferred to emission because it
-        // requires generating an implicit Query with alias/return, which is an ELM-level concern
-        if (conversion.isListConversion && conversion.conversion != null) {
-            return expr
+        // List conversion with operator-based element-level conversion: build a synthetic
+        // QueryExpression that applies the inner conversion to each element.
+        // Produces: (X in list return <innerConversion>(X))
+        // Only handles operator-based inner conversions (ToDecimal, ToLong, etc.);
+        // cast-inner list conversions (List<Any>→List<T> via As) are deferred to
+        // the set-operator emission path (emitSetOperator) which applies them directly.
+        if (
+            conversion.isListConversion &&
+                conversion.conversion != null &&
+                conversion.conversion!!.operator != null
+        ) {
+            return buildListConversionQuery(expr, conversion.conversion!!, conversion.toType)
         }
         // Interval conversion: deferred to emission because it produces Property access on
-        // low/high/lowClosed/highClosed, which is an ELM-level concern
+        // low/high/lowClosed/highClosed using ELM-specific lowClosedExpression which cannot
+        // be expressed in the AST IntervalLiteral (which only has static lowerClosed booleans).
         if (conversion.isIntervalConversion && conversion.conversion != null) {
             return expr
         }
         // List/interval promotions and demotions not yet handled
         return expr
+    }
+
+    /**
+     * Build a synthetic [QueryExpression] that applies [elementConversion] to each element of
+     * [listExpr]. Produces the AST equivalent of: (X in listExpr return <elementConversion>(X))
+     *
+     * The alias identifier is registered in the [TypeTable] so the emitter can resolve it to an ELM
+     * [AliasRef] rather than an [IdentifierRef]. The resulting query's type is also registered as
+     * [resultListType] so downstream code (e.g., union choice-type wrapping) can still determine
+     * the element type.
+     */
+    private fun buildListConversionQuery(
+        listExpr: Expression,
+        elementConversion: Conversion,
+        resultListType: DataType,
+    ): Expression {
+        val aliasName = "X"
+        // The element type is the source type of the inner conversion
+        val elementType = elementConversion.fromType
+
+        // Create the alias reference expression and register its resolution in the TypeTable
+        // so that the emitter produces AliasRef("X"), not IdentifierRef("X").
+        val aliasRefExpr =
+            IdentifierExpression(
+                name = QualifiedIdentifier(listOf(aliasName)),
+                locator = listExpr.locator,
+            )
+        typeTable.setIdentifierResolution(aliasRefExpr, Resolution.AliasRef(aliasName, elementType))
+
+        // Apply the inner conversion to the alias reference
+        val convertedElement = insertConversion(aliasRefExpr, elementConversion)
+
+        conversionsInserted++
+        conversionKindCounts["list"] = (conversionKindCounts["list"] ?: 0) + 1
+
+        val queryExpr =
+            QueryExpression(
+                sources =
+                    listOf(
+                        AliasedQuerySource(
+                            source = ExpressionQuerySource(expression = listExpr),
+                            alias = Identifier(aliasName),
+                            locator = listExpr.locator,
+                        )
+                    ),
+                lets = emptyList(),
+                inclusions = emptyList(),
+                result =
+                    ReturnClause(
+                        // all=true → emitter sets ElmReturnClause.distinct=false,
+                        // matching the legacy translator's withDistinct(false) on implicit
+                        // list conversion queries.
+                        all = true,
+                        distinct = false,
+                        expression = convertedElement,
+                        locator = listExpr.locator,
+                    ),
+                locator = listExpr.locator,
+            )
+        // Register the result type so the emitter can determine element types for
+        // union/intersect/except choice-type wrapping (semanticModel[queryExpr]).
+        typeTable[queryExpr] = resultListType
+        return queryExpr
     }
 
     /** Convert a DataType to an AST TypeSpecifier. */
@@ -335,11 +413,34 @@ class ConversionInserter(
     ): Expression {
         val resolution = typeTable.getOperatorResolution(expr)
         val operands = applyConversions(resolution, listOf(left, right))
-        val l = operands[0]
-        val r = operands[1]
+        var l = operands[0]
+        var r = operands[1]
+
+        // CONCAT (&) operator: wrap each operand in Coalesce(operand, '') to match legacy
+        // translator behavior. This matches EmissionContext.emitConcatenate.
+        if (expr.operator == BinaryOperator.CONCAT) {
+            l = wrapInCoalesceWithEmptyString(l)
+            r = wrapInCoalesceWithEmptyString(r)
+        }
+
         // Compare against the ORIGINAL expression's children (not the pre-folded `left`/`right`
         // params) so that changes made by the recursive fold are also propagated.
         return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
+    }
+
+    /**
+     * Wrap an expression in Coalesce(expr, '') — used for the CONCAT (&) operator to match the
+     * legacy translator's behavior of coalescing null string operands to empty string.
+     */
+    private fun wrapInCoalesceWithEmptyString(expr: Expression): Expression {
+        val emptyString =
+            LiteralExpression(literal = StringLiteral(value = ""), locator = expr.locator)
+        return FunctionCallExpression(
+            target = null,
+            function = Identifier("Coalesce"),
+            arguments = listOf(expr, emptyString),
+            locator = expr.locator,
+        )
     }
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Expression): Expression {

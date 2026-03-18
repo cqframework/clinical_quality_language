@@ -47,7 +47,6 @@ import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
-import org.hl7.elm.r1.As
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Literal as ElmLiteral
@@ -105,17 +104,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         return createConversionElm(conversionName, expression)
     }
 
-    /** Wrap an expression in a Coalesce with an empty string fallback. */
-    fun wrapCoalesce(expression: ElmExpression): ElmExpression {
-        val emptyString = ElmLiteral().withValueType(QName(typesNamespace, "String")).withValue("")
-        return org.hl7.elm.r1.Coalesce().apply { operand = mutableListOf(expression, emptyString) }
-    }
-
     /**
-     * Apply only non-operator conversions from an [OperatorResolution], skipping operator-based
-     * conversions (ToDecimal, ToLong, etc.) which are already handled by ConversionInserter in the
-     * AST phase. Cast, list, and interval conversions are still applied here. The [operands] list
-     * is mutated in place with wrapped expressions.
+     * Apply only interval conversions from an [OperatorResolution]. Operator-based and cast
+     * conversions are handled by ConversionInserter in the AST phase. List+cast conversions for set
+     * operators are handled directly by [emitSetOperator] via [wrapListConversion]. The [operands]
+     * list is mutated in place.
      */
     fun applyRemainingConversions(
         resolution: OperatorResolution,
@@ -124,55 +117,25 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         if (!resolution.hasConversions()) return
         resolution.conversions.forEachIndexed { index, conversion ->
             if (conversion != null && index < operands.size) {
-                // Skip operator-based conversions (handled by ConversionInserter)
-                if (conversion.operator != null) return@forEachIndexed
-                operands[index] = applyConversion(operands[index], conversion)
+                // Only handle interval conversions here; everything else is handled by CI
+                if (conversion.isIntervalConversion && conversion.conversion != null) {
+                    operands[index] = wrapIntervalConversion(operands[index], conversion)
+                }
             }
         }
     }
 
     /**
-     * Apply a single [Conversion] to an ELM expression, returning the wrapped expression. Handles
-     * both operator-based conversions (ToDecimal, etc.) and cast conversions (As wrapping).
-     */
-    fun applyConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
-        val convName = operatorRegistry.conversionOperatorName(conversion)
-        if (convName != null) {
-            return wrapConversion(expression, convName)
-        }
-        // Cast conversion: wrap in As
-        if (conversion.isCast) {
-            return wrapAsConversion(expression, conversion)
-        }
-        // List conversion: wrap in implicit Query with element-level conversion
-        // Only apply for operator-based conversions (ToDecimal, ToLong, etc.)
-        // not for cast conversions (As wrapping)
-        if (
-            conversion.isListConversion &&
-                conversion.conversion != null &&
-                conversion.conversion!!.operator != null
-        ) {
-            return wrapListConversion(expression, conversion.conversion!!)
-        }
-        // Interval conversion: expand into Interval with Property access on
-        // low/high/lowClosed/highClosed
-        if (conversion.isIntervalConversion && conversion.conversion != null) {
-            return wrapIntervalConversion(expression, conversion)
-        }
-        // List/interval promotions and demotions not yet handled
-        return expression
-    }
-
-    /**
-     * Wrap a list expression in an implicit Query that applies an element-level conversion.
-     * Produces: Query(source=[alias "X" from list], return=Return(conversion(AliasRef("X"))))
+     * Wrap a list expression in an implicit Query that applies a cast element-level conversion.
+     * Used by [emitSetOperator] for list demotion (List<Any> → List<T>). Produces:
+     * Query(source=[alias "X" from list], return=Return(As(AliasRef("X"), targetType)))
      */
     fun wrapListConversion(
         listExpression: ElmExpression,
         elementConversion: Conversion,
     ): ElmExpression {
         val aliasRef = org.hl7.elm.r1.AliasRef().apply { name = "X" }
-        val convertedElement = applyConversion(aliasRef, elementConversion)
+        val convertedElement = wrapAsConversion(aliasRef, elementConversion)
         return org.hl7.elm.r1.Query().apply {
             source =
                 mutableListOf(
@@ -192,14 +155,13 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /**
-     * Wrap an expression in an ELM [As] node based on a cast [Conversion]. Uses `asType` for simple
-     * named types and `asTypeSpecifier` for complex types (list, interval, choice).
+     * Wrap an expression in an ELM [As] node based on a cast [Conversion]. Used by
+     * [wrapListConversion] for list-demotion in set operators.
      */
     fun wrapAsConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
         val targetType = conversion.toType
-        return As().apply {
+        return org.hl7.elm.r1.As().apply {
             operand = expression
-            // Simple named types use asType (QName), complex types use asTypeSpecifier
             if (
                 targetType is org.hl7.cql.model.SimpleType ||
                     targetType is org.hl7.cql.model.ClassType
@@ -215,18 +177,27 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
      * Expand an interval expression by extracting Property paths on low/high/lowClosed/highClosed
      * and applying the inner conversion to the low and high values. This matches the legacy
      * translator's `convertIntervalExpression` behavior for interval type demotion (e.g.,
-     * `Interval<Any>` → `Interval<Integer>`).
+     * `Interval<Any>` → `Interval<Integer>`). Interval conversions cannot be expressed in the AST
+     * because [IntervalLiteral] only has a static [lowerClosed] boolean, while ELM requires a
+     * dynamic [lowClosedExpression] Property access.
      */
     fun wrapIntervalConversion(expression: ElmExpression, conversion: Conversion): ElmExpression {
         val innerConversion = conversion.conversion!!
+        fun applyInner(elm: ElmExpression): ElmExpression {
+            val convName = operatorRegistry.conversionOperatorName(innerConversion)
+            return when {
+                convName != null -> wrapConversion(elm, convName)
+                innerConversion.isCast -> wrapAsConversion(elm, innerConversion)
+                else -> elm
+            }
+        }
         return org.hl7.elm.r1.Interval().apply {
             low =
-                applyConversion(
+                applyInner(
                     org.hl7.elm.r1.Property().apply {
                         path = "low"
                         source = expression
-                    },
-                    innerConversion,
+                    }
                 )
             lowClosedExpression =
                 org.hl7.elm.r1.Property().apply {
@@ -234,12 +205,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     source = expression
                 }
             high =
-                applyConversion(
+                applyInner(
                     org.hl7.elm.r1.Property().apply {
                         path = "high"
                         source = expression
-                    },
-                    innerConversion,
+                    }
                 )
             highClosedExpression =
                 org.hl7.elm.r1.Property().apply {

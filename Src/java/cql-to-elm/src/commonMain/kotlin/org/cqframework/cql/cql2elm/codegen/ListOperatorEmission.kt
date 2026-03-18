@@ -26,29 +26,21 @@ internal fun EmissionContext.emitSetOperator(
     var left = leftElm
     var right = rightElm
 
-    // Apply operator resolution conversions for set operators
-    // For union/intersect/except with empty list operands, the resolution
-    // provides list demotion conversions (List<Any> → List<T>) that must be
-    // applied as implicit Query wrapping with As cast
+    // Apply list-demotion conversions (List<Any> → List<T> via implicit Query with As cast).
+    // These are deferred from ConversionInserter because they are only needed here (set operators),
+    // not for other binary or function contexts where the cast list conversion is a no-op.
     val resolution = lookupResolution(expression)
     if (resolution != null && resolution.hasConversions()) {
         resolution.conversions.forEachIndexed { index, conversion ->
-            if (conversion != null) {
-                if (
+            if (
+                conversion != null &&
                     conversion.isListConversion &&
-                        conversion.conversion != null &&
-                        conversion.conversion!!.isCast
-                ) {
-                    // List demotion: wrap in Query with As cast on elements
-                    val target = if (index == 0) left else right
-                    val wrapped = wrapListConversion(target, conversion.conversion!!)
-                    if (index == 0) left = wrapped else right = wrapped
-                } else {
-                    // Other conversions (operator-based): use standard path
-                    val target = if (index == 0) left else right
-                    val wrapped = applyConversion(target, conversion)
-                    if (index == 0) left = wrapped else right = wrapped
-                }
+                    conversion.conversion != null &&
+                    conversion.conversion!!.isCast
+            ) {
+                val target = if (index == 0) left else right
+                val wrapped = wrapListConversion(target, conversion.conversion!!)
+                if (index == 0) left = wrapped else right = wrapped
             }
         }
     }

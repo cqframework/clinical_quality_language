@@ -75,9 +75,10 @@ internal fun EmissionContext.emitBinaryOperator(
 ): ElmExpression {
     val op = expression.operator
 
-    // Handle Concatenate (&) specially - it wraps each operand in Coalesce(operand, '')
+    // Handle Concatenate (&): Coalesce wrapping is inserted by ConversionInserter at the AST
+    // level, so operands are already coalesced. Just emit as Concatenate.
     if (op == BinaryOperator.CONCAT) {
-        return emitConcatenate(leftElm, rightElm)
+        return Concatenate().apply { operand = mutableListOf(leftElm, rightElm) }
     }
 
     // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
@@ -142,16 +143,6 @@ internal fun EmissionContext.emitNotWrapper(
         decorate(inner, resolution.operator.resultType!!)
     }
     return Not().apply { operand = inner }
-}
-
-internal fun EmissionContext.emitConcatenate(
-    leftElm: ElmExpression,
-    rightElm: ElmExpression,
-): ElmExpression {
-    // Legacy translator wraps each operand in Coalesce(operand, '') for & operator
-    return Concatenate().apply {
-        operand = mutableListOf(wrapCoalesce(leftElm), wrapCoalesce(rightElm))
-    }
 }
 
 internal fun EmissionContext.emitUnaryOperator(
