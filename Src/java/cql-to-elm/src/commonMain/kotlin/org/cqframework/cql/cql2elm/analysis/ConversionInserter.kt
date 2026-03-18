@@ -170,6 +170,10 @@ class ConversionInserter(
      * - List conversions (element-level conversion) produce a synthetic [QueryExpression]
      */
     private fun insertConversion(expr: Expression, conversion: Conversion): Expression {
+        // Idempotency: don't wrap if already converted to the target type
+        if (expr is ConversionExpression) return expr
+        if (expr is AsExpression && expr.implicit) return expr
+
         // Operator-based conversion (e.g., ToDecimal, ToLong)
         val operatorName = operatorRegistry.conversionOperatorName(conversion)
         if (operatorName != null) {
@@ -319,6 +323,10 @@ class ConversionInserter(
                 val pointSpec = dataTypeToAstTypeSpecifier(dataType.pointType) ?: return null
                 org.hl7.cql.ast.IntervalTypeSpecifier(pointType = pointSpec)
             }
+            is org.hl7.cql.model.ChoiceType -> {
+                val choices = dataType.types.map { dataTypeToAstTypeSpecifier(it) ?: return null }
+                org.hl7.cql.ast.ChoiceTypeSpecifier(choices = choices)
+            }
             else -> null
         }
 
@@ -327,6 +335,8 @@ class ConversionInserter(
      * wrapping (for null literals in typed contexts) into the AST before emission.
      */
     private fun wrapNullAsAst(expr: Expression, targetType: DataType): Expression {
+        // Idempotency: don't double-wrap
+        if (expr is AsExpression && expr.implicit) return expr
         val typeSpec = dataTypeToAstTypeSpecifier(targetType) ?: return expr
         conversionsInserted++
         conversionKindCounts["nullAs"] = (conversionKindCounts["nullAs"] ?: 0) + 1
@@ -349,6 +359,39 @@ class ConversionInserter(
         toType: DataType,
     ): Expression {
         if (fromType == toType) return expr
+        // Idempotency: don't double-wrap
+        if (expr is ConversionExpression || (expr is AsExpression && expr.implicit)) return expr
+
+        // ChoiceType unification: wrap in implicit As(ChoiceTypeSpecifier)
+        if (toType is org.hl7.cql.model.ChoiceType) {
+            val typeSpec = dataTypeToAstTypeSpecifier(toType) ?: return expr
+            conversionsInserted++
+            conversionKindCounts["choiceAs"] = (conversionKindCounts["choiceAs"] ?: 0) + 1
+            return AsExpression(
+                operand = expr,
+                type = typeSpec,
+                implicit = true,
+                locator = expr.locator,
+            )
+        }
+
+        // List<T> → List<Choice<...>> for union operands
+        if (
+            toType is ListType &&
+                toType.elementType is org.hl7.cql.model.ChoiceType &&
+                fromType is ListType
+        ) {
+            val typeSpec = dataTypeToAstTypeSpecifier(toType) ?: return expr
+            conversionsInserted++
+            conversionKindCounts["choiceListAs"] = (conversionKindCounts["choiceListAs"] ?: 0) + 1
+            return AsExpression(
+                operand = expr,
+                type = typeSpec,
+                implicit = true,
+                locator = expr.locator,
+            )
+        }
+
         val convName =
             implicitConversionNameForTypes(fromType.toString(), toType.toString()) ?: return expr
         val typeName = conversionOperatorToTypeName(convName) ?: return expr
@@ -450,6 +493,51 @@ class ConversionInserter(
             op = BinaryOperator.CONCAT
         }
 
+        // Union/intersect/except: wrap operands in As(List<Choice>) when element types differ
+        if (
+            op == BinaryOperator.UNION ||
+                op == BinaryOperator.INTERSECT ||
+                op == BinaryOperator.EXCEPT
+        ) {
+            val leftType = typeTable[expr.left]
+            val rightType = typeTable[expr.right]
+            if (leftType is ListType && rightType is ListType) {
+                val leftElem = leftType.elementType
+                val rightElem = rightType.elementType
+                if (
+                    leftElem != rightElem &&
+                        leftElem !is org.hl7.cql.model.ChoiceType &&
+                        rightElem !is org.hl7.cql.model.ChoiceType &&
+                        !leftElem.isSuperTypeOf(rightElem) &&
+                        !rightElem.isSuperTypeOf(leftElem)
+                ) {
+                    val choiceElem =
+                        org.hl7.cql.model.ChoiceType(listOf(leftElem, rightElem).distinct())
+                    val choiceListType = ListType(choiceElem)
+                    val typeSpec = dataTypeToAstTypeSpecifier(choiceListType)
+                    if (typeSpec != null) {
+                        l =
+                            AsExpression(
+                                operand = l,
+                                type = typeSpec,
+                                implicit = true,
+                                locator = expr.locator,
+                            )
+                        r =
+                            AsExpression(
+                                operand = r,
+                                type = typeSpec,
+                                implicit = true,
+                                locator = expr.locator,
+                            )
+                        conversionsInserted += 2
+                        conversionKindCounts["choiceListAs"] =
+                            (conversionKindCounts["choiceListAs"] ?: 0) + 2
+                    }
+                }
+            }
+        }
+
         return if (l === expr.left && r === expr.right && op === expr.operator) expr
         else expr.copy(operator = op, left = l, right = r)
     }
@@ -459,6 +547,9 @@ class ConversionInserter(
      * legacy translator's behavior of coalescing null string operands to empty string.
      */
     private fun wrapInCoalesceWithEmptyString(expr: Expression): Expression {
+        // Idempotent: don't double-wrap if already a Coalesce
+        if (expr is FunctionCallExpression && expr.function.value == "Coalesce") return expr
+
         val emptyString =
             LiteralExpression(literal = StringLiteral(value = ""), locator = expr.locator)
         return FunctionCallExpression(
@@ -710,14 +801,20 @@ class ConversionInserter(
         thenBranch: Expression,
         elseBranch: Expression,
     ): Expression {
-        return if (
-            condition === expr.condition &&
-                thenBranch === expr.thenBranch &&
-                elseBranch === expr.elseBranch
-        ) {
+        var t = thenBranch
+        var e = elseBranch
+
+        // Type unification: if the result type is a ChoiceType, wrap branches in As(ChoiceType)
+        val resultType = typeTable[expr]
+        if (resultType != null) {
+            t = maybeWrapForTargetType(t, expr.thenBranch, resultType)
+            e = maybeWrapForTargetType(e, expr.elseBranch, resultType)
+        }
+
+        return if (condition === expr.condition && t === expr.thenBranch && e === expr.elseBranch) {
             expr
         } else {
-            expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch)
+            expr.copy(condition = condition, thenBranch = t, elseBranch = e)
         }
     }
 

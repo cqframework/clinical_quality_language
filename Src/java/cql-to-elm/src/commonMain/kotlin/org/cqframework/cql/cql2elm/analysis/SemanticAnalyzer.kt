@@ -41,35 +41,57 @@ class SemanticAnalyzer(
         val diagnostics: kotlin.collections.List<Diagnostic> = emptyList(),
     )
 
+    @Suppress("MagicNumber")
     fun analyze(library: Library): Result {
         val symbols = symbolCollector.collect(library)
-        val typeResolver = TypeResolver(operatorRegistry)
-        val typeTable = typeResolver.resolve(library, symbols)
 
-        // Insert explicit conversion nodes into the AST based on operator resolutions.
-        // The ConversionInserter reads the TypeTable to find which operands need wrapping
-        // and creates ConversionExpression/AsExpression nodes in the AST. We do NOT re-infer
-        // types afterward — the original TypeTable remains valid for all unchanged nodes, and
-        // new conversion nodes are emitted via their own emission handlers.
-        val converter = ConversionInserter(typeTable, operatorRegistry)
-        val convertedLibrary = converter.convertLibrary(library)
+        // INFER → CONVERT → CHECK convergence loop.
+        // Each iteration: infer types, insert conversions, check if new conversions appeared.
+        // Converges when CONVERT inserts nothing new (or max iterations reached).
+        var currentLibrary = library
+        var currentTypeTable: TypeTable
+        var totalConversions = 0
+        val conversionsPerIteration = mutableListOf<Int>()
+        val maxIterations = 3
 
-        val semanticModel = SemanticModel(symbols, typeTable, operatorRegistry, options)
-        semanticValidator.validate(convertedLibrary, symbols, semanticModel)
+        for (iteration in 1..maxIterations) {
+            // INFER: type resolution + overload resolution
+            val resolver = TypeResolver(operatorRegistry)
+            currentTypeTable = resolver.resolve(currentLibrary, symbols)
 
-        // Collect metrics
+            // CONVERT: insert explicit conversion/As nodes into AST
+            val converter = ConversionInserter(currentTypeTable, operatorRegistry)
+            currentLibrary = converter.convertLibrary(currentLibrary)
+            val inserted = converter.conversionsInserted
+            conversionsPerIteration.add(inserted)
+            totalConversions += inserted
+
+            // CHECK: converged if no new conversions inserted
+            if (inserted == 0) break
+        }
+
+        // Final type table is from the last INFER pass
+        val finalResolver = TypeResolver(operatorRegistry)
+        val finalTypeTable = finalResolver.resolve(currentLibrary, symbols)
+
+        val semanticModel = SemanticModel(symbols, finalTypeTable, operatorRegistry, options)
+        semanticValidator.validate(currentLibrary, symbols, semanticModel)
+
         semanticModel.metrics =
             AnalysisMetrics(
-                definitionCount = convertedLibrary.definitions.size,
-                statementCount = convertedLibrary.statements.size,
-                expressionCount = typeTable.expressionCount,
-                typedCount = typeTable.typedCount,
-                unresolvedCount = typeTable.expressionCount - typeTable.typedCount,
-                operatorResolutionCount = typeTable.operatorResolutionCount,
-                identifierResolutionCount = typeTable.identifierResolutionCount,
+                definitionCount = currentLibrary.definitions.size,
+                statementCount = currentLibrary.statements.size,
+                expressionCount = finalTypeTable.expressionCount,
+                typedCount = finalTypeTable.typedCount,
+                unresolvedCount = finalTypeTable.expressionCount - finalTypeTable.typedCount,
+                operatorResolutionCount = finalTypeTable.operatorResolutionCount,
+                identifierResolutionCount = finalTypeTable.identifierResolutionCount,
+                conversionsInserted = totalConversions,
+                inferConvertIterations = conversionsPerIteration.size,
+                newConversionsPerIteration = conversionsPerIteration,
                 errorCount = semanticModel.errors.size,
             )
-        return Result(convertedLibrary, semanticModel)
+        return Result(currentLibrary, semanticModel)
     }
 }
 
