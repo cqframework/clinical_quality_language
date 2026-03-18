@@ -434,17 +434,24 @@ class ConversionInserter(
         val operands = applyConversions(resolution, listOf(left, right))
         var l = operands[0]
         var r = operands[1]
+        var op = expr.operator
 
-        // CONCAT (&) operator: wrap each operand in Coalesce(operand, '') to match legacy
-        // translator behavior. This matches EmissionContext.emitConcatenate.
-        if (expr.operator == BinaryOperator.CONCAT) {
+        // CONCAT (&) operator: wrap each operand in Coalesce(operand, '')
+        if (op == BinaryOperator.CONCAT) {
             l = wrapInCoalesceWithEmptyString(l)
             r = wrapInCoalesceWithEmptyString(r)
         }
 
-        // Compare against the ORIGINAL expression's children (not the pre-folded `left`/`right`
-        // params) so that changes made by the recursive fold are also propagated.
-        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
+        // Operator resolution rewrite: Add on strings → CONCAT
+        if (
+            op == BinaryOperator.ADD &&
+                resolution?.operator?.resultType?.toString() == "System.String"
+        ) {
+            op = BinaryOperator.CONCAT
+        }
+
+        return if (l === expr.left && r === expr.right && op === expr.operator) expr
+        else expr.copy(operator = op, left = l, right = r)
     }
 
     /**

@@ -102,18 +102,9 @@ internal fun EmissionContext.emitBinaryOperator(
                 "Binary operator '${op.name}' is not yet supported."
             )
 
+    // Add→Concatenate rewrite is handled by ConversionInserter (rewrites ADD to CONCAT
+    // when operator resolution determines string addition). No semantic logic here.
     val operands = mutableListOf(leftElm, rightElm)
-
-    // Special case: Add on strings becomes Concatenate
-    val resolution = lookupResolution(expression)
-    if (
-        resolution != null &&
-            systemOpName == "Add" &&
-            resolution.operator.resultType == operatorRegistry.type("String")
-    ) {
-        return Concatenate().apply { operand = operands }
-    }
-
     return createBinaryElm(systemOpName, operands)
 }
 
