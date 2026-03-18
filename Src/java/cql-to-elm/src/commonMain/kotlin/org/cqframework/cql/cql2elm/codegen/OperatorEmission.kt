@@ -104,20 +104,14 @@ internal fun EmissionContext.emitBinaryOperator(
 
     val operands = mutableListOf(leftElm, rightElm)
 
-    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
-    // List/interval conversions are still applied here since they produce ELM-level
-    // structures (Query, Interval with Property access) that don't map to AST nodes.
+    // Special case: Add on strings becomes Concatenate
     val resolution = lookupResolution(expression)
-    if (resolution != null) {
-        applyRemainingConversions(resolution, operands)
-
-        // Special case: Add on strings becomes Concatenate
-        if (
+    if (
+        resolution != null &&
             systemOpName == "Add" &&
-                resolution.operator.resultType == operatorRegistry.type("String")
-        ) {
-            return Concatenate().apply { operand = operands }
-        }
+            resolution.operator.resultType == operatorRegistry.type("String")
+    ) {
+        return Concatenate().apply { operand = operands }
     }
 
     return createBinaryElm(systemOpName, operands)
@@ -131,11 +125,8 @@ internal fun EmissionContext.emitNotWrapper(
 ): ElmExpression {
     val operands = mutableListOf(leftElm, rightElm)
 
-    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
+    // Look up resolution to decorate the inner expression with the Boolean result type
     val resolution = lookupResolution(expression)
-    if (resolution != null) {
-        applyRemainingConversions(resolution, operands)
-    }
 
     val inner = createBinaryElm(innerOpName, operands)
     // Decorate the inner expression with the Boolean result type from the resolution
@@ -162,16 +153,7 @@ internal fun EmissionContext.emitUnaryOperator(
                 "Unary operator '${op.name}' is not yet supported."
             )
 
-    val operands = mutableListOf(operandElm)
-
-    // Operator and cast conversions are handled by ConversionInserter in the AST phase.
-    // List/interval conversions are still applied here.
-    val resolution = lookupResolution(expression)
-    if (resolution != null) {
-        applyRemainingConversions(resolution, operands)
-    }
-
-    return createUnaryElm(systemOpName, operands[0])
+    return createUnaryElm(systemOpName, operandElm)
 }
 
 /** Create the appropriate ELM binary expression node using the table-driven constructor map. */

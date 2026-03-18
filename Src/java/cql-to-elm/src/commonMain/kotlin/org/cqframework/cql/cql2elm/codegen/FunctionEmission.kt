@@ -233,13 +233,6 @@ internal fun EmissionContext.emitFunctionCall(
     val functionName = expression.function.value
 
     val args = rawArgs.toMutableList()
-    // Operator-based conversions (ToDecimal, ToLong, etc.) are inserted at the AST level by
-    // ConversionInserter and emitted via onConversion handlers. Only apply remaining (cast,
-    // list, interval) conversions here.
-    val resolution = lookupResolution(expression)
-    if (resolution != null) {
-        applyRemainingConversions(resolution, args)
-    }
 
     // Try system function emission (math, date/time, message)
     emitSystemFunction(functionName, args)?.let {
