@@ -187,11 +187,27 @@ class FullParityTest {
                     "Error recovery: legacy replaces invalid sort expressions with Null",
                 // AggregateOperators: PASSING (M19)
                 // TypeOperators: PASSING (M19)
-                // Aggregate: union inside aggregate over-wraps QueryLetRef/List operands
-                // in As(List<Choice<Interval,List<Interval>>>) when types should match
-                // Aggregate: Factorial needs As(Integer) on Coalesce result (accumulator type
-                // inference), RolledOutIntervals over-wraps union with ChoiceType
-                "Aggregate" to "Aggregate accumulator type inference + union over-wrapping",
+                // Aggregate: OUR TYPE INFERENCE IS MORE CORRECT than legacy (PR #1710).
+                //
+                // Factorial: Coalesce(R, 1) where R is an aggregate accumulator starting
+                // from null. The legacy resolves Coalesce(Any, Integer) via generic overload
+                // matching which unifies T to Any, giving result type Any. This forces an
+                // unnecessary As(Integer) cast on the Multiply operand. Our pipeline computes
+                // the result type as the common type of concrete (non-Any) args = Integer,
+                // which is correct — Coalesce always returns a non-null value of the unified
+                // concrete type. No downstream cast needed.
+                //
+                // RolledOutIntervals: similar issue — legacy over-wraps union operands in
+                // As(List<Choice<Interval,List<Interval>>>) because the accumulator type
+                // propagation loses precision. Our pipeline preserves the correct types.
+                //
+                // Pattern to watch for: when the legacy inserts As casts that our pipeline
+                // doesn't, check whether the legacy's type inference lost precision due to
+                // Any-typed aggregate accumulators or null starting values. If our inferred
+                // type is strictly more specific and correct, it's a legacy bug, not a
+                // parity regression.
+                "Aggregate" to
+                    "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
                 // CqlIntervalOperators: TestEndsNull — CI constant-folds interval bounds but
                 // emitter's `hasError` check catches the As-wrapped null bound, emitting bare Null.
                 // The emission-side interval expansion is still needed as fallback for
