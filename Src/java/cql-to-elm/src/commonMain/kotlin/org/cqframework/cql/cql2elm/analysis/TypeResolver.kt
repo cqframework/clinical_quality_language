@@ -720,16 +720,22 @@ class TypeResolver(
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
 
-        // Apply effective types from synthetic table
+        // Apply effective types from synthetic table.
+        // Skip ImplicitCast on Any-typed args — the cast is for emission (As wrapping),
+        // not for resolution. Applying it changes Any→List<Any> which breaks generic
+        // resolution (T unifies to List<Any> instead of Any).
+        val anyType = operatorRegistry.type("Any")
         val effectiveArgTypes =
             if (syntheticTable != null) {
                 nonNullArgTypes.mapIndexed { index, type ->
-                    syntheticTable.effectiveType(
-                        expression,
-                        Slot.Argument(index),
-                        type,
-                        operatorRegistry,
-                    ) ?: type
+                    if (type == anyType) type // Don't change Any — resolution handles it
+                    else
+                        syntheticTable.effectiveType(
+                            expression,
+                            Slot.Argument(index),
+                            type,
+                            operatorRegistry,
+                        ) ?: type
                 }
             } else {
                 nonNullArgTypes

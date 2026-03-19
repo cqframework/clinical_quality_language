@@ -69,7 +69,35 @@ class OperatorEntry(val name: String) {
                 return null
             }
 
-            val result = OperatorResolution(operator, conversions)
+            var result = OperatorResolution(operator, conversions)
+
+            // When getInvocationSignature replaced Any-typed call operands with the operator's
+            // expected types, inject cast conversions for those positions. Without this, the
+            // resolution accepts Any in typed positions (e.g., List<T>) without recording a
+            // cast, and the emitter doesn't wrap the null in As(expectedType).
+            if (invocationSignature != callSignature) {
+                val callTypes = callSignature.operandTypes
+                val invTypes = invocationSignature.operandTypes
+                val convs: MutableList<Conversion?> =
+                    conversions?.toMutableList() ?: MutableList(callTypes.size) { null }
+                var patched = false
+                for (i in callTypes.indices) {
+                    if (
+                        callTypes[i] == DataType.ANY &&
+                            i < invTypes.size &&
+                            invTypes[i] != DataType.ANY &&
+                            (i >= convs.size || convs[i] == null)
+                    ) {
+                        while (convs.size <= i) convs.add(null)
+                        convs[i] = Conversion(callTypes[i], invTypes[i])
+                        patched = true
+                    }
+                }
+                if (patched) {
+                    result = OperatorResolution(result.operator, convs)
+                }
+            }
+
             return result
         }
 

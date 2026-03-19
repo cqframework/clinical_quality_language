@@ -206,12 +206,9 @@ class FullParityTest {
                 // CqlIntervalOperators: testing
                 // "CqlIntervalOperators" to
                 //     "TestEndsNull: CI-generated As on null bound flagged as error by validator",
-                // CqlListOperators: IndexOf(null, {}) — null first arg needs context-aware
-                // type inference to determine it should be List<Any>. The List<Any> retry
-                // resolves the type but the emitter still sees the expression as errored.
-                // Needs deeper investigation into how the resolution/validator interact.
-                "CqlListOperators" to
-                    "IndexOf(null, {}): null arg type inference needs context-aware resolution",
+                // CqlListOperators: resolution now records cast for Any→Collection args.
+                // Re-typing still produces null type - needs further investigation.
+                "CqlListOperators" to "IndexOf(null, {}): re-typing loses type for Any-arg cast",
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
                 // interval-point comparisons
                 // "IntervalOperators" — testing

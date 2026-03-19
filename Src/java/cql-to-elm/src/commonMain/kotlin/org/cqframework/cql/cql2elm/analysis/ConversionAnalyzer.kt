@@ -330,7 +330,11 @@ class ConversionAnalyzer(
         // DateTime/Date/Time null arg wrapping
         val functionName = expr.function.value
         recordDateTimeNullArgConversions(functionName, expr)
-        // CalculateAge ToDate wrapping is structural (lowering), not a type conversion.
+
+        // Null arg collection wrapping (e.g., IndexOf(null, {}) → As(null, List<Any>))
+        // cannot be a Synthetic — it changes effective types from Any to List<Any>, which
+        // breaks generic resolution on re-typing (T=List<Any> instead of T=Any).
+        // This wrapping must happen at emission time. See CqlListOperators KNOWN_SKIP.
     }
 
     /** Record NullAs synthetics for DateTime/Date/Time null arguments. */
