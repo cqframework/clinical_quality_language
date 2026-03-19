@@ -91,13 +91,15 @@ class SemanticAnalyzer(
         val lowering = ExpressionLowering(preLowerModel)
         val loweredLibrary = lowering.lowerLibrary(library)
 
-        // Re-type the lowered AST: new nodes need type entries, children are already typed.
+        // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
+        // (QueryExpression for flatten, ConversionExpression for CalculateAge) that need typing.
+        val loweredSymbols = symbolCollector.collect(loweredLibrary)
         val loweredResolver = TypeResolver(operatorRegistry, syntheticTable)
-        val loweredTypeTable = loweredResolver.resolve(loweredLibrary, symbols)
+        val loweredTypeTable = loweredResolver.resolve(loweredLibrary, loweredSymbols)
 
         val semanticModel =
             SemanticModel(
-                symbols,
+                loweredSymbols,
                 loweredTypeTable,
                 operatorRegistry,
                 options,

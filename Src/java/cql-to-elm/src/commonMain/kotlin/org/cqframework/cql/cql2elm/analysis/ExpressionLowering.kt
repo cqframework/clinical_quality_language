@@ -226,6 +226,23 @@ class ExpressionLowering(
         target: Expression?,
         arguments: List<Expression>,
     ): Expression {
+        val functionName = expr.function.value
+        // CalculateAgeInYears/Months: wrap arg in ToDate (CQL spec: Year/Month precision on Date)
+        if (
+            (functionName == "CalculateAgeInYears" || functionName == "CalculateAgeInMonths") &&
+                arguments.size == 1
+        ) {
+            val wrapped =
+                org.hl7.cql.ast.ConversionExpression(
+                    operand = arguments[0],
+                    destinationType =
+                        org.hl7.cql.ast.NamedTypeSpecifier(
+                            name = org.hl7.cql.ast.QualifiedIdentifier(listOf("Date"))
+                        ),
+                    locator = expr.locator,
+                )
+            return rewrite(expr, expr.copy(target = target, arguments = listOf(wrapped)))
+        }
         val argsChanged = arguments.indices.any { arguments[it] !== expr.arguments[it] }
         val targetChanged = target !== expr.target
         return if (!targetChanged && !argsChanged) expr
@@ -273,8 +290,82 @@ class ExpressionLowering(
         else rewrite(expr, expr.copy(left = l, right = r))
     }
 
-    override fun onListTransform(expr: ListTransformExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+    override fun onListTransform(expr: ListTransformExpression, operand: Expression): Expression {
+        // Heterogeneous flatten: wrap operand in Query(return=As(X, List<T>)) when the
+        // list literal has mixed List<T> and T elements.
+        if (expr.listTransformKind == org.hl7.cql.ast.ListTransformKind.FLATTEN) {
+            val wrapped = lowerHeterogeneousFlatten(expr, operand)
+            if (wrapped != null) return rewrite(expr, expr.copy(operand = wrapped))
+        }
+        return if (operand === expr.operand) expr else expr.copy(operand = operand)
+    }
+
+    /** Returns a Query-wrapped operand if the flatten has a heterogeneous list, or null. */
+    private fun lowerHeterogeneousFlatten(
+        expr: ListTransformExpression,
+        operand: Expression,
+    ): Expression? {
+        val srcExpr = expr.operand
+        if (srcExpr !is LiteralExpression) return null
+        val literal = srcExpr.literal
+        if (literal !is org.hl7.cql.ast.ListLiteral) return null
+
+        val elemTypes = literal.elements.mapNotNull { semanticModel[it] }
+        if (elemTypes.isEmpty()) return null
+        val hasListType = elemTypes.any { it is org.hl7.cql.model.ListType }
+        val hasNonListType = elemTypes.any { it !is org.hl7.cql.model.ListType }
+        if (!hasListType || !hasNonListType) return null
+
+        val targetListType = elemTypes.filterIsInstance<org.hl7.cql.model.ListType>().first()
+        val loc = expr.locator
+
+        // Build AST: Query(source=[X from operand], return=As(X, targetListType))
+        val aliasName = "X"
+        val aliasRef =
+            IdentifierExpression(
+                name = org.hl7.cql.ast.QualifiedIdentifier(listOf(aliasName)),
+                locator = loc,
+            )
+        val typeSpec =
+            org.hl7.cql.ast.ListTypeSpecifier(
+                elementType =
+                    org.hl7.cql.ast.NamedTypeSpecifier(
+                        name =
+                            org.hl7.cql.ast.QualifiedIdentifier(
+                                listOf(
+                                    targetListType.elementType.toString().removePrefix("System.")
+                                )
+                            )
+                    )
+            )
+        val castExpr =
+            org.hl7.cql.ast.AsExpression(
+                operand = aliasRef,
+                type = typeSpec,
+                implicit = true,
+                locator = loc,
+            )
+        return org.hl7.cql.ast.QueryExpression(
+            sources =
+                listOf(
+                    org.hl7.cql.ast.AliasedQuerySource(
+                        source = org.hl7.cql.ast.ExpressionQuerySource(expression = operand),
+                        alias = org.hl7.cql.ast.Identifier(aliasName),
+                        locator = loc,
+                    )
+                ),
+            lets = emptyList(),
+            inclusions = emptyList(),
+            result =
+                org.hl7.cql.ast.ReturnClause(
+                    all = true,
+                    distinct = false,
+                    expression = castExpr,
+                    locator = loc,
+                ),
+            locator = loc,
+        )
+    }
 
     override fun onExpandCollapse(
         expr: ExpandCollapseExpression,

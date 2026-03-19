@@ -329,14 +329,7 @@ class ConversionAnalyzer(
         // DateTime/Date/Time null arg wrapping
         val functionName = expr.function.value
         recordDateTimeNullArgConversions(functionName, expr)
-
-        // CalculateAgeInYears/Months: wrap arg in ToDate conversion
-        if (
-            (functionName == "CalculateAgeInYears" || functionName == "CalculateAgeInMonths") &&
-                expr.arguments.size == 1
-        ) {
-            recordIfNew(expr, Slot.Argument(0), Synthetic.OperatorConversion("ToDate"))
-        }
+        // CalculateAge ToDate wrapping is structural (lowering), not a type conversion.
     }
 
     /** Record NullAs synthetics for DateTime/Date/Time null arguments. */
@@ -480,41 +473,7 @@ class ConversionAnalyzer(
                 }
             recordIfNew(expr, Slot.Operand, Synthetic.ImplicitCast(targetType))
         }
-        // Heterogeneous flatten: when the operand is a list literal with mixed List<T> and T
-        // elements, wrap each non-list element in ImplicitCast(List<T>) so flatten treats them
-        // uniformly.
-        if (expr.listTransformKind == org.hl7.cql.ast.ListTransformKind.FLATTEN) {
-            recordHeterogeneousFlattenConversions(expr)
-        }
-    }
-
-    /**
-     * For flatten on a list literal with mixed List/non-List elements, record ListDemotion on the
-     * operand so the emitter wraps the entire list in Query(return=As(X, List<T>)).
-     */
-    private fun recordHeterogeneousFlattenConversions(expr: ListTransformExpression) {
-        val operand = expr.operand
-        if (operand !is LiteralExpression) return
-        val literal = operand.literal
-        if (literal !is org.hl7.cql.ast.ListLiteral) return
-
-        val elemTypes = literal.elements.mapNotNull { typeTable[it] }
-        if (elemTypes.isEmpty()) return
-
-        val hasListType = elemTypes.any { it is ListType }
-        val hasNonListType = elemTypes.any { it !is ListType }
-        if (!hasListType || !hasNonListType) return
-
-        // Find the target list type from the list-typed elements
-        val listTypes = elemTypes.filterIsInstance<ListType>()
-        val targetListType = listTypes.first()
-
-        // Wrap the entire list in a Query that casts each element to List<T>
-        recordIfNew(
-            expr,
-            Slot.Operand,
-            Synthetic.ListDemotion(targetListType, ListType(targetListType)),
-        )
+        // Heterogeneous flatten detection is structural (lowering), not a type conversion.
     }
 
     override fun onExpandCollapse(expr: ExpandCollapseExpression, operand: Unit, per: Unit?) {
