@@ -447,11 +447,22 @@ class ConversionAnalyzer(
         propagateIntervalPointType(expr.left, leftType, expr.right, rightType)
         propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
 
-        // Before/after phrase: record boundary selectors and point-interval promotion as
-        // synthetics. Order matters: boundary first, then promotion.
+        // Record boundary selectors and type-dependent synthetics per phrase type.
         val phrase = expr.phrase
-        if (phrase is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase) {
-            recordBeforeAfterSynthetics(expr, phrase, leftType, rightType)
+        when (phrase) {
+            is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
+                recordBeforeAfterSynthetics(expr, phrase, leftType, rightType)
+            is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
+                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
+                recordBoundary(expr, Slot.Right, phrase.rightBoundary)
+            }
+            is org.hl7.cql.ast.IncludesIntervalPhrase ->
+                recordBoundary(expr, Slot.Right, phrase.rightBoundary)
+            is org.hl7.cql.ast.IncludedInIntervalPhrase ->
+                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
+            is org.hl7.cql.ast.WithinIntervalPhrase ->
+                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
+            else -> {}
         }
     }
 

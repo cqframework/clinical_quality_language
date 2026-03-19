@@ -112,12 +112,13 @@ private fun EmissionContext.emitIncludesPhrase(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
+    // Right boundary applied via synthetics by ConversionAnalyzer.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    val right = applyBoundary(rightElm, phrase.rightBoundary)
     // Determine if the right operand is a point (not a list/interval)
     // Empty list literals ({}) are treated as element type by legacy operator resolution
     // when the left operand has a concrete (non-Any) element type.
     // When the left is Interval<Any>, the right (any type) is treated as element (Contains).
+    // TODO: move this operator selection decision to analysis (recorded as OperatorRewrite)
     val leftType = semanticModel[expression.left]
     val leftIsAnyInterval =
         leftType is IntervalType && leftType.pointType.toString() == "System.Any"
@@ -129,24 +130,24 @@ private fun EmissionContext.emitIncludesPhrase(
     return if (phrase.proper) {
         if (isPointRight) {
             ProperContains().apply {
-                operand = mutableListOf(leftElm, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         } else {
             ProperIncludes().apply {
-                operand = mutableListOf(leftElm, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         }
     } else {
         if (isPointRight) {
             Contains().apply {
-                operand = mutableListOf(leftElm, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         } else {
             Includes().apply {
-                operand = mutableListOf(leftElm, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         }
@@ -159,33 +160,33 @@ private fun EmissionContext.emitIncludedInPhrase(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
+    // Left boundary applied via synthetics by ConversionAnalyzer.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    val left = applyBoundary(leftElm, phrase.leftBoundary)
-    // Determine if the left operand is a point (not a list/interval)
+    // TODO: move this operator selection decision to analysis (recorded as OperatorRewrite)
     val isPointLeft =
         (phrase.leftBoundary != null && phrase.leftBoundary != IntervalBoundarySelector.OCCURS) ||
             isElementType(expression.left)
     return if (phrase.proper) {
         if (isPointLeft) {
             ProperIn().apply {
-                operand = mutableListOf(left, rightElm)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         } else {
             ProperIncludedIn().apply {
-                operand = mutableListOf(left, rightElm)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         }
     } else {
         if (isPointLeft) {
             In().apply {
-                operand = mutableListOf(left, rightElm)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         } else {
             IncludedIn().apply {
-                operand = mutableListOf(left, rightElm)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         }
@@ -334,15 +335,14 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
     }
 }
 
+/** Boundary selectors applied via synthetics by [ConversionAnalyzer]. */
 private fun emitConcurrentPhrase(
     phrase: ConcurrentIntervalPhrase,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    val left = applyBoundary(leftElm, phrase.leftBoundary)
-    val right = applyBoundary(rightElm, phrase.rightBoundary)
-    val ops = mutableListOf(left, right)
+    val ops = mutableListOf(leftElm, rightElm)
 
     return when (phrase.qualifier) {
         ConcurrentQualifier.AS ->
@@ -452,7 +452,7 @@ private fun EmissionContext.emitWithinPhrase(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    val left = applyBoundary(leftElm, phrase.leftBoundary)
+    // Left boundary applied via synthetics by ConversionAnalyzer.
     val rightType = semanticModel[expression.right]
     val rightIsInterval = rightType is IntervalType
 
@@ -501,7 +501,7 @@ private fun EmissionContext.emitWithinPhrase(
             highClosed = closed
         }
 
-    val inExpr = In().apply { operand = mutableListOf(left, interval) }
+    val inExpr = In().apply { operand = mutableListOf(leftElm, interval) }
 
     // When not proper and right is a point (not a full interval), add null check:
     // And(In(...), Not(IsNull(point))). Intervals with boundary selectors (start/end)
