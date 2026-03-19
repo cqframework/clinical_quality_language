@@ -88,6 +88,15 @@ interface ExpressionFold<R> {
 
     fun onBetween(expr: BetweenExpression, input: R, lower: R, upper: R): R
 
+    // --- Four children ---
+    fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: R,
+        high: R,
+        lowClosed: R,
+        highClosed: R,
+    ): R
+
     // --- Variable children ---
     fun onCase(expr: CaseExpression, comparand: R?, cases: List<CaseChildren<R>>, elseResult: R): R
 
@@ -146,6 +155,16 @@ interface ExpressionFold<R> {
                 onIf(expr, fold(expr.condition), fold(expr.thenBranch), fold(expr.elseBranch))
             is BetweenExpression ->
                 onBetween(expr, fold(expr.input), fold(expr.lower), fold(expr.upper))
+
+            // Four children
+            is IntervalExpression ->
+                onIntervalExpression(
+                    expr,
+                    fold(expr.low),
+                    fold(expr.high),
+                    fold(expr.lowClosedExpression),
+                    fold(expr.highClosedExpression),
+                )
 
             // Variable children
             is CaseExpression ->

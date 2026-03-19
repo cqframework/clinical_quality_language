@@ -31,6 +31,7 @@ import org.hl7.cql.ast.Identifier
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
@@ -1154,6 +1155,28 @@ class ConversionInserter(
         return if (input === expr.input && lower === expr.lower && upper === expr.upper) expr
         else expr.copy(input = input, lower = lower, upper = upper)
     }
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: Expression,
+        high: Expression,
+        lowClosed: Expression,
+        highClosed: Expression,
+    ): Expression =
+        if (
+            low === expr.low &&
+                high === expr.high &&
+                lowClosed === expr.lowClosedExpression &&
+                highClosed === expr.highClosedExpression
+        )
+            expr
+        else
+            expr.copy(
+                low = low,
+                high = high,
+                lowClosedExpression = lowClosed,
+                highClosedExpression = highClosed,
+            )
 
     override fun onIntervalRelation(
         expr: IntervalRelationExpression,

@@ -117,6 +117,7 @@ open class AstWalker {
             is ExternalConstantExpression -> visitExternalConstantExpression(expression)
             is DateTimeComponentExpression -> visitDateTimeComponentExpression(expression)
             is UnsupportedExpression -> visitUnsupportedExpression(expression)
+            is IntervalExpression -> visitIntervalExpression(expression)
         }
     }
 
@@ -420,4 +421,11 @@ open class AstWalker {
     open fun visitTemporalRelationshipPhrase(phrase: TemporalRelationshipPhrase) {}
 
     open fun visitUnsupportedExpression(expression: UnsupportedExpression) {}
+
+    open fun visitIntervalExpression(expression: IntervalExpression) {
+        visitExpression(expression.low)
+        visitExpression(expression.high)
+        visitExpression(expression.lowClosedExpression)
+        visitExpression(expression.highClosedExpression)
+    }
 }

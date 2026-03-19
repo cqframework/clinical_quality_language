@@ -32,6 +32,7 @@ import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.ListTransformExpression
@@ -364,16 +365,8 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     low = children.intervalLow?.let { applySynthetics(expr, Slot.IntervalLow, it) }
                     high =
                         children.intervalHigh?.let { applySynthetics(expr, Slot.IntervalHigh, it) }
-                    if (literal.lowerClosedExpression != null) {
-                        lowClosedExpression = emitExpression(literal.lowerClosedExpression!!)
-                    } else {
-                        lowClosed = literal.lowerClosed
-                    }
-                    if (literal.upperClosedExpression != null) {
-                        highClosedExpression = emitExpression(literal.upperClosedExpression!!)
-                    } else {
-                        highClosed = literal.upperClosed
-                    }
+                    lowClosed = literal.lowerClosed
+                    highClosed = literal.upperClosed
                 }
             }
             else -> emitLiteral(literal)
@@ -524,6 +517,21 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         lower: ElmExpression,
         upper: ElmExpression,
     ) = emitBetween(expr, input, lower, upper)
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: ElmExpression,
+        high: ElmExpression,
+        lowClosed: ElmExpression,
+        highClosed: ElmExpression,
+    ): ElmExpression {
+        return org.hl7.elm.r1.Interval().apply {
+            this.low = low
+            this.high = high
+            lowClosedExpression = lowClosed
+            highClosedExpression = highClosed
+        }
+    }
 
     override fun onIntervalRelation(
         expr: IntervalRelationExpression,

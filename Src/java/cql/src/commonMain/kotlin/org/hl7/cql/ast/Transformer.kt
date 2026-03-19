@@ -118,6 +118,7 @@ open class Transformer {
             is DateTimeComponentExpression -> visitDateTimeComponentExpression(expression)
             is ExternalConstantExpression -> visitExternalConstantExpression(expression)
             is UnsupportedExpression -> visitUnsupportedExpression(expression)
+            is IntervalExpression -> visitIntervalExpression(expression)
             is LiteralExpression -> visitLiteralExpression(expression)
             is OperatorBinaryExpression -> visitOperatorBinaryExpression(expression)
             is OperatorUnaryExpression -> visitOperatorUnaryExpression(expression)
@@ -274,6 +275,14 @@ open class Transformer {
         expression
 
     open fun visitUnsupportedExpression(expression: UnsupportedExpression): Expression = expression
+
+    open fun visitIntervalExpression(expression: IntervalExpression): Expression =
+        expression.copy(
+            low = visitExpression(expression.low),
+            high = visitExpression(expression.high),
+            lowClosedExpression = visitExpression(expression.lowClosedExpression),
+            highClosedExpression = visitExpression(expression.highClosedExpression),
+        )
 
     open fun visitLiteralExpression(expression: LiteralExpression): Expression =
         expression.copy(literal = visitLiteral(expression.literal))

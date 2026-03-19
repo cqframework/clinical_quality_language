@@ -83,12 +83,8 @@ data class InstanceLiteral(
 data class IntervalLiteral(
     val lower: Expression,
     val upper: Expression,
-    val lowerClosed: Boolean = true,
-    val upperClosed: Boolean = true,
-    /** Dynamic closed expression (overrides [lowerClosed] when present). */
-    val lowerClosedExpression: Expression? = null,
-    /** Dynamic closed expression (overrides [upperClosed] when present). */
-    val upperClosedExpression: Expression? = null,
+    val lowerClosed: Boolean,
+    val upperClosed: Boolean,
     override val locator: Locator = Locator.UNKNOWN,
 ) : Literal
 

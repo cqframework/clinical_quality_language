@@ -29,6 +29,7 @@ import org.hl7.cql.ast.Identifier
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
@@ -327,6 +328,28 @@ class ExpressionLowering(
     ) =
         if (input === expr.input && lower === expr.lower && upper === expr.upper) expr
         else expr.copy(input = input, lower = lower, upper = upper)
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: Expression,
+        high: Expression,
+        lowClosed: Expression,
+        highClosed: Expression,
+    ): Expression =
+        if (
+            low === expr.low &&
+                high === expr.high &&
+                lowClosed === expr.lowClosedExpression &&
+                highClosed === expr.highClosedExpression
+        )
+            expr
+        else
+            expr.copy(
+                low = low,
+                high = high,
+                lowClosedExpression = lowClosed,
+                highClosedExpression = highClosed,
+            )
 
     override fun onIntervalRelation(
         expr: IntervalRelationExpression,
@@ -721,18 +744,8 @@ class ExpressionLowering(
                         listOf(targetPointType.toString().removePrefix("System."))
                     )
             )
-        // Interval[As(T, low), As(T, high)] with lowClosed/highClosed from Property extraction
-        // expressed as a new IntervalLiteral where:
-        //   lower = As(Property("low", source=intervalExpr), targetType)
-        //   upper = As(Property("high", source=intervalExpr), targetType)
-        // The lowClosed/highClosed are dynamic (from the source interval), so we use
-        // PropertyAccessExpression for them too. But IntervalLiteral needs static closed flags.
-        // Instead, return an IntervalRelation-free construction that the emitter handles.
-        //
-        // Actually, we need to produce something the emitter can handle. The cleanest AST
-        // representation: keep the IntervalRelationExpression but rewrite the operand.
-        // The emitter's Interval<Any> expansion is the one that creates the Property+As pattern.
-        // For AST lowering, we can represent this as nested expressions:
+        // Produce IntervalExpression with Property-extracted bounds cast to the target type,
+        // and dynamic closed flags from Property access on the source interval.
         val lowProp =
             org.hl7.cql.ast.PropertyAccessExpression(
                 target = intervalExpr,
@@ -771,15 +784,11 @@ class ExpressionLowering(
                 property = org.hl7.cql.ast.Identifier("highClosed"),
                 locator = loc,
             )
-        return LiteralExpression(
-            literal =
-                org.hl7.cql.ast.IntervalLiteral(
-                    lower = lowAs,
-                    upper = highAs,
-                    lowerClosedExpression = lowClosedProp,
-                    upperClosedExpression = highClosedProp,
-                    locator = loc,
-                ),
+        return IntervalExpression(
+            low = lowAs,
+            high = highAs,
+            lowClosedExpression = lowClosedProp,
+            highClosedExpression = highClosedProp,
             locator = loc,
         )
     }

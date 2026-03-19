@@ -122,6 +122,22 @@ data class IfExpression(
     override val locator: Locator = Locator.UNKNOWN,
 ) : Expression
 
+/**
+ * A constructed interval with expression-valued bounds and closed flags. Unlike [IntervalLiteral]
+ * (which represents the CQL `Interval[x, y]` syntax with static closed/open brackets), this node is
+ * produced by the lowering phase for runtime interval construction (e.g., Interval<Any> expansion
+ * where closed flags come from Property access on the source interval).
+ */
+@Serializable
+@SerialName("intervalExpression")
+data class IntervalExpression(
+    val low: Expression,
+    val high: Expression,
+    val lowClosedExpression: Expression,
+    val highClosedExpression: Expression,
+    override val locator: Locator = Locator.UNKNOWN,
+) : Expression
+
 @Serializable
 data class CaseItem(
     val condition: Expression,

@@ -33,6 +33,7 @@ import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntLiteral
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
@@ -356,6 +357,14 @@ class TypeResolver(
         lower: DataType?,
         upper: DataType?,
     ): DataType? = inferBetweenType(expr)
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: DataType?,
+        high: DataType?,
+        lowClosed: DataType?,
+        highClosed: DataType?,
+    ): DataType? = low?.let { org.hl7.cql.model.IntervalType(it) }
 
     override fun onIntervalRelation(
         expr: IntervalRelationExpression,

@@ -22,6 +22,7 @@ import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
@@ -255,6 +256,14 @@ private class ExpressionChecker(
     override fun onTypeExtent(expr: TypeExtentExpression) {} // leaf
 
     override fun onBetween(expr: BetweenExpression, input: Unit, lower: Unit, upper: Unit) {}
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: Unit,
+        high: Unit,
+        lowClosed: Unit,
+        highClosed: Unit,
+    ) {}
 
     override fun onIntervalRelation(expr: IntervalRelationExpression, left: Unit, right: Unit) {}
 

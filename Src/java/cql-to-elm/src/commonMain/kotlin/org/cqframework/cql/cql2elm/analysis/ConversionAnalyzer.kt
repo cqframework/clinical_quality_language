@@ -30,6 +30,7 @@ import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
+import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
 import org.hl7.cql.ast.IsExpression
 import org.hl7.cql.ast.Library
@@ -608,4 +609,12 @@ class ConversionAnalyzer(
     override fun onRetrieve(expr: RetrieveExpression) {}
 
     override fun onUnsupported(expr: UnsupportedExpression) {}
+
+    override fun onIntervalExpression(
+        expr: IntervalExpression,
+        low: Unit,
+        high: Unit,
+        lowClosed: Unit,
+        highClosed: Unit,
+    ) {}
 }
