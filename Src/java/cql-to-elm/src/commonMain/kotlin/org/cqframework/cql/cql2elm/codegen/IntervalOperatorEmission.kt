@@ -192,59 +192,183 @@ private fun EmissionContext.emitIncludedInPhrase(
     }
 }
 
+@Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")
 private fun EmissionContext.emitBeforeOrAfterPhrase(
     phrase: BeforeOrAfterIntervalPhrase,
     expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    if (phrase.offset != null) {
-        throw ElmEmitter.UnsupportedNodeException(
-            "Quantity offsets on before/after (e.g., '3 days before') are not yet supported."
-        )
-    }
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    var left = applyBoundary(leftElm, phrase.leftBoundary)
-    var right = applyBoundary(rightElm, phrase.rightBoundary)
+    val isBefore = phrase.relationship.direction == TemporalRelationshipDirection.BEFORE
+    val isInclusive = phrase.relationship.inclusive
 
-    // Point-interval promotion: when one operand is a point and the other is an interval,
-    // wrap the point in If(IsNull(point), Null, Interval[point, point])
-    val leftType = semanticModel[expression.left]
-    val rightType = semanticModel[expression.right]
-    if (leftType != null && leftType !is IntervalType && rightType is IntervalType) {
-        left = promotePointToInterval(left)
-    } else if (rightType != null && rightType !is IntervalType && leftType is IntervalType) {
-        right = promotePointToInterval(right)
-    }
-
-    val ops = mutableListOf(left, right)
-
-    val inclusive = phrase.relationship.inclusive
-    return when (phrase.relationship.direction) {
-        TemporalRelationshipDirection.BEFORE ->
-            if (inclusive) {
+    if (phrase.offset == null) {
+        // No quantity offset — simple before/after comparison
+        var left = applyBoundary(leftElm, phrase.leftBoundary)
+        var right = applyBoundary(rightElm, phrase.rightBoundary)
+        val leftType = semanticModel[expression.left]
+        val rightType = semanticModel[expression.right]
+        // After boundary application, a START/END selector extracts a point from an interval.
+        // Check effective types: if one side is a point (or was extracted to a point) and the
+        // other is an interval, promote the point to a degenerate interval.
+        val leftIsPoint =
+            leftType != null &&
+                (leftType !is IntervalType ||
+                    phrase.leftBoundary == IntervalBoundarySelector.START ||
+                    phrase.leftBoundary == IntervalBoundarySelector.END)
+        val rightIsPoint =
+            rightType != null &&
+                (rightType !is IntervalType ||
+                    phrase.rightBoundary == IntervalBoundarySelector.START ||
+                    phrase.rightBoundary == IntervalBoundarySelector.END)
+        val leftIsInterval = leftType is IntervalType && !leftIsPoint
+        val rightIsInterval = rightType is IntervalType && !rightIsPoint
+        if (leftIsPoint && rightIsInterval) {
+            left = promotePointToInterval(left)
+        } else if (rightIsPoint && leftIsInterval) {
+            right = promotePointToInterval(right)
+        }
+        val ops = mutableListOf(left, right)
+        return if (isInclusive) {
+            if (isBefore)
                 SameOrBefore().apply {
                     operand = ops
                     precision?.let { this.precision = it }
                 }
-            } else {
-                Before().apply {
-                    operand = ops
-                    precision?.let { this.precision = it }
-                }
-            }
-        TemporalRelationshipDirection.AFTER ->
-            if (inclusive) {
+            else
                 SameOrAfter().apply {
                     operand = ops
                     precision?.let { this.precision = it }
                 }
-            } else {
+        } else {
+            if (isBefore)
+                Before().apply {
+                    operand = ops
+                    precision?.let { this.precision = it }
+                }
+            else
                 After().apply {
                     operand = ops
                     precision?.let { this.precision = it }
                 }
+        }
+    }
+
+    // Quantity offset: e.g., "3 days before", "3 days or more before", "less than 3 days after"
+    // Apply boundary selectors first, then apply direction-based Start/End extraction for
+    // operands that are still intervals after boundary application.
+    val offset = phrase.offset!!
+    val qty = emitLiteral(offset.quantity)
+    var left = applyBoundary(leftElm, phrase.leftBoundary)
+    var right = applyBoundary(rightElm, phrase.rightBoundary)
+
+    val leftType = semanticModel[expression.left]
+    val rightType = semanticModel[expression.right]
+    val leftStillInterval =
+        leftType is IntervalType &&
+            phrase.leftBoundary != IntervalBoundarySelector.START &&
+            phrase.leftBoundary != IntervalBoundarySelector.END
+    val rightStillInterval =
+        rightType is IntervalType &&
+            phrase.rightBoundary != IntervalBoundarySelector.START &&
+            phrase.rightBoundary != IntervalBoundarySelector.END
+    if (leftStillInterval) {
+        left = if (isBefore) End().apply { operand = left } else Start().apply { operand = left }
+    }
+    if (rightStillInterval) {
+        right = if (isBefore) Start().apply { operand = right } else End().apply { operand = right }
+    }
+
+    val isOrMore = offset.offsetQualifier == org.hl7.cql.ast.OffsetRelativeQualifier.OR_MORE
+    val isMoreThan =
+        offset.exclusiveQualifier == org.hl7.cql.ast.ExclusiveRelativeQualifier.MORE_THAN
+    val isOrLess = offset.offsetQualifier == org.hl7.cql.ast.OffsetRelativeQualifier.OR_LESS
+    val isLessThan =
+        offset.exclusiveQualifier == org.hl7.cql.ast.ExclusiveRelativeQualifier.LESS_THAN
+
+    if (isOrMore || isMoreThan) {
+        // "or more" / "more than": Before/SameOrBefore(left, Subtract/Add(right, qty))
+        val isOffsetInclusive = isOrMore
+        val adjusted =
+            if (isBefore) org.hl7.elm.r1.Subtract().apply { operand = mutableListOf(right, qty) }
+            else org.hl7.elm.r1.Add().apply { operand = mutableListOf(right, qty) }
+        val ops = mutableListOf(left, adjusted as ElmExpression)
+        return if (isOffsetInclusive) {
+            if (isBefore)
+                SameOrBefore().apply {
+                    operand = ops
+                    precision?.let { this.precision = it }
+                }
+            else
+                SameOrAfter().apply {
+                    operand = ops
+                    precision?.let { this.precision = it }
+                }
+        } else {
+            if (isBefore)
+                Before().apply {
+                    operand = ops
+                    precision?.let { this.precision = it }
+                }
+            else
+                After().apply {
+                    operand = ops
+                    precision?.let { this.precision = it }
+                }
+        }
+    }
+
+    if (isOrLess || isLessThan) {
+        // "or less" / "less than": In(left, Interval(Subtract/Add(right, qty), right))
+        val isOffsetInclusive = isOrLess
+        val lower: ElmExpression
+        val upper: ElmExpression
+        if (isBefore) {
+            lower = org.hl7.elm.r1.Subtract().apply { operand = mutableListOf(right, qty) }
+            upper = right
+        } else {
+            lower = right
+            upper =
+                org.hl7.elm.r1.Add().apply {
+                    operand = mutableListOf(right, emitLiteral(offset.quantity))
+                }
+        }
+        val interval =
+            org.hl7.elm.r1.Interval().apply {
+                low = lower
+                high = upper
+                lowClosed = if (isBefore) isOffsetInclusive else isInclusive
+                highClosed = if (isBefore) isInclusive else isOffsetInclusive
             }
+        val inExpr =
+            In().apply {
+                operand = mutableListOf(left, interval)
+                precision?.let { this.precision = it }
+            }
+        // Add null check when offset or comparison is inclusive
+        return if (isOffsetInclusive || isInclusive) {
+            org.hl7.elm.r1.And().apply {
+                operand =
+                    mutableListOf(
+                        inExpr,
+                        org.hl7.elm.r1.Not().apply {
+                            operand = org.hl7.elm.r1.IsNull().apply { this.operand = right }
+                        },
+                    )
+            }
+        } else {
+            inExpr
+        }
+    }
+
+    // Exact offset (no qualifier): SameAs(left, Subtract/Add(right, qty))
+    val adjusted =
+        if (isBefore) org.hl7.elm.r1.Subtract().apply { operand = mutableListOf(right, qty) }
+        else org.hl7.elm.r1.Add().apply { operand = mutableListOf(right, qty) }
+    return SameAs().apply {
+        operand = mutableListOf(left, adjusted as ElmExpression)
+        precision?.let { this.precision = it }
     }
 }
 
@@ -370,13 +494,31 @@ private fun EmissionContext.emitWithinPhrase(
     val rightType = semanticModel[expression.right]
     val rightIsInterval = rightType is IntervalType
 
-    // Right operand: extract start/end if interval, or use as-is for points
-    val rightStart =
-        if (rightIsInterval) applyBoundary(rightElm, IntervalBoundarySelector.START)
-        else applyBoundary(rightElm, phrase.rightBoundary)
-    val rightEnd =
-        if (rightIsInterval) applyBoundary(rightElm, IntervalBoundarySelector.END)
-        else applyBoundary(rightElm, phrase.rightBoundary)
+    // Right operand: if interval with a boundary selector, use that selector for both
+    // start/end (e.g., "within 3 days of start B" uses Start(B) for both bounds).
+    // If interval without boundary, use Start(B) for lower and End(B) for upper.
+    // If point, use the point directly for both.
+    val rightBoundary = phrase.rightBoundary
+    val rightStart: ElmExpression
+    val rightEnd: ElmExpression
+    if (rightIsInterval) {
+        if (
+            rightBoundary == IntervalBoundarySelector.START ||
+                rightBoundary == IntervalBoundarySelector.END
+        ) {
+            // Boundary selector already extracts a specific bound — use for both
+            val point = applyBoundary(rightElm, rightBoundary)
+            rightStart = point
+            rightEnd = point
+        } else {
+            rightStart = Start().apply { operand = rightElm }
+            rightEnd = End().apply { operand = rightElm }
+        }
+    } else {
+        val point = applyBoundary(rightElm, rightBoundary)
+        rightStart = point
+        rightEnd = point
+    }
 
     // Emit the quantity
     val qty = emitLiteral(phrase.quantity)
@@ -399,17 +541,18 @@ private fun EmissionContext.emitWithinPhrase(
 
     val inExpr = In().apply { operand = mutableListOf(left, interval) }
 
-    // When not proper and right is a point, add null check: And(In(...), Not(IsNull(point)))
-    return if (!phrase.proper && !rightIsInterval) {
+    // When not proper and right is a point (not a full interval), add null check:
+    // And(In(...), Not(IsNull(point))). Intervals with boundary selectors (start/end)
+    // are treated as points. Full intervals don't need the null check.
+    val rightEffectivelyPoint = !rightIsInterval || rightBoundary != null
+    return if (!phrase.proper && rightEffectivelyPoint) {
+        val nullCheckTarget = applyBoundary(rightElm, rightBoundary)
         org.hl7.elm.r1.And().apply {
             operand =
                 mutableListOf(
                     inExpr,
                     org.hl7.elm.r1.Not().apply {
-                        operand =
-                            org.hl7.elm.r1.IsNull().apply {
-                                this.operand = applyBoundary(rightElm, phrase.rightBoundary)
-                            }
+                        operand = org.hl7.elm.r1.IsNull().apply { this.operand = nullCheckTarget }
                     },
                 )
         }
