@@ -339,6 +339,14 @@ class ConversionAnalyzer(
         // DateTime/Date/Time null arg wrapping
         val functionName = expr.function.value
         recordDateTimeNullArgConversions(functionName, expr)
+
+        // CalculateAgeInYears/Months: wrap arg in ToDate conversion
+        if (
+            (functionName == "CalculateAgeInYears" || functionName == "CalculateAgeInMonths") &&
+                expr.arguments.size == 1
+        ) {
+            recordIfNew(expr, Slot.Argument(0), Synthetic.OperatorConversion("ToDate"))
+        }
     }
 
     /** Record NullAs synthetics for DateTime/Date/Time null arguments. */
@@ -438,6 +446,11 @@ class ConversionAnalyzer(
         // the interval literal's bounds so the convergence loop picks them up.
         propagateIntervalPointType(expr.left, leftType, expr.right, rightType)
         propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
+
+        // Point-interval promotion for before/after phrases is handled at emission time
+        // (emitBeforeOrAfterPhrase) because it must happen AFTER boundary application.
+        // The Synthetic.PointToInterval type exists for future use when boundary application
+        // is also moved to synthetics.
     }
 
     /**

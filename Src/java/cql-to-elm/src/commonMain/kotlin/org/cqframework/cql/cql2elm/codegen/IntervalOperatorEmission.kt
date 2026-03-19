@@ -204,14 +204,14 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
     val isInclusive = phrase.relationship.inclusive
 
     if (phrase.offset == null) {
-        // No quantity offset — simple before/after comparison
+        // No quantity offset — simple before/after comparison.
+        // Point-interval promotion must happen AFTER boundary application (applyBoundary
+        // extracts a point from an interval via Start()/End(), then the point may need
+        // promotion). This ordering dependency prevents using Synthetic.PointToInterval here.
         var left = applyBoundary(leftElm, phrase.leftBoundary)
         var right = applyBoundary(rightElm, phrase.rightBoundary)
         val leftType = semanticModel[expression.left]
         val rightType = semanticModel[expression.right]
-        // After boundary application, a START/END selector extracts a point from an interval.
-        // Check effective types: if one side is a point (or was extracted to a point) and the
-        // other is an interval, promote the point to a degenerate interval.
         val leftIsPoint =
             leftType != null &&
                 (leftType !is IntervalType ||
@@ -225,9 +225,9 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
         val leftIsInterval = leftType is IntervalType && !leftIsPoint
         val rightIsInterval = rightType is IntervalType && !rightIsPoint
         if (leftIsPoint && rightIsInterval) {
-            left = promotePointToInterval(left)
+            left = emitPointToInterval(left)
         } else if (rightIsPoint && leftIsInterval) {
-            right = promotePointToInterval(right)
+            right = emitPointToInterval(right)
         }
         val ops = mutableListOf(left, right)
         return if (isInclusive) {

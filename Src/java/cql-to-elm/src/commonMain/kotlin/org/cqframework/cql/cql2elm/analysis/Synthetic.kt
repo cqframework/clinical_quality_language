@@ -38,6 +38,12 @@ sealed interface Synthetic {
      * operator (e.g., Add → Concatenate when operand types resolve to String).
      */
     data class OperatorRewrite(val targetOperator: String) : Synthetic
+
+    /**
+     * Promote a point to a degenerate interval: `If(IsNull(p), Null, Interval[p, p])`. Used when a
+     * before/after/within phrase has a point operand against an interval operand.
+     */
+    data object PointToInterval : Synthetic
 }
 
 /**
@@ -144,6 +150,7 @@ class SyntheticTable {
                         IntervalType(resolution?.operator?.resultType ?: return null)
                     }
                     is Synthetic.OperatorRewrite -> currentType // no type change
+                    is Synthetic.PointToInterval -> IntervalType(currentType!!)
                 }
         }
         return currentType

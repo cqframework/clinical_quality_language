@@ -5,8 +5,6 @@ package org.cqframework.cql.cql2elm.codegen
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
-import org.hl7.cql.model.ChoiceType
-import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.AllTrue
 import org.hl7.elm.r1.AnyTrue
 import org.hl7.elm.r1.Avg
@@ -74,104 +72,6 @@ internal fun EmissionContext.emitIfExpression(
         then = thenElm
         `else` = elseElm
     }
-}
-
-/** Check if an AST expression is a null literal. */
-private fun isNullBranch(expr: org.hl7.cql.ast.Expression): Boolean =
-    expr is org.hl7.cql.ast.LiteralExpression && expr.literal is org.hl7.cql.ast.NullLiteral
-
-/** Apply an implicit type promotion (Integer→Decimal etc.) to an ELM branch expression. */
-private fun EmissionContext.applyIfImplicitConversion(
-    expression: ElmExpression,
-    fromType: org.hl7.cql.model.DataType,
-    toType: org.hl7.cql.model.DataType,
-): ElmExpression {
-    val convName =
-        when {
-            fromType.toString() == "System.Integer" && toType.toString() == "System.Long" ->
-                "ToLong"
-            fromType.toString() == "System.Integer" && toType.toString() == "System.Decimal" ->
-                "ToDecimal"
-            fromType.toString() == "System.Long" && toType.toString() == "System.Decimal" ->
-                "ToDecimal"
-            fromType.toString() == "System.Code" && toType.toString() == "System.Concept" ->
-                "ToConcept"
-            else -> null
-        }
-    return if (convName != null) wrapConversion(expression, convName) else expression
-}
-
-/**
- * Wrap a null ELM expression in an As node for the given target type, matching legacy behavior for
- * if/else null branches.
- */
-private fun EmissionContext.wrapIfBranchNullAs(
-    expression: ElmExpression,
-    targetType: org.hl7.cql.model.DataType,
-): ElmExpression {
-    return org.hl7.elm.r1.As().apply {
-        operand = expression
-        if (
-            targetType is org.hl7.cql.model.SimpleType || targetType is org.hl7.cql.model.ClassType
-        ) {
-            asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
-        } else {
-            asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
-        }
-    }
-}
-
-/**
- * Check if two branch expressions need choice type wrapping. Returns a [ChoiceType] if the branch
- * types are known, different, and neither is a subtype of the other.
- */
-private fun EmissionContext.computeChoiceType(
-    vararg branches: org.hl7.cql.ast.Expression
-): ChoiceType? {
-    val anyType = operatorRegistry.type("Any")
-    val types = branches.mapNotNull { semanticModel[it] }.filter { it != anyType }
-    if (types.size < 2) return null
-    val distinct = types.distinct()
-    if (distinct.size < 2) return null
-    // Check if any pair is already sub/super type compatible
-    if (distinct.all { t -> distinct.any { other -> other != t && other.isSuperTypeOf(t) } }) {
-        return null
-    }
-    // Check if there exists a numeric promotion between types (e.g., Integer→Decimal)
-    if (
-        distinct.any { candidate ->
-            distinct.all { t -> t == candidate || isNumericPromotion(t, candidate) }
-        }
-    ) {
-        return null
-    }
-    // Check if there exists a common non-Any supertype
-    val common = distinct.reduce { acc, type -> acc.getCommonSuperTypeOf(type) }
-    if (common != anyType && common != DataType.ANY) return null
-    return ChoiceType(distinct)
-}
-
-/** Wrap an emitted ELM expression in an As(ChoiceTypeSpecifier). */
-private fun EmissionContext.wrapInAs(
-    expression: ElmExpression,
-    choiceType: ChoiceType,
-): ElmExpression {
-    return org.hl7.elm.r1.As().apply {
-        operand = expression
-        asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(choiceType)
-    }
-}
-
-/**
- * Check if [from] can be promoted to [to] via a numeric widening conversion (Integer→Long,
- * Integer→Decimal, Long→Decimal). This is distinct from arbitrary implicit conversions.
- */
-private fun isNumericPromotion(from: DataType, to: DataType): Boolean {
-    val fromName = from.toString()
-    val toName = to.toString()
-    return (fromName == "System.Integer" && toName == "System.Long") ||
-        (fromName == "System.Integer" && toName == "System.Decimal") ||
-        (fromName == "System.Long" && toName == "System.Decimal")
 }
 
 /** Emit an index expression (e.g., 'John'[1]) as an ELM Indexer node. Children are pre-folded. */

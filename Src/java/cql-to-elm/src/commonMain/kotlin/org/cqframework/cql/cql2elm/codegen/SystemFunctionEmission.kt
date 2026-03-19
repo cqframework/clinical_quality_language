@@ -199,22 +199,17 @@ private fun emitTail(args: List<ElmExpression>): ElmExpression {
 }
 
 /**
- * Emit `CalculateAgeInYears(birthDate)` etc. as `CalculateAge(operand, precision)`. For Year/Month
- * precision, the legacy translator wraps the operand in `ToDate()`.
+ * Emit `CalculateAgeInYears(birthDate)` etc. as `CalculateAge(operand, precision)`. ToDate wrapping
+ * for Year/Month precision is handled by the ConversionAnalyzer (OperatorConversion synthetic on
+ * the argument slot), applied by EmissionContext.applySynthetics before we get here.
  */
 private fun emitCalculateAge(
     args: List<ElmExpression>,
     precision: DateTimePrecision,
 ): ElmExpression {
     require(args.size == 1) { "Expected 1 argument for CalculateAge" }
-    val operand =
-        if (precision == DateTimePrecision.YEAR || precision == DateTimePrecision.MONTH) {
-            org.hl7.elm.r1.ToDate().apply { this.operand = args[0] }
-        } else {
-            args[0]
-        }
     return CalculateAge().apply {
-        this.operand = operand
+        operand = args[0]
         this.precision = precision
     }
 }

@@ -126,6 +126,7 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     is Synthetic.IntervalConversion ->
                         emitIntervalConversion(result, s.innerOperatorName)
                     is Synthetic.OperatorRewrite -> result // handled at Slot.Self level
+                    is Synthetic.PointToInterval -> emitPointToInterval(result)
                 }
         }
         return result
@@ -233,6 +234,21 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
             }
         }
         return expression
+    }
+
+    /** Promote a point to degenerate interval: If(IsNull(p), Null, Interval[p, p]). */
+    internal fun emitPointToInterval(point: ElmExpression): ElmExpression {
+        return org.hl7.elm.r1.If().apply {
+            condition = org.hl7.elm.r1.IsNull().apply { operand = point }
+            then = org.hl7.elm.r1.Null()
+            `else` =
+                org.hl7.elm.r1.Interval().apply {
+                    low = point
+                    high = point
+                    lowClosed = true
+                    highClosed = true
+                }
+        }
     }
 
     /**
