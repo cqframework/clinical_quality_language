@@ -44,6 +44,9 @@ sealed interface Synthetic {
      * before/after/within phrase has a point operand against an interval operand.
      */
     data object PointToInterval : Synthetic
+
+    /** Extract interval bound: wraps in `Start()` (true) or `End()` (false). */
+    data class IntervalBound(val start: Boolean) : Synthetic
 }
 
 /**
@@ -151,6 +154,8 @@ class SyntheticTable {
                     }
                     is Synthetic.OperatorRewrite -> currentType // no type change
                     is Synthetic.PointToInterval -> IntervalType(currentType!!)
+                    is Synthetic.IntervalBound ->
+                        (currentType as? IntervalType)?.pointType ?: currentType
                 }
         }
         return currentType

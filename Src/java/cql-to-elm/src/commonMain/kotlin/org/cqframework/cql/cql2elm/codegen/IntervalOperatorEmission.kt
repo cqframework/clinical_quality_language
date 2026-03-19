@@ -192,6 +192,11 @@ private fun EmissionContext.emitIncludedInPhrase(
     }
 }
 
+/**
+ * Emit a before/after phrase. Boundary selectors, direction-based interval extraction, and
+ * point-interval promotion are all applied as synthetics by [ConversionAnalyzer] — the operands
+ * arrive fully processed. This handler is purely structural.
+ */
 @Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")
 private fun EmissionContext.emitBeforeOrAfterPhrase(
     phrase: BeforeOrAfterIntervalPhrase,
@@ -204,32 +209,8 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
     val isInclusive = phrase.relationship.inclusive
 
     if (phrase.offset == null) {
-        // No quantity offset — simple before/after comparison.
-        // Point-interval promotion must happen AFTER boundary application (applyBoundary
-        // extracts a point from an interval via Start()/End(), then the point may need
-        // promotion). This ordering dependency prevents using Synthetic.PointToInterval here.
-        var left = applyBoundary(leftElm, phrase.leftBoundary)
-        var right = applyBoundary(rightElm, phrase.rightBoundary)
-        val leftType = semanticModel[expression.left]
-        val rightType = semanticModel[expression.right]
-        val leftIsPoint =
-            leftType != null &&
-                (leftType !is IntervalType ||
-                    phrase.leftBoundary == IntervalBoundarySelector.START ||
-                    phrase.leftBoundary == IntervalBoundarySelector.END)
-        val rightIsPoint =
-            rightType != null &&
-                (rightType !is IntervalType ||
-                    phrase.rightBoundary == IntervalBoundarySelector.START ||
-                    phrase.rightBoundary == IntervalBoundarySelector.END)
-        val leftIsInterval = leftType is IntervalType && !leftIsPoint
-        val rightIsInterval = rightType is IntervalType && !rightIsPoint
-        if (leftIsPoint && rightIsInterval) {
-            left = emitPointToInterval(left)
-        } else if (rightIsPoint && leftIsInterval) {
-            right = emitPointToInterval(right)
-        }
-        val ops = mutableListOf(left, right)
+        // No quantity offset — operands have boundary + promotion synthetics already applied
+        val ops = mutableListOf(leftElm, rightElm)
         return if (isInclusive) {
             if (isBefore)
                 SameOrBefore().apply {
@@ -255,30 +236,11 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
         }
     }
 
-    // Quantity offset: e.g., "3 days before", "3 days or more before", "less than 3 days after"
-    // Apply boundary selectors first, then apply direction-based Start/End extraction for
-    // operands that are still intervals after boundary application.
+    // Quantity offset — operands have boundary + direction extraction synthetics already applied
     val offset = phrase.offset!!
     val qty = emitLiteral(offset.quantity)
-    var left = applyBoundary(leftElm, phrase.leftBoundary)
-    var right = applyBoundary(rightElm, phrase.rightBoundary)
-
-    val leftType = semanticModel[expression.left]
-    val rightType = semanticModel[expression.right]
-    val leftStillInterval =
-        leftType is IntervalType &&
-            phrase.leftBoundary != IntervalBoundarySelector.START &&
-            phrase.leftBoundary != IntervalBoundarySelector.END
-    val rightStillInterval =
-        rightType is IntervalType &&
-            phrase.rightBoundary != IntervalBoundarySelector.START &&
-            phrase.rightBoundary != IntervalBoundarySelector.END
-    if (leftStillInterval) {
-        left = if (isBefore) End().apply { operand = left } else Start().apply { operand = left }
-    }
-    if (rightStillInterval) {
-        right = if (isBefore) Start().apply { operand = right } else End().apply { operand = right }
-    }
+    val left = leftElm
+    val right = rightElm
 
     val isOrMore = offset.offsetQualifier == org.hl7.cql.ast.OffsetRelativeQualifier.OR_MORE
     val isMoreThan =

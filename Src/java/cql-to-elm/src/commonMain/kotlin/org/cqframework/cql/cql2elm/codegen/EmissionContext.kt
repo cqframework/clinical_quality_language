@@ -127,6 +127,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                         emitIntervalConversion(result, s.innerOperatorName)
                     is Synthetic.OperatorRewrite -> result // handled at Slot.Self level
                     is Synthetic.PointToInterval -> emitPointToInterval(result)
+                    is Synthetic.IntervalBound ->
+                        if (s.start) org.hl7.elm.r1.Start().apply { operand = result }
+                        else org.hl7.elm.r1.End().apply { operand = result }
                 }
         }
         return result
