@@ -152,40 +152,17 @@ internal fun EmissionContext.emitMembership(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    var left = leftElm
-    var right = rightElm
-
-    val leftType = semanticModel[expression.left]
-    val rightType = semanticModel[expression.right]
-
-    // Interval<Any> expansion for non-literal intervals that ConversionInserter couldn't
-    // constant-fold. Literal intervals are handled by CI.buildIntervalConversion.
-    if (
-        expression.operator == MembershipOperator.IN &&
-            rightType is org.hl7.cql.model.IntervalType &&
-            rightType.pointType.toString() == "System.Any" &&
-            leftType != null
-    ) {
-        right = expandIntervalToPointType(right, leftType)
-    } else if (
-        expression.operator == MembershipOperator.CONTAINS &&
-            leftType is org.hl7.cql.model.IntervalType &&
-            leftType.pointType.toString() == "System.Any" &&
-            rightType != null
-    ) {
-        left = expandIntervalToPointType(left, rightType)
-    }
-
+    // Interval<Any> expansion is handled by ExpressionLowering. Operands arrive processed.
     val precision = expression.precision?.let { precisionStringToEnum(it) }
     return when (expression.operator) {
         MembershipOperator.IN ->
             In().apply {
-                operand = mutableListOf(left, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
         MembershipOperator.CONTAINS ->
             Contains().apply {
-                operand = mutableListOf(left, right)
+                operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
             }
     }

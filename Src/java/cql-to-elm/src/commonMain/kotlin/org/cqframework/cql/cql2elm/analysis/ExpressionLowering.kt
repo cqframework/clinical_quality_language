@@ -241,9 +241,36 @@ class ExpressionLowering(
     override fun onExists(expr: ExistsExpression, operand: Expression) =
         if (operand === expr.operand) expr else expr.copy(operand = operand)
 
-    override fun onMembership(expr: MembershipExpression, left: Expression, right: Expression) =
-        if (left === expr.left && right === expr.right) expr
-        else expr.copy(left = left, right = right)
+    override fun onMembership(
+        expr: MembershipExpression,
+        left: Expression,
+        right: Expression,
+    ): Expression {
+        var l = left
+        var r = right
+        val leftType = semanticModel[expr.left]
+        val rightType = semanticModel[expr.right]
+        // Interval<Any> expansion for membership operators
+        if (
+            expr.operator == org.hl7.cql.ast.MembershipOperator.IN &&
+                rightType is IntervalType &&
+                rightType.pointType.toString() == "System.Any" &&
+                leftType != null &&
+                leftType.toString() != "System.Any"
+        ) {
+            r = expandIntervalToType(right, leftType)
+        } else if (
+            expr.operator == org.hl7.cql.ast.MembershipOperator.CONTAINS &&
+                leftType is IntervalType &&
+                leftType.pointType.toString() == "System.Any" &&
+                rightType != null &&
+                rightType.toString() != "System.Any"
+        ) {
+            l = expandIntervalToType(left, rightType)
+        }
+        return if (l === expr.left && r === expr.right) expr
+        else rewrite(expr, expr.copy(left = l, right = r))
+    }
 
     override fun onListTransform(expr: ListTransformExpression, operand: Expression) =
         if (operand === expr.operand) expr else expr.copy(operand = operand)
