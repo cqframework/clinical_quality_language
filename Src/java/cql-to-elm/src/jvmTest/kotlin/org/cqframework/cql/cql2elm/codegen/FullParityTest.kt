@@ -174,17 +174,8 @@ class FullParityTest {
          */
         private val KNOWN_SKIPS =
             mapOf(
-                // shouldNotBeAllowed: legacy replaces Includes on non-list type with Null
-                "MultiSourceQuery" to
-                    "Error recovery: legacy replaces type-invalid Includes with Null",
-                // Null type-casting: legacy wraps null operands in As(ListTypeSpecifier)
-                // for list operations and wraps lists in As for union choice types;
-                // also wraps heterogeneous Flatten in implicit Query
-                // "ListOperators" — testing
-                // TestAliasSort: alias sort now handled (replaced with Null)
-                // Error recovery: legacy replaces all invalid sort clauses with Null
-                "InvalidSortClauses" to
-                    "Error recovery: legacy replaces invalid sort expressions with Null",
+                // MultiSourceQuery: PASSING — validator flags invalid Includes → emitter emits Null
+                // InvalidSortClauses: PASSING — validator flags invalid sort → emitter emits Null
                 // AggregateOperators: PASSING (M19)
                 // TypeOperators: PASSING (M19)
                 // Aggregate: OUR TYPE INFERENCE IS MORE CORRECT than legacy (PR #1710).

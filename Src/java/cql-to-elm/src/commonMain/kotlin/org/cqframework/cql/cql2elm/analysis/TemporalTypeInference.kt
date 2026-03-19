@@ -123,5 +123,19 @@ internal fun TypeResolver.inferIntervalRelationType(
     expression: IntervalRelationExpression
 ): DataType? {
     // left, right pre-folded by catamorphism
+    // Basic validation: includes/includedIn require at least one list/interval operand
+    val phrase = expression.phrase
+    if (
+        phrase is org.hl7.cql.ast.IncludesIntervalPhrase ||
+            phrase is org.hl7.cql.ast.IncludedInIntervalPhrase
+    ) {
+        val leftType = typeTable[expression.left]
+        val rightType = typeTable[expression.right]
+        val leftIsCollection =
+            leftType is org.hl7.cql.model.ListType || leftType is org.hl7.cql.model.IntervalType
+        val rightIsCollection =
+            rightType is org.hl7.cql.model.ListType || rightType is org.hl7.cql.model.IntervalType
+        if (!leftIsCollection && !rightIsCollection) return null
+    }
     return type("Boolean")
 }

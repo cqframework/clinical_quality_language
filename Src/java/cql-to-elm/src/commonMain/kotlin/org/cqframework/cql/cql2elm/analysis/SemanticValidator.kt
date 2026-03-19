@@ -130,7 +130,33 @@ private class ExpressionChecker(
             it.starting?.let { s -> fold(s) }
             fold(it.expression)
         }
-        // Skip sort items — they use ByColumn/ByDirection emission, not identifier resolution
+        // Flag query as error if sort involves non-comparable types.
+        // Legacy replaces the entire query with Null for invalid sorts.
+        if (expr.sort != null) {
+            val queryType = model[expr]
+            // Direction-only sort on non-comparable source element type (e.g., List<Interval>)
+            if (queryType is ListType && queryType.elementType is org.hl7.cql.model.IntervalType) {
+                model.addError(expr)
+            }
+            // Sort-by expression: check if it resolves to Interval (not comparable)
+            // or if it's an unresolved column that points to an Interval property
+            expr.sort?.items?.forEach { sortItem ->
+                val sortType = model[sortItem.expression]
+                if (sortType is org.hl7.cql.model.IntervalType) {
+                    model.addError(expr)
+                } else if (sortType == null && sortItem.expression is IdentifierExpression) {
+                    // Unresolved sort column: check source element type for the property
+                    val elemType = if (queryType is ListType) queryType.elementType else null
+                    if (elemType is org.hl7.cql.model.TupleType) {
+                        val propName = (sortItem.expression as IdentifierExpression).name.simpleName
+                        val propType = elemType.elements.find { it.name == propName }?.type
+                        if (propType is org.hl7.cql.model.IntervalType) {
+                            model.addError(expr)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun hasNestedError(expression: Expression): Boolean {
@@ -268,7 +294,12 @@ private class ExpressionChecker(
         highClosed: Unit,
     ) {}
 
-    override fun onIntervalRelation(expr: IntervalRelationExpression, left: Unit, right: Unit) {}
+    override fun onIntervalRelation(expr: IntervalRelationExpression, left: Unit, right: Unit) {
+        // Flag if interval relation has no resolved type (e.g., Includes on non-list/interval)
+        if (model[expr] == null) {
+            model.addError(expr)
+        }
+    }
 
     override fun onQuery(expr: QueryExpression, children: QueryChildren<Unit>) {}
 
