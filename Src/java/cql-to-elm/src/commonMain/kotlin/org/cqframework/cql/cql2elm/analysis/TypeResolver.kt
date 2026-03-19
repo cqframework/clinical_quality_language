@@ -722,12 +722,48 @@ class TypeResolver(
                 nonNullArgTypes
             }
 
-        val resolution =
+        var resolution =
             operatorRegistry.resolve(
                 functionName,
                 effectiveArgTypes,
                 allowPromotionAndDemotion = true,
             )
+
+        // When resolution fails and there are Any-typed args (from null), retry with
+        // Any args replaced by List<Any> — handles cases like IndexOf(null, {}) where
+        // null should be inferred as List<Any> to match the operator signature.
+        // Patch the resolution with cast conversions for the substituted positions.
+        if (resolution == null) {
+            val anyType = operatorRegistry.type("Any")
+            val hasAnyArgs = effectiveArgTypes.any { it == anyType }
+            if (hasAnyArgs) {
+                val listAny = ListType(anyType)
+                val substituted = effectiveArgTypes.map { if (it == anyType) listAny else it }
+                val retryResolution =
+                    operatorRegistry.resolve(
+                        functionName,
+                        substituted,
+                        allowPromotionAndDemotion = true,
+                    )
+                if (retryResolution != null) {
+                    // Inject cast conversions at positions where Any was substituted
+                    val patchedConversions =
+                        effectiveArgTypes.mapIndexed { i, t ->
+                            if (t == anyType) Conversion(anyType, listAny)
+                            else retryResolution.conversions.getOrNull(i)
+                        }
+                    resolution =
+                        OperatorResolution(retryResolution.operator, patchedConversions).also {
+                            it.score = retryResolution.score
+                            it.allowFluent = retryResolution.allowFluent
+                            it.libraryIdentifier = retryResolution.libraryIdentifier
+                            it.libraryName = retryResolution.libraryName
+                            it.operatorHasOverloads = retryResolution.operatorHasOverloads
+                        }
+                }
+            }
+        }
+
         if (resolution != null) {
             typeTable.setOperatorResolution(expression, resolution)
             return resolution.operator.resultType
