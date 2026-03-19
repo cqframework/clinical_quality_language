@@ -61,7 +61,18 @@ import org.hl7.cql.model.IntervalType
  * rewritten parent nodes are new objects. The TypeResolver re-types the new nodes in a
  * post-lowering pass.
  */
-class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionFold<Expression> {
+class ExpressionLowering(
+    private val semanticModel: SemanticModel,
+    private val syntheticTable: SyntheticTable = semanticModel.syntheticTable,
+) : ExpressionFold<Expression> {
+
+    /** Rewrite an expression, transferring any synthetics from the original to the replacement. */
+    private fun rewrite(original: Expression, replacement: Expression): Expression {
+        if (replacement !== original) {
+            syntheticTable.transfer(original, replacement)
+        }
+        return replacement
+    }
 
     fun lowerLibrary(library: Library): Library {
         val newStatements = library.statements.map { lowerStatement(it) }
@@ -127,9 +138,9 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
             val r = wrapInCoalesce(right)
             return if (l === left && r === right) {
                 if (left === expr.left && right === expr.right) expr
-                else expr.copy(left = left, right = right)
+                else rewrite(expr, expr.copy(left = left, right = right))
             } else {
-                expr.copy(left = l, right = r)
+                rewrite(expr, expr.copy(left = l, right = r))
             }
         }
 
@@ -137,7 +148,10 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
         if (op == BinaryOperator.ADD) {
             val resolution = semanticModel.getOperatorResolution(expr)
             if (resolution?.operator?.resultType?.toString() == "System.String") {
-                return expr.copy(operator = BinaryOperator.CONCAT, left = left, right = right)
+                return rewrite(
+                    expr,
+                    expr.copy(operator = BinaryOperator.CONCAT, left = left, right = right),
+                )
             }
         }
 
@@ -307,21 +321,39 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
             is org.hl7.cql.ast.IncludesIntervalPhrase -> {
                 l = left
                 r = applyBoundary(right, phrase.rightBoundary)
+                if (isPointOperand(expr.right, phrase.rightBoundary, expr.left)) {
+                    return lowerToMembership(
+                        expr,
+                        org.hl7.cql.ast.MembershipOperator.CONTAINS,
+                        l,
+                        r,
+                        phrase.precision,
+                        phrase.proper,
+                    )
+                }
             }
             is org.hl7.cql.ast.IncludedInIntervalPhrase -> {
                 l = applyBoundary(left, phrase.leftBoundary)
                 r = right
+                if (isPointOperand(expr.left, phrase.leftBoundary, null)) {
+                    return lowerToMembership(
+                        expr,
+                        org.hl7.cql.ast.MembershipOperator.IN,
+                        l,
+                        r,
+                        phrase.precision,
+                        phrase.proper,
+                    )
+                }
             }
-            is org.hl7.cql.ast.WithinIntervalPhrase -> {
-                l = applyBoundary(left, phrase.leftBoundary)
-                r = right
-            }
+            is org.hl7.cql.ast.WithinIntervalPhrase -> return lowerWithin(expr, phrase, left, right)
             else -> {
                 l = left
                 r = right
             }
         }
-        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
+        return if (l === expr.left && r === expr.right) expr
+        else rewrite(expr, expr.copy(left = l, right = r))
     }
 
     /** Apply a boundary selector, wrapping in TimeBoundaryExpression for START/END. */
@@ -383,7 +415,7 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
                 right = promotePointToInterval(right)
             }
             // Return the interval relation with lowered operands but same phrase
-            return expr.copy(left = left, right = right)
+            return rewrite(expr, expr.copy(left = left, right = right))
         }
 
         // Offset case: apply boundaries, then direction-based extraction
@@ -417,7 +449,7 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
                     locator = right.locator,
                 )
         }
-        return expr.copy(left = left, right = right)
+        return rewrite(expr, expr.copy(left = left, right = right))
     }
 
     /** Promote a point to a degenerate interval: If(IsNull(p), Null, Interval[p, p]). */
@@ -445,6 +477,185 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
                     locator = loc,
                 ),
             locator = loc,
+        )
+    }
+
+    /**
+     * Lower a within phrase: `A within N days of B` → `In(A, Interval[Sub(start,qty),
+     * Add(end,qty)])`. For points, start=end=the point. For intervals, start=Start(B), end=End(B).
+     * For intervals with boundary selector, start=end=the boundary-applied point. Non-proper adds
+     * null check: `And(In(...), Not(IsNull(point)))`.
+     */
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
+    private fun lowerWithin(
+        expr: IntervalRelationExpression,
+        phrase: org.hl7.cql.ast.WithinIntervalPhrase,
+        foldedLeft: Expression,
+        foldedRight: Expression,
+    ): Expression {
+        val loc = expr.locator
+        val left = applyBoundary(foldedLeft, phrase.leftBoundary)
+        val rightType = semanticModel[expr.right]
+        val rightIsInterval = rightType is IntervalType
+        val rightBoundary = phrase.rightBoundary
+
+        // Determine rightStart and rightEnd as AST expressions
+        val rightStart: Expression
+        val rightEnd: Expression
+        if (rightIsInterval) {
+            if (
+                rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                    rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END
+            ) {
+                val point = applyBoundary(foldedRight, rightBoundary)
+                rightStart = point
+                rightEnd = point
+            } else {
+                rightStart =
+                    TimeBoundaryExpression(
+                        timeBoundaryKind = org.hl7.cql.ast.TimeBoundaryKind.START,
+                        operand = foldedRight,
+                        locator = loc,
+                    )
+                rightEnd =
+                    TimeBoundaryExpression(
+                        timeBoundaryKind = org.hl7.cql.ast.TimeBoundaryKind.END,
+                        operand = foldedRight,
+                        locator = loc,
+                    )
+            }
+        } else {
+            val point = applyBoundary(foldedRight, rightBoundary)
+            rightStart = point
+            rightEnd = point
+        }
+
+        // Build: In(left, Interval[Subtract(rightStart, qty), Add(rightEnd, qty)])
+        val qty = LiteralExpression(literal = phrase.quantity, locator = loc)
+        val qty2 = LiteralExpression(literal = phrase.quantity, locator = loc)
+        val closed = !phrase.proper
+        val lower =
+            OperatorBinaryExpression(
+                operator = org.hl7.cql.ast.BinaryOperator.SUBTRACT,
+                left = rightStart,
+                right = qty,
+                locator = loc,
+            )
+        val upper =
+            OperatorBinaryExpression(
+                operator = org.hl7.cql.ast.BinaryOperator.ADD,
+                left = rightEnd,
+                right = qty2,
+                locator = loc,
+            )
+        val interval =
+            LiteralExpression(
+                literal =
+                    org.hl7.cql.ast.IntervalLiteral(
+                        lower = lower,
+                        upper = upper,
+                        lowerClosed = closed,
+                        upperClosed = closed,
+                        locator = loc,
+                    ),
+                locator = loc,
+            )
+        val inExpr =
+            MembershipExpression(
+                operator = org.hl7.cql.ast.MembershipOperator.IN,
+                left = left,
+                right = interval,
+                locator = loc,
+            )
+
+        // Non-proper with point (or boundary-applied interval): add null check
+        val rightEffectivelyPoint = !rightIsInterval || rightBoundary != null
+        return if (!phrase.proper && rightEffectivelyPoint) {
+            val nullTarget = applyBoundary(foldedRight, rightBoundary)
+            OperatorBinaryExpression(
+                operator = org.hl7.cql.ast.BinaryOperator.AND,
+                left = inExpr,
+                right =
+                    org.hl7.cql.ast.OperatorUnaryExpression(
+                        operator = org.hl7.cql.ast.UnaryOperator.NOT,
+                        operand =
+                            org.hl7.cql.ast.BooleanTestExpression(
+                                operand = nullTarget,
+                                kind = org.hl7.cql.ast.BooleanTestKind.IS_NULL,
+                                negated = false,
+                                locator = loc,
+                            ),
+                        locator = loc,
+                    ),
+                locator = loc,
+            )
+        } else {
+            inExpr
+        }
+    }
+
+    /**
+     * Check if an expression is a point type (not list/interval) for includes/includedIn dispatch.
+     */
+    private fun isPointOperand(
+        expression: Expression,
+        boundary: org.hl7.cql.ast.IntervalBoundarySelector?,
+        otherExpression: Expression?,
+    ): Boolean {
+        // Boundary START/END always extracts a point
+        if (boundary != null && boundary != org.hl7.cql.ast.IntervalBoundarySelector.OCCURS) {
+            return true
+        }
+        val type = semanticModel[expression]
+        if (type != null) {
+            if (type !is org.hl7.cql.model.ListType && type !is IntervalType) return true
+        }
+        // Empty list treated as element when the other side has concrete element type
+        if (otherExpression != null && isEmptyListLiteral(expression)) {
+            val otherType = semanticModel[otherExpression]
+            if (otherType is org.hl7.cql.model.ListType) {
+                val elemType = otherType.elementType
+                if (elemType.toString() != "System.Any") return true
+            }
+        }
+        // Interval<Any> left: treat right as element (Contains)
+        if (otherExpression != null) {
+            val otherType = semanticModel[otherExpression]
+            if (otherType is IntervalType && otherType.pointType.toString() == "System.Any") {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isEmptyListLiteral(expression: Expression): Boolean =
+        expression is LiteralExpression &&
+            expression.literal is org.hl7.cql.ast.ListLiteral &&
+            (expression.literal as org.hl7.cql.ast.ListLiteral).elements.isEmpty()
+
+    /** Rewrite includes/includedIn to MembershipExpression when one operand is a point. */
+    private fun lowerToMembership(
+        expr: IntervalRelationExpression,
+        operator: org.hl7.cql.ast.MembershipOperator,
+        left: Expression,
+        right: Expression,
+        precision: String?,
+        proper: Boolean,
+    ): Expression {
+        // MembershipExpression doesn't have a proper flag. For proper Contains/In,
+        // the emission handles it. Keep as IntervalRelationExpression for proper cases.
+        if (proper) {
+            return rewrite(expr, expr.copy(left = left, right = right))
+        }
+        return rewrite(
+            expr,
+            MembershipExpression(
+                operator = operator,
+                left = left,
+                right = right,
+                precision = precision,
+                locator = expr.locator,
+            ),
         )
     }
 

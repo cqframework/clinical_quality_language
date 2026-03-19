@@ -85,7 +85,12 @@ internal fun EmissionContext.emitIntervalRelation(
         is StartsIntervalPhrase -> emitStartsPhrase(phrase, left, right)
         is EndsIntervalPhrase -> emitEndsPhrase(phrase, left, right)
         is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, left, right)
-        is WithinIntervalPhrase -> emitWithinPhrase(phrase, expression, left, right)
+        // WithinIntervalPhrase is fully lowered by ExpressionLowering into
+        // MembershipExpression(IN, ...) — it never reaches here.
+        is WithinIntervalPhrase ->
+            throw ElmEmitter.UnsupportedNodeException(
+                "WithinIntervalPhrase should have been lowered to MembershipExpression."
+            )
         else ->
             throw ElmEmitter.UnsupportedNodeException(
                 "Interval operator phrase '${phrase::class.simpleName}' is not yet supported."

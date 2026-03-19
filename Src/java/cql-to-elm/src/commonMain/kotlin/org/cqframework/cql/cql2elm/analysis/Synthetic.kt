@@ -98,6 +98,22 @@ class SyntheticTable {
     }
 
     /**
+     * Transfer all synthetics from [source] to [target]. Used by the lowering phase when an
+     * expression is rewritten — synthetics recorded against the original expression identity need
+     * to follow to the new expression.
+     */
+    fun transfer(source: Expression, target: Expression) {
+        val slotMap = entries[source] ?: return
+        for ((slot, synthetics) in slotMap) {
+            for (s in synthetics) {
+                val targetSlotMap = entries.getOrPut(target) { mutableMapOf() }
+                val targetList = targetSlotMap.getOrPut(slot) { mutableListOf() }
+                targetList.add(s)
+            }
+        }
+    }
+
+    /**
      * Compute the post-conversion [DataType] given a source type and the synthetics at this slot.
      * Walks the synthetic chain: e.g., Integer + OperatorConversion("ToDecimal") → Decimal. Returns
      * null if the source type is null or a conversion can't be resolved.
