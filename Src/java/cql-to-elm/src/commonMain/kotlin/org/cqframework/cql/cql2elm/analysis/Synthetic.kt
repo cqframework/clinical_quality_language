@@ -7,8 +7,12 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 
 /**
- * A synthetic transformation to be applied during emission, without mutating the AST. Each variant
- * records enough information for the emitter to produce the correct ELM wrapper.
+ * An implicit type conversion to be applied during emission. Each variant records enough
+ * information for the emitter to produce the correct ELM wrapper.
+ *
+ * Synthetics are strictly type conversions — they change the type of an operand. Structural
+ * transformations (boundary selectors, phrase expansion, operator rewrites) belong in the lowering
+ * phase, not here.
  */
 sealed interface Synthetic {
     /** Wrap operand in a conversion function (ToDecimal, ToLong, ToString, etc.) */
@@ -16,9 +20,6 @@ sealed interface Synthetic {
 
     /** Wrap operand in implicit As(targetType) — used for casts, null-As, and choice wrapping. */
     data class ImplicitCast(val targetType: DataType) : Synthetic
-
-    /** Wrap operand in Coalesce(operand, '') for CONCAT null-coalescing. */
-    data object CoalesceWrap : Synthetic
 
     /** Wrap list in Query(source=list, return=ToXxx(AliasRef(X))) for element-level conversion. */
     data class ListConversion(val innerOperatorName: String) : Synthetic
@@ -32,21 +33,6 @@ sealed interface Synthetic {
      * ConversionInserter).
      */
     data class IntervalConversion(val innerOperatorName: String) : Synthetic
-
-    /**
-     * Replace the expression's operator at emission time. Used on [Slot.Self] to rewrite a binary
-     * operator (e.g., Add → Concatenate when operand types resolve to String).
-     */
-    data class OperatorRewrite(val targetOperator: String) : Synthetic
-
-    /**
-     * Promote a point to a degenerate interval: `If(IsNull(p), Null, Interval[p, p])`. Used when a
-     * before/after/within phrase has a point operand against an interval operand.
-     */
-    data object PointToInterval : Synthetic
-
-    /** Extract interval bound: wraps in `Start()` (true) or `End()` (false). */
-    data class IntervalBound(val start: Boolean) : Synthetic
 }
 
 /**
@@ -61,8 +47,6 @@ sealed interface Slot {
     data object Operand : Slot
 
     data class Argument(val index: Int) : Slot
-
-    data object Self : Slot
 
     /** List literal element at the given index. */
     data class ListElement(val index: Int) : Slot
@@ -87,7 +71,7 @@ sealed interface Slot {
 }
 
 /**
- * Side table that records synthetic transformations keyed by parent expression identity and slot.
+ * Side table that records implicit type conversions keyed by parent expression identity and slot.
  * This keeps the AST immutable — conversions are applied during emission by reading this table.
  *
  * **Not thread-safe.** Each instance is owned by a single analysis pass.
@@ -138,7 +122,6 @@ class SyntheticTable {
                         resolution?.operator?.resultType ?: return null
                     }
                     is Synthetic.ImplicitCast -> s.targetType
-                    is Synthetic.CoalesceWrap -> currentType // no type change
                     is Synthetic.ListConversion -> {
                         val elemType = (currentType as? ListType)?.elementType ?: return null
                         val resolution =
@@ -152,10 +135,6 @@ class SyntheticTable {
                             operatorRegistry.resolve(s.innerOperatorName, listOf(pointType))
                         IntervalType(resolution?.operator?.resultType ?: return null)
                     }
-                    is Synthetic.OperatorRewrite -> currentType // no type change
-                    is Synthetic.PointToInterval -> IntervalType(currentType!!)
-                    is Synthetic.IntervalBound ->
-                        (currentType as? IntervalType)?.pointType ?: currentType
                 }
         }
         return currentType

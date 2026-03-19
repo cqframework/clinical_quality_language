@@ -82,10 +82,20 @@ internal fun EmissionContext.emitBinaryOperator(
 ): ElmExpression {
     val op = expression.operator
 
-    // Handle Concatenate (&): CoalesceWrap synthetics are applied by onBinaryOperator,
-    // so operands are already coalesced.
+    // Handle Concatenate (&): wrap operands in Coalesce(x, '') for null-safety
     if (op == BinaryOperator.CONCAT) {
-        return createOperandListElm("Concatenate", mutableListOf(leftElm, rightElm))
+        return createOperandListElm(
+            "Concatenate",
+            mutableListOf(emitCoalesceWrap(leftElm), emitCoalesceWrap(rightElm)),
+        )
+    }
+
+    // Add on strings → emit as Concatenate (structural lowering, not a type conversion)
+    if (op == BinaryOperator.ADD) {
+        val resolution = lookupResolution(expression)
+        if (resolution?.operator?.resultType?.toString() == "System.String") {
+            return createOperandListElm("Concatenate", mutableListOf(leftElm, rightElm))
+        }
     }
 
     // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
@@ -112,16 +122,6 @@ internal fun EmissionContext.emitBinaryOperator(
     val operands = mutableListOf(leftElm, rightElm)
     return createOperandListElm(systemOpName, operands)
 }
-
-/**
- * Emit a binary operator that has been rewritten by an [OperatorRewrite] synthetic. Looks up
- * [targetOperator] in [operandListConstructors]. Operands already have slot synthetics applied.
- */
-internal fun EmissionContext.emitRewrittenBinaryOperator(
-    targetOperator: String,
-    leftElm: ElmExpression,
-    rightElm: ElmExpression,
-): ElmExpression = createOperandListElm(targetOperator, mutableListOf(leftElm, rightElm))
 
 internal fun EmissionContext.emitNotWrapper(
     expression: OperatorBinaryExpression,

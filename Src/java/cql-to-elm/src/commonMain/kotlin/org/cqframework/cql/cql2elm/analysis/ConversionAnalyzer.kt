@@ -260,19 +260,8 @@ class ConversionAnalyzer(
 
         val op = expr.operator
 
-        // CONCAT (&): record CoalesceWrap on both operands
-        if (op == BinaryOperator.CONCAT) {
-            recordIfNew(expr, Slot.Left, Synthetic.CoalesceWrap)
-            recordIfNew(expr, Slot.Right, Synthetic.CoalesceWrap)
-        }
-
-        // Add on strings → rewrite to Concatenate
-        if (
-            op == BinaryOperator.ADD &&
-                resolution?.operator?.resultType?.toString() == "System.String"
-        ) {
-            recordIfNew(expr, Slot.Self, Synthetic.OperatorRewrite("Concatenate"))
-        }
+        // CONCAT coalescing and Add→Concatenate rewrite are structural lowering,
+        // handled in emission (OperatorEmission.kt). Not conversions.
 
         // Union/intersect/except: choice wrapping for mismatched element types
         if (
@@ -447,96 +436,8 @@ class ConversionAnalyzer(
         propagateIntervalPointType(expr.left, leftType, expr.right, rightType)
         propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
 
-        // Record boundary selectors and type-dependent synthetics per phrase type.
-        val phrase = expr.phrase
-        when (phrase) {
-            is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
-                recordBeforeAfterSynthetics(expr, phrase, leftType, rightType)
-            is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
-                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
-                recordBoundary(expr, Slot.Right, phrase.rightBoundary)
-            }
-            is org.hl7.cql.ast.IncludesIntervalPhrase ->
-                recordBoundary(expr, Slot.Right, phrase.rightBoundary)
-            is org.hl7.cql.ast.IncludedInIntervalPhrase ->
-                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
-            is org.hl7.cql.ast.WithinIntervalPhrase ->
-                recordBoundary(expr, Slot.Left, phrase.leftBoundary)
-            else -> {}
-        }
-    }
-
-    /**
-     * Record boundary selectors, direction-based extraction, and point-interval promotion for
-     * before/after phrases. All as synthetics so ordering is explicit and emission is mechanical.
-     */
-    private fun recordBeforeAfterSynthetics(
-        expr: IntervalRelationExpression,
-        phrase: org.hl7.cql.ast.BeforeOrAfterIntervalPhrase,
-        leftType: DataType?,
-        rightType: DataType?,
-    ) {
-        val isBefore =
-            phrase.relationship.direction == org.hl7.cql.ast.TemporalRelationshipDirection.BEFORE
-
-        if (phrase.offset == null) {
-            // No offset: apply boundary selectors, then point-interval promotion
-            recordBoundary(expr, Slot.Left, phrase.leftBoundary)
-            recordBoundary(expr, Slot.Right, phrase.rightBoundary)
-
-            val leftIsPoint =
-                leftType != null &&
-                    (leftType !is IntervalType ||
-                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-            val rightIsPoint =
-                rightType != null &&
-                    (rightType !is IntervalType ||
-                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-            val leftIsInterval = leftType is IntervalType && !leftIsPoint
-            val rightIsInterval = rightType is IntervalType && !rightIsPoint
-            if (leftIsPoint && rightIsInterval) {
-                recordIfNew(expr, Slot.Left, Synthetic.PointToInterval)
-            } else if (rightIsPoint && leftIsInterval) {
-                recordIfNew(expr, Slot.Right, Synthetic.PointToInterval)
-            }
-        } else {
-            // With offset: apply boundary selectors, then direction-based extraction for
-            // operands that are still intervals after boundary application.
-            recordBoundary(expr, Slot.Left, phrase.leftBoundary)
-            recordBoundary(expr, Slot.Right, phrase.rightBoundary)
-
-            val leftStillInterval =
-                leftType is IntervalType &&
-                    phrase.leftBoundary != org.hl7.cql.ast.IntervalBoundarySelector.START &&
-                    phrase.leftBoundary != org.hl7.cql.ast.IntervalBoundarySelector.END
-            val rightStillInterval =
-                rightType is IntervalType &&
-                    phrase.rightBoundary != org.hl7.cql.ast.IntervalBoundarySelector.START &&
-                    phrase.rightBoundary != org.hl7.cql.ast.IntervalBoundarySelector.END
-            if (leftStillInterval) {
-                recordIfNew(expr, Slot.Left, Synthetic.IntervalBound(start = !isBefore))
-            }
-            if (rightStillInterval) {
-                recordIfNew(expr, Slot.Right, Synthetic.IntervalBound(start = isBefore))
-            }
-        }
-    }
-
-    /** Record a boundary selector synthetic for START/END (OCCURS and null are no-ops). */
-    private fun recordBoundary(
-        parent: Expression,
-        slot: Slot,
-        boundary: org.hl7.cql.ast.IntervalBoundarySelector?,
-    ) {
-        when (boundary) {
-            org.hl7.cql.ast.IntervalBoundarySelector.START ->
-                recordIfNew(parent, slot, Synthetic.IntervalBound(start = true))
-            org.hl7.cql.ast.IntervalBoundarySelector.END ->
-                recordIfNew(parent, slot, Synthetic.IntervalBound(start = false))
-            else -> {} // OCCURS and null are no-ops
-        }
+        // Boundary selectors, point-interval promotion, operator rewrites, and CONCAT
+        // coalescing are structural lowering — handled in emission, not here.
     }
 
     /**

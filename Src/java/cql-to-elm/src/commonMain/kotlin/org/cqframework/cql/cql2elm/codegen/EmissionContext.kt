@@ -119,17 +119,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                 when (s) {
                     is Synthetic.OperatorConversion -> createConversionElm(s.operatorName, result)
                     is Synthetic.ImplicitCast -> emitImplicitCast(result, s.targetType)
-                    is Synthetic.CoalesceWrap -> emitCoalesceWrap(result)
                     is Synthetic.ListConversion ->
                         emitListConversionQuery(result, s.innerOperatorName)
                     is Synthetic.ListDemotion -> emitListDemotionQuery(result, s.targetElementType)
                     is Synthetic.IntervalConversion ->
                         emitIntervalConversion(result, s.innerOperatorName)
-                    is Synthetic.OperatorRewrite -> result // handled at Slot.Self level
-                    is Synthetic.PointToInterval -> emitPointToInterval(result)
-                    is Synthetic.IntervalBound ->
-                        if (s.start) org.hl7.elm.r1.Start().apply { operand = result }
-                        else org.hl7.elm.r1.End().apply { operand = result }
                 }
         }
         return result
@@ -151,7 +145,8 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     }
 
     /** Emit Coalesce(expression, '') wrapping for CONCAT null-coalescing. */
-    private fun emitCoalesceWrap(expression: ElmExpression): ElmExpression {
+    /** Emit Coalesce(expression, '') for CONCAT null-coalescing. */
+    internal fun emitCoalesceWrap(expression: ElmExpression): ElmExpression {
         val emptyStringLiteral =
             ElmLiteral().withValueType(QName(typesNamespace, "String")).withValue("")
         return org.hl7.elm.r1.Coalesce().apply {
@@ -389,17 +384,11 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         left: ElmExpression,
         right: ElmExpression,
     ): ElmExpression {
-        val l = applySynthetics(expr, Slot.Left, left)
-        val r = applySynthetics(expr, Slot.Right, right)
-
-        // Check for operator rewrite on Self (e.g., Add → Concatenate for string addition)
-        val selfSynthetics = semanticModel.syntheticTable.get(expr, Slot.Self)
-        val rewrite = selfSynthetics.filterIsInstance<Synthetic.OperatorRewrite>().firstOrNull()
-        if (rewrite != null) {
-            return emitRewrittenBinaryOperator(rewrite.targetOperator, l, r)
-        }
-
-        return emitBinaryOperator(expr, l, r)
+        return emitBinaryOperator(
+            expr,
+            applySynthetics(expr, Slot.Left, left),
+            applySynthetics(expr, Slot.Right, right),
+        )
     }
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: ElmExpression) =
