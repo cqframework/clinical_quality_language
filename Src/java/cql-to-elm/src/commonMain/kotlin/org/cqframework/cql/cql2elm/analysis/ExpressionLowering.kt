@@ -306,21 +306,39 @@ class ExpressionLowering(
         left: Expression,
         right: Expression,
     ): Expression {
+        // Interval<Any> expansion: when one operand is Interval<Any> (non-literal) and the
+        // other has a concrete point type, expand using PropertyAccessExpression + AsExpression.
+        var loweredLeft = left
+        var loweredRight = right
+        val leftType = semanticModel[expr.left]
+        val rightType = semanticModel[expr.right]
+        if (
+            leftType is IntervalType &&
+                rightType is IntervalType &&
+                rightType.pointType.toString() == "System.Any" &&
+                leftType.pointType.toString() != "System.Any" &&
+                !(expr.right is LiteralExpression &&
+                    (expr.right as LiteralExpression).literal is org.hl7.cql.ast.IntervalLiteral)
+        ) {
+            loweredRight = expandIntervalToType(right, leftType.pointType)
+        }
+
         val phrase = expr.phrase
         // Apply boundary selectors per phrase type. Identity-preserving: only create new
         // objects when boundaries actually changed operands.
+        // Use lowered operands (Interval<Any> may have been expanded above).
         val l: Expression
         val r: Expression
         when (phrase) {
             is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
-                return lowerBeforeOrAfter(expr, phrase, left, right)
+                return lowerBeforeOrAfter(expr, phrase, loweredLeft, loweredRight)
             is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
-                l = applyBoundary(left, phrase.leftBoundary)
-                r = applyBoundary(right, phrase.rightBoundary)
+                l = applyBoundary(loweredLeft, phrase.leftBoundary)
+                r = applyBoundary(loweredRight, phrase.rightBoundary)
             }
             is org.hl7.cql.ast.IncludesIntervalPhrase -> {
-                l = left
-                r = applyBoundary(right, phrase.rightBoundary)
+                l = loweredLeft
+                r = applyBoundary(loweredRight, phrase.rightBoundary)
                 if (isPointOperand(expr.right, phrase.rightBoundary, expr.left)) {
                     return lowerToMembership(
                         expr,
@@ -333,8 +351,8 @@ class ExpressionLowering(
                 }
             }
             is org.hl7.cql.ast.IncludedInIntervalPhrase -> {
-                l = applyBoundary(left, phrase.leftBoundary)
-                r = right
+                l = applyBoundary(loweredLeft, phrase.leftBoundary)
+                r = loweredRight
                 if (isPointOperand(expr.left, phrase.leftBoundary, null)) {
                     return lowerToMembership(
                         expr,
@@ -346,10 +364,11 @@ class ExpressionLowering(
                     )
                 }
             }
-            is org.hl7.cql.ast.WithinIntervalPhrase -> return lowerWithin(expr, phrase, left, right)
+            is org.hl7.cql.ast.WithinIntervalPhrase ->
+                return lowerWithin(expr, phrase, loweredLeft, loweredRight)
             else -> {
-                l = left
-                r = right
+                l = loweredLeft
+                r = loweredRight
             }
         }
         return if (l === expr.left && r === expr.right) expr
@@ -656,6 +675,85 @@ class ExpressionLowering(
                 precision = precision,
                 locator = expr.locator,
             ),
+        )
+    }
+
+    /**
+     * Expand a non-literal Interval<Any> expression into an explicit interval construction with
+     * PropertyAccessExpression for bounds, wrapped in AsExpression for the target point type.
+     */
+    private fun expandIntervalToType(
+        intervalExpr: Expression,
+        targetPointType: org.hl7.cql.model.DataType,
+    ): Expression {
+        val loc = intervalExpr.locator
+        val typeSpec =
+            org.hl7.cql.ast.NamedTypeSpecifier(
+                name =
+                    org.hl7.cql.ast.QualifiedIdentifier(
+                        listOf(targetPointType.toString().removePrefix("System."))
+                    )
+            )
+        // Interval[As(T, low), As(T, high)] with lowClosed/highClosed from Property extraction
+        // expressed as a new IntervalLiteral where:
+        //   lower = As(Property("low", source=intervalExpr), targetType)
+        //   upper = As(Property("high", source=intervalExpr), targetType)
+        // The lowClosed/highClosed are dynamic (from the source interval), so we use
+        // PropertyAccessExpression for them too. But IntervalLiteral needs static closed flags.
+        // Instead, return an IntervalRelation-free construction that the emitter handles.
+        //
+        // Actually, we need to produce something the emitter can handle. The cleanest AST
+        // representation: keep the IntervalRelationExpression but rewrite the operand.
+        // The emitter's Interval<Any> expansion is the one that creates the Property+As pattern.
+        // For AST lowering, we can represent this as nested expressions:
+        val lowProp =
+            org.hl7.cql.ast.PropertyAccessExpression(
+                target = intervalExpr,
+                property = org.hl7.cql.ast.Identifier("low"),
+                locator = loc,
+            )
+        val highProp =
+            org.hl7.cql.ast.PropertyAccessExpression(
+                target = intervalExpr,
+                property = org.hl7.cql.ast.Identifier("high"),
+                locator = loc,
+            )
+        val lowAs =
+            org.hl7.cql.ast.AsExpression(
+                operand = lowProp,
+                type = typeSpec,
+                implicit = true,
+                locator = loc,
+            )
+        val highAs =
+            org.hl7.cql.ast.AsExpression(
+                operand = highProp,
+                type = typeSpec,
+                implicit = true,
+                locator = loc,
+            )
+        val lowClosedProp =
+            org.hl7.cql.ast.PropertyAccessExpression(
+                target = intervalExpr,
+                property = org.hl7.cql.ast.Identifier("lowClosed"),
+                locator = loc,
+            )
+        val highClosedProp =
+            org.hl7.cql.ast.PropertyAccessExpression(
+                target = intervalExpr,
+                property = org.hl7.cql.ast.Identifier("highClosed"),
+                locator = loc,
+            )
+        return LiteralExpression(
+            literal =
+                org.hl7.cql.ast.IntervalLiteral(
+                    lower = lowAs,
+                    upper = highAs,
+                    lowerClosedExpression = lowClosedProp,
+                    upperClosedExpression = highClosedProp,
+                    locator = loc,
+                ),
+            locator = loc,
         )
     }
 

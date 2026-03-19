@@ -56,34 +56,17 @@ internal fun EmissionContext.emitIntervalRelation(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    var left = leftElm
-    var right = rightElm
-
-    val leftType = semanticModel[expression.left]
-    val rightType = semanticModel[expression.right]
-
-    // Interval<Any> expansion: for non-literal intervals (IdentifierRef, FunctionRef, etc.),
-    // expand via Property extraction at emission time. Literal intervals have their bounds
-    // wrapped by the SyntheticTable (recorded in ConversionAnalyzer.propagateIntervalPointType).
-    if (
-        leftType is IntervalType &&
-            rightType is IntervalType &&
-            rightType.pointType.toString() == "System.Any" &&
-            leftType.pointType.toString() != "System.Any" &&
-            right !is org.hl7.elm.r1.Interval
-    ) {
-        right = expandIntervalToType(right, leftType.pointType)
-    }
-
+    // Interval<Any> expansion is handled by ExpressionLowering. Operands arrive processed.
     return when (val phrase = expression.phrase) {
-        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, left, right)
-        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, left, right)
-        is BeforeOrAfterIntervalPhrase -> emitBeforeOrAfterPhrase(phrase, expression, left, right)
-        is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, left, right)
-        is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, left, right)
-        is StartsIntervalPhrase -> emitStartsPhrase(phrase, left, right)
-        is EndsIntervalPhrase -> emitEndsPhrase(phrase, left, right)
-        is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, left, right)
+        is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
+        is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
+        is BeforeOrAfterIntervalPhrase ->
+            emitBeforeOrAfterPhrase(phrase, expression, leftElm, rightElm)
+        is MeetsIntervalPhrase -> emitMeetsPhrase(phrase, leftElm, rightElm)
+        is OverlapsIntervalPhrase -> emitOverlapsPhrase(phrase, leftElm, rightElm)
+        is StartsIntervalPhrase -> emitStartsPhrase(phrase, leftElm, rightElm)
+        is EndsIntervalPhrase -> emitEndsPhrase(phrase, leftElm, rightElm)
+        is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, leftElm, rightElm)
         // WithinIntervalPhrase is fully lowered by ExpressionLowering into
         // MembershipExpression(IN, ...) — it never reaches here.
         is WithinIntervalPhrase ->

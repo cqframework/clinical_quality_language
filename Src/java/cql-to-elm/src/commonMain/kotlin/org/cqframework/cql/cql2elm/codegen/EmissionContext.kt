@@ -364,8 +364,16 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     low = children.intervalLow?.let { applySynthetics(expr, Slot.IntervalLow, it) }
                     high =
                         children.intervalHigh?.let { applySynthetics(expr, Slot.IntervalHigh, it) }
-                    lowClosed = literal.lowerClosed
-                    highClosed = literal.upperClosed
+                    if (literal.lowerClosedExpression != null) {
+                        lowClosedExpression = emitExpression(literal.lowerClosedExpression!!)
+                    } else {
+                        lowClosed = literal.lowerClosed
+                    }
+                    if (literal.upperClosedExpression != null) {
+                        highClosedExpression = emitExpression(literal.upperClosedExpression!!)
+                    } else {
+                        highClosed = literal.upperClosed
+                    }
                 }
             }
             else -> emitLiteral(literal)
