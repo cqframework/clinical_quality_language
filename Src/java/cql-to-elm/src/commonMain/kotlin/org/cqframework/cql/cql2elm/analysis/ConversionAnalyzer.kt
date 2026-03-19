@@ -282,6 +282,12 @@ class ConversionAnalyzer(
         ) {
             recordSetOperatorConversions(expr)
         }
+
+        // Interval<Any> literal bounds: propagate point type from the typed counterpart
+        val leftType = typeTable[expr.left]
+        val rightType = typeTable[expr.right]
+        propagateIntervalPointType(expr.left, leftType, expr.right, rightType)
+        propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
     }
 
     /** Record synthetics for union/intersect/except when element types differ. */
@@ -413,6 +419,7 @@ class ConversionAnalyzer(
         val rightType = typeTable[expr.right]
         val anyType = operatorRegistry.type("Any")
 
+        // Null literal operands
         if (
             isNullLiteralExpr(expr.right) &&
                 leftType is IntervalType &&
@@ -425,6 +432,33 @@ class ConversionAnalyzer(
                 rightType.pointType != anyType
         ) {
             recordIfNew(expr, Slot.Left, Synthetic.ImplicitCast(rightType.pointType))
+        }
+
+        // Interval<Any> operands: propagate point type from the typed counterpart into
+        // the interval literal's bounds so the convergence loop picks them up.
+        propagateIntervalPointType(expr.left, leftType, expr.right, rightType)
+        propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
+    }
+
+    /**
+     * When [target] is an interval literal with point type Any and [source] has a concrete point
+     * type, record bound-level synthetics on the interval literal so null bounds get wrapped.
+     */
+    private fun propagateIntervalPointType(
+        source: Expression,
+        sourceType: DataType?,
+        target: Expression,
+        targetType: DataType?,
+    ) {
+        if (sourceType !is IntervalType || targetType !is IntervalType) return
+        val anyType = operatorRegistry.type("Any")
+        if (targetType.pointType != anyType || sourceType.pointType == anyType) return
+        val pointType = sourceType.pointType
+        // Target must be an interval literal to record bound-level synthetics
+        if (target is LiteralExpression && target.literal is org.hl7.cql.ast.IntervalLiteral) {
+            val interval = target.literal as org.hl7.cql.ast.IntervalLiteral
+            recordTargetTypeConversion(target, Slot.IntervalLow, interval.lower, pointType)
+            recordTargetTypeConversion(target, Slot.IntervalHigh, interval.upper, pointType)
         }
     }
 

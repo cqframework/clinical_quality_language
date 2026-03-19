@@ -189,14 +189,16 @@ class FullParityTest {
                 // TypeOperators: PASSING (M19)
                 // Aggregate: union inside aggregate over-wraps QueryLetRef/List operands
                 // in As(List<Choice<Interval,List<Interval>>>) when types should match
-                "Aggregate" to
-                    "Union inside aggregate: over-wrapping with ChoiceType when types match",
+                // Aggregate: Factorial needs As(Integer) on Coalesce result (accumulator type
+                // inference), RolledOutIntervals over-wraps union with ChoiceType
+                "Aggregate" to "Aggregate accumulator type inference + union over-wrapping",
                 // CqlIntervalOperators: TestEndsNull — CI constant-folds interval bounds but
                 // emitter's `hasError` check catches the As-wrapped null bound, emitting bare Null.
                 // The emission-side interval expansion is still needed as fallback for
                 // non-literals.
-                "CqlIntervalOperators" to
-                    "TestEndsNull: CI-generated As on null bound flagged as error by validator",
+                // CqlIntervalOperators: testing
+                // "CqlIntervalOperators" to
+                //     "TestEndsNull: CI-generated As on null bound flagged as error by validator",
                 // CqlListOperators: IndexOfNullEmpty — null first arg not resolved by TypeResolver
                 "CqlListOperators" to
                     "IndexOf(null, {}): null arg type resolution differs from legacy",

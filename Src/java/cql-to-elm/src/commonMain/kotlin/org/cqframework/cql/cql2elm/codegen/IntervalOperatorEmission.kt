@@ -63,10 +63,9 @@ internal fun EmissionContext.emitIntervalRelation(
     val leftType = semanticModel[expression.left]
     val rightType = semanticModel[expression.right]
 
-    // Interval<Any> expansion: for non-literal intervals that the ConversionInserter couldn't
-    // constant-fold, expand via Property extraction at emission time. Literal intervals are
-    // handled by ConversionInserter.buildIntervalConversion — skip if already constant-folded
-    // (the emitted ELM Interval will have lowClosed/highClosed set).
+    // Interval<Any> expansion: for non-literal intervals (IdentifierRef, FunctionRef, etc.),
+    // expand via Property extraction at emission time. Literal intervals have their bounds
+    // wrapped by the SyntheticTable (recorded in ConversionAnalyzer.propagateIntervalPointType).
     if (
         leftType is IntervalType &&
             rightType is IntervalType &&
