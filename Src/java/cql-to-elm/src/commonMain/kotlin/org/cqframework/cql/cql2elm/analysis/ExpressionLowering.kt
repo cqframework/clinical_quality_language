@@ -48,6 +48,7 @@ import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.model.IntervalType
 
 /**
  * AST→AST structural lowering phase. Rewrites complex CQL phrases into trees of simpler AST nodes,
@@ -290,9 +291,162 @@ class ExpressionLowering(private val semanticModel: SemanticModel) : ExpressionF
         expr: IntervalRelationExpression,
         left: Expression,
         right: Expression,
+    ): Expression {
+        val phrase = expr.phrase
+        // Apply boundary selectors per phrase type. Identity-preserving: only create new
+        // objects when boundaries actually changed operands.
+        val l: Expression
+        val r: Expression
+        when (phrase) {
+            is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
+                return lowerBeforeOrAfter(expr, phrase, left, right)
+            is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
+                l = applyBoundary(left, phrase.leftBoundary)
+                r = applyBoundary(right, phrase.rightBoundary)
+            }
+            is org.hl7.cql.ast.IncludesIntervalPhrase -> {
+                l = left
+                r = applyBoundary(right, phrase.rightBoundary)
+            }
+            is org.hl7.cql.ast.IncludedInIntervalPhrase -> {
+                l = applyBoundary(left, phrase.leftBoundary)
+                r = right
+            }
+            is org.hl7.cql.ast.WithinIntervalPhrase -> {
+                l = applyBoundary(left, phrase.leftBoundary)
+                r = right
+            }
+            else -> {
+                l = left
+                r = right
+            }
+        }
+        return if (l === expr.left && r === expr.right) expr else expr.copy(left = l, right = r)
+    }
+
+    /** Apply a boundary selector, wrapping in TimeBoundaryExpression for START/END. */
+    private fun applyBoundary(
+        operand: Expression,
+        boundary: org.hl7.cql.ast.IntervalBoundarySelector?,
     ): Expression =
-        if (left === expr.left && right === expr.right) expr
-        else expr.copy(left = left, right = right)
+        when (boundary) {
+            org.hl7.cql.ast.IntervalBoundarySelector.START ->
+                TimeBoundaryExpression(
+                    timeBoundaryKind = org.hl7.cql.ast.TimeBoundaryKind.START,
+                    operand = operand,
+                    locator = operand.locator,
+                )
+            org.hl7.cql.ast.IntervalBoundarySelector.END ->
+                TimeBoundaryExpression(
+                    timeBoundaryKind = org.hl7.cql.ast.TimeBoundaryKind.END,
+                    operand = operand,
+                    locator = operand.locator,
+                )
+            else -> operand // OCCURS and null are no-ops
+        }
+
+    /**
+     * Lower a before/after phrase. Applies boundary selectors, point-interval promotion, quantity
+     * offsets, and direction-based interval extraction — all as AST rewrites.
+     */
+    @Suppress("CyclomaticComplexMethod", "LongMethod", "NestedBlockDepth")
+    private fun lowerBeforeOrAfter(
+        expr: IntervalRelationExpression,
+        phrase: org.hl7.cql.ast.BeforeOrAfterIntervalPhrase,
+        foldedLeft: Expression,
+        foldedRight: Expression,
+    ): Expression {
+        val isBefore =
+            phrase.relationship.direction == org.hl7.cql.ast.TemporalRelationshipDirection.BEFORE
+        val leftType = semanticModel[expr.left]
+        val rightType = semanticModel[expr.right]
+
+        if (phrase.offset == null) {
+            // No offset: apply boundaries, then point-interval promotion
+            var left = applyBoundary(foldedLeft, phrase.leftBoundary)
+            var right = applyBoundary(foldedRight, phrase.rightBoundary)
+            val leftIsPoint =
+                leftType != null &&
+                    (leftType !is IntervalType ||
+                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
+            val rightIsPoint =
+                rightType != null &&
+                    (rightType !is IntervalType ||
+                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
+            val leftIsInterval = leftType is IntervalType && !leftIsPoint
+            val rightIsInterval = rightType is IntervalType && !rightIsPoint
+            if (leftIsPoint && rightIsInterval) {
+                left = promotePointToInterval(left)
+            } else if (rightIsPoint && leftIsInterval) {
+                right = promotePointToInterval(right)
+            }
+            // Return the interval relation with lowered operands but same phrase
+            return expr.copy(left = left, right = right)
+        }
+
+        // Offset case: apply boundaries, then direction-based extraction
+        var left = applyBoundary(foldedLeft, phrase.leftBoundary)
+        var right = applyBoundary(foldedRight, phrase.rightBoundary)
+        val leftStillInterval =
+            leftType is IntervalType &&
+                phrase.leftBoundary != org.hl7.cql.ast.IntervalBoundarySelector.START &&
+                phrase.leftBoundary != org.hl7.cql.ast.IntervalBoundarySelector.END
+        val rightStillInterval =
+            rightType is IntervalType &&
+                phrase.rightBoundary != org.hl7.cql.ast.IntervalBoundarySelector.START &&
+                phrase.rightBoundary != org.hl7.cql.ast.IntervalBoundarySelector.END
+        if (leftStillInterval) {
+            left =
+                TimeBoundaryExpression(
+                    timeBoundaryKind =
+                        if (isBefore) org.hl7.cql.ast.TimeBoundaryKind.END
+                        else org.hl7.cql.ast.TimeBoundaryKind.START,
+                    operand = left,
+                    locator = left.locator,
+                )
+        }
+        if (rightStillInterval) {
+            right =
+                TimeBoundaryExpression(
+                    timeBoundaryKind =
+                        if (isBefore) org.hl7.cql.ast.TimeBoundaryKind.START
+                        else org.hl7.cql.ast.TimeBoundaryKind.END,
+                    operand = right,
+                    locator = right.locator,
+                )
+        }
+        return expr.copy(left = left, right = right)
+    }
+
+    /** Promote a point to a degenerate interval: If(IsNull(p), Null, Interval[p, p]). */
+    private fun promotePointToInterval(point: Expression): Expression {
+        val loc = point.locator
+        return IfExpression(
+            condition =
+                org.hl7.cql.ast.BooleanTestExpression(
+                    operand = point,
+                    kind = org.hl7.cql.ast.BooleanTestKind.IS_NULL,
+                    negated = false,
+                    locator = loc,
+                ),
+            thenBranch = LiteralExpression(literal = org.hl7.cql.ast.NullLiteral(), locator = loc),
+            elseBranch =
+                LiteralExpression(
+                    literal =
+                        org.hl7.cql.ast.IntervalLiteral(
+                            lower = point,
+                            upper = point,
+                            lowerClosed = true,
+                            upperClosed = true,
+                            locator = loc,
+                        ),
+                    locator = loc,
+                ),
+            locator = loc,
+        )
+    }
 
     override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>) = expr
 
