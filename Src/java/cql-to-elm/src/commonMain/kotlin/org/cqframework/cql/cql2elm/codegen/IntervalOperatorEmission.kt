@@ -23,7 +23,6 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.After
 import org.hl7.elm.r1.Before
-import org.hl7.elm.r1.Contains
 import org.hl7.elm.r1.End
 import org.hl7.elm.r1.Ends
 import org.hl7.elm.r1.Expression as ElmExpression
@@ -111,29 +110,31 @@ private fun applyBoundary(
     }
 }
 
+/**
+ * Emit an includes phrase. Non-proper point cases are lowered to MembershipExpression(CONTAINS) by
+ * ExpressionLowering. This handler handles: proper cases (ProperContains/ProperIncludes) and
+ * non-proper non-point cases (Includes).
+ */
 private fun EmissionContext.emitIncludesPhrase(
     phrase: IncludesIntervalPhrase,
     expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Right boundary applied by ExpressionLowering.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    // Determine if the right operand is a point (not a list/interval)
-    // Empty list literals ({}) are treated as element type by legacy operator resolution
-    // when the left operand has a concrete (non-Any) element type.
-    // When the left is Interval<Any>, the right (any type) is treated as element (Contains).
-    // TODO: move this operator selection decision to analysis (recorded as OperatorRewrite)
-    val leftType = semanticModel[expression.left]
-    val leftIsAnyInterval =
-        leftType is IntervalType && leftType.pointType.toString() == "System.Any"
-    val isPointRight =
-        (phrase.rightBoundary != null && phrase.rightBoundary != IntervalBoundarySelector.OCCURS) ||
-            isElementType(expression.right) ||
-            (isEmptyListLiteral(expression.right) && hasConcreteListElementType(expression.left)) ||
-            leftIsAnyInterval
-    return if (phrase.proper) {
-        if (isPointRight) {
+    if (phrase.proper) {
+        // Proper cases need type check for ProperContains vs ProperIncludes
+        val leftType = semanticModel[expression.left]
+        val leftIsAnyInterval =
+            leftType is IntervalType && leftType.pointType.toString() == "System.Any"
+        val isPointRight =
+            (phrase.rightBoundary != null &&
+                phrase.rightBoundary != IntervalBoundarySelector.OCCURS) ||
+                isElementType(expression.right) ||
+                (isEmptyListLiteral(expression.right) &&
+                    hasConcreteListElementType(expression.left)) ||
+                leftIsAnyInterval
+        return if (isPointRight) {
             ProperContains().apply {
                 operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
@@ -144,34 +145,32 @@ private fun EmissionContext.emitIncludesPhrase(
                 precision?.let { this.precision = it }
             }
         }
-    } else {
-        if (isPointRight) {
-            Contains().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
-            }
-        } else {
-            Includes().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
-            }
-        }
+    }
+    // Non-proper non-point: Includes (point cases lowered to MembershipExpression by lowering)
+    return Includes().apply {
+        operand = mutableListOf(leftElm, rightElm)
+        precision?.let { this.precision = it }
     }
 }
 
+/**
+ * Emit an includedIn phrase. Non-proper point cases are lowered to MembershipExpression(IN) by
+ * ExpressionLowering. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
+ * non-point cases (IncludedIn).
+ */
 private fun EmissionContext.emitIncludedInPhrase(
     phrase: IncludedInIntervalPhrase,
     expression: IntervalRelationExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Left boundary applied by ExpressionLowering.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
-    val isPointLeft =
-        (phrase.leftBoundary != null && phrase.leftBoundary != IntervalBoundarySelector.OCCURS) ||
-            isElementType(expression.left)
-    return if (phrase.proper) {
-        if (isPointLeft) {
+    if (phrase.proper) {
+        val isPointLeft =
+            (phrase.leftBoundary != null &&
+                phrase.leftBoundary != IntervalBoundarySelector.OCCURS) ||
+                isElementType(expression.left)
+        return if (isPointLeft) {
             ProperIn().apply {
                 operand = mutableListOf(leftElm, rightElm)
                 precision?.let { this.precision = it }
@@ -182,18 +181,11 @@ private fun EmissionContext.emitIncludedInPhrase(
                 precision?.let { this.precision = it }
             }
         }
-    } else {
-        if (isPointLeft) {
-            In().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
-            }
-        } else {
-            IncludedIn().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
-            }
-        }
+    }
+    // Non-proper non-point: IncludedIn (point cases lowered by lowering)
+    return IncludedIn().apply {
+        operand = mutableListOf(leftElm, rightElm)
+        precision?.let { this.precision = it }
     }
 }
 
@@ -444,89 +436,8 @@ private fun emitEndsPhrase(
     }
 }
 
-/**
- * Emit a `within N days of` phrase. Produces: `In(left, Interval[Subtract(rightStart, qty),
- * Add(rightEnd, qty)])` where rightStart/rightEnd are extracted via Start()/End() if the right
- * operand is an interval, or used as-is for points. Boundary selectors are applied to both
- * operands.
- */
-@Suppress("CyclomaticComplexMethod")
-private fun EmissionContext.emitWithinPhrase(
-    phrase: WithinIntervalPhrase,
-    expression: IntervalRelationExpression,
-    leftElm: ElmExpression,
-    rightElm: ElmExpression,
-): ElmExpression {
-    // Left boundary applied by ExpressionLowering.
-    val rightType = semanticModel[expression.right]
-    val rightIsInterval = rightType is IntervalType
-
-    // Right operand: if interval with a boundary selector, use that selector for both
-    // start/end (e.g., "within 3 days of start B" uses Start(B) for both bounds).
-    // If interval without boundary, use Start(B) for lower and End(B) for upper.
-    // If point, use the point directly for both.
-    val rightBoundary = phrase.rightBoundary
-    val rightStart: ElmExpression
-    val rightEnd: ElmExpression
-    if (rightIsInterval) {
-        if (
-            rightBoundary == IntervalBoundarySelector.START ||
-                rightBoundary == IntervalBoundarySelector.END
-        ) {
-            // Boundary selector already extracts a specific bound — use for both
-            val point = applyBoundary(rightElm, rightBoundary)
-            rightStart = point
-            rightEnd = point
-        } else {
-            rightStart = Start().apply { operand = rightElm }
-            rightEnd = End().apply { operand = rightElm }
-        }
-    } else {
-        val point = applyBoundary(rightElm, rightBoundary)
-        rightStart = point
-        rightEnd = point
-    }
-
-    // Emit the quantity
-    val qty = emitLiteral(phrase.quantity)
-    val closed = !phrase.proper
-
-    // Lower = Subtract(rightStart, qty), Upper = Add(rightEnd, qty)
-    val lower = org.hl7.elm.r1.Subtract().apply { operand = mutableListOf(rightStart, qty) }
-    val upper =
-        org.hl7.elm.r1.Add().apply {
-            operand = mutableListOf(rightEnd, emitLiteral(phrase.quantity))
-        }
-
-    val interval =
-        org.hl7.elm.r1.Interval().apply {
-            low = lower
-            lowClosed = closed
-            high = upper
-            highClosed = closed
-        }
-
-    val inExpr = In().apply { operand = mutableListOf(leftElm, interval) }
-
-    // When not proper and right is a point (not a full interval), add null check:
-    // And(In(...), Not(IsNull(point))). Intervals with boundary selectors (start/end)
-    // are treated as points. Full intervals don't need the null check.
-    val rightEffectivelyPoint = !rightIsInterval || rightBoundary != null
-    return if (!phrase.proper && rightEffectivelyPoint) {
-        val nullCheckTarget = applyBoundary(rightElm, rightBoundary)
-        org.hl7.elm.r1.And().apply {
-            operand =
-                mutableListOf(
-                    inExpr,
-                    org.hl7.elm.r1.Not().apply {
-                        operand = org.hl7.elm.r1.IsNull().apply { this.operand = nullCheckTarget }
-                    },
-                )
-        }
-    } else {
-        inExpr
-    }
-}
+// emitWithinPhrase — deleted. Within is fully lowered by ExpressionLowering
+// into MembershipExpression(IN, ...) with arithmetic and null check.
 
 /**
  * Returns true if the expression's resolved type is an element type (not a list or interval). Used
