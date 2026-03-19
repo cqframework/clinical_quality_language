@@ -4,10 +4,13 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.Abs
+import org.hl7.elm.r1.CalculateAge
+import org.hl7.elm.r1.CalculateAgeAt
 import org.hl7.elm.r1.Ceiling
 import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateTime
+import org.hl7.elm.r1.DateTimePrecision
 import org.hl7.elm.r1.Exp
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Floor
@@ -84,6 +87,22 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         "Skip" -> emitSkip(args)
         "Take" -> emitTake(args)
         "Tail" -> emitTail(args)
+
+        // Age calculation functions → CalculateAge / CalculateAgeAt ELM nodes
+        "CalculateAgeInYears" -> emitCalculateAge(args, DateTimePrecision.YEAR)
+        "CalculateAgeInMonths" -> emitCalculateAge(args, DateTimePrecision.MONTH)
+        "CalculateAgeInWeeks" -> emitCalculateAge(args, DateTimePrecision.WEEK)
+        "CalculateAgeInDays" -> emitCalculateAge(args, DateTimePrecision.DAY)
+        "CalculateAgeInHours" -> emitCalculateAge(args, DateTimePrecision.HOUR)
+        "CalculateAgeInMinutes" -> emitCalculateAge(args, DateTimePrecision.MINUTE)
+        "CalculateAgeInSeconds" -> emitCalculateAge(args, DateTimePrecision.SECOND)
+        "CalculateAgeInYearsAt" -> emitCalculateAgeAt(args, DateTimePrecision.YEAR)
+        "CalculateAgeInMonthsAt" -> emitCalculateAgeAt(args, DateTimePrecision.MONTH)
+        "CalculateAgeInWeeksAt" -> emitCalculateAgeAt(args, DateTimePrecision.WEEK)
+        "CalculateAgeInDaysAt" -> emitCalculateAgeAt(args, DateTimePrecision.DAY)
+        "CalculateAgeInHoursAt" -> emitCalculateAgeAt(args, DateTimePrecision.HOUR)
+        "CalculateAgeInMinutesAt" -> emitCalculateAgeAt(args, DateTimePrecision.MINUTE)
+        "CalculateAgeInSecondsAt" -> emitCalculateAgeAt(args, DateTimePrecision.SECOND)
 
         else -> null
     }
@@ -176,5 +195,40 @@ private fun emitTail(args: List<ElmExpression>): ElmExpression {
         startIndex =
             ElmLiteral().withValueType(QName("urn:hl7-org:elm-types:r1", "Integer")).withValue("1")
         endIndex = Null()
+    }
+}
+
+/**
+ * Emit `CalculateAgeInYears(birthDate)` etc. as `CalculateAge(operand, precision)`. For Year/Month
+ * precision, the legacy translator wraps the operand in `ToDate()`.
+ */
+private fun emitCalculateAge(
+    args: List<ElmExpression>,
+    precision: DateTimePrecision,
+): ElmExpression {
+    require(args.size == 1) { "Expected 1 argument for CalculateAge" }
+    val operand =
+        if (precision == DateTimePrecision.YEAR || precision == DateTimePrecision.MONTH) {
+            org.hl7.elm.r1.ToDate().apply { this.operand = args[0] }
+        } else {
+            args[0]
+        }
+    return CalculateAge().apply {
+        this.operand = operand
+        this.precision = precision
+    }
+}
+
+/**
+ * Emit `CalculateAgeInYearsAt(birthDate, asOf)` etc. as `CalculateAgeAt([operands], precision)`.
+ */
+private fun emitCalculateAgeAt(
+    args: List<ElmExpression>,
+    precision: DateTimePrecision,
+): ElmExpression {
+    require(args.size == 2) { "Expected 2 arguments for CalculateAgeAt" }
+    return CalculateAgeAt().apply {
+        operand = mutableListOf(args[0], args[1])
+        this.precision = precision
     }
 }

@@ -229,9 +229,10 @@ class FullParityTest {
                     "Code→Concept conversion (ToConcept) and CodesToConcept error recovery",
                 // Name hiding: QDM model interval resolution and out-of-scope error recovery
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
-                // Age operators: legacy maps CalculateAge/CalculateAgeAt to special ELM nodes
+                // AgeOperators: CalculateAgeIn* and AgeIn*At resolve via operator registry.
+                // AgeIn*() (0-arg) still needs model context injection (Patient.birthDate).
                 "AgeOperators" to
-                    "System function mapping: legacy maps age functions to CalculateAge ELM nodes",
+                    "AgeIn*() 0-arg functions need model context injection (Patient.birthDate)",
                 // Terminology: legacy resolves retrieve code properties and function references
                 "TerminologyReferences" to
                     "Retrieve code properties and terminology function resolution",

@@ -2715,6 +2715,53 @@ object SystemLibraryHelper {
             ),
         )
 
+        // CalculateAgeIn* and AgeIn*At aliases — same resolution as CalculateAge/CalculateAgeAt
+        // but with precision-specific names used in CQL source. The emitter maps these to
+        // CalculateAge/CalculateAgeAt ELM nodes with the appropriate precision.
+        val agePrecisions =
+            listOf("Years", "Months", "Weeks", "Days", "Hours", "Minutes", "Seconds")
+        for (p in agePrecisions) {
+            add(
+                system,
+                tb,
+                Operator("CalculateAgeIn$p", Signature(systemModel.dateTime), systemModel.integer),
+            )
+            add(
+                system,
+                tb,
+                Operator("CalculateAgeIn$p", Signature(systemModel.date), systemModel.integer),
+            )
+            add(
+                system,
+                tb,
+                Operator(
+                    "CalculateAgeIn${p}At",
+                    Signature(systemModel.dateTime, systemModel.dateTime),
+                    systemModel.integer,
+                ),
+            )
+            add(
+                system,
+                tb,
+                Operator(
+                    "CalculateAgeIn${p}At",
+                    Signature(systemModel.date, systemModel.date),
+                    systemModel.integer,
+                ),
+            )
+            // AgeIn*At takes a reference date (1 arg resolved against context-injected birthDate)
+            add(
+                system,
+                tb,
+                Operator("AgeIn${p}At", Signature(systemModel.dateTime), systemModel.integer),
+            )
+            add(
+                system,
+                tb,
+                Operator("AgeIn${p}At", Signature(systemModel.date), systemModel.integer),
+            )
+        }
+
         add(system, tb, Operator("InValueSet", Signature(systemModel.string), systemModel.boolean))
         add(system, tb, Operator("InValueSet", Signature(systemModel.code), systemModel.boolean))
         add(system, tb, Operator("InValueSet", Signature(systemModel.concept), systemModel.boolean))

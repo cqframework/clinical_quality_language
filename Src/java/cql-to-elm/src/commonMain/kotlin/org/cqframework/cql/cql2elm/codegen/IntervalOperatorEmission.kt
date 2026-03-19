@@ -85,10 +85,7 @@ internal fun EmissionContext.emitIntervalRelation(
         is StartsIntervalPhrase -> emitStartsPhrase(phrase, left, right)
         is EndsIntervalPhrase -> emitEndsPhrase(phrase, left, right)
         is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, left, right)
-        is WithinIntervalPhrase ->
-            throw ElmEmitter.UnsupportedNodeException(
-                "WithinIntervalPhrase ('within N days of') is not yet supported."
-            )
+        is WithinIntervalPhrase -> emitWithinPhrase(phrase, expression, left, right)
         else ->
             throw ElmEmitter.UnsupportedNodeException(
                 "Interval operator phrase '${phrase::class.simpleName}' is not yet supported."
@@ -353,6 +350,71 @@ private fun emitEndsPhrase(
     return Ends().apply {
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
+    }
+}
+
+/**
+ * Emit a `within N days of` phrase. Produces: `In(left, Interval[Subtract(rightStart, qty),
+ * Add(rightEnd, qty)])` where rightStart/rightEnd are extracted via Start()/End() if the right
+ * operand is an interval, or used as-is for points. Boundary selectors are applied to both
+ * operands.
+ */
+@Suppress("CyclomaticComplexMethod")
+private fun EmissionContext.emitWithinPhrase(
+    phrase: WithinIntervalPhrase,
+    expression: IntervalRelationExpression,
+    leftElm: ElmExpression,
+    rightElm: ElmExpression,
+): ElmExpression {
+    val left = applyBoundary(leftElm, phrase.leftBoundary)
+    val rightType = semanticModel[expression.right]
+    val rightIsInterval = rightType is IntervalType
+
+    // Right operand: extract start/end if interval, or use as-is for points
+    val rightStart =
+        if (rightIsInterval) applyBoundary(rightElm, IntervalBoundarySelector.START)
+        else applyBoundary(rightElm, phrase.rightBoundary)
+    val rightEnd =
+        if (rightIsInterval) applyBoundary(rightElm, IntervalBoundarySelector.END)
+        else applyBoundary(rightElm, phrase.rightBoundary)
+
+    // Emit the quantity
+    val qty = emitLiteral(phrase.quantity)
+    val closed = !phrase.proper
+
+    // Lower = Subtract(rightStart, qty), Upper = Add(rightEnd, qty)
+    val lower = org.hl7.elm.r1.Subtract().apply { operand = mutableListOf(rightStart, qty) }
+    val upper =
+        org.hl7.elm.r1.Add().apply {
+            operand = mutableListOf(rightEnd, emitLiteral(phrase.quantity))
+        }
+
+    val interval =
+        org.hl7.elm.r1.Interval().apply {
+            low = lower
+            lowClosed = closed
+            high = upper
+            highClosed = closed
+        }
+
+    val inExpr = In().apply { operand = mutableListOf(left, interval) }
+
+    // When not proper and right is a point, add null check: And(In(...), Not(IsNull(point)))
+    return if (!phrase.proper && !rightIsInterval) {
+        org.hl7.elm.r1.And().apply {
+            operand =
+                mutableListOf(
+                    inExpr,
+                    org.hl7.elm.r1.Not().apply {
+                        operand =
+                            org.hl7.elm.r1.IsNull().apply {
+                                this.operand = applyBoundary(rightElm, phrase.rightBoundary)
+                            }
+                    },
+                )
+        }
+    } else {
+        inExpr
     }
 }
 
