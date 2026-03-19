@@ -76,7 +76,7 @@ class SemanticAnalyzer(
         val finalResolver = TypeResolver(operatorRegistry, syntheticTable)
         val finalTypeTable = finalResolver.resolve(library, symbols)
 
-        val semanticModel =
+        val preLowerModel =
             SemanticModel(
                 symbols,
                 finalTypeTable,
@@ -84,12 +84,31 @@ class SemanticAnalyzer(
                 options,
                 syntheticTable = syntheticTable,
             )
-        semanticValidator.validate(library, symbols, semanticModel)
+        semanticValidator.validate(library, symbols, preLowerModel)
+
+        // LOWERING: structural rewrites (phrases → operator trees, coalesce wrapping, etc.)
+        // Produces a new AST with complex phrases desugared into simpler nodes.
+        val lowering = ExpressionLowering(preLowerModel)
+        val loweredLibrary = lowering.lowerLibrary(library)
+
+        // Re-type the lowered AST: new nodes need type entries, children are already typed.
+        val loweredResolver = TypeResolver(operatorRegistry, syntheticTable)
+        val loweredTypeTable = loweredResolver.resolve(loweredLibrary, symbols)
+
+        val semanticModel =
+            SemanticModel(
+                symbols,
+                loweredTypeTable,
+                operatorRegistry,
+                options,
+                errors = preLowerModel.errors,
+                syntheticTable = syntheticTable,
+            )
 
         semanticModel.metrics =
             AnalysisMetrics(
-                definitionCount = library.definitions.size,
-                statementCount = library.statements.size,
+                definitionCount = loweredLibrary.definitions.size,
+                statementCount = loweredLibrary.statements.size,
                 expressionCount = finalTypeTable.expressionCount,
                 typedCount = finalTypeTable.typedCount,
                 unresolvedCount = finalTypeTable.expressionCount - finalTypeTable.typedCount,
@@ -98,9 +117,9 @@ class SemanticAnalyzer(
                 conversionsInserted = totalConversions,
                 inferConvertIterations = conversionsPerIteration.size,
                 newConversionsPerIteration = conversionsPerIteration,
-                errorCount = semanticModel.errors.size,
+                errorCount = preLowerModel.errors.size,
             )
-        return Result(library, semanticModel)
+        return Result(loweredLibrary, semanticModel)
     }
 }
 

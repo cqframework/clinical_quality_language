@@ -82,20 +82,11 @@ internal fun EmissionContext.emitBinaryOperator(
 ): ElmExpression {
     val op = expression.operator
 
-    // Handle Concatenate (&): wrap operands in Coalesce(x, '') for null-safety
+    // CONCAT (&): Coalesce wrapping and Add→Concatenate rewrite handled by ExpressionLowering.
+    // By the time we get here, CONCAT operands are already Coalesce-wrapped and Add-on-strings
+    // has been rewritten to CONCAT.
     if (op == BinaryOperator.CONCAT) {
-        return createOperandListElm(
-            "Concatenate",
-            mutableListOf(emitCoalesceWrap(leftElm), emitCoalesceWrap(rightElm)),
-        )
-    }
-
-    // Add on strings → emit as Concatenate (structural lowering, not a type conversion)
-    if (op == BinaryOperator.ADD) {
-        val resolution = lookupResolution(expression)
-        if (resolution?.operator?.resultType?.toString() == "System.String") {
-            return createOperandListElm("Concatenate", mutableListOf(leftElm, rightElm))
-        }
+        return createOperandListElm("Concatenate", mutableListOf(leftElm, rightElm))
     }
 
     // Set operators (union/intersect/except) emit as NaryExpression, not BinaryExpression
