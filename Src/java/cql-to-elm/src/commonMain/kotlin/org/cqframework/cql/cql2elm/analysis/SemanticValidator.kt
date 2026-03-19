@@ -21,6 +21,7 @@ import org.hl7.cql.ast.ExternalConstantExpression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
+import org.hl7.cql.ast.ImplicitCastExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
@@ -222,6 +223,8 @@ private class ExpressionChecker(
     override fun onIs(expr: IsExpression, operand: Unit) {}
 
     override fun onCast(expr: CastExpression, operand: Unit) {}
+
+    override fun onImplicitCast(expr: ImplicitCastExpression, operand: Unit) {}
 
     override fun onConversion(expr: ConversionExpression, operand: Unit) {}
 

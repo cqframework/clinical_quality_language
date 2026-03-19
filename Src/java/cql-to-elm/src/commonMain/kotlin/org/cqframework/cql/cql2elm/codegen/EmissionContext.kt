@@ -31,6 +31,7 @@ import org.hl7.cql.ast.ExternalConstantExpression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
+import org.hl7.cql.ast.ImplicitCastExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
@@ -432,6 +433,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     override fun onIs(expr: IsExpression, operand: ElmExpression) = emitIsExpression(expr, operand)
 
     override fun onAs(expr: AsExpression, operand: ElmExpression) = emitAsExpression(expr, operand)
+
+    override fun onImplicitCast(expr: ImplicitCastExpression, operand: ElmExpression) =
+        emitImplicitCastExpression(expr, operand)
 
     override fun onCast(expr: CastExpression, operand: ElmExpression) =
         emitCastExpression(expr, operand)

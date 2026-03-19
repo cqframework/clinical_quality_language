@@ -50,6 +50,8 @@ interface ExpressionFold<R> {
 
     fun onAs(expr: AsExpression, operand: R): R
 
+    fun onImplicitCast(expr: ImplicitCastExpression, operand: R): R
+
     fun onCast(expr: CastExpression, operand: R): R
 
     fun onConversion(expr: ConversionExpression, operand: R): R
@@ -127,6 +129,7 @@ interface ExpressionFold<R> {
             is BooleanTestExpression -> onBooleanTest(expr, fold(expr.operand))
             is ExistsExpression -> onExists(expr, fold(expr.operand))
             is IsExpression -> onIs(expr, fold(expr.operand))
+            is ImplicitCastExpression -> onImplicitCast(expr, fold(expr.operand))
             is AsExpression -> onAs(expr, fold(expr.operand))
             is CastExpression -> onCast(expr, fold(expr.operand))
             is ConversionExpression -> onConversion(expr, fold(expr.operand))

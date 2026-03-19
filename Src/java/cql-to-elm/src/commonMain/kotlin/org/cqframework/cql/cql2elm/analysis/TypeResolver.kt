@@ -31,6 +31,7 @@ import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
+import org.hl7.cql.ast.ImplicitCastExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntLiteral
 import org.hl7.cql.ast.IntervalExpression
@@ -277,6 +278,9 @@ class TypeResolver(
     override fun onIs(expr: IsExpression, operand: DataType?): DataType? = inferIsType(expr)
 
     override fun onAs(expr: AsExpression, operand: DataType?): DataType? = inferAsType(expr)
+
+    override fun onImplicitCast(expr: ImplicitCastExpression, operand: DataType?): DataType? =
+        resolveTypeSpecifier(expr.type)
 
     override fun onCast(expr: CastExpression, operand: DataType?): DataType? = inferCastType(expr)
 

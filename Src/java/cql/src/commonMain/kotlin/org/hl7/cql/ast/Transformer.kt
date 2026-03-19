@@ -119,6 +119,7 @@ open class Transformer {
             is ExternalConstantExpression -> visitExternalConstantExpression(expression)
             is UnsupportedExpression -> visitUnsupportedExpression(expression)
             is IntervalExpression -> visitIntervalExpression(expression)
+            is ImplicitCastExpression -> visitImplicitCastExpression(expression)
             is LiteralExpression -> visitLiteralExpression(expression)
             is OperatorBinaryExpression -> visitOperatorBinaryExpression(expression)
             is OperatorUnaryExpression -> visitOperatorUnaryExpression(expression)
@@ -275,6 +276,9 @@ open class Transformer {
         expression
 
     open fun visitUnsupportedExpression(expression: UnsupportedExpression): Expression = expression
+
+    open fun visitImplicitCastExpression(expression: ImplicitCastExpression): Expression =
+        expression.copy(operand = visitExpression(expression.operand))
 
     open fun visitIntervalExpression(expression: IntervalExpression): Expression =
         expression.copy(

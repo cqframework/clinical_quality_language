@@ -2,11 +2,11 @@
 
 package org.cqframework.cql.cql2elm.codegen
 
-import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BeforeOrAfterIntervalPhrase
 import org.hl7.cql.ast.ConcurrentIntervalPhrase
 import org.hl7.cql.ast.ConcurrentQualifier
 import org.hl7.cql.ast.EndsIntervalPhrase
+import org.hl7.cql.ast.ImplicitCastExpression
 import org.hl7.cql.ast.IncludedInIntervalPhrase
 import org.hl7.cql.ast.IncludesIntervalPhrase
 import org.hl7.cql.ast.IntervalBoundarySelector
@@ -430,9 +430,10 @@ private fun emitEndsPhrase(
 private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression): Boolean {
     val type = semanticModel[expression]
     if (type != null) return type !is ListType && type !is IntervalType
-    // AsExpression inserted by ConversionInserter (null-wrapping) is not in semanticModel.
+    // ImplicitCastExpression inserted by ConversionInserter (null-wrapping) is not in
+    // semanticModel.
     // Determine element-ness from the target type specifier.
-    if (expression is AsExpression) {
+    if (expression is ImplicitCastExpression) {
         return when (expression.type) {
             is NamedTypeSpecifier -> true // Named types are always points
             is ListTypeSpecifier -> false

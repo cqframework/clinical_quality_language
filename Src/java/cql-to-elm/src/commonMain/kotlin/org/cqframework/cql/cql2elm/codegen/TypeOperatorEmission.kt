@@ -56,28 +56,31 @@ internal fun EmissionContext.emitIsExpression(
  *   behavior for internally generated null-As nodes.
  * - Explicit casts (user-written `x as T`): emit with `asTypeSpecifier` and `strict = false`.
  */
+/** Emit an explicit user-written `x as T` expression. */
 internal fun EmissionContext.emitAsExpression(
     expression: AsExpression,
     operandElm: ElmExpression,
 ): ElmExpression {
-    if (expression.implicit) {
-        // Implicit null-wrapping: use asType for named types (matching legacy wrapNullAs behavior)
-        val typeSpec = expression.type
-        return As().apply {
-            operand = operandElm
-            if (typeSpec is NamedTypeSpecifier) {
-                asType = QName(typesNamespace, typeSpec.name.simpleName)
-            } else {
-                asTypeSpecifier = emitTypeSpecifier(typeSpec)
-            }
-            // No strict field for implicit casts (matching legacy)
-        }
-    }
-    // Explicit user-written as expression
     return As().apply {
         operand = operandElm
         asTypeSpecifier = emitTypeSpecifier(expression.type)
         strict = false
+    }
+}
+
+/** Emit an implicit cast (from analysis/lowering). Uses asType for named types, no strict. */
+internal fun EmissionContext.emitImplicitCastExpression(
+    expression: org.hl7.cql.ast.ImplicitCastExpression,
+    operandElm: ElmExpression,
+): ElmExpression {
+    val typeSpec = expression.type
+    return As().apply {
+        operand = operandElm
+        if (typeSpec is NamedTypeSpecifier) {
+            asType = QName(typesNamespace, typeSpec.name.simpleName)
+        } else {
+            asTypeSpecifier = emitTypeSpecifier(typeSpec)
+        }
     }
 }
 

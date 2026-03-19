@@ -28,6 +28,7 @@ import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.Identifier
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
+import org.hl7.cql.ast.ImplicitCastExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.cql.ast.IntervalExpression
 import org.hl7.cql.ast.IntervalRelationExpression
@@ -215,6 +216,9 @@ class ExpressionLowering(
     override fun onAs(expr: AsExpression, operand: Expression) =
         if (operand === expr.operand) expr else expr.copy(operand = operand)
 
+    override fun onImplicitCast(expr: ImplicitCastExpression, operand: Expression) =
+        if (operand === expr.operand) expr else expr.copy(operand = operand)
+
     override fun onCast(expr: CastExpression, operand: Expression) =
         if (operand === expr.operand) expr else expr.copy(operand = operand)
 
@@ -338,13 +342,7 @@ class ExpressionLowering(
                             )
                     )
             )
-        val castExpr =
-            org.hl7.cql.ast.AsExpression(
-                operand = aliasRef,
-                type = typeSpec,
-                implicit = true,
-                locator = loc,
-            )
+        val castExpr = ImplicitCastExpression(operand = aliasRef, type = typeSpec, locator = loc)
         return org.hl7.cql.ast.QueryExpression(
             sources =
                 listOf(
@@ -849,20 +847,8 @@ class ExpressionLowering(
                 property = org.hl7.cql.ast.Identifier("high"),
                 locator = loc,
             )
-        val lowAs =
-            org.hl7.cql.ast.AsExpression(
-                operand = lowProp,
-                type = typeSpec,
-                implicit = true,
-                locator = loc,
-            )
-        val highAs =
-            org.hl7.cql.ast.AsExpression(
-                operand = highProp,
-                type = typeSpec,
-                implicit = true,
-                locator = loc,
-            )
+        val lowAs = ImplicitCastExpression(operand = lowProp, type = typeSpec, locator = loc)
+        val highAs = ImplicitCastExpression(operand = highProp, type = typeSpec, locator = loc)
         val lowClosedProp =
             org.hl7.cql.ast.PropertyAccessExpression(
                 target = intervalExpr,
