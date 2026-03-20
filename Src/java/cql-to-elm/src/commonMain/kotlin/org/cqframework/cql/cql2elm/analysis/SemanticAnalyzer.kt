@@ -49,7 +49,7 @@ class SemanticAnalyzer(
         // Each iteration: infer types (using effective types from synthetics), then record
         // all conversion kinds in the SyntheticTable. No AST mutation — the AST stays immutable.
         // Converges when no new synthetics are recorded (or max iterations reached).
-        var currentTypeTable: TypeTable
+        val cumulativeTypeTable = TypeTable()
         var totalConversions = 0
         val conversionsPerIteration = mutableListOf<Int>()
         val maxIterations = 3
@@ -58,10 +58,16 @@ class SemanticAnalyzer(
         for (iteration in 1..maxIterations) {
             // INFER: type resolution + overload resolution (reads synthetics for effective types)
             val resolver = TypeResolver(operatorRegistry, syntheticTable)
-            currentTypeTable = resolver.resolve(library, symbols)
+            val iterationTypeTable = resolver.resolve(library, symbols)
+
+            // Merge this iteration's results into the cumulative table.
+            // Later iterations may lose types that earlier iterations resolved (e.g., when
+            // effective types from synthetics break generic resolution). mergeFrom preserves
+            // the earliest successful type/resolution for each expression.
+            cumulativeTypeTable.mergeFrom(iterationTypeTable)
 
             // RECORD: all conversions in side table (no AST mutation)
-            val analyzer = ConversionAnalyzer(currentTypeTable, operatorRegistry, syntheticTable)
+            val analyzer = ConversionAnalyzer(cumulativeTypeTable, operatorRegistry, syntheticTable)
             analyzer.analyzeLibrary(library)
 
             val inserted = analyzer.newSyntheticsInserted
@@ -72,9 +78,7 @@ class SemanticAnalyzer(
             if (inserted == 0) break
         }
 
-        // Final pass: re-infer types with all synthetics applied
-        val finalResolver = TypeResolver(operatorRegistry, syntheticTable)
-        val finalTypeTable = finalResolver.resolve(library, symbols)
+        val finalTypeTable = cumulativeTypeTable
 
         val preLowerModel =
             SemanticModel(
@@ -93,9 +97,11 @@ class SemanticAnalyzer(
 
         // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
         // (QueryExpression for flatten, ConversionExpression for CalculateAge) that need typing.
+        // Merge the pre-lowering cumulative table so unchanged expressions keep their types.
         val loweredSymbols = symbolCollector.collect(loweredLibrary)
         val loweredResolver = TypeResolver(operatorRegistry, syntheticTable)
         val loweredTypeTable = loweredResolver.resolve(loweredLibrary, loweredSymbols)
+        loweredTypeTable.mergeFrom(finalTypeTable)
 
         val semanticModel =
             SemanticModel(
@@ -178,6 +184,36 @@ class TypeTable {
     fun setIdentifierResolution(expression: IdentifierExpression, resolution: Resolution) {
         identifierResolutions[expression] = resolution
         identifierResolutionCount++
+    }
+
+    /**
+     * Merge entries from [other] into this table. For each expression in [other]:
+     * - If this table has no type for the expression, copy the type from [other].
+     * - If this table already has a type, keep the existing one. Same logic for operator and
+     *   identifier resolutions.
+     *
+     * This preserves types from earlier convergence loop iterations that may be lost in later
+     * iterations (e.g., when effective types from synthetics break generic resolution).
+     */
+    fun mergeFrom(other: TypeTable) {
+        for ((expression, type) in other.types) {
+            if (types[expression] == null) {
+                types[expression] = type
+                typedCount++
+            }
+        }
+        for ((expression, resolution) in other.operatorResolutions) {
+            if (operatorResolutions[expression] == null) {
+                operatorResolutions[expression] = resolution
+                operatorResolutionCount++
+            }
+        }
+        for ((expression, resolution) in other.identifierResolutions) {
+            if (identifierResolutions[expression] == null) {
+                identifierResolutions[expression] = resolution
+                identifierResolutionCount++
+            }
+        }
     }
 }
 

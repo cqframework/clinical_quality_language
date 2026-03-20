@@ -206,9 +206,6 @@ class FullParityTest {
                 // CqlIntervalOperators: testing
                 // "CqlIntervalOperators" to
                 //     "TestEndsNull: CI-generated As on null bound flagged as error by validator",
-                // CqlListOperators: resolution now records cast for Any→Collection args.
-                // Re-typing still produces null type - needs further investigation.
-                "CqlListOperators" to "IndexOf(null, {}): re-typing loses type for Any-arg cast",
                 // Null safety wrapping: legacy wraps point operands in If(IsNull) for
                 // interval-point comparisons
                 // "IntervalOperators" — testing
