@@ -230,23 +230,6 @@ class ExpressionLowering(
         target: Expression?,
         arguments: List<Expression>,
     ): Expression {
-        val functionName = expr.function.value
-        // CalculateAgeInYears/Months: wrap arg in ToDate (CQL spec: Year/Month precision on Date)
-        if (
-            (functionName == "CalculateAgeInYears" || functionName == "CalculateAgeInMonths") &&
-                arguments.size == 1
-        ) {
-            val wrapped =
-                org.hl7.cql.ast.ConversionExpression(
-                    operand = arguments[0],
-                    destinationType =
-                        org.hl7.cql.ast.NamedTypeSpecifier(
-                            name = org.hl7.cql.ast.QualifiedIdentifier(listOf("Date"))
-                        ),
-                    locator = expr.locator,
-                )
-            return rewrite(expr, expr.copy(target = target, arguments = listOf(wrapped)))
-        }
         val argsChanged = arguments.indices.any { arguments[it] !== expr.arguments[it] }
         val targetChanged = target !== expr.target
         return if (!targetChanged && !argsChanged) expr

@@ -412,6 +412,14 @@ class TypeResolver(
             return resolveExpressionDef(name)
         }
 
+        // Check context definitions (e.g., "Patient" from "context Patient").
+        // Context definitions create an implicit ExpressionDef at emission time, so identifiers
+        // referencing the context name should resolve as expression references.
+        symbolTable.resolveContext(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return null // Type unknown at analysis time (model-dependent)
+        }
+
         // Check parameter definitions
         symbolTable.resolveParameter(name)?.let { resolution ->
             typeTable.setIdentifierResolution(expression, resolution)

@@ -214,10 +214,11 @@ class FullParityTest {
                     "Code→Concept conversion (ToConcept) and CodesToConcept error recovery",
                 // Name hiding: QDM model interval resolution and out-of-scope error recovery
                 "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
-                // AgeOperators: CalculateAgeIn* and AgeIn*At resolve via operator registry.
-                // AgeIn*() (0-arg) still needs model context injection (Patient.birthDate).
+                // AgeOperators: desugaring works (AgeIn*→CalculateAgeIn* with birthDate injection)
+                // but TypeResolver can't resolve model property types (Patient.birthDatetime)
+                // so operator resolution doesn't discover the DateTime→Date conversion.
                 "AgeOperators" to
-                    "AgeIn*() 0-arg functions need model context injection (Patient.birthDate)",
+                    "TypeResolver needs model type resolution for Patient.birthDatetime",
                 // Terminology: legacy resolves retrieve code properties and function references
                 "TerminologyReferences" to
                     "Retrieve code properties and terminology function resolution",

@@ -34,8 +34,7 @@ internal fun EmissionContext.emitIdentifierExpression(
             ValueSetRef().withName(resolution.definition.name.value).apply { preserve = true }
         is Resolution.CodeRef -> CodeRef().withName(resolution.definition.name.value)
         is Resolution.ConceptRef -> ConceptRef().withName(resolution.definition.name.value)
-        is Resolution.ContextRef ->
-            throw ElmEmitter.UnsupportedNodeException("Context references are not yet supported.")
+        is Resolution.ContextRef -> ExpressionRef().withName(resolution.definition.context.value)
         null ->
             // Unresolved identifiers become IdentifierRef — the legacy translator emits these
             // for sort-by property paths and other contexts where the identifier refers to a

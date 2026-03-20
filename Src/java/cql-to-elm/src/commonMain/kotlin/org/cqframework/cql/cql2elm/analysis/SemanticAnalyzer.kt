@@ -17,6 +17,7 @@ import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IncludeDefinition
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ParameterDefinition
+import org.hl7.cql.ast.UsingDefinition
 import org.hl7.cql.ast.ValueSetDefinition
 import org.hl7.cql.model.DataType
 
@@ -43,7 +44,11 @@ class SemanticAnalyzer(
 
     @Suppress("MagicNumber")
     fun analyze(library: Library): Result {
-        val symbols = symbolCollector.collect(library)
+        // Desugar AgeIn*() → CalculateAgeIn*(Patient.birthDate) before type inference.
+        // This is purely structural (needs model info, not types) so the convergence loop
+        // can resolve CalculateAgeIn* against the operator registry and discover conversions.
+        val desugared = desugarAgeInFunctions(library)
+        val symbols = symbolCollector.collect(desugared)
 
         // INFER → RECORD convergence loop.
         // Each iteration: infer types (using effective types from synthetics), then record
@@ -58,7 +63,7 @@ class SemanticAnalyzer(
         for (iteration in 1..maxIterations) {
             // INFER: type resolution + overload resolution (reads synthetics for effective types)
             val resolver = TypeResolver(operatorRegistry, syntheticTable)
-            val iterationTypeTable = resolver.resolve(library, symbols)
+            val iterationTypeTable = resolver.resolve(desugared, symbols)
 
             // Merge this iteration's results into the cumulative table.
             // Later iterations may lose types that earlier iterations resolved (e.g., when
@@ -68,7 +73,7 @@ class SemanticAnalyzer(
 
             // RECORD: all conversions in side table (no AST mutation)
             val analyzer = ConversionAnalyzer(cumulativeTypeTable, operatorRegistry, syntheticTable)
-            analyzer.analyzeLibrary(library)
+            analyzer.analyzeLibrary(desugared)
 
             val inserted = analyzer.newSyntheticsInserted
             conversionsPerIteration.add(inserted)
@@ -88,15 +93,15 @@ class SemanticAnalyzer(
                 options,
                 syntheticTable = syntheticTable,
             )
-        semanticValidator.validate(library, symbols, preLowerModel)
+        semanticValidator.validate(desugared, symbols, preLowerModel)
 
         // LOWERING: structural rewrites (phrases → operator trees, coalesce wrapping, etc.)
         // Produces a new AST with complex phrases desugared into simpler nodes.
         val lowering = ExpressionLowering(preLowerModel)
-        val loweredLibrary = lowering.lowerLibrary(library)
+        val loweredLibrary = lowering.lowerLibrary(desugared)
 
         // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
-        // (QueryExpression for flatten, ConversionExpression for CalculateAge) that need typing.
+        // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
         // Merge the pre-lowering cumulative table so unchanged expressions keep their types.
         val loweredSymbols = symbolCollector.collect(loweredLibrary)
         val loweredResolver = TypeResolver(operatorRegistry, syntheticTable)
@@ -128,6 +133,75 @@ class SemanticAnalyzer(
                 errorCount = preLowerModel.errors.size,
             )
         return Result(loweredLibrary, semanticModel)
+    }
+
+    /**
+     * Desugar AgeIn*() and AgeIn*At() calls by injecting Patient.birthDate from the model. Purely
+     * structural — needs model info but not types. Returns the library unchanged if no model is
+     * available or no AgeIn* calls are present.
+     */
+    private fun desugarAgeInFunctions(library: Library): Library {
+        val mm = modelManager ?: return library
+        val usingDef =
+            library.definitions.filterIsInstance<UsingDefinition>().firstOrNull {
+                it.modelIdentifier.simpleName != "System"
+            } ?: return library
+        val model =
+            try {
+                mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
+            } catch (_: Exception) {
+                return library
+            }
+        val birthDateProp = model.modelInfo.patientBirthDatePropertyName ?: return library
+        val desugarer = AgeInDesugarer(birthDateProp)
+        return desugarer.visitLibrary(library)
+    }
+}
+
+/**
+ * AST Transformer that rewrites AgeIn*() and AgeIn*At() calls into CalculateAgeIn* calls with the
+ * Patient birth date property injected as the first argument.
+ */
+private class AgeInDesugarer(private val birthDatePropertyName: String) :
+    org.hl7.cql.ast.Transformer() {
+    override fun visitFunctionCallExpression(
+        expression: org.hl7.cql.ast.FunctionCallExpression
+    ): org.hl7.cql.ast.Expression {
+        val name = expression.function.value
+        val isAgeIn = name.startsWith("AgeIn") && !name.startsWith("AgeIncludes")
+        if (!isAgeIn) return super.visitFunctionCallExpression(expression)
+
+        val isAt = name.endsWith("At")
+        val args = expression.arguments
+
+        // 0-arg AgeIn*() or 1-arg AgeIn*At(date)
+        if (!isAt && args.isNotEmpty()) return super.visitFunctionCallExpression(expression)
+        if (isAt && args.size != 1) return super.visitFunctionCallExpression(expression)
+
+        val birthDateExpr = buildBirthDateExpr(expression)
+        val calculateName = "CalculateAgeIn${name.removePrefix("AgeIn")}"
+        val visitedArgs = args.map { visitExpression(it) }
+        val newArgs = listOf(birthDateExpr) + visitedArgs
+
+        return expression.copy(
+            function = org.hl7.cql.ast.Identifier(calculateName),
+            arguments = newArgs,
+        )
+    }
+
+    private fun buildBirthDateExpr(
+        context: org.hl7.cql.ast.Expression
+    ): org.hl7.cql.ast.Expression {
+        val patientRef =
+            org.hl7.cql.ast.IdentifierExpression(
+                org.hl7.cql.ast.QualifiedIdentifier(listOf("Patient")),
+                locator = context.locator,
+            )
+        return org.hl7.cql.ast.PropertyAccessExpression(
+            target = patientRef,
+            property = org.hl7.cql.ast.Identifier(birthDatePropertyName),
+            locator = context.locator,
+        )
     }
 }
 
@@ -244,6 +318,7 @@ sealed interface Resolution {
  * Symbol table that retains definitions, contexts, and inferred types discovered during analysis.
  */
 data class SymbolTable(
+    val usingDefinitions: List<UsingDefinition> = emptyList(),
     val expressionDefinitions: Map<String, ExpressionDefinition> = emptyMap(),
     val parameterDefinitions: Map<String, ParameterDefinition> = emptyMap(),
     val contextDefinitions: List<ContextDefinition> = emptyList(),
@@ -254,6 +329,11 @@ data class SymbolTable(
     val codeDefinitions: Map<String, CodeDefinition> = emptyMap(),
     val conceptDefinitions: Map<String, ConceptDefinition> = emptyMap(),
 ) {
+    fun resolveContext(name: String): Resolution.ContextRef? =
+        contextDefinitions
+            .firstOrNull { it.context.value == name }
+            ?.let { Resolution.ContextRef(it) }
+
     fun resolveExpression(name: String): Resolution.ExpressionRef? =
         expressionDefinitions[name]?.let { Resolution.ExpressionRef(it) }
 
@@ -287,6 +367,7 @@ data class Diagnostic(val severity: Severity, val message: String) {
 
 class SymbolCollector {
     fun collect(library: Library): SymbolTable {
+        val usingDefs = mutableListOf<UsingDefinition>()
         val expressionDefs = mutableMapOf<String, ExpressionDefinition>()
         val parameterDefs = mutableMapOf<String, ParameterDefinition>()
         val contextDefs = mutableListOf<ContextDefinition>()
@@ -299,6 +380,7 @@ class SymbolCollector {
 
         for (definition in library.definitions) {
             when (definition) {
+                is UsingDefinition -> usingDefs.add(definition)
                 is ParameterDefinition -> parameterDefs[definition.name.value] = definition
                 is IncludeDefinition -> {
                     val alias = definition.alias?.value ?: definition.libraryIdentifier.simpleName
@@ -323,6 +405,7 @@ class SymbolCollector {
         }
 
         return SymbolTable(
+            usingDefinitions = usingDefs,
             expressionDefinitions = expressionDefs,
             parameterDefinitions = parameterDefs,
             contextDefinitions = contextDefs,
