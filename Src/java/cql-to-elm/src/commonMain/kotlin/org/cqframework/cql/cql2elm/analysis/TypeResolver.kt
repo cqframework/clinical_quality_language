@@ -2,6 +2,7 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.AsExpression
@@ -82,6 +83,7 @@ import org.hl7.cql.model.TupleTypeElement
 class TypeResolver(
     internal val operatorRegistry: OperatorRegistry,
     private val syntheticTable: SyntheticTable? = null,
+    private val modelManager: ModelManager? = null,
 ) : ExpressionFold<DataType?> {
 
     /** Tracks expression definitions currently being resolved to detect circular references. */
@@ -294,8 +296,8 @@ class TypeResolver(
     ): DataType? = inferFunctionCallType(expr, arguments)
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
-        // Target already pre-folded (identifiers within resolved); nothing more to do
-        return null
+        if (target == null) return null
+        return resolvePropertyType(target, expr.property.value)
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =
@@ -417,7 +419,7 @@ class TypeResolver(
         // referencing the context name should resolve as expression references.
         symbolTable.resolveContext(name)?.let { resolution ->
             typeTable.setIdentifierResolution(expression, resolution)
-            return null // Type unknown at analysis time (model-dependent)
+            return resolveContextType(name)
         }
 
         // Check parameter definitions
@@ -839,5 +841,48 @@ class TypeResolver(
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
+    }
+
+    /** Resolve the type of a context identifier (e.g., "Patient") from the loaded models. */
+    private fun resolveContextType(contextName: String): DataType? {
+        val mm = modelManager ?: return null
+        for (usingDef in symbolTable.usingDefinitions) {
+            if (usingDef.modelIdentifier.simpleName == "System") continue
+            val model =
+                try {
+                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
+                } catch (_: Exception) {
+                    continue
+                }
+            val ctx = model.resolveContextName(contextName, mustResolve = false)
+            if (ctx != null) return ctx.type
+        }
+        return null
+    }
+
+    /** Resolve the type of a property on a source type (e.g., "birthDatetime" on QDM.Patient). */
+    private fun resolvePropertyType(sourceType: DataType, propertyName: String): DataType? {
+        if (sourceType is org.hl7.cql.model.ClassType) {
+            // Search elements including inherited ones
+            var current: DataType? = sourceType
+            while (current is org.hl7.cql.model.ClassType) {
+                val element = current.elements.firstOrNull { it.name == propertyName }
+                if (element != null) return element.type
+                current = current.baseType
+            }
+        }
+        if (sourceType is org.hl7.cql.model.IntervalType) {
+            return when (propertyName) {
+                "low",
+                "high" -> sourceType.pointType
+                "lowClosed",
+                "highClosed" -> operatorRegistry.type("Boolean")
+                else -> null
+            }
+        }
+        if (sourceType is org.hl7.cql.model.TupleType) {
+            return sourceType.elements.firstOrNull { it.name == propertyName }?.type
+        }
+        return null
     }
 }

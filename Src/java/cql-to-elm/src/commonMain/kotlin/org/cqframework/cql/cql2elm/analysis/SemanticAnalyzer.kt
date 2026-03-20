@@ -62,7 +62,7 @@ class SemanticAnalyzer(
 
         for (iteration in 1..maxIterations) {
             // INFER: type resolution + overload resolution (reads synthetics for effective types)
-            val resolver = TypeResolver(operatorRegistry, syntheticTable)
+            val resolver = TypeResolver(operatorRegistry, syntheticTable, modelManager)
             val iterationTypeTable = resolver.resolve(desugared, symbols)
 
             // Merge this iteration's results into the cumulative table.
@@ -178,8 +178,24 @@ private class AgeInDesugarer(private val birthDatePropertyName: String) :
         if (!isAt && args.isNotEmpty()) return super.visitFunctionCallExpression(expression)
         if (isAt && args.size != 1) return super.visitFunctionCallExpression(expression)
 
-        val birthDateExpr = buildBirthDateExpr(expression)
-        val calculateName = "CalculateAgeIn${name.removePrefix("AgeIn")}"
+        var birthDateExpr: org.hl7.cql.ast.Expression = buildBirthDateExpr(expression)
+        val suffix = name.removePrefix("AgeIn")
+        val calculateName = "CalculateAgeIn$suffix"
+
+        // CQL spec: AgeIn(Years|Months)() operates on Date precision.
+        // Wrap birthDate (DateTime) in ToDate for Year/Month 0-arg calls.
+        if (!isAt && (suffix == "Years" || suffix == "Months")) {
+            birthDateExpr =
+                org.hl7.cql.ast.ConversionExpression(
+                    operand = birthDateExpr,
+                    destinationType =
+                        org.hl7.cql.ast.NamedTypeSpecifier(
+                            name = org.hl7.cql.ast.QualifiedIdentifier(listOf("Date"))
+                        ),
+                    locator = expression.locator,
+                )
+        }
+
         val visitedArgs = args.map { visitExpression(it) }
         val newArgs = listOf(birthDateExpr) + visitedArgs
 
