@@ -51,7 +51,7 @@ internal fun EmissionContext.emitLiteral(literal: Literal): ElmExpression {
         is DecimalLiteral ->
             ElmLiteral()
                 .withValueType(QName(typesNamespace, "Decimal"))
-                .withValue(literal.value.toString())
+                .withValue(literal.value.toPlainString())
         is NullLiteral -> Null()
         is QuantityLiteral -> emitQuantity(literal)
         is RatioLiteral -> emitRatio(literal)
