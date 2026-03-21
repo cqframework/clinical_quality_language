@@ -230,11 +230,71 @@ class ExpressionLowering(
         target: Expression?,
         arguments: List<Expression>,
     ): Expression {
+        // CalculateAgeIn*At with mixed DateTime/Date args: enforce compatibility by
+        // converting the DateTime operand to Date, matching the legacy translator's
+        // behavior (SystemFunctionResolver.enforceCompatible). This ensures the (Date,Date)
+        // overload is used rather than promoting Date→DateTime.
+        val lowered = lowerCalculateAgeAtCompatibility(expr, arguments)
+        if (lowered != null) return lowered
+
         val argsChanged = arguments.indices.any { arguments[it] !== expr.arguments[it] }
         val targetChanged = target !== expr.target
         return if (!targetChanged && !argsChanged) expr
         else expr.copy(target = target, arguments = arguments)
     }
+
+    /**
+     * For CalculateAgeIn{Years,Months,Weeks,Days}At calls where one arg is DateTime and the other
+     * is Date, wrap the DateTime arg in ConversionExpression(ToDate) so both operands are Date.
+     * This matches the CQL spec behavior: age calculations at day precision or coarser should
+     * operate on Date, not DateTime.
+     *
+     * Returns null if no lowering is needed.
+     */
+    private fun lowerCalculateAgeAtCompatibility(
+        expr: FunctionCallExpression,
+        arguments: List<Expression>,
+    ): Expression? {
+        if (arguments.size != 2) return null
+        val name = expr.function.value
+        // Only apply to day-or-coarser precisions (Years, Months, Weeks, Days).
+        // Hours, Minutes, Seconds require DateTime precision — no conversion needed.
+        val isAgeAtDayOrCoarser =
+            name.startsWith("CalculateAgeIn") &&
+                name.endsWith("At") &&
+                !name.contains("Hours") &&
+                !name.contains("Minutes") &&
+                !name.contains("Seconds")
+        if (!isAgeAtDayOrCoarser) return null
+
+        val type0 = semanticModel[expr.arguments[0]]?.toString()
+        val type1 = semanticModel[expr.arguments[1]]?.toString()
+        if (type0 == null || type1 == null) return null
+
+        // If one is DateTime and the other is Date, convert the DateTime one to Date.
+        val newArgs = arguments.toMutableList()
+        if (type0 == "System.DateTime" && type1 == "System.Date") {
+            newArgs[0] = wrapInToDate(arguments[0], expr)
+        } else if (type0 == "System.Date" && type1 == "System.DateTime") {
+            newArgs[1] = wrapInToDate(arguments[1], expr)
+        } else {
+            return null
+        }
+        // Don't use rewrite() here — we don't want to transfer the old synthetics
+        // (e.g., Date→DateTime on arg[1]) since the new args are both Date and the
+        // (Date,Date) overload matches exactly with no conversions needed.
+        return expr.copy(arguments = newArgs)
+    }
+
+    private fun wrapInToDate(operand: Expression, context: Expression): ConversionExpression =
+        ConversionExpression(
+            operand = operand,
+            destinationType =
+                org.hl7.cql.ast.NamedTypeSpecifier(
+                    name = org.hl7.cql.ast.QualifiedIdentifier(listOf("Date"))
+                ),
+            locator = context.locator,
+        )
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: Expression) =
         if (target === expr.target) expr else expr.copy(target = target)
@@ -428,19 +488,24 @@ class ExpressionLowering(
         left: Expression,
         right: Expression,
     ): Expression {
-        // Interval<Any> expansion: when one operand is Interval<Any> (non-literal) and the
-        // other has a concrete point type, expand using PropertyAccessExpression + AsExpression.
+        // Interval type promotion: when both operands are non-literal intervals with
+        // different point types, expand the one needing conversion into bound access +
+        // conversion + reconstruction. This handles Interval<Date> → Interval<DateTime>
+        // for operators like IncludedIn/Includes. The IntervalConversion synthetic tells
+        // us which slot needs conversion and what operator to use.
         var loweredLeft = left
         var loweredRight = right
         val leftType = semanticModel[expr.left]
         val rightType = semanticModel[expr.right]
+
+        // Interval<Any> expansion: when one operand is Interval<Any> (non-literal) and the
+        // other has a concrete point type, expand using PropertyAccessExpression + AsExpression.
         if (
             leftType is IntervalType &&
                 rightType is IntervalType &&
                 rightType.pointType.toString() == "System.Any" &&
                 leftType.pointType.toString() != "System.Any" &&
-                !(expr.right is LiteralExpression &&
-                    (expr.right as LiteralExpression).literal is org.hl7.cql.ast.IntervalLiteral)
+                !isIntervalLiteral(expr.right)
         ) {
             loweredRight = expandIntervalToType(right, leftType.pointType)
         }
@@ -852,6 +917,9 @@ class ExpressionLowering(
             locator = loc,
         )
     }
+
+    private fun isIntervalLiteral(expr: Expression): Boolean =
+        expr is LiteralExpression && expr.literal is org.hl7.cql.ast.IntervalLiteral
 
     override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>) = expr
 

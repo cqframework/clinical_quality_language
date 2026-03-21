@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.CastExpression
 import org.hl7.cql.ast.ConversionExpression
@@ -77,7 +76,7 @@ internal fun EmissionContext.emitImplicitCastExpression(
     return As().apply {
         operand = operandElm
         if (typeSpec is NamedTypeSpecifier) {
-            asType = QName(typesNamespace, typeSpec.name.simpleName)
+            asType = resolveTypeQName(typeSpec.name.simpleName)
         } else {
             asTypeSpecifier = emitTypeSpecifier(typeSpec)
         }
@@ -98,8 +97,9 @@ internal fun EmissionContext.emitCastExpression(
 
 /**
  * Emit a [ConversionExpression] (`convert X to Y`) as the appropriate ELM conversion function node
- * (e.g., ToString, ToDecimal). The legacy translator resolves the conversion via the ConversionMap
- * and emits the corresponding function operator. Operand is pre-folded.
+ * (e.g., ToString, ToDecimal) for system types, or as an [As] cast for class/tuple conversions. The
+ * legacy translator resolves the conversion via the ConversionMap and emits the corresponding
+ * function operator or cast. Operand is pre-folded.
  */
 internal fun EmissionContext.emitConversionExpression(
     expression: ConversionExpression,
@@ -116,9 +116,23 @@ internal fun EmissionContext.emitConversionExpression(
         if (conversionName != null) {
             return createConversionElm(conversionName, operandElm)
         }
+        // For non-system types (e.g., class/tuple conversions), emit as an As (cast) node.
+        // The legacy translator resolves these as cast conversions via buildAs, which uses
+        // asType (QName) for named types. No strict flag is set.
+        return As().apply {
+            operand = operandElm
+            asType = resolveTypeQName(destType.name.simpleName)
+        }
+    }
+    // Non-named destination types (e.g., TupleTypeSpecifier): emit as cast with asTypeSpecifier
+    if (destType != null) {
+        return As().apply {
+            operand = operandElm
+            asTypeSpecifier = emitTypeSpecifier(destType)
+        }
     }
     throw ElmEmitter.UnsupportedNodeException(
-        "ConversionExpression to '${expression.destinationType}' is not yet supported."
+        "ConversionExpression with no destination type is not supported."
     )
 }
 
@@ -129,7 +143,7 @@ internal fun EmissionContext.emitTypeSpecifier(
     return when (typeSpec) {
         is NamedTypeSpecifier -> {
             val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
-            elmTypeSpec.name = QName(typesNamespace, typeSpec.name.simpleName)
+            elmTypeSpec.name = resolveTypeQName(typeSpec.name.simpleName)
             elmTypeSpec
         }
         is org.hl7.cql.ast.ListTypeSpecifier ->

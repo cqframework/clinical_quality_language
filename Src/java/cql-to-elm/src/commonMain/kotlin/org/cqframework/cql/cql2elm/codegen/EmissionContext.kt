@@ -79,6 +79,94 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
     internal val loadedModelNames = mutableListOf<String>()
 
     /**
+     * Resolve an AST type name to the correct ELM [QName], checking system types first, then loaded
+     * models. Falls back to [typesNamespace] if no model match is found.
+     */
+    internal fun resolveTypeQName(name: String): QName {
+        // System types (Integer, String, Code, etc.) live in the ELM types namespace
+        val systemType = operatorRegistry.systemModel.resolveTypeName(name)
+        if (systemType != null) {
+            return dataTypeToQName(systemType)
+        }
+        // Model types (Element, Extension, etc.) need their model's namespace.
+        // We resolve the QName directly from the model info rather than going through
+        // TypeBuilder.dataTypeToQName, because the OperatorRegistry's ModelResolver
+        // only knows about the System model.
+        val mm = modelManager
+        if (mm != null) {
+            for (modelName in loadedModelNames) {
+                val model =
+                    try {
+                        mm.resolveModel(modelName, null)
+                    } catch (_: Exception) {
+                        continue
+                    }
+                val dataType = model.resolveTypeName(name)
+                if (dataType != null && dataType is org.hl7.cql.model.NamedType) {
+                    val modelInfo = model.modelInfo
+                    val ns = modelInfo.targetUrl ?: modelInfo.url ?: typesNamespace
+                    val simpleName = dataType.target ?: dataType.simpleName
+                    return QName(ns, simpleName)
+                }
+            }
+        }
+        // Fallback: assume system type namespace
+        return QName(typesNamespace, name)
+    }
+
+    /**
+     * Convert a resolved [DataType] to a [QName] with the correct namespace. For system types,
+     * delegates to [operatorRegistry.typeBuilder.dataTypeToQName]. For model types, resolves the
+     * namespace directly from the model info to avoid the OperatorRegistry's system-only
+     * ModelResolver.
+     */
+    internal fun dataTypeToQName(type: DataType): QName {
+        if (type !is org.hl7.cql.model.NamedType) {
+            throw IllegalArgumentException("A named type is required in this context.")
+        }
+        val namedType: org.hl7.cql.model.NamedType = type
+        // System types can go through the TypeBuilder
+        if (namedType.namespace == "System") {
+            return operatorRegistry.typeBuilder.dataTypeToQName(type)
+        }
+        // Model types: resolve from loaded models
+        val mm = modelManager
+        if (mm != null) {
+            for (modelName in loadedModelNames) {
+                val model =
+                    try {
+                        mm.resolveModel(modelName, null)
+                    } catch (_: Exception) {
+                        continue
+                    }
+                // Check if this model owns the type
+                if (model.resolveTypeName(namedType.simpleName) != null) {
+                    val modelInfo = model.modelInfo
+                    val ns = modelInfo.targetUrl ?: modelInfo.url ?: typesNamespace
+                    val simpleName = namedType.target ?: namedType.simpleName
+                    return QName(ns, simpleName)
+                }
+            }
+        }
+        // Fallback: try the TypeBuilder (may throw)
+        return operatorRegistry.typeBuilder.dataTypeToQName(type)
+    }
+
+    /**
+     * Convert a resolved [DataType] to an ELM TypeSpecifier with the correct namespace. For
+     * NamedType, uses [dataTypeToQName] which handles model types correctly. For other types,
+     * delegates to [operatorRegistry.typeBuilder.dataTypeToTypeSpecifier].
+     */
+    internal fun dataTypeToTypeSpecifier(type: DataType): org.hl7.elm.r1.TypeSpecifier {
+        if (type is org.hl7.cql.model.NamedType) {
+            return org.hl7.elm.r1.NamedTypeSpecifier().withName(dataTypeToQName(type)).apply {
+                resultType = type
+            }
+        }
+        return operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(type)
+    }
+
+    /**
      * Set resultType on an ELM element via the Trackable extension property. This sets the internal
      * resultType for downstream consumers but does NOT set resultTypeName or resultTypeSpecifier on
      * the serialized output, matching the legacy translator's default behavior.
@@ -139,9 +227,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                 targetType is org.hl7.cql.model.SimpleType ||
                     targetType is org.hl7.cql.model.ClassType
             ) {
-                asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
+                asType = dataTypeToQName(targetType)
             } else {
-                asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+                asTypeSpecifier = dataTypeToTypeSpecifier(targetType)
             }
         }
     }
@@ -194,10 +282,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                     targetElementType is org.hl7.cql.model.SimpleType ||
                         targetElementType is org.hl7.cql.model.ClassType
                 ) {
-                    asType = operatorRegistry.typeBuilder.dataTypeToQName(targetElementType)
+                    asType = dataTypeToQName(targetElementType)
                 } else {
-                    asTypeSpecifier =
-                        operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetElementType)
+                    asTypeSpecifier = dataTypeToTypeSpecifier(targetElementType)
                 }
             }
         return org.hl7.elm.r1.Query().apply {
@@ -223,6 +310,7 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         expression: ElmExpression,
         innerOperatorName: String,
     ): ElmExpression {
+        // Literal intervals: wrap each bound in the conversion operator
         if (expression is org.hl7.elm.r1.Interval) {
             return org.hl7.elm.r1.Interval().apply {
                 low = expression.low?.let { createConversionElm(innerOperatorName, it) }
@@ -233,7 +321,37 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                 highClosedExpression = expression.highClosedExpression
             }
         }
-        return expression
+        // Non-literal intervals (e.g., Property references): decompose into bound access +
+        // conversion + reconstruction. This produces the same output as the legacy translator
+        // for interval type promotion (e.g., Interval<Date> → Interval<DateTime>).
+        return org.hl7.elm.r1.Interval().apply {
+            low =
+                createConversionElm(
+                    innerOperatorName,
+                    org.hl7.elm.r1.Property().apply {
+                        path = "low"
+                        source = expression
+                    },
+                )
+            high =
+                createConversionElm(
+                    innerOperatorName,
+                    org.hl7.elm.r1.Property().apply {
+                        path = "high"
+                        source = expression
+                    },
+                )
+            lowClosedExpression =
+                org.hl7.elm.r1.Property().apply {
+                    path = "lowClosed"
+                    source = expression
+                }
+            highClosedExpression =
+                org.hl7.elm.r1.Property().apply {
+                    path = "highClosed"
+                    source = expression
+                }
+        }
     }
 
     /** Promote a point to degenerate interval: If(IsNull(p), Null, Interval[p, p]). */
@@ -292,9 +410,9 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
                 targetType is org.hl7.cql.model.SimpleType ||
                     targetType is org.hl7.cql.model.ClassType
             ) {
-                asType = operatorRegistry.typeBuilder.dataTypeToQName(targetType)
+                asType = dataTypeToQName(targetType)
             } else {
-                asTypeSpecifier = operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(targetType)
+                asTypeSpecifier = dataTypeToTypeSpecifier(targetType)
             }
         }
     }

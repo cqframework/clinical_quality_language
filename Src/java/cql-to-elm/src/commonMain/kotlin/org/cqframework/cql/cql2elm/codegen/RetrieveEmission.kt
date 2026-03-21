@@ -11,7 +11,22 @@ import org.hl7.elm.r1.Retrieve
  * [org.cqframework.cql.cql2elm.ModelManager] to determine the correct QName and templateId.
  */
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
-    return buildRetrieveForType(expression.typeSpecifier.name.simpleName)
+    val retrieve = buildRetrieveForType(expression.typeSpecifier.name.simpleName)
+
+    // Resolve codeProperty/codeComparator when a terminology restriction is present.
+    // The terminology expression itself is emitted by the function definition's operand
+    // binding, not inlined here — the Retrieve just needs the code path metadata.
+    if (expression.terminology != null) {
+        val model = resolveModelForType(expression.typeSpecifier.name.simpleName)
+        val dataType = model.resolveTypeName(expression.typeSpecifier.name.simpleName)
+        val classType = dataType as? ClassType
+        if (classType?.primaryCodePath != null) {
+            retrieve.codeProperty = classType.primaryCodePath
+            retrieve.codeComparator = "in"
+        }
+    }
+
+    return retrieve
 }
 
 /**

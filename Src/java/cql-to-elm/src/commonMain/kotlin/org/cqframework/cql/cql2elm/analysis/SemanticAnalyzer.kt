@@ -57,7 +57,7 @@ class SemanticAnalyzer(
         val cumulativeTypeTable = TypeTable()
         var totalConversions = 0
         val conversionsPerIteration = mutableListOf<Int>()
-        val maxIterations = 3
+        val maxIterations = 2
         val syntheticTable = SyntheticTable()
 
         for (iteration in 1..maxIterations) {

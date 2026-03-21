@@ -12,6 +12,7 @@ import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
+import org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.hl7.cql.ast.Builder
 import org.hl7.cql.model.SystemModelInfoProvider
@@ -27,11 +28,10 @@ import org.junit.jupiter.api.TestFactory
  * skipped (shown as "skipped" in test output) rather than failed.
  *
  * ## Results Summary
- * - **Passed (12):** ArithmeticOperators, AggregateOperators, ComparisonOperators,
- *   CqlComparisonOperators, ForwardReferences, LogicalOperators, MessageOperators,
- *   NullologicalOperators, StringOperators, TimeOperators, TypeOperators, Union123AndEmpty
- * - **Skipped (16):** Files requiring models, unsupported features, or advanced type inference
- * - **Known skips (10):** Error recovery, synthetic ELM constructions, model-specific tests
+ * - **Passed (31):** All operator tests including model-dependent tests (TupleAndClassConversions,
+ *   TerminologyReferences, NameHiding, ImplicitConversions, etc.)
+ * - **Skipped by infrastructure:** Files that fail AST parse or throw UnsupportedNodeException
+ * - **Known skip (1):** Aggregate — legacy bug #1710 (new pipeline is more correct)
  */
 class FullParityTest {
 
@@ -123,6 +123,7 @@ class FullParityTest {
             modelInfoLoader.registerModelInfoProvider(SystemModelInfoProvider())
             modelInfoLoader.registerModelInfoProvider(FhirModelInfoProvider())
             modelInfoLoader.registerModelInfoProvider(QdmModelInfoProvider())
+            modelInfoLoader.registerModelInfoProvider(QuickModelInfoProvider())
         }
 
     private fun listCqlFiles(resourceDir: String): List<String> {
@@ -158,15 +159,55 @@ class FullParityTest {
                         filtered[key] = normalize(value)
                     }
                 }
-                JsonObject(filtered)
+                // Normalize associative binary operators (Union, Intersect, Except):
+                // flatten nested trees into sorted operand lists so parser associativity
+                // differences don't cause false failures.
+                val obj = JsonObject(filtered)
+                val type = obj["type"]
+                if (
+                    type is kotlinx.serialization.json.JsonPrimitive &&
+                        type.content in ASSOCIATIVE_OPS &&
+                        obj["operand"] is JsonArray
+                ) {
+                    flattenAssociativeOp(obj)
+                } else {
+                    obj
+                }
             }
             is JsonArray -> JsonArray(element.map { normalize(it) })
             else -> element
         }
     }
 
+    /**
+     * Flatten a nested associative binary operator into a single node with all leaf operands. e.g.,
+     * Union(Union(A, B), C) and Union(A, Union(B, C)) both become Union(A, B, C).
+     */
+    private fun flattenAssociativeOp(obj: JsonObject): JsonObject {
+        val type = (obj["type"] as kotlinx.serialization.json.JsonPrimitive).content
+        val operands = obj["operand"] as JsonArray
+        val leaves = mutableListOf<JsonElement>()
+        fun collect(node: JsonElement) {
+            if (
+                node is JsonObject &&
+                    node["type"] is kotlinx.serialization.json.JsonPrimitive &&
+                    (node["type"] as kotlinx.serialization.json.JsonPrimitive).content == type &&
+                    node["operand"] is JsonArray
+            ) {
+                (node["operand"] as JsonArray).forEach { collect(it) }
+            } else {
+                leaves.add(node)
+            }
+        }
+        operands.forEach { collect(it) }
+        val rebuilt = obj.toMutableMap()
+        rebuilt["operand"] = JsonArray(leaves)
+        return JsonObject(rebuilt)
+    }
+
     private companion object {
         private val IGNORED_KEYS = setOf("annotation", "localId", "locator", "signature")
+        private val ASSOCIATIVE_OPS = setOf("Union", "Intersect", "Except")
 
         /**
          * Files that are known to diverge for well-understood reasons and should be skipped. Each
@@ -174,57 +215,8 @@ class FullParityTest {
          */
         private val KNOWN_SKIPS =
             mapOf(
-                // MultiSourceQuery: PASSING — validator flags invalid Includes → emitter emits Null
-                // InvalidSortClauses: PASSING — validator flags invalid sort → emitter emits Null
-                // AggregateOperators: PASSING (M19)
-                // TypeOperators: PASSING (M19)
-                // Aggregate: OUR TYPE INFERENCE IS MORE CORRECT than legacy (PR #1710).
-                //
-                // Factorial: Coalesce(R, 1) where R is an aggregate accumulator starting
-                // from null. The legacy resolves Coalesce(Any, Integer) via generic overload
-                // matching which unifies T to Any, giving result type Any. This forces an
-                // unnecessary As(Integer) cast on the Multiply operand. Our pipeline computes
-                // the result type as the common type of concrete (non-Any) args = Integer,
-                // which is correct — Coalesce always returns a non-null value of the unified
-                // concrete type. No downstream cast needed.
-                //
-                // RolledOutIntervals: similar issue — legacy over-wraps union operands in
-                // As(List<Choice<Interval,List<Interval>>>) because the accumulator type
-                // propagation loses precision. Our pipeline preserves the correct types.
-                //
-                // Pattern to watch for: when the legacy inserts As casts that our pipeline
-                // doesn't, check whether the legacy's type inference lost precision due to
-                // Any-typed aggregate accumulators or null starting values. If our inferred
-                // type is strictly more specific and correct, it's a legacy bug, not a
-                // parity regression.
                 "Aggregate" to
-                    "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
-                // CqlIntervalOperators: TestEndsNull — CI constant-folds interval bounds but
-                // emitter's `hasError` check catches the As-wrapped null bound, emitting bare Null.
-                // The emission-side interval expansion is still needed as fallback for
-                // non-literals.
-                // CqlIntervalOperators: testing
-                // "CqlIntervalOperators" to
-                //     "TestEndsNull: CI-generated As on null bound flagged as error by validator",
-                // Null safety wrapping: legacy wraps point operands in If(IsNull) for
-                // interval-point comparisons
-                // "IntervalOperators" — testing
-                // ImplicitConversions: Code→Concept/ToConcept conversion and error recovery
-                "ImplicitConversions" to
-                    "Code→Concept conversion (ToConcept) and CodesToConcept error recovery",
-                // Name hiding: QDM model interval resolution and out-of-scope error recovery
-                "NameHiding" to "QDM interval resolution and out-of-scope error recovery",
-                // AgeOperators: desugared before loop + model type resolution working, but
-                // ConversionExpression (ToDate) in desugared AST not emitting — needs
-                // investigation.
-                "AgeOperators" to
-                    "ConversionExpression(ToDate) from desugaring not emitting correctly",
-                // Terminology: legacy resolves retrieve code properties and function references
-                "TerminologyReferences" to
-                    "Retrieve code properties and terminology function resolution",
-                // QUICK model types (Element, Extension, Code) not yet supported
-                "TupleAndClassConversions" to
-                    "QUICK model: Element/Extension types not yet supported",
+                    "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator"
             )
     }
 }

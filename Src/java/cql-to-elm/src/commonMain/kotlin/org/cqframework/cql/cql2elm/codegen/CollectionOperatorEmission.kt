@@ -176,7 +176,7 @@ private fun EmissionContext.expandIntervalToPointType(
     intervalExpr: ElmExpression,
     targetPointType: org.hl7.cql.model.DataType,
 ): ElmExpression {
-    val asQName = operatorRegistry.typeBuilder.dataTypeToQName(targetPointType)
+    val asQName = dataTypeToQName(targetPointType)
     return org.hl7.elm.r1.Interval().apply {
         low =
             org.hl7.elm.r1.As().apply {

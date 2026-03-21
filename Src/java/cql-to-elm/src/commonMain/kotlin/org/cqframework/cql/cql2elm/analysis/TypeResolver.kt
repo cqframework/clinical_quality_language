@@ -82,7 +82,7 @@ import org.hl7.cql.model.TupleTypeElement
  */
 class TypeResolver(
     internal val operatorRegistry: OperatorRegistry,
-    private val syntheticTable: SyntheticTable? = null,
+    internal val syntheticTable: SyntheticTable? = null,
     private val modelManager: ModelManager? = null,
 ) : ExpressionFold<DataType?> {
 
@@ -109,6 +109,50 @@ class TypeResolver(
 
     /** Shorthand for resolving a System type by name. Used by extension functions. */
     internal fun type(name: String): DataType? = operatorRegistry.type(name)
+
+    /**
+     * Resolve a type by simple name, checking system types first, then all loaded models. This
+     * handles both system types (Integer, String) and model types (Element, Extension).
+     */
+    internal fun resolveNamedType(name: String): DataType? {
+        // Try system type first
+        try {
+            return operatorRegistry.type(name)
+        } catch (_: IllegalArgumentException) {
+            // Not a system type — fall through to model resolution
+        }
+        return resolveModelType(modelName = null, typeName = name)
+    }
+
+    /**
+     * Resolve a type from loaded models, optionally qualified by model name. When [modelName] is
+     * null, searches all non-System models via [symbolTable.usingDefinitions].
+     */
+    private fun resolveModelType(modelName: String?, typeName: String): DataType? {
+        val mm = modelManager ?: return null
+        if (modelName != null) {
+            val model =
+                try {
+                    mm.resolveModel(modelName, null)
+                } catch (_: Exception) {
+                    return null
+                }
+            return model.resolveTypeName(typeName)
+        }
+        // Unqualified: search all non-System models
+        for (usingDef in symbolTable.usingDefinitions) {
+            if (usingDef.modelIdentifier.simpleName == "System") continue
+            val model =
+                try {
+                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
+                } catch (_: Exception) {
+                    continue
+                }
+            val dataType = model.resolveTypeName(typeName)
+            if (dataType != null) return dataType
+        }
+        return null
+    }
 
     /** Push a query scope onto the stack. Used by [QueryTypeInference]. */
     internal fun pushQueryScope(scope: Map<String, Resolution>) {
@@ -150,9 +194,16 @@ class TypeResolver(
             return it
         }
         inProgressExpressions.add(name)
+        // Save and clear query scopes: expression definitions are library-level declarations,
+        // not nested subexpressions. They must not inherit the caller's query scope.
+        // Without this, alias B from "Source 1 B where exists(Query3)" leaks into Query3.
+        val savedScopes = queryScopes.toList()
+        queryScopes.clear()
         try {
             return inferType(exprDef.expression)
         } finally {
+            queryScopes.clear()
+            queryScopes.addAll(savedScopes)
             inProgressExpressions.remove(name)
         }
     }
@@ -189,7 +240,23 @@ class TypeResolver(
 
     internal fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType? {
         return when (typeSpec) {
-            is NamedTypeSpecifier -> operatorRegistry.type(typeSpec.name.simpleName)
+            is NamedTypeSpecifier -> {
+                val parts = typeSpec.name.parts
+                if (parts.size == 1) {
+                    resolveNamedType(parts[0])
+                } else {
+                    // Qualified: first parts are model name, last is type name
+                    val modelName = parts.dropLast(1).joinToString(".")
+                    val typeName = parts.last()
+                    // Try system type first for System-qualified names
+                    try {
+                        operatorRegistry.type(typeName)?.let {
+                            return it
+                        }
+                    } catch (_: IllegalArgumentException) {}
+                    resolveModelType(modelName, typeName)
+                }
+            }
             is org.hl7.cql.ast.ListTypeSpecifier -> {
                 val elementType = resolveTypeSpecifier(typeSpec.elementType) ?: return null
                 ListType(elementType)
@@ -381,7 +448,22 @@ class TypeResolver(
     override fun onQuery(expr: QueryExpression, children: QueryChildren<DataType?>): DataType? =
         inferQueryType(expr)
 
-    override fun onRetrieve(expr: RetrieveExpression): DataType? = null
+    override fun onRetrieve(expr: RetrieveExpression): DataType? {
+        val mm = modelManager ?: return null
+        val typeName = expr.typeSpecifier.name.simpleName
+        for (usingDef in symbolTable.usingDefinitions) {
+            if (usingDef.modelIdentifier.simpleName == "System") continue
+            val model =
+                try {
+                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
+                } catch (_: Exception) {
+                    continue
+                }
+            val dataType = model.resolveTypeName(typeName)
+            if (dataType != null) return ListType(dataType)
+        }
+        return null
+    }
 
     override fun onUnsupported(expr: UnsupportedExpression): DataType? = null
 
@@ -473,6 +555,9 @@ class TypeResolver(
             }
             is TimeLiteral -> operatorRegistry.type("Time")
             is NullLiteral -> operatorRegistry.type("Any")
+            is org.hl7.cql.ast.CodeLiteral -> operatorRegistry.type("Code")
+            is org.hl7.cql.ast.ConceptLiteral -> operatorRegistry.type("Concept")
+            is org.hl7.cql.ast.RatioLiteral -> operatorRegistry.type("Ratio")
             is ListLiteral -> inferListLiteralType(literal)
             is org.hl7.cql.ast.IntervalLiteral -> inferIntervalLiteralType(literal)
             is org.hl7.cql.ast.TupleLiteral -> inferTupleLiteralType(literal)
@@ -553,8 +638,8 @@ class TypeResolver(
     private fun inferInstanceLiteralType(literal: org.hl7.cql.ast.InstanceLiteral): DataType? {
         // Resolve element expressions for side effects (e.g., identifier resolution)
         literal.elements.forEach { inferType(it.expression) }
-        val typeName = literal.type?.name?.simpleName ?: return null
-        return operatorRegistry.type(typeName)
+        val typeSpec = literal.type ?: return null
+        return resolveTypeSpecifier(typeSpec)
     }
 
     @Suppress("ReturnCount")
@@ -573,6 +658,15 @@ class TypeResolver(
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
             operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight)) ?: return null
+        // Binary operators don't allow promotion/demotion (list↔scalar, interval↔scalar).
+        // The OperatorMap may return list/interval demotions because the Conversion class
+        // hardcodes isImplicit=true for them. Reject those resolutions here.
+        if (
+            resolution.hasConversions() &&
+                resolution.conversions.any { it != null && it.isStructuralChange }
+        ) {
+            return null
+        }
         typeTable.setOperatorResolution(expression, resolution)
         return resolution.operator.resultType
     }
@@ -757,41 +851,6 @@ class TypeResolver(
                 effectiveArgTypes,
                 allowPromotionAndDemotion = true,
             )
-
-        // When resolution fails and there are Any-typed args (from null), retry with
-        // Any args replaced by List<Any> — handles cases like IndexOf(null, {}) where
-        // null should be inferred as List<Any> to match the operator signature.
-        // Patch the resolution with cast conversions for the substituted positions.
-        if (resolution == null) {
-            val anyType = operatorRegistry.type("Any")
-            val hasAnyArgs = effectiveArgTypes.any { it == anyType }
-            if (hasAnyArgs) {
-                val listAny = ListType(anyType)
-                val substituted = effectiveArgTypes.map { if (it == anyType) listAny else it }
-                val retryResolution =
-                    operatorRegistry.resolve(
-                        functionName,
-                        substituted,
-                        allowPromotionAndDemotion = true,
-                    )
-                if (retryResolution != null) {
-                    // Inject cast conversions at positions where Any was substituted
-                    val patchedConversions =
-                        effectiveArgTypes.mapIndexed { i, t ->
-                            if (t == anyType) Conversion(anyType, listAny)
-                            else retryResolution.conversions.getOrNull(i)
-                        }
-                    resolution =
-                        OperatorResolution(retryResolution.operator, patchedConversions).also {
-                            it.score = retryResolution.score
-                            it.allowFluent = retryResolution.allowFluent
-                            it.libraryIdentifier = retryResolution.libraryIdentifier
-                            it.libraryName = retryResolution.libraryName
-                            it.operatorHasOverloads = retryResolution.operatorHasOverloads
-                        }
-                }
-            }
-        }
 
         if (resolution != null) {
             typeTable.setOperatorResolution(expression, resolution)

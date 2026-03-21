@@ -126,7 +126,7 @@ internal fun EmissionContext.emitTuple(literal: TupleLiteral): Tuple {
 internal fun EmissionContext.emitInstance(literal: InstanceLiteral): Instance {
     val instance = Instance()
     literal.type?.let { typeSpec ->
-        instance.classType = QName(typesNamespace, typeSpec.name.simpleName)
+        instance.classType = resolveTypeQName(typeSpec.name.simpleName)
     }
     if (literal.elements.isNotEmpty()) {
         instance.element =

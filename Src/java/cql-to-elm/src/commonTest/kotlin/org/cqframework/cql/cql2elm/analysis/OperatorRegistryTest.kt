@@ -5,6 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.hl7.cql.model.DataType
+import org.hl7.cql.model.ListType
 
 class OperatorRegistryTest {
 
@@ -102,5 +104,61 @@ class OperatorRegistryTest {
         val resolution = registry.resolve("Less", listOf(intType, intType))
         assertNotNull(resolution)
         assertEquals(boolType, resolution.operator.resultType)
+    }
+
+    // --- Generic instantiation with Any (null-guard) ---
+
+    @Test
+    fun `In Any ListInteger resolves to In Any ListAny`() {
+        // In(T, List<T>) with (Any, List<Integer>): T binds to Any from arg0 (first binding),
+        // arg1 List<Integer> compatible with List<Any>. Null-guard has no effect on first binding.
+        val anyType = DataType.ANY
+        val intType = registry.type("Integer")
+        val listInt = ListType(intType)
+        val resolution = registry.resolve("In", listOf(anyType, listInt))
+        assertNotNull(resolution, "In(Any, List<Integer>) should resolve")
+        assertEquals(anyType, resolution.operator.signature.operandTypes[0])
+        assertEquals(ListType(anyType), resolution.operator.signature.operandTypes[1])
+    }
+
+    @Test
+    fun `Contains ListInteger Any resolves with null-guard preventing widening`() {
+        // Contains(List<T>, T) with (List<Integer>, Any)
+        // Left-to-right: List<T> vs List<Integer> → T=Integer. Then T vs Any:
+        // Without null-guard: Any.isSuperTypeOf(Integer)=false,
+        // callType(Any).isSuperTypeOf(bound(Integer))=true → rebind T=Any
+        // With null-guard: callType==Any, T already bound → return true, T stays Integer
+        val anyType = DataType.ANY
+        val intType = registry.type("Integer")
+        val listInt = ListType(intType)
+        val resolution = registry.resolve("Contains", listOf(listInt, anyType))
+        assertNotNull(resolution, "Contains(List<Integer>, Any) should resolve")
+        // With null-guard: T=Integer, operator is Contains(List<Integer>, Integer)
+        assertEquals(listInt, resolution.operator.signature.operandTypes[0])
+        assertEquals(intType, resolution.operator.signature.operandTypes[1])
+        // Cast conversion at arg1 (Any → Integer)
+        assertTrue(resolution.hasConversions(), "Should have conversions for Any→Integer cast")
+        val conv1 = resolution.conversions[1]
+        assertNotNull(conv1, "Conversion at position 1 should not be null")
+        assertTrue(conv1.isCast, "Conversion should be a cast")
+        assertEquals(intType, conv1.toType)
+    }
+
+    @Test
+    fun `IndexOf ListInteger Any resolves with null-guard preventing widening`() {
+        // IndexOf(List<T>, T) with (List<Integer>, Any)
+        // Same pattern as Contains: T binds to Integer from arg0, null-guard prevents widening
+        val anyType = DataType.ANY
+        val intType = registry.type("Integer")
+        val listInt = ListType(intType)
+        val resolution = registry.resolve("IndexOf", listOf(listInt, anyType))
+        assertNotNull(resolution, "IndexOf(List<Integer>, Any) should resolve")
+        assertEquals(listInt, resolution.operator.signature.operandTypes[0])
+        assertEquals(intType, resolution.operator.signature.operandTypes[1])
+        assertTrue(resolution.hasConversions(), "Should have conversions for Any→Integer cast")
+        val conv1 = resolution.conversions[1]
+        assertNotNull(conv1, "Conversion at position 1 should not be null")
+        assertTrue(conv1.isCast, "Conversion should be a cast")
+        assertEquals(intType, conv1.toType)
     }
 }

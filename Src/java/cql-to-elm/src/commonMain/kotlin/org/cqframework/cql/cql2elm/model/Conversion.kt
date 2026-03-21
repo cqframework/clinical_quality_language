@@ -159,6 +159,10 @@ class Conversion(
     var isIntervalDemotion: Boolean = false
         private set
 
+    /** True if this conversion involves structural type changes (list↔scalar, interval↔scalar). */
+    val isStructuralChange: Boolean
+        get() = isListPromotion || isListDemotion || isIntervalPromotion || isIntervalDemotion
+
     companion object {
         fun singletonOperand(operator: Operator): DataType {
             require(operator.signature.operandTypes.size == 1) {

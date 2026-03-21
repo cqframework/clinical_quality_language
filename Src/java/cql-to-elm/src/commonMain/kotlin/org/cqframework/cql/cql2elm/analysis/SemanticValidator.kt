@@ -231,7 +231,16 @@ private class ExpressionChecker(
 
     override fun onExternalConstant(expr: ExternalConstantExpression) {} // leaf
 
-    override fun onBinaryOperator(expr: OperatorBinaryExpression, left: Unit, right: Unit) {}
+    override fun onBinaryOperator(expr: OperatorBinaryExpression, left: Unit, right: Unit) {
+        // If both operands have types but the operator couldn't resolve, it's a type error
+        // (e.g., Equal(Concept, List<Code>) — no implicit conversion exists).
+        if (model[expr] != null) return
+        val leftType = model[expr.left]
+        val rightType = model[expr.right]
+        if (leftType != null && rightType != null) {
+            model.addError(expr)
+        }
+    }
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Unit) {}
 
@@ -297,6 +306,12 @@ private class ExpressionChecker(
     override fun onIntervalRelation(expr: IntervalRelationExpression, left: Unit, right: Unit) {
         // Flag if interval relation has no resolved type (e.g., Includes on non-list/interval)
         if (model[expr] == null) {
+            model.addError(expr)
+            return
+        }
+        // Propagate errors from children: if an operand has an error (e.g., unresolved
+        // identifier B in "B.relevantPeriod during ..."), the interval relation is also invalid.
+        if (hasNestedError(expr.left) || hasNestedError(expr.right)) {
             model.addError(expr)
         }
     }

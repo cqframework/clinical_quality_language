@@ -37,6 +37,9 @@ class InstantiationContextImpl(
                 false
             }
         } else {
+            // If the call type is Any (null literal) and parameter is already bound,
+            // accept without widening — the concrete binding from another operand wins.
+            if (callType == DataType.ANY) return true
             // If the type is bound, and is a super type of the call type, return true;
             if (boundType.isSuperTypeOf(callType) || callType.isCompatibleWith(boundType)) {
                 return true

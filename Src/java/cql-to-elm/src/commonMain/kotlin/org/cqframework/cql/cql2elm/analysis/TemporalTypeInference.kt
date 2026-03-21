@@ -119,23 +119,67 @@ internal fun TypeResolver.inferExpandCollapseType(
     return operandType
 }
 
+@Suppress("ReturnCount", "CyclomaticComplexMethod")
 internal fun TypeResolver.inferIntervalRelationType(
     expression: IntervalRelationExpression
 ): DataType? {
     // left, right pre-folded by catamorphism
-    // Basic validation: includes/includedIn require at least one list/interval operand
+    val leftType = typeTable[expression.left]
+    val rightType = typeTable[expression.right]
+
+    // Resolve through the OperatorMap ONLY when both operands are intervals with different
+    // point types (interval type promotion, e.g., Interval<Date> → Interval<DateTime>).
+    // For other cases (scalar/null operands, same-type intervals), the existing lowering +
+    // ConversionAnalyzer path handles everything correctly.
+    val opName = intervalPhraseToOperatorName(expression.phrase)
+    if (
+        opName != null &&
+            leftType is org.hl7.cql.model.IntervalType &&
+            rightType is org.hl7.cql.model.IntervalType &&
+            leftType.pointType != rightType.pointType
+    ) {
+        val effectiveLeft =
+            syntheticTable?.effectiveType(expression, Slot.Left, leftType, operatorRegistry)
+                ?: leftType
+        val effectiveRight =
+            syntheticTable?.effectiveType(expression, Slot.Right, rightType, operatorRegistry)
+                ?: rightType
+        val resolution = operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
+        if (resolution != null) {
+            typeTable.setOperatorResolution(expression, resolution)
+            return resolution.operator.resultType
+        }
+    }
+
+    // Fallback: basic validation for includes/includedIn (at least one collection operand required)
     val phrase = expression.phrase
     if (
         phrase is org.hl7.cql.ast.IncludesIntervalPhrase ||
             phrase is org.hl7.cql.ast.IncludedInIntervalPhrase
     ) {
-        val leftType = typeTable[expression.left]
-        val rightType = typeTable[expression.right]
         val leftIsCollection =
             leftType is org.hl7.cql.model.ListType || leftType is org.hl7.cql.model.IntervalType
         val rightIsCollection =
             rightType is org.hl7.cql.model.ListType || rightType is org.hl7.cql.model.IntervalType
         if (!leftIsCollection && !rightIsCollection) return null
     }
+
     return type("Boolean")
 }
+
+/**
+ * Map an interval phrase to the system operator name used for resolution. Returns null if the
+ * phrase type doesn't have a direct operator mapping (e.g., complex phrases that are lowered into
+ * operator trees before emission).
+ */
+private fun intervalPhraseToOperatorName(phrase: org.hl7.cql.ast.IntervalOperatorPhrase): String? =
+    when (phrase) {
+        is org.hl7.cql.ast.IncludedInIntervalPhrase ->
+            if (phrase.proper) "ProperIncludedIn" else "IncludedIn"
+        is org.hl7.cql.ast.IncludesIntervalPhrase ->
+            if (phrase.proper) "ProperIncludes" else "Includes"
+        is org.hl7.cql.ast.ConcurrentIntervalPhrase -> null // lowered to boundary comparisons
+        is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase -> null // lowered by ExpressionLowering
+        is org.hl7.cql.ast.WithinIntervalPhrase -> null // lowered by ExpressionLowering
+        else -> null
+    }
