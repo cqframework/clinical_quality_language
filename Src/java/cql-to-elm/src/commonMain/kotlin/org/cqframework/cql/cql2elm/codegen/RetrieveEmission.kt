@@ -8,7 +8,8 @@ import org.hl7.elm.r1.Retrieve
 
 /**
  * Emit a [RetrieveExpression] as an ELM [Retrieve]. Resolves the data type through the
- * [org.cqframework.cql.cql2elm.ModelManager] to determine the correct QName and templateId.
+ * [org.cqframework.cql.cql2elm.analysis.ModelContext] to determine the correct QName and
+ * templateId.
  */
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
     val retrieve = buildRetrieveForType(expression.typeSpecifier.name.simpleName)
@@ -17,7 +18,7 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
     // The terminology expression itself is emitted by the function definition's operand
     // binding, not inlined here — the Retrieve just needs the code path metadata.
     if (expression.terminology != null) {
-        val model = resolveModelForType(expression.typeSpecifier.name.simpleName)
+        val model = modelContext.resolveModelForType(expression.typeSpecifier.name.simpleName)
         val dataType = model.resolveTypeName(expression.typeSpecifier.name.simpleName)
         val classType = dataType as? ClassType
         if (classType?.primaryCodePath != null) {
@@ -35,7 +36,7 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
  * (e.g., `Patient = SingletonFrom([Patient])`).
  */
 internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve {
-    val model = resolveModelForType(typeName)
+    val model = modelContext.resolveModelForType(typeName)
     val modelInfo = model.modelInfo
     val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
 
@@ -46,27 +47,4 @@ internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve {
         this.dataType = QName(modelUrl, typeName)
         classType?.identifier?.let { templateId = it }
     }
-}
-
-/**
- * Resolve which model provides a given type name. Iterates through loaded model names to find the
- * model that can resolve the type.
- */
-private fun EmissionContext.resolveModelForType(
-    typeName: String
-): org.cqframework.cql.cql2elm.model.Model {
-    val mm =
-        modelManager
-            ?: throw ElmEmitter.UnsupportedNodeException(
-                "RetrieveExpression requires a ModelManager to resolve type '$typeName'."
-            )
-    for (modelName in loadedModelNames) {
-        val model = mm.resolveModel(modelName)
-        if (model.resolveTypeName(typeName) != null) {
-            return model
-        }
-    }
-    throw ElmEmitter.UnsupportedNodeException(
-        "Could not resolve type '$typeName' in any loaded model."
-    )
 }

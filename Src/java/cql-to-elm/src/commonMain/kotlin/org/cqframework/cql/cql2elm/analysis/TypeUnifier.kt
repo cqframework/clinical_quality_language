@@ -2,8 +2,6 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
-import org.cqframework.cql.cql2elm.model.Conversion
-import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.AsExpression
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.BinaryOperator
@@ -57,16 +55,44 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 
 /**
- * Populates the [SyntheticTable] with all conversion kinds: operator conversions, casts, list/
- * interval conversions, null-As wrapping, coalesce wrapping, and type unification for branches and
- * literal elements.
+ * Populates the [SyntheticTable] with type-unification synthetics — implicit conversions and type
+ * adjustments that are recorded as metadata rather than AST mutations. Implements
+ * [ExpressionFold]<[Unit]> for compile-time exhaustive dispatch.
  *
- * Replaces the mutation-based [ConversionInserter] — records synthetics instead of modifying the
- * AST.
+ * ## Kinds of conversions recorded
+ * - **Branch unification** (If/Case/List/Interval) — when branch types differ, records
+ *   [Synthetic.ImplicitCast] or [Synthetic.OperatorConversion] to coerce to the common type.
+ * - **Null-literal wrapping** — null literals in typed slots get [Synthetic.ImplicitCast] to the
+ *   target type (e.g., `null` in an If-then slot → `As(null, Integer)`).
+ * - **ChoiceType wrapping** — union/intersect/except with mismatched element types get
+ *   [Synthetic.ImplicitCast] to `List<Choice<A,B>>`, or [Synthetic.ListDemotion] when one operand
+ *   is `List<Any>` (empty list literal).
+ * - **Interval bound propagation** — `Interval<Any>` literals (one bound is null) get their point
+ *   type inferred from the typed counterpart.
+ * - **DateTime null-arg conversions** — null arguments in `DateTime()`/`Date()`/`Time()`
+ *   constructors get [Synthetic.ImplicitCast] to Integer or Decimal.
+ *
+ * Operator-resolution conversion recording (the "transcription" concern) happens in
+ * [recordResolutionSynthetics] at each setOperatorResolution call site.
+ *
+ * ## Adding a new kind of synthetic conversion
+ * 1. Define a new [Synthetic] subtype in `Synthetic.kt` if the existing subtypes
+ *    ([Synthetic.ImplicitCast], [Synthetic.OperatorConversion], [Synthetic.ListDemotion]) don't
+ *    cover the case.
+ * 2. In the relevant `on*` handler in this class, detect the condition and call
+ *    [SyntheticTable.addIfAbsent] to record the synthetic at the (parent, [Slot]) location.
+ * 3. In `EmissionContext.applySynthetics` (the ELM emitter), handle the new [Synthetic] subtype to
+ *    produce the correct ELM wrapper node.
+ *
+ * ## What does NOT go here
+ * - Type inference → [TypeResolver]
+ * - Structural AST rewrites → [Normalizer]
+ * - Error detection → [SemanticValidator]
+ * - ELM-specific concerns → `EmissionContext`
  *
  * **Not thread-safe.** Create a fresh instance per analysis iteration.
  */
-class ConversionAnalyzer(
+class TypeUnifier(
     private val typeTable: TypeTable,
     private val operatorRegistry: OperatorRegistry,
     private val syntheticTable: SyntheticTable,
@@ -114,60 +140,7 @@ class ConversionAnalyzer(
 
     /** Record a synthetic if not already present at the given parent/slot. */
     private fun recordIfNew(parent: Expression, slot: Slot, synthetic: Synthetic) {
-        val existing = syntheticTable.get(parent, slot)
-        if (existing.contains(synthetic)) return
-        syntheticTable.add(parent, slot, synthetic)
-    }
-
-    /**
-     * Convert a [Conversion] from an [OperatorResolution] to a [Synthetic], or null if the
-     * conversion kind isn't handled by the side table.
-     */
-    private fun conversionToSynthetic(conversion: Conversion): Synthetic? {
-        // Operator conversion (ToDecimal, ToLong, etc.)
-        val operatorName = operatorRegistry.conversionOperatorName(conversion)
-        if (operatorName != null) {
-            return Synthetic.OperatorConversion(operatorName)
-        }
-        // Cast conversion
-        if (conversion.isCast) {
-            return Synthetic.ImplicitCast(conversion.toType)
-        }
-        // List conversion with operator inner conversion
-        if (
-            conversion.isListConversion &&
-                conversion.conversion != null &&
-                conversion.conversion!!.operator != null
-        ) {
-            return Synthetic.ListConversion(conversion.conversion!!.operator!!.name)
-        }
-        // Interval conversion with operator inner conversion
-        if (
-            conversion.isIntervalConversion &&
-                conversion.conversion != null &&
-                conversion.conversion!!.operator != null
-        ) {
-            return Synthetic.IntervalConversion(conversion.conversion!!.operator!!.name)
-        }
-        return null
-    }
-
-    /**
-     * Record synthetics from an [OperatorResolution]'s conversions for each slot. Handles all
-     * conversion kinds (operator, cast, list, interval).
-     */
-    private fun recordResolutionConversions(
-        parent: Expression,
-        resolution: OperatorResolution?,
-        slots: List<Slot>,
-    ) {
-        if (resolution == null || !resolution.hasConversions()) return
-        resolution.conversions.forEachIndexed { index, conversion ->
-            if (conversion != null && index < slots.size) {
-                val synthetic = conversionToSynthetic(conversion) ?: return@forEachIndexed
-                recordIfNew(parent, slots[index], synthetic)
-            }
-        }
+        syntheticTable.addIfAbsent(parent, slot, synthetic)
     }
 
     /** Check if an expression is a null literal. */
@@ -257,8 +230,6 @@ class ConversionAnalyzer(
     // --- ExpressionFold<Unit> implementation ---
 
     override fun onBinaryOperator(expr: OperatorBinaryExpression, left: Unit, right: Unit) {
-        val resolution = typeTable.getOperatorResolution(expr)
-        recordResolutionConversions(expr, resolution, listOf(Slot.Left, Slot.Right))
 
         val op = expr.operator
 
@@ -313,19 +284,11 @@ class ConversionAnalyzer(
         }
     }
 
-    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Unit) {
-        val resolution = typeTable.getOperatorResolution(expr)
-        recordResolutionConversions(expr, resolution, listOf(Slot.Operand))
-    }
-
     override fun onFunctionCall(
         expr: FunctionCallExpression,
         target: Unit?,
         arguments: List<Unit>,
     ) {
-        val resolution = typeTable.getOperatorResolution(expr)
-        val slots = arguments.indices.map { Slot.Argument(it) }
-        recordResolutionConversions(expr, resolution, slots)
 
         // DateTime/Date/Time null arg wrapping
         val functionName = expr.function.value
@@ -374,9 +337,6 @@ class ConversionAnalyzer(
     }
 
     override fun onMembership(expr: MembershipExpression, left: Unit, right: Unit) {
-        val resolution = typeTable.getOperatorResolution(expr)
-        recordResolutionConversions(expr, resolution, listOf(Slot.Left, Slot.Right))
-
         val leftType = typeTable[expr.left]
         val rightType = typeTable[expr.right]
         val anyType = operatorRegistry.type("Any")
@@ -408,9 +368,6 @@ class ConversionAnalyzer(
     }
 
     override fun onIntervalRelation(expr: IntervalRelationExpression, left: Unit, right: Unit) {
-        val resolution = typeTable.getOperatorResolution(expr)
-        recordResolutionConversions(expr, resolution, listOf(Slot.Left, Slot.Right))
-
         val leftType = typeTable[expr.left]
         val rightType = typeTable[expr.right]
         val anyType = operatorRegistry.type("Any")
@@ -572,6 +529,8 @@ class ConversionAnalyzer(
     override fun onExternalConstant(expr: ExternalConstantExpression) {}
 
     override fun onBooleanTest(expr: BooleanTestExpression, operand: Unit) {}
+
+    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Unit) {}
 
     override fun onIs(expr: IsExpression, operand: Unit) {}
 

@@ -82,7 +82,7 @@ internal fun EmissionContext.emitBinaryOperator(
 ): ElmExpression {
     val op = expression.operator
 
-    // CONCAT (&): Coalesce wrapping and Add→Concatenate rewrite handled by ExpressionLowering.
+    // CONCAT (&): Coalesce wrapping and Add→Concatenate rewrite handled by Normalizer.
     // By the time we get here, CONCAT operands are already Coalesce-wrapped and Add-on-strings
     // has been rewritten to CONCAT.
     if (op == BinaryOperator.CONCAT) {

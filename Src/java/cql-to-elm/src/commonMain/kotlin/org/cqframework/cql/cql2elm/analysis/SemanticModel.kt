@@ -24,6 +24,8 @@ class SemanticModel(
     internal val errors: MutableSet<Expression> = mutableSetOf(),
     /** Side table of synthetic conversions keyed by parent expression + slot. */
     val syntheticTable: SyntheticTable = SyntheticTable(),
+    /** Model context for type/QName resolution. Passed to codegen. */
+    val modelContext: ModelContext = ModelContext.systemOnly(),
 ) {
     /** Metrics collected during analysis. Populated by [SemanticAnalyzer]. */
     var metrics: AnalysisMetrics = AnalysisMetrics()

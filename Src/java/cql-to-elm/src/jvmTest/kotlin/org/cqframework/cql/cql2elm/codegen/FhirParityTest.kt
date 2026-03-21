@@ -39,9 +39,7 @@ class FhirParityTest {
         val frontend = SemanticAnalyzer(modelManager = modelManager)
         val frontendResult = frontend.analyze(astResult.library)
         val emittedLibrary =
-            ElmEmitter(frontendResult.semanticModel, modelManager)
-                .emit(frontendResult.library)
-                .library
+            ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
 
         val legacyTranslator = CqlTranslator.fromText(cql, LibraryManager(createModelManager()))
         val legacyLibrary = requireNotNull(legacyTranslator.toELM())

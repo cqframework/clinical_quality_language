@@ -67,7 +67,7 @@ internal fun EmissionContext.emitAsExpression(
     }
 }
 
-/** Emit an implicit cast (from analysis/lowering). Uses asType for named types, no strict. */
+/** Emit an implicit cast (from analysis/normalization). Uses asType for named types, no strict. */
 internal fun EmissionContext.emitImplicitCastExpression(
     expression: org.hl7.cql.ast.ImplicitCastExpression,
     operandElm: ElmExpression,

@@ -13,6 +13,19 @@ import org.cqframework.cql.shared.BigDecimal
 import org.hl7.cql.parsetree.createParser
 
 @Suppress("TooManyFunctions", "LongMethod", "CyclomaticComplexMethod", "ReturnCount", "LargeClass")
+/**
+ * Converts the ANTLR parse tree into the immutable CQL AST ([Library], [Expression], etc.).
+ *
+ * This phase is **purely structural**: it maps grammar productions 1:1 to AST nodes. There is no
+ * type inference, no operator resolution, no model awareness, and no validation. Those concerns
+ * belong to the downstream analysis phases ([TypeResolver], [Normalizer], [SemanticValidator],
+ * etc.).
+ *
+ * To add support for a new CQL grammar production:
+ * 1. Add the corresponding AST node in `Expressions.kt` (or the appropriate AST file).
+ * 2. Add a `build*` method here that visits the parse-tree context and creates the AST node.
+ * 3. Wire the new `build*` method into the parent dispatch (e.g., [buildExpression]).
+ */
 class Builder(private val sourceId: String? = null) {
 
     private val problems = mutableListOf<Problem>()

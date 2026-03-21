@@ -1,8 +1,9 @@
 package org.hl7.cql.ast
 
 /**
- * A catamorphism (fold) over the [Expression] AST. Children are pre-folded by [fold] before being
- * passed to the handler — implementors combine child results without manual recursion.
+ * A catamorphism (fold) over the [Expression] AST — the single traversal mechanism for the CQL AST
+ * in the compiler pipeline. Children are pre-folded by [fold] before being passed to the handler —
+ * implementors combine child results without manual recursion.
  *
  * Adding a new [Expression] subtype without adding a handler in [fold] is a compile error (sealed
  * class exhaustiveness). Adding a handler in [fold] without a corresponding algebra method is also
@@ -12,7 +13,32 @@ package org.hl7.cql.ast
  * pre-folded child results. For leaf nodes (no expression children), the handler receives only the
  * AST node.
  *
- * Usage:
+ * ## Concrete implementors
+ * | Phase               | `R`             | Purpose                                         |
+ * |---------------------|-----------------|-------------------------------------------------|
+ * | `TypeResolver`      | `DataType?`     | Infer types, populate [TypeTable]               |
+ * | `TypeUnifier`       | `Unit`          | Record implicit conversions in [SyntheticTable] |
+ * | `SemanticValidator` | `Unit`          | Detect semantic errors                          |
+ * | `Normalizer`        | `Expression`    | Lower phrases to operators                      |
+ * | `EmissionContext`   | `ElmExpression` | Convert CQL AST to ELM                          |
+ *
+ * ## Extending: New Expression Types
+ * 1. Add a sealed subtype in `Expressions.kt` (data class implementing [Expression]).
+ * 2. Add the new case to [fold]'s `when` block — pre-fold its expression children and dispatch.
+ * 3. Add a corresponding abstract `on*` method to this interface.
+ * 4. Add the new child to `forEachChildExpression` in `ExpressionChildren.kt`.
+ * 5. Implement the new `on*` method in all five concrete folds **and** [RewritingFold].
+ *
+ * Omitting step 2 or 3 is a compile error. Omitting step 5 is a compile error per implementor.
+ *
+ * ## Extending: New Analysis Phase
+ *
+ * Implement `ExpressionFold<YourResult>`. The catamorphism in [fold] handles all recursion — you
+ * only implement the algebra (the `on*` methods). For AST-to-AST rewrites, subclass [RewritingFold]
+ * instead and override only the nodes you want to transform.
+ *
+ * ## Usage
+ *
  * ```
  * val myAlgebra = object : ExpressionFold<MyResult> {
  *     override fun onIf(expr: IfExpression, condition: MyResult,

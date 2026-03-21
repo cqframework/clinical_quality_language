@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.model.Conversion
+import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.model.DataType
@@ -97,6 +99,12 @@ class SyntheticTable {
         return slotMap[slot] ?: emptyList()
     }
 
+    /** Record a synthetic if not already present at the given parent/slot. */
+    fun addIfAbsent(parent: Expression, slot: Slot, synthetic: Synthetic) {
+        if (get(parent, slot).contains(synthetic)) return
+        add(parent, slot, synthetic)
+    }
+
     /**
      * Transfer all synthetics from [source] to [target]. Used by the lowering phase when an
      * expression is rewritten — synthetics recorded against the original expression identity need
@@ -154,5 +162,51 @@ class SyntheticTable {
                 }
         }
         return currentType
+    }
+}
+
+/**
+ * Convert a [Conversion] from an [OperatorResolution] to a [Synthetic], or null if the conversion
+ * kind isn't handled by the side table.
+ */
+internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorRegistry): Synthetic? {
+    val operatorName = registry.conversionOperatorName(conversion)
+    if (operatorName != null) return Synthetic.OperatorConversion(operatorName)
+    if (conversion.isCast) return Synthetic.ImplicitCast(conversion.toType)
+    if (
+        conversion.isListConversion &&
+            conversion.conversion != null &&
+            conversion.conversion!!.operator != null
+    ) {
+        return Synthetic.ListConversion(conversion.conversion!!.operator!!.name)
+    }
+    if (
+        conversion.isIntervalConversion &&
+            conversion.conversion != null &&
+            conversion.conversion!!.operator != null
+    ) {
+        return Synthetic.IntervalConversion(conversion.conversion!!.operator!!.name)
+    }
+    return null
+}
+
+/**
+ * Record synthetics from an [OperatorResolution]'s conversions for each slot. Called by
+ * TypeResolver at each setOperatorResolution site and by TypeUnifier when re-deriving resolution
+ * conversions is needed.
+ */
+internal fun recordResolutionSynthetics(
+    syntheticTable: SyntheticTable,
+    parent: Expression,
+    resolution: OperatorResolution,
+    slots: List<Slot>,
+    registry: OperatorRegistry,
+) {
+    if (!resolution.hasConversions()) return
+    resolution.conversions.forEachIndexed { index, conversion ->
+        if (conversion != null && index < slots.size) {
+            val synthetic = conversionToSynthetic(conversion, registry) ?: return@forEachIndexed
+            syntheticTable.addIfAbsent(parent, slots[index], synthetic)
+        }
     }
 }

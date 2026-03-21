@@ -152,7 +152,7 @@ internal fun EmissionContext.emitMembership(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Interval<Any> expansion is handled by ExpressionLowering. Operands arrive processed.
+    // Interval<Any> expansion is handled by Normalizer. Operands arrive processed.
     val precision = expression.precision?.let { precisionStringToEnum(it) }
     return when (expression.operator) {
         MembershipOperator.IN ->

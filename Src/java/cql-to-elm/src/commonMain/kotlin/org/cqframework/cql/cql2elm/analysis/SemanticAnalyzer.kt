@@ -17,17 +17,54 @@ import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IncludeDefinition
 import org.hl7.cql.ast.Library
 import org.hl7.cql.ast.ParameterDefinition
+import org.hl7.cql.ast.RewritingFold
 import org.hl7.cql.ast.UsingDefinition
 import org.hl7.cql.ast.ValueSetDefinition
+import org.hl7.cql.ast.rewriteLibrary
 import org.hl7.cql.model.DataType
 
 /**
- * Entry point for semantic analysis. Orchestrates three passes over the AST:
- * 1. [SymbolCollector] — builds the [SymbolTable]
- * 2. [TypeResolver] — infers types and resolves operators, building the [TypeTable]
- * 3. [SemanticValidator] — detects errors and flags expressions in the [SemanticModel]
+ * Entry point for semantic analysis of a CQL [Library]. Orchestrates the full pipeline from parsed
+ * AST to a [SemanticModel] that codegen ([ElmEmitter]) reads mechanically.
  *
- * The result is a [SemanticModel] that codegen reads mechanically.
+ * ## Pipeline phases (in order)
+ * 1. **ModelContext construction** — resolves [UsingDefinition]s via [ModelManager] into a
+ *    [ModelContext] that all downstream phases share for model-type and property lookup.
+ * 2. **AgeIn desugaring** — structural rewrite ([AgeInDesugarer], a [RewritingFold]) that expands
+ *    `AgeIn*()` into `CalculateAgeIn*(Patient.birthDate)`. Needs model info (birth-date property
+ *    name) but not types, so it runs before inference.
+ * 3. **Symbol collection** — [SymbolCollector] builds the [SymbolTable] (expression definitions,
+ *    function definitions, parameter definitions) from top-level library declarations.
+ * 4. **INFER → UNIFY convergence loop** (max 2 iterations):
+ *     - *INFER*: [TypeResolver] walks the AST, infers types, resolves operators and identifiers,
+ *       populating a [TypeTable]. Reads the [SyntheticTable] for effective types of operands (e.g.,
+ *       a null literal that has been synthetically cast to Integer).
+ *     - *UNIFY*: [TypeUnifier] discovers implicit conversions (branch unification, null wrapping,
+ *       choice wrapping, interval bound propagation, DateTime null-arg conversions) and records
+ *       them in the [SyntheticTable] without mutating the AST.
+ *     - The loop exists because type inference and conversion discovery are mutually dependent: a
+ *       new synthetic may change the effective type of an operand, which may change operator
+ *       resolution, which may expose new conversion needs. Convergence is reached when no new
+ *       synthetics are inserted.
+ * 5. **Semantic validation** — [SemanticValidator] flags errors (unresolved identifiers, undeclared
+ *    functions, invalid casts, etc.) in the [SemanticModel].
+ * 6. **Normalization** — [Normalizer] performs type-directed structural lowering (phrase → operator
+ *    trees, concat coalescing, interval expansion, heterogeneous flatten). Produces a new AST with
+ *    rewritten parent nodes.
+ * 7. **Post-normalization re-collection and re-typing** — new AST nodes created by normalization
+ *    need symbols and types. The post-normalization [TypeTable] is merged with the cumulative
+ *    pre-normalization table so that unchanged expressions keep their types.
+ *
+ * ## Result
+ *
+ * A [SemanticModel] bundling [SymbolTable], [TypeTable], [OperatorRegistry], [SyntheticTable], and
+ * [ModelContext]. The [ElmEmitter] reads this to produce ELM output.
+ *
+ * ## Extending
+ *
+ * To add a new analysis phase: implement [ExpressionFold]<R> (which gives compile-time exhaustive
+ * dispatch — adding a new Expression subtype without a handler is a compile error), then wire the
+ * new phase into [analyze] at the appropriate point in the pipeline.
  */
 class SemanticAnalyzer(
     private val symbolCollector: SymbolCollector = SymbolCollector(),
@@ -44,13 +81,17 @@ class SemanticAnalyzer(
 
     @Suppress("MagicNumber")
     fun analyze(library: Library): Result {
+        // Build ModelContext from UsingDefinitions before any analysis phase.
+        // This is the single model-resolution interface used by all downstream phases.
+        val modelContext = buildModelContext(library)
+
         // Desugar AgeIn*() → CalculateAgeIn*(Patient.birthDate) before type inference.
         // This is purely structural (needs model info, not types) so the convergence loop
         // can resolve CalculateAgeIn* against the operator registry and discover conversions.
-        val desugared = desugarAgeInFunctions(library)
+        val desugared = desugarAgeInFunctions(library, modelContext)
         val symbols = symbolCollector.collect(desugared)
 
-        // INFER → RECORD convergence loop.
+        // INFER → UNIFY convergence loop.
         // Each iteration: infer types (using effective types from synthetics), then record
         // all conversion kinds in the SyntheticTable. No AST mutation — the AST stays immutable.
         // Converges when no new synthetics are recorded (or max iterations reached).
@@ -62,7 +103,7 @@ class SemanticAnalyzer(
 
         for (iteration in 1..maxIterations) {
             // INFER: type resolution + overload resolution (reads synthetics for effective types)
-            val resolver = TypeResolver(operatorRegistry, syntheticTable, modelManager)
+            val resolver = TypeResolver(operatorRegistry, syntheticTable, modelContext)
             val iterationTypeTable = resolver.resolve(desugared, symbols)
 
             // Merge this iteration's results into the cumulative table.
@@ -71,11 +112,11 @@ class SemanticAnalyzer(
             // the earliest successful type/resolution for each expression.
             cumulativeTypeTable.mergeFrom(iterationTypeTable)
 
-            // RECORD: all conversions in side table (no AST mutation)
-            val analyzer = ConversionAnalyzer(cumulativeTypeTable, operatorRegistry, syntheticTable)
-            analyzer.analyzeLibrary(desugared)
+            // UNIFY: type unification, null-wrapping, choice wrapping (no AST mutation)
+            val unifier = TypeUnifier(cumulativeTypeTable, operatorRegistry, syntheticTable)
+            unifier.analyzeLibrary(desugared)
 
-            val inserted = analyzer.newSyntheticsInserted
+            val inserted = unifier.newSyntheticsInserted
             conversionsPerIteration.add(inserted)
             totalConversions += inserted
 
@@ -85,7 +126,7 @@ class SemanticAnalyzer(
 
         val finalTypeTable = cumulativeTypeTable
 
-        val preLowerModel =
+        val preNormModel =
             SemanticModel(
                 symbols,
                 finalTypeTable,
@@ -93,35 +134,37 @@ class SemanticAnalyzer(
                 options,
                 syntheticTable = syntheticTable,
             )
-        semanticValidator.validate(desugared, symbols, preLowerModel)
+        semanticValidator.validate(desugared, symbols, preNormModel)
 
-        // LOWERING: structural rewrites (phrases → operator trees, coalesce wrapping, etc.)
-        // Produces a new AST with complex phrases desugared into simpler nodes.
-        val lowering = ExpressionLowering(preLowerModel)
-        val loweredLibrary = lowering.lowerLibrary(desugared)
+        // NORMALIZATION: structural rewrites (phrases → operator trees, coalesce wrapping, etc.)
+        // Produces a new AST with complex phrases rewritten into simpler nodes.
+        val normalizer = Normalizer(preNormModel)
+        val normalizedLibrary = normalizer.normalizeLibrary(desugared)
 
-        // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
+        // Re-collect symbols and re-type the normalized AST: normalization may create new
+        // expressions
         // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
-        // Merge the pre-lowering cumulative table so unchanged expressions keep their types.
-        val loweredSymbols = symbolCollector.collect(loweredLibrary)
-        val loweredResolver = TypeResolver(operatorRegistry, syntheticTable)
-        val loweredTypeTable = loweredResolver.resolve(loweredLibrary, loweredSymbols)
-        loweredTypeTable.mergeFrom(finalTypeTable)
+        // Merge the pre-normalization cumulative table so unchanged expressions keep their types.
+        val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
+        val normalizedResolver = TypeResolver(operatorRegistry, syntheticTable)
+        val normalizedTypeTable = normalizedResolver.resolve(normalizedLibrary, normalizedSymbols)
+        normalizedTypeTable.mergeFrom(finalTypeTable)
 
         val semanticModel =
             SemanticModel(
-                loweredSymbols,
-                loweredTypeTable,
+                normalizedSymbols,
+                normalizedTypeTable,
                 operatorRegistry,
                 options,
-                errors = preLowerModel.errors,
+                errors = preNormModel.errors,
                 syntheticTable = syntheticTable,
+                modelContext = modelContext,
             )
 
         semanticModel.metrics =
             AnalysisMetrics(
-                definitionCount = loweredLibrary.definitions.size,
-                statementCount = loweredLibrary.statements.size,
+                definitionCount = normalizedLibrary.definitions.size,
+                statementCount = normalizedLibrary.statements.size,
                 expressionCount = finalTypeTable.expressionCount,
                 typedCount = finalTypeTable.typedCount,
                 unresolvedCount = finalTypeTable.expressionCount - finalTypeTable.typedCount,
@@ -130,9 +173,21 @@ class SemanticAnalyzer(
                 conversionsInserted = totalConversions,
                 inferConvertIterations = conversionsPerIteration.size,
                 newConversionsPerIteration = conversionsPerIteration,
-                errorCount = preLowerModel.errors.size,
+                errorCount = preNormModel.errors.size,
             )
-        return Result(loweredLibrary, semanticModel)
+        return Result(normalizedLibrary, semanticModel)
+    }
+
+    /**
+     * Build a [ModelContext] from the library's using definitions and the ModelManager. The System
+     * model is implicit per the CQL spec, so this always returns a non-null ModelContext —
+     * [ModelContext.systemOnly] when no ModelManager or UsingDefinitions are available.
+     */
+    private fun buildModelContext(library: Library): ModelContext {
+        val mm = modelManager ?: return ModelContext.systemOnly()
+        val usingDefs = library.definitions.filterIsInstance<UsingDefinition>()
+        if (usingDefs.isEmpty()) return ModelContext.systemOnly()
+        return ModelContext(mm, usingDefs)
     }
 
     /**
@@ -140,45 +195,48 @@ class SemanticAnalyzer(
      * structural — needs model info but not types. Returns the library unchanged if no model is
      * available or no AgeIn* calls are present.
      */
-    private fun desugarAgeInFunctions(library: Library): Library {
-        val mm = modelManager ?: return library
+    private fun desugarAgeInFunctions(library: Library, modelContext: ModelContext): Library {
         val usingDef =
             library.definitions.filterIsInstance<UsingDefinition>().firstOrNull {
                 it.modelIdentifier.simpleName != "System"
             } ?: return library
         val model =
             try {
-                mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
+                modelContext.resolveModel(
+                    usingDef.modelIdentifier.simpleName,
+                    usingDef.version?.value,
+                )
             } catch (_: Exception) {
                 return library
             }
         val birthDateProp = model.modelInfo.patientBirthDatePropertyName ?: return library
         val desugarer = AgeInDesugarer(birthDateProp)
-        return desugarer.visitLibrary(library)
+        return rewriteLibrary(desugarer, library)
     }
 }
 
 /**
- * AST Transformer that rewrites AgeIn*() and AgeIn*At() calls into CalculateAgeIn* calls with the
- * Patient birth date property injected as the first argument.
+ * AST rewriting fold that rewrites AgeIn*() and AgeIn*At() calls into CalculateAgeIn* calls with
+ * the Patient birth date property injected as the first argument.
  */
-private class AgeInDesugarer(private val birthDatePropertyName: String) :
-    org.hl7.cql.ast.Transformer() {
-    override fun visitFunctionCallExpression(
-        expression: org.hl7.cql.ast.FunctionCallExpression
-    ): org.hl7.cql.ast.Expression {
-        val name = expression.function.value
+private class AgeInDesugarer(private val birthDatePropertyName: String) : RewritingFold() {
+    override fun onFunctionCall(
+        expr: org.hl7.cql.ast.FunctionCallExpression,
+        target: Expression?,
+        arguments: List<Expression>,
+    ): Expression {
+        val name = expr.function.value
         val isAgeIn = name.startsWith("AgeIn") && !name.startsWith("AgeIncludes")
-        if (!isAgeIn) return super.visitFunctionCallExpression(expression)
+        if (!isAgeIn) return super.onFunctionCall(expr, target, arguments)
 
         val isAt = name.endsWith("At")
-        val args = expression.arguments
+        val args = expr.arguments
 
         // 0-arg AgeIn*() or 1-arg AgeIn*At(date)
-        if (!isAt && args.isNotEmpty()) return super.visitFunctionCallExpression(expression)
-        if (isAt && args.size != 1) return super.visitFunctionCallExpression(expression)
+        if (!isAt && args.isNotEmpty()) return super.onFunctionCall(expr, target, arguments)
+        if (isAt && args.size != 1) return super.onFunctionCall(expr, target, arguments)
 
-        var birthDateExpr: org.hl7.cql.ast.Expression = buildBirthDateExpr(expression)
+        var birthDateExpr: Expression = buildBirthDateExpr(expr)
         val suffix = name.removePrefix("AgeIn")
         val calculateName = "CalculateAgeIn$suffix"
 
@@ -192,22 +250,16 @@ private class AgeInDesugarer(private val birthDatePropertyName: String) :
                         org.hl7.cql.ast.NamedTypeSpecifier(
                             name = org.hl7.cql.ast.QualifiedIdentifier(listOf("Date"))
                         ),
-                    locator = expression.locator,
+                    locator = expr.locator,
                 )
         }
 
-        val visitedArgs = args.map { visitExpression(it) }
-        val newArgs = listOf(birthDateExpr) + visitedArgs
+        val newArgs = listOf(birthDateExpr) + arguments
 
-        return expression.copy(
-            function = org.hl7.cql.ast.Identifier(calculateName),
-            arguments = newArgs,
-        )
+        return expr.copy(function = org.hl7.cql.ast.Identifier(calculateName), arguments = newArgs)
     }
 
-    private fun buildBirthDateExpr(
-        context: org.hl7.cql.ast.Expression
-    ): org.hl7.cql.ast.Expression {
+    private fun buildBirthDateExpr(context: Expression): Expression {
         val patientRef =
             org.hl7.cql.ast.IdentifierExpression(
                 org.hl7.cql.ast.QualifiedIdentifier(listOf("Patient")),

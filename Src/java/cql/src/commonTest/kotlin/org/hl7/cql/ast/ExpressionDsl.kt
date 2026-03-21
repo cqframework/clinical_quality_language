@@ -356,7 +356,7 @@ fun ExpressionResult.assertMatches(expected: ExpressionSpec) {
         problems.isEmpty(),
         "Expected no problems but found: ${problems.joinToString { it.message }}",
     )
-    val expectedExpression = buildExpressionSpec(expected).transform(NormalizingTransformer)
-    val actualExpression = expression.transform(NormalizingTransformer)
+    val expectedExpression = NormalizingTransformer.fold(buildExpressionSpec(expected))
+    val actualExpression = NormalizingTransformer.fold(expression)
     assertEquals(expectedExpression, actualExpression)
 }

@@ -10,7 +10,6 @@ import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.UsingDefinition
-import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
 import org.hl7.elm.r1.ContextDef
 import org.hl7.elm.r1.FunctionDef
@@ -48,17 +47,8 @@ internal fun EmissionContext.emitUsing(definition: UsingDefinition): UsingDef {
         when (modelName) {
             "System" -> typesNamespace
             else -> {
-                val mm = modelManager
-                if (mm != null) {
-                    val model =
-                        mm.resolveModel(ModelIdentifier(modelName, null, definition.version?.value))
-                    loadedModelNames.add(modelName)
-                    model.modelInfo.targetUrl ?: model.modelInfo.url
-                } else {
-                    throw ElmEmitter.UnsupportedNodeException(
-                        "Model '$modelName' requires a ModelManager."
-                    )
-                }
+                val model = modelContext.resolveModel(modelName, definition.version?.value)
+                model.modelInfo.targetUrl ?: model.modelInfo.url
             }
         }
     return usingDef
@@ -78,13 +68,10 @@ internal fun EmissionContext.emitContextDefs(
             .filter { it.context.value == "Unfiltered" }
             .map { ctx -> ContextDef().withName(ctx.context.value) }
 
-    // Model-dependent contexts require a model manager and non-System usings
+    // Model-dependent contexts require a ModelContext and non-System usings
     val modelDependentDefs =
         if (
-            modelManager != null &&
-                definitions.any {
-                    it is UsingDefinition && it.modelIdentifier.simpleName != "System"
-                }
+            definitions.any { it is UsingDefinition && it.modelIdentifier.simpleName != "System" }
         ) {
             contextDefs
                 .filter { it.context.value != "Unfiltered" }

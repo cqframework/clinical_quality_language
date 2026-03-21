@@ -93,15 +93,12 @@ internal fun EmissionContext.emitFunctionCall(
     targetElm: ElmExpression?,
     rawArgs: List<ElmExpression>,
 ): ElmExpression {
-    if (targetElm != null) {
-        throw ElmEmitter.UnsupportedNodeException(
-            "Fluent function calls (target.${expression.function.value}()) are not yet supported."
-        )
-    }
+    // Fluent call: target.f(args) → f(target, args) — target becomes the first argument.
+    val effectiveArgs = if (targetElm != null) listOf(targetElm) + rawArgs else rawArgs
 
     val functionName = expression.function.value
 
-    val args = rawArgs.toMutableList()
+    val args = effectiveArgs.toMutableList()
 
     // Try system function emission (math, date/time, message)
     emitSystemFunction(functionName, args)?.let {

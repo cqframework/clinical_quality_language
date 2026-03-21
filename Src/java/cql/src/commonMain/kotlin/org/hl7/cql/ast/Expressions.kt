@@ -1,3 +1,24 @@
+/**
+ * CQL AST expression nodes — the intermediate representation between the ANTLR parse tree (built by
+ * [Builder]) and ELM output (emitted by `EmissionContext`).
+ *
+ * ## Design
+ * - The [Expression] hierarchy is `sealed`, so `when` dispatch in [ExpressionFold.fold] is
+ *   exhaustive at compile time. Adding a new subtype without handling it in every fold is a compile
+ *   error.
+ * - Nodes are immutable Kotlin data classes. Type information is stored externally in `TypeTable`
+ *   (keyed by expression identity), not on the nodes themselves.
+ * - Nodes annotated with [@Ir][Ir] (e.g., [IntervalExpression], [ImplicitCastExpression]) are
+ *   synthetic — inserted by analysis or lowering phases, never present in parsed CQL source.
+ *
+ * ## Extending: Adding a New Expression Type
+ * 1. Add a `data class` here that implements [Expression] (or [UnaryExpression] /
+ *    [BinaryExpression]).
+ * 2. Update [ExpressionFold.fold]'s `when` block to handle the new type.
+ * 3. Add a corresponding `on*` abstract method to [ExpressionFold].
+ * 4. Add child extraction to `forEachChildExpression` in `ExpressionChildren.kt`.
+ * 5. Implement the handler in all [ExpressionFold] implementors and [RewritingFold].
+ */
 package org.hl7.cql.ast
 
 import kotlinx.serialization.ExperimentalSerializationApi

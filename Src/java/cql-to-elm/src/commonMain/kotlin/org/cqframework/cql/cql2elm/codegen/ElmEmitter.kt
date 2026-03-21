@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.analysis.SymbolTable
@@ -9,28 +8,37 @@ import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
- * Converts the CQL AST into an equivalent ELM representation. The emitter reads types from the
- * [TypeTable] (populated by [org.cqframework.cql.cql2elm.analysis.TypeResolver]) and sets
- * `resultType`, `resultTypeName`, and `resultTypeSpecifier` on emitted ELM nodes to match the
- * legacy translator output.
+ * Thin orchestrator that drives the CQL AST → ELM conversion.
  *
- * This is a thin orchestrator; the actual emission logic lives in extension functions on
- * [EmissionContext] in separate files:
- * - [LiteralEmission.kt][emitLiteral] -- literal type handlers
- * - [OperatorEmission.kt][emitBinaryOperator] -- binary/unary operator emission
- * - [TemporalEmission.kt][emitDateTime] -- date/time parsing
- * - [DefinitionEmission.kt][emitUsings] -- definition and statement emission
+ * **Input:** a CQL AST [Library][org.hl7.cql.ast.Library] plus a [SemanticModel] (the compilation
+ * database produced by the analysis phases — [SymbolTable], [TypeTable], [OperatorRegistry], and
+ * SyntheticTable).
+ *
+ * **Output:** an ELM [Library] wrapped in a [Result].
+ *
+ * This class creates an [EmissionContext] (which is the [ExpressionFold] responsible for all
+ * expression-level codegen) and then calls its per-section emission methods — usings, includes,
+ * parameters, terminology, contexts, statements — to populate the ELM Library.
+ *
+ * ## How to add a new library-level section
+ * 1. Add the emission method to [EmissionContext] (or an emission extension file).
+ * 2. Wire it into [emit]: call the new method, check for non-empty results, and assign to the
+ *    appropriate ELM [Library] field.
+ *
+ * ## What NOT to put here
+ * - Expression-level emission logic — that belongs in [EmissionContext] and emission extension
+ *   files. This class only orchestrates library-level sections.
+ * - Analysis or validation — those happen before this stage in the pipeline.
  */
-class ElmEmitter(semanticModel: SemanticModel, modelManager: ModelManager? = null) {
+class ElmEmitter(semanticModel: SemanticModel) {
     /** Backward-compatible constructor accepting individual components. */
     constructor(
         symbolTable: SymbolTable = SymbolTable(),
         typeTable: TypeTable = TypeTable(),
         operatorRegistry: OperatorRegistry = OperatorRegistry.createSystemRegistry(),
-        modelManager: ModelManager? = null,
-    ) : this(SemanticModel(symbolTable, typeTable, operatorRegistry), modelManager)
+    ) : this(SemanticModel(symbolTable, typeTable, operatorRegistry))
 
-    private val ctx = EmissionContext(semanticModel, modelManager)
+    private val ctx = EmissionContext(semanticModel)
 
     @Suppress("MemberVisibilityCanBePrivate") data class Result(val library: Library)
 

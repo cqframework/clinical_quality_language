@@ -56,7 +56,7 @@ internal fun EmissionContext.emitIntervalRelation(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Interval<Any> expansion is handled by ExpressionLowering. Operands arrive processed.
+    // Interval<Any> expansion is handled by Normalizer. Operands arrive processed.
     return when (val phrase = expression.phrase) {
         is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
         is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
@@ -67,11 +67,11 @@ internal fun EmissionContext.emitIntervalRelation(
         is StartsIntervalPhrase -> emitStartsPhrase(phrase, leftElm, rightElm)
         is EndsIntervalPhrase -> emitEndsPhrase(phrase, leftElm, rightElm)
         is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, leftElm, rightElm)
-        // WithinIntervalPhrase is fully lowered by ExpressionLowering into
+        // WithinIntervalPhrase is fully normalized by Normalizer into
         // MembershipExpression(IN, ...) — it never reaches here.
         is WithinIntervalPhrase ->
             throw ElmEmitter.UnsupportedNodeException(
-                "WithinIntervalPhrase should have been lowered to MembershipExpression."
+                "WithinIntervalPhrase should have been normalized to MembershipExpression."
             )
         else ->
             throw ElmEmitter.UnsupportedNodeException(
@@ -94,9 +94,9 @@ private fun applyBoundary(
 }
 
 /**
- * Emit an includes phrase. Non-proper point cases are lowered to MembershipExpression(CONTAINS) by
- * ExpressionLowering. This handler handles: proper cases (ProperContains/ProperIncludes) and
- * non-proper non-point cases (Includes).
+ * Emit an includes phrase. Non-proper point cases are normalized to MembershipExpression(CONTAINS)
+ * by Normalizer. This handler handles: proper cases (ProperContains/ProperIncludes) and non-proper
+ * non-point cases (Includes).
  */
 private fun EmissionContext.emitIncludesPhrase(
     phrase: IncludesIntervalPhrase,
@@ -129,7 +129,7 @@ private fun EmissionContext.emitIncludesPhrase(
             }
         }
     }
-    // Non-proper non-point: Includes (point cases lowered to MembershipExpression by lowering)
+    // Non-proper non-point: Includes (point cases normalized to MembershipExpression by Normalizer)
     return Includes().apply {
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
@@ -137,8 +137,8 @@ private fun EmissionContext.emitIncludesPhrase(
 }
 
 /**
- * Emit an includedIn phrase. Non-proper point cases are lowered to MembershipExpression(IN) by
- * ExpressionLowering. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
+ * Emit an includedIn phrase. Non-proper point cases are normalized to MembershipExpression(IN) by
+ * Normalizer. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
  * non-point cases (IncludedIn).
  */
 private fun EmissionContext.emitIncludedInPhrase(
@@ -165,7 +165,7 @@ private fun EmissionContext.emitIncludedInPhrase(
             }
         }
     }
-    // Non-proper non-point: IncludedIn (point cases lowered by lowering)
+    // Non-proper non-point: IncludedIn (point cases normalized by Normalizer)
     return IncludedIn().apply {
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
@@ -174,9 +174,9 @@ private fun EmissionContext.emitIncludedInPhrase(
 
 /**
  * Emit a before/after phrase. Boundary application, point-interval promotion, and direction-based
- * interval extraction are handled by [ExpressionLowering] — operands arrive fully processed. This
- * handler is purely structural: map the phrase to the correct ELM operator and apply quantity
- * offset arithmetic.
+ * interval extraction are handled by [Normalizer] — operands arrive fully processed. This handler
+ * is purely structural: map the phrase to the correct ELM operator and apply quantity offset
+ * arithmetic.
  */
 @Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")
 private fun EmissionContext.emitBeforeOrAfterPhrase(
@@ -190,7 +190,7 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
     val isInclusive = phrase.relationship.inclusive
 
     if (phrase.offset == null) {
-        // No offset — operands lowered with boundaries + promotion by ExpressionLowering
+        // No offset — operands normalized with boundaries + promotion by Normalizer
         val ops = mutableListOf(leftElm, rightElm)
         return if (isInclusive) {
             if (isBefore)
@@ -217,7 +217,7 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
         }
     }
 
-    // Offset — operands lowered with boundaries + direction extraction by ExpressionLowering
+    // Offset — operands normalized with boundaries + direction extraction by Normalizer
     val offset = phrase.offset!!
     val qty = emitLiteral(offset.quantity)
     val left = leftElm
@@ -320,7 +320,7 @@ private fun emitConcurrentPhrase(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Boundaries applied by ExpressionLowering.
+    // Boundaries applied by Normalizer.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
     val ops = mutableListOf(leftElm, rightElm)
 
@@ -419,7 +419,7 @@ private fun emitEndsPhrase(
     }
 }
 
-// emitWithinPhrase — deleted. Within is fully lowered by ExpressionLowering
+// emitWithinPhrase — deleted. Within is fully normalized by Normalizer
 // into MembershipExpression(IN, ...) with arithmetic and null check.
 
 /**

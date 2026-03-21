@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.codegen
 
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
-import org.hl7.cql.ast.AstWalker
 import org.hl7.cql.ast.ContextDefinition
+import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.ExpressionFunctionBody
 import org.hl7.cql.ast.FunctionCallExpression
@@ -10,6 +10,7 @@ import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.UnsupportedStatement
+import org.hl7.cql.ast.forEachChildExpression
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
 import org.hl7.elm.r1.ExpressionDef
 
@@ -86,7 +87,7 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
         val contextName = contextDefinition.context.value
         if (contextName in emittedExpressions) return
-        if (ctx.modelManager == null || ctx.loadedModelNames.isEmpty()) return
+        if (ctx.modelContext.loadedModelNames.isEmpty()) return
 
         try {
             val retrieve = ctx.buildRetrieveForType(contextName)
@@ -180,36 +181,32 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 }
 
 /**
- * Collects all [IdentifierExpression] names from an expression tree using [AstWalker]. This ensures
- * complete coverage of all AST expression types as new ones are added.
+ * Collects all [IdentifierExpression] names from an expression tree by recursively walking child
+ * expressions via [forEachChildExpression].
  */
 internal object IdentifierRefCollector {
-    fun collect(expression: org.hl7.cql.ast.Expression): Set<String> {
+    fun collect(expression: Expression): Set<String> {
         val refs = mutableSetOf<String>()
-        val walker =
-            object : AstWalker() {
-                override fun visitIdentifierExpression(expression: IdentifierExpression) {
-                    refs.add(expression.name.simpleName)
-                }
-            }
-        walker.visitExpression(expression)
+        walk(expression, refs)
         return refs
+    }
+
+    private fun walk(expression: Expression, refs: MutableSet<String>) {
+        if (expression is IdentifierExpression) refs.add(expression.name.simpleName)
+        forEachChildExpression(expression) { walk(it, refs) }
     }
 }
 
 /** Collects function names referenced via [FunctionCallExpression] in an expression tree. */
 internal object FunctionRefCollector {
-    fun collect(expression: org.hl7.cql.ast.Expression): Set<String> {
+    fun collect(expression: Expression): Set<String> {
         val refs = mutableSetOf<String>()
-        val walker =
-            object : AstWalker() {
-                override fun visitFunctionCallExpression(expression: FunctionCallExpression) {
-                    refs.add(expression.function.value)
-                    // Still visit sub-expressions (arguments, target)
-                    super.visitFunctionCallExpression(expression)
-                }
-            }
-        walker.visitExpression(expression)
+        walk(expression, refs)
         return refs
+    }
+
+    private fun walk(expression: Expression, refs: MutableSet<String>) {
+        if (expression is FunctionCallExpression) refs.add(expression.function.value)
+        forEachChildExpression(expression) { walk(it, refs) }
     }
 }

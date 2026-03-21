@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.analysis.Slot
@@ -56,27 +55,88 @@ import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Literal as ElmLiteral
 
 /**
- * Shared state and helpers used by all emission extension functions. Implements [ExpressionFold] to
- * provide compile-time exhaustive dispatch over the AST — adding a new Expression subtype without a
- * handler is a compile error.
+ * The code-generation fold: an [ExpressionFold]<[ElmExpression]> that converts each CQL AST
+ * expression into an equivalent ELM node. This is the final stage of the CQL-to-ELM pipeline:
+ * ```
+ * CQL AST + SemanticModel  ──► EmissionContext (ExpressionFold<ElmExpression>)  ──► ELM
+ * ```
  *
- * The [fold]/[emitExpression] override pattern ensures that when the catamorphism pre-folds
- * children via `fold(child)`, it goes through [emitExpression] which adds decoration and error
- * checking. The `on*` handlers receive fully decorated ELM expressions as pre-folded children.
+ * ## How the fold works
+ *
+ * [fold] is overridden to route every expression through [emitExpression], which:
+ * 1. Checks whether the [SemanticValidator][org.cqframework.cql.cql2elm.analysis.SemanticValidator]
+ *    flagged this expression with an error — if so, emits `Null` immediately.
+ * 2. Dispatches to the catamorphism (`super.fold`) which pre-folds children via `fold(child)` and
+ *    then calls the matching `on*` handler with fully-decorated ELM children.
+ * 3. Decorates the result with `resultType` from the [SemanticModel].
+ *
+ * Because children are pre-folded through [emitExpression] before `on*` is called, every child the
+ * handler receives is already a decorated [ElmExpression].
+ *
+ * ## Synthetic application pattern
+ *
+ * Each `on*` handler wraps child ELM nodes with [applySynthetics] before passing them to the
+ * emission function. [applySynthetics] looks up the [SyntheticTable] for implicit conversions
+ * recorded by [TypeUnifier][org.cqframework.cql.cql2elm.analysis.TypeUnifier] at a given `(parent,
+ * Slot)` and wraps the ELM expression in the appropriate conversion nodes (operator conversions,
+ * implicit casts, list/interval conversions). This keeps the AST immutable — type coercions are
+ * applied only at code-generation time.
+ *
+ * ## Extension file convention
+ *
+ * The `on*` handlers in this class are thin routers: they delegate to extension functions defined
+ * in per-domain files inside the `codegen` package. Each domain gets its own file:
+ *
+ * | File                            | Scope                                    |
+ * |---------------------------------|------------------------------------------|
+ * | [LiteralEmission.kt]            | Literal type handlers                    |
+ * | [OperatorEmission.kt]           | Binary / unary operator emission         |
+ * | [TemporalEmission.kt]           | Date/time literal parsing                |
+ * | [TemporalOperatorEmission.kt]   | Temporal operator emission               |
+ * | [IntervalOperatorEmission.kt]   | Interval operator emission               |
+ * | [ListOperatorEmission.kt]       | List / set operator emission             |
+ * | [CollectionOperatorEmission.kt] | Collection operator emission             |
+ * | [TypeOperatorEmission.kt]       | is / as / cast / convert emission        |
+ * | [ReferenceEmission.kt]          | Identifier and reference emission        |
+ * | [PropertyAccessEmission.kt]     | Property access emission                 |
+ * | [FunctionEmission.kt]           | Function call emission                   |
+ * | [SystemFunctionEmission.kt]     | System function emission                 |
+ * | [QueryEmission.kt]              | Query expression emission                |
+ * | [RetrieveEmission.kt]           | Retrieve expression emission             |
+ * | [CaseEmission.kt]               | Case expression emission                 |
+ * | [DefinitionEmission.kt]         | Definition emission (usings, parameters) |
+ * | [StatementEmission.kt]          | Statement emission (expressions, funcs)  |
+ * | [TerminologyEmission.kt]        | Terminology definition emission          |
+ * | [EmissionHelpers.kt]            | Shared utilities                         |
+ *
+ * ## How to add emission for a new expression type
+ * 1. Add the `on*` handler in this class (the compiler will force this once the new [Expression]
+ *    subtype is added to the AST and [ExpressionFold]).
+ * 2. Implement ELM construction — either inline in the handler or in an existing/new emission
+ *    extension file (see below).
+ * 3. Call [applySynthetics] for every child slot that may carry an implicit conversion.
+ *
+ * ## How to add a new emission extension file
+ * 1. Create a new `.kt` file in the `codegen` package.
+ * 2. Define extension functions on [EmissionContext] (e.g., `internal fun
+ *    EmissionContext.emitFoo(...)`).
+ * 3. Call the extension function from the `on*` handler in this class.
+ *
+ * ## What NOT to put here
+ * - Type inference or operator resolution logic — those belong in the analysis phases.
+ * - AST mutation — the AST is immutable by this stage; use [SyntheticTable] for conversions.
+ * - Library-level orchestration — that belongs in [ElmEmitter].
  */
 @Suppress("TooManyFunctions")
-class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelManager? = null) :
-    ExpressionFold<ElmExpression> {
+class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpression> {
     val operatorRegistry: OperatorRegistry
         get() = semanticModel.operatorRegistry
 
-    val typesNamespace = "urn:hl7-org:elm-types:r1"
+    internal val modelContext: org.cqframework.cql.cql2elm.analysis.ModelContext
+        get() = semanticModel.modelContext
 
-    /**
-     * Model names loaded via using definitions. Populated during [emitUsings] and used by
-     * [buildRetrieveForType] to resolve types against loaded models.
-     */
-    internal val loadedModelNames = mutableListOf<String>()
+    val typesNamespace
+        get() = modelContext.typesNamespace
 
     /**
      * Resolve an AST type name to the correct ELM [QName], checking system types first, then loaded
@@ -88,83 +148,22 @@ class EmissionContext(val semanticModel: SemanticModel, val modelManager: ModelM
         if (systemType != null) {
             return dataTypeToQName(systemType)
         }
-        // Model types (Element, Extension, etc.) need their model's namespace.
-        // We resolve the QName directly from the model info rather than going through
-        // TypeBuilder.dataTypeToQName, because the OperatorRegistry's ModelResolver
-        // only knows about the System model.
-        val mm = modelManager
-        if (mm != null) {
-            for (modelName in loadedModelNames) {
-                val model =
-                    try {
-                        mm.resolveModel(modelName, null)
-                    } catch (_: Exception) {
-                        continue
-                    }
-                val dataType = model.resolveTypeName(name)
-                if (dataType != null && dataType is org.hl7.cql.model.NamedType) {
-                    val modelInfo = model.modelInfo
-                    val ns = modelInfo.targetUrl ?: modelInfo.url ?: typesNamespace
-                    val simpleName = dataType.target ?: dataType.simpleName
-                    return QName(ns, simpleName)
-                }
-            }
-        }
-        // Fallback: assume system type namespace
-        return QName(typesNamespace, name)
+        return modelContext.typeNameToQName(name)
     }
 
     /**
-     * Convert a resolved [DataType] to a [QName] with the correct namespace. For system types,
-     * delegates to [operatorRegistry.typeBuilder.dataTypeToQName]. For model types, resolves the
-     * namespace directly from the model info to avoid the OperatorRegistry's system-only
-     * ModelResolver.
+     * Convert a resolved [DataType] to a [QName] with the correct namespace. ModelContext handles
+     * both system types (ELM types namespace) and model types (model-specific namespace).
      */
-    internal fun dataTypeToQName(type: DataType): QName {
-        if (type !is org.hl7.cql.model.NamedType) {
-            throw IllegalArgumentException("A named type is required in this context.")
-        }
-        val namedType: org.hl7.cql.model.NamedType = type
-        // System types can go through the TypeBuilder
-        if (namedType.namespace == "System") {
-            return operatorRegistry.typeBuilder.dataTypeToQName(type)
-        }
-        // Model types: resolve from loaded models
-        val mm = modelManager
-        if (mm != null) {
-            for (modelName in loadedModelNames) {
-                val model =
-                    try {
-                        mm.resolveModel(modelName, null)
-                    } catch (_: Exception) {
-                        continue
-                    }
-                // Check if this model owns the type
-                if (model.resolveTypeName(namedType.simpleName) != null) {
-                    val modelInfo = model.modelInfo
-                    val ns = modelInfo.targetUrl ?: modelInfo.url ?: typesNamespace
-                    val simpleName = namedType.target ?: namedType.simpleName
-                    return QName(ns, simpleName)
-                }
-            }
-        }
-        // Fallback: try the TypeBuilder (may throw)
-        return operatorRegistry.typeBuilder.dataTypeToQName(type)
-    }
+    internal fun dataTypeToQName(type: DataType): QName = modelContext.dataTypeToQName(type)
 
     /**
      * Convert a resolved [DataType] to an ELM TypeSpecifier with the correct namespace. For
-     * NamedType, uses [dataTypeToQName] which handles model types correctly. For other types,
-     * delegates to [operatorRegistry.typeBuilder.dataTypeToTypeSpecifier].
+     * NamedType, uses [dataTypeToQName] which handles model types correctly. For other types
+     * (ListType, IntervalType, etc.), delegates to the TypeBuilder.
      */
-    internal fun dataTypeToTypeSpecifier(type: DataType): org.hl7.elm.r1.TypeSpecifier {
-        if (type is org.hl7.cql.model.NamedType) {
-            return org.hl7.elm.r1.NamedTypeSpecifier().withName(dataTypeToQName(type)).apply {
-                resultType = type
-            }
-        }
-        return operatorRegistry.typeBuilder.dataTypeToTypeSpecifier(type)
-    }
+    internal fun dataTypeToTypeSpecifier(type: DataType): org.hl7.elm.r1.TypeSpecifier =
+        modelContext.dataTypeToTypeSpecifier(type, operatorRegistry.typeBuilder)
 
     /**
      * Set resultType on an ELM element via the Trackable extension property. This sets the internal

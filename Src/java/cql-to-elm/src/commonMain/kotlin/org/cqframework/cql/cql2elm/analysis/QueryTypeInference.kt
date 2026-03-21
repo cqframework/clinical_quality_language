@@ -12,23 +12,21 @@ import org.hl7.cql.model.TupleTypeElement
 @Suppress("ReturnCount")
 internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType? {
     // Build scope from sources
-    val scope = mutableMapOf<String, Resolution>()
+    val queryBindings = mutableMapOf<String, Resolution>()
     for (source in expression.sources) {
         val elementType = inferSourceElementType(source)
         // Always add alias to scope even without a resolved type, so inner expressions
         // can resolve identifiers (e.g., for property access and sort-by)
         val aliasType = elementType ?: (type("Any") ?: continue)
-        scope[source.alias.value] = Resolution.AliasRef(source.alias.value, aliasType)
+        queryBindings[source.alias.value] = Resolution.AliasRef(source.alias.value, aliasType)
     }
 
-    // Push scope for lets, where, inclusions, return, aggregate
-    pushQueryScope(scope)
-    try {
+    return scope.withQueryScope(queryBindings) {
         // Resolve let clause types and add to scope
         for (letItem in expression.lets) {
             val letType = inferType(letItem.expression)
             if (letType != null) {
-                scope[letItem.identifier.value] =
+                queryBindings[letItem.identifier.value] =
                     Resolution.QueryLetRef(letItem.identifier.value, letType)
             }
         }
@@ -43,7 +41,7 @@ internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?
 
         // Resolve aggregate
         expression.aggregate?.let { agg ->
-            val aggType = inferAggregateType(agg, scope)
+            val aggType = inferAggregateType(agg, queryBindings)
             resolveSortItems(expression)
             return aggType
         }
@@ -76,9 +74,7 @@ internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?
         // Resolve sort (runs regardless of whether return clause is present)
         resolveSortItems(expression)
 
-        return resultType
-    } finally {
-        popQueryScope()
+        resultType
     }
 }
 
@@ -102,12 +98,7 @@ private fun TypeResolver.inferInclusionType(inclusion: org.hl7.cql.ast.QueryIncl
     val elementType = inferSourceElementType(source) ?: return
     val innerScope =
         mapOf(source.alias.value to Resolution.AliasRef(source.alias.value, elementType))
-    pushQueryScope(innerScope)
-    try {
-        inferType(condition)
-    } finally {
-        popQueryScope()
-    }
+    scope.withQueryScope(innerScope) { inferType(condition) }
 }
 
 private fun TypeResolver.resolveSortItems(expression: QueryExpression) {
@@ -121,14 +112,15 @@ private fun TypeResolver.resolveSortItems(expression: QueryExpression) {
 @Suppress("ReturnCount")
 private fun TypeResolver.inferAggregateType(
     agg: org.hl7.cql.ast.AggregateClause,
-    scope: MutableMap<String, Resolution>,
+    queryBindings: MutableMap<String, Resolution>,
 ): DataType? {
     // Resolve starting expression type
     val startingType = agg.starting?.let { inferType(it) } ?: type("Any")
 
     // Add accumulator to scope — legacy uses QueryLetRef for the accumulator identifier
     if (startingType != null) {
-        scope[agg.identifier.value] = Resolution.QueryLetRef(agg.identifier.value, startingType)
+        queryBindings[agg.identifier.value] =
+            Resolution.QueryLetRef(agg.identifier.value, startingType)
     }
 
     return inferType(agg.expression)

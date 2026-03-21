@@ -41,6 +41,7 @@ import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.ast.forEachChildExpression
 import org.hl7.cql.model.ListType
 
 /**
@@ -48,13 +49,27 @@ import org.hl7.cql.model.ListType
  * [ExpressionFold] for compile-time exhaustive dispatch — adding a new Expression subtype without a
  * validation handler is a compile error.
  *
- * Detected errors:
+ * ## Detected errors
  * - Unresolved identifiers (no resolution and no inferred type)
- * - Undeclared function calls (function name not found anywhere)
- * - Unmatched function signatures (name exists but arity doesn't match)
+ * - Undeclared function calls (function name not found anywhere in [SymbolTable])
+ * - Unmatched function signatures (name exists but no overload matches call arity)
  * - Recursive function calls (matching arity but null type from circular reference)
- * - Function bodies with nested errors (entire body flagged)
- * - Invalid casts (e.g., list → scalar As expression)
+ * - Function bodies with nested errors (entire body flagged via [ExpressionChecker.hasNestedError])
+ * - Invalid casts (e.g., `List<T>` → scalar `As` expression)
+ * - Unresolved binary operators (both operands typed but no matching operator overload)
+ * - Unresolved interval relations (e.g., `Includes` on non-list/non-interval types)
+ * - Invalid sort expressions (sort on non-comparable types such as `Interval`)
+ *
+ * ## Adding a new validation
+ * 1. Override the relevant `on*` handler in [ExpressionChecker]. The handler receives pre-folded
+ *    children (the catamorphism validates children before the parent).
+ * 2. Check the condition using the [SemanticModel] (type lookups, resolution lookups).
+ * 3. Call [SemanticModel.addError] on the offending expression if the check fails.
+ *
+ * ## What this does NOT do
+ * - No type inference — that is [TypeResolver]'s job.
+ * - No conversion recording — that is [TypeUnifier]'s job.
+ * - No AST mutation — the AST is immutable at this point; errors are recorded in the model.
  */
 class SemanticValidator {
     fun validate(library: Library, symbolTable: SymbolTable, semanticModel: SemanticModel) {
@@ -161,18 +176,8 @@ private class ExpressionChecker(
 
     fun hasNestedError(expression: Expression): Boolean {
         if (model.hasError(expression)) return true
-        // Use AstWalker for deep check since it handles all node types including non-expressions
         var found = false
-        val walker =
-            object : org.hl7.cql.ast.AstWalker() {
-                override fun visitExpression(expression: Expression) {
-                    if (model.hasError(expression)) {
-                        found = true
-                    }
-                    if (!found) super.visitExpression(expression)
-                }
-            }
-        walker.visitExpression(expression)
+        forEachChildExpression(expression) { if (!found && hasNestedError(it)) found = true }
         return found
     }
 

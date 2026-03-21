@@ -130,7 +130,7 @@ internal fun TypeResolver.inferIntervalRelationType(
     // Resolve through the OperatorMap ONLY when both operands are intervals with different
     // point types (interval type promotion, e.g., Interval<Date> → Interval<DateTime>).
     // For other cases (scalar/null operands, same-type intervals), the existing lowering +
-    // ConversionAnalyzer path handles everything correctly.
+    // TypeUnifier path handles everything correctly.
     val opName = intervalPhraseToOperatorName(expression.phrase)
     if (
         opName != null &&
@@ -146,7 +146,7 @@ internal fun TypeResolver.inferIntervalRelationType(
                 ?: rightType
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
         if (resolution != null) {
-            typeTable.setOperatorResolution(expression, resolution)
+            recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
             return resolution.operator.resultType
         }
     }
@@ -179,7 +179,7 @@ private fun intervalPhraseToOperatorName(phrase: org.hl7.cql.ast.IntervalOperato
         is org.hl7.cql.ast.IncludesIntervalPhrase ->
             if (phrase.proper) "ProperIncludes" else "Includes"
         is org.hl7.cql.ast.ConcurrentIntervalPhrase -> null // lowered to boundary comparisons
-        is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase -> null // lowered by ExpressionLowering
-        is org.hl7.cql.ast.WithinIntervalPhrase -> null // lowered by ExpressionLowering
+        is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase -> null // normalized by Normalizer
+        is org.hl7.cql.ast.WithinIntervalPhrase -> null // normalized by Normalizer
         else -> null
     }

@@ -50,20 +50,54 @@ import org.hl7.cql.ast.TimeBoundaryExpression
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.ast.rewriteCase
+import org.hl7.cql.ast.rewriteLiteral
+import org.hl7.cql.ast.rewriteQuery
 import org.hl7.cql.model.IntervalType
 
 /**
- * AST→AST structural lowering phase. Rewrites complex CQL phrases into trees of simpler AST nodes,
- * using existing node types. Reads the [SemanticModel] for type information (is this an interval?)
- * but does not modify types — that's the analysis phase's job.
+ * Type-directed normalization of the CQL AST. Performs structural rewrites that require type
+ * information, producing a new AST where complex surface-syntax phrases are lowered into simpler,
+ * operator-level nodes. Implements [ExpressionFold]<[Expression]> — returning the (possibly
+ * rewritten) expression for each node.
  *
- * After lowering, each AST node maps 1:1 to an ELM node, making emission purely mechanical.
+ * ## Kinds of rewrites performed here
+ * - **Phrase lowering**: string `Add` on String operands → `Concat` operator; `Concat` (`&`)
+ *   operands wrapped in `Coalesce(operand, '')`.
+ * - **Concat coalescing**: `&` operands null-guarded via Coalesce wrapping.
+ * - **Interval expansion**: `Interval<Any>` literals (from untyped bounds) expanded to typed
+ *   intervals using the concrete point type from the other bound.
+ * - **Heterogeneous list flattening**: `flatten` on a list with mixed `T` and `List<T>` elements
+ *   wrapped in a `Query(return=As(X, List<T>))` to produce uniform `List<List<T>>`.
+ * - **CalculateAgeAt DateTime/Date compatibility**: mixed DateTime/Date arguments normalized to
+ *   both-Date by wrapping the DateTime operand in `ConversionExpression(ToDate)`.
+ * - **Interval relation expansion**: `In`/`Contains` with `Interval<Any>` operands get the untyped
+ *   interval expanded to match the concrete operand type.
  *
- * The lowered AST shares child expression nodes by reference with the original AST. Only the
- * rewritten parent nodes are new objects. The TypeResolver re-types the new nodes in a
- * post-lowering pass.
+ * ## What does NOT go here
+ * - Type inference → [TypeResolver]
+ * - Conversion recording → [TypeUnifier]
+ * - Error checking → [SemanticValidator]
+ * - ELM-specific emission concerns → `EmissionContext`
+ *
+ * ## Adding a new normalization rule
+ * 1. Override the relevant `on*` handler. The handler receives pre-folded children (already
+ *    normalized recursively by the catamorphism).
+ * 2. Return the rewritten [Expression]. If unchanged, return the original expression instance
+ *    (identity check `===` is used to avoid unnecessary copy).
+ * 3. Call [SyntheticTable.transfer] via [rewrite] if the original expression had synthetics — this
+ *    ensures the [EmissionContext] can find them on the replacement node.
+ *
+ * ## Post-normalization re-typing
+ *
+ * New nodes created by normalization (e.g., [QueryExpression] for flatten, [ConversionExpression]
+ * for ToDate) have no entries in the [TypeTable]. The [SemanticAnalyzer] runs a post-normalization
+ * re-collection and re-typing pass to fill in types for these nodes.
+ *
+ * The normalized AST shares child expression nodes by reference with the original; only rewritten
+ * parent nodes are new objects. This phase is target-neutral — its output is CQL AST, not ELM.
  */
-class ExpressionLowering(
+class Normalizer(
     private val semanticModel: SemanticModel,
     private val syntheticTable: SyntheticTable = semanticModel.syntheticTable,
 ) : ExpressionFold<Expression> {
@@ -76,9 +110,9 @@ class ExpressionLowering(
         return replacement
     }
 
-    fun lowerLibrary(library: Library): Library {
-        val newStatements = library.statements.map { lowerStatement(it) }
-        val newDefinitions = library.definitions.map { lowerDefinition(it) }
+    fun normalizeLibrary(library: Library): Library {
+        val newStatements = library.statements.map { normalizeStatement(it) }
+        val newDefinitions = library.definitions.map { normalizeDefinition(it) }
         return if (
             newStatements.indices.all { newStatements[it] === library.statements[it] } &&
                 newDefinitions.indices.all { newDefinitions[it] === library.definitions[it] }
@@ -89,19 +123,19 @@ class ExpressionLowering(
         }
     }
 
-    private fun lowerStatement(statement: Statement): Statement =
+    private fun normalizeStatement(statement: Statement): Statement =
         when (statement) {
             is ExpressionDefinition -> {
-                val lowered = fold(statement.expression)
-                if (lowered === statement.expression) statement
-                else statement.copy(expression = lowered)
+                val normalized = fold(statement.expression)
+                if (normalized === statement.expression) statement
+                else statement.copy(expression = normalized)
             }
             is FunctionDefinition -> {
                 val body = statement.body
                 if (body is ExpressionFunctionBody) {
-                    val lowered = fold(body.expression)
-                    if (lowered === body.expression) statement
-                    else statement.copy(body = body.copy(expression = lowered))
+                    val normalized = fold(body.expression)
+                    if (normalized === body.expression) statement
+                    else statement.copy(body = body.copy(expression = normalized))
                 } else {
                     statement
                 }
@@ -109,15 +143,16 @@ class ExpressionLowering(
             else -> statement
         }
 
-    private fun lowerDefinition(
+    private fun normalizeDefinition(
         definition: org.hl7.cql.ast.Definition
     ): org.hl7.cql.ast.Definition =
         when (definition) {
             is org.hl7.cql.ast.ParameterDefinition -> {
                 val default = definition.default
                 if (default != null) {
-                    val lowered = fold(default)
-                    if (lowered === default) definition else definition.copy(default = lowered)
+                    val normalized = fold(default)
+                    if (normalized === default) definition
+                    else definition.copy(default = normalized)
                 } else {
                     definition
                 }
@@ -125,7 +160,7 @@ class ExpressionLowering(
             else -> definition
         }
 
-    // --- Structural lowering handlers ---
+    // --- Structural normalization handlers ---
 
     override fun onBinaryOperator(
         expr: OperatorBinaryExpression,
@@ -177,7 +212,8 @@ class ExpressionLowering(
 
     // --- Identity handlers (pass through pre-folded children) ---
 
-    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Expression>) = expr
+    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Expression>) =
+        rewriteLiteral(expr, children)
 
     override fun onIdentifier(expr: IdentifierExpression) = expr
 
@@ -208,7 +244,7 @@ class ExpressionLowering(
         comparand: Expression?,
         cases: List<CaseChildren<Expression>>,
         elseResult: Expression,
-    ): Expression = expr // cases have complex children; pass through for now
+    ): Expression = rewriteCase(expr, comparand, cases, elseResult)
 
     override fun onIs(expr: IsExpression, operand: Expression) =
         if (operand === expr.operand) expr else expr.copy(operand = operand)
@@ -234,8 +270,8 @@ class ExpressionLowering(
         // converting the DateTime operand to Date, matching the legacy translator's
         // behavior (SystemFunctionResolver.enforceCompatible). This ensures the (Date,Date)
         // overload is used rather than promoting Date→DateTime.
-        val lowered = lowerCalculateAgeAtCompatibility(expr, arguments)
-        if (lowered != null) return lowered
+        val normalized = normalizeCalculateAgeAtCompatibility(expr, arguments)
+        if (normalized != null) return normalized
 
         val argsChanged = arguments.indices.any { arguments[it] !== expr.arguments[it] }
         val targetChanged = target !== expr.target
@@ -249,9 +285,9 @@ class ExpressionLowering(
      * This matches the CQL spec behavior: age calculations at day precision or coarser should
      * operate on Date, not DateTime.
      *
-     * Returns null if no lowering is needed.
+     * Returns null if no normalization is needed.
      */
-    private fun lowerCalculateAgeAtCompatibility(
+    private fun normalizeCalculateAgeAtCompatibility(
         expr: FunctionCallExpression,
         arguments: List<Expression>,
     ): Expression? {
@@ -341,14 +377,14 @@ class ExpressionLowering(
         // Heterogeneous flatten: wrap operand in Query(return=As(X, List<T>)) when the
         // list literal has mixed List<T> and T elements.
         if (expr.listTransformKind == org.hl7.cql.ast.ListTransformKind.FLATTEN) {
-            val wrapped = lowerHeterogeneousFlatten(expr, operand)
+            val wrapped = normalizeHeterogeneousFlatten(expr, operand)
             if (wrapped != null) return rewrite(expr, expr.copy(operand = wrapped))
         }
         return if (operand === expr.operand) expr else expr.copy(operand = operand)
     }
 
     /** Returns a Query-wrapped operand if the flatten has a heterogeneous list, or null. */
-    private fun lowerHeterogeneousFlatten(
+    private fun normalizeHeterogeneousFlatten(
         expr: ListTransformExpression,
         operand: Expression,
     ): Expression? {
@@ -518,7 +554,7 @@ class ExpressionLowering(
         val r: Expression
         when (phrase) {
             is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
-                return lowerBeforeOrAfter(expr, phrase, loweredLeft, loweredRight)
+                return normalizeBeforeOrAfter(expr, phrase, loweredLeft, loweredRight)
             is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
                 l = applyBoundary(loweredLeft, phrase.leftBoundary)
                 r = applyBoundary(loweredRight, phrase.rightBoundary)
@@ -527,7 +563,7 @@ class ExpressionLowering(
                 l = loweredLeft
                 r = applyBoundary(loweredRight, phrase.rightBoundary)
                 if (isPointOperand(expr.right, phrase.rightBoundary, expr.left)) {
-                    return lowerToMembership(
+                    return normalizeToMembership(
                         expr,
                         org.hl7.cql.ast.MembershipOperator.CONTAINS,
                         l,
@@ -541,7 +577,7 @@ class ExpressionLowering(
                 l = applyBoundary(loweredLeft, phrase.leftBoundary)
                 r = loweredRight
                 if (isPointOperand(expr.left, phrase.leftBoundary, null)) {
-                    return lowerToMembership(
+                    return normalizeToMembership(
                         expr,
                         org.hl7.cql.ast.MembershipOperator.IN,
                         l,
@@ -552,7 +588,7 @@ class ExpressionLowering(
                 }
             }
             is org.hl7.cql.ast.WithinIntervalPhrase ->
-                return lowerWithin(expr, phrase, loweredLeft, loweredRight)
+                return normalizeWithin(expr, phrase, loweredLeft, loweredRight)
             else -> {
                 l = loweredLeft
                 r = loweredRight
@@ -588,7 +624,7 @@ class ExpressionLowering(
      * offsets, and direction-based interval extraction — all as AST rewrites.
      */
     @Suppress("CyclomaticComplexMethod", "LongMethod", "NestedBlockDepth")
-    private fun lowerBeforeOrAfter(
+    private fun normalizeBeforeOrAfter(
         expr: IntervalRelationExpression,
         phrase: org.hl7.cql.ast.BeforeOrAfterIntervalPhrase,
         foldedLeft: Expression,
@@ -693,7 +729,7 @@ class ExpressionLowering(
      * null check: `And(In(...), Not(IsNull(point)))`.
      */
     @Suppress("CyclomaticComplexMethod", "LongMethod")
-    private fun lowerWithin(
+    private fun normalizeWithin(
         expr: IntervalRelationExpression,
         phrase: org.hl7.cql.ast.WithinIntervalPhrase,
         foldedLeft: Expression,
@@ -840,7 +876,7 @@ class ExpressionLowering(
             (expression.literal as org.hl7.cql.ast.ListLiteral).elements.isEmpty()
 
     /** Rewrite includes/includedIn to MembershipExpression when one operand is a point. */
-    private fun lowerToMembership(
+    private fun normalizeToMembership(
         expr: IntervalRelationExpression,
         operator: org.hl7.cql.ast.MembershipOperator,
         left: Expression,
@@ -921,7 +957,8 @@ class ExpressionLowering(
     private fun isIntervalLiteral(expr: Expression): Boolean =
         expr is LiteralExpression && expr.literal is org.hl7.cql.ast.IntervalLiteral
 
-    override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>) = expr
+    override fun onQuery(expr: QueryExpression, children: QueryChildren<Expression>) =
+        rewriteQuery(expr, children)
 
     override fun onRetrieve(expr: RetrieveExpression) = expr
 

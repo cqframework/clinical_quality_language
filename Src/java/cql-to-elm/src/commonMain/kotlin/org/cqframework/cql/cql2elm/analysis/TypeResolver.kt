@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
-import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.AsExpression
@@ -68,38 +67,53 @@ import org.hl7.cql.model.TupleType
 import org.hl7.cql.model.TupleTypeElement
 
 /**
- * Walks the AST and infers types for all expressions, populating the [TypeTable]. Uses the
- * [OperatorRegistry] to resolve operator types and store operator resolution results.
+ * Walks the AST and infers types for all expressions, populating the [TypeTable]. Implements
+ * [ExpressionFold]<[DataType]?> for compile-time exhaustive dispatch — adding a new Expression
+ * subtype without a type-inference handler is a compile error.
  *
- * **Not thread-safe.** Each instance maintains mutable state and must not be shared across threads
- * or reused after [resolve] returns. A fresh instance is created per [SemanticAnalyzer.analyze]
- * call.
+ * ## Reads
+ * - [SymbolTable] — resolves expression/function/parameter definitions by name.
+ * - [OperatorRegistry] — resolves operator and function overloads by operand types.
+ * - [SyntheticTable] (optional) — provides effective types for operands that have synthetic
+ *   conversions recorded by [TypeUnifier] (e.g., a null literal cast to Integer). When present,
+ *   effective types are used for operator resolution instead of raw inferred types.
+ * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
- * Type inference for specific expression categories is split into extension function files:
- * - [TypeOperatorInference.kt] — is/as/cast/convert
- * - [TemporalTypeInference.kt] — date/time, interval, collection operators
- * - [QueryTypeInference.kt] — query expressions with scoping
+ * ## Writes
+ * - [TypeTable] — the primary output. Maps each [Expression] (by reference identity) to its
+ *   inferred [DataType], and records [OperatorResolution]s and identifier [Resolution]s.
+ *
+ * ## Extension function pattern
+ *
+ * Type inference for specific expression categories is split into extension function files to keep
+ * this class navigable:
+ * - `TypeOperatorInference.kt` — is/as/cast/convert type resolution
+ * - `TemporalTypeInference.kt` — date/time literals, interval, duration/difference operators
+ * - `QueryTypeInference.kt` — query expressions with alias scoping
+ *
+ * ## Adding type inference for a new expression type
+ * 1. Add the `on*` handler override in this class (or an extension function file if the logic is
+ *    substantial). The handler receives pre-folded child types from the catamorphism.
+ * 2. Look up operand types from the pre-folded child parameters. If the expression is an operator,
+ *    resolve via [OperatorRegistry] and record the resolution with
+ *    [TypeTable.setOperatorResolution].
+ * 3. Return the inferred [DataType] (or null if unresolvable). The result is stored automatically
+ *    by [inferType].
+ *
+ * ## Not thread-safe
+ *
+ * Each instance maintains mutable state ([ScopeTracker], [TypeTable]) and must not be shared across
+ * threads or reused after [resolve] returns. A fresh instance is created per
+ * [SemanticAnalyzer.analyze] call.
  */
 class TypeResolver(
     internal val operatorRegistry: OperatorRegistry,
     internal val syntheticTable: SyntheticTable? = null,
-    private val modelManager: ModelManager? = null,
+    internal val modelContext: ModelContext = ModelContext.systemOnly(),
 ) : ExpressionFold<DataType?> {
 
-    /** Tracks expression definitions currently being resolved to detect circular references. */
-    private val inProgressExpressions = mutableSetOf<String>()
-
-    /** Tracks function definitions currently being resolved to detect circular references. */
-    private val inProgressFunctions = mutableSetOf<FunctionDefinition>()
-
-    /** Per-scope operand types for function body resolution. */
-    private var operandScope: Map<String, DataType> = emptyMap()
-
-    /** Query scope stack: maps alias/let names to their Resolution within a query. */
-    private val queryScopes = mutableListOf<Map<String, Resolution>>()
-
-    /** Type cache for resolved function definitions. */
-    private val functionResultTypes = HashMap<FunctionDefinition, DataType>()
+    /** Manages all mutable scope state: query scopes, operand scope, circularity guards. */
+    internal val scope = ScopeTracker()
 
     /** The type table for the current resolution pass. Set by [resolve] before use. */
     internal lateinit var typeTable: TypeTable
@@ -121,47 +135,7 @@ class TypeResolver(
         } catch (_: IllegalArgumentException) {
             // Not a system type — fall through to model resolution
         }
-        return resolveModelType(modelName = null, typeName = name)
-    }
-
-    /**
-     * Resolve a type from loaded models, optionally qualified by model name. When [modelName] is
-     * null, searches all non-System models via [symbolTable.usingDefinitions].
-     */
-    private fun resolveModelType(modelName: String?, typeName: String): DataType? {
-        val mm = modelManager ?: return null
-        if (modelName != null) {
-            val model =
-                try {
-                    mm.resolveModel(modelName, null)
-                } catch (_: Exception) {
-                    return null
-                }
-            return model.resolveTypeName(typeName)
-        }
-        // Unqualified: search all non-System models
-        for (usingDef in symbolTable.usingDefinitions) {
-            if (usingDef.modelIdentifier.simpleName == "System") continue
-            val model =
-                try {
-                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
-                } catch (_: Exception) {
-                    continue
-                }
-            val dataType = model.resolveTypeName(typeName)
-            if (dataType != null) return dataType
-        }
-        return null
-    }
-
-    /** Push a query scope onto the stack. Used by [QueryTypeInference]. */
-    internal fun pushQueryScope(scope: Map<String, Resolution>) {
-        queryScopes.add(scope)
-    }
-
-    /** Pop the innermost query scope. Used by [QueryTypeInference]. */
-    internal fun popQueryScope() {
-        queryScopes.removeAt(queryScopes.lastIndex)
+        return modelContext.resolveTypeName(name)
     }
 
     fun resolve(library: Library, symbolTable: SymbolTable): TypeTable {
@@ -188,53 +162,44 @@ class TypeResolver(
 
     @Suppress("ReturnCount")
     private fun resolveExpressionDef(name: String): DataType? {
-        if (name in inProgressExpressions) return null
+        if (scope.isExpressionInProgress(name)) return null
         val exprDef = symbolTable.expressionDefinitions[name] ?: return null
         typeTable[exprDef.expression]?.let {
             return it
         }
-        inProgressExpressions.add(name)
-        // Save and clear query scopes: expression definitions are library-level declarations,
-        // not nested subexpressions. They must not inherit the caller's query scope.
-        // Without this, alias B from "Source 1 B where exists(Query3)" leaks into Query3.
-        val savedScopes = queryScopes.toList()
-        queryScopes.clear()
-        try {
-            return inferType(exprDef.expression)
+        scope.guardExpression(name)
+        // Expression definitions are library-level declarations that must not inherit the
+        // caller's query scope. Without isolation, aliases leak across expression boundaries.
+        return try {
+            scope.withIsolatedScopes { inferType(exprDef.expression) }
         } finally {
-            queryScopes.clear()
-            queryScopes.addAll(savedScopes)
-            inProgressExpressions.remove(name)
+            scope.releaseExpression(name)
         }
     }
 
     @Suppress("ReturnCount")
     private fun resolveFunctionDef(funcDef: FunctionDefinition): DataType? {
-        functionResultTypes[funcDef]?.let {
+        scope.getCachedFunctionResult(funcDef)?.let {
             return it
         }
-        if (funcDef in inProgressFunctions) return null
+        if (scope.isFunctionInProgress(funcDef)) return null
         val body = funcDef.body
         if (body !is ExpressionFunctionBody) return null
 
-        inProgressFunctions.add(funcDef)
-        val scope = mutableMapOf<String, DataType>()
+        scope.guardFunction(funcDef)
+        val operands = mutableMapOf<String, DataType>()
         for (operand in funcDef.operands) {
             val type = resolveTypeSpecifier(operand.type) ?: continue
-            scope[operand.name.value] = type
+            operands[operand.name.value] = type
         }
-
-        val previousScope = operandScope
-        operandScope = scope
-        try {
-            val resultType = inferType(body.expression)
-            if (resultType != null) {
-                functionResultTypes[funcDef] = resultType
+        return try {
+            scope.withOperandScope(operands) {
+                val resultType = inferType(body.expression)
+                if (resultType != null) scope.cacheFunctionResult(funcDef, resultType)
+                resultType
             }
-            return resultType
         } finally {
-            operandScope = previousScope
-            inProgressFunctions.remove(funcDef)
+            scope.releaseFunction(funcDef)
         }
     }
 
@@ -254,7 +219,7 @@ class TypeResolver(
                             return it
                         }
                     } catch (_: IllegalArgumentException) {}
-                    resolveModelType(modelName, typeName)
+                    modelContext.resolveModelType(modelName, typeName)
                 }
             }
             is org.hl7.cql.ast.ListTypeSpecifier -> {
@@ -449,20 +414,8 @@ class TypeResolver(
         inferQueryType(expr)
 
     override fun onRetrieve(expr: RetrieveExpression): DataType? {
-        val mm = modelManager ?: return null
         val typeName = expr.typeSpecifier.name.simpleName
-        for (usingDef in symbolTable.usingDefinitions) {
-            if (usingDef.modelIdentifier.simpleName == "System") continue
-            val model =
-                try {
-                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
-                } catch (_: Exception) {
-                    continue
-                }
-            val dataType = model.resolveTypeName(typeName)
-            if (dataType != null) return ListType(dataType)
-        }
-        return null
+        return modelContext.resolveRetrieveType(typeName)
     }
 
     override fun onUnsupported(expr: UnsupportedExpression): DataType? = null
@@ -473,19 +426,17 @@ class TypeResolver(
     private fun inferIdentifierType(expression: IdentifierExpression): DataType? {
         val name = expression.name.simpleName
         // Check query scope first (innermost scope wins)
-        for (i in queryScopes.indices.reversed()) {
-            queryScopes[i][name]?.let { resolution ->
-                typeTable.setIdentifierResolution(expression, resolution)
-                return when (resolution) {
-                    is Resolution.AliasRef -> resolution.type
-                    is Resolution.QueryLetRef -> resolution.type
-                    else -> null
-                }
+        scope.resolveInQueryScopes(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return when (resolution) {
+                is Resolution.AliasRef -> resolution.type
+                is Resolution.QueryLetRef -> resolution.type
+                else -> null
             }
         }
 
         // Check operand scope (for function body resolution)
-        operandScope[name]?.let { type ->
+        scope.resolveOperand(name)?.let { type ->
             typeTable.setIdentifierResolution(expression, Resolution.OperandRef(name, type))
             return type
         }
@@ -642,6 +593,20 @@ class TypeResolver(
         return resolveTypeSpecifier(typeSpec)
     }
 
+    /**
+     * Record an operator resolution and its conversion synthetics. Combines
+     * [TypeTable.setOperatorResolution] with [recordResolutionSynthetics] in one call.
+     */
+    internal fun recordResolution(
+        expression: Expression,
+        resolution: OperatorResolution,
+        slots: List<Slot>,
+    ) {
+        typeTable.setOperatorResolution(expression, resolution)
+        val st = syntheticTable ?: return
+        recordResolutionSynthetics(st, expression, resolution, slots, operatorRegistry)
+    }
+
     @Suppress("ReturnCount")
     private fun inferBinaryType(
         expression: OperatorBinaryExpression,
@@ -667,7 +632,7 @@ class TypeResolver(
         ) {
             return null
         }
-        typeTable.setOperatorResolution(expression, resolution)
+        recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
         return resolution.operator.resultType
     }
 
@@ -684,7 +649,7 @@ class TypeResolver(
                 BooleanTestKind.IS_FALSE -> "IsFalse"
             }
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution)
+        typeTable.setOperatorResolution(expression, resolution) // BooleanTest: no slot synthetics
         return resolution.operator.resultType
     }
 
@@ -700,7 +665,7 @@ class TypeResolver(
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
         if (opName == "Positive") return effectiveOperand
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveOperand)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution)
+        recordResolution(expression, resolution, listOf(Slot.Operand))
         return resolution.operator.resultType
     }
 
@@ -745,8 +710,7 @@ class TypeResolver(
      *
      * The resolution is computed with Any/null args replaced by the result type (to prevent Any
      * from polluting generic type parameter unification), then patched to include cast conversions
-     * at the null-arg positions so the ConversionAnalyzer's generic `recordResolutionConversions`
-     * picks them up without Coalesce-specific code.
+     * at the null-arg positions so [recordResolution] picks them up without Coalesce-specific code.
      */
     @Suppress("ReturnCount")
     private fun inferMultiArgCoalesceType(
@@ -769,7 +733,7 @@ class TypeResolver(
         if (resolution != null) {
             // Patch the resolution: inject cast conversions at null-arg positions when the
             // resolution has other conversions (i.e., type promotion occurred). This lets the
-            // ConversionAnalyzer handle null wrapping generically via recordResolutionConversions.
+            // recordResolution handle null wrapping generically.
             val patched =
                 if (resolution.hasConversions() && resultType != anyType) {
                     val patchedConversions =
@@ -790,7 +754,8 @@ class TypeResolver(
                 } else {
                     resolution
                 }
-            typeTable.setOperatorResolution(expression, patched)
+            val argSlots = argTypes.indices.map { Slot.Argument(it) }
+            recordResolution(expression, patched, argSlots)
         }
         return resultType
     }
@@ -809,7 +774,7 @@ class TypeResolver(
             if (singleArgType is ListType) {
                 val resolution = operatorRegistry.resolve(functionName, listOf(singleArgType))
                 if (resolution != null) {
-                    typeTable.setOperatorResolution(expression, resolution)
+                    recordResolution(expression, resolution, listOf(Slot.Argument(0)))
                     return resolution.operator.resultType
                 }
             }
@@ -853,7 +818,8 @@ class TypeResolver(
             )
 
         if (resolution != null) {
-            typeTable.setOperatorResolution(expression, resolution)
+            val argSlots = nonNullArgTypes.indices.map { Slot.Argument(it) }
+            recordResolution(expression, resolution, argSlots)
             return resolution.operator.resultType
         }
 
@@ -903,21 +869,8 @@ class TypeResolver(
     }
 
     /** Resolve the type of a context identifier (e.g., "Patient") from the loaded models. */
-    private fun resolveContextType(contextName: String): DataType? {
-        val mm = modelManager ?: return null
-        for (usingDef in symbolTable.usingDefinitions) {
-            if (usingDef.modelIdentifier.simpleName == "System") continue
-            val model =
-                try {
-                    mm.resolveModel(usingDef.modelIdentifier.simpleName, usingDef.version?.value)
-                } catch (_: Exception) {
-                    continue
-                }
-            val ctx = model.resolveContextName(contextName, mustResolve = false)
-            if (ctx != null) return ctx.type
-        }
-        return null
-    }
+    private fun resolveContextType(contextName: String): DataType? =
+        modelContext.resolveContextType(contextName)
 
     /** Resolve the type of a property on a source type (e.g., "birthDatetime" on QDM.Patient). */
     private fun resolvePropertyType(sourceType: DataType, propertyName: String): DataType? {
