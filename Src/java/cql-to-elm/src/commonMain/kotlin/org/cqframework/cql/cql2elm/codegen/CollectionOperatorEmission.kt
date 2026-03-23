@@ -12,13 +12,19 @@ import org.hl7.cql.ast.MembershipOperator
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.TypeExtentKind
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.And
+import org.hl7.elm.r1.AnyInCodeSystem
+import org.hl7.elm.r1.AnyInValueSet
+import org.hl7.elm.r1.CodeSystemRef
 import org.hl7.elm.r1.Contains
 import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Greater
 import org.hl7.elm.r1.GreaterOrEqual
 import org.hl7.elm.r1.In
+import org.hl7.elm.r1.InCodeSystem
+import org.hl7.elm.r1.InValueSet
 import org.hl7.elm.r1.IncludedIn
 import org.hl7.elm.r1.Interval
 import org.hl7.elm.r1.Less
@@ -27,6 +33,7 @@ import org.hl7.elm.r1.MaxValue
 import org.hl7.elm.r1.MinValue
 import org.hl7.elm.r1.PointFrom
 import org.hl7.elm.r1.SingletonFrom
+import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.Width
 
 /** Emit an [ExistsExpression] as an ELM Exists node. Operand is pre-folded. */
@@ -146,25 +153,60 @@ private fun EmissionContext.buildPerOperand(
 
 /**
  * Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. Children are pre-folded.
+ *
+ * When the operator is IN and the right operand resolves to a [ValueSetRef] or [CodeSystemRef],
+ * emit the specialized terminology operators ([InValueSet], [AnyInValueSet], [InCodeSystem],
+ * [AnyInCodeSystem]) matching the legacy translator's behavior. The choice between scalar and
+ * list variants depends on the left operand's type from the semantic model.
  */
 internal fun EmissionContext.emitMembership(
     expression: MembershipExpression,
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Interval<Any> expansion is handled by Normalizer. Operands arrive processed.
     val precision = expression.precision?.let { precisionStringToEnum(it) }
-    return when (expression.operator) {
-        MembershipOperator.IN ->
-            In().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
+
+    if (expression.operator == MembershipOperator.IN) {
+        // Check for terminology specialization: In with ValueSetRef or CodeSystemRef right operand
+        val leftType = semanticModel[expression.left]
+        val isListLeft = leftType is ListType
+
+        if (rightElm is ValueSetRef) {
+            return if (isListLeft) {
+                AnyInValueSet().apply {
+                    codes = leftElm
+                    valueset = rightElm
+                }
+            } else {
+                InValueSet().apply {
+                    code = leftElm
+                    valueset = rightElm
+                }
             }
-        MembershipOperator.CONTAINS ->
-            Contains().apply {
-                operand = mutableListOf(leftElm, rightElm)
-                precision?.let { this.precision = it }
+        }
+        if (rightElm is CodeSystemRef) {
+            return if (isListLeft) {
+                AnyInCodeSystem().apply {
+                    codes = leftElm
+                    codesystem = rightElm
+                }
+            } else {
+                InCodeSystem().apply {
+                    code = leftElm
+                    codesystem = rightElm
+                }
             }
+        }
+
+        return In().apply {
+            operand = mutableListOf(leftElm, rightElm)
+            precision?.let { this.precision = it }
+        }
+    }
+
+    return Contains().apply {
+        operand = mutableListOf(leftElm, rightElm)
+        precision?.let { this.precision = it }
     }
 }
 

@@ -1,10 +1,13 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
 import org.cqframework.cql.shared.QName
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.model.ClassType
 import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.Retrieve
+import org.hl7.elm.r1.ValueSetRef as ElmValueSetRef
 
 /**
  * Emit a [RetrieveExpression] as an ELM [Retrieve]. Resolves the data type through the
@@ -14,16 +17,49 @@ import org.hl7.elm.r1.Retrieve
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
     val retrieve = buildRetrieveForType(expression.typeSpecifier.name.simpleName)
 
-    // Resolve codeProperty/codeComparator when a terminology restriction is present.
-    // The terminology expression itself is emitted by the function definition's operand
-    // binding, not inlined here — the Retrieve just needs the code path metadata.
-    if (expression.terminology != null) {
+    // Resolve codeProperty, codeComparator, and codes when a terminology restriction is present.
+    val terminologyRestriction = expression.terminology
+    if (terminologyRestriction != null) {
         val model = modelContext.resolveModelForType(expression.typeSpecifier.name.simpleName)
         val dataType = model.resolveTypeName(expression.typeSpecifier.name.simpleName)
         val classType = dataType as? ClassType
         if (classType?.primaryCodePath != null) {
             retrieve.codeProperty = classType.primaryCodePath
             retrieve.codeComparator = "in"
+        }
+        // Resolve the terminology reference from the symbol table.
+        // RetrieveExpression is a leaf in ExpressionFold so its children are NOT pre-folded
+        // by the TypeResolver. We resolve directly from the SymbolTable instead.
+        val terminologyExpr = terminologyRestriction.terminology
+        if (terminologyExpr is IdentifierExpression) {
+            val name = terminologyExpr.name.simpleName
+            // Value set reference: [Type: "MyValueSet"]
+            semanticModel.resolveValueSet(name)?.let { resolution ->
+                retrieve.codes = ElmValueSetRef()
+                    .withName(unescapeCql(resolution.definition.name.value))
+                    .apply { preserve = true }
+            }
+            // Code system reference: [Type: LOINC]
+            if (retrieve.codes == null) {
+                semanticModel.resolveCodeSystem(name)?.let { resolution ->
+                    retrieve.codes = org.hl7.elm.r1.CodeSystemRef()
+                        .withName(unescapeCql(resolution.definition.name.value))
+                }
+            }
+            // Code reference: [Type: "my-code"]
+            if (retrieve.codes == null) {
+                semanticModel.resolveCode(name)?.let { resolution ->
+                    retrieve.codes = org.hl7.elm.r1.CodeRef()
+                        .withName(unescapeCql(resolution.definition.name.value))
+                }
+            }
+            // Concept reference
+            if (retrieve.codes == null) {
+                semanticModel.resolveConcept(name)?.let { resolution ->
+                    retrieve.codes = org.hl7.elm.r1.ConceptRef()
+                        .withName(unescapeCql(resolution.definition.name.value))
+                }
+            }
         }
     }
 
