@@ -146,7 +146,7 @@ class SemanticAnalyzer(
         // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
         // Merge the pre-normalization cumulative table so unchanged expressions keep their types.
         val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
-        val normalizedResolver = TypeResolver(operatorRegistry, syntheticTable)
+        val normalizedResolver = TypeResolver(operatorRegistry, syntheticTable, modelContext)
         val normalizedTypeTable = normalizedResolver.resolve(normalizedLibrary, normalizedSymbols)
         normalizedTypeTable.mergeFrom(finalTypeTable)
 
