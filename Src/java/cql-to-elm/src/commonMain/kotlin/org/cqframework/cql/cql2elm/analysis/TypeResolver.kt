@@ -195,6 +195,7 @@ class TypeResolver(
         for (operand in funcDef.operands) {
             val type = resolveTypeSpecifier(operand.type) ?: continue
             operands[operand.name.value] = type
+            typeTable.setOperandType(operand, type)
         }
         return try {
             scope.withOperandScope(operands) {

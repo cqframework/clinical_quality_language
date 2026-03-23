@@ -61,21 +61,19 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 39/77 pass")
+    @Disabled("Exploratory: 39/77 pass, 15 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
     }
 
-    @Disabled("Exploratory: FHIR R4 emission gaps — ModelManager type resolution, fluent functions")
+    @Disabled("Exploratory: 0/14 pass")
     @TestFactory
     fun fhirR4Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled(
-        "Exploratory: FHIR R4.0.1 emission gaps — ModelManager type resolution, fluent functions"
-    )
+    @Disabled("Exploratory: 5/28 pass, 1 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")

@@ -138,10 +138,8 @@ internal fun EmissionContext.emitFunctionDefinition(
         operandDef.name = unescapeCql(operand.name.value)
         val typeSpec = operand.type
         operandDef.operandTypeSpecifier = emitTypeSpecifier(typeSpec)
-        // Set result type on operand from registry
-        val resolvedType =
-            operatorRegistry.type((typeSpec as? NamedTypeSpecifier)?.name?.simpleName ?: "")
-        decorate(operandDef, resolvedType)
+        // Use pre-computed operand type from analysis (never re-resolve during emission)
+        semanticModel.getOperandType(operand)?.let { decorate(operandDef, it) }
         functionDef.operand.add(operandDef)
     }
 
@@ -157,11 +155,17 @@ internal fun EmissionContext.emitFunctionDefinition(
         }
         is ExternalFunctionBody -> {
             functionDef.external = true
-            // For external functions, set result type from declared return type
+            // For external functions, try to resolve declared return type.
+            // This is the only remaining type resolution in emission; external functions
+            // don't go through resolveFunctionDef so their return types aren't pre-computed.
             definition.returnType?.let { typeSpec ->
                 if (typeSpec is NamedTypeSpecifier) {
-                    val resolvedType = operatorRegistry.type(typeSpec.name.simpleName)
-                    decorate(functionDef, resolvedType)
+                    try {
+                        val resolvedType = operatorRegistry.type(typeSpec.name.simpleName)
+                        decorate(functionDef, resolvedType)
+                    } catch (_: IllegalArgumentException) {
+                        // Non-system type (e.g., model type) — skip decoration
+                    }
                 }
             }
         }

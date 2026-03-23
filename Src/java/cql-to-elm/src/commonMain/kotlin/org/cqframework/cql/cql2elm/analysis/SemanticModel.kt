@@ -6,6 +6,7 @@ import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
+import org.hl7.cql.ast.OperandDefinition
 import org.hl7.cql.model.DataType
 
 /**
@@ -56,6 +57,9 @@ class SemanticModel(
     /** Look up if a function call resolved to a user-defined function. */
     fun getFunctionCallResolution(expression: FunctionCallExpression): FunctionDefinition? =
         typeTable.getFunctionCallResolution(expression)
+
+    /** Look up the resolved type for a function operand definition. */
+    fun getOperandType(operand: OperandDefinition): DataType? = typeTable.getOperandType(operand)
 
     // --- Symbol queries (delegated to SymbolTable) ---
 

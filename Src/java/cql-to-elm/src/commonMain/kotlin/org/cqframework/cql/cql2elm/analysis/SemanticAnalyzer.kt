@@ -18,6 +18,7 @@ import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IncludeDefinition
 import org.hl7.cql.ast.Library
+import org.hl7.cql.ast.OperandDefinition
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.RewritingFold
 import org.hl7.cql.ast.UsingDefinition
@@ -293,7 +294,7 @@ class TypeTable {
     private val identifierResolutions = IdentityHashMap<IdentifierExpression, Resolution>()
     private val functionCallResolutions =
         IdentityHashMap<FunctionCallExpression, FunctionDefinition>()
-
+    private val operandTypes = IdentityHashMap<OperandDefinition, DataType>()
     /** Total expressions that had type inference attempted. */
     var expressionCount: Int = 0
         internal set
@@ -347,6 +348,14 @@ class TypeTable {
     fun getFunctionCallResolution(expression: FunctionCallExpression): FunctionDefinition? =
         functionCallResolutions[expression]
 
+    /** Record the resolved type for a function operand definition. */
+    fun setOperandType(operand: OperandDefinition, type: DataType) {
+        operandTypes[operand] = type
+    }
+
+    /** Look up the resolved type for a function operand definition. */
+    fun getOperandType(operand: OperandDefinition): DataType? = operandTypes[operand]
+
     /**
      * Merge entries from [other] into this table. For each expression in [other]:
      * - If this table has no type for the expression, copy the type from [other].
@@ -378,6 +387,11 @@ class TypeTable {
         for ((expression, definition) in other.functionCallResolutions) {
             if (functionCallResolutions[expression] == null) {
                 functionCallResolutions[expression] = definition
+            }
+        }
+        for ((operand, type) in other.operandTypes) {
+            if (operandTypes[operand] == null) {
+                operandTypes[operand] = type
             }
         }
     }
