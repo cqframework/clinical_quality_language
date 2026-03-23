@@ -304,9 +304,13 @@ Adds output annotations controlled by compiler options:
 
 ### Exploratory Suite Triage (2026-03-23)
 
-Enabled all three `@Disabled` test factories. Summary: 53 passed, 59 failed, 39 skipped.
+Enabled all three `@Disabled` test factories.
 
-#### Root-level tests (77 files): 23 pass, 36 fail, 18 skip
+Initial triage: 53 passed, 59 failed, 39 skipped.
+After quick fixes: root-level 23 → 26 pass, skips 18 → 21 (3 previously-failing now skip due
+to improved error detection).
+
+#### Root-level tests (77 files): 26 pass, 30 fail, 21 skip
 
 #### FHIR R4 tests (14 files): 0 pass, 7 fail, 7 skip
 
