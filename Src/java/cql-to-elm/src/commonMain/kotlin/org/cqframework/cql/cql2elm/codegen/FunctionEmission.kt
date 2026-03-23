@@ -2,7 +2,9 @@
 
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.analysis.Resolution
 import org.hl7.cql.ast.FunctionCallExpression
+import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.elm.r1.AllTrue
@@ -93,6 +95,17 @@ internal fun EmissionContext.emitFunctionCall(
     targetElm: ElmExpression?,
     rawArgs: List<ElmExpression>,
 ): ElmExpression {
+    // Library-qualified call: Common.TestMessage(args) → FunctionRef(name, libraryName=alias).
+    // The target is a library alias, NOT a fluent first-argument.
+    val libraryAlias = resolveLibraryAlias(expression.target)
+    if (libraryAlias != null) {
+        return FunctionRef().apply {
+            name = expression.function.value
+            libraryName = libraryAlias
+            operand = rawArgs.toMutableList()
+        }
+    }
+
     // Fluent call: target.f(args) → f(target, args) — target becomes the first argument.
     val effectiveArgs = if (targetElm != null) listOf(targetElm) + rawArgs else rawArgs
 

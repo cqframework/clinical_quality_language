@@ -10,6 +10,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
+import org.cqframework.cql.cql2elm.TestLibrarySourceProvider
 import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider
@@ -60,9 +61,7 @@ class FullParityTest {
         }
     }
 
-    @Disabled(
-        "Exploratory: parity gaps from library includes, FHIR emission, and unknown system types"
-    )
+    @Disabled("Exploratory: 36/77 pass; remaining gaps from FHIR emission, unknown system types, error recovery")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
@@ -134,7 +133,7 @@ class FullParityTest {
         val legacyLibrary =
             try {
                 val legacyTranslator =
-                    CqlTranslator.fromText(cql, LibraryManager(createModelManager()))
+                    CqlTranslator.fromText(cql, createLibraryManager())
                 requireNotNull(legacyTranslator.toELM())
             } catch (e: Exception) {
                 assumeTrue(false, "Legacy translator failed: ${e.message}")
@@ -167,6 +166,11 @@ class FullParityTest {
             modelInfoLoader.registerModelInfoProvider(FhirModelInfoProvider())
             modelInfoLoader.registerModelInfoProvider(QdmModelInfoProvider())
             modelInfoLoader.registerModelInfoProvider(QuickModelInfoProvider())
+        }
+
+    private fun createLibraryManager(): LibraryManager =
+        LibraryManager(createModelManager()).apply {
+            librarySourceLoader.registerProvider(TestLibrarySourceProvider())
         }
 
     private fun listCqlFiles(resourceDir: String): List<String> {

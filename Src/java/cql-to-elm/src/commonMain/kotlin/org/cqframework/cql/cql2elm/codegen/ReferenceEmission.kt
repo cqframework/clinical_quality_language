@@ -36,6 +36,12 @@ internal fun EmissionContext.emitIdentifierExpression(
         is Resolution.CodeRef -> CodeRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ConceptRef -> ConceptRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ContextRef -> ExpressionRef().withName(resolution.definition.context.value)
+        is Resolution.IncludeRef ->
+            // Library alias identifiers are never emitted standalone — they appear as targets of
+            // property access or function calls. The parent emission handles libraryName. If we
+            // get here, the fold is processing the target before the parent sees it; return a
+            // placeholder that will be discarded.
+            org.hl7.elm.r1.IdentifierRef().withName(expression.name.simpleName)
         null ->
             // Unresolved identifiers become IdentifierRef — the legacy translator emits these
             // for sort-by property paths and other contexts where the identifier refers to a

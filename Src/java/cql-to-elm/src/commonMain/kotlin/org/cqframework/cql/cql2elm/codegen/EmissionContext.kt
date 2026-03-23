@@ -158,6 +158,18 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     internal fun dataTypeToQName(type: DataType): QName = modelContext.dataTypeToQName(type)
 
     /**
+     * Check whether the given AST expression is an [IdentifierExpression] that resolved to an
+     * included library alias (via [Resolution.IncludeRef]). Returns the alias string if so,
+     * `null` otherwise. Used by function call and property access emission to detect cross-library
+     * references (e.g., `Common.TestMessage(...)` where `Common` is a library alias).
+     */
+    internal fun resolveLibraryAlias(expression: Expression?): String? {
+        val identifier = expression as? IdentifierExpression ?: return null
+        val resolution = semanticModel.getIdentifierResolution(identifier)
+        return (resolution as? org.cqframework.cql.cql2elm.analysis.Resolution.IncludeRef)?.alias
+    }
+
+    /**
      * Convert a resolved [DataType] to an ELM TypeSpecifier with the correct namespace. For
      * NamedType, uses [dataTypeToQName] which handles model types correctly. For other types
      * (ListType, IntervalType, etc.), delegates to the TypeBuilder.

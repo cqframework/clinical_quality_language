@@ -197,6 +197,10 @@ private class ExpressionChecker(
     ) {
         // Children are already validated by the catamorphism (pre-folded).
 
+        // Skip validation for library-qualified calls (e.g., Common.toString(x)).
+        // We can't resolve cross-library functions without the included library's symbols.
+        if (isLibraryQualifiedCall(expr)) return
+
         if (model[expr] != null) return
         if (model.getOperatorResolution(expr) != null) return
 
@@ -217,6 +221,12 @@ private class ExpressionChecker(
         if (argTypes.size == expr.arguments.size) {
             model.addError(expr)
         }
+    }
+
+    /** Check if a function call's target resolves to an included library alias. */
+    private fun isLibraryQualifiedCall(expr: FunctionCallExpression): Boolean {
+        val target = expr.target as? IdentifierExpression ?: return false
+        return model.getIdentifierResolution(target) is Resolution.IncludeRef
     }
 
     override fun onAs(expr: AsExpression, operand: Unit) {

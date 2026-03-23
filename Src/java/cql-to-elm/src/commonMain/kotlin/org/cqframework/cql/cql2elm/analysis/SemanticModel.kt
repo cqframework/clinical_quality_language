@@ -68,4 +68,6 @@ class SemanticModel(
     fun resolveCode(name: String) = symbolTable.resolveCode(name)
 
     fun resolveConcept(name: String) = symbolTable.resolveConcept(name)
+
+    fun resolveInclude(name: String) = symbolTable.resolveInclude(name)
 }

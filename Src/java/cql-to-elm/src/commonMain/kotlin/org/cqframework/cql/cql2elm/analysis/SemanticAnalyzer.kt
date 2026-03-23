@@ -380,6 +380,9 @@ sealed interface Resolution {
     data class CodeRef(val definition: CodeDefinition) : Resolution
 
     data class ConceptRef(val definition: ConceptDefinition) : Resolution
+
+    /** The identifier resolved to a library alias introduced by an `include` statement. */
+    data class IncludeRef(val alias: String, val definition: IncludeDefinition) : Resolution
 }
 
 /**
@@ -422,6 +425,9 @@ data class SymbolTable(
 
     fun resolveConcept(name: String): Resolution.ConceptRef? =
         conceptDefinitions[name]?.let { Resolution.ConceptRef(it) }
+
+    fun resolveInclude(name: String): Resolution.IncludeRef? =
+        includeDefinitions[name]?.let { Resolution.IncludeRef(name, it) }
 }
 
 /** Represents a diagnostic message produced during compilation. */

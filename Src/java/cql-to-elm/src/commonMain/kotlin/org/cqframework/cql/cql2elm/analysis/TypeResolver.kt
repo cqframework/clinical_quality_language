@@ -488,6 +488,14 @@ class TypeResolver(
             return type("Concept")
         }
 
+        // Check include definitions (library aliases)
+        symbolTable.resolveInclude(name)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            // Library references don't have a meaningful type themselves —
+            // their members are accessed via property access or function call.
+            return null
+        }
+
         return null
     }
 
