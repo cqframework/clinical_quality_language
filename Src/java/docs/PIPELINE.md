@@ -302,6 +302,64 @@ Adds output annotations controlled by compiler options:
 | **Legacy bug (skip)** | Aggregate (#1710 — our type inference is more correct) |
 | **Error recovery (skip)** | MultiSourceQuery (legacy replaces type errors with Null) |
 
+### Exploratory Suite Triage (2026-03-23)
+
+Enabled all three `@Disabled` test factories. Summary: 53 passed, 59 failed, 39 skipped.
+
+#### Root-level tests (77 files): 23 pass, 36 fail, 18 skip
+
+#### FHIR R4 tests (14 files): 0 pass, 7 fail, 7 skip
+
+#### FHIR R4.0.1 tests (28 files): 3 pass, 13 fail, 12 skip
+
+#### Failure Categories
+
+| Category | Count | Root Cause | Fix Strategy |
+|----------|-------|------------|--------------|
+| **Library includes** | 29 fail + 10 fail | New pipeline emits `include` defs but doesn't resolve cross-library refs, producing `FunctionRef` where legacy resolved to `Null` or inline. Many root tests use `TranslationTestsCommon`. | Wire `LibraryManager` into AST pipeline's `SemanticAnalyzer` |
+| **ELM content diffs** | 20 fail | Detailed subcategories below | Mixed — see subcategories |
+
+##### ELM Content Difference Subcategories
+
+| Subcategory | Tests | Issue |
+|-------------|-------|-------|
+| Escaped quotes in identifiers | Issue827, TestQuotedForwards, TranslationTests | Emitter produces `\"` where legacy uses `"` in identifier names |
+| DateTime timezone `0` vs `0.0` | DateTimeLiteralTest, TestPointIntervalSignatures | Emitter emits integer `0` for timezone offset; legacy emits decimal `0.0` |
+| `In` vs `InValueSet`/`AnyInValueSet`/`InCodeSystem`/`AnyInCodeSystem` | InCodeSystemTest, InValueSetTest, PropertyTest, TranslationTests | New pipeline emits generic `In` operator; legacy rewrites to specialized terminology operators |
+| `Retrieve.codes` not emitted | CMS146v2_Test_CQM, TestDoubleListPromotion (R4 + R401) | New pipeline doesn't populate `codes` field on Retrieve; legacy does |
+| Error recovery (expressions → Null) | IdentifierDoesNotResolve..., Issue616, TestIdentifierCaseMismatch | New pipeline preserves invalid expressions; legacy replaces with Null |
+| Local function → system function resolution | LocalFunctionResolutionTest | System function `ToDate` emitted as `FunctionRef` |
+| Query vs inline form | Issue587, SignatureResolutionTest | New pipeline emits Query where legacy inlines; or vice versa |
+| Date vs ToDateTime promotion | Issue863 | New pipeline emits `Date` literal; legacy wraps in `ToDateTime` |
+| QDM model class resolution | TestChoiceAssignment | QDM class type differs — model-specific resolution gap |
+| Context definition synthesis | TestEncounterParameterContext | New pipeline doesn't synthesize context definitions (e.g., `define Encounter: SingletonFrom([Encounter])`) |
+| Point-interval promotion | TestPointIntervalSignatures | `If(IsNull...)` point promotion not applied |
+
+#### Skip Categories
+
+| Category | Count | Issue |
+|----------|-------|-------|
+| ModelManager required in emission | 12 | `IllegalStateException: ModelManager required` — emission needs model context for type specifier resolution |
+| Could not resolve type/model | 8 | `Could not resolve` — model types not available (Patient context, related context, etc.) |
+| Unknown system type | 8 | `Unknown system type: ''` — empty type from analysis edge cases |
+| AST Builder problems | 3 | CQL files with intentional errors; Builder rejects them |
+| AST Builder parse error | 2 | Escape sequence handling not implemented in Builder |
+| Unsupported AST node | 2 | Unit conversion, timezone component not yet emitted |
+| FHIR model version mismatch | 1 | FHIR version not matched in ModelManager |
+| Argument count mismatch | 1 | Expected 1 arg, got more — FHIR helpers call shape |
+
+#### Priority Order for Closing Gaps
+
+1. **Escaped quotes** (3 tests) — string escaping bug in identifier emission
+2. **DateTime timezone offset** (2+ tests) — emit `0.0` instead of `0`
+3. **Terminology operators** (4+ tests) — `In`/`InValueSet`/`InCodeSystem` specialization
+4. **Retrieve.codes** (3 tests) — populate codes field on Retrieve emission
+5. **Context definition synthesis** (1+ tests) — synthesize `define <Context>` expressions
+6. **Point-interval promotion** (1+ tests) — apply `If(IsNull, Null, Interval[p,p])` lowering
+7. **Library includes** (39 tests) — largest batch, requires `LibraryManager` integration
+8. **ModelManager in emission** (12 skips) — pass ModelManager into emission context
+9. **Unknown system types** (8 skips) — fix empty type strings from analysis
+
 ### Implementation Status
 
 | Component | Status |
