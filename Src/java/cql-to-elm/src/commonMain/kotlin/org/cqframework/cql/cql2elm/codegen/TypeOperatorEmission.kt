@@ -106,9 +106,16 @@ internal fun EmissionContext.emitConversionExpression(
     operandElm: ElmExpression,
 ): ElmExpression {
     if (expression.destinationUnit != null) {
-        throw ElmEmitter.UnsupportedNodeException(
-            "Unit conversions (convert to '${expression.destinationUnit}') are not yet supported."
-        )
+        return org.hl7.elm.r1.ConvertQuantity().apply {
+            operand =
+                mutableListOf(
+                    operandElm,
+                    org.hl7.elm.r1.Literal().apply {
+                        valueType = javax.xml.namespace.QName("urn:hl7-org:elm-types:r1", "String")
+                        value = expression.destinationUnit
+                    },
+                )
+        }
     }
     val destType = expression.destinationType
     if (destType is NamedTypeSpecifier) {
@@ -208,6 +215,7 @@ internal fun createConversionElm(operatorName: String, operand: ElmExpression): 
         "ToQuantity" -> ToQuantity().apply { this.operand = operand }
         "ToRatio" -> ToRatio().apply { this.operand = operand }
         "ToConcept" -> ToConcept().apply { this.operand = operand }
+        "ExpandValueSet" -> org.hl7.elm.r1.ExpandValueSet().apply { this.operand = operand }
         "ConvertsToString" -> ConvertsToString().apply { this.operand = operand }
         "ConvertsToBoolean" -> ConvertsToBoolean().apply { this.operand = operand }
         "ConvertsToInteger" -> ConvertsToInteger().apply { this.operand = operand }

@@ -28,7 +28,9 @@ internal fun EmissionContext.emitDateTimeComponent(
     return when (expression.component) {
         DateTimeComponent.DATE -> DateFrom().apply { operand = operandElm }
         DateTimeComponent.TIME -> TimeFrom().apply { operand = operandElm }
-        DateTimeComponent.TIMEZONE_OFFSET -> TimezoneOffsetFrom().apply { operand = operandElm }
+        DateTimeComponent.TIMEZONE_OFFSET,
+        DateTimeComponent.TIMEZONE // CQL 1.3 legacy name for timezoneoffset
+        -> TimezoneOffsetFrom().apply { operand = operandElm }
         else ->
             DateTimeComponentFrom().apply {
                 operand = operandElm
