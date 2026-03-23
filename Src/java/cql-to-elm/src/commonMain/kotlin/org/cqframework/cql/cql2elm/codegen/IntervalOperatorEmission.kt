@@ -511,21 +511,3 @@ private fun EmissionContext.expandIntervalToType(
             }
     }
 }
-
-/**
- * Promote a point expression to a degenerate interval: If(IsNull(point), Null, Interval[point,
- * point]). This matches legacy behavior for point-interval comparisons.
- */
-private fun promotePointToInterval(point: ElmExpression): ElmExpression {
-    return org.hl7.elm.r1.If().apply {
-        condition = org.hl7.elm.r1.IsNull().apply { operand = point }
-        then = org.hl7.elm.r1.Null()
-        `else` =
-            org.hl7.elm.r1.Interval().apply {
-                low = point
-                high = point
-                lowClosed = true
-                highClosed = true
-            }
-    }
-}

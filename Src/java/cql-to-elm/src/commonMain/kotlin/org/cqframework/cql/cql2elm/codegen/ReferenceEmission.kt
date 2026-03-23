@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
 import org.cqframework.cql.cql2elm.analysis.Resolution
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.elm.r1.AliasRef
@@ -24,16 +25,16 @@ internal fun EmissionContext.emitIdentifierExpression(
 ): ElmExpression {
     val resolution = semanticModel.getIdentifierResolution(expression)
     return when (resolution) {
-        is Resolution.ExpressionRef -> ExpressionRef().withName(resolution.definition.name.value)
-        is Resolution.ParameterRef -> ParameterRef().withName(resolution.definition.name.value)
+        is Resolution.ExpressionRef -> ExpressionRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.ParameterRef -> ParameterRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.OperandRef -> OperandRef().withName(resolution.name)
         is Resolution.AliasRef -> AliasRef().withName(resolution.name)
         is Resolution.QueryLetRef -> QueryLetRef().withName(resolution.name)
-        is Resolution.CodeSystemRef -> CodeSystemRef().withName(resolution.definition.name.value)
+        is Resolution.CodeSystemRef -> CodeSystemRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ValueSetRef ->
-            ValueSetRef().withName(resolution.definition.name.value).apply { preserve = true }
-        is Resolution.CodeRef -> CodeRef().withName(resolution.definition.name.value)
-        is Resolution.ConceptRef -> ConceptRef().withName(resolution.definition.name.value)
+            ValueSetRef().withName(unescapeCql(resolution.definition.name.value)).apply { preserve = true }
+        is Resolution.CodeRef -> CodeRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.ConceptRef -> ConceptRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ContextRef -> ExpressionRef().withName(resolution.definition.context.value)
         null ->
             // Unresolved identifiers become IdentifierRef — the legacy translator emits these

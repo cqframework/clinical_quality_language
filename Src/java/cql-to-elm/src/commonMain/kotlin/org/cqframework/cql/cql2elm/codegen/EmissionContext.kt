@@ -352,22 +352,6 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                 }
         }
     }
-
-    /** Promote a point to degenerate interval: If(IsNull(p), Null, Interval[p, p]). */
-    internal fun emitPointToInterval(point: ElmExpression): ElmExpression {
-        return org.hl7.elm.r1.If().apply {
-            condition = org.hl7.elm.r1.IsNull().apply { operand = point }
-            then = org.hl7.elm.r1.Null()
-            `else` =
-                org.hl7.elm.r1.Interval().apply {
-                    low = point
-                    high = point
-                    lowClosed = true
-                    highClosed = true
-                }
-        }
-    }
-
     /**
      * Wrap a list expression in an implicit Query that applies a cast element-level conversion.
      * Used by [emitSetOperator] for list demotion (List<Any> → List<T>). Produces:

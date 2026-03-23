@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Definition
@@ -94,7 +95,7 @@ internal fun EmissionContext.emitParameters(definitions: List<Definition>): List
 
 internal fun EmissionContext.emitParameter(definition: ParameterDefinition): ParameterDef {
     val paramDef = ParameterDef()
-    paramDef.name = definition.name.value
+    paramDef.name = unescapeCql(definition.name.value)
     paramDef.accessLevel = ElmAccessModifier.PUBLIC
     definition.access?.let { access ->
         paramDef.accessLevel =
@@ -117,7 +118,7 @@ internal fun EmissionContext.emitFunctionDefinition(
     currentContext: String?,
 ): FunctionDef {
     val functionDef = FunctionDef()
-    functionDef.name = definition.name.value
+    functionDef.name = unescapeCql(definition.name.value)
     functionDef.accessLevel = ElmAccessModifier.PUBLIC
     definition.access?.let { access ->
         functionDef.accessLevel =
@@ -134,7 +135,7 @@ internal fun EmissionContext.emitFunctionDefinition(
     // Emit operand definitions
     for (operand in definition.operands) {
         val operandDef = OperandDef()
-        operandDef.name = operand.name.value
+        operandDef.name = unescapeCql(operand.name.value)
         val typeSpec = operand.type
         operandDef.operandTypeSpecifier = emitTypeSpecifier(typeSpec)
         // Set result type on operand from registry

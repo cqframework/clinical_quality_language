@@ -58,7 +58,7 @@ internal fun EmissionContext.emitDateTime(literal: DateTimeLiteral): ElmExpressi
         result.millisecond = createIntLiteral(normalizeMilliseconds(matcher.groups[19]!!.value))
     }
     if (matcher.groups[23] != null) {
-        result.timezoneOffset = createDecimalLiteral(BigDecimal("0"))
+        result.timezoneOffset = createDecimalLiteral(BigDecimal("0.0"))
     } else if (matcher.groups[25] != null) {
         val polarity = if (matcher.groups[25]!!.value == "+") 1 else -1
         val offsetHour = matcher.groups[26]!!.value.toInt()

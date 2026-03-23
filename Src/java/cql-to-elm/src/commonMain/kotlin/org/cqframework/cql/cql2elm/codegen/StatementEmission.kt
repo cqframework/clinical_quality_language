@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
 import org.hl7.cql.ast.AccessModifier as AstAccessModifier
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Expression
@@ -160,7 +161,7 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     private fun emitExpressionDefinition(definition: ExpressionDefinition): ExpressionDef {
         val expressionDef =
             ExpressionDef().apply {
-                name = definition.name.value
+                name = unescapeCql(definition.name.value)
                 accessLevel = ElmAccessModifier.PUBLIC
                 definition.access?.let { access ->
                     accessLevel =
