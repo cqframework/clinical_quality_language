@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.analysis
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.Expression
+import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.model.DataType
@@ -51,6 +52,10 @@ class SemanticModel(
     /** Look up how an identifier expression was resolved. */
     fun getIdentifierResolution(expression: IdentifierExpression): Resolution? =
         typeTable.getIdentifierResolution(expression)
+
+    /** Look up if a function call resolved to a user-defined function. */
+    fun getFunctionCallResolution(expression: FunctionCallExpression): FunctionDefinition? =
+        typeTable.getFunctionCallResolution(expression)
 
     // --- Symbol queries (delegated to SymbolTable) ---
 

@@ -13,6 +13,7 @@ import org.hl7.cql.ast.ConceptDefinition
 import org.hl7.cql.ast.ContextDefinition
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
+import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IncludeDefinition
@@ -290,6 +291,8 @@ class TypeTable {
     private val types = IdentityHashMap<Expression, DataType>()
     private val operatorResolutions = IdentityHashMap<Expression, OperatorResolution>()
     private val identifierResolutions = IdentityHashMap<IdentifierExpression, Resolution>()
+    private val functionCallResolutions =
+        IdentityHashMap<FunctionCallExpression, FunctionDefinition>()
 
     /** Total expressions that had type inference attempted. */
     var expressionCount: Int = 0
@@ -332,6 +335,18 @@ class TypeTable {
         identifierResolutionCount++
     }
 
+    /** Record that a function call resolved to a user-defined function. */
+    fun setFunctionCallResolution(
+        expression: FunctionCallExpression,
+        definition: FunctionDefinition,
+    ) {
+        functionCallResolutions[expression] = definition
+    }
+
+    /** Check if a function call resolved to a user-defined function. */
+    fun getFunctionCallResolution(expression: FunctionCallExpression): FunctionDefinition? =
+        functionCallResolutions[expression]
+
     /**
      * Merge entries from [other] into this table. For each expression in [other]:
      * - If this table has no type for the expression, copy the type from [other].
@@ -358,6 +373,11 @@ class TypeTable {
             if (identifierResolutions[expression] == null) {
                 identifierResolutions[expression] = resolution
                 identifierResolutionCount++
+            }
+        }
+        for ((expression, definition) in other.functionCallResolutions) {
+            if (functionCallResolutions[expression] == null) {
+                functionCallResolutions[expression] = definition
             }
         }
     }

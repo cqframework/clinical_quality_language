@@ -821,6 +821,25 @@ class TypeResolver(
                 nonNullArgTypes
             }
 
+        // User-defined functions take precedence over system operators when they match.
+        // This matches the legacy pipeline behavior where library-local functions shadow
+        // system operators of the same name.
+        val candidates = symbolTable.resolveFunctions(functionName)
+        for (funcDef in candidates) {
+            if (funcDef.operands.size != nonNullArgTypes.size) continue
+            val operandTypes = funcDef.operands.map { resolveTypeSpecifier(it.type) }
+            if (operandTypes.any { it == null }) continue
+            val matches =
+                operandTypes.zip(nonNullArgTypes).all { (expected, actual) ->
+                    expected == actual || actual.isSubTypeOf(expected!!)
+                }
+            if (matches) {
+                typeTable.setFunctionCallResolution(expression, funcDef)
+                return resolveFunctionDef(funcDef)
+            }
+        }
+
+        // Fall back to system operator resolution (with implicit conversions).
         var resolution =
             operatorRegistry.resolve(
                 functionName,
@@ -832,20 +851,6 @@ class TypeResolver(
             val argSlots = nonNullArgTypes.indices.map { Slot.Argument(it) }
             recordResolution(expression, resolution, argSlots)
             return resolution.operator.resultType
-        }
-
-        val candidates = symbolTable.resolveFunctions(functionName)
-        for (funcDef in candidates) {
-            if (funcDef.operands.size != nonNullArgTypes.size) continue
-            val operandTypes = funcDef.operands.map { resolveTypeSpecifier(it.type) }
-            if (operandTypes.any { it == null }) continue
-            val matches =
-                operandTypes.zip(nonNullArgTypes).all { (expected, actual) ->
-                    expected == actual || actual.isSubTypeOf(expected!!)
-                }
-            if (matches) {
-                return resolveFunctionDef(funcDef)
-            }
         }
 
         // Cross-library function call: resolve against the included library's operator map.

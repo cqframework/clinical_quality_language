@@ -111,6 +111,15 @@ internal fun EmissionContext.emitFunctionCall(
 
     val args = effectiveArgs.toMutableList()
 
+    // Analysis resolved this call to a user-defined function — emit FunctionRef.
+    // User functions shadow system operators of the same name.
+    if (semanticModel.getFunctionCallResolution(expression) != null) {
+        return FunctionRef().apply {
+            name = functionName
+            operand = args.toMutableList()
+        }
+    }
+
     // Try system function emission (math, date/time, message)
     emitSystemFunction(functionName, args)?.let {
         return it
