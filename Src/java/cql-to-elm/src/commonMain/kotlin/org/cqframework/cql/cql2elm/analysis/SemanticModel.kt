@@ -61,6 +61,10 @@ class SemanticModel(
     /** Look up the resolved type for a function operand definition. */
     fun getOperandType(operand: OperandDefinition): DataType? = typeTable.getOperandType(operand)
 
+    /** Look up the resolved return type for an external function definition. */
+    fun getExternalFunctionReturnType(funcDef: FunctionDefinition): DataType? =
+        typeTable.getExternalFunctionReturnType(funcDef)
+
     // --- Symbol queries (delegated to SymbolTable) ---
 
     fun resolveExpression(name: String) = symbolTable.resolveExpression(name)

@@ -295,6 +295,7 @@ class TypeTable {
     private val functionCallResolutions =
         IdentityHashMap<FunctionCallExpression, FunctionDefinition>()
     private val operandTypes = IdentityHashMap<OperandDefinition, DataType>()
+    private val externalFunctionReturnTypes = IdentityHashMap<FunctionDefinition, DataType>()
     /** Total expressions that had type inference attempted. */
     var expressionCount: Int = 0
         internal set
@@ -356,6 +357,15 @@ class TypeTable {
     /** Look up the resolved type for a function operand definition. */
     fun getOperandType(operand: OperandDefinition): DataType? = operandTypes[operand]
 
+    /** Record the resolved return type for an external function definition. */
+    fun setExternalFunctionReturnType(funcDef: FunctionDefinition, type: DataType) {
+        externalFunctionReturnTypes[funcDef] = type
+    }
+
+    /** Look up the resolved return type for an external function definition. */
+    fun getExternalFunctionReturnType(funcDef: FunctionDefinition): DataType? =
+        externalFunctionReturnTypes[funcDef]
+
     /**
      * Merge entries from [other] into this table. For each expression in [other]:
      * - If this table has no type for the expression, copy the type from [other].
@@ -392,6 +402,11 @@ class TypeTable {
         for ((operand, type) in other.operandTypes) {
             if (operandTypes[operand] == null) {
                 operandTypes[operand] = type
+            }
+        }
+        for ((funcDef, type) in other.externalFunctionReturnTypes) {
+            if (externalFunctionReturnTypes[funcDef] == null) {
+                externalFunctionReturnTypes[funcDef] = type
             }
         }
     }

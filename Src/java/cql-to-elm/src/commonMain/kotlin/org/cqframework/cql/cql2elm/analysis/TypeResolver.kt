@@ -187,15 +187,30 @@ class TypeResolver(
             return it
         }
         if (scope.isFunctionInProgress(funcDef)) return null
+
+        // Record resolved operand types for ALL functions (expression-body AND external).
+        // The emitter needs these to decorate OperandDef nodes with resultType.
+        for (operand in funcDef.operands) {
+            val type = resolveTypeSpecifier(operand.type) ?: continue
+            typeTable.setOperandType(operand, type)
+        }
+
         val body = funcDef.body
-        if (body !is ExpressionFunctionBody) return null
+        if (body !is ExpressionFunctionBody) {
+            // External function: resolve and store the declared return type.
+            funcDef.returnType?.let { typeSpec ->
+                resolveTypeSpecifier(typeSpec)?.let {
+                    typeTable.setExternalFunctionReturnType(funcDef, it)
+                }
+            }
+            return null
+        }
 
         scope.guardFunction(funcDef)
         val operands = mutableMapOf<String, DataType>()
         for (operand in funcDef.operands) {
-            val type = resolveTypeSpecifier(operand.type) ?: continue
+            val type = typeTable.getOperandType(operand) ?: continue
             operands[operand.name.value] = type
-            typeTable.setOperandType(operand, type)
         }
         return try {
             scope.withOperandScope(operands) {

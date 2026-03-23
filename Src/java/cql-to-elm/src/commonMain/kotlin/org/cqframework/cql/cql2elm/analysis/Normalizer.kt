@@ -53,6 +53,7 @@ import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.ast.rewriteCase
 import org.hl7.cql.ast.rewriteLiteral
 import org.hl7.cql.ast.rewriteQuery
+import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
 
 /**
@@ -556,27 +557,15 @@ class Normalizer(
             is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
                 return normalizeBeforeOrAfter(expr, phrase, loweredLeft, loweredRight)
             is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
-                var cl = applyBoundary(loweredLeft, phrase.leftBoundary)
-                var cr = applyBoundary(loweredRight, phrase.rightBoundary)
-                // Point-interval promotion: same logic as normalizeBeforeOrAfter
-                val leftIsPoint =
-                    leftType != null &&
-                        (leftType !is IntervalType ||
-                            phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                            phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-                val rightIsPoint =
-                    rightType != null &&
-                        (rightType !is IntervalType ||
-                            phrase.rightBoundary ==
-                                org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                            phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-                val leftIsInterval = leftType is IntervalType && !leftIsPoint
-                val rightIsInterval = rightType is IntervalType && !rightIsPoint
-                if (leftIsPoint && rightIsInterval) {
-                    cl = promotePointToInterval(cl)
-                } else if (rightIsPoint && leftIsInterval) {
-                    cr = promotePointToInterval(cr)
-                }
+                val (cl, cr) =
+                    applyPointIntervalPromotion(
+                        applyBoundary(loweredLeft, phrase.leftBoundary),
+                        applyBoundary(loweredRight, phrase.rightBoundary),
+                        leftType,
+                        rightType,
+                        phrase.leftBoundary,
+                        phrase.rightBoundary,
+                    )
                 l = cl
                 r = cr
             }
@@ -658,26 +647,15 @@ class Normalizer(
 
         if (phrase.offset == null) {
             // No offset: apply boundaries, then point-interval promotion
-            var left = applyBoundary(foldedLeft, phrase.leftBoundary)
-            var right = applyBoundary(foldedRight, phrase.rightBoundary)
-            val leftIsPoint =
-                leftType != null &&
-                    (leftType !is IntervalType ||
-                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                        phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-            val rightIsPoint =
-                rightType != null &&
-                    (rightType !is IntervalType ||
-                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
-                        phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
-            val leftIsInterval = leftType is IntervalType && !leftIsPoint
-            val rightIsInterval = rightType is IntervalType && !rightIsPoint
-            if (leftIsPoint && rightIsInterval) {
-                left = promotePointToInterval(left)
-            } else if (rightIsPoint && leftIsInterval) {
-                right = promotePointToInterval(right)
-            }
-            // Return the interval relation with lowered operands but same phrase
+            val (left, right) =
+                applyPointIntervalPromotion(
+                    applyBoundary(foldedLeft, phrase.leftBoundary),
+                    applyBoundary(foldedRight, phrase.rightBoundary),
+                    leftType,
+                    rightType,
+                    phrase.leftBoundary,
+                    phrase.rightBoundary,
+                )
             return rewrite(expr, expr.copy(left = left, right = right))
         }
 
@@ -713,6 +691,42 @@ class Normalizer(
                 )
         }
         return rewrite(expr, expr.copy(left = left, right = right))
+    }
+
+    /**
+     * Determine whether an operand is effectively a point value (not an interval), considering its
+     * inferred type and any boundary selector that extracts a bound.
+     */
+    private fun isEffectivePoint(
+        type: DataType?,
+        boundary: org.hl7.cql.ast.IntervalBoundarySelector?,
+    ): Boolean =
+        type != null &&
+            (type !is IntervalType ||
+                boundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                boundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
+
+    /**
+     * Apply point-to-interval promotion when one operand is a point and the other is an interval.
+     * Wraps the point in If(IsNull, Null, Interval[p, p]). Returns the (possibly promoted) pair.
+     */
+    private fun applyPointIntervalPromotion(
+        left: Expression,
+        right: Expression,
+        leftType: DataType?,
+        rightType: DataType?,
+        leftBoundary: org.hl7.cql.ast.IntervalBoundarySelector?,
+        rightBoundary: org.hl7.cql.ast.IntervalBoundarySelector?,
+    ): Pair<Expression, Expression> {
+        val leftIsPoint = isEffectivePoint(leftType, leftBoundary)
+        val rightIsPoint = isEffectivePoint(rightType, rightBoundary)
+        val leftIsInterval = leftType is IntervalType && !leftIsPoint
+        val rightIsInterval = rightType is IntervalType && !rightIsPoint
+        return when {
+            leftIsPoint && rightIsInterval -> promotePointToInterval(left) to right
+            rightIsPoint && leftIsInterval -> left to promotePointToInterval(right)
+            else -> left to right
+        }
     }
 
     /** Promote a point to a degenerate interval: If(IsNull(p), Null, Interval[p, p]). */

@@ -7,7 +7,6 @@ import org.hl7.cql.ast.Definition
 import org.hl7.cql.ast.ExpressionFunctionBody
 import org.hl7.cql.ast.ExternalFunctionBody
 import org.hl7.cql.ast.FunctionDefinition
-import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.ParameterDefinition
 import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.UsingDefinition
@@ -155,18 +154,9 @@ internal fun EmissionContext.emitFunctionDefinition(
         }
         is ExternalFunctionBody -> {
             functionDef.external = true
-            // For external functions, try to resolve declared return type.
-            // This is the only remaining type resolution in emission; external functions
-            // don't go through resolveFunctionDef so their return types aren't pre-computed.
-            definition.returnType?.let { typeSpec ->
-                if (typeSpec is NamedTypeSpecifier) {
-                    try {
-                        val resolvedType = operatorRegistry.type(typeSpec.name.simpleName)
-                        decorate(functionDef, resolvedType)
-                    } catch (_: IllegalArgumentException) {
-                        // Non-system type (e.g., model type) — skip decoration
-                    }
-                }
+            // Use pre-computed return type from analysis (no type resolution in emission)
+            semanticModel.getExternalFunctionReturnType(definition)?.let {
+                decorate(functionDef, it)
             }
         }
     }
