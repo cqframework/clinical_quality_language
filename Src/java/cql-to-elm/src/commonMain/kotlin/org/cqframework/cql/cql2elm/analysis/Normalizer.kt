@@ -556,8 +556,29 @@ class Normalizer(
             is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase ->
                 return normalizeBeforeOrAfter(expr, phrase, loweredLeft, loweredRight)
             is org.hl7.cql.ast.ConcurrentIntervalPhrase -> {
-                l = applyBoundary(loweredLeft, phrase.leftBoundary)
-                r = applyBoundary(loweredRight, phrase.rightBoundary)
+                var cl = applyBoundary(loweredLeft, phrase.leftBoundary)
+                var cr = applyBoundary(loweredRight, phrase.rightBoundary)
+                // Point-interval promotion: same logic as normalizeBeforeOrAfter
+                val leftIsPoint =
+                    leftType != null &&
+                        (leftType !is IntervalType ||
+                            phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                            phrase.leftBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
+                val rightIsPoint =
+                    rightType != null &&
+                        (rightType !is IntervalType ||
+                            phrase.rightBoundary ==
+                                org.hl7.cql.ast.IntervalBoundarySelector.START ||
+                            phrase.rightBoundary == org.hl7.cql.ast.IntervalBoundarySelector.END)
+                val leftIsInterval = leftType is IntervalType && !leftIsPoint
+                val rightIsInterval = rightType is IntervalType && !rightIsPoint
+                if (leftIsPoint && rightIsInterval) {
+                    cl = promotePointToInterval(cl)
+                } else if (rightIsPoint && leftIsInterval) {
+                    cr = promotePointToInterval(cr)
+                }
+                l = cl
+                r = cr
             }
             is org.hl7.cql.ast.IncludesIntervalPhrase -> {
                 l = loweredLeft

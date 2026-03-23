@@ -106,7 +106,29 @@ internal fun TypeResolver.inferBetweenType(expression: BetweenExpression): DataT
 }
 
 internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType? {
-    // left, right pre-folded by catamorphism
+    // left, right pre-folded by catamorphism.
+    // Resolve through the operator map to record implicit conversions (e.g., Date→DateTime
+    // for `In(Date, Interval<DateTime>)`). Only record when the resolution produces a non-trivial
+    // conversion operator (ToDateTime, ToDecimal, etc.); simple casts (Null→T) are already handled
+    // by the emitter and recording them here produces spurious As wrappers.
+    val leftType = typeTable[expression.left]
+    val rightType = typeTable[expression.right]
+    if (leftType != null && rightType != null) {
+        val opName =
+            when (expression.operator) {
+                org.hl7.cql.ast.MembershipOperator.IN -> "In"
+                org.hl7.cql.ast.MembershipOperator.CONTAINS -> "Contains"
+            }
+        val resolution = operatorRegistry.resolve(opName, listOf(leftType, rightType))
+        if (
+            resolution != null &&
+                resolution.hasConversions() &&
+                resolution.conversions.any { it != null && it.operator != null }
+        ) {
+            recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
+            return resolution.operator.resultType
+        }
+    }
     return type("Boolean")
 }
 

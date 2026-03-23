@@ -61,7 +61,7 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 39/77 pass, 15 skip")
+    @Disabled("Exploratory: 40/77 pass, 16 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
