@@ -542,13 +542,17 @@ class TypeResolver(
 
     private fun inferListLiteralType(literal: ListLiteral): DataType? {
         val anyType = operatorRegistry.type("Any")
+        // Use declared element type if present (e.g., List<Integer>{}).
+        // Without this, empty typed lists resolve to List<Any>, breaking
+        // operator resolution that depends on the concrete element type.
+        val declaredElementType = literal.elementType?.let { resolveTypeSpecifier(it) }
         // Infer all element types, then exclude Any (from null literals) for common type
         // computation
         val elementTypes = literal.elements.mapNotNull { inferType(it) }
         val nonNullTypes = elementTypes.filter { it != anyType }
-        if (nonNullTypes.isEmpty()) return ListType(anyType)
+        if (nonNullTypes.isEmpty()) return ListType(declaredElementType ?: anyType)
         val commonType = findCommonTypeWithConversions(nonNullTypes)
-        return ListType(commonType)
+        return ListType(declaredElementType ?: commonType)
     }
 
     private fun inferTupleLiteralType(literal: org.hl7.cql.ast.TupleLiteral): DataType? {
