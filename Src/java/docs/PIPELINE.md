@@ -307,30 +307,32 @@ Adds output annotations controlled by compiler options:
 Enabled all three `@Disabled` test factories.
 
 Initial triage: 53 passed, 59 failed, 39 skipped.
-After quick fixes: root-level 23 → 26 pass, skips 18 → 21 (3 previously-failing now skip due
-to improved error detection).
+After quick fixes: root-level 23 → 26 pass.
+After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pass (8 fail,
+6 skip), FHIR R4.0.1 unchanged (3 pass, 16 fail, 9 skip).
 
-#### Root-level tests (77 files): 26 pass, 30 fail, 21 skip
+#### Root-level tests (77 files): 36 pass, 20 fail, 21 skip
 
-#### FHIR R4 tests (14 files): 0 pass, 7 fail, 7 skip
+#### FHIR R4 tests (14 files): 0 pass, 8 fail, 6 skip
 
-#### FHIR R4.0.1 tests (28 files): 3 pass, 13 fail, 12 skip
+#### FHIR R4.0.1 tests (28 files): 3 pass, 16 fail, 9 skip
 
 #### Failure Categories
 
 | Category | Count | Root Cause | Fix Strategy |
 |----------|-------|------------|--------------|
-| **Library includes** | 29 fail + 10 fail | New pipeline emits `include` defs but doesn't resolve cross-library refs, producing `FunctionRef` where legacy resolved to `Null` or inline. Many root tests use `TranslationTestsCommon`. | Wire `LibraryManager` into AST pipeline's `SemanticAnalyzer` |
+| **Library includes** (resolved) | 10 newly passing | Cross-library refs now emit `FunctionRef`/`ExpressionRef` with `libraryName`. `TestLibrarySourceProvider` wired into parity test. | `Resolution.IncludeRef`, `SemanticValidator` skip for cross-library calls |
 | **ELM content diffs** | 20 fail | Detailed subcategories below | Mixed — see subcategories |
 
 ##### ELM Content Difference Subcategories
 
 | Subcategory | Tests | Issue |
 |-------------|-------|-------|
-| Escaped quotes in identifiers | Issue827, TestQuotedForwards, TranslationTests | Emitter produces `\"` where legacy uses `"` in identifier names |
-| DateTime timezone `0` vs `0.0` | DateTimeLiteralTest, TestPointIntervalSignatures | Emitter emits integer `0` for timezone offset; legacy emits decimal `0.0` |
-| `In` vs `InValueSet`/`AnyInValueSet`/`InCodeSystem`/`AnyInCodeSystem` | InCodeSystemTest, InValueSetTest, PropertyTest, TranslationTests | New pipeline emits generic `In` operator; legacy rewrites to specialized terminology operators |
-| `Retrieve.codes` not emitted | CMS146v2_Test_CQM, TestDoubleListPromotion (R4 + R401) | New pipeline doesn't populate `codes` field on Retrieve; legacy does |
+| ~~Escaped quotes in identifiers~~ | ~~Issue827, TestQuotedForwards~~ | **Fixed** — `unescapeCql()` applied in emission |
+| ~~DateTime timezone `0` vs `0.0`~~ | ~~DateTimeLiteralTest~~ | **Fixed** — `BigDecimal("0.0")` for UTC offset |
+| ~~`In` vs `InValueSet`/`InCodeSystem`~~ | ~~InCodeSystemTest, InValueSetTest~~ | **Fixed** — Specialized terminology operator emission |
+| ~~`Retrieve.codes` not emitted~~ | ~~CMS146v2_Test_CQM~~ | **Fixed** — SymbolTable-based terminology resolution in RetrieveEmission |
+| Cross-library implicit conversions | Median_dup_vals_odd, Median_odd, TupleDifferentKeys, UncertTuplesWithDiffNullFields | Included library's function signatures not available for conversion resolution |
 | Error recovery (expressions → Null) | IdentifierDoesNotResolve..., Issue616, TestIdentifierCaseMismatch | New pipeline preserves invalid expressions; legacy replaces with Null |
 | Local function → system function resolution | LocalFunctionResolutionTest | System function `ToDate` emitted as `FunctionRef` |
 | Query vs inline form | Issue587, SignatureResolutionTest | New pipeline emits Query where legacy inlines; or vice versa |
@@ -354,13 +356,12 @@ to improved error detection).
 
 #### Priority Order for Closing Gaps
 
-1. **Escaped quotes** (3 tests) — string escaping bug in identifier emission
-2. **DateTime timezone offset** (2+ tests) — emit `0.0` instead of `0`
-3. **Terminology operators** (4+ tests) — `In`/`InValueSet`/`InCodeSystem` specialization
-4. **Retrieve.codes** (3 tests) — populate codes field on Retrieve emission
-5. **Context definition synthesis** (1+ tests) — synthesize `define <Context>` expressions
-6. **Point-interval promotion** (1+ tests) — apply `If(IsNull, Null, Interval[p,p])` lowering
-7. **Library includes** (39 tests) — largest batch, requires `LibraryManager` integration
+1. **Cross-library implicit conversions** (4+ tests) — wire `CompiledLibrary.operatorMap` into TypeResolver for included libraries
+2. **Error recovery parity** (3+ tests) — case-insensitive identifier matching, Null replacement for unresolved identifiers
+3. **Context definition synthesis** (1+ tests) — synthesize `define <Context>` expressions
+4. **Point-interval promotion** (1+ tests) — apply `If(IsNull, Null, Interval[p,p])` lowering
+5. **ModelManager in emission** (15 FHIR skips) — type specifier resolution during codegen
+6. **Unknown system types** (8 skips) — empty type strings from analysis edge cases
 8. **ModelManager in emission** (12 skips) — pass ModelManager into emission context
 9. **Unknown system types** (8 skips) — fix empty type strings from analysis
 
