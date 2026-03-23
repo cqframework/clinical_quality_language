@@ -9,8 +9,8 @@ import kotlinx.serialization.json.jsonObject
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.cql2elm.TestLibrarySourceProvider
+import org.cqframework.cql.cql2elm.analysis.SemanticAnalyzer
 import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider
@@ -61,7 +61,7 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 36/77 pass; remaining gaps from FHIR emission, unknown system types, error recovery")
+    @Disabled("Exploratory: 38/77 pass")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
@@ -117,9 +117,13 @@ class FullParityTest {
         // Step 2: Run through SemanticAnalyzer + ElmEmitter
         val emittedLibrary =
             try {
-                val modelManager = createModelManager()
+                val libraryManager = createLibraryManager()
                 val frontendResult =
-                    SemanticAnalyzer(modelManager = modelManager).analyze(astResult.library)
+                    SemanticAnalyzer(
+                            modelManager = libraryManager.modelManager,
+                            libraryManager = libraryManager,
+                        )
+                        .analyze(astResult.library)
                 ElmEmitter(frontendResult.semanticModel).emit(frontendResult.library).library
             } catch (e: ElmEmitter.UnsupportedNodeException) {
                 assumeTrue(false, "Unsupported AST node: ${e.message}")
@@ -132,8 +136,7 @@ class FullParityTest {
         // Step 3: Run through legacy translator
         val legacyLibrary =
             try {
-                val legacyTranslator =
-                    CqlTranslator.fromText(cql, createLibraryManager())
+                val legacyTranslator = CqlTranslator.fromText(cql, createLibraryManager())
                 requireNotNull(legacyTranslator.toELM())
             } catch (e: Exception) {
                 assumeTrue(false, "Legacy translator failed: ${e.message}")

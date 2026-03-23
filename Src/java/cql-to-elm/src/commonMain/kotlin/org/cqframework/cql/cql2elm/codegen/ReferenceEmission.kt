@@ -25,16 +25,22 @@ internal fun EmissionContext.emitIdentifierExpression(
 ): ElmExpression {
     val resolution = semanticModel.getIdentifierResolution(expression)
     return when (resolution) {
-        is Resolution.ExpressionRef -> ExpressionRef().withName(unescapeCql(resolution.definition.name.value))
-        is Resolution.ParameterRef -> ParameterRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.ExpressionRef ->
+            ExpressionRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.ParameterRef ->
+            ParameterRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.OperandRef -> OperandRef().withName(resolution.name)
         is Resolution.AliasRef -> AliasRef().withName(resolution.name)
         is Resolution.QueryLetRef -> QueryLetRef().withName(resolution.name)
-        is Resolution.CodeSystemRef -> CodeSystemRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.CodeSystemRef ->
+            CodeSystemRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ValueSetRef ->
-            ValueSetRef().withName(unescapeCql(resolution.definition.name.value)).apply { preserve = true }
+            ValueSetRef().withName(unescapeCql(resolution.definition.name.value)).apply {
+                preserve = true
+            }
         is Resolution.CodeRef -> CodeRef().withName(unescapeCql(resolution.definition.name.value))
-        is Resolution.ConceptRef -> ConceptRef().withName(unescapeCql(resolution.definition.name.value))
+        is Resolution.ConceptRef ->
+            ConceptRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ContextRef -> ExpressionRef().withName(resolution.definition.context.value)
         is Resolution.IncludeRef ->
             // Library alias identifiers are never emitted standalone — they appear as targets of

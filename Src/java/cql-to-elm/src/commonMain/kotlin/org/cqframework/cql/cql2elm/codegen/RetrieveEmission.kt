@@ -35,29 +35,36 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
             val name = terminologyExpr.name.simpleName
             // Value set reference: [Type: "MyValueSet"]
             semanticModel.resolveValueSet(name)?.let { resolution ->
-                retrieve.codes = ElmValueSetRef()
-                    .withName(unescapeCql(resolution.definition.name.value))
-                    .apply { preserve = true }
+                retrieve.codes =
+                    ElmValueSetRef().withName(unescapeCql(resolution.definition.name.value)).apply {
+                        preserve = true
+                    }
             }
             // Code system reference: [Type: LOINC]
             if (retrieve.codes == null) {
                 semanticModel.resolveCodeSystem(name)?.let { resolution ->
-                    retrieve.codes = org.hl7.elm.r1.CodeSystemRef()
-                        .withName(unescapeCql(resolution.definition.name.value))
+                    retrieve.codes =
+                        org.hl7.elm.r1
+                            .CodeSystemRef()
+                            .withName(unescapeCql(resolution.definition.name.value))
                 }
             }
             // Code reference: [Type: "my-code"]
             if (retrieve.codes == null) {
                 semanticModel.resolveCode(name)?.let { resolution ->
-                    retrieve.codes = org.hl7.elm.r1.CodeRef()
-                        .withName(unescapeCql(resolution.definition.name.value))
+                    retrieve.codes =
+                        org.hl7.elm.r1
+                            .CodeRef()
+                            .withName(unescapeCql(resolution.definition.name.value))
                 }
             }
             // Concept reference
             if (retrieve.codes == null) {
                 semanticModel.resolveConcept(name)?.let { resolution ->
-                    retrieve.codes = org.hl7.elm.r1.ConceptRef()
-                        .withName(unescapeCql(resolution.definition.name.value))
+                    retrieve.codes =
+                        org.hl7.elm.r1
+                            .ConceptRef()
+                            .withName(unescapeCql(resolution.definition.name.value))
                 }
             }
         }

@@ -2,6 +2,8 @@
 
 package org.cqframework.cql.cql2elm.analysis
 
+import org.cqframework.cql.cql2elm.LibraryManager
+import org.cqframework.cql.cql2elm.model.CallContext
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.hl7.cql.ast.AsExpression
@@ -65,6 +67,7 @@ import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.TupleType
 import org.hl7.cql.model.TupleTypeElement
+import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Walks the AST and infers types for all expressions, populating the [TypeTable]. Implements
@@ -110,6 +113,7 @@ class TypeResolver(
     internal val operatorRegistry: OperatorRegistry,
     internal val syntheticTable: SyntheticTable? = null,
     internal val modelContext: ModelContext = ModelContext.systemOnly(),
+    internal val libraryManager: LibraryManager? = null,
 ) : ExpressionFold<DataType?> {
 
     /** Manages all mutable scope state: query scopes, operand scope, circularity guards. */
@@ -843,7 +847,58 @@ class TypeResolver(
                 return resolveFunctionDef(funcDef)
             }
         }
+
+        // Cross-library function call: resolve against the included library's operator map.
+        // The target identifier resolved to IncludeRef during identifier resolution; use that
+        // to look up the included library's CompiledLibrary and resolve with implicit conversions.
+        resolveLibraryFunctionCall(expression, effectiveArgTypes)?.let {
+            return it
+        }
+
         return null
+    }
+
+    /**
+     * Resolve a library-qualified function call (e.g., `Common.toString(3)`) against the included
+     * library's compiled operator map. Returns the result type if resolution succeeds, or null.
+     *
+     * Uses [LibraryManager] to compile the included library (via the legacy pipeline) and
+     * [CompiledLibrary.resolveCall] for overload resolution with implicit conversions. Conversion
+     * synthetics are recorded so the emitter wraps arguments correctly (e.g., ToDecimal).
+     */
+    private fun resolveLibraryFunctionCall(
+        expression: FunctionCallExpression,
+        argTypes: List<DataType>,
+    ): DataType? {
+        val lm = libraryManager ?: return null
+        val target = expression.target as? IdentifierExpression ?: return null
+        val includeRef =
+            typeTable.getIdentifierResolution(target) as? Resolution.IncludeRef ?: return null
+        val includeDef = includeRef.definition
+        val libraryId =
+            VersionedIdentifier()
+                .withId(includeDef.libraryIdentifier.simpleName)
+                .withVersion(includeDef.version?.value)
+        val compiledLibrary =
+            try {
+                lm.resolveLibrary(libraryId)
+            } catch (_: Exception) {
+                return null
+            }
+        val callContext =
+            CallContext(
+                libraryName = null,
+                operatorName = expression.function.value,
+                allowPromotionAndDemotion = true,
+                allowFluent = false,
+                mustResolve = false,
+                operandTypes = argTypes,
+            )
+        val resolution =
+            compiledLibrary.resolveCall(callContext, operatorRegistry.conversionMap) ?: return null
+        val argSlots = argTypes.indices.map { Slot.Argument(it) }
+        recordResolution(expression, resolution, argSlots)
+        return resolution.operator.resultType
     }
 
     @Suppress("ReturnCount")

@@ -25,9 +25,9 @@ internal fun EmissionContext.emitPropertyAccess(
 
         // Library-qualified access: Common.SomeExpression → ExpressionRef(name, libraryName).
         if (resolution is Resolution.IncludeRef) {
-            return ExpressionRef()
-                .withName(unescapeCql(expression.property.value))
-                .apply { libraryName = resolution.alias }
+            return ExpressionRef().withName(unescapeCql(expression.property.value)).apply {
+                libraryName = resolution.alias
+            }
         }
 
         // Query-alias scoped property: P.gender → Property(scope="P", path="gender").

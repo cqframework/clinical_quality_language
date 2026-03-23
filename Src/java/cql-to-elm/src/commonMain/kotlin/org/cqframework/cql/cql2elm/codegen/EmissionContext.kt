@@ -159,8 +159,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
 
     /**
      * Check whether the given AST expression is an [IdentifierExpression] that resolved to an
-     * included library alias (via [Resolution.IncludeRef]). Returns the alias string if so,
-     * `null` otherwise. Used by function call and property access emission to detect cross-library
+     * included library alias (via [Resolution.IncludeRef]). Returns the alias string if so, `null`
+     * otherwise. Used by function call and property access emission to detect cross-library
      * references (e.g., `Common.TestMessage(...)` where `Common` is a library alias).
      */
     internal fun resolveLibraryAlias(expression: Expression?): String? {
@@ -364,6 +364,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                 }
         }
     }
+
     /**
      * Wrap a list expression in an implicit Query that applies a cast element-level conversion.
      * Used by [emitSetOperator] for list demotion (List<Any> → List<T>). Produces:

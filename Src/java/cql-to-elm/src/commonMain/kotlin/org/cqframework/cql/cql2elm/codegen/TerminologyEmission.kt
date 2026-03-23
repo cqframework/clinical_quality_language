@@ -96,7 +96,9 @@ internal fun EmissionContext.emitConceptDef(definition: ConceptDefinition): Conc
     conceptDef.accessLevel = emitAccessModifier(definition.access)
     for (codeRef in definition.codes) {
         conceptDef.code.add(
-            CodeRef().withName(unescapeCql(codeRef.identifier.value)).withLibraryName(codeRef.libraryName?.value)
+            CodeRef()
+                .withName(unescapeCql(codeRef.identifier.value))
+                .withLibraryName(codeRef.libraryName?.value)
         )
     }
     return conceptDef

@@ -156,8 +156,8 @@ private fun EmissionContext.buildPerOperand(
  *
  * When the operator is IN and the right operand resolves to a [ValueSetRef] or [CodeSystemRef],
  * emit the specialized terminology operators ([InValueSet], [AnyInValueSet], [InCodeSystem],
- * [AnyInCodeSystem]) matching the legacy translator's behavior. The choice between scalar and
- * list variants depends on the left operand's type from the semantic model.
+ * [AnyInCodeSystem]) matching the legacy translator's behavior. The choice between scalar and list
+ * variants depends on the left operand's type from the semantic model.
  */
 internal fun EmissionContext.emitMembership(
     expression: MembershipExpression,

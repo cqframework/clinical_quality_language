@@ -3,6 +3,7 @@
 package org.cqframework.cql.cql2elm.analysis
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
+import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.utils.IdentityHashMap
@@ -72,6 +73,7 @@ class SemanticAnalyzer(
     private val semanticValidator: SemanticValidator = SemanticValidator(),
     val modelManager: ModelManager? = null,
     val options: CqlCompilerOptions? = null,
+    val libraryManager: LibraryManager? = null,
 ) {
     data class Result(
         val library: Library,
@@ -103,7 +105,8 @@ class SemanticAnalyzer(
 
         for (iteration in 1..maxIterations) {
             // INFER: type resolution + overload resolution (reads synthetics for effective types)
-            val resolver = TypeResolver(operatorRegistry, syntheticTable, modelContext)
+            val resolver =
+                TypeResolver(operatorRegistry, syntheticTable, modelContext, libraryManager)
             val iterationTypeTable = resolver.resolve(desugared, symbols)
 
             // Merge this iteration's results into the cumulative table.
@@ -146,7 +149,8 @@ class SemanticAnalyzer(
         // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
         // Merge the pre-normalization cumulative table so unchanged expressions keep their types.
         val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
-        val normalizedResolver = TypeResolver(operatorRegistry, syntheticTable, modelContext)
+        val normalizedResolver =
+            TypeResolver(operatorRegistry, syntheticTable, modelContext, libraryManager)
         val normalizedTypeTable = normalizedResolver.resolve(normalizedLibrary, normalizedSymbols)
         normalizedTypeTable.mergeFrom(finalTypeTable)
 

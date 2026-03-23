@@ -2,9 +2,7 @@
 
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.analysis.Resolution
 import org.hl7.cql.ast.FunctionCallExpression
-import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IfExpression
 import org.hl7.cql.ast.IndexExpression
 import org.hl7.elm.r1.AllTrue
