@@ -71,6 +71,14 @@ private constructor(
     val loadedModelNames: List<String>
         get() = loadedModels.map { it.name }
 
+    /**
+     * Collect all implicit conversions declared in loaded models' conversionInfo. These include
+     * FHIRHelpers-style conversions (e.g., FHIR.dateTime → System.DateTime via
+     * FHIRHelpers.ToDateTime) that must be registered in the ConversionMap for type unification.
+     */
+    fun collectModelConversions(): List<org.cqframework.cql.cql2elm.model.Conversion> =
+        loadedModels.flatMap { it.model.getConversions() }
+
     // ----- Type Resolution -----
 
     /**

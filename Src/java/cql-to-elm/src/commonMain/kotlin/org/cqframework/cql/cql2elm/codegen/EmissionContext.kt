@@ -225,10 +225,24 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                     is Synthetic.ListDemotion -> emitListDemotionQuery(result, s.targetElementType)
                     is Synthetic.IntervalConversion ->
                         emitIntervalConversion(result, s.innerOperatorName)
+                    is Synthetic.LibraryConversion ->
+                        emitLibraryFunctionRef(s.libraryName, s.functionName, result)
                 }
         }
         return result
     }
+
+    /** Emit a FunctionRef to a library conversion function (e.g., FHIRHelpers.ToDateTime). */
+    private fun emitLibraryFunctionRef(
+        libraryName: String,
+        functionName: String,
+        operand: ElmExpression,
+    ): ElmExpression =
+        org.hl7.elm.r1.FunctionRef().apply {
+            this.libraryName = libraryName
+            this.name = functionName
+            this.operand = mutableListOf(operand)
+        }
 
     /** Emit an implicit As(targetType) wrapping. */
     private fun emitImplicitCast(expression: ElmExpression, targetType: DataType): ElmExpression {

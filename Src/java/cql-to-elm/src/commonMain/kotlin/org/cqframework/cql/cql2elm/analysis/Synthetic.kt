@@ -35,6 +35,17 @@ sealed interface Synthetic {
      * ConversionInserter).
      */
     data class IntervalConversion(val innerOperatorName: String) : Synthetic
+
+    /**
+     * Wrap operand in a FunctionRef to a library conversion function (e.g.,
+     * FHIRHelpers.ToDateTime). Unlike [OperatorConversion] which emits system unary operators
+     * (ToDecimal etc.), this emits a qualified FunctionRef node with libraryName.
+     */
+    data class LibraryConversion(
+        val libraryName: String,
+        val functionName: String,
+        val resultType: DataType,
+    ) : Synthetic
 }
 
 /**
@@ -159,6 +170,7 @@ class SyntheticTable {
                             operatorRegistry.resolve(s.innerOperatorName, listOf(pointType))
                         IntervalType(resolution?.operator?.resultType ?: return null)
                     }
+                    is Synthetic.LibraryConversion -> s.resultType
                 }
         }
         return currentType
@@ -170,8 +182,15 @@ class SyntheticTable {
  * kind isn't handled by the side table.
  */
 internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorRegistry): Synthetic? {
-    val operatorName = registry.conversionOperatorName(conversion)
-    if (operatorName != null) return Synthetic.OperatorConversion(operatorName)
+    val operator = conversion.operator
+    if (operator != null) {
+        val libraryName = operator.libraryName
+        return if (libraryName != null && libraryName != "System") {
+            Synthetic.LibraryConversion(libraryName, operator.name, conversion.toType)
+        } else {
+            Synthetic.OperatorConversion(operator.name)
+        }
+    }
     if (conversion.isCast) return Synthetic.ImplicitCast(conversion.toType)
     if (
         conversion.isListConversion &&

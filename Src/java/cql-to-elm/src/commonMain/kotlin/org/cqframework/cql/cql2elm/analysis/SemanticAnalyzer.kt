@@ -89,6 +89,13 @@ class SemanticAnalyzer(
         // This is the single model-resolution interface used by all downstream phases.
         val modelContext = buildModelContext(library)
 
+        // Register model-declared implicit conversions (e.g., FHIR.dateTime → System.DateTime
+        // via FHIRHelpers.ToDateTime) in the OperatorRegistry's ConversionMap. Without this,
+        // type unification never finds FHIR→System conversions and properties stay unwrapped.
+        for (conversion in modelContext.collectModelConversions()) {
+            operatorRegistry.conversionMap.add(conversion)
+        }
+
         // Desugar AgeIn*() → CalculateAgeIn*(Patient.birthDate) before type inference.
         // This is purely structural (needs model info, not types) so the convergence loop
         // can resolve CalculateAgeIn* against the operator registry and discover conversions.
