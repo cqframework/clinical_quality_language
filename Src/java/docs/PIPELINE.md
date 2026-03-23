@@ -345,7 +345,7 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 
 | Category | Count | Issue |
 |----------|-------|-------|
-| ModelManager required in emission | 12 | `IllegalStateException: ModelManager required` — emission needs model context for type specifier resolution |
+| ~~ModelManager required~~ | ~~12~~ | **Fixed** — post-normalization TypeResolver was missing `modelContext`. Analysis bug, not emission. |
 | Could not resolve type/model | 8 | `Could not resolve` — model types not available (Patient context, related context, etc.) |
 | Unknown system type | 8 | `Unknown system type: ''` — empty type from analysis edge cases |
 | AST Builder problems | 3 | CQL files with intentional errors; Builder rejects them |
@@ -360,10 +360,7 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 2. **Error recovery parity** (3+ tests) — case-insensitive identifier matching, Null replacement for unresolved identifiers
 3. **Context definition synthesis** (1+ tests) — synthesize `define <Context>` expressions
 4. **Point-interval promotion** (1+ tests) — apply `If(IsNull, Null, Interval[p,p])` lowering
-5. **ModelManager in emission** (15 FHIR skips) — type specifier resolution during codegen
-6. **Unknown system types** (8 skips) — empty type strings from analysis edge cases
-8. **ModelManager in emission** (12 skips) — pass ModelManager into emission context
-9. **Unknown system types** (8 skips) — fix empty type strings from analysis
+5. **Unknown system types** (8 skips) — fix empty type strings from analysis
 
 ### Implementation Status
 
