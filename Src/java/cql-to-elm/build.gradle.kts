@@ -5,6 +5,10 @@ plugins {
     id("cql.kotlin-multiplatform-conventions")
 }
 
+detekt {
+    baseline = file("config/detekt-baseline.xml")
+}
+
 val loadTestResourcesTask = tasks.register<LoadTestResourcesTask>("loadTestResources")
 
 tasks.withType<AbstractKotlinCompile<*>>().configureEach {

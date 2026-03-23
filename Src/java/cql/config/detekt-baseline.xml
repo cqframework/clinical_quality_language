@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:RewritingFold.kt$RewritingFold$low === expr.low &amp;&amp; high === expr.high &amp;&amp; lowClosed === expr.lowClosedExpression &amp;&amp; highClosed === expr.highClosedExpression</ID>
+    <ID>ComplexCondition:RewritingFold.kt$sourcesSame &amp;&amp; letsSame &amp;&amp; inclusionCondsSame &amp;&amp; inclusionSourcesSame &amp;&amp; whereSame &amp;&amp; returnSame &amp;&amp; aggStartSame &amp;&amp; aggExprSame &amp;&amp; sortSame</ID>
+    <ID>CyclomaticComplexMethod:ExpressionChildren.kt$@Suppress("CyclomaticComplexity") inline fun forEachChildExpression(expression: Expression, action: (Expression) -> Unit)</ID>
+    <ID>CyclomaticComplexMethod:RewritingFold.kt$fun rewriteLiteral(expr: LiteralExpression, children: LiteralChildren&lt;Expression>): Expression</ID>
+    <ID>LongMethod:ExpressionChildren.kt$@Suppress("CyclomaticComplexity") inline fun forEachChildExpression(expression: Expression, action: (Expression) -> Unit)</ID>
+    <ID>LongMethod:NormalizingTransformer.kt$NormalizingTransformer$@Suppress("CyclomaticComplexMethod") private fun normalizeLiteral(literal: Literal, children: LiteralChildren&lt;Expression>): Literal</ID>
+    <ID>LongMethod:NormalizingTransformer.kt$NormalizingTransformer$override fun onQuery(expr: QueryExpression, children: QueryChildren&lt;Expression>): Expression</ID>
+    <ID>LongMethod:RewritingFold.kt$@Suppress("CyclomaticComplexMethod") fun rewriteQuery(expr: QueryExpression, c: QueryChildren&lt;Expression>): Expression</ID>
+    <ID>NestedBlockDepth:Builder.kt$Builder$@Suppress("MagicNumber") private fun String.unescapeCql(): String</ID>
+    <ID>NestedBlockDepth:ExpressionChildren.kt$@Suppress("CyclomaticComplexity") inline fun forEachChildExpression(expression: Expression, action: (Expression) -> Unit)</ID>
+    <ID>ReturnCount:RewritingFold.kt$fun rewriteLiteral(expr: LiteralExpression, children: LiteralChildren&lt;Expression>): Expression</ID>
+  </CurrentIssues>
+</SmellBaseline>

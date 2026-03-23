@@ -9,4 +9,4 @@ package org.hl7.cql.ast
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-public annotation class Ir {}
+public annotation class Ir

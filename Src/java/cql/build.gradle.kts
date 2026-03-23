@@ -13,6 +13,10 @@ plugins {
     id("com.strumenta.antlr-kotlin") version "1.0.9"
 }
 
+detekt {
+    baseline = file("config/detekt-baseline.xml")
+}
+
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
     dependsOn("cleanGenerateKotlinGrammarSource")
     source = fileTree("../../grammar") {
