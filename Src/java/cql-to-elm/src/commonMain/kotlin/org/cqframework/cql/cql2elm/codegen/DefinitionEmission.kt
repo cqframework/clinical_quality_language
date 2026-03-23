@@ -140,9 +140,7 @@ internal fun EmissionContext.emitFunctionDefinition(
         // Set result type on operand from registry
         val resolvedType =
             operatorRegistry.type((typeSpec as? NamedTypeSpecifier)?.name?.simpleName ?: "")
-        if (resolvedType != null) {
-            decorate(operandDef, resolvedType)
-        }
+        decorate(operandDef, resolvedType)
         functionDef.operand.add(operandDef)
     }
 
@@ -162,9 +160,7 @@ internal fun EmissionContext.emitFunctionDefinition(
             definition.returnType?.let { typeSpec ->
                 if (typeSpec is NamedTypeSpecifier) {
                     val resolvedType = operatorRegistry.type(typeSpec.name.simpleName)
-                    if (resolvedType != null) {
-                        decorate(functionDef, resolvedType)
-                    }
+                    decorate(functionDef, resolvedType)
                 }
             }
         }

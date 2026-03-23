@@ -215,7 +215,7 @@ class TypeResolver(
                     val typeName = parts.last()
                     // Try system type first for System-qualified names
                     try {
-                        operatorRegistry.type(typeName)?.let {
+                        operatorRegistry.type(typeName).let {
                             return it
                         }
                     } catch (_: IllegalArgumentException) {}
@@ -304,7 +304,7 @@ class TypeResolver(
 
     override fun onCase(
         expr: CaseExpression,
-        comparand: DataType??,
+        comparand: DataType?,
         cases: List<CaseChildren<DataType?>>,
         elseResult: DataType?,
     ): DataType? = inferCaseType(expr, cases, elseResult)
@@ -323,7 +323,7 @@ class TypeResolver(
 
     override fun onFunctionCall(
         expr: FunctionCallExpression,
-        target: DataType??,
+        target: DataType?,
         arguments: List<DataType?>,
     ): DataType? = inferFunctionCallType(expr, arguments)
 
@@ -350,7 +350,7 @@ class TypeResolver(
     override fun onExpandCollapse(
         expr: ExpandCollapseExpression,
         operand: DataType?,
-        per: DataType??,
+        per: DataType?,
     ): DataType? = inferExpandCollapseType(expr, operand)
 
     override fun onDateTimeComponent(
@@ -513,7 +513,6 @@ class TypeResolver(
             is org.hl7.cql.ast.IntervalLiteral -> inferIntervalLiteralType(literal)
             is org.hl7.cql.ast.TupleLiteral -> inferTupleLiteralType(literal)
             is org.hl7.cql.ast.InstanceLiteral -> inferInstanceLiteralType(literal)
-            else -> null
         }
     }
 

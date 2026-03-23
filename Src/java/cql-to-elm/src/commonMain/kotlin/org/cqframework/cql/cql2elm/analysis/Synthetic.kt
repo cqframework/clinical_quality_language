@@ -176,16 +176,16 @@ internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorReg
     if (
         conversion.isListConversion &&
             conversion.conversion != null &&
-            conversion.conversion!!.operator != null
+            conversion.conversion.operator != null
     ) {
-        return Synthetic.ListConversion(conversion.conversion!!.operator!!.name)
+        return Synthetic.ListConversion(conversion.conversion.operator.name)
     }
     if (
         conversion.isIntervalConversion &&
             conversion.conversion != null &&
-            conversion.conversion!!.operator != null
+            conversion.conversion.operator != null
     ) {
-        return Synthetic.IntervalConversion(conversion.conversion!!.operator!!.name)
+        return Synthetic.IntervalConversion(conversion.conversion.operator.name)
     }
     return null
 }

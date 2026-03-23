@@ -191,11 +191,10 @@ that types children before parents. Key rules:
 
 ## Phase 3: Lowering
 
-**Package:** `org.cqframework.cql.cql2elm.analysis` (or dedicated package)
+**Class:** `Normalizer` in `org.cqframework.cql.cql2elm.analysis`
 
-**Status:** Partially implemented (logic currently split between
-ConversionAnalyzer and emission code). Being refactored into an explicit
-phase.
+**Status:** Implemented. Structural rewrites consolidated in `Normalizer.kt`
+(~960 lines). Invoked by SemanticAnalyzer after the convergence loop.
 
 Lowering transforms complex CQL phrases into simpler AST trees using
 existing node types. It reads the SemanticModel for structural type
@@ -295,15 +294,13 @@ Adds output annotations controlled by compiler options:
 
 ## Current Status
 
-### OperatorTests Parity: 25/32 passing
+### OperatorTests Parity: 30/32 passing
 
 | Status | Tests |
 |--------|-------|
-| **Passing (25)** | AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, DateTimeOperators, ForwardReferences, Functions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, ListOperators, LogicalOperators, MessageOperators, NullologicalOperators, Query, RecursiveFunctions, Sorting, StringOperators, TimeOperators, TypeOperators, UndeclaredForward, UndeclaredSignature, Union123AndEmpty |
-| **Legacy bug** | Aggregate (#1710 — our type inference is more correct) |
-| **Needs model** | AgeOperators, ImplicitConversions, NameHiding, TerminologyReferences, TupleAndClassConversions |
-| **Error recovery** | MultiSourceQuery, InvalidSortClauses |
-| **Null inference** | CqlListOperators (IndexOf(null, {})) |
+| **Passing (30)** | AgeOperators, AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, CqlListOperators, DateTimeOperators, ForwardReferences, Functions, ImplicitConversions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, InvalidSortClauses, ListOperators, LogicalOperators, MessageOperators, NameHiding, NullologicalOperators, Query, RecursiveFunctions, Sorting, StringOperators, TerminologyReferences, TimeOperators, TupleAndClassConversions, TypeOperators, UndeclaredForward, UndeclaredSignature |
+| **Legacy bug (skip)** | Aggregate (#1710 — our type inference is more correct) |
+| **Error recovery (skip)** | MultiSourceQuery (legacy replaces type errors with Null) |
 
 ### Implementation Status
 
@@ -314,9 +311,9 @@ Adds output annotations controlled by compiler options:
 | ConversionAnalyzer | Done (all conversion kinds via SyntheticTable) |
 | SyntheticTable | Done (5 conversion types, convergence loop) |
 | SemanticValidator | Partial (identifiers, casts, recursive functions) |
-| Lowering | Partial (before/after boundaries as synthetics; rest in emission) |
-| Emission | Done (20 emission files, mostly mechanical) |
-| Post-processing | Partial (resultType decoration) |
+| Normalizer (lowering) | Done (phrase expansion, interval operators, boundary selectors, coalescing, operator rewrites) |
+| Emission | Done (20 emission files, mechanical) |
+| Post-processing | Partial (resultType decoration; no locators, annotations, or signatures yet) |
 
 ---
 
@@ -333,6 +330,7 @@ Adds output annotations controlled by compiler options:
 | Synthetic / SyntheticTable | `cql-to-elm/.../analysis/Synthetic.kt` |
 | SemanticValidator | `cql-to-elm/.../analysis/SemanticValidator.kt` |
 | OperatorRegistry | `cql-to-elm/.../analysis/OperatorRegistry.kt` |
+| Normalizer (lowering) | `cql-to-elm/.../analysis/Normalizer.kt` |
 
 ### Codegen
 
