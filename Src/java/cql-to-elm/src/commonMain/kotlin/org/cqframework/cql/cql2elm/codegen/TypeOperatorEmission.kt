@@ -76,7 +76,7 @@ internal fun EmissionContext.emitImplicitCastExpression(
     return As().apply {
         operand = operandElm
         if (typeSpec is NamedTypeSpecifier) {
-            asType = resolveTypeQName(typeSpec.name.simpleName)
+            asType = resolveTypeQName(typeSpec.name)
         } else {
             asTypeSpecifier = emitTypeSpecifier(typeSpec)
         }
@@ -128,7 +128,7 @@ internal fun EmissionContext.emitConversionExpression(
         // asType (QName) for named types. No strict flag is set.
         return As().apply {
             operand = operandElm
-            asType = resolveTypeQName(destType.name.simpleName)
+            asType = resolveTypeQName(destType.name)
         }
     }
     // Non-named destination types (e.g., TupleTypeSpecifier): emit as cast with asTypeSpecifier
@@ -150,7 +150,7 @@ internal fun EmissionContext.emitTypeSpecifier(
     return when (typeSpec) {
         is NamedTypeSpecifier -> {
             val elmTypeSpec = org.hl7.elm.r1.NamedTypeSpecifier()
-            elmTypeSpec.name = resolveTypeQName(typeSpec.name.simpleName)
+            elmTypeSpec.name = resolveTypeQName(typeSpec.name)
             elmTypeSpec
         }
         is org.hl7.cql.ast.ListTypeSpecifier ->

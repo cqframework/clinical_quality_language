@@ -151,6 +151,10 @@ private constructor(
         throw IllegalArgumentException("Could not resolve type '$typeName' in any loaded model.")
     }
 
+    /** Find a loaded model by name (e.g., "FHIR"), or null if not loaded. */
+    fun resolveModelByName(modelName: String): Model? =
+        loadedModels.firstOrNull { it.name == modelName }?.model
+
     /**
      * Resolve a model by name directly. Used by desugar phases (e.g., AgeIn) that need
      * model-specific metadata like patientBirthDatePropertyName.

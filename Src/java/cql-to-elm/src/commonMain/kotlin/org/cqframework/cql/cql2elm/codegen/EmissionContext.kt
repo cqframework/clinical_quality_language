@@ -152,6 +152,25 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     }
 
     /**
+     * Resolve a type QName from a [QualifiedIdentifier]. When the identifier has a model qualifier
+     * (e.g., FHIR.Bundle.Entry), resolve in the specified model's namespace to avoid system-type
+     * shadowing (e.g., FHIR.CodeSystem != System.CodeSystem).
+     */
+    internal fun resolveTypeQName(qualifiedName: org.hl7.cql.ast.QualifiedIdentifier): QName {
+        if (qualifiedName.parts.size > 1) {
+            val modelQualifier = qualifiedName.parts.first()
+            // Remaining parts form the type name (e.g., ["Bundle", "Entry"] → "Bundle.Entry")
+            val typeName = qualifiedName.parts.drop(1).joinToString(".")
+            val model = modelContext.resolveModelByName(modelQualifier)
+            if (model != null) {
+                val modelUrl = model.modelInfo.targetUrl ?: model.modelInfo.url!!
+                return QName(modelUrl, typeName)
+            }
+        }
+        return resolveTypeQName(qualifiedName.simpleName)
+    }
+
+    /**
      * Convert a resolved [DataType] to a [QName] with the correct namespace. ModelContext handles
      * both system types (ELM types namespace) and model types (model-specific namespace).
      */
