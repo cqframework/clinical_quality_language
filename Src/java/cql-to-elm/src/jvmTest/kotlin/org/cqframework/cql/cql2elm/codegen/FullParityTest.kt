@@ -73,19 +73,19 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 44/77 pass, 13 skip")
+    @Disabled("Exploratory: 45/77 pass, 13 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
     }
 
-    @Disabled("Exploratory: 8/14 pass")
+    @Disabled("Exploratory: 8/12 pass")
     @TestFactory
     fun fhirR4Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled("Exploratory: 5/28 pass, 1 skip")
+    @Disabled("Exploratory: 13/28 pass, 1 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")

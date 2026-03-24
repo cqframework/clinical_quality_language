@@ -1024,8 +1024,28 @@ class TypeResolver(
     private fun resolveContextType(contextName: String): DataType? =
         modelContext.resolveContextType(contextName)
 
-    /** Resolve the type of a property on a source type (e.g., "birthDatetime" on QDM.Patient). */
+    /**
+     * Resolve the type of a property on a source type.
+     *
+     * Handles dotted paths (e.g., `birthDate.value` on FHIR.Patient) by chaining through
+     * intermediate types: resolve `birthDate` → FHIR.date, then `value` on FHIR.date → System.Date.
+     * This supports the FHIR model's `patientBirthDatePropertyName` which is `birthDate.value`.
+     */
     private fun resolvePropertyType(sourceType: DataType, propertyName: String): DataType? {
+        // Handle dotted paths by resolving each segment through intermediate types
+        if (propertyName.contains('.')) {
+            var currentType: DataType = sourceType
+            for (segment in propertyName.split('.')) {
+                currentType = resolveSimplePropertyType(currentType, segment) ?: return null
+            }
+            return currentType
+        }
+        return resolveSimplePropertyType(sourceType, propertyName)
+    }
+
+    /** Resolve a single (non-dotted) property name on a source type. */
+    @Suppress("ReturnCount")
+    private fun resolveSimplePropertyType(sourceType: DataType, propertyName: String): DataType? {
         if (sourceType is org.hl7.cql.model.ClassType) {
             // Search elements including inherited ones
             var current: DataType? = sourceType
