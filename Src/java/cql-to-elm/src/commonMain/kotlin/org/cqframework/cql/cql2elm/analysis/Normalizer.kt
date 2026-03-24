@@ -74,6 +74,10 @@ import org.hl7.cql.model.IntervalType
  *   both-Date by wrapping the DateTime operand in `ConversionExpression(ToDate)`.
  * - **Interval relation expansion**: `In`/`Contains` with `Interval<Any>` operands get the untyped
  *   interval expanded to match the concrete operand type.
+ * - **Choice narrowing** (TODO): multi-branch choice conversions (Choice<A,B,...> → T where
+ *   multiple alternatives are viable) should be lowered into CaseExpression with Is/As/convert
+ *   arms. Currently, `conversionToSynthetics` returns emptyList() for these; the Normalizer should
+ *   detect them via `OperatorResolution.conversions` and build the Case tree.
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]

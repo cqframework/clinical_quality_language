@@ -182,7 +182,7 @@ class OperatorRegistryTest {
         val conv = resolution.conversions[0]
         assertNotNull(conv, "Conversion at position 0 should not be null")
         assertTrue(conv.isCast, "Should be a cast")
-        // For system types this is a simple compatible cast — ImplicitCast, not ChoiceNarrowing
+        // For system types this is a simple compatible cast — ImplicitCast, not multi-branch
         val synthetics = conversionToSynthetics(conv, registry)
         assertEquals(1, synthetics.size, "Single ImplicitCast")
         assertTrue(synthetics[0] is Synthetic.ImplicitCast, "Compatible cast produces ImplicitCast")
@@ -214,8 +214,10 @@ class OperatorRegistryTest {
     }
 
     @Test
-    fun `multi-branch choice conversion produces ChoiceNarrowing`() {
-        // When multiple choice alternatives match, produce a ChoiceNarrowing with Case branches.
+    fun `multi-branch choice conversion returns empty — Normalizer handles it`() {
+        // Multi-branch choice narrowing is a structural rewrite (Case/Is/As tree), not a
+        // single-node type conversion. conversionToSynthetics returns emptyList(); the
+        // Normalizer will lower these into CaseExpression nodes.
         val intType = registry.type("Integer")
         val strType = registry.type("String")
         val decType = registry.type("Decimal")
@@ -230,19 +232,10 @@ class OperatorRegistryTest {
         choiceConversion.addAlternativeConversion(altConv)
 
         val synthetics = conversionToSynthetics(choiceConversion, registry)
-        assertEquals(1, synthetics.size, "Single ChoiceNarrowing")
-        assertTrue(synthetics[0] is Synthetic.ChoiceNarrowing)
-        val narrowing = synthetics[0] as Synthetic.ChoiceNarrowing
-        assertEquals(2, narrowing.branches.size, "Should have 2 branches")
-
-        // Branch 0: Int → Decimal via ToDecimal
-        assertEquals(intType, narrowing.branches[0].fromType)
-        assertEquals(1, narrowing.branches[0].innerSynthetics.size)
-        assertTrue(narrowing.branches[0].innerSynthetics[0] is Synthetic.OperatorConversion)
-
-        // Branch 1: Str → Decimal via ToDecimalFromString
-        assertEquals(strType, narrowing.branches[1].fromType)
-        assertEquals(1, narrowing.branches[1].innerSynthetics.size)
-        assertTrue(narrowing.branches[1].innerSynthetics[0] is Synthetic.OperatorConversion)
+        assertEquals(
+            0,
+            synthetics.size,
+            "Multi-branch choice returns empty — Normalizer handles it",
+        )
     }
 }

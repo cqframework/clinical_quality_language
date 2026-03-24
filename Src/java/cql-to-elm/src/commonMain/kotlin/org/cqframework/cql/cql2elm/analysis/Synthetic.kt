@@ -59,27 +59,6 @@ sealed interface Synthetic {
         val functionName: String,
         val resultType: DataType,
     ) : Synthetic
-
-    /**
-     * Narrow a choice-typed operand to a specific target type by emitting a Case expression. Each
-     * [Branch] tests the runtime type with Is, casts with As, then applies an inner conversion
-     * (e.g., FHIRHelpers.ToInteger). The else branch is null of [resultType].
-     *
-     * Produced when an operator resolution requires converting a `Choice<A,B,...>` to a concrete
-     * type and multiple choice alternatives are viable conversion paths.
-     *
-     * CQL spec §4.9 Conversion Precedence: when a choice type has multiple equally-tenable
-     * conversions, the translator emits a Case to select at runtime.
-     */
-    data class ChoiceNarrowing(val branches: List<Branch>, val resultType: DataType) : Synthetic {
-        /** One arm of the choice narrowing Case expression. */
-        data class Branch(
-            /** The choice alternative type to test with Is and cast with As. */
-            val fromType: DataType,
-            /** Inner conversions to apply after the As cast (chain, may be empty). */
-            val innerSynthetics: List<Synthetic>,
-        )
-    }
 }
 
 /**
@@ -220,7 +199,6 @@ class SyntheticTable {
                         IntervalType(resultPointType)
                     }
                     is Synthetic.LibraryConversion -> s.resultType
-                    is Synthetic.ChoiceNarrowing -> s.resultType
                 }
         }
         return currentType
@@ -249,16 +227,8 @@ internal fun conversionToSynthetics(
     if (conversion.isCast && conversion.conversion != null && conversion.fromType is ChoiceType) {
         val innerSynthetics = conversionToSynthetics(conversion.conversion, registry)
         if (conversion.hasAlternativeConversions()) {
-            // Multi-branch: emit a Case expression testing each alternative at runtime.
-            val branches = mutableListOf<Synthetic.ChoiceNarrowing.Branch>()
-            branches.add(
-                Synthetic.ChoiceNarrowing.Branch(conversion.conversion.fromType, innerSynthetics)
-            )
-            for (alt in conversion.getAlternativeConversions()) {
-                val altInner = conversionToSynthetics(alt, registry)
-                branches.add(Synthetic.ChoiceNarrowing.Branch(alt.fromType, altInner))
-            }
-            return listOf(Synthetic.ChoiceNarrowing(branches, conversion.toType))
+            // Multi-branch: handled by the Normalizer, not synthetics.
+            return emptyList()
         } else {
             // Single branch: decompose into As(fromType) + inner conversion chain.
             // No Case needed — matches old compiler behavior.
