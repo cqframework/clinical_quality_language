@@ -52,6 +52,7 @@ import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression as ElmExpression
+import org.hl7.elm.r1.Instance
 import org.hl7.elm.r1.Literal as ElmLiteral
 
 /**
@@ -538,6 +539,24 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                     lowClosed = literal.lowerClosed
                     highClosed = literal.upperClosed
                 }
+            }
+            is org.hl7.cql.ast.InstanceLiteral -> {
+                val instance = Instance()
+                literal.type?.let { typeSpec ->
+                    instance.classType = resolveTypeQName(typeSpec.name)
+                }
+                if (children.tupleElements.isNotEmpty()) {
+                    instance.element =
+                        children.tupleElements
+                            .mapIndexed { i, elem ->
+                                org.hl7.elm.r1.InstanceElement().apply {
+                                    name = literal.elements[i].name.value
+                                    value = applySynthetics(expr, Slot.ListElement(i), elem)
+                                }
+                            }
+                            .toMutableList()
+                }
+                instance
             }
             else -> emitLiteral(literal)
         }

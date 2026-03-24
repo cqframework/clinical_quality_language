@@ -518,6 +518,25 @@ class TypeUnifier(
                     recordTargetTypeConversion(expr, Slot.IntervalHigh, literal.upper, pointType)
                 }
             }
+            is org.hl7.cql.ast.InstanceLiteral -> {
+                // Instance element type unification: when the instance type is a ClassType,
+                // check each element's value against the expected property type.
+                val instanceType = typeTable[expr]
+                if (instanceType is org.hl7.cql.model.ClassType) {
+                    literal.elements.forEachIndexed { i, elem ->
+                        val expectedType =
+                            instanceType.elements.firstOrNull { it.name == elem.name.value }?.type
+                        if (expectedType != null) {
+                            recordTargetTypeConversion(
+                                expr,
+                                Slot.ListElement(i),
+                                elem.expression,
+                                expectedType,
+                            )
+                        }
+                    }
+                }
+            }
             else -> {}
         }
     }
