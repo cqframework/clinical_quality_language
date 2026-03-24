@@ -14,6 +14,7 @@ import org.hl7.cql.ast.UnsupportedStatement
 import org.hl7.cql.ast.forEachChildExpression
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
 import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.ParameterRef
 
 /**
  * Emits statement-level constructs (context definitions, expression definitions, function
@@ -91,14 +92,21 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         if (ctx.modelContext.loadedModelNames.isEmpty()) return
 
         try {
-            val retrieve = ctx.buildRetrieveForType(contextName)
-            val singletonFrom = org.hl7.elm.r1.SingletonFrom()
-            singletonFrom.operand = retrieve
+            val paramResolution = ctx.semanticModel.resolveParameter(contextName)
+            val contextExpression =
+                if (paramResolution != null) {
+                    ParameterRef().withName(contextName)
+                } else {
+                    val retrieve = ctx.buildRetrieveForType(contextName)
+                    val singletonFrom = org.hl7.elm.r1.SingletonFrom()
+                    singletonFrom.operand = retrieve
+                    singletonFrom
+                }
 
             val exprDef = ExpressionDef()
             exprDef.name = contextName
             exprDef.context = currentContext
-            exprDef.expression = singletonFrom
+            exprDef.expression = contextExpression
             expressions += exprDef
             emittedExpressions.add(contextName)
         } catch (_: ElmEmitter.UnsupportedNodeException) {

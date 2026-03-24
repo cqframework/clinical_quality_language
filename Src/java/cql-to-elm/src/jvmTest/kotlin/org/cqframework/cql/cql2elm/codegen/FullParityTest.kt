@@ -79,13 +79,13 @@ class FullParityTest {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
     }
 
-    @Disabled("Exploratory: 8/12 pass")
+    @Disabled("Exploratory: 9/12 pass")
     @TestFactory
     fun fhirR4Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled("Exploratory: 13/28 pass, 1 skip")
+    @Disabled("Exploratory: 14/28 pass, 1 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")
@@ -284,6 +284,8 @@ class FullParityTest {
                     "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
                 "MultiSourceQuery" to
                     "New pipeline preserves expressions with type errors; legacy replaces with Null",
+                "RecursiveFunctions" to
+                    "New pipeline correctly resolves recursive function types; legacy emits Null body",
             )
     }
 }

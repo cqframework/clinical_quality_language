@@ -57,7 +57,9 @@ import org.hl7.cql.model.ListType
  * - Function bodies with nested errors (entire body flagged via [ExpressionChecker.hasNestedError])
  * - Invalid casts (e.g., `List<T>` → scalar `As` expression)
  * - Unresolved binary operators (both operands typed but no matching operator overload)
+ * - Unresolved unary operators (operand typed but no matching operator overload)
  * - Unresolved interval relations (e.g., `Includes` on non-list/non-interval types)
+ * - Invalid quantity literals (e.g., bad unit — no resolved type)
  * - Invalid sort expressions (sort on non-comparable types such as `Interval`)
  *
  * ## Adding a new validation
@@ -203,6 +205,7 @@ private class ExpressionChecker(
 
         if (model[expr] != null) return
         if (model.getOperatorResolution(expr) != null) return
+        if (model.getFunctionCallResolution(expr) != null) return
 
         val name = expr.function.value
         val userFuncs = symbolTable.resolveFunctions(name)
@@ -211,16 +214,15 @@ private class ExpressionChecker(
             val anyArityMatch = userFuncs.any { it.operands.size == callArity }
             if (!anyArityMatch) {
                 model.addError(expr)
-            } else if (model[expr] == null) {
-                model.addError(expr)
             }
+            // If a matching-arity user function exists, it's valid even if the type
+            // couldn't be inferred (e.g., recursive functions with circular type deps).
             return
         }
 
-        val argTypes = expr.arguments.mapNotNull { model[it] }
-        if (argTypes.size == expr.arguments.size) {
-            model.addError(expr)
-        }
+        // No user function found, no operator resolution, no function call resolution.
+        // This is an unresolved call — flag it.
+        model.addError(expr)
     }
 
     /** Check if a function call's target resolves to an included library alias. */
@@ -242,7 +244,13 @@ private class ExpressionChecker(
 
     // --- Default handlers: children are pre-folded, nothing more to do ---
 
-    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Unit>) {} // leaf
+    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Unit>) {
+        // Flag quantity literals (and ratio literals containing quantities) with no resolved type.
+        // Legacy emits Null for invalid quantities (e.g., bad unit).
+        if (model[expr] == null && expr.literal is org.hl7.cql.ast.QuantityLiteral) {
+            model.addError(expr)
+        }
+    }
 
     override fun onExternalConstant(expr: ExternalConstantExpression) {} // leaf
 
@@ -257,7 +265,15 @@ private class ExpressionChecker(
         }
     }
 
-    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Unit) {}
+    override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Unit) {
+        // Flag unary operators that couldn't resolve (operand has a type but operator doesn't).
+        if (model[expr] == null) {
+            val operandType = model[expr.operand]
+            if (operandType != null) {
+                model.addError(expr)
+            }
+        }
+    }
 
     override fun onBooleanTest(expr: BooleanTestExpression, operand: Unit) {}
 
