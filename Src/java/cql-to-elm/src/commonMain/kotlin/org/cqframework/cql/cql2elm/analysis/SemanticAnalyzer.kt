@@ -452,10 +452,21 @@ sealed interface Resolution {
     data class ConceptRef(val definition: ConceptDefinition) : Resolution
 
     /**
-     * A qualified identifier (e.g., `Q.item` in a query source) resolved as a property access on a
-     * query alias. Emitted as `Property(scope=alias, path=property)`.
+     * A qualified identifier (e.g., `Q.item` or `concept.coding` in a query source) resolved as a
+     * property access on a reference. The [qualifierKind] determines how the qualifier is emitted:
+     * aliases use ELM `scope`, operands use `source` with OperandRef.
      */
-    data class ScopedProperty(val scope: String, val path: String, val type: DataType) : Resolution
+    data class ScopedProperty(
+        val scope: String,
+        val path: String,
+        val type: DataType,
+        val qualifierKind: QualifierKind = QualifierKind.ALIAS,
+    ) : Resolution {
+        enum class QualifierKind {
+            ALIAS,
+            OPERAND,
+        }
+    }
 
     /** The identifier resolved to a library alias introduced by an `include` statement. */
     data class IncludeRef(val alias: String, val definition: IncludeDefinition) : Resolution

@@ -549,31 +549,21 @@ class TypeResolver(
         val qualifier = parts.first()
         val property = parts.drop(1).joinToString(".")
 
-        // Check if qualifier is a query alias
-        scope.resolveInQueryScopes(qualifier)?.let { resolution ->
-            if (resolution is Resolution.AliasRef) {
-                val propType = resolvePropertyType(resolution.type, property)
-                val scopedResolution =
-                    Resolution.ScopedProperty(
-                        scope = qualifier,
-                        path = property,
-                        type = propType ?: return null,
-                    )
-                typeTable.setIdentifierResolution(expression, scopedResolution)
-                return propType
-            }
-
-            if (resolution is Resolution.QueryLetRef) {
-                val propType = resolvePropertyType(resolution.type, property)
-                val scopedResolution =
-                    Resolution.ScopedProperty(
-                        scope = qualifier,
-                        path = property,
-                        type = propType ?: return null,
-                    )
-                typeTable.setIdentifierResolution(expression, scopedResolution)
-                return propType
-            }
+        // Try resolving the qualifier through scoped paths (query aliases, operands).
+        // If it resolves to a typed reference, treat the rest as a property chain.
+        val resolved = resolveQualifierType(qualifier)
+        if (resolved != null) {
+            val (qualifierType, qualifierKind) = resolved
+            val propType = resolvePropertyType(qualifierType, property) ?: return null
+            val scopedResolution =
+                Resolution.ScopedProperty(
+                    scope = qualifier,
+                    path = property,
+                    type = propType,
+                    qualifierKind = qualifierKind,
+                )
+            typeTable.setIdentifierResolution(expression, scopedResolution)
+            return propType
         }
 
         // Check if qualifier is a library include (e.g., FHIRHelpers.SomeExpression)
@@ -582,7 +572,36 @@ class TypeResolver(
             return null
         }
 
-        // Unresolved — qualifier is not a query alias or library include
+        return null
+    }
+
+    /**
+     * Try to resolve a qualifier name as a query alias/let or function operand. Returns (type,
+     * kind) if resolved, null otherwise. Conservative: only handles scoped references (alias, let,
+     * operand) where the qualifier is unambiguously a local binding, not
+     * expression/parameter/context refs which use different ELM emission patterns in the legacy
+     * translator.
+     */
+    @Suppress("ReturnCount")
+    private fun resolveQualifierType(
+        qualifier: String
+    ): Pair<DataType, Resolution.ScopedProperty.QualifierKind>? {
+        // Query scope (alias or let)
+        scope.resolveInQueryScopes(qualifier)?.let { resolution ->
+            return when (resolution) {
+                is Resolution.AliasRef ->
+                    resolution.type to Resolution.ScopedProperty.QualifierKind.ALIAS
+                is Resolution.QueryLetRef ->
+                    resolution.type to Resolution.ScopedProperty.QualifierKind.ALIAS
+                else -> null
+            }
+        }
+
+        // Function operand (e.g., concept.coding inside function body)
+        scope.resolveOperand(qualifier)?.let {
+            return it to Resolution.ScopedProperty.QualifierKind.OPERAND
+        }
+
         return null
     }
 

@@ -36,8 +36,12 @@ internal fun EmissionContext.emitIdentifierExpression(
         is Resolution.QueryLetRef -> QueryLetRef().withName(resolution.name)
         is Resolution.ScopedProperty ->
             Property().apply {
-                scope = resolution.scope
                 path = resolution.path
+                when (resolution.qualifierKind) {
+                    Resolution.ScopedProperty.QualifierKind.ALIAS -> scope = resolution.scope
+                    Resolution.ScopedProperty.QualifierKind.OPERAND ->
+                        source = OperandRef().withName(resolution.scope)
+                }
             }
         is Resolution.CodeSystemRef ->
             CodeSystemRef().withName(unescapeCql(resolution.definition.name.value))
