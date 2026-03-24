@@ -331,7 +331,10 @@ class TypeResolver(
 
     override fun onIs(expr: IsExpression, operand: DataType?): DataType? = inferIsType(expr)
 
-    override fun onAs(expr: AsExpression, operand: DataType?): DataType? = inferAsType(expr)
+    override fun onAs(expr: AsExpression, operand: DataType?): DataType? {
+        val rawType = inferAsType(expr) ?: return null
+        return applyModelConversion(expr, Slot.Operand, rawType) ?: rawType
+    }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: DataType?): DataType? =
         resolveTypeSpecifier(expr.type)
@@ -350,29 +353,7 @@ class TypeResolver(
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
         val rawType = resolvePropertyType(target, expr.property.value) ?: return null
-        // Check for implicit model conversion (e.g., FHIR.dateTime → System.DateTime via
-        // FHIRHelpers.ToDateTime). When a property yields a model type that has an implicit
-        // conversion to a system type, record the conversion as a synthetic so the emitter
-        // wraps the property access in a FunctionRef. Return the converted type so downstream
-        // phases (Normalizer, TypeUnifier) see the system type.
-        val conversions = operatorRegistry.conversionMap.getConversions(rawType)
-        val modelConversion =
-            conversions.firstOrNull {
-                it.isImplicit &&
-                    it.operator != null &&
-                    it.operator.libraryName != null &&
-                    it.operator.libraryName != "System"
-            }
-        if (modelConversion != null) {
-            val op = modelConversion.operator!!
-            syntheticTable?.addIfAbsent(
-                expr,
-                Slot.PropertyResult,
-                Synthetic.LibraryConversion(op.libraryName!!, op.name, modelConversion.toType),
-            )
-            return modelConversion.toType
-        }
-        return rawType
+        return applyModelConversion(expr, Slot.PropertyResult, rawType) ?: rawType
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =
@@ -1006,5 +987,28 @@ class TypeResolver(
             return sourceType.elements.firstOrNull { it.name == propertyName }?.type
         }
         return null
+    }
+
+    /**
+     * Check if [rawType] has an implicit model conversion (e.g., FHIR.dateTime → System.DateTime
+     * via FHIRHelpers.ToDateTime). If so, record a [Synthetic.LibraryConversion] on [expr]/[slot]
+     * and return the converted type. Returns null if no model conversion applies.
+     */
+    private fun applyModelConversion(expr: Expression, slot: Slot, rawType: DataType): DataType? {
+        val conversions = operatorRegistry.conversionMap.getConversions(rawType)
+        val mc =
+            conversions.firstOrNull {
+                it.isImplicit &&
+                    it.operator != null &&
+                    it.operator.libraryName != null &&
+                    it.operator.libraryName != "System"
+            } ?: return null
+        val op = mc.operator!!
+        syntheticTable?.addIfAbsent(
+            expr,
+            slot,
+            Synthetic.LibraryConversion(op.libraryName!!, op.name, mc.toType),
+        )
+        return mc.toType
     }
 }

@@ -588,7 +588,10 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
 
     override fun onIs(expr: IsExpression, operand: ElmExpression) = emitIsExpression(expr, operand)
 
-    override fun onAs(expr: AsExpression, operand: ElmExpression) = emitAsExpression(expr, operand)
+    override fun onAs(expr: AsExpression, operand: ElmExpression): ElmExpression {
+        val result = emitAsExpression(expr, operand)
+        return applySynthetics(expr, Slot.Operand, result)
+    }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: ElmExpression) =
         emitImplicitCastExpression(expr, operand)
