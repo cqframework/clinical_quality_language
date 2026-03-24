@@ -71,9 +71,12 @@ internal fun emitSystemFunction(functionName: String, args: List<ElmExpression>)
         "Round" -> emitRound(args)
 
         // Date/time zero-arg functions
-        "Now" -> emitNullaryArg(args) { Now() }
-        "Today" -> emitNullaryArg(args) { Today() }
-        "TimeOfDay" -> emitNullaryArg(args) { TimeOfDay() }
+        "Now",
+        "now" -> emitNullaryArg(args) { Now() }
+        "Today",
+        "today" -> emitNullaryArg(args) { Today() }
+        "TimeOfDay",
+        "timeOfDay" -> emitNullaryArg(args) { TimeOfDay() }
 
         // Date/time constructor functions
         "DateTime" -> emitDateTimeConstructor(args)
