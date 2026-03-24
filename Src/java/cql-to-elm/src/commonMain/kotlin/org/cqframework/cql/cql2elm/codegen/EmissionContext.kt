@@ -143,12 +143,20 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
      * models. Falls back to [typesNamespace] if no model match is found.
      */
     internal fun resolveTypeQName(name: String): QName {
-        // System types (Integer, String, Code, etc.) live in the ELM types namespace
+        // Model types take precedence over system types for unqualified names.
+        // This ensures FHIR.CodeSystem is resolved as {http://hl7.org/fhir}CodeSystem
+        // when a FHIR model is loaded, not as {urn:hl7-org:elm-types:r1}CodeSystem.
+        val modelQName = modelContext.typeNameToQName(name)
+        if (modelQName.namespaceURI != modelContext.typesNamespace) {
+            // Found in a non-system model — use the model namespace
+            return modelQName
+        }
+        // System type or not found in any model
         val systemType = operatorRegistry.systemModel.resolveTypeName(name)
         if (systemType != null) {
             return dataTypeToQName(systemType)
         }
-        return modelContext.typeNameToQName(name)
+        return modelQName
     }
 
     /**
@@ -159,8 +167,13 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     internal fun resolveTypeQName(qualifiedName: org.hl7.cql.ast.QualifiedIdentifier): QName {
         if (qualifiedName.parts.size > 1) {
             val modelQualifier = qualifiedName.parts.first()
-            // Remaining parts form the type name (e.g., ["Bundle", "Entry"] → "Bundle.Entry")
             val typeName = qualifiedName.parts.drop(1).joinToString(".")
+            // Explicit System qualifier → always resolve in system namespace
+            if (modelQualifier == "System") {
+                val systemType = operatorRegistry.systemModel.resolveTypeName(typeName)
+                if (systemType != null) return dataTypeToQName(systemType)
+                return QName(modelContext.typesNamespace, typeName)
+            }
             val model = modelContext.resolveModelByName(modelQualifier)
             if (model != null) {
                 val modelUrl = model.modelInfo.targetUrl ?: model.modelInfo.url!!
