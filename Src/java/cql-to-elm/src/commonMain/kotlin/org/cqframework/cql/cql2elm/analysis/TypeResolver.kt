@@ -133,13 +133,15 @@ class TypeResolver(
      * handles both system types (Integer, String) and model types (Element, Extension).
      */
     internal fun resolveNamedType(name: String): DataType? {
-        // Try system type first
+        // Model types take precedence over system types for unqualified names when a
+        // non-system model is loaded. This ensures FHIR.Ratio is resolved as FHIR.Ratio
+        // (not System.Ratio) when a FHIR model is active.
+        val modelType = modelContext.resolveTypeName(name)
+        if (modelType != null) return modelType
         try {
             return operatorRegistry.type(name)
-        } catch (_: IllegalArgumentException) {
-            // Not a system type — fall through to model resolution
-        }
-        return modelContext.resolveTypeName(name)
+        } catch (_: IllegalArgumentException) {}
+        return null
     }
 
     fun resolve(library: Library, symbolTable: SymbolTable): TypeTable {
@@ -233,12 +235,13 @@ class TypeResolver(
                     // Qualified: first parts are model name, last is type name
                     val modelName = parts.dropLast(1).joinToString(".")
                     val typeName = parts.last()
-                    // Try system type first for System-qualified names
-                    try {
-                        operatorRegistry.type(typeName).let {
-                            return it
-                        }
-                    } catch (_: IllegalArgumentException) {}
+                    if (modelName == "System") {
+                        // Explicit System qualifier → always resolve in system model
+                        try {
+                            return operatorRegistry.type(typeName)
+                        } catch (_: IllegalArgumentException) {}
+                    }
+                    // Try model resolution first, then system
                     modelContext.resolveModelType(modelName, typeName)
                 }
             }
@@ -659,8 +662,6 @@ class TypeResolver(
         val resolution =
             operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight)) ?: return null
         // Binary operators don't allow promotion/demotion (list↔scalar, interval↔scalar).
-        // The OperatorMap may return list/interval demotions because the Conversion class
-        // hardcodes isImplicit=true for them. Reject those resolutions here.
         if (
             resolution.hasConversions() &&
                 resolution.conversions.any { it != null && it.isStructuralChange }
