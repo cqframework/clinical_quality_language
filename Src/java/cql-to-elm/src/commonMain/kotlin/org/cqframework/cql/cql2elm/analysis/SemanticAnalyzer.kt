@@ -41,25 +41,25 @@ import org.hl7.cql.model.DataType
  * 4. **INFER → PLAN convergence loop** (max 2 iterations):
  *     - *INFER*: [TypeResolver] walks the AST, infers types, resolves operators and identifiers,
  *       populating a [TypeTable]. Reads the [ConversionTable] for effective types of operands
- *       (e.g., a null literal that has been implicitly cast to Integer). As a side effect,
- *       records operator-resolution-derived conversions (e.g., ToDecimal on a left operand)
- *       into the [ConversionTable] — these are conversions intrinsic to overload resolution,
- *       discovered at the point where the operator is resolved.
+ *       (e.g., a null literal that has been implicitly cast to Integer). As a side effect, records
+ *       operator-resolution-derived conversions (e.g., ToDecimal on a left operand) into the
+ *       [ConversionTable] — these are conversions intrinsic to overload resolution, discovered at
+ *       the point where the operator is resolved.
  *     - *PLAN*: [ConversionPlanner] discovers cross-expression implicit conversions (branch
- *       unification, null wrapping, choice wrapping, interval bound propagation, DateTime
- *       null-arg conversions) and records them in the [ConversionTable] without mutating the AST.
- *     - The loop exists because type inference and conversion planning are mutually dependent:
- *       a new conversion may change the effective type of an operand, which may change operator
+ *       unification, null wrapping, choice wrapping, interval bound propagation, DateTime null-arg
+ *       conversions) and records them in the [ConversionTable] without mutating the AST.
+ *     - The loop exists because type inference and conversion planning are mutually dependent: a
+ *       new conversion may change the effective type of an operand, which may change operator
  *       resolution, which may expose new conversion needs. Convergence is reached when no new
  *       conversions are inserted.
  * 5. **Semantic validation** — [SemanticValidator] flags errors (unresolved identifiers, undeclared
  *    functions, invalid casts, etc.) in the [SemanticModel].
- * 6. **Lowering** — [Lowering] performs type-directed structural lowering (phrase → operator
- *    trees, concat coalescing, interval expansion, heterogeneous flatten). Produces a new AST with
+ * 6. **Lowering** — [Lowering] performs type-directed structural lowering (phrase → operator trees,
+ *    concat coalescing, interval expansion, heterogeneous flatten). Produces a new AST with
  *    rewritten parent nodes.
- * 7. **Post-lowering re-collection and re-typing** — new AST nodes created by lowering
- *    need symbols and types. The post-lowering [TypeTable] is merged with the cumulative
- *    pre-lowering table so that unchanged expressions keep their types.
+ * 7. **Post-lowering re-collection and re-typing** — new AST nodes created by lowering need symbols
+ *    and types. The post-lowering [TypeTable] is merged with the cumulative pre-lowering table so
+ *    that unchanged expressions keep their types.
  *
  * ## Result
  *
@@ -450,6 +450,12 @@ sealed interface Resolution {
     data class CodeRef(val definition: CodeDefinition) : Resolution
 
     data class ConceptRef(val definition: ConceptDefinition) : Resolution
+
+    /**
+     * A qualified identifier (e.g., `Q.item` in a query source) resolved as a property access on a
+     * query alias. Emitted as `Property(scope=alias, path=property)`.
+     */
+    data class ScopedProperty(val scope: String, val path: String, val type: DataType) : Resolution
 
     /** The identifier resolved to a library alias introduced by an `include` statement. */
     data class IncludeRef(val alias: String, val definition: IncludeDefinition) : Resolution

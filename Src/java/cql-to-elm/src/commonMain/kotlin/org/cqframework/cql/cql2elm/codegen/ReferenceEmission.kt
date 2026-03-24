@@ -11,6 +11,7 @@ import org.hl7.elm.r1.Expression as ElmExpression
 import org.hl7.elm.r1.ExpressionRef
 import org.hl7.elm.r1.OperandRef
 import org.hl7.elm.r1.ParameterRef
+import org.hl7.elm.r1.Property
 import org.hl7.elm.r1.QueryLetRef
 import org.hl7.elm.r1.ValueSetRef
 
@@ -20,6 +21,7 @@ import org.hl7.elm.r1.ValueSetRef
  * [QueryLetRef], or a terminology reference ([CodeSystemRef], [ValueSetRef], [CodeRef],
  * [ConceptRef]).
  */
+@Suppress("CyclomaticComplexMethod")
 internal fun EmissionContext.emitIdentifierExpression(
     expression: IdentifierExpression
 ): ElmExpression {
@@ -32,6 +34,11 @@ internal fun EmissionContext.emitIdentifierExpression(
         is Resolution.OperandRef -> OperandRef().withName(resolution.name)
         is Resolution.AliasRef -> AliasRef().withName(resolution.name)
         is Resolution.QueryLetRef -> QueryLetRef().withName(resolution.name)
+        is Resolution.ScopedProperty ->
+            Property().apply {
+                scope = resolution.scope
+                path = resolution.path
+            }
         is Resolution.CodeSystemRef ->
             CodeSystemRef().withName(unescapeCql(resolution.definition.name.value))
         is Resolution.ValueSetRef ->

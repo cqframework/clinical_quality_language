@@ -20,6 +20,7 @@
     <ID>CyclomaticComplexMethod:IntervalOperatorEmission.kt$private fun EmissionContext.emitIncludesPhrase( phrase: IncludesIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>CyclomaticComplexMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
     <ID>CyclomaticComplexMethod:QueryTypeInference.kt$@Suppress("ReturnCount") internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?</ID>
+    <ID>CyclomaticComplexMethod:ReferenceEmission.kt$internal fun EmissionContext.emitIdentifierExpression( expression: IdentifierExpression ): ElmExpression</ID>
     <ID>CyclomaticComplexMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>CyclomaticComplexMethod:SemanticAnalyzer.kt$SymbolCollector$fun collect(library: Library): SymbolTable</ID>
     <ID>CyclomaticComplexMethod:SemanticValidator.kt$ExpressionChecker$private fun validateQuery(expr: QueryExpression)</ID>
@@ -30,16 +31,17 @@
     <ID>LargeClass:Lowering.kt$Lowering : ExpressionFold</ID>
     <ID>LargeClass:TypeResolver.kt$TypeResolver : ExpressionFold</ID>
     <ID>LongMethod:FunctionEmission.kt$@Suppress("CyclomaticComplexMethod") internal fun EmissionContext.emitFunctionCall( expression: FunctionCallExpression, targetElm: ElmExpression?, rawArgs: List&lt;ElmExpression>, ): ElmExpression</ID>
+    <ID>LongMethod:ImplicitConversion.kt$internal fun conversionToImplicits( conversion: Conversion, registry: OperatorRegistry, ): List&lt;ImplicitConversion></ID>
     <ID>LongMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
     <ID>LongMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>LongMethod:SemanticAnalyzer.kt$SemanticAnalyzer$@Suppress("MagicNumber") fun analyze(library: Library): Result</ID>
+    <ID>LongMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount") private fun inferIdentifierType(expression: IdentifierExpression): DataType?</ID>
     <ID>LongMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount", "CyclomaticComplexMethod") private fun inferFunctionCallType( expression: FunctionCallExpression, argTypes: List&lt;DataType?>, ): DataType?</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( expr: IntervalRelationExpression, operator: org.hl7.cql.ast.MembershipOperator, left: Expression, right: Expression, precision: String?, proper: Boolean, )</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( left: Expression, right: Expression, leftType: DataType?, rightType: DataType?, leftBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, rightBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, )</ID>
     <ID>LongParameterList:SemanticModel.kt$SemanticModel$( internal val symbolTable: SymbolTable, internal val typeTable: TypeTable, val operatorRegistry: OperatorRegistry, val options: CqlCompilerOptions? = null, /** Expressions flagged with semantic errors. Codegen emits Null for these. */ internal val errors: MutableSet&lt;Expression> = mutableSetOf(), /** Side table of implicit conversions keyed by parent expression + slot. */ val conversionTable: ConversionTable = ConversionTable(), /** Model context for type/QName resolution. Passed to codegen. */ val modelContext: ModelContext = ModelContext.systemOnly(), )</ID>
     <ID>LoopWithTooManyJumpStatements:TypeResolver.kt$TypeResolver$for</ID>
     <ID>MagicNumber:ConversionPlanner.kt$ConversionPlanner$7</ID>
-    <ID>MaxLineLength:ConversionPlanner.kt$ConversionPlanner$*</ID>
     <ID>NestedBlockDepth:CollectionOperatorEmission.kt$internal fun EmissionContext.emitMembership( expression: MembershipExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>NestedBlockDepth:ConversionPlanner.kt$ConversionPlanner$@Suppress("CyclomaticComplexMethod") private fun recordDateTimeNullArgConversions( functionName: String, expr: FunctionCallExpression, )</ID>
     <ID>NestedBlockDepth:IntervalOperatorEmission.kt$private fun EmissionContext.emitIncludedInPhrase( phrase: IncludedInIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
@@ -79,6 +81,7 @@
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun findCommonTypeWithConversions(types: List&lt;DataType>): DataType</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun inferCaseType( expression: CaseExpression, cases: List&lt;CaseChildren&lt;DataType?>>, elseType: DataType?, ): DataType?</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun inferQualifiedIdentifierType( expression: IdentifierExpression, parts: List&lt;String>, ): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun resolveLibraryFunctionCall( expression: FunctionCallExpression, argTypes: List&lt;DataType>, ): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun resolvePropertyType(sourceType: DataType, propertyName: String): DataType?</ID>
     <ID>TooManyFunctions:ModelContext.kt$ModelContext</ID>

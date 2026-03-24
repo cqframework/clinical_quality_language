@@ -74,10 +74,6 @@ import org.hl7.cql.model.IntervalType
  *   both-Date by wrapping the DateTime operand in `ConversionExpression(ToDate)`.
  * - **Interval relation expansion**: `In`/`Contains` with `Interval<Any>` operands get the untyped
  *   interval expanded to match the concrete operand type.
- * - **Choice narrowing** (TODO): multi-branch choice conversions (Choice<A,B,...> → T where
- *   multiple alternatives are viable) should be lowered into CaseExpression with Is/As/convert
- *   multiple alternatives are viable) should be lowered into CaseExpression with Is/As/convert
- *   arms. Currently, `conversionToImplicits` returns emptyList() for these; the Lowering should
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
@@ -90,8 +86,8 @@ import org.hl7.cql.model.IntervalType
  *    normalized recursively by the catamorphism).
  * 2. Return the rewritten [Expression]. If unchanged, return the original expression instance
  *    (identity check `===` is used to avoid unnecessary copy).
- * 3. Call [ConversionTable.transfer] via [rewrite] if the original expression had conversions — this
- *    ensures the [EmissionContext] can find them on the replacement node.
+ * 3. Call [ConversionTable.transfer] via [rewrite] if the original expression had conversions —
+ *    this ensures the [EmissionContext] can find them on the replacement node.
  *
  * ## Post-normalization re-typing
  *

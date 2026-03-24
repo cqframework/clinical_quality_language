@@ -14,13 +14,13 @@ package org.hl7.cql.ast
  * AST node.
  *
  * ## Concrete implementors
- * | Phase               | `R`             | Purpose                                         |
- * |---------------------|-----------------|-------------------------------------------------|
- * | `TypeResolver`      | `DataType?`     | Infer types, populate [TypeTable]               |
+ * | Phase               | `R`             | Purpose                                          |
+ * |---------------------|-----------------|--------------------------------------------------|
+ * | `TypeResolver`      | `DataType?`     | Infer types, populate [TypeTable]                |
  * | `ConversionPlanner` | `Unit`          | Record implicit conversions in [ConversionTable] |
- * | `SemanticValidator` | `Unit`          | Detect semantic errors                          |
- * | `Lowering`          | `Expression`    | Lower phrases to operators                      |
- * | `EmissionContext`   | `ElmExpression` | Convert CQL AST to ELM                          |
+ * | `SemanticValidator` | `Unit`          | Detect semantic errors                           |
+ * | `Lowering`          | `Expression`    | Lower phrases to operators                       |
+ * | `EmissionContext`   | `ElmExpression` | Convert CQL AST to ELM                           |
  *
  * ## Extending: New Expression Types
  * 1. Add a sealed subtype in `Expressions.kt` (data class implementing [Expression]).

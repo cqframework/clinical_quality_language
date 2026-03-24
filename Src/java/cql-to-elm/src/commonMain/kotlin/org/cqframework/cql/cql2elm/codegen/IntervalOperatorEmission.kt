@@ -138,8 +138,8 @@ private fun EmissionContext.emitIncludesPhrase(
 
 /**
  * Emit an includedIn phrase. Non-proper point cases are normalized to MembershipExpression(IN) by
- * Lowering. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
- * non-point cases (IncludedIn).
+ * Lowering. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper non-point
+ * cases (IncludedIn).
  */
 private fun EmissionContext.emitIncludedInPhrase(
     phrase: IncludedInIntervalPhrase,
@@ -174,8 +174,8 @@ private fun EmissionContext.emitIncludedInPhrase(
 
 /**
  * Emit a before/after phrase. Boundary application, point-interval promotion, and direction-based
- * interval extraction are handled by [Lowering] — operands arrive fully processed. This handler
- * is purely structural: map the phrase to the correct ELM operator and apply quantity offset
+ * interval extraction are handled by [Lowering] — operands arrive fully processed. This handler is
+ * purely structural: map the phrase to the correct ELM operator and apply quantity offset
  * arithmetic.
  */
 @Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")

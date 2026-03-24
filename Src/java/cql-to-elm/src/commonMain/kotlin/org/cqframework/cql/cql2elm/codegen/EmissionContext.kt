@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm.codegen
 
-import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
-import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.analysis.ConversionSlot
 import org.cqframework.cql.cql2elm.analysis.ImplicitConversion
+import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
+import org.cqframework.cql.cql2elm.analysis.SemanticModel
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
@@ -78,10 +78,10 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  *
  * Each `on*` handler wraps child ELM nodes with [applyConversions] before passing them to the
  * emission function. [applyConversions] looks up the [ConversionTable] for implicit conversions
- * recorded by [ConversionPlanner][org.cqframework.cql.cql2elm.analysis.ConversionPlanner] at a given `(parent,
- * ConversionSlot)` and wraps the ELM expression in the appropriate conversion nodes (operator conversions,
- * implicit casts, list/interval conversions). This keeps the AST immutable — type coercions are
- * applied only at code-generation time.
+ * recorded by [ConversionPlanner][org.cqframework.cql.cql2elm.analysis.ConversionPlanner] at a
+ * given `(parent, ConversionSlot)` and wraps the ELM expression in the appropriate conversion nodes
+ * (operator conversions, implicit casts, list/interval conversions). This keeps the AST immutable —
+ * type coercions are applied only at code-generation time.
  *
  * ## Extension file convention
  *
@@ -241,11 +241,15 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     }
 
     /**
-     * Apply any implicit conversions recorded in the [ConversionTable] for the given parent/slot. Wraps the
-     * ELM expression in the appropriate ELM conversion nodes.
+     * Apply any implicit conversions recorded in the [ConversionTable] for the given parent/slot.
+     * Wraps the ELM expression in the appropriate ELM conversion nodes.
      */
     @Suppress("CyclomaticComplexMethod")
-    fun applyConversions(parent: Expression, slot: ConversionSlot, elm: ElmExpression): ElmExpression {
+    fun applyConversions(
+        parent: Expression,
+        slot: ConversionSlot,
+        elm: ElmExpression,
+    ): ElmExpression {
         val conversions = semanticModel.conversionTable.get(parent, slot)
         var result = elm
         for (s in conversions) {
@@ -282,18 +286,16 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     }
 
     /**
-     * Emit a Case expression for choice type narrowing. Each branch tests the runtime type of the
-     * operand, casts it with As, and applies the inner conversion chain. The else branch is a typed
-     * null.
-     *
-     * Only produced for multi-branch narrowing (analysis decomposes single-branch into sequential
-     * conversions). Matches the legacy translator's convertExpression Case emission.
+     * Apply a single [ImplicitConversion] to an expression. Factored out of [applyConversions] for
+     * reuse.
      */
-
-    /** Apply a single [ImplicitConversion] to an expression. Factored out of [applyConversions] for reuse. */
-    private fun applySingleConversion(elm: ElmExpression, conversion: ImplicitConversion): ElmExpression =
+    private fun applySingleConversion(
+        elm: ElmExpression,
+        conversion: ImplicitConversion,
+    ): ElmExpression =
         when (conversion) {
-            is ImplicitConversion.OperatorConversion -> createConversionElm(conversion.operatorName, elm)
+            is ImplicitConversion.OperatorConversion ->
+                createConversionElm(conversion.operatorName, elm)
             is ImplicitConversion.ImplicitCast -> emitImplicitCast(elm, conversion.targetType)
             is ImplicitConversion.ListConversion ->
                 emitListConversionQuery(
@@ -301,11 +303,55 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                     conversion.innerOperatorName,
                     conversion.innerLibraryName,
                 )
-            is ImplicitConversion.ListDemotion -> emitListDemotionQuery(elm, conversion.targetElementType)
+            is ImplicitConversion.ListDemotion ->
+                emitListDemotionQuery(elm, conversion.targetElementType)
             is ImplicitConversion.IntervalConversion ->
-                emitIntervalConversion(elm, conversion.innerOperatorName, conversion.innerLibraryName)
+                emitIntervalConversion(
+                    elm,
+                    conversion.innerOperatorName,
+                    conversion.innerLibraryName,
+                )
             is ImplicitConversion.LibraryConversion ->
                 emitLibraryFunctionRef(conversion.libraryName, conversion.functionName, elm)
+            is ImplicitConversion.ChoiceNarrowing -> emitChoiceNarrowing(elm, conversion)
+        }
+
+    /**
+     * Emit a Case expression for multi-branch choice narrowing. Each branch tests the runtime type
+     * of the operand with Is, casts with As, then applies the inner conversion chain. The else
+     * branch is a typed Null.
+     */
+    private fun emitChoiceNarrowing(
+        expression: ElmExpression,
+        narrowing: ImplicitConversion.ChoiceNarrowing,
+    ): ElmExpression {
+        val caseExpr = org.hl7.elm.r1.Case()
+        for (branch in narrowing.branches) {
+            val isExpr = emitIsTest(expression, branch.fromType)
+            var thenExpr: ElmExpression = emitImplicitCast(expression, branch.fromType)
+            for (inner in branch.innerConversions) {
+                thenExpr = applySingleConversion(thenExpr, inner)
+            }
+            caseExpr.caseItem.add(
+                org.hl7.elm.r1.CaseItem().apply {
+                    `when` = isExpr
+                    then = thenExpr
+                }
+            )
+        }
+        caseExpr.`else` = org.hl7.elm.r1.Null()
+        return caseExpr
+    }
+
+    /** Emit an Is(expression, type) test. */
+    private fun emitIsTest(expression: ElmExpression, type: DataType): ElmExpression =
+        org.hl7.elm.r1.Is().apply {
+            operand = expression
+            if (type is org.hl7.cql.model.SimpleType || type is org.hl7.cql.model.ClassType) {
+                isType = dataTypeToQName(type)
+            } else {
+                isTypeSpecifier = dataTypeToTypeSpecifier(type)
+            }
         }
 
     /** Emit Coalesce(expression, '') wrapping for CONCAT null-coalescing. */
@@ -549,9 +595,14 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             }
             is org.hl7.cql.ast.IntervalLiteral -> {
                 org.hl7.elm.r1.Interval().apply {
-                    low = children.intervalLow?.let { applyConversions(expr, ConversionSlot.IntervalLow, it) }
+                    low =
+                        children.intervalLow?.let {
+                            applyConversions(expr, ConversionSlot.IntervalLow, it)
+                        }
                     high =
-                        children.intervalHigh?.let { applyConversions(expr, ConversionSlot.IntervalHigh, it) }
+                        children.intervalHigh?.let {
+                            applyConversions(expr, ConversionSlot.IntervalHigh, it)
+                        }
                     lowClosed = literal.lowerClosed
                     highClosed = literal.upperClosed
                 }
@@ -567,7 +618,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                             .mapIndexed { i, elem ->
                                 org.hl7.elm.r1.InstanceElement().apply {
                                     name = literal.elements[i].name.value
-                                    value = applyConversions(expr, ConversionSlot.ListElement(i), elem)
+                                    value =
+                                        applyConversions(expr, ConversionSlot.ListElement(i), elem)
                                 }
                             }
                             .toMutableList()
@@ -627,7 +679,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             comparand,
             cases.mapIndexed { i, c ->
                 CaseChildren(
-                    condition = applyConversions(expr, ConversionSlot.CaseCondition(i), c.condition),
+                    condition =
+                        applyConversions(expr, ConversionSlot.CaseCondition(i), c.condition),
                     result = applyConversions(expr, ConversionSlot.CaseBranch(i), c.result),
                 )
             },
@@ -658,7 +711,9 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         emitFunctionCall(
             expr,
             target,
-            arguments.mapIndexed { index, arg -> applyConversions(expr, ConversionSlot.Argument(index), arg) },
+            arguments.mapIndexed { index, arg ->
+                applyConversions(expr, ConversionSlot.Argument(index), arg)
+            },
         )
 
     override fun onPropertyAccess(
@@ -693,7 +748,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         expr: ExpandCollapseExpression,
         operand: ElmExpression,
         per: ElmExpression?,
-    ): ElmExpression = emitExpandCollapse(expr, applyConversions(expr, ConversionSlot.Operand, operand), per)
+    ): ElmExpression =
+        emitExpandCollapse(expr, applyConversions(expr, ConversionSlot.Operand, operand), per)
 
     override fun onDateTimeComponent(expr: DateTimeComponentExpression, operand: ElmExpression) =
         emitDateTimeComponent(expr, operand)

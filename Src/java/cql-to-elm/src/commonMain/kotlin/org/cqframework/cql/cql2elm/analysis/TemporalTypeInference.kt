@@ -125,7 +125,11 @@ internal fun TypeResolver.inferMembershipType(expression: MembershipExpression):
                 resolution.hasConversions() &&
                 resolution.conversions.any { it != null && it.operator != null }
         ) {
-            recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
+            recordResolution(
+                expression,
+                resolution,
+                listOf(ConversionSlot.Left, ConversionSlot.Right),
+            )
             return resolution.operator.resultType
         }
     }
@@ -161,14 +165,26 @@ internal fun TypeResolver.inferIntervalRelationType(
             leftType.pointType != rightType.pointType
     ) {
         val effectiveLeft =
-            conversionTable?.effectiveType(expression, ConversionSlot.Left, leftType, operatorRegistry)
-                ?: leftType
+            conversionTable?.effectiveType(
+                expression,
+                ConversionSlot.Left,
+                leftType,
+                operatorRegistry,
+            ) ?: leftType
         val effectiveRight =
-            conversionTable?.effectiveType(expression, ConversionSlot.Right, rightType, operatorRegistry)
-                ?: rightType
+            conversionTable?.effectiveType(
+                expression,
+                ConversionSlot.Right,
+                rightType,
+                operatorRegistry,
+            ) ?: rightType
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
         if (resolution != null) {
-            recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
+            recordResolution(
+                expression,
+                resolution,
+                listOf(ConversionSlot.Left, ConversionSlot.Right),
+            )
             return resolution.operator.resultType
         }
     }

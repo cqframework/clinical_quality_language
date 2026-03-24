@@ -185,7 +185,10 @@ class OperatorRegistryTest {
         // For system types this is a simple compatible cast — ImplicitCast, not multi-branch
         val conversions = conversionToImplicits(conv, registry)
         assertEquals(1, conversions.size, "Single ImplicitCast")
-        assertTrue(conversions[0] is ImplicitConversion.ImplicitCast, "Compatible cast produces ImplicitCast")
+        assertTrue(
+            conversions[0] is ImplicitConversion.ImplicitCast,
+            "Compatible cast produces ImplicitCast",
+        )
     }
 
     @Test
@@ -210,14 +213,14 @@ class OperatorRegistryTest {
         assertEquals(intType, (conversions[0] as ImplicitConversion.ImplicitCast).targetType)
         // Second: OperatorConversion(ToDecimal)
         assertTrue(conversions[1] is ImplicitConversion.OperatorConversion)
-        assertEquals("ToDecimal", (conversions[1] as ImplicitConversion.OperatorConversion).operatorName)
+        assertEquals(
+            "ToDecimal",
+            (conversions[1] as ImplicitConversion.OperatorConversion).operatorName,
+        )
     }
 
     @Test
-    fun `multi-branch choice conversion returns empty — Lowering handles it`() {
-        // Multi-branch choice narrowing is a structural rewrite (Case/Is/As tree), not a
-        // single-node type conversion. conversionToImplicits returns emptyList(); the
-        // Lowering will lower these into CaseExpression nodes.
+    fun `multi-branch choice conversion produces ChoiceNarrowing`() {
         val intType = registry.type("Integer")
         val strType = registry.type("String")
         val decType = registry.type("Decimal")
@@ -232,10 +235,11 @@ class OperatorRegistryTest {
         choiceConversion.addAlternativeConversion(altConv)
 
         val conversions = conversionToImplicits(choiceConversion, registry)
-        assertEquals(
-            0,
-            conversions.size,
-            "Multi-branch choice returns empty — Lowering handles it",
-        )
+        assertEquals(1, conversions.size, "Multi-branch choice should produce one ChoiceNarrowing")
+        val narrowing = conversions[0] as ImplicitConversion.ChoiceNarrowing
+        assertEquals(2, narrowing.branches.size, "Should have 2 branches (primary + 1 alternative)")
+        assertEquals(intType, narrowing.branches[0].fromType)
+        assertEquals(strType, narrowing.branches[1].fromType)
+        assertEquals(decType, narrowing.resultType)
     }
 }

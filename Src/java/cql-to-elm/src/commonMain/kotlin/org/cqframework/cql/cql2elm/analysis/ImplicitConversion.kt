@@ -11,9 +11,11 @@ import org.hl7.cql.model.ListType
 
 /**
  * An implicit type conversion to be applied during emission. Each variant records enough
- * information for the emitter to produce the correct ELM wrapper.
+ * information for the emitter to produce the correct ELM wrapper(s).
  *
- * Implicit conversions are strictly type conversions — they change the type of an operand.
+ * Most variants are single-node wrappers (ToDecimal, As, etc.). [ChoiceNarrowing] is the exception:
+ * it emits a Case(Is/As) tree when a ChoiceType has multiple viable conversion paths to the target.
+ *
  * Structural transformations (boundary selectors, phrase expansion, operator rewrites) belong in
  * the lowering phase, not here.
  */
@@ -36,7 +38,8 @@ sealed interface ImplicitConversion {
     ) : ImplicitConversion
 
     /** Wrap list in Query(source=list, return=As(AliasRef(X), targetType)) for list demotion. */
-    data class ListDemotion(val targetElementType: DataType, val resultType: DataType) : ImplicitConversion
+    data class ListDemotion(val targetElementType: DataType, val resultType: DataType) :
+        ImplicitConversion
 
     /**
      * Wrap interval bounds with inner operator conversion. When [innerLibraryName] is non-null, the
@@ -59,6 +62,16 @@ sealed interface ImplicitConversion {
         val functionName: String,
         val resultType: DataType,
     ) : ImplicitConversion
+
+    /**
+     * Multi-branch choice narrowing: runtime Case(Is/As) tree. Each [Branch] tests one alternative
+     * from the source Choice type, casts to it, then applies inner conversions. Produced when
+     * operator resolution finds multiple viable conversion paths from a ChoiceType.
+     */
+    data class ChoiceNarrowing(val branches: List<Branch>, val resultType: DataType) :
+        ImplicitConversion {
+        data class Branch(val fromType: DataType, val innerConversions: List<ImplicitConversion>)
+    }
 }
 
 /**
@@ -106,7 +119,8 @@ sealed interface ConversionSlot {
  * **Not thread-safe.** Each instance is owned by a single analysis pass.
  */
 class ConversionTable {
-    private val entries = IdentityHashMap<Expression, MutableMap<ConversionSlot, MutableList<ImplicitConversion>>>()
+    private val entries =
+        IdentityHashMap<Expression, MutableMap<ConversionSlot, MutableList<ImplicitConversion>>>()
 
     /** Total conversions inserted across all calls to [add]. */
     var conversionsInserted: Int = 0
@@ -199,6 +213,7 @@ class ConversionTable {
                         IntervalType(resultPointType)
                     }
                     is ImplicitConversion.LibraryConversion -> s.resultType
+                    is ImplicitConversion.ChoiceNarrowing -> s.resultType
                 }
         }
         return currentType
@@ -211,6 +226,7 @@ class ConversionTable {
  * when a conversion decomposes into sequential steps (e.g., single-branch choice: ImplicitCast +
  * inner).
  */
+@Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 internal fun conversionToImplicits(
     conversion: Conversion,
     registry: OperatorRegistry,
@@ -219,21 +235,42 @@ internal fun conversionToImplicits(
     if (operator != null) {
         val libraryName = operator.libraryName
         return if (libraryName != null && libraryName != "System") {
-            listOf(ImplicitConversion.LibraryConversion(libraryName, operator.name, conversion.toType))
+            listOf(
+                ImplicitConversion.LibraryConversion(libraryName, operator.name, conversion.toType)
+            )
         } else {
             listOf(ImplicitConversion.OperatorConversion(operator.name))
         }
     }
     // Choice narrowing: isCast with an inner conversion from a ChoiceType.
     if (conversion.isCast && conversion.conversion != null && conversion.fromType is ChoiceType) {
-        val innerConversions = conversionToImplicits(conversion.conversion, registry)
         if (conversion.hasAlternativeConversions()) {
-            // Multi-branch: handled by the Lowering, not implicit conversions.
-            return emptyList()
+            // Multi-branch: build ChoiceNarrowing with a branch for each viable alternative.
+            val primaryInner = conversionToImplicits(conversion.conversion, registry)
+            val primaryBranch =
+                ImplicitConversion.ChoiceNarrowing.Branch(
+                    conversion.conversion.fromType,
+                    primaryInner,
+                )
+            val altBranches =
+                conversion.getAlternativeConversions().map { alt ->
+                    ImplicitConversion.ChoiceNarrowing.Branch(
+                        alt.fromType,
+                        conversionToImplicits(alt, registry),
+                    )
+                }
+            return listOf(
+                ImplicitConversion.ChoiceNarrowing(
+                    branches = listOf(primaryBranch) + altBranches,
+                    resultType = conversion.toType,
+                )
+            )
         } else {
             // Single branch: decompose into As(fromType) + inner conversion chain.
             // No Case needed — matches old compiler behavior.
-            return listOf(ImplicitConversion.ImplicitCast(conversion.conversion.fromType)) + innerConversions
+            val innerConversions = conversionToImplicits(conversion.conversion, registry)
+            return listOf(ImplicitConversion.ImplicitCast(conversion.conversion.fromType)) +
+                innerConversions
         }
     }
     if (conversion.isCast) return listOf(ImplicitConversion.ImplicitCast(conversion.toType))

@@ -78,8 +78,8 @@ import org.hl7.elm.r1.VersionedIdentifier
  * - [SymbolTable] — resolves expression/function/parameter definitions by name.
  * - [OperatorRegistry] — resolves operator and function overloads by operand types.
  * - [ConversionTable] (optional) — provides effective types for operands that have implicit
- *   conversions recorded by [ConversionPlanner] (e.g., a null literal cast to Integer). When present,
- *   effective types are used for operator resolution instead of raw inferred types.
+ *   conversions recorded by [ConversionPlanner] (e.g., a null literal cast to Integer). When
+ *   present, effective types are used for operator resolution instead of raw inferred types.
  * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
  * ## Writes
@@ -449,9 +449,17 @@ class TypeResolver(
 
     // --- Private inference methods ---
 
-    @Suppress("ReturnCount")
+    @Suppress("ReturnCount", "LongMethod", "CyclomaticComplexMethod")
     private fun inferIdentifierType(expression: IdentifierExpression): DataType? {
-        val name = expression.name.simpleName
+        val parts = expression.name.parts
+        val name = parts.last()
+
+        // Qualified identifier with a qualifier (e.g., Q.item in a query source).
+        // The qualifier may resolve as an alias or library include, changing the semantics.
+        if (parts.size > 1) {
+            return inferQualifiedIdentifierType(expression, parts)
+        }
+
         // Check query scope first (innermost scope wins)
         scope.resolveInQueryScopes(name)?.let { resolution ->
             typeTable.setIdentifierResolution(expression, resolution)
@@ -523,6 +531,46 @@ class TypeResolver(
             return null
         }
 
+        return null
+    }
+
+    /**
+     * Handle a qualified identifier (e.g., `Q.item`) where [parts] has 2+ segments.
+     *
+     * The first segment is tried as a query alias. If it resolves, the second segment is a property
+     * path on that alias — emitted as `Property(scope=alias, path=property)`. This is the CQL
+     * pattern `with Q.item i1` where Q is a primary query alias.
+     */
+    @Suppress("ReturnCount")
+    private fun inferQualifiedIdentifierType(
+        expression: IdentifierExpression,
+        parts: List<String>,
+    ): DataType? {
+        val qualifier = parts.first()
+        val property = parts.drop(1).joinToString(".")
+
+        // Check if qualifier is a query alias
+        scope.resolveInQueryScopes(qualifier)?.let { resolution ->
+            if (resolution is Resolution.AliasRef) {
+                val propType = resolvePropertyType(resolution.type, property)
+                val scopedResolution =
+                    Resolution.ScopedProperty(
+                        scope = qualifier,
+                        path = property,
+                        type = propType ?: return null,
+                    )
+                typeTable.setIdentifierResolution(expression, scopedResolution)
+                return propType
+            }
+        }
+
+        // Check if qualifier is a library include (e.g., FHIRHelpers.SomeExpression)
+        symbolTable.resolveInclude(qualifier)?.let { resolution ->
+            typeTable.setIdentifierResolution(expression, resolution)
+            return null
+        }
+
+        // Fall back to simple name resolution (last segment only)
         return null
     }
 
@@ -653,11 +701,19 @@ class TypeResolver(
     ): DataType? {
         if (leftType == null || rightType == null) return null
         val effectiveLeft =
-            conversionTable?.effectiveType(expression, ConversionSlot.Left, leftType, operatorRegistry)
-                ?: leftType
+            conversionTable?.effectiveType(
+                expression,
+                ConversionSlot.Left,
+                leftType,
+                operatorRegistry,
+            ) ?: leftType
         val effectiveRight =
-            conversionTable?.effectiveType(expression, ConversionSlot.Right, rightType, operatorRegistry)
-                ?: rightType
+            conversionTable?.effectiveType(
+                expression,
+                ConversionSlot.Right,
+                rightType,
+                operatorRegistry,
+            ) ?: rightType
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
             operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight)) ?: return null
@@ -696,8 +752,12 @@ class TypeResolver(
     ): DataType? {
         if (operandType == null) return null
         val effectiveOperand =
-            conversionTable?.effectiveType(expression, ConversionSlot.Operand, operandType, operatorRegistry)
-                ?: operandType
+            conversionTable?.effectiveType(
+                expression,
+                ConversionSlot.Operand,
+                operandType,
+                operatorRegistry,
+            ) ?: operandType
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
         if (opName == "Positive") return effectiveOperand
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveOperand)) ?: return null
@@ -893,8 +953,8 @@ class TypeResolver(
      * library's compiled operator map. Returns the result type if resolution succeeds, or null.
      *
      * Uses [LibraryManager] to compile the included library (via the legacy pipeline) and
- * [CompiledLibrary.resolveCall] for overload resolution with implicit conversions.
- * Implicit conversions are recorded so the emitter wraps arguments correctly (e.g., ToDecimal).
+     * [CompiledLibrary.resolveCall] for overload resolution with implicit conversions. Implicit
+     * conversions are recorded so the emitter wraps arguments correctly (e.g., ToDecimal).
      */
     private fun resolveLibraryFunctionCall(
         expression: FunctionCallExpression,
@@ -992,10 +1052,14 @@ class TypeResolver(
 
     /**
      * Check if [rawType] has an implicit model conversion (e.g., FHIR.dateTime → System.DateTime
-     * via FHIRHelpers.ToDateTime). If so, record a [ImplicitConversion.LibraryConversion] on [expr]/[slot]
-     * and return the converted type. Returns null if no model conversion applies.
+     * via FHIRHelpers.ToDateTime). If so, record a [ImplicitConversion.LibraryConversion] on
+     * [expr]/[slot] and return the converted type. Returns null if no model conversion applies.
      */
-    private fun applyModelConversion(expr: Expression, slot: ConversionSlot, rawType: DataType): DataType? {
+    private fun applyModelConversion(
+        expr: Expression,
+        slot: ConversionSlot,
+        rawType: DataType,
+    ): DataType? {
         // Don't eagerly narrow ChoiceTypes — choice narrowing must happen at the point of use
         // (operator resolution), not at the property access level. Eagerly narrowing breaks
         // explicit As casts like 'onset as FHIR.Period'.

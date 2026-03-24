@@ -284,8 +284,6 @@ class FullParityTest {
                     "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
                 "MultiSourceQuery" to
                     "New pipeline preserves expressions with type errors; legacy replaces with Null",
-                "TestChoiceTypes" to
-                    "Requires query relationship scope resolution (With/Without) not yet in new pipeline",
             )
     }
 }

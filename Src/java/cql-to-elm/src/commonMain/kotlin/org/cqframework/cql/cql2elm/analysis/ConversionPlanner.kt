@@ -61,12 +61,13 @@ import org.hl7.cql.model.ListType
  *
  * ## Kinds of conversions recorded
  * - **Branch unification** (If/Case/List/Interval) — when branch types differ, records
- *   [ImplicitConversion.ImplicitCast] or [ImplicitConversion.OperatorConversion] to coerce to the common type.
- * - **Null-literal wrapping** — null literals in typed slots get [ImplicitConversion.ImplicitCast] to the
- *   target type (e.g., `null` in an If-then slot → `As(null, Integer)`).
+ *   [ImplicitConversion.ImplicitCast] or [ImplicitConversion.OperatorConversion] to coerce to the
+ *   common type.
+ * - **Null-literal wrapping** — null literals in typed slots get [ImplicitConversion.ImplicitCast]
+ *   to the target type (e.g., `null` in an If-then slot → `As(null, Integer)`).
  * - **ChoiceType wrapping** — union/intersect/except with mismatched element types get
- *   [ImplicitConversion.ImplicitCast] to `List<Choice<A,B>>`, or [ImplicitConversion.ListDemotion] when one operand
- *   is `List<Any>` (empty list literal).
+ *   [ImplicitConversion.ImplicitCast] to `List<Choice<A,B>>`, or [ImplicitConversion.ListDemotion]
+ *   when one operand is `List<Any>` (empty list literal).
  * - **Interval bound propagation** — `Interval<Any>` literals (one bound is null) get their point
  *   type inferred from the typed counterpart.
  * - **DateTime null-arg conversions** — null arguments in `DateTime()`/`Date()`/`Time()`
@@ -77,12 +78,13 @@ import org.hl7.cql.model.ListType
  *
  * ## Adding a new kind of implicit conversion
  * 1. Define a new [ImplicitConversion] subtype in `ImplicitConversion.kt` if the existing subtypes
- *    ([ImplicitConversion.ImplicitCast], [ImplicitConversion.OperatorConversion], [ImplicitConversion.ListDemotion]) don't
- *    cover the case.
+ *    ([ImplicitConversion.ImplicitCast], [ImplicitConversion.OperatorConversion],
+ *    [ImplicitConversion.ListDemotion]) don't cover the case.
  * 2. In the relevant `on*` handler in this class, detect the condition and call
- *    [ConversionTable.addIfAbsent] to record the conversion at the (parent, [ConversionSlot]) location.
- * 3. In `EmissionContext.applyConversions` (the ELM emitter), handle the new [ImplicitConversion] subtype to
- *    produce the correct ELM wrapper node.
+ *    [ConversionTable.addIfAbsent] to record the conversion at the (parent, [ConversionSlot])
+ *    location.
+ * 3. In `EmissionContext.applyConversions` (the ELM emitter), handle the new [ImplicitConversion]
+ *    subtype to produce the correct ELM wrapper node.
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
@@ -139,7 +141,11 @@ class ConversionPlanner(
     // --- Conversion recording helpers ---
 
     /** Record a conversion if not already present at the given parent/slot. */
-    private fun recordIfNew(parent: Expression, slot: ConversionSlot, conversion: ImplicitConversion) {
+    private fun recordIfNew(
+        parent: Expression,
+        slot: ConversionSlot,
+        conversion: ImplicitConversion,
+    ) {
         conversionTable.addIfAbsent(parent, slot, conversion)
     }
 
@@ -264,9 +270,17 @@ class ConversionPlanner(
             if (leftElem != rightElem) {
                 // Case 1: One operand is List<Any> (empty list) — list demotion
                 if (rightElem == anyType && leftElem != anyType) {
-                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ListDemotion(leftElem, leftType))
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Right,
+                        ImplicitConversion.ListDemotion(leftElem, leftType),
+                    )
                 } else if (leftElem == anyType && rightElem != anyType) {
-                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ListDemotion(rightElem, rightType))
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Left,
+                        ImplicitConversion.ListDemotion(rightElem, rightType),
+                    )
                 }
                 // Case 2: Different concrete types — wrap both in As(List<Choice>)
                 else if (
@@ -277,8 +291,16 @@ class ConversionPlanner(
                 ) {
                     val choiceElem = ChoiceType(listOf(leftElem, rightElem).distinct())
                     val choiceListType = ListType(choiceElem)
-                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(choiceListType))
-                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(choiceListType))
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Left,
+                        ImplicitConversion.ImplicitCast(choiceListType),
+                    )
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Right,
+                        ImplicitConversion.ImplicitCast(choiceListType),
+                    )
                 }
             }
         }
@@ -295,7 +317,8 @@ class ConversionPlanner(
         recordDateTimeNullArgConversions(functionName, expr)
 
         // Null arg collection wrapping (e.g., IndexOf(null, {}) → As(null, List<Any>))
-        // cannot be an implicit conversion — it changes effective types from Any to List<Any>, which
+        // cannot be an implicit conversion — it changes effective types from Any to List<Any>,
+        // which
         // breaks generic resolution on re-typing (T=List<Any> instead of T=Any).
         // This wrapping must happen at emission time. See CqlListOperators KNOWN_SKIP.
     }
@@ -317,7 +340,11 @@ class ConversionPlanner(
                     if (isNullLiteralExpr(arg)) {
                         val targetType = if (i == 7) decimalType else integerType
                         if (targetType != anyType) {
-                            recordIfNew(expr, ConversionSlot.Argument(i), ImplicitConversion.ImplicitCast(targetType))
+                            recordIfNew(
+                                expr,
+                                ConversionSlot.Argument(i),
+                                ImplicitConversion.ImplicitCast(targetType),
+                            )
                         }
                     }
                 }
@@ -328,7 +355,11 @@ class ConversionPlanner(
                     val arg = expr.arguments[i]
                     if (isNullLiteralExpr(arg)) {
                         if (integerType != anyType) {
-                            recordIfNew(expr, ConversionSlot.Argument(i), ImplicitConversion.ImplicitCast(integerType))
+                            recordIfNew(
+                                expr,
+                                ConversionSlot.Argument(i),
+                                ImplicitConversion.ImplicitCast(integerType),
+                            )
                         }
                     }
                 }
@@ -346,22 +377,38 @@ class ConversionPlanner(
                 if (isNullLiteralExpr(expr.right)) {
                     val elemType = elementTypeOfDataType(leftType)
                     if (elemType != null && elemType != anyType) {
-                        recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(elemType))
+                        recordIfNew(
+                            expr,
+                            ConversionSlot.Right,
+                            ImplicitConversion.ImplicitCast(elemType),
+                        )
                     }
                 }
                 if (isNullLiteralExpr(expr.left) && rightType != null && rightType != anyType) {
-                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(ListType(rightType)))
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Left,
+                        ImplicitConversion.ImplicitCast(ListType(rightType)),
+                    )
                 }
             }
             org.hl7.cql.ast.MembershipOperator.IN -> {
                 if (isNullLiteralExpr(expr.left) && rightType is IntervalType) {
                     val pointType = rightType.pointType
                     if (pointType != anyType) {
-                        recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(pointType))
+                        recordIfNew(
+                            expr,
+                            ConversionSlot.Left,
+                            ImplicitConversion.ImplicitCast(pointType),
+                        )
                     }
                 }
                 if (isNullLiteralExpr(expr.right) && leftType != null && leftType != anyType) {
-                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(IntervalType(leftType)))
+                    recordIfNew(
+                        expr,
+                        ConversionSlot.Right,
+                        ImplicitConversion.ImplicitCast(IntervalType(leftType)),
+                    )
                 }
             }
         }
@@ -378,13 +425,21 @@ class ConversionPlanner(
                 leftType is IntervalType &&
                 leftType.pointType != anyType
         ) {
-            recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(leftType.pointType))
+            recordIfNew(
+                expr,
+                ConversionSlot.Right,
+                ImplicitConversion.ImplicitCast(leftType.pointType),
+            )
         } else if (
             isNullLiteralExpr(expr.left) &&
                 rightType is IntervalType &&
                 rightType.pointType != anyType
         ) {
-            recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(rightType.pointType))
+            recordIfNew(
+                expr,
+                ConversionSlot.Left,
+                ImplicitConversion.ImplicitCast(rightType.pointType),
+            )
         }
 
         // Interval<Any> operands: propagate point type from the typed counterpart into
@@ -413,15 +468,29 @@ class ConversionPlanner(
         // Target must be an interval literal to record bound-level conversions
         if (target is LiteralExpression && target.literal is org.hl7.cql.ast.IntervalLiteral) {
             val interval = target.literal as org.hl7.cql.ast.IntervalLiteral
-            recordTargetTypeConversion(target, ConversionSlot.IntervalLow, interval.lower, pointType)
-            recordTargetTypeConversion(target, ConversionSlot.IntervalHigh, interval.upper, pointType)
+            recordTargetTypeConversion(
+                target,
+                ConversionSlot.IntervalLow,
+                interval.lower,
+                pointType,
+            )
+            recordTargetTypeConversion(
+                target,
+                ConversionSlot.IntervalHigh,
+                interval.upper,
+                pointType,
+            )
         }
     }
 
     override fun onExists(expr: ExistsExpression, operand: Unit) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(ListType(anyType)))
+            recordIfNew(
+                expr,
+                ConversionSlot.Operand,
+                ImplicitConversion.ImplicitCast(ListType(anyType)),
+            )
         }
     }
 
@@ -441,14 +510,22 @@ class ConversionPlanner(
     override fun onExpandCollapse(expr: ExpandCollapseExpression, operand: Unit, per: Unit?) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(ListType(IntervalType(anyType))))
+            recordIfNew(
+                expr,
+                ConversionSlot.Operand,
+                ImplicitConversion.ImplicitCast(ListType(IntervalType(anyType))),
+            )
         }
     }
 
     override fun onWidth(expr: WidthExpression, operand: Unit) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(IntervalType(anyType)))
+            recordIfNew(
+                expr,
+                ConversionSlot.Operand,
+                ImplicitConversion.ImplicitCast(IntervalType(anyType)),
+            )
         }
     }
 
@@ -506,7 +583,12 @@ class ConversionPlanner(
                 val elementType = if (listType is ListType) listType.elementType else null
                 if (elementType != null) {
                     literal.elements.forEachIndexed { i, elem ->
-                        recordTargetTypeConversion(expr, ConversionSlot.ListElement(i), elem, elementType)
+                        recordTargetTypeConversion(
+                            expr,
+                            ConversionSlot.ListElement(i),
+                            elem,
+                            elementType,
+                        )
                     }
                 }
             }
@@ -514,8 +596,18 @@ class ConversionPlanner(
                 val intervalType = typeTable[expr]
                 val pointType = if (intervalType is IntervalType) intervalType.pointType else null
                 if (pointType != null) {
-                    recordTargetTypeConversion(expr, ConversionSlot.IntervalLow, literal.lower, pointType)
-                    recordTargetTypeConversion(expr, ConversionSlot.IntervalHigh, literal.upper, pointType)
+                    recordTargetTypeConversion(
+                        expr,
+                        ConversionSlot.IntervalLow,
+                        literal.lower,
+                        pointType,
+                    )
+                    recordTargetTypeConversion(
+                        expr,
+                        ConversionSlot.IntervalHigh,
+                        literal.upper,
+                        pointType,
+                    )
                 }
             }
             is org.hl7.cql.ast.InstanceLiteral -> {

@@ -294,11 +294,11 @@ Adds output annotations controlled by compiler options:
 
 ## Current Status
 
-### OperatorTests Parity: 30/32 passing
+### OperatorTests Parity: 32/32 passing (+ 2 FHIR R4 choice type tests)
 
 | Status | Tests |
 |--------|-------|
-| **Passing (30)** | AgeOperators, AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, CqlListOperators, DateTimeOperators, ForwardReferences, Functions, ImplicitConversions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, InvalidSortClauses, ListOperators, LogicalOperators, MessageOperators, NameHiding, NullologicalOperators, Query, RecursiveFunctions, Sorting, StringOperators, TerminologyReferences, TimeOperators, TupleAndClassConversions, TypeOperators, UndeclaredForward, UndeclaredSignature |
+| **Passing (32)** | AgeOperators, AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, CqlListOperators, DateTimeOperators, ForwardReferences, Functions, ImplicitConversions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, InvalidSortClauses, ListOperators, LogicalOperators, MessageOperators, NameHiding, NullologicalOperators, Query, RecursiveFunctions, Sorting, StringOperators, TerminologyReferences, TimeOperators, TupleAndClassConversions, TypeOperators, UndeclaredForward, UndeclaredSignature, **TestChoiceTypes**, **TestChoiceDateRangeOptimization** |
 | **Legacy bug (skip)** | Aggregate (#1710 — our type inference is more correct) |
 | **Error recovery (skip)** | MultiSourceQuery (legacy replaces type errors with Null) |
 
