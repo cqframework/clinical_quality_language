@@ -25,7 +25,6 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
         val classType = dataType as? ClassType
         if (classType?.primaryCodePath != null) {
             retrieve.codeProperty = classType.primaryCodePath
-            retrieve.codeComparator = "in"
         }
         // Resolve the terminology reference from the symbol table.
         // RetrieveExpression is a leaf in ExpressionFold so its children are NOT pre-folded
@@ -49,25 +48,35 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
                             .withName(unescapeCql(resolution.definition.name.value))
                 }
             }
-            // Code reference: [Type: "my-code"]
+            // Code reference: [Type: "my-code"] — single code uses Equivalent (~) + ToList
             if (retrieve.codes == null) {
                 semanticModel.resolveCode(name)?.let { resolution ->
                     retrieve.codes =
-                        org.hl7.elm.r1
-                            .CodeRef()
-                            .withName(unescapeCql(resolution.definition.name.value))
+                        org.hl7.elm.r1.ToList().apply {
+                            operand =
+                                org.hl7.elm.r1
+                                    .CodeRef()
+                                    .withName(unescapeCql(resolution.definition.name.value))
+                        }
                 }
             }
-            // Concept reference
+            // Concept reference — single concept uses Equivalent (~) + ToList
             if (retrieve.codes == null) {
                 semanticModel.resolveConcept(name)?.let { resolution ->
                     retrieve.codes =
-                        org.hl7.elm.r1
-                            .ConceptRef()
-                            .withName(unescapeCql(resolution.definition.name.value))
+                        org.hl7.elm.r1.ToList().apply {
+                            operand =
+                                org.hl7.elm.r1
+                                    .ConceptRef()
+                                    .withName(unescapeCql(resolution.definition.name.value))
+                        }
                 }
             }
         }
+        // Set codeComparator based on terminology type:
+        // - Single Code/Concept wrapped in ToList: use "~" (Equivalent)
+        // - ValueSet, CodeSystem, unresolved runtime terms: use "in"
+        retrieve.codeComparator = if (retrieve.codes is org.hl7.elm.r1.ToList) "~" else "in"
     }
 
     return retrieve
