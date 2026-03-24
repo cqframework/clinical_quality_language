@@ -543,10 +543,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         }
     }
 
-    override fun onIdentifier(expr: IdentifierExpression): ElmExpression {
-        val result = emitIdentifierExpression(expr)
-        return applySynthetics(expr, Slot.PropertyResult, result)
-    }
+    override fun onIdentifier(expr: IdentifierExpression) = emitIdentifierExpression(expr)
 
     override fun onExternalConstant(expr: ExternalConstantExpression): ElmExpression =
         throw ElmEmitter.UnsupportedNodeException(

@@ -299,10 +299,7 @@ class TypeResolver(
         children: LiteralChildren<DataType?>,
     ): DataType? = inferLiteralType(expr.literal)
 
-    override fun onIdentifier(expr: IdentifierExpression): DataType? {
-        val rawType = inferIdentifierType(expr) ?: return null
-        return applyModelConversion(expr, Slot.PropertyResult, rawType) ?: rawType
-    }
+    override fun onIdentifier(expr: IdentifierExpression): DataType? = inferIdentifierType(expr)
 
     override fun onExternalConstant(expr: ExternalConstantExpression): DataType? = null
 
