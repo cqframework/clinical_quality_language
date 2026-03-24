@@ -772,7 +772,7 @@ class TypeResolver(
                 BooleanTestKind.IS_FALSE -> "IsFalse"
             }
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution) // BooleanTest: no slot conversions
+        recordResolution(expression, resolution, listOf(ConversionSlot.Operand))
         return resolution.operator.resultType
     }
 
@@ -1031,7 +1031,7 @@ class TypeResolver(
         if (targetType == null || indexType == null) return null
         val resolution =
             operatorRegistry.resolve("Indexer", listOf(targetType, indexType)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution)
+        recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
         return resolution.operator.resultType
     }
 
@@ -1047,7 +1047,7 @@ class TypeResolver(
                 ListTransformKind.FLATTEN -> "Flatten"
             }
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution)
+        recordResolution(expression, resolution, listOf(ConversionSlot.Operand))
         return resolution.operator.resultType
     }
 

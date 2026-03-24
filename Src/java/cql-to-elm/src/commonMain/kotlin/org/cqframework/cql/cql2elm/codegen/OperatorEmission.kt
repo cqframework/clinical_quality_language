@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.analysis.ConversionSlot
 import org.cqframework.cql.cql2elm.analysis.OperatorNames
 import org.hl7.cql.ast.BinaryOperator
 import org.hl7.cql.ast.BooleanTestExpression
@@ -188,11 +189,12 @@ internal fun EmissionContext.emitBooleanTest(
     expression: BooleanTestExpression,
     operandElm: ElmExpression,
 ): ElmExpression {
+    val convertedOperand = applyConversions(expression, ConversionSlot.Operand, operandElm)
     val innerElm: ElmExpression =
         when (expression.kind) {
-            BooleanTestKind.IS_NULL -> IsNull().apply { operand = operandElm }
-            BooleanTestKind.IS_TRUE -> IsTrue().apply { operand = operandElm }
-            BooleanTestKind.IS_FALSE -> IsFalse().apply { operand = operandElm }
+            BooleanTestKind.IS_NULL -> IsNull().apply { operand = convertedOperand }
+            BooleanTestKind.IS_TRUE -> IsTrue().apply { operand = convertedOperand }
+            BooleanTestKind.IS_FALSE -> IsFalse().apply { operand = convertedOperand }
         }
 
     // Set result type on the inner expression from the resolution
