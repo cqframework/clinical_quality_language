@@ -996,6 +996,27 @@ class TypeResolver(
      * and return the converted type. Returns null if no model conversion applies.
      */
     private fun applyModelConversion(expr: Expression, slot: Slot, rawType: DataType): DataType? {
+        // Don't eagerly narrow ChoiceTypes — choice narrowing must happen at the point of use
+        // (operator resolution), not at the property access level. Eagerly narrowing breaks
+        // explicit As casts like 'onset as FHIR.Period'.
+        if (rawType is org.hl7.cql.model.ChoiceType) return null
+        return findAndRecordModelConversion(expr, slot, rawType)
+    }
+
+    private fun findModelConversion(rawType: DataType): Conversion? {
+        return operatorRegistry.conversionMap.getConversions(rawType).firstOrNull {
+            it.isImplicit &&
+                it.operator != null &&
+                it.operator.libraryName != null &&
+                it.operator.libraryName != "System"
+        }
+    }
+
+    private fun findAndRecordModelConversion(
+        expr: Expression,
+        slot: Slot,
+        rawType: DataType,
+    ): DataType? {
         val conversions = operatorRegistry.conversionMap.getConversions(rawType)
         val mc =
             conversions.firstOrNull {

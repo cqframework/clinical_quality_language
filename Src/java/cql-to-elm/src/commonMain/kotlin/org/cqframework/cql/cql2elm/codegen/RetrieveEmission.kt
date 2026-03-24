@@ -23,8 +23,11 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
         val model = modelContext.resolveModelForType(expression.typeSpecifier.name.simpleName)
         val dataType = model.resolveTypeName(expression.typeSpecifier.name.simpleName)
         val classType = dataType as? ClassType
-        if (classType?.primaryCodePath != null) {
-            retrieve.codeProperty = classType.primaryCodePath
+        // Use explicit codePath from CQL if provided, otherwise fall back to model's
+        // primaryCodePath
+        val codePath = expression.codePath?.simpleName ?: classType?.primaryCodePath
+        if (codePath != null) {
+            retrieve.codeProperty = codePath
         }
         // Resolve the terminology reference from the symbol table.
         // RetrieveExpression is a leaf in ExpressionFold so its children are NOT pre-folded
@@ -73,11 +76,16 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
                 }
             }
         }
-        // Set codeComparator based on terminology type (only when a code property exists):
-        // - Single Code/Concept wrapped in ToList: use "~" (Equivalent)
-        // - ValueSet, CodeSystem, unresolved runtime terms: use "in"
+        // Set codeComparator: use explicit comparator from CQL if provided,
+        // otherwise infer from codes type.
         if (retrieve.codeProperty != null) {
-            retrieve.codeComparator = if (retrieve.codes is org.hl7.elm.r1.ToList) "~" else "in"
+            retrieve.codeComparator =
+                when (expression.comparator) {
+                    org.hl7.cql.ast.TerminologyComparator.IN -> "in"
+                    org.hl7.cql.ast.TerminologyComparator.EQUIVALENT -> "~"
+                    org.hl7.cql.ast.TerminologyComparator.EQUALS -> "="
+                    null -> if (retrieve.codes is org.hl7.elm.r1.ToList) "~" else "in"
+                }
         }
     }
 
