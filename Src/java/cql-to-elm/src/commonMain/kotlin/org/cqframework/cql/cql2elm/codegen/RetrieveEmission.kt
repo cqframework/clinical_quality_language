@@ -73,10 +73,12 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
                 }
             }
         }
-        // Set codeComparator based on terminology type:
+        // Set codeComparator based on terminology type (only when a code property exists):
         // - Single Code/Concept wrapped in ToList: use "~" (Equivalent)
         // - ValueSet, CodeSystem, unresolved runtime terms: use "in"
-        retrieve.codeComparator = if (retrieve.codes is org.hl7.elm.r1.ToList) "~" else "in"
+        if (retrieve.codeProperty != null) {
+            retrieve.codeComparator = if (retrieve.codes is org.hl7.elm.r1.ToList) "~" else "in"
+        }
     }
 
     return retrieve

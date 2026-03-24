@@ -240,10 +240,10 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                     is Synthetic.OperatorConversion -> createConversionElm(s.operatorName, result)
                     is Synthetic.ImplicitCast -> emitImplicitCast(result, s.targetType)
                     is Synthetic.ListConversion ->
-                        emitListConversionQuery(result, s.innerOperatorName)
+                        emitListConversionQuery(result, s.innerOperatorName, s.innerLibraryName)
                     is Synthetic.ListDemotion -> emitListDemotionQuery(result, s.targetElementType)
                     is Synthetic.IntervalConversion ->
-                        emitIntervalConversion(result, s.innerOperatorName)
+                        emitIntervalConversion(result, s.innerOperatorName, s.innerLibraryName)
                     is Synthetic.LibraryConversion ->
                         emitLibraryFunctionRef(s.libraryName, s.functionName, result)
                 }
@@ -292,9 +292,15 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     private fun emitListConversionQuery(
         listExpression: ElmExpression,
         innerOperatorName: String,
+        innerLibraryName: String? = null,
     ): ElmExpression {
         val aliasRef = org.hl7.elm.r1.AliasRef().apply { name = "X" }
-        val convertedElement = createConversionElm(innerOperatorName, aliasRef)
+        val convertedElement =
+            if (innerLibraryName != null) {
+                emitLibraryFunctionRef(innerLibraryName, innerOperatorName, aliasRef)
+            } else {
+                createConversionElm(innerOperatorName, aliasRef)
+            }
         return org.hl7.elm.r1.Query().apply {
             source =
                 mutableListOf(
@@ -353,12 +359,17 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     private fun emitIntervalConversion(
         expression: ElmExpression,
         innerOperatorName: String,
+        innerLibraryName: String? = null,
     ): ElmExpression {
+        fun convertBound(bound: ElmExpression): ElmExpression =
+            if (innerLibraryName != null)
+                emitLibraryFunctionRef(innerLibraryName, innerOperatorName, bound)
+            else createConversionElm(innerOperatorName, bound)
         // Literal intervals: wrap each bound in the conversion operator
         if (expression is org.hl7.elm.r1.Interval) {
             return org.hl7.elm.r1.Interval().apply {
-                low = expression.low?.let { createConversionElm(innerOperatorName, it) }
-                high = expression.high?.let { createConversionElm(innerOperatorName, it) }
+                low = expression.low?.let { convertBound(it) }
+                high = expression.high?.let { convertBound(it) }
                 lowClosed = expression.lowClosed
                 highClosed = expression.highClosed
                 lowClosedExpression = expression.lowClosedExpression
@@ -370,20 +381,18 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         // for interval type promotion (e.g., Interval<Date> → Interval<DateTime>).
         return org.hl7.elm.r1.Interval().apply {
             low =
-                createConversionElm(
-                    innerOperatorName,
+                convertBound(
                     org.hl7.elm.r1.Property().apply {
                         path = "low"
                         source = expression
-                    },
+                    }
                 )
             high =
-                createConversionElm(
-                    innerOperatorName,
+                convertBound(
                     org.hl7.elm.r1.Property().apply {
                         path = "high"
                         source = expression
-                    },
+                    }
                 )
             lowClosedExpression =
                 org.hl7.elm.r1.Property().apply {

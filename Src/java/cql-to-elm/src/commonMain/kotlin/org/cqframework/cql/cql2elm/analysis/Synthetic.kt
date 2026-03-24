@@ -23,18 +23,30 @@ sealed interface Synthetic {
     /** Wrap operand in implicit As(targetType) — used for casts, null-As, and choice wrapping. */
     data class ImplicitCast(val targetType: DataType) : Synthetic
 
-    /** Wrap list in Query(source=list, return=ToXxx(AliasRef(X))) for element-level conversion. */
-    data class ListConversion(val innerOperatorName: String) : Synthetic
+    /**
+     * Wrap list in Query(source=list, return=ConversionOp(AliasRef(X))) for element-level
+     * conversion. When [innerLibraryName] is non-null, the conversion is a library function (e.g.,
+     * FHIRHelpers.ToDateTime) rather than a system operator.
+     */
+    data class ListConversion(
+        val innerOperatorName: String,
+        val innerLibraryName: String? = null,
+        val innerResultType: DataType? = null,
+    ) : Synthetic
 
     /** Wrap list in Query(source=list, return=As(AliasRef(X), targetType)) for list demotion. */
     data class ListDemotion(val targetElementType: DataType, val resultType: DataType) : Synthetic
 
     /**
-     * Wrap interval bounds with inner operator conversion. Only applies to interval literals; for
-     * non-literal intervals, the synthetic is a no-op (same behavior as the legacy
-     * ConversionInserter).
+     * Wrap interval bounds with inner operator conversion. When [innerLibraryName] is non-null, the
+     * conversion is a library function rather than a system operator. Only applies to interval
+     * literals; for non-literal intervals, the synthetic is a no-op.
      */
-    data class IntervalConversion(val innerOperatorName: String) : Synthetic
+    data class IntervalConversion(
+        val innerOperatorName: String,
+        val innerLibraryName: String? = null,
+        val innerResultType: DataType? = null,
+    ) : Synthetic
 
     /**
      * Wrap operand in a FunctionRef to a library conversion function (e.g.,
@@ -159,16 +171,28 @@ class SyntheticTable {
                     is Synthetic.ImplicitCast -> s.targetType
                     is Synthetic.ListConversion -> {
                         val elemType = (currentType as? ListType)?.elementType ?: return null
-                        val resolution =
-                            operatorRegistry.resolve(s.innerOperatorName, listOf(elemType))
-                        ListType(resolution?.operator?.resultType ?: return null)
+                        val resultElemType =
+                            if (s.innerResultType != null) {
+                                s.innerResultType
+                            } else {
+                                val res =
+                                    operatorRegistry.resolve(s.innerOperatorName, listOf(elemType))
+                                res?.operator?.resultType ?: return null
+                            }
+                        ListType(resultElemType)
                     }
                     is Synthetic.ListDemotion -> s.resultType
                     is Synthetic.IntervalConversion -> {
                         val pointType = (currentType as? IntervalType)?.pointType ?: return null
-                        val resolution =
-                            operatorRegistry.resolve(s.innerOperatorName, listOf(pointType))
-                        IntervalType(resolution?.operator?.resultType ?: return null)
+                        val resultPointType =
+                            if (s.innerResultType != null) {
+                                s.innerResultType
+                            } else {
+                                val res =
+                                    operatorRegistry.resolve(s.innerOperatorName, listOf(pointType))
+                                res?.operator?.resultType ?: return null
+                            }
+                        IntervalType(resultPointType)
                     }
                     is Synthetic.LibraryConversion -> s.resultType
                 }
@@ -197,14 +221,20 @@ internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorReg
             conversion.conversion != null &&
             conversion.conversion.operator != null
     ) {
-        return Synthetic.ListConversion(conversion.conversion.operator.name)
+        val inner = conversion.conversion.operator
+        val lib = inner.libraryName?.takeIf { it != "System" }
+        val resultType = if (lib != null) conversion.conversion.toType else null
+        return Synthetic.ListConversion(inner.name, lib, resultType)
     }
     if (
         conversion.isIntervalConversion &&
             conversion.conversion != null &&
             conversion.conversion.operator != null
     ) {
-        return Synthetic.IntervalConversion(conversion.conversion.operator.name)
+        val inner = conversion.conversion.operator
+        val lib = inner.libraryName?.takeIf { it != "System" }
+        val resultType = if (lib != null) conversion.conversion.toType else null
+        return Synthetic.IntervalConversion(inner.name, lib, resultType)
     }
     return null
 }
