@@ -349,7 +349,30 @@ class TypeResolver(
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
-        return resolvePropertyType(target, expr.property.value)
+        val rawType = resolvePropertyType(target, expr.property.value) ?: return null
+        // Check for implicit model conversion (e.g., FHIR.dateTime → System.DateTime via
+        // FHIRHelpers.ToDateTime). When a property yields a model type that has an implicit
+        // conversion to a system type, record the conversion as a synthetic so the emitter
+        // wraps the property access in a FunctionRef. Return the converted type so downstream
+        // phases (Normalizer, TypeUnifier) see the system type.
+        val conversions = operatorRegistry.conversionMap.getConversions(rawType)
+        val modelConversion =
+            conversions.firstOrNull {
+                it.isImplicit &&
+                    it.operator != null &&
+                    it.operator.libraryName != null &&
+                    it.operator.libraryName != "System"
+            }
+        if (modelConversion != null) {
+            val op = modelConversion.operator!!
+            syntheticTable?.addIfAbsent(
+                expr,
+                Slot.PropertyResult,
+                Synthetic.LibraryConversion(op.libraryName!!, op.name, modelConversion.toType),
+            )
+            return modelConversion.toType
+        }
+        return rawType
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =

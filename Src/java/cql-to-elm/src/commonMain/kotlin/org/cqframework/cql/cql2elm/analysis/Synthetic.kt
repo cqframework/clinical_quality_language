@@ -93,6 +93,9 @@ sealed interface Slot {
 
     /** Case-expression comparand condition at the given index. */
     data class CaseCondition(val index: Int) : Slot
+
+    /** Property access result — wraps the emitted Property node with a conversion. */
+    data object PropertyResult : Slot
 }
 
 /**

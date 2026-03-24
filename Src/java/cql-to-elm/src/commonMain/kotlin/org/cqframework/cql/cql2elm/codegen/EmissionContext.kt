@@ -610,8 +610,13 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             arguments.mapIndexed { index, arg -> applySynthetics(expr, Slot.Argument(index), arg) },
         )
 
-    override fun onPropertyAccess(expr: PropertyAccessExpression, target: ElmExpression) =
-        emitPropertyAccess(expr, target)
+    override fun onPropertyAccess(
+        expr: PropertyAccessExpression,
+        target: ElmExpression,
+    ): ElmExpression {
+        val property = emitPropertyAccess(expr, target)
+        return applySynthetics(expr, Slot.PropertyResult, property)
+    }
 
     override fun onIndex(expr: IndexExpression, target: ElmExpression, index: ElmExpression) =
         emitIndexExpression(expr, target, index)
