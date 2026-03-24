@@ -71,6 +71,8 @@ class SemanticModel(
 
     fun resolveParameter(name: String) = symbolTable.resolveParameter(name)
 
+    fun resolveContext(name: String) = symbolTable.resolveContext(name)
+
     fun resolveFunctions(name: String): List<FunctionDefinition> =
         symbolTable.resolveFunctions(name)
 

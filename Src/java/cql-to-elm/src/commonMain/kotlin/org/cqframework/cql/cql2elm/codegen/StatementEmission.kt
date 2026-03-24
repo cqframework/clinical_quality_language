@@ -83,8 +83,10 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     }
 
     /**
-     * Emit the implicit context expression definition that the legacy translator creates. For
-     * `context Patient`, this produces: `define Patient = SingletonFrom([Patient])`.
+     * Emit the implicit context expression definition. For parameter-backed contexts (e.g.,
+     * `parameter Encounter Encounter` + `context Encounter`), emits `ParameterRef`. Otherwise emits
+     * `SingletonFrom(Retrieve([Type]))` for model-based contexts. The decision is pre-computed
+     * during analysis (ContextRef.isParameterBacked).
      */
     private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
         val contextName = contextDefinition.context.value
@@ -92,9 +94,9 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         if (ctx.modelContext.loadedModelNames.isEmpty()) return
 
         try {
-            val paramResolution = ctx.semanticModel.resolveParameter(contextName)
+            val contextRef = ctx.semanticModel.resolveContext(contextName)
             val contextExpression =
-                if (paramResolution != null) {
+                if (contextRef?.isParameterBacked == true) {
                     ParameterRef().withName(contextName)
                 } else {
                     val retrieve = ctx.buildRetrieveForType(contextName)

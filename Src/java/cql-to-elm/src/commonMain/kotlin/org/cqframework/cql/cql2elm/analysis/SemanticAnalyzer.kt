@@ -435,7 +435,10 @@ sealed interface Resolution {
 
     data class ParameterRef(val definition: ParameterDefinition) : Resolution
 
-    data class ContextRef(val definition: ContextDefinition) : Resolution
+    data class ContextRef(
+        val definition: ContextDefinition,
+        val isParameterBacked: Boolean = false,
+    ) : Resolution
 
     data class OperandRef(val name: String, val type: DataType) : Resolution
 
@@ -490,7 +493,12 @@ data class SymbolTable(
     fun resolveContext(name: String): Resolution.ContextRef? =
         contextDefinitions
             .firstOrNull { it.context.value == name }
-            ?.let { Resolution.ContextRef(it) }
+            ?.let {
+                Resolution.ContextRef(
+                    definition = it,
+                    isParameterBacked = parameterDefinitions.containsKey(name),
+                )
+            }
 
     fun resolveExpression(name: String): Resolution.ExpressionRef? =
         expressionDefinitions[name]?.let { Resolution.ExpressionRef(it) }
