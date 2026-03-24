@@ -56,7 +56,7 @@ internal fun EmissionContext.emitIntervalRelation(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Interval<Any> expansion is handled by Normalizer. Operands arrive processed.
+    // Interval<Any> expansion is handled by Lowering. Operands arrive processed.
     return when (val phrase = expression.phrase) {
         is IncludesIntervalPhrase -> emitIncludesPhrase(phrase, expression, leftElm, rightElm)
         is IncludedInIntervalPhrase -> emitIncludedInPhrase(phrase, expression, leftElm, rightElm)
@@ -67,7 +67,7 @@ internal fun EmissionContext.emitIntervalRelation(
         is StartsIntervalPhrase -> emitStartsPhrase(phrase, leftElm, rightElm)
         is EndsIntervalPhrase -> emitEndsPhrase(phrase, leftElm, rightElm)
         is ConcurrentIntervalPhrase -> emitConcurrentPhrase(phrase, leftElm, rightElm)
-        // WithinIntervalPhrase is fully normalized by Normalizer into
+        // WithinIntervalPhrase is fully normalized by Lowering into
         // MembershipExpression(IN, ...) — it never reaches here.
         is WithinIntervalPhrase ->
             throw ElmEmitter.UnsupportedNodeException(
@@ -95,7 +95,7 @@ private fun applyBoundary(
 
 /**
  * Emit an includes phrase. Non-proper point cases are normalized to MembershipExpression(CONTAINS)
- * by Normalizer. This handler handles: proper cases (ProperContains/ProperIncludes) and non-proper
+ * by Lowering. This handler handles: proper cases (ProperContains/ProperIncludes) and non-proper
  * non-point cases (Includes).
  */
 private fun EmissionContext.emitIncludesPhrase(
@@ -129,7 +129,7 @@ private fun EmissionContext.emitIncludesPhrase(
             }
         }
     }
-    // Non-proper non-point: Includes (point cases normalized to MembershipExpression by Normalizer)
+    // Non-proper non-point: Includes (point cases normalized to MembershipExpression by Lowering)
     return Includes().apply {
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
@@ -138,7 +138,7 @@ private fun EmissionContext.emitIncludesPhrase(
 
 /**
  * Emit an includedIn phrase. Non-proper point cases are normalized to MembershipExpression(IN) by
- * Normalizer. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
+ * Lowering. This handler handles: proper cases (ProperIn/ProperIncludedIn) and non-proper
  * non-point cases (IncludedIn).
  */
 private fun EmissionContext.emitIncludedInPhrase(
@@ -165,7 +165,7 @@ private fun EmissionContext.emitIncludedInPhrase(
             }
         }
     }
-    // Non-proper non-point: IncludedIn (point cases normalized by Normalizer)
+    // Non-proper non-point: IncludedIn (point cases normalized by Lowering)
     return IncludedIn().apply {
         operand = mutableListOf(leftElm, rightElm)
         precision?.let { this.precision = it }
@@ -174,7 +174,7 @@ private fun EmissionContext.emitIncludedInPhrase(
 
 /**
  * Emit a before/after phrase. Boundary application, point-interval promotion, and direction-based
- * interval extraction are handled by [Normalizer] — operands arrive fully processed. This handler
+ * interval extraction are handled by [Lowering] — operands arrive fully processed. This handler
  * is purely structural: map the phrase to the correct ELM operator and apply quantity offset
  * arithmetic.
  */
@@ -190,7 +190,7 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
     val isInclusive = phrase.relationship.inclusive
 
     if (phrase.offset == null) {
-        // No offset — operands normalized with boundaries + promotion by Normalizer
+        // No offset — operands normalized with boundaries + promotion by Lowering
         val ops = mutableListOf(leftElm, rightElm)
         return if (isInclusive) {
             if (isBefore)
@@ -217,7 +217,7 @@ private fun EmissionContext.emitBeforeOrAfterPhrase(
         }
     }
 
-    // Offset — operands normalized with boundaries + direction extraction by Normalizer
+    // Offset — operands normalized with boundaries + direction extraction by Lowering
     val offset = phrase.offset!!
     val qty = emitLiteral(offset.quantity)
     val left = leftElm
@@ -320,7 +320,7 @@ private fun emitConcurrentPhrase(
     leftElm: ElmExpression,
     rightElm: ElmExpression,
 ): ElmExpression {
-    // Boundaries applied by Normalizer.
+    // Boundaries applied by Lowering.
     val precision = phrase.precision?.let { precisionStringToEnum(it) }
     val ops = mutableListOf(leftElm, rightElm)
 
@@ -419,7 +419,7 @@ private fun emitEndsPhrase(
     }
 }
 
-// emitWithinPhrase — deleted. Within is fully normalized by Normalizer
+// emitWithinPhrase — deleted. Within is fully normalized by Lowering
 // into MembershipExpression(IN, ...) with arithmetic and null check.
 
 /**

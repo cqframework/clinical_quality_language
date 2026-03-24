@@ -229,7 +229,7 @@ abstract class RewritingFold : ExpressionFold<Expression> {
 }
 
 // ---------------------------------------------------------------------------
-// Identity-check reconstruction helpers. Internal so Normalizer (which implements
+// Identity-check reconstruction helpers. Internal so Lowering (which implements
 // ExpressionFold<Expression> directly, not via RewritingFold) can delegate to them
 // for nodes it does not actively rewrite.
 // ---------------------------------------------------------------------------

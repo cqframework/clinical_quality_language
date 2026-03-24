@@ -183,9 +183,9 @@ class OperatorRegistryTest {
         assertNotNull(conv, "Conversion at position 0 should not be null")
         assertTrue(conv.isCast, "Should be a cast")
         // For system types this is a simple compatible cast — ImplicitCast, not multi-branch
-        val synthetics = conversionToSynthetics(conv, registry)
-        assertEquals(1, synthetics.size, "Single ImplicitCast")
-        assertTrue(synthetics[0] is Synthetic.ImplicitCast, "Compatible cast produces ImplicitCast")
+        val conversions = conversionToImplicits(conv, registry)
+        assertEquals(1, conversions.size, "Single ImplicitCast")
+        assertTrue(conversions[0] is ImplicitConversion.ImplicitCast, "Compatible cast produces ImplicitCast")
     }
 
     @Test
@@ -203,21 +203,21 @@ class OperatorRegistryTest {
         val innerConversion = Conversion(toDecOp, true)
         val choiceConversion = Conversion(choiceType, decType, innerConversion)
 
-        val synthetics = conversionToSynthetics(choiceConversion, registry)
-        assertEquals(2, synthetics.size, "Should decompose into ImplicitCast + OperatorConversion")
+        val conversions = conversionToImplicits(choiceConversion, registry)
+        assertEquals(2, conversions.size, "Should decompose into ImplicitCast + OperatorConversion")
         // First: ImplicitCast to narrow choice to Integer
-        assertTrue(synthetics[0] is Synthetic.ImplicitCast)
-        assertEquals(intType, (synthetics[0] as Synthetic.ImplicitCast).targetType)
+        assertTrue(conversions[0] is ImplicitConversion.ImplicitCast)
+        assertEquals(intType, (conversions[0] as ImplicitConversion.ImplicitCast).targetType)
         // Second: OperatorConversion(ToDecimal)
-        assertTrue(synthetics[1] is Synthetic.OperatorConversion)
-        assertEquals("ToDecimal", (synthetics[1] as Synthetic.OperatorConversion).operatorName)
+        assertTrue(conversions[1] is ImplicitConversion.OperatorConversion)
+        assertEquals("ToDecimal", (conversions[1] as ImplicitConversion.OperatorConversion).operatorName)
     }
 
     @Test
-    fun `multi-branch choice conversion returns empty — Normalizer handles it`() {
+    fun `multi-branch choice conversion returns empty — Lowering handles it`() {
         // Multi-branch choice narrowing is a structural rewrite (Case/Is/As tree), not a
-        // single-node type conversion. conversionToSynthetics returns emptyList(); the
-        // Normalizer will lower these into CaseExpression nodes.
+        // single-node type conversion. conversionToImplicits returns emptyList(); the
+        // Lowering will lower these into CaseExpression nodes.
         val intType = registry.type("Integer")
         val strType = registry.type("String")
         val decType = registry.type("Decimal")
@@ -231,11 +231,11 @@ class OperatorRegistryTest {
         val choiceConversion = Conversion(choiceType, decType, primaryConv)
         choiceConversion.addAlternativeConversion(altConv)
 
-        val synthetics = conversionToSynthetics(choiceConversion, registry)
+        val conversions = conversionToImplicits(choiceConversion, registry)
         assertEquals(
             0,
-            synthetics.size,
-            "Multi-branch choice returns empty — Normalizer handles it",
+            conversions.size,
+            "Multi-branch choice returns empty — Lowering handles it",
         )
     }
 }

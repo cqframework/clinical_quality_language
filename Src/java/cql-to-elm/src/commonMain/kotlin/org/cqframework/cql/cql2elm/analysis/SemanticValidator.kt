@@ -68,7 +68,7 @@ import org.hl7.cql.model.ListType
  *
  * ## What this does NOT do
  * - No type inference — that is [TypeResolver]'s job.
- * - No conversion recording — that is [TypeUnifier]'s job.
+ * - No conversion recording — that is [ConversionPlanner]'s job.
  * - No AST mutation — the AST is immutable at this point; errors are recorded in the model.
  */
 class SemanticValidator {

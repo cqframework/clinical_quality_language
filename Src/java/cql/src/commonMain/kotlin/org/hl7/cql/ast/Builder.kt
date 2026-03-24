@@ -18,7 +18,7 @@ import org.hl7.cql.parsetree.createParser
  *
  * This phase is **purely structural**: it maps grammar productions 1:1 to AST nodes. There is no
  * type inference, no operator resolution, no model awareness, and no validation. Those concerns
- * belong to the downstream analysis phases ([TypeResolver], [Normalizer], [SemanticValidator],
+ * belong to the downstream analysis phases ([TypeResolver], [Lowering], [SemanticValidator],
  * etc.).
  *
  * To add support for a new CQL grammar production:

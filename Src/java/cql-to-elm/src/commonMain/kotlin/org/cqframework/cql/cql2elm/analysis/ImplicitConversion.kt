@@ -13,16 +13,16 @@ import org.hl7.cql.model.ListType
  * An implicit type conversion to be applied during emission. Each variant records enough
  * information for the emitter to produce the correct ELM wrapper.
  *
- * Synthetics are strictly type conversions — they change the type of an operand. Structural
- * transformations (boundary selectors, phrase expansion, operator rewrites) belong in the lowering
- * phase, not here.
+ * Implicit conversions are strictly type conversions — they change the type of an operand.
+ * Structural transformations (boundary selectors, phrase expansion, operator rewrites) belong in
+ * the lowering phase, not here.
  */
-sealed interface Synthetic {
+sealed interface ImplicitConversion {
     /** Wrap operand in a conversion function (ToDecimal, ToLong, ToString, etc.) */
-    data class OperatorConversion(val operatorName: String) : Synthetic
+    data class OperatorConversion(val operatorName: String) : ImplicitConversion
 
     /** Wrap operand in implicit As(targetType) — used for casts, null-As, and choice wrapping. */
-    data class ImplicitCast(val targetType: DataType) : Synthetic
+    data class ImplicitCast(val targetType: DataType) : ImplicitConversion
 
     /**
      * Wrap list in Query(source=list, return=ConversionOp(AliasRef(X))) for element-level
@@ -33,21 +33,21 @@ sealed interface Synthetic {
         val innerOperatorName: String,
         val innerLibraryName: String? = null,
         val innerResultType: DataType? = null,
-    ) : Synthetic
+    ) : ImplicitConversion
 
     /** Wrap list in Query(source=list, return=As(AliasRef(X), targetType)) for list demotion. */
-    data class ListDemotion(val targetElementType: DataType, val resultType: DataType) : Synthetic
+    data class ListDemotion(val targetElementType: DataType, val resultType: DataType) : ImplicitConversion
 
     /**
      * Wrap interval bounds with inner operator conversion. When [innerLibraryName] is non-null, the
      * conversion is a library function rather than a system operator. Only applies to interval
-     * literals; for non-literal intervals, the synthetic is a no-op.
+     * literals; for non-literal intervals, the implicit conversion is a no-op.
      */
     data class IntervalConversion(
         val innerOperatorName: String,
         val innerLibraryName: String? = null,
         val innerResultType: DataType? = null,
-    ) : Synthetic
+    ) : ImplicitConversion
 
     /**
      * Wrap operand in a FunctionRef to a library conversion function (e.g.,
@@ -58,45 +58,45 @@ sealed interface Synthetic {
         val libraryName: String,
         val functionName: String,
         val resultType: DataType,
-    ) : Synthetic
+    ) : ImplicitConversion
 }
 
 /**
- * Identifies which operand slot of a parent expression a synthetic applies to. Keyed by parent
- * expression identity + slot, so AST immutability is preserved.
+ * Identifies which operand slot of a parent expression an implicit conversion applies to. Keyed by
+ * parent expression identity + slot, so AST immutability is preserved.
  */
-sealed interface Slot {
-    data object Left : Slot
+sealed interface ConversionSlot {
+    data object Left : ConversionSlot
 
-    data object Right : Slot
+    data object Right : ConversionSlot
 
-    data object Operand : Slot
+    data object Operand : ConversionSlot
 
-    data class Argument(val index: Int) : Slot
+    data class Argument(val index: Int) : ConversionSlot
 
     /** List literal element at the given index. */
-    data class ListElement(val index: Int) : Slot
+    data class ListElement(val index: Int) : ConversionSlot
 
     /** Interval literal low bound. */
-    data object IntervalLow : Slot
+    data object IntervalLow : ConversionSlot
 
     /** Interval literal high bound. */
-    data object IntervalHigh : Slot
+    data object IntervalHigh : ConversionSlot
 
     /** If-expression then branch. */
-    data object ThenBranch : Slot
+    data object ThenBranch : ConversionSlot
 
     /** If-expression or case-expression else branch. */
-    data object ElseBranch : Slot
+    data object ElseBranch : ConversionSlot
 
     /** Case-expression branch result at the given index. */
-    data class CaseBranch(val index: Int) : Slot
+    data class CaseBranch(val index: Int) : ConversionSlot
 
     /** Case-expression comparand condition at the given index. */
-    data class CaseCondition(val index: Int) : Slot
+    data class CaseCondition(val index: Int) : ConversionSlot
 
     /** Property access result — wraps the emitted Property node with a conversion. */
-    data object PropertyResult : Slot
+    data object PropertyResult : ConversionSlot
 }
 
 /**
@@ -105,42 +105,42 @@ sealed interface Slot {
  *
  * **Not thread-safe.** Each instance is owned by a single analysis pass.
  */
-class SyntheticTable {
-    private val entries = IdentityHashMap<Expression, MutableMap<Slot, MutableList<Synthetic>>>()
+class ConversionTable {
+    private val entries = IdentityHashMap<Expression, MutableMap<ConversionSlot, MutableList<ImplicitConversion>>>()
 
-    /** Total synthetics inserted across all calls to [add]. */
-    var syntheticsInserted: Int = 0
+    /** Total conversions inserted across all calls to [add]. */
+    var conversionsInserted: Int = 0
         private set
 
-    /** Record a synthetic at the given parent/slot. */
-    fun add(parent: Expression, slot: Slot, synthetic: Synthetic) {
+    /** Record a conversion at the given parent/slot. */
+    fun add(parent: Expression, slot: ConversionSlot, conversion: ImplicitConversion) {
         val slotMap = entries.getOrPut(parent) { mutableMapOf() }
         val list = slotMap.getOrPut(slot) { mutableListOf() }
-        list.add(synthetic)
-        syntheticsInserted++
+        list.add(conversion)
+        conversionsInserted++
     }
 
-    /** Get all synthetics recorded at the given parent/slot, or empty list. */
-    fun get(parent: Expression, slot: Slot): List<Synthetic> {
+    /** Get all conversions recorded at the given parent/slot, or empty list. */
+    fun get(parent: Expression, slot: ConversionSlot): List<ImplicitConversion> {
         val slotMap = entries[parent] ?: return emptyList()
         return slotMap[slot] ?: emptyList()
     }
 
-    /** Record a synthetic if not already present at the given parent/slot. */
-    fun addIfAbsent(parent: Expression, slot: Slot, synthetic: Synthetic) {
-        if (get(parent, slot).contains(synthetic)) return
-        add(parent, slot, synthetic)
+    /** Record a conversion if not already present at the given parent/slot. */
+    fun addIfAbsent(parent: Expression, slot: ConversionSlot, conversion: ImplicitConversion) {
+        if (get(parent, slot).contains(conversion)) return
+        add(parent, slot, conversion)
     }
 
     /**
-     * Transfer all synthetics from [source] to [target]. Used by the lowering phase when an
-     * expression is rewritten — synthetics recorded against the original expression identity need
+     * Transfer all conversions from [source] to [target]. Used by the lowering phase when an
+     * expression is rewritten — conversions recorded against the original expression identity need
      * to follow to the new expression.
      */
     fun transfer(source: Expression, target: Expression) {
         val slotMap = entries[source] ?: return
-        for ((slot, synthetics) in slotMap) {
-            for (s in synthetics) {
+        for ((slot, conversions) in slotMap) {
+            for (s in conversions) {
                 val targetSlotMap = entries.getOrPut(target) { mutableMapOf() }
                 val targetList = targetSlotMap.getOrPut(slot) { mutableListOf() }
                 targetList.add(s)
@@ -149,31 +149,31 @@ class SyntheticTable {
     }
 
     /**
-     * Compute the post-conversion [DataType] given a source type and the synthetics at this slot.
-     * Walks the synthetic chain: e.g., Integer + OperatorConversion("ToDecimal") → Decimal. Returns
-     * null if the source type is null or a conversion can't be resolved.
+     * Compute the post-conversion [DataType] given a source type and the conversions at this slot.
+     * Walks the conversion chain: e.g., Integer + OperatorConversion("ToDecimal") → Decimal.
+     * Returns null if the source type is null or a conversion can't be resolved.
      */
     @Suppress("ReturnCount")
     fun effectiveType(
         parent: Expression,
-        slot: Slot,
+        slot: ConversionSlot,
         sourceType: DataType?,
         operatorRegistry: OperatorRegistry,
     ): DataType? {
         if (sourceType == null) return null
-        val synthetics = get(parent, slot)
-        if (synthetics.isEmpty()) return sourceType
+        val conversions = get(parent, slot)
+        if (conversions.isEmpty()) return sourceType
         var currentType = sourceType
-        for (s in synthetics) {
+        for (s in conversions) {
             currentType =
                 when (s) {
-                    is Synthetic.OperatorConversion -> {
+                    is ImplicitConversion.OperatorConversion -> {
                         val resolution =
                             operatorRegistry.resolve(s.operatorName, listOf(currentType!!))
                         resolution?.operator?.resultType ?: return null
                     }
-                    is Synthetic.ImplicitCast -> s.targetType
-                    is Synthetic.ListConversion -> {
+                    is ImplicitConversion.ImplicitCast -> s.targetType
+                    is ImplicitConversion.ListConversion -> {
                         val elemType = (currentType as? ListType)?.elementType ?: return null
                         val resultElemType =
                             if (s.innerResultType != null) {
@@ -185,8 +185,8 @@ class SyntheticTable {
                             }
                         ListType(resultElemType)
                     }
-                    is Synthetic.ListDemotion -> s.resultType
-                    is Synthetic.IntervalConversion -> {
+                    is ImplicitConversion.ListDemotion -> s.resultType
+                    is ImplicitConversion.IntervalConversion -> {
                         val pointType = (currentType as? IntervalType)?.pointType ?: return null
                         val resultPointType =
                             if (s.innerResultType != null) {
@@ -198,7 +198,7 @@ class SyntheticTable {
                             }
                         IntervalType(resultPointType)
                     }
-                    is Synthetic.LibraryConversion -> s.resultType
+                    is ImplicitConversion.LibraryConversion -> s.resultType
                 }
         }
         return currentType
@@ -206,36 +206,37 @@ class SyntheticTable {
 }
 
 /**
- * Convert a [Conversion] from an [OperatorResolution] to a list of [Synthetic]s, or empty if the
- * conversion kind isn't handled by the side table. Returns multiple synthetics when a conversion
- * decomposes into sequential steps (e.g., single-branch choice: ImplicitCast + inner).
+ * Convert a [Conversion] from an [OperatorResolution] to a list of [ImplicitConversion]s, or empty
+ * if the conversion kind isn't handled by the side table. Returns multiple implicit conversions
+ * when a conversion decomposes into sequential steps (e.g., single-branch choice: ImplicitCast +
+ * inner).
  */
-internal fun conversionToSynthetics(
+internal fun conversionToImplicits(
     conversion: Conversion,
     registry: OperatorRegistry,
-): List<Synthetic> {
+): List<ImplicitConversion> {
     val operator = conversion.operator
     if (operator != null) {
         val libraryName = operator.libraryName
         return if (libraryName != null && libraryName != "System") {
-            listOf(Synthetic.LibraryConversion(libraryName, operator.name, conversion.toType))
+            listOf(ImplicitConversion.LibraryConversion(libraryName, operator.name, conversion.toType))
         } else {
-            listOf(Synthetic.OperatorConversion(operator.name))
+            listOf(ImplicitConversion.OperatorConversion(operator.name))
         }
     }
     // Choice narrowing: isCast with an inner conversion from a ChoiceType.
     if (conversion.isCast && conversion.conversion != null && conversion.fromType is ChoiceType) {
-        val innerSynthetics = conversionToSynthetics(conversion.conversion, registry)
+        val innerConversions = conversionToImplicits(conversion.conversion, registry)
         if (conversion.hasAlternativeConversions()) {
-            // Multi-branch: handled by the Normalizer, not synthetics.
+            // Multi-branch: handled by the Lowering, not implicit conversions.
             return emptyList()
         } else {
             // Single branch: decompose into As(fromType) + inner conversion chain.
             // No Case needed — matches old compiler behavior.
-            return listOf(Synthetic.ImplicitCast(conversion.conversion.fromType)) + innerSynthetics
+            return listOf(ImplicitConversion.ImplicitCast(conversion.conversion.fromType)) + innerConversions
         }
     }
-    if (conversion.isCast) return listOf(Synthetic.ImplicitCast(conversion.toType))
+    if (conversion.isCast) return listOf(ImplicitConversion.ImplicitCast(conversion.toType))
     if (
         conversion.isListConversion &&
             conversion.conversion != null &&
@@ -244,7 +245,7 @@ internal fun conversionToSynthetics(
         val inner = conversion.conversion.operator
         val lib = inner.libraryName?.takeIf { it != "System" }
         val resultType = if (lib != null) conversion.conversion.toType else null
-        return listOf(Synthetic.ListConversion(inner.name, lib, resultType))
+        return listOf(ImplicitConversion.ListConversion(inner.name, lib, resultType))
     }
     if (
         conversion.isIntervalConversion &&
@@ -254,29 +255,29 @@ internal fun conversionToSynthetics(
         val inner = conversion.conversion.operator
         val lib = inner.libraryName?.takeIf { it != "System" }
         val resultType = if (lib != null) conversion.conversion.toType else null
-        return listOf(Synthetic.IntervalConversion(inner.name, lib, resultType))
+        return listOf(ImplicitConversion.IntervalConversion(inner.name, lib, resultType))
     }
     return emptyList()
 }
 
 /**
- * Record synthetics from an [OperatorResolution]'s conversions for each slot. Called by
- * TypeResolver at each setOperatorResolution site and by TypeUnifier when re-deriving resolution
- * conversions is needed.
+ * Record implicit conversions from an [OperatorResolution]'s conversions for each slot. Called by
+ * TypeResolver at each setOperatorResolution site and by ConversionPlanner when re-deriving
+ * resolution conversions is needed.
  */
-internal fun recordResolutionSynthetics(
-    syntheticTable: SyntheticTable,
+internal fun recordResolutionConversions(
+    conversionTable: ConversionTable,
     parent: Expression,
     resolution: OperatorResolution,
-    slots: List<Slot>,
+    slots: List<ConversionSlot>,
     registry: OperatorRegistry,
 ) {
     if (!resolution.hasConversions()) return
     resolution.conversions.forEachIndexed { index, conversion ->
         if (conversion != null && index < slots.size) {
-            val synthetics = conversionToSynthetics(conversion, registry)
-            for (synthetic in synthetics) {
-                syntheticTable.addIfAbsent(parent, slots[index], synthetic)
+            val conversions = conversionToImplicits(conversion, registry)
+            for (c in conversions) {
+                conversionTable.addIfAbsent(parent, slots[index], c)
             }
         }
     }

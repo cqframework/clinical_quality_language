@@ -27,7 +27,7 @@ CQL Source
 ┌──────────────────────────────────────────────────────┐
 │  2. ANALYSIS (convergence loop)                      │
 │     SymbolCollector → SymbolTable                    │
-│     TypeResolver + ConversionAnalyzer → SemanticModel │
+│     TypeResolver + ConversionPlanner → SemanticModel │
 │     SemanticValidator → diagnostics                  │
 │     Output: AST + SemanticModel (types, conversions) │
 └──────────────────────┬───────────────────────────────┘
@@ -60,7 +60,7 @@ CQL Source
 
 The pipeline separates two fundamentally different transformations:
 
-**Type conversions** (Analysis phase → SyntheticTable):
+**Type conversions** (Analysis phase → ConversionTable):
 - Driven by type inference. An Integer operand where Decimal is expected
   → record `OperatorConversion("ToDecimal")`.
 - Participate in the convergence loop: inserting a conversion changes types,
@@ -108,7 +108,7 @@ by AST node identity. The AST is never mutated.
 |-----------|------|
 | `SymbolCollector` | Walks AST, builds `SymbolTable` (definitions, scopes) |
 | `TypeResolver` | Bottom-up type inference + overload resolution → `TypeTable` |
-| `ConversionAnalyzer` | Records implicit conversions in `SyntheticTable` |
+| `ConversionPlanner` | Records implicit conversions in `ConversionTable` |
 | `SemanticValidator` | Detects errors, flags them in `SemanticModel` |
 
 ### Convergence Loop
@@ -117,18 +117,18 @@ Type inference and conversion analysis iterate until stable:
 
 ```
 symbols = SymbolCollector.collect(library)
-syntheticTable = SyntheticTable()
+conversionTable = ConversionTable()
 
 for iteration in 1..maxIterations:
-    typeTable = TypeResolver(operatorRegistry, syntheticTable)
+    typeTable = TypeResolver(operatorRegistry, conversionTable)
                     .resolve(library, symbols)
-    analyzer = ConversionAnalyzer(typeTable, operatorRegistry, syntheticTable)
-    analyzer.analyzeLibrary(library)
-    if analyzer.newSyntheticsInserted == 0: break
+    planner = ConversionPlanner(typeTable, operatorRegistry, conversionTable)
+    planner.analyzeLibrary(library)
+    if planner.newConversionsInserted == 0: break
 
-finalTypeTable = TypeResolver(operatorRegistry, syntheticTable)
+finalTypeTable = TypeResolver(operatorRegistry, conversionTable)
                      .resolve(library, symbols)
-semanticModel = SemanticModel(symbols, finalTypeTable, syntheticTable, ...)
+semanticModel = SemanticModel(symbols, finalTypeTable, conversionTable, ...)
 SemanticValidator.validate(library, symbols, semanticModel)
 ```
 
@@ -137,30 +137,30 @@ SemanticValidator.validate(library, symbols, semanticModel)
 the argument type, which the TypeResolver needs to see to resolve the Avg
 overload correctly.
 
-**Why no AST mutation?** The AST stays immutable. The `SyntheticTable`
+**Why no AST mutation?** The AST stays immutable. The `ConversionTable`
 records conversions keyed by `(parentExpression, slot)` using an
 `IdentityHashMap`. The TypeResolver reads effective types from the
-SyntheticTable when resolving overloads. Benefits:
+ConversionTable when resolving overloads. Benefits:
 - SymbolTable collected once (no re-collection)
 - No identity-tracking bugs
 - No idempotency guards
 - Editor sees both source types and post-conversion types
 
-### SyntheticTable
+### ConversionTable
 
 Records implicit type conversions only:
 
 ```kotlin
-sealed interface Synthetic {
-    data class OperatorConversion(val operatorName: String) : Synthetic
-    data class ImplicitCast(val targetType: DataType) : Synthetic
-    data class ListConversion(val innerOperatorName: String) : Synthetic
-    data class ListDemotion(val targetElementType: DataType, ...) : Synthetic
-    data class IntervalConversion(val innerOperatorName: String) : Synthetic
+sealed interface ImplicitConversion {
+    data class OperatorConversion(val operatorName: String) : ImplicitConversion
+    data class ImplicitCast(val targetType: DataType) : ImplicitConversion
+    data class ListConversion(val innerOperatorName: String) : ImplicitConversion
+    data class ListDemotion(val targetElementType: DataType, ...) : ImplicitConversion
+    data class IntervalConversion(val innerOperatorName: String) : ImplicitConversion
 }
 ```
 
-Keyed by `(Expression, Slot)` where Slot identifies which operand:
+Keyed by `(Expression, ConversionSlot)` where ConversionSlot identifies which operand:
 `Left`, `Right`, `Operand`, `Argument(i)`, `ListElement(i)`,
 `IntervalLow`, `IntervalHigh`, `ThenBranch`, `ElseBranch`,
 `CaseBranch(i)`, `CaseCondition(i)`.
@@ -175,7 +175,7 @@ that types children before parents. Key rules:
 - **Operators:** resolve via OperatorRegistry, record resolution
 - **Function calls:** resolve via OperatorRegistry or user-defined functions
 - **Queries:** scoped inference (aliases, lets, aggregate accumulators)
-- **Effective types:** when the SyntheticTable has a conversion for a slot,
+- **Effective types:** when the ConversionTable has a conversion for a slot,
   the effective type (post-conversion) is used for overload resolution
 
 ### Semantic Error Classification
@@ -191,9 +191,9 @@ that types children before parents. Key rules:
 
 ## Phase 3: Lowering
 
-**Class:** `Normalizer` in `org.cqframework.cql.cql2elm.analysis`
+**Class:** `Lowering` in `org.cqframework.cql.cql2elm.analysis`
 
-**Status:** Implemented. Structural rewrites consolidated in `Normalizer.kt`
+**Status:** Implemented. Structural rewrites consolidated in `Lowering.kt`
 (~960 lines). Invoked by SemanticAnalyzer after the convergence loop.
 
 Lowering transforms complex CQL phrases into simpler AST trees using
@@ -250,17 +250,17 @@ purely mechanical — no `semanticModel` type lookups, no conditional
 logic, no wrapping.
 
 The `EmissionContext` implements `ExpressionFold<ElmExpression>`. Each
-handler creates the corresponding ELM node and applies any synthetics
-from the SyntheticTable (type conversions recorded during analysis).
+handler creates the corresponding ELM node and applies any conversions
+from the ConversionTable (type conversions recorded during analysis).
 
 ```kotlin
 override fun onBinaryOperator(expr, left, right) =
     emitBinaryOperator(expr,
-        applySynthetics(expr, Slot.Left, left),
-        applySynthetics(expr, Slot.Right, right))
+        applyConversions(expr, ConversionSlot.Left, left),
+        applyConversions(expr, ConversionSlot.Right, right))
 ```
 
-`applySynthetics` wraps an ELM expression in conversion nodes:
+`applyConversions` wraps an ELM expression in conversion nodes:
 - `OperatorConversion("ToDecimal")` → `ToDecimal(operand)`
 - `ImplicitCast(Decimal)` → `As(operand, Decimal)`
 - `ListConversion("ToDecimal")` → `Query(source=list, return=ToDecimal(X))`
@@ -368,10 +368,10 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 |-----------|--------|
 | SymbolCollector | Done |
 | TypeResolver | Done (bottom-up + overload resolution + effective types) |
-| ConversionAnalyzer | Done (all conversion kinds via SyntheticTable) |
-| SyntheticTable | Done (5 conversion types, convergence loop) |
+| ConversionPlanner | Done (all conversion kinds via ConversionTable) |
+| ConversionTable | Done (5 conversion types, convergence loop) |
 | SemanticValidator | Partial (identifiers, casts, recursive functions) |
-| Normalizer (lowering) | Done (phrase expansion, interval operators, boundary selectors, coalescing, operator rewrites) |
+| Lowering | Done (phrase expansion, interval operators, boundary selectors, coalescing, operator rewrites) |
 | Emission | Done (20 emission files, mechanical) |
 | Post-processing | Partial (resultType decoration; no locators, annotations, or signatures yet) |
 
@@ -386,11 +386,11 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 | SemanticAnalyzer | `cql-to-elm/.../analysis/SemanticAnalyzer.kt` |
 | SemanticModel | `cql-to-elm/.../analysis/SemanticModel.kt` |
 | TypeResolver | `cql-to-elm/.../analysis/TypeResolver.kt` |
-| ConversionAnalyzer | `cql-to-elm/.../analysis/ConversionAnalyzer.kt` |
-| Synthetic / SyntheticTable | `cql-to-elm/.../analysis/Synthetic.kt` |
+| ConversionPlanner | `cql-to-elm/.../analysis/ConversionPlanner.kt` |
+| ImplicitConversion / ConversionTable | `cql-to-elm/.../analysis/ImplicitConversion.kt` |
 | SemanticValidator | `cql-to-elm/.../analysis/SemanticValidator.kt` |
 | OperatorRegistry | `cql-to-elm/.../analysis/OperatorRegistry.kt` |
-| Normalizer (lowering) | `cql-to-elm/.../analysis/Normalizer.kt` |
+| Lowering | `cql-to-elm/.../analysis/Lowering.kt` |
 
 ### Codegen
 

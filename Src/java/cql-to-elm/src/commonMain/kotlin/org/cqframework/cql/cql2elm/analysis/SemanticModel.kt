@@ -24,8 +24,8 @@ class SemanticModel(
     val options: CqlCompilerOptions? = null,
     /** Expressions flagged with semantic errors. Codegen emits Null for these. */
     internal val errors: MutableSet<Expression> = mutableSetOf(),
-    /** Side table of synthetic conversions keyed by parent expression + slot. */
-    val syntheticTable: SyntheticTable = SyntheticTable(),
+    /** Side table of implicit conversions keyed by parent expression + slot. */
+    val conversionTable: ConversionTable = ConversionTable(),
     /** Model context for type/QName resolution. Passed to codegen. */
     val modelContext: ModelContext = ModelContext.systemOnly(),
 ) {

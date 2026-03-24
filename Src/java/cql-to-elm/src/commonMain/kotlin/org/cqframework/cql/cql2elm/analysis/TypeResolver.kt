@@ -77,8 +77,8 @@ import org.hl7.elm.r1.VersionedIdentifier
  * ## Reads
  * - [SymbolTable] — resolves expression/function/parameter definitions by name.
  * - [OperatorRegistry] — resolves operator and function overloads by operand types.
- * - [SyntheticTable] (optional) — provides effective types for operands that have synthetic
- *   conversions recorded by [TypeUnifier] (e.g., a null literal cast to Integer). When present,
+ * - [ConversionTable] (optional) — provides effective types for operands that have implicit
+ *   conversions recorded by [ConversionPlanner] (e.g., a null literal cast to Integer). When present,
  *   effective types are used for operator resolution instead of raw inferred types.
  * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
@@ -111,7 +111,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  */
 class TypeResolver(
     internal val operatorRegistry: OperatorRegistry,
-    internal val syntheticTable: SyntheticTable? = null,
+    internal val conversionTable: ConversionTable? = null,
     internal val modelContext: ModelContext = ModelContext.systemOnly(),
     internal val libraryManager: LibraryManager? = null,
 ) : ExpressionFold<DataType?> {
@@ -336,7 +336,7 @@ class TypeResolver(
 
     override fun onAs(expr: AsExpression, operand: DataType?): DataType? {
         val rawType = inferAsType(expr) ?: return null
-        return applyModelConversion(expr, Slot.Operand, rawType) ?: rawType
+        return applyModelConversion(expr, ConversionSlot.Operand, rawType) ?: rawType
     }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: DataType?): DataType? =
@@ -356,7 +356,7 @@ class TypeResolver(
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
         val rawType = resolvePropertyType(target, expr.property.value) ?: return null
-        return applyModelConversion(expr, Slot.PropertyResult, rawType) ?: rawType
+        return applyModelConversion(expr, ConversionSlot.PropertyResult, rawType) ?: rawType
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =
@@ -632,17 +632,17 @@ class TypeResolver(
     }
 
     /**
-     * Record an operator resolution and its conversion synthetics. Combines
-     * [TypeTable.setOperatorResolution] with [recordResolutionSynthetics] in one call.
+     * Record an operator resolution and its implicit conversions. Combines
+     * [TypeTable.setOperatorResolution] with [recordResolutionConversions] in one call.
      */
     internal fun recordResolution(
         expression: Expression,
         resolution: OperatorResolution,
-        slots: List<Slot>,
+        slots: List<ConversionSlot>,
     ) {
         typeTable.setOperatorResolution(expression, resolution)
-        val st = syntheticTable ?: return
-        recordResolutionSynthetics(st, expression, resolution, slots, operatorRegistry)
+        val st = conversionTable ?: return
+        recordResolutionConversions(st, expression, resolution, slots, operatorRegistry)
     }
 
     @Suppress("ReturnCount")
@@ -653,10 +653,10 @@ class TypeResolver(
     ): DataType? {
         if (leftType == null || rightType == null) return null
         val effectiveLeft =
-            syntheticTable?.effectiveType(expression, Slot.Left, leftType, operatorRegistry)
+            conversionTable?.effectiveType(expression, ConversionSlot.Left, leftType, operatorRegistry)
                 ?: leftType
         val effectiveRight =
-            syntheticTable?.effectiveType(expression, Slot.Right, rightType, operatorRegistry)
+            conversionTable?.effectiveType(expression, ConversionSlot.Right, rightType, operatorRegistry)
                 ?: rightType
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         val resolution =
@@ -668,7 +668,7 @@ class TypeResolver(
         ) {
             return null
         }
-        recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
+        recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
         return resolution.operator.resultType
     }
 
@@ -685,7 +685,7 @@ class TypeResolver(
                 BooleanTestKind.IS_FALSE -> "IsFalse"
             }
         val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
-        typeTable.setOperatorResolution(expression, resolution) // BooleanTest: no slot synthetics
+        typeTable.setOperatorResolution(expression, resolution) // BooleanTest: no slot conversions
         return resolution.operator.resultType
     }
 
@@ -696,12 +696,12 @@ class TypeResolver(
     ): DataType? {
         if (operandType == null) return null
         val effectiveOperand =
-            syntheticTable?.effectiveType(expression, Slot.Operand, operandType, operatorRegistry)
+            conversionTable?.effectiveType(expression, ConversionSlot.Operand, operandType, operatorRegistry)
                 ?: operandType
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
         if (opName == "Positive") return effectiveOperand
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveOperand)) ?: return null
-        recordResolution(expression, resolution, listOf(Slot.Operand))
+        recordResolution(expression, resolution, listOf(ConversionSlot.Operand))
         return resolution.operator.resultType
     }
 
@@ -790,7 +790,7 @@ class TypeResolver(
                 } else {
                     resolution
                 }
-            val argSlots = argTypes.indices.map { Slot.Argument(it) }
+            val argSlots = argTypes.indices.map { ConversionSlot.Argument(it) }
             recordResolution(expression, patched, argSlots)
         }
         return resultType
@@ -810,7 +810,7 @@ class TypeResolver(
             if (singleArgType is ListType) {
                 val resolution = operatorRegistry.resolve(functionName, listOf(singleArgType))
                 if (resolution != null) {
-                    recordResolution(expression, resolution, listOf(Slot.Argument(0)))
+                    recordResolution(expression, resolution, listOf(ConversionSlot.Argument(0)))
                     return resolution.operator.resultType
                 }
             }
@@ -825,19 +825,19 @@ class TypeResolver(
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
 
-        // Apply effective types from synthetic table.
+        // Apply effective types from conversion table.
         // Skip ImplicitCast on Any-typed args — the cast is for emission (As wrapping),
         // not for resolution. Applying it changes Any→List<Any> which breaks generic
         // resolution (T unifies to List<Any> instead of Any).
         val anyType = operatorRegistry.type("Any")
         val effectiveArgTypes =
-            if (syntheticTable != null) {
+            if (conversionTable != null) {
                 nonNullArgTypes.mapIndexed { index, type ->
                     if (type == anyType) type // Don't change Any — resolution handles it
                     else
-                        syntheticTable.effectiveType(
+                        conversionTable.effectiveType(
                             expression,
-                            Slot.Argument(index),
+                            ConversionSlot.Argument(index),
                             type,
                             operatorRegistry,
                         ) ?: type
@@ -873,7 +873,7 @@ class TypeResolver(
             )
 
         if (resolution != null) {
-            val argSlots = nonNullArgTypes.indices.map { Slot.Argument(it) }
+            val argSlots = nonNullArgTypes.indices.map { ConversionSlot.Argument(it) }
             recordResolution(expression, resolution, argSlots)
             return resolution.operator.resultType
         }
@@ -893,8 +893,8 @@ class TypeResolver(
      * library's compiled operator map. Returns the result type if resolution succeeds, or null.
      *
      * Uses [LibraryManager] to compile the included library (via the legacy pipeline) and
-     * [CompiledLibrary.resolveCall] for overload resolution with implicit conversions. Conversion
-     * synthetics are recorded so the emitter wraps arguments correctly (e.g., ToDecimal).
+ * [CompiledLibrary.resolveCall] for overload resolution with implicit conversions.
+ * Implicit conversions are recorded so the emitter wraps arguments correctly (e.g., ToDecimal).
      */
     private fun resolveLibraryFunctionCall(
         expression: FunctionCallExpression,
@@ -926,7 +926,7 @@ class TypeResolver(
             )
         val resolution =
             compiledLibrary.resolveCall(callContext, operatorRegistry.conversionMap) ?: return null
-        val argSlots = argTypes.indices.map { Slot.Argument(it) }
+        val argSlots = argTypes.indices.map { ConversionSlot.Argument(it) }
         recordResolution(expression, resolution, argSlots)
         return resolution.operator.resultType
     }
@@ -992,10 +992,10 @@ class TypeResolver(
 
     /**
      * Check if [rawType] has an implicit model conversion (e.g., FHIR.dateTime → System.DateTime
-     * via FHIRHelpers.ToDateTime). If so, record a [Synthetic.LibraryConversion] on [expr]/[slot]
+     * via FHIRHelpers.ToDateTime). If so, record a [ImplicitConversion.LibraryConversion] on [expr]/[slot]
      * and return the converted type. Returns null if no model conversion applies.
      */
-    private fun applyModelConversion(expr: Expression, slot: Slot, rawType: DataType): DataType? {
+    private fun applyModelConversion(expr: Expression, slot: ConversionSlot, rawType: DataType): DataType? {
         // Don't eagerly narrow ChoiceTypes — choice narrowing must happen at the point of use
         // (operator resolution), not at the property access level. Eagerly narrowing breaks
         // explicit As casts like 'onset as FHIR.Period'.
@@ -1014,7 +1014,7 @@ class TypeResolver(
 
     private fun findAndRecordModelConversion(
         expr: Expression,
-        slot: Slot,
+        slot: ConversionSlot,
         rawType: DataType,
     ): DataType? {
         val conversions = operatorRegistry.conversionMap.getConversions(rawType)
@@ -1026,10 +1026,10 @@ class TypeResolver(
                     it.operator.libraryName != "System"
             } ?: return null
         val op = mc.operator!!
-        syntheticTable?.addIfAbsent(
+        conversionTable?.addIfAbsent(
             expr,
             slot,
-            Synthetic.LibraryConversion(op.libraryName!!, op.name, mc.toType),
+            ImplicitConversion.LibraryConversion(op.libraryName!!, op.name, mc.toType),
         )
         return mc.toType
     }

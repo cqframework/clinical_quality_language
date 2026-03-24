@@ -38,29 +38,32 @@ import org.hl7.cql.model.DataType
  *    name) but not types, so it runs before inference.
  * 3. **Symbol collection** — [SymbolCollector] builds the [SymbolTable] (expression definitions,
  *    function definitions, parameter definitions) from top-level library declarations.
- * 4. **INFER → UNIFY convergence loop** (max 2 iterations):
+ * 4. **INFER → PLAN convergence loop** (max 2 iterations):
  *     - *INFER*: [TypeResolver] walks the AST, infers types, resolves operators and identifiers,
- *       populating a [TypeTable]. Reads the [SyntheticTable] for effective types of operands (e.g.,
- *       a null literal that has been synthetically cast to Integer).
- *     - *UNIFY*: [TypeUnifier] discovers implicit conversions (branch unification, null wrapping,
- *       choice wrapping, interval bound propagation, DateTime null-arg conversions) and records
- *       them in the [SyntheticTable] without mutating the AST.
- *     - The loop exists because type inference and conversion discovery are mutually dependent: a
- *       new synthetic may change the effective type of an operand, which may change operator
+ *       populating a [TypeTable]. Reads the [ConversionTable] for effective types of operands
+ *       (e.g., a null literal that has been implicitly cast to Integer). As a side effect,
+ *       records operator-resolution-derived conversions (e.g., ToDecimal on a left operand)
+ *       into the [ConversionTable] — these are conversions intrinsic to overload resolution,
+ *       discovered at the point where the operator is resolved.
+ *     - *PLAN*: [ConversionPlanner] discovers cross-expression implicit conversions (branch
+ *       unification, null wrapping, choice wrapping, interval bound propagation, DateTime
+ *       null-arg conversions) and records them in the [ConversionTable] without mutating the AST.
+ *     - The loop exists because type inference and conversion planning are mutually dependent:
+ *       a new conversion may change the effective type of an operand, which may change operator
  *       resolution, which may expose new conversion needs. Convergence is reached when no new
- *       synthetics are inserted.
+ *       conversions are inserted.
  * 5. **Semantic validation** — [SemanticValidator] flags errors (unresolved identifiers, undeclared
  *    functions, invalid casts, etc.) in the [SemanticModel].
- * 6. **Normalization** — [Normalizer] performs type-directed structural lowering (phrase → operator
+ * 6. **Lowering** — [Lowering] performs type-directed structural lowering (phrase → operator
  *    trees, concat coalescing, interval expansion, heterogeneous flatten). Produces a new AST with
  *    rewritten parent nodes.
- * 7. **Post-normalization re-collection and re-typing** — new AST nodes created by normalization
- *    need symbols and types. The post-normalization [TypeTable] is merged with the cumulative
- *    pre-normalization table so that unchanged expressions keep their types.
+ * 7. **Post-lowering re-collection and re-typing** — new AST nodes created by lowering
+ *    need symbols and types. The post-lowering [TypeTable] is merged with the cumulative
+ *    pre-lowering table so that unchanged expressions keep their types.
  *
  * ## Result
  *
- * A [SemanticModel] bundling [SymbolTable], [TypeTable], [OperatorRegistry], [SyntheticTable], and
+ * A [SemanticModel] bundling [SymbolTable], [TypeTable], [OperatorRegistry], [ConversionTable], and
  * [ModelContext]. The [ElmEmitter] reads this to produce ELM output.
  *
  * ## Extending
@@ -102,37 +105,44 @@ class SemanticAnalyzer(
         val desugared = desugarAgeInFunctions(library, modelContext)
         val symbols = symbolCollector.collect(desugared)
 
-        // INFER → UNIFY convergence loop.
-        // Each iteration: infer types (using effective types from synthetics), then record
-        // all conversion kinds in the SyntheticTable. No AST mutation — the AST stays immutable.
-        // Converges when no new synthetics are recorded (or max iterations reached).
+        // INFER → PLAN convergence loop.
+        // Each iteration: infer types (reading effective types from the ConversionTable), then
+        // plan cross-expression conversions. No AST mutation — the AST stays immutable.
+        // Converges when no new conversions are recorded (or max iterations reached).
+        //
+        // Note: TypeResolver also writes operator-resolution conversions to the ConversionTable
+        // during INFER (see TypeResolver.recordResolution). These are conversions intrinsic to
+        // overload resolution — splitting them into a separate pass would redundantly re-walk
+        // every resolved operator. ConversionPlanner handles higher-level concerns (branch
+        // unification, null-slot wrapping, choice coercion) that require cross-expression context.
         val cumulativeTypeTable = TypeTable()
         var totalConversions = 0
         val conversionsPerIteration = mutableListOf<Int>()
         val maxIterations = 2
-        val syntheticTable = SyntheticTable()
+        val conversionTable = ConversionTable()
 
         for (iteration in 1..maxIterations) {
-            // INFER: type resolution + overload resolution (reads synthetics for effective types)
+            // INFER: type resolution + overload resolution
+            // (reads + writes ConversionTable for effective types and operator conversions)
             val resolver =
-                TypeResolver(operatorRegistry, syntheticTable, modelContext, libraryManager)
+                TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
             val iterationTypeTable = resolver.resolve(desugared, symbols)
 
             // Merge this iteration's results into the cumulative table.
             // Later iterations may lose types that earlier iterations resolved (e.g., when
-            // effective types from synthetics break generic resolution). mergeFrom preserves
+            // effective types from conversions break generic resolution). mergeFrom preserves
             // the earliest successful type/resolution for each expression.
             cumulativeTypeTable.mergeFrom(iterationTypeTable)
 
-            // UNIFY: type unification, null-wrapping, choice wrapping (no AST mutation)
-            val unifier = TypeUnifier(cumulativeTypeTable, operatorRegistry, syntheticTable)
-            unifier.analyzeLibrary(desugared)
+            // PLAN: cross-expression conversion discovery (no AST mutation)
+            val planner = ConversionPlanner(cumulativeTypeTable, operatorRegistry, conversionTable)
+            planner.analyzeLibrary(desugared)
 
-            val inserted = unifier.newSyntheticsInserted
+            val inserted = planner.newConversionsInserted
             conversionsPerIteration.add(inserted)
             totalConversions += inserted
 
-            // CHECK: converged if no new synthetics recorded
+            // Converged if no new conversions recorded
             if (inserted == 0) break
         }
 
@@ -144,22 +154,22 @@ class SemanticAnalyzer(
                 finalTypeTable,
                 operatorRegistry,
                 options,
-                syntheticTable = syntheticTable,
+                conversionTable = conversionTable,
             )
         semanticValidator.validate(desugared, symbols, preNormModel)
 
-        // NORMALIZATION: structural rewrites (phrases → operator trees, coalesce wrapping, etc.)
-        // Produces a new AST with complex phrases rewritten into simpler nodes.
-        val normalizer = Normalizer(preNormModel)
-        val normalizedLibrary = normalizer.normalizeLibrary(desugared)
+        // LOWERING: type-directed structural rewrites (phrases → operator trees, coalesce
+        // wrapping, interval expansion, etc.). Produces a new AST with complex phrases rewritten
+        // into simpler nodes.
+        val lowering = Lowering(preNormModel)
+        val normalizedLibrary = lowering.normalizeLibrary(desugared)
 
-        // Re-collect symbols and re-type the normalized AST: normalization may create new
-        // expressions
+        // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
         // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
-        // Merge the pre-normalization cumulative table so unchanged expressions keep their types.
+        // Merge the pre-lowering cumulative table so unchanged expressions keep their types.
         val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
         val normalizedResolver =
-            TypeResolver(operatorRegistry, syntheticTable, modelContext, libraryManager)
+            TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
         val normalizedTypeTable = normalizedResolver.resolve(normalizedLibrary, normalizedSymbols)
         normalizedTypeTable.mergeFrom(finalTypeTable)
 
@@ -170,7 +180,7 @@ class SemanticAnalyzer(
                 operatorRegistry,
                 options,
                 errors = preNormModel.errors,
-                syntheticTable = syntheticTable,
+                conversionTable = conversionTable,
                 modelContext = modelContext,
             )
 
@@ -380,7 +390,7 @@ class TypeTable {
      *   identifier resolutions.
      *
      * This preserves types from earlier convergence loop iterations that may be lost in later
-     * iterations (e.g., when effective types from synthetics break generic resolution).
+     * iterations (e.g., when effective types from conversions break generic resolution).
      */
     fun mergeFrom(other: TypeTable) {
         for ((expression, type) in other.types) {

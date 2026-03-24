@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm.codegen
 
 import org.cqframework.cql.cql2elm.analysis.OperatorRegistry
 import org.cqframework.cql.cql2elm.analysis.SemanticModel
-import org.cqframework.cql.cql2elm.analysis.Slot
-import org.cqframework.cql.cql2elm.analysis.Synthetic
+import org.cqframework.cql.cql2elm.analysis.ConversionSlot
+import org.cqframework.cql.cql2elm.analysis.ImplicitConversion
 import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
@@ -74,12 +74,12 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  * Because children are pre-folded through [emitExpression] before `on*` is called, every child the
  * handler receives is already a decorated [ElmExpression].
  *
- * ## Synthetic application pattern
+ * ## Implicit conversion application pattern
  *
- * Each `on*` handler wraps child ELM nodes with [applySynthetics] before passing them to the
- * emission function. [applySynthetics] looks up the [SyntheticTable] for implicit conversions
- * recorded by [TypeUnifier][org.cqframework.cql.cql2elm.analysis.TypeUnifier] at a given `(parent,
- * Slot)` and wraps the ELM expression in the appropriate conversion nodes (operator conversions,
+ * Each `on*` handler wraps child ELM nodes with [applyConversions] before passing them to the
+ * emission function. [applyConversions] looks up the [ConversionTable] for implicit conversions
+ * recorded by [ConversionPlanner][org.cqframework.cql.cql2elm.analysis.ConversionPlanner] at a given `(parent,
+ * ConversionSlot)` and wraps the ELM expression in the appropriate conversion nodes (operator conversions,
  * implicit casts, list/interval conversions). This keeps the AST immutable — type coercions are
  * applied only at code-generation time.
  *
@@ -115,7 +115,7 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  *    subtype is added to the AST and [ExpressionFold]).
  * 2. Implement ELM construction — either inline in the handler or in an existing/new emission
  *    extension file (see below).
- * 3. Call [applySynthetics] for every child slot that may carry an implicit conversion.
+ * 3. Call [applyConversions] for every child slot that may carry an implicit conversion.
  *
  * ## How to add a new emission extension file
  * 1. Create a new `.kt` file in the `codegen` package.
@@ -125,7 +125,7 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  *
  * ## What NOT to put here
  * - Type inference or operator resolution logic — those belong in the analysis phases.
- * - AST mutation — the AST is immutable by this stage; use [SyntheticTable] for conversions.
+ * - AST mutation — the AST is immutable by this stage; use [ConversionTable] for conversions.
  * - Library-level orchestration — that belongs in [ElmEmitter].
  */
 @Suppress("TooManyFunctions")
@@ -241,15 +241,15 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     }
 
     /**
-     * Apply any synthetics recorded in the [SyntheticTable] for the given parent/slot. Wraps the
+     * Apply any implicit conversions recorded in the [ConversionTable] for the given parent/slot. Wraps the
      * ELM expression in the appropriate ELM conversion nodes.
      */
     @Suppress("CyclomaticComplexMethod")
-    fun applySynthetics(parent: Expression, slot: Slot, elm: ElmExpression): ElmExpression {
-        val synthetics = semanticModel.syntheticTable.get(parent, slot)
+    fun applyConversions(parent: Expression, slot: ConversionSlot, elm: ElmExpression): ElmExpression {
+        val conversions = semanticModel.conversionTable.get(parent, slot)
         var result = elm
-        for (s in synthetics) {
-            result = applySingleSynthetic(result, s)
+        for (s in conversions) {
+            result = applySingleConversion(result, s)
         }
         return result
     }
@@ -287,25 +287,25 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
      * null.
      *
      * Only produced for multi-branch narrowing (analysis decomposes single-branch into sequential
-     * synthetics). Matches the legacy translator's convertExpression Case emission.
+     * conversions). Matches the legacy translator's convertExpression Case emission.
      */
 
-    /** Apply a single [Synthetic] to an expression. Factored out of [applySynthetics] for reuse. */
-    private fun applySingleSynthetic(elm: ElmExpression, synthetic: Synthetic): ElmExpression =
-        when (synthetic) {
-            is Synthetic.OperatorConversion -> createConversionElm(synthetic.operatorName, elm)
-            is Synthetic.ImplicitCast -> emitImplicitCast(elm, synthetic.targetType)
-            is Synthetic.ListConversion ->
+    /** Apply a single [ImplicitConversion] to an expression. Factored out of [applyConversions] for reuse. */
+    private fun applySingleConversion(elm: ElmExpression, conversion: ImplicitConversion): ElmExpression =
+        when (conversion) {
+            is ImplicitConversion.OperatorConversion -> createConversionElm(conversion.operatorName, elm)
+            is ImplicitConversion.ImplicitCast -> emitImplicitCast(elm, conversion.targetType)
+            is ImplicitConversion.ListConversion ->
                 emitListConversionQuery(
                     elm,
-                    synthetic.innerOperatorName,
-                    synthetic.innerLibraryName,
+                    conversion.innerOperatorName,
+                    conversion.innerLibraryName,
                 )
-            is Synthetic.ListDemotion -> emitListDemotionQuery(elm, synthetic.targetElementType)
-            is Synthetic.IntervalConversion ->
-                emitIntervalConversion(elm, synthetic.innerOperatorName, synthetic.innerLibraryName)
-            is Synthetic.LibraryConversion ->
-                emitLibraryFunctionRef(synthetic.libraryName, synthetic.functionName, elm)
+            is ImplicitConversion.ListDemotion -> emitListDemotionQuery(elm, conversion.targetElementType)
+            is ImplicitConversion.IntervalConversion ->
+                emitIntervalConversion(elm, conversion.innerOperatorName, conversion.innerLibraryName)
+            is ImplicitConversion.LibraryConversion ->
+                emitLibraryFunctionRef(conversion.libraryName, conversion.functionName, elm)
         }
 
     /** Emit Coalesce(expression, '') wrapping for CONCAT null-coalescing. */
@@ -532,7 +532,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         children: LiteralChildren<ElmExpression>,
     ): ElmExpression {
         val literal = expr.literal
-        // For list and interval literals, use pre-folded children and apply synthetics
+        // For list and interval literals, use pre-folded children and apply conversions
         // so that element/bound type conversions are applied correctly.
         return when (literal) {
             is org.hl7.cql.ast.ListLiteral -> {
@@ -541,7 +541,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                     list.element =
                         children.elements
                             .mapIndexed { i, elem ->
-                                applySynthetics(expr, Slot.ListElement(i), elem)
+                                applyConversions(expr, ConversionSlot.ListElement(i), elem)
                             }
                             .toMutableList()
                 }
@@ -549,9 +549,9 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             }
             is org.hl7.cql.ast.IntervalLiteral -> {
                 org.hl7.elm.r1.Interval().apply {
-                    low = children.intervalLow?.let { applySynthetics(expr, Slot.IntervalLow, it) }
+                    low = children.intervalLow?.let { applyConversions(expr, ConversionSlot.IntervalLow, it) }
                     high =
-                        children.intervalHigh?.let { applySynthetics(expr, Slot.IntervalHigh, it) }
+                        children.intervalHigh?.let { applyConversions(expr, ConversionSlot.IntervalHigh, it) }
                     lowClosed = literal.lowerClosed
                     highClosed = literal.upperClosed
                 }
@@ -567,7 +567,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
                             .mapIndexed { i, elem ->
                                 org.hl7.elm.r1.InstanceElement().apply {
                                     name = literal.elements[i].name.value
-                                    value = applySynthetics(expr, Slot.ListElement(i), elem)
+                                    value = applyConversions(expr, ConversionSlot.ListElement(i), elem)
                                 }
                             }
                             .toMutableList()
@@ -592,13 +592,13 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     ): ElmExpression {
         return emitBinaryOperator(
             expr,
-            applySynthetics(expr, Slot.Left, left),
-            applySynthetics(expr, Slot.Right, right),
+            applyConversions(expr, ConversionSlot.Left, left),
+            applyConversions(expr, ConversionSlot.Right, right),
         )
     }
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: ElmExpression) =
-        emitUnaryOperator(expr, applySynthetics(expr, Slot.Operand, operand))
+        emitUnaryOperator(expr, applyConversions(expr, ConversionSlot.Operand, operand))
 
     override fun onBooleanTest(expr: BooleanTestExpression, operand: ElmExpression) =
         emitBooleanTest(expr, operand)
@@ -612,8 +612,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         emitIfExpression(
             expr,
             condition,
-            applySynthetics(expr, Slot.ThenBranch, thenBranch),
-            applySynthetics(expr, Slot.ElseBranch, elseBranch),
+            applyConversions(expr, ConversionSlot.ThenBranch, thenBranch),
+            applyConversions(expr, ConversionSlot.ElseBranch, elseBranch),
         )
 
     override fun onCase(
@@ -627,18 +627,18 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             comparand,
             cases.mapIndexed { i, c ->
                 CaseChildren(
-                    condition = applySynthetics(expr, Slot.CaseCondition(i), c.condition),
-                    result = applySynthetics(expr, Slot.CaseBranch(i), c.result),
+                    condition = applyConversions(expr, ConversionSlot.CaseCondition(i), c.condition),
+                    result = applyConversions(expr, ConversionSlot.CaseBranch(i), c.result),
                 )
             },
-            applySynthetics(expr, Slot.ElseBranch, elseResult),
+            applyConversions(expr, ConversionSlot.ElseBranch, elseResult),
         )
 
     override fun onIs(expr: IsExpression, operand: ElmExpression) = emitIsExpression(expr, operand)
 
     override fun onAs(expr: AsExpression, operand: ElmExpression): ElmExpression {
         val result = emitAsExpression(expr, operand)
-        return applySynthetics(expr, Slot.Operand, result)
+        return applyConversions(expr, ConversionSlot.Operand, result)
     }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: ElmExpression) =
@@ -658,7 +658,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         emitFunctionCall(
             expr,
             target,
-            arguments.mapIndexed { index, arg -> applySynthetics(expr, Slot.Argument(index), arg) },
+            arguments.mapIndexed { index, arg -> applyConversions(expr, ConversionSlot.Argument(index), arg) },
         )
 
     override fun onPropertyAccess(
@@ -666,14 +666,14 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         target: ElmExpression,
     ): ElmExpression {
         val property = emitPropertyAccess(expr, target)
-        return applySynthetics(expr, Slot.PropertyResult, property)
+        return applyConversions(expr, ConversionSlot.PropertyResult, property)
     }
 
     override fun onIndex(expr: IndexExpression, target: ElmExpression, index: ElmExpression) =
         emitIndexExpression(expr, target, index)
 
     override fun onExists(expr: ExistsExpression, operand: ElmExpression) =
-        emitExists(expr, applySynthetics(expr, Slot.Operand, operand))
+        emitExists(expr, applyConversions(expr, ConversionSlot.Operand, operand))
 
     override fun onMembership(
         expr: MembershipExpression,
@@ -682,18 +682,18 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     ) =
         emitMembership(
             expr,
-            applySynthetics(expr, Slot.Left, left),
-            applySynthetics(expr, Slot.Right, right),
+            applyConversions(expr, ConversionSlot.Left, left),
+            applyConversions(expr, ConversionSlot.Right, right),
         )
 
     override fun onListTransform(expr: ListTransformExpression, operand: ElmExpression) =
-        emitListTransform(expr, applySynthetics(expr, Slot.Operand, operand))
+        emitListTransform(expr, applyConversions(expr, ConversionSlot.Operand, operand))
 
     override fun onExpandCollapse(
         expr: ExpandCollapseExpression,
         operand: ElmExpression,
         per: ElmExpression?,
-    ): ElmExpression = emitExpandCollapse(expr, applySynthetics(expr, Slot.Operand, operand), per)
+    ): ElmExpression = emitExpandCollapse(expr, applyConversions(expr, ConversionSlot.Operand, operand), per)
 
     override fun onDateTimeComponent(expr: DateTimeComponentExpression, operand: ElmExpression) =
         emitDateTimeComponent(expr, operand)
@@ -720,7 +720,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         emitTimeBoundary(expr, operand)
 
     override fun onWidth(expr: WidthExpression, operand: ElmExpression) =
-        emitWidth(expr, applySynthetics(expr, Slot.Operand, operand))
+        emitWidth(expr, applyConversions(expr, ConversionSlot.Operand, operand))
 
     override fun onElementExtractor(expr: ElementExtractorExpression, operand: ElmExpression) =
         emitElementExtractor(expr, operand)
@@ -756,8 +756,8 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
     ) =
         emitIntervalRelation(
             expr,
-            applySynthetics(expr, Slot.Left, left),
-            applySynthetics(expr, Slot.Right, right),
+            applyConversions(expr, ConversionSlot.Left, left),
+            applyConversions(expr, ConversionSlot.Right, right),
         )
 
     override fun onQuery(

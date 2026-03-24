@@ -2,71 +2,89 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>ComplexCondition:ConversionPlanner.kt$ConversionPlanner$leftElem !is ChoiceType &amp;&amp; rightElem !is ChoiceType &amp;&amp; !leftElem.isSuperTypeOf(rightElem) &amp;&amp; !rightElem.isSuperTypeOf(leftElem)</ID>
+    <ID>ComplexCondition:ConversionPlanner.kt$ConversionPlanner$targetType is ListType &amp;&amp; targetType.elementType is ChoiceType &amp;&amp; fromType is ListType &amp;&amp; canEmitAsTypeSpecifier(targetType)</ID>
     <ID>ComplexCondition:FullParityTest.kt$FullParityTest$node is JsonObject &amp;&amp; node["type"] is kotlinx.serialization.json.JsonPrimitive &amp;&amp; (node["type"] as kotlinx.serialization.json.JsonPrimitive).content == type &amp;&amp; node["operand"] is JsonArray</ID>
-    <ID>ComplexCondition:Normalizer.kt$Normalizer$expr.operator == org.hl7.cql.ast.MembershipOperator.CONTAINS &amp;&amp; leftType is IntervalType &amp;&amp; leftType.pointType.toString() == "System.Any" &amp;&amp; rightType != null &amp;&amp; rightType.toString() != "System.Any"</ID>
-    <ID>ComplexCondition:Normalizer.kt$Normalizer$expr.operator == org.hl7.cql.ast.MembershipOperator.IN &amp;&amp; rightType is IntervalType &amp;&amp; rightType.pointType.toString() == "System.Any" &amp;&amp; leftType != null &amp;&amp; leftType.toString() != "System.Any"</ID>
-    <ID>ComplexCondition:Normalizer.kt$Normalizer$leftType is IntervalType &amp;&amp; rightType is IntervalType &amp;&amp; rightType.pointType.toString() == "System.Any" &amp;&amp; leftType.pointType.toString() != "System.Any" &amp;&amp; !isIntervalLiteral(expr.right)</ID>
-    <ID>ComplexCondition:Normalizer.kt$Normalizer$low === expr.low &amp;&amp; high === expr.high &amp;&amp; lowClosed === expr.lowClosedExpression &amp;&amp; highClosed === expr.highClosedExpression</ID>
+    <ID>ComplexCondition:Lowering.kt$Lowering$expr.operator == org.hl7.cql.ast.MembershipOperator.CONTAINS &amp;&amp; leftType is IntervalType &amp;&amp; leftType.pointType.toString() == "System.Any" &amp;&amp; rightType != null &amp;&amp; rightType.toString() != "System.Any"</ID>
+    <ID>ComplexCondition:Lowering.kt$Lowering$expr.operator == org.hl7.cql.ast.MembershipOperator.IN &amp;&amp; rightType is IntervalType &amp;&amp; rightType.pointType.toString() == "System.Any" &amp;&amp; leftType != null &amp;&amp; leftType.toString() != "System.Any"</ID>
+    <ID>ComplexCondition:Lowering.kt$Lowering$leftType is IntervalType &amp;&amp; rightType is IntervalType &amp;&amp; rightType.pointType.toString() == "System.Any" &amp;&amp; leftType.pointType.toString() != "System.Any" &amp;&amp; !isIntervalLiteral(expr.right)</ID>
+    <ID>ComplexCondition:Lowering.kt$Lowering$low === expr.low &amp;&amp; high === expr.high &amp;&amp; lowClosed === expr.lowClosedExpression &amp;&amp; highClosed === expr.highClosedExpression</ID>
     <ID>ComplexCondition:OperatorEntry.kt$OperatorEntry.SignatureNode$callTypes[i] == DataType.ANY &amp;&amp; i &lt; invTypes.size &amp;&amp; invTypes[i] != DataType.ANY &amp;&amp; (i >= convs.size || convs[i] == null)</ID>
     <ID>ComplexCondition:TemporalTypeInference.kt$opName != null &amp;&amp; leftType is org.hl7.cql.model.IntervalType &amp;&amp; rightType is org.hl7.cql.model.IntervalType &amp;&amp; leftType.pointType != rightType.pointType</ID>
-    <ID>ComplexCondition:TypeUnifier.kt$TypeUnifier$leftElem !is ChoiceType &amp;&amp; rightElem !is ChoiceType &amp;&amp; !leftElem.isSuperTypeOf(rightElem) &amp;&amp; !rightElem.isSuperTypeOf(leftElem)</ID>
-    <ID>ComplexCondition:TypeUnifier.kt$TypeUnifier$targetType is ListType &amp;&amp; targetType.elementType is ChoiceType &amp;&amp; fromType is ListType &amp;&amp; canEmitAsTypeSpecifier(targetType)</ID>
-    <ID>CyclomaticComplexMethod:DefinitionEmission.kt$internal fun EmissionContext.emitFunctionDefinition( definition: FunctionDefinition, currentContext: String?, ): FunctionDef</ID>
+    <ID>ComplexCondition:TemporalTypeInference.kt$resolution != null &amp;&amp; resolution.hasConversions() &amp;&amp; resolution.conversions.any { it != null &amp;&amp; it.operator != null }</ID>
+    <ID>CyclomaticComplexMethod:CollectionOperatorEmission.kt$internal fun EmissionContext.emitMembership( expression: MembershipExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
+    <ID>CyclomaticComplexMethod:ConversionPlanner.kt$ConversionPlanner$override fun onMembership(expr: MembershipExpression, left: Unit, right: Unit)</ID>
     <ID>CyclomaticComplexMethod:ElmEmitter.kt$ElmEmitter$fun emit(astLibrary: org.hl7.cql.ast.Library): Result</ID>
+    <ID>CyclomaticComplexMethod:ImplicitConversion.kt$ConversionTable$@Suppress("ReturnCount") fun effectiveType( parent: Expression, slot: ConversionSlot, sourceType: DataType?, operatorRegistry: OperatorRegistry, ): DataType?</ID>
+    <ID>CyclomaticComplexMethod:ImplicitConversion.kt$internal fun conversionToImplicits( conversion: Conversion, registry: OperatorRegistry, ): List&lt;ImplicitConversion></ID>
     <ID>CyclomaticComplexMethod:IntervalOperatorEmission.kt$private fun EmissionContext.emitIncludesPhrase( phrase: IncludesIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
-    <ID>CyclomaticComplexMethod:Normalizer.kt$Normalizer$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
+    <ID>CyclomaticComplexMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
     <ID>CyclomaticComplexMethod:QueryTypeInference.kt$@Suppress("ReturnCount") internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?</ID>
+    <ID>CyclomaticComplexMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>CyclomaticComplexMethod:SemanticAnalyzer.kt$SymbolCollector$fun collect(library: Library): SymbolTable</ID>
     <ID>CyclomaticComplexMethod:SemanticValidator.kt$ExpressionChecker$private fun validateQuery(expr: QueryExpression)</ID>
     <ID>CyclomaticComplexMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount") private fun inferIdentifierType(expression: IdentifierExpression): DataType?</ID>
-    <ID>CyclomaticComplexMethod:TypeUnifier.kt$TypeUnifier$override fun onMembership(expr: MembershipExpression, left: Unit, right: Unit)</ID>
+    <ID>EmptyFunctionBlock:ConversionPlanner.kt$ConversionPlanner${}</ID>
     <ID>EmptyFunctionBlock:SemanticValidator.kt$ExpressionChecker${}</ID>
-    <ID>EmptyFunctionBlock:TypeUnifier.kt$TypeUnifier${}</ID>
     <ID>ForbiddenComment:TerminologyEmission.kt$// TODO: For namespaced libraries, the legacy uses NamespaceManager.getPath(namespaceUri, name)</ID>
-    <ID>LargeClass:Normalizer.kt$Normalizer : ExpressionFold</ID>
+    <ID>LargeClass:Lowering.kt$Lowering : ExpressionFold</ID>
     <ID>LargeClass:TypeResolver.kt$TypeResolver : ExpressionFold</ID>
     <ID>LongMethod:FunctionEmission.kt$@Suppress("CyclomaticComplexMethod") internal fun EmissionContext.emitFunctionCall( expression: FunctionCallExpression, targetElm: ElmExpression?, rawArgs: List&lt;ElmExpression>, ): ElmExpression</ID>
-    <ID>LongMethod:Normalizer.kt$Normalizer$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
+    <ID>LongMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
+    <ID>LongMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>LongMethod:SemanticAnalyzer.kt$SemanticAnalyzer$@Suppress("MagicNumber") fun analyze(library: Library): Result</ID>
-    <ID>LongParameterList:Normalizer.kt$Normalizer$( expr: IntervalRelationExpression, operator: org.hl7.cql.ast.MembershipOperator, left: Expression, right: Expression, precision: String?, proper: Boolean, )</ID>
-    <ID>LongParameterList:SemanticModel.kt$SemanticModel$( internal val symbolTable: SymbolTable, internal val typeTable: TypeTable, val operatorRegistry: OperatorRegistry, val options: CqlCompilerOptions? = null, /** Expressions flagged with semantic errors. Codegen emits Null for these. */ internal val errors: MutableSet&lt;Expression> = mutableSetOf(), /** Side table of synthetic conversions keyed by parent expression + slot. */ val syntheticTable: SyntheticTable = SyntheticTable(), /** Model context for type/QName resolution. Passed to codegen. */ val modelContext: ModelContext = ModelContext.systemOnly(), )</ID>
+    <ID>LongMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount", "CyclomaticComplexMethod") private fun inferFunctionCallType( expression: FunctionCallExpression, argTypes: List&lt;DataType?>, ): DataType?</ID>
+    <ID>LongParameterList:Lowering.kt$Lowering$( expr: IntervalRelationExpression, operator: org.hl7.cql.ast.MembershipOperator, left: Expression, right: Expression, precision: String?, proper: Boolean, )</ID>
+    <ID>LongParameterList:Lowering.kt$Lowering$( left: Expression, right: Expression, leftType: DataType?, rightType: DataType?, leftBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, rightBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, )</ID>
+    <ID>LongParameterList:SemanticModel.kt$SemanticModel$( internal val symbolTable: SymbolTable, internal val typeTable: TypeTable, val operatorRegistry: OperatorRegistry, val options: CqlCompilerOptions? = null, /** Expressions flagged with semantic errors. Codegen emits Null for these. */ internal val errors: MutableSet&lt;Expression> = mutableSetOf(), /** Side table of implicit conversions keyed by parent expression + slot. */ val conversionTable: ConversionTable = ConversionTable(), /** Model context for type/QName resolution. Passed to codegen. */ val modelContext: ModelContext = ModelContext.systemOnly(), )</ID>
     <ID>LoopWithTooManyJumpStatements:TypeResolver.kt$TypeResolver$for</ID>
-    <ID>MagicNumber:TypeUnifier.kt$TypeUnifier$7</ID>
-    <ID>NestedBlockDepth:DefinitionEmission.kt$internal fun EmissionContext.emitFunctionDefinition( definition: FunctionDefinition, currentContext: String?, ): FunctionDef</ID>
+    <ID>MagicNumber:ConversionPlanner.kt$ConversionPlanner$7</ID>
+    <ID>MaxLineLength:ConversionPlanner.kt$ConversionPlanner$*</ID>
+    <ID>NestedBlockDepth:CollectionOperatorEmission.kt$internal fun EmissionContext.emitMembership( expression: MembershipExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
+    <ID>NestedBlockDepth:ConversionPlanner.kt$ConversionPlanner$@Suppress("CyclomaticComplexMethod") private fun recordDateTimeNullArgConversions( functionName: String, expr: FunctionCallExpression, )</ID>
     <ID>NestedBlockDepth:IntervalOperatorEmission.kt$private fun EmissionContext.emitIncludedInPhrase( phrase: IncludedInIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>NestedBlockDepth:IntervalOperatorEmission.kt$private fun EmissionContext.emitIncludesPhrase( phrase: IncludesIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>NestedBlockDepth:OperatorEntry.kt$OperatorEntry.SignatureNode$@Suppress("LongParameterList", "UnusedParameter") private fun getOperatorResolution( operator: Operator, callSignature: Signature, invocationSignature: Signature, conversionMap: ConversionMap, operatorMap: OperatorMap, allowPromotionAndDemotion: Boolean, requireConversions: Boolean, ): OperatorResolution?</ID>
+    <ID>NestedBlockDepth:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>NestedBlockDepth:SemanticValidator.kt$ExpressionChecker$private fun validateQuery(expr: QueryExpression)</ID>
     <ID>NestedBlockDepth:SemanticValidator.kt$SemanticValidator$fun validate(library: Library, symbolTable: SymbolTable, semanticModel: SemanticModel)</ID>
     <ID>NestedBlockDepth:StatementEmission.kt$StatementEmitter$private fun ensureFunctionEmitted(name: String)</ID>
     <ID>NestedBlockDepth:TypeResolver.kt$TypeResolver$internal fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType?</ID>
-    <ID>NestedBlockDepth:TypeUnifier.kt$TypeUnifier$@Suppress("CyclomaticComplexMethod") private fun recordDateTimeNullArgConversions( functionName: String, expr: FunctionCallExpression, )</ID>
+    <ID>ReturnCount:CollectionOperatorEmission.kt$internal fun EmissionContext.emitMembership( expression: MembershipExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>ReturnCount:CollectionOperatorEmission.kt$private fun EmissionContext.buildPerOperand( expression: org.hl7.cql.ast.ExpandCollapseExpression, perElm: ElmExpression?, ): ElmExpression</ID>
+    <ID>ReturnCount:ConversionPlanner.kt$ConversionPlanner$private fun recordTargetTypeConversion( parent: Expression, slot: ConversionSlot, childExpr: Expression, targetType: DataType, )</ID>
+    <ID>ReturnCount:EmissionContext.kt$EmissionContext$internal fun resolveTypeQName(name: String): QName</ID>
+    <ID>ReturnCount:EmissionContext.kt$EmissionContext$internal fun resolveTypeQName(qualifiedName: org.hl7.cql.ast.QualifiedIdentifier): QName</ID>
     <ID>ReturnCount:FullParityTest.kt$FullParityTest$private fun tryAssertParity(resourcePath: String, testName: String)</ID>
+    <ID>ReturnCount:FunctionEmission.kt$@Suppress("CyclomaticComplexMethod") internal fun EmissionContext.emitFunctionCall( expression: FunctionCallExpression, targetElm: ElmExpression?, rawArgs: List&lt;ElmExpression>, ): ElmExpression</ID>
+    <ID>ReturnCount:ImplicitConversion.kt$internal fun conversionToImplicits( conversion: Conversion, registry: OperatorRegistry, ): List&lt;ImplicitConversion></ID>
     <ID>ReturnCount:IntervalOperatorEmission.kt$@Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod") private fun EmissionContext.emitBeforeOrAfterPhrase( phrase: BeforeOrAfterIntervalPhrase, expression: IntervalRelationExpression, leftElm: ElmExpression, rightElm: ElmExpression, ): ElmExpression</ID>
     <ID>ReturnCount:IntervalOperatorEmission.kt$private fun EmissionContext.hasConcreteListElementType( expression: org.hl7.cql.ast.Expression ): Boolean</ID>
     <ID>ReturnCount:IntervalOperatorEmission.kt$private fun EmissionContext.isElementType(expression: org.hl7.cql.ast.Expression): Boolean</ID>
+    <ID>ReturnCount:Lowering.kt$Lowering$override fun onBinaryOperator( expr: OperatorBinaryExpression, left: Expression, right: Expression, ): Expression</ID>
+    <ID>ReturnCount:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
+    <ID>ReturnCount:Lowering.kt$Lowering$private fun isPointOperand( expression: Expression, boundary: org.hl7.cql.ast.IntervalBoundarySelector?, otherExpression: Expression?, ): Boolean</ID>
+    <ID>ReturnCount:Lowering.kt$Lowering$private fun normalizeCalculateAgeAtCompatibility( expr: FunctionCallExpression, arguments: List&lt;Expression>, ): Expression?</ID>
+    <ID>ReturnCount:Lowering.kt$Lowering$private fun normalizeHeterogeneousFlatten( expr: ListTransformExpression, operand: Expression, ): Expression?</ID>
     <ID>ReturnCount:ModelContext.kt$ModelContext$fun dataTypeToQName(type: DataType): QName</ID>
     <ID>ReturnCount:ModelContext.kt$ModelContext$fun resolveModelType(modelName: String?, typeName: String): DataType?</ID>
-    <ID>ReturnCount:Normalizer.kt$Normalizer$override fun onBinaryOperator( expr: OperatorBinaryExpression, left: Expression, right: Expression, ): Expression</ID>
-    <ID>ReturnCount:Normalizer.kt$Normalizer$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
-    <ID>ReturnCount:Normalizer.kt$Normalizer$private fun isPointOperand( expression: Expression, boundary: org.hl7.cql.ast.IntervalBoundarySelector?, otherExpression: Expression?, ): Boolean</ID>
-    <ID>ReturnCount:Normalizer.kt$Normalizer$private fun normalizeCalculateAgeAtCompatibility( expr: FunctionCallExpression, arguments: List&lt;Expression>, ): Expression?</ID>
-    <ID>ReturnCount:Normalizer.kt$Normalizer$private fun normalizeHeterogeneousFlatten( expr: ListTransformExpression, operand: Expression, ): Expression?</ID>
+    <ID>ReturnCount:PropertyAccessEmission.kt$internal fun EmissionContext.emitPropertyAccess( expression: PropertyAccessExpression, targetElm: ElmExpression, ): ElmExpression</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$AgeInDesugarer$override fun onFunctionCall( expr: org.hl7.cql.ast.FunctionCallExpression, target: Expression?, arguments: List&lt;Expression>, ): Expression</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$SemanticAnalyzer$private fun buildModelContext(library: Library): ModelContext</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$SemanticAnalyzer$private fun desugarAgeInFunctions(library: Library, modelContext: ModelContext): Library</ID>
     <ID>ReturnCount:SemanticValidator.kt$ExpressionChecker$override fun onFunctionCall( expr: FunctionCallExpression, target: Unit?, arguments: List&lt;Unit>, )</ID>
-    <ID>ReturnCount:Synthetic.kt$internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorRegistry): Synthetic?</ID>
     <ID>ReturnCount:TypeOperatorEmission.kt$internal fun EmissionContext.emitConversionExpression( expression: ConversionExpression, operandElm: ElmExpression, ): ElmExpression</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$internal fun resolveNamedType(name: String): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$internal fun resolveTypeSpecifier(typeSpec: org.hl7.cql.ast.TypeSpecifier): DataType?</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun findCommonTypeWithConversions(types: List&lt;DataType>): DataType</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun inferCaseType( expression: CaseExpression, cases: List&lt;CaseChildren&lt;DataType?>>, elseType: DataType?, ): DataType?</ID>
+    <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun resolveLibraryFunctionCall( expression: FunctionCallExpression, argTypes: List&lt;DataType>, ): DataType?</ID>
     <ID>ReturnCount:TypeResolver.kt$TypeResolver$private fun resolvePropertyType(sourceType: DataType, propertyName: String): DataType?</ID>
-    <ID>ReturnCount:TypeUnifier.kt$TypeUnifier$private fun recordTargetTypeConversion( parent: Expression, slot: Slot, childExpr: Expression, targetType: DataType, )</ID>
     <ID>TooManyFunctions:ModelContext.kt$ModelContext</ID>
     <ID>TooManyFunctions:QueryEmission.kt$org.cqframework.cql.cql2elm.codegen.QueryEmission.kt</ID>
     <ID>TooManyFunctions:ScopeTracker.kt$ScopeTracker</ID>
+    <ID>TooManyFunctions:SemanticAnalyzer.kt$TypeTable</ID>
     <ID>TooManyFunctions:SemanticModel.kt$SemanticModel</ID>
     <ID>TooManyFunctions:SystemFunctionEmission.kt$org.cqframework.cql.cql2elm.codegen.SystemFunctionEmission.kt</ID>
     <ID>TooManyFunctions:TemporalTypeInference.kt$org.cqframework.cql.cql2elm.analysis.TemporalTypeInference.kt</ID>
@@ -74,6 +92,7 @@
     <ID>UnusedParameter:CaseEmission.kt$expression: CaseExpression</ID>
     <ID>UnusedParameter:CollectionOperatorEmission.kt$expression: ExistsExpression</ID>
     <ID>UnusedParameter:CollectionOperatorEmission.kt$expression: WidthExpression</ID>
+    <ID>UnusedParameter:ConversionPlanner.kt$ConversionPlanner$source: Expression</ID>
     <ID>UnusedParameter:FunctionEmission.kt$expression: IfExpression</ID>
     <ID>UnusedParameter:FunctionEmission.kt$expression: IndexExpression</ID>
     <ID>UnusedParameter:IntervalOperatorEmission.kt$expression: IntervalRelationExpression</ID>
@@ -84,7 +103,6 @@
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: DurationBetweenExpression</ID>
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: DurationOfExpression</ID>
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: ExistsExpression</ID>
-    <ID>UnusedParameter:TemporalTypeInference.kt$expression: MembershipExpression</ID>
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: TimeBoundaryExpression</ID>
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: WidthExpression</ID>
     <ID>UnusedParameter:TemporalTypeInference.kt$expression: org.hl7.cql.ast.ExpandCollapseExpression</ID>
@@ -92,11 +110,10 @@
     <ID>UnusedParameter:TypeResolver.kt$TypeResolver$expression: CaseExpression</ID>
     <ID>UnusedParameter:TypeResolver.kt$TypeResolver$expression: IfExpression</ID>
     <ID>UnusedParameter:TypeResolver.kt$TypeResolver$library: Library</ID>
-    <ID>UnusedParameter:TypeUnifier.kt$TypeUnifier$source: Expression</ID>
     <ID>UnusedPrivateMember:CollectionOperatorEmission.kt$private fun EmissionContext.expandIntervalToPointType( intervalExpr: ElmExpression, targetPointType: org.hl7.cql.model.DataType, ): ElmExpression</ID>
     <ID>UnusedPrivateMember:IntervalOperatorEmission.kt$private fun EmissionContext.expandIntervalToType( intervalExpr: ElmExpression, targetPointType: org.hl7.cql.model.DataType, ): ElmExpression</ID>
     <ID>UnusedPrivateMember:IntervalOperatorEmission.kt$private fun applyBoundary( operand: ElmExpression, boundary: IntervalBoundarySelector?, ): ElmExpression</ID>
-    <ID>UnusedPrivateMember:IntervalOperatorEmission.kt$private fun promotePointToInterval(point: ElmExpression): ElmExpression</ID>
+    <ID>UnusedPrivateMember:TypeResolver.kt$TypeResolver$private fun findModelConversion(rawType: DataType): Conversion?</ID>
     <ID>UnusedPrivateProperty:SemanticAnalyzer.kt$SemanticAnalyzer$iteration</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -55,63 +55,63 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 
 /**
- * Populates the [SyntheticTable] with type-unification synthetics — implicit conversions and type
+ * Populates the [ConversionTable] with type-unification conversions — implicit conversions and type
  * adjustments that are recorded as metadata rather than AST mutations. Implements
  * [ExpressionFold]<[Unit]> for compile-time exhaustive dispatch.
  *
  * ## Kinds of conversions recorded
  * - **Branch unification** (If/Case/List/Interval) — when branch types differ, records
- *   [Synthetic.ImplicitCast] or [Synthetic.OperatorConversion] to coerce to the common type.
- * - **Null-literal wrapping** — null literals in typed slots get [Synthetic.ImplicitCast] to the
+ *   [ImplicitConversion.ImplicitCast] or [ImplicitConversion.OperatorConversion] to coerce to the common type.
+ * - **Null-literal wrapping** — null literals in typed slots get [ImplicitConversion.ImplicitCast] to the
  *   target type (e.g., `null` in an If-then slot → `As(null, Integer)`).
  * - **ChoiceType wrapping** — union/intersect/except with mismatched element types get
- *   [Synthetic.ImplicitCast] to `List<Choice<A,B>>`, or [Synthetic.ListDemotion] when one operand
+ *   [ImplicitConversion.ImplicitCast] to `List<Choice<A,B>>`, or [ImplicitConversion.ListDemotion] when one operand
  *   is `List<Any>` (empty list literal).
  * - **Interval bound propagation** — `Interval<Any>` literals (one bound is null) get their point
  *   type inferred from the typed counterpart.
  * - **DateTime null-arg conversions** — null arguments in `DateTime()`/`Date()`/`Time()`
- *   constructors get [Synthetic.ImplicitCast] to Integer or Decimal.
+ *   constructors get [ImplicitConversion.ImplicitCast] to Integer or Decimal.
  *
  * Operator-resolution conversion recording (the "transcription" concern) happens in
- * [recordResolutionSynthetics] at each setOperatorResolution call site.
+ * [recordResolutionConversions] at each setOperatorResolution call site.
  *
- * ## Adding a new kind of synthetic conversion
- * 1. Define a new [Synthetic] subtype in `Synthetic.kt` if the existing subtypes
- *    ([Synthetic.ImplicitCast], [Synthetic.OperatorConversion], [Synthetic.ListDemotion]) don't
+ * ## Adding a new kind of implicit conversion
+ * 1. Define a new [ImplicitConversion] subtype in `ImplicitConversion.kt` if the existing subtypes
+ *    ([ImplicitConversion.ImplicitCast], [ImplicitConversion.OperatorConversion], [ImplicitConversion.ListDemotion]) don't
  *    cover the case.
  * 2. In the relevant `on*` handler in this class, detect the condition and call
- *    [SyntheticTable.addIfAbsent] to record the synthetic at the (parent, [Slot]) location.
- * 3. In `EmissionContext.applySynthetics` (the ELM emitter), handle the new [Synthetic] subtype to
+ *    [ConversionTable.addIfAbsent] to record the conversion at the (parent, [ConversionSlot]) location.
+ * 3. In `EmissionContext.applyConversions` (the ELM emitter), handle the new [ImplicitConversion] subtype to
  *    produce the correct ELM wrapper node.
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
- * - Structural AST rewrites → [Normalizer]
+ * - Structural AST rewrites → [Lowering]
  * - Error detection → [SemanticValidator]
  * - ELM-specific concerns → `EmissionContext`
  *
  * **Not thread-safe.** Create a fresh instance per analysis iteration.
  */
-class TypeUnifier(
+class ConversionPlanner(
     private val typeTable: TypeTable,
     private val operatorRegistry: OperatorRegistry,
-    private val syntheticTable: SyntheticTable,
+    private val conversionTable: ConversionTable,
 ) : ExpressionFold<Unit> {
 
-    /** Number of new synthetics inserted during this analysis pass. */
-    var newSyntheticsInserted: Int = 0
+    /** Number of new conversions inserted during this analysis pass. */
+    var newConversionsInserted: Int = 0
         private set
 
     /** Analyze all statements and definitions in a library. */
     fun analyzeLibrary(library: Library) {
-        val before = syntheticTable.syntheticsInserted
+        val before = conversionTable.conversionsInserted
         for (statement in library.statements) {
             analyzeStatement(statement)
         }
         for (definition in library.definitions) {
             analyzeDefinition(definition)
         }
-        newSyntheticsInserted = syntheticTable.syntheticsInserted - before
+        newConversionsInserted = conversionTable.conversionsInserted - before
     }
 
     private fun analyzeStatement(statement: Statement) {
@@ -138,9 +138,9 @@ class TypeUnifier(
 
     // --- Conversion recording helpers ---
 
-    /** Record a synthetic if not already present at the given parent/slot. */
-    private fun recordIfNew(parent: Expression, slot: Slot, synthetic: Synthetic) {
-        syntheticTable.addIfAbsent(parent, slot, synthetic)
+    /** Record a conversion if not already present at the given parent/slot. */
+    private fun recordIfNew(parent: Expression, slot: ConversionSlot, conversion: ImplicitConversion) {
+        conversionTable.addIfAbsent(parent, slot, conversion)
     }
 
     /** Check if an expression is a null literal. */
@@ -148,12 +148,12 @@ class TypeUnifier(
         expr is LiteralExpression && expr.literal is NullLiteral
 
     /**
-     * Record a synthetic for type unification: if the child's type doesn't match [targetType],
+     * Record a conversion for type unification: if the child's type doesn't match [targetType],
      * record the appropriate conversion (NullAs, OperatorConversion, ChoiceAs, etc.).
      */
     private fun recordTargetTypeConversion(
         parent: Expression,
-        slot: Slot,
+        slot: ConversionSlot,
         childExpr: Expression,
         targetType: DataType,
     ) {
@@ -162,7 +162,7 @@ class TypeUnifier(
 
         // Null literal: record ImplicitCast
         if (isNullLiteralExpr(childExpr)) {
-            recordIfNew(parent, slot, Synthetic.ImplicitCast(targetType))
+            recordIfNew(parent, slot, ImplicitConversion.ImplicitCast(targetType))
             return
         }
 
@@ -173,7 +173,7 @@ class TypeUnifier(
         // ChoiceType: record ImplicitCast (only if the type can be converted to a TypeSpecifier;
         // TupleTypes can't, so ChoiceType containing tuples skips wrapping)
         if (targetType is ChoiceType && canEmitAsTypeSpecifier(targetType)) {
-            recordIfNew(parent, slot, Synthetic.ImplicitCast(targetType))
+            recordIfNew(parent, slot, ImplicitConversion.ImplicitCast(targetType))
             return
         }
 
@@ -184,14 +184,14 @@ class TypeUnifier(
                 fromType is ListType &&
                 canEmitAsTypeSpecifier(targetType)
         ) {
-            recordIfNew(parent, slot, Synthetic.ImplicitCast(targetType))
+            recordIfNew(parent, slot, ImplicitConversion.ImplicitCast(targetType))
             return
         }
 
         // Implicit operator conversion (Integer→Decimal, etc.)
         val convName = implicitConversionName(fromType.toString(), targetType.toString())
         if (convName != null) {
-            recordIfNew(parent, slot, Synthetic.OperatorConversion(convName))
+            recordIfNew(parent, slot, ImplicitConversion.OperatorConversion(convName))
         }
     }
 
@@ -207,7 +207,7 @@ class TypeUnifier(
 
     /**
      * Check if a DataType can be converted to a TypeSpecifier for emission. TupleTypes and other
-     * complex types cannot, so synthetics involving them are skipped (matching CI behavior).
+     * complex types cannot, so conversions involving them are skipped (matching CI behavior).
      */
     private fun canEmitAsTypeSpecifier(type: DataType): Boolean =
         when (type) {
@@ -252,7 +252,7 @@ class TypeUnifier(
         propagateIntervalPointType(expr.right, rightType, expr.left, leftType)
     }
 
-    /** Record synthetics for union/intersect/except when element types differ. */
+    /** Record conversions for union/intersect/except when element types differ. */
     @Suppress("NestedBlockDepth")
     private fun recordSetOperatorConversions(expr: OperatorBinaryExpression) {
         val anyType = operatorRegistry.type("Any")
@@ -264,9 +264,9 @@ class TypeUnifier(
             if (leftElem != rightElem) {
                 // Case 1: One operand is List<Any> (empty list) — list demotion
                 if (rightElem == anyType && leftElem != anyType) {
-                    recordIfNew(expr, Slot.Right, Synthetic.ListDemotion(leftElem, leftType))
+                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ListDemotion(leftElem, leftType))
                 } else if (leftElem == anyType && rightElem != anyType) {
-                    recordIfNew(expr, Slot.Left, Synthetic.ListDemotion(rightElem, rightType))
+                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ListDemotion(rightElem, rightType))
                 }
                 // Case 2: Different concrete types — wrap both in As(List<Choice>)
                 else if (
@@ -277,8 +277,8 @@ class TypeUnifier(
                 ) {
                     val choiceElem = ChoiceType(listOf(leftElem, rightElem).distinct())
                     val choiceListType = ListType(choiceElem)
-                    recordIfNew(expr, Slot.Left, Synthetic.ImplicitCast(choiceListType))
-                    recordIfNew(expr, Slot.Right, Synthetic.ImplicitCast(choiceListType))
+                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(choiceListType))
+                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(choiceListType))
                 }
             }
         }
@@ -295,12 +295,12 @@ class TypeUnifier(
         recordDateTimeNullArgConversions(functionName, expr)
 
         // Null arg collection wrapping (e.g., IndexOf(null, {}) → As(null, List<Any>))
-        // cannot be a Synthetic — it changes effective types from Any to List<Any>, which
+        // cannot be an implicit conversion — it changes effective types from Any to List<Any>, which
         // breaks generic resolution on re-typing (T=List<Any> instead of T=Any).
         // This wrapping must happen at emission time. See CqlListOperators KNOWN_SKIP.
     }
 
-    /** Record NullAs synthetics for DateTime/Date/Time null arguments. */
+    /** Record NullAs conversions for DateTime/Date/Time null arguments. */
     @Suppress("CyclomaticComplexMethod")
     private fun recordDateTimeNullArgConversions(
         functionName: String,
@@ -317,7 +317,7 @@ class TypeUnifier(
                     if (isNullLiteralExpr(arg)) {
                         val targetType = if (i == 7) decimalType else integerType
                         if (targetType != anyType) {
-                            recordIfNew(expr, Slot.Argument(i), Synthetic.ImplicitCast(targetType))
+                            recordIfNew(expr, ConversionSlot.Argument(i), ImplicitConversion.ImplicitCast(targetType))
                         }
                     }
                 }
@@ -328,7 +328,7 @@ class TypeUnifier(
                     val arg = expr.arguments[i]
                     if (isNullLiteralExpr(arg)) {
                         if (integerType != anyType) {
-                            recordIfNew(expr, Slot.Argument(i), Synthetic.ImplicitCast(integerType))
+                            recordIfNew(expr, ConversionSlot.Argument(i), ImplicitConversion.ImplicitCast(integerType))
                         }
                     }
                 }
@@ -346,22 +346,22 @@ class TypeUnifier(
                 if (isNullLiteralExpr(expr.right)) {
                     val elemType = elementTypeOfDataType(leftType)
                     if (elemType != null && elemType != anyType) {
-                        recordIfNew(expr, Slot.Right, Synthetic.ImplicitCast(elemType))
+                        recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(elemType))
                     }
                 }
                 if (isNullLiteralExpr(expr.left) && rightType != null && rightType != anyType) {
-                    recordIfNew(expr, Slot.Left, Synthetic.ImplicitCast(ListType(rightType)))
+                    recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(ListType(rightType)))
                 }
             }
             org.hl7.cql.ast.MembershipOperator.IN -> {
                 if (isNullLiteralExpr(expr.left) && rightType is IntervalType) {
                     val pointType = rightType.pointType
                     if (pointType != anyType) {
-                        recordIfNew(expr, Slot.Left, Synthetic.ImplicitCast(pointType))
+                        recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(pointType))
                     }
                 }
                 if (isNullLiteralExpr(expr.right) && leftType != null && leftType != anyType) {
-                    recordIfNew(expr, Slot.Right, Synthetic.ImplicitCast(IntervalType(leftType)))
+                    recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(IntervalType(leftType)))
                 }
             }
         }
@@ -378,13 +378,13 @@ class TypeUnifier(
                 leftType is IntervalType &&
                 leftType.pointType != anyType
         ) {
-            recordIfNew(expr, Slot.Right, Synthetic.ImplicitCast(leftType.pointType))
+            recordIfNew(expr, ConversionSlot.Right, ImplicitConversion.ImplicitCast(leftType.pointType))
         } else if (
             isNullLiteralExpr(expr.left) &&
                 rightType is IntervalType &&
                 rightType.pointType != anyType
         ) {
-            recordIfNew(expr, Slot.Left, Synthetic.ImplicitCast(rightType.pointType))
+            recordIfNew(expr, ConversionSlot.Left, ImplicitConversion.ImplicitCast(rightType.pointType))
         }
 
         // Interval<Any> operands: propagate point type from the typed counterpart into
@@ -398,7 +398,7 @@ class TypeUnifier(
 
     /**
      * When [target] is an interval literal with point type Any and [source] has a concrete point
-     * type, record bound-level synthetics on the interval literal so null bounds get wrapped.
+     * type, record bound-level conversions on the interval literal so null bounds get wrapped.
      */
     private fun propagateIntervalPointType(
         source: Expression,
@@ -410,18 +410,18 @@ class TypeUnifier(
         val anyType = operatorRegistry.type("Any")
         if (targetType.pointType != anyType || sourceType.pointType == anyType) return
         val pointType = sourceType.pointType
-        // Target must be an interval literal to record bound-level synthetics
+        // Target must be an interval literal to record bound-level conversions
         if (target is LiteralExpression && target.literal is org.hl7.cql.ast.IntervalLiteral) {
             val interval = target.literal as org.hl7.cql.ast.IntervalLiteral
-            recordTargetTypeConversion(target, Slot.IntervalLow, interval.lower, pointType)
-            recordTargetTypeConversion(target, Slot.IntervalHigh, interval.upper, pointType)
+            recordTargetTypeConversion(target, ConversionSlot.IntervalLow, interval.lower, pointType)
+            recordTargetTypeConversion(target, ConversionSlot.IntervalHigh, interval.upper, pointType)
         }
     }
 
     override fun onExists(expr: ExistsExpression, operand: Unit) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, Slot.Operand, Synthetic.ImplicitCast(ListType(anyType)))
+            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(ListType(anyType)))
         }
     }
 
@@ -433,7 +433,7 @@ class TypeUnifier(
                     org.hl7.cql.ast.ListTransformKind.DISTINCT -> ListType(anyType)
                     org.hl7.cql.ast.ListTransformKind.FLATTEN -> ListType(ListType(anyType))
                 }
-            recordIfNew(expr, Slot.Operand, Synthetic.ImplicitCast(targetType))
+            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(targetType))
         }
         // Heterogeneous flatten detection is structural (lowering), not a type conversion.
     }
@@ -441,21 +441,21 @@ class TypeUnifier(
     override fun onExpandCollapse(expr: ExpandCollapseExpression, operand: Unit, per: Unit?) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, Slot.Operand, Synthetic.ImplicitCast(ListType(IntervalType(anyType))))
+            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(ListType(IntervalType(anyType))))
         }
     }
 
     override fun onWidth(expr: WidthExpression, operand: Unit) {
         if (isNullLiteralExpr(expr.operand)) {
             val anyType = operatorRegistry.type("Any")
-            recordIfNew(expr, Slot.Operand, Synthetic.ImplicitCast(IntervalType(anyType)))
+            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ImplicitCast(IntervalType(anyType)))
         }
     }
 
     override fun onIf(expr: IfExpression, condition: Unit, thenBranch: Unit, elseBranch: Unit) {
         val resultType = typeTable[expr] ?: return
-        recordTargetTypeConversion(expr, Slot.ThenBranch, expr.thenBranch, resultType)
-        recordTargetTypeConversion(expr, Slot.ElseBranch, expr.elseBranch, resultType)
+        recordTargetTypeConversion(expr, ConversionSlot.ThenBranch, expr.thenBranch, resultType)
+        recordTargetTypeConversion(expr, ConversionSlot.ElseBranch, expr.elseBranch, resultType)
     }
 
     @Suppress("CyclomaticComplexMethod")
@@ -477,7 +477,7 @@ class TypeUnifier(
             if (comparandType != null && comparandType != anyType) {
                 recordTargetTypeConversion(
                     expr,
-                    Slot.CaseCondition(i),
+                    ConversionSlot.CaseCondition(i),
                     originalItem.condition,
                     comparandType,
                 )
@@ -485,7 +485,7 @@ class TypeUnifier(
             if (resultType != null) {
                 recordTargetTypeConversion(
                     expr,
-                    Slot.CaseBranch(i),
+                    ConversionSlot.CaseBranch(i),
                     originalItem.result,
                     resultType,
                 )
@@ -494,7 +494,7 @@ class TypeUnifier(
 
         // Else branch
         if (resultType != null) {
-            recordTargetTypeConversion(expr, Slot.ElseBranch, expr.elseResult, resultType)
+            recordTargetTypeConversion(expr, ConversionSlot.ElseBranch, expr.elseResult, resultType)
         }
     }
 
@@ -506,7 +506,7 @@ class TypeUnifier(
                 val elementType = if (listType is ListType) listType.elementType else null
                 if (elementType != null) {
                     literal.elements.forEachIndexed { i, elem ->
-                        recordTargetTypeConversion(expr, Slot.ListElement(i), elem, elementType)
+                        recordTargetTypeConversion(expr, ConversionSlot.ListElement(i), elem, elementType)
                     }
                 }
             }
@@ -514,8 +514,8 @@ class TypeUnifier(
                 val intervalType = typeTable[expr]
                 val pointType = if (intervalType is IntervalType) intervalType.pointType else null
                 if (pointType != null) {
-                    recordTargetTypeConversion(expr, Slot.IntervalLow, literal.lower, pointType)
-                    recordTargetTypeConversion(expr, Slot.IntervalHigh, literal.upper, pointType)
+                    recordTargetTypeConversion(expr, ConversionSlot.IntervalLow, literal.lower, pointType)
+                    recordTargetTypeConversion(expr, ConversionSlot.IntervalHigh, literal.upper, pointType)
                 }
             }
             is org.hl7.cql.ast.InstanceLiteral -> {
@@ -529,7 +529,7 @@ class TypeUnifier(
                         if (expectedType != null) {
                             recordTargetTypeConversion(
                                 expr,
-                                Slot.ListElement(i),
+                                ConversionSlot.ListElement(i),
                                 elem.expression,
                                 expectedType,
                             )

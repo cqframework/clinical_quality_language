@@ -125,7 +125,7 @@ internal fun TypeResolver.inferMembershipType(expression: MembershipExpression):
                 resolution.hasConversions() &&
                 resolution.conversions.any { it != null && it.operator != null }
         ) {
-            recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
+            recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
             return resolution.operator.resultType
         }
     }
@@ -152,7 +152,7 @@ internal fun TypeResolver.inferIntervalRelationType(
     // Resolve through the OperatorMap ONLY when both operands are intervals with different
     // point types (interval type promotion, e.g., Interval<Date> → Interval<DateTime>).
     // For other cases (scalar/null operands, same-type intervals), the existing lowering +
-    // TypeUnifier path handles everything correctly.
+    // ConversionPlanner path handles everything correctly.
     val opName = intervalPhraseToOperatorName(expression.phrase)
     if (
         opName != null &&
@@ -161,14 +161,14 @@ internal fun TypeResolver.inferIntervalRelationType(
             leftType.pointType != rightType.pointType
     ) {
         val effectiveLeft =
-            syntheticTable?.effectiveType(expression, Slot.Left, leftType, operatorRegistry)
+            conversionTable?.effectiveType(expression, ConversionSlot.Left, leftType, operatorRegistry)
                 ?: leftType
         val effectiveRight =
-            syntheticTable?.effectiveType(expression, Slot.Right, rightType, operatorRegistry)
+            conversionTable?.effectiveType(expression, ConversionSlot.Right, rightType, operatorRegistry)
                 ?: rightType
         val resolution = operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
         if (resolution != null) {
-            recordResolution(expression, resolution, listOf(Slot.Left, Slot.Right))
+            recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
             return resolution.operator.resultType
         }
     }
@@ -201,7 +201,7 @@ private fun intervalPhraseToOperatorName(phrase: org.hl7.cql.ast.IntervalOperato
         is org.hl7.cql.ast.IncludesIntervalPhrase ->
             if (phrase.proper) "ProperIncludes" else "Includes"
         is org.hl7.cql.ast.ConcurrentIntervalPhrase -> null // lowered to boundary comparisons
-        is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase -> null // normalized by Normalizer
-        is org.hl7.cql.ast.WithinIntervalPhrase -> null // normalized by Normalizer
+        is org.hl7.cql.ast.BeforeOrAfterIntervalPhrase -> null // normalized by Lowering
+        is org.hl7.cql.ast.WithinIntervalPhrase -> null // normalized by Lowering
         else -> null
     }

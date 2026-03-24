@@ -76,12 +76,12 @@ import org.hl7.cql.model.IntervalType
  *   interval expanded to match the concrete operand type.
  * - **Choice narrowing** (TODO): multi-branch choice conversions (Choice<A,B,...> → T where
  *   multiple alternatives are viable) should be lowered into CaseExpression with Is/As/convert
- *   arms. Currently, `conversionToSynthetics` returns emptyList() for these; the Normalizer should
- *   detect them via `OperatorResolution.conversions` and build the Case tree.
+ *   multiple alternatives are viable) should be lowered into CaseExpression with Is/As/convert
+ *   arms. Currently, `conversionToImplicits` returns emptyList() for these; the Lowering should
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
- * - Conversion recording → [TypeUnifier]
+ * - Conversion recording → [ConversionPlanner]
  * - Error checking → [SemanticValidator]
  * - ELM-specific emission concerns → `EmissionContext`
  *
@@ -90,7 +90,7 @@ import org.hl7.cql.model.IntervalType
  *    normalized recursively by the catamorphism).
  * 2. Return the rewritten [Expression]. If unchanged, return the original expression instance
  *    (identity check `===` is used to avoid unnecessary copy).
- * 3. Call [SyntheticTable.transfer] via [rewrite] if the original expression had synthetics — this
+ * 3. Call [ConversionTable.transfer] via [rewrite] if the original expression had conversions — this
  *    ensures the [EmissionContext] can find them on the replacement node.
  *
  * ## Post-normalization re-typing
@@ -102,15 +102,15 @@ import org.hl7.cql.model.IntervalType
  * The normalized AST shares child expression nodes by reference with the original; only rewritten
  * parent nodes are new objects. This phase is target-neutral — its output is CQL AST, not ELM.
  */
-class Normalizer(
+class Lowering(
     private val semanticModel: SemanticModel,
-    private val syntheticTable: SyntheticTable = semanticModel.syntheticTable,
+    private val conversionTable: ConversionTable = semanticModel.conversionTable,
 ) : ExpressionFold<Expression> {
 
-    /** Rewrite an expression, transferring any synthetics from the original to the replacement. */
+    /** Rewrite an expression, transferring any conversions from the original to the replacement. */
     private fun rewrite(original: Expression, replacement: Expression): Expression {
         if (replacement !== original) {
-            syntheticTable.transfer(original, replacement)
+            conversionTable.transfer(original, replacement)
         }
         return replacement
     }
@@ -321,7 +321,7 @@ class Normalizer(
         } else {
             return null
         }
-        // Don't use rewrite() here — we don't want to transfer the old synthetics
+        // Don't use rewrite() here — we don't want to transfer the old conversions
         // (e.g., Date→DateTime on arg[1]) since the new args are both Date and the
         // (Date,Date) overload matches exactly with no conversions needed.
         return expr.copy(arguments = newArgs)

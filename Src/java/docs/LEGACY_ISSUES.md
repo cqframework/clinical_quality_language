@@ -346,11 +346,11 @@ directly).
 A cleaner architecture: a **side-table IR** that keeps the AST immutable:
 
 ```
-CQL Source → AST (pure source) → IR (AST + SyntheticTable) → ELM
+CQL Source → AST (pure source) → IR (AST + ConversionTable) → ELM
 ```
 
 The IR is not a new tree. It's the original AST plus a
-`SyntheticTable` (`IdentityHashMap<Expression, List<Synthetic>>`)
+`ConversionTable` (`IdentityHashMap<Expression, List<ImplicitConversion>>`)
 describing transformations to apply during emission. The AST never
 changes — SymbolTable collected once, identity stable, no idempotency
 guards needed.
@@ -359,10 +359,10 @@ The convergence loop stays (type inference depends on conversion
 effects — e.g., `Avg({1,2,3})` needs to know `List<Integer>` converts
 to `List<Decimal>` to resolve the overload). What changes is the
 representation: `TypeResolver` reads "effective types" from the
-SyntheticTable instead of re-inferring on a mutated AST.
+ConversionTable instead of re-inferring on a mutated AST.
 
 See `AST_DEVELOPMENT_PLAN.md` Milestone 19 for the full design
-including the `Synthetic` sealed hierarchy, convergence loop, and
+including the `ImplicitConversion` sealed hierarchy, convergence loop, and
 migration path.
 
 ---

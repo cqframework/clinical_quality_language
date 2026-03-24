@@ -12,7 +12,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  *
  * **Input:** a CQL AST [Library][org.hl7.cql.ast.Library] plus a [SemanticModel] (the compilation
  * database produced by the analysis phases — [SymbolTable], [TypeTable], [OperatorRegistry], and
- * SyntheticTable).
+ * ConversionTable).
  *
  * **Output:** an ELM [Library] wrapped in a [Result].
  *

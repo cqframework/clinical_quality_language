@@ -46,8 +46,8 @@ internal fun EmissionContext.emitListTransform(
     expression: ListTransformExpression,
     operandElm: ElmExpression,
 ): ElmExpression {
-    // Heterogeneous flatten detection moved to TypeUnifier — non-list elements
-    // are wrapped via ImplicitCast(List<T>) synthetics on the list literal's elements.
+    // Heterogeneous flatten detection moved to ConversionPlanner — non-list elements
+    // are wrapped via ImplicitCast(List<T>) conversions on the list literal's elements.
     return when (expression.listTransformKind) {
         ListTransformKind.DISTINCT -> Distinct().apply { operand = operandElm }
         ListTransformKind.FLATTEN -> Flatten().apply { operand = operandElm }
@@ -55,4 +55,4 @@ internal fun EmissionContext.emitListTransform(
 }
 
 // detectHeterogeneousFlatten and wrapFlattenHeterogeneous deleted — moved to
-// TypeUnifier.recordHeterogeneousFlattenConversions as ImplicitCast synthetics.
+// ConversionPlanner.recordHeterogeneousFlattenConversions as ImplicitCast conversions.
