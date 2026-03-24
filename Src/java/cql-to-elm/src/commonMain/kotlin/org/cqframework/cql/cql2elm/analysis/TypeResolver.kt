@@ -562,6 +562,18 @@ class TypeResolver(
                 typeTable.setIdentifierResolution(expression, scopedResolution)
                 return propType
             }
+
+            if (resolution is Resolution.QueryLetRef) {
+                val propType = resolvePropertyType(resolution.type, property)
+                val scopedResolution =
+                    Resolution.ScopedProperty(
+                        scope = qualifier,
+                        path = property,
+                        type = propType ?: return null,
+                    )
+                typeTable.setIdentifierResolution(expression, scopedResolution)
+                return propType
+            }
         }
 
         // Check if qualifier is a library include (e.g., FHIRHelpers.SomeExpression)
@@ -570,7 +582,7 @@ class TypeResolver(
             return null
         }
 
-        // Fall back to simple name resolution (last segment only)
+        // Unresolved — qualifier is not a query alias or library include
         return null
     }
 

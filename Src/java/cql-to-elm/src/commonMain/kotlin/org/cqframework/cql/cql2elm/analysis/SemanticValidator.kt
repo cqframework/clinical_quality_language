@@ -221,8 +221,12 @@ private class ExpressionChecker(
         }
 
         // No user function found, no operator resolution, no function call resolution.
-        // This is an unresolved call — flag it.
-        model.addError(expr)
+        // Only flag when all arguments are typed — avoids cascading errors when the
+        // root cause is an untyped argument.
+        val argTypes = expr.arguments.mapNotNull { model[it] }
+        if (argTypes.size == expr.arguments.size) {
+            model.addError(expr)
+        }
     }
 
     /** Check if a function call's target resolves to an included library alias. */
@@ -244,13 +248,10 @@ private class ExpressionChecker(
 
     // --- Default handlers: children are pre-folded, nothing more to do ---
 
-    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Unit>) {
-        // Flag quantity literals (and ratio literals containing quantities) with no resolved type.
-        // Legacy emits Null for invalid quantities (e.g., bad unit).
-        if (model[expr] == null && expr.literal is org.hl7.cql.ast.QuantityLiteral) {
-            model.addError(expr)
-        }
-    }
+    // Note: matching legacy's Null-for-bad-units on QuantityLiteral requires unit validation
+    // in TypeResolver.inferLiteralType — the resolver unconditionally returns type Quantity
+    // for all QuantityLiteral instances regardless of unit validity.
+    override fun onLiteral(expr: LiteralExpression, children: LiteralChildren<Unit>) {}
 
     override fun onExternalConstant(expr: ExternalConstantExpression) {} // leaf
 
