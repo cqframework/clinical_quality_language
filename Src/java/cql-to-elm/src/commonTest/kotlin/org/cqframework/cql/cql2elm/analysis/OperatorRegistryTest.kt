@@ -5,6 +5,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.cqframework.cql.cql2elm.model.Conversion
+import org.cqframework.cql.cql2elm.model.Operator
+import org.cqframework.cql.cql2elm.model.Signature
+import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 
@@ -160,5 +164,85 @@ class OperatorRegistryTest {
         assertNotNull(conv1, "Conversion at position 1 should not be null")
         assertTrue(conv1.isCast, "Conversion should be a cast")
         assertEquals(intType, conv1.toType)
+    }
+
+    // --- Choice type narrowing ---
+
+    @Test
+    fun `Greater ChoiceIntegerString Integer resolves with compatible cast`() {
+        // For system types, ChoiceType is compatible with the target so findCompatibleConversion
+        // produces a simple Cast. No inner conversion, no alternatives — this is NOT choice
+        // narrowing, just a standard compatible cast.
+        val intType = registry.type("Integer")
+        val strType = registry.type("String")
+        val choiceType = ChoiceType(listOf(intType, strType))
+        val resolution = registry.resolve("Greater", listOf(choiceType, intType))
+        assertNotNull(resolution, "Greater(Choice<Integer,String>, Integer) should resolve")
+        assertTrue(resolution.hasConversions(), "Should have a conversion")
+        val conv = resolution.conversions[0]
+        assertNotNull(conv, "Conversion at position 0 should not be null")
+        assertTrue(conv.isCast, "Should be a cast")
+        // For system types this is a simple compatible cast — ImplicitCast, not ChoiceNarrowing
+        val synthetics = conversionToSynthetics(conv, registry)
+        assertEquals(1, synthetics.size, "Single ImplicitCast")
+        assertTrue(synthetics[0] is Synthetic.ImplicitCast, "Compatible cast produces ImplicitCast")
+    }
+
+    @Test
+    fun `single-branch choice conversion decomposes into ImplicitCast plus inner`() {
+        // When only one choice alternative matches (no alternatives), analysis decomposes into:
+        // 1. ImplicitCast(fromType) — narrows the choice
+        // 2. The inner conversion — converts narrowed type to target
+        // No Case wrapper. Matches old compiler behavior.
+        val intType = registry.type("Integer")
+        val strType = registry.type("String")
+        val decType = registry.type("Decimal")
+        val choiceType = ChoiceType(listOf(intType, strType))
+
+        val toDecOp = Operator("ToDecimal", Signature(intType), decType)
+        val innerConversion = Conversion(toDecOp, true)
+        val choiceConversion = Conversion(choiceType, decType, innerConversion)
+
+        val synthetics = conversionToSynthetics(choiceConversion, registry)
+        assertEquals(2, synthetics.size, "Should decompose into ImplicitCast + OperatorConversion")
+        // First: ImplicitCast to narrow choice to Integer
+        assertTrue(synthetics[0] is Synthetic.ImplicitCast)
+        assertEquals(intType, (synthetics[0] as Synthetic.ImplicitCast).targetType)
+        // Second: OperatorConversion(ToDecimal)
+        assertTrue(synthetics[1] is Synthetic.OperatorConversion)
+        assertEquals("ToDecimal", (synthetics[1] as Synthetic.OperatorConversion).operatorName)
+    }
+
+    @Test
+    fun `multi-branch choice conversion produces ChoiceNarrowing`() {
+        // When multiple choice alternatives match, produce a ChoiceNarrowing with Case branches.
+        val intType = registry.type("Integer")
+        val strType = registry.type("String")
+        val decType = registry.type("Decimal")
+        val choiceType = ChoiceType(listOf(intType, strType))
+
+        val toDecOp = Operator("ToDecimal", Signature(intType), decType)
+        val primaryConv = Conversion(toDecOp, true)
+        val toDecStrOp = Operator("ToDecimalFromString", Signature(strType), decType)
+        val altConv = Conversion(toDecStrOp, true)
+
+        val choiceConversion = Conversion(choiceType, decType, primaryConv)
+        choiceConversion.addAlternativeConversion(altConv)
+
+        val synthetics = conversionToSynthetics(choiceConversion, registry)
+        assertEquals(1, synthetics.size, "Single ChoiceNarrowing")
+        assertTrue(synthetics[0] is Synthetic.ChoiceNarrowing)
+        val narrowing = synthetics[0] as Synthetic.ChoiceNarrowing
+        assertEquals(2, narrowing.branches.size, "Should have 2 branches")
+
+        // Branch 0: Int → Decimal via ToDecimal
+        assertEquals(intType, narrowing.branches[0].fromType)
+        assertEquals(1, narrowing.branches[0].innerSynthetics.size)
+        assertTrue(narrowing.branches[0].innerSynthetics[0] is Synthetic.OperatorConversion)
+
+        // Branch 1: Str → Decimal via ToDecimalFromString
+        assertEquals(strType, narrowing.branches[1].fromType)
+        assertEquals(1, narrowing.branches[1].innerSynthetics.size)
+        assertTrue(narrowing.branches[1].innerSynthetics[0] is Synthetic.OperatorConversion)
     }
 }

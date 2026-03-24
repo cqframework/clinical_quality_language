@@ -61,6 +61,18 @@ class FullParityTest {
         }
     }
 
+    @TestFactory
+    fun fhirR4ChoiceTypeParity(): Collection<DynamicTest> {
+        val testDir = "org/cqframework/cql/cql2elm/fhir/r4/"
+        // Choice type test files exercising choice narrowing / alternative conversions
+        val choiceFiles = listOf("TestChoiceTypes.cql", "TestChoiceDateRangeOptimization.cql")
+        return choiceFiles.map { fileName ->
+            DynamicTest.dynamicTest("fhir-r4-${fileName.removeSuffix(".cql")}") {
+                tryAssertParity(testDir + fileName, fileName.removeSuffix(".cql"))
+            }
+        }
+    }
+
     @Disabled("Exploratory: 44/77 pass, 13 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
@@ -272,6 +284,8 @@ class FullParityTest {
                     "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
                 "MultiSourceQuery" to
                     "New pipeline preserves expressions with type errors; legacy replaces with Null",
+                "TestChoiceTypes" to
+                    "Requires query relationship scope resolution (With/Without) not yet in new pipeline",
             )
     }
 }

@@ -249,18 +249,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         val synthetics = semanticModel.syntheticTable.get(parent, slot)
         var result = elm
         for (s in synthetics) {
-            result =
-                when (s) {
-                    is Synthetic.OperatorConversion -> createConversionElm(s.operatorName, result)
-                    is Synthetic.ImplicitCast -> emitImplicitCast(result, s.targetType)
-                    is Synthetic.ListConversion ->
-                        emitListConversionQuery(result, s.innerOperatorName, s.innerLibraryName)
-                    is Synthetic.ListDemotion -> emitListDemotionQuery(result, s.targetElementType)
-                    is Synthetic.IntervalConversion ->
-                        emitIntervalConversion(result, s.innerOperatorName, s.innerLibraryName)
-                    is Synthetic.LibraryConversion ->
-                        emitLibraryFunctionRef(s.libraryName, s.functionName, result)
-                }
+            result = applySingleSynthetic(result, s)
         }
         return result
     }
@@ -291,6 +280,89 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
             }
         }
     }
+
+    /**
+     * Emit a Case expression for choice type narrowing. Each branch tests the runtime type of the
+     * operand, casts it with As, and applies the inner conversion chain. The else branch is a typed
+     * null.
+     *
+     * Only produced for multi-branch narrowing (analysis decomposes single-branch into sequential
+     * synthetics). Matches the legacy translator's convertExpression Case emission.
+     */
+    private fun emitChoiceNarrowing(
+        expression: ElmExpression,
+        narrowing: Synthetic.ChoiceNarrowing,
+    ): ElmExpression {
+        val caseExpr = org.hl7.elm.r1.Case()
+        caseExpr.resultType = narrowing.resultType
+        for (branch in narrowing.branches) {
+            val isExpr = emitIsTest(expression, branch.fromType)
+            var thenExpr: ElmExpression = emitAsCast(expression, branch.fromType)
+            for (inner in branch.innerSynthetics) {
+                thenExpr = applySingleSynthetic(thenExpr, inner)
+            }
+            caseExpr.caseItem.add(
+                org.hl7.elm.r1.CaseItem().apply {
+                    `when` = isExpr
+                    then = thenExpr
+                }
+            )
+        }
+        caseExpr.`else` = emitTypedNull(narrowing.resultType)
+        return caseExpr
+    }
+
+    /** Apply a single [Synthetic] to an expression. Factored out of [applySynthetics] for reuse. */
+    private fun applySingleSynthetic(elm: ElmExpression, synthetic: Synthetic): ElmExpression =
+        when (synthetic) {
+            is Synthetic.OperatorConversion -> createConversionElm(synthetic.operatorName, elm)
+            is Synthetic.ImplicitCast -> emitImplicitCast(elm, synthetic.targetType)
+            is Synthetic.ListConversion ->
+                emitListConversionQuery(
+                    elm,
+                    synthetic.innerOperatorName,
+                    synthetic.innerLibraryName,
+                )
+            is Synthetic.ListDemotion -> emitListDemotionQuery(elm, synthetic.targetElementType)
+            is Synthetic.IntervalConversion ->
+                emitIntervalConversion(elm, synthetic.innerOperatorName, synthetic.innerLibraryName)
+            is Synthetic.LibraryConversion ->
+                emitLibraryFunctionRef(synthetic.libraryName, synthetic.functionName, elm)
+            is Synthetic.ChoiceNarrowing -> emitChoiceNarrowing(elm, synthetic)
+        }
+
+    /** Emit an Is(expression, type) test expression. */
+    private fun emitIsTest(expression: ElmExpression, type: DataType): ElmExpression =
+        org.hl7.elm.r1.Is().apply {
+            operand = expression
+            if (type is org.hl7.cql.model.SimpleType || type is org.hl7.cql.model.ClassType) {
+                isType = dataTypeToQName(type)
+            } else {
+                isTypeSpecifier = dataTypeToTypeSpecifier(type)
+            }
+        }
+
+    /** Emit an As(expression, type) cast expression. */
+    private fun emitAsCast(expression: ElmExpression, type: DataType): ElmExpression =
+        org.hl7.elm.r1.As().apply {
+            operand = expression
+            if (type is org.hl7.cql.model.SimpleType || type is org.hl7.cql.model.ClassType) {
+                asType = dataTypeToQName(type)
+            } else {
+                asTypeSpecifier = dataTypeToTypeSpecifier(type)
+            }
+        }
+
+    /** Emit a typed Null literal. */
+    private fun emitTypedNull(type: DataType): ElmExpression =
+        org.hl7.elm.r1.Null().apply {
+            resultType = type
+            if (type is org.hl7.cql.model.SimpleType || type is org.hl7.cql.model.ClassType) {
+                resultTypeName = dataTypeToQName(type)
+            } else {
+                resultTypeSpecifier = dataTypeToTypeSpecifier(type)
+            }
+        }
 
     /** Emit Coalesce(expression, '') wrapping for CONCAT null-coalescing. */
     /** Emit Coalesce(expression, '') for CONCAT null-coalescing. */

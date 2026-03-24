@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.model.Conversion
 import org.cqframework.cql.cql2elm.model.OperatorResolution
 import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.hl7.cql.ast.Expression
+import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
@@ -58,6 +59,27 @@ sealed interface Synthetic {
         val functionName: String,
         val resultType: DataType,
     ) : Synthetic
+
+    /**
+     * Narrow a choice-typed operand to a specific target type by emitting a Case expression. Each
+     * [Branch] tests the runtime type with Is, casts with As, then applies an inner conversion
+     * (e.g., FHIRHelpers.ToInteger). The else branch is null of [resultType].
+     *
+     * Produced when an operator resolution requires converting a `Choice<A,B,...>` to a concrete
+     * type and multiple choice alternatives are viable conversion paths.
+     *
+     * CQL spec §4.9 Conversion Precedence: when a choice type has multiple equally-tenable
+     * conversions, the translator emits a Case to select at runtime.
+     */
+    data class ChoiceNarrowing(val branches: List<Branch>, val resultType: DataType) : Synthetic {
+        /** One arm of the choice narrowing Case expression. */
+        data class Branch(
+            /** The choice alternative type to test with Is and cast with As. */
+            val fromType: DataType,
+            /** Inner conversions to apply after the As cast (chain, may be empty). */
+            val innerSynthetics: List<Synthetic>,
+        )
+    }
 }
 
 /**
@@ -198,6 +220,7 @@ class SyntheticTable {
                         IntervalType(resultPointType)
                     }
                     is Synthetic.LibraryConversion -> s.resultType
+                    is Synthetic.ChoiceNarrowing -> s.resultType
                 }
         }
         return currentType
@@ -205,20 +228,44 @@ class SyntheticTable {
 }
 
 /**
- * Convert a [Conversion] from an [OperatorResolution] to a [Synthetic], or null if the conversion
- * kind isn't handled by the side table.
+ * Convert a [Conversion] from an [OperatorResolution] to a list of [Synthetic]s, or empty if the
+ * conversion kind isn't handled by the side table. Returns multiple synthetics when a conversion
+ * decomposes into sequential steps (e.g., single-branch choice: ImplicitCast + inner).
  */
-internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorRegistry): Synthetic? {
+internal fun conversionToSynthetics(
+    conversion: Conversion,
+    registry: OperatorRegistry,
+): List<Synthetic> {
     val operator = conversion.operator
     if (operator != null) {
         val libraryName = operator.libraryName
         return if (libraryName != null && libraryName != "System") {
-            Synthetic.LibraryConversion(libraryName, operator.name, conversion.toType)
+            listOf(Synthetic.LibraryConversion(libraryName, operator.name, conversion.toType))
         } else {
-            Synthetic.OperatorConversion(operator.name)
+            listOf(Synthetic.OperatorConversion(operator.name))
         }
     }
-    if (conversion.isCast) return Synthetic.ImplicitCast(conversion.toType)
+    // Choice narrowing: isCast with an inner conversion from a ChoiceType.
+    if (conversion.isCast && conversion.conversion != null && conversion.fromType is ChoiceType) {
+        val innerSynthetics = conversionToSynthetics(conversion.conversion, registry)
+        if (conversion.hasAlternativeConversions()) {
+            // Multi-branch: emit a Case expression testing each alternative at runtime.
+            val branches = mutableListOf<Synthetic.ChoiceNarrowing.Branch>()
+            branches.add(
+                Synthetic.ChoiceNarrowing.Branch(conversion.conversion.fromType, innerSynthetics)
+            )
+            for (alt in conversion.getAlternativeConversions()) {
+                val altInner = conversionToSynthetics(alt, registry)
+                branches.add(Synthetic.ChoiceNarrowing.Branch(alt.fromType, altInner))
+            }
+            return listOf(Synthetic.ChoiceNarrowing(branches, conversion.toType))
+        } else {
+            // Single branch: decompose into As(fromType) + inner conversion chain.
+            // No Case needed — matches old compiler behavior.
+            return listOf(Synthetic.ImplicitCast(conversion.conversion.fromType)) + innerSynthetics
+        }
+    }
+    if (conversion.isCast) return listOf(Synthetic.ImplicitCast(conversion.toType))
     if (
         conversion.isListConversion &&
             conversion.conversion != null &&
@@ -227,7 +274,7 @@ internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorReg
         val inner = conversion.conversion.operator
         val lib = inner.libraryName?.takeIf { it != "System" }
         val resultType = if (lib != null) conversion.conversion.toType else null
-        return Synthetic.ListConversion(inner.name, lib, resultType)
+        return listOf(Synthetic.ListConversion(inner.name, lib, resultType))
     }
     if (
         conversion.isIntervalConversion &&
@@ -237,9 +284,9 @@ internal fun conversionToSynthetic(conversion: Conversion, registry: OperatorReg
         val inner = conversion.conversion.operator
         val lib = inner.libraryName?.takeIf { it != "System" }
         val resultType = if (lib != null) conversion.conversion.toType else null
-        return Synthetic.IntervalConversion(inner.name, lib, resultType)
+        return listOf(Synthetic.IntervalConversion(inner.name, lib, resultType))
     }
-    return null
+    return emptyList()
 }
 
 /**
@@ -257,8 +304,10 @@ internal fun recordResolutionSynthetics(
     if (!resolution.hasConversions()) return
     resolution.conversions.forEachIndexed { index, conversion ->
         if (conversion != null && index < slots.size) {
-            val synthetic = conversionToSynthetic(conversion, registry) ?: return@forEachIndexed
-            syntheticTable.addIfAbsent(parent, slots[index], synthetic)
+            val synthetics = conversionToSynthetics(conversion, registry)
+            for (synthetic in synthetics) {
+                syntheticTable.addIfAbsent(parent, slots[index], synthetic)
+            }
         }
     }
 }
