@@ -14,7 +14,6 @@ import org.hl7.cql.ast.UnsupportedStatement
 import org.hl7.cql.ast.forEachChildExpression
 import org.hl7.elm.r1.AccessModifier as ElmAccessModifier
 import org.hl7.elm.r1.ExpressionDef
-import org.hl7.elm.r1.ParameterRef
 
 /**
  * Emits statement-level constructs (context definitions, expression definitions, function
@@ -83,10 +82,10 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
     }
 
     /**
-     * Emit the implicit context expression definition. For parameter-backed contexts (e.g.,
-     * `parameter Encounter Encounter` + `context Encounter`), emits `ParameterRef`. Otherwise emits
-     * `SingletonFrom(Retrieve([Type]))` for model-based contexts. The decision is pre-computed
-     * during analysis (ContextRef.isParameterBacked).
+     * Emit the implicit context expression definition for model-backed contexts. Emits
+     * `SingletonFrom(Retrieve([Type]))`. Parameter-backed contexts (e.g., `parameter Encounter
+     * Encounter` + `context Encounter`) are NOT emitted as expression definitions — the legacy
+     * compiler also skips them (the parameter already provides the context value).
      */
     private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
         val contextName = contextDefinition.context.value
@@ -95,20 +94,19 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 
         try {
             val contextRef = ctx.semanticModel.resolveContext(contextName)
-            val contextExpression =
-                if (contextRef?.isParameterBacked == true) {
-                    ParameterRef().withName(contextName)
-                } else {
-                    val retrieve = ctx.buildRetrieveForType(contextName)
-                    val singletonFrom = org.hl7.elm.r1.SingletonFrom()
-                    singletonFrom.operand = retrieve
-                    singletonFrom
-                }
+
+            // Parameter-backed contexts are not emitted as expression definitions.
+            // The parameter already provides the context value.
+            if (contextRef?.isParameterBacked == true) return
+
+            val retrieve = ctx.buildRetrieveForType(contextName)
+            val singletonFrom = org.hl7.elm.r1.SingletonFrom()
+            singletonFrom.operand = retrieve
 
             val exprDef = ExpressionDef()
             exprDef.name = contextName
             exprDef.context = currentContext
-            exprDef.expression = contextExpression
+            exprDef.expression = singletonFrom
             expressions += exprDef
             emittedExpressions.add(contextName)
         } catch (_: ElmEmitter.UnsupportedNodeException) {

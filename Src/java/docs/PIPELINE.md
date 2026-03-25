@@ -294,73 +294,43 @@ Adds output annotations controlled by compiler options:
 
 ## Current Status
 
-### OperatorTests Parity: 32/32 passing (+ 2 FHIR R4 choice type tests)
+### OperatorTests Parity: 29/32 passing, 3 known skips (+ 2 FHIR R4 choice type tests)
 
 | Status | Tests |
 |--------|-------|
-| **Passing (32)** | AgeOperators, AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, CqlListOperators, DateTimeOperators, ForwardReferences, Functions, ImplicitConversions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, InvalidSortClauses, ListOperators, LogicalOperators, MessageOperators, NameHiding, NullologicalOperators, Query, RecursiveFunctions, Sorting, StringOperators, TerminologyReferences, TimeOperators, TupleAndClassConversions, TypeOperators, UndeclaredForward, UndeclaredSignature, **TestChoiceTypes**, **TestChoiceDateRangeOptimization** |
+| **Passing (29 + 2 FHIR)** | AgeOperators, AggregateOperators, ArithmeticOperators, ComparisonOperators, CqlComparisonOperators, CqlIntervalOperators, CqlListOperators, DateTimeOperators, ForwardReferences, Functions, ImplicitConversions, IntervalOperatorPhrases, IntervalOperators, InvalidCastExpression, InvalidSortClauses, ListOperators, LogicalOperators, MessageOperators, NameHiding, NullologicalOperators, Query, Sorting, StringOperators, TerminologyReferences, TimeOperators, TupleAndClassConversions, TypeOperators, UndeclaredForward, UndeclaredSignature, **TestChoiceTypes**, **TestChoiceDateRangeOptimization** |
 | **Legacy bug (skip)** | Aggregate (#1710 — our type inference is more correct) |
 | **Error recovery (skip)** | MultiSourceQuery (legacy replaces type errors with Null) |
+| **Recursive (skip)** | RecursiveFunctions (new pipeline correctly resolves recursive types) |
 
-### Exploratory Suite Triage (2026-03-23)
+### Exploratory Suite Triage (updated 2026-03-24)
 
 Enabled all three `@Disabled` test factories.
 
-Initial triage: 53 passed, 59 failed, 39 skipped.
-After quick fixes: root-level 23 → 26 pass.
-After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pass (8 fail,
-6 skip), FHIR R4.0.1 unchanged (3 pass, 16 fail, 9 skip).
+#### Root-level tests (77 files): 46 pass, 18 fail, 13 skip
 
-#### Root-level tests (77 files): 36 pass, 20 fail, 21 skip
+#### FHIR R4 tests (16 files): 12 pass, 4 fail
 
-#### FHIR R4 tests (14 files): 0 pass, 8 fail, 6 skip
+#### FHIR R4.0.1 tests (28 files): 13 pass, 14 fail, 1 skip
 
-#### FHIR R4.0.1 tests (28 files): 3 pass, 16 fail, 9 skip
+#### Library Resolution Phase (2026-03-24)
 
-#### Failure Categories
+Added `ModelIntegration` and `LibraryResolution` phases to SemanticAnalyzer pipeline.
+Pre-compiles implicit helper libraries (e.g., FHIRHelpers) referenced by model conversion
+info, so they are cached in LibraryManager for on-demand resolution during type inference.
+Also resolves explicit includes from CQL source. Result: 20 previously-failing tests now pass
+(EqualityWithConversions, TestChoiceTypes, TestImplicitFHIRHelpers, TestContext,
+TestIntervalImplicitConversion, TestRetrieveWithConcept, etc.).
 
-| Category | Count | Root Cause | Fix Strategy |
-|----------|-------|------------|--------------|
-| **Library includes** (resolved) | 10 newly passing | Cross-library refs now emit `FunctionRef`/`ExpressionRef` with `libraryName`. `TestLibrarySourceProvider` wired into parity test. | `Resolution.IncludeRef`, `SemanticValidator` skip for cross-library calls |
-| **ELM content diffs** | 20 fail | Detailed subcategories below | Mixed — see subcategories |
+#### Remaining Failure Categories
 
-##### ELM Content Difference Subcategories
-
-| Subcategory | Tests | Issue |
-|-------------|-------|-------|
-| ~~Escaped quotes in identifiers~~ | ~~Issue827, TestQuotedForwards~~ | **Fixed** — `unescapeCql()` applied in emission |
-| ~~DateTime timezone `0` vs `0.0`~~ | ~~DateTimeLiteralTest~~ | **Fixed** — `BigDecimal("0.0")` for UTC offset |
-| ~~`In` vs `InValueSet`/`InCodeSystem`~~ | ~~InCodeSystemTest, InValueSetTest~~ | **Fixed** — Specialized terminology operator emission |
-| ~~`Retrieve.codes` not emitted~~ | ~~CMS146v2_Test_CQM~~ | **Fixed** — SymbolTable-based terminology resolution in RetrieveEmission |
-| Cross-library implicit conversions | Median_dup_vals_odd, Median_odd, TupleDifferentKeys, UncertTuplesWithDiffNullFields | Included library's function signatures not available for conversion resolution |
-| Error recovery (expressions → Null) | IdentifierDoesNotResolve..., Issue616, TestIdentifierCaseMismatch | New pipeline preserves invalid expressions; legacy replaces with Null |
-| Local function → system function resolution | LocalFunctionResolutionTest | System function `ToDate` emitted as `FunctionRef` |
-| Query vs inline form | Issue587, SignatureResolutionTest | New pipeline emits Query where legacy inlines; or vice versa |
-| Date vs ToDateTime promotion | Issue863 | New pipeline emits `Date` literal; legacy wraps in `ToDateTime` |
-| QDM model class resolution | TestChoiceAssignment | QDM class type differs — model-specific resolution gap |
-| Context definition synthesis | TestEncounterParameterContext | New pipeline doesn't synthesize context definitions (e.g., `define Encounter: SingletonFrom([Encounter])`) |
-| Point-interval promotion | TestPointIntervalSignatures | `If(IsNull...)` point promotion not applied |
-
-#### Skip Categories
-
-| Category | Count | Issue |
-|----------|-------|-------|
-| ~~ModelManager required~~ | ~~12~~ | **Fixed** — post-normalization TypeResolver was missing `modelContext`. Analysis bug, not emission. |
-| Could not resolve type/model | 8 | `Could not resolve` — model types not available (Patient context, related context, etc.) |
-| Unknown system type | 8 | `Unknown system type: ''` — empty type from analysis edge cases |
-| AST Builder problems | 3 | CQL files with intentional errors; Builder rejects them |
-| AST Builder parse error | 2 | Escape sequence handling not implemented in Builder |
-| Unsupported AST node | 2 | Unit conversion, timezone component not yet emitted |
-| FHIR model version mismatch | 1 | FHIR version not matched in ModelManager |
-| Argument count mismatch | 1 | Expected 1 arg, got more — FHIR helpers call shape |
-
-#### Priority Order for Closing Gaps
-
-1. **Cross-library implicit conversions** (4+ tests) — wire `CompiledLibrary.operatorMap` into TypeResolver for included libraries
-2. **Error recovery parity** (3+ tests) — case-insensitive identifier matching, Null replacement for unresolved identifiers
-3. **Context definition synthesis** (1+ tests) — synthesize `define <Context>` expressions
-4. **Point-interval promotion** (1+ tests) — apply `If(IsNull, Null, Interval[p,p])` lowering
-5. **Unknown system types** (8 skips) — fix empty type strings from analysis
+| Category | Count | Tests | Issue |
+|----------|-------|-------|-------|
+| **FHIR emission gaps** | ~14 | TestFHIR, TestFHIRHelpers, TestFHIRTiming, TestFHIRWithHelpers, TestFHIRPath, etc. | Various FHIR property mapping, context parameter, medication request, terminology wrapping |
+| **Error recovery** | ~5 | Issue616, IdentifierDoesNotResolve..., TestIdentifierCaseMismatch, TestIncorrectParameterType1204 | New pipeline preserves invalid expressions; legacy replaces with Null. |
+| **Cross-library conversions** | ~2 | TupleDifferentKeys, UncertTuplesWithDiffNullFields | Legacy emits Null for cross-library function calls it can't resolve. |
+| **Compiler options** | ~3 | TestCompatibilityLevel3, InTest, QuantityLiteralTest | Options not threaded through new pipeline. |
+| **Minor emission diffs** | ~7 | TestComments, TestChoiceAssignment, TranslationTests, Issue587, Issue643, etc. | Mixed: model version emission, return clause diffs, ToDateTime promotion. |
 
 ### Implementation Status
 
@@ -370,6 +340,8 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 | TypeResolver | Done (bottom-up + overload resolution + effective types) |
 | ConversionPlanner | Done (all conversion kinds via ConversionTable) |
 | ConversionTable | Done (5 conversion types, convergence loop) |
+| ModelIntegration | Done (implicit helper library detection, version inference) |
+| LibraryResolution | Done (explicit + implicit include pre-compilation) |
 | SemanticValidator | Partial (identifiers, casts, recursive functions) |
 | Lowering | Done (phrase expansion, interval operators, boundary selectors, coalescing, operator rewrites) |
 | Emission | Done (20 emission files, mechanical) |
@@ -391,6 +363,8 @@ After library include resolution: root-level 26 → 36 pass, FHIR R4 0 → 0 pas
 | SemanticValidator | `cql-to-elm/.../analysis/SemanticValidator.kt` |
 | OperatorRegistry | `cql-to-elm/.../analysis/OperatorRegistry.kt` |
 | Lowering | `cql-to-elm/.../analysis/Lowering.kt` |
+| ModelIntegration | `cql-to-elm/.../analysis/ModelIntegration.kt` |
+| LibraryResolution | `cql-to-elm/.../analysis/LibraryResolution.kt` |
 
 ### Codegen
 

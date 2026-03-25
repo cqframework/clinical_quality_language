@@ -65,6 +65,10 @@ class SemanticModel(
     fun getExternalFunctionReturnType(funcDef: FunctionDefinition): DataType? =
         typeTable.getExternalFunctionReturnType(funcDef)
 
+    /** Look up the pre-decided membership variant for a membership expression. */
+    fun getMembershipKind(expression: Expression): MembershipKind? =
+        typeTable.getMembershipKind(expression)
+
     // --- Symbol queries (delegated to SymbolTable) ---
 
     fun resolveExpression(name: String) = symbolTable.resolveExpression(name)

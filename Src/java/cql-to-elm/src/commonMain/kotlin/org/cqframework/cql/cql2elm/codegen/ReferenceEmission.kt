@@ -41,6 +41,10 @@ internal fun EmissionContext.emitIdentifierExpression(
                     Resolution.ScopedProperty.QualifierKind.ALIAS -> scope = resolution.scope
                     Resolution.ScopedProperty.QualifierKind.OPERAND ->
                         source = OperandRef().withName(resolution.scope)
+                    Resolution.ScopedProperty.QualifierKind.CONTEXT ->
+                        source = ExpressionRef().withName(resolution.scope)
+                    Resolution.ScopedProperty.QualifierKind.PARAMETER_CONTEXT ->
+                        source = ParameterRef().withName(resolution.scope)
                 }
             }
         is Resolution.CodeSystemRef ->

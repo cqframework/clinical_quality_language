@@ -73,19 +73,19 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 45/77 pass, 13 skip")
+    @Disabled("Exploratory: 46/77 pass, 20 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
     }
 
-    @Disabled("Exploratory: 9/12 pass")
+    @Disabled("Exploratory: 12/16 pass, 1 skip")
     @TestFactory
     fun fhirR4Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled("Exploratory: 14/28 pass, 1 skip")
+    @Disabled("Exploratory: 14/28 pass, 2 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")
@@ -286,6 +286,24 @@ class FullParityTest {
                     "New pipeline preserves expressions with type errors; legacy replaces with Null",
                 "RecursiveFunctions" to
                     "New pipeline correctly resolves recursive function types; legacy emits Null body",
+                "TupleDifferentKeys" to
+                    "New pipeline correctly resolves cross-library FunctionRef; legacy emits Null",
+                "UncertTuplesWithDiffNullFields" to
+                    "New pipeline correctly resolves cross-library FunctionRef; legacy emits Null",
+                // Error recovery: legacy emits Null for expressions it can't resolve.
+                // New pipeline preserves the (correct) expression.
+                "IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598" to
+                    "New pipeline preserves Add expression; legacy replaces unresolved identifier with Null",
+                "InTest" to
+                    "New pipeline preserves In expression; legacy replaces undeclared type with Null",
+                "Issue616" to
+                    "New pipeline preserves Quantity literal; legacy replaces invalid unit with Null",
+                "QuantityLiteralTest" to
+                    "New pipeline preserves Quantity literal; legacy replaces invalid unit with Null",
+                "TestCompatibilityLevel3" to
+                    "New pipeline preserves TimezoneOffsetFrom; legacy replaces CQL 1.3 error with Null",
+                "TestURIConversion" to
+                    "New pipeline preserves FunctionRef for .select(); legacy emits Null",
             )
     }
 }

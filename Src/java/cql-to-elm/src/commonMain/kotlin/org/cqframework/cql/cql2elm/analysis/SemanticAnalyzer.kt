@@ -103,6 +103,15 @@ class SemanticAnalyzer(
         // This is purely structural (needs model info, not types) so the convergence loop
         // can resolve CalculateAgeIn* against the operator registry and discover conversions.
         val desugared = desugarAgeInFunctions(library, modelContext)
+
+        // LIBRARY RESOLUTION: pre-compile included libraries via LibraryManager so that
+        // TypeResolver.resolveLibraryFunctionCall can resolve cross-library function calls.
+        // Also pre-compile implicit helper libraries referenced by model conversion info
+        // (e.g., FHIRHelpers for FHIR models) so they are cached in LibraryManager for
+        // on-demand resolution during type inference.
+        val libraryResolution = LibraryResolution(libraryManager, modelContext)
+        libraryResolution.resolveIncludes(desugared)
+
         val symbols = symbolCollector.collect(desugared)
 
         // INFER → PLAN convergence loop.
@@ -198,7 +207,7 @@ class SemanticAnalyzer(
                 newConversionsPerIteration = conversionsPerIteration,
                 errorCount = preNormModel.errors.size,
             )
-        return Result(normalizedLibrary, semanticModel)
+        return Result(normalizedLibrary, semanticModel, libraryResolution.diagnostics)
     }
 
     /**
@@ -305,6 +314,25 @@ typealias CompilerFrontend = SemanticAnalyzer
  * reference identity so that structurally identical nodes at different positions never collide —
  * even when they share the same [org.hl7.cql.ast.Locator].
  */
+/**
+ * Pre-decided membership variant for a [MembershipExpression]. Computed during type resolution so
+ * that emission can mechanically map to the correct ELM node without inspecting types.
+ */
+enum class MembershipKind {
+    /** Generic `In` — right operand is a list or interval. */
+    PLAIN_IN,
+    /** `InValueSet` — right operand is a ValueSet, left is scalar (Code/Concept/String). */
+    IN_VALUE_SET,
+    /** `AnyInValueSet` — right operand is a ValueSet, left is a list. */
+    ANY_IN_VALUE_SET,
+    /** `InCodeSystem` — right operand is a CodeSystem, left is scalar. */
+    IN_CODE_SYSTEM,
+    /** `AnyInCodeSystem` — right operand is a CodeSystem, left is a list. */
+    ANY_IN_CODE_SYSTEM,
+    /** Generic `Contains` — left operand is a list or interval. */
+    PLAIN_CONTAINS,
+}
+
 class TypeTable {
     private val types = IdentityHashMap<Expression, DataType>()
     private val operatorResolutions = IdentityHashMap<Expression, OperatorResolution>()
@@ -313,6 +341,7 @@ class TypeTable {
         IdentityHashMap<FunctionCallExpression, FunctionDefinition>()
     private val operandTypes = IdentityHashMap<OperandDefinition, DataType>()
     private val externalFunctionReturnTypes = IdentityHashMap<FunctionDefinition, DataType>()
+    private val membershipKinds = IdentityHashMap<Expression, MembershipKind>()
     /** Total expressions that had type inference attempted. */
     var expressionCount: Int = 0
         internal set
@@ -383,6 +412,14 @@ class TypeTable {
     fun getExternalFunctionReturnType(funcDef: FunctionDefinition): DataType? =
         externalFunctionReturnTypes[funcDef]
 
+    /** Record the pre-decided membership variant for a membership expression. */
+    fun setMembershipKind(expression: Expression, kind: MembershipKind) {
+        membershipKinds[expression] = kind
+    }
+
+    /** Look up the pre-decided membership variant. */
+    fun getMembershipKind(expression: Expression): MembershipKind? = membershipKinds[expression]
+
     /**
      * Merge entries from [other] into this table. For each expression in [other]:
      * - If this table has no type for the expression, copy the type from [other].
@@ -424,6 +461,11 @@ class TypeTable {
         for ((funcDef, type) in other.externalFunctionReturnTypes) {
             if (externalFunctionReturnTypes[funcDef] == null) {
                 externalFunctionReturnTypes[funcDef] = type
+            }
+        }
+        for ((expression, kind) in other.membershipKinds) {
+            if (membershipKinds[expression] == null) {
+                membershipKinds[expression] = kind
             }
         }
     }
@@ -468,6 +510,10 @@ sealed interface Resolution {
         enum class QualifierKind {
             ALIAS,
             OPERAND,
+            /** Property of a model-backed context (source = ExpressionRef to the context). */
+            CONTEXT,
+            /** Property of a parameter-backed context (source = ParameterRef to the parameter). */
+            PARAMETER_CONTEXT,
         }
     }
 

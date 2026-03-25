@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.codegen
 
+import org.cqframework.cql.cql2elm.analysis.MembershipKind
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.ast.BetweenExpression
 import org.hl7.cql.ast.ElementExtractorExpression
@@ -12,7 +13,6 @@ import org.hl7.cql.ast.MembershipOperator
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.TypeExtentKind
 import org.hl7.cql.ast.WidthExpression
-import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.And
 import org.hl7.elm.r1.AnyInCodeSystem
 import org.hl7.elm.r1.AnyInValueSet
@@ -154,10 +154,11 @@ private fun EmissionContext.buildPerOperand(
 /**
  * Emit a [MembershipExpression] (in/contains) as the appropriate ELM node. Children are pre-folded.
  *
- * When the operator is IN and the right operand resolves to a [ValueSetRef] or [CodeSystemRef],
- * emit the specialized terminology operators ([InValueSet], [AnyInValueSet], [InCodeSystem],
- * [AnyInCodeSystem]) matching the legacy translator's behavior. The choice between scalar and list
- * variants depends on the left operand's type from the semantic model.
+ * Dispatches on [MembershipKind] pre-decided during type resolution. The emitter does not inspect
+ * operand types — it mechanically maps the analysis decision to the correct ELM node.
+ *
+ * For terminology nodes, direct references (ValueSetRef/CodeSystemRef) are set on the `valueset`/
+ * `codesystem` property; expression-typed operands use `valuesetExpression`/`codesystemExpression`.
  */
 internal fun EmissionContext.emitMembership(
     expression: MembershipExpression,
@@ -165,48 +166,51 @@ internal fun EmissionContext.emitMembership(
     rightElm: ElmExpression,
 ): ElmExpression {
     val precision = expression.precision?.let { precisionStringToEnum(it) }
-
-    if (expression.operator == MembershipOperator.IN) {
-        // Check for terminology specialization: In with ValueSetRef or CodeSystemRef right operand
-        val leftType = semanticModel[expression.left]
-        val isListLeft = leftType is ListType
-
-        if (rightElm is ValueSetRef) {
-            return if (isListLeft) {
-                AnyInValueSet().apply {
-                    codes = leftElm
-                    valueset = rightElm
-                }
-            } else {
-                InValueSet().apply {
-                    code = leftElm
-                    valueset = rightElm
-                }
+    val kind =
+        semanticModel.getMembershipKind(expression)
+            ?: when (expression.operator) {
+                MembershipOperator.IN -> MembershipKind.PLAIN_IN
+                MembershipOperator.CONTAINS -> MembershipKind.PLAIN_CONTAINS
             }
-        }
-        if (rightElm is CodeSystemRef) {
-            return if (isListLeft) {
-                AnyInCodeSystem().apply {
-                    codes = leftElm
-                    codesystem = rightElm
-                }
-            } else {
-                InCodeSystem().apply {
-                    code = leftElm
-                    codesystem = rightElm
-                }
+
+    // Terminology ELM nodes (InValueSet, InCodeSystem, etc.) have canonical operand order:
+    // code/codes first, valueset/codesystem second. CQL `contains` has the reverse order
+    // (set on left, element on right), so swap when the kind is a terminology variant and
+    // the AST operator is CONTAINS.
+    val isContains = expression.operator == MembershipOperator.CONTAINS
+    val codeElm = if (isContains) rightElm else leftElm
+    val setElm = if (isContains) leftElm else rightElm
+    return when (kind) {
+        MembershipKind.IN_VALUE_SET ->
+            InValueSet().apply {
+                code = codeElm
+                if (setElm is ValueSetRef) valueset = setElm else valuesetExpression = setElm
             }
-        }
-
-        return In().apply {
-            operand = mutableListOf(leftElm, rightElm)
-            precision?.let { this.precision = it }
-        }
-    }
-
-    return Contains().apply {
-        operand = mutableListOf(leftElm, rightElm)
-        precision?.let { this.precision = it }
+        MembershipKind.ANY_IN_VALUE_SET ->
+            AnyInValueSet().apply {
+                codes = codeElm
+                if (setElm is ValueSetRef) valueset = setElm else valuesetExpression = setElm
+            }
+        MembershipKind.IN_CODE_SYSTEM ->
+            InCodeSystem().apply {
+                code = codeElm
+                if (setElm is CodeSystemRef) codesystem = setElm else codesystemExpression = setElm
+            }
+        MembershipKind.ANY_IN_CODE_SYSTEM ->
+            AnyInCodeSystem().apply {
+                codes = codeElm
+                if (setElm is CodeSystemRef) codesystem = setElm else codesystemExpression = setElm
+            }
+        MembershipKind.PLAIN_IN ->
+            In().apply {
+                operand = mutableListOf(leftElm, rightElm)
+                precision?.let { this.precision = it }
+            }
+        MembershipKind.PLAIN_CONTAINS ->
+            Contains().apply {
+                operand = mutableListOf(leftElm, rightElm)
+                precision?.let { this.precision = it }
+            }
     }
 }
 

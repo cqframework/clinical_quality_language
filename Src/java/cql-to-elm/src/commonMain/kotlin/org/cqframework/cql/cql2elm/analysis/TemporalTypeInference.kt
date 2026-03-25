@@ -107,12 +107,68 @@ internal fun TypeResolver.inferBetweenType(expression: BetweenExpression): DataT
 
 internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType? {
     // left, right pre-folded by catamorphism.
-    // Resolve through the operator map to record implicit conversions (e.g., Date→DateTime
-    // for `In(Date, Interval<DateTime>)`). Only record when the resolution produces a non-trivial
-    // conversion operator (ToDateTime, ToDecimal, etc.); simple casts (Null→T) are already handled
-    // by the emitter and recording them here produces spurious As wrappers.
     val leftType = typeTable[expression.left]
     val rightType = typeTable[expression.right]
+
+    val vsType =
+        try {
+            type("ValueSet")
+        } catch (_: IllegalArgumentException) {
+            null
+        }
+    val csType =
+        try {
+            type("CodeSystem")
+        } catch (_: IllegalArgumentException) {
+            null
+        }
+
+    // Terminology specialization: when one operand is a ValueSet or CodeSystem,
+    // pre-decide the membership variant. No operator resolution needed — these map
+    // directly to InValueSet/AnyInValueSet/InCodeSystem/AnyInCodeSystem ELM nodes.
+    // This prevents the generic In resolution from recording ExpandValueSet conversions.
+    if (expression.operator == org.hl7.cql.ast.MembershipOperator.IN) {
+        if (rightType == vsType) {
+            val kind =
+                if (leftType is ListType) MembershipKind.ANY_IN_VALUE_SET
+                else MembershipKind.IN_VALUE_SET
+            typeTable.setMembershipKind(expression, kind)
+            return type("Boolean")
+        }
+        if (rightType == csType) {
+            val kind =
+                if (leftType is ListType) MembershipKind.ANY_IN_CODE_SYSTEM
+                else MembershipKind.IN_CODE_SYSTEM
+            typeTable.setMembershipKind(expression, kind)
+            return type("Boolean")
+        }
+    }
+    if (expression.operator == org.hl7.cql.ast.MembershipOperator.CONTAINS) {
+        if (leftType == vsType) {
+            val kind =
+                if (rightType is ListType) MembershipKind.ANY_IN_VALUE_SET
+                else MembershipKind.IN_VALUE_SET
+            typeTable.setMembershipKind(expression, kind)
+            return type("Boolean")
+        }
+        if (leftType == csType) {
+            val kind =
+                if (rightType is ListType) MembershipKind.ANY_IN_CODE_SYSTEM
+                else MembershipKind.IN_CODE_SYSTEM
+            typeTable.setMembershipKind(expression, kind)
+            return type("Boolean")
+        }
+    }
+
+    // Non-terminology: set plain variant and resolve through operator map to record
+    // implicit conversions (e.g., Date→DateTime for `In(Date, Interval<DateTime>)`).
+    val plainKind =
+        when (expression.operator) {
+            org.hl7.cql.ast.MembershipOperator.IN -> MembershipKind.PLAIN_IN
+            org.hl7.cql.ast.MembershipOperator.CONTAINS -> MembershipKind.PLAIN_CONTAINS
+        }
+    typeTable.setMembershipKind(expression, plainKind)
+
     if (leftType != null && rightType != null) {
         val opName =
             when (expression.operator) {

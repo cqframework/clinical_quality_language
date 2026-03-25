@@ -125,6 +125,19 @@ class TypeResolver(
     /** The symbol table for the current resolution pass. Set by [resolve] before use. */
     internal lateinit var symbolTable: SymbolTable
 
+    /**
+     * The resolved type of the current context (e.g., FHIR.Encounter for `context Encounter`). Set
+     * by [resolve] when walking library statements. Used as a fallback in [inferIdentifierType]:
+     * unqualified identifiers that don't match any scope are tried as properties of this type.
+     */
+    internal var currentContextType: DataType? = null
+
+    /**
+     * The name of the current context (e.g., "Encounter" for `context Encounter`). Used to build
+     * the [Resolution.ScopedProperty] scope name for context property resolution.
+     */
+    internal var currentContextName: String? = null
+
     /** Shorthand for resolving a System type by name. Used by extension functions. */
     internal fun type(name: String): DataType? = operatorRegistry.type(name)
 
@@ -153,10 +166,28 @@ class TypeResolver(
             paramDef.default?.let { inferType(it) }
         }
 
-        for ((_, exprDef) in symbolTable.expressionDefinitions) {
-            resolveExpressionDef(exprDef.name.value)
+        // Walk statements in order to track the current context. When a ContextDefinition
+        // is encountered, resolve its type from the model. Expression and function definitions
+        // are resolved with the current context available for implicit property resolution.
+        for (statement in library.statements) {
+            when (statement) {
+                is org.hl7.cql.ast.ContextDefinition -> {
+                    currentContextName = statement.context.value
+                    currentContextType = resolveContextType(currentContextName!!)
+                }
+                is org.hl7.cql.ast.ExpressionDefinition ->
+                    resolveExpressionDef(statement.name.value)
+                is org.hl7.cql.ast.FunctionDefinition -> resolveFunctionDef(statement)
+                else -> {}
+            }
         }
 
+        // Resolve any functions not yet cached (e.g., functions whose body returned null on first
+        // attempt). Reset context state — the statement walk set context for each definition in
+        // order, but this catch-up loop runs after the last ContextDefinition. Without resetting,
+        // a failed function would be re-resolved with the last context's type, which may be wrong.
+        currentContextType = null
+        currentContextName = null
         for ((_, funcDefs) in symbolTable.functionDefinitions) {
             for (funcDef in funcDefs) {
                 resolveFunctionDef(funcDef)
@@ -252,6 +283,10 @@ class TypeResolver(
             is org.hl7.cql.ast.IntervalTypeSpecifier -> {
                 val pointType = resolveTypeSpecifier(typeSpec.pointType) ?: return null
                 org.hl7.cql.model.IntervalType(pointType)
+            }
+            is org.hl7.cql.ast.ChoiceTypeSpecifier -> {
+                val choiceTypes = typeSpec.choices.map { resolveTypeSpecifier(it) ?: return null }
+                org.hl7.cql.model.ChoiceType(choiceTypes)
             }
             else -> null
         }
@@ -529,6 +564,31 @@ class TypeResolver(
             // Library references don't have a meaningful type themselves —
             // their members are accessed via property access or function call.
             return null
+        }
+
+        // Fallback: try resolving as a property of the current context.
+        // In `context Patient`, unqualified `birthDate` resolves as `Patient.birthDate`.
+        // This produces Property(path="birthDate", source=ExpressionRef("Patient")).
+        val ctxType = currentContextType
+        val ctxName = currentContextName
+        if (ctxType != null && ctxName != null) {
+            val propType = resolvePropertyType(ctxType, name)
+            if (propType != null) {
+                val isParameterBacked =
+                    symbolTable.resolveContext(ctxName)?.isParameterBacked == true
+                val qualifierKind =
+                    if (isParameterBacked) Resolution.ScopedProperty.QualifierKind.PARAMETER_CONTEXT
+                    else Resolution.ScopedProperty.QualifierKind.CONTEXT
+                val resolution =
+                    Resolution.ScopedProperty(
+                        scope = ctxName,
+                        path = name,
+                        type = propType,
+                        qualifierKind = qualifierKind,
+                    )
+                typeTable.setIdentifierResolution(expression, resolution)
+                return propType
+            }
         }
 
         return null
