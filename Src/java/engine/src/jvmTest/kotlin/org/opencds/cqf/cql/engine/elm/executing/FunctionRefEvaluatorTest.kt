@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import javax.xml.namespace.QName
+import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.ListTypeSpecifier
@@ -69,6 +70,41 @@ internal class FunctionRefEvaluatorTest {
         )
         Assertions.assertFalse(
             FunctionRefEvaluator.operandDefTypeSpecifierEqual(integerOperandDef, null)
+        )
+    }
+
+    @Test
+    fun choiceTypeSpecifierOrderShouldNotAffectSignatureMatch() {
+        // Simulates the ChoiceType deterministic serialization issue:
+        // The FunctionDef operand has choice types in sorted order (from ChoiceType sorting),
+        // but the FunctionRef signature has them in a different order (e.g., from model info).
+        // The engine should match them regardless of order.
+        val fhirNs = "http://hl7.org/fhir"
+        val dateTimeType = NamedTypeSpecifier().withName(QName(fhirNs, "dateTime"))
+        val periodType = NamedTypeSpecifier().withName(QName(fhirNs, "Period"))
+        val ageType = NamedTypeSpecifier().withName(QName(fhirNs, "Age"))
+        val rangeType = NamedTypeSpecifier().withName(QName(fhirNs, "Range"))
+        val stringType = NamedTypeSpecifier().withName(QName(fhirNs, "string"))
+
+        // FunctionDef operand: sorted alphabetically (as ChoiceType now produces)
+        val sortedChoice =
+            ChoiceTypeSpecifier()
+                .withChoice(listOf(ageType, dateTimeType, periodType, rangeType, stringType))
+        val functionDef =
+            FunctionDef()
+                .withOperand(listOf(OperandDef().withOperandTypeSpecifier(sortedChoice)))
+
+        // FunctionRef signature: model-info order (dateTime, Age, Period, Range, string)
+        val modelOrderChoice =
+            ChoiceTypeSpecifier()
+                .withChoice(listOf(dateTimeType, ageType, periodType, rangeType, stringType))
+
+        Assertions.assertTrue(
+            FunctionRefEvaluator.functionDefOperandsSignatureEqual(
+                functionDef,
+                listOf(modelOrderChoice),
+            ),
+            "ChoiceTypeSpecifier matching should be order-independent",
         )
     }
 
