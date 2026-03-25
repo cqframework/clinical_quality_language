@@ -91,8 +91,7 @@ internal class FunctionRefEvaluatorTest {
             ChoiceTypeSpecifier()
                 .withChoice(listOf(ageType, dateTimeType, periodType, rangeType, stringType))
         val functionDef =
-            FunctionDef()
-                .withOperand(listOf(OperandDef().withOperandTypeSpecifier(sortedChoice)))
+            FunctionDef().withOperand(listOf(OperandDef().withOperandTypeSpecifier(sortedChoice)))
 
         // FunctionRef signature: model-info order (dateTime, Age, Period, Range, string)
         val modelOrderChoice =
