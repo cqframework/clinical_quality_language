@@ -21,7 +21,7 @@ spotless {
     }
     kotlin {
         target("**/*.kt")
-        targetExclude("**/generated/**", "**/generated-sources/**")
+        targetExclude("**/generated/**", "**/generated-sources/**", "**/bin/**")
         ktfmt().kotlinlangStyle()
     }
 }
