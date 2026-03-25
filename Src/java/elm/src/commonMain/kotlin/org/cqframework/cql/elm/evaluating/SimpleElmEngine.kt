@@ -247,19 +247,7 @@ class SimpleElmEngine {
             if (right is ChoiceTypeSpecifier) {
                 if (left.choice.size == right.choice.size) {
                     for (i in left.choice.indices) {
-                        val leftType = left.choice[i]
-                        val rightType = right.choice[i]
-                        if (!typeSpecifiersEqual(leftType, rightType)) {
-                            return false
-                        }
-                    }
-                }
-
-                if (left.choice.size == right.choice.size) {
-                    for (i in left.choice.indices) {
-                        val leftType = left.choice[i]
-                        val rightType = right.choice[i]
-                        if (!typeSpecifiersEqual(leftType, rightType)) {
+                        if (!typeSpecifiersEqual(left.choice[i], right.choice[i])) {
                             return false
                         }
                     }

@@ -476,22 +476,8 @@ internal class BaseTest {
         )
         val u = def.expression as Union?
         assertThat(u!!.operand.size, `is`(2))
-        assertThat(u.operand[0], Matchers.instanceOf(Retrieve::class.java))
-        r = u.operand[0] as Retrieve?
-        assertThat<String?>(
-            r!!.templateId,
-            `is`<String?>(
-                "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"
-            ),
-        )
-        assertThat<String?>(r.codeProperty, `is`<String?>("medication"))
-        assertThat<String?>(r.codeComparator, `is`<String?>("in"))
-        assertThat<Expression?>(r.codes, Matchers.instanceOf<Expression?>(ValueSetRef::class.java))
-        vsr = r.codes as ValueSetRef?
-        assertThat<String?>(vsr!!.name, `is`<String?>("Antithrombotic Therapy"))
-
-        assertThat(u.operand[1], Matchers.instanceOf(Query::class.java))
-        q = u.operand[1] as Query?
+        assertThat(u.operand[0], Matchers.instanceOf(Query::class.java))
+        q = u.operand[0] as Query?
         assertThat(q!!.source.size, `is`(1))
         assertThat(q.source[0].expression, Matchers.instanceOf(Retrieve::class.java))
         r = q.source[0].expression as Retrieve?
@@ -559,6 +545,20 @@ internal class BaseTest {
         p = fr.operand[0] as Property?
         assertThat<String?>(p!!.scope, `is`<String?>("M"))
         assertThat<String?>(p.path, `is`<String?>("code"))
+
+        assertThat(u.operand[1], Matchers.instanceOf(Retrieve::class.java))
+        r = u.operand[1] as Retrieve?
+        assertThat<String?>(
+            r!!.templateId,
+            `is`<String?>(
+                "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"
+            ),
+        )
+        assertThat<String?>(r.codeProperty, `is`<String?>("medication"))
+        assertThat<String?>(r.codeComparator, `is`<String?>("in"))
+        assertThat<Expression?>(r.codes, Matchers.instanceOf<Expression?>(ValueSetRef::class.java))
+        vsr = r.codes as ValueSetRef?
+        assertThat<String?>(vsr!!.name, `is`<String?>("Antithrombotic Therapy"))
     }
 
     @Test

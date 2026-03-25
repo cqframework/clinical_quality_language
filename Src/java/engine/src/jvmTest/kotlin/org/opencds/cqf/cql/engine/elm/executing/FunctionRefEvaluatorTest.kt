@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import javax.xml.namespace.QName
+import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.ListTypeSpecifier
@@ -69,6 +70,25 @@ internal class FunctionRefEvaluatorTest {
         )
         Assertions.assertFalse(
             FunctionRefEvaluator.operandDefTypeSpecifierEqual(integerOperandDef, null)
+        )
+    }
+
+    @Test
+    fun choiceTypeSpecifierSignatureMatchesSameOrder() {
+        val fhirNs = "http://hl7.org/fhir"
+        val ageType = NamedTypeSpecifier().withName(QName(fhirNs, "Age"))
+        val dateTimeType = NamedTypeSpecifier().withName(QName(fhirNs, "dateTime"))
+        val periodType = NamedTypeSpecifier().withName(QName(fhirNs, "Period"))
+
+        // Both in the same (sorted) order — should match
+        val defChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
+        val functionDef =
+            FunctionDef().withOperand(listOf(OperandDef().withOperandTypeSpecifier(defChoice)))
+
+        val sigChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
+
+        Assertions.assertTrue(
+            FunctionRefEvaluator.functionDefOperandsSignatureEqual(functionDef, listOf(sigChoice))
         )
     }
 

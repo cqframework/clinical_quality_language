@@ -1879,6 +1879,18 @@ class LibraryBuilder(
     ): Expression {
         val fromType: IntervalType = conversion.fromType as IntervalType
         val toType: IntervalType = conversion.toType as IntervalType
+
+        // Optimization: when the expression is an Interval literal, directly convert the bounds
+        // and preserve the lowClosed/highClosed booleans. This avoids unnecessary runtime Property
+        // extraction for values known at compile time (constant folding).
+        // Also handles Interval literals wrapped in As casts (e.g., from cast+interval conversion
+        // chains where convertExpression applies a cast before the interval conversion).
+        val interval = unwrapIntervalLiteral(expression)
+        if (interval != null) {
+            return constantFoldIntervalConversion(interval, conversion, toType)
+        }
+
+        // For non-literal intervals, extract bounds via Property access at runtime
         return objectFactory
             .createInterval()
             .withLow(
@@ -1915,6 +1927,31 @@ class LibraryBuilder(
                     .withPath("highClosed")
                     .withResultType(resolveTypeName("System", "Boolean"))
             )
+            .withResultType(toType)
+    }
+
+    /** Unwrap an expression to find an Interval literal, including through As casts. */
+    private fun unwrapIntervalLiteral(expression: Expression?): org.hl7.elm.r1.Interval? =
+        when (expression) {
+            is org.hl7.elm.r1.Interval -> expression
+            is org.hl7.elm.r1.As -> expression.operand as? org.hl7.elm.r1.Interval
+            else -> null
+        }
+
+    /** Constant-fold an interval conversion by directly converting the literal's bounds. */
+    private fun constantFoldIntervalConversion(
+        interval: org.hl7.elm.r1.Interval,
+        conversion: Conversion,
+        toType: IntervalType,
+    ): Expression {
+        val low = interval.low
+        val high = interval.high
+        return objectFactory
+            .createInterval()
+            .withLow(if (low != null) convertExpression(low, conversion.conversion!!) else null)
+            .withLowClosed(interval.lowClosed)
+            .withHigh(if (high != null) convertExpression(high, conversion.conversion!!) else null)
+            .withHighClosed(interval.highClosed)
             .withResultType(toType)
     }
 
