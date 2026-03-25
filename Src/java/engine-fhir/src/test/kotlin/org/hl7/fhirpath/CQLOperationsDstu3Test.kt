@@ -3,14 +3,6 @@ package org.hl7.fhirpath
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import com.google.common.collect.Sets
-import org.hl7.fhir.dstu3.model.BaseDateTimeType
-import org.hl7.fhir.dstu3.model.BooleanType
-import org.hl7.fhir.dstu3.model.Coding
-import org.hl7.fhir.dstu3.model.DecimalType
-import org.hl7.fhir.dstu3.model.Enumeration
-import org.hl7.fhir.dstu3.model.IntegerType
-import org.hl7.fhir.dstu3.model.Quantity
-import org.hl7.fhir.dstu3.model.StringType
 import org.hl7.fhirpath.tests.Group
 import org.hl7.fhirpath.tests.Test
 import org.junit.jupiter.api.Assumptions
@@ -24,7 +16,7 @@ import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
-import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 
 class CQLOperationsDstu3Test : TestFhirPath() {
     @ParameterizedTest(name = "{0}")
@@ -41,53 +33,59 @@ class CQLOperationsDstu3Test : TestFhirPath() {
         state: State?,
         resolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
     ): Boolean? {
-        // Perform FHIR system-defined type conversions
-        var actualResult = actualResult
-        when (actualResult) {
-            is Enumeration<*> -> {
-                actualResult = actualResult.valueAsString
-            }
-
-            is BooleanType -> {
-                actualResult = actualResult.value
-            }
-
-            is IntegerType -> {
-                actualResult = actualResult.value
-            }
-
-            is DecimalType -> {
-                actualResult = actualResult.value
-            }
-
-            is StringType -> {
-                actualResult = actualResult.value
-            }
-
-            is BaseDateTimeType -> {
-                actualResult = resolver.toJavaPrimitive(actualResult, actualResult)
-            }
-
-            is Quantity -> {
-                val quantity = actualResult
-                actualResult =
-                    org.opencds.cqf.cql.engine.runtime
-                        .Quantity()
-                        .withValue(quantity.getValue())
-                        .withUnit(quantity.getUnit())
-            }
-
-            is Coding -> {
-                val coding = actualResult
-                actualResult =
-                    Code()
-                        .withCode(coding.getCode())
-                        .withDisplay(coding.getDisplay())
-                        .withSystem(coding.getSystem())
-                        .withVersion(coding.getVersion())
-            }
+        if (actualResult is CqlClassInstance && actualResult.elements.containsKey("value")) {
+            return EqualEvaluator.equal(expectedResult, actualResult.elements["value"], state)
         }
+
         return EqualEvaluator.equal(expectedResult, actualResult, state)
+
+        //        // Perform FHIR system-defined type conversions
+        //        var actualResult = actualResult
+        //        when (actualResult) {
+        //            is Enumeration<*> -> {
+        //                actualResult = actualResult.valueAsString
+        //            }
+        //
+        //            is BooleanType -> {
+        //                actualResult = actualResult.value
+        //            }
+        //
+        //            is IntegerType -> {
+        //                actualResult = actualResult.value
+        //            }
+        //
+        //            is DecimalType -> {
+        //                actualResult = actualResult.value
+        //            }
+        //
+        //            is StringType -> {
+        //                actualResult = actualResult.value
+        //            }
+        //
+        //            is BaseDateTimeType -> {
+        //                actualResult = resolver.toJavaPrimitive(actualResult, actualResult)
+        //            }
+        //
+        //            is Quantity -> {
+        //                val quantity = actualResult
+        //                actualResult =
+        //                    org.opencds.cqf.cql.engine.runtime
+        //                        .Quantity()
+        //                        .withValue(quantity.getValue())
+        //                        .withUnit(quantity.getUnit())
+        //            }
+        //
+        //            is Coding -> {
+        //                val coding = actualResult
+        //                actualResult =
+        //                    Code()
+        //                        .withCode(coding.getCode())
+        //                        .withDisplay(coding.getDisplay())
+        //                        .withSystem(coding.getSystem())
+        //                        .withVersion(coding.getVersion())
+        //            }
+        //        }
+        //        return EqualEvaluator.equal(expectedResult, actualResult, state)
     }
 
     companion object {

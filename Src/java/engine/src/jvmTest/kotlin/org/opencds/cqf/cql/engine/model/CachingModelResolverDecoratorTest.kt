@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -33,10 +32,8 @@ internal class CachingModelResolverDecoratorTest {
     }
 
     @Test
-    @Suppress("deprecation")
     fun context_path_resolved_only_once() {
         val m = Mockito.mock(ModelResolver::class.java)
-        Mockito.`when`(m.packageName).thenReturn("test.package")
         Mockito.`when`(m.getContextPath("Patient", "Patient")).thenReturn("id")
 
         val cache = CachingModelResolverDecorator(m)
@@ -45,24 +42,6 @@ internal class CachingModelResolverDecoratorTest {
 
         Assertions.assertEquals("id", result)
         Mockito.verify(m, Mockito.times(1)).getContextPath("Patient", "Patient")
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun type_resolved_only_once() {
-        val m = Mockito.mock(ModelResolver::class.java)
-        Mockito.`when`(m.packageName).thenReturn("test.package")
-        Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Int::class.java)))
-            .thenReturn(Int::class.java)
-        Mockito.`when`(m.resolveType(ArgumentMatchers.isA(Class::class.java)))
-            .thenThrow(RuntimeException("Can't get a class of a class"))
-
-        val cache = CachingModelResolverDecorator(m)
-        cache.resolveType(5)
-        val result = cache.resolveType(5)
-
-        Assertions.assertEquals(Int::class.java, result)
-        Mockito.verify(m, Mockito.times(1)).resolveType(5)
     }
 
     @Test

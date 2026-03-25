@@ -100,10 +100,11 @@ abstract class TestFhirPath {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", provider)
         if (testCase is Pass && testCase.resource != null) {
             val resource = testCase.resource
-            engine.state.setParameter(null, resource.fhirType(), resource)
-            engine.state.setParameter(null, "%context", resource)
-            engine.state.setParameter(null, "%resource", resource)
-            engine.state.setParameter(null, "%rootResource", resource)
+            val resourceAsCqlValue = resolver.toCqlValue(resource)
+            engine.state.setParameter(null, resource.fhirType(), resourceAsCqlValue)
+            engine.state.setParameter(null, "%context", resourceAsCqlValue)
+            engine.state.setParameter(null, "%resource", resourceAsCqlValue)
+            engine.state.setParameter(null, "%rootResource", resourceAsCqlValue)
         }
 
         var result: EvaluationResult?

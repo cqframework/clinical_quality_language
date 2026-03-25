@@ -3,9 +3,9 @@ package org.opencds.cqf.cql.engine.fhir.retrieve
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
-import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.TerminologyAwareRetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -13,7 +13,7 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 abstract class SearchParamFhirRetrieveProvider
 protected constructor(
     val searchParameterResolver: SearchParameterResolver,
-    val modelResolver: ModelResolver,
+    val modelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
 ) : TerminologyAwareRetrieveProvider() {
     protected val fhirContext: FhirContext
         get() = searchParameterResolver.fhirContext
@@ -105,6 +105,6 @@ protected constructor(
                 dateRange,
             )
 
-        return this.executeQueries(dataType, queries)
+        return this.executeQueries(dataType, queries)?.map { modelResolver.toCqlValue(it) }
     }
 }

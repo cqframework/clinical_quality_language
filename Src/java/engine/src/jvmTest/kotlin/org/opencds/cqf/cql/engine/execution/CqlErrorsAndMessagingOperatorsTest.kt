@@ -31,7 +31,7 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
         try {
             value = engine.expression(library, "TestMessageError")
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("400: This is an error!\n"))
+            Assertions.assertEquals(re.message, String.format("400: This is an error!\n4"))
         }
 
         value = engine.expression(library, "TestMessageWithNullSeverity")
@@ -91,14 +91,14 @@ internal class CqlErrorsAndMessagingOperatorsTest : CqlTestBase() {
             value = engine.expression(library, "TestErrorWithNullCode")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("This is a message\n"))
+            Assertions.assertEquals(re.message, String.format("This is a message\n1"))
         }
 
         try {
             value = engine.expression(library, "TestErrorWithNullMessage")
             MatcherAssert.assertThat(value, Matchers.`is`(1))
         } catch (re: RuntimeException) {
-            Assertions.assertEquals(re.message, String.format("1: null\n"))
+            Assertions.assertEquals(re.message, String.format("1: null\n1"))
         }
     }
 

@@ -2,8 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.As
+import org.hl7.elm.r1.NamedTypeSpecifier
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.JavaClass
 
 /*
 as<T>(argument Any) T
@@ -25,17 +25,9 @@ define RuntimeError:
     return cast P as Observation
 */
 object AsEvaluator {
-    private fun resolveType(`as`: As, state: State?): JavaClass<*>? {
-        if (`as`.asTypeSpecifier != null) {
-            return state!!.environment.resolveType(`as`.asTypeSpecifier)
-        }
-
-        return state!!.environment.resolveType(`as`.asType)
-    }
-
     @JvmStatic
     fun internalEvaluate(operand: Any?, `as`: As, isStrict: Boolean, state: State?): Any? {
-        val clazz = resolveType(`as`, state)
-        return state!!.environment.`as`(operand, clazz!!, isStrict)
+        val type = `as`.asTypeSpecifier ?: NamedTypeSpecifier().withName(`as`.asType)
+        return state!!.environment.`as`(operand, type, isStrict)
     }
 }

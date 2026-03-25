@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.model
 
-import org.opencds.cqf.cql.engine.util.JavaClass
+import org.cqframework.cql.shared.QName
 
 /**
  * A ModelResolver provides support for mapping a logical model (e.g. QDM or FHIR) onto a Java
@@ -9,40 +9,6 @@ import org.opencds.cqf.cql.engine.util.JavaClass
  * also possibly with different property naming schemes, etc.
  */
 interface ModelResolver {
-    @get:Deprecated("Use getPackageNames() instead")
-    @set:Deprecated("Use setPackageNames#String instead")
-    var packageName: String?
-
-    var packageNames: MutableList<String?>
-        /**
-         * Return the package names of Java objects supported by this model
-         *
-         * @return list of Java package names for model objects that support this model.
-         */
-        get() = mutableListOf(this.packageName)
-        /**
-         * Set the package names of Java objects supported by this model
-         *
-         * @param packageNames list of Java package names for model objects that support this model.
-         */
-        set(packageNames) {
-            // Intentionally empty. This provides backwards
-            // compatibility for models that implement a single
-            // package name and still use the get/setPackageName
-            // methods.
-        }
-
-    /**
-     * Resolve the provided path expression for the provided target. Paths can be things like simple
-     * dotted property notation (e.g. Patient.id) or more complex things like list indexed property
-     * expressions (e.g. Patient.name[0].given). The exact details are configured in the model
-     * definition and passed to the ELM file during CQL to ELM translation.
-     *
-     * @return result of the provided expression. Null is expected whenever a path doesn't exist on
-     *   the target.
-     */
-    fun resolvePath(target: Any?, path: String?): Any?
-
     /**
      * Get the path expression that expresses the relationship between the `targetType` and the
      * given `contextType`. For example, in a FHIR model, with context type `Patient` and targetType
@@ -52,43 +18,14 @@ interface ModelResolver {
     fun getContextPath(contextType: String?, targetType: String?): Any?
 
     /**
-     * Resolve the Java class that corresponds to the given model type
+     * Check whether or not a specified `valueType` is a subtype of the specified `type`.
      *
-     * @param typeName Model type name. In the ELM, model objects are namespaced (e.g.
-     *   FHIR.Patient), but the namespace is removed prior to calling this method, so the input
-     *   would just be Patient.
-     * @return Class object that represents the specified model type
+     * @param valueType A model type, e.g. `"Patient"`
+     * @param type E.g. `QName("http://hl7.org/fhir", "DomainResource")`
+     * @return `true` when `valueType` is a subtype of (or the same type as) the specified `type`,
+     *   otherwise `false`.
      */
-    fun resolveType(typeName: String?): JavaClass<*>?
-
-    /**
-     * Resolve the Java class that corresponds to the given model object instance.
-     *
-     * @param value Object instance
-     * @return Class object that represents the specified value
-     */
-    fun resolveType(value: Any?): JavaClass<*>?
-
-    /**
-     * Check whether or not a specified value instance is of the specified type.
-     *
-     * @param value
-     * @param type
-     * @return true when the value is of the specified type, otherwise false.
-     */
-    fun `is`(value: Any?, type: JavaClass<*>?): Boolean?
-
-    /**
-     * Cast the specified value to the specified type. When type conversion is not possible, null
-     * should be returned unless the isStrict flag is set to true wherein an Exception will be
-     * thrown.
-     *
-     * @param value model object instance
-     * @param type type to which the value should be case
-     * @param isStrict flag indicating how to handle invalid type conversion
-     * @return the result of the value conversion or null if conversion is not possible.
-     */
-    fun `as`(value: Any?, type: JavaClass<*>?, isStrict: Boolean): Any?
+    fun `is`(valueType: String, type: QName): Boolean?
 
     /**
      * Create an instance of the model object that corresponds to the specified type.
@@ -97,33 +34,6 @@ interface ModelResolver {
      * @return new instance of the specified model type
      */
     fun createInstance(typeName: String?): Any?
-
-    /**
-     * Set the value of a particular property on the given model object.
-     *
-     * @param target model object
-     * @param path path to the property that will be set
-     * @param value value to set to the property indicated by the path expression
-     */
-    fun setValue(target: Any?, path: String?, value: Any?)
-
-    /**
-     * Compare two objects for equality
-     *
-     * @param left left hand side of the equality expression
-     * @param right right hand side of the equality expression
-     * @return flag indicating whether the objects are equal
-     */
-    fun objectEqual(left: Any?, right: Any?): Boolean?
-
-    /**
-     * Compare two objects for equivalence
-     *
-     * @param left left hand side of the equivalence expression
-     * @param right right hand side of the equivalence expression
-     * @return flag indicating whether the objects are equal
-     */
-    fun objectEquivalent(left: Any?, right: Any?): Boolean?
 
     /**
      * Ensure that for a given object each implementation can introspect that object in its own way

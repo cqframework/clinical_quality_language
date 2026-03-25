@@ -32,7 +32,7 @@ internal class Issue1225 : FhirExecutionTestBase() {
                     if (dataType == "Patient") {
                         val p = Patient()
                         p.getAddress().add(Address().addLine("123").addLine("456"))
-                        return mutableListOf<Any?>(p)
+                        return mutableListOf(r4ModelResolver!!.toCqlValue(p))
                     }
 
                     return mutableListOf()

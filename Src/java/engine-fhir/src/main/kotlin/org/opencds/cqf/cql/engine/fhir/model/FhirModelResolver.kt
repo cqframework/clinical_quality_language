@@ -4,35 +4,35 @@ import ca.uhn.fhir.context.BaseRuntimeChildDefinition
 import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.RuntimeChildChoiceDefinition
-import ca.uhn.fhir.context.RuntimeChildPrimitiveDatatypeDefinition
 import ca.uhn.fhir.context.RuntimeChildResourceBlockDefinition
 import ca.uhn.fhir.context.RuntimeChildResourceDefinition
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum
 import java.lang.reflect.InvocationTargetException
 import java.util.Calendar
 import java.util.GregorianCalendar
+import javax.xml.namespace.QName
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Exception
 import kotlin.IllegalArgumentException
 import kotlin.Int
-import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.instance.model.api.IAnyResource
 import org.hl7.fhir.instance.model.api.IBase
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement
 import org.hl7.fhir.instance.model.api.IBaseElement
 import org.hl7.fhir.instance.model.api.IBaseEnumFactory
 import org.hl7.fhir.instance.model.api.IBaseEnumeration
+import org.hl7.fhir.instance.model.api.IBaseHasExtensions
+import org.hl7.fhir.instance.model.api.IBaseHasModifierExtensions
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
-import org.opencds.cqf.cql.engine.exception.DataProviderException
-import org.opencds.cqf.cql.engine.exception.InvalidCast
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
@@ -64,8 +64,6 @@ abstract class FhirModelResolver<
 ) : ModelResolver {
     protected abstract fun initialize()
 
-    protected abstract fun equalsDeep(left: BaseType, right: BaseType): Boolean
-
     abstract fun castToSimpleQuantity(base: BaseType): SimpleQuantityType
 
     protected abstract fun getCalendar(dateTime: BaseDateTimeType): Calendar
@@ -91,8 +89,12 @@ abstract class FhirModelResolver<
     }
 
     override fun resolveId(target: Any?): String? {
-        if (target is IBaseResource) {
-            return target.idElement.idPart
+        if (target is CqlClassInstance && target.type.namespaceURI == "http://hl7.org/fhir") {
+            val clazz = this.resolveType(target.type.localPart) ?: return null
+            if (IBaseResource::class.java.isAssignableFrom(clazz)) {
+                val id = target.elements["id"] as? CqlClassInstance ?: return null
+                return id.elements["value"] as? String
+            }
         }
         return null
     }
@@ -115,7 +117,7 @@ abstract class FhirModelResolver<
         }
 
         val resourceDefinition = this.fhirContext.getResourceDefinition(targetType)
-        val theValue = this.createInstance(contextType)
+        val theValue = this.createHapiInstance(contextType)
 
         // Because we created this instance from the local FhirContext, we know it is an IBase
         // The model resolver interface is not generic, so we have to cast here
@@ -174,71 +176,37 @@ abstract class FhirModelResolver<
         return null
     }
 
-    override fun objectEqual(left: Any?, right: Any?): Boolean? {
-        if (left == null) {
-            return null
-        }
-
-        if (right == null) {
-            return null
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        return this.equalsDeep(left as BaseType, right as BaseType)
-    }
-
-    override fun objectEquivalent(left: Any?, right: Any?): Boolean {
-        if (left == null && right == null) {
+    override fun `is`(valueType: String, type: QName): Boolean? {
+        // System.Any is a supertype of all types
+        if (type == QName("urn:hl7-org:elm-types:r1", "Any")) {
             return true
         }
 
-        if (left == null || right == null) {
+        if (type.namespaceURI != "http://hl7.org/fhir") {
             return false
         }
 
-        @Suppress("UNCHECKED_CAST")
-        return this.equalsDeep(left as BaseType, right as BaseType)
+        val valueTypeClass = resolveType(valueType) ?: return null
+        val typeClass = resolveType(type.localPart) ?: return null
+
+        return typeClass.isAssignableFrom(valueTypeClass)
     }
 
     override fun createInstance(typeName: String?): Any {
-        return createInstance(resolveType(typeName)!!)
+        return toCqlValue(createHapiInstance(typeName!!), true)!!
     }
 
-    @get:Deprecated("Deprecated in Java")
-    @set:Deprecated("Deprecated in Java")
-    override var packageName: String?
-        get() {
-            if (packageNames.isEmpty()) {
-                return null
-            }
-            return packageNames[0]
-        }
-        set(packageName) {
-            this.packageNames =
-                if (packageName != null) mutableListOf(packageName) else mutableListOf()
-        }
+    /** The package names of Java objects supported by this model */
+    open var packageNames = mutableListOf<String>()
 
-    override var packageNames = mutableListOf<String?>()
-
-    override fun resolvePath(target: Any?, path: String?): Any? {
-        var target = target
-        val identifiers =
-            path!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        for (identifier in identifiers) {
-            // handling indexes: i.e. item[0].code
-            if (identifier.contains("[")) {
-                val index = Character.getNumericValue(identifier[identifier.indexOf("[") + 1])
-                target = resolveProperty(target, identifier.replace("\\[\\d]".toRegex(), ""))!!
-                target = (target as ArrayList<*>)[index]
-            } else {
-                target = resolveProperty(target, identifier)
-            }
-        }
-
-        return target
-    }
-
-    override fun resolveType(typeName: String?): Class<*>? {
+    /**
+     * Resolve the Java class that corresponds to the given model type.
+     *
+     * @param typeName E.g. "Patient"
+     * @return The Java class that corresponds to the given model type, e.g.
+     *   `org.hl7.fhir.r4.model.Patient`.
+     */
+    open fun resolveType(typeName: String?): Class<*>? {
         // For Dstu2
         var typeName = typeName
         if (typeName!!.startsWith("FHIR.")) {
@@ -334,147 +302,7 @@ abstract class FhirModelResolver<
         return null
     }
 
-    override fun resolveType(value: Any?): Class<*>? {
-        if (value == null) {
-            return Any::class.java
-        }
-
-        // For FHIR enumerations, return the type of the backing Enum
-        if (this.enumChecker(value)) {
-            @Suppress("UNCHECKED_CAST")
-            val factoryName = this.enumFactoryTypeGetter(value as EnumerationType).getSimpleName()
-            return this.resolveType(factoryName.substringBefore("EnumFactory"))
-        }
-
-        return value.javaClass
-    }
-
-    override fun setValue(target: Any?, path: String?, value: Any?) {
-        var value = value
-        if (target == null) {
-            return
-        }
-
-        if (target is IBaseEnumeration<*> && path == "value") {
-            target.valueAsString = value as String?
-            return
-        }
-
-        val base = target as IBase
-        val definition: BaseRuntimeElementCompositeDefinition<*>
-        if (base is IPrimitiveType<*>) {
-            setPrimitiveValue(value, base)
-            return
-        } else {
-            definition = resolveRuntimeDefinition(base)
-        }
-
-        var child = definition.getChildByName(path)
-        if (child == null) {
-            child = resolveChoiceProperty(definition, path)
-        }
-
-        if (child == null) {
-            throw DataProviderException("Unable to resolve path $path.")
-        }
-
-        try {
-            if (value is Iterable<*>) {
-                for (`val` in value) {
-                    child.mutator.addValue(base, setBaseValue(`val`, base))
-                }
-            } else {
-                child.mutator.setValue(base, setBaseValue(value, base))
-            }
-        } catch (le: IllegalArgumentException) {
-            if (value!!.javaClass.getSimpleName() == "Quantity") {
-                try {
-                    @Suppress("UNCHECKED_CAST")
-                    value = this.castToSimpleQuantity(value as BaseType)
-                } catch (_: FHIRException) {
-                    throw InvalidCast("Unable to cast Quantity to SimpleQuantity")
-                }
-                child.mutator.setValue(base, setBaseValue(value, base))
-            } else {
-                throw DataProviderException("Configuration error encountered: ${le.message}")
-            }
-        }
-    }
-
     // Resolutions
-    protected open fun resolveProperty(target: Any?, path: String): Any? {
-        if (target == null) {
-            return null
-        }
-
-        if (target is IBaseEnumeration<*> && path == "value") {
-            return target.valueAsString
-        }
-
-        // TODO: Consider using getResourceType everywhere?
-        @Suppress("UNCHECKED_CAST")
-        if (target is IAnyResource && this.getResourceType(target as ResourceType) == path) {
-            return target
-        }
-
-        val base = target as IBase
-        val definition: BaseRuntimeElementCompositeDefinition<*>
-        if (base is IPrimitiveType<*>) {
-            return toJavaPrimitive(
-                if (path == "value") (target as IPrimitiveType<*>).getValue() else target,
-                base,
-            )
-        } else {
-            definition = resolveRuntimeDefinition(base)
-        }
-
-        var child = definition.getChildByName(path)
-        if (child == null) {
-            child = resolveChoiceProperty(definition, path)
-        }
-
-        if (child == null) {
-            return null
-        }
-
-        val values = child.accessor.getValues(base)
-
-        if (values == null || values.isEmpty()) {
-            return null
-        }
-
-        // If the instance is a primitive (including (or even especially an enumeration), and it has
-        // no value, return
-        // null
-        if (child is RuntimeChildPrimitiveDatatypeDefinition) {
-            val value = values[0]
-            if (value is IPrimitiveType<*>) {
-                if (!value.hasValue()) {
-                    return null
-                }
-            }
-        }
-
-        if (
-            child is RuntimeChildChoiceDefinition &&
-                !child.elementName.equals(path, ignoreCase = true)
-        ) {
-            if (
-                !values[0]!!
-                    .javaClass
-                    .getSimpleName()
-                    .equals(
-                        child.getChildByName(path).getImplementingClass().getSimpleName(),
-                        ignoreCase = true,
-                    )
-            ) {
-                return null
-            }
-        }
-
-        return toJavaPrimitive(if (child.max < 1) values else values[0], base)
-    }
-
     protected fun resolveRuntimeDefinition(base: IBase): BaseRuntimeElementCompositeDefinition<*> {
         when (base) {
             is IAnyResource -> {
@@ -535,13 +363,17 @@ abstract class FhirModelResolver<
     }
 
     // Creators
-    protected fun createInstance(clazz: Class<*>): Any {
+    internal fun createHapiInstance(typeName: String): Any {
+        return createHapiInstance(this.resolveType(typeName)!!)
+    }
+
+    protected fun createHapiInstance(clazz: Class<*>): Any {
         try {
             if (clazz.isEnum) {
                 val factoryClass = this.resolveType(clazz.getName() + "EnumFactory")
 
                 @Suppress("UNCHECKED_CAST")
-                val factory = this.createInstance(factoryClass!!) as EnumFactoryType
+                val factory = this.createHapiInstance(factoryClass!!) as EnumFactoryType
                 return this.enumConstructor(factory)
             }
 
@@ -751,5 +583,98 @@ abstract class FhirModelResolver<
             "Base64BinaryType" -> (source as IPrimitiveType<*>).valueAsString
             else -> result
         }
+    }
+
+    /** Recursively converts a HAPI FHIR construct to a CQL-native equivalent. */
+    fun toCqlValue(
+        target: Any?,
+        expandPrimitivesAndEnumerationsWithNoValues: Boolean = false,
+    ): Any? {
+        if (target == null) {
+            return null
+        }
+
+        val elements = mutableMapOf<String, Any?>()
+
+        if (target is IBaseHasExtensions) {
+            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
+            elements["extension"] =
+                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues
+        }
+
+        if (target is IBaseHasModifierExtensions) {
+            val modifierExtensionsAsCqlValues = target.modifierExtension.map { toCqlValue(it) }
+            elements["extension"] =
+                if (modifierExtensionsAsCqlValues.isEmpty()) null else modifierExtensionsAsCqlValues
+        }
+
+        if (target is IBaseElement) {
+            elements["id"] = target.id
+        }
+
+        if (this.enumChecker(target)) {
+            @Suppress("UNCHECKED_CAST")
+            target as EnumerationType
+
+            // If the instance is a primitive (including or even especially an enumeration), and it
+            // has no value, return null
+            if (
+                !expandPrimitivesAndEnumerationsWithNoValues &&
+                    !target.hasValue() &&
+                    elements.all { it.value == null }
+            ) {
+                return null
+            }
+
+            // For FHIR enumerations, use the type of the backing Enum
+            val factoryName = this.enumFactoryTypeGetter(target).simpleName
+            val typeName = factoryName.substringBefore("EnumFactory")
+
+            elements["value"] = target.valueAsString
+
+            return CqlClassInstance(QName("http://hl7.org/fhir", typeName), elements)
+        }
+
+        if (target is IPrimitiveType<*>) {
+            // If the instance is a primitive (including or even especially an enumeration), and it
+            // has no value, return null
+            if (
+                !expandPrimitivesAndEnumerationsWithNoValues &&
+                    !target.hasValue() &&
+                    elements.all { it.value == null }
+            ) {
+                return null
+            }
+
+            val elementDefinition = this.fhirContext.getElementDefinition(target.javaClass)
+
+            elements["value"] = toJavaPrimitive(target.value, target)
+
+            return CqlClassInstance(QName("http://hl7.org/fhir", elementDefinition.name), elements)
+        }
+
+        if (target !is IBase) {
+            throw IllegalArgumentException(
+                "Unable to convert an instance of ${target.javaClass.name} to a CQL value. Expected an instance of IBase."
+            )
+        }
+
+        val definition = resolveRuntimeDefinition(target)
+
+        for (child in definition.children) {
+            val childName = child.elementName
+            val hapiValues = child.accessor.getValues(target)
+
+            val hapiValuesAsCqlValues = hapiValues.map { toCqlValue(it) }
+
+            if (child.max == 1) {
+                elements[childName] = hapiValuesAsCqlValues.firstOrNull()
+            } else {
+                elements[childName] =
+                    if (hapiValuesAsCqlValues.isEmpty()) null else hapiValuesAsCqlValues
+            }
+        }
+
+        return CqlClassInstance(QName("http://hl7.org/fhir", definition.name), elements)
     }
 }

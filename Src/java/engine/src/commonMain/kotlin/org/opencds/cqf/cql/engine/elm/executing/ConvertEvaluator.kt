@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.QName
+import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidConversion
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.JavaClass
 
 /*
 convert to<T>(argument Any) T
@@ -40,33 +40,6 @@ For specific semantics for each conversion, refer to the explicit conversion ope
 
 */
 object ConvertEvaluator {
-    private fun resolveType(
-        toType: QName?,
-        typeSpecifier: TypeSpecifier?,
-        state: State?,
-    ): JavaClass<*> {
-        if (typeSpecifier != null) {
-            return state!!.environment.resolveType(typeSpecifier)!!
-        }
-        return state!!.environment.resolveType(toType)!!
-    }
-
-    private fun convert(operand: Any?, type: JavaClass<*>): Any? {
-        if (operand == null) {
-            return null
-        }
-
-        try {
-            if (type.isInstance(operand)) {
-                return type.cast(operand)
-            }
-        } catch (e: Exception) {
-            throw InvalidConversion("Error during conversion: " + e.message)
-        }
-
-        throw InvalidConversion(operand, type)
-    }
-
     @JvmStatic
     fun internalEvaluate(
         operand: Any?,
@@ -74,7 +47,11 @@ object ConvertEvaluator {
         typeSpecifier: TypeSpecifier?,
         state: State?,
     ): Any? {
-        val type = resolveType(toType, typeSpecifier, state)
-        return convert(operand, type)
+        val type = typeSpecifier ?: NamedTypeSpecifier().withName(toType)
+        try {
+            return state!!.environment.`as`(operand, type, true)
+        } catch (e: Exception) {
+            throw InvalidConversion("Error during conversion: " + e.message)
+        }
     }
 }

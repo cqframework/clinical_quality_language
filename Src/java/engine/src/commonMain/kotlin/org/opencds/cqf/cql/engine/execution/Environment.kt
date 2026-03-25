@@ -4,6 +4,7 @@ import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.LibraryManager
+import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.*
@@ -11,13 +12,18 @@ import org.opencds.cqf.cql.engine.data.DataProvider
 import org.opencds.cqf.cql.engine.data.ExternalFunctionProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.exception.InvalidCast
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CodeSystem
+import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
-import org.opencds.cqf.cql.engine.util.JavaClass
-import org.opencds.cqf.cql.engine.util.javaClass
-import org.opencds.cqf.cql.engine.util.javaClassPackageName
-import org.opencds.cqf.cql.engine.util.kotlinClassToJavaClass
 
 /**
  * The Environment class represents the current CQL execution environment. Meaning, things that are
@@ -34,8 +40,6 @@ constructor(
     val terminologyProvider: TerminologyProvider? = null,
 ) {
     val dataProviders = mutableMapOf<String?, DataProvider?>()
-
-    private val packageMap = mutableMapOf<String?, DataProvider?>()
 
     // -- ExternalFunctionProviders -- TODO the registration of these... Should be
     // part of the LibraryManager?
@@ -73,73 +77,100 @@ constructor(
 
     // -- DataProvider "Helpers"
     fun resolvePath(target: Any?, path: String): Any? {
+        var target = target
+        //  The path attribute may include qualifiers (.) and indexers ([x])
+        val qualifiersAndIndexers =
+            path.split('.', '[', ']').map { it.trim() }.filter { it.isNotEmpty() }
+        for (qualifierOrIndexer in qualifiersAndIndexers) {
+            val indexer = qualifierOrIndexer.toIntOrNull()
+            target =
+                if (indexer == null) {
+                    resolveProperty(target, qualifierOrIndexer)
+                } else {
+                    (target as Iterable<*>).elementAtOrNull(indexer)
+                }
+        }
+        return target
+    }
+
+    fun resolveProperty(target: Any?, property: String): Any? {
         if (target == null) {
             return null
         }
 
-        // TODO: Path may include .'s and []'s.
-        // For now, assume no qualifiers or indexers...
-        val clazz: JavaClass<*> = target.javaClass
-
-        if (clazz.getPackageName().startsWith("java.lang")) {
-            throw CqlException(
-                "Invalid path: $path for type: ${clazz.getName()} - this is likely an issue with the data model."
-            )
+        return when (target) {
+            is Quantity -> {
+                when (property) {
+                    "value" -> target.value
+                    "unit" -> target.unit
+                    else -> null
+                }
+            }
+            is Ratio -> {
+                when (property) {
+                    "numerator" -> target.numerator
+                    "denominator" -> target.denominator
+                    else -> null
+                }
+            }
+            is Code -> {
+                when (property) {
+                    "code" -> target.code
+                    "display" -> target.display
+                    "system" -> target.system
+                    "version" -> target.version
+                    else -> null
+                }
+            }
+            is Concept -> {
+                when (property) {
+                    "display" -> target.display
+                    "codes" -> target.codes
+                    else -> null
+                }
+            }
+            is CodeSystem -> {
+                when (property) {
+                    "id" -> target.id
+                    "version" -> target.version
+                    "name" -> target.name
+                    else -> null
+                }
+            }
+            is ValueSet -> {
+                when (property) {
+                    "id" -> target.id
+                    "version" -> target.version
+                    "name" -> target.name
+                    "codesystems" -> target.codeSystems
+                    else -> null
+                }
+            }
+            is Interval -> {
+                when (property) {
+                    "low" -> target.low
+                    "lowClosed" -> target.lowClosed
+                    "high" -> target.high
+                    "highClosed" -> target.highClosed
+                    else -> null
+                }
+            }
+            is Tuple -> target.getElement(property)
+            is CqlClassInstance -> target.elements[property]
+            else -> throw IllegalArgumentException("Could not resolve path '$property' on $target.")
         }
-
-        val dataProvider = resolveDataProvider(clazz.getPackageName())
-        return dataProvider!!.resolvePath(target, path)
     }
 
-    fun `as`(operand: Any?, type: JavaClass<*>, isStrict: Boolean): Any? {
-        if (operand == null) {
-            return null
-        }
-
-        // Special case for Iterable instances being cast to CQL Lists.
-        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
-        if (
-            kotlinClassToJavaClass(Iterable::class).isAssignableFrom(type) && operand is Iterable<*>
-        ) {
+    fun `as`(operand: Any?, type: TypeSpecifier, isStrict: Boolean): Any? {
+        if (`is`(operand, type) == true) {
             return operand
         }
 
-        if (type.isInstance(operand)) {
-            return operand
-        }
-
-        val provider = resolveDataProvider(type.getPackageName(), false)
-        if (provider != null) {
-            return provider.`as`(operand, type, isStrict)
+        if (isStrict) {
+            throw InvalidCast("Cannot cast $operand to $type.")
         }
 
         return null
-    }
-
-    fun objectEqual(left: Any?, right: Any?): Boolean? {
-        if (left == null) {
-            return null
-        }
-
-        val clazz: JavaClass<*> = left.javaClass
-
-        val dataProvider = resolveDataProvider(clazz.getPackageName())
-        return dataProvider!!.objectEqual(left, right)
-    }
-
-    fun objectEquivalent(left: Any?, right: Any?): Boolean? {
-        if ((left == null) && (right == null)) {
-            return true
-        }
-
-        if (left == null) {
-            return false
-        }
-
-        val clazz: JavaClass<*> = left.javaClass
-
-        val dataProvider = resolveDataProvider(clazz.getPackageName())
-        return dataProvider!!.objectEquivalent(left, right)
     }
 
     fun createInstance(typeName: QName): Any? {
@@ -154,41 +185,182 @@ constructor(
             return
         }
 
-        val clazz: JavaClass<*> = target.javaClass
-
-        val dataProvider = resolveDataProvider(clazz.getPackageName())
-        dataProvider!!.setValue(target, path, value)
+        when (target) {
+            is Quantity -> {
+                when (path) {
+                    "value" -> target.value = value as BigDecimal?
+                    "unit" -> target.unit = value as String?
+                    else -> throw IllegalArgumentException("Could not set $path on Quantity.")
+                }
+            }
+            is Ratio -> {
+                when (path) {
+                    "numerator" -> target.numerator = value as Quantity?
+                    "denominator" -> target.denominator = value as Quantity?
+                    else -> throw IllegalArgumentException("Could not set $path on Ratio.")
+                }
+            }
+            is Code -> {
+                when (path) {
+                    "code" -> target.code = value as String?
+                    "display" -> target.display = value as String?
+                    "system" -> target.system = value as String?
+                    "version" -> target.version = value as String?
+                    else -> throw IllegalArgumentException("Could not set $path on Code.")
+                }
+            }
+            is Concept -> {
+                when (path) {
+                    "display" -> target.display = value as String?
+                    "codes" ->
+                        target.codes = @Suppress("UNCHECKED_CAST") (value as MutableList<Code?>?)
+                    else -> throw IllegalArgumentException("Could not set $path on Concept.")
+                }
+            }
+            is CodeSystem -> {
+                when (path) {
+                    "id" -> target.id = value as String?
+                    "version" -> target.version = value as String?
+                    "name" -> target.name = value as String?
+                    else -> throw IllegalArgumentException("Could not set $path on CodeSystem.")
+                }
+            }
+            is ValueSet -> {
+                when (path) {
+                    "id" -> target.id = value as String?
+                    "version" -> target.version = value as String?
+                    "name" -> target.name = value as String?
+                    "codesystems" ->
+                        target.setCodeSystems(
+                            @Suppress("UNCHECKED_CAST") (value as MutableList<CodeSystem?>?)
+                        )
+                    else -> throw IllegalArgumentException("Could not set $path on ValueSet.")
+                }
+            }
+            is Interval -> {
+                when (path) {
+                    "low" -> target.low = value
+                    "high" -> target.high = value
+                    else -> throw IllegalArgumentException("Could not set $path on $target.")
+                }
+            }
+            is CqlClassInstance -> target.elements[path] = value
+            else -> throw IllegalArgumentException("Could not set $path on $target.")
+        }
     }
 
-    fun `is`(operand: Any?, type: JavaClass<*>): Boolean? {
+    fun `is`(operand: Any?, type: TypeSpecifier): Boolean? {
+        // System.Any is a supertype of all types
+        if (type is NamedTypeSpecifier && type.name == QName("urn:hl7-org:elm-types:r1", "Any")) {
+            return true
+        }
+
         if (operand == null) {
-            return null
+            return false
         }
 
-        // Special case for Iterable instances being checked against CQL List type.
-        // See https://github.com/cqframework/clinical_quality_language/issues/1577.
-        if (
-            kotlinClassToJavaClass(Iterable::class).isAssignableFrom(type) && operand is Iterable<*>
-        ) {
-            return true
-        }
+        when (type) {
+            is NamedTypeSpecifier -> {
+                val operandNamedType = getNamedTypeForCqlValue(operand)
 
-        if (type.isInstance(operand)) {
-            return true
-        }
+                if (operandNamedType == null) {
+                    return false
+                }
 
-        val provider = resolveDataProvider(type.getPackageName(), false)
-        if (provider != null) {
-            return provider.`is`(operand, type)
-        }
+                val provider =
+                    resolveDataProviderByModelUriOrNull(operandNamedType.getNamespaceURI())
 
-        return false
+                if (provider == null) {
+                    return null
+                }
+
+                return provider.`is`(operandNamedType.getLocalPart(), type.name!!)
+            }
+            is ListTypeSpecifier -> {
+                if (operand is Iterable<*>) {
+                    if (operand.any()) {
+                        for (item in operand) {
+                            val result = `is`(item, type.elementType!!)
+                            if (result == null) {
+                                return null
+                            }
+                            if (result == false) {
+                                return false
+                            }
+                        }
+                        return true
+                    }
+                    // An empty list has type List<Any>
+                    return type.elementType == QName("urn:hl7-org:elm-types:r1", "Any")
+                }
+                return false
+            }
+            is IntervalTypeSpecifier -> {
+                if (operand is Interval) {
+                    val lowResult = `is`(operand.low, type.pointType!!)
+                    if (lowResult == false) {
+                        return false
+                    }
+
+                    val highResult = `is`(operand.high, type.pointType!!)
+                    if (highResult == false) {
+                        return false
+                    }
+
+                    if (lowResult == true || highResult == true) {
+                        return true
+                    }
+
+                    return null
+                }
+                return false
+            }
+            is TupleTypeSpecifier -> {
+                if (
+                    operand is Tuple &&
+                        operand.elements.keys == type.element.map { it.name!! }.toSet()
+                ) {
+
+                    for (elementDefinition in type.element) {
+                        val elementValue = operand.elements[elementDefinition.name!!]
+                        val result = `is`(elementValue, elementDefinition.elementType!!)
+                        if (result == null) {
+                            return null
+                        }
+                        if (result == false) {
+                            return false
+                        }
+                    }
+                    return true
+                }
+                return false
+            }
+            is ChoiceTypeSpecifier -> {
+                var foundNull = false
+                for (choice in type.choice) {
+                    val result = `is`(operand, choice)
+                    if (result == null) {
+                        foundNull = true
+                    }
+                    if (result == true) {
+                        return true
+                    }
+                }
+                return if (foundNull) {
+                    null
+                } else {
+                    false
+                }
+            }
+            else -> {
+                return false
+            }
+        }
     }
 
     // -- DataProvider resolution
     fun registerDataProvider(modelUri: String?, dataProvider: DataProvider?) {
         dataProviders[modelUri] = dataProvider
-        dataProvider!!.packageNames.forEach { pn -> packageMap[pn] = dataProvider }
     }
 
     @JsName("resolveDataProviderByQName")
@@ -199,98 +371,23 @@ constructor(
     }
 
     fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
-        val dataProvider =
-            dataProviders[modelUri]
-                ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
-
-        return dataProvider
+        return resolveDataProviderByModelUriOrNull(modelUri)
+            ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
     }
 
-    @JvmOverloads
-    fun resolveDataProvider(packageName: String?, mustResolve: Boolean = true): DataProvider? {
-        val dataProvider = packageMap[packageName]
-        if (dataProvider == null && mustResolve) {
-            throw CqlException("Could not resolve data provider for package '${packageName}'.")
-        }
-
-        return dataProvider
+    fun resolveDataProviderByModelUriOrNull(modelUri: String?): DataProvider? {
+        return dataProviders[modelUri]
     }
 
-    @JsName("resolveTypeByQName")
-    fun resolveType(typeName: QName?): JavaClass<*>? {
-        var typeName = typeName
-        typeName = fixupQName(typeName!!)
-        val dataProvider = resolveDataProvider(typeName)
-        return dataProvider.resolveType(typeName.getLocalPart())
-    }
-
-    @JsName("resolveTypeByTypeSpecifier")
-    fun resolveType(typeSpecifier: TypeSpecifier?): JavaClass<*>? {
-        return when (typeSpecifier) {
-            is NamedTypeSpecifier -> resolveType(typeSpecifier.name)
-            is ListTypeSpecifier ->
-                // TODO: This doesn't allow for list-distinguished overloads...
-                kotlinClassToJavaClass(MutableList::class)
-            // return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
-            is IntervalTypeSpecifier ->
-                // TODO: This doesn't allow for interval-distinguished overloads
-                kotlinClassToJavaClass(Interval::class)
-            is ChoiceTypeSpecifier ->
-                // TODO: This doesn't allow for choice-distinguished overloads...
-                kotlinClassToJavaClass(Any::class)
-            else ->
-                // TODO: This doesn't allow for tuple-distinguished overloads....
-                kotlinClassToJavaClass(Tuple::class)
-        }
-    }
-
-    fun resolveType(value: Any?): JavaClass<*>? {
-        if (value == null) {
-            return null
-        }
-
-        if (value is TypeSpecifier) {
-            return resolveType(value)
-        }
-
-        val packageName = value.javaClassPackageName
-
-        // May not be necessary, idea is to sync with the use of List.class for
-        // ListTypeSpecifiers in the resolveType above
-        if (value is Iterable<*>) {
-            return kotlinClassToJavaClass(MutableList::class)
-        }
-
-        if (value is Tuple) {
-            return kotlinClassToJavaClass(Tuple::class)
-        }
-
-        // Primitives should just use the type
-        // BTR: Well, we should probably be explicit about all and only the types we
-        // expect
-        if (packageName.startsWith("java")) {
-            return value.javaClass
-        }
-
-        val dataProvider = resolveDataProvider(value.javaClassPackageName)
-        return dataProvider!!.resolveType(value)
-    }
-
-    fun resolveOperandType(operandDef: OperandDef): JavaClass<*>? {
+    fun resolveOperandType(operandDef: OperandDef): TypeSpecifier {
         return if (operandDef.operandTypeSpecifier != null) {
-            resolveType(operandDef.operandTypeSpecifier)
+            operandDef.operandTypeSpecifier!!
         } else {
-            resolveType(operandDef.operandType)
+            NamedTypeSpecifier().withName(operandDef.operandType)
         }
-    }
-
-    fun isType(argumentType: JavaClass<*>?, operandType: JavaClass<*>): Boolean {
-        return argumentType == null || operandType.isAssignableFrom(argumentType)
     }
 
     fun matchesTypes(functionDef: FunctionDef, arguments: kotlin.collections.List<*>): Boolean {
-        var isMatch = true
-
         val operands = functionDef.operand
 
         // if argument length is mismatched, don't compare
@@ -298,14 +395,9 @@ constructor(
             return false
         }
 
-        for (i in arguments.indices) {
-            isMatch = isType(resolveType(arguments[i]), this.resolveOperandType(operands[i])!!)
-            if (!isMatch) {
-                break
-            }
+        return arguments.zip(operands).all { (argument, operand) ->
+            argument == null || `is`(argument, resolveOperandType(operand)) != false
         }
-
-        return isMatch
     }
 
     fun fixupQName(typeName: QName): QName {
