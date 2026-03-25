@@ -159,7 +159,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val choiceType = ChoiceType(specifiersByType.keys)
         // Build the specifier list in the same order as choiceType.types (sorted) so that
         // ChoiceTypeSpecifier ordering is always consistent with ChoiceType ordering.
-        val sortedSpecifiers = choiceType.types.map { specifiersByType[it]!! }
+        val sortedSpecifiers = choiceType.types.map { checkNotNull(specifiersByType[it]) }
         val result = of.createChoiceTypeSpecifier().withChoice(sortedSpecifiers)
         result.resultType = choiceType
         return result
