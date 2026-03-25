@@ -74,36 +74,21 @@ internal class FunctionRefEvaluatorTest {
     }
 
     @Test
-    fun choiceTypeSpecifierOrderShouldNotAffectSignatureMatch() {
-        // Simulates the ChoiceType deterministic serialization issue:
-        // The FunctionDef operand has choice types in sorted order (from ChoiceType sorting),
-        // but the FunctionRef signature has them in a different order (e.g., from model info).
-        // The engine should match them regardless of order.
+    fun choiceTypeSpecifierSignatureMatchesSameOrder() {
         val fhirNs = "http://hl7.org/fhir"
+        val ageType = NamedTypeSpecifier().withName(QName(fhirNs, "Age"))
         val dateTimeType = NamedTypeSpecifier().withName(QName(fhirNs, "dateTime"))
         val periodType = NamedTypeSpecifier().withName(QName(fhirNs, "Period"))
-        val ageType = NamedTypeSpecifier().withName(QName(fhirNs, "Age"))
-        val rangeType = NamedTypeSpecifier().withName(QName(fhirNs, "Range"))
-        val stringType = NamedTypeSpecifier().withName(QName(fhirNs, "string"))
 
-        // FunctionDef operand: sorted alphabetically (as ChoiceType now produces)
-        val sortedChoice =
-            ChoiceTypeSpecifier()
-                .withChoice(listOf(ageType, dateTimeType, periodType, rangeType, stringType))
+        // Both in the same (sorted) order — should match
+        val defChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
         val functionDef =
-            FunctionDef().withOperand(listOf(OperandDef().withOperandTypeSpecifier(sortedChoice)))
+            FunctionDef().withOperand(listOf(OperandDef().withOperandTypeSpecifier(defChoice)))
 
-        // FunctionRef signature: model-info order (dateTime, Age, Period, Range, string)
-        val modelOrderChoice =
-            ChoiceTypeSpecifier()
-                .withChoice(listOf(dateTimeType, ageType, periodType, rangeType, stringType))
+        val sigChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
 
         Assertions.assertTrue(
-            FunctionRefEvaluator.functionDefOperandsSignatureEqual(
-                functionDef,
-                listOf(modelOrderChoice),
-            ),
-            "ChoiceTypeSpecifier matching should be order-independent",
+            FunctionRefEvaluator.functionDefOperandsSignatureEqual(functionDef, listOf(sigChoice))
         )
     }
 

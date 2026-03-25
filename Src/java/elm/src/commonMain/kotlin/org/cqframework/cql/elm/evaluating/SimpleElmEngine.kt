@@ -242,31 +242,20 @@ class SimpleElmEngine {
             return false
         }
 
-        // ChoiceTypeSpecifier — compare as sets since choice type order is not semantically
-        // meaningful.
+        // ChoiceTypeSpecifier
         if (left is ChoiceTypeSpecifier) {
             if (right is ChoiceTypeSpecifier) {
-                if (left.choice.size != right.choice.size) {
-                    return false
-                }
-
-                // Each type in left must have a match in right
-                val matched = BooleanArray(right.choice.size)
-                for (leftType in left.choice) {
-                    var found = false
-                    for (j in right.choice.indices) {
-                        if (!matched[j] && typeSpecifiersEqual(leftType, right.choice[j])) {
-                            matched[j] = true
-                            found = true
-                            break
+                if (left.choice.size == right.choice.size) {
+                    for (i in left.choice.indices) {
+                        if (!typeSpecifiersEqual(left.choice[i], right.choice[i])) {
+                            return false
                         }
                     }
-                    if (!found) {
-                        return false
-                    }
+
+                    return true
                 }
 
-                return true
+                return false
             }
 
             return false

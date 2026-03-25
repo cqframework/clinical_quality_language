@@ -151,15 +151,16 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     override fun visitChoiceTypeSpecifier(ctx: ChoiceTypeSpecifierContext): ChoiceTypeSpecifier {
-        val typeSpecifiers = ArrayList<TypeSpecifier>()
-        val types = ArrayList<DataType>()
+        val specifiersByType = LinkedHashMap<DataType, TypeSpecifier>()
         for (typeSpecifierContext in ctx.typeSpecifier()) {
             val typeSpecifier = parseTypeSpecifier(typeSpecifierContext)!!
-            typeSpecifiers.add(typeSpecifier)
-            types.add(typeSpecifier.resultType!!)
+            specifiersByType[typeSpecifier.resultType!!] = typeSpecifier
         }
-        val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
-        val choiceType = ChoiceType(types)
+        val choiceType = ChoiceType(specifiersByType.keys)
+        // Build the specifier list in the same order as choiceType.types (sorted) so that
+        // ChoiceTypeSpecifier ordering is always consistent with ChoiceType ordering.
+        val sortedSpecifiers = choiceType.types.map { specifiersByType[it]!! }
+        val result = of.createChoiceTypeSpecifier().withChoice(sortedSpecifiers)
         result.resultType = choiceType
         return result
     }
