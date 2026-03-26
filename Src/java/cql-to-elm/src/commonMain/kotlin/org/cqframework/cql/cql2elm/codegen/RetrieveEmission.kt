@@ -15,7 +15,10 @@ import org.hl7.elm.r1.ValueSetRef as ElmValueSetRef
  * templateId.
  */
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
-    val retrieve = buildRetrieveForType(expression.typeSpecifier.name.simpleName)
+    // Non-retrievable types are detected by SemanticValidator and flagged via addError();
+    // emitExpression's error gate returns Null() before reaching here.
+    val typeName = expression.typeSpecifier.name.simpleName
+    val retrieve = buildRetrieveForType(typeName)
 
     // Resolve codeProperty, codeComparator, and codes when a terminology restriction is present.
     val terminologyRestriction = expression.terminology

@@ -42,6 +42,7 @@ import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
 import org.hl7.cql.ast.forEachChildExpression
+import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.ListType
 
 /**
@@ -350,7 +351,22 @@ private class ExpressionChecker(
 
     override fun onQuery(expr: QueryExpression, children: QueryChildren<Unit>) {}
 
-    override fun onRetrieve(expr: RetrieveExpression) {} // leaf (for now)
+    override fun onRetrieve(expr: RetrieveExpression) {
+        // Non-retrievable types (e.g. abstract DomainResource) are invalid in a Retrieve context.
+        // Flag so the emitter's error gate emits Null, matching legacy translator behavior.
+        // Wrapped in try-catch: a system-only ModelContext will throw for FHIR types, which
+        // would be caught by other validators (unresolved type). Don't double-report.
+        try {
+            val typeName = expr.typeSpecifier.name.simpleName
+            val resolvedModel = model.modelContext.resolveModelForType(typeName)
+            val dataType = resolvedModel.resolveTypeName(typeName)
+            if (dataType is ClassType && !dataType.isRetrievable) {
+                model.addError(expr)
+            }
+        } catch (_: Exception) {
+            // Type not resolvable — let other validators handle it.
+        }
+    }
 
     override fun onUnsupported(expr: UnsupportedExpression) {} // nothing to validate
 }

@@ -515,6 +515,15 @@ class ConversionPlanner(
                 ConversionSlot.Operand,
                 ImplicitConversion.ImplicitCast(ListType(IntervalType(anyType))),
             )
+            return
+        }
+        // List<Any> operand (e.g. collapse {null}): demote list elements to Interval<Any>
+        // to match legacy behavior which wraps in Query { X = list } return As(X, Interval<Any>).
+        val operandType = typeTable[expr.operand] ?: return
+        val anyType = operatorRegistry.type("Any") ?: return
+        if (operandType is ListType && operandType.elementType == anyType) {
+            val intervalAny = IntervalType(anyType)
+            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ListDemotion(intervalAny, ListType(intervalAny)))
         }
     }
 

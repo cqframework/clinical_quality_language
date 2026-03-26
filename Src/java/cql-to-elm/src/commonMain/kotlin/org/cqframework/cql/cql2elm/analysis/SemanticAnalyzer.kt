@@ -164,6 +164,9 @@ class SemanticAnalyzer(
                 operatorRegistry,
                 options,
                 conversionTable = conversionTable,
+                // Pass modelContext so SemanticValidator can resolve model types during validation
+                // (e.g. checking ClassType.isRetrievable for RetrieveExpression nodes).
+                modelContext = modelContext,
             )
         semanticValidator.validate(desugared, symbols, preNormModel)
 

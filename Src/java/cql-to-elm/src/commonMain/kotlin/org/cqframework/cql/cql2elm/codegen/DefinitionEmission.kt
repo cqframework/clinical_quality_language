@@ -41,16 +41,25 @@ internal fun EmissionContext.emitUsing(definition: UsingDefinition): UsingDef {
     val usingDef = UsingDef()
     val localId = definition.alias?.value ?: definition.modelIdentifier.simpleName
     usingDef.localIdentifier = localId
-    usingDef.version = definition.version?.value
     val modelName = definition.modelIdentifier.simpleName
-    usingDef.uri =
-        when (modelName) {
-            "System" -> typesNamespace
-            else -> {
-                val model = modelContext.resolveModel(modelName, definition.version?.value)
-                model.modelInfo.targetUrl ?: model.modelInfo.url
+    when (modelName) {
+        "System" -> {
+            usingDef.uri = typesNamespace
+            // System has no version in ELM output
+        }
+        else -> {
+            val model = modelContext.resolveModel(modelName, definition.version?.value)
+            // Match legacy translator's applyTargetModelMaps() behavior: models that remap to another
+            // target (e.g. QICore → FHIR) use the target's URL and version, not the CQL source version.
+            if (model.modelInfo.targetUrl != null) {
+                usingDef.uri = model.modelInfo.targetUrl
+                usingDef.version = model.modelInfo.targetVersion
+            } else {
+                usingDef.uri = model.modelInfo.url
+                usingDef.version = definition.version?.value
             }
         }
+    }
     return usingDef
 }
 
