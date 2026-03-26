@@ -580,6 +580,12 @@ abstract class FhirModelResolver<
             return null
         }
 
+        if (target !is IBase) {
+            throw IllegalArgumentException(
+                "Unable to convert an instance of ${target.javaClass.name} to a CQL value. Expected an instance of IBase."
+            )
+        }
+
         val elements = mutableMapOf<String, Any?>()
 
         if (target is IBaseHasExtensions) {
@@ -637,12 +643,6 @@ abstract class FhirModelResolver<
             elements["value"] = toJavaPrimitive(target.value, target)
 
             return CqlClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
-        }
-
-        if (target !is IBase) {
-            throw IllegalArgumentException(
-                "Unable to convert an instance of ${target.javaClass.name} to a CQL value. Expected an instance of IBase."
-            )
         }
 
         val definition = resolveRuntimeDefinition(target)
