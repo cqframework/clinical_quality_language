@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.fhir.model
 import ca.uhn.fhir.context.BaseRuntimeChildDefinition
 import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition
 import ca.uhn.fhir.context.FhirContext
-import ca.uhn.fhir.context.RuntimeChildChoiceDefinition
 import ca.uhn.fhir.context.RuntimeChildResourceBlockDefinition
 import ca.uhn.fhir.context.RuntimeChildResourceDefinition
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum
@@ -38,6 +37,7 @@ import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.anyTypeName
 
 // TODO: Probably quite a bit of redundancy here. Probably only really need the BaseType and the
 // PrimitiveType
@@ -89,7 +89,7 @@ abstract class FhirModelResolver<
     }
 
     override fun resolveId(target: Any?): String? {
-        if (target is CqlClassInstance && target.type.namespaceURI == "http://hl7.org/fhir") {
+        if (target is CqlClassInstance && target.type.namespaceURI == fhirModelNamespaceUri) {
             val clazz = this.resolveType(target.type.localPart) ?: return null
             if (IBaseResource::class.java.isAssignableFrom(clazz)) {
                 val id = target.elements["id"] as? CqlClassInstance ?: return null
@@ -178,11 +178,12 @@ abstract class FhirModelResolver<
 
     override fun `is`(valueType: String, type: QName): Boolean? {
         // System.Any is a supertype of all types
-        if (type == QName("urn:hl7-org:elm-types:r1", "Any")) {
+        if (type == anyTypeName) {
             return true
         }
 
-        if (type.namespaceURI != "http://hl7.org/fhir") {
+        if (type.namespaceURI != fhirModelNamespaceUri) {
+            // FHIR model types only extend System.Any or other FHIR model types
             return false
         }
 
@@ -326,21 +327,6 @@ abstract class FhirModelResolver<
                     "Unable to resolve the runtime definition for ${base.javaClass.name}"
                 )
         }
-    }
-
-    protected fun resolveChoiceProperty(
-        definition: BaseRuntimeElementCompositeDefinition<*>,
-        path: String?,
-    ): BaseRuntimeChildDefinition? {
-        for (child in definition.children) {
-            if (child is RuntimeChildChoiceDefinition) {
-                if (child.elementName.startsWith(path!!)) {
-                    return child
-                }
-            }
-        }
-
-        return null
     }
 
     private fun deepSearch(typeName: String): Class<*>? {
@@ -632,7 +618,7 @@ abstract class FhirModelResolver<
 
             elements["value"] = target.valueAsString
 
-            return CqlClassInstance(QName("http://hl7.org/fhir", typeName), elements)
+            return CqlClassInstance(QName(fhirModelNamespaceUri, typeName), elements)
         }
 
         if (target is IPrimitiveType<*>) {
@@ -650,7 +636,7 @@ abstract class FhirModelResolver<
 
             elements["value"] = toJavaPrimitive(target.value, target)
 
-            return CqlClassInstance(QName("http://hl7.org/fhir", elementDefinition.name), elements)
+            return CqlClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
         }
 
         if (target !is IBase) {
@@ -675,6 +661,10 @@ abstract class FhirModelResolver<
             }
         }
 
-        return CqlClassInstance(QName("http://hl7.org/fhir", definition.name), elements)
+        return CqlClassInstance(QName(fhirModelNamespaceUri, definition.name), elements)
+    }
+
+    companion object {
+        const val fhirModelNamespaceUri = "http://hl7.org/fhir"
     }
 }
