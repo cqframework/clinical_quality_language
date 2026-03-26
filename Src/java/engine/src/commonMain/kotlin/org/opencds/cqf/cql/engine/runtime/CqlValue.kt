@@ -3,6 +3,25 @@ package org.opencds.cqf.cql.engine.runtime
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 
+const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"
+
+val anyTypeName = QName(systemModelNamespaceUri, "Any")
+val booleanTypeName = QName(systemModelNamespaceUri, "Boolean")
+val integerTypeName = QName(systemModelNamespaceUri, "Integer")
+val longTypeName = QName(systemModelNamespaceUri, "Long")
+val decimalTypeName = QName(systemModelNamespaceUri, "Decimal")
+val stringTypeName = QName(systemModelNamespaceUri, "String")
+val dateTypeName = QName(systemModelNamespaceUri, "Date")
+val dateTimeTypeName = QName(systemModelNamespaceUri, "DateTime")
+val timeTypeName = QName(systemModelNamespaceUri, "Time")
+val quantityTypeName = QName(systemModelNamespaceUri, "Quantity")
+val ratioTypeName = QName(systemModelNamespaceUri, "Ratio")
+val codeTypeName = QName(systemModelNamespaceUri, "Code")
+val conceptTypeName = QName(systemModelNamespaceUri, "Concept")
+val codeSystemTypeName = QName(systemModelNamespaceUri, "CodeSystem")
+val valueSetTypeName = QName(systemModelNamespaceUri, "ValueSet")
+val vocabularyTypeName = QName(systemModelNamespaceUri, "Vocabulary")
+
 /**
  * Returns the type as a `QName` for instances of named types. Returns null for intervals, lists,
  * and anonymous tuples.
@@ -11,24 +30,24 @@ import org.cqframework.cql.shared.QName
  */
 fun getNamedTypeForCqlValue(value: Any?): QName? {
     if (value == null) {
-        return QName("urn:hl7-org:elm-types:r1", "Any")
+        return anyTypeName
     }
 
     return when (value) {
-        is Boolean -> QName("urn:hl7-org:elm-types:r1", "Boolean")
-        is Int -> QName("urn:hl7-org:elm-types:r1", "Integer")
-        is Long -> QName("urn:hl7-org:elm-types:r1", "Long")
-        is BigDecimal -> QName("urn:hl7-org:elm-types:r1", "Decimal")
-        is String -> QName("urn:hl7-org:elm-types:r1", "String")
-        is Date -> QName("urn:hl7-org:elm-types:r1", "Date")
-        is DateTime -> QName("urn:hl7-org:elm-types:r1", "DateTime")
-        is Time -> QName("urn:hl7-org:elm-types:r1", "Time")
-        is Quantity -> QName("urn:hl7-org:elm-types:r1", "Quantity")
-        is Ratio -> QName("urn:hl7-org:elm-types:r1", "Ratio")
-        is Code -> QName("urn:hl7-org:elm-types:r1", "Code")
-        is Concept -> QName("urn:hl7-org:elm-types:r1", "Concept")
-        is CodeSystem -> QName("urn:hl7-org:elm-types:r1", "CodeSystem")
-        is ValueSet -> QName("urn:hl7-org:elm-types:r1", "ValueSet")
+        is Boolean -> booleanTypeName
+        is Int -> integerTypeName
+        is Long -> longTypeName
+        is BigDecimal -> decimalTypeName
+        is String -> stringTypeName
+        is Date -> dateTypeName
+        is DateTime -> dateTimeTypeName
+        is Time -> timeTypeName
+        is Quantity -> quantityTypeName
+        is Ratio -> ratioTypeName
+        is Code -> codeTypeName
+        is Concept -> conceptTypeName
+        is CodeSystem -> codeSystemTypeName
+        is ValueSet -> valueSetTypeName
         is CqlClassInstance -> value.type
         else -> null
     }

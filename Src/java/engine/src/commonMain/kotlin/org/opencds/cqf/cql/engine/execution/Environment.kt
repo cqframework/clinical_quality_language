@@ -22,7 +22,9 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.anyTypeName
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
+import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 /**
@@ -54,8 +56,8 @@ constructor(
             }
         }
 
-        if (!this.dataProviders.containsKey("urn:hl7-org:elm-types:r1")) {
-            this.registerDataProvider("urn:hl7-org:elm-types:r1", SystemDataProvider())
+        if (!this.dataProviders.containsKey(systemModelNamespaceUri)) {
+            this.registerDataProvider(systemModelNamespaceUri, SystemDataProvider())
         }
     }
 
@@ -249,60 +251,77 @@ constructor(
         }
     }
 
-    fun `is`(operand: Any?, type: TypeSpecifier): Boolean? {
+    /**
+     * Returns true if the value is of the specified type. Returns null if type relationship cannot
+     * be determined. This is not the same as type compatibility (see [isCompatible]).
+     */
+    fun `is`(value: Any?, type: TypeSpecifier): Boolean? {
         // System.Any is a supertype of all types
-        if (type is NamedTypeSpecifier && type.name == QName("urn:hl7-org:elm-types:r1", "Any")) {
+        if (type is NamedTypeSpecifier && type.name == anyTypeName) {
             return true
         }
 
-        if (operand == null) {
+        if (value == null) {
+            // `null is X` is true if X is System.Any (handled above) and false otherwise
             return false
         }
 
         when (type) {
             is NamedTypeSpecifier -> {
-                val operandNamedType = getNamedTypeForCqlValue(operand)
+                val valueNamedType = getNamedTypeForCqlValue(value)
 
-                if (operandNamedType == null) {
+                if (valueNamedType == null) {
+                    // value is not an instance of a named type
                     return false
                 }
 
-                val provider =
-                    resolveDataProviderByModelUriOrNull(operandNamedType.getNamespaceURI())
+                if (valueNamedType == type.name) {
+                    // Types are the same
+                    return true
+                }
+
+                val provider = resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
 
                 if (provider == null) {
+                    // Cannot determine relationship between types
                     return null
                 }
 
-                return provider.`is`(operandNamedType.getLocalPart(), type.name!!)
+                return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
             }
             is ListTypeSpecifier -> {
-                if (operand is Iterable<*>) {
-                    if (operand.any()) {
-                        for (item in operand) {
+                if (value is Iterable<*>) {
+                    if (value.any()) {
+                        for (item in value) {
                             val result = `is`(item, type.elementType!!)
                             if (result == null) {
+                                // Found an element for which we cannot determine type relationship
                                 return null
                             }
                             if (result == false) {
+                                // Found an element that is not of the correct type
                                 return false
                             }
                         }
                         return true
                     }
-                    // An empty list has type List<Any>
-                    return type.elementType == QName("urn:hl7-org:elm-types:r1", "Any")
+
+                    // An empty list has type List<System.Any>. Return true if and only if the
+                    // element type of the type specifier is System.Any.
+                    return type.elementType == NamedTypeSpecifier().withName(anyTypeName)
                 }
+
+                // Must be an Iterable to be of a list type
                 return false
             }
             is IntervalTypeSpecifier -> {
-                if (operand is Interval) {
-                    val lowResult = `is`(operand.low, type.pointType!!)
+                if (value is Interval) {
+                    val lowResult = `is`(value.low, type.pointType!!)
                     if (lowResult == false) {
                         return false
                     }
 
-                    val highResult = `is`(operand.high, type.pointType!!)
+                    val highResult = `is`(value.high, type.pointType!!)
                     if (highResult == false) {
                         return false
                     }
@@ -313,36 +332,41 @@ constructor(
 
                     return null
                 }
+
+                // Must be an interval to be of an interval type
                 return false
             }
             is TupleTypeSpecifier -> {
                 if (
-                    operand is Tuple &&
-                        operand.elements.keys == type.element.map { it.name!! }.toSet()
+                    value is Tuple && value.elements.keys == type.element.map { it.name!! }.toSet()
                 ) {
-
                     for (elementDefinition in type.element) {
-                        val elementValue = operand.elements[elementDefinition.name!!]
+                        val elementValue = value.elements[elementDefinition.name!!]
                         val result = `is`(elementValue, elementDefinition.elementType!!)
                         if (result == null) {
+                            // Found an element for which we cannot determine type relationship
                             return null
                         }
                         if (result == false) {
+                            // Found an element that is not of the correct type
                             return false
                         }
                     }
                     return true
                 }
+
+                // Must be a tuple with the matching element names to be of the specified tuple type
                 return false
             }
             is ChoiceTypeSpecifier -> {
                 var foundNull = false
                 for (choice in type.choice) {
-                    val result = `is`(operand, choice)
+                    val result = `is`(value, choice)
                     if (result == null) {
                         foundNull = true
                     }
                     if (result == true) {
+                        // Found a match
                         return true
                     }
                 }
@@ -353,7 +377,140 @@ constructor(
                 }
             }
             else -> {
+                throw IllegalArgumentException("Unexpected type specifier: $type.")
+            }
+        }
+    }
+
+    /**
+     * Returns true if the value's type is compatible with the specified type (so e.g. the value can
+     * be passed to a function expecting the specified type). Returns null if we cannot determine
+     * compatibility. This is not the same as is-checking (see [`is`]).
+     */
+    fun isCompatible(value: Any?, type: TypeSpecifier): Boolean? {
+        // System.Any is a supertype of all types
+        if (type is NamedTypeSpecifier && type.name == anyTypeName) {
+            return true
+        }
+
+        // null is compatible with all types
+        if (value == null) {
+            return true
+        }
+
+        when (type) {
+            is NamedTypeSpecifier -> {
+                val valueNamedType = getNamedTypeForCqlValue(value)
+
+                if (valueNamedType == null) {
+                    // value is not an instance of a named type
+                    return false
+                }
+
+                if (valueNamedType == type.name) {
+                    // Types are the same
+                    return true
+                }
+
+                val provider = resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
+
+                if (provider == null) {
+                    // Cannot determine compatibility
+                    return null
+                }
+
+                return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
+            }
+            is ListTypeSpecifier -> {
+                if (value is Iterable<*>) {
+                    if (value.any()) {
+                        for (item in value) {
+                            val result = isCompatible(item, type.elementType!!)
+                            if (result == null) {
+                                // Found an element for which we cannot determine compatibility
+                                return null
+                            }
+                            if (result == false) {
+                                // Found an element that is not compatible
+                                return false
+                            }
+                        }
+                        return true
+                    }
+
+                    // An empty list is compatible with all list types
+                    return true
+                }
+
+                // Must be an Iterable to be compatible with a list type
                 return false
+            }
+            is IntervalTypeSpecifier -> {
+                if (value is Interval) {
+                    val lowResult = isCompatible(value.low, type.pointType!!)
+                    if (lowResult == false) {
+                        return false
+                    }
+
+                    val highResult = isCompatible(value.high, type.pointType!!)
+                    if (highResult == false) {
+                        return false
+                    }
+
+                    if (lowResult == true || highResult == true) {
+                        return true
+                    }
+
+                    return null
+                }
+
+                // Must be an interval to be compatible with an interval type
+                return false
+            }
+            is TupleTypeSpecifier -> {
+                if (value is Tuple) {
+                    for (elementDefinition in type.element) {
+                        if (!value.elements.containsKey(elementDefinition.name!!)) {
+                            // Value is missing an element
+                            return false
+                        }
+                        val elementValue = value.elements[elementDefinition.name!!]
+                        val result = isCompatible(elementValue, elementDefinition.elementType!!)
+                        if (result == null) {
+                            // Found an element for which we cannot determine compatibility
+                            return null
+                        }
+                        if (result == false) {
+                            // Found an element that is not compatible
+                            return false
+                        }
+                    }
+                    return true
+                }
+
+                // Must be a tuple to be compatible with a tuple type
+                return false
+            }
+            is ChoiceTypeSpecifier -> {
+                var foundNull = false
+                for (choice in type.choice) {
+                    val result = isCompatible(value, choice)
+                    if (result == null) {
+                        foundNull = true
+                    }
+                    if (result == true) {
+                        // Found a type that is compatible
+                        return true
+                    }
+                }
+                return if (foundNull) {
+                    null
+                } else {
+                    false
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Unexpected type specifier: $type.")
             }
         }
     }
@@ -395,8 +552,9 @@ constructor(
             return false
         }
 
+        // Types must not be incompatible
         return arguments.zip(operands).all { (argument, operand) ->
-            argument == null || `is`(argument, resolveOperandType(operand)) != false
+            isCompatible(argument, resolveOperandType(operand)) != false
         }
     }
 

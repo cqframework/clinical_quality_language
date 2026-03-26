@@ -21,11 +21,19 @@ open class SystemDataProvider : DataProvider {
         throw IllegalArgumentException("SystemDataProvider does not support retrieval.")
     }
 
-    override fun `is`(valueType: String, type: QName): Boolean? {
-        return type.getNamespaceURI() == "urn:hl7-org:elm-types:r1" &&
-            type.getLocalPart() == valueType ||
-            valueType == "Any" ||
-            type == QName("urn:hl7-org:elm-types:r1", "Any")
+    /**
+     * Returns true if:
+     * - `type` is System._valueType_ (exact type name match), or
+     * - `type` is System.Any (System.Any is a supertype of all types), or
+     * - value type is System.ValueSet/System.CodeSystem and type is System.Vocabulary (ValueSet and
+     *   CodeSystem are the only types in the system model that don't immediately extend
+     *   System.Any).
+     */
+    override fun `is`(valueType: String, type: QName): Boolean {
+        return type == QName(systemModelNamespaceUri, valueType) ||
+            type == anyTypeName ||
+            (valueType == valueSetTypeName.getLocalPart() ||
+                valueType == codeSystemTypeName.getLocalPart()) && type == vocabularyTypeName
     }
 
     override fun createInstance(typeName: String?): Any? {

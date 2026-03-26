@@ -24,7 +24,8 @@
     <ID>CyclomaticComplexMethod:CqlValue.kt$fun getNamedTypeForCqlValue(value: Any?): QName?</ID>
     <ID>CyclomaticComplexMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>CyclomaticComplexMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
-    <ID>CyclomaticComplexMethod:Environment.kt$Environment$fun `is`(operand: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:Environment.kt$Environment$fun `is`(value: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:Environment.kt$Environment$fun isCompatible(value: Any?, type: TypeSpecifier): Boolean?</ID>
     <ID>CyclomaticComplexMethod:Environment.kt$Environment$fun resolveProperty(target: Any?, property: String): Any?</ID>
     <ID>CyclomaticComplexMethod:Environment.kt$Environment$fun setValue(target: Any?, path: String, value: Any?)</ID>
     <ID>CyclomaticComplexMethod:EquivalentEvaluator.kt$EquivalentEvaluator$@JvmStatic @JvmOverloads fun equivalent(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
@@ -70,7 +71,7 @@
     <ID>ForbiddenComment:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$// TODO: Support adding more functions to an existing provider object.</ID>
     <ID>ForbiddenComment:TerminologyAwareRetrieveProvider.kt$TerminologyAwareRetrieveProvider$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
     <ID>FunctionNaming:Environment.kt$Environment$fun `as`(operand: Any?, type: TypeSpecifier, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:Environment.kt$Environment$fun `is`(operand: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>FunctionNaming:Environment.kt$Environment$fun `is`(value: Any?, type: TypeSpecifier): Boolean?</ID>
     <ID>FunctionNaming:InEvaluator.kt$InEvaluator$fun `in`(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(valueType: String, type: QName): Boolean?</ID>
     <ID>FunctionNaming:TerminologyProvider.kt$TerminologyProvider$fun `in`(code: Code, valueSet: ValueSetInfo): Boolean</ID>
@@ -110,7 +111,8 @@
     <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun offsetPrecisionsTest()</ID>
     <ID>LongMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>LongMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
-    <ID>LongMethod:Environment.kt$Environment$fun `is`(operand: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>LongMethod:Environment.kt$Environment$fun `is`(value: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>LongMethod:Environment.kt$Environment$fun isCompatible(value: Any?, type: TypeSpecifier): Boolean?</ID>
     <ID>LongMethod:Environment.kt$Environment$fun resolveProperty(target: Any?, property: String): Any?</ID>
     <ID>LongMethod:Environment.kt$Environment$fun setValue(target: Any?, path: String, value: Any?)</ID>
     <ID>LongMethod:EqualEvaluator.kt$EqualEvaluator$@JvmStatic @JvmOverloads fun equal(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
@@ -320,7 +322,8 @@
     <ID>NestedBlockDepth:DebugLibraryMapEntry.kt$DebugLibraryMapEntry$@Suppress("ReturnCount") fun shouldDebug(node: Element?): DebugAction?</ID>
     <ID>NestedBlockDepth:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>NestedBlockDepth:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
-    <ID>NestedBlockDepth:Environment.kt$Environment$fun `is`(operand: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>NestedBlockDepth:Environment.kt$Environment$fun `is`(value: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>NestedBlockDepth:Environment.kt$Environment$fun isCompatible(value: Any?, type: TypeSpecifier): Boolean?</ID>
     <ID>NestedBlockDepth:FilterEvaluator.kt$FilterEvaluator$@JvmStatic fun filter(elm: Filter?, source: Any?, condition: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:FlattenEvaluator.kt$FlattenEvaluator$@JvmStatic fun flatten(operand: Any?): List&lt;Any?>?</ID>
     <ID>NestedBlockDepth:InCodeSystemEvaluator.kt$InCodeSystemEvaluator$@JvmStatic fun inCodeSystem(code: Any?, codeSystem: Any?, state: State?): Any?</ID>
@@ -389,7 +392,8 @@
     <ID>ReturnCount:DivideEvaluator.kt$DivideEvaluator$@JvmStatic fun divide(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>ReturnCount:EndsEvaluator.kt$EndsEvaluator$@JvmStatic fun ends(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun `is`(operand: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>ReturnCount:Environment.kt$Environment$fun `is`(value: Any?, type: TypeSpecifier): Boolean?</ID>
+    <ID>ReturnCount:Environment.kt$Environment$fun isCompatible(value: Any?, type: TypeSpecifier): Boolean?</ID>
     <ID>ReturnCount:EvaluationVisitor.kt$EvaluationVisitor$override fun visitCase(elm: Case, context: State?): Any?</ID>
     <ID>ReturnCount:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$@JvmStatic fun expand(listOrInterval: Any?, per: Quantity?, state: State?): Any?</ID>
@@ -561,6 +565,7 @@
     <ID>TooManyFunctions:TimeJs.kt$OffsetDateTimeJs : TemporalJs</ID>
     <ID>TooManyFunctions:TimeJs.kt$org.opencds.cqf.cql.engine.util.TimeJs.kt</ID>
     <ID>TooManyFunctions:TimeJvm.kt$org.opencds.cqf.cql.engine.util.TimeJvm.kt</ID>
+    <ID>TopLevelPropertyNaming:CqlValue.kt$const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownPackageName = "unknown"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownSimpleName = "Unknown"</ID>
     <ID>UnusedParameter:FunctionRefEvaluator.kt$FunctionRefEvaluator$state: State?</ID>

@@ -10,6 +10,7 @@ import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
+import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 
 object MessageEvaluator {
     val logger = KotlinLogging.logger("MessageEvaluator")
@@ -81,9 +82,7 @@ object MessageEvaluator {
                 is Interval,
                 is Tuple,
                 is Iterable<*> ->
-                    state!!
-                        .environment
-                        .resolveDataProviderByModelUriOrNull("urn:hl7-org:elm-types:r1")
+                    state!!.environment.resolveDataProviderByModelUriOrNull(systemModelNamespaceUri)
                 else ->
                     state!!
                         .environment
