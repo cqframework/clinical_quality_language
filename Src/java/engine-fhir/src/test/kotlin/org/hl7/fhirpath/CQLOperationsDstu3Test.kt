@@ -9,14 +9,10 @@ import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator
-import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver
-import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 
 class CQLOperationsDstu3Test : TestFhirPath() {
     @ParameterizedTest(name = "{0}")
@@ -25,67 +21,6 @@ class CQLOperationsDstu3Test : TestFhirPath() {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping $name")
         runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver)
         runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver)
-    }
-
-    override fun compareResults(
-        expectedResult: Any?,
-        actualResult: Any?,
-        state: State?,
-        resolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
-    ): Boolean? {
-        if (actualResult is CqlClassInstance && actualResult.elements.containsKey("value")) {
-            return EqualEvaluator.equal(expectedResult, actualResult.elements["value"], state)
-        }
-
-        return EqualEvaluator.equal(expectedResult, actualResult, state)
-
-        //        // Perform FHIR system-defined type conversions
-        //        var actualResult = actualResult
-        //        when (actualResult) {
-        //            is Enumeration<*> -> {
-        //                actualResult = actualResult.valueAsString
-        //            }
-        //
-        //            is BooleanType -> {
-        //                actualResult = actualResult.value
-        //            }
-        //
-        //            is IntegerType -> {
-        //                actualResult = actualResult.value
-        //            }
-        //
-        //            is DecimalType -> {
-        //                actualResult = actualResult.value
-        //            }
-        //
-        //            is StringType -> {
-        //                actualResult = actualResult.value
-        //            }
-        //
-        //            is BaseDateTimeType -> {
-        //                actualResult = resolver.toJavaPrimitive(actualResult, actualResult)
-        //            }
-        //
-        //            is Quantity -> {
-        //                val quantity = actualResult
-        //                actualResult =
-        //                    org.opencds.cqf.cql.engine.runtime
-        //                        .Quantity()
-        //                        .withValue(quantity.getValue())
-        //                        .withUnit(quantity.getUnit())
-        //            }
-        //
-        //            is Coding -> {
-        //                val coding = actualResult
-        //                actualResult =
-        //                    Code()
-        //                        .withCode(coding.getCode())
-        //                        .withDisplay(coding.getDisplay())
-        //                        .withSystem(coding.getSystem())
-        //                        .withVersion(coding.getVersion())
-        //            }
-        //        }
-        //        return EqualEvaluator.equal(expectedResult, actualResult, state)
     }
 
     companion object {
