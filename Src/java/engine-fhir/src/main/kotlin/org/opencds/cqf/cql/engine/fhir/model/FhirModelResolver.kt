@@ -571,11 +571,16 @@ abstract class FhirModelResolver<
         }
     }
 
-    /** Recursively converts a HAPI FHIR construct to a CQL-native equivalent. */
+    /**
+     * Recursively converts a HAPI FHIR construct to a CQL-native equivalent.
+     *
+     * @param target The HAPI FHIR object to convert
+     * @param expandPrimitivesAndEnumerationsWithNoValues Whether to convert a HAPI FHIR primitive/enumeration with no value to a structured type instance with a null `value` child, or to null.
+     * */
     fun toCqlValue(
         target: Any?,
         expandPrimitivesAndEnumerationsWithNoValues: Boolean = false,
-    ): Any? {
+    ): CqlClassInstance? {
         if (target == null) {
             return null
         }
