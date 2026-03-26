@@ -245,9 +245,9 @@ class CQLOperationsR4Test : TestFhirPath() {
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent13",
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent17",
                 "r4/tests-fhir-r4/testNotEquivalent/testNotEquivalent21",
-                "r4/tests-fhir-r4/testObservations/testPolymorphismIsA3", // The engine correctly
-                // returns false but the
-                // tests expects null.
+                "r4/tests-fhir-r4/testObservations/testPolymorphismIsA3", // The engine returns
+                // false but the test
+                // expects null.
                 "r4/tests-fhir-r4/testPower/testPower3",
                 "r4/tests-fhir-r4/testPrecedence/testPrecedence3",
                 "r4/tests-fhir-r4/testPrecedence/testPrecedence4",

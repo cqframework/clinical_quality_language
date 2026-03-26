@@ -32,7 +32,7 @@ internal class FunctionRefEvaluatorTest {
                 )
             }
         Assertions.assertEquals(
-            "Could not resolve call to operator 'func({urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer)' in library 'lib'.",
+            "Could not resolve call to operator 'func(java.lang.Integer, java.lang.Integer, java.lang.Integer)' in library 'lib'.",
             cqlException.message,
         )
     }
@@ -99,16 +99,10 @@ internal class FunctionRefEvaluatorTest {
 
         var actual =
             FunctionRefEvaluator.typesToString(state, mutableListOf<String?>("a", "b", "c"))
-        Assertions.assertEquals(
-            "{urn:hl7-org:elm-types:r1}String, {urn:hl7-org:elm-types:r1}String, {urn:hl7-org:elm-types:r1}String",
-            actual,
-        )
+        Assertions.assertEquals("java.lang.String, java.lang.String, java.lang.String", actual)
 
         actual = FunctionRefEvaluator.typesToString(state, mutableListOf(1, 2, null))
-        Assertions.assertEquals(
-            "{urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Any",
-            actual,
-        )
+        Assertions.assertEquals("java.lang.Integer, java.lang.Integer, null", actual)
 
         actual = FunctionRefEvaluator.typesToString(state, null)
         Assertions.assertEquals("", actual)
