@@ -180,6 +180,16 @@ class CoercionInserter(
         )
     }
 
+    /** Find a model conversion for [type] from the ConversionMap (not from TypeTable). */
+    private fun findModelConversionForType(type: DataType): org.cqframework.cql.cql2elm.model.Conversion? {
+        return operatorRegistry.conversionMap.getConversions(type).firstOrNull {
+            it.isImplicit &&
+                it.operator != null &&
+                it.operator.libraryName != null &&
+                it.operator.libraryName != "System"
+        }
+    }
+
     /**
      * Record a conversion for type unification: if the child's type doesn't match [targetType],
      * record the appropriate conversion (NullAs, OperatorConversion, ChoiceAs, etc.).
@@ -436,6 +446,35 @@ class CoercionInserter(
                         ConversionSlot.Right,
                         ImplicitConversion.ImplicitCast(IntervalType(leftType)),
                     )
+                }
+            }
+        }
+        // AnyInValueSet / AnyInCodeSystem: when the codes operand is a List<ModelType>
+        // (e.g., List<FHIR.CodeableConcept>), the legacy wraps each element in a model
+        // conversion (FHIRHelpers.ToConcept) via a Query. Record a ListConversion so the
+        // emitter produces the same wrapping.
+        val kind = typeTable.getMembershipKind(expr)
+        val isContains = expr.operator == org.hl7.cql.ast.MembershipOperator.CONTAINS
+        val codesExpr = if (isContains) expr.right else expr.left
+        val codesSlot = if (isContains) ConversionSlot.Right else ConversionSlot.Left
+        if (kind == MembershipKind.ANY_IN_VALUE_SET || kind == MembershipKind.ANY_IN_CODE_SYSTEM) {
+            val codesType = typeTable[codesExpr]
+            if (codesType is ListType) {
+                val mc = typeTable.getModelConversion(codesExpr)
+                    ?: codesExpr?.let {
+                        // The codes expression might be a property whose model conversion
+                        // was recorded. Check element type for a model conversion directly.
+                        findModelConversionForType(codesType.elementType)
+                    }
+                if (mc != null) {
+                    val op = mc.operator
+                    if (op != null && op.libraryName != null && op.libraryName != "System") {
+                        recordIfNew(
+                            expr,
+                            codesSlot,
+                            ImplicitConversion.ListConversion(op.name, op.libraryName, mc.toType),
+                        )
+                    }
                 }
             }
         }
