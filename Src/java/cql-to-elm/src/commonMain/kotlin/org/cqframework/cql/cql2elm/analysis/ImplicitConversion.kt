@@ -146,6 +146,12 @@ class ConversionTable {
         add(parent, slot, conversion)
     }
 
+    /** Remove all coercions at the given parent/slot. Returns true if any were removed. */
+    fun remove(parent: Expression, slot: ConversionSlot): Boolean {
+        val slotMap = entries[parent] ?: return false
+        return slotMap.remove(slot) != null
+    }
+
     /**
      * Re-key all coercions from [source] to [target]. Used by [Lowering] when a rewritten
      * expression gets a new identity — the coercions stay the same, only the key changes.

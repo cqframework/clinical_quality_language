@@ -390,8 +390,19 @@ class TypeResolver(
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
-        val rawType = resolvePropertyType(target, expr.property.value) ?: return null
-        return inferModelConvertedType(expr, rawType) ?: rawType
+        var resolvedType = resolvePropertyType(target, expr.property.value)
+        // If the property doesn't resolve on the model-converted type, fall back to the
+        // raw (pre-conversion) type. This handles property chains where an accessor exists
+        // on the raw model type but not on the converted system type (e.g., FHIR.string
+        // has element value:System.String, but System.String has no such element).
+        if (resolvedType == null && expr.target != null) {
+            val mc = typeTable.getModelConversion(expr.target!!)
+            if (mc != null) {
+                resolvedType = resolvePropertyType(mc.fromType, expr.property.value)
+            }
+        }
+        if (resolvedType == null) return null
+        return inferModelConvertedType(expr, resolvedType) ?: resolvedType
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =

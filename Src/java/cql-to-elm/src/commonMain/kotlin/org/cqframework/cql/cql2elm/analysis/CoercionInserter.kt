@@ -692,6 +692,23 @@ class CoercionInserter(
     override fun onConversion(expr: ConversionExpression, operand: Unit) {}
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: Unit) {
+        // If this property accessor produces the same system type as the target's model
+        // conversion, the accessor IS the type transition — the model coercion is redundant.
+        // e.g., FHIR.string has element value:System.String, and FHIRHelpers.ToString also
+        // converts FHIR.string → System.String. Applying both would make the accessor
+        // unresolvable (System.String has no .value property).
+        val targetExpr = expr.target
+        if (targetExpr != null) {
+            val mc = typeTable.getModelConversion(targetExpr)
+            if (mc != null) {
+                val accessedType = (mc.fromType as? org.hl7.cql.model.ClassType)
+                    ?.elements?.firstOrNull { it.name == expr.property.value }?.type
+                if (accessedType != null && accessedType == mc.toType) {
+                    conversionTable.remove(targetExpr, ConversionSlot.PropertyResult)
+                    return
+                }
+            }
+        }
         recordModelCoercion(expr, ConversionSlot.PropertyResult)
     }
 
