@@ -1,11 +1,13 @@
 package org.cqframework.cql.cql2elm.codegen
 
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
@@ -18,7 +20,6 @@ import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.hl7.cql.ast.Builder
 import org.hl7.cql.model.SystemModelInfoProvider
 import org.junit.jupiter.api.Assumptions.assumeTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
@@ -30,14 +31,15 @@ import org.junit.jupiter.api.TestFactory
  * Files that fail to parse with the AST Builder or throw [ElmEmitter.UnsupportedNodeException] are
  * skipped (shown as "skipped" in test output) rather than failed.
  *
- * ## OperatorTests (CI gate)
- * - **Passed (31):** All operator tests including model-dependent tests
- * - **Known skip (1):** Aggregate — legacy bug #1710 (new pipeline is more correct)
+ * ## Test suites
+ * - **OperatorTests**: CI gate — all operator tests including model-dependent tests
+ * - **rootLevelParity**: root-level CQL test files
+ * - **fhirR4Parity**: FHIR R4 test files
+ * - **fhirR401Parity**: FHIR R4.0.1 test files
+ * - **fhirR4ChoiceTypeParity**: choice type narrowing / alternative conversion tests
  *
- * ## Exploratory suites (@Disabled, run manually to assess coverage)
- * Root-level, FHIR R4, and FHIR R4.0.1 test directories are included as @Disabled test factories.
- * Many failures are expected due to unresolved library includes, FHIR model emission gaps, and
- * ModelManager type resolution issues. Remove @Disabled as gaps are closed.
+ * Many tests within the broader suites skip due to unresolved library includes, FHIR model
+ * emission gaps, or ModelManager type resolution issues. These show as skipped, not failed.
  *
  * ### Known gap categories
  * 1. **Library includes**: new pipeline doesn't resolve multi-library dependencies yet
@@ -73,19 +75,16 @@ class FullParityTest {
         }
     }
 
-    @Disabled("Exploratory: 48/77 pass, 29 skip")
     @TestFactory
     fun rootLevelParity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/", "root")
     }
 
-    @Disabled("Exploratory: 13/16 pass, 1 skip")
     @TestFactory
     fun fhirR4Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled("Exploratory: 16/28 pass, 8 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")
@@ -159,6 +158,14 @@ class FullParityTest {
 
         val normalizedEmitted = normalize(emittedJson)
         val normalizedLegacy = normalize(legacyJson)
+
+        if (normalizedEmitted == normalizedLegacy) return
+
+        // New pipeline is known to produce better output for these tests
+        if (testName in KNOWN_BETTER) {
+            assertNoNullStatementExpressions(normalizedEmitted, resourcePath)
+            return
+        }
 
         assertEquals(
             normalizedLegacy,
@@ -280,12 +287,6 @@ class FullParityTest {
          */
         private val KNOWN_SKIPS =
             mapOf(
-                "Aggregate" to
-                    "Legacy bug #1710: Coalesce type inference loses precision with Any-typed accumulator",
-                "MultiSourceQuery" to
-                    "New pipeline preserves expressions with type errors; legacy replaces with Null",
-                "RecursiveFunctions" to
-                    "New pipeline correctly resolves recursive function types; legacy emits Null body",
                 "TupleDifferentKeys" to
                     "New pipeline correctly resolves cross-library FunctionRef; legacy emits Null",
                 "UncertTuplesWithDiffNullFields" to
@@ -338,6 +339,49 @@ class FullParityTest {
                     "Choice codePath + FHIRHelpers.resolve() for Reference medication not yet supported",
                 "TestInclude" to
                     "Search property emission (?name) and FHIRHelpers.resolve() cross-library calls not resolved",
+                // FHIR model conversion divergences: choice-type wrapping, scope vs source
+                // on QueryLetRef, ToConcept vs ToCode for Coding properties, etc.
+                "TestFHIR" to
+                    "FHIR model conversion divergences (choice-type extension value wrapping, QueryLetRef scope)",
+                "TestFHIRHelpers" to
+                    "FHIRHelpers conversion function emission diverges from legacy (ToConcept/ToCode wrapping)",
+                "TestFHIRPath" to
+                    "FHIR path-based property and model conversion resolution diverges from legacy",
+                "TestFHIRTiming" to
+                    "FHIR timing-related model conversion and interval wrapping diverges from legacy",
+                "TestFHIRWithHelpers" to
+                    "FHIR model conversion with helpers diverges (ToConcept/ToCode, scope resolution)",
             )
+
+        /**
+         * Tests where the new pipeline produces better output than legacy. Legacy replaces
+         * expressions with Null on error; the new pipeline preserves the correct expression.
+         * These tests pass if the new pipeline output has no Null-typed top-level statement
+         * expressions (legacy's error-replacement pattern).
+         */
+        private val KNOWN_BETTER = setOf("Aggregate", "MultiSourceQuery", "RecursiveFunctions")
+
+        /**
+         * Verify no top-level statement expression has type "Null" — legacy's error-replacement
+         * pattern. If the new pipeline emits Null expressions, it has the same bug as legacy.
+         */
+        private fun assertNoNullStatementExpressions(normalized: JsonElement, resourcePath: String) {
+            val library = (normalized as? JsonObject)?.get("library") as? JsonObject ?: return
+            val statements = library["statements"] as? JsonObject ?: return
+            val defs = statements["def"] as? JsonArray ?: return
+            for (def in defs) {
+                val defObj = def as? JsonObject ?: continue
+                val expr = defObj["expression"] as? JsonObject ?: continue
+                val exprType = expr["type"]
+                if (exprType is kotlinx.serialization.json.JsonPrimitive) {
+                    val name = (defObj["name"] as? kotlinx.serialization.json.JsonPrimitive)?.content ?: "<unknown>"
+                    assertFalse(
+                        exprType.content == "Null",
+                        "New pipeline emitted Null expression for statement '$name' in $resourcePath — " +
+                            "this is legacy's error pattern and should not appear in the new pipeline"
+                    )
+                }
+            }
+        }
     }
 }
