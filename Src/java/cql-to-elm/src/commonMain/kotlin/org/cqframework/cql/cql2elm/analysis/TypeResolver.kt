@@ -78,9 +78,9 @@ import org.hl7.elm.r1.VersionedIdentifier
  * ## Reads
  * - [SymbolTable] — resolves expression/function/parameter definitions by name.
  * - [OperatorRegistry] — resolves operator and function overloads by operand types.
- * - [ConversionTable] (optional) — provides effective types for operands that have implicit
- *   conversions recorded by [CoercionInserter] (e.g., a null literal cast to Integer). When
- *   present, effective types are used for operator resolution instead of raw inferred types.
+ * - [ConversionTable] (optional, write-only) — records operator-resolution coercions (e.g.,
+ *   ToDecimal on the left operand of Add(Integer, Decimal)). These are read by
+ *   [CoercionInserter] and [EmissionContext], not by TypeResolver itself.
  * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
  * ## Writes
@@ -803,30 +803,16 @@ class TypeResolver(
         rightType: DataType?,
     ): DataType? {
         if (leftType == null || rightType == null) return null
-        val effectiveLeft =
-            conversionTable?.effectiveType(
-                expression,
-                ConversionSlot.Left,
-                leftType,
-                operatorRegistry,
-            ) ?: leftType
-        val effectiveRight =
-            conversionTable?.effectiveType(
-                expression,
-                ConversionSlot.Right,
-                rightType,
-                operatorRegistry,
-            ) ?: rightType
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
         var resolution =
-            operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
+            operatorRegistry.resolve(opName, listOf(leftType, rightType))
 
         // Set operators (Union/Intersect/Except) with mismatched list element types:
         // compute ChoiceType wrapping and retry. This makes the first TypeResolver pass
         // succeed without the convergence loop where CoercionInserter records the wrapping
         // and TypeResolver re-resolves on a second pass.
         if (resolution == null) {
-            val choiceTypes = tryChoiceWrappedTypes(expression.operator, effectiveLeft, effectiveRight)
+            val choiceTypes = tryChoiceWrappedTypes(expression.operator, leftType, rightType)
             if (choiceTypes != null) {
                 resolution = operatorRegistry.resolve(opName, choiceTypes)
             }
@@ -898,16 +884,9 @@ class TypeResolver(
         operandType: DataType?,
     ): DataType? {
         if (operandType == null) return null
-        val effectiveOperand =
-            conversionTable?.effectiveType(
-                expression,
-                ConversionSlot.Operand,
-                operandType,
-                operatorRegistry,
-            ) ?: operandType
         val opName = OperatorNames.unaryOperatorToSystemName(expression.operator) ?: return null
-        if (opName == "Positive") return effectiveOperand
-        val resolution = operatorRegistry.resolve(opName, listOf(effectiveOperand)) ?: return null
+        if (opName == "Positive") return operandType
+        val resolution = operatorRegistry.resolve(opName, listOf(operandType)) ?: return null
         recordResolution(expression, resolution, listOf(ConversionSlot.Operand))
         return resolution.operator.resultType
     }
@@ -1032,26 +1011,6 @@ class TypeResolver(
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
 
-        // Apply effective types from conversion table.
-        // Skip ImplicitCast on Any-typed args — the cast is for emission (As wrapping),
-        // not for resolution. Applying it changes Any→List<Any> which breaks generic
-        // resolution (T unifies to List<Any> instead of Any).
-        val anyType = operatorRegistry.type("Any")
-        val effectiveArgTypes =
-            if (conversionTable != null) {
-                nonNullArgTypes.mapIndexed { index, type ->
-                    if (type == anyType) type // Don't change Any — resolution handles it
-                    else
-                        conversionTable.effectiveType(
-                            expression,
-                            ConversionSlot.Argument(index),
-                            type,
-                            operatorRegistry,
-                        ) ?: type
-                }
-            } else {
-                nonNullArgTypes
-            }
 
         // User-defined functions take precedence over system operators when they match.
         // This matches the legacy pipeline behavior where library-local functions shadow
@@ -1075,7 +1034,7 @@ class TypeResolver(
         var resolution =
             operatorRegistry.resolve(
                 functionName,
-                effectiveArgTypes,
+                nonNullArgTypes,
                 allowPromotionAndDemotion = true,
             )
 
@@ -1088,7 +1047,7 @@ class TypeResolver(
         // Cross-library function call: resolve against the included library's operator map.
         // The target identifier resolved to IncludeRef during identifier resolution; use that
         // to look up the included library's CompiledLibrary and resolve with implicit conversions.
-        resolveLibraryFunctionCall(expression, effectiveArgTypes)?.let {
+        resolveLibraryFunctionCall(expression, nonNullArgTypes)?.let {
             return it
         }
 

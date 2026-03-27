@@ -328,11 +328,11 @@ class Lowering(
             return null
         }
         // Don't use rewrite() here — we don't want to transfer the old conversions
-        // (e.g., Date→DateTime on arg[1]) since the new args are both Date and the
-        // (Date,Date) overload matches exactly with no conversions needed.
-        // But do transfer type/resolution metadata so post-lowering re-typing isn't needed.
+        // (e.g., Date→DateTime on arg[1]) or operator resolution (old resolution was for
+        // the mixed-type overload, new args are both Date). Only the result type transfers
+        // — CalculateAgeIn* always returns Integer regardless of overload.
         val result = expr.copy(arguments = newArgs)
-        typeTable.transfer(expr, result)
+        semanticModel[expr]?.let { typeTable[result] = it }
         return result
     }
 
