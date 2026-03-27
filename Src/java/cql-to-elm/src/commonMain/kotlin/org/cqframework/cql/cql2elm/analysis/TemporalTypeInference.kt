@@ -176,10 +176,12 @@ internal fun TypeResolver.inferMembershipType(expression: MembershipExpression):
                 org.hl7.cql.ast.MembershipOperator.CONTAINS -> "Contains"
             }
         val resolution = operatorRegistry.resolve(opName, listOf(leftType, rightType))
-        if (
-            resolution != null &&
-                resolution.hasConversions() &&
-                resolution.conversions.any { it != null && it.operator != null }
+        // Record if the resolution has conversions with operators (e.g., ToDateTime) OR
+        // cast conversions with inner operator conversions (choice narrowing: As + FHIRHelpers).
+        if (resolution != null && resolution.hasConversions() &&
+            resolution.conversions.any { c ->
+                c != null && (c.operator != null || (c.isCast && c.conversion?.operator != null))
+            }
         ) {
             recordResolution(
                 expression,
