@@ -405,60 +405,6 @@ class TypeTable {
     fun getModelConversion(expression: Expression): org.cqframework.cql.cql2elm.model.Conversion? =
         modelConversions[expression]
 
-    /**
-     * Merge entries from [other] into this table. For each expression in [other]:
-     * - If this table has no type for the expression, copy the type from [other].
-     * - If this table already has a type, keep the existing one. Same logic for operator and
-     *   identifier resolutions.
-     *
-     * This preserves types from earlier convergence loop iterations that may be lost in later
-     * iterations (e.g., when effective types from conversions break generic resolution).
-     */
-    fun mergeFrom(other: TypeTable) {
-        for ((expression, type) in other.types) {
-            if (types[expression] == null) {
-                types[expression] = type
-                typedCount++
-            }
-        }
-        for ((expression, resolution) in other.operatorResolutions) {
-            if (operatorResolutions[expression] == null) {
-                operatorResolutions[expression] = resolution
-                operatorResolutionCount++
-            }
-        }
-        for ((expression, resolution) in other.identifierResolutions) {
-            if (identifierResolutions[expression] == null) {
-                identifierResolutions[expression] = resolution
-                identifierResolutionCount++
-            }
-        }
-        for ((expression, definition) in other.functionCallResolutions) {
-            if (functionCallResolutions[expression] == null) {
-                functionCallResolutions[expression] = definition
-            }
-        }
-        for ((operand, type) in other.operandTypes) {
-            if (operandTypes[operand] == null) {
-                operandTypes[operand] = type
-            }
-        }
-        for ((funcDef, type) in other.externalFunctionReturnTypes) {
-            if (externalFunctionReturnTypes[funcDef] == null) {
-                externalFunctionReturnTypes[funcDef] = type
-            }
-        }
-        for ((expression, kind) in other.membershipKinds) {
-            if (membershipKinds[expression] == null) {
-                membershipKinds[expression] = kind
-            }
-        }
-        for ((expression, conversion) in other.modelConversions) {
-            if (modelConversions[expression] == null) {
-                modelConversions[expression] = conversion
-            }
-        }
-    }
 
     /**
      * Transfer all metadata from [source] to [target]. Used by [Lowering] when a rewritten
@@ -466,7 +412,7 @@ class TypeTable {
      * resolution, membership kind, model conversion) is copied to the new key. The old key's
      * entries are left intact (they may still be referenced by other tables like ConversionTable).
      *
-     * Unlike [mergeFrom], this operates on individual expressions within the same table.
+     * Operates on individual expressions within the same table.
      */
     fun transfer(source: Expression, target: Expression) {
         if (source === target) return

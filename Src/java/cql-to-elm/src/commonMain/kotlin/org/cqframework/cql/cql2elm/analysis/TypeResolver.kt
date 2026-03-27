@@ -870,7 +870,7 @@ class TypeResolver(
         if (leftElem.isSuperTypeOf(rightElem) || rightElem.isSuperTypeOf(leftElem)) return null
         // Don't wrap if either is already a ChoiceType
         if (leftElem is ChoiceType || rightElem is ChoiceType) return null
-        val choiceElem = ChoiceType(listOf(leftElem, rightElem).distinct())
+        val choiceElem = ChoiceType(listOf(leftElem, rightElem))
         val choiceListType = ListType(choiceElem)
         return listOf(choiceListType, choiceListType)
     }
