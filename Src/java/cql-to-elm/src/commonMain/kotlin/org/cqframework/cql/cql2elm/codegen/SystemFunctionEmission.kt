@@ -203,7 +203,7 @@ private fun emitTail(args: List<ElmExpression>): ElmExpression {
 
 /**
  * Emit `CalculateAgeInYears(birthDate)` etc. as `CalculateAge(operand, precision)`. ToDate wrapping
- * for Year/Month precision is handled by the ConversionPlanner (OperatorConversion on the argument
+ * for Year/Month precision is handled by the CoercionInserter (OperatorConversion on the argument
  * slot), applied by EmissionContext.applyConversions before we get here.
  */
 private fun emitCalculateAge(

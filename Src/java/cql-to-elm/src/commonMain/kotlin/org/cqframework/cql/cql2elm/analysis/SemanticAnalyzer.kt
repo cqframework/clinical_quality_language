@@ -38,20 +38,20 @@ import org.hl7.cql.model.DataType
  *    name) but not types, so it runs before inference.
  * 3. **Symbol collection** — [SymbolCollector] builds the [SymbolTable] (expression definitions,
  *    function definitions, parameter definitions) from top-level library declarations.
- * 4. **INFER → PLAN convergence loop** (max 2 iterations):
- *     - *INFER*: [TypeResolver] walks the AST, infers types, resolves operators and identifiers,
- *       populating a [TypeTable]. Reads the [ConversionTable] for effective types of operands
- *       (e.g., a null literal that has been implicitly cast to Integer). As a side effect, records
- *       operator-resolution-derived conversions (e.g., ToDecimal on a left operand) into the
- *       [ConversionTable] — these are conversions intrinsic to overload resolution, discovered at
- *       the point where the operator is resolved.
- *     - *PLAN*: [ConversionPlanner] discovers cross-expression implicit conversions (branch
+ * 4. **SYNTHESIZE → CHECK convergence loop** (max 2 iterations):
+ *     - *SYNTHESIZE*: [TypeResolver] walks the AST bottom-up, infers types, resolves operators
+ *       and identifiers, populating a [TypeTable]. Reads the [ConversionTable] for effective types
+ *       of operands (e.g., a null literal that has been implicitly cast to Integer). As a side
+ *       effect, records operator-resolution-derived coercions (e.g., ToDecimal on a left operand)
+ *       into the [ConversionTable] — these are coercions intrinsic to overload resolution,
+ *       discovered at the point where the operator is resolved.
+ *     - *CHECK*: [CoercionInserter] traverses the typed AST top-down and records implicit coercions
+ *       where a child’s synthesized type doesn’t match its parent’s expected type (branch
  *       unification, null wrapping, choice wrapping, interval bound propagation, DateTime null-arg
- *       conversions) and records them in the [ConversionTable] without mutating the AST.
- *     - The loop exists because type inference and conversion planning are mutually dependent: a
- *       new conversion may change the effective type of an operand, which may change operator
- *       resolution, which may expose new conversion needs. Convergence is reached when no new
- *       conversions are inserted.
+ *       coercions). This is the “checking mode” in bidirectional type-checking terminology.
+ *     - The loop exists because synthesis and checking are mutually dependent: a new coercion may
+ *       change the effective type of an operand, which may change operator resolution, which may
+ *       expose new coercion needs. Convergence is reached when no new coercions are inserted.
  * 5. **Semantic validation** — [SemanticValidator] flags errors (unresolved identifiers, undeclared
  *    functions, invalid casts, etc.) in the [SemanticModel].
  * 6. **Lowering** — [Lowering] performs type-directed structural lowering (phrase → operator trees,
@@ -114,15 +114,15 @@ class SemanticAnalyzer(
 
         val symbols = symbolCollector.collect(desugared)
 
-        // INFER → PLAN convergence loop.
-        // Each iteration: infer types (reading effective types from the ConversionTable), then
-        // plan cross-expression conversions. No AST mutation — the AST stays immutable.
-        // Converges when no new conversions are recorded (or max iterations reached).
+        // SYNTHESIZE → CHECK convergence loop.
+        // Each iteration: synthesize types bottom-up (reading effective types from the
+        // ConversionTable), then check top-down for coercion insertion. No AST mutation.
+        // Converges when no new coercions are recorded (or max iterations reached).
         //
-        // Note: TypeResolver also writes operator-resolution conversions to the ConversionTable
-        // during INFER (see TypeResolver.recordResolution). These are conversions intrinsic to
-        // overload resolution — splitting them into a separate pass would redundantly re-walk
-        // every resolved operator. ConversionPlanner handles higher-level concerns (branch
+        // Note: TypeResolver also writes operator-resolution coercions to the ConversionTable
+        // during SYNTHESIZE (see TypeResolver.recordResolution). These are coercions intrinsic
+        // to overload resolution — splitting them into a separate pass would redundantly re-walk
+        // every resolved operator. CoercionInserter handles higher-level concerns (branch
         // unification, null-slot wrapping, choice coercion) that require cross-expression context.
         val cumulativeTypeTable = TypeTable()
         var totalConversions = 0
@@ -131,8 +131,8 @@ class SemanticAnalyzer(
         val conversionTable = ConversionTable()
 
         for (iteration in 1..maxIterations) {
-            // INFER: type resolution + overload resolution
-            // (reads + writes ConversionTable for effective types and operator conversions)
+            // SYNTHESIZE: type resolution + overload resolution (bottom-up)
+            // (reads + writes ConversionTable for effective types and operator coercions)
             val resolver =
                 TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
             val iterationTypeTable = resolver.resolve(desugared, symbols)
@@ -143,8 +143,8 @@ class SemanticAnalyzer(
             // the earliest successful type/resolution for each expression.
             cumulativeTypeTable.mergeFrom(iterationTypeTable)
 
-            // PLAN: cross-expression conversion discovery (no AST mutation)
-            val planner = ConversionPlanner(cumulativeTypeTable, operatorRegistry, conversionTable)
+            // CHECK: coercion insertion (top-down — parent inspects children's types)
+            val planner = CoercionInserter(cumulativeTypeTable, operatorRegistry, conversionTable)
             planner.analyzeLibrary(desugared)
 
             val inserted = planner.newConversionsInserted
@@ -345,6 +345,8 @@ class TypeTable {
     private val operandTypes = IdentityHashMap<OperandDefinition, DataType>()
     private val externalFunctionReturnTypes = IdentityHashMap<FunctionDefinition, DataType>()
     private val membershipKinds = IdentityHashMap<Expression, MembershipKind>()
+    private val modelConversions =
+        IdentityHashMap<Expression, org.cqframework.cql.cql2elm.model.Conversion>()
     /** Total expressions that had type inference attempted. */
     var expressionCount: Int = 0
         internal set
@@ -423,6 +425,15 @@ class TypeTable {
     /** Look up the pre-decided membership variant. */
     fun getMembershipKind(expression: Expression): MembershipKind? = membershipKinds[expression]
 
+    /** Record a model conversion discovered during synthesis (used by CoercionInserter). */
+    fun setModelConversion(expression: Expression, conversion: org.cqframework.cql.cql2elm.model.Conversion) {
+        modelConversions[expression] = conversion
+    }
+
+    /** Look up the model conversion for an expression. */
+    fun getModelConversion(expression: Expression): org.cqframework.cql.cql2elm.model.Conversion? =
+        modelConversions[expression]
+
     /**
      * Merge entries from [other] into this table. For each expression in [other]:
      * - If this table has no type for the expression, copy the type from [other].
@@ -469,6 +480,11 @@ class TypeTable {
         for ((expression, kind) in other.membershipKinds) {
             if (membershipKinds[expression] == null) {
                 membershipKinds[expression] = kind
+            }
+        }
+        for ((expression, conversion) in other.modelConversions) {
+            if (modelConversions[expression] == null) {
+                modelConversions[expression] = conversion
             }
         }
     }

@@ -78,7 +78,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  * - [SymbolTable] — resolves expression/function/parameter definitions by name.
  * - [OperatorRegistry] — resolves operator and function overloads by operand types.
  * - [ConversionTable] (optional) — provides effective types for operands that have implicit
- *   conversions recorded by [ConversionPlanner] (e.g., a null literal cast to Integer). When
+ *   conversions recorded by [CoercionInserter] (e.g., a null literal cast to Integer). When
  *   present, effective types are used for operator resolution instead of raw inferred types.
  * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
@@ -371,7 +371,7 @@ class TypeResolver(
 
     override fun onAs(expr: AsExpression, operand: DataType?): DataType? {
         val rawType = inferAsType(expr) ?: return null
-        return applyModelConversion(expr, ConversionSlot.Operand, rawType) ?: rawType
+        return inferModelConvertedType(expr, rawType) ?: rawType
     }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: DataType?): DataType? =
@@ -391,7 +391,7 @@ class TypeResolver(
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
         val rawType = resolvePropertyType(target, expr.property.value) ?: return null
-        return applyModelConversion(expr, ConversionSlot.PropertyResult, rawType) ?: rawType
+        return inferModelConvertedType(expr, rawType) ?: rawType
     }
 
     override fun onIndex(expr: IndexExpression, target: DataType?, index: DataType?): DataType? =
@@ -1162,50 +1162,27 @@ class TypeResolver(
     }
 
     /**
-     * Check if [rawType] has an implicit model conversion (e.g., FHIR.dateTime → System.DateTime
-     * via FHIRHelpers.ToDateTime). If so, record a [ImplicitConversion.LibraryConversion] on
-     * [expr]/[slot] and return the converted type. Returns null if no model conversion applies.
+     * Infer the converted system type for a raw model type (e.g., FHIR.dateTime → System.DateTime).
+     * Returns the converted type for type synthesis; does NOT record in the [ConversionTable].
+     * Stores the [Conversion] in [TypeTable.setModelConversion] so the [CoercionInserter] can
+     * read it during the checking pass and decide where to record the coercion.
      */
-    private fun applyModelConversion(
-        expr: Expression,
-        slot: ConversionSlot,
-        rawType: DataType,
-    ): DataType? {
+    private fun inferModelConvertedType(expr: Expression, rawType: DataType): DataType? {
         // Don't eagerly narrow ChoiceTypes — choice narrowing must happen at the point of use
-        // (operator resolution), not at the property access level. Eagerly narrowing breaks
-        // explicit As casts like 'onset as FHIR.Period'.
+        // (operator resolution), not at the property access level.
         if (rawType is org.hl7.cql.model.ChoiceType) return null
-        return findAndRecordModelConversion(expr, slot, rawType)
+        val mc = findModelConversion(rawType) ?: return null
+        typeTable.setModelConversion(expr, mc)
+        return mc.toType
     }
 
-    private fun findModelConversion(rawType: DataType): Conversion? {
+    /** Find implicit model conversion for [rawType], or null if none applies. */
+    internal fun findModelConversion(rawType: DataType): org.cqframework.cql.cql2elm.model.Conversion? {
         return operatorRegistry.conversionMap.getConversions(rawType).firstOrNull {
             it.isImplicit &&
                 it.operator != null &&
                 it.operator.libraryName != null &&
                 it.operator.libraryName != "System"
         }
-    }
-
-    private fun findAndRecordModelConversion(
-        expr: Expression,
-        slot: ConversionSlot,
-        rawType: DataType,
-    ): DataType? {
-        val conversions = operatorRegistry.conversionMap.getConversions(rawType)
-        val mc =
-            conversions.firstOrNull {
-                it.isImplicit &&
-                    it.operator != null &&
-                    it.operator.libraryName != null &&
-                    it.operator.libraryName != "System"
-            } ?: return null
-        val op = mc.operator!!
-        conversionTable?.addIfAbsent(
-            expr,
-            slot,
-            ImplicitConversion.LibraryConversion(op.libraryName!!, op.name, mc.toType),
-        )
-        return mc.toType
     }
 }

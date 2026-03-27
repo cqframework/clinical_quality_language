@@ -147,11 +147,10 @@ class ConversionTable {
     }
 
     /**
-     * Transfer all conversions from [source] to [target]. Used by the lowering phase when an
-     * expression is rewritten — conversions recorded against the original expression identity need
-     * to follow to the new expression.
+     * Re-key all coercions from [source] to [target]. Used by [Lowering] when a rewritten
+     * expression gets a new identity — the coercions stay the same, only the key changes.
      */
-    fun transfer(source: Expression, target: Expression) {
+    fun rekey(source: Expression, target: Expression) {
         val slotMap = entries[source] ?: return
         for ((slot, conversions) in slotMap) {
             for (s in conversions) {
@@ -299,7 +298,7 @@ internal fun conversionToImplicits(
 
 /**
  * Record implicit conversions from an [OperatorResolution]'s conversions for each slot. Called by
- * TypeResolver at each setOperatorResolution site and by ConversionPlanner when re-deriving
+ * TypeResolver at each setOperatorResolution site and by CoercionInserter when re-deriving
  * resolution conversions is needed.
  */
 internal fun recordResolutionConversions(

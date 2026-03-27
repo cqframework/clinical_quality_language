@@ -55,11 +55,21 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 
 /**
- * Populates the [ConversionTable] with type-unification conversions — implicit conversions and type
- * adjustments that are recorded as metadata rather than AST mutations. Implements
- * [ExpressionFold]<[Unit]> for compile-time exhaustive dispatch.
+ * Coercion insertion pass: populates the [ConversionTable] with implicit type coercions that the
+ * emitter applies mechanically during code generation. Implements [ExpressionFold]<[Unit]> for
+ * compile-time exhaustive dispatch.
  *
- * ## Kinds of conversions recorded
+ * This follows the standard compiler pattern for **coercive subtyping** (Traytel & Nipkow 2011,
+ * "Extending HM with Coercive Structural Subtyping"): type inference runs first (bottom-up via
+ * [TypeResolver]), then a second pass traverses the typed AST and inserts coercions at positions
+ * where the synthesized type doesn't match the expected type. Coercions are recorded as metadata
+ * in the [ConversionTable] rather than mutating the AST.
+ *
+ * In bidirectional type-checking terms, [TypeResolver] is the **synthesis** (bottom-up) pass and
+ * this class provides the **checking** (top-down) pass: it inspects each parent expression's
+ * expected operand types and records coercions for children whose synthesized types don't conform.
+ *
+ * ## Kinds of coercions recorded
  * - **Branch unification** (If/Case/List/Interval) — when branch types differ, records
  *   [ImplicitConversion.ImplicitCast] or [ImplicitConversion.OperatorConversion] to coerce to the
  *   common type.
@@ -73,18 +83,17 @@ import org.hl7.cql.model.ListType
  * - **DateTime null-arg conversions** — null arguments in `DateTime()`/`Date()`/`Time()`
  *   constructors get [ImplicitConversion.ImplicitCast] to Integer or Decimal.
  *
- * Operator-resolution conversion recording (the "transcription" concern) happens in
- * [recordResolutionConversions] at each setOperatorResolution call site.
+ * Operator-resolution coercion recording (the "transcription" concern) happens in
+ * [recordResolutionConversions] at each setOperatorResolution call site in [TypeResolver].
  *
- * ## Adding a new kind of implicit conversion
+ * ## Adding a new kind of coercion
  * 1. Define a new [ImplicitConversion] subtype in `ImplicitConversion.kt` if the existing subtypes
- *    ([ImplicitConversion.ImplicitCast], [ImplicitConversion.OperatorConversion],
- *    [ImplicitConversion.ListDemotion]) don't cover the case.
+ *    don't cover the case.
  * 2. In the relevant `on*` handler in this class, detect the condition and call
- *    [ConversionTable.addIfAbsent] to record the conversion at the (parent, [ConversionSlot])
+ *    [ConversionTable.addIfAbsent] to record the coercion at the (parent, [ConversionSlot])
  *    location.
- * 3. In `EmissionContext.applyConversions` (the ELM emitter), handle the new [ImplicitConversion]
- *    subtype to produce the correct ELM wrapper node.
+ * 3. In `EmissionContext.applyConversions`, handle the new [ImplicitConversion] subtype to produce
+ *    the correct ELM wrapper node.
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
@@ -94,7 +103,7 @@ import org.hl7.cql.model.ListType
  *
  * **Not thread-safe.** Create a fresh instance per analysis iteration.
  */
-class ConversionPlanner(
+class CoercionInserter(
     private val typeTable: TypeTable,
     private val operatorRegistry: OperatorRegistry,
     private val conversionTable: ConversionTable,
@@ -152,6 +161,24 @@ class ConversionPlanner(
     /** Check if an expression is a null literal. */
     private fun isNullLiteralExpr(expr: Expression): Boolean =
         expr is LiteralExpression && expr.literal is NullLiteral
+
+    /**
+     * Record a model coercion (e.g., FHIRHelpers.ToConcept) at the given [slot] if [TypeResolver]
+     * found a model conversion during synthesis. The conversion object is stored in
+     * [TypeTable.getModelConversion] by the synthesis pass; we read it here and convert to an
+     * [ImplicitConversion.LibraryConversion] in the [ConversionTable].
+     */
+    private fun recordModelCoercion(expr: Expression, slot: ConversionSlot) {
+        val mc = typeTable.getModelConversion(expr) ?: return
+        val op = mc.operator ?: return
+        val libraryName = op.libraryName ?: return
+        if (libraryName == "System") return
+        conversionTable.addIfAbsent(
+            expr,
+            slot,
+            ImplicitConversion.LibraryConversion(libraryName, op.name, mc.toType),
+        )
+    }
 
     /**
      * Record a conversion for type unification: if the child's type doesn't match [targetType],
@@ -654,7 +681,9 @@ class ConversionPlanner(
 
     override fun onIs(expr: IsExpression, operand: Unit) {}
 
-    override fun onAs(expr: AsExpression, operand: Unit) {}
+    override fun onAs(expr: AsExpression, operand: Unit) {
+        recordModelCoercion(expr, ConversionSlot.Operand)
+    }
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: Unit) {}
 
@@ -662,7 +691,9 @@ class ConversionPlanner(
 
     override fun onConversion(expr: ConversionExpression, operand: Unit) {}
 
-    override fun onPropertyAccess(expr: PropertyAccessExpression, target: Unit) {}
+    override fun onPropertyAccess(expr: PropertyAccessExpression, target: Unit) {
+        recordModelCoercion(expr, ConversionSlot.PropertyResult)
+    }
 
     override fun onIndex(expr: IndexExpression, target: Unit, index: Unit) {}
 

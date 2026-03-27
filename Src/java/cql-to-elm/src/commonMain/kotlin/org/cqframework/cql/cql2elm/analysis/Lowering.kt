@@ -77,7 +77,7 @@ import org.hl7.cql.model.IntervalType
  *
  * ## What does NOT go here
  * - Type inference → [TypeResolver]
- * - Conversion recording → [ConversionPlanner]
+ * - Conversion recording → [CoercionInserter]
  * - Error checking → [SemanticValidator]
  * - ELM-specific emission concerns → `EmissionContext`
  *
@@ -103,10 +103,10 @@ class Lowering(
     private val conversionTable: ConversionTable = semanticModel.conversionTable,
 ) : ExpressionFold<Expression> {
 
-    /** Rewrite an expression, transferring any conversions from the original to the replacement. */
+    /** Rewrite an expression, re-keying any coercions from the original to the replacement. */
     private fun rewrite(original: Expression, replacement: Expression): Expression {
         if (replacement !== original) {
-            conversionTable.transfer(original, replacement)
+            conversionTable.rekey(original, replacement)
         }
         return replacement
     }

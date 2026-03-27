@@ -212,7 +212,7 @@ internal fun TypeResolver.inferIntervalRelationType(
     // Resolve through the OperatorMap ONLY when both operands are intervals with different
     // point types (interval type promotion, e.g., Interval<Date> → Interval<DateTime>).
     // For other cases (scalar/null operands, same-type intervals), the existing lowering +
-    // ConversionPlanner path handles everything correctly.
+    // CoercionInserter path handles everything correctly.
     val opName = intervalPhraseToOperatorName(expression.phrase)
     if (
         opName != null &&

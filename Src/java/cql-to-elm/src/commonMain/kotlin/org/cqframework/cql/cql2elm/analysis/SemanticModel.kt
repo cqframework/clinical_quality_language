@@ -69,6 +69,10 @@ class SemanticModel(
     fun getMembershipKind(expression: Expression): MembershipKind? =
         typeTable.getMembershipKind(expression)
 
+    /** Look up the model conversion recorded during synthesis for an expression. */
+    fun getModelConversion(expression: Expression): org.cqframework.cql.cql2elm.model.Conversion? =
+        typeTable.getModelConversion(expression)
+
     // --- Symbol queries (delegated to SymbolTable) ---
 
     fun resolveExpression(name: String) = symbolTable.resolveExpression(name)

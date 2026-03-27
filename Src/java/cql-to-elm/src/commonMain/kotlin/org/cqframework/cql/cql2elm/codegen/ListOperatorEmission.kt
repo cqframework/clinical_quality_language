@@ -46,7 +46,7 @@ internal fun EmissionContext.emitListTransform(
     expression: ListTransformExpression,
     operandElm: ElmExpression,
 ): ElmExpression {
-    // Heterogeneous flatten detection moved to ConversionPlanner — non-list elements
+    // Heterogeneous flatten detection moved to CoercionInserter — non-list elements
     // are wrapped via ImplicitCast(List<T>) conversions on the list literal's elements.
     return when (expression.listTransformKind) {
         ListTransformKind.DISTINCT -> Distinct().apply { operand = operandElm }
@@ -55,4 +55,4 @@ internal fun EmissionContext.emitListTransform(
 }
 
 // detectHeterogeneousFlatten and wrapFlattenHeterogeneous deleted — moved to
-// ConversionPlanner.recordHeterogeneousFlattenConversions as ImplicitCast conversions.
+// CoercionInserter.recordHeterogeneousFlattenConversions as ImplicitCast conversions.

@@ -17,7 +17,7 @@ package org.hl7.cql.ast
  * | Phase               | `R`             | Purpose                                          |
  * |---------------------|-----------------|--------------------------------------------------|
  * | `TypeResolver`      | `DataType?`     | Infer types, populate [TypeTable]                |
- * | `ConversionPlanner` | `Unit`          | Record implicit conversions in [ConversionTable] |
+ * | `CoercionInserter`  | `Unit`          | Insert implicit coercions into [ConversionTable] |
  * | `SemanticValidator` | `Unit`          | Detect semantic errors                           |
  * | `Lowering`          | `Expression`    | Lower phrases to operators                       |
  * | `EmissionContext`   | `ElmExpression` | Convert CQL AST to ELM                           |
