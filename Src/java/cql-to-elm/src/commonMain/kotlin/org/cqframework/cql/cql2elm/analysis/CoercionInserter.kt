@@ -190,6 +190,16 @@ class CoercionInserter(
         }
     }
 
+    /** Resolve an element type by name, walking the baseType chain. */
+    private fun resolveElementType(classType: org.hl7.cql.model.ClassType?, name: String): DataType? {
+        var current: DataType? = classType
+        while (current is org.hl7.cql.model.ClassType) {
+            current.elements.firstOrNull { it.name == name }?.let { return it.type }
+            current = current.baseType
+        }
+        return null
+    }
+
     /**
      * Record a conversion for type unification: if the child's type doesn't match [targetType],
      * record the appropriate conversion (NullAs, OperatorConversion, ChoiceAs, etc.).
@@ -740,8 +750,9 @@ class CoercionInserter(
         if (targetExpr != null) {
             val mc = typeTable.getModelConversion(targetExpr)
             if (mc != null) {
-                val accessedType = (mc.fromType as? org.hl7.cql.model.ClassType)
-                    ?.elements?.firstOrNull { it.name == expr.property.value }?.type
+                val accessedType = resolveElementType(
+                    mc.fromType as? org.hl7.cql.model.ClassType, expr.property.value
+                )
                 if (accessedType != null && accessedType == mc.toType) {
                     // Determine the slot where the target's coercion was recorded.
                     // PropertyAccess records at PropertyResult; As records at Operand.
