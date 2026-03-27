@@ -151,11 +151,18 @@ class SemanticAnalyzer(
         val normalizedLibrary = lowering.normalizeLibrary(desugared)
 
         // Lowering transfers metadata (types, resolutions, coercions) for rewritten nodes
-        // via TypeTable.transfer and computes types for genuinely new nodes at creation time.
-        // Re-collect symbols for the normalized library (lowering may have introduced new
-        // statements like context definitions or rewritten function bodies).
+        // via TypeTable.transfer and computes types for simple new nodes (Coalesce, etc.)
+        // at creation time. However, Lowering also creates structurally new expressions
+        // (e.g., MembershipExpression from IntervalRelation) that need fresh type inference
+        // and operator resolution. A targeted TypeResolver pass fills in only the missing
+        // entries — nodes already typed via transfer are skipped.
         val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
-
+        val postLoweringResolver =
+            TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
+        val postLoweringTypes = postLoweringResolver.resolve(normalizedLibrary, normalizedSymbols)
+        // Merge post-lowering types into the main table. transfer-copied entries take
+        // precedence (they have correct resolutions); postLoweringTypes fills gaps.
+        finalTypeTable.mergeFrom(postLoweringTypes)
         val semanticModel =
             SemanticModel(
                 normalizedSymbols,
@@ -405,6 +412,48 @@ class TypeTable {
     fun getModelConversion(expression: Expression): org.cqframework.cql.cql2elm.model.Conversion? =
         modelConversions[expression]
 
+
+    /**
+     * Merge entries from [other] into this table, filling gaps only. For each expression in
+     * [other], copies the entry only if this table has no entry for that expression. Used after
+     * Lowering to fill in types for structurally new nodes (e.g., MembershipExpression created
+     * from IntervalRelation) without overwriting entries that Lowering's transfer already set.
+     */
+    fun mergeFrom(other: TypeTable) {
+        for ((expression, type) in other.types) {
+            if (types[expression] == null) {
+                types[expression] = type
+                typedCount++
+            }
+        }
+        for ((expression, resolution) in other.operatorResolutions) {
+            if (operatorResolutions[expression] == null) {
+                operatorResolutions[expression] = resolution
+                operatorResolutionCount++
+            }
+        }
+        for ((expression, resolution) in other.identifierResolutions) {
+            if (identifierResolutions[expression] == null) {
+                identifierResolutions[expression] = resolution
+                identifierResolutionCount++
+            }
+        }
+        for ((expression, definition) in other.functionCallResolutions) {
+            if (functionCallResolutions[expression] == null) {
+                functionCallResolutions[expression] = definition
+            }
+        }
+        for ((expression, kind) in other.membershipKinds) {
+            if (membershipKinds[expression] == null) {
+                membershipKinds[expression] = kind
+            }
+        }
+        for ((expression, conversion) in other.modelConversions) {
+            if (modelConversions[expression] == null) {
+                modelConversions[expression] = conversion
+            }
+        }
+    }
 
     /**
      * Transfer all metadata from [source] to [target]. Used by [Lowering] when a rewritten

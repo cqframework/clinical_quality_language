@@ -337,8 +337,6 @@ class FullParityTest {
                     "FHIRHelpers conversion function emission diverges from legacy (ToConcept/ToCode wrapping)",
                 "TestFHIRPath" to
                     "FHIR path-based property and model conversion resolution diverges from legacy",
-                "TestFHIRTiming" to
-                    "FHIR timing-related model conversion and interval wrapping diverges from legacy",
                 "TestFHIRWithHelpers" to
                     "FHIR model conversion with helpers diverges (ToConcept/ToCode, scope resolution)",
             )
