@@ -80,7 +80,8 @@ constructor(
     // -- DataProvider "Helpers"
 
     /**
-     * Resolves a path on a target object. The path may include qualifiers (`.`) and indexers (`[x]`).
+     * Resolves a path on a target object. The path may include qualifiers (`.`) and indexers
+     * (`[x]`).
      */
     fun resolvePath(target: Any?, path: String): Any? {
         var target = target
@@ -98,9 +99,7 @@ constructor(
         return target
     }
 
-    /**
-     * Resolves a property on a target object.
-     */
+    /** Resolves a property on a target object. */
     fun resolveProperty(target: Any?, property: String): Any? {
         if (target == null) {
             return null
