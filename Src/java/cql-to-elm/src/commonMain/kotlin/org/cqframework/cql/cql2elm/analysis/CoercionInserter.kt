@@ -743,7 +743,13 @@ class CoercionInserter(
                 val accessedType = (mc.fromType as? org.hl7.cql.model.ClassType)
                     ?.elements?.firstOrNull { it.name == expr.property.value }?.type
                 if (accessedType != null && accessedType == mc.toType) {
-                    conversionTable.remove(targetExpr, ConversionSlot.PropertyResult)
+                    // Determine the slot where the target's coercion was recorded.
+                    // PropertyAccess records at PropertyResult; As records at Operand.
+                    val targetSlot = when (targetExpr) {
+                        is org.hl7.cql.ast.AsExpression -> ConversionSlot.Operand
+                        else -> ConversionSlot.PropertyResult
+                    }
+                    conversionTable.remove(targetExpr, targetSlot)
                     return
                 }
             }

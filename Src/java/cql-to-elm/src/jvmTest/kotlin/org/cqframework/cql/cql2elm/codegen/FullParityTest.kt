@@ -85,7 +85,7 @@ class FullParityTest {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r4/", "fhir-r4")
     }
 
-    @Disabled("Exploratory: 15/28 pass, 2 skip")
+    @Disabled("Exploratory: 15/28 pass, 8 skip")
     @TestFactory
     fun fhirR401Parity(): Collection<DynamicTest> {
         return buildParityTests("org/cqframework/cql/cql2elm/fhir/r401/", "fhir-r401")
@@ -324,6 +324,20 @@ class FullParityTest {
                     "FHIRHelpers list element conversion (ToConcept for AnyInValueSet) not yet applied by new pipeline",
                 "MappingExpansionsRespectSignatureLevel" to
                     "FHIRHelpers.ToInterval model conversion for Period properties not yet applied",
+                // FHIR-specific function resolution gaps: cross-library fluent calls and
+                // system functions not yet resolved by the new pipeline.
+                "TestFHIRPathLiteralStringEscapes" to
+                    "convertsToString() fluent system function not resolved; emits Null",
+                "TestTrace" to
+                    "Trace() function not resolved; emits Null instead of Message node",
+                "TestMeasureParameterContext" to
+                    "FHIRHelpers.extension() cross-library fluent call not resolved",
+                "TestParameterContext" to
+                    "FHIRHelpers.extension() cross-library fluent call not resolved",
+                "TestMedicationRequest" to
+                    "Choice codePath + FHIRHelpers.resolve() for Reference medication not yet supported",
+                "TestInclude" to
+                    "Search property emission (?name) and FHIRHelpers.resolve() cross-library calls not resolved",
             )
     }
 }
