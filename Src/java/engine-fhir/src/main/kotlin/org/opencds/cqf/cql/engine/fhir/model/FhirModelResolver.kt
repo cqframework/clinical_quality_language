@@ -575,8 +575,10 @@ abstract class FhirModelResolver<
      * Recursively converts a HAPI FHIR construct to a CQL-native equivalent.
      *
      * @param target The HAPI FHIR object to convert
-     * @param expandPrimitivesAndEnumerationsWithNoValues Whether to convert a HAPI FHIR primitive/enumeration with no value to a structured type instance with a null `value` child, or to null.
-     * */
+     * @param expandPrimitivesAndEnumerationsWithNoValues Whether to convert a HAPI FHIR
+     *   primitive/enumeration with no value to a structured type instance with a null `value`
+     *   child, or to null.
+     */
     fun toCqlValue(
         target: Any?,
         expandPrimitivesAndEnumerationsWithNoValues: Boolean = false,
@@ -595,14 +597,12 @@ abstract class FhirModelResolver<
 
         if (target is IBaseHasExtensions) {
             val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues
+            elements["extension"] = extensionsAsCqlValues.ifEmpty { null }
         }
 
         if (target is IBaseHasModifierExtensions) {
             val modifierExtensionsAsCqlValues = target.modifierExtension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (modifierExtensionsAsCqlValues.isEmpty()) null else modifierExtensionsAsCqlValues
+            elements["extension"] = modifierExtensionsAsCqlValues.ifEmpty { null }
         }
 
         if (target is IBaseElement) {
@@ -653,17 +653,17 @@ abstract class FhirModelResolver<
         val definition = resolveRuntimeDefinition(target)
 
         for (child in definition.children) {
-            val childName = child.elementName
-            val hapiValues = child.accessor.getValues(target)
-
-            val hapiValuesAsCqlValues = hapiValues.map { toCqlValue(it) }
-
-            if (child.max == 1) {
-                elements[childName] = hapiValuesAsCqlValues.firstOrNull()
-            } else {
-                elements[childName] =
-                    if (hapiValuesAsCqlValues.isEmpty()) null else hapiValuesAsCqlValues
-            }
+            elements[child.elementName] =
+                child.accessor
+                    .getValues(target)
+                    .map { toCqlValue(it) }
+                    .let {
+                        if (child.max == 1) {
+                            it.firstOrNull()
+                        } else {
+                            it.ifEmpty { null }
+                        }
+                    }
         }
 
         return CqlClassInstance(QName(fhirModelNamespaceUri, definition.name), elements)
