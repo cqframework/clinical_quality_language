@@ -101,12 +101,18 @@ import org.hl7.cql.model.IntervalType
 class Lowering(
     private val semanticModel: SemanticModel,
     private val conversionTable: ConversionTable = semanticModel.conversionTable,
+    private val typeTable: TypeTable = semanticModel.typeTable,
 ) : ExpressionFold<Expression> {
 
-    /** Rewrite an expression, re-keying any coercions from the original to the replacement. */
+    /**
+     * Rewrite an expression, transferring all metadata (types, resolutions, coercions) from the
+     * original to the replacement. This keeps the TypeTable and ConversionTable consistent with
+     * the rewritten AST so that post-lowering re-typing is unnecessary for replaced nodes.
+     */
     private fun rewrite(original: Expression, replacement: Expression): Expression {
         if (replacement !== original) {
             conversionTable.rekey(original, replacement)
+            typeTable.transfer(original, replacement)
         }
         return replacement
     }
@@ -195,20 +201,24 @@ class Lowering(
 
         // Identity for other operators
         return if (left === expr.left && right === expr.right) expr
-        else expr.copy(left = left, right = right)
+        else rewrite(expr, expr.copy(left = left, right = right))
     }
 
     private fun wrapInCoalesce(expr: Expression): Expression {
         // Idempotent: don't double-wrap
         if (expr is FunctionCallExpression && expr.function.value == "Coalesce") return expr
+        val stringType = semanticModel.operatorRegistry.type("String")
         val emptyString =
             LiteralExpression(literal = StringLiteral(value = ""), locator = expr.locator)
-        return FunctionCallExpression(
+        typeTable[emptyString] = stringType
+        val coalesce = FunctionCallExpression(
             target = null,
             function = Identifier("Coalesce"),
             arguments = listOf(expr, emptyString),
             locator = expr.locator,
         )
+        typeTable[coalesce] = stringType
+        return coalesce
     }
 
     // --- Identity handlers (pass through pre-folded children) ---
@@ -221,10 +231,10 @@ class Lowering(
     override fun onExternalConstant(expr: ExternalConstantExpression) = expr
 
     override fun onUnaryOperator(expr: OperatorUnaryExpression, operand: Expression): Expression =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onBooleanTest(expr: BooleanTestExpression, operand: Expression): Expression =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onIf(
         expr: IfExpression,
@@ -238,7 +248,7 @@ class Lowering(
                 elseBranch === expr.elseBranch
         )
             expr
-        else expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch)
+        else rewrite(expr, expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch))
 
     override fun onCase(
         expr: CaseExpression,
@@ -248,19 +258,19 @@ class Lowering(
     ): Expression = rewriteCase(expr, comparand, cases, elseResult)
 
     override fun onIs(expr: IsExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onAs(expr: AsExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onImplicitCast(expr: ImplicitCastExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onCast(expr: CastExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onConversion(expr: ConversionExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onFunctionCall(
         expr: FunctionCallExpression,
@@ -277,7 +287,7 @@ class Lowering(
         val argsChanged = arguments.indices.any { arguments[it] !== expr.arguments[it] }
         val targetChanged = target !== expr.target
         return if (!targetChanged && !argsChanged) expr
-        else expr.copy(target = target, arguments = arguments)
+        else rewrite(expr, expr.copy(target = target, arguments = arguments))
     }
 
     /**
@@ -320,7 +330,10 @@ class Lowering(
         // Don't use rewrite() here — we don't want to transfer the old conversions
         // (e.g., Date→DateTime on arg[1]) since the new args are both Date and the
         // (Date,Date) overload matches exactly with no conversions needed.
-        return expr.copy(arguments = newArgs)
+        // But do transfer type/resolution metadata so post-lowering re-typing isn't needed.
+        val result = expr.copy(arguments = newArgs)
+        typeTable.transfer(expr, result)
+        return result
     }
 
     private fun wrapInToDate(operand: Expression, context: Expression): ConversionExpression =
@@ -334,14 +347,14 @@ class Lowering(
         )
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: Expression) =
-        if (target === expr.target) expr else expr.copy(target = target)
+        if (target === expr.target) expr else rewrite(expr, expr.copy(target = target))
 
     override fun onIndex(expr: IndexExpression, target: Expression, index: Expression) =
         if (target === expr.target && index === expr.index) expr
-        else expr.copy(target = target, index = index)
+        else rewrite(expr, expr.copy(target = target, index = index))
 
     override fun onExists(expr: ExistsExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onMembership(
         expr: MembershipExpression,
@@ -381,7 +394,7 @@ class Lowering(
             val wrapped = normalizeHeterogeneousFlatten(expr, operand)
             if (wrapped != null) return rewrite(expr, expr.copy(operand = wrapped))
         }
-        return if (operand === expr.operand) expr else expr.copy(operand = operand)
+        return if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
     }
 
     /** Returns a Query-wrapped operand if the flatten has a heterogeneous list, or null. */
@@ -423,7 +436,21 @@ class Lowering(
                     )
             )
         val castExpr = ImplicitCastExpression(operand = aliasRef, type = typeSpec, locator = loc)
-        return org.hl7.cql.ast.QueryExpression(
+        // Type new nodes so post-lowering re-typing isn't needed.
+        // aliasRef resolves to the query source element type during the post-lowering
+        // TypeResolver walk. Here we know the source list's element type.
+        val sourceListType = semanticModel[expr.operand]
+        val sourceElemType = (sourceListType as? org.hl7.cql.model.ListType)?.elementType
+        if (sourceElemType != null) {
+            typeTable[aliasRef] = sourceElemType
+            // Record identifier resolution so emission produces AliasRef, not IdentifierRef.
+            typeTable.setIdentifierResolution(
+                aliasRef,
+                Resolution.AliasRef(aliasName, sourceElemType),
+            )
+        }
+        typeTable[castExpr] = targetListType
+        val query = org.hl7.cql.ast.QueryExpression(
             sources =
                 listOf(
                     org.hl7.cql.ast.AliasedQuerySource(
@@ -443,6 +470,8 @@ class Lowering(
                 ),
             locator = loc,
         )
+        typeTable[query] = org.hl7.cql.model.ListType(targetListType)
+        return query
     }
 
     override fun onExpandCollapse(
@@ -451,10 +480,10 @@ class Lowering(
         per: Expression?,
     ) =
         if (operand === expr.operand && per === expr.perExpression) expr
-        else expr.copy(operand = operand, perExpression = per)
+        else rewrite(expr, expr.copy(operand = operand, perExpression = per))
 
     override fun onDateTimeComponent(expr: DateTimeComponentExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onDurationBetween(
         expr: DurationBetweenExpression,
@@ -462,7 +491,7 @@ class Lowering(
         upper: Expression,
     ) =
         if (lower === expr.lower && upper === expr.upper) expr
-        else expr.copy(lower = lower, upper = upper)
+        else rewrite(expr, expr.copy(lower = lower, upper = upper))
 
     override fun onDifferenceBetween(
         expr: DifferenceBetweenExpression,
@@ -470,22 +499,22 @@ class Lowering(
         upper: Expression,
     ) =
         if (lower === expr.lower && upper === expr.upper) expr
-        else expr.copy(lower = lower, upper = upper)
+        else rewrite(expr, expr.copy(lower = lower, upper = upper))
 
     override fun onDurationOf(expr: DurationOfExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onDifferenceOf(expr: DifferenceOfExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onTimeBoundary(expr: TimeBoundaryExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onWidth(expr: WidthExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onElementExtractor(expr: ElementExtractorExpression, operand: Expression) =
-        if (operand === expr.operand) expr else expr.copy(operand = operand)
+        if (operand === expr.operand) expr else rewrite(expr, expr.copy(operand = operand))
 
     override fun onTypeExtent(expr: TypeExtentExpression) = expr
 
@@ -496,7 +525,7 @@ class Lowering(
         upper: Expression,
     ) =
         if (input === expr.input && lower === expr.lower && upper === expr.upper) expr
-        else expr.copy(input = input, lower = lower, upper = upper)
+        else rewrite(expr, expr.copy(input = input, lower = lower, upper = upper))
 
     override fun onIntervalExpression(
         expr: IntervalExpression,
@@ -513,11 +542,14 @@ class Lowering(
         )
             expr
         else
-            expr.copy(
-                low = low,
-                high = high,
-                lowClosedExpression = lowClosed,
-                highClosedExpression = highClosed,
+            rewrite(
+                expr,
+                expr.copy(
+                    low = low,
+                    high = high,
+                    lowClosedExpression = lowClosed,
+                    highClosedExpression = highClosed,
+                ),
             )
 
     override fun onIntervalRelation(

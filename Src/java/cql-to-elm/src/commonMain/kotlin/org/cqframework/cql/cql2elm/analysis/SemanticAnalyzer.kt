@@ -176,19 +176,16 @@ class SemanticAnalyzer(
         val lowering = Lowering(preNormModel)
         val normalizedLibrary = lowering.normalizeLibrary(desugared)
 
-        // Re-collect symbols and re-type the lowered AST: lowering may create new expressions
-        // (QueryExpression for flatten, ConversionExpression for type casts) that need typing.
-        // Merge the pre-lowering cumulative table so unchanged expressions keep their types.
+        // Lowering transfers metadata (types, resolutions, coercions) for rewritten nodes
+        // via TypeTable.transfer and computes types for genuinely new nodes at creation time.
+        // Re-collect symbols for the normalized library (lowering may have introduced new
+        // statements like context definitions or rewritten function bodies).
         val normalizedSymbols = symbolCollector.collect(normalizedLibrary)
-        val normalizedResolver =
-            TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
-        val normalizedTypeTable = normalizedResolver.resolve(normalizedLibrary, normalizedSymbols)
-        normalizedTypeTable.mergeFrom(finalTypeTable)
 
         val semanticModel =
             SemanticModel(
                 normalizedSymbols,
-                normalizedTypeTable,
+                finalTypeTable,
                 operatorRegistry,
                 options,
                 errors = preNormModel.errors,
@@ -486,6 +483,28 @@ class TypeTable {
             if (modelConversions[expression] == null) {
                 modelConversions[expression] = conversion
             }
+        }
+    }
+
+    /**
+     * Transfer all metadata from [source] to [target]. Used by [Lowering] when a rewritten
+     * expression gets a new identity — the metadata (type, operator resolution, identifier
+     * resolution, membership kind, model conversion) is copied to the new key. The old key's
+     * entries are left intact (they may still be referenced by other tables like ConversionTable).
+     *
+     * Unlike [mergeFrom], this operates on individual expressions within the same table.
+     */
+    fun transfer(source: Expression, target: Expression) {
+        if (source === target) return
+        types[source]?.let { types[target] = it }
+        operatorResolutions[source]?.let { operatorResolutions[target] = it }
+        membershipKinds[source]?.let { membershipKinds[target] = it }
+        modelConversions[source]?.let { modelConversions[target] = it }
+        if (source is IdentifierExpression && target is IdentifierExpression) {
+            identifierResolutions[source]?.let { identifierResolutions[target] = it }
+        }
+        if (source is FunctionCallExpression && target is FunctionCallExpression) {
+            functionCallResolutions[source]?.let { functionCallResolutions[target] = it }
         }
     }
 }
