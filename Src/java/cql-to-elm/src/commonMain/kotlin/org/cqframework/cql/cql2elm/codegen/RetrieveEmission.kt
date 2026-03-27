@@ -15,16 +15,16 @@ import org.hl7.elm.r1.ValueSetRef as ElmValueSetRef
  * templateId.
  */
 internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression {
-    // Non-retrievable types are detected by SemanticValidator and flagged via addError();
-    // emitExpression's error gate returns Null() before reaching here.
+    // Unresolvable types are flagged by SemanticValidator; the error gate in emitExpression
+    // returns Null() before reaching here. So buildRetrieveForType should always succeed.
     val typeName = expression.typeSpecifier.name.simpleName
-    val retrieve = buildRetrieveForType(typeName)
+    val retrieve = buildRetrieveForType(typeName)!!
 
     // Resolve codeProperty, codeComparator, and codes when a terminology restriction is present.
     val terminologyRestriction = expression.terminology
     if (terminologyRestriction != null) {
         val model = modelContext.resolveModelForType(expression.typeSpecifier.name.simpleName)
-        val dataType = model.resolveTypeName(expression.typeSpecifier.name.simpleName)
+        val dataType = model?.resolveTypeName(expression.typeSpecifier.name.simpleName)
         val classType = dataType as? ClassType
         // Use explicit codePath from CQL if provided, otherwise fall back to model's
         // primaryCodePath
@@ -98,10 +98,11 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
 /**
  * Build an ELM [Retrieve] node for a given type name, resolving the model URL and templateId. This
  * is shared by [emitRetrieve] (explicit retrieves) and implicit context expression definitions
- * (e.g., `Patient = SingletonFrom([Patient])`).
+ * (e.g., `Patient = SingletonFrom([Patient])`). Returns null if the type is not resolvable in any
+ * loaded model.
  */
-internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve {
-    val model = modelContext.resolveModelForType(typeName)
+internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve? {
+    val model = modelContext.resolveModelForType(typeName) ?: return null
     val modelInfo = model.modelInfo
     val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
 

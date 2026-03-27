@@ -139,16 +139,16 @@ private constructor(
 
     /**
      * Resolve which [Model] provides a given type name. Used by codegen (Retrieve emission) when it
-     * needs the full model object for templateId / URL extraction. Throws if no model can resolve
-     * the type.
+     * needs the full model object for templateId / URL extraction. Returns null if no model can
+     * resolve the type.
      */
-    fun resolveModelForType(typeName: String): Model {
+    fun resolveModelForType(typeName: String): Model? {
         for (lm in loadedModels) {
             if (lm.model.resolveTypeName(typeName) != null) {
                 return lm.model
             }
         }
-        throw IllegalArgumentException("Could not resolve type '$typeName' in any loaded model.")
+        return null
     }
 
     /** Find a loaded model by name (e.g., "FHIR"), or null if not loaded. */

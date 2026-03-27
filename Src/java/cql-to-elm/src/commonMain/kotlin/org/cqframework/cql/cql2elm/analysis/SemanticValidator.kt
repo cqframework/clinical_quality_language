@@ -352,19 +352,18 @@ private class ExpressionChecker(
     override fun onQuery(expr: QueryExpression, children: QueryChildren<Unit>) {}
 
     override fun onRetrieve(expr: RetrieveExpression) {
-        // Non-retrievable types (e.g. abstract DomainResource) are invalid in a Retrieve context.
-        // Flag so the emitter's error gate emits Null, matching legacy translator behavior.
-        // Wrapped in try-catch: a system-only ModelContext will throw for FHIR types, which
-        // would be caught by other validators (unresolved type). Don't double-report.
-        try {
-            val typeName = expr.typeSpecifier.name.simpleName
-            val resolvedModel = model.modelContext.resolveModelForType(typeName)
-            val dataType = resolvedModel.resolveTypeName(typeName)
-            if (dataType is ClassType && !dataType.isRetrievable) {
-                model.addError(expr)
-            }
-        } catch (_: Exception) {
-            // Type not resolvable — let other validators handle it.
+        val typeName = expr.typeSpecifier.name.simpleName
+        val resolvedModel = model.modelContext.resolveModelForType(typeName)
+        if (resolvedModel == null) {
+            // Type not resolvable in any loaded model — flag as error so the emitter's
+            // error gate emits Null rather than crashing on an unresolvable type.
+            model.addError(expr)
+            return
+        }
+        // Non-retrievable types (e.g. abstract DomainResource) are invalid in a Retrieve.
+        val dataType = resolvedModel.resolveTypeName(typeName)
+        if (dataType is ClassType && !dataType.isRetrievable) {
+            model.addError(expr)
         }
     }
 

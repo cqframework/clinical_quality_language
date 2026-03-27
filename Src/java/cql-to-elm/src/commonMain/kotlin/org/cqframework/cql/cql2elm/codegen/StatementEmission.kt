@@ -92,26 +92,26 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
         if (contextName in emittedExpressions) return
         if (ctx.modelContext.loadedModelNames.isEmpty()) return
 
-        try {
-            val contextRef = ctx.semanticModel.resolveContext(contextName)
+        val contextRef = ctx.semanticModel.resolveContext(contextName)
 
-            // Parameter-backed contexts are not emitted as expression definitions.
-            // The parameter already provides the context value.
-            if (contextRef?.isParameterBacked == true) return
+        // Parameter-backed contexts are not emitted as expression definitions.
+        // The parameter already provides the context value.
+        if (contextRef?.isParameterBacked == true) return
 
-            val retrieve = ctx.buildRetrieveForType(contextName)
-            val singletonFrom = org.hl7.elm.r1.SingletonFrom()
-            singletonFrom.operand = retrieve
+        // buildRetrieveForType returns null when the context type isn't in any loaded model
+        // (e.g., QDM types like "Procedure, Performed", or the built-in "Unfiltered" context).
+        // Skip the implicit definition — this is not an error, the model simply doesn't
+        // provide this type.
+        val retrieve = ctx.buildRetrieveForType(contextName) ?: return
+        val singletonFrom = org.hl7.elm.r1.SingletonFrom()
+        singletonFrom.operand = retrieve
 
-            val exprDef = ExpressionDef()
-            exprDef.name = contextName
-            exprDef.context = currentContext
-            exprDef.expression = singletonFrom
-            expressions += exprDef
-            emittedExpressions.add(contextName)
-        } catch (_: ElmEmitter.UnsupportedNodeException) {
-            // Context type not found in any model — skip implicit definition
-        }
+        val exprDef = ExpressionDef()
+        exprDef.name = contextName
+        exprDef.context = currentContext
+        exprDef.expression = singletonFrom
+        expressions += exprDef
+        emittedExpressions.add(contextName)
     }
 
     /** Ensure an expression definition is emitted, resolving dependencies first. */
