@@ -114,48 +114,22 @@ class SemanticAnalyzer(
 
         val symbols = symbolCollector.collect(desugared)
 
-        // SYNTHESIZE → CHECK convergence loop.
-        // Each iteration: synthesize types bottom-up (reading effective types from the
-        // ConversionTable), then check top-down for coercion insertion. No AST mutation.
-        // Converges when no new coercions are recorded (or max iterations reached).
-        //
-        // Note: TypeResolver also writes operator-resolution coercions to the ConversionTable
-        // during SYNTHESIZE (see TypeResolver.recordResolution). These are coercions intrinsic
-        // to overload resolution — splitting them into a separate pass would redundantly re-walk
-        // every resolved operator. CoercionInserter handles higher-level concerns (branch
-        // unification, null-slot wrapping, choice coercion) that require cross-expression context.
-        val cumulativeTypeTable = TypeTable()
-        var totalConversions = 0
-        val conversionsPerIteration = mutableListOf<Int>()
-        val maxIterations = 2
+        // SYNTHESIZE: type resolution + overload resolution (bottom-up).
+        // TypeResolver handles set operator ChoiceType wrapping inline, so no
+        // convergence loop is needed — a single pass suffices.
         val conversionTable = ConversionTable()
+        val resolver =
+            TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
+        val typeTable = resolver.resolve(desugared, symbols)
 
-        for (iteration in 1..maxIterations) {
-            // SYNTHESIZE: type resolution + overload resolution (bottom-up)
-            // (reads + writes ConversionTable for effective types and operator coercions)
-            val resolver =
-                TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
-            val iterationTypeTable = resolver.resolve(desugared, symbols)
+        // CHECK: coercion insertion (top-down — parent inspects children's types).
+        // Records implicit coercions (null wrapping, branch unification, choice
+        // wrapping, model conversions) that EmissionContext applies during codegen.
+        val planner = CoercionInserter(typeTable, operatorRegistry, conversionTable)
+        planner.analyzeLibrary(desugared)
+        val totalConversions = planner.newConversionsInserted
 
-            // Merge this iteration's results into the cumulative table.
-            // Later iterations may lose types that earlier iterations resolved (e.g., when
-            // effective types from conversions break generic resolution). mergeFrom preserves
-            // the earliest successful type/resolution for each expression.
-            cumulativeTypeTable.mergeFrom(iterationTypeTable)
-
-            // CHECK: coercion insertion (top-down — parent inspects children's types)
-            val planner = CoercionInserter(cumulativeTypeTable, operatorRegistry, conversionTable)
-            planner.analyzeLibrary(desugared)
-
-            val inserted = planner.newConversionsInserted
-            conversionsPerIteration.add(inserted)
-            totalConversions += inserted
-
-            // Converged if no new conversions recorded
-            if (inserted == 0) break
-        }
-
-        val finalTypeTable = cumulativeTypeTable
+        val finalTypeTable = typeTable
 
         val preNormModel =
             SemanticModel(
@@ -203,8 +177,8 @@ class SemanticAnalyzer(
                 operatorResolutionCount = finalTypeTable.operatorResolutionCount,
                 identifierResolutionCount = finalTypeTable.identifierResolutionCount,
                 conversionsInserted = totalConversions,
-                inferConvertIterations = conversionsPerIteration.size,
-                newConversionsPerIteration = conversionsPerIteration,
+                inferConvertIterations = 1,
+                newConversionsPerIteration = listOf(totalConversions),
                 errorCount = preNormModel.errors.size,
             )
         return Result(normalizedLibrary, semanticModel, libraryResolution.diagnostics)

@@ -63,6 +63,7 @@ import org.hl7.cql.ast.TimeLiteral
 import org.hl7.cql.ast.TypeExtentExpression
 import org.hl7.cql.ast.UnsupportedExpression
 import org.hl7.cql.ast.WidthExpression
+import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.TupleType
@@ -817,8 +818,21 @@ class TypeResolver(
                 operatorRegistry,
             ) ?: rightType
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
-        val resolution =
-            operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight)) ?: return null
+        var resolution =
+            operatorRegistry.resolve(opName, listOf(effectiveLeft, effectiveRight))
+
+        // Set operators (Union/Intersect/Except) with mismatched list element types:
+        // compute ChoiceType wrapping and retry. This makes the first TypeResolver pass
+        // succeed without the convergence loop where CoercionInserter records the wrapping
+        // and TypeResolver re-resolves on a second pass.
+        if (resolution == null) {
+            val choiceTypes = tryChoiceWrappedTypes(expression.operator, effectiveLeft, effectiveRight)
+            if (choiceTypes != null) {
+                resolution = operatorRegistry.resolve(opName, choiceTypes)
+            }
+        }
+
+        if (resolution == null) return null
         // Binary operators don't allow promotion/demotion (list↔scalar, interval↔scalar).
         if (
             resolution.hasConversions() &&
@@ -828,6 +842,37 @@ class TypeResolver(
         }
         recordResolution(expression, resolution, listOf(ConversionSlot.Left, ConversionSlot.Right))
         return resolution.operator.resultType
+    }
+
+    /**
+     * For set operators (Union/Intersect/Except) with mismatched list element types, compute
+     * ChoiceType-wrapped operand types. Returns a pair of wrapped types to retry resolution with,
+     * or null if the operator isn't a set operator or the types don't need wrapping.
+     *
+     * This handles the case that previously required the convergence loop: CoercionInserter
+     * would discover the ChoiceType wrapping, and a second TypeResolver pass would re-resolve
+     * with the wrapped types. Now TypeResolver computes the wrapping inline.
+     */
+    private fun tryChoiceWrappedTypes(
+        operator: org.hl7.cql.ast.BinaryOperator,
+        leftType: DataType,
+        rightType: DataType,
+    ): List<DataType>? {
+        if (operator != org.hl7.cql.ast.BinaryOperator.UNION &&
+            operator != org.hl7.cql.ast.BinaryOperator.INTERSECT &&
+            operator != org.hl7.cql.ast.BinaryOperator.EXCEPT
+        ) return null
+        if (leftType !is ListType || rightType !is ListType) return null
+        val leftElem = leftType.elementType
+        val rightElem = rightType.elementType
+        if (leftElem == rightElem) return null
+        // Don't wrap if one is already a supertype of the other
+        if (leftElem.isSuperTypeOf(rightElem) || rightElem.isSuperTypeOf(leftElem)) return null
+        // Don't wrap if either is already a ChoiceType
+        if (leftElem is ChoiceType || rightElem is ChoiceType) return null
+        val choiceElem = ChoiceType(listOf(leftElem, rightElem).distinct())
+        val choiceListType = ListType(choiceElem)
+        return listOf(choiceListType, choiceListType)
     }
 
     @Suppress("ReturnCount")
