@@ -17,6 +17,7 @@ import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.Null
 import org.hl7.elm.r1.Quantity
 import org.hl7.elm.r1.Ratio
+import org.hl7.elm.r1.Time
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -76,6 +77,30 @@ internal class LiteralTests {
         assertThat(def, HasTypeAndResult.hasTypeAndResult(DateTime::class.java, "System.DateTime"))
         dateTime = def.expression as DateTime?
         assertThat<Expression?>(dateTime!!.timezoneOffset, literalFor(1.5))
+
+        var time = defs!!["TimeMillisecond1Literal"]!!.expression as Time
+        assertThat(time.millisecond, literalFor(100))
+
+        time = defs!!["TimeMillisecond12Literal"]!!.expression as Time
+        assertThat(time.millisecond, literalFor(120))
+
+        time = defs!!["TimeMillisecond123Literal"]!!.expression as Time
+        assertThat(time.millisecond, literalFor(123))
+
+        time = defs!!["TimeMillisecond1234Literal"]!!.expression as Time
+        assertThat(time.millisecond, literalFor(123))
+
+        dateTime = defs!!["DateTimeMillisecond1Literal"]!!.expression as DateTime
+        assertThat(dateTime.millisecond, literalFor(100))
+
+        dateTime = defs!!["DateTimeMillisecond12Literal"]!!.expression as DateTime
+        assertThat(dateTime.millisecond, literalFor(120))
+
+        dateTime = defs!!["DateTimeMillisecond123Literal"]!!.expression as DateTime
+        assertThat(dateTime.millisecond, literalFor(123))
+
+        dateTime = defs!!["DateTimeMillisecond1234Literal"]!!.expression as DateTime
+        assertThat(dateTime.millisecond, literalFor(123))
     }
 
     @Test
