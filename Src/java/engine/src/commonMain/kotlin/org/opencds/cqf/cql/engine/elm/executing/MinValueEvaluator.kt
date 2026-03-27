@@ -21,41 +21,30 @@ For any other type, attempting to invoke minimum results in an error.
 */
 object MinValueEvaluator {
     @JvmStatic
-    fun minValue(type: String?): Any? {
+    fun minValue(type: QName?): Any? {
         if (type == null) {
             return null
         }
 
-        if (type.endsWith("Integer")) {
-            return Value.MIN_INT
+        return when (type) {
+            integerTypeName -> Value.MIN_INT
+            longTypeName -> Value.MIN_LONG
+            decimalTypeName -> Value.MIN_DECIMAL
+            dateTypeName -> Date(1, 1, 1)
+            dateTimeTypeName -> DateTime(ZERO, 1, 1, 1, 0, 0, 0, 0)
+            timeTypeName -> Time(0, 0, 0, 0)
+            // NOTE: Quantity min is not standard
+            quantityTypeName -> Quantity().withValue(Value.MIN_DECIMAL).withUnit("1")
+            else ->
+                throw InvalidOperatorArgument(
+                    "The Minimum operator is not implemented for type $type"
+                )
         }
-        if (type.endsWith("Long")) {
-            return Value.MIN_LONG
-        }
-        if (type.endsWith("Decimal")) {
-            return Value.MIN_DECIMAL
-        }
-        if (type.endsWith("Date")) {
-            return Date(1, 1, 1)
-        }
-        if (type.endsWith("DateTime")) {
-            return DateTime(ZERO, 1, 1, 1, 0, 0, 0, 0)
-        }
-        if (type.endsWith("Time")) {
-            return Time(0, 0, 0, 0)
-        }
-        // NOTE: Quantity min is not standard
-        if (type.endsWith("Quantity")) {
-            return Quantity().withValue(Value.MIN_DECIMAL).withUnit("1")
-        }
-
-        throw InvalidOperatorArgument("The Minimum operator is not implemented for type ${type}")
     }
 
     @JvmStatic
     fun internalEvaluate(vtype: QName?, state: State?): Any? {
         val valueType = state!!.environment.fixupQName(vtype!!)
-        val type = valueType.getLocalPart()
-        return minValue(type)
+        return minValue(valueType)
     }
 }
