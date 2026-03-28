@@ -35,6 +35,7 @@
     <ID>LongMethod:Lowering.kt$Lowering$private fun normalizeHeterogeneousFlatten( expr: ListTransformExpression, operand: Expression, ): Expression?</ID>
     <ID>LongMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
     <ID>LongMethod:TemporalTypeInference.kt$internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType?</ID>
+    <ID>LongMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount", "CyclomaticComplexMethod") private fun inferFunctionCallType( expression: FunctionCallExpression, targetType: DataType?, argTypes: List&lt;DataType?>, ): DataType?</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( expr: IntervalRelationExpression, operator: org.hl7.cql.ast.MembershipOperator, left: Expression, right: Expression, precision: String?, proper: Boolean, )</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( left: Expression, right: Expression, leftType: DataType?, rightType: DataType?, leftBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, rightBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, )</ID>
     <ID>LongParameterList:SemanticModel.kt$SemanticModel$( internal val symbolTable: SymbolTable, internal val typeTable: TypeTable, val operatorRegistry: OperatorRegistry, val options: CqlCompilerOptions? = null, /** Expressions flagged with semantic errors. Codegen emits Null for these. */ internal val errors: MutableSet&lt;Expression> = mutableSetOf(), /** Side table of implicit conversions keyed by parent expression + slot. */ val conversionTable: ConversionTable = ConversionTable(), /** Model context for type/QName resolution. Passed to codegen. */ val modelContext: ModelContext = ModelContext.systemOnly(), )</ID>
@@ -69,6 +70,7 @@
     <ID>ReturnCount:Lowering.kt$Lowering$private fun normalizeCalculateAgeAtCompatibility( expr: FunctionCallExpression, arguments: List&lt;Expression>, ): Expression?</ID>
     <ID>ReturnCount:Lowering.kt$Lowering$private fun normalizeHeterogeneousFlatten( expr: ListTransformExpression, operand: Expression, ): Expression?</ID>
     <ID>ReturnCount:ModelContext.kt$ModelContext$fun dataTypeToQName(type: DataType): QName</ID>
+    <ID>ReturnCount:ModelContext.kt$ModelContext$fun resolveModelForType(typeName: String): Model?</ID>
     <ID>ReturnCount:ModelContext.kt$ModelContext$fun resolveModelType(modelName: String?, typeName: String): DataType?</ID>
     <ID>ReturnCount:PropertyAccessEmission.kt$internal fun EmissionContext.emitPropertyAccess( expression: PropertyAccessExpression, targetElm: ElmExpression, ): ElmExpression</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$AgeInDesugarer$override fun onFunctionCall( expr: org.hl7.cql.ast.FunctionCallExpression, target: Expression?, arguments: List&lt;Expression>, ): Expression</ID>

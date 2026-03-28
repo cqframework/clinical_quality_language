@@ -306,6 +306,12 @@ class FullParityTest {
                     "QDM context type resolution; implicit context def emission differs from legacy",
                 "TestPatientContext" to
                     "QDM Patient context emission; implicit context def differs from legacy",
+                // QDM label-resolved retrieves: types resolve via label but emission details differ
+                "Issue395" to "QDM label-resolved retrieve; query content differs",
+                "Issue405" to "QDM label-resolved retrieve; query content differs",
+                "ParserPerformance" to "QDM label-resolved retrieve; SDE content differs",
+                "TestIncludedIn" to "QDM label-resolved retrieve; IncludedIn differs",
+                "TestRelatedContextRetrieve" to "QDM label-resolved retrieve; context differs",
                 "TestVSCastFunction" to
                     "Model conversion application and list element choice-type wrapping diverge from legacy",
                 "TestChoiceAssignment" to
@@ -316,17 +322,15 @@ class FullParityTest {
                 "TranslationTests" to
                     "List<Integer>{null} element type wrapping diverges from legacy; cause under investigation",
                 // FHIR-specific gaps: model conversions, cross-library calls, fluent functions.
-                "Issue643" to
-                    "FHIRHelpers list element conversion (ToConcept for AnyInValueSet) not yet applied by new pipeline",
                 "MappingExpansionsRespectSignatureLevel" to
                     "FHIRHelpers.ToInterval model conversion for Period properties not yet applied",
                 "TestFHIRPathLiteralStringEscapes" to
-                    "convertsToString() fluent system function not resolved; emits Null",
+                    "convertsToString() fluent resolution works but parity diff on escape handling",
                 "TestTrace" to "Trace() function not resolved; emits Null instead of Message node",
                 "TestMeasureParameterContext" to
-                    "FHIRHelpers.extension() cross-library fluent call not resolved",
+                    "extension() fluent resolution works but parity diff on FunctionRef emission",
                 "TestParameterContext" to
-                    "FHIRHelpers.extension() cross-library fluent call not resolved",
+                    "extension() fluent resolution works but parity diff on FunctionRef emission",
                 "TestMedicationRequest" to
                     "Choice codePath + FHIRHelpers.resolve() for Reference medication not yet supported",
                 "TestInclude" to

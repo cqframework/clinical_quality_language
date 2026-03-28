@@ -387,7 +387,7 @@ class TypeResolver(
         expr: FunctionCallExpression,
         target: DataType?,
         arguments: List<DataType?>,
-    ): DataType? = inferFunctionCallType(expr, arguments)
+    ): DataType? = inferFunctionCallType(expr, target, arguments)
 
     override fun onPropertyAccess(expr: PropertyAccessExpression, target: DataType?): DataType? {
         if (target == null) return null
@@ -987,10 +987,9 @@ class TypeResolver(
     @Suppress("ReturnCount", "CyclomaticComplexMethod")
     private fun inferFunctionCallType(
         expression: FunctionCallExpression,
+        targetType: DataType?,
         argTypes: List<DataType?>,
     ): DataType? {
-        // target pre-folded but unused
-
         val functionName = expression.function.value
 
         if (functionName == "Coalesce" && argTypes.size == 1) {
@@ -1046,10 +1045,32 @@ class TypeResolver(
         }
 
         // Cross-library function call: resolve against the included library's operator map.
-        // The target identifier resolved to IncludeRef during identifier resolution; use that
-        // to look up the included library's CompiledLibrary and resolve with implicit conversions.
         resolveLibraryFunctionCall(expression, nonNullArgTypes)?.let {
             return it
+        }
+
+        // Fluent function call: target.function(args) → try resolution with [targetType] +
+        // argTypes.
+        // e.g., 'foo'.convertsToString() → ConvertsToString('foo')
+        //        name.given.trace('test') → Trace(name.given, 'test')
+        if (targetType != null && expression.target != null) {
+            val fluentArgTypes = listOf(targetType) + nonNullArgTypes
+            val fluentResolution =
+                operatorRegistry.resolve(
+                    functionName,
+                    fluentArgTypes,
+                    allowPromotionAndDemotion = true,
+                )
+            if (fluentResolution != null) {
+                val fluentSlots = fluentArgTypes.indices.map { ConversionSlot.Argument(it) }
+                recordResolution(expression, fluentResolution, fluentSlots)
+                return fluentResolution.operator.resultType
+            }
+
+            // Also try against included libraries (e.g., FHIRHelpers.extension())
+            resolveLibraryFunctionCall(expression, fluentArgTypes)?.let {
+                return it
+            }
         }
 
         return null

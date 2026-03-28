@@ -361,7 +361,8 @@ private class ExpressionChecker(
             return
         }
         // Non-retrievable types (e.g. abstract DomainResource) are invalid in a Retrieve.
-        val dataType = resolvedModel.resolveTypeName(typeName)
+        val dataType =
+            resolvedModel.resolveTypeName(typeName) ?: resolvedModel.resolveLabel(typeName)
         if (dataType is ClassType && !dataType.isRetrievable) {
             model.addError(expr)
         }

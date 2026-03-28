@@ -144,9 +144,8 @@ private constructor(
      */
     fun resolveModelForType(typeName: String): Model? {
         for (lm in loadedModels) {
-            if (lm.model.resolveTypeName(typeName) != null) {
-                return lm.model
-            }
+            if (lm.model.resolveTypeName(typeName) != null) return lm.model
+            if (lm.model.resolveLabel(typeName) != null) return lm.model
         }
         return null
     }

@@ -28,7 +28,9 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
     val terminologyRestriction = expression.terminology
     if (terminologyRestriction != null) {
         val model = modelContext.resolveModelForType(expression.typeSpecifier.name.simpleName)
-        val dataType = model?.resolveTypeName(expression.typeSpecifier.name.simpleName)
+        val dataType =
+            model?.resolveTypeName(expression.typeSpecifier.name.simpleName)
+                ?: model?.resolveLabel(expression.typeSpecifier.name.simpleName)
         val classType = dataType as? ClassType
         // Use explicit codePath from CQL if provided, otherwise fall back to model's
         // primaryCodePath
@@ -110,7 +112,7 @@ internal fun EmissionContext.buildRetrieveForType(typeName: String): Retrieve? {
     val modelInfo = model.modelInfo
     val modelUrl = modelInfo.targetUrl ?: modelInfo.url!!
 
-    val dataType = model.resolveTypeName(typeName)
+    val dataType = model.resolveTypeName(typeName) ?: model.resolveLabel(typeName)
     val classType = dataType as? ClassType
 
     return Retrieve().apply {
