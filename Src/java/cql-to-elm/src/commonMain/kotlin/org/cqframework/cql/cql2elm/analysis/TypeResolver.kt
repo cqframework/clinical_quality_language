@@ -79,8 +79,8 @@ import org.hl7.elm.r1.VersionedIdentifier
  * - [SymbolTable] — resolves expression/function/parameter definitions by name.
  * - [OperatorRegistry] — resolves operator and function overloads by operand types.
  * - [ConversionTable] (optional, write-only) — records operator-resolution coercions (e.g.,
- *   ToDecimal on the left operand of Add(Integer, Decimal)). These are read by
- *   [CoercionInserter] and [EmissionContext], not by TypeResolver itself.
+ *   ToDecimal on the left operand of Add(Integer, Decimal)). These are read by [CoercionInserter]
+ *   and [EmissionContext], not by TypeResolver itself.
  * - [ModelContext] — resolves model types and property types for Retrieve and PropertyAccess.
  *
  * ## Writes
@@ -804,8 +804,7 @@ class TypeResolver(
     ): DataType? {
         if (leftType == null || rightType == null) return null
         val opName = OperatorNames.binaryOperatorToSystemName(expression.operator) ?: return null
-        var resolution =
-            operatorRegistry.resolve(opName, listOf(leftType, rightType))
+        var resolution = operatorRegistry.resolve(opName, listOf(leftType, rightType))
 
         // Set operators (Union/Intersect/Except) with mismatched list element types:
         // compute ChoiceType wrapping and retry. This makes the first TypeResolver pass
@@ -835,19 +834,22 @@ class TypeResolver(
      * ChoiceType-wrapped operand types. Returns a pair of wrapped types to retry resolution with,
      * or null if the operator isn't a set operator or the types don't need wrapping.
      *
-     * This handles the case that previously required the convergence loop: CoercionInserter
-     * would discover the ChoiceType wrapping, and a second TypeResolver pass would re-resolve
-     * with the wrapped types. Now TypeResolver computes the wrapping inline.
+     * This handles the case that previously required the convergence loop: CoercionInserter would
+     * discover the ChoiceType wrapping, and a second TypeResolver pass would re-resolve with the
+     * wrapped types. Now TypeResolver computes the wrapping inline.
      */
+    @Suppress("ReturnCount")
     private fun tryChoiceWrappedTypes(
         operator: org.hl7.cql.ast.BinaryOperator,
         leftType: DataType,
         rightType: DataType,
     ): List<DataType>? {
-        if (operator != org.hl7.cql.ast.BinaryOperator.UNION &&
-            operator != org.hl7.cql.ast.BinaryOperator.INTERSECT &&
-            operator != org.hl7.cql.ast.BinaryOperator.EXCEPT
-        ) return null
+        if (
+            operator != org.hl7.cql.ast.BinaryOperator.UNION &&
+                operator != org.hl7.cql.ast.BinaryOperator.INTERSECT &&
+                operator != org.hl7.cql.ast.BinaryOperator.EXCEPT
+        )
+            return null
         if (leftType !is ListType || rightType !is ListType) return null
         val leftElem = leftType.elementType
         val rightElem = rightType.elementType
@@ -1010,7 +1012,6 @@ class TypeResolver(
 
         val nonNullArgTypes = argTypes.filterNotNull()
         if (nonNullArgTypes.size != argTypes.size) return null
-
 
         // User-defined functions take precedence over system operators when they match.
         // This matches the legacy pipeline behavior where library-local functions shadow
@@ -1179,9 +1180,10 @@ class TypeResolver(
     /**
      * Infer the converted system type for a raw model type (e.g., FHIR.dateTime → System.DateTime).
      * Returns the converted type for type synthesis; does NOT record in the [ConversionTable].
-     * Stores the [Conversion] in [TypeTable.setModelConversion] so the [CoercionInserter] can
-     * read it during the checking pass and decide where to record the coercion.
+     * Stores the [Conversion] in [TypeTable.setModelConversion] so the [CoercionInserter] can read
+     * it during the checking pass and decide where to record the coercion.
      */
+    @Suppress("ReturnCount")
     private fun inferModelConvertedType(expr: Expression, rawType: DataType): DataType? {
         // Don't eagerly narrow ChoiceTypes — choice narrowing must happen at the point of use
         // (operator resolution), not at the property access level.
@@ -1192,7 +1194,9 @@ class TypeResolver(
     }
 
     /** Find implicit model conversion for [rawType], or null if none applies. */
-    internal fun findModelConversion(rawType: DataType): org.cqframework.cql.cql2elm.model.Conversion? {
+    internal fun findModelConversion(
+        rawType: DataType
+    ): org.cqframework.cql.cql2elm.model.Conversion? {
         return operatorRegistry.conversionMap.getConversions(rawType).firstOrNull {
             it.isImplicit &&
                 it.operator != null &&

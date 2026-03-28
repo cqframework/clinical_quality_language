@@ -106,8 +106,8 @@ class Lowering(
 
     /**
      * Rewrite an expression, transferring all metadata (types, resolutions, coercions) from the
-     * original to the replacement. This keeps the TypeTable and ConversionTable consistent with
-     * the rewritten AST so that post-lowering re-typing is unnecessary for replaced nodes.
+     * original to the replacement. This keeps the TypeTable and ConversionTable consistent with the
+     * rewritten AST so that post-lowering re-typing is unnecessary for replaced nodes.
      */
     private fun rewrite(original: Expression, replacement: Expression): Expression {
         if (replacement !== original) {
@@ -211,12 +211,13 @@ class Lowering(
         val emptyString =
             LiteralExpression(literal = StringLiteral(value = ""), locator = expr.locator)
         typeTable[emptyString] = stringType
-        val coalesce = FunctionCallExpression(
-            target = null,
-            function = Identifier("Coalesce"),
-            arguments = listOf(expr, emptyString),
-            locator = expr.locator,
-        )
+        val coalesce =
+            FunctionCallExpression(
+                target = null,
+                function = Identifier("Coalesce"),
+                arguments = listOf(expr, emptyString),
+                locator = expr.locator,
+            )
         typeTable[coalesce] = stringType
         return coalesce
     }
@@ -248,7 +249,11 @@ class Lowering(
                 elseBranch === expr.elseBranch
         )
             expr
-        else rewrite(expr, expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch))
+        else
+            rewrite(
+                expr,
+                expr.copy(condition = condition, thenBranch = thenBranch, elseBranch = elseBranch),
+            )
 
     override fun onCase(
         expr: CaseExpression,
@@ -450,26 +455,27 @@ class Lowering(
             )
         }
         typeTable[castExpr] = targetListType
-        val query = org.hl7.cql.ast.QueryExpression(
-            sources =
-                listOf(
-                    org.hl7.cql.ast.AliasedQuerySource(
-                        source = org.hl7.cql.ast.ExpressionQuerySource(expression = operand),
-                        alias = org.hl7.cql.ast.Identifier(aliasName),
+        val query =
+            org.hl7.cql.ast.QueryExpression(
+                sources =
+                    listOf(
+                        org.hl7.cql.ast.AliasedQuerySource(
+                            source = org.hl7.cql.ast.ExpressionQuerySource(expression = operand),
+                            alias = org.hl7.cql.ast.Identifier(aliasName),
+                            locator = loc,
+                        )
+                    ),
+                lets = emptyList(),
+                inclusions = emptyList(),
+                result =
+                    org.hl7.cql.ast.ReturnClause(
+                        all = true,
+                        distinct = false,
+                        expression = castExpr,
                         locator = loc,
-                    )
-                ),
-            lets = emptyList(),
-            inclusions = emptyList(),
-            result =
-                org.hl7.cql.ast.ReturnClause(
-                    all = true,
-                    distinct = false,
-                    expression = castExpr,
-                    locator = loc,
-                ),
-            locator = loc,
-        )
+                    ),
+                locator = loc,
+            )
         typeTable[query] = org.hl7.cql.model.ListType(targetListType)
         return query
     }

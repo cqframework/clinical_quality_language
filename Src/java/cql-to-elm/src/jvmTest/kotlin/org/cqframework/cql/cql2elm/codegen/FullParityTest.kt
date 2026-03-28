@@ -7,7 +7,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
@@ -38,8 +37,8 @@ import org.junit.jupiter.api.TestFactory
  * - **fhirR401Parity**: FHIR R4.0.1 test files
  * - **fhirR4ChoiceTypeParity**: choice type narrowing / alternative conversion tests
  *
- * Many tests within the broader suites skip due to unresolved library includes, FHIR model
- * emission gaps, or ModelManager type resolution issues. These show as skipped, not failed.
+ * Many tests within the broader suites skip due to unresolved library includes, FHIR model emission
+ * gaps, or ModelManager type resolution issues. These show as skipped, not failed.
  *
  * ### Known gap categories
  * 1. **Library includes**: new pipeline doesn't resolve multi-library dependencies yet
@@ -299,7 +298,8 @@ class FullParityTest {
                     "New pipeline emits Null body for function with unresolvable type",
                 "TestIncorrectParameterType1204" to
                     "New pipeline emits Null body for function with unresolvable parameter type",
-                // QDM tests: context type resolution now handled by validator, output diverges from legacy
+                // QDM tests: context type resolution now handled by validator, output diverges from
+                // legacy
                 "Issue592" to
                     "QDM Population context type resolution; implicit context def differs from legacy",
                 "ParameterTestInvalid" to
@@ -311,7 +311,8 @@ class FullParityTest {
                 "TestChoiceAssignment" to
                     "QDM classType name resolution and choice-typed instance element wrapping diverge from legacy",
                 "TestComments" to
-                    "AgeInYearsAt Date vs DateTime overload selection diverges from legacy; both are semantically correct",
+                    "AgeInYearsAt Date vs DateTime overload selection diverges from legacy; " +
+                        "both are semantically correct",
                 "TranslationTests" to
                     "List<Integer>{null} element type wrapping diverges from legacy; cause under investigation",
                 // FHIR-specific gaps: model conversions, cross-library calls, fluent functions.
@@ -321,8 +322,7 @@ class FullParityTest {
                     "FHIRHelpers.ToInterval model conversion for Period properties not yet applied",
                 "TestFHIRPathLiteralStringEscapes" to
                     "convertsToString() fluent system function not resolved; emits Null",
-                "TestTrace" to
-                    "Trace() function not resolved; emits Null instead of Message node",
+                "TestTrace" to "Trace() function not resolved; emits Null instead of Message node",
                 "TestMeasureParameterContext" to
                     "FHIRHelpers.extension() cross-library fluent call not resolved",
                 "TestParameterContext" to
@@ -343,35 +343,48 @@ class FullParityTest {
 
         /**
          * Tests where the new pipeline produces better output than legacy. Legacy replaces
-         * expressions with Null on error; the new pipeline preserves the correct expression.
-         * These tests pass if the new pipeline output has no Null-typed top-level statement
-         * expressions (legacy's error-replacement pattern).
+         * expressions with Null on error; the new pipeline preserves the correct expression. These
+         * tests pass if the new pipeline output has no Null-typed top-level statement expressions
+         * (legacy's error-replacement pattern).
          */
-        private val KNOWN_BETTER = setOf(
-            "Aggregate", "MultiSourceQuery", "RecursiveFunctions",
-            "IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598",
-            "Issue616", "QuantityLiteralTest", "TestCompatibilityLevel3",
-            "TestURIConversion", "TestNoImplicitCast",
-        )
+        private val KNOWN_BETTER =
+            setOf(
+                "Aggregate",
+                "MultiSourceQuery",
+                "RecursiveFunctions",
+                "IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598",
+                "Issue616",
+                "QuantityLiteralTest",
+                "TestCompatibilityLevel3",
+                "TestURIConversion",
+                "TestNoImplicitCast",
+            )
 
         /**
          * Verify no top-level statement expression has type "Null" — legacy's error-replacement
          * pattern. If the new pipeline emits Null expressions, it has the same bug as legacy.
          */
-        private fun assertNoNullStatementExpressions(normalized: JsonElement, resourcePath: String) {
+        @Suppress("ReturnCount")
+        private fun assertNoNullStatementExpressions(
+            normalized: JsonElement,
+            resourcePath: String,
+        ) {
             val library = (normalized as? JsonObject)?.get("library") as? JsonObject ?: return
             val statements = library["statements"] as? JsonObject ?: return
             val defs = statements["def"] as? JsonArray ?: return
+            @Suppress("LoopWithTooManyJumpStatements")
             for (def in defs) {
                 val defObj = def as? JsonObject ?: continue
                 val expr = defObj["expression"] as? JsonObject ?: continue
                 val exprType = expr["type"]
                 if (exprType is kotlinx.serialization.json.JsonPrimitive) {
-                    val name = (defObj["name"] as? kotlinx.serialization.json.JsonPrimitive)?.content ?: "<unknown>"
+                    val name =
+                        (defObj["name"] as? kotlinx.serialization.json.JsonPrimitive)?.content
+                            ?: "<unknown>"
                     assertFalse(
                         exprType.content == "Null",
                         "New pipeline emitted Null expression for statement '$name' in $resourcePath — " +
-                            "this is legacy's error pattern and should not appear in the new pipeline"
+                            "this is legacy's error pattern and should not appear in the new pipeline",
                     )
                 }
             }

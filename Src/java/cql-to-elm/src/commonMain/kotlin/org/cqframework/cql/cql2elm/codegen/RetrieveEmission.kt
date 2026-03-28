@@ -18,8 +18,11 @@ internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmEx
     // Unresolvable types are flagged by SemanticValidator; the error gate in emitExpression
     // returns Null() before reaching here. So buildRetrieveForType should always succeed.
     val typeName = expression.typeSpecifier.name.simpleName
-    val retrieve = buildRetrieveForType(typeName)
-        ?: error("Retrieve type '$typeName' unresolvable at emission — SemanticValidator should have flagged this")
+    val retrieve =
+        buildRetrieveForType(typeName)
+            ?: error(
+                "Retrieve type '$typeName' unresolvable at emission — SemanticValidator should have flagged this"
+            )
 
     // Resolve codeProperty, codeComparator, and codes when a terminology restriction is present.
     val terminologyRestriction = expression.terminology

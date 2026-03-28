@@ -39,12 +39,12 @@ import org.hl7.cql.model.DataType
  * 3. **Symbol collection** — [SymbolCollector] builds the [SymbolTable] (expression definitions,
  *    function definitions, parameter definitions) from top-level library declarations.
  * 4. **SYNTHESIZE → CHECK convergence loop** (max 2 iterations):
- *     - *SYNTHESIZE*: [TypeResolver] walks the AST bottom-up, infers types, resolves operators
- *       and identifiers, populating a [TypeTable]. Reads the [ConversionTable] for effective types
- *       of operands (e.g., a null literal that has been implicitly cast to Integer). As a side
- *       effect, records operator-resolution-derived coercions (e.g., ToDecimal on a left operand)
- *       into the [ConversionTable] — these are coercions intrinsic to overload resolution,
- *       discovered at the point where the operator is resolved.
+ *     - *SYNTHESIZE*: [TypeResolver] walks the AST bottom-up, infers types, resolves operators and
+ *       identifiers, populating a [TypeTable]. Reads the [ConversionTable] for effective types of
+ *       operands (e.g., a null literal that has been implicitly cast to Integer). As a side effect,
+ *       records operator-resolution-derived coercions (e.g., ToDecimal on a left operand) into the
+ *       [ConversionTable] — these are coercions intrinsic to overload resolution, discovered at the
+ *       point where the operator is resolved.
  *     - *CHECK*: [CoercionInserter] traverses the typed AST top-down and records implicit coercions
  *       where a child’s synthesized type doesn’t match its parent’s expected type (branch
  *       unification, null wrapping, choice wrapping, interval bound propagation, DateTime null-arg
@@ -118,8 +118,7 @@ class SemanticAnalyzer(
         // TypeResolver handles set operator ChoiceType wrapping inline, so no
         // convergence loop is needed — a single pass suffices.
         val conversionTable = ConversionTable()
-        val resolver =
-            TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
+        val resolver = TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
         val typeTable = resolver.resolve(desugared, symbols)
 
         // CHECK: coercion insertion (top-down — parent inspects children's types).
@@ -404,7 +403,10 @@ class TypeTable {
     fun getMembershipKind(expression: Expression): MembershipKind? = membershipKinds[expression]
 
     /** Record a model conversion discovered during synthesis (used by CoercionInserter). */
-    fun setModelConversion(expression: Expression, conversion: org.cqframework.cql.cql2elm.model.Conversion) {
+    fun setModelConversion(
+        expression: Expression,
+        conversion: org.cqframework.cql.cql2elm.model.Conversion,
+    ) {
         modelConversions[expression] = conversion
     }
 
@@ -412,12 +414,11 @@ class TypeTable {
     fun getModelConversion(expression: Expression): org.cqframework.cql.cql2elm.model.Conversion? =
         modelConversions[expression]
 
-
     /**
      * Merge entries from [other] into this table, filling gaps only. For each expression in
      * [other], copies the entry only if this table has no entry for that expression. Used after
-     * Lowering to fill in types for structurally new nodes (e.g., MembershipExpression created
-     * from IntervalRelation) without overwriting entries that Lowering's transfer already set.
+     * Lowering to fill in types for structurally new nodes (e.g., MembershipExpression created from
+     * IntervalRelation) without overwriting entries that Lowering's transfer already set.
      */
     fun mergeFrom(other: TypeTable) {
         for ((expression, type) in other.types) {

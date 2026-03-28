@@ -111,7 +111,8 @@ internal fun EmissionContext.emitConversionExpression(
                 mutableListOf(
                     operandElm,
                     org.hl7.elm.r1.Literal().apply {
-                        valueType = javax.xml.namespace.QName("urn:hl7-org:elm-types:r1", "String")
+                        valueType =
+                            org.cqframework.cql.shared.QName("urn:hl7-org:elm-types:r1", "String")
                         value = expression.destinationUnit
                     },
                 )

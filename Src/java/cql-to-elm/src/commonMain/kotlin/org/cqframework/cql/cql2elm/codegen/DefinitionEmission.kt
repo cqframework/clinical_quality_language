@@ -49,8 +49,10 @@ internal fun EmissionContext.emitUsing(definition: UsingDefinition): UsingDef {
         }
         else -> {
             val model = modelContext.resolveModel(modelName, definition.version?.value)
-            // Match legacy translator's applyTargetModelMaps() behavior: models that remap to another
-            // target (e.g. QICore → FHIR) use the target's URL and version, not the CQL source version.
+            // Match legacy translator's applyTargetModelMaps() behavior: models that remap to
+            // another
+            // target (e.g. QICore → FHIR) use the target's URL and version, not the CQL source
+            // version.
             if (model.modelInfo.targetUrl != null) {
                 usingDef.uri = model.modelInfo.targetUrl
                 usingDef.version = model.modelInfo.targetVersion

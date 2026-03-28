@@ -62,8 +62,8 @@ import org.hl7.cql.model.ListType
  * This follows the standard compiler pattern for **coercive subtyping** (Traytel & Nipkow 2011,
  * "Extending HM with Coercive Structural Subtyping"): type inference runs first (bottom-up via
  * [TypeResolver]), then a second pass traverses the typed AST and inserts coercions at positions
- * where the synthesized type doesn't match the expected type. Coercions are recorded as metadata
- * in the [ConversionTable] rather than mutating the AST.
+ * where the synthesized type doesn't match the expected type. Coercions are recorded as metadata in
+ * the [ConversionTable] rather than mutating the AST.
  *
  * In bidirectional type-checking terms, [TypeResolver] is the **synthesis** (bottom-up) pass and
  * this class provides the **checking** (top-down) pass: it inspects each parent expression's
@@ -181,7 +181,9 @@ class CoercionInserter(
     }
 
     /** Find a model conversion for [type] from the ConversionMap (not from TypeTable). */
-    private fun findModelConversionForType(type: DataType): org.cqframework.cql.cql2elm.model.Conversion? {
+    private fun findModelConversionForType(
+        type: DataType
+    ): org.cqframework.cql.cql2elm.model.Conversion? {
         return operatorRegistry.conversionMap.getConversions(type).firstOrNull {
             it.isImplicit &&
                 it.operator != null &&
@@ -191,10 +193,17 @@ class CoercionInserter(
     }
 
     /** Resolve an element type by name, walking the baseType chain. */
-    private fun resolveElementType(classType: org.hl7.cql.model.ClassType?, name: String): DataType? {
+    private fun resolveElementType(
+        classType: org.hl7.cql.model.ClassType?,
+        name: String,
+    ): DataType? {
         var current: DataType? = classType
         while (current is org.hl7.cql.model.ClassType) {
-            current.elements.firstOrNull { it.name == name }?.let { return it.type }
+            current.elements
+                .firstOrNull { it.name == name }
+                ?.let {
+                    return it.type
+                }
             current = current.baseType
         }
         return null
@@ -470,12 +479,13 @@ class CoercionInserter(
         if (kind == MembershipKind.ANY_IN_VALUE_SET || kind == MembershipKind.ANY_IN_CODE_SYSTEM) {
             val codesType = typeTable[codesExpr]
             if (codesType is ListType) {
-                val mc = typeTable.getModelConversion(codesExpr)
-                    ?: codesExpr?.let {
-                        // The codes expression might be a property whose model conversion
-                        // was recorded. Check element type for a model conversion directly.
-                        findModelConversionForType(codesType.elementType)
-                    }
+                val mc =
+                    typeTable.getModelConversion(codesExpr)
+                        ?: codesExpr?.let {
+                            // The codes expression might be a property whose model conversion
+                            // was recorded. Check element type for a model conversion directly.
+                            findModelConversionForType(codesType.elementType)
+                        }
                 if (mc != null) {
                     val op = mc.operator
                     if (op != null && op.libraryName != null && op.libraryName != "System") {
@@ -599,7 +609,11 @@ class CoercionInserter(
         val anyType = operatorRegistry.type("Any") ?: return
         if (operandType is ListType && operandType.elementType == anyType) {
             val intervalAny = IntervalType(anyType)
-            recordIfNew(expr, ConversionSlot.Operand, ImplicitConversion.ListDemotion(intervalAny, ListType(intervalAny)))
+            recordIfNew(
+                expr,
+                ConversionSlot.Operand,
+                ImplicitConversion.ListDemotion(intervalAny, ListType(intervalAny)),
+            )
         }
     }
 
@@ -750,16 +764,19 @@ class CoercionInserter(
         if (targetExpr != null) {
             val mc = typeTable.getModelConversion(targetExpr)
             if (mc != null) {
-                val accessedType = resolveElementType(
-                    mc.fromType as? org.hl7.cql.model.ClassType, expr.property.value
-                )
+                val accessedType =
+                    resolveElementType(
+                        mc.fromType as? org.hl7.cql.model.ClassType,
+                        expr.property.value,
+                    )
                 if (accessedType != null && accessedType == mc.toType) {
                     // Determine the slot where the target's coercion was recorded.
                     // PropertyAccess records at PropertyResult; As records at Operand.
-                    val targetSlot = when (targetExpr) {
-                        is org.hl7.cql.ast.AsExpression -> ConversionSlot.Operand
-                        else -> ConversionSlot.PropertyResult
-                    }
+                    val targetSlot =
+                        when (targetExpr) {
+                            is org.hl7.cql.ast.AsExpression -> ConversionSlot.Operand
+                            else -> ConversionSlot.PropertyResult
+                        }
                     conversionTable.remove(targetExpr, targetSlot)
                     return
                 }

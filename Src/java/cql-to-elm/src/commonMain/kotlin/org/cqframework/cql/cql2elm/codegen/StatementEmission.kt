@@ -87,6 +87,7 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
      * Encounter` + `context Encounter`) are NOT emitted as expression definitions — the legacy
      * compiler also skips them (the parameter already provides the context value).
      */
+    @Suppress("ReturnCount")
     private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
         val contextName = contextDefinition.context.value
         if (contextName in emittedExpressions) return

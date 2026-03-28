@@ -180,15 +180,16 @@ internal fun TypeResolver.inferMembershipType(expression: MembershipExpression):
         // - operator conversions (e.g., ToDateTime)
         // - cast + inner operator (choice narrowing: As + FHIRHelpers)
         // - list/interval conversions with inner operators (element-wise model conversion)
-        if (resolution != null && resolution.hasConversions() &&
-            resolution.conversions.any { c ->
-                c != null && (
-                    c.operator != null ||
-                    (c.isCast && c.conversion?.operator != null) ||
-                    (c.isListConversion && c.conversion?.operator != null) ||
-                    (c.isIntervalConversion && c.conversion?.operator != null)
-                )
-            }
+        if (
+            resolution != null &&
+                resolution.hasConversions() &&
+                resolution.conversions.any { c ->
+                    c != null &&
+                        (c.operator != null ||
+                            (c.isCast && c.conversion?.operator != null) ||
+                            (c.isListConversion && c.conversion?.operator != null) ||
+                            (c.isIntervalConversion && c.conversion?.operator != null))
+                }
         ) {
             recordResolution(
                 expression,

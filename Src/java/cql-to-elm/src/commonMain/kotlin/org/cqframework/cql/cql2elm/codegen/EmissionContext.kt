@@ -78,8 +78,8 @@ import org.hl7.elm.r1.Literal as ElmLiteral
  *
  * Each `on*` handler wraps child ELM nodes with [applyConversions] before passing them to the
  * emission function. [applyConversions] looks up the [ConversionTable] for implicit conversions
- * recorded by [CoercionInserter][org.cqframework.cql.cql2elm.analysis.CoercionInserter] at a
- * given `(parent, ConversionSlot)` and wraps the ELM expression in the appropriate conversion nodes
+ * recorded by [CoercionInserter][org.cqframework.cql.cql2elm.analysis.CoercionInserter] at a given
+ * `(parent, ConversionSlot)` and wraps the ELM expression in the appropriate conversion nodes
  * (operator conversions, implicit casts, list/interval conversions). This keeps the AST immutable —
  * type coercions are applied only at code-generation time.
  *
@@ -148,7 +148,7 @@ class EmissionContext(val semanticModel: SemanticModel) : ExpressionFold<ElmExpr
         // This ensures FHIR.CodeSystem is resolved as {http://hl7.org/fhir}CodeSystem
         // when a FHIR model is loaded, not as {urn:hl7-org:elm-types:r1}CodeSystem.
         val modelQName = modelContext.typeNameToQName(name)
-        if (modelQName.namespaceURI != modelContext.typesNamespace) {
+        if (modelQName.getNamespaceURI() != modelContext.typesNamespace) {
             // Found in a non-system model — use the model namespace
             return modelQName
         }

@@ -38,7 +38,7 @@ class ModelIntegration(private val modelContext: ModelContext) {
                 }
             for (conversion in model.getConversions()) {
                 val libName = conversion.operator?.libraryName ?: continue
-                result.putIfAbsent(libName, version)
+                if (libName !in result) result[libName] = version
             }
         }
         return result
