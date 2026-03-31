@@ -11,4 +11,6 @@ The `FhirModelResolver.toCqlValue()` helper method converts HAPI FHIR structures
 - checks max cardinality to determine if a CQL list or a singleton to use as the value,
 - if the child FHIR element has no values, sets the element value to `null` in the tuple.
 
-Additionally, when the element is List-typed but has no values, `null` is chosen instead of an empty list. When an element is FHIR primitive-typed (e.g. `FHIR.string` or `FHIR.code`-typed) and does not have value/id/extensions, `null` is chosen instead of a blank structure like `FHIR.string { id: null, extension: null, value: null }`.
+In general, the least nested structure is chosen for the value of an element, e.g.:
+- when the element is List-typed but has no values, `null` is chosen instead of an empty list
+- when an element is FHIR primitive-typed (e.g. `FHIR.string` or `FHIR.code`-typed) and does not have value/id/extensions, `null` is chosen instead of a blank structure like `FHIR.string { id: null, extension: null, value: null }`
