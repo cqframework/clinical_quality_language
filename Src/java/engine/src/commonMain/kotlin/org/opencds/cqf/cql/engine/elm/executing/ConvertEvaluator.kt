@@ -49,7 +49,7 @@ object ConvertEvaluator {
     ): Any? {
         val type = typeSpecifier ?: NamedTypeSpecifier().withName(toType)
         try {
-            return state!!.environment.`as`(operand, type, true)
+            return AsEvaluator.`as`(operand, type, true, state)
         } catch (e: Exception) {
             throw InvalidConversion("Error during conversion: " + e.message)
         }

@@ -3,6 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.As
 import org.hl7.elm.r1.NamedTypeSpecifier
+import org.hl7.elm.r1.TypeSpecifier
+import org.opencds.cqf.cql.engine.exception.InvalidCast
 import org.opencds.cqf.cql.engine.execution.State
 
 /*
@@ -28,6 +30,18 @@ object AsEvaluator {
     @JvmStatic
     fun internalEvaluate(operand: Any?, `as`: As, isStrict: Boolean, state: State?): Any? {
         val type = `as`.asTypeSpecifier ?: NamedTypeSpecifier().withName(`as`.asType)
-        return state!!.environment.`as`(operand, type, isStrict)
+        return `as`(operand, type, isStrict, state)
+    }
+
+    fun `as`(operand: Any?, type: TypeSpecifier, isStrict: Boolean, state: State?): Any? {
+        if (IsEvaluator.`is`(operand, type, state) == true) {
+            return operand
+        }
+
+        if (isStrict) {
+            throw InvalidCast("Cannot cast $operand to $type.")
+        }
+
+        return null
     }
 }

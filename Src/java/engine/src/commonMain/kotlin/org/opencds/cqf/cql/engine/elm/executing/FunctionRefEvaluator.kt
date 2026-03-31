@@ -10,6 +10,10 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.anyTypeName
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.util.javaClassName
 
 object FunctionRefEvaluator {
@@ -118,7 +122,7 @@ object FunctionRefEvaluator {
             "Using runtime function resolution for '$name'. It's recommended to always include signatures in ELM"
         }
 
-        return namedDefs.filter { x -> state.environment.matchesTypes(x, arguments) }
+        return namedDefs.filter { x -> matchesTypes(x, arguments, state) }
     }
 
     fun functionDefOperandsSignatureEqual(
@@ -184,5 +188,168 @@ object FunctionRefEvaluator {
         }
 
         return argStr.toString()
+    }
+
+    fun resolveOperandType(operandDef: OperandDef): TypeSpecifier {
+        return if (operandDef.operandTypeSpecifier != null) {
+            operandDef.operandTypeSpecifier!!
+        } else {
+            NamedTypeSpecifier().withName(operandDef.operandType)
+        }
+    }
+
+    fun matchesTypes(
+        functionDef: FunctionDef,
+        arguments: kotlin.collections.List<*>,
+        state: State?,
+    ): Boolean {
+        val operands = functionDef.operand
+
+        // if argument length is mismatched, don't compare
+        if (arguments.size != operands.size) {
+            return false
+        }
+
+        // Types must not be incompatible
+        return arguments.zip(operands).all { (argument, operand) ->
+            isCompatible(argument, resolveOperandType(operand), state) != false
+        }
+    }
+
+    /**
+     * Returns true if the value's type is compatible with the specified type (so e.g. the value can
+     * be passed to a function expecting the specified type). Returns null if we cannot determine
+     * compatibility. This is not the same as is-checking (see [IsEvaluator.`is`]).
+     */
+    fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean? {
+        // System.Any is a supertype of all types
+        if (type is NamedTypeSpecifier && type.name == anyTypeName) {
+            return true
+        }
+
+        // null is compatible with all types
+        if (value == null) {
+            return true
+        }
+
+        when (type) {
+            is NamedTypeSpecifier -> {
+                val valueNamedType = getNamedTypeForCqlValue(value)
+
+                if (valueNamedType == null) {
+                    // value is not an instance of a named type
+                    return false
+                }
+
+                if (valueNamedType == type.name) {
+                    // Types are the same
+                    return true
+                }
+
+                val provider =
+                    state!!
+                        .environment
+                        .resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
+
+                if (provider == null) {
+                    // Cannot determine compatibility
+                    return null
+                }
+
+                return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
+            }
+            is ListTypeSpecifier -> {
+                if (value is Iterable<*>) {
+                    if (value.any()) {
+                        for (item in value) {
+                            val result = isCompatible(item, type.elementType!!, state)
+                            if (result == null) {
+                                // Found an element for which we cannot determine compatibility
+                                return null
+                            }
+                            if (result == false) {
+                                // Found an element that is not compatible
+                                return false
+                            }
+                        }
+                        return true
+                    }
+
+                    // An empty list is compatible with all list types
+                    return true
+                }
+
+                // Must be an Iterable to be compatible with a list type
+                return false
+            }
+            is IntervalTypeSpecifier -> {
+                if (value is Interval) {
+                    val lowResult = isCompatible(value.low, type.pointType!!, state)
+                    if (lowResult == false) {
+                        return false
+                    }
+
+                    val highResult = isCompatible(value.high, type.pointType!!, state)
+                    if (highResult == false) {
+                        return false
+                    }
+
+                    if (lowResult == true || highResult == true) {
+                        return true
+                    }
+
+                    return null
+                }
+
+                // Must be an interval to be compatible with an interval type
+                return false
+            }
+            is TupleTypeSpecifier -> {
+                if (value is Tuple) {
+                    for (elementDefinition in type.element) {
+                        if (!value.elements.containsKey(elementDefinition.name!!)) {
+                            // Value is missing an element
+                            return false
+                        }
+                        val elementValue = value.elements[elementDefinition.name!!]
+                        val result =
+                            isCompatible(elementValue, elementDefinition.elementType!!, state)
+                        if (result == null) {
+                            // Found an element for which we cannot determine compatibility
+                            return null
+                        }
+                        if (result == false) {
+                            // Found an element that is not compatible
+                            return false
+                        }
+                    }
+                    return true
+                }
+
+                // Must be a tuple to be compatible with a tuple type
+                return false
+            }
+            is ChoiceTypeSpecifier -> {
+                var foundNull = false
+                for (choice in type.choice) {
+                    val result = isCompatible(value, choice, state)
+                    if (result == null) {
+                        foundNull = true
+                    }
+                    if (result == true) {
+                        // Found a type that is compatible
+                        return true
+                    }
+                }
+                return if (foundNull) {
+                    null
+                } else {
+                    false
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Unexpected type specifier: $type.")
+            }
+        }
     }
 }
