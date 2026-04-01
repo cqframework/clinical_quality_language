@@ -360,10 +360,14 @@ private class ExpressionChecker(
             model.addError(expr)
             return
         }
-        // Non-retrievable types (e.g. abstract DomainResource) are invalid in a Retrieve.
+        // Non-retrievable types (e.g. abstract DomainResource) are invalid in explicit
+        // retrieve expressions. Context-backed retrieves (synthesized for implicit context
+        // definitions like Patient = SingletonFrom([Patient])) are exempt — the CQL spec
+        // allows context declarations for non-retrievable types.
+        val isContextType = symbolTable.contextDefinitions.any { it.context.value == typeName }
         val dataType =
             resolvedModel.resolveTypeName(typeName) ?: resolvedModel.resolveLabel(typeName)
-        if (dataType is ClassType && !dataType.isRetrievable) {
+        if (!isContextType && dataType is ClassType && !dataType.isRetrievable) {
             model.addError(expr)
         }
     }

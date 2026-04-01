@@ -83,9 +83,14 @@ class FhirParityTest {
             is JsonObject -> {
                 val filtered = mutableMapOf<String, JsonElement>()
                 for ((key, value) in element) {
-                    if (key !in IGNORED_KEYS) {
-                        filtered[key] = normalize(value)
-                    }
+                    if (key in IGNORED_KEYS) continue
+                    if (
+                        key == "accessLevel" &&
+                            value is kotlinx.serialization.json.JsonPrimitive &&
+                            value.content == "Public"
+                    )
+                        continue
+                    filtered[key] = normalize(value)
                 }
                 JsonObject(filtered)
             }

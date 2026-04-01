@@ -20,7 +20,9 @@
     <ID>CyclomaticComplexMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
     <ID>CyclomaticComplexMethod:QueryTypeInference.kt$@Suppress("ReturnCount") internal fun TypeResolver.inferQueryType(expression: QueryExpression): DataType?</ID>
     <ID>CyclomaticComplexMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
+    <ID>CyclomaticComplexMethod:SemanticAnalyzer.kt$SemanticAnalyzer$private fun synthesizeImplicitContextDefs( library: Library, modelContext: ModelContext, ): Library</ID>
     <ID>CyclomaticComplexMethod:SemanticAnalyzer.kt$SymbolCollector$fun collect(library: Library): SymbolTable</ID>
+    <ID>CyclomaticComplexMethod:SemanticAnalyzer.kt$TypeTable$fun mergeFrom(other: TypeTable)</ID>
     <ID>CyclomaticComplexMethod:SemanticValidator.kt$ExpressionChecker$private fun validateQuery(expr: QueryExpression)</ID>
     <ID>CyclomaticComplexMethod:TemporalTypeInference.kt$internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType?</ID>
     <ID>EmptyFunctionBlock:CoercionInserter.kt$CoercionInserter${}</ID>
@@ -34,12 +36,16 @@
     <ID>LongMethod:Lowering.kt$Lowering$override fun onIntervalRelation( expr: IntervalRelationExpression, left: Expression, right: Expression, ): Expression</ID>
     <ID>LongMethod:Lowering.kt$Lowering$private fun normalizeHeterogeneousFlatten( expr: ListTransformExpression, operand: Expression, ): Expression?</ID>
     <ID>LongMethod:RetrieveEmission.kt$internal fun EmissionContext.emitRetrieve(expression: RetrieveExpression): ElmExpression</ID>
+    <ID>LongMethod:SemanticAnalyzer.kt$SemanticAnalyzer$@Suppress("MagicNumber") fun analyze(library: Library): Result</ID>
     <ID>LongMethod:TemporalTypeInference.kt$internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType?</ID>
     <ID>LongMethod:TypeResolver.kt$TypeResolver$@Suppress("ReturnCount", "CyclomaticComplexMethod") private fun inferFunctionCallType( expression: FunctionCallExpression, targetType: DataType?, argTypes: List&lt;DataType?>, ): DataType?</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( expr: IntervalRelationExpression, operator: org.hl7.cql.ast.MembershipOperator, left: Expression, right: Expression, precision: String?, proper: Boolean, )</ID>
     <ID>LongParameterList:Lowering.kt$Lowering$( left: Expression, right: Expression, leftType: DataType?, rightType: DataType?, leftBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, rightBoundary: org.hl7.cql.ast.IntervalBoundarySelector?, )</ID>
     <ID>LongParameterList:SemanticModel.kt$SemanticModel$( internal val symbolTable: SymbolTable, internal val typeTable: TypeTable, val operatorRegistry: OperatorRegistry, val options: CqlCompilerOptions? = null, /** Expressions flagged with semantic errors. Codegen emits Null for these. */ internal val errors: MutableSet&lt;Expression> = mutableSetOf(), /** Side table of implicit conversions keyed by parent expression + slot. */ val conversionTable: ConversionTable = ConversionTable(), /** Model context for type/QName resolution. Passed to codegen. */ val modelContext: ModelContext = ModelContext.systemOnly(), )</ID>
+    <ID>LoopWithTooManyJumpStatements:FhirParityTest.kt$FhirParityTest$for</ID>
+    <ID>LoopWithTooManyJumpStatements:FullParityTest.kt$FullParityTest$for</ID>
     <ID>LoopWithTooManyJumpStatements:ModelIntegration.kt$ModelIntegration$for</ID>
+    <ID>LoopWithTooManyJumpStatements:SemanticAnalyzer.kt$SemanticAnalyzer$for</ID>
     <ID>LoopWithTooManyJumpStatements:TypeResolver.kt$TypeResolver$for</ID>
     <ID>MagicNumber:CoercionInserter.kt$CoercionInserter$7</ID>
     <ID>NestedBlockDepth:CoercionInserter.kt$CoercionInserter$@Suppress("CyclomaticComplexMethod") private fun recordDateTimeNullArgConversions( functionName: String, expr: FunctionCallExpression, )</ID>
@@ -76,6 +82,7 @@
     <ID>ReturnCount:SemanticAnalyzer.kt$AgeInDesugarer$override fun onFunctionCall( expr: org.hl7.cql.ast.FunctionCallExpression, target: Expression?, arguments: List&lt;Expression>, ): Expression</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$SemanticAnalyzer$private fun buildModelContext(library: Library): ModelContext</ID>
     <ID>ReturnCount:SemanticAnalyzer.kt$SemanticAnalyzer$private fun desugarAgeInFunctions(library: Library, modelContext: ModelContext): Library</ID>
+    <ID>ReturnCount:SemanticAnalyzer.kt$SemanticAnalyzer$private fun synthesizeImplicitContextDefs( library: Library, modelContext: ModelContext, ): Library</ID>
     <ID>ReturnCount:SemanticValidator.kt$ExpressionChecker$override fun onFunctionCall( expr: FunctionCallExpression, target: Unit?, arguments: List&lt;Unit>, )</ID>
     <ID>ReturnCount:TemporalTypeInference.kt$internal fun TypeResolver.inferMembershipType(expression: MembershipExpression): DataType?</ID>
     <ID>ReturnCount:TypeOperatorEmission.kt$internal fun EmissionContext.emitConversionExpression( expression: ConversionExpression, operandElm: ElmExpression, ): ElmExpression</ID>

@@ -78,41 +78,9 @@ internal class StatementEmitter(private val ctx: EmissionContext) {
 
     private fun handleContext(contextDefinition: ContextDefinition) {
         currentContext = contextDefinition.context.value
-        emitImplicitContextDef(contextDefinition)
-    }
-
-    /**
-     * Emit the implicit context expression definition for model-backed contexts. Emits
-     * `SingletonFrom(Retrieve([Type]))`. Parameter-backed contexts (e.g., `parameter Encounter
-     * Encounter` + `context Encounter`) are NOT emitted as expression definitions — the legacy
-     * compiler also skips them (the parameter already provides the context value).
-     */
-    @Suppress("ReturnCount")
-    private fun emitImplicitContextDef(contextDefinition: ContextDefinition) {
-        val contextName = contextDefinition.context.value
-        if (contextName in emittedExpressions) return
-        if (ctx.modelContext.loadedModelNames.isEmpty()) return
-
-        val contextRef = ctx.semanticModel.resolveContext(contextName)
-
-        // Parameter-backed contexts are not emitted as expression definitions.
-        // The parameter already provides the context value.
-        if (contextRef?.isParameterBacked == true) return
-
-        // buildRetrieveForType returns null when the context type isn't in any loaded model
-        // (e.g., QDM types like "Procedure, Performed", or the built-in "Unfiltered" context).
-        // Skip the implicit definition — this is not an error, the model simply doesn't
-        // provide this type.
-        val retrieve = ctx.buildRetrieveForType(contextName) ?: return
-        val singletonFrom = org.hl7.elm.r1.SingletonFrom()
-        singletonFrom.operand = retrieve
-
-        val exprDef = ExpressionDef()
-        exprDef.name = contextName
-        exprDef.context = currentContext
-        exprDef.expression = singletonFrom
-        expressions += exprDef
-        emittedExpressions.add(contextName)
+        // Implicit context expression definitions (Patient = SingletonFrom([Patient]))
+        // are synthesized by SemanticAnalyzer.synthesizeImplicitContextDefs and appear
+        // as regular ExpressionDefinitions in the AST. No special emission logic needed.
     }
 
     /** Ensure an expression definition is emitted, resolving dependencies first. */

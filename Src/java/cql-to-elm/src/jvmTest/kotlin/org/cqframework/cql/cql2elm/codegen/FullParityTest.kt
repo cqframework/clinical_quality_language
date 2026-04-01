@@ -226,9 +226,17 @@ class FullParityTest {
             is JsonObject -> {
                 val filtered = mutableMapOf<String, JsonElement>()
                 for ((key, value) in element) {
-                    if (key !in IGNORED_KEYS) {
-                        filtered[key] = normalize(value)
-                    }
+                    if (key in IGNORED_KEYS) continue
+                    // accessLevel "Public" is the ELM default — omitting it is equivalent.
+                    // Strip it so implicit context defs (no access modifier in AST) match
+                    // legacy output (which also omits the default).
+                    if (
+                        key == "accessLevel" &&
+                            value is kotlinx.serialization.json.JsonPrimitive &&
+                            value.content == "Public"
+                    )
+                        continue
+                    filtered[key] = normalize(value)
                 }
                 // Normalize associative binary operators (Union, Intersect):
                 // flatten nested trees into sorted operand lists so parser associativity

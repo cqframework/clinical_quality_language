@@ -11,16 +11,23 @@ import org.hl7.cql.ast.CodeDefinition
 import org.hl7.cql.ast.CodeSystemDefinition
 import org.hl7.cql.ast.ConceptDefinition
 import org.hl7.cql.ast.ContextDefinition
+import org.hl7.cql.ast.ElementExtractorExpression
+import org.hl7.cql.ast.ElementExtractorKind
 import org.hl7.cql.ast.Expression
 import org.hl7.cql.ast.ExpressionDefinition
 import org.hl7.cql.ast.FunctionCallExpression
 import org.hl7.cql.ast.FunctionDefinition
+import org.hl7.cql.ast.Identifier
 import org.hl7.cql.ast.IdentifierExpression
 import org.hl7.cql.ast.IncludeDefinition
 import org.hl7.cql.ast.Library
+import org.hl7.cql.ast.NamedTypeSpecifier
 import org.hl7.cql.ast.OperandDefinition
 import org.hl7.cql.ast.ParameterDefinition
+import org.hl7.cql.ast.QualifiedIdentifier
+import org.hl7.cql.ast.RetrieveExpression
 import org.hl7.cql.ast.RewritingFold
+import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.UsingDefinition
 import org.hl7.cql.ast.ValueSetDefinition
 import org.hl7.cql.ast.rewriteLibrary
@@ -112,20 +119,25 @@ class SemanticAnalyzer(
         val libraryResolution = LibraryResolution(libraryManager, modelContext)
         libraryResolution.resolveIncludes(desugared)
 
-        val symbols = symbolCollector.collect(desugared)
+        // Synthesize implicit context expression definitions (e.g., Patient =
+        // SingletonFrom([Patient]))
+        // from model info. These are AST-level definitions, not emission-level constructs.
+        val withContextDefs = synthesizeImplicitContextDefs(desugared, modelContext)
+
+        val symbols = symbolCollector.collect(withContextDefs)
 
         // SYNTHESIZE: type resolution + overload resolution (bottom-up).
         // TypeResolver handles set operator ChoiceType wrapping inline, so no
         // convergence loop is needed — a single pass suffices.
         val conversionTable = ConversionTable()
         val resolver = TypeResolver(operatorRegistry, conversionTable, modelContext, libraryManager)
-        val typeTable = resolver.resolve(desugared, symbols)
+        val typeTable = resolver.resolve(withContextDefs, symbols)
 
         // CHECK: coercion insertion (top-down — parent inspects children's types).
         // Records implicit coercions (null wrapping, branch unification, choice
         // wrapping, model conversions) that EmissionContext applies during codegen.
         val planner = CoercionInserter(typeTable, operatorRegistry, conversionTable)
-        planner.analyzeLibrary(desugared)
+        planner.analyzeLibrary(withContextDefs)
         val totalConversions = planner.newConversionsInserted
 
         val finalTypeTable = typeTable
@@ -141,13 +153,13 @@ class SemanticAnalyzer(
                 // (e.g. checking ClassType.isRetrievable for RetrieveExpression nodes).
                 modelContext = modelContext,
             )
-        semanticValidator.validate(desugared, symbols, preNormModel)
+        semanticValidator.validate(withContextDefs, symbols, preNormModel)
 
         // LOWERING: type-directed structural rewrites (phrases → operator trees, coalesce
         // wrapping, interval expansion, etc.). Produces a new AST with complex phrases rewritten
         // into simpler nodes.
         val lowering = Lowering(preNormModel)
-        val normalizedLibrary = lowering.normalizeLibrary(desugared)
+        val normalizedLibrary = lowering.normalizeLibrary(withContextDefs)
 
         // Lowering transfers metadata (types, resolutions, coercions) for rewritten nodes
         // via TypeTable.transfer and computes types for simple new nodes (Coalesce, etc.)
@@ -188,6 +200,77 @@ class SemanticAnalyzer(
                 errorCount = preNormModel.errors.size,
             )
         return Result(normalizedLibrary, semanticModel, libraryResolution.diagnostics)
+    }
+
+    /**
+     * Synthesize implicit expression definitions for model-backed contexts. For each `context
+     * Patient` statement where the model provides a Patient type, adds an
+     * `ExpressionDefinition("Patient", SingletonFrom([Patient]))` to the library.
+     *
+     * This is a model integration concern: the model determines which contexts are backed by
+     * retrievable types. Parameter-backed contexts (where a parameter provides the context value)
+     * and unresolvable contexts are skipped.
+     */
+    private fun synthesizeImplicitContextDefs(
+        library: Library,
+        modelContext: ModelContext,
+    ): Library {
+        val contextDefs = library.statements.filterIsInstance<ContextDefinition>()
+        if (contextDefs.isEmpty()) return library
+
+        val existingNames =
+            library.statements
+                .filterIsInstance<ExpressionDefinition>()
+                .map { it.name.value }
+                .toSet()
+        val parameterNames =
+            library.definitions
+                .filterIsInstance<ParameterDefinition>()
+                .map { it.name.value }
+                .toSet()
+
+        // Build a set of context names that need implicit defs
+        val toSynthesize = mutableSetOf<String>()
+        for (ctx in contextDefs) {
+            val name = ctx.context.value
+            if (name == "Unfiltered") continue
+            if (name in existingNames) continue
+            if (name in parameterNames) continue
+            if (modelContext.resolveModelForType(name) == null) continue
+            toSynthesize += name
+        }
+        if (toSynthesize.isEmpty()) return library
+
+        // Interleave: insert implicit def right after its context statement
+        val newStatements = mutableListOf<Statement>()
+        val alreadySynthesized = mutableSetOf<String>()
+        for (stmt in library.statements) {
+            newStatements += stmt
+            if (stmt is ContextDefinition && stmt.context.value in toSynthesize) {
+                val name = stmt.context.value
+                if (name !in alreadySynthesized) {
+                    alreadySynthesized += name
+                    val retrieve =
+                        RetrieveExpression(
+                            typeSpecifier =
+                                NamedTypeSpecifier(name = QualifiedIdentifier(listOf(name))),
+                            locator = stmt.locator,
+                        )
+                    newStatements +=
+                        ExpressionDefinition(
+                            name = Identifier(name),
+                            expression =
+                                ElementExtractorExpression(
+                                    elementExtractorKind = ElementExtractorKind.SINGLETON,
+                                    operand = retrieve,
+                                    locator = stmt.locator,
+                                ),
+                            locator = stmt.locator,
+                        )
+                }
+            }
+        }
+        return library.copy(statements = newStatements)
     }
 
     /**
@@ -452,6 +535,14 @@ class TypeTable {
         for ((expression, conversion) in other.modelConversions) {
             if (modelConversions[expression] == null) {
                 modelConversions[expression] = conversion
+            }
+        }
+        for ((operand, type) in other.operandTypes) {
+            if (operandTypes[operand] == null) operandTypes[operand] = type
+        }
+        for ((funcDef, type) in other.externalFunctionReturnTypes) {
+            if (externalFunctionReturnTypes[funcDef] == null) {
+                externalFunctionReturnTypes[funcDef] = type
             }
         }
     }
