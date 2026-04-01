@@ -324,8 +324,6 @@ class FullParityTest {
                 // FHIR-specific gaps: model conversions, cross-library calls, fluent functions.
                 "MappingExpansionsRespectSignatureLevel" to
                     "FHIRHelpers.ToInterval model conversion for Period properties not yet applied",
-                "TestFHIRPathLiteralStringEscapes" to
-                    "convertsToString() fluent resolution works but parity diff on escape handling",
                 "TestTrace" to "Trace() function not resolved; emits Null instead of Message node",
                 "TestMeasureParameterContext" to
                     "extension() fluent resolution works but parity diff on FunctionRef emission",

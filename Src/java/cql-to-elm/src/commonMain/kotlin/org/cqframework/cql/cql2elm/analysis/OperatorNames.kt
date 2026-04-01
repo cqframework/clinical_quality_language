@@ -44,4 +44,42 @@ object OperatorNames {
             UnaryOperator.POSITIVE -> "Positive"
         }
     }
+
+    /**
+     * FHIRPath fluent function names that map directly to CQL system operators. These are
+     * spec-defined by FHIRPath, not model-specific. The fluent call `x.convertsToString()` resolves
+     * as the system operator `ConvertsToString(x)`.
+     */
+    fun fluentFunctionToSystemName(name: String): String? = FHIRPATH_FLUENT_ALIASES[name]
+
+    private val FHIRPATH_FLUENT_ALIASES =
+        mapOf(
+            "convertsToBoolean" to "ConvertsToBoolean",
+            "convertsToDate" to "ConvertsToDate",
+            "convertsToDateTime" to "ConvertsToDateTime",
+            "convertsToDecimal" to "ConvertsToDecimal",
+            "convertsToInteger" to "ConvertsToInteger",
+            "convertsToLong" to "ConvertsToLong",
+            "convertsToQuantity" to "ConvertsToQuantity",
+            "convertsToString" to "ConvertsToString",
+            "convertsToTime" to "ConvertsToTime",
+            "toChars" to "ToChars",
+            "upper" to "Upper",
+            "lower" to "Lower",
+            "trim" to "Trim",
+            "length" to "Length",
+            "count" to "Count",
+            "sum" to "Sum",
+            "min" to "Min",
+            "max" to "Max",
+            "avg" to "Avg",
+            "abs" to "Abs",
+            "ceiling" to "Ceiling",
+            "floor" to "Floor",
+            "truncate" to "Truncate",
+            "ln" to "Ln",
+            "log" to "Log",
+            "exp" to "Exp",
+            "sqrt" to "SquareRoot",
+        )
 }

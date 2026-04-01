@@ -107,7 +107,10 @@ internal fun EmissionContext.emitFunctionCall(
     // Fluent call: target.f(args) → f(target, args) — target becomes the first argument.
     val effectiveArgs = if (targetElm != null) listOf(targetElm) + rawArgs else rawArgs
 
-    val functionName = expression.function.value
+    // Use the resolved operator name if analysis identified a system operator.
+    // This handles FHIRPath fluent aliases (e.g., convertsToString → ConvertsToString).
+    val resolution = semanticModel.getOperatorResolution(expression)
+    val functionName = resolution?.operator?.name ?: expression.function.value
 
     val args = effectiveArgs.toMutableList()
 

@@ -1055,16 +1055,22 @@ class TypeResolver(
         //        name.given.trace('test') → Trace(name.given, 'test')
         if (targetType != null && expression.target != null) {
             val fluentArgTypes = listOf(targetType) + nonNullArgTypes
-            val fluentResolution =
-                operatorRegistry.resolve(
-                    functionName,
-                    fluentArgTypes,
-                    allowPromotionAndDemotion = true,
-                )
-            if (fluentResolution != null) {
-                val fluentSlots = fluentArgTypes.indices.map { ConversionSlot.Argument(it) }
-                recordResolution(expression, fluentResolution, fluentSlots)
-                return fluentResolution.operator.resultType
+            // Try the function name as-is, then try the FHIRPath alias
+            val namesToTry =
+                listOfNotNull(functionName, OperatorNames.fluentFunctionToSystemName(functionName))
+                    .distinct()
+            for (resolvedName in namesToTry) {
+                val fluentResolution =
+                    operatorRegistry.resolve(
+                        resolvedName,
+                        fluentArgTypes,
+                        allowPromotionAndDemotion = true,
+                    )
+                if (fluentResolution != null) {
+                    val fluentSlots = fluentArgTypes.indices.map { ConversionSlot.Argument(it) }
+                    recordResolution(expression, fluentResolution, fluentSlots)
+                    return fluentResolution.operator.resultType
+                }
             }
 
             // Also try against included libraries (e.g., FHIRHelpers.extension())
