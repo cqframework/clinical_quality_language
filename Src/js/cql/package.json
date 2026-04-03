@@ -16,6 +16,7 @@
     "./cql": "./kotlin/cql.mjs",
     "./cql-to-elm": "./kotlin/cql-to-elm.mjs",
     "./elm": "./kotlin/elm.mjs",
+    "./engine": "./kotlin/engine.mjs",
     "./shared": "./kotlin/shared.mjs"
   },
   "dependencies": {
