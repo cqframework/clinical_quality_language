@@ -48,7 +48,7 @@ object PropertyEvaluator {
                 if (indexer == null) {
                     resolveProperty(target, qualifierOrIndexer)
                 } else {
-                    (target as Iterable<*>).elementAtOrNull(indexer)
+                    (target as? Iterable<*>)?.elementAtOrNull(indexer)
                 }
         }
         return target
