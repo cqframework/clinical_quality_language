@@ -22,41 +22,30 @@ For any other type, attempting to invoke maximum results in an error.
 @Suppress("MagicNumber")
 object MaxValueEvaluator {
     @JvmStatic
-    fun maxValue(type: String?): Any? {
+    fun maxValue(type: QName?): Any? {
         if (type == null) {
             return null
         }
 
-        if (type.endsWith("Integer")) {
-            return Value.MAX_INT
+        return when (type) {
+            integerTypeName -> Value.MAX_INT
+            longTypeName -> Value.MAX_LONG
+            decimalTypeName -> Value.MAX_DECIMAL
+            dateTypeName -> Date(9999, 12, 31)
+            dateTimeTypeName -> DateTime(ZERO, 9999, 12, 31, 23, 59, 59, 999)
+            timeTypeName -> Time(23, 59, 59, 999)
+            // NOTE: Quantity max is not standard
+            quantityTypeName -> Quantity().withValue(Value.MAX_DECIMAL).withUnit("1")
+            else ->
+                throw InvalidOperatorArgument(
+                    "The Maximum operator is not implemented for type $type"
+                )
         }
-        if (type.endsWith("Long")) {
-            return Value.MAX_LONG
-        }
-        if (type.endsWith("Decimal")) {
-            return Value.MAX_DECIMAL
-        }
-        if (type.endsWith("Date")) {
-            return Date(9999, 12, 31)
-        }
-        if (type.endsWith("DateTime")) {
-            return DateTime(ZERO, 9999, 12, 31, 23, 59, 59, 999)
-        }
-        if (type.endsWith("Time")) {
-            return Time(23, 59, 59, 999)
-        }
-        // NOTE: Quantity max is not standard
-        if (type.endsWith("Quantity")) {
-            return Quantity().withValue(Value.MAX_DECIMAL).withUnit("1")
-        }
-
-        throw InvalidOperatorArgument("The Maximum operator is not implemented for type ${type}")
     }
 
     @JvmStatic
     fun internalEvaluate(typeName: QName?, state: State?): Any? {
         val valueType = state!!.environment.fixupQName(typeName!!)
-        val type = valueType.getLocalPart()
-        return maxValue(type)
+        return maxValue(valueType)
     }
 }

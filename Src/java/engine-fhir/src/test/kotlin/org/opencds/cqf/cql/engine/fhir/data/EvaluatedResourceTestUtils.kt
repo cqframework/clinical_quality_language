@@ -6,6 +6,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors
+import kotlin.test.assertEquals
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.CqlCompiler
@@ -30,9 +31,11 @@ import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.EvaluationResults
 import org.opencds.cqf.cql.engine.execution.ExpressionResult
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -51,7 +54,9 @@ internal object EvaluatedResourceTestUtils {
     val PROCEDURE: Procedure =
         Procedure().setId(IdType(ResourceType.Procedure.name, "Procedure1")) as Procedure
 
-    val RETRIEVE_PROVIDER: RetrieveProvider =
+    fun getRetrieveProvider(
+        fhirModelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>
+    ): RetrieveProvider =
         object : RetrieveProvider {
             override fun retrieve(
                 context: String?,
@@ -68,11 +73,11 @@ internal object EvaluatedResourceTestUtils {
                 dateRange: Interval?,
             ): Iterable<Any?>? {
                 return when (dataType) {
-                    "Encounter" -> mutableListOf<Any?>(ENCOUNTER)
-                    "Condition" -> mutableListOf<Any?>(CONDITION)
-                    "Patient" -> mutableListOf<Any?>(PATIENT)
-                    "Procedure" -> mutableListOf<Any?>(PROCEDURE)
-                    else -> mutableListOf<Any?>()
+                    "Encounter" -> mutableListOf(fhirModelResolver.toCqlValue(ENCOUNTER))
+                    "Condition" -> mutableListOf(fhirModelResolver.toCqlValue(CONDITION))
+                    "Patient" -> mutableListOf(fhirModelResolver.toCqlValue(PATIENT))
+                    "Procedure" -> mutableListOf(fhirModelResolver.toCqlValue(PROCEDURE))
+                    else -> mutableListOf()
                 }
             }
         }
@@ -296,11 +301,25 @@ internal object EvaluatedResourceTestUtils {
         return VersionedIdentifier().withId(id)
     }
 
-    private fun extractResourcesInOrder(resourceCandidates: Collection<*>): List<IBaseResource> {
+    private fun extractResourceTypesAndIdsInOrder(
+        resourceCandidates: Collection<*>
+    ): List<Pair<String, String>> {
         return resourceCandidates
-            .filter { obj: Any? -> IBaseResource::class.java.isInstance(obj) }
-            .map { obj: Any? -> IBaseResource::class.java.cast(obj) }
-            .sortedBy { it.idElement.idPart }
+            .filterIsInstance<IBaseResource>()
+            .map { it.fhirType() to it.idElement.idPart }
+            .sortedBy { it.second }
+    }
+
+    private fun extractCqlFhirClassInstanceTypesAndIdsInOrder(
+        candidates: Collection<*>
+    ): List<Pair<String, String>> {
+        return candidates
+            .filterIsInstance<CqlClassInstance>()
+            .map {
+                it.type.localPart to
+                    (it.elements["id"] as CqlClassInstance).elements["value"] as String
+            }
+            .sortedBy { it.second }
     }
 
     private fun assertValuesEqual(expectedValue: Collection<IBaseResource>, actualValue: Any?) {
@@ -323,8 +342,8 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(expectedResources.size),
         )
 
-        val expectedResourcesList = extractResourcesInOrder(expectedResources)
-        val actualResourcesList = extractResourcesInOrder(actualResources)
+        val expectedResourcesList = extractResourceTypesAndIdsInOrder(expectedResources)
+        val actualResourcesList = extractCqlFhirClassInstanceTypesAndIdsInOrder(actualResources)
 
         for (index in expectedResourcesList.indices) {
             val expectedResource = expectedResourcesList[0]
@@ -353,17 +372,10 @@ internal object EvaluatedResourceTestUtils {
     }
 
     private fun assertResourcesEqual(
-        expectedResource: IBaseResource,
-        actualResource: IBaseResource,
+        expectedResourceTypeAndId: Pair<String, String>,
+        actualResourceTypeAndId: Pair<String, String>,
     ) {
-        MatcherAssert.assertThat(
-            actualResource.javaClass,
-            CoreMatchers.equalTo<Class<out IBaseResource?>?>(expectedResource.javaClass),
-        )
-        MatcherAssert.assertThat(
-            actualResource.idElement,
-            CoreMatchers.equalTo(expectedResource.idElement),
-        )
+        assertEquals(expectedResourceTypeAndId, actualResourceTypeAndId)
     }
 
     private class TestRetrieveProvider : RetrieveProvider {

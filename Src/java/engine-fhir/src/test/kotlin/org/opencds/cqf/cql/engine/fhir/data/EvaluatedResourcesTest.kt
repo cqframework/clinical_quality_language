@@ -90,7 +90,10 @@ internal class EvaluatedResourcesTest : FhirExecutionTestBase() {
     private fun getCqlEngineForFhir(expressionCaching: Boolean): CqlEngine {
         engine.state.environment.registerDataProvider(
             "http://hl7.org/fhir",
-            CompositeDataProvider(r4ModelResolver!!, EvaluatedResourceTestUtils.RETRIEVE_PROVIDER),
+            CompositeDataProvider(
+                r4ModelResolver!!,
+                EvaluatedResourceTestUtils.getRetrieveProvider(r4ModelResolver!!),
+            ),
         )
         engine.cache.setExpressionCaching(expressionCaching)
         return engine

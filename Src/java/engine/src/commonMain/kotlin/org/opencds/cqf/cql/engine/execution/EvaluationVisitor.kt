@@ -1024,7 +1024,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     override fun visitForEach(elm: ForEach, context: State?): Any? {
         val source = visitExpression(elm.source!!, context)
         val element = visitExpression(elm.element!!, context)
-        return forEach(source, element, context)
+        return forEach(source, element)
     }
 
     override fun visitGeometricMean(elm: GeometricMean, context: State?): Any? {

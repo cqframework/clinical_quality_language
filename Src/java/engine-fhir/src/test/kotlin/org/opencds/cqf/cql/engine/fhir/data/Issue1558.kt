@@ -36,8 +36,8 @@ internal class Issue1558 : FhirExecutionTestBase() {
                     dateRange: Interval?,
                 ): Iterable<Any?>? {
                     return when (dataType) {
-                        "Patient" -> mutableListOf(patient)
-                        "CareTeam" -> mutableListOf(careTeam)
+                        "Patient" -> mutableListOf(r4ModelResolver!!.toCqlValue(patient))
+                        "CareTeam" -> mutableListOf(r4ModelResolver!!.toCqlValue(careTeam))
                         else -> mutableListOf()
                     }
                 }

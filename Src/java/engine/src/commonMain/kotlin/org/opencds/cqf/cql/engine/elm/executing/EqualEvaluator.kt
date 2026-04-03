@@ -4,11 +4,9 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator.or
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEqual
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -112,15 +110,18 @@ object EqualEvaluator {
             return tuplesEqual(left, right, state)
         }
 
-        // Fallback to data provider's `objectEqual()`
-
-        if (state != null) {
-            return state.environment.objectEqual(left, right)
+        if (left is CqlClassInstance && right is CqlClassInstance) {
+            if (left.type == right.type) {
+                return tuplesEqual(
+                    Tuple().withElements(left.elements),
+                    Tuple().withElements(right.elements),
+                    state,
+                )
+            }
+            return false
         }
 
-        throw InvalidOperatorArgument(
-            "Equal(${left.javaClassName}, ${right.javaClassName}) requires Context and state was null"
-        )
+        return false
     }
 
     fun quantitiesEqual(left: Quantity, right: Quantity, state: State?): Boolean? {
