@@ -12,13 +12,13 @@ import org.hl7.fhir.dstu3.model.Coding
 import org.hl7.fhir.instance.model.api.IBaseBundle
 import org.hl7.fhir.instance.model.api.IBaseCoding
 import org.hl7.fhir.instance.model.api.IBaseResource
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
-import org.opencds.cqf.cql.engine.model.ModelResolver
 
 class RestFhirRetrieveProvider(
     searchParameterResolver: SearchParameterResolver,
-    modelResolver: ModelResolver,
+    modelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
     private val fhirClient: IGenericClient,
 ) : SearchParamFhirRetrieveProvider(searchParameterResolver, modelResolver) {
     var searchStyle: SearchStyleEnum = DEFAULT_SEARCH_STYLE

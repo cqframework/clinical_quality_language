@@ -48,9 +48,9 @@ object Value {
     }
 
     fun validateDecimal(ret: BigDecimal, targetScale: Int?): BigDecimal? {
-        if (ret.compareTo(maxValue("Decimal") as BigDecimal) > 0) {
+        if (ret.compareTo(maxValue(decimalTypeName) as BigDecimal) > 0) {
             return null
-        } else if (ret.compareTo(minValue("Decimal") as BigDecimal) < 0) {
+        } else if (ret.compareTo(minValue(decimalTypeName) as BigDecimal) < 0) {
             return null
         } else {
             return verifyPrecision(ret, targetScale)

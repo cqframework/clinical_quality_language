@@ -24,6 +24,9 @@ import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
+import org.opencds.cqf.cql.engine.runtime.dateTypeName
+import org.opencds.cqf.cql.engine.runtime.quantityTypeName
 
 internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
     override fun isFhirType(value: Any): Boolean {
@@ -179,10 +182,10 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             return null
         }
 
-        return when (getSimpleName(value.pointType!!.typeName)) {
-            "Date",
-            "DateTime" -> toFhirPeriod(value)
-            "Quantity" -> toFhirRange(value)
+        return when (value.pointType) {
+            dateTypeName,
+            dateTimeTypeName -> toFhirPeriod(value)
+            quantityTypeName -> toFhirRange(value)
             else -> toCqlText(value)
         }
     }
@@ -318,12 +321,6 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         }
 
         throw NotImplementedException("toCqlTuple is not yet implemented")
-    }
-
-    protected fun getSimpleName(typeName: String): String? {
-        val nameParts: Array<String?> =
-            typeName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        return nameParts[nameParts.size - 1]
     }
 
     protected fun toTime(calendar: Calendar, calendarConstant: Int): Time {

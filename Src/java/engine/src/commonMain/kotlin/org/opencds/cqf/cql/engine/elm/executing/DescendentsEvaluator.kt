@@ -5,7 +5,6 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
 object DescendentsEvaluator {
-    private val descendents = mutableListOf<Any?>()
 
     @JvmStatic
     fun descendents(source: Any?): Any? {
@@ -17,6 +16,8 @@ object DescendentsEvaluator {
     }
 
     fun getDescendents(source: Any?): Any? {
+        val descendents = mutableListOf<Any?>()
+
         if (source is Iterable<*>) {
             for (element in source) {
                 descendents.add(getDescendents(element))

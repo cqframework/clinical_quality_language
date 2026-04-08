@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.runtime
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.Expression
+import org.opencds.cqf.cql.engine.elm.executing.PropertyEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidComparison
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
@@ -60,8 +61,8 @@ class CqlList {
     }
 
     val columnSort: Comparator<Any?> = Comparator { left, right ->
-        val leftCol = state!!.environment.resolvePath(left, path!!)
-        val rightCol = state!!.environment.resolvePath(right, path!!)
+        val leftCol = PropertyEvaluator.resolvePath(left, path!!)
+        val rightCol = PropertyEvaluator.resolvePath(right, path!!)
 
         compareTo(leftCol, rightCol)
     }

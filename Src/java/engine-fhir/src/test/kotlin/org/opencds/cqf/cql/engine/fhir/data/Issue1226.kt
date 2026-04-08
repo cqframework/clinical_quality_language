@@ -31,10 +31,15 @@ internal class Issue1226 : FhirExecutionTestBase() {
                     dateRange: Interval?,
                 ): Iterable<Any?> {
                     when (dataType) {
-                        "Patient" -> return mutableListOf(Patient().setId("123"))
+                        "Patient" ->
+                            return mutableListOf(
+                                r4ModelResolver!!.toCqlValue(Patient().setId("123"))
+                            )
                         "MedicationRequest" ->
                             return mutableListOf(
-                                MedicationRequest().setMedication(Reference("Medication/456"))
+                                r4ModelResolver!!.toCqlValue(
+                                    MedicationRequest().setMedication(Reference("Medication/456"))
+                                )
                             )
                     }
 

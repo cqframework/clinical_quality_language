@@ -47,6 +47,9 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
+import org.opencds.cqf.cql.engine.runtime.dateTypeName
+import org.opencds.cqf.cql.engine.runtime.quantityTypeName
 
 internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
     override fun toFhirId(value: String?): IIdType? {
@@ -194,7 +197,7 @@ internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
         }
 
         val period = Period()
-        if (getSimpleName(value.pointType!!.typeName) == "DateTime") {
+        if (value.pointType == dateTimeTypeName) {
             if (value.start != null) {
                 period.startElement = toFhirDateTime(value.start as DateTime?) as DateTimeType?
             }
@@ -204,7 +207,7 @@ internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
             }
 
             return period
-        } else if (getSimpleName(value.pointType!!.typeName) == "Date") {
+        } else if (value.pointType == dateTypeName) {
             // TODO: This will construct DateTimeType values in FHIR with the system timezone id,
             // not the
             // timezoneoffset of the evaluation request..... this is a bug waiting to happen
@@ -233,7 +236,7 @@ internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        require(getSimpleName(value.pointType!!.typeName) == "Quantity") {
+        require(value.pointType == quantityTypeName) {
             "FHIR Range can only be created from an Interval of Quantity type"
         }
 

@@ -6,11 +6,9 @@ import kotlin.math.min
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEquivalent
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -136,15 +134,18 @@ object EquivalentEvaluator {
             return tuplesEquivalent(left, right, state)
         }
 
-        // Fallback to data provider's `objectEquivalent()`
-
-        if (state != null) {
-            return state.environment.objectEquivalent(left, right)
+        if (left is CqlClassInstance && right is CqlClassInstance) {
+            if (left.type == right.type) {
+                return tuplesEquivalent(
+                    Tuple().withElements(left.elements),
+                    Tuple().withElements(right.elements),
+                    state,
+                )
+            }
+            return false
         }
 
-        throw InvalidOperatorArgument(
-            "Equivalent(${left.javaClassName}, ${right.javaClassName}) requires Context and context was null"
-        )
+        return false
     }
 
     fun quantitiesEquivalent(left: Quantity, right: Quantity, state: State?): Boolean? {
