@@ -3,9 +3,7 @@
 package org.cqframework.cql.shared
 
 /** A minimal multiplatform implementation of QName. */
-expect class QName {
-    constructor(namespaceURI: String, localPart: String, prefix: String)
-
+expect class QName(namespaceURI: String, localPart: String, prefix: String) {
     constructor(namespaceURI: String, localPart: String)
 
     constructor(localPart: String)

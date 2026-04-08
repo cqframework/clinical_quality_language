@@ -48,6 +48,10 @@ kotlin {
     jvm()
 
     js {
+        compilerOptions {
+            // Enable support for BigInt
+            freeCompilerArgs.add("-Xes-long-as-bigint")
+        }
         useEsModules()
         browser {
             testTask {
