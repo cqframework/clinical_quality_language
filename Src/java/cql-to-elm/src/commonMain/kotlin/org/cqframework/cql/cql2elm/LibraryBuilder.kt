@@ -1800,8 +1800,9 @@ class LibraryBuilder(
         resolveUnaryCall("System", "SingletonFrom", singletonFrom)
         // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression)
-        return if (conversion.conversion != null) {
-            convertExpression(singletonFrom, conversion.conversion)
+        val inner = conversion.conversion
+        return if (inner != null) {
+            convertExpression(singletonFrom, inner)
         } else {
             singletonFrom
         }
@@ -1809,8 +1810,9 @@ class LibraryBuilder(
 
     private fun promoteListExpression(expression: Expression, conversion: Conversion): Expression {
         var expression = expression
-        if (conversion.conversion != null) {
-            expression = convertExpression(expression, conversion.conversion)
+        val inner = conversion.conversion
+        if (inner != null) {
+            expression = convertExpression(expression, inner)
         }
         if (expression.resultType == resolveTypeName("System", "Boolean")) {
             // WARNING:
@@ -1836,8 +1838,9 @@ class LibraryBuilder(
         resolveUnaryCall("System", "PointFrom", pointFrom)
         // WARNING:
         reportWarning("Interval-valued expression was demoted to a point.", expression)
-        return if (conversion.conversion != null) {
-            convertExpression(pointFrom, conversion.conversion)
+        val inner = conversion.conversion
+        return if (inner != null) {
+            convertExpression(pointFrom, inner)
         } else {
             pointFrom
         }
@@ -1848,8 +1851,9 @@ class LibraryBuilder(
         conversion: Conversion,
     ): Expression {
         var expression = expression
-        if (conversion.conversion != null) {
-            expression = convertExpression(expression, conversion.conversion)
+        val inner = conversion.conversion
+        if (inner != null) {
+            expression = convertExpression(expression, inner)
         }
         return resolveToInterval(expression)
     }
@@ -1891,6 +1895,7 @@ class LibraryBuilder(
         }
 
         // For non-literal intervals, extract bounds via Property access at runtime
+        val inner = conversion.conversion!!
         return objectFactory
             .createInterval()
             .withLow(
@@ -1900,7 +1905,7 @@ class LibraryBuilder(
                         .withSource(expression)
                         .withPath("low")
                         .withResultType(fromType.pointType),
-                    conversion.conversion!!,
+                    inner,
                 )
             )
             .withLowClosedExpression(
@@ -1917,7 +1922,7 @@ class LibraryBuilder(
                         .withSource(expression)
                         .withPath("high")
                         .withResultType(fromType.pointType),
-                    conversion.conversion,
+                    inner,
                 )
             )
             .withHighClosedExpression(
@@ -1946,11 +1951,12 @@ class LibraryBuilder(
     ): Expression {
         val low = interval.low
         val high = interval.high
+        val inner = conversion.conversion!!
         return objectFactory
             .createInterval()
-            .withLow(if (low != null) convertExpression(low, conversion.conversion!!) else null)
+            .withLow(if (low != null) convertExpression(low, inner) else null)
             .withLowClosed(interval.lowClosed)
-            .withHigh(if (high != null) convertExpression(high, conversion.conversion!!) else null)
+            .withHigh(if (high != null) convertExpression(high, inner) else null)
             .withHighClosed(interval.highClosed)
             .withResultType(toType)
     }
@@ -2029,34 +2035,23 @@ class LibraryBuilder(
     }
 
     @JsExport.Ignore
-    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     fun convertExpression(expression: Expression, conversion: Conversion): Expression {
-        if (
-            conversion.isCast &&
-                (conversion.fromType.isSuperTypeOf(conversion.toType) ||
-                    conversion.fromType.isCompatibleWith(conversion.toType))
-        ) {
-            if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
-
-                if ((conversion.fromType).isSubSetOf(conversion.toType)) {
-                    // conversion between compatible choice types requires no cast (i.e.
-                    // choice<Integer, String> can be safely passed to choice<Integer, String,
-                    // DateTime>
-                    return expression
+        return when (conversion) {
+            is Conversion.Cast -> {
+                if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
+                    if (conversion.fromType.isSubSetOf(conversion.toType)) {
+                        // conversion between compatible choice types requires no cast (i.e.
+                        // choice<Integer, String> can be safely passed to choice<Integer, String,
+                        // DateTime>
+                        return expression
+                    }
+                    // Otherwise, the choice is narrowing and a run-time As is required (to use
+                    // only the expected target types)
                 }
-                // Otherwise, the choice is narrowing and a run-time As is required (to use only the
-                // expected target types)
+                collapseTypeCase(buildAs(expression, conversion.toType))
             }
-            val castedOperand = buildAs(expression, conversion.toType)
-            return collapseTypeCase(castedOperand)
-        } else
-            @Suppress("ComplexCondition")
-            if (
-                conversion.isCast &&
-                    conversion.conversion != null &&
-                    (conversion.fromType.isSuperTypeOf(conversion.conversion.fromType) ||
-                        conversion.fromType.isCompatibleWith(conversion.conversion.fromType))
-            ) {
+            is Conversion.ChoiceNarrowingCast -> {
                 val castedOperand = buildAs(expression, conversion.conversion.fromType)
                 var result = convertExpression(castedOperand, conversion.conversion)
                 if (conversion.hasAlternativeConversions()) {
@@ -2068,7 +2063,7 @@ class LibraryBuilder(
                             .withWhen(buildIs(expression, conversion.conversion.fromType))
                             .withThen(result)
                     )
-                    for (alternative: Conversion in conversion.getAlternativeConversions()) {
+                    for (alternative in conversion.getAlternativeConversions()) {
                         caseResult.caseItem.add(
                             objectFactory
                                 .createCaseItem()
@@ -2084,21 +2079,19 @@ class LibraryBuilder(
                     caseResult.withElse(buildNull(result.resultType))
                     result = caseResult
                 }
-
-                return result
-            } else if (conversion.isListConversion) {
-                return convertListExpression(expression, conversion)
-            } else if (conversion.isListDemotion) {
-                return demoteListExpression(expression, conversion)
-            } else if (conversion.isListPromotion) {
-                return promoteListExpression(expression, conversion)
-            } else if (conversion.isIntervalConversion) {
-                return convertIntervalExpression(expression, conversion)
-            } else if (conversion.isIntervalDemotion) {
-                return demoteIntervalExpression(expression, conversion)
-            } else if (conversion.isIntervalPromotion) {
-                return promoteIntervalExpression(expression, conversion)
-            } else if (conversion.operator != null) {
+                result
+            }
+            is Conversion.ChoiceWideningCast -> {
+                val castedOperand = buildAs(expression, conversion.conversion.fromType)
+                convertExpression(castedOperand, conversion.conversion)
+            }
+            is Conversion.ListConversion -> convertListExpression(expression, conversion)
+            is Conversion.ListDemotion -> demoteListExpression(expression, conversion)
+            is Conversion.ListPromotion -> promoteListExpression(expression, conversion)
+            is Conversion.IntervalConversion -> convertIntervalExpression(expression, conversion)
+            is Conversion.IntervalDemotion -> demoteIntervalExpression(expression, conversion)
+            is Conversion.IntervalPromotion -> promoteIntervalExpression(expression, conversion)
+            is Conversion.OperatorConversion -> {
                 val functionRef =
                     objectFactory
                         .createFunctionRef()
@@ -2108,87 +2101,19 @@ class LibraryBuilder(
                 val systemFunctionInvocation =
                     systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunctionInvocation != null) {
-                    return systemFunctionInvocation.expression
-                }
-                resolveCall(
-                    functionRef.libraryName,
-                    functionRef.name!!,
-                    FunctionRefInvocation(functionRef),
-                    allowPromotionAndDemotion = false,
-                    allowFluent = false,
-                )
-                return functionRef
-            } else {
-                if (conversion.toType == resolveTypeName("System", "Boolean")) {
-                    return objectFactory
-                        .createToBoolean()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Integer")) {
-                    return objectFactory
-                        .createToInteger()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Long")) {
-                    return objectFactory
-                        .createToLong()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Decimal")) {
-                    return objectFactory
-                        .createToDecimal()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "String")) {
-                    return objectFactory
-                        .createToString()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Date")) {
-                    return objectFactory
-                        .createToDate()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "DateTime")) {
-                    return objectFactory
-                        .createToDateTime()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Time")) {
-                    return objectFactory
-                        .createToTime()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Quantity")) {
-                    return objectFactory
-                        .createToQuantity()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Ratio")) {
-                    return objectFactory
-                        .createToRatio()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
-                } else if (conversion.toType == resolveTypeName("System", "Concept")) {
-                    return objectFactory
-                        .createToConcept()
-                        .withOperand(expression)
-                        .withResultType(conversion.toType)
+                    systemFunctionInvocation.expression
                 } else {
-                    val convertedOperand =
-                        objectFactory
-                            .createConvert()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    if (convertedOperand.resultType is NamedType) {
-                        convertedOperand.toType = dataTypeToQName(convertedOperand.resultType)
-                    } else {
-                        convertedOperand.toTypeSpecifier =
-                            dataTypeToTypeSpecifier(convertedOperand.resultType)
-                    }
-                    return convertedOperand
+                    resolveCall(
+                        functionRef.libraryName,
+                        functionRef.name!!,
+                        FunctionRefInvocation(functionRef),
+                        allowPromotionAndDemotion = false,
+                        allowFluent = false,
+                    )
+                    functionRef
                 }
             }
+        }
     }
 
     /**

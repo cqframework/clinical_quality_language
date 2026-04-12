@@ -113,7 +113,11 @@ class CompiledLibrary {
     }
 
     fun add(conversion: Conversion) {
-        require(!conversion.isCast) {
+        require(
+            conversion !is Conversion.Cast &&
+                conversion !is Conversion.ChoiceNarrowingCast &&
+                conversion !is Conversion.ChoiceWideningCast
+        ) {
             "Casting conversions cannot be registered as part of a library."
         }
 

@@ -138,35 +138,35 @@ object SystemLibraryHelper {
         val booleanToString =
             Operator("ToString", Signature(systemModel.boolean), systemModel.string)
         add(system, tb, booleanToString)
-        add(system, tb, Conversion(booleanToString, false))
+        add(system, tb, Conversion.OperatorConversion(booleanToString, false))
         val integerToString =
             Operator("ToString", Signature(systemModel.integer), systemModel.string)
         add(system, tb, integerToString)
-        add(system, tb, Conversion(integerToString, false))
+        add(system, tb, Conversion.OperatorConversion(integerToString, false))
         val longToString = Operator("ToString", Signature(systemModel.long), systemModel.string)
         add(system, tb, longToString)
-        add(system, tb, Conversion(longToString, false))
+        add(system, tb, Conversion.OperatorConversion(longToString, false))
         val decimalToString =
             Operator("ToString", Signature(systemModel.decimal), systemModel.string)
         add(system, tb, decimalToString)
-        add(system, tb, Conversion(decimalToString, false))
+        add(system, tb, Conversion.OperatorConversion(decimalToString, false))
         val dateTimeToString =
             Operator("ToString", Signature(systemModel.dateTime), systemModel.string)
         add(system, tb, dateTimeToString)
-        add(system, tb, Conversion(dateTimeToString, false))
+        add(system, tb, Conversion.OperatorConversion(dateTimeToString, false))
         val dateToString = Operator("ToString", Signature(systemModel.date), systemModel.string)
         add(system, tb, dateToString)
-        add(system, tb, Conversion(dateToString, false))
+        add(system, tb, Conversion.OperatorConversion(dateToString, false))
         val timeToString = Operator("ToString", Signature(systemModel.time), systemModel.string)
         add(system, tb, timeToString)
-        add(system, tb, Conversion(timeToString, false))
+        add(system, tb, Conversion.OperatorConversion(timeToString, false))
         val quantityToString =
             Operator("ToString", Signature(systemModel.quantity), systemModel.string)
         add(system, tb, quantityToString)
-        add(system, tb, Conversion(quantityToString, false))
+        add(system, tb, Conversion.OperatorConversion(quantityToString, false))
         val ratioToString = Operator("ToString", Signature(systemModel.ratio), systemModel.string)
         add(system, tb, ratioToString)
-        add(system, tb, Conversion(ratioToString, false))
+        add(system, tb, Conversion.OperatorConversion(ratioToString, false))
 
         // Operator stringToString = new Operator("ToString", new
         // Signature(systemModel.getString()),
@@ -182,18 +182,18 @@ object SystemLibraryHelper {
         val stringToBoolean =
             Operator("ToBoolean", Signature(systemModel.string), systemModel.boolean)
         add(system, tb, stringToBoolean)
-        add(system, tb, Conversion(stringToBoolean, false))
+        add(system, tb, Conversion.OperatorConversion(stringToBoolean, false))
         val integerToBoolean =
             Operator("ToBoolean", Signature(systemModel.integer), systemModel.boolean)
         add(system, tb, integerToBoolean)
-        add(system, tb, Conversion(integerToBoolean, false))
+        add(system, tb, Conversion.OperatorConversion(integerToBoolean, false))
         val decimalToBoolean =
             Operator("ToBoolean", Signature(systemModel.decimal), systemModel.boolean)
         add(system, tb, decimalToBoolean)
-        add(system, tb, Conversion(decimalToBoolean, false))
+        add(system, tb, Conversion.OperatorConversion(decimalToBoolean, false))
         val longToBoolean = Operator("ToBoolean", Signature(systemModel.long), systemModel.boolean)
         add(system, tb, longToBoolean)
-        add(system, tb, Conversion(longToBoolean, false))
+        add(system, tb, Conversion.OperatorConversion(longToBoolean, false))
 
         // Operator booleanToBoolean = new Operator("ToBoolean", new
         // Signature(systemModel.getBoolean()),
@@ -205,7 +205,7 @@ object SystemLibraryHelper {
         val toChars =
             Operator("ToChars", Signature(systemModel.string), ListType(systemModel.string))
         add(system, tb, toChars)
-        add(system, tb, Conversion(toChars, false))
+        add(system, tb, Conversion.OperatorConversion(toChars, false))
 
         // ToInteger(String) : Integer
         // ToInteger(Boolean) : Integer
@@ -214,14 +214,14 @@ object SystemLibraryHelper {
         val stringToInteger =
             Operator("ToInteger", Signature(systemModel.string), systemModel.integer)
         add(system, tb, stringToInteger)
-        add(system, tb, Conversion(stringToInteger, false))
+        add(system, tb, Conversion.OperatorConversion(stringToInteger, false))
         val longToInteger = Operator("ToInteger", Signature(systemModel.long), systemModel.integer)
         add(system, tb, longToInteger)
-        add(system, tb, Conversion(longToInteger, false))
+        add(system, tb, Conversion.OperatorConversion(longToInteger, false))
         val booleanToInteger =
             Operator("ToInteger", Signature(systemModel.boolean), systemModel.integer)
         add(system, tb, booleanToInteger)
-        add(system, tb, Conversion(booleanToInteger, false))
+        add(system, tb, Conversion.OperatorConversion(booleanToInteger, false))
 
         // Operator integerToInteger = new Operator("ToInteger", new
         // Signature(systemModel.getInteger()),
@@ -235,17 +235,17 @@ object SystemLibraryHelper {
         // ToLong(Long) : Long
         val stringToLong = Operator("ToLong", Signature(systemModel.string), systemModel.long)
         add(system, tb, stringToLong)
-        add(system, tb, Conversion(stringToLong, false))
+        add(system, tb, Conversion.OperatorConversion(stringToLong, false))
         val integerToLong = Operator("ToLong", Signature(systemModel.integer), systemModel.long)
         add(system, tb, integerToLong)
-        add(system, tb, Conversion(integerToLong, true))
+        add(system, tb, Conversion.OperatorConversion(integerToLong, true))
         // Operator longToLong = new Operator("ToLong", new Signature(systemModel.getLong()),
         // systemModel.getLong());
         // add(system, tb, longToLong);
         // add(system, tb, new Conversion(longToLong, false));
         val booleanToLong = Operator("ToLong", Signature(systemModel.boolean), systemModel.long)
         add(system, tb, booleanToLong)
-        add(system, tb, Conversion(booleanToLong, false))
+        add(system, tb, Conversion.OperatorConversion(booleanToLong, false))
 
         // ToDecimal(Boolean) : Decimal
         // ToDecimal(String) : Decimal
@@ -255,14 +255,14 @@ object SystemLibraryHelper {
         val stringToDecimal =
             Operator("ToDecimal", Signature(systemModel.string), systemModel.decimal)
         add(system, tb, stringToDecimal)
-        add(system, tb, Conversion(stringToDecimal, false))
+        add(system, tb, Conversion.OperatorConversion(stringToDecimal, false))
         val integerToDecimal =
             Operator("ToDecimal", Signature(systemModel.integer), systemModel.decimal)
         add(system, tb, integerToDecimal)
-        add(system, tb, Conversion(integerToDecimal, true))
+        add(system, tb, Conversion.OperatorConversion(integerToDecimal, true))
         val longToDecimal = Operator("ToDecimal", Signature(systemModel.long), systemModel.decimal)
         add(system, tb, longToDecimal)
-        add(system, tb, Conversion(longToDecimal, true))
+        add(system, tb, Conversion.OperatorConversion(longToDecimal, true))
         // Operator decimalToDecimal = new Operator("ToDecimal", new
         // Signature(systemModel.getDecimal()),
         // systemModel.getDecimal());
@@ -271,7 +271,7 @@ object SystemLibraryHelper {
         val booleanToDecimal =
             Operator("ToDecimal", Signature(systemModel.boolean), systemModel.decimal)
         add(system, tb, booleanToDecimal)
-        add(system, tb, Conversion(booleanToDecimal, false))
+        add(system, tb, Conversion.OperatorConversion(booleanToDecimal, false))
 
         // ToDateTime(String) : DateTime
         // ToDateTime(Date) : DateTime
@@ -279,11 +279,11 @@ object SystemLibraryHelper {
         val stringToDateTime =
             Operator("ToDateTime", Signature(systemModel.string), systemModel.dateTime)
         add(system, tb, stringToDateTime)
-        add(system, tb, Conversion(stringToDateTime, false))
+        add(system, tb, Conversion.OperatorConversion(stringToDateTime, false))
         val dateToDateTime =
             Operator("ToDateTime", Signature(systemModel.date), systemModel.dateTime)
         add(system, tb, dateToDateTime)
-        add(system, tb, Conversion(dateToDateTime, true))
+        add(system, tb, Conversion.OperatorConversion(dateToDateTime, true))
 
         // Operator dateTimeToDateTime = new Operator("ToDateTime", new
         // Signature(systemModel.getDateTime()),
@@ -296,10 +296,10 @@ object SystemLibraryHelper {
         // ToDate(Date) : Date
         val stringToDate = Operator("ToDate", Signature(systemModel.string), systemModel.date)
         add(system, tb, stringToDate)
-        add(system, tb, Conversion(stringToDate, false))
+        add(system, tb, Conversion.OperatorConversion(stringToDate, false))
         val dateTimeToDate = Operator("ToDate", Signature(systemModel.dateTime), systemModel.date)
         add(system, tb, dateTimeToDate)
-        add(system, tb, Conversion(dateTimeToDate, false))
+        add(system, tb, Conversion.OperatorConversion(dateTimeToDate, false))
 
         // Operator dateToDate = new Operator("ToDate", new Signature(systemModel.getDate()),
         // systemModel.getDate());
@@ -310,7 +310,7 @@ object SystemLibraryHelper {
         // ToTime(Time) : Time
         val stringToTime = Operator("ToTime", Signature(systemModel.string), systemModel.time)
         add(system, tb, stringToTime)
-        add(system, tb, Conversion(stringToTime, false))
+        add(system, tb, Conversion.OperatorConversion(stringToTime, false))
 
         // Operator timeToTime = new Operator("ToTime", new Signature(systemModel.getTime()),
         // systemModel.getTime());
@@ -325,19 +325,19 @@ object SystemLibraryHelper {
         val stringToQuantity =
             Operator("ToQuantity", Signature(systemModel.string), systemModel.quantity)
         add(system, tb, stringToQuantity)
-        add(system, tb, Conversion(stringToQuantity, false))
+        add(system, tb, Conversion.OperatorConversion(stringToQuantity, false))
         val ratioToQuantity =
             Operator("ToQuantity", Signature(systemModel.ratio), systemModel.quantity)
         add(system, tb, ratioToQuantity)
-        add(system, tb, Conversion(ratioToQuantity, false))
+        add(system, tb, Conversion.OperatorConversion(ratioToQuantity, false))
         val integerToQuantity =
             Operator("ToQuantity", Signature(systemModel.integer), systemModel.quantity)
         add(system, tb, integerToQuantity)
-        add(system, tb, Conversion(integerToQuantity, true))
+        add(system, tb, Conversion.OperatorConversion(integerToQuantity, true))
         val decimalToQuantity =
             Operator("ToQuantity", Signature(systemModel.decimal), systemModel.quantity)
         add(system, tb, decimalToQuantity)
-        add(system, tb, Conversion(decimalToQuantity, true))
+        add(system, tb, Conversion.OperatorConversion(decimalToQuantity, true))
 
         // Operator quantityToQuantity = new Operator("ToQuantity", new
         // Signature(systemModel.getQuantity()),
@@ -349,7 +349,7 @@ object SystemLibraryHelper {
         // ToRatio(Ratio) : Ratio
         val stringToRatio = Operator("ToRatio", Signature(systemModel.string), systemModel.ratio)
         add(system, tb, stringToRatio)
-        add(system, tb, Conversion(stringToRatio, false))
+        add(system, tb, Conversion.OperatorConversion(stringToRatio, false))
 
         // Operator ratioToRatio = new Operator("ToRatio", new Signature(systemModel.getRatio()),
         // systemModel.getRatio());
@@ -2681,12 +2681,12 @@ object SystemLibraryHelper {
         // ToConcept(Code)
         val codeToConcept = Operator("ToConcept", Signature(systemModel.code), systemModel.concept)
         add(system, tb, codeToConcept)
-        add(system, tb, Conversion(codeToConcept, true))
+        add(system, tb, Conversion.OperatorConversion(codeToConcept, true))
         // ToConcept(list<Code>)
         val codesToConcept =
             Operator("ToConcept", Signature(ListType(systemModel.code)), systemModel.concept)
         add(system, tb, codesToConcept)
-        add(system, tb, Conversion(codesToConcept, false))
+        add(system, tb, Conversion.OperatorConversion(codesToConcept, false))
 
         // TODO: The result of CalculateAge and CalculateAgeAt may be an uncertainty over the range
         // of possible values (implemented as an interval in the engine).
@@ -2886,7 +2886,7 @@ object SystemLibraryHelper {
         val expandValueSet =
             Operator("ExpandValueSet", Signature(systemModel.valueSet), ListType(systemModel.code))
         add(system, tb, expandValueSet)
-        add(system, tb, Conversion(expandValueSet, true))
+        add(system, tb, Conversion.OperatorConversion(expandValueSet, true))
 
         add(
             system,

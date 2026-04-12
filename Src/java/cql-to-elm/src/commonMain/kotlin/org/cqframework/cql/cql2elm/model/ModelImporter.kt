@@ -103,7 +103,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             operator.libraryName = libraryName
 
             // All conversions loaded as part of a model are implicit
-            val conversion = Conversion(operator, true)
+            val conversion = Conversion.OperatorConversion(operator, true)
             conversions.add(conversion)
         }
 

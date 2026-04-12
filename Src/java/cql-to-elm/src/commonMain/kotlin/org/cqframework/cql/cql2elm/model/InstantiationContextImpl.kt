@@ -152,18 +152,21 @@ class InstantiationContextImpl(
     override fun getIntervalConversionTargets(callType: DataType): List<IntervalType> {
         val results = ArrayList<IntervalType>()
         for (c in conversionMap.getConversions(callType)) {
-            if (c.toType is IntervalType) {
-                results.add(c.toType)
+            val targetType = c.toType
+            if (targetType is IntervalType) {
+                results.add(targetType)
                 conversionScore += ConversionMap.ConversionScore.ComplexConversion.score
             }
         }
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                if (c.operator != null && c.toType is IntervalType) {
+                val op = c.operator
+                val targetType = c.toType
+                if (op != null && targetType is IntervalType) {
                     // instantiate the generic...
                     val instantiationResult =
-                        (c.operator as GenericOperator).instantiate(
+                        (op as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
@@ -175,7 +178,7 @@ class InstantiationContextImpl(
                     // score
                     if (operator != null) {
                         operatorMap.addOperator(operator)
-                        val conversion = Conversion(operator, true)
+                        val conversion = Conversion.OperatorConversion(operator, true)
                         conversionMap.add(conversion)
                         results.add(conversion.toType as IntervalType)
                     }
@@ -200,18 +203,21 @@ class InstantiationContextImpl(
     override fun getListConversionTargets(callType: DataType): List<ListType> {
         val results = ArrayList<ListType>()
         for (c in conversionMap.getConversions(callType)) {
-            if (c.toType is ListType) {
-                results.add(c.toType)
+            val targetType = c.toType
+            if (targetType is ListType) {
+                results.add(targetType)
                 conversionScore += ConversionMap.ConversionScore.ComplexConversion.score
             }
         }
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                if (c.operator != null && c.toType is ListType) {
+                val op = c.operator
+                val targetType = c.toType
+                if (op != null && targetType is ListType) {
                     // instantiate the generic...
                     val instantiationResult =
-                        (c.operator as GenericOperator).instantiate(
+                        (op as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
@@ -223,7 +229,7 @@ class InstantiationContextImpl(
                     // score
                     if (operator != null) {
                         operatorMap.addOperator(operator)
-                        val conversion = Conversion(operator, true)
+                        val conversion = Conversion.OperatorConversion(operator, true)
                         conversionMap.add(conversion)
                         results.add(conversion.toType as ListType)
                     }
@@ -248,17 +254,20 @@ class InstantiationContextImpl(
     override fun getSimpleConversionTargets(callType: DataType): List<SimpleType> {
         val results = ArrayList<SimpleType>()
         for (c in conversionMap.getConversions(callType)) {
-            if (c.toType is SimpleType) {
-                results.add(c.toType)
+            val targetType = c.toType
+            if (targetType is SimpleType) {
+                results.add(targetType)
                 conversionScore += ConversionMap.ConversionScore.SimpleConversion.score
             }
         }
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                if (c.operator != null && c.toType is SimpleType) {
+                val op = c.operator
+                val targetType = c.toType
+                if (op != null && targetType is SimpleType) {
                     val instantiationResult =
-                        (c.operator as GenericOperator).instantiate(
+                        (op as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
@@ -270,7 +279,7 @@ class InstantiationContextImpl(
                     // score
                     if (operator != null) {
                         operatorMap.addOperator(operator)
-                        val conversion = Conversion(operator, true)
+                        val conversion = Conversion.OperatorConversion(operator, true)
                         conversionMap.add(conversion)
                         results.add(conversion.toType as SimpleType)
                     }

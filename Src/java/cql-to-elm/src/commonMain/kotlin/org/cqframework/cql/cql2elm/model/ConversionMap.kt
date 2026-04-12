@@ -97,7 +97,7 @@ class ConversionMap {
 
     private fun findCompatibleConversion(fromType: DataType, toType: DataType): Conversion? {
         if (fromType.isCompatibleWith(toType)) {
-            return Conversion(fromType, toType)
+            return Conversion.Cast(fromType, toType)
         }
 
         return null
@@ -109,13 +109,13 @@ class ConversionMap {
         allowPromotionAndDemotion: Boolean,
         operatorMap: OperatorMap,
     ): Conversion? {
-        var result: Conversion? = null
+        var result: Conversion.ChoiceNarrowingCast? = null
         for (choice in fromType.types) {
             val choiceConversion =
                 findConversion(choice, toType, true, allowPromotionAndDemotion, operatorMap)
             if (choiceConversion != null) {
                 if (result == null) {
-                    result = Conversion(fromType, toType, choiceConversion)
+                    result = Conversion.ChoiceNarrowingCast(fromType, toType, choiceConversion)
                 } else {
                     result.addAlternativeConversion(choiceConversion)
                 }
@@ -133,7 +133,7 @@ class ConversionMap {
     ): Conversion? {
         for (choice in toType.types) {
             findConversion(fromType, choice, true, allowPromotionAndDemotion, operatorMap)?.let {
-                return Conversion(fromType, toType, it)
+                return Conversion.ChoiceWideningCast(fromType, toType, it)
             }
         }
 
@@ -152,7 +152,7 @@ class ConversionMap {
                 allowPromotionAndDemotion = false,
                 operatorMap = operatorMap,
             )
-            ?.let { Conversion(fromType, toType, it) }
+            ?.let { Conversion.ListConversion(fromType, toType, it) }
     }
 
     private fun findIntervalConversion(
@@ -167,7 +167,7 @@ class ConversionMap {
                 allowPromotionAndDemotion = false,
                 operatorMap = operatorMap,
             )
-            ?.let { Conversion(fromType, toType, it) }
+            ?.let { Conversion.IntervalConversion(fromType, toType, it) }
     }
 
     private fun findListDemotion(
@@ -177,7 +177,7 @@ class ConversionMap {
     ): Conversion? {
         val elementType = fromType.elementType
         return if (elementType.isSubTypeOf(toType)) {
-            Conversion(fromType, toType, null)
+            Conversion.ListDemotion(fromType, toType, null)
         } else {
             findConversion(
                     elementType,
@@ -186,7 +186,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.ListDemotion(fromType, toType, it) }
         }
     }
 
@@ -196,7 +196,7 @@ class ConversionMap {
         operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.elementType)) {
-            Conversion(fromType, toType, null)
+            Conversion.ListPromotion(fromType, toType, null)
         } else {
             findConversion(
                     fromType,
@@ -205,7 +205,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.ListPromotion(fromType, toType, it) }
         }
     }
 
@@ -216,7 +216,7 @@ class ConversionMap {
     ): Conversion? {
         val pointType = fromType.pointType
         return if (pointType.isSubTypeOf(toType)) {
-            Conversion(fromType, toType, null)
+            Conversion.IntervalDemotion(fromType, toType, null)
         } else {
             findConversion(
                     pointType,
@@ -225,7 +225,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.IntervalDemotion(fromType, toType, it) }
         }
     }
 
@@ -235,7 +235,7 @@ class ConversionMap {
         operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.pointType)) {
-            Conversion(fromType, toType, null)
+            Conversion.IntervalPromotion(fromType, toType, null)
         } else {
             findConversion(
                     fromType,
@@ -244,7 +244,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.IntervalPromotion(fromType, toType, it) }
         }
     }
 
@@ -269,7 +269,7 @@ class ConversionMap {
                 val operator = instantiationResult.operator
                 if (operator != null && !operatorMap.containsOperator(operator)) {
                     operatorMap.addOperator(operator)
-                    val conversion = Conversion(operator, true)
+                    val conversion = Conversion.OperatorConversion(operator, true)
                     this.add(conversion)
                     operatorsInstantiated = true
                 }
