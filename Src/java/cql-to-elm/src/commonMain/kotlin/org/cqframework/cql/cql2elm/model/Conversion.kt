@@ -15,20 +15,12 @@ sealed class Conversion {
     open val isImplicit: Boolean
         get() = true
 
-    @Suppress("MemberNameEqualsClassName")
-    open val conversion: Conversion?
-        get() = null
-
-    open val operator: Operator?
-        get() = null
-
-    val isGeneric: Boolean
-        get() = operator is GenericOperator
-
-    class OperatorConversion(override val operator: Operator, override val isImplicit: Boolean) :
+    class OperatorConversion(val operator: Operator, override val isImplicit: Boolean) :
         Conversion() {
         override val fromType: DataType = singletonOperand(operator)
         override val toType: DataType = ensureResultType(operator)
+        val isGeneric: Boolean
+            get() = operator is GenericOperator
 
         override val score: Int
             get() =
@@ -44,7 +36,7 @@ sealed class Conversion {
     class ChoiceNarrowingCast(
         override val fromType: ChoiceType,
         override val toType: DataType,
-        override val conversion: Conversion,
+        val innerConversion: Conversion,
     ) : Conversion() {
         private val alternativeConversions: MutableList<Conversion> = mutableListOf()
 
@@ -57,80 +49,80 @@ sealed class Conversion {
         }
 
         override val score: Int
-            get() = ConversionScore.Cast.score + conversion.score
+            get() = ConversionScore.Cast.score + innerConversion.score
     }
 
     class ChoiceWideningCast(
         override val fromType: DataType,
         override val toType: ChoiceType,
-        override val conversion: Conversion,
+        val innerConversion: Conversion,
     ) : Conversion() {
         override val score: Int
-            get() = ConversionScore.Cast.score + conversion.score
+            get() = ConversionScore.Cast.score + innerConversion.score
     }
 
     class ListConversion(
         override val fromType: ListType,
         override val toType: ListType,
-        override val conversion: Conversion,
+        val elementConversion: Conversion,
     ) : Conversion() {
         override val score: Int
             get() {
                 val baseScore =
                     if (toType.elementType is SimpleType) ConversionScore.SimpleConversion.score
                     else ConversionScore.ComplexConversion.score
-                return baseScore + conversion.score
+                return baseScore + elementConversion.score
             }
     }
 
     class ListPromotion(
         override val fromType: DataType,
         override val toType: ListType,
-        override val conversion: Conversion?,
+        val elementConversion: Conversion?,
     ) : Conversion() {
         override val score: Int
-            get() = ConversionScore.ListPromotion.score + (conversion?.score ?: 0)
+            get() = ConversionScore.ListPromotion.score + (elementConversion?.score ?: 0)
     }
 
     class ListDemotion(
         override val fromType: ListType,
         override val toType: DataType,
-        override val conversion: Conversion?,
+        val elementConversion: Conversion?,
     ) : Conversion() {
         override val score: Int
-            get() = ConversionScore.ListDemotion.score + (conversion?.score ?: 0)
+            get() = ConversionScore.ListDemotion.score + (elementConversion?.score ?: 0)
     }
 
     class IntervalConversion(
         override val fromType: IntervalType,
         override val toType: IntervalType,
-        override val conversion: Conversion,
+        val pointConversion: Conversion,
     ) : Conversion() {
         override val score: Int
             get() {
                 val baseScore =
                     if (toType.pointType is SimpleType) ConversionScore.SimpleConversion.score
                     else ConversionScore.ComplexConversion.score
-                return baseScore + conversion.score
+                return baseScore + pointConversion.score
             }
     }
 
     class IntervalPromotion(
         override val fromType: DataType,
         override val toType: IntervalType,
-        override val conversion: Conversion?,
+        val pointConversion: Conversion?,
     ) : Conversion() {
         override val score: Int
-            get() = ConversionScore.IntervalPromotion.score + (conversion?.score ?: 0)
+            get() = ConversionScore.IntervalPromotion.score + (pointConversion?.score ?: 0)
     }
 
     class IntervalDemotion(
         override val fromType: IntervalType,
         override val toType: DataType,
-        override val conversion: Conversion?,
+        val pointConversion: Conversion?,
     ) : Conversion() {
         override val score: Int
-            get() = ConversionScore.IntervalDemotion.score + (conversion?.score ?: 0)
+            get() = ConversionScore.IntervalDemotion.score + (pointConversion?.score ?: 0)
     }
 
     companion object {

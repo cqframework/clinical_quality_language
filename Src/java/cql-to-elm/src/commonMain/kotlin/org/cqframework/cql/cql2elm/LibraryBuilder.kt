@@ -1752,9 +1752,10 @@ class LibraryBuilder(
         return expression
     }
 
-    private fun convertListExpression(expression: Expression?, conversion: Conversion): Expression {
-        val fromType: ListType = conversion.fromType as ListType
-        val toType: ListType = conversion.toType as ListType
+    private fun convertListExpression(
+        expression: Expression?,
+        conversion: Conversion.ListConversion,
+    ): Expression {
         return objectFactory
             .createQuery()
             .withSource(
@@ -1763,7 +1764,7 @@ class LibraryBuilder(
                         .createAliasedQuerySource()
                         .withAlias("X")
                         .withExpression(expression)
-                        .withResultType(fromType)
+                        .withResultType(conversion.fromType)
                 )
             )
             .withReturn(
@@ -1775,13 +1776,13 @@ class LibraryBuilder(
                             objectFactory
                                 .createAliasRef()
                                 .withName("X")
-                                .withResultType(fromType.elementType),
-                            conversion.conversion!!,
+                                .withResultType(conversion.fromType.elementType),
+                            conversion.elementConversion,
                         )
                     )
-                    .withResultType(toType)
+                    .withResultType(conversion.toType)
             )
-            .withResultType(toType)
+            .withResultType(conversion.toType)
     }
 
     private fun reportWarning(message: String, expression: Element?) {
@@ -1793,14 +1794,16 @@ class LibraryBuilder(
         recordParsingException(warning)
     }
 
-    private fun demoteListExpression(expression: Expression?, conversion: Conversion): Expression {
-        val fromType = conversion.fromType as ListType
+    private fun demoteListExpression(
+        expression: Expression?,
+        conversion: Conversion.ListDemotion,
+    ): Expression {
         val singletonFrom = objectFactory.createSingletonFrom().withOperand(expression)
-        singletonFrom.resultType = fromType.elementType
+        singletonFrom.resultType = conversion.fromType.elementType
         resolveUnaryCall("System", "SingletonFrom", singletonFrom)
         // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression)
-        val inner = conversion.conversion
+        val inner = conversion.elementConversion
         return if (inner != null) {
             convertExpression(singletonFrom, inner)
         } else {
@@ -1808,9 +1811,12 @@ class LibraryBuilder(
         }
     }
 
-    private fun promoteListExpression(expression: Expression, conversion: Conversion): Expression {
+    private fun promoteListExpression(
+        expression: Expression,
+        conversion: Conversion.ListPromotion,
+    ): Expression {
         var expression = expression
-        val inner = conversion.conversion
+        val inner = conversion.elementConversion
         if (inner != null) {
             expression = convertExpression(expression, inner)
         }
@@ -1830,15 +1836,14 @@ class LibraryBuilder(
 
     private fun demoteIntervalExpression(
         expression: Expression?,
-        conversion: Conversion,
+        conversion: Conversion.IntervalDemotion,
     ): Expression {
-        val fromType = conversion.fromType as IntervalType
         val pointFrom = objectFactory.createPointFrom().withOperand(expression)
-        pointFrom.resultType = fromType.pointType
+        pointFrom.resultType = conversion.fromType.pointType
         resolveUnaryCall("System", "PointFrom", pointFrom)
         // WARNING:
         reportWarning("Interval-valued expression was demoted to a point.", expression)
-        val inner = conversion.conversion
+        val inner = conversion.pointConversion
         return if (inner != null) {
             convertExpression(pointFrom, inner)
         } else {
@@ -1848,10 +1853,10 @@ class LibraryBuilder(
 
     private fun promoteIntervalExpression(
         expression: Expression,
-        conversion: Conversion,
+        conversion: Conversion.IntervalPromotion,
     ): Expression {
         var expression = expression
-        val inner = conversion.conversion
+        val inner = conversion.pointConversion
         if (inner != null) {
             expression = convertExpression(expression, inner)
         }
@@ -1879,11 +1884,8 @@ class LibraryBuilder(
 
     private fun convertIntervalExpression(
         expression: Expression?,
-        conversion: Conversion,
+        conversion: Conversion.IntervalConversion,
     ): Expression {
-        val fromType: IntervalType = conversion.fromType as IntervalType
-        val toType: IntervalType = conversion.toType as IntervalType
-
         // Optimization: when the expression is an Interval literal, directly convert the bounds
         // and preserve the lowClosed/highClosed booleans. This avoids unnecessary runtime Property
         // extraction for values known at compile time (constant folding).
@@ -1891,11 +1893,10 @@ class LibraryBuilder(
         // chains where convertExpression applies a cast before the interval conversion).
         val interval = unwrapIntervalLiteral(expression)
         if (interval != null) {
-            return constantFoldIntervalConversion(interval, conversion, toType)
+            return constantFoldIntervalConversion(interval, conversion)
         }
 
         // For non-literal intervals, extract bounds via Property access at runtime
-        val inner = conversion.conversion!!
         return objectFactory
             .createInterval()
             .withLow(
@@ -1904,8 +1905,8 @@ class LibraryBuilder(
                         .createProperty()
                         .withSource(expression)
                         .withPath("low")
-                        .withResultType(fromType.pointType),
-                    inner,
+                        .withResultType(conversion.fromType.pointType),
+                    conversion.pointConversion,
                 )
             )
             .withLowClosedExpression(
@@ -1921,8 +1922,8 @@ class LibraryBuilder(
                         .createProperty()
                         .withSource(expression)
                         .withPath("high")
-                        .withResultType(fromType.pointType),
-                    inner,
+                        .withResultType(conversion.fromType.pointType),
+                    conversion.pointConversion,
                 )
             )
             .withHighClosedExpression(
@@ -1932,7 +1933,7 @@ class LibraryBuilder(
                     .withPath("highClosed")
                     .withResultType(resolveTypeName("System", "Boolean"))
             )
-            .withResultType(toType)
+            .withResultType(conversion.toType)
     }
 
     /** Unwrap an expression to find an Interval literal, including through As casts. */
@@ -1946,19 +1947,19 @@ class LibraryBuilder(
     /** Constant-fold an interval conversion by directly converting the literal's bounds. */
     private fun constantFoldIntervalConversion(
         interval: org.hl7.elm.r1.Interval,
-        conversion: Conversion,
-        toType: IntervalType,
+        conversion: Conversion.IntervalConversion,
     ): Expression {
         val low = interval.low
         val high = interval.high
-        val inner = conversion.conversion!!
         return objectFactory
             .createInterval()
-            .withLow(if (low != null) convertExpression(low, inner) else null)
+            .withLow(if (low != null) convertExpression(low, conversion.pointConversion) else null)
             .withLowClosed(interval.lowClosed)
-            .withHigh(if (high != null) convertExpression(high, inner) else null)
+            .withHigh(
+                if (high != null) convertExpression(high, conversion.pointConversion) else null
+            )
             .withHighClosed(interval.highClosed)
-            .withResultType(toType)
+            .withResultType(conversion.toType)
     }
 
     fun buildAs(expression: Expression?, asType: DataType?): As {
@@ -2052,15 +2053,15 @@ class LibraryBuilder(
                 collapseTypeCase(buildAs(expression, conversion.toType))
             }
             is Conversion.ChoiceNarrowingCast -> {
-                val castedOperand = buildAs(expression, conversion.conversion.fromType)
-                var result = convertExpression(castedOperand, conversion.conversion)
+                val castedOperand = buildAs(expression, conversion.innerConversion.fromType)
+                var result = convertExpression(castedOperand, conversion.innerConversion)
                 if (conversion.hasAlternativeConversions()) {
                     val caseResult = objectFactory.createCase()
                     caseResult.resultType = result.resultType
                     caseResult.caseItem.add(
                         objectFactory
                             .createCaseItem()
-                            .withWhen(buildIs(expression, conversion.conversion.fromType))
+                            .withWhen(buildIs(expression, conversion.innerConversion.fromType))
                             .withThen(result)
                     )
                     for (alternative in conversion.getAlternativeConversions()) {
@@ -2082,8 +2083,8 @@ class LibraryBuilder(
                 result
             }
             is Conversion.ChoiceWideningCast -> {
-                val castedOperand = buildAs(expression, conversion.conversion.fromType)
-                convertExpression(castedOperand, conversion.conversion)
+                val castedOperand = buildAs(expression, conversion.innerConversion.fromType)
+                convertExpression(castedOperand, conversion.innerConversion)
             }
             is Conversion.ListConversion -> convertListExpression(expression, conversion)
             is Conversion.ListDemotion -> demoteListExpression(expression, conversion)

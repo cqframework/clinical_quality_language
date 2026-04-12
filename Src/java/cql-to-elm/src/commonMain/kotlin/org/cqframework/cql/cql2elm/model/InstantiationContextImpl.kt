@@ -161,12 +161,11 @@ class InstantiationContextImpl(
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                val op = c.operator
                 val targetType = c.toType
-                if (op != null && targetType is IntervalType) {
+                if (targetType is IntervalType) {
                     // instantiate the generic...
                     val instantiationResult =
-                        (op as GenericOperator).instantiate(
+                        (c.operator as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
@@ -212,12 +211,11 @@ class InstantiationContextImpl(
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                val op = c.operator
                 val targetType = c.toType
-                if (op != null && targetType is ListType) {
+                if (targetType is ListType) {
                     // instantiate the generic...
                     val instantiationResult =
-                        (op as GenericOperator).instantiate(
+                        (c.operator as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,
@@ -263,11 +261,10 @@ class InstantiationContextImpl(
 
         if (results.isEmpty()) {
             for (c in conversionMap.genericConversions) {
-                val op = c.operator
                 val targetType = c.toType
-                if (op != null && targetType is SimpleType) {
+                if (targetType is SimpleType) {
                     val instantiationResult =
-                        (op as GenericOperator).instantiate(
+                        (c.operator as GenericOperator).instantiate(
                             Signature(callType),
                             operatorMap,
                             conversionMap,

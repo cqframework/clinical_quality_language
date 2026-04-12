@@ -36,7 +36,7 @@ class ConversionMap {
     }
 
     private val map: MutableMap<DataType, MutableList<Conversion>> = HashMap()
-    val genericConversions: MutableList<Conversion> = ArrayList()
+    val genericConversions: MutableList<Conversion.OperatorConversion> = ArrayList()
     var isListDemotionEnabled: Boolean = true
     var isListPromotionEnabled: Boolean = true
     var isIntervalDemotionEnabled: Boolean = false
@@ -47,7 +47,9 @@ class ConversionMap {
     }
 
     fun getConversionOperator(fromType: DataType, toType: DataType): Operator? {
-        return this.getConversions(fromType).firstOrNull { it.toType == toType }?.operator
+        return (getConversions(fromType).firstOrNull { it.toType == toType }
+                as? Conversion.OperatorConversion)
+            ?.operator
     }
 
     fun add(conversion: Conversion) {
@@ -61,7 +63,7 @@ class ConversionMap {
         // used because the
         // generic conversions
         // are not added in the SystemLibraryHelper.
-        if (conversion.isGeneric) {
+        if (conversion is Conversion.OperatorConversion && conversion.isGeneric) {
             val conversions = genericConversions
             check(!hasConversion(conversion, conversions)) {
                 "Conversion from ${conversion.fromType} to ${conversion.toType} is already defined."
@@ -257,22 +259,20 @@ class ConversionMap {
     ): Boolean {
         var operatorsInstantiated = false
         for (c in genericConversions) {
-            if (c.operator != null) {
-                // instantiate the generic...
-                val instantiationResult =
-                    (c.operator as GenericOperator).instantiate(
-                        Signature(fromType),
-                        operatorMap,
-                        this,
-                        false,
-                    )
-                val operator = instantiationResult.operator
-                if (operator != null && !operatorMap.containsOperator(operator)) {
-                    operatorMap.addOperator(operator)
-                    val conversion = Conversion.OperatorConversion(operator, true)
-                    this.add(conversion)
-                    operatorsInstantiated = true
-                }
+            // instantiate the generic...
+            val instantiationResult =
+                (c.operator as GenericOperator).instantiate(
+                    Signature(fromType),
+                    operatorMap,
+                    this,
+                    false,
+                )
+            val operator = instantiationResult.operator
+            if (operator != null && !operatorMap.containsOperator(operator)) {
+                operatorMap.addOperator(operator)
+                val conversion = Conversion.OperatorConversion(operator, true)
+                this.add(conversion)
+                operatorsInstantiated = true
             }
         }
 
