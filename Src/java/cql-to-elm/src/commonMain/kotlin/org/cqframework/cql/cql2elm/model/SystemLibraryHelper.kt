@@ -2968,7 +2968,11 @@ object SystemLibraryHelper {
     }
 
     @Suppress("UnusedParameter")
-    private fun add(systemLibrary: CompiledLibrary, tb: TypeBuilder, conversion: Conversion) {
+    private fun add(
+        systemLibrary: CompiledLibrary,
+        tb: TypeBuilder,
+        conversion: Conversion.OperatorConversion,
+    ) {
         systemLibrary.add(conversion)
     }
 }

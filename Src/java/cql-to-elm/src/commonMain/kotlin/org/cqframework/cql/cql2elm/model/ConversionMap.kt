@@ -35,35 +35,30 @@ class ConversionMap {
         ListPromotion(9),
     }
 
-    private val map: MutableMap<DataType, MutableList<Conversion>> = HashMap()
+    private val map: MutableMap<DataType, MutableList<Conversion.OperatorConversion>> = HashMap()
     val genericConversions: MutableList<Conversion.OperatorConversion> = ArrayList()
     var isListDemotionEnabled: Boolean = true
     var isListPromotionEnabled: Boolean = true
     var isIntervalDemotionEnabled: Boolean = false
     var isIntervalPromotionEnabled: Boolean = false
 
-    private fun hasConversion(conversion: Conversion, conversions: List<Conversion>): Boolean {
+    private fun hasConversion(
+        conversion: Conversion.OperatorConversion,
+        conversions: List<Conversion.OperatorConversion>,
+    ): Boolean {
         return conversions.any { it.toType == conversion.toType }
     }
 
     fun getConversionOperator(fromType: DataType, toType: DataType): Operator? {
-        return (getConversions(fromType).firstOrNull { it.toType == toType }
-                as? Conversion.OperatorConversion)
-            ?.operator
+        return getConversions(fromType).firstOrNull { it.toType == toType }?.operator
     }
 
-    fun add(conversion: Conversion) {
+    fun add(conversion: Conversion.OperatorConversion) {
         // NOTE: The conversion map supports generic conversions, however, they turned out to be
-        // quite expensive
-        // computationally
-        // so we introduced list promotion and demotion instead (we should add interval promotion
-        // and demotion too,
-        // would be quite useful)
-        // Generic conversions could still be potentially useful, so I left the code, but it's never
-        // used because the
-        // generic conversions
-        // are not added in the SystemLibraryHelper.
-        if (conversion is Conversion.OperatorConversion && conversion.isGeneric) {
+        // quite expensive computationally, so we introduced list promotion and demotion instead.
+        // Generic conversions could still be potentially useful, so I left the code, but it's
+        // never used because the generic conversions are not added in the SystemLibraryHelper.
+        if (conversion.isGeneric) {
             val conversions = genericConversions
             check(!hasConversion(conversion, conversions)) {
                 "Conversion from ${conversion.fromType} to ${conversion.toType} is already defined."
@@ -80,15 +75,15 @@ class ConversionMap {
         }
     }
 
-    fun getConversions(fromType: DataType): MutableList<Conversion> {
+    fun getConversions(fromType: DataType): MutableList<Conversion.OperatorConversion> {
         return map.getOrPut(fromType) { ArrayList() }
     }
 
     /*
     Returns conversions for the given type, or any supertype, recursively
      */
-    private fun getAllConversions(fromType: DataType?): List<Conversion> {
-        val conversions: MutableList<Conversion> = ArrayList()
+    private fun getAllConversions(fromType: DataType?): List<Conversion.OperatorConversion> {
+        val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
         var currentType = fromType
         while (currentType != null && currentType != DataType.ANY) {
             conversions.addAll(getConversions(currentType))
@@ -111,20 +106,14 @@ class ConversionMap {
         allowPromotionAndDemotion: Boolean,
         operatorMap: OperatorMap,
     ): Conversion? {
-        var result: Conversion.ChoiceNarrowingCast? = null
-        for (choice in fromType.types) {
-            val choiceConversion =
+        val matches =
+            fromType.types.mapNotNull { choice ->
                 findConversion(choice, toType, true, allowPromotionAndDemotion, operatorMap)
-            if (choiceConversion != null) {
-                if (result == null) {
-                    result = Conversion.ChoiceNarrowingCast(fromType, toType, choiceConversion)
-                } else {
-                    result.addAlternativeConversion(choiceConversion)
-                }
             }
-        }
 
-        return result
+        if (matches.isEmpty()) return null
+
+        return Conversion.ChoiceNarrowingCast(fromType, toType, matches.first(), matches.drop(1))
     }
 
     private fun findTargetChoiceConversion(

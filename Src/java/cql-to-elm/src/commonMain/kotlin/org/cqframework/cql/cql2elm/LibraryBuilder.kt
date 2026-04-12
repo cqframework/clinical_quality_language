@@ -2055,7 +2055,7 @@ class LibraryBuilder(
             is Conversion.ChoiceNarrowingCast -> {
                 val castedOperand = buildAs(expression, conversion.innerConversion.fromType)
                 var result = convertExpression(castedOperand, conversion.innerConversion)
-                if (conversion.hasAlternativeConversions()) {
+                if (conversion.alternativeConversions.isNotEmpty()) {
                     val caseResult = objectFactory.createCase()
                     caseResult.resultType = result.resultType
                     caseResult.caseItem.add(
@@ -2064,7 +2064,7 @@ class LibraryBuilder(
                             .withWhen(buildIs(expression, conversion.innerConversion.fromType))
                             .withThen(result)
                     )
-                    for (alternative in conversion.getAlternativeConversions()) {
+                    for (alternative in conversion.alternativeConversions) {
                         caseResult.caseItem.add(
                             objectFactory
                                 .createCaseItem()

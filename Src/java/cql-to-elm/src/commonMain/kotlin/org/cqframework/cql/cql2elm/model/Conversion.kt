@@ -26,6 +26,22 @@ sealed class Conversion {
             get() =
                 if (toType is ClassType) ConversionScore.ComplexConversion.score
                 else ConversionScore.SimpleConversion.score
+
+        companion object {
+            fun singletonOperand(operator: Operator): DataType {
+                require(operator.signature.operandTypes.size == 1) {
+                    "Conversion operator must be unary."
+                }
+                return operator.signature.operandTypes[0]
+            }
+
+            fun ensureResultType(operator: Operator): DataType {
+                requireNotNull(operator.resultType) {
+                    "Conversion operator must have a result type."
+                }
+                return operator.resultType!!
+            }
+        }
     }
 
     class Cast(override val fromType: DataType, override val toType: DataType) : Conversion() {
@@ -37,17 +53,8 @@ sealed class Conversion {
         override val fromType: ChoiceType,
         override val toType: DataType,
         val innerConversion: Conversion,
+        val alternativeConversions: List<Conversion> = emptyList(),
     ) : Conversion() {
-        private val alternativeConversions: MutableList<Conversion> = mutableListOf()
-
-        fun getAlternativeConversions(): List<Conversion> = alternativeConversions
-
-        fun hasAlternativeConversions(): Boolean = alternativeConversions.isNotEmpty()
-
-        fun addAlternativeConversion(alternativeConversion: Conversion) {
-            alternativeConversions.add(alternativeConversion)
-        }
-
         override val score: Int
             get() = ConversionScore.Cast.score + innerConversion.score
     }
@@ -123,19 +130,5 @@ sealed class Conversion {
     ) : Conversion() {
         override val score: Int
             get() = ConversionScore.IntervalDemotion.score + (pointConversion?.score ?: 0)
-    }
-
-    companion object {
-        fun singletonOperand(operator: Operator): DataType {
-            require(operator.signature.operandTypes.size == 1) {
-                "Conversion operator must be unary."
-            }
-            return operator.signature.operandTypes[0]
-        }
-
-        fun ensureResultType(operator: Operator): DataType {
-            requireNotNull(operator.resultType) { "Conversion operator must have a result type." }
-            return operator.resultType!!
-        }
     }
 }

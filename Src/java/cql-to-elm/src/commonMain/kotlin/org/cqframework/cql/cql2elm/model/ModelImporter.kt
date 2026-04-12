@@ -55,7 +55,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     private val typeInfoIndex: MutableMap<String, TypeInfo> = HashMap()
     private val resolvedTypes: MutableMap<String, DataType> = HashMap()
     private val dataTypes: MutableList<DataType> = ArrayList()
-    val conversions: MutableList<Conversion> = ArrayList()
+    val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
     val contexts: MutableList<ModelContext> = ArrayList()
     private var defaultContext: ModelContext? = null
 
