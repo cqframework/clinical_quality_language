@@ -1,12 +1,6 @@
 package org.cqframework.cql.cql2elm.model
 
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.Cast
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.ComplexConversion
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.IntervalDemotion
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.IntervalPromotion
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.ListDemotion
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.ListPromotion
-import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore.SimpleConversion
+import org.cqframework.cql.cql2elm.model.ConversionMap.ConversionScore
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
@@ -14,162 +8,127 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.SimpleType
 
-class Conversion(
-    val fromType: DataType,
-    val toType: DataType,
-    val isImplicit: Boolean = false,
-    val conversion: Conversion? = null,
-    val operator: Operator? = null,
-) {
-    constructor(
-        operator: Operator,
-        isImplicit: Boolean,
-    ) : this(singletonOperand(operator), ensureResultType(operator), isImplicit, null, operator)
+sealed class Conversion {
+    abstract val fromType: DataType
+    abstract val toType: DataType
+    abstract val score: Int
+    open val isImplicit: Boolean
+        get() = true
 
-    constructor(fromType: DataType, toType: DataType) : this(fromType, toType, true) {
-        this.isCast = true
-    }
+    class OperatorConversion(val operator: Operator, override val isImplicit: Boolean) :
+        Conversion() {
+        override val fromType: DataType = singletonOperand(operator)
+        override val toType: DataType = ensureResultType(operator)
+        val isGeneric: Boolean
+            get() = operator is GenericOperator
 
-    constructor(
-        fromType: ChoiceType,
-        toType: DataType,
-        choiceConversion: Conversion,
-    ) : this(fromType, toType, true, choiceConversion) {
-        this.isCast = true
-    }
+        override val score: Int
+            get() =
+                if (toType is ClassType) ConversionScore.ComplexConversion.score
+                else ConversionScore.SimpleConversion.score
 
-    constructor(
-        fromType: DataType,
-        toType: ChoiceType,
-        choiceConversion: Conversion,
-    ) : this(fromType, toType, true, choiceConversion) {
-        this.isCast = true
-    }
+        companion object {
+            fun singletonOperand(operator: Operator): DataType {
+                require(operator.signature.operandTypes.size == 1) {
+                    "Conversion operator must be unary."
+                }
+                return operator.signature.operandTypes[0]
+            }
 
-    constructor(
-        fromType: ListType,
-        toType: ListType,
-        elementConversion: Conversion,
-    ) : this(fromType, toType, true, elementConversion) {
-        this.isListConversion = true
-    }
-
-    constructor(
-        fromType: ListType,
-        toType: DataType,
-        elementConversion: Conversion?,
-    ) : this(fromType, toType, true, elementConversion) {
-        this.isListDemotion = true
-    }
-
-    constructor(
-        fromType: DataType,
-        toType: ListType,
-        elementConversion: Conversion?,
-    ) : this(fromType, toType, true, elementConversion) {
-        this.isListPromotion = true
-    }
-
-    constructor(
-        fromType: IntervalType,
-        toType: DataType,
-        elementConversion: Conversion?,
-    ) : this(fromType, toType, true, elementConversion) {
-        this.isIntervalDemotion = true
-    }
-
-    constructor(
-        fromType: DataType,
-        toType: IntervalType,
-        elementConversion: Conversion?,
-    ) : this(fromType, toType, true, elementConversion) {
-        this.isIntervalPromotion = true
-    }
-
-    constructor(
-        fromType: IntervalType,
-        toType: IntervalType,
-        pointConversion: Conversion,
-    ) : this(fromType, toType, true, pointConversion) {
-        this.isIntervalConversion = true
-    }
-
-    private val alternativeConversions: MutableList<Conversion> = mutableListOf()
-
-    fun getAlternativeConversions(): List<Conversion> {
-        return alternativeConversions
-    }
-
-    fun hasAlternativeConversions(): Boolean {
-        return alternativeConversions.isNotEmpty()
-    }
-
-    fun addAlternativeConversion(alternativeConversion: Conversion) {
-        require(fromType is ChoiceType) {
-            "Alternative conversions can only be used with choice types"
-        }
-
-        // Should also guard against adding an alternative that is not one of the component
-        // types of the fromType
-        // This should never happen though with current usage
-        alternativeConversions.add(alternativeConversion)
-    }
-
-    val score: Int
-        get() {
-            val nestedScore = conversion?.score ?: 0
-            return when {
-                isCast -> Cast.score + nestedScore
-                isIntervalDemotion -> IntervalDemotion.score + nestedScore
-                isListDemotion -> ListDemotion.score + nestedScore
-                isIntervalPromotion -> IntervalPromotion.score + nestedScore
-                isListPromotion -> ListPromotion.score + nestedScore
-                isListConversion && toType is ListType && toType.elementType is SimpleType ->
-                    SimpleConversion.score + nestedScore
-                isListConversion -> ComplexConversion.score + nestedScore
-                isIntervalConversion && toType is IntervalType && toType.pointType is SimpleType ->
-                    SimpleConversion.score + nestedScore
-                isIntervalConversion -> ComplexConversion.score + nestedScore
-                toType is ClassType -> ComplexConversion.score + nestedScore
-                else -> SimpleConversion.score + nestedScore
+            fun ensureResultType(operator: Operator): DataType {
+                requireNotNull(operator.resultType) {
+                    "Conversion operator must have a result type."
+                }
+                return operator.resultType!!
             }
         }
+    }
 
-    val isGeneric: Boolean
-        get() = operator is GenericOperator
+    class Cast(override val fromType: DataType, override val toType: DataType) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.Cast.score
+    }
 
-    var isCast: Boolean = false
-        private set
+    class ChoiceNarrowingCast(
+        override val fromType: ChoiceType,
+        override val toType: DataType,
+        val innerConversion: Conversion,
+        val alternativeConversions: List<Conversion> = emptyList(),
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.Cast.score + innerConversion.score
+    }
 
-    var isListConversion: Boolean = false
-        private set
+    class ChoiceWideningCast(
+        override val fromType: DataType,
+        override val toType: ChoiceType,
+        val innerConversion: Conversion,
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.Cast.score + innerConversion.score
+    }
 
-    var isListPromotion: Boolean = false
-        private set
-
-    var isListDemotion: Boolean = false
-        private set
-
-    var isIntervalConversion: Boolean = false
-        private set
-
-    var isIntervalPromotion: Boolean = false
-        private set
-
-    var isIntervalDemotion: Boolean = false
-        private set
-
-    companion object {
-        fun singletonOperand(operator: Operator): DataType {
-            require(operator.signature.operandTypes.size == 1) {
-                "Conversion operator must be unary."
+    class ListConversion(
+        override val fromType: ListType,
+        override val toType: ListType,
+        val elementConversion: Conversion,
+    ) : Conversion() {
+        override val score: Int
+            get() {
+                val baseScore =
+                    if (toType.elementType is SimpleType) ConversionScore.SimpleConversion.score
+                    else ConversionScore.ComplexConversion.score
+                return baseScore + elementConversion.score
             }
-            return operator.signature.operandTypes[0]
-        }
+    }
 
-        fun ensureResultType(operator: Operator): DataType {
-            requireNotNull(operator.resultType) { "Conversion operator must have a result type." }
-            return operator.resultType!!
-        }
+    class ListPromotion(
+        override val fromType: DataType,
+        override val toType: ListType,
+        val elementConversion: Conversion?,
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.ListPromotion.score + (elementConversion?.score ?: 0)
+    }
+
+    class ListDemotion(
+        override val fromType: ListType,
+        override val toType: DataType,
+        val elementConversion: Conversion?,
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.ListDemotion.score + (elementConversion?.score ?: 0)
+    }
+
+    class IntervalConversion(
+        override val fromType: IntervalType,
+        override val toType: IntervalType,
+        val pointConversion: Conversion,
+    ) : Conversion() {
+        override val score: Int
+            get() {
+                val baseScore =
+                    if (toType.pointType is SimpleType) ConversionScore.SimpleConversion.score
+                    else ConversionScore.ComplexConversion.score
+                return baseScore + pointConversion.score
+            }
+    }
+
+    class IntervalPromotion(
+        override val fromType: DataType,
+        override val toType: IntervalType,
+        val pointConversion: Conversion?,
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.IntervalPromotion.score + (pointConversion?.score ?: 0)
+    }
+
+    class IntervalDemotion(
+        override val fromType: IntervalType,
+        override val toType: DataType,
+        val pointConversion: Conversion?,
+    ) : Conversion() {
+        override val score: Int
+            get() = ConversionScore.IntervalDemotion.score + (pointConversion?.score ?: 0)
     }
 }
