@@ -55,6 +55,7 @@ class Cql2ElmVisitor(
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
     private val dateRangeOptimizer = DateRangeOptimizer(libraryBuilder)
+    private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
     private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
@@ -2729,6 +2730,13 @@ class Cql2ElmVisitor(
         }
         var result: Expression? = null
 
+        // Resolve the contextIdentifier once for use in any retrieves built below.
+        val contextExpression: Expression? =
+            ctx.contextIdentifier()?.let {
+                val identifiers: kotlin.collections.List<String> = visit(it).cast()
+                resolveQualifiedIdentifier(identifiers)
+            }
+
         // Only expand a choice-valued code path if no comparator is specified
         // Otherwise, a code comparator will always choose a specific representation
         val hasFHIRHelpers: Boolean = this.libraryInfo.resolveLibraryName("FHIRHelpers") != null
@@ -2754,7 +2762,7 @@ class Cql2ElmVisitor(
                     //       such that M.id = Last(Split(MR.medication.reference, '/'))
                     //         and M.code in <valueset>
                     val mrRetrieve: Retrieve =
-                        buildRetrieve(
+                        retrieveBuilder.build(
                             ctx,
                             useStrictRetrieveTyping,
                             namedType,
@@ -2765,13 +2773,14 @@ class Cql2ElmVisitor(
                             null,
                             null,
                             null,
+                            contextExpression,
                         )
                     mrRetrieve.resultType = ListType(namedType as DataType)
                     val mDataType: DataType? = libraryBuilder.resolveTypeName(model, "Medication")
                     val mClassType = mDataType as ClassType
                     val mNamedType: NamedType = mClassType
                     val mRetrieve: Retrieve =
-                        buildRetrieve(
+                        retrieveBuilder.build(
                             ctx,
                             useStrictRetrieveTyping,
                             mNamedType,
@@ -2782,6 +2791,7 @@ class Cql2ElmVisitor(
                             null,
                             null,
                             null,
+                            contextExpression,
                         )
                     mRetrieve.resultType = ListType(mDataType)
                     val q: Query = of.createQuery()
@@ -2872,7 +2882,7 @@ class Cql2ElmVisitor(
                         }
                 } else {
                     val retrieve: Retrieve =
-                        buildRetrieve(
+                        retrieveBuilder.build(
                             ctx,
                             useStrictRetrieveTyping,
                             namedType,
@@ -2883,6 +2893,7 @@ class Cql2ElmVisitor(
                             propertyType,
                             propertyException,
                             terminology,
+                            contextExpression,
                         )
                     retrieve.resultType = ListType(namedType as DataType)
                     result =
@@ -2903,7 +2914,7 @@ class Cql2ElmVisitor(
             }
         } else {
             val retrieve: Retrieve =
-                buildRetrieve(
+                retrieveBuilder.build(
                     ctx,
                     useStrictRetrieveTyping,
                     namedType,
@@ -2914,260 +2925,12 @@ class Cql2ElmVisitor(
                     property?.resultType,
                     propertyException,
                     terminology,
+                    contextExpression,
                 )
             retrieve.resultType = ListType(namedType as DataType)
             result = retrieve
         }
         return result
-    }
-
-    @Suppress("LongParameterList")
-    private fun buildRetrieve(
-        ctx: RetrieveContext,
-        useStrictRetrieveTyping: Boolean,
-        namedType: NamedType?,
-        classType: ClassType,
-        codePath: String?,
-        codeComparator: String?,
-        property: Property?,
-        propertyType: DataType?,
-        propertyException: Exception?,
-        terminology: Expression?,
-    ): Retrieve {
-        var codeComparator: String? = codeComparator
-        val retrieve: Retrieve =
-            of.createRetrieve()
-                .withDataType(libraryBuilder.dataTypeToQName(namedType as DataType?))
-                .withTemplateId(classType.identifier)
-                .withCodeProperty(codePath)
-        if (ctx.contextIdentifier() != null) {
-            val identifiers: kotlin.collections.List<String> =
-                visit(ctx.contextIdentifier()!!).cast()
-            val contextExpression: Expression? = resolveQualifiedIdentifier(identifiers)
-            retrieve.context = contextExpression
-        }
-        if (terminology != null) {
-            // Resolve the terminology target using an in or ~ operator
-            try {
-                if (codeComparator == null) {
-                    codeComparator = "~"
-                    if (terminology.resultType is ListType) {
-                        codeComparator = "in"
-                    } else if (libraryBuilder.isCompatibleWith("1.5")) {
-                        codeComparator =
-                            if (
-                                (propertyType != null &&
-                                    propertyType.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                                    ))
-                            ) {
-                                if (
-                                    terminology.resultType!!.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                                    )
-                                )
-                                    "~"
-                                else "contains"
-                            } else {
-                                if (
-                                    terminology.resultType!!.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                                    )
-                                )
-                                    "in"
-                                else "~"
-                            }
-                    }
-                }
-                if (property == null) {
-                    throw (propertyException)!!
-                }
-                when (codeComparator) {
-                    "in" -> {
-                        when (
-                            val inExpression: Expression =
-                                libraryBuilder.resolveIn(property, terminology)
-                        ) {
-                            is In -> {
-                                retrieve.codes = inExpression.operand[1]
-                            }
-                            is InValueSet -> {
-                                retrieve.codes = inExpression.valueset
-                            }
-                            is InCodeSystem -> {
-                                retrieve.codes = inExpression.codesystem
-                            }
-                            is AnyInValueSet -> {
-                                retrieve.codes = inExpression.valueset
-                            }
-                            is AnyInCodeSystem -> {
-                                retrieve.codes = inExpression.codesystem
-                            }
-                            else -> {
-                                // ERROR:
-                                // WARNING:
-                                libraryBuilder.recordParsingException(
-                                    CqlSemanticException(
-                                        "Unexpected membership operator ${inExpression::class.simpleName} in retrieve",
-                                        getTrackBack(ctx),
-                                        if (useStrictRetrieveTyping)
-                                            CqlCompilerException.ErrorSeverity.Error
-                                        else CqlCompilerException.ErrorSeverity.Warning,
-                                    )
-                                )
-                            }
-                        }
-                    }
-                    "contains" -> {
-                        val contains: Expression =
-                            libraryBuilder.resolveContains(property, terminology)
-                        if (contains is Contains) {
-                            retrieve.codes = contains.operand[1]
-                        }
-                        // TODO: Introduce support for the contains operator to make this possible
-                        // to support with a retrieve (direct-reference code negation)
-                        // ERROR:
-                        libraryBuilder.recordParsingException(
-                            CqlSemanticException(
-                                "Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
-                                getTrackBack(ctx),
-                                if (useStrictRetrieveTyping)
-                                    CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning,
-                            )
-                        )
-                    }
-                    "~" -> {
-
-                        // Resolve with equivalent to verify the type of the target
-                        val equivalent: BinaryExpression =
-                            of.createEquivalent().withOperand(listOf(property, terminology))
-                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
-
-                        // Automatically promote to a list for use in the retrieve target
-                        if (
-                            !(equivalent.operand[1].resultType is ListType ||
-                                (libraryBuilder.isCompatibleWith("1.5") &&
-                                    equivalent.operand[1]
-                                        .resultType!!
-                                        .isSubTypeOf(
-                                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                                        )))
-                        ) {
-                            retrieve.codes = libraryBuilder.resolveToList(equivalent.operand[1])
-                        } else {
-                            retrieve.codes = equivalent.operand[1]
-                        }
-                    }
-                    "=" -> {
-
-                        // Resolve with equality to verify the type of the source and target
-                        val equal: BinaryExpression =
-                            of.createEqual().withOperand(listOf(property, terminology))
-                        libraryBuilder.resolveBinaryCall("System", "Equal", equal)
-
-                        // Automatically promote to a list for use in the retrieve target
-                        if (
-                            !(equal.operand[1].resultType is ListType ||
-                                (libraryBuilder.isCompatibleWith("1.5") &&
-                                    equal.operand[1]
-                                        .resultType!!
-                                        .isSubTypeOf(
-                                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                                        )))
-                        ) {
-                            retrieve.codes = libraryBuilder.resolveToList(equal.operand[1])
-                        } else {
-                            retrieve.codes = equal.operand[1]
-                        }
-                    }
-                    else -> // ERROR:
-                        // WARNING:
-                        libraryBuilder.recordParsingException(
-                            CqlSemanticException(
-                                "Unknown code comparator $codeComparator in retrieve",
-                                getTrackBack(ctx.codeComparator()!!),
-                                if (useStrictRetrieveTyping)
-                                    CqlCompilerException.ErrorSeverity.Error
-                                else CqlCompilerException.ErrorSeverity.Warning,
-                            )
-                        )
-                }
-                retrieve.codeComparator = codeComparator
-
-                // Verify that the type of the terminology target is a List<Code>
-                // Due to implicit conversion defined by specific models, the resolution path above
-                // may result in a List<Concept>
-                // In that case, convert to a list of code (Union the Code elements of the Concepts
-                // in the list)
-                if (
-                    ((retrieve.codes != null) &&
-                        (retrieve.codes!!.resultType != null) &&
-                        retrieve.codes!!.resultType is ListType &&
-                        ((retrieve.codes!!.resultType as ListType).elementType ==
-                            libraryBuilder.resolveTypeName("System", "Concept")))
-                ) {
-                    if (retrieve.codes is ToList) {
-                        // ToList will always have a single argument
-                        val toList: ToList = retrieve.codes as ToList
-                        // If that argument is a ToConcept, replace the ToList argument with the
-                        // code (skip the implicit conversion, the data access layer is responsible
-                        // for it)
-                        if (toList.operand is ToConcept) {
-                            toList.operand = (toList.operand as ToConcept).operand
-                        } else {
-                            // Otherwise, access the codes property of the resulting Concept
-                            val codesAccessor: Expression =
-                                libraryBuilder.buildProperty(
-                                    toList.operand,
-                                    "codes",
-                                    false,
-                                    toList.operand!!.resultType,
-                                )
-                            retrieve.codes = codesAccessor
-                        }
-                    } else {
-                        // WARNING:
-                        libraryBuilder.recordParsingException(
-                            CqlSemanticException(
-                                "Terminology target is a list of concepts, but expects a list of codes",
-                                getTrackBack(ctx),
-                                CqlCompilerException.ErrorSeverity.Warning,
-                            )
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                // If something goes wrong attempting to resolve, just set to the expression and
-                // report it as a warning, it shouldn't prevent translation unless the modelinfo
-                // indicates strict retrieve typing
-                if (
-                    ((libraryBuilder.isCompatibleWith("1.5") &&
-                        !(terminology.resultType!!.isSubTypeOf(
-                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                        ))) ||
-                        (!libraryBuilder.isCompatibleWith("1.5") &&
-                            terminology.resultType !is ListType))
-                ) {
-                    retrieve.codes = libraryBuilder.resolveToList(terminology)
-                } else {
-                    retrieve.codes = terminology
-                }
-                retrieve.codeComparator = codeComparator
-                // ERROR:
-                // WARNING:
-                libraryBuilder.recordParsingException(
-                    CqlSemanticException(
-                        "Could not resolve membership operator for terminology target of the retrieve.",
-                        getTrackBack(ctx),
-                        if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
-                        else CqlCompilerException.ErrorSeverity.Warning,
-                        e,
-                    )
-                )
-            }
-        }
-        return retrieve
     }
 
     override fun visitSourceClause(ctx: SourceClauseContext): Any {
