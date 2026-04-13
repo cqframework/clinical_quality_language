@@ -79,10 +79,11 @@ class LibraryBuilder(
     private val nameTypeSpecifiers:
         MutableMap<String, ResultWithPossibleError<NamedTypeSpecifier?>> =
         HashMap()
-    private val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
+    internal val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
     private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
     val scopeManager: ScopeManager = ScopeManager()
     private val propertyResolver: PropertyResolver by lazy { PropertyResolver(this, objectFactory) }
+    private val symbolTable: SymbolTable by lazy { SymbolTable(this) }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -269,11 +270,7 @@ class LibraryBuilder(
     }
 
     private fun addUsing(usingDef: UsingDef) {
-        if (library.usings == null) {
-            library.usings = objectFactory.createLibraryUsings()
-        }
-        library.usings!!.def.add(usingDef)
-        compiledLibrary.add(usingDef)
+        symbolTable.addUsing(usingDef)
     }
 
     @Suppress("NestedBlockDepth")
@@ -462,7 +459,7 @@ class LibraryBuilder(
         loadConversionMap(systemLibrary)
     }
 
-    private fun loadConversionMap(library: CompiledLibrary) {
+    internal fun loadConversionMap(library: CompiledLibrary) {
         for (conversion in library.getConversions()) {
             conversionMap.add(conversion)
         }
@@ -600,131 +597,60 @@ class LibraryBuilder(
     }
 
     fun addInclude(includeDef: IncludeDef) {
-        require(library.identifier != null && library.identifier!!.id != null) {
-            "Unnamed libraries cannot reference other libraries."
-        }
-        if (library.includes == null) {
-            library.includes = objectFactory.createLibraryIncludes()
-        }
-        library.includes!!.def.add(includeDef)
-        compiledLibrary.add(includeDef)
-        val libraryIdentifier =
-            VersionedIdentifier()
-                .withSystem(NamespaceManager.getUriPart(includeDef.path))
-                .withId(NamespaceManager.getNamePart(includeDef.path))
-                .withVersion(includeDef.version)
-        val errors = ArrayList<CqlCompilerException>()
-        val referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors)
-        for (error in errors) {
-            recordParsingException(error)
-        }
-
-        // Note that translation of a referenced library may result in implicit specification of the
-        // namespace
-        // In this case, the referencedLibrary will have a namespaceUri different from the currently
-        // resolved namespaceUri of the IncludeDef.
-        val currentNamespaceUri = NamespaceManager.getUriPart(includeDef.path)
-        @Suppress("ComplexCondition")
-        if (
-            currentNamespaceUri == null && libraryIdentifier.system != null ||
-                currentNamespaceUri != null && currentNamespaceUri != libraryIdentifier.system
-        ) {
-            includeDef.path =
-                NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
-        }
-        libraries[includeDef.localIdentifier!!] = referencedLibrary
-        loadConversionMap(referencedLibrary)
+        symbolTable.addInclude(includeDef)
     }
 
     fun addParameter(paramDef: ParameterDef) {
-        if (library.parameters == null) {
-            library.parameters = objectFactory.createLibraryParameters()
-        }
-        library.parameters!!.def.add(paramDef)
-        compiledLibrary.add(paramDef)
+        symbolTable.addParameter(paramDef)
     }
 
     fun addCodeSystem(cs: CodeSystemDef) {
-        if (library.codeSystems == null) {
-            library.codeSystems = objectFactory.createLibraryCodeSystems()
-        }
-        library.codeSystems!!.def.add(cs)
-        compiledLibrary.add(cs)
+        symbolTable.addCodeSystem(cs)
     }
 
     fun addValueSet(vs: ValueSetDef) {
-        if (library.valueSets == null) {
-            library.valueSets = objectFactory.createLibraryValueSets()
-        }
-        library.valueSets!!.def.add(vs)
-        compiledLibrary.add(vs)
+        symbolTable.addValueSet(vs)
     }
 
     fun addCode(cd: CodeDef) {
-        if (library.codes == null) {
-            library.codes = objectFactory.createLibraryCodes()
-        }
-        library.codes!!.def.add(cd)
-        compiledLibrary.add(cd)
+        symbolTable.addCode(cd)
     }
 
     fun addConcept(cd: ConceptDef) {
-        if (library.concepts == null) {
-            library.concepts = objectFactory.createLibraryConcepts()
-        }
-        library.concepts!!.def.add(cd)
-        compiledLibrary.add(cd)
+        symbolTable.addConcept(cd)
     }
 
     fun addContext(cd: ContextDef) {
-        if (library.contexts == null) {
-            library.contexts = objectFactory.createLibraryContexts()
-        }
-        library.contexts!!.def.add(cd)
+        symbolTable.addContext(cd)
     }
 
     fun addExpression(expDef: ExpressionDef) {
-        if (library.statements == null) {
-            library.statements = objectFactory.createLibraryStatements()
-        }
-        library.statements!!.def.add(expDef)
-        compiledLibrary.add(expDef)
+        symbolTable.addExpression(expDef)
     }
 
     fun removeExpression(expDef: ExpressionDef) {
-        if (library.statements != null) {
-            library.statements!!.def.remove(expDef)
-            compiledLibrary.remove(expDef)
-        }
+        symbolTable.removeExpression(expDef)
     }
 
-    fun resolve(identifier: String): ResolvedIdentifierContext {
-        return compiledLibrary.resolve(identifier)
-    }
+    fun resolve(identifier: String): ResolvedIdentifierContext = symbolTable.resolve(identifier)
 
-    fun resolveIncludeRef(identifier: String): IncludeDef? {
-        return compiledLibrary.resolveIncludeRef(identifier)
-    }
+    fun resolveIncludeRef(identifier: String): IncludeDef? =
+        symbolTable.resolveIncludeRef(identifier)
 
     private fun resolveIncludeAlias(libraryIdentifier: VersionedIdentifier): String? {
         return compiledLibrary.resolveIncludeAlias(libraryIdentifier)
     }
 
-    fun resolveCodeSystemRef(identifier: String): CodeSystemDef? {
-        return compiledLibrary.resolveCodeSystemRef(identifier)
-    }
+    fun resolveCodeSystemRef(identifier: String): CodeSystemDef? =
+        symbolTable.resolveCodeSystemRef(identifier)
 
-    fun resolveValueSetRef(identifier: String): ValueSetDef? {
-        return compiledLibrary.resolveValueSetRef(identifier)
-    }
+    fun resolveValueSetRef(identifier: String): ValueSetDef? =
+        symbolTable.resolveValueSetRef(identifier)
 
-    fun resolveCodeRef(identifier: String): CodeDef? {
-        return compiledLibrary.resolveCodeRef(identifier)
-    }
+    fun resolveCodeRef(identifier: String): CodeDef? = symbolTable.resolveCodeRef(identifier)
 
-    fun resolveConceptRef(identifier: String): ConceptDef? {
-        return compiledLibrary.resolveConceptRef(identifier)
-    }
+    fun resolveConceptRef(identifier: String): ConceptDef? =
+        symbolTable.resolveConceptRef(identifier)
 
     fun resolveParameterRef(identifier: String): ParameterDef? {
         checkLiteralContext()
