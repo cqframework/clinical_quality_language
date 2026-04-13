@@ -2504,176 +2504,165 @@ class LibraryBuilder(
         return null
     }
 
-    @Suppress("LongMethod", "CyclomaticComplexMethod", "ThrowsCount")
+    /**
+     * Resolve an identifier through an ordered chain of focused resolvers. An identifier may be (in
+     * priority order):
+     * 1. A literal in a type-specifier context
+     * 2. A reference to a column of the current sort-clause's result type
+     * 3. An implicit property of a `$this` alias
+     * 4. The `$index` / `$total` query iteration variables
+     * 5. A query alias
+     * 6. A query let-clause
+     * 7. A function operand
+     * 8. A definition (expression / parameter / valueset / codesystem / code / concept / include)
+     * 9. An implicit property of a context parameter
+     *
+     * If none match and [mustResolve] is true, an exception is raised.
+     */
     fun resolveIdentifier(identifier: String, mustResolve: Boolean): Expression? {
-        // An Identifier will always be:
-        // 1: The name of an alias
-        // 2: The name of a query define clause
-        // 3: The name of an expression
-        // 4: The name of a parameter
-        // 5: The name of a valueset
-        // 6: The name of a codesystem
-        // 7: The name of a code
-        // 8: The name of a concept
-        // 9: The name of a library
-        // 10: The name of a property on a specific context
-        // 11: An unresolved identifier error is thrown
-
-        // In a type specifier context, return the identifier as a Literal for resolution as a type
-        // by the caller
-        if (inTypeSpecifierContext()) {
-            return this.createLiteral(identifier)
+        for (resolver in identifierResolvers) {
+            val result = resolver(identifier)
+            if (result != null) return result
         }
-
-        // In the sort clause of a plural query, names may be resolved based on the result type of
-        // the query
-        val resultElement: Expression? = resolveQueryResultElement(identifier)
-        if (resultElement != null) {
-            return resultElement
-        }
-
-        // In the case of a $this alias, names may be resolved as implicit property references
-        val thisElement: Expression? = resolveQueryThisElement(identifier)
-        if (thisElement != null) {
-            return thisElement
-        }
-        if ((identifier == "\$index")) {
-            val result: Iteration = objectFactory.createIteration()
-            result.resultType = resolveTypeName("System", "Integer")
-            return result
-        }
-        if ((identifier == "\$total")) {
-            val result: Total = objectFactory.createTotal()
-            result.resultType = resolveTypeName("System", "Decimal")
-            // TODO: This isn't right, but we don't set up a query for the Aggregate operator right
-            // now...
-            return result
-        }
-        val alias: AliasedQuerySource? = resolveAlias(identifier)
-        if (alias != null) {
-            val result: AliasRef = objectFactory.createAliasRef().withName(identifier)
-            if (alias.resultType is ListType) {
-                result.resultType = (alias.resultType as ListType).elementType
-            } else {
-                result.resultType = alias.resultType
-            }
-            return result
-        }
-        val let: LetClause? = resolveQueryLet(identifier)
-        if (let != null) {
-            val result: QueryLetRef = objectFactory.createQueryLetRef().withName(identifier)
-            result.resultType = let.resultType
-            return result
-        }
-        val operandRef: OperandRef? = resolveOperandRef(identifier)
-        if (operandRef != null) {
-            return operandRef
-        }
+        // The exact-match-element step also produces the diagnostic message used when we fail.
         val resolvedIdentifierContext: ResolvedIdentifierContext = resolve(identifier)
-        val element = resolvedIdentifierContext.exactMatchElement
-        if (element != null) {
-            if (element is ExpressionDef) {
-                checkLiteralContext()
-                val expressionRef: ExpressionRef =
-                    objectFactory.createExpressionRef().withName(element.name)
-                expressionRef.resultType = getExpressionDefResultType(element)
-                requireNotNull(expressionRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to expression ${expressionRef.name} because its definition contains errors."
-                }
-                return expressionRef
-            }
-            if (element is ParameterDef) {
-                checkLiteralContext()
-                val parameterRef: ParameterRef =
-                    objectFactory.createParameterRef().withName(element.name)
-                parameterRef.resultType = element.resultType
-                requireNotNull(parameterRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to parameter ${parameterRef.name} because its definition contains errors."
-                }
-                return parameterRef
-            }
-            if (element is ValueSetDef) {
-                checkLiteralContext()
-                val valuesetRef: ValueSetRef =
-                    objectFactory.createValueSetRef().withName(element.name)
-                valuesetRef.resultType = element.resultType
-                requireNotNull(valuesetRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to valueset ${valuesetRef.name} because its definition contains errors."
-                }
-                if (isCompatibleWith("1.5")) {
-                    valuesetRef.preserve = true
-                }
-                return valuesetRef
-            }
-            if (element is CodeSystemDef) {
-                checkLiteralContext()
-                val codesystemRef: CodeSystemRef =
-                    objectFactory.createCodeSystemRef().withName(element.name)
-                codesystemRef.resultType = element.resultType
-                requireNotNull(codesystemRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to codesystem ${codesystemRef.name} because its definition contains errors."
-                }
-                return codesystemRef
-            }
-            if (element is CodeDef) {
-                checkLiteralContext()
-                val codeRef: CodeRef = objectFactory.createCodeRef().withName(element.name)
-                codeRef.resultType = element.resultType
-                requireNotNull(codeRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to code ${codeRef.name} because its definition contains errors."
-                }
-                return codeRef
-            }
-            if (element is ConceptDef) {
-                checkLiteralContext()
-                val conceptRef: ConceptRef = objectFactory.createConceptRef().withName(element.name)
-                conceptRef.resultType = element.resultType
-                requireNotNull(conceptRef.resultType) {
-                    // ERROR:
-                    "Could not validate reference to concept ${conceptRef.name} because its definition contains error."
-                }
-                return conceptRef
-            }
-            if (element is IncludeDef) {
-                checkLiteralContext()
-                return LibraryRef(objectFactory.nextId(), element.localIdentifier)
-            }
-        }
+        val elementRef = resolvedIdentifierContext.exactMatchElement?.let { buildElementRef(it) }
+        if (elementRef != null) return elementRef
 
-        // If no other resolution occurs, and we are in a specific context, and there is a parameter
-        // with the same name as the context, the identifier may be resolved as an implicit property
-        // reference on that context.
-        val parameterRef: ParameterRef? = resolveImplicitContext()
-        if (parameterRef != null) {
-            val resolution: PropertyResolution? =
-                resolveProperty(parameterRef.resultType, identifier, false)
-            if (resolution != null) {
-                var contextAccessor: Expression? =
-                    buildProperty(
-                        parameterRef,
-                        resolution.name,
-                        resolution.isSearch,
-                        resolution.type,
-                    )
-                contextAccessor = applyTargetMap(contextAccessor, resolution.targetMap)
-                return contextAccessor
-            }
-        }
+        val implicitContextRef = resolveImplicitContextProperty(identifier)
+        if (implicitContextRef != null) return implicitContextRef
+
         if (mustResolve) {
-            // ERROR:
-            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable()
-            if (message == null) {
-                message = "Could not resolve identifier $identifier in the current library."
-            }
-
+            val message =
+                resolvedIdentifierContext.warnCaseInsensitiveIfApplicable()
+                    ?: "Could not resolve identifier $identifier in the current library."
             throw IllegalArgumentException(message)
         }
         return null
+    }
+
+    private val identifierResolvers: kotlin.collections.List<(String) -> Expression?> =
+        listOf(
+            ::resolveAsTypeSpecifierLiteral,
+            ::resolveQueryResultElement,
+            ::resolveQueryThisElement,
+            ::resolveIterationVariable,
+            ::resolveAliasIdentifier,
+            ::resolveLetIdentifier,
+            ::resolveOperandIdentifier,
+        )
+
+    private fun resolveAsTypeSpecifierLiteral(identifier: String): Expression? =
+        if (inTypeSpecifierContext()) createLiteral(identifier) else null
+
+    private fun resolveIterationVariable(identifier: String): Expression? =
+        when (identifier) {
+            "\$index" -> {
+                val iteration = objectFactory.createIteration()
+                iteration.resultType = resolveTypeName("System", "Integer")
+                iteration
+            }
+            "\$total" -> {
+                // TODO: This isn't right, but we don't set up a query for the Aggregate operator
+                // right now...
+                val total = objectFactory.createTotal()
+                total.resultType = resolveTypeName("System", "Decimal")
+                total
+            }
+            else -> null
+        }
+
+    private fun resolveAliasIdentifier(identifier: String): Expression? {
+        val alias = resolveAlias(identifier) ?: return null
+        val ref = objectFactory.createAliasRef().withName(identifier)
+        ref.resultType =
+            if (alias.resultType is ListType) (alias.resultType as ListType).elementType
+            else alias.resultType
+        return ref
+    }
+
+    private fun resolveLetIdentifier(identifier: String): Expression? {
+        val let = resolveQueryLet(identifier) ?: return null
+        val ref = objectFactory.createQueryLetRef().withName(identifier)
+        ref.resultType = let.resultType
+        return ref
+    }
+
+    private fun resolveOperandIdentifier(identifier: String): Expression? =
+        resolveOperandRef(identifier)
+
+    private fun resolveImplicitContextProperty(identifier: String): Expression? {
+        val parameterRef = resolveImplicitContext() ?: return null
+        val resolution = resolveProperty(parameterRef.resultType, identifier, false) ?: return null
+        val contextAccessor =
+            buildProperty(parameterRef, resolution.name, resolution.isSearch, resolution.type)
+        return applyTargetMap(contextAccessor, resolution.targetMap)
+    }
+
+    @Suppress("LongMethod")
+    private fun buildElementRef(element: Element): Expression? {
+        return when (element) {
+            is ExpressionDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createExpressionRef().withName(element.name)
+                ref.resultType = getExpressionDefResultType(element)
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to expression ${ref.name} because its definition contains errors."
+                }
+                ref
+            }
+            is ParameterDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createParameterRef().withName(element.name)
+                ref.resultType = element.resultType
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to parameter ${ref.name} because its definition contains errors."
+                }
+                ref
+            }
+            is ValueSetDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createValueSetRef().withName(element.name)
+                ref.resultType = element.resultType
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to valueset ${ref.name} because its definition contains errors."
+                }
+                if (isCompatibleWith("1.5")) ref.preserve = true
+                ref
+            }
+            is CodeSystemDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createCodeSystemRef().withName(element.name)
+                ref.resultType = element.resultType
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to codesystem ${ref.name} because its definition contains errors."
+                }
+                ref
+            }
+            is CodeDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createCodeRef().withName(element.name)
+                ref.resultType = element.resultType
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to code ${ref.name} because its definition contains errors."
+                }
+                ref
+            }
+            is ConceptDef -> {
+                checkLiteralContext()
+                val ref = objectFactory.createConceptRef().withName(element.name)
+                ref.resultType = element.resultType
+                requireNotNull(ref.resultType) {
+                    "Could not validate reference to concept ${ref.name} because its definition contains error."
+                }
+                ref
+            }
+            is IncludeDef -> {
+                checkLiteralContext()
+                LibraryRef(objectFactory.nextId(), element.localIdentifier)
+            }
+            else -> null
+        }
     }
 
     /**
@@ -3168,103 +3157,18 @@ class LibraryBuilder(
         throw IllegalArgumentException("TargetMapping not implemented: $targetMap")
     }
 
-    @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
+    /**
+     * Resolve a member access expression `left.memberIdentifier`. Dispatches on the kind of `left`
+     * expression:
+     * - [LibraryRef]: resolve the member as a definition in the referenced library
+     * - [AliasRef]: build a Property referenced by the alias's scope
+     * - left has a list result type: build a flatten-style Query (FHIRPath path traversal)
+     * - otherwise: build a Property on the left expression
+     */
+    @Suppress("LongMethod", "NestedBlockDepth")
     fun resolveAccessor(left: Expression, memberIdentifier: String): Expression? {
-        // if left is a LibraryRef
-        // if right is an identifier
-        // right may be an ExpressionRef, a CodeSystemRef, a ValueSetRef, a CodeRef, a ConceptRef,
-        // or a ParameterRef --
-        // need to resolve on the referenced library
-        // if left is an ExpressionRef
-        // if right is an identifier
-        // return a Property with the ExpressionRef as source and identifier as Path
-        // if left is a Property
-        // if right is an identifier
-        // modify the Property to append the identifier to the path
-        // if left is an AliasRef
-        // return a Property with a Path and no source, and Scope set to the Alias
-        // if left is an Identifier
-        // return a new Identifier with left as a qualifier
-        // else
-        // throws an error as an unresolved identifier
         when {
-            left is LibraryRef -> {
-                val libraryName: String? = left.libraryName
-                val referencedLibrary: CompiledLibrary = resolveLibrary(libraryName)
-                val resolvedIdentifierContext: ResolvedIdentifierContext =
-                    referencedLibrary.resolve(memberIdentifier)
-                val element = resolvedIdentifierContext.exactMatchElement
-                if (element != null) {
-                    if (element is ExpressionDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: Expression =
-                            objectFactory
-                                .createExpressionRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = getExpressionDefResultType(element)
-                        return result
-                    }
-                    if (element is ParameterDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: Expression =
-                            objectFactory
-                                .createParameterRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = element.resultType
-                        return result
-                    }
-                    if (element is ValueSetDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: ValueSetRef =
-                            objectFactory
-                                .createValueSetRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = element.resultType
-                        if (isCompatibleWith("1.5")) {
-                            result.preserve = true
-                        }
-                        return result
-                    }
-                    if (element is CodeSystemDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: CodeSystemRef =
-                            objectFactory
-                                .createCodeSystemRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = element.resultType
-                        return result
-                    }
-                    if (element is CodeDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: CodeRef =
-                            objectFactory
-                                .createCodeRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = element.resultType
-                        return result
-                    }
-                    if (element is ConceptDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                        val result: ConceptRef =
-                            objectFactory
-                                .createConceptRef()
-                                .withLibraryName(libraryName)
-                                .withName(memberIdentifier)
-                        result.resultType = element.resultType
-                        return result
-                    }
-                }
-
-                // ERROR:
-                throw IllegalArgumentException(
-                    "Could not resolve identifier $memberIdentifier in library ${referencedLibrary.identifier!!.id}."
-                )
-            }
+            left is LibraryRef -> return resolveLibraryMemberAccessor(left, memberIdentifier)
             left is AliasRef -> {
                 val resolution: PropertyResolution? =
                     resolveProperty(left.resultType, memberIdentifier)
@@ -3334,6 +3238,94 @@ class LibraryBuilder(
                 result = applyTargetMap(result, resolution.targetMap)
                 return result
             }
+        }
+    }
+
+    private fun resolveLibraryMemberAccessor(
+        left: LibraryRef,
+        memberIdentifier: String,
+    ): Expression {
+        val libraryName: String? = left.libraryName
+        val referencedLibrary: CompiledLibrary = resolveLibrary(libraryName)
+        val resolvedIdentifierContext: ResolvedIdentifierContext =
+            referencedLibrary.resolve(memberIdentifier)
+        val element = resolvedIdentifierContext.exactMatchElement
+        val ref = element?.let { buildLibraryMemberRef(libraryName, memberIdentifier, it) }
+        return ref
+            ?: throw IllegalArgumentException(
+                "Could not resolve identifier $memberIdentifier in library ${referencedLibrary.identifier!!.id}."
+            )
+    }
+
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
+    private fun buildLibraryMemberRef(
+        libraryName: String?,
+        memberIdentifier: String,
+        element: Element,
+    ): Expression? {
+        return when (element) {
+            is ExpressionDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createExpressionRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = getExpressionDefResultType(element)
+                ref
+            }
+            is ParameterDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createParameterRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = element.resultType
+                ref
+            }
+            is ValueSetDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createValueSetRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = element.resultType
+                if (isCompatibleWith("1.5")) ref.preserve = true
+                ref
+            }
+            is CodeSystemDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createCodeSystemRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = element.resultType
+                ref
+            }
+            is CodeDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createCodeRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = element.resultType
+                ref
+            }
+            is ConceptDef -> {
+                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
+                val ref =
+                    objectFactory
+                        .createConceptRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier)
+                ref.resultType = element.resultType
+                ref
+            }
+            else -> null
         }
     }
 
