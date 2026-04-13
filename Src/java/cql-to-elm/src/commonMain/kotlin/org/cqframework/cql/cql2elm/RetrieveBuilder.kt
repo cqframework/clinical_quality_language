@@ -197,13 +197,13 @@ class RetrieveBuilder(
     private fun applyEquivalent(retrieve: Retrieve, property: Property, terminology: Expression) {
         val equivalent: BinaryExpression =
             of.createEquivalent().withOperand(listOf(property, terminology))
-        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
+        libraryBuilder.resolveCall("System", "Equivalent", equivalent)
         retrieve.codes = promoteToList(equivalent.operand[1])
     }
 
     private fun applyEqual(retrieve: Retrieve, property: Property, terminology: Expression) {
         val equal: BinaryExpression = of.createEqual().withOperand(listOf(property, terminology))
-        libraryBuilder.resolveBinaryCall("System", "Equal", equal)
+        libraryBuilder.resolveCall("System", "Equal", equal)
         retrieve.codes = promoteToList(equal.operand[1])
     }
 

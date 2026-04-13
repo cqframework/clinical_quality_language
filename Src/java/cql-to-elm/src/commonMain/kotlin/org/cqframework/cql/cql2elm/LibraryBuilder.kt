@@ -752,29 +752,43 @@ class LibraryBuilder(
         )
     }
 
-    fun resolveUnaryCall(
+    /**
+     * Resolve an operator invocation, dispatching on the runtime type of [expression] to wrap it in
+     * the appropriate [Invocation]. Replaces the family of arity-specific `resolve*Call` wrappers
+     * (`resolveUnaryCall`, `resolveBinaryCall`, etc.).
+     *
+     * Set-membership operators (`In`, `IncludedIn`, `ProperIn`, `ProperIncludedIn`, etc.) carry
+     * CQL-specific semantics beyond arity and stay on their own dedicated entry points.
+     */
+    @JsExport.Ignore
+    fun resolveCall(
         libraryName: String?,
         operatorName: String,
-        expression: UnaryExpression,
+        expression: Expression,
     ): Expression? {
+        val invocation = expressionToInvocation(expression)
         return resolveCall(
             libraryName,
             operatorName,
-            UnaryExpressionInvocation(expression),
+            invocation,
+            mustResolve = true,
             allowPromotionAndDemotion = false,
             allowFluent = false,
         )
     }
 
-    @JsExport.Ignore
-    fun resolveBinaryCall(
-        libraryName: String?,
-        operatorName: String,
-        expression: BinaryExpression,
-    ): Expression? {
-        val invocation = resolveBinaryInvocation(libraryName, operatorName, expression)
-        return invocation?.expression
-    }
+    private fun expressionToInvocation(expression: Expression): Invocation =
+        when (expression) {
+            is UnaryExpression -> UnaryExpressionInvocation(expression)
+            is BinaryExpression -> BinaryExpressionInvocation(expression)
+            is TernaryExpression -> TernaryExpressionInvocation(expression)
+            is NaryExpression -> NaryExpressionInvocation(expression)
+            is AggregateExpression -> AggregateExpressionInvocation(expression)
+            else ->
+                throw IllegalArgumentException(
+                    "Cannot resolve operator call for expression of type ${expression::class.simpleName}"
+                )
+        }
 
     @JvmOverloads
     fun resolveBinaryInvocation(
@@ -794,6 +808,11 @@ class LibraryBuilder(
         )
     }
 
+    /**
+     * Variant of [resolveCall] that allows the caller to override resolution behavior for the
+     * specific binary call. Kept as a dedicated entry point because it forwards `mustResolve` and
+     * `allowPromotionAndDemotion`, which the unified helper does not.
+     */
     @JsExport.Ignore
     fun resolveBinaryCall(
         libraryName: String?,
@@ -811,48 +830,6 @@ class LibraryBuilder(
                 allowPromotionAndDemotion,
             )
         return invocation?.expression
-    }
-
-    fun resolveTernaryCall(
-        libraryName: String?,
-        operatorName: String,
-        expression: TernaryExpression,
-    ): Expression? {
-        return resolveCall(
-            libraryName,
-            operatorName,
-            TernaryExpressionInvocation(expression),
-            allowPromotionAndDemotion = false,
-            allowFluent = false,
-        )
-    }
-
-    fun resolveNaryCall(
-        libraryName: String?,
-        operatorName: String,
-        expression: NaryExpression?,
-    ): Expression? {
-        return resolveCall(
-            libraryName,
-            operatorName,
-            NaryExpressionInvocation(expression!!),
-            allowPromotionAndDemotion = false,
-            allowFluent = false,
-        )
-    }
-
-    fun resolveAggregateCall(
-        libraryName: String?,
-        operatorName: String,
-        expression: AggregateExpression,
-    ): Expression? {
-        return resolveCall(
-            libraryName,
-            operatorName,
-            AggregateExpressionInvocation(expression),
-            allowPromotionAndDemotion = false,
-            allowFluent = false,
-        )
     }
 
     private class BinaryWrapper(var left: Expression, var right: Expression)
@@ -936,7 +913,7 @@ class LibraryBuilder(
         // TODO: Take advantage of nary unions
         val wrapper = normalizeListTypes(left, right)
         val union = objectFactory.createUnion().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveNaryCall("System", "Union", union)
+        resolveCall("System", "Union", union)
         return union
     }
 
@@ -958,14 +935,14 @@ class LibraryBuilder(
         val wrapper = normalizeListTypes(left, right)
         val intersect =
             objectFactory.createIntersect().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveNaryCall("System", "Intersect", intersect)
+        resolveCall("System", "Intersect", intersect)
         return intersect
     }
 
     fun resolveExcept(left: Expression, right: Expression): Expression {
         val wrapper = normalizeListTypes(left, right)
         val except = objectFactory.createExcept().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveNaryCall("System", "Except", except)
+        resolveCall("System", "Except", except)
         return except
     }
 
@@ -1027,7 +1004,7 @@ class LibraryBuilder(
             return inCodeSystem
         }
         val inExpression = objectFactory.createIn().withOperand(listOf(left, right))
-        resolveBinaryCall("System", "In", inExpression)
+        resolveCall("System", "In", inExpression)
         return inExpression
     }
 
@@ -1035,7 +1012,7 @@ class LibraryBuilder(
     fun resolveContains(left: Expression, right: Expression): Expression {
         // TODO: Add terminology overloads
         val contains = objectFactory.createContains().withOperand(listOf(left, right))
-        resolveBinaryCall("System", "Contains", contains)
+        resolveCall("System", "Contains", contains)
         return contains
     }
 
@@ -1208,7 +1185,7 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(includesInvocation, containsInvocation)
-            ?: resolveBinaryCall("System", "Includes", includes)
+            ?: resolveCall("System", "Includes", includes)
 
         // Neither operator resolved, so force a resolve to throw
     }
@@ -1245,7 +1222,7 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(properIncludesInvocation, properContainsInvocation)
-            ?: resolveBinaryCall("System", "ProperIncludes", properIncludes)
+            ?: resolveCall("System", "ProperIncludes", properIncludes)
 
         // Neither operator resolved, so force a resolve to throw
     }
@@ -1282,7 +1259,7 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(includedInInvocation, inInvocation)
-            ?: resolveBinaryCall("System", "IncludedIn", includedIn)
+            ?: resolveCall("System", "IncludedIn", includedIn)
 
         // Neither operator resolved, so force a resolve to throw
     }
@@ -1319,7 +1296,7 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false,
             )
         return lowestScoringInvocation(properIncludedInInvocation, properInInvocation)
-            ?: resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn)
+            ?: resolveCall("System", "ProperIncludedIn", properIncludedIn)
 
         // Neither operator resolved, so force a resolve to throw
     }
@@ -1727,7 +1704,7 @@ class LibraryBuilder(
         val right = objectFactory.createLiteral().withResultType(dataType) as Expression
         val comparison: BinaryExpression =
             objectFactory.createLess().withOperand(listOf(left, right))
-        resolveBinaryCall("System", "Less", comparison)
+        resolveCall("System", "Less", comparison)
     }
 
     @JsExport.Ignore
@@ -1793,7 +1770,7 @@ class LibraryBuilder(
     ): Expression {
         val singletonFrom = objectFactory.createSingletonFrom().withOperand(expression)
         singletonFrom.resultType = conversion.fromType.elementType
-        resolveUnaryCall("System", "SingletonFrom", singletonFrom)
+        resolveCall("System", "SingletonFrom", singletonFrom)
         // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression)
         val inner = conversion.elementConversion
@@ -1833,7 +1810,7 @@ class LibraryBuilder(
     ): Expression {
         val pointFrom = objectFactory.createPointFrom().withOperand(expression)
         pointFrom.resultType = conversion.fromType.pointType
-        resolveUnaryCall("System", "PointFrom", pointFrom)
+        resolveCall("System", "PointFrom", pointFrom)
         // WARNING:
         reportWarning("Interval-valued expression was demoted to a point.", expression)
         val inner = conversion.pointConversion
@@ -2018,13 +1995,13 @@ class LibraryBuilder(
 
     fun buildPredecessor(source: Expression?): Expression {
         val result = objectFactory.createPredecessor().withOperand(source)
-        resolveUnaryCall("System", "Predecessor", result)
+        resolveCall("System", "Predecessor", result)
         return result
     }
 
     fun buildSuccessor(source: Expression?): Expression {
         val result = objectFactory.createSuccessor().withOperand(source)
-        resolveUnaryCall("System", "Successor", result)
+        resolveCall("System", "Successor", result)
         return result
     }
 
