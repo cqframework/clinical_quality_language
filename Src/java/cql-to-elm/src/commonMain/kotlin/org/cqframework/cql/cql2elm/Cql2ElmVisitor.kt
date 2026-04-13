@@ -10,6 +10,7 @@ import org.cqframework.cql.cql2elm.DataTypes.subTypeOf
 import org.cqframework.cql.cql2elm.DataTypes.verifyCast
 import org.cqframework.cql.cql2elm.DataTypes.verifyType
 import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope
+import org.cqframework.cql.cql2elm.elm.DateRangeOptimizer
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.QueryContext
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -22,7 +23,6 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.cqframework.cql.cql2elm.utils.Stack
-import org.cqframework.cql.cql2elm.utils.isLeapYear
 import org.cqframework.cql.cql2elm.utils.logger
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
@@ -53,6 +53,8 @@ class Cql2ElmVisitor(
     libraryInfo: LibraryInfo,
 ) : CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
+    private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
+    private val dateRangeOptimizer = DateRangeOptimizer(libraryBuilder)
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
     private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
@@ -785,224 +787,7 @@ class Cql2ElmVisitor(
         if (input.startsWith("@")) {
             input = input.substring(1)
         }
-        val timePattern = Regex("T(\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?")
-        // -1-------2---3-------4---5-------6---7-----------
-        val matcher = timePattern.matchEntire(input)
-        return if (matcher != null) {
-            try {
-                val result = of.createTime()
-                val hour = matcher.groups[1]!!.value.toInt()
-                var minute = -1
-                var second = -1
-                var millisecond = -1
-                require(hour in 0..24) { "Invalid hour in time literal ($hour)." }
-                result.hour = libraryBuilder.createLiteral(hour)
-                if (matcher.groups[3] != null) {
-                    minute = matcher.groups[3]!!.value.toInt()
-                    require(!((minute < 0) || (minute >= 60) || (hour == 24 && minute > 0))) {
-                        "Invalid minute in time literal ($minute)."
-                    }
-                    result.minute = libraryBuilder.createLiteral(minute)
-                }
-                if (matcher.groups[5] != null) {
-                    second = matcher.groups[5]!!.value.toInt()
-                    require(!((second < 0) || (second >= 60) || (hour == 24 && second > 0))) {
-                        "Invalid second in time literal ($second)."
-                    }
-                    result.second = libraryBuilder.createLiteral(second)
-                }
-                if (matcher.groups[7] != null) {
-                    millisecond = matcher.groups[7]!!.value.toInt()
-                    require(hour == 24 && millisecond == 0 || millisecond >= 0) {
-                        "Invalid millisecond in time literal ($millisecond)."
-                    }
-                    result.millisecond = libraryBuilder.createLiteral(millisecond)
-                }
-                result.resultType = libraryBuilder.resolveTypeName("System", "Time")
-                result
-            } catch (e: RuntimeException) {
-                throw IllegalArgumentException(
-                    "Invalid time input ($input). Use ISO 8601 time representation (hh:mm:ss.fff).",
-                    e,
-                )
-            }
-        } else {
-            @Suppress("UseRequire")
-            throw IllegalArgumentException(
-                "Invalid time input ($input). Use ISO 8601 time representation (hh:mm:ss.fff)."
-            )
-        }
-    }
-
-    private fun parseDateTimeLiteral(input: String): Expression {
-        /*
-         * DATETIME
-         * : '@'
-         * [0-9][0-9][0-9][0-9] // year
-         * (
-         * (
-         * '-'[0-9][0-9] // month
-         * (
-         * (
-         * '-'[0-9][0-9] // day
-         * ('T' TIMEFORMAT?)?
-         * )
-         * | 'T'
-         * )?
-         * )
-         * | 'T'
-         * )?
-         * ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
-         * ;
-         */
-        val dateTimePattern =
-            Regex(
-                "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(:(\\d{2}))))?"
-            )
-        // 1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
-        // ----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
-
-        /*
-         * year - group 1
-         * month - group 5
-         * day - group 9
-         * day dateTime indicator - group 11
-         * hour - group 13
-         * minute - group 15
-         * second - group 17
-         * millisecond - group 19
-         * month dateTime indicator - group 20
-         * year dateTime indicator - group 21
-         * utc indicator - group 23
-         * timezone offset polarity - group 25
-         * timezone offset hour - group 26
-         * timezone offset minute - group 28
-         */
-
-        /*
-         * Pattern dateTimePattern =
-         * Pattern.compile(
-         * "(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?"
-         * );
-         * //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1--
-         * -1-------------11---12-----2-------2----2---------------
-         * //----------------------------------------0-------1---2-------3---4-------5--
-         * -6-------------78---90-----1-------2----3---------------
-         */
-        val matcher = dateTimePattern.matchEntire(input)
-        return if (matcher != null) {
-            try {
-                val result = of.createDateTime()
-                val year = matcher.groups[1]!!.value.toInt()
-                var month = -1
-                var day = -1
-                var hour = -1
-                var minute = -1
-                var second = -1
-                var millisecond = -1
-                result.year = libraryBuilder.createLiteral(year)
-                if (matcher.groups[5] != null) {
-                    month = matcher.groups[5]!!.value.toInt()
-                    require(month in 0..12) { "Invalid month in date/time literal ($input)." }
-                    result.month = libraryBuilder.createLiteral(month)
-                }
-                if (matcher.groups[9] != null) {
-                    day = matcher.groups[9]!!.value.toInt()
-                    var maxDay = 31
-                    when (month) {
-                        2 -> maxDay = if (isLeapYear(year)) 29 else 28
-                        4,
-                        6,
-                        9,
-                        11 -> maxDay = 30
-                    }
-                    require(day in 0..maxDay) { "Invalid day in date/time literal ($input)." }
-                    result.day = libraryBuilder.createLiteral(day)
-                }
-                if (matcher.groups[13] != null) {
-                    hour = matcher.groups[13]!!.value.toInt()
-                    require(hour in 0..24) { "Invalid hour in date/time literal ($input)." }
-                    result.hour = libraryBuilder.createLiteral(hour)
-                }
-                if (matcher.groups[15] != null) {
-                    minute = matcher.groups[15]!!.value.toInt()
-                    require(minute in 0..60 && !(hour == 24 && minute > 0)) {
-                        "Invalid minute in date/time literal ($input)."
-                    }
-                    result.minute = libraryBuilder.createLiteral(minute)
-                }
-                if (matcher.groups[17] != null) {
-                    second = matcher.groups[17]!!.value.toInt()
-                    require(second in 0..60 && !(hour == 24 && second > 0)) {
-                        "Invalid second in date/time literal ($input)."
-                    }
-                    result.second = libraryBuilder.createLiteral(second)
-                }
-                if (matcher.groups[19] != null) {
-                    millisecond = matcher.groups[19]!!.value.toInt()
-                    require(millisecond >= 0 && !(hour == 24 && millisecond > 0)) {
-                        "Invalid millisecond in date/time literal ($input)."
-                    }
-                    result.millisecond = libraryBuilder.createLiteral(millisecond)
-                }
-                if (matcher.groups[23] != null && (matcher.groups[23]!!.value == "Z")) {
-                    result.timezoneOffset = libraryBuilder.createLiteral(0.0)
-                }
-                if (matcher.groups[25] != null) {
-                    val offsetPolarity = if ((matcher.groups[25]!!.value == "+")) 1 else -1
-                    if (matcher.groups[28] != null) {
-                        val hourOffset = matcher.groups[26]!!.value.toInt()
-                        require(hourOffset in 0..14) {
-                            "Timezone hour offset is out of range in date/time literal ($input)."
-                        }
-                        val minuteOffset = matcher.groups[28]!!.value.toInt()
-                        require(minuteOffset in 0..60 && !(hourOffset == 14 && minuteOffset > 0)) {
-                            "Timezone minute offset is out of range in date/time literal ($input)."
-                        }
-                        result.timezoneOffset =
-                            libraryBuilder.createLiteral(
-                                (hourOffset + (minuteOffset.toDouble() / 60)) * offsetPolarity
-                            )
-                    } else {
-                        if (matcher.groups[26] != null) {
-                            val hourOffset = matcher.groups[26]!!.value.toInt()
-                            require(hourOffset in 0..14) {
-                                "Timezone hour offset is out of range in date/time literal ($input)."
-                            }
-                            result.timezoneOffset =
-                                libraryBuilder.createLiteral(
-                                    (hourOffset * offsetPolarity).toDouble()
-                                )
-                        }
-                    }
-                }
-                if (
-                    (result.hour == null) &&
-                        (matcher.groups[11] == null) &&
-                        (matcher.groups[20] == null) &&
-                        (matcher.groups[21] == null)
-                ) {
-                    val date = of.createDate()
-                    date.year = result.year
-                    date.month = result.month
-                    date.day = result.day
-                    date.resultType = libraryBuilder.resolveTypeName("System", "Date")
-                    return date
-                }
-                result.resultType = libraryBuilder.resolveTypeName("System", "DateTime")
-                result
-            } catch (e: RuntimeException) {
-                throw IllegalArgumentException(
-                    "Invalid date-time input ($input)." +
-                        " Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).",
-                    e,
-                )
-            }
-        } else
-            throw IllegalArgumentException(
-                "Invalid date-time input ($input)." +
-                    " Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm))."
-            )
+        return dateTimeLiteralParser.parseTime(input)
     }
 
     override fun visitDateLiteral(ctx: DateLiteralContext): Any {
@@ -1010,7 +795,7 @@ class Cql2ElmVisitor(
         if (input.startsWith("@")) {
             input = input.substring(1)
         }
-        return parseDateTimeLiteral(input)
+        return dateTimeLiteralParser.parseDateTime(input)
     }
 
     override fun visitDateTimeLiteral(ctx: DateTimeLiteralContext): Any {
@@ -1018,7 +803,7 @@ class Cql2ElmVisitor(
         if (input.startsWith("@")) {
             input = input.substring(1)
         }
-        return parseDateTimeLiteral(input)
+        return dateTimeLiteralParser.parseDateTime(input)
     }
 
     override fun visitNullLiteral(ctx: NullLiteralContext): Null {
@@ -3555,258 +3340,12 @@ class Cql2ElmVisitor(
         }
     }
 
-    // TODO: Expand this optimization to work the DateLow/DateHigh property attributes
     /**
-     * Some systems may wish to optimize performance by restricting retrieves with available date
-     * ranges. Specifying date ranges in a retrieve was removed from the CQL grammar, but it is
-     * still possible to extract date ranges from the where clause and put them in the Retrieve in
-     * ELM. The `optimizeDateRangeInQuery` method attempts to do this automatically. If optimization
-     * is possible, it will remove the corresponding "during" from the where clause and insert the
-     * date range into the Retrieve.
-     *
-     * @param aqs the AliasedQuerySource containing the ClinicalRequest to possibly refactor a date
-     *   range into.
-     * @param where the Where clause to search for potential date range optimizations
-     * @return the where clause with optimized "durings" removed, or `null` if there is no longer a
-     *   Where clause after optimization.
+     * Rewrite a query's where clause to promote date-range predicates into the source retrieve's
+     * `dateProperty` / `dateRange` fields where possible. See [DateRangeOptimizer] for details.
      */
-    fun optimizeDateRangeInQuery(where: Expression?, aqs: AliasedQuerySource): Expression? {
-        var where = where
-        if (aqs.expression is Retrieve) {
-            val retrieve = aqs.expression as Retrieve
-            val alias = aqs.alias
-            if (
-                (where is IncludedIn || where is In) &&
-                    attemptDateRangeOptimization(where, retrieve, alias!!)
-            ) {
-                where = null
-            } else if (where is And && attemptDateRangeOptimization(where, retrieve, alias!!)) {
-                // Now optimize out the trues from the Ands
-                where = consolidateAnd(where)
-            }
-        }
-        return where
-    }
-
-    /**
-     * Test a `BinaryExpression` expression and determine if it is suitable to be refactored into
-     * the `Retrieve` as a date range restriction. If so, adjust the `Retrieve` accordingly and
-     * return `true`.
-     *
-     * @param during the `BinaryExpression` expression to potentially refactor into the `Retrieve`
-     * @param retrieve the `Retrieve` to add qualifying date ranges to (if applicable)
-     * @param alias the alias of the `Retrieve` in the query.
-     * @return `true` if the date range was set in the `Retrieve`; `false` otherwise.
-     */
-    private fun attemptDateRangeOptimization(
-        during: BinaryExpression,
-        retrieve: Retrieve,
-        alias: String,
-    ): Boolean {
-        if (retrieve.dateProperty != null || retrieve.dateRange != null) {
-            return false
-        }
-        val left = during.operand[0]
-        val right = during.operand[1]
-        val propertyPath = getPropertyPath(left, alias)
-        if (propertyPath != null && isRHSEligibleForDateRangeOptimization(right)) {
-            retrieve.dateProperty = propertyPath
-            retrieve.dateRange = right
-            return true
-        }
-        return false
-    }
-
-    /**
-     * Collapse a property path expression back to it's qualified form for use as the path attribute
-     * of the retrieve.
-     *
-     * @param reference the `Expression` to collapse
-     * @param alias the alias of the `Retrieve` in the query.
-     * @return The collapsed path operands (or sub-operands) were modified; `false` otherwise.
-     */
-    private fun getPropertyPath(reference: Expression, alias: String): String? {
-        var ref = reference
-        ref = getConversionReference(ref)
-        ref = getChoiceSelection(ref)
-        if (ref is Property) {
-            val property = ref
-            if (alias == property.scope) {
-                return property.path
-            } else if (property.source != null) {
-                val subPath = getPropertyPath(property.source!!, alias)
-                if (subPath != null) {
-                    return "$subPath.${property.path}"
-                }
-            }
-        }
-        return null
-    }
-
-    /**
-     * If this is a conversion operator, return the argument of the conversion, on the grounds that
-     * the date range optimization should apply through a conversion (i.e. it is an order-preserving
-     * conversion)
-     *
-     * @param reference the `Expression` to examine
-     * @return The argument to the conversion operator if there was one, otherwise, the given
-     *   `reference`
-     */
-    private fun getConversionReference(reference: Expression): Expression {
-        if (reference is FunctionRef) {
-            val functionRef: FunctionRef = reference
-            if (
-                (functionRef.operand.size == 1) &&
-                    (functionRef.resultType != null) &&
-                    (functionRef.operand[0].resultType != null)
-            ) {
-                val o: Operator? =
-                    libraryBuilder.conversionMap.getConversionOperator(
-                        functionRef.operand[0].resultType!!,
-                        functionRef.resultType!!,
-                    )
-                if (
-                    ((o != null) &&
-                        (o.libraryName != null) &&
-                        (o.libraryName == functionRef.libraryName) &&
-                        (o.name == functionRef.name))
-                ) {
-                    return functionRef.operand[0]
-                }
-            }
-        }
-        return reference
-    }
-
-    /**
-     * If this is a choice selection, return the argument of the choice selection, on the grounds
-     * that the date range optimization should apply through the cast (i.e. it is an
-     * order-preserving cast)
-     *
-     * @param reference the `Expression` to examine
-     * @return The argument to the choice selection (i.e. As) if there was one, otherwise, the given
-     *   `reference`
-     */
-    private fun getChoiceSelection(reference: Expression): Expression {
-        if (reference is As) {
-            if (reference.operand != null && reference.operand!!.resultType is ChoiceType) {
-                return reference.operand!!
-            }
-        }
-        return reference
-    }
-
-    /**
-     * Test an `And` expression and determine if it contains any operands (first-level or nested
-     * deeper) than are `IncludedIn` expressions that can be refactored into a `Retrieve`. If so,
-     * adjust the `Retrieve` accordingly and reset the corresponding operand to a literal `true`.
-     * This `and` branch containing a `true` can be further consolidated later.
-     *
-     * @param and the `And` expression containing operands to potentially refactor into the
-     *   `Retrieve`
-     * @param retrieve the `Retrieve` to add qualifying date ranges to (if applicable)
-     * @param alias the alias of the `Retrieve` in the query.
-     * @return `true` if the date range was set in the `Retrieve` and the `And` operands (or
-     *   sub-operands) were modified; `false` otherwise.
-     */
-    private fun attemptDateRangeOptimization(and: And, retrieve: Retrieve, alias: String): Boolean {
-        if (retrieve.dateProperty != null || retrieve.dateRange != null) {
-            return false
-        }
-        for (i in and.operand.indices) {
-            val operand = and.operand[i]
-            if (
-                (operand is IncludedIn || operand is In) &&
-                    attemptDateRangeOptimization(operand, retrieve, alias)
-            ) {
-                // Replace optimized part in And with true -- to be optimized out later
-                and.operand[i] = libraryBuilder.createLiteral(true)
-                return true
-            } else if (operand is And && attemptDateRangeOptimization(operand, retrieve, alias)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * If any branches in the `And` tree contain a `true`, refactor it out.
-     *
-     * @param and the `And` tree to attempt to consolidate
-     * @return the potentially consolidated `And`
-     */
-    private fun consolidateAnd(and: And): Expression {
-        var result: Expression = and
-        val lhs = and.operand[0]
-        val rhs = and.operand[1]
-        when {
-            isBooleanLiteral(lhs, true) -> result = rhs
-            isBooleanLiteral(rhs, true) -> result = lhs
-            lhs is And -> and.operand[0] = consolidateAnd(lhs)
-            rhs is And -> and.operand[1] = consolidateAnd(rhs)
-        }
-        return result
-    }
-
-    /**
-     * Determine if the right-hand side of an `IncludedIn` expression can be refactored into the
-     * date range of a `Retrieve`. Currently, refactoring is only supported when the RHS is a
-     * literal DateTime interval, a literal DateTime, a parameter representing a DateTime interval
-     * or a DateTime, or an expression reference representing a DateTime interval or a DateTime.
-     *
-     * @param rhs the right-hand side of the `IncludedIn` to test for potential optimization
-     * @return `true` if the RHS supports refactoring to a `Retrieve`, `false` otherwise.
-     */
-    private fun isRHSEligibleForDateRangeOptimization(rhs: Expression): Boolean {
-        return (rhs.resultType!!.isSubTypeOf(
-            libraryBuilder.resolveTypeName("System", "DateTime")!!
-        ) ||
-            rhs.resultType!!.isSubTypeOf(
-                IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")!!)
-            ))
-
-        // BTR: The only requirement for the optimization is that the expression be of type DateTime
-        // or Interval<DateTime>
-        // Whether or not the expression can be statically evaluated (literal, in the loose sense of
-        // the word) is really a function of the engine in determining the "initial" data
-        // requirements, versus subsequent data requirements
-        // Element targetElement = rhs;
-        // if (rhs instanceof ParameterRef) {
-        //     String paramName = ((ParameterRef) rhs).getName();
-        //     for (ParameterDef def : getLibrary().getParameters().getDef()) {
-        //         if (paramName.equals(def.getName())) {
-        //             targetElement = def.getParameterTypeSpecifier();
-        //             if (targetElement == null) {
-        //                 targetElement = def.getDefault();
-        //             }
-        //             break;
-        //         }
-        //     }
-        // } else if (rhs instanceof ExpressionRef && !(rhs instanceof FunctionRef)) {
-        //     // TODO: Support forward declaration, if necessary
-        //     String expName = ((ExpressionRef) rhs).getName();
-        //     for (ExpressionDef def : getLibrary().getStatements().getDef()) {
-        //         if (expName.equals(def.getName())) {
-        //             targetElement = def.getExpression();
-        //         }
-        //     }
-        // }
-        //
-        // boolean isEligible = false;
-        // if (targetElement instanceof DateTime) {
-        //     isEligible = true;
-        // } else if (targetElement instanceof Interval) {
-        //     Interval ivl = (Interval) targetElement;
-        //     isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) ||
-        //         (ivl.getHigh() != null && ivl.getHigh() instanceof DateTime);
-        // } else if (targetElement instanceof IntervalTypeSpecifier) {
-        //     IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
-        //     isEligible = isDateTimeTypeSpecifier(spec.getPointType());
-        // } else if (targetElement instanceof NamedTypeSpecifier) {
-        //     isEligible = isDateTimeTypeSpecifier(targetElement);
-        // }
-        // return isEligible;
-    }
+    fun optimizeDateRangeInQuery(where: Expression?, aqs: AliasedQuerySource): Expression? =
+        dateRangeOptimizer.optimize(where, aqs)
 
     override fun visitLetClause(ctx: LetClauseContext): Any {
         val letClauseItems: MutableList<LetClause?> = ArrayList()
@@ -4449,21 +3988,6 @@ class Cql2ElmVisitor(
 
     private fun parseExpression(pt: ParseTree?): Expression? {
         return if (pt == null) null else visit(pt) as Expression?
-    }
-
-    private fun isBooleanLiteral(expression: Expression, bool: Boolean?): Boolean {
-        var ret = false
-        if (expression is Literal) {
-            ret =
-                (expression.valueType ==
-                    libraryBuilder.dataTypeToQName(
-                        libraryBuilder.resolveTypeName("System", "Boolean")
-                    ))
-            if (ret && bool != null) {
-                ret = bool == expression.value.toBoolean()
-            }
-        }
-        return ret
     }
 
     private fun getTrackBack(tree: ParseTree): TrackBack? {
