@@ -2599,70 +2599,12 @@ class LibraryBuilder(
         return applyTargetMap(contextAccessor, resolution.targetMap)
     }
 
-    @Suppress("LongMethod")
     private fun buildElementRef(element: Element): Expression? {
-        return when (element) {
-            is ExpressionDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createExpressionRef().withName(element.name)
-                ref.resultType = getExpressionDefResultType(element)
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to expression ${ref.name} because its definition contains errors."
-                }
-                ref
-            }
-            is ParameterDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createParameterRef().withName(element.name)
-                ref.resultType = element.resultType
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to parameter ${ref.name} because its definition contains errors."
-                }
-                ref
-            }
-            is ValueSetDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createValueSetRef().withName(element.name)
-                ref.resultType = element.resultType
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to valueset ${ref.name} because its definition contains errors."
-                }
-                if (isCompatibleWith("1.5")) ref.preserve = true
-                ref
-            }
-            is CodeSystemDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createCodeSystemRef().withName(element.name)
-                ref.resultType = element.resultType
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to codesystem ${ref.name} because its definition contains errors."
-                }
-                ref
-            }
-            is CodeDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createCodeRef().withName(element.name)
-                ref.resultType = element.resultType
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to code ${ref.name} because its definition contains errors."
-                }
-                ref
-            }
-            is ConceptDef -> {
-                checkLiteralContext()
-                val ref = objectFactory.createConceptRef().withName(element.name)
-                ref.resultType = element.resultType
-                requireNotNull(ref.resultType) {
-                    "Could not validate reference to concept ${ref.name} because its definition contains error."
-                }
-                ref
-            }
-            is IncludeDef -> {
-                checkLiteralContext()
-                LibraryRef(objectFactory.nextId(), element.localIdentifier)
-            }
-            else -> null
+        if (element is IncludeDef) {
+            checkLiteralContext()
+            return LibraryRef(objectFactory.nextId(), element.localIdentifier)
         }
+        return buildDefinitionRef(element, libraryName = null, memberName = null)
     }
 
     /**
@@ -3257,77 +3199,129 @@ class LibraryBuilder(
             )
     }
 
-    @Suppress("CyclomaticComplexMethod", "LongMethod")
     private fun buildLibraryMemberRef(
         libraryName: String?,
         memberIdentifier: String,
         element: Element,
+    ): Expression? = buildDefinitionRef(element, libraryName, memberIdentifier)
+
+    /**
+     * Build a `*Ref` ELM node for a resolved definition.
+     *
+     * When [libraryName] is non-null, [memberName] must be the member identifier used to address
+     * the definition in the referenced library, and an access-level check runs. When [libraryName]
+     * is null the ref is built for the current library; a literal-context check runs and the result
+     * type is validated to have resolved (to catch upstream definition errors).
+     *
+     * [IncludeDef] is handled separately by the caller — it builds a [LibraryRef] rather than a
+     * `*Ref` node and only applies in the local case.
+     */
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
+    private fun buildDefinitionRef(
+        element: Element,
+        libraryName: String?,
+        memberName: String?,
     ): Expression? {
-        return when (element) {
-            is ExpressionDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createExpressionRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = getExpressionDefResultType(element)
-                ref
+        val isLocal = libraryName == null
+        val accessChecked: (AccessModifier?) -> Unit = { access ->
+            if (isLocal) checkLiteralContext()
+            else checkAccessLevel(libraryName, memberName!!, access!!)
+        }
+        val ref: Expression =
+            when (element) {
+                is ExpressionDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createExpressionRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = getExpressionDefResultType(element)
+                    r
+                }
+                is ParameterDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createParameterRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = element.resultType
+                    r
+                }
+                is ValueSetDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createValueSetRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = element.resultType
+                    if (isCompatibleWith("1.5")) r.preserve = true
+                    r
+                }
+                is CodeSystemDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createCodeSystemRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = element.resultType
+                    r
+                }
+                is CodeDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createCodeRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = element.resultType
+                    r
+                }
+                is ConceptDef -> {
+                    accessChecked(element.accessLevel)
+                    val r =
+                        objectFactory
+                            .createConceptRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberName ?: element.name)
+                    r.resultType = element.resultType
+                    r
+                }
+                else -> return null
             }
-            is ParameterDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createParameterRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = element.resultType
-                ref
+        if (isLocal) {
+            requireNotNull(ref.resultType) {
+                val name = memberName ?: refName(ref)
+                "Could not validate reference to ${definitionKindLabel(element)} $name because its definition contains errors."
             }
-            is ValueSetDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createValueSetRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = element.resultType
-                if (isCompatibleWith("1.5")) ref.preserve = true
-                ref
-            }
-            is CodeSystemDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createCodeSystemRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = element.resultType
-                ref
-            }
-            is CodeDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createCodeRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = element.resultType
-                ref
-            }
-            is ConceptDef -> {
-                checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
-                val ref =
-                    objectFactory
-                        .createConceptRef()
-                        .withLibraryName(libraryName)
-                        .withName(memberIdentifier)
-                ref.resultType = element.resultType
-                ref
-            }
+        }
+        return ref
+    }
+
+    private fun refName(ref: Expression): String? =
+        when (ref) {
+            is ExpressionRef -> ref.name
+            is ParameterRef -> ref.name
+            is ValueSetRef -> ref.name
+            is CodeSystemRef -> ref.name
+            is CodeRef -> ref.name
+            is ConceptRef -> ref.name
             else -> null
         }
-    }
+
+    private fun definitionKindLabel(element: Element): String =
+        when (element) {
+            is ExpressionDef -> "expression"
+            is ParameterDef -> "parameter"
+            is ValueSetDef -> "valueset"
+            is CodeSystemDef -> "codesystem"
+            is CodeDef -> "code"
+            is ConceptDef -> "concept"
+            else -> element::class.simpleName ?: "definition"
+        }
 
     private fun resolveQueryResultElement(identifier: String): Expression? {
         if (inQueryContext()) {
