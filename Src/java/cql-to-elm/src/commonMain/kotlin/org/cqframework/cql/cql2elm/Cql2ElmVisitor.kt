@@ -10,7 +10,6 @@ import org.cqframework.cql.cql2elm.DataTypes.subTypeOf
 import org.cqframework.cql.cql2elm.DataTypes.verifyCast
 import org.cqframework.cql.cql2elm.DataTypes.verifyType
 import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope
-import org.cqframework.cql.cql2elm.elm.DateRangeOptimizer
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.QueryContext
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -54,7 +53,6 @@ class Cql2ElmVisitor(
 ) : CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
-    private val dateRangeOptimizer = DateRangeOptimizer(libraryBuilder)
     private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
@@ -2992,14 +2990,10 @@ class Cql2ElmVisitor(
                 for (queryInclusionClauseContext in ctx.queryInclusionClause()) {
                     qicx.add(visit(queryInclusionClauseContext) as RelationshipClause)
                 }
-                var where =
+                val where =
                     if (ctx.whereClause() != null) visit(ctx.whereClause()!!) as Expression?
                     else null
-                if (this.dateRangeOptimization && where != null) {
-                    for (aqs: AliasedQuerySource in sources) {
-                        where = optimizeDateRangeInQuery(where, aqs)
-                    }
-                }
+                // Date-range promotion now runs as a post-visit ElmPass; see DateRangeOptimizer.
                 var ret =
                     if (ctx.returnClause() != null) visit(ctx.returnClause()!!) as ReturnClause?
                     else null
@@ -3102,13 +3096,6 @@ class Cql2ElmVisitor(
             }
         }
     }
-
-    /**
-     * Rewrite a query's where clause to promote date-range predicates into the source retrieve's
-     * `dateProperty` / `dateRange` fields where possible. See [DateRangeOptimizer] for details.
-     */
-    fun optimizeDateRangeInQuery(where: Expression?, aqs: AliasedQuerySource): Expression? =
-        dateRangeOptimizer.optimize(where, aqs)
 
     override fun visitLetClause(ctx: LetClauseContext): Any {
         val letClauseItems: MutableList<LetClause?> = ArrayList()

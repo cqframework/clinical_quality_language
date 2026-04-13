@@ -92,10 +92,8 @@ class SystemMethodResolver(
         val source = enterQueryContext(target)
         return try {
             checkArgumentCount(ctx, functionName, 1)
-            var where = visitor.visit(ctx!!.expression(0)!!) as Expression?
-            if (visitor.dateRangeOptimization) {
-                where = visitor.optimizeDateRangeInQuery(where, source)
-            }
+            // Date-range promotion runs as a post-visit ElmPass (see DateRangeOptimizer).
+            val where = visitor.visit(ctx!!.expression(0)!!) as Expression?
             createQuery(source, null, where, null)
         } finally {
             exitQueryContext()

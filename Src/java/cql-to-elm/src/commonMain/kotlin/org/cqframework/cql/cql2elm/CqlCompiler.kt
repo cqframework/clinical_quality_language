@@ -9,8 +9,11 @@ import kotlinx.io.readString
 import org.antlr.v4.kotlinruntime.*
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.cql2elm.StringEscapeUtils.unescapeCql
+import org.cqframework.cql.cql2elm.elm.DateRangeOptimizer
 import org.cqframework.cql.cql2elm.elm.ElmEdit
 import org.cqframework.cql.cql2elm.elm.ElmEditor
+import org.cqframework.cql.cql2elm.elm.ElmPass
+import org.cqframework.cql.cql2elm.elm.ElmPassPipeline
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.cql2elm.tracking.TrackBack
@@ -154,20 +157,25 @@ class CqlCompiler(
         visitor.visit(tree)
         library = builder.library
 
-        // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are
-        // removed and there will probably be a lot of other optimizations that happen here in the
-        // future)
+        // Phase 5: ELM post-visit passes. Each pass runs in declared order and observes the
+        // output of all prior passes. Add new semantic rewrites before the strip-down editor.
+        val passes = mutableListOf<ElmPass>()
+
+        if (CqlCompilerOptions.Options.EnableDateRangeOptimization in options) {
+            passes.add(DateRangeOptimizer(builder))
+        }
+
         val optionToEdit =
             mapOf(
                 CqlCompilerOptions.Options.EnableAnnotations to ElmEdit.REMOVE_ANNOTATION,
                 CqlCompilerOptions.Options.EnableResultTypes to ElmEdit.REMOVE_RESULT_TYPE,
                 CqlCompilerOptions.Options.EnableLocators to ElmEdit.REMOVE_LOCATOR,
             )
-
-        // The edits are applied if the corresponding option is NOT present
+        // Edits are applied when the corresponding option is NOT present.
         val edits = optionToEdit.filterKeys { it !in options }.values.toList()
+        passes.add(ElmEditor(edits))
 
-        ElmEditor(edits).edit(library!!)
+        ElmPassPipeline(passes).run(library!!)
         compiledLibrary = builder.compiledLibrary
         exceptions.addAll(builder.exceptions)
         return library!!

@@ -2,18 +2,22 @@ package org.cqframework.cql.cql2elm.elm
 
 import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.IntervalType
 import org.hl7.elm.r1.AliasedQuerySource
 import org.hl7.elm.r1.And
 import org.hl7.elm.r1.As
 import org.hl7.elm.r1.BinaryExpression
+import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.In
 import org.hl7.elm.r1.IncludedIn
+import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.Property
+import org.hl7.elm.r1.Query
 import org.hl7.elm.r1.Retrieve
 
 /**
@@ -23,8 +27,34 @@ import org.hl7.elm.r1.Retrieve
  * Extracted from [org.cqframework.cql.cql2elm.Cql2ElmVisitor] so the optimization can be maintained
  * as a distinct ELM transformation.
  */
-@Suppress("USELESS_CAST", "ComplexCondition", "ReturnCount")
-class DateRangeOptimizer(private val libraryBuilder: LibraryBuilder) {
+@Suppress("USELESS_CAST", "ComplexCondition", "ReturnCount", "TooManyFunctions")
+class DateRangeOptimizer(private val libraryBuilder: LibraryBuilder) : ElmPass {
+    override val name: String = "DateRangeOptimizer"
+
+    /**
+     * Walk every [Query] in the library and attempt to promote qualifying date-range predicates
+     * from the query's where clause into its source retrieves' `dateProperty` / `dateRange`.
+     */
+    override fun apply(library: Library) {
+        val visitor: FunctionalElmVisitor<Element?, Unit> =
+            FunctionalElmVisitor.from(
+                { t, _ -> t },
+                { aggregate, next ->
+                    if (next is Query) optimizeQuery(next)
+                    aggregate
+                },
+            )
+        visitor.visitLibrary(library, Unit)
+    }
+
+    private fun optimizeQuery(query: Query) {
+        var where = query.where
+        for (source in query.source) {
+            where = optimize(where, source)
+        }
+        query.where = where
+    }
+
     /**
      * If the query source is a retrieve and the where clause contains a qualifying `IncludedIn` /
      * `In` / `And`, rewrite the retrieve's date range and strip the absorbed predicate from the

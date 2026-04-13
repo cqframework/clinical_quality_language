@@ -65,8 +65,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
 
     private var locate = false
     private var resultTypes = false
-    var dateRangeOptimization = false
-        private set
 
     var isMethodInvocationEnabled = true
         private set
@@ -339,14 +337,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
         return resultTypes
     }
 
-    fun enableDateRangeOptimization() {
-        dateRangeOptimization = true
-    }
-
-    fun disableDateRangeOptimization() {
-        dateRangeOptimization = false
-    }
-
     fun enableDetailedErrors() {
         isDetailedErrorsEnabled = true
     }
@@ -372,9 +362,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun setCompilerOptions(options: CqlCompilerOptions) {
-        if (options.options.contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
-            enableDateRangeOptimization()
-        }
+        // EnableDateRangeOptimization is consumed by the post-visit pipeline; see CqlCompiler.
         if (options.options.contains(CqlCompilerOptions.Options.EnableAnnotations)) {
             enableAnnotations()
         }

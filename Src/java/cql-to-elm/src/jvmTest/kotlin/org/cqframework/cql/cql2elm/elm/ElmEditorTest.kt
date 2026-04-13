@@ -20,7 +20,7 @@ internal class ElmEditorTest {
 
     @Test
     fun edit() {
-        editor.edit(Library())
+        editor.apply(Library())
         Assertions.assertEquals(1, editCount)
     }
 
