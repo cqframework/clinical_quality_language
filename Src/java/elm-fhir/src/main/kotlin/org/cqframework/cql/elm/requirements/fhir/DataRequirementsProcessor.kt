@@ -74,6 +74,7 @@ import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.r5.model.CanonicalType
+import org.hl7.fhir.r5.model.CodeType
 import org.hl7.fhir.r5.model.CodeableConcept
 import org.hl7.fhir.r5.model.Coding
 import org.hl7.fhir.r5.model.DataRequirement
@@ -955,19 +956,42 @@ class DataRequirementsProcessor {
                 toReference(context.resolveValueSetRef(declaredLibraryIdentifier, value)!!)
             )
         }
-
-        if (value is ToList) {
+        else if (value is ToList) {
             resolveCodeFilterCodes(context, libraryIdentifier, cfc, value.operand)
         }
-
-        if (value is List) {
+        else if (value is List) {
             for (e in value.element) {
                 resolveCodeFilterCodes(context, libraryIdentifier, cfc, e)
             }
         }
-
-        if (value is Literal) {
+        else if (value is Literal) {
             cfc.addCode().setCode(value.value)
+        }
+        else {
+            context.enterLibrary(libraryIdentifier)
+            try {
+                var code = toFhirValue(context, value);
+                if (code is CodeableConcept) {
+                    for (coding in code.getCoding()) {
+                        cfc.addCode(coding);
+                    }
+                }
+                else if (code is Coding) {
+                    cfc.addCode(code);
+                }
+                else if (code != null) {
+                    cfc.addCode().setCode(code.toString());
+                }
+            } catch (e: Exception) {
+                val c = Coding()
+                c.addExtension(
+                    "http://hl7.org/fhir/uv/crmi-analysisException",
+                    StringType("Error attempting to determine filter value: ${e.message}"),
+                )
+                cfc.addCode(c);
+            } finally {
+                context.exitLibrary()
+            }
         }
 
         return cfc
