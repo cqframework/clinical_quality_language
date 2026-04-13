@@ -567,33 +567,27 @@ class Cql2ElmVisitor(
                 libraryBuilder.removeExpression(def)
                 removeImplicitContextExpressionDef(def)
             }
-            libraryBuilder.pushExpressionContext(this.currentContext)
-            try {
-                libraryBuilder.pushExpressionDefinition(identifier)
-                try {
-                    def =
+            libraryBuilder.scopeManager.withExpressionContext(this.currentContext) {
+                libraryBuilder.scopeManager.withExpressionDefinition(identifier) {
+                    val newDef =
                         of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                             .withName(identifier)
                             .withContext(this.currentContext)
                             .withExpression(visit(ctx.expression()) as Expression?)
-                    if (def.expression != null) {
-                        def.resultType = def.expression!!.resultType
+                    if (newDef.expression != null) {
+                        newDef.resultType = newDef.expression!!.resultType
                     }
-                    libraryBuilder.addExpression(def)
-                } finally {
-                    libraryBuilder.popExpressionDefinition()
+                    libraryBuilder.addExpression(newDef)
+                    def = newDef
                 }
-            } finally {
-                libraryBuilder.popExpressionContext()
             }
         }
         return def
     }
 
     override fun visitExpressionDefinition(ctx: ExpressionDefinitionContext): ExpressionDef? {
-        libraryBuilder.pushIdentifierScope()
-        return try {
+        return libraryBuilder.scopeManager.withIdentifierScope {
             val expressionDef = internalVisitExpressionDefinition(ctx)
             if (this.forwards.isEmpty() || this.forwards.peek().name != expressionDef!!.name) {
                 require(!this.definedExpressionDefinitions.contains(expressionDef!!.name)) {
@@ -607,8 +601,6 @@ class Cql2ElmVisitor(
                 this.definedExpressionDefinitions.add(expressionDef.name!!)
             }
             expressionDef
-        } finally {
-            libraryBuilder.popIdentifierScope()
         }
     }
 
@@ -4014,11 +4006,8 @@ class Cql2ElmVisitor(
 
     override fun visitInvocationExpressionTerm(ctx: InvocationExpressionTermContext): Expression? {
         val left = parseExpression(ctx.expressionTerm())!!
-        libraryBuilder.pushExpressionTarget(left)
-        return try {
+        return libraryBuilder.scopeManager.withExpressionTarget(left) {
             visit(ctx.qualifiedInvocation()) as Expression?
-        } finally {
-            libraryBuilder.popExpressionTarget()
         }
     }
 
@@ -4408,21 +4397,12 @@ class Cql2ElmVisitor(
         }
         try {
             if (ctx.functionBody() != null) {
-                libraryBuilder.beginFunctionDef(functionDef)
-                try {
-                    libraryBuilder.pushExpressionContext(this.currentContext)
-                    try {
-                        libraryBuilder.pushExpressionDefinition(fh.mangledName)
-                        try {
+                libraryBuilder.scopeManager.withFunctionDef(functionDef) {
+                    libraryBuilder.scopeManager.withExpressionContext(this.currentContext) {
+                        libraryBuilder.scopeManager.withExpressionDefinition(fh.mangledName) {
                             functionDef.expression = parseExpression(ctx.functionBody())
-                        } finally {
-                            libraryBuilder.popExpressionDefinition()
                         }
-                    } finally {
-                        libraryBuilder.popExpressionContext()
                     }
-                } finally {
-                    libraryBuilder.endFunctionDef()
                 }
                 if (resultType != null && functionDef.expression?.resultType != null) {
                     require(subTypeOf(functionDef.expression!!.resultType, resultType.resultType)) {
@@ -4457,22 +4437,14 @@ class Cql2ElmVisitor(
     }
 
     override fun visitFunctionDefinition(ctx: FunctionDefinitionContext): Any {
-        libraryBuilder.pushIdentifierScope()
-        return try {
+        return libraryBuilder.scopeManager.withIdentifierScope {
             registerFunctionDefinition(ctx)
             compileFunctionDefinition(ctx)
-        } finally {
-            libraryBuilder.popIdentifierScope()
         }
     }
 
     private fun parseLiteralExpression(pt: ParseTree?): Expression? {
-        libraryBuilder.pushLiteralContext()
-        return try {
-            parseExpression(pt)
-        } finally {
-            libraryBuilder.popLiteralContext()
-        }
+        return libraryBuilder.scopeManager.withLiteralContext { parseExpression(pt) }
     }
 
     private fun parseExpression(pt: ParseTree?): Expression? {

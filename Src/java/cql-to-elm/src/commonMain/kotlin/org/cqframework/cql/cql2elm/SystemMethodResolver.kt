@@ -111,12 +111,9 @@ class SystemMethodResolver(
         val source = enterQueryContext(target)
         return try {
             checkArgumentCount(ctx, functionName, 1)
-            builder.pushTypeSpecifierContext()
             val typeArgument: Expression? =
-                try {
+                builder.scopeManager.withTypeSpecifierContext {
                     visitor.visit(ctx!!.expression(0)!!) as Expression?
-                } finally {
-                    builder.popTypeSpecifierContext()
                 }
             require(typeArgument is Literal) { "Expected literal argument" }
             require(
@@ -441,12 +438,9 @@ class SystemMethodResolver(
             "is",
             "as" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                builder.pushTypeSpecifierContext()
                 val typeArgument: Expression? =
-                    try {
+                    builder.scopeManager.withTypeSpecifierContext {
                         visitor.visit(ctx!!.expression(0)!!) as Expression?
-                    } finally {
-                        builder.popTypeSpecifierContext()
                     }
                 require(typeArgument is Literal) { "Expected literal argument" }
                 require(

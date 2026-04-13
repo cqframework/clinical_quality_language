@@ -12,7 +12,6 @@ import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
-import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.getTranslatorVersion
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.shared.BigDecimal
@@ -84,13 +83,7 @@ class LibraryBuilder(
         HashMap()
     private val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
     private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
-    private val expressionContext = Stack<String>()
-    private val expressionDefinitions = ExpressionDefinitionContextStack()
-    private val functionDefs = Stack<FunctionDef>()
-    private val globalIdentifiers = ArrayDeque<IdentifierContext>()
-    private val localIdentifierStack = Stack<ArrayDeque<IdentifierContext>>()
-    private var literalContext = 0
-    private var typeSpecifierContext = 0
+    val scopeManager: ScopeManager = ScopeManager()
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -3390,8 +3383,9 @@ class LibraryBuilder(
     private fun resolveAlias(identifier: String): AliasedQuerySource? {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
-            for (i in scope.queries.indices.reversed()) {
-                val source = scope.queries.elementAt(i).resolveAlias(identifier)
+            val queries = scopeManager.currentScope.queries
+            for (i in queries.indices.reversed()) {
+                val source = queries.elementAt(i).resolveAlias(identifier)
                 if (source != null) {
                     return source
                 }
@@ -3426,8 +3420,9 @@ class LibraryBuilder(
     private fun resolveQueryLet(identifier: String): LetClause? {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
-            for (i in scope.queries.indices.reversed()) {
-                val let = scope.queries.elementAt(i).resolveLet(identifier)
+            val queries = scopeManager.currentScope.queries
+            for (i in queries.indices.reversed()) {
+                val let = queries.elementAt(i).resolveLet(identifier)
                 if (let != null) {
                     return let
                 }
@@ -3437,8 +3432,8 @@ class LibraryBuilder(
     }
 
     private fun resolveOperandRef(identifier: String): OperandRef? {
-        if (!functionDefs.empty()) {
-            for (operand in functionDefs.peek().operand) {
+        if (!scopeManager.functionDefs.empty()) {
+            for (operand in scopeManager.functionDefs.peek().operand) {
                 if (operand.name == identifier) {
                     return objectFactory
                         .createOperandRef()
@@ -3470,8 +3465,8 @@ class LibraryBuilder(
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references
             // patient context
-            if (inQueryContext() && scope.queries.peek().inSourceClause()) {
-                scope.queries.peek().referencesSpecificContextValue = true
+            if (inQueryContext() && scopeManager.currentScope.queries.peek().inSourceClause()) {
+                scopeManager.currentScope.queries.peek().referencesSpecificContextValue = true
             }
             val resultType: DataType = expressionDef.resultType!!
             return resultType as? ListType ?: ListType(resultType)
@@ -3515,11 +3510,12 @@ class LibraryBuilder(
         scope: IdentifierScope = IdentifierScope.LOCAL,
     ) {
         val identifier = identifierRef.name!!
+        val localStack = scopeManager.localIdentifierStack
         val localMatch =
-            if (localIdentifierStack.isNotEmpty())
-                findMatchingIdentifierContext(localIdentifierStack.peek(), identifier)
+            if (localStack.isNotEmpty())
+                findMatchingIdentifierContext(localStack.peek(), identifier)
             else null
-        val globalMatch = findMatchingIdentifierContext(globalIdentifiers, identifier)
+        val globalMatch = findMatchingIdentifierContext(scopeManager.globalIdentifiers, identifier)
         if (globalMatch != null || localMatch != null) {
             val matchedContext = globalMatch ?: localMatch!!
             val matchedOnFunctionOverloads =
@@ -3536,9 +3532,13 @@ class LibraryBuilder(
                 if (element == null) null else element::class
             // Sometimes the underlying Trackable doesn't resolve in the calling code
             if (scope == IdentifierScope.GLOBAL) {
-                globalIdentifiers.add(IdentifierContext(identifierRef, trackableOrNull))
+                scopeManager.globalIdentifiers.add(
+                    IdentifierContext(identifierRef, trackableOrNull)
+                )
             } else {
-                localIdentifierStack.peek().add(IdentifierContext(identifierRef, trackableOrNull))
+                scopeManager.localIdentifierStack
+                    .peek()
+                    .add(IdentifierContext(identifierRef, trackableOrNull))
             }
         }
     }
@@ -3558,18 +3558,18 @@ class LibraryBuilder(
     @JvmOverloads
     fun popIdentifier(scope: IdentifierScope = IdentifierScope.LOCAL) {
         if (scope == IdentifierScope.GLOBAL) {
-            globalIdentifiers.removeLast()
+            scopeManager.globalIdentifiers.removeLast()
         } else {
-            localIdentifierStack.peek().removeLast()
+            scopeManager.localIdentifierStack.peek().removeLast()
         }
     }
 
     fun pushIdentifierScope() {
-        localIdentifierStack.push(ArrayDeque())
+        scopeManager.pushIdentifierScope()
     }
 
     fun popIdentifierScope() {
-        localIdentifierStack.pop()
+        scopeManager.popIdentifierScope()
     }
 
     private fun shouldAddIdentifierContext(element: Element?): Boolean {
@@ -3588,77 +3588,29 @@ class LibraryBuilder(
             "$elementString identifier $identifierParam is hiding another identifier of the same name."
     }
 
-    private class Scope {
-        val targets = Stack<Expression>()
-        val queries = Stack<QueryContext>()
-    }
-
-    private inner class ExpressionDefinitionContext(val identifier: String) {
-        val scope: Scope = Scope()
-        var rootCause: Exception? = null
-    }
-
-    private inner class ExpressionDefinitionContextStack : Stack<ExpressionDefinitionContext?>() {
-        operator fun contains(identifier: String): Boolean {
-            for (i in 0 until size()) {
-                if (this.elementAt(i)?.identifier == identifier) {
-                    return true
-                }
-            }
-            return false
-        }
-    }
-
-    fun determineRootCause(): Exception? {
-        if (expressionDefinitions.isNotEmpty()) {
-            val currentContext = expressionDefinitions.peek()
-            if (currentContext != null) {
-                return currentContext.rootCause
-            }
-        }
-        return null
-    }
+    fun determineRootCause(): Exception? = scopeManager.determineRootCause()
 
     fun setRootCause(rootCause: Exception?) {
-        if (expressionDefinitions.isNotEmpty()) {
-            val currentContext = expressionDefinitions.peek()
-            currentContext?.rootCause = rootCause
-        }
+        scopeManager.setRootCause(rootCause)
     }
 
     fun pushExpressionDefinition(identifier: String) {
-        require(!expressionDefinitions.contains(identifier)) {
-            // ERROR:
-            "Cannot resolve reference to expression or function $identifier because it results in a circular reference."
-        }
-        expressionDefinitions.push(ExpressionDefinitionContext(identifier))
+        scopeManager.pushExpressionDefinition(identifier)
     }
 
     fun popExpressionDefinition() {
-        expressionDefinitions.pop()
+        scopeManager.popExpressionDefinition()
     }
-
-    private fun hasScope(): Boolean {
-        return !expressionDefinitions.empty()
-    }
-
-    private val scope: Scope
-        get() = expressionDefinitions.peek()?.scope!!
 
     fun pushExpressionContext(context: String?) {
-        requireNotNull(context) { "Expression context cannot be null" }
-        expressionContext.push(context)
+        scopeManager.pushExpressionContext(context)
     }
 
     fun popExpressionContext() {
-        check(!expressionContext.empty()) { "Expression context stack is empty." }
-        expressionContext.pop()
+        scopeManager.popExpressionContext()
     }
 
-    private fun currentExpressionContext(): String {
-        check(!expressionContext.empty()) { "Expression context stack is empty." }
-        return expressionContext.peek()
-    }
+    private fun currentExpressionContext(): String = scopeManager.currentExpressionContext()
 
     private fun inSpecificContext(): Boolean {
         return !inUnfilteredContext()
@@ -3669,54 +3621,41 @@ class LibraryBuilder(
             isCompatibilityLevel3 && currentExpressionContext() == "Population"
     }
 
-    private fun inQueryContext(): Boolean {
-        return hasScope() && scope.queries.isNotEmpty()
-    }
+    private fun inQueryContext(): Boolean = scopeManager.inQueryContext()
 
     fun pushQueryContext(context: QueryContext) {
-        scope.queries.push(context)
+        scopeManager.pushQueryContext(context)
     }
 
-    fun popQueryContext(): QueryContext {
-        return scope.queries.pop()
-    }
+    fun popQueryContext(): QueryContext = scopeManager.popQueryContext()
 
-    fun peekQueryContext(): QueryContext {
-        return scope.queries.peek()
-    }
+    fun peekQueryContext(): QueryContext = scopeManager.peekQueryContext()
 
     fun pushExpressionTarget(target: Expression) {
-        scope.targets.push(target)
+        scopeManager.pushExpressionTarget(target)
     }
 
-    fun popExpressionTarget(): Expression {
-        return scope.targets.pop()
-    }
+    fun popExpressionTarget(): Expression = scopeManager.popExpressionTarget()
 
-    fun hasExpressionTarget(): Boolean {
-        return hasScope() && scope.targets.isNotEmpty()
-    }
+    fun hasExpressionTarget(): Boolean = scopeManager.hasExpressionTarget()
 
     fun beginFunctionDef(functionDef: FunctionDef) {
-        functionDefs.push(functionDef)
+        scopeManager.beginFunctionDef(functionDef)
     }
 
     fun endFunctionDef() {
-        functionDefs.pop()
+        scopeManager.endFunctionDef()
     }
 
     fun pushLiteralContext() {
-        literalContext++
+        scopeManager.pushLiteralContext()
     }
 
     fun popLiteralContext() {
-        check(inLiteralContext()) { "Not in literal context" }
-        literalContext--
+        scopeManager.popLiteralContext()
     }
 
-    private fun inLiteralContext(): Boolean {
-        return literalContext > 0
-    }
+    private fun inLiteralContext(): Boolean = scopeManager.inLiteralContext()
 
     fun checkLiteralContext() {
         check(!inLiteralContext()) {
@@ -3725,17 +3664,14 @@ class LibraryBuilder(
     }
 
     fun pushTypeSpecifierContext() {
-        typeSpecifierContext++
+        scopeManager.pushTypeSpecifierContext()
     }
 
     fun popTypeSpecifierContext() {
-        check(inTypeSpecifierContext()) { "Not in type specifier context" }
-        typeSpecifierContext--
+        scopeManager.popTypeSpecifierContext()
     }
 
-    private fun inTypeSpecifierContext(): Boolean {
-        return typeSpecifierContext > 0
-    }
+    private fun inTypeSpecifierContext(): Boolean = scopeManager.inTypeSpecifierContext()
 
     companion object {
         private fun lookupElementWarning(element: Any?): String {
