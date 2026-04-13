@@ -362,7 +362,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun setCompilerOptions(options: CqlCompilerOptions) {
-        // EnableDateRangeOptimization is consumed by the post-visit pipeline; see CqlCompiler.
         if (options.options.contains(CqlCompilerOptions.Options.EnableAnnotations)) {
             enableAnnotations()
         }

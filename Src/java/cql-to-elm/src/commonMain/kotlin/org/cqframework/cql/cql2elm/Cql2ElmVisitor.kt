@@ -54,6 +54,13 @@ class Cql2ElmVisitor(
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
     private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }
+    private val timing =
+        TimingOperatorDispatcher(
+            libraryBuilder,
+            of,
+            track = { element, pt -> track(element, pt) },
+            trackFromElement = { element, from -> track(element, from) },
+        )
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
     private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
@@ -1665,88 +1672,33 @@ class Cql2ElmVisitor(
         // ('start' | 'end')?
         val timingOperator: TimingOperatorContext = this.timingOperators.peek()
         val firstChild: ParseTree = ctx.getChild(0)!!
-        if (("starts" == firstChild.text)) {
-            val start: Start = of.createStart().withOperand(timingOperator.left)
-            track(start, firstChild)
-            libraryBuilder.resolveCall("System", "Start", start)
-            timingOperator.left = start
-        }
-        if (("ends" == firstChild.text)) {
-            val end: End = of.createEnd().withOperand(timingOperator.left)
-            track(end, firstChild)
-            libraryBuilder.resolveCall("System", "End", end)
-            timingOperator.left = end
+        when (firstChild.text) {
+            "starts" -> timingOperator.left = timing.takeStart(timingOperator.left, firstChild)
+            "ends" -> timingOperator.left = timing.takeEnd(timingOperator.left, firstChild)
         }
         val lastChild: ParseTree = ctx.getChild(ctx.childCount - 1)!!
-        if (("start" == lastChild.text)) {
-            val start: Start = of.createStart().withOperand(timingOperator.right)
-            track(start, lastChild)
-            libraryBuilder.resolveCall("System", "Start", start)
-            timingOperator.right = start
+        when (lastChild.text) {
+            "start" -> timingOperator.right = timing.takeStart(timingOperator.right, lastChild)
+            "end" -> timingOperator.right = timing.takeEnd(timingOperator.right, lastChild)
         }
-        if (("end" == lastChild.text)) {
-            val end: End = of.createEnd().withOperand(timingOperator.right)
-            track(end, lastChild)
-            libraryBuilder.resolveCall("System", "End", end)
-            timingOperator.right = end
-        }
-        val operatorName: String?
-        var operator: BinaryExpression?
-        var allowPromotionAndDemotion = false
-        if (ctx.relativeQualifier() == null) {
-            operator =
-                if (ctx.dateTimePrecision() != null) {
-                    of.createSameAs()
-                        .withPrecision(
-                            parseComparableDateTimePrecision(ctx.dateTimePrecision()!!.text)
-                        )
-                } else {
-                    of.createSameAs()
-                }
-            operatorName = "SameAs"
-        } else {
-            when (ctx.relativeQualifier()!!.text) {
-                "or after" -> {
-                    operator =
-                        if (ctx.dateTimePrecision() != null) {
-                            of.createSameOrAfter()
-                                .withPrecision(
-                                    parseComparableDateTimePrecision(ctx.dateTimePrecision()!!.text)
-                                )
-                        } else {
-                            of.createSameOrAfter()
-                        }
-                    operatorName = "SameOrAfter"
-                    allowPromotionAndDemotion = true
-                }
-                "or before" -> {
-                    operator =
-                        if (ctx.dateTimePrecision() != null) {
-                            of.createSameOrBefore()
-                                .withPrecision(
-                                    parseComparableDateTimePrecision(ctx.dateTimePrecision()!!.text)
-                                )
-                        } else {
-                            of.createSameOrBefore()
-                        }
-                    operatorName = "SameOrBefore"
-                    allowPromotionAndDemotion = true
-                }
+        val (operatorName, allowPromotion) =
+            when (ctx.relativeQualifier()?.text) {
+                null -> "SameAs" to false
+                "or after" -> "SameOrAfter" to true
+                "or before" -> "SameOrBefore" to true
                 else ->
                     throw IllegalArgumentException(
                         "Unknown relative qualifier: '${ctx.relativeQualifier()!!.text}'."
                     )
             }
-        }
-        operator = operator.withOperand(listOf(timingOperator.left, timingOperator.right))
-        libraryBuilder.resolveBinaryCall(
-            "System",
+        val precision = ctx.dateTimePrecision()?.let { parseComparableDateTimePrecision(it.text) }
+        return timing.buildTemporal(
             operatorName,
-            operator,
-            true,
-            allowPromotionAndDemotion,
+            timingOperator.left,
+            timingOperator.right,
+            precision,
+            allowPromotion,
         )
-        return operator
     }
 
     override fun visitIncludesIntervalOperatorPhrase(
@@ -1757,25 +1709,16 @@ class Cql2ElmVisitor(
         var isRightPoint = false
         val timingOperator = this.timingOperators.peek()
         for (pt in ctx.children!!) {
-            if ("properly" == pt.text) {
-                isProper = true
-                continue
-            }
-            if ("start" == pt.text) {
-                val start = of.createStart().withOperand(timingOperator.right)
-                track(start, pt)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.right = start
-                isRightPoint = true
-                continue
-            }
-            if ("end" == pt.text) {
-                val end = of.createEnd().withOperand(timingOperator.right)
-                track(end, pt)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.right = end
-                isRightPoint = true
-                continue
+            when (pt.text) {
+                "properly" -> isProper = true
+                "start" -> {
+                    timingOperator.right = timing.takeStart(timingOperator.right, pt)
+                    isRightPoint = true
+                }
+                "end" -> {
+                    timingOperator.right = timing.takeEnd(timingOperator.right, pt)
+                    isRightPoint = true
+                }
             }
         }
         val dateTimePrecision =
@@ -1826,25 +1769,16 @@ class Cql2ElmVisitor(
         var isLeftPoint = false
         val timingOperator = this.timingOperators.peek()
         for (pt in ctx.children!!) {
-            if ("starts" == pt.text) {
-                val start = of.createStart().withOperand(timingOperator.left)
-                track(start, pt)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.left = start
-                isLeftPoint = true
-                continue
-            }
-            if ("ends" == pt.text) {
-                val end = of.createEnd().withOperand(timingOperator.left)
-                track(end, pt)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.left = end
-                isLeftPoint = true
-                continue
-            }
-            if ("properly" == pt.text) {
-                isProper = true
-                continue
+            when (pt.text) {
+                "starts" -> {
+                    timingOperator.left = timing.takeStart(timingOperator.left, pt)
+                    isLeftPoint = true
+                }
+                "ends" -> {
+                    timingOperator.left = timing.takeEnd(timingOperator.left, pt)
+                    isLeftPoint = true
+                }
+                "properly" -> isProper = true
             }
         }
         val dateTimePrecision =
@@ -1921,169 +1855,63 @@ class Cql2ElmVisitor(
         var isBefore = false
         var isInclusive = false
         for (child in ctx.children!!) {
-            if ("starts" == child.text) {
-                val start = of.createStart().withOperand(timingOperator.left)
-                track(start, child)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.left = start
-                continue
-            }
-            if ("ends" == child.text) {
-                val end = of.createEnd().withOperand(timingOperator.left)
-                track(end, child)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.left = end
-                continue
-            }
-            if ("start" == child.text) {
-                val start = of.createStart().withOperand(timingOperator.right)
-                track(start, child)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.right = start
-                continue
-            }
-            if ("end" == child.text) {
-                val end = of.createEnd().withOperand(timingOperator.right)
-                track(end, child)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.right = end
-                continue
+            when (child.text) {
+                "starts" -> timingOperator.left = timing.takeStart(timingOperator.left, child)
+                "ends" -> timingOperator.left = timing.takeEnd(timingOperator.left, child)
+                "start" -> timingOperator.right = timing.takeStart(timingOperator.right, child)
+                "end" -> timingOperator.right = timing.takeEnd(timingOperator.right, child)
             }
         }
         for (child in ctx.temporalRelationship().children!!) {
-            if ("before" == child.text) {
-                isBefore = true
-                continue
-            }
-            if ("on or" == child.text || "or on" == child.text) {
-                isInclusive = true
-                continue
+            when (child.text) {
+                "before" -> isBefore = true
+                "on or",
+                "or on" -> isInclusive = true
             }
         }
         val dateTimePrecision =
-            if (ctx.dateTimePrecisionSpecifier() != null)
-                ctx.dateTimePrecisionSpecifier()!!.dateTimePrecision().text
-            else null
-        if (ctx.quantityOffset() == null) {
-            return if (isInclusive) {
-                if (isBefore) {
-                    val sameOrBefore =
-                        of.createSameOrBefore()
-                            .withOperand(listOf(timingOperator.left, timingOperator.right))
-                    if (dateTimePrecision != null) {
-                        sameOrBefore.precision = parseComparableDateTimePrecision(dateTimePrecision)
-                    }
-                    libraryBuilder.resolveBinaryCall(
-                        "System",
-                        "SameOrBefore",
-                        sameOrBefore,
-                        mustResolve = true,
-                        allowPromotionAndDemotion = true,
-                    )
-                    sameOrBefore
-                } else {
-                    val sameOrAfter =
-                        of.createSameOrAfter()
-                            .withOperand(listOf(timingOperator.left, timingOperator.right))
-                    if (dateTimePrecision != null) {
-                        sameOrAfter.precision = parseComparableDateTimePrecision(dateTimePrecision)
-                    }
-                    libraryBuilder.resolveBinaryCall(
-                        "System",
-                        "SameOrAfter",
-                        sameOrAfter,
-                        mustResolve = true,
-                        allowPromotionAndDemotion = true,
-                    )
-                    sameOrAfter
-                }
-            } else {
-                if (isBefore) {
-                    val before =
-                        of.createBefore()
-                            .withOperand(listOf(timingOperator.left, timingOperator.right))
-                    if (dateTimePrecision != null) {
-                        before.precision = parseComparableDateTimePrecision(dateTimePrecision)
-                    }
-                    libraryBuilder.resolveBinaryCall(
-                        "System",
-                        "Before",
-                        before,
-                        mustResolve = true,
-                        allowPromotionAndDemotion = true,
-                    )
-                    before
-                } else {
-                    val after =
-                        of.createAfter()
-                            .withOperand(listOf(timingOperator.left, timingOperator.right))
-                    if (dateTimePrecision != null) {
-                        after.precision = parseComparableDateTimePrecision(dateTimePrecision)
-                    }
-                    libraryBuilder.resolveBinaryCall(
-                        "System",
-                        "After",
-                        after,
-                        mustResolve = true,
-                        allowPromotionAndDemotion = true,
-                    )
-                    after
-                }
+            ctx.dateTimePrecisionSpecifier()?.dateTimePrecision()?.text?.let {
+                parseComparableDateTimePrecision(it)
             }
+        if (ctx.quantityOffset() == null) {
+            val op =
+                when {
+                    isInclusive && isBefore -> "SameOrBefore"
+                    isInclusive -> "SameOrAfter"
+                    isBefore -> "Before"
+                    else -> "After"
+                }
+            return timing.buildTemporal(
+                op,
+                timingOperator.left,
+                timingOperator.right,
+                dateTimePrecision,
+                allowPromotionAndDemotion = true,
+            )
         } else {
             val quantity = visit(ctx.quantityOffset()!!.quantity()!!) as Quantity
             if (timingOperator.left.resultType is IntervalType) {
-                if (isBefore) {
-                    val end = of.createEnd().withOperand(timingOperator.left)
-                    track(end, timingOperator.left)
-                    libraryBuilder.resolveCall("System", "End", end)
-                    timingOperator.left = end
-                } else {
-                    val start = of.createStart().withOperand(timingOperator.left)
-                    track(start, timingOperator.left)
-                    libraryBuilder.resolveCall("System", "Start", start)
-                    timingOperator.left = start
-                }
+                timingOperator.left =
+                    if (isBefore) timing.takeEnd(timingOperator.left, timingOperator.left)
+                    else timing.takeStart(timingOperator.left, timingOperator.left)
             }
             if (timingOperator.right.resultType is IntervalType) {
-                if (isBefore) {
-                    val start = of.createStart().withOperand(timingOperator.right)
-                    track(start, timingOperator.right)
-                    libraryBuilder.resolveCall("System", "Start", start)
-                    timingOperator.right = start
-                } else {
-                    val end = of.createEnd().withOperand(timingOperator.right)
-                    track(end, timingOperator.right)
-                    libraryBuilder.resolveCall("System", "End", end)
-                    timingOperator.right = end
-                }
+                timingOperator.right =
+                    if (isBefore) timing.takeStart(timingOperator.right, timingOperator.right)
+                    else timing.takeEnd(timingOperator.right, timingOperator.right)
             }
             if (
                 ctx.quantityOffset()!!.offsetRelativeQualifier() == null &&
                     ctx.quantityOffset()!!.exclusiveRelativeQualifier() == null
             ) {
-                // Use a SameAs
-                // For a Before, subtract the quantity from the right operand
-                // For an After, add the quantity to the right operand
-                if (isBefore) {
-                    val subtract =
-                        of.createSubtract().withOperand(listOf(timingOperator.right, quantity))
-                    track(subtract, timingOperator.right)
-                    libraryBuilder.resolveCall("System", "Subtract", subtract)
-                    timingOperator.right = subtract
-                } else {
-                    val add = of.createAdd().withOperand(listOf(timingOperator.right, quantity))
-                    track(add, timingOperator.right)
-                    libraryBuilder.resolveCall("System", "Add", add)
-                    timingOperator.right = add
-                }
-                val sameAs =
-                    of.createSameAs().withOperand(listOf(timingOperator.left, timingOperator.right))
-                if (dateTimePrecision != null) {
-                    sameAs.precision = parseComparableDateTimePrecision(dateTimePrecision)
-                }
-                libraryBuilder.resolveCall("System", "SameAs", sameAs)
-                return sameAs
+                // SameAs with right shifted by +/- quantity.
+                timingOperator.right = shiftOperand(timingOperator.right, quantity, isBefore)
+                return timing.buildTemporal(
+                    "SameAs",
+                    timingOperator.left,
+                    timingOperator.right,
+                    dateTimePrecision,
+                )
             } else {
                 val isOffsetInclusive = ctx.quantityOffset()!!.offsetRelativeQualifier() != null
                 val qualifier =
@@ -2092,98 +1920,26 @@ class Cql2ElmVisitor(
                     else ctx.quantityOffset()!!.exclusiveRelativeQualifier()!!.text
                 when (qualifier) {
                     "more than",
-                    "or more" -> // For More Than/Or More, use a
-                        // Before/After/SameOrBefore/SameOrAfter
-                        // For a Before, subtract the quantity from the right operand
-                        // For an After, add the quantity to the right operand
-                        return if (isBefore) {
-                            val subtract =
-                                of.createSubtract()
-                                    .withOperand(listOf(timingOperator.right, quantity))
-                            track(subtract, timingOperator.right)
-                            libraryBuilder.resolveCall("System", "Subtract", subtract)
-                            timingOperator.right = subtract
-                            if (!isOffsetInclusive) {
-                                val before =
-                                    of.createBefore()
-                                        .withOperand(
-                                            listOf(timingOperator.left, timingOperator.right)
-                                        )
-                                if (dateTimePrecision != null) {
-                                    before.precision =
-                                        parseComparableDateTimePrecision(dateTimePrecision)
-                                }
-                                libraryBuilder.resolveBinaryCall(
-                                    "System",
-                                    "Before",
-                                    before,
-                                    mustResolve = true,
-                                    allowPromotionAndDemotion = true,
-                                )
-                                before
-                            } else {
-                                val sameOrBefore =
-                                    of.createSameOrBefore()
-                                        .withOperand(
-                                            listOf(timingOperator.left, timingOperator.right)
-                                        )
-                                if (dateTimePrecision != null) {
-                                    sameOrBefore.precision =
-                                        parseComparableDateTimePrecision(dateTimePrecision)
-                                }
-                                libraryBuilder.resolveBinaryCall(
-                                    "System",
-                                    "SameOrBefore",
-                                    sameOrBefore,
-                                    mustResolve = true,
-                                    allowPromotionAndDemotion = true,
-                                )
-                                sameOrBefore
+                    "or more" -> {
+                        // Shift right by +/- quantity, then Before/After (or SameOr-variant if
+                        // inclusive).
+                        timingOperator.right =
+                            shiftOperand(timingOperator.right, quantity, isBefore)
+                        val op =
+                            when {
+                                isBefore && isOffsetInclusive -> "SameOrBefore"
+                                isBefore -> "Before"
+                                isOffsetInclusive -> "SameOrAfter"
+                                else -> "After"
                             }
-                        } else {
-                            val add =
-                                of.createAdd().withOperand(listOf(timingOperator.right, quantity))
-                            track(add, timingOperator.right)
-                            libraryBuilder.resolveCall("System", "Add", add)
-                            timingOperator.right = add
-                            if (!isOffsetInclusive) {
-                                val after =
-                                    of.createAfter()
-                                        .withOperand(
-                                            listOf(timingOperator.left, timingOperator.right)
-                                        )
-                                if (dateTimePrecision != null) {
-                                    after.precision =
-                                        parseComparableDateTimePrecision(dateTimePrecision)
-                                }
-                                libraryBuilder.resolveBinaryCall(
-                                    "System",
-                                    "After",
-                                    after,
-                                    mustResolve = true,
-                                    allowPromotionAndDemotion = true,
-                                )
-                                after
-                            } else {
-                                val sameOrAfter =
-                                    of.createSameOrAfter()
-                                        .withOperand(
-                                            listOf(timingOperator.left, timingOperator.right)
-                                        )
-                                if (dateTimePrecision != null) {
-                                    sameOrAfter.precision =
-                                        parseComparableDateTimePrecision(dateTimePrecision)
-                                }
-                                libraryBuilder.resolveBinaryCall(
-                                    "System",
-                                    "SameOrAfter",
-                                    sameOrAfter,
-                                    mustResolve = true,
-                                    allowPromotionAndDemotion = true,
-                                )
-                                sameOrAfter
-                            }
-                        }
+                        return timing.buildTemporal(
+                            op,
+                            timingOperator.left,
+                            timingOperator.right,
+                            dateTimePrecision,
+                            allowPromotionAndDemotion = true,
+                        )
+                    }
                     "less than",
                     "or less" -> {
                         // For Less Than/Or Less, use an In
@@ -2235,8 +1991,7 @@ class Cql2ElmVisitor(
                         val inExpression =
                             of.createIn().withOperand(listOf(timingOperator.left, interval))
                         if (dateTimePrecision != null) {
-                            inExpression.precision =
-                                parseComparableDateTimePrecision(dateTimePrecision)
+                            inExpression.precision = dateTimePrecision
                         }
                         track(inExpression, ctx.quantityOffset()!!)
                         libraryBuilder.resolveCall("System", "In", inExpression)
@@ -2265,6 +2020,28 @@ class Cql2ElmVisitor(
         throw IllegalArgumentException("Unable to resolve interval operator phrase.")
     }
 
+    /**
+     * Return `operand +/- quantity` depending on direction: subtract when [subtract] is true,
+     * otherwise add. Tracks the new node against [trackSource] (an [Element] to copy trackbacks
+     * from, or a [ParseTree] to resolve a new trackback from) and resolves the call.
+     */
+    private fun shiftOperand(
+        operand: Expression,
+        quantity: Quantity,
+        subtract: Boolean,
+        trackSource: Any = operand,
+    ): BinaryExpression {
+        val shifted: BinaryExpression =
+            if (subtract) of.createSubtract().withOperand(listOf(operand, quantity))
+            else of.createAdd().withOperand(listOf(operand, quantity))
+        when (trackSource) {
+            is Element -> track(shifted, trackSource)
+            is ParseTree -> track(shifted, trackSource)
+        }
+        libraryBuilder.resolveCall("System", if (subtract) "Subtract" else "Add", shifted)
+        return shifted
+    }
+
     override fun visitWithinIntervalOperatorPhrase(
         ctx: WithinIntervalOperatorPhraseContext
     ): Expression {
@@ -2277,61 +2054,30 @@ class Cql2ElmVisitor(
         val timingOperator = this.timingOperators.peek()
         var isProper = false
         for (child in ctx.children!!) {
-            if ("starts" == child.text) {
-                val start = of.createStart().withOperand(timingOperator.left)
-                track(start, child)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.left = start
-                continue
-            }
-            if ("ends" == child.text) {
-                val end = of.createEnd().withOperand(timingOperator.left)
-                track(end, child)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.left = end
-                continue
-            }
-            if ("start" == child.text) {
-                val start = of.createStart().withOperand(timingOperator.right)
-                track(start, child)
-                libraryBuilder.resolveCall("System", "Start", start)
-                timingOperator.right = start
-                continue
-            }
-            if ("end" == child.text) {
-                val end = of.createEnd().withOperand(timingOperator.right)
-                track(end, child)
-                libraryBuilder.resolveCall("System", "End", end)
-                timingOperator.right = end
-                continue
-            }
-            if ("properly" == child.text) {
-                isProper = true
-                continue
+            when (child.text) {
+                "starts" -> timingOperator.left = timing.takeStart(timingOperator.left, child)
+                "ends" -> timingOperator.left = timing.takeEnd(timingOperator.left, child)
+                "start" -> timingOperator.right = timing.takeStart(timingOperator.right, child)
+                "end" -> timingOperator.right = timing.takeEnd(timingOperator.right, child)
+                "properly" -> isProper = true
             }
         }
         val quantity = visit(ctx.quantity()) as Quantity
-        var lowerBound: Expression?
-        var upperBound: Expression?
+        var lowerBound: Expression
+        var upperBound: Expression
         var initialBound: Expression? = null
         if (timingOperator.right.resultType is IntervalType) {
-            lowerBound = of.createStart().withOperand(timingOperator.right)
-            track(lowerBound, ctx.quantity())
-            libraryBuilder.resolveCall("System", "Start", lowerBound)
-            upperBound = of.createEnd().withOperand(timingOperator.right)
-            track(upperBound, ctx.quantity())
-            libraryBuilder.resolveCall("System", "End", upperBound)
+            lowerBound = timing.takeStart(timingOperator.right, ctx.quantity())
+            upperBound = timing.takeEnd(timingOperator.right, ctx.quantity())
         } else {
             lowerBound = timingOperator.right
             upperBound = timingOperator.right
             initialBound = lowerBound
         }
-        lowerBound = of.createSubtract().withOperand(listOf(lowerBound, quantity))
-        track(lowerBound, ctx.quantity())
-        libraryBuilder.resolveCall("System", "Subtract", (lowerBound as BinaryExpression?)!!)
-        upperBound = of.createAdd().withOperand(listOf(upperBound, quantity))
-        track(upperBound, ctx.quantity())
-        libraryBuilder.resolveCall("System", "Add", (upperBound as BinaryExpression?)!!)
+        lowerBound =
+            shiftOperand(lowerBound, quantity, subtract = true, trackSource = ctx.quantity())
+        upperBound =
+            shiftOperand(upperBound, quantity, subtract = false, trackSource = ctx.quantity())
         val interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper)
         track(interval, ctx.quantity())
         val inExpression = of.createIn().withOperand(listOf(timingOperator.left, interval))
@@ -2357,118 +2103,43 @@ class Cql2ElmVisitor(
     }
 
     override fun visitMeetsIntervalOperatorPhrase(ctx: MeetsIntervalOperatorPhraseContext): Any {
-        val operatorName: String?
-        val operator: BinaryExpression
-        val dateTimePrecision =
-            if (ctx.dateTimePrecisionSpecifier() != null)
-                ctx.dateTimePrecisionSpecifier()!!.dateTimePrecision().text
-            else null
-        if (ctx.childCount == 1 + if (dateTimePrecision == null) 0 else 1) {
-            operator =
-                if (dateTimePrecision != null)
-                    of.createMeets()
-                        .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                else of.createMeets()
-            operatorName = "Meets"
-        } else {
-            if ("before" == ctx.getChild(1)!!.text) {
-                operator =
-                    if (dateTimePrecision != null)
-                        of.createMeetsBefore()
-                            .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                    else of.createMeetsBefore()
-                operatorName = "MeetsBefore"
-            } else {
-                operator =
-                    if (dateTimePrecision != null)
-                        of.createMeetsAfter()
-                            .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                    else of.createMeetsAfter()
-                operatorName = "MeetsAfter"
-            }
-        }
-        operator.withOperand(
-            listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
-        )
-        libraryBuilder.resolveCall("System", operatorName, operator)
-        return operator
+        val precision = parsePrecisionSpecifier(ctx.dateTimePrecisionSpecifier())
+        val operatorName =
+            if (ctx.childCount == 1 + if (precision == null) 0 else 1) "Meets"
+            else if ("before" == ctx.getChild(1)!!.text) "MeetsBefore" else "MeetsAfter"
+        val t = this.timingOperators.peek()
+        return timing.buildTemporal(operatorName, t.left, t.right, precision)
     }
 
     override fun visitOverlapsIntervalOperatorPhrase(
         ctx: OverlapsIntervalOperatorPhraseContext
     ): Any {
-        val operatorName: String?
-        val operator: BinaryExpression
-        val dateTimePrecision =
-            if (ctx.dateTimePrecisionSpecifier() != null)
-                ctx.dateTimePrecisionSpecifier()!!.dateTimePrecision().text
-            else null
-        if (ctx.childCount == 1 + if (dateTimePrecision == null) 0 else 1) {
-            operator =
-                if (dateTimePrecision != null)
-                    of.createOverlaps()
-                        .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                else of.createOverlaps()
-            operatorName = "Overlaps"
-        } else {
-            if ("before" == ctx.getChild(1)!!.text) {
-                operator =
-                    if (dateTimePrecision != null)
-                        of.createOverlapsBefore()
-                            .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                    else of.createOverlapsBefore()
-                operatorName = "OverlapsBefore"
-            } else {
-                operator =
-                    if (dateTimePrecision != null)
-                        of.createOverlapsAfter()
-                            .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                    else of.createOverlapsAfter()
-                operatorName = "OverlapsAfter"
-            }
-        }
-        operator.withOperand(
-            listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
-        )
-        libraryBuilder.resolveCall("System", operatorName, operator)
-        return operator
+        val precision = parsePrecisionSpecifier(ctx.dateTimePrecisionSpecifier())
+        val operatorName =
+            if (ctx.childCount == 1 + if (precision == null) 0 else 1) "Overlaps"
+            else if ("before" == ctx.getChild(1)!!.text) "OverlapsBefore" else "OverlapsAfter"
+        val t = this.timingOperators.peek()
+        return timing.buildTemporal(operatorName, t.left, t.right, precision)
     }
 
     override fun visitStartsIntervalOperatorPhrase(
         ctx: StartsIntervalOperatorPhraseContext
     ): Starts {
-        val dateTimePrecision =
-            if (ctx.dateTimePrecisionSpecifier() != null)
-                ctx.dateTimePrecisionSpecifier()!!.dateTimePrecision().text
-            else null
-        val starts =
-            (if (dateTimePrecision != null)
-                    of.createStarts()
-                        .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                else of.createStarts())
-                .withOperand(
-                    listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
-                )
-        libraryBuilder.resolveCall("System", "Starts", starts)
-        return starts
+        val precision = parsePrecisionSpecifier(ctx.dateTimePrecisionSpecifier())
+        val t = this.timingOperators.peek()
+        return timing.buildTemporal("Starts", t.left, t.right, precision) as Starts
     }
 
     override fun visitEndsIntervalOperatorPhrase(ctx: EndsIntervalOperatorPhraseContext): Ends {
-        val dateTimePrecision =
-            if (ctx.dateTimePrecisionSpecifier() != null)
-                ctx.dateTimePrecisionSpecifier()!!.dateTimePrecision().text
-            else null
-        val ends =
-            (if (dateTimePrecision != null)
-                    of.createEnds()
-                        .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                else of.createEnds())
-                .withOperand(
-                    listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
-                )
-        libraryBuilder.resolveCall("System", "Ends", ends)
-        return ends
+        val precision = parsePrecisionSpecifier(ctx.dateTimePrecisionSpecifier())
+        val t = this.timingOperators.peek()
+        return timing.buildTemporal("Ends", t.left, t.right, precision) as Ends
     }
+
+    private fun parsePrecisionSpecifier(
+        specCtx: DateTimePrecisionSpecifierContext?
+    ): DateTimePrecision? =
+        specCtx?.dateTimePrecision()?.text?.let { parseComparableDateTimePrecision(it) }
 
     fun resolveIfThenElse(ifObject: If): Expression {
         ifObject.condition =
