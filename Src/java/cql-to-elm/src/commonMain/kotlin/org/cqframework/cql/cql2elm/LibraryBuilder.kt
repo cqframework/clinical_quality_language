@@ -84,6 +84,9 @@ class LibraryBuilder(
     val scopeManager: ScopeManager = ScopeManager()
     private val propertyResolver: PropertyResolver by lazy { PropertyResolver(this, objectFactory) }
     private val symbolTable: SymbolTable by lazy { SymbolTable(this) }
+    private val expressionFactory: ExpressionFactory by lazy {
+        ExpressionFactory(this, objectFactory)
+    }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -1762,7 +1765,7 @@ class LibraryBuilder(
     // constructing an interval with null boundaries
     private fun resolveToInterval(expression: Expression?): Expression {
         val condition = objectFactory.createIf()
-        condition.condition = buildIsNull(expression)
+        condition.condition = expressionFactory.buildIsNull(expression)
         condition.then = buildNull(IntervalType(expression!!.resultType!!))
         val toInterval =
             objectFactory
@@ -1857,78 +1860,25 @@ class LibraryBuilder(
             .withResultType(conversion.toType)
     }
 
-    fun buildAs(expression: Expression?, asType: DataType?): As {
-        val result = objectFactory.createAs().withOperand(expression).withResultType(asType)
-        if (result.resultType is NamedType) {
-            result.asType = dataTypeToQName(result.resultType)
-        } else {
-            result.asTypeSpecifier = dataTypeToTypeSpecifier(result.resultType)
-        }
-        return result
-    }
+    fun buildAs(expression: Expression?, asType: DataType?): As =
+        expressionFactory.buildAs(expression, asType)
 
-    fun buildIs(expression: Expression?, isType: DataType?): Is {
-        val result =
-            objectFactory
-                .createIs()
-                .withOperand(expression)
-                .withResultType(resolveTypeName("System", "Boolean"))
-        if (isType is NamedType) {
-            result.isType = dataTypeToQName(isType)
-        } else {
-            result.isTypeSpecifier = dataTypeToTypeSpecifier(isType)
-        }
-        return result
-    }
+    fun buildIs(expression: Expression?, isType: DataType?): Is =
+        expressionFactory.buildIs(expression, isType)
 
-    fun buildNull(nullType: DataType?): Null {
-        val result = objectFactory.createNull().withResultType(nullType)
-        if (nullType is NamedType) {
-            result.resultTypeName = dataTypeToQName(nullType)
-        } else {
-            result.resultTypeSpecifier = dataTypeToTypeSpecifier(nullType)
-        }
-        return result
-    }
+    fun buildNull(nullType: DataType?): Null = expressionFactory.buildNull(nullType)
 
-    private fun buildIsNull(expression: Expression?): IsNull {
-        val isNull = objectFactory.createIsNull().withOperand(expression)
-        isNull.resultType = resolveTypeName("System", "Boolean")
-        return isNull
-    }
+    internal fun buildIsNotNull(expression: Expression?): Not =
+        expressionFactory.buildIsNotNull(expression)
 
-    internal fun buildIsNotNull(expression: Expression?): Not {
-        val isNull = buildIsNull(expression)
-        val not = objectFactory.createNot().withOperand(isNull)
-        not.resultType = resolveTypeName("System", "Boolean")
-        return not
-    }
+    fun buildMinimum(dataType: DataType?): MinValue = expressionFactory.buildMinimum(dataType)
 
-    fun buildMinimum(dataType: DataType?): MinValue {
-        val minimum = objectFactory.createMinValue()
-        minimum.valueType = dataTypeToQName(dataType)
-        minimum.resultType = dataType
-        return minimum
-    }
+    fun buildMaximum(dataType: DataType?): MaxValue = expressionFactory.buildMaximum(dataType)
 
-    fun buildMaximum(dataType: DataType?): MaxValue {
-        val maximum = objectFactory.createMaxValue()
-        maximum.valueType = dataTypeToQName(dataType)
-        maximum.resultType = dataType
-        return maximum
-    }
+    fun buildPredecessor(source: Expression?): Expression =
+        expressionFactory.buildPredecessor(source)
 
-    fun buildPredecessor(source: Expression?): Expression {
-        val result = objectFactory.createPredecessor().withOperand(source)
-        resolveCall("System", "Predecessor", result)
-        return result
-    }
-
-    fun buildSuccessor(source: Expression?): Expression {
-        val result = objectFactory.createSuccessor().withOperand(source)
-        resolveCall("System", "Successor", result)
-        return result
-    }
+    fun buildSuccessor(source: Expression?): Expression = expressionFactory.buildSuccessor(source)
 
     @JsExport.Ignore
     @Suppress("LongMethod", "CyclomaticComplexMethod")
@@ -2138,61 +2088,23 @@ class LibraryBuilder(
     }
 
     @JsExport.Ignore
-    private fun createLiteral(value: String?, type: String): Literal {
-        val resultType = resolveTypeName("System", type)
-        val result =
-            objectFactory
-                .createLiteral()
-                .withValue(value)
-                .withValueType(dataTypeToQName(resultType))
-        result.resultType = resultType
-        return result
-    }
+    fun createLiteral(string: String?): Literal = expressionFactory.createLiteral(string)
 
     @JsExport.Ignore
-    fun createLiteral(string: String?): Literal {
-        return createLiteral(string, "String")
-    }
+    fun createLiteral(bool: Boolean): Literal = expressionFactory.createLiteral(bool)
 
     @JsExport.Ignore
-    fun createLiteral(bool: Boolean): Literal {
-        return createLiteral(bool.toString(), "Boolean")
-    }
+    fun createLiteral(integer: Int): Literal = expressionFactory.createLiteral(integer)
 
     @JsExport.Ignore
-    fun createLiteral(integer: Int): Literal {
-        return createLiteral(integer.toString(), "Integer")
-    }
+    fun createLiteral(value: Double): Literal = expressionFactory.createLiteral(value)
 
-    @JsExport.Ignore
-    fun createLiteral(value: Double): Literal {
-        return createLiteral(value.toString(), "Decimal")
-    }
+    fun createNumberLiteral(value: String): Literal = expressionFactory.createNumberLiteral(value)
 
-    fun createNumberLiteral(value: String): Literal {
-        val resultType =
-            resolveTypeName("System", if (value.contains(".")) "Decimal" else "Integer")
-        val result =
-            objectFactory
-                .createLiteral()
-                .withValue(value)
-                .withValueType(dataTypeToQName(resultType))
-        result.resultType = resultType
-        return result
-    }
+    fun createLongNumberLiteral(value: String?): Literal =
+        expressionFactory.createLongNumberLiteral(value)
 
-    fun createLongNumberLiteral(value: String?): Literal {
-        val resultType = resolveTypeName("System", "Long")
-        val result =
-            objectFactory
-                .createLiteral()
-                .withValue(value)
-                .withValueType(dataTypeToQName(resultType))
-        result.resultType = resultType
-        return result
-    }
-
-    private fun validateUnit(unit: String) {
+    internal fun validateUnit(unit: String) {
         when (unit) {
             "year",
             "years",
@@ -2242,42 +2154,18 @@ class LibraryBuilder(
         require(message == null) { message!! }
     }
 
-    fun createQuantity(value: BigDecimal?, unit: String): Quantity {
-        validateUnit(unit)
-        val result = objectFactory.createQuantity().withValue(value).withUnit(unit)
-        val resultType = resolveTypeName("System", "Quantity")
-        result.resultType = resultType
-        return result
-    }
+    fun createQuantity(value: BigDecimal?, unit: String): Quantity =
+        expressionFactory.createQuantity(value, unit)
 
-    fun createRatio(numerator: Quantity?, denominator: Quantity?): Ratio {
-        val result =
-            objectFactory.createRatio().withNumerator(numerator).withDenominator(denominator)
-        val resultType = resolveTypeName("System", "Ratio")
-        result.resultType = resultType
-        return result
-    }
+    fun createRatio(numerator: Quantity?, denominator: Quantity?): Ratio =
+        expressionFactory.createRatio(numerator, denominator)
 
     fun createInterval(
         low: Expression?,
         lowClosed: Boolean,
         high: Expression?,
         highClosed: Boolean,
-    ): Interval {
-        val result: Interval =
-            objectFactory
-                .createInterval()
-                .withLow(low)
-                .withLowClosed(lowClosed)
-                .withHigh(high)
-                .withHighClosed(highClosed)
-        val pointType: DataType? =
-            ensureCompatibleTypes(result.low!!.resultType, result.high!!.resultType!!)
-        result.resultType = IntervalType(pointType!!)
-        result.low = ensureCompatible(result.low, pointType)
-        result.high = ensureCompatible(result.high, pointType)
-        return result
-    }
+    ): Interval = expressionFactory.createInterval(low, lowClosed, high, highClosed)
 
     fun dataTypeToQName(type: DataType?): QName {
         return typeBuilder.dataTypeToQName(type)
