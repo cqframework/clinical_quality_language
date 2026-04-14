@@ -87,6 +87,7 @@ class LibraryBuilder(
     private val expressionFactory: ExpressionFactory by lazy {
         ExpressionFactory(this, objectFactory)
     }
+    private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this) }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -471,6 +472,9 @@ class LibraryBuilder(
     private val systemLibrary: CompiledLibrary
         get() = resolveLibrary("System")
 
+    internal val systemLibraryInternal: CompiledLibrary
+        get() = systemLibrary
+
     fun resolveLibrary(identifier: String?): CompiledLibrary {
         if (identifier != "System") {
             checkLiteralContext()
@@ -693,30 +697,7 @@ class LibraryBuilder(
         libraryName: String?,
         operatorName: String,
         expression: Expression,
-    ): Expression? {
-        val invocation = expressionToInvocation(expression)
-        return resolveCall(
-            libraryName,
-            operatorName,
-            invocation,
-            mustResolve = true,
-            allowPromotionAndDemotion = false,
-            allowFluent = false,
-        )
-    }
-
-    private fun expressionToInvocation(expression: Expression): Invocation =
-        when (expression) {
-            is UnaryExpression -> UnaryExpressionInvocation(expression)
-            is BinaryExpression -> BinaryExpressionInvocation(expression)
-            is TernaryExpression -> TernaryExpressionInvocation(expression)
-            is NaryExpression -> NaryExpressionInvocation(expression)
-            is AggregateExpression -> AggregateExpressionInvocation(expression)
-            else ->
-                throw IllegalArgumentException(
-                    "Cannot resolve operator call for expression of type ${expression::class.simpleName}"
-                )
-        }
+    ): Expression? = semanticAnalyzer.resolveCall(libraryName, operatorName, expression)
 
     @JvmOverloads
     fun resolveBinaryInvocation(
@@ -725,16 +706,14 @@ class LibraryBuilder(
         expression: BinaryExpression,
         mustResolve: Boolean = true,
         allowPromotionAndDemotion: Boolean = false,
-    ): Invocation? {
-        return resolveInvocation(
+    ): Invocation? =
+        semanticAnalyzer.resolveBinaryInvocation(
             libraryName,
             operatorName,
-            BinaryExpressionInvocation(expression),
+            expression,
             mustResolve,
             allowPromotionAndDemotion,
-            false,
         )
-    }
 
     /**
      * Variant of [resolveCall] that allows the caller to override resolution behavior for the
@@ -748,17 +727,14 @@ class LibraryBuilder(
         expression: BinaryExpression,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
-    ): Expression? {
-        val invocation =
-            resolveBinaryInvocation(
-                libraryName,
-                operatorName,
-                expression,
-                mustResolve,
-                allowPromotionAndDemotion,
-            )
-        return invocation?.expression
-    }
+    ): Expression? =
+        semanticAnalyzer.resolveBinaryCall(
+            libraryName,
+            operatorName,
+            expression,
+            mustResolve,
+            allowPromotionAndDemotion,
+        )
 
     private class BinaryWrapper(var left: Expression, var right: Expression)
 
@@ -1233,16 +1209,7 @@ class LibraryBuilder(
         libraryName: String?,
         operatorName: String,
         invocation: Invocation,
-    ): Expression? {
-        return resolveCall(
-            libraryName,
-            operatorName,
-            invocation,
-            mustResolve = true,
-            allowPromotionAndDemotion = false,
-            allowFluent = false,
-        )
-    }
+    ): Expression? = semanticAnalyzer.resolveCall(libraryName, operatorName, invocation)
 
     internal fun resolveCall(
         libraryName: String?,
@@ -1250,16 +1217,14 @@ class LibraryBuilder(
         invocation: Invocation,
         allowPromotionAndDemotion: Boolean,
         allowFluent: Boolean,
-    ): Expression? {
-        return resolveCall(
+    ): Expression? =
+        semanticAnalyzer.resolveCall(
             libraryName,
             operatorName,
             invocation,
-            true,
             allowPromotionAndDemotion,
             allowFluent,
         )
-    }
 
     @Suppress("LongParameterList")
     private fun resolveCall(
@@ -1269,65 +1234,19 @@ class LibraryBuilder(
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
         allowFluent: Boolean,
-    ): Expression? {
-        val result =
-            resolveInvocation(
-                libraryName,
-                operatorName,
-                invocation,
-                mustResolve,
-                allowPromotionAndDemotion,
-                allowFluent,
-            )
-        return result?.expression
-    }
-
-    @JsExport.Ignore
-    fun resolveInvocation(
-        libraryName: String?,
-        operatorName: String,
-        invocation: Invocation,
-        allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean,
-    ): Invocation? {
-        return resolveInvocation(
+    ): Expression? =
+        semanticAnalyzer.resolveCall(
             libraryName,
             operatorName,
             invocation,
-            true,
-            allowPromotionAndDemotion,
-            allowFluent,
-        )
-    }
-
-    @Suppress("LongParameterList")
-    private fun buildCallContext(
-        libraryName: String?,
-        operatorName: String,
-        operands: Iterable<Expression?>,
-        mustResolve: Boolean,
-        allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean,
-    ): CallContext {
-        val dataTypes: MutableList<DataType> = ArrayList()
-        for (operand in operands) {
-            require(operand != null && operand.resultType != null) {
-                "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
-            }
-            dataTypes.add(operand.resultType!!)
-        }
-        return CallContext(
-            libraryName,
-            operatorName,
-            allowPromotionAndDemotion,
-            allowFluent,
             mustResolve,
-            dataTypes,
+            allowPromotionAndDemotion,
+            allowFluent,
         )
-    }
 
     @JsExport.Ignore
-    @Suppress("LongParameterList", "LongMethod")
+    @JvmOverloads
+    @Suppress("LongParameterList")
     fun resolveInvocation(
         libraryName: String?,
         operatorName: String,
@@ -1335,174 +1254,23 @@ class LibraryBuilder(
         mustResolve: Boolean = true,
         allowPromotionAndDemotion: Boolean = false,
         allowFluent: Boolean = false,
-    ): Invocation? {
-        val operands: Iterable<Expression> = invocation.operands
-        val callContext =
-            buildCallContext(
-                libraryName,
-                operatorName,
-                operands,
-                mustResolve,
-                allowPromotionAndDemotion,
-                allowFluent,
-            )
-        val resolution = resolveCall(callContext)
-        if (resolution == null && !mustResolve) {
-            return null
-        }
-        checkOperator(callContext, resolution)
-        val convertedOperands: MutableList<Expression> = ArrayList()
-        val operandIterator = operands.iterator()
-        val signatureTypes = resolution!!.operator.signature.operandTypes.iterator()
-        val conversionIterator =
-            if (resolution.hasConversions()) resolution.conversions.iterator() else null
-        while (operandIterator.hasNext()) {
-            var operand = operandIterator.next()
-            val conversion = conversionIterator?.next()
-            if (conversion != null) {
-                operand = convertExpression(operand, conversion)
-            }
-            val signatureType = signatureTypes.next()
-            operand = pruneChoices(operand, signatureType)
-            convertedOperands.add(operand)
-        }
-        invocation.operands = convertedOperands
-        @Suppress("ComplexCondition")
-        if (
-            options.signatureLevel == SignatureLevel.All ||
-                (options.signatureLevel == SignatureLevel.Differing &&
-                    resolution.operator.signature != callContext.signature) ||
-                options.signatureLevel == SignatureLevel.Overloads &&
-                    resolution.operatorHasOverloads
-        ) {
-            invocation.signature =
-                dataTypesToTypeSpecifiers(resolution.operator.signature.operandTypes)
-        } else if (resolution.operatorHasOverloads && resolution.operator.libraryName != "System") {
-            // NOTE: Because system functions only deal with CQL system-defined types, and there is
-            // one and only one runtime representation of each system-defined type, there is no
-            // possibility of ambiguous overload resolution with system functions
-            // WARNING:
-            reportWarning(
-                """
-                    The function ${resolution.operator.libraryName}.${resolution.operator.name} has multiple overloads
-                    and due to the SignatureLevel setting (${options.signatureLevel.name}),
-                    the overload signature is not being included in the output.
-                    This may result in ambiguous function resolution
-                    at runtime, consider setting the SignatureLevel to Overloads or All
-                    to ensure that the output includes sufficient
-                    information to support correct overload selection at runtime.
-                """
-                    .trimIndent()
-                    .replace("\n", " "),
-                invocation.expression,
-            )
-        }
-        invocation.resultType = resolution.operator.resultType
-        if (resolution.libraryIdentifier != null) {
-            resolution.libraryName = resolveIncludeAlias(resolution.libraryIdentifier!!)
-        }
-        invocation.resolution = resolution
-        return invocation
-    }
+    ): Invocation? =
+        semanticAnalyzer.resolveInvocation(
+            libraryName,
+            operatorName,
+            invocation,
+            mustResolve,
+            allowPromotionAndDemotion,
+            allowFluent,
+        )
 
-    private fun pruneChoices(
-        expression: Expression,
-        @Suppress("UnusedParameter") targetType: DataType,
-    ): Expression {
-        // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the
-        // targetType (type leading)
-        // This is a placeholder for where this functionality would be added in the future.
-        return expression
-    }
-
-    fun resolveFunctionDefinition(fd: FunctionDef): Operator? {
-        val libraryName = compiledLibrary.identifier!!.id
-        val operatorName = fd.name
-        val dataTypes: MutableList<DataType> = ArrayList()
-        for (operand in fd.operand) {
-            requireNotNull(operand.resultType) {
-                "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
-            }
-            dataTypes.add(operand.resultType!!)
-        }
-        val callContext =
-            CallContext(
-                compiledLibrary.identifier!!.id,
-                fd.name!!,
-                false,
-                fd.fluent != null && fd.fluent!!,
-                false,
-                dataTypes,
-            )
-        // Resolve exact, no conversion map
-        return compiledLibrary.resolveCall(callContext, conversionMap)?.operator
-    }
-
-    @Suppress("NestedBlockDepth")
-    private fun resolveCall(callContext: CallContext): OperatorResolution? {
-        var result: OperatorResolution?
-        if (callContext.libraryName.isNullOrEmpty()) {
-            result = compiledLibrary.resolveCall(callContext, conversionMap)
-            if (result == null) {
-                result = systemLibrary.resolveCall(callContext, conversionMap)
-                if (result == null && callContext.allowFluent) {
-                    // attempt to resolve in each non-system included library, in order of
-                    // inclusion, first resolution wins
-                    for (lib in libraries.values) {
-                        if (lib != systemLibrary) {
-                            result = lib.resolveCall(callContext, conversionMap)
-                            if (result != null) {
-                                break
-                            }
-                        }
-                    }
-                }
-                /*
-                // Implicit resolution is only allowed for the system library functions.
-                // Except for fluent functions, so consider whether we should have an ambiguous warnings for fluent function resolution?
-                for (CompiledLibrary library : libraries.values()) {
-                    OperatorResolution libraryResult = library.resolveCall(callContext, libraryBuilder.getConversionMap());
-                    if (libraryResult != null) {
-                        if (result != null) {
-                            throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
-                                    callContext.getOperatorName(), result.getOperator().getName(), libraryResult.getOperator().getName()));
-                        }
-
-                        result = libraryResult;
-                    }
-                }
-                */
-            }
-        } else {
-            result = resolveLibrary(callContext.libraryName).resolveCall(callContext, conversionMap)
-        }
-        if (result != null) {
-            checkAccessLevel(
-                result.operator.libraryName,
-                result.operator.name,
-                result.operator.accessLevel,
-            )
-        }
-        return result
-    }
+    fun resolveFunctionDefinition(fd: FunctionDef): Operator? =
+        semanticAnalyzer.resolveFunctionDefinition(fd)
 
     private fun isInterFunctionAccess(f1: String, f2: String?): Boolean {
         return if (f1.isNotBlank() && !f2.isNullOrBlank()) {
             !f1.equals(f2, ignoreCase = true)
         } else false
-    }
-
-    private fun checkOperator(callContext: CallContext, resolution: OperatorResolution?) {
-        requireNotNull(resolution) {
-            // ERROR:
-            "Could not resolve call to operator ${callContext.operatorName} with signature ${callContext.signature}."
-        }
-        require(!resolution.operator.fluent || callContext.allowFluent) {
-            "Operator ${callContext.operatorName} with signature ${callContext.signature} is a fluent function and can only be invoked with fluent syntax."
-        }
-        require(!callContext.allowFluent || resolution.operator.fluent || resolution.allowFluent) {
-            "Invocation of operator ${callContext.operatorName} with signature ${callContext.signature} uses fluent syntax, but the operator is not defined as a fluent function."
-        }
     }
 
     fun checkAccessLevel(
@@ -1683,7 +1451,7 @@ class LibraryBuilder(
             .withResultType(conversion.toType)
     }
 
-    private fun reportWarning(message: String, expression: Element?) {
+    internal fun reportWarning(message: String, expression: Element?) {
         val trackback =
             if (expression != null && expression.trackbacks.isNotEmpty()) expression.trackbacks[0]
             else null
@@ -2171,7 +1939,7 @@ class LibraryBuilder(
         return typeBuilder.dataTypeToQName(type)
     }
 
-    private fun dataTypesToTypeSpecifiers(
+    internal fun dataTypesToTypeSpecifiers(
         types: kotlin.collections.List<DataType>
     ): kotlin.collections.List<TypeSpecifier> {
         return typeBuilder.dataTypesToTypeSpecifiers(types)
