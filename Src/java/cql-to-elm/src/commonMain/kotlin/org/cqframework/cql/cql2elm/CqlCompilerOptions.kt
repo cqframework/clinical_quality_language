@@ -6,7 +6,7 @@ import kotlin.js.JsExport
 import kotlin.js.JsStatic
 import kotlin.jvm.JvmStatic
 import kotlinx.serialization.Serializable
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
+import org.cqframework.cql.cql2elm.Cql2ElmContext.SignatureLevel
 import org.cqframework.cql.shared.JsOnlyExport
 
 /** Translation options for CQL source files */
@@ -98,7 +98,7 @@ class CqlCompilerOptions() {
      * @param disableMethodInvocation boolean
      * @param requireFromKeyword boolean
      * @param validateUnits boolean
-     * @param signatureLevel LibraryBuilder.SignatureLevel
+     * @param signatureLevel Cql2ElmContext.SignatureLevel
      * @param compatibilityLevel String
      */
     @JsExport.Ignore
@@ -242,7 +242,7 @@ class CqlCompilerOptions() {
 
     /**
      * Return this instance of CqlTranslatorOptions with addition of newly assigned signatureLevel
-     * (LibraryBuilder.SignatureLevel)
+     * (Cql2ElmContext.SignatureLevel)
      *
      * @param signatureLevel
      * @return

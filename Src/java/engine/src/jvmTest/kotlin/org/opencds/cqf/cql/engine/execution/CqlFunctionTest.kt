@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.execution
 
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -10,7 +10,7 @@ internal class CqlFunctionTest : CqlTestBase() {
     @Test
     fun all_function_tests() {
         val compilerOptions =
-            defaultOptions().withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads)
+            defaultOptions().withSignatureLevel(Cql2ElmContext.SignatureLevel.Overloads)
         val engine = getEngine(compilerOptions)
 
         val results = engine.evaluate { library("CqlFunctionTests") }.onlyResultOrThrow

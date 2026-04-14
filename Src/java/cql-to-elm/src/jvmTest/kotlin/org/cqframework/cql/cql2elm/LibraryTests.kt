@@ -67,7 +67,7 @@ internal class LibraryTests {
         val compilerOptions =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         val libraryManager = LibraryManager(modelManager!!, compilerOptions)
         libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -113,7 +113,7 @@ internal class LibraryTests {
         val compilerOptions =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         val libraryManager = LibraryManager(modelManager, compilerOptions)
 
@@ -370,7 +370,7 @@ internal class LibraryTests {
             val options =
                 CqlCompilerOptions(
                     CqlCompilerException.ErrorSeverity.Info,
-                    LibraryBuilder.SignatureLevel.All,
+                    Cql2ElmContext.SignatureLevel.All,
                     CqlCompilerOptions.Options.EnableAnnotations,
                 )
             val libraryManager = LibraryManager(modelManager!!, options)
@@ -953,13 +953,13 @@ internal class LibraryTests {
     @Throws(IOException::class)
     fun forwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformationSignatureLevelNone(
         testFileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
     ) {
         val translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel)
         val expectedWarningCount =
             if (
-                LibraryBuilder.SignatureLevel.None == signatureLevel ||
-                    LibraryBuilder.SignatureLevel.Differing == signatureLevel
+                Cql2ElmContext.SignatureLevel.None == signatureLevel ||
+                    Cql2ElmContext.SignatureLevel.Differing == signatureLevel
             )
                 2
             else 0
@@ -1011,35 +1011,35 @@ internal class LibraryTests {
             return arrayOf(
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.None,
+                    Cql2ElmContext.SignatureLevel.None,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Differing,
+                    Cql2ElmContext.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Overloads,
+                    Cql2ElmContext.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.All,
+                    Cql2ElmContext.SignatureLevel.All,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.None,
+                    Cql2ElmContext.SignatureLevel.None,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Differing,
+                    Cql2ElmContext.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.Overloads,
+                    Cql2ElmContext.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE,
-                    LibraryBuilder.SignatureLevel.All,
+                    Cql2ElmContext.SignatureLevel.All,
                 ),
             )
         }

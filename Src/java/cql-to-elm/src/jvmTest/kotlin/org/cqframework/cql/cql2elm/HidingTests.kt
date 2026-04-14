@@ -15,7 +15,7 @@ internal class HidingTests {
             TestUtils.runSemanticTest(
                 "HidingTests/TestHidingCaseInsensitiveWarning.cql",
                 0,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         val warnings = translator.warnings
         assertLocatorsExist(warnings)

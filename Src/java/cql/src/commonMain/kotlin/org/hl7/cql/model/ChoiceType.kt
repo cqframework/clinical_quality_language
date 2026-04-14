@@ -10,7 +10,7 @@ private constructor(
     // TODO: Change type to Set<DataType> to deduplicate choice options. E.g. in QICore model info,
     // Observation.effective has System.DateTime duplicated. This doesn't break anything but the
     // compiled ELM is different because there are fewer alternative conversions in
-    // [org.cqframework.cql.cql2elm.LibraryBuilder.convertExpression].
+    // [org.cqframework.cql.cql2elm.Cql2ElmContext.convertExpression].
     val types: List<DataType>
 ) : BaseDataType() {
     constructor(types: Iterable<DataType>) : this(types.flattenChoices())
@@ -61,7 +61,7 @@ private constructor(
 
     @Suppress("ForbiddenComment")
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
-    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // is different because [org.cqframework.cql.cql2elm.Cql2ElmContext.normalizeListTypes] returns
     // the choice options in a different order.
     override fun hashCode(): Int {
         var result = 13

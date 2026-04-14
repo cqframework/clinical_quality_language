@@ -46,14 +46,14 @@ import org.hl7.elm.r1.ValueSetRef
  * specific named library), applies conversions to operands, and returns the resolved [Invocation]
  * or ELM [Expression].
  *
- * Extracted from [LibraryBuilder] as part of the ongoing split of builder responsibilities. Holds a
- * back-reference to [LibraryBuilder] for access to its library registry, the conversion map,
+ * Extracted from [Cql2ElmContext] as part of the ongoing split of builder responsibilities. Holds a
+ * back-reference to [Cql2ElmContext] for access to its library registry, the conversion map,
  * compatibility-level options, type-specifier conversion, and parsing diagnostics. These
  * collaborators will shrink as the retirement proceeds.
  *
  * Set-membership operators (`In`, `IncludedIn`, `ProperIn`, etc.) and the higher-level
  * `resolveFunction`/`resolveUnion`/`resolveIntersect`/`resolveContains` family remain on
- * [LibraryBuilder] because they encode CQL-specific semantics (list-type normalization, implicit
+ * [Cql2ElmContext] because they encode CQL-specific semantics (list-type normalization, implicit
  * coalesce, DateTimePrecision qualification) beyond raw resolution.
  */
 @Suppress(
@@ -64,7 +64,7 @@ import org.hl7.elm.r1.ValueSetRef
     "ReturnCount",
     "ForbiddenComment",
 )
-class SemanticAnalyzer(private val lb: LibraryBuilder, private val of: IdObjectFactory) {
+class SemanticAnalyzer(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
     /**
      * Resolve an operator invocation, dispatching on the runtime type of [expression] to wrap it in
      * the appropriate [Invocation].
@@ -210,10 +210,10 @@ class SemanticAnalyzer(private val lb: LibraryBuilder, private val of: IdObjectF
 
         val signatureLevel = lb.libraryManager.cqlCompilerOptions.signatureLevel
         if (
-            signatureLevel == LibraryBuilder.SignatureLevel.All ||
-                (signatureLevel == LibraryBuilder.SignatureLevel.Differing &&
+            signatureLevel == Cql2ElmContext.SignatureLevel.All ||
+                (signatureLevel == Cql2ElmContext.SignatureLevel.Differing &&
                     resolution.operator.signature != callContext.signature) ||
-                signatureLevel == LibraryBuilder.SignatureLevel.Overloads &&
+                signatureLevel == Cql2ElmContext.SignatureLevel.Overloads &&
                     resolution.operatorHasOverloads
         ) {
             invocation.signature =

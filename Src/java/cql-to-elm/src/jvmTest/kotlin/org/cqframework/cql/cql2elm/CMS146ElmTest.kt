@@ -33,7 +33,7 @@ class CMS146ElmTest {
     @ParameterizedTest
     @MethodSource("signatureLevels")
     @Throws(IOException::class)
-    fun signatureLevels(signatureLevel: LibraryBuilder.SignatureLevel) {
+    fun signatureLevels(signatureLevel: Cql2ElmContext.SignatureLevel) {
         val modelManager = ModelManager()
         val translator =
             CqlTranslator.fromSource(
@@ -331,7 +331,7 @@ class CMS146ElmTest {
                         modelManager,
                         CqlCompilerOptions(
                             CqlCompilerException.ErrorSeverity.Warning,
-                            LibraryBuilder.SignatureLevel.None,
+                            Cql2ElmContext.SignatureLevel.None,
                         ),
                     ),
                 )
@@ -342,10 +342,10 @@ class CMS146ElmTest {
         @JvmStatic
         fun signatureLevels(): Array<Array<Any>> {
             return arrayOf(
-                arrayOf(LibraryBuilder.SignatureLevel.None),
-                arrayOf(LibraryBuilder.SignatureLevel.Differing),
-                arrayOf(LibraryBuilder.SignatureLevel.Overloads),
-                arrayOf(LibraryBuilder.SignatureLevel.All),
+                arrayOf(Cql2ElmContext.SignatureLevel.None),
+                arrayOf(Cql2ElmContext.SignatureLevel.Differing),
+                arrayOf(Cql2ElmContext.SignatureLevel.Overloads),
+                arrayOf(Cql2ElmContext.SignatureLevel.All),
             )
         }
     }

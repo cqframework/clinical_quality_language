@@ -3,10 +3,10 @@ package org.cqframework.cql.cql2elm.operators
 import java.io.IOException
 import kotlinx.io.asSource
 import kotlinx.io.buffered
+import org.cqframework.cql.cql2elm.Cql2ElmContext.SignatureLevel
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlTranslator.Companion.fromSource
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.Companion.hasTypeAndResult

@@ -49,5 +49,5 @@ fun libraryManagerSetSignatureLevel(
     signatureLevel: String,
 ) {
     libraryManager.get().cqlCompilerOptions.signatureLevel =
-        LibraryBuilder.SignatureLevel.valueOf(signatureLevel)
+        Cql2ElmContext.SignatureLevel.valueOf(signatureLevel)
 }

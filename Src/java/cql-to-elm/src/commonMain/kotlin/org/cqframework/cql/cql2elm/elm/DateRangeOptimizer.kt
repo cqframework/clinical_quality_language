@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.elm
 
-import org.cqframework.cql.cql2elm.LibraryBuilder
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
 import org.hl7.cql.model.ChoiceType
@@ -28,7 +28,7 @@ import org.hl7.elm.r1.Retrieve
  * as a distinct ELM transformation.
  */
 @Suppress("USELESS_CAST", "ComplexCondition", "ReturnCount", "TooManyFunctions")
-class DateRangeOptimizer(private val libraryBuilder: LibraryBuilder) : ElmPass {
+class DateRangeOptimizer(private val libraryBuilder: Cql2ElmContext) : ElmPass {
     override val name: String = "DateRangeOptimizer"
 
     /**

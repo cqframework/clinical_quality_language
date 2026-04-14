@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm.fhir.r401
 
 import java.io.IOException
 import java.util.stream.Collectors
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.TestUtils
 import org.cqframework.cql.cql2elm.matchers.QuickDataType
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
@@ -938,7 +938,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r401/TestOverload.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads,
+                Cql2ElmContext.SignatureLevel.Overloads,
             )
         assertThat(translator.warnings.size, `is`(1))
 
@@ -988,7 +988,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r401/TestOverloadForward.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads,
+                Cql2ElmContext.SignatureLevel.Overloads,
             )
         assertThat(translator.warnings.size, `is`(1))
 

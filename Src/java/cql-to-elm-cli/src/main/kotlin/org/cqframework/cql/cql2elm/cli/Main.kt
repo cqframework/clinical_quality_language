@@ -15,13 +15,13 @@ import joptsimple.OptionSpec
 import kotlin.system.exitProcess
 import kotlinx.io.asSource
 import kotlinx.io.buffered
+import org.cqframework.cql.cql2elm.Cql2ElmContext.SignatureLevel
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlTranslator
 import org.cqframework.cql.cql2elm.CqlTranslator.Companion.fromFile
 import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider
 import org.cqframework.cql.cql2elm.DefaultModelInfoProvider
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider

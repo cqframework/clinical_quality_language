@@ -68,7 +68,7 @@ internal class TranslationTests {
         val compilerOptions =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
                 CqlCompilerOptions.Options.EnableDateRangeOptimization,
                 CqlCompilerOptions.Options.EnableAnnotations,
                 CqlCompilerOptions.Options.EnableLocators,
@@ -589,7 +589,7 @@ internal class TranslationTests {
             TestUtils.runSemanticTest(
                 "MappingExpansionsRespectSignatureLevel.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads,
+                Cql2ElmContext.SignatureLevel.Overloads,
             )
 
         /*

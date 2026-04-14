@@ -42,7 +42,7 @@ class CqlCompiler(
     val exceptions = mutableListOf<CqlCompilerException>()
 
     private inner class CqlErrorListener(
-        private val builder: LibraryBuilder,
+        private val builder: Cql2ElmContext,
         private val detailedErrors: Boolean,
     ) : BaseErrorListener() {
         private fun extractLibraryIdentifier(parser: cqlParser): VersionedIdentifier? {
@@ -125,7 +125,7 @@ class CqlCompiler(
     /** Compiles CQL source from the provided [CharStream] into an ELM [Library]. */
     fun run(charStream: CharStream): Library {
         val options = libraryManager.cqlCompilerOptions.options
-        val builder = LibraryBuilder(namespaceInfo, libraryManager, IdObjectFactory())
+        val builder = Cql2ElmContext(namespaceInfo, libraryManager, IdObjectFactory())
         val errorListener =
             CqlErrorListener(
                 builder,

@@ -15,7 +15,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
 
@@ -42,7 +42,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
         libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
@@ -69,7 +69,7 @@ internal class ElmSupportTest {
         val options =
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         libraryManager = LibraryManager(modelManager!!, options)
         libraryManager!!.librarySourceLoader.registerProvider(TestLibrarySourceProvider())

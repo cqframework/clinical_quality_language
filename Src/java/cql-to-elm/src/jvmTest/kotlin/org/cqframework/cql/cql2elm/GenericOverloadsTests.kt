@@ -21,7 +21,7 @@ internal class GenericOverloadsTests {
     @Throws(IOException::class)
     private fun getLibrary(
         enableResultTypes: Boolean,
-        level: LibraryBuilder.SignatureLevel,
+        level: Cql2ElmContext.SignatureLevel,
     ): Library {
         val translator: CqlTranslator = getTranslator(enableResultTypes, level)
         assertThat(translator.errors.size, `is`(0))
@@ -74,7 +74,7 @@ internal class GenericOverloadsTests {
     @Test
     @Throws(IOException::class)
     fun resultTypes() {
-        val library = getLibrary(true, LibraryBuilder.SignatureLevel.Overloads)
+        val library = getLibrary(true, Cql2ElmContext.SignatureLevel.Overloads)
 
         val stringifies = stringifies(library)
         stringifies.forEach(
@@ -85,7 +85,7 @@ internal class GenericOverloadsTests {
     @Test
     @Throws(IOException::class)
     fun noResultTypes() {
-        val library = getLibrary(false, LibraryBuilder.SignatureLevel.Overloads)
+        val library = getLibrary(false, Cql2ElmContext.SignatureLevel.Overloads)
 
         val stringifies = stringifies(library)
         stringifies.forEach(
@@ -96,7 +96,7 @@ internal class GenericOverloadsTests {
     @Test
     @Throws(IOException::class)
     fun resultTypesSignatureNone() {
-        val library = getLibrary(true, LibraryBuilder.SignatureLevel.None)
+        val library = getLibrary(true, Cql2ElmContext.SignatureLevel.None)
 
         val stringifies = stringifies(library)
         stringifies.forEach(
@@ -107,7 +107,7 @@ internal class GenericOverloadsTests {
     @Test
     @Throws(IOException::class)
     fun noResultTypesSignatureNone() {
-        val library = getLibrary(false, LibraryBuilder.SignatureLevel.None)
+        val library = getLibrary(false, Cql2ElmContext.SignatureLevel.None)
 
         val stringifies = stringifies(library)
         stringifies.forEach(
@@ -122,7 +122,7 @@ internal class GenericOverloadsTests {
         @Throws(IOException::class)
         private fun getTranslator(
             enableResultTypes: Boolean,
-            level: LibraryBuilder.SignatureLevel,
+            level: Cql2ElmContext.SignatureLevel,
         ): CqlTranslator {
             val options = CqlCompilerOptions()
             options.options.clear()

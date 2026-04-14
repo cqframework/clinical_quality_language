@@ -25,13 +25,13 @@ import org.hl7.elm.r1.Null
  * interval promotion/demotion, OperatorConversion function calls, and the per-literal
  * constant-folding optimization for interval conversions.
  *
- * Extracted from [LibraryBuilder] as part of the ongoing split of builder responsibilities. Holds a
- * back-reference to [LibraryBuilder] for the conversion map + operator map, type-name resolution,
+ * Extracted from [Cql2ElmContext] as part of the ongoing split of builder responsibilities. Holds a
+ * back-reference to [Cql2ElmContext] for the conversion map + operator map, type-name resolution,
  * expression-factory helpers (`buildAs`, `buildIs`, `buildNull`, `buildIsNull`), operator
  * resolution (`resolveCall`), the SystemFunctionResolver, and parsing-warning reporting.
  */
 @Suppress("TooManyFunctions")
-class ConversionEngine(private val lb: LibraryBuilder, private val of: IdObjectFactory) {
+class ConversionEngine(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
     fun findConversion(
         fromType: DataType,
         toType: DataType,

@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm.qicore.v500
 
 import java.io.IOException
 import java.util.stream.Collectors
-import org.cqframework.cql.cql2elm.LibraryBuilder
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.TestUtils
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
@@ -48,7 +48,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "qicore/v500/AuthoringPatterns.cql",
                 0,
-                LibraryBuilder.SignatureLevel.Overloads,
+                Cql2ElmContext.SignatureLevel.Overloads,
             )
 
         assertThat(translator.warnings.toString(), translator.warnings.size, `is`(1))

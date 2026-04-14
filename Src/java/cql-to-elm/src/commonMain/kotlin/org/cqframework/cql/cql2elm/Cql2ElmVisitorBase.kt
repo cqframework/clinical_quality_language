@@ -40,7 +40,7 @@ import org.hl7.elm.r1.*
     "ReturnCount",
 )
 abstract class Cql2ElmVisitorBase(
-    @JvmField protected val libraryBuilder: LibraryBuilder,
+    @JvmField protected val libraryBuilder: Cql2ElmContext,
     protected val tokenStream: TokenStream,
 ) : cqlBaseVisitor<Any?>() {
     @JvmField protected val of: IdObjectFactory = libraryBuilder.objectFactory

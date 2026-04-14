@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 /** Created by Bryn on 4/12/2018. */
 internal class SignatureOutputTests {
     @Throws(IOException::class)
-    private fun getLibrary(signatureLevel: LibraryBuilder.SignatureLevel): Library {
+    private fun getLibrary(signatureLevel: Cql2ElmContext.SignatureLevel): Library {
         val translator: CqlTranslator = getTranslator(signatureLevel)
         assertThat(translator.errors.size, `is`(0))
         defs = HashMap()
@@ -31,7 +31,7 @@ internal class SignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun none() {
-        val translator: CqlTranslator = getTranslator(LibraryBuilder.SignatureLevel.None)
+        val translator: CqlTranslator = getTranslator(Cql2ElmContext.SignatureLevel.None)
         assertThat(translator.warnings.size, Matchers.greaterThan(1))
         assertThat(
             translator.warnings[0].message,
@@ -44,7 +44,7 @@ internal class SignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun differing() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.Differing)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.Differing)
         // TestAvg->Avg->signature(1)
         // TestDivide->Divide->signature(2)
         // TestIntegerOverload->OverloadTest->signature(1)
@@ -85,7 +85,7 @@ internal class SignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun overloads() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.Overloads)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.Overloads)
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)
         // TestAvg->Avg->signature(1)
@@ -129,7 +129,7 @@ internal class SignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun all() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.All)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.All)
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)
         // TestDateTime->DateTime->signature(3)
@@ -178,7 +178,7 @@ internal class SignatureOutputTests {
         private var defs: MutableMap<String?, ExpressionDef>? = null
 
         @Throws(IOException::class)
-        private fun getTranslator(signatureLevel: LibraryBuilder.SignatureLevel): CqlTranslator {
+        private fun getTranslator(signatureLevel: Cql2ElmContext.SignatureLevel): CqlTranslator {
             return TestUtils.getTranslator(CQL_TEST_FILE, null, signatureLevel)
         }
     }

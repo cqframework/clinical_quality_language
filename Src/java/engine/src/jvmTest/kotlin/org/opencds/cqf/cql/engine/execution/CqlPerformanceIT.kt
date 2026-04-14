@@ -6,9 +6,9 @@ import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.stream.Stream
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.fhir.ucum.UcumException
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Assertions
@@ -124,7 +124,7 @@ class CqlPerformanceIT : CqlTestBase() {
         // When called with the null argument, the toString function in the CqlPerformanceTest
         // library can only be unambiguously resolved at runtime if the library is
         // compiled with signature level set to Overloads or All.
-        options.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads)
+        options.withSignatureLevel(Cql2ElmContext.SignatureLevel.Overloads)
         return options
     }
 

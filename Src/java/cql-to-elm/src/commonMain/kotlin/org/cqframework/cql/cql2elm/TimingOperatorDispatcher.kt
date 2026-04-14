@@ -38,7 +38,7 @@ import org.hl7.elm.r1.Starts
  * [org.cqframework.cql.cql2elm.model.TimingOperatorContext]-like caller-owned state in place.
  */
 class TimingOperatorDispatcher(
-    private val libraryBuilder: LibraryBuilder,
+    private val libraryBuilder: Cql2ElmContext,
     private val of: IdObjectFactory,
     private val track: (Element, ParseTree) -> TrackBack?,
     private val trackFromElement: (Element, Element) -> TrackBack?,

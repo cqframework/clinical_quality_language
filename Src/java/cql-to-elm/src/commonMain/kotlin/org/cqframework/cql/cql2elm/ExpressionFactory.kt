@@ -29,14 +29,14 @@ import org.hl7.elm.r1.Ratio
  * quantity/ratio/interval), type-annotation nodes (`As`/`Is`/`Null`), null-checks, bounded min/max,
  * and predecessor/successor calls.
  *
- * Extracted from [LibraryBuilder] as part of the ongoing split of builder responsibilities. Holds a
- * back-reference to [LibraryBuilder] for type-system queries (resolveTypeName, dataTypeToQName,
+ * Extracted from [Cql2ElmContext] as part of the ongoing split of builder responsibilities. Holds a
+ * back-reference to [Cql2ElmContext] for type-system queries (resolveTypeName, dataTypeToQName,
  * dataTypeToTypeSpecifier), comparison helpers (ensureCompatible[Types]), and operator resolution
  * (resolveCall). These collaborators will move to the new SemanticAnalyzer component as the
  * retirement proceeds.
  */
 @Suppress("TooManyFunctions")
-class ExpressionFactory(private val lb: LibraryBuilder, private val of: IdObjectFactory) {
+class ExpressionFactory(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
     // Literal construction ----------------------------------------------------
 
     @JsExport.Ignore

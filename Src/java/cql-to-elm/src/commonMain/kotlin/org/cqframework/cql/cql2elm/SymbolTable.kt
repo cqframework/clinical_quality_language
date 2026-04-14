@@ -22,13 +22,13 @@ import org.hl7.elm.r1.VersionedIdentifier
  * definition updates both the [org.hl7.elm.r1.Library] tree and the [CompiledLibrary]'s resolve-
  * indexes in one operation. Resolver methods read exclusively from the CompiledLibrary.
  *
- * Extracted from [LibraryBuilder] as part of the ongoing split of builder responsibilities. Holds a
- * back-reference to [LibraryBuilder] for cross-cutting concerns (conversion-map loading,
+ * Extracted from [Cql2ElmContext] as part of the ongoing split of builder responsibilities. Holds a
+ * back-reference to [Cql2ElmContext] for cross-cutting concerns (conversion-map loading,
  * parse-error recording, library-manager access) that will move to focused collaborators once the
  * split completes.
  */
 @Suppress("TooManyFunctions", "LargeClass", "MaxLineLength", "ForbiddenComment")
-class SymbolTable(private val lb: LibraryBuilder) {
+class SymbolTable(private val lb: Cql2ElmContext) {
     fun addUsing(usingDef: UsingDef) {
         if (lb.library.usings == null) {
             lb.library.usings = lb.objectFactory.createLibraryUsings()
@@ -177,7 +177,7 @@ class SymbolTable(private val lb: LibraryBuilder) {
     }
 
     // ========================================================================
-    // Model lifecycle. Loading a model caches it on LibraryBuilder.models,
+    // Model lifecycle. Loading a model caches it on Cql2ElmContext.models,
     // registers its conversions on the conversion map, and synthesizes a
     // UsingDef so downstream `resolveUsingRef(modelName)` can find it.
     // ========================================================================

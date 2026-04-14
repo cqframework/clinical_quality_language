@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.execution
 
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -13,12 +13,12 @@ internal class CqlListDistinguishedOverloadsTest : CqlTestBase() {
         val compilerOptions = defaultOptions()
 
         val engine1 =
-            getEngine(compilerOptions.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads))
+            getEngine(compilerOptions.withSignatureLevel(Cql2ElmContext.SignatureLevel.Overloads))
         val value = engine1.expression(library, "Test")
         Assertions.assertEquals("1, 2, 3, 4, 5", value)
 
         val engine2 =
-            getEngine(compilerOptions.withSignatureLevel(LibraryBuilder.SignatureLevel.None))
+            getEngine(compilerOptions.withSignatureLevel(Cql2ElmContext.SignatureLevel.None))
         val cqlException =
             Assertions.assertThrows(CqlException::class.java) {
                 engine2.expression(library, "Test")

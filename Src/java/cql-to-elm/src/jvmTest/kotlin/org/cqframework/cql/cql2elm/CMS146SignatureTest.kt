@@ -16,7 +16,7 @@ internal class CMS146SignatureTest {
     @MethodSource("sigCounts")
     @Throws(IOException::class)
     fun cms146SignatureLevels(
-        signatureLevel: LibraryBuilder.SignatureLevel,
+        signatureLevel: Cql2ElmContext.SignatureLevel,
         expectedSignatures: Int,
     ) {
         val cms146 = getFile("CMS146v2_Test_CQM.cql")
@@ -55,10 +55,10 @@ internal class CMS146SignatureTest {
         @JvmStatic
         private fun sigCounts(): Array<Array<Any?>?> {
             return arrayOf(
-                arrayOf(LibraryBuilder.SignatureLevel.None, 0),
-                arrayOf(LibraryBuilder.SignatureLevel.Differing, 3),
-                arrayOf(LibraryBuilder.SignatureLevel.Overloads, 11),
-                arrayOf(LibraryBuilder.SignatureLevel.All, 34),
+                arrayOf(Cql2ElmContext.SignatureLevel.None, 0),
+                arrayOf(Cql2ElmContext.SignatureLevel.Differing, 3),
+                arrayOf(Cql2ElmContext.SignatureLevel.Overloads, 11),
+                arrayOf(Cql2ElmContext.SignatureLevel.All, 34),
             )
         }
 

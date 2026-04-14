@@ -10,7 +10,7 @@ import org.hl7.elm.r1.*
 @Suppress("TooManyFunctions")
 class SystemMethodResolver(
     private val visitor: Cql2ElmVisitor,
-    private val builder: LibraryBuilder,
+    private val builder: Cql2ElmContext,
 ) {
     private val of = builder.objectFactory
 

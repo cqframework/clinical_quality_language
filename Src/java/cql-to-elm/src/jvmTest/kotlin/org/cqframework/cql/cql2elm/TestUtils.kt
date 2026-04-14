@@ -54,7 +54,7 @@ object TestUtils {
     @JvmStatic
     fun visitFile(
         fileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
     ): ExpressionDef? {
         val file = getFileOrThrow(fileName)
         val translator = CqlTranslator.fromFile(file.path, getLibraryManager(signatureLevel))
@@ -72,7 +72,7 @@ object TestUtils {
     @JvmStatic
     fun visitFileLibrary(
         fileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
     ): CompiledLibrary? {
         val file = getFileOrThrow(fileName)
         val translator = CqlTranslator.fromFile(file.path, getLibraryManager(signatureLevel))
@@ -125,7 +125,7 @@ object TestUtils {
     private fun createElmTranslatorVisitor(tokens: TokenStream, tree: ParseTree): Cql2ElmVisitor {
         val modelManager = ModelManager()
         val libraryManager = getLibraryManager(modelManager, null)
-        val libraryBuilder = LibraryBuilder(libraryManager, IdObjectFactory())
+        val libraryBuilder = Cql2ElmContext(libraryManager, IdObjectFactory())
         return Cql2ElmVisitor(libraryBuilder, tokens)
     }
 
@@ -164,7 +164,7 @@ object TestUtils {
     fun runSemanticTest(
         testFileName: String,
         expectedErrors: Int,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
         vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val cqlCompilerOptions = CqlCompilerOptions(*options)
@@ -202,7 +202,7 @@ object TestUtils {
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
         expectedErrors: Int,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
         vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val cqlCompilerOptions = CqlCompilerOptions(*options)
@@ -280,7 +280,7 @@ object TestUtils {
     @Throws(IOException::class)
     fun createTranslatorFromStream(
         testFileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
         vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         return createTranslatorFromStream(null, testFileName, signatureLevel, *options)
@@ -290,7 +290,7 @@ object TestUtils {
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         testFileName: String,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
         vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val inputStream = Cql2ElmVisitorTest::class.java.getResourceAsStream(testFileName)
@@ -304,7 +304,7 @@ object TestUtils {
     fun createTranslatorFromStream(
         namespaceInfo: NamespaceInfo?,
         inputStream: InputStream,
-        signatureLevel: LibraryBuilder.SignatureLevel?,
+        signatureLevel: Cql2ElmContext.SignatureLevel?,
         vararg options: CqlCompilerOptions.Options,
     ): CqlTranslator {
         val modelManager = ModelManager()
@@ -350,7 +350,7 @@ object TestUtils {
     fun getTranslator(
         cqlTestFile: String,
         nullableLibrarySourceProvider: String?,
-        signatureLevel: LibraryBuilder.SignatureLevel,
+        signatureLevel: Cql2ElmContext.SignatureLevel,
     ): CqlTranslator {
         val testFile = getFileOrThrow(cqlTestFile)
         val modelManager = ModelManager()
@@ -403,15 +403,15 @@ object TestUtils {
 
     private val libraryManager: LibraryManager
         get() {
-            val sig: LibraryBuilder.SignatureLevel? = null
+            val sig: Cql2ElmContext.SignatureLevel? = null
             return getLibraryManager(sig)
         }
 
-    private fun getLibraryManager(signatureLevel: LibraryBuilder.SignatureLevel?): LibraryManager {
+    private fun getLibraryManager(signatureLevel: Cql2ElmContext.SignatureLevel?): LibraryManager {
         return getLibraryManager(
             CqlCompilerOptions(
                 CqlCompilerException.ErrorSeverity.Warning,
-                signatureLevel ?: LibraryBuilder.SignatureLevel.All,
+                signatureLevel ?: Cql2ElmContext.SignatureLevel.All,
             )
         )
     }

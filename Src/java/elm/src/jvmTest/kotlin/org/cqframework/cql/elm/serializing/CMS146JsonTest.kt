@@ -5,10 +5,10 @@ import java.io.IOException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Scanner
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlTranslator
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.json.JSONException
@@ -22,7 +22,7 @@ internal class CMS146JsonTest {
     @Throws(IOException::class, JSONException::class)
     fun cms146SignatureLevels(
         fileName: String,
-        expectedSignatureLevel: LibraryBuilder.SignatureLevel,
+        expectedSignatureLevel: Cql2ElmContext.SignatureLevel,
     ) {
         val expectedJson: String? = getJson(fileName)
 
@@ -50,19 +50,19 @@ internal class CMS146JsonTest {
             return arrayOf(
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_None.json",
-                    LibraryBuilder.SignatureLevel.None,
+                    Cql2ElmContext.SignatureLevel.None,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Differing.json",
-                    LibraryBuilder.SignatureLevel.Differing,
+                    Cql2ElmContext.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Overloads.json",
-                    LibraryBuilder.SignatureLevel.Overloads,
+                    Cql2ElmContext.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_All.json",
-                    LibraryBuilder.SignatureLevel.All,
+                    Cql2ElmContext.SignatureLevel.All,
                 ),
             )
         }

@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm.fhir.r4
 
 import java.io.IOException
 import javax.xml.namespace.QName
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.TestUtils
 import org.cqframework.cql.cql2elm.matchers.QuickDataType
 import org.hamcrest.MatcherAssert
@@ -394,7 +394,7 @@ internal class BaseTest {
             TestUtils.runSemanticTest(
                 "fhir/r4/exm108/EXM108.cql",
                 0,
-                LibraryBuilder.SignatureLevel.All,
+                Cql2ElmContext.SignatureLevel.All,
             )
         // Should only be one identifier being hid after fixes, "Warafin"
         Assertions.assertEquals(1, translator.exceptions.size)

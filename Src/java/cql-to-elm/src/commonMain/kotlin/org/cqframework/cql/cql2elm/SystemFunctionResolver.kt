@@ -11,7 +11,7 @@ import org.cqframework.cql.elm.createExpression
 import org.hl7.elm.r1.*
 
 @Suppress("LargeClass", "TooManyFunctions")
-class SystemFunctionResolver(private val builder: LibraryBuilder) {
+class SystemFunctionResolver(private val builder: Cql2ElmContext) {
     private val of = builder.objectFactory
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")

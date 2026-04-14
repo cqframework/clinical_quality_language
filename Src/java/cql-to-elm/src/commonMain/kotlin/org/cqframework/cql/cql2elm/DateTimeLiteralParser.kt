@@ -24,7 +24,7 @@ import org.hl7.elm.r1.Time
     "MaxLineLength",
 )
 class DateTimeLiteralParser(
-    private val libraryBuilder: LibraryBuilder,
+    private val libraryBuilder: Cql2ElmContext,
     private val of: IdObjectFactory,
 ) {
     /**

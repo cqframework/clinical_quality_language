@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.fhir.data
 
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider
@@ -23,7 +23,7 @@ internal class TestFHIRHelpers : FhirExecutionTestBase() {
         // If we update the FHIRHelpers content to not have ambiguous overloads
         // the results of this test will change
         val compilerOptions = defaultOptions()
-        compilerOptions.signatureLevel = LibraryBuilder.SignatureLevel.None
+        compilerOptions.signatureLevel = Cql2ElmContext.SignatureLevel.None
         val modelManager = ModelManager()
         val libraryManager = LibraryManager(modelManager, compilerOptions)
         libraryManager.librarySourceLoader.clearProviders()

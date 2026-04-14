@@ -45,7 +45,7 @@ data class IntervalType(val pointType: DataType) : BaseDataType() {
 
     @Suppress("ForbiddenComment")
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
-    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // is different because [org.cqframework.cql.cql2elm.Cql2ElmContext.normalizeListTypes] returns
     // the choice options in a different order.
     override fun hashCode(): Int {
         return 53 * pointType.hashCode()

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 /** Created by Bryn on 4/12/2018. */
 internal class IncludedSignatureOutputTests {
     @Throws(IOException::class)
-    private fun getLibrary(signatureLevel: LibraryBuilder.SignatureLevel): Library {
+    private fun getLibrary(signatureLevel: Cql2ElmContext.SignatureLevel): Library {
         val translator: CqlTranslator = getTranslator(signatureLevel)
         assertThat(translator.errors.size, `is`(0))
         val library: Library = translator.toELM()!!
@@ -27,7 +27,7 @@ internal class IncludedSignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun none() {
-        val translator: CqlTranslator = getTranslator(LibraryBuilder.SignatureLevel.None)
+        val translator: CqlTranslator = getTranslator(Cql2ElmContext.SignatureLevel.None)
         assertThat(translator.warnings.size, Matchers.greaterThan(1))
         assertThat(
             translator.warnings[0].message,
@@ -41,7 +41,7 @@ internal class IncludedSignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun differing() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.Differing)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.Differing)
 
         var def = defs["TestOverload"]!!
         assertThat((def.expression as FunctionRef).signature.size, `is`(0))
@@ -68,7 +68,7 @@ internal class IncludedSignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun overloads() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.Overloads)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.Overloads)
 
         var def = defs["TestOverload"]!!
         assertThat((def.expression as FunctionRef).signature.size, `is`(0))
@@ -95,7 +95,7 @@ internal class IncludedSignatureOutputTests {
     @Test
     @Throws(IOException::class)
     fun all() {
-        val library = getLibrary(LibraryBuilder.SignatureLevel.All)
+        val library = getLibrary(Cql2ElmContext.SignatureLevel.All)
 
         var def: ExpressionDef = defs["TestOverload"]!!
         assertThat((def.expression as FunctionRef).signature.size, `is`(0))
@@ -125,7 +125,7 @@ internal class IncludedSignatureOutputTests {
         private var defs = mutableMapOf<String, ExpressionDef>()
 
         @Throws(IOException::class)
-        private fun getTranslator(signatureLevel: LibraryBuilder.SignatureLevel): CqlTranslator {
+        private fun getTranslator(signatureLevel: Cql2ElmContext.SignatureLevel): CqlTranslator {
             return TestUtils.getTranslator(CQL_TEST_FILE, LIBRARY_SOURCE_PROVIDER, signatureLevel)
         }
     }

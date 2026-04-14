@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.fhir.dstu2
 
 import java.io.IOException
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.TestUtils
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -303,7 +303,7 @@ internal class BaseTest {
             NamespaceInfo("Public", "http://cql.hl7.org/public"),
             "fhir/dstu2/TestFHIRNamespaces.cql",
             0,
-            LibraryBuilder.SignatureLevel.None,
+            Cql2ElmContext.SignatureLevel.None,
         )
     }
 

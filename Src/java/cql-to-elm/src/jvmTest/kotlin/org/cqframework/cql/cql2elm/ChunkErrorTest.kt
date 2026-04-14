@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
  * Regression test for a bug where the translator silently drops statements after the first
  * expression definition when processing CQL without a `library` declaration.
  *
- * The root cause is in `LibraryBuilder`'s chunk tracking: after processing the first expression
+ * The root cause is in `Cql2ElmContext`'s chunk tracking: after processing the first expression
  * definition, subsequent definitions trigger "Child chunk cannot be added because it is not
  * contained within the parent chunk", causing them to be silently dropped from the ELM output.
  *

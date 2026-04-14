@@ -9,9 +9,9 @@ import java.util.stream.Collectors
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.CompilerOptions
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlIncludeException
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryReader
 import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter
 import org.cqframework.cql.elm.serializing.ElmXmlLibraryReader
@@ -96,7 +96,7 @@ internal class ElmDeserializeTests {
             nestedNarrative = nestedNarrative.content[0] as Narrative
             assertEquals("[", nestedNarrative.content[0])
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.All)
+            verifySigLevels(library, Cql2ElmContext.SignatureLevel.All)
         } catch (e: IOException) {
             throw IllegalArgumentException("Error reading ELM: " + e.message)
         }
@@ -129,7 +129,7 @@ internal class ElmDeserializeTests {
             assertNotNull(library.statements!!.def[1])
             assertTrue(library.statements!!.def[1].expression is Query)
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.Differing)
+            verifySigLevels(library, Cql2ElmContext.SignatureLevel.Differing)
         } catch (e: IOException) {
             throw IllegalArgumentException("Error reading ELM: " + e.message)
         }
@@ -182,7 +182,7 @@ internal class ElmDeserializeTests {
             assertEquals("\n                  ", nestedNarrative.content[0])
             assertTrue(nestedNarrative.content[1] is Narrative)
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.Overloads)
+            verifySigLevels(library, Cql2ElmContext.SignatureLevel.Overloads)
         } catch (e: IOException) {
             e.printStackTrace()
             throw IllegalArgumentException("Error reading ELM: " + e.message)
@@ -196,7 +196,7 @@ internal class ElmDeserializeTests {
                 deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json")
             assertNotNull(library)
 
-            verifySigLevels(library, LibraryBuilder.SignatureLevel.None)
+            verifySigLevels(library, Cql2ElmContext.SignatureLevel.None)
         } catch (e: IOException) {
             throw IllegalArgumentException("Error reading ELM: " + e.message)
         }
@@ -424,7 +424,7 @@ internal class ElmDeserializeTests {
 
         private fun verifySigLevels(
             library: Library,
-            expectedSignatureLevel: LibraryBuilder.SignatureLevel,
+            expectedSignatureLevel: Cql2ElmContext.SignatureLevel,
         ) {
             val sigLevels =
                 library.annotation

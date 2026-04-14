@@ -38,12 +38,12 @@ internal const val FP_THIS = "\$this"
  * Owns property-path resolution and member-access expression building, plus the target-map
  * expansion used by model-info-informed retrieval.
  *
- * The class holds a back-reference to [LibraryBuilder] for lookups that cross into the symbol table
+ * The class holds a back-reference to [Cql2ElmContext] for lookups that cross into the symbol table
  * (type resolution, model mapping, included-library management). Once the builder is split into
  * focused components the back-reference will be replaced by direct collaborators.
  */
 @Suppress("LargeClass", "TooManyFunctions", "ReturnCount", "MaxLineLength")
-class PropertyResolver(private val lb: LibraryBuilder, private val of: IdObjectFactory) {
+class PropertyResolver(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
     /**
      * Resolve a property accessor against [sourceType]. Walks the type's class hierarchy until a
      * matching element is found. Supports [ClassType], [TupleType], [IntervalType], [ChoiceType],
@@ -335,7 +335,7 @@ class PropertyResolver(private val lb: LibraryBuilder, private val of: IdObjectF
         var argumentSignature: TypeSpecifier? = null
         if (
             lb.libraryManager.cqlCompilerOptions.signatureLevel !=
-                LibraryBuilder.SignatureLevel.None &&
+                Cql2ElmContext.SignatureLevel.None &&
                 qualifiedFunctionName == "FHIRHelpers.ToInterval"
         ) {
             var fhirVersion = "4.0.1"

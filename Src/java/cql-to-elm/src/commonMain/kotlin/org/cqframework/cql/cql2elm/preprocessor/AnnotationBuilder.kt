@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2elm.preprocessor
 import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
-import org.cqframework.cql.cql2elm.LibraryBuilder
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.model.Chunk
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.gen.cqlParser.LibraryContext
@@ -34,7 +34,7 @@ import org.hl7.elm.r1.ValueSetDef
     "ComplexCondition",
 )
 class AnnotationBuilder(
-    private val libraryBuilder: LibraryBuilder,
+    private val libraryBuilder: Cql2ElmContext,
     private val tokenStream: TokenStream,
 ) {
     private val af = ObjectFactory()

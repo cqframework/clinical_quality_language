@@ -6,11 +6,11 @@ import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
+import org.cqframework.cql.cql2elm.Cql2ElmContext.IdentifierScope
 import org.cqframework.cql.cql2elm.DataTypes.equal
 import org.cqframework.cql.cql2elm.DataTypes.subTypeOf
 import org.cqframework.cql.cql2elm.DataTypes.verifyCast
 import org.cqframework.cql.cql2elm.DataTypes.verifyType
-import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.QueryContext
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -57,7 +57,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
     "LoopWithTooManyJumpStatements",
     "MagicNumber",
 )
-class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
+class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     Cql2ElmVisitorBase(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)

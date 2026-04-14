@@ -38,7 +38,7 @@ import org.hl7.elm.r1.ToList
     "MaxLineLength",
 )
 class RetrieveBuilder(
-    private val libraryBuilder: LibraryBuilder,
+    private val libraryBuilder: Cql2ElmContext,
     private val of: IdObjectFactory,
     private val getTrackBack: (ParserRuleContext) -> TrackBack?,
 ) {

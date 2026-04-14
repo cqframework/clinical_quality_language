@@ -5,10 +5,10 @@ import java.io.IOException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Scanner
+import org.cqframework.cql.cql2elm.Cql2ElmContext
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlTranslator
-import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +21,7 @@ internal class CMS146XmlTest {
     @Throws(IOException::class)
     fun cms146SignatureLevels(
         fileName: String,
-        expectedSignatureLevel: LibraryBuilder.SignatureLevel,
+        expectedSignatureLevel: Cql2ElmContext.SignatureLevel,
     ) {
         val expectedXml: String? = getXml(fileName)
 
@@ -52,19 +52,19 @@ internal class CMS146XmlTest {
             return arrayOf(
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_None.xml",
-                    LibraryBuilder.SignatureLevel.None,
+                    Cql2ElmContext.SignatureLevel.None,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Differing.xml",
-                    LibraryBuilder.SignatureLevel.Differing,
+                    Cql2ElmContext.SignatureLevel.Differing,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_Overloads.xml",
-                    LibraryBuilder.SignatureLevel.Overloads,
+                    Cql2ElmContext.SignatureLevel.Overloads,
                 ),
                 arrayOf(
                     "CMS146v2_Expected_SignatureLevel_All.xml",
-                    LibraryBuilder.SignatureLevel.All,
+                    Cql2ElmContext.SignatureLevel.All,
                 ),
             )
         }

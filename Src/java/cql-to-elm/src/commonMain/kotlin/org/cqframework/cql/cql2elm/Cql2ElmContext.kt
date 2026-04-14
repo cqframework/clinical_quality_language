@@ -31,7 +31,7 @@ import org.hl7.elm.r1.*
     "MaxLineLength",
     "NON_EXPORTABLE_TYPE",
 )
-class LibraryBuilder(
+class Cql2ElmContext(
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
     val libraryManager: LibraryManager,
     val objectFactory: IdObjectFactory,

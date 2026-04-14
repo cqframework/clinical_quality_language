@@ -21,13 +21,13 @@ import org.hl7.elm.r1.TypeSpecifier
  * Owns type compatibility checks, conversion-aware type verification, and utilities for projecting
  * [DataType] values into ELM [QName]/[TypeSpecifier] form.
  *
- * Extracted from [LibraryBuilder] as part of the ongoing split of builder responsibilities. Holds a
- * back-reference to [LibraryBuilder] for access to the model-aware type resolver
+ * Extracted from [Cql2ElmContext] as part of the ongoing split of builder responsibilities. Holds a
+ * back-reference to [Cql2ElmContext] for access to the model-aware type resolver
  * (`resolveTypeName`, `resolveLabel`), the property resolver, the conversion-map (via
  * `findConversion`/`convertExpression`), and the `TypeBuilder`.
  */
 @Suppress("TooManyFunctions", "MaxLineLength")
-class TypeResolver(private val lb: LibraryBuilder, private val of: IdObjectFactory) {
+class TypeResolver(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
     fun dataTypeToQName(type: DataType?): QName = lb.typeBuilderInternal.dataTypeToQName(type)
 
     fun dataTypeToTypeSpecifier(type: DataType?): TypeSpecifier =
@@ -119,7 +119,7 @@ class TypeResolver(private val lb: LibraryBuilder, private val of: IdObjectFacto
 
     // ========================================================================
     // Model-aware type resolution. Queries the loaded-model registry on
-    // LibraryBuilder for labels, context names, and type names. The result is
+    // Cql2ElmContext for labels, context names, and type names. The result is
     // a [DataType] (or [ModelContext]) from the model's schema.
     // ========================================================================
 

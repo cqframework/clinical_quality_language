@@ -54,7 +54,7 @@ internal class TestLocalId {
             )
         val libraryManager = LibraryManager(modelManager, options)
         libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
-        val libraryBuilder = LibraryBuilder(libraryManager, brokenFactory)
+        val libraryBuilder = Cql2ElmContext(libraryManager, brokenFactory)
 
         // Simplest possible library, just to trigger a missing id error.
         val lexer = cqlLexer(CharStreams.fromString("library Test\ndefine \"One\": 1"))
