@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.TokenStream
+import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.cqframework.cql.cql2elm.DataTypes.equal
@@ -13,9 +14,19 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.QueryContext
 import org.cqframework.cql.cql2elm.model.invocation.*
+import org.cqframework.cql.cql2elm.preprocessor.BaseInfo
+import org.cqframework.cql.cql2elm.preprocessor.CodeDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.CodesystemDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.ConceptDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.ContextDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorElmCommonVisitor
 import org.cqframework.cql.cql2elm.preprocessor.ExpressionDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.FunctionDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.IncludeDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo
+import org.cqframework.cql.cql2elm.preprocessor.ParameterDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.UsingDefinitionInfo
+import org.cqframework.cql.cql2elm.preprocessor.ValuesetDefinitionInfo
 import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
@@ -28,6 +39,7 @@ import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.*
 import org.cqframework.cql.shared.BigDecimal
 import org.hl7.cql.model.*
+import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.*
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
@@ -46,11 +58,8 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
     "LoopWithTooManyJumpStatements",
     "MagicNumber",
 )
-class Cql2ElmVisitor(
-    libraryBuilder: LibraryBuilder,
-    tokenStream: TokenStream,
-    libraryInfo: LibraryInfo,
-) : CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
+class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
+    CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
     private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }
@@ -86,10 +95,6 @@ class Cql2ElmVisitor(
     val expressions: kotlin.collections.List<Expression> = ArrayList()
     private val contextDefinitions: MutableMap<String, Element?> = HashMap()
 
-    init {
-        this.libraryInfo = libraryInfo
-    }
-
     override fun defaultResult(): Any? {
         return null
     }
@@ -99,24 +104,60 @@ class Cql2ElmVisitor(
     }
 
     override fun visitLibrary(ctx: LibraryContext): Any? {
-        var lastResult: Any? = null
+        // Initialize the compiled library's identifier even when the source has no explicit
+        // `library` declaration — downstream resolution paths read
+        // compiledLibrary.identifier!!.id and must not NPE. preprocessLibrary below and the
+        // main visitor's visitLibraryDefinition both overwrite this with the real identifier
+        // when a library declaration is present.
+        libraryBuilder.libraryIdentifier = org.hl7.elm.r1.VersionedIdentifier()
 
-        // Loop through and call visit on each child (to ensure they are tracked)
-        for (i in 0 until ctx.childCount) {
-            val tree = ctx.getChild(i)
-            val terminalNode = tree as? TerminalNode
-            if (terminalNode != null && terminalNode.symbol.type == Token.EOF) {
-                continue
-            }
-            val childResult = visit(tree!!)
-            // Only set the last result if we received something useful
-            if (childResult != null) {
-                lastResult = childResult
-            }
+        // beginTranslation() loads the System library and adds its UsingDef. Must run before
+        // preprocessLibrary so that subsequent `using X` definitions append AFTER the System
+        // entry — preserving the historical order [System, ...userUsings].
+        libraryBuilder.beginTranslation()
+
+        // Pre-pass: walk top-level children once, populate libraryInfo with definition-index
+        // entries (and trigger model loading / library-identifier assignment) so that forward
+        // references resolve during the main visit. Replaces the previously separate
+        // CqlPreprocessor walk.
+        //
+        // Chunk tracking is disabled for the duration of the pre-pass. The pre-pass calls
+        // visit() on a handful of sub-trees (qualifiedIdentifier, versionSpecifier, identifier)
+        // to extract strings; if annotations are enabled those visits would push chunks into
+        // the same stack the main pass will populate, producing duplicate entries and
+        // "Unable to find target chunk for insertion" errors. The main pass re-enables
+        // chunk tracking (if it was on) after the pre-pass completes.
+        val wasAnnotationEnabled = isAnnotationEnabled
+        if (wasAnnotationEnabled) disableAnnotations()
+        try {
+            preprocessLibrary(ctx)
+        } finally {
+            if (wasAnnotationEnabled) enableAnnotations()
         }
 
-        // Return last result (consistent with super implementation and helps w/ testing)
-        return lastResult
+        try {
+            var lastResult: Any? = null
+
+            // Main pass: call visit() on each top-level child so that chunk/tag processing
+            // fires and ELM is emitted.
+            for (i in 0 until ctx.childCount) {
+                val tree = ctx.getChild(i)
+                val terminalNode = tree as? TerminalNode
+                if (terminalNode != null && terminalNode.symbol.type == Token.EOF) {
+                    continue
+                }
+                val childResult = visit(tree!!)
+                // Only set the last result if we received something useful
+                if (childResult != null) {
+                    lastResult = childResult
+                }
+            }
+
+            // Return last result (consistent with super implementation and helps w/ testing)
+            return lastResult
+        } finally {
+            libraryBuilder.endTranslation()
+        }
     }
 
     override fun visitLibraryDefinition(ctx: LibraryDefinitionContext): VersionedIdentifier {
@@ -3462,5 +3503,225 @@ class Cql2ElmVisitor(
             decorate(element, tb)
         }
         return tb
+    }
+
+    // ========================================================================
+    // Library preprocessing: scan top-level children to populate libraryInfo
+    // with name → definition-context entries so forward references resolve
+    // during the main visit. Formerly a separate CqlPreprocessor walk.
+    // ========================================================================
+
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
+    private fun preprocessLibrary(ctx: LibraryContext) {
+        var ppContext = "Unfiltered"
+        var implicitContext = false
+        var lastSourceIndex = -1
+
+        fun processHeader(child: ParseTree, info: BaseInfo) {
+            val sourceInterval = child.sourceInterval
+            val beforeDefinition = sourceInterval.a - 1
+            if (beforeDefinition >= lastSourceIndex) {
+                val header = Interval(lastSourceIndex + 1, sourceInterval.a - 1)
+                lastSourceIndex = sourceInterval.b
+                info.headerInterval = header
+                info.header = tokenStream.getText(header)
+            }
+        }
+
+        for (i in 0 until ctx.childCount) {
+            val raw = ctx.getChild(i) ?: continue
+            @Suppress("TooGenericExceptionCaught")
+            try {
+                // LibraryContext's grammar wraps non-library children in DefinitionContext and
+                // StatementContext. Unwrap to the concrete *DefinitionContext so the `when` below
+                // can match on concrete definition types.
+                val child =
+                    when (raw) {
+                        is DefinitionContext ->
+                            raw.usingDefinition()
+                                ?: raw.includeDefinition()
+                                ?: raw.codesystemDefinition()
+                                ?: raw.valuesetDefinition()
+                                ?: raw.codeDefinition()
+                                ?: raw.conceptDefinition()
+                                ?: raw.parameterDefinition()
+                                ?: continue
+                        is StatementContext ->
+                            raw.contextDefinition()
+                                ?: raw.expressionDefinition()
+                                ?: raw.functionDefinition()
+                                ?: continue
+                        else -> raw
+                    }
+                when (child) {
+                    is LibraryDefinitionContext -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val identifiers = visit(child.qualifiedIdentifier()) as MutableList<String>
+                        val libraryName = identifiers.removeAt(identifiers.size - 1)
+                        val namespaceName =
+                            if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+                        val version =
+                            if (child.versionSpecifier() != null)
+                                visit(child.versionSpecifier()!!) as String
+                            else null
+                        libraryInfo = LibraryInfo(namespaceName, libraryName, version, child)
+                        processHeader(child, libraryInfo)
+
+                        // Set the compiled library identifier so subsequent translation has the
+                        // right namespace/name/version context.
+                        val vid =
+                            org.hl7.elm.r1
+                                .VersionedIdentifier()
+                                .withId(libraryName)
+                                .withVersion(version)
+                        vid.system =
+                            when {
+                                namespaceName != null ->
+                                    libraryBuilder.resolveNamespaceUri(namespaceName, true)
+                                libraryBuilder.namespaceInfo != null ->
+                                    libraryBuilder.namespaceInfo.uri
+                                else -> null
+                            }
+                        libraryBuilder.libraryIdentifier = vid
+                    }
+                    is IncludeDefinitionContext -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val identifiers = visit(child.qualifiedIdentifier()) as MutableList<String>
+                        val name = identifiers.removeAt(identifiers.size - 1)
+                        val namespaceName =
+                            if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+                        val version =
+                            if (child.versionSpecifier() != null)
+                                visit(child.versionSpecifier()!!) as String
+                            else null
+                        val localName =
+                            if (child.localIdentifier() != null)
+                                parseString(child.localIdentifier())!!
+                            else name
+                        val info =
+                            IncludeDefinitionInfo(namespaceName, name, version, localName, child)
+                        processHeader(child, info)
+                        libraryInfo.addIncludeDefinition(info)
+                    }
+                    is UsingDefinitionContext -> {
+                        @Suppress("UNCHECKED_CAST")
+                        val identifiers = visit(child.qualifiedIdentifier()) as MutableList<String>
+                        val unqualified = identifiers.removeAt(identifiers.size - 1)
+                        val namespaceForUsing =
+                            if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+                        val version =
+                            if (child.versionSpecifier() != null)
+                                visit(child.versionSpecifier()!!) as String
+                            else null
+                        val localName =
+                            if (child.localIdentifier() != null)
+                                parseString(child.localIdentifier())!!
+                            else unqualified
+                        val info =
+                            UsingDefinitionInfo(
+                                namespaceForUsing,
+                                unqualified,
+                                version,
+                                localName,
+                                child,
+                            )
+                        processHeader(child, info)
+                        libraryInfo.addUsingDefinition(info)
+
+                        // Side effect: load the model into the ModelManager. Later type-name
+                        // resolution (NamedTypeSpecifier visits, parameter defaults, retrieves)
+                        // depends on the model being present by the time the main pass begins.
+                        val modelNamespace: NamespaceInfo? =
+                            when {
+                                identifiers.isNotEmpty() -> {
+                                    val nsName = identifiers.joinToString(".")
+                                    val uri = libraryBuilder.resolveNamespaceUri(nsName, true)
+                                    NamespaceInfo(nsName, uri!!)
+                                }
+                                libraryBuilder.isWellKnownModelName(unqualified) -> null
+                                libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo
+                                else -> null
+                            }
+                        getModel(modelNamespace, unqualified, version, localName)
+                    }
+                    is CodesystemDefinitionContext -> {
+                        val info =
+                            CodesystemDefinitionInfo(parseString(child.identifier())!!, child)
+                        processHeader(child, info)
+                        libraryInfo.addCodesystemDefinition(info)
+                    }
+                    is ValuesetDefinitionContext -> {
+                        val info = ValuesetDefinitionInfo(parseString(child.identifier())!!, child)
+                        processHeader(child, info)
+                        libraryInfo.addValuesetDefinition(info)
+                    }
+                    is CodeDefinitionContext -> {
+                        val info = CodeDefinitionInfo(parseString(child.identifier())!!, child)
+                        processHeader(child, info)
+                        libraryInfo.addCodeDefinition(info)
+                    }
+                    is ConceptDefinitionContext -> {
+                        val info = ConceptDefinitionInfo(parseString(child.identifier())!!, child)
+                        processHeader(child, info)
+                        libraryInfo.addConceptDefinition(info)
+                    }
+                    is ParameterDefinitionContext -> {
+                        val info = ParameterDefinitionInfo(parseString(child.identifier())!!, child)
+                        processHeader(child, info)
+                        libraryInfo.addParameterDefinition(info)
+                    }
+                    is ContextDefinitionContext -> {
+                        val modelIdentifier =
+                            if (child.modelIdentifier() != null)
+                                parseString(child.modelIdentifier())
+                            else null
+                        val unqualified = parseString(child.identifier())!!
+                        ppContext =
+                            if (!modelIdentifier.isNullOrEmpty()) "$modelIdentifier.$unqualified"
+                            else unqualified
+                        val info = ContextDefinitionInfo(child)
+                        processHeader(child, info)
+                        libraryInfo.addContextDefinition(info)
+                        if (!implicitContext && unqualified != "Unfiltered") {
+                            libraryInfo.addExpressionDefinition(
+                                ExpressionDefinitionInfo(unqualified, ppContext, null)
+                            )
+                            implicitContext = true
+                        }
+                    }
+                    is ExpressionDefinitionContext -> {
+                        val info =
+                            ExpressionDefinitionInfo(
+                                parseString(child.identifier())!!,
+                                ppContext,
+                                child,
+                            )
+                        processHeader(child, info)
+                        libraryInfo.addExpressionDefinition(info)
+                    }
+                    is FunctionDefinitionContext -> {
+                        val info =
+                            FunctionDefinitionInfo(
+                                parseString(child.identifierOrFunctionIdentifier())!!,
+                                ppContext,
+                                child,
+                            )
+                        processHeader(child, info)
+                        libraryInfo.addFunctionDefinition(info)
+                    }
+                }
+            } catch (e: CqlCompilerException) {
+                libraryBuilder.recordParsingException(e)
+            } catch (e: Exception) {
+                libraryBuilder.recordParsingException(
+                    CqlSemanticException(
+                        e.message ?: "Internal error processing top-level definition",
+                        getTrackBack(raw),
+                        CqlCompilerException.ErrorSeverity.Error,
+                        e,
+                    )
+                )
+            }
+        }
     }
 }

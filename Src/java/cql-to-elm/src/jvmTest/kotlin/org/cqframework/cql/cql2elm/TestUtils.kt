@@ -18,7 +18,6 @@ import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
@@ -122,14 +121,12 @@ object TestUtils {
         check(builder.isEmpty()) { builder.toString() }
     }
 
+    @Suppress("UnusedParameter")
     private fun createElmTranslatorVisitor(tokens: TokenStream, tree: ParseTree): Cql2ElmVisitor {
         val modelManager = ModelManager()
         val libraryManager = getLibraryManager(modelManager, null)
         val libraryBuilder = LibraryBuilder(libraryManager, IdObjectFactory())
-        val preprocessor = CqlPreprocessor(libraryBuilder, tokens)
-        preprocessor.visit(tree)
-        val visitor = Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.libraryInfo)
-        return visitor
+        return Cql2ElmVisitor(libraryBuilder, tokens)
     }
 
     private fun parseTokenStream(tokens: TokenStream): ParseTree {

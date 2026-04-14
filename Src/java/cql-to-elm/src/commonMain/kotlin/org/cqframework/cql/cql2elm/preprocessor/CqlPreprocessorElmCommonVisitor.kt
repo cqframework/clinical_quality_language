@@ -20,7 +20,15 @@ import org.cqframework.cql.gen.cqlParser.*
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 
-/** Common functionality used by [CqlPreprocessor] and [Cql2ElmVisitor] */
+/**
+ * Common functionality used by [org.cqframework.cql.cql2elm.Cql2ElmVisitor].
+ *
+ * Kept as an abstract base class for historical reasons: it previously supported a second subclass
+ * (`CqlPreprocessor`) that ran as a separate parse-tree walk before the main visitor. That walk is
+ * now inlined into `Cql2ElmVisitor.visitLibrary`; the shared scaffolding here (tree-visit framing,
+ * chunk/tag/annotation processing, type-specifier visiting, tracking) remains valuable and is left
+ * in place for future reorganization.
+ */
 @Suppress(
     "LargeClass",
     "CyclomaticComplexMethod",

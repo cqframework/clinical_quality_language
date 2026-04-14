@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
@@ -63,9 +62,7 @@ internal class TestLocalId {
         val parser = cqlParser(tokens)
         parser.buildParseTree = true
         val tree = parser.library()
-        val preprocessor = CqlPreprocessor(libraryBuilder, tokens)
-        preprocessor.visit(tree)
-        val visitor = Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.libraryInfo)
+        val visitor = Cql2ElmVisitor(libraryBuilder, tokens)
         visitor.visit(tree)
 
         val exceptions = libraryBuilder.exceptions

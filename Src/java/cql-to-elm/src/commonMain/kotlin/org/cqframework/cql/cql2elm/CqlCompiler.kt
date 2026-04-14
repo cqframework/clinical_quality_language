@@ -15,7 +15,6 @@ import org.cqframework.cql.cql2elm.elm.ElmEditor
 import org.cqframework.cql.cql2elm.elm.ElmPass
 import org.cqframework.cql.cql2elm.elm.ElmPassPipeline
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.gen.cqlLexer
@@ -146,14 +145,10 @@ class CqlCompiler(
         parser.addErrorListener(errorListener)
         val tree: ParseTree = parser.library()
 
-        // Phase 3: preprocess the parse tree (generates the LibraryInfo with
-        // header information for definitions)
-        val preprocessor = CqlPreprocessor(builder, tokens)
-        preprocessor.visit(tree)
-
-        // Phase 4: generate the ELM (the ELM is generated with full type information that can be
-        // used for validation, optimization, rewriting, debugging, etc.)
-        val visitor = Cql2ElmVisitor(builder, tokens, preprocessor.libraryInfo)
+        // Phase 3: generate the ELM. Cql2ElmVisitor internally performs an index-building pass
+        // over top-level definitions (formerly a separate CqlPreprocessor phase) before emitting
+        // ELM, so forward references resolve correctly.
+        val visitor = Cql2ElmVisitor(builder, tokens)
         visitor.visit(tree)
         library = builder.library
 

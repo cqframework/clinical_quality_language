@@ -22,11 +22,9 @@ import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 
 /**
- * Owns the chunk-stack, narrative, and annotation building logic shared between [CqlPreprocessor]
- * and [org.cqframework.cql.cql2elm.Cql2ElmVisitor].
- *
- * Extracted from `CqlPreprocessorElmCommonVisitor` so changes to annotation handling for the
- * preprocessor no longer risk breaking the visitor through a shared inheritance chain.
+ * Owns the chunk-stack, narrative, and annotation building logic used by
+ * [org.cqframework.cql.cql2elm.Cql2ElmVisitor]. Originally shared with a separate `CqlPreprocessor`
+ * visitor that has since been folded into the main visitor.
  */
 @Suppress(
     "TooManyFunctions",
