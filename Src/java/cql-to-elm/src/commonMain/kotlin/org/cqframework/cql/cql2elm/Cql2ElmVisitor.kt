@@ -61,6 +61,18 @@ class Cql2ElmVisitor(
             track = { element, pt -> track(element, pt) },
             trackFromElement = { element, from -> track(element, from) },
         )
+
+    /**
+     * Resolve a System-library operator call against an already-constructed ELM node and return the
+     * node. Collapses the repeated `of.createX().withOperand(...);
+     * libraryBuilder.resolveCall("System", name, it); return it` pattern that dominates the simple
+     * expression visitors.
+     */
+    private inline fun <E : Expression> systemCall(operatorName: String, result: E): E {
+        libraryBuilder.resolveCall("System", operatorName, result)
+        return result
+    }
+
     private val definedExpressionDefinitions: MutableSet<String> = HashSet()
     private val forwards = Stack<ExpressionDefinitionInfo>()
     private val functionHeaders: MutableMap<FunctionDefinitionContext, FunctionHeader> = HashMap()
@@ -870,14 +882,12 @@ class Cql2ElmVisitor(
 
     override fun visitNotExpression(ctx: NotExpressionContext): Not {
         val result = of.createNot().withOperand(parseExpression(ctx.expression()))
-        libraryBuilder.resolveCall("System", "Not", result)
-        return result
+        return systemCall("Not", result)
     }
 
     override fun visitExistenceExpression(ctx: ExistenceExpressionContext): Exists {
         val result = of.createExists().withOperand(parseExpression(ctx.expression()))
-        libraryBuilder.resolveCall("System", "Exists", result)
-        return result
+        return systemCall("Exists", result)
     }
 
     override fun visitMultiplicationExpressionTerm(
@@ -924,8 +934,7 @@ class Cql2ElmVisitor(
                         parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
-        libraryBuilder.resolveCall("System", "Power", power)
-        return power
+        return systemCall("Power", power)
     }
 
     override fun visitPolarityExpressionTerm(ctx: PolarityExpressionTermContext): Any? {
@@ -933,8 +942,7 @@ class Cql2ElmVisitor(
             return visit(ctx.expressionTerm())
         }
         val result = of.createNegate().withOperand(parseExpression(ctx.expressionTerm()))
-        libraryBuilder.resolveCall("System", "Negate", result)
-        return result
+        return systemCall("Negate", result)
     }
 
     override fun visitAdditionExpressionTerm(ctx: AdditionExpressionTermContext): Expression {
@@ -1004,16 +1012,14 @@ class Cql2ElmVisitor(
         ctx: ElementExtractorExpressionTermContext
     ): SingletonFrom {
         val result = of.createSingletonFrom().withOperand(parseExpression(ctx.expressionTerm()))
-        libraryBuilder.resolveCall("System", "SingletonFrom", result)
-        return result
+        return systemCall("SingletonFrom", result)
     }
 
     override fun visitPointExtractorExpressionTerm(
         ctx: PointExtractorExpressionTermContext
     ): PointFrom {
         val result = of.createPointFrom().withOperand(parseExpression(ctx.expressionTerm()))
-        libraryBuilder.resolveCall("System", "PointFrom", result)
-        return result
+        return systemCall("PointFrom", result)
     }
 
     override fun visitTypeExtentExpressionTerm(ctx: TypeExtentExpressionTermContext): Any {
@@ -1157,8 +1163,7 @@ class Cql2ElmVisitor(
             of.createDurationBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
                 .withOperand(listOf(start, end))
-        libraryBuilder.resolveCall("System", "DurationBetween", result)
-        return result
+        return systemCall("DurationBetween", result)
     }
 
     override fun visitDifferenceExpressionTerm(
@@ -1174,8 +1179,7 @@ class Cql2ElmVisitor(
             of.createDifferenceBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
                 .withOperand(listOf(start, end))
-        libraryBuilder.resolveCall("System", "DifferenceBetween", result)
-        return result
+        return systemCall("DifferenceBetween", result)
     }
 
     override fun visitBetweenExpression(ctx: BetweenExpressionContext): Expression {
@@ -1235,8 +1239,7 @@ class Cql2ElmVisitor(
                         parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
-        libraryBuilder.resolveCall("System", "DurationBetween", result)
-        return result
+        return systemCall("DurationBetween", result)
     }
 
     override fun visitDifferenceBetweenExpression(ctx: DifferenceBetweenExpressionContext): Any {
@@ -1249,15 +1252,13 @@ class Cql2ElmVisitor(
                         parseExpression(ctx.expressionTerm(1))!!,
                     )
                 )
-        libraryBuilder.resolveCall("System", "DifferenceBetween", result)
-        return result
+        return systemCall("DifferenceBetween", result)
     }
 
     override fun visitWidthExpressionTerm(ctx: WidthExpressionTermContext): Any {
         val result: UnaryExpression =
             of.createWidth().withOperand(parseExpression(ctx.expressionTerm()))
-        libraryBuilder.resolveCall("System", "Width", result)
-        return result
+        return systemCall("Width", result)
     }
 
     override fun visitParenthesizedTerm(ctx: ParenthesizedTermContext): Expression? {
@@ -1282,8 +1283,7 @@ class Cql2ElmVisitor(
                                     parseExpression(ctx.expression(1))!!,
                                 )
                             )
-                    libraryBuilder.resolveCall("System", "In", inExpression)
-                    return inExpression
+                    return systemCall("In", inExpression)
                 } else {
                     val left: Expression? = parseExpression(ctx.expression(0))
                     val right: Expression? = parseExpression(ctx.expression(1))
@@ -1304,8 +1304,7 @@ class Cql2ElmVisitor(
                                     parseExpression(ctx.expression(1))!!,
                                 )
                             )
-                    libraryBuilder.resolveCall("System", "Contains", contains)
-                    return contains
+                    return systemCall("Contains", contains)
                 } else {
                     val left = parseExpression(ctx.expression(0))!!
                     val right = parseExpression(ctx.expression(1))!!
@@ -1336,8 +1335,7 @@ class Cql2ElmVisitor(
                         return inCodeSystem
                     }
                     val contains: Contains = of.createContains().withOperand(listOf(left, right))
-                    libraryBuilder.resolveCall("System", "Contains", contains)
-                    return contains
+                    return systemCall("Contains", contains)
                 }
         }
         throw IllegalArgumentException("Unknown operator: $operator")
@@ -1352,8 +1350,7 @@ class Cql2ElmVisitor(
                         parseExpression(ctx.expression(1))!!,
                     )
                 )
-        libraryBuilder.resolveCall("System", "And", and)
-        return and
+        return systemCall("And", and)
     }
 
     override fun visitOrExpression(ctx: OrExpressionContext): Expression {
@@ -1391,8 +1388,7 @@ class Cql2ElmVisitor(
                         parseExpression(ctx.expression(1))!!,
                     )
                 )
-        libraryBuilder.resolveCall("System", "Implies", implies)
-        return implies
+        return systemCall("Implies", implies)
     }
 
     override fun visitInFixSetExpression(ctx: InFixSetExpressionContext): Expression {
@@ -1423,8 +1419,7 @@ class Cql2ElmVisitor(
             if ("~" != parseString(ctx.getChild(1))) {
                 track(equivalent, ctx)
                 val not = of.createNot().withOperand(equivalent)
-                libraryBuilder.resolveCall("System", "Not", not)
-                return not
+                return systemCall("Not", not)
             }
             equivalent
         } else {
@@ -1440,8 +1435,7 @@ class Cql2ElmVisitor(
             if ("=" != parseString(ctx.getChild(1))) {
                 track(equal, ctx)
                 val not = of.createNot().withOperand(equal)
-                libraryBuilder.resolveCall("System", "Not", not)
-                return not
+                return systemCall("Not", not)
             }
             equal
         }
@@ -2007,8 +2001,7 @@ class Cql2ElmVisitor(
                             libraryBuilder.resolveCall("System", "Not", notNullTest)
                             val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
                             track(and, ctx.quantityOffset()!!)
-                            libraryBuilder.resolveCall("System", "And", and)
-                            return and
+                            return systemCall("And", and)
                         }
 
                         // Otherwise, return the constructed in
@@ -2094,8 +2087,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveCall("System", "Not", notNullTest)
             val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
             track(and, ctx.quantity())
-            libraryBuilder.resolveCall("System", "And", and)
-            return and
+            return systemCall("And", and)
         }
 
         // Otherwise, return the constructed in
@@ -2238,13 +2230,11 @@ class Cql2ElmVisitor(
         when (ctx.getChild(0)!!.text) {
             "distinct" -> {
                 val distinct = of.createDistinct().withOperand(parseExpression(ctx.expression()))
-                libraryBuilder.resolveCall("System", "Distinct", distinct)
-                return distinct
+                return systemCall("Distinct", distinct)
             }
             "flatten" -> {
                 val flatten = of.createFlatten().withOperand(parseExpression(ctx.expression()))
-                libraryBuilder.resolveCall("System", "Flatten", flatten)
-                return flatten
+                return systemCall("Flatten", flatten)
             }
         }
         throw IllegalArgumentException("Unknown aggregate operator ${ctx.getChild(0)!!.text}.")
@@ -2301,13 +2291,11 @@ class Cql2ElmVisitor(
         when (ctx.getChild(0)!!.text) {
             "expand" -> {
                 val expand: Expand = of.createExpand().withOperand(listOf(source, per!!))
-                libraryBuilder.resolveCall("System", "Expand", expand)
-                return expand
+                return systemCall("Expand", expand)
             }
             "collapse" -> {
                 val collapse: Collapse = of.createCollapse().withOperand(listOf(source, per!!))
-                libraryBuilder.resolveCall("System", "Collapse", collapse)
-                return collapse
+                return systemCall("Collapse", collapse)
             }
         }
         throw IllegalArgumentException("Unknown aggregate set operator ${ctx.getChild(0)!!.text}.")
@@ -2960,8 +2948,7 @@ class Cql2ElmVisitor(
                 )
 
         // TODO: Support zero-based indexers as defined by the isZeroBased attribute
-        libraryBuilder.resolveCall("System", "Indexer", indexer)
-        return indexer
+        return systemCall("Indexer", indexer)
     }
 
     override fun visitInvocationExpressionTerm(ctx: InvocationExpressionTermContext): Expression? {
