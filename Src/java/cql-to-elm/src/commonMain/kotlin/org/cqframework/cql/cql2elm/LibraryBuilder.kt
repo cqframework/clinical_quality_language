@@ -78,9 +78,6 @@ class LibraryBuilder(
     internal val modelsInternal: MutableMap<String, Model?>
         get() = models
 
-    private val nameTypeSpecifiers:
-        MutableMap<String, ResultWithPossibleError<NamedTypeSpecifier?>> =
-        HashMap()
     internal val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
     private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
     internal val systemFunctionResolverInternal: SystemFunctionResolver
@@ -221,18 +218,17 @@ class LibraryBuilder(
 
     fun getNamedTypeSpecifierResult(
         namedTypeSpecifierIdentifier: String
-    ): ResultWithPossibleError<NamedTypeSpecifier?>? {
-        return nameTypeSpecifiers[namedTypeSpecifierIdentifier]
-    }
+    ): ResultWithPossibleError<NamedTypeSpecifier?>? =
+        typeResolver.getNamedTypeSpecifierResult(namedTypeSpecifierIdentifier)
 
     fun addNamedTypeSpecifierResult(
         namedTypeSpecifierIdentifier: String,
         namedTypeSpecifierResult: ResultWithPossibleError<NamedTypeSpecifier?>,
-    ) {
-        if (!nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
-            nameTypeSpecifiers[namedTypeSpecifierIdentifier] = namedTypeSpecifierResult
-        }
-    }
+    ) =
+        typeResolver.addNamedTypeSpecifierResult(
+            namedTypeSpecifierIdentifier,
+            namedTypeSpecifierResult,
+        )
 
     fun hasUsings(): Boolean = symbolTable.hasUsings()
 
@@ -240,154 +236,18 @@ class LibraryBuilder(
         symbolTable.addUsing(usingDef)
     }
 
-    @Suppress("NestedBlockDepth")
-    private fun resolveLabel(modelName: String?, label: String): ClassType? {
-        var result: ClassType? = null
-        if (modelName == null || (modelName == "")) {
-            for (model: Model? in models.values) {
-                val modelResult: ClassType? = model!!.resolveLabel(label)
-                if (modelResult != null) {
-                    require(result == null) {
-                        "Label $label is ambiguous between ${(result as ClassType).label} and ${modelResult.label}."
-                    }
-                    result = modelResult
-                }
-            }
-        } else {
-            result = getModel(modelName).resolveLabel(label)
-        }
-        return result
-    }
-
-    @Suppress("NestedBlockDepth")
-    fun resolveContextName(modelName: String?, contextName: String): ModelContext? {
-        // Attempt to resolve as a label first
-        var result: ModelContext? = null
-        if (modelName == null || (modelName == "")) {
-            // Attempt to resolve in the default model if one is available
-            if (defaultModel != null) {
-                val modelResult: ModelContext? = defaultModel!!.resolveContextName(contextName)
-                if (modelResult != null) {
-                    return modelResult
-                }
-            }
-
-            // Otherwise, resolve across all models and throw for ambiguous resolution
-            for (model: Model? in models.values) {
-                val modelResult: ModelContext? = model!!.resolveContextName(contextName)
-                if (modelResult != null) {
-                    require(result == null) {
-                        "Context name $contextName is ambiguous between ${(result as ModelContext).name} and ${modelResult.name}."
-                    }
-                    result = modelResult
-                }
-            }
-        } else {
-            result = getModel(modelName).resolveContextName(contextName)
-        }
-        return result
-    }
+    fun resolveContextName(modelName: String?, contextName: String): ModelContext? =
+        typeResolver.resolveContextName(modelName, contextName)
 
     @JsExport.Ignore
-    fun resolveTypeName(typeName: String): DataType? {
-        return resolveTypeName(null, typeName)
-    }
+    fun resolveTypeName(typeName: String): DataType? = typeResolver.resolveTypeName(typeName)
 
     @JsExport.Ignore
-    @Suppress("NestedBlockDepth")
-    fun resolveTypeName(modelName: String?, typeName: String): DataType? {
-        // Attempt to resolve as a label first
-        var result: DataType? = resolveLabel(modelName, typeName)
-        if (result == null) {
-            if (modelName == null || (modelName == "")) {
-                // Attempt to resolve in the default model if one is available
-                if (defaultModel != null) {
-                    val modelResult: DataType? = defaultModel!!.resolveTypeName(typeName)
-                    if (modelResult != null) {
-                        return modelResult
-                    }
-                }
+    fun resolveTypeName(modelName: String?, typeName: String): DataType? =
+        typeResolver.resolveTypeName(modelName, typeName)
 
-                // Otherwise, resolve across all models and throw for ambiguous resolution
-                for (model: Model? in models.values) {
-                    val modelResult: DataType? = model!!.resolveTypeName(typeName)
-                    if (modelResult != null) {
-                        require(result == null) {
-                            "Type name $typeName is ambiguous between ${(result as NamedType).name} and ${(modelResult as NamedType).name}."
-                        }
-                        result = modelResult
-                    }
-                }
-            } else {
-                result = getModel(modelName).resolveTypeName(typeName)
-            }
-        }
-
-        // Types introduced in 1.5: Long, Vocabulary, ValueSet, CodeSystem
-        if (result != null && result is NamedType) {
-            when ((result as NamedType).name) {
-                "System.Long",
-                "System.Vocabulary",
-                "System.CodeSystem",
-                "System.ValueSet" -> // NOTE: This is a hack to allow the new ToValueSet operator in
-                    // FHIRHelpers for
-                    // backwards-compatibility
-                    // The operator still cannot be used in 1.4, but the definition will compile.
-                    // This really should be
-                    // being done with preprocessor directives,
-                    // but that's a whole other project in and of itself.
-                    require(isCompatibleWith("1.5") || isFHIRHelpers(compiledLibrary)) {
-                        "The type ${(result as NamedType).name} was introduced in CQL 1.5 and cannot be referenced at compatibility level $compatibilityLevel"
-                    }
-            }
-        }
-        return result
-    }
-
-    private fun isFHIRHelpers(library: CompiledLibrary?): Boolean {
-        return (library != null) &&
-            (library.identifier != null) &&
-            (library.identifier!!.id != null) &&
-            (library.identifier!!.id == "FHIRHelpers")
-    }
-
-    fun resolveTypeSpecifier(typeSpecifier: String?): DataType? {
-        requireNotNull(typeSpecifier) { "typeSpecifier is null" }
-
-        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier
-        // simpleTypeSpecifier: (identifier '.')? identifier
-        // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
-        // listTypeSpecifier: 'list' '<' typeSpecifier '>'
-        return when {
-            typeSpecifier.lowercase().startsWith("interval<") -> {
-                val pointType =
-                    resolveTypeSpecifier(
-                        typeSpecifier.substring(
-                            typeSpecifier.indexOf('<') + 1,
-                            typeSpecifier.lastIndexOf('>'),
-                        )
-                    )
-                IntervalType(pointType!!)
-            }
-            else ->
-                if (typeSpecifier.lowercase().startsWith("list<")) {
-                    val elementType =
-                        resolveTypeName(
-                            typeSpecifier.substring(
-                                typeSpecifier.indexOf('<') + 1,
-                                typeSpecifier.lastIndexOf('>'),
-                            )
-                        )
-                    ListType(elementType!!)
-                } else if (typeSpecifier.indexOf(".") >= 0) {
-                    val modelName = typeSpecifier.substring(0, typeSpecifier.indexOf("."))
-                    val typeName = typeSpecifier.substring(typeSpecifier.indexOf(".") + 1)
-                    resolveTypeName(modelName, typeName)
-                } else {
-                    resolveTypeName(typeSpecifier)
-                }
-        }
-    }
+    fun resolveTypeSpecifier(typeSpecifier: String?): DataType? =
+        typeResolver.resolveTypeSpecifier(typeSpecifier)
 
     fun resolveUsingRef(modelName: String): UsingDef? = symbolTable.resolveUsingRef(modelName)
 
