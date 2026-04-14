@@ -121,11 +121,11 @@ abstract class Cql2ElmVisitorBase(
                             e,
                         )
                     }
-                var rootCause = libraryBuilder.determineRootCause()
+                var rootCause = libraryBuilder.scopeManager.determineRootCause()
                 if (rootCause == null) {
                     rootCause = ex
                     libraryBuilder.recordParsingException(ex)
-                    libraryBuilder.setRootCause(rootCause)
+                    libraryBuilder.scopeManager.setRootCause(rootCause)
                 } else {
                     if (isDetailedErrorsEnabled) {
                         libraryBuilder.recordParsingException(ex)

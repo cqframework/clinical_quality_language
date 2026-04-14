@@ -51,7 +51,7 @@ class SystemMethodResolver(
         source.resultType = target.resultType
         sources.add(source)
         queryContext.addPrimaryQuerySources(sources)
-        builder.pushQueryContext(queryContext)
+        builder.scopeManager.pushQueryContext(queryContext)
         return source
     }
 
@@ -61,7 +61,7 @@ class SystemMethodResolver(
         where: Expression?,
         ret: ReturnClause?,
     ): Query {
-        val queryContext = builder.peekQueryContext()
+        val queryContext = builder.scopeManager.peekQueryContext()
         val lets: MutableList<LetClause> = arrayListOf()
         if (let != null) {
             lets.add(let)
@@ -81,7 +81,7 @@ class SystemMethodResolver(
     }
 
     private fun exitQueryContext() {
-        builder.popQueryContext()
+        builder.scopeManager.popQueryContext()
     }
 
     private fun createWhere(
@@ -183,7 +183,7 @@ class SystemMethodResolver(
             isSingular = source.resultType !is ListType
             checkArgumentCount(ctx, functionName, 1)
             val select = visitor.visit(ctx!!.expression(0)!!) as Expression?
-            val queryContext = builder.peekQueryContext()
+            val queryContext = builder.scopeManager.peekQueryContext()
             val let = of.createLetClause().withExpression(select).withIdentifier("\$a")
             let.resultType = select!!.resultType
             queryContext.addLetClause(let)

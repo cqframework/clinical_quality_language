@@ -2647,7 +2647,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
 
     override fun visitQuery(ctx: cqlParser.QueryContext): Query {
         val queryContext = QueryContext()
-        libraryBuilder.pushQueryContext(queryContext)
+        libraryBuilder.scopeManager.pushQueryContext(queryContext)
         var sources: kotlin.collections.List<AliasedQuerySource>? = null
         return try {
             queryContext.enterSourceClause()
@@ -2673,7 +2673,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
              * query (or even expression in general)
              * if (libraryBuilder.inUnfilteredContext() &&
              * queryContext.referencesSpecificContext()) {
-             * libraryBuilder.pushExpressionContext("Patient");
+             * libraryBuilder.scopeManager.pushExpressionContext("Patient");
              * expressionContextPushed = true;
              * }
              */
@@ -2780,14 +2780,14 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
                 query
             } finally {
                 if (expressionContextPushed) {
-                    libraryBuilder.popExpressionContext()
+                    libraryBuilder.scopeManager.popExpressionContext()
                 }
                 for (letClause in dfcx) {
                     libraryBuilder.popIdentifier()
                 }
             }
         } finally {
-            libraryBuilder.popQueryContext()
+            libraryBuilder.scopeManager.popQueryContext()
             if (sources != null) {
                 for (source in sources) {
                     libraryBuilder.popIdentifier()
@@ -2810,7 +2810,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
                 .withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()))
         letClause.resultType = letClause.expression!!.resultType
-        libraryBuilder.peekQueryContext().addLetClause(letClause)
+        libraryBuilder.scopeManager.peekQueryContext().addLetClause(letClause)
         return letClause
     }
 
@@ -2825,7 +2825,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
 
     override fun visitWithClause(ctx: WithClauseContext): Any {
         val aqs = visit(ctx.aliasedQuerySource()) as AliasedQuerySource
-        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs)
+        libraryBuilder.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
         return try {
             val expression = visit(ctx.expression()) as Expression
             verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
@@ -2834,13 +2834,13 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
             result.resultType = aqs.resultType
             result
         } finally {
-            libraryBuilder.peekQueryContext().removeQuerySource(aqs)
+            libraryBuilder.scopeManager.peekQueryContext().removeQuerySource(aqs)
         }
     }
 
     override fun visitWithoutClause(ctx: WithoutClauseContext): Any {
         val aqs = visit(ctx.aliasedQuerySource()) as AliasedQuerySource
-        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs)
+        libraryBuilder.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
         return try {
             val expression = visit(ctx.expression()) as Expression
             verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
@@ -2849,7 +2849,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
             result.resultType = aqs.resultType
             result
         } finally {
-            libraryBuilder.peekQueryContext().removeQuerySource(aqs)
+            libraryBuilder.scopeManager.peekQueryContext().removeQuerySource(aqs)
         }
     }
 
@@ -2869,7 +2869,8 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
         }
         returnClause.expression = parseExpression(ctx.expression())
         returnClause.resultType =
-            if (libraryBuilder.peekQueryContext().isSingular) returnClause.expression!!.resultType
+            if (libraryBuilder.scopeManager.peekQueryContext().isSingular)
+                returnClause.expression!!.resultType
             else ListType(returnClause.expression!!.resultType!!)
         return returnClause
     }
@@ -2914,7 +2915,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
                 .withExpression(accumulator)
                 .withIdentifier(aggregateClause.identifier)
         letClause.resultType = letClause.expression!!.resultType
-        libraryBuilder.peekQueryContext().addLetClause(letClause)
+        libraryBuilder.scopeManager.peekQueryContext().addLetClause(letClause)
         aggregateClause.expression = parseExpression(ctx.expression())
         aggregateClause.resultType = aggregateClause.expression!!.resultType
         if (aggregateClause.starting == null) {
@@ -3034,12 +3035,12 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
     }
 
     private fun resolveMemberIdentifier(identifier: String): Expression? {
-        if (libraryBuilder.hasExpressionTarget()) {
-            val target = libraryBuilder.popExpressionTarget()
+        if (libraryBuilder.scopeManager.hasExpressionTarget()) {
+            val target = libraryBuilder.scopeManager.popExpressionTarget()
             return try {
                 libraryBuilder.resolveAccessor(target, identifier)
             } finally {
-                libraryBuilder.pushExpressionTarget(target)
+                libraryBuilder.scopeManager.pushExpressionTarget(target)
             }
         }
         return resolveIdentifier(identifier)
@@ -3206,8 +3207,8 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
         identifier: String,
         paramListCtx: ParamListContext?,
     ): Expression? {
-        if (libraryBuilder.hasExpressionTarget()) {
-            val target: Expression = libraryBuilder.popExpressionTarget()
+        if (libraryBuilder.scopeManager.hasExpressionTarget()) {
+            val target: Expression = libraryBuilder.scopeManager.popExpressionTarget()
             try {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target is LibraryRef) {
@@ -3233,7 +3234,7 @@ class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
                     "Invalid invocation target: ${target::class.simpleName}"
                 )
             } finally {
-                libraryBuilder.pushExpressionTarget(target)
+                libraryBuilder.scopeManager.pushExpressionTarget(target)
             }
         }
 

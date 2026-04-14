@@ -2025,7 +2025,7 @@ class LibraryBuilder(
         )
 
     private fun resolveAsTypeSpecifierLiteral(identifier: String): Expression? =
-        if (inTypeSpecifierContext()) createLiteral(identifier) else null
+        if (scopeManager.inTypeSpecifierContext()) createLiteral(identifier) else null
 
     private fun resolveIterationVariable(identifier: String): Expression? =
         when (identifier) {
@@ -2090,9 +2090,9 @@ class LibraryBuilder(
      * @return A reference to the parameter providing the implicit context value
      */
     fun resolveImplicitContext(): ParameterRef? {
-        if (!inLiteralContext() && inSpecificContext()) {
+        if (!scopeManager.inLiteralContext() && inSpecificContext()) {
             val resolvedIdentifierContext: ResolvedIdentifierContext =
-                resolve(currentExpressionContext())
+                resolve(scopeManager.currentExpressionContext())
             val optParameterDef = resolvedIdentifierContext.getElementOfType(ParameterDef::class)
             if (optParameterDef != null) {
                 val contextParameter: ParameterDef = optParameterDef
@@ -2331,8 +2331,8 @@ class LibraryBuilder(
         }
 
     private fun resolveQueryResultElement(identifier: String): Expression? {
-        if (inQueryContext()) {
-            val query = peekQueryContext()
+        if (scopeManager.inQueryContext()) {
+            val query = scopeManager.peekQueryContext()
             if (query.inSortClause() && !query.isSingular) {
                 if (identifier == FP_THIS) {
                     val result = objectFactory.createIdentifierRef().withName(identifier)
@@ -2352,7 +2352,7 @@ class LibraryBuilder(
 
     private fun resolveAlias(identifier: String): AliasedQuerySource? {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
-        if (inQueryContext()) {
+        if (scopeManager.inQueryContext()) {
             val queries = scopeManager.currentScope.queries
             for (i in queries.indices.reversed()) {
                 val source = queries.elementAt(i).resolveAlias(identifier)
@@ -2366,8 +2366,8 @@ class LibraryBuilder(
 
     @Suppress("NestedBlockDepth")
     private fun resolveQueryThisElement(identifier: String): Expression? {
-        if (inQueryContext()) {
-            val query = peekQueryContext()
+        if (scopeManager.inQueryContext()) {
+            val query = scopeManager.peekQueryContext()
             if (query.isImplicit) {
                 val source = resolveAlias(FP_THIS)
                 if (source != null) {
@@ -2389,7 +2389,7 @@ class LibraryBuilder(
 
     private fun resolveQueryLet(identifier: String): LetClause? {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
-        if (inQueryContext()) {
+        if (scopeManager.inQueryContext()) {
             val queries = scopeManager.currentScope.queries
             for (i in queries.indices.reversed()) {
                 val let = queries.elementAt(i).resolveLet(identifier)
@@ -2418,7 +2418,7 @@ class LibraryBuilder(
     private fun getExpressionDefResultType(expressionDef: ExpressionDef): DataType? {
         // If the current expression context is the same as the expression def context, return the
         // expression def result type.
-        if ((currentExpressionContext() == expressionDef.context)) {
+        if ((scopeManager.currentExpressionContext() == expressionDef.context)) {
             return expressionDef.resultType
         }
 
@@ -2435,14 +2435,17 @@ class LibraryBuilder(
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references
             // patient context
-            if (inQueryContext() && scopeManager.currentScope.queries.peek().inSourceClause()) {
+            if (
+                scopeManager.inQueryContext() &&
+                    scopeManager.currentScope.queries.peek().inSourceClause()
+            ) {
                 scopeManager.currentScope.queries.peek().referencesSpecificContextValue = true
             }
             val resultType: DataType = expressionDef.resultType!!
             return resultType as? ListType ?: ListType(resultType)
         }
         throw IllegalArgumentException(
-            "Invalid context reference from ${currentExpressionContext()} context to ${expressionDef.context} context."
+            "Invalid context reference from ${scopeManager.currentExpressionContext()} context to ${expressionDef.context} context."
         )
     }
 
@@ -2558,90 +2561,20 @@ class LibraryBuilder(
             "$elementString identifier $identifierParam is hiding another identifier of the same name."
     }
 
-    fun determineRootCause(): Exception? = scopeManager.determineRootCause()
-
-    fun setRootCause(rootCause: Exception?) {
-        scopeManager.setRootCause(rootCause)
+    fun checkLiteralContext() {
+        check(!scopeManager.inLiteralContext()) {
+            "Expressions in this context must be able to be evaluated at compile-time."
+        }
     }
-
-    fun pushExpressionDefinition(identifier: String) {
-        scopeManager.pushExpressionDefinition(identifier)
-    }
-
-    fun popExpressionDefinition() {
-        scopeManager.popExpressionDefinition()
-    }
-
-    fun pushExpressionContext(context: String?) {
-        scopeManager.pushExpressionContext(context)
-    }
-
-    fun popExpressionContext() {
-        scopeManager.popExpressionContext()
-    }
-
-    private fun currentExpressionContext(): String = scopeManager.currentExpressionContext()
 
     private fun inSpecificContext(): Boolean {
         return !inUnfilteredContext()
     }
 
     private fun inUnfilteredContext(): Boolean {
-        return currentExpressionContext() == "Unfiltered" ||
-            isCompatibilityLevel3 && currentExpressionContext() == "Population"
+        return scopeManager.currentExpressionContext() == "Unfiltered" ||
+            isCompatibilityLevel3 && scopeManager.currentExpressionContext() == "Population"
     }
-
-    private fun inQueryContext(): Boolean = scopeManager.inQueryContext()
-
-    fun pushQueryContext(context: QueryContext) {
-        scopeManager.pushQueryContext(context)
-    }
-
-    fun popQueryContext(): QueryContext = scopeManager.popQueryContext()
-
-    fun peekQueryContext(): QueryContext = scopeManager.peekQueryContext()
-
-    fun pushExpressionTarget(target: Expression) {
-        scopeManager.pushExpressionTarget(target)
-    }
-
-    fun popExpressionTarget(): Expression = scopeManager.popExpressionTarget()
-
-    fun hasExpressionTarget(): Boolean = scopeManager.hasExpressionTarget()
-
-    fun beginFunctionDef(functionDef: FunctionDef) {
-        scopeManager.beginFunctionDef(functionDef)
-    }
-
-    fun endFunctionDef() {
-        scopeManager.endFunctionDef()
-    }
-
-    fun pushLiteralContext() {
-        scopeManager.pushLiteralContext()
-    }
-
-    fun popLiteralContext() {
-        scopeManager.popLiteralContext()
-    }
-
-    private fun inLiteralContext(): Boolean = scopeManager.inLiteralContext()
-
-    fun checkLiteralContext() {
-        check(!inLiteralContext()) {
-            "Expressions in this context must be able to be evaluated at compile-time."
-        }
-    }
-
-    fun pushTypeSpecifierContext() {
-        scopeManager.pushTypeSpecifierContext()
-    }
-
-    fun popTypeSpecifierContext() {
-        scopeManager.popTypeSpecifierContext()
-    }
-
-    private fun inTypeSpecifierContext(): Boolean = scopeManager.inTypeSpecifierContext()
 
     companion object {
         private fun lookupElementWarning(element: Any?): String {
