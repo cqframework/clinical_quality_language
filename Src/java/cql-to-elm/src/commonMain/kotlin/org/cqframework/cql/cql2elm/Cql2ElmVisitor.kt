@@ -19,7 +19,6 @@ import org.cqframework.cql.cql2elm.preprocessor.CodeDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.CodesystemDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.ConceptDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.ContextDefinitionInfo
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorElmCommonVisitor
 import org.cqframework.cql.cql2elm.preprocessor.ExpressionDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.FunctionDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.IncludeDefinitionInfo
@@ -59,7 +58,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
     "MagicNumber",
 )
 class Cql2ElmVisitor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
-    CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
+    Cql2ElmVisitorBase(libraryBuilder, tokenStream) {
     private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
     private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
     private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }

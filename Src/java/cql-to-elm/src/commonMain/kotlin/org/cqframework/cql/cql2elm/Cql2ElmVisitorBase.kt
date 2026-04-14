@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.preprocessor
+package org.cqframework.cql.cql2elm
 
 import kotlin.jvm.JvmField
 import org.antlr.v4.kotlinruntime.ParserRuleContext
@@ -9,6 +9,8 @@ import org.cqframework.cql.cql2elm.*
 import org.cqframework.cql.cql2elm.model.Chunk
 import org.cqframework.cql.cql2elm.model.FunctionHeader
 import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.cql2elm.preprocessor.AnnotationBuilder
+import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo
 import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
@@ -37,7 +39,7 @@ import org.hl7.elm.r1.*
     "ComplexCondition",
     "ReturnCount",
 )
-abstract class CqlPreprocessorElmCommonVisitor(
+abstract class Cql2ElmVisitorBase(
     @JvmField protected val libraryBuilder: LibraryBuilder,
     protected val tokenStream: TokenStream,
 ) : cqlBaseVisitor<Any?>() {
