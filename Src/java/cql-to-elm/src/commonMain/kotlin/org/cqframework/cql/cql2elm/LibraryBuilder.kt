@@ -93,7 +93,7 @@ class LibraryBuilder(
     private val expressionFactory: ExpressionFactory by lazy {
         ExpressionFactory(this, objectFactory)
     }
-    private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this) }
+    private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this, objectFactory) }
     private val typeResolver: TypeResolver by lazy { TypeResolver(this, objectFactory) }
     private val conversionEngine: ConversionEngine by lazy { ConversionEngine(this, objectFactory) }
     private val modelManager = libraryManager.modelManager
@@ -739,474 +739,104 @@ class LibraryBuilder(
             allowPromotionAndDemotion,
         )
 
-    private class BinaryWrapper(var left: Expression, var right: Expression)
+    fun resolveUnion(left: Expression, right: Expression): Expression =
+        semanticAnalyzer.resolveUnion(left, right)
 
-    @Suppress("NestedBlockDepth")
-    private fun normalizeListTypes(left: Expression, right: Expression): BinaryWrapper {
-        // for union of lists
-        // collect list of types in either side
-        // cast both operands to a choice type with all types
+    fun resolveIntersect(left: Expression, right: Expression): Expression =
+        semanticAnalyzer.resolveIntersect(left, right)
 
-        // for intersect of lists
-        // collect list of types in both sides
-        // cast both operands to a choice type with all types
-        // TODO: cast the result to a choice type with only types in both sides
-
-        // for difference of lists
-        // collect list of types in both sides
-        // cast both operands to a choice type with all types
-        // TODO: cast the result to the initial type of the left
-        var left = left
-        var right = right
-        if (left.resultType is ListType && right.resultType is ListType) {
-            val leftListType = left.resultType as ListType
-            val rightListType = right.resultType as ListType
-            @Suppress("ComplexCondition")
-            if (
-                !(leftListType.isSuperTypeOf(rightListType) ||
-                    rightListType.isSuperTypeOf(leftListType)) &&
-                    !(leftListType.isCompatibleWith(rightListType) ||
-                        rightListType.isCompatibleWith(leftListType))
-            ) {
-                val elementTypes: MutableSet<DataType> = HashSet()
-                if (leftListType.elementType is ChoiceType) {
-                    for (choice in (leftListType.elementType as ChoiceType).types) {
-                        elementTypes.add(choice)
-                    }
-                } else {
-                    elementTypes.add(leftListType.elementType)
-                }
-                if (rightListType.elementType is ChoiceType) {
-                    for (choice in (rightListType.elementType as ChoiceType).types) {
-                        elementTypes.add(choice)
-                    }
-                } else {
-                    elementTypes.add(rightListType.elementType)
-                }
-                if (elementTypes.size > 1) {
-                    val targetType = ListType(ChoiceType(elementTypes))
-                    left =
-                        objectFactory
-                            .createAs()
-                            .withOperand(left)
-                            .withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType))
-                    left.resultType = targetType
-                    right =
-                        objectFactory
-                            .createAs()
-                            .withOperand(right)
-                            .withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType))
-                    right.resultType = targetType
-                }
-            }
-        }
-        return BinaryWrapper(left, right)
-    }
-
-    fun resolveUnion(left: Expression, right: Expression): Expression {
-        // Create right-leaning bushy instead of left-deep
-        var left = left
-        var right = right
-        if (left is Union) {
-            val leftUnion = left
-            val leftUnionLeft = leftUnion.operand[0]
-            val leftUnionRight = leftUnion.operand[1]
-            if (leftUnionLeft is Union && leftUnionRight !is Union) {
-                left = leftUnionLeft
-                right = resolveUnion(leftUnionRight, right)
-            }
-        }
-
-        // TODO: Take advantage of nary unions
-        val wrapper = normalizeListTypes(left, right)
-        val union = objectFactory.createUnion().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveCall("System", "Union", union)
-        return union
-    }
-
-    fun resolveIntersect(left: Expression, right: Expression): Expression {
-        // Create right-leaning bushy instead of left-deep
-        var left = left
-        var right = right
-        if (left is Intersect) {
-            val leftIntersect = left
-            val leftIntersectLeft = leftIntersect.operand[0]
-            val leftIntersectRight = leftIntersect.operand[1]
-            if (leftIntersectLeft is Intersect && leftIntersectRight !is Intersect) {
-                left = leftIntersectLeft
-                right = resolveIntersect(leftIntersectRight, right)
-            }
-        }
-
-        // TODO: Take advantage of nary intersect
-        val wrapper = normalizeListTypes(left, right)
-        val intersect =
-            objectFactory.createIntersect().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveCall("System", "Intersect", intersect)
-        return intersect
-    }
-
-    fun resolveExcept(left: Expression, right: Expression): Expression {
-        val wrapper = normalizeListTypes(left, right)
-        val except = objectFactory.createExcept().withOperand(listOf(wrapper.left, wrapper.right))
-        resolveCall("System", "Except", except)
-        return except
-    }
+    fun resolveExcept(left: Expression, right: Expression): Expression =
+        semanticAnalyzer.resolveExcept(left, right)
 
     @JsExport.Ignore
-    @Suppress("CyclomaticComplexMethod")
-    fun resolveIn(left: Expression, right: Expression): Expression {
-        @Suppress("ComplexCondition")
-        if (
-            right is ValueSetRef ||
-                (isCompatibleWith("1.5") &&
-                    right.resultType!!.isCompatibleWith(resolveTypeName("System", "ValueSet")!!) &&
-                    right.resultType != resolveTypeName("System", "Any"))
-        ) {
-            if (left.resultType is ListType) {
-                val anyIn =
-                    objectFactory
-                        .createAnyInValueSet()
-                        .withCodes(left)
-                        .withValueset(right as? ValueSetRef)
-                        .withValuesetExpression(if (right is ValueSetRef) null else right)
-                resolveCall("System", "AnyInValueSet", AnyInValueSetInvocation(anyIn))
-                return anyIn
-            }
-            val inValueSet =
-                objectFactory
-                    .createInValueSet()
-                    .withCode(left)
-                    .withValueset(right as? ValueSetRef)
-                    .withValuesetExpression(if (right is ValueSetRef) null else right)
-            resolveCall("System", "InValueSet", InValueSetInvocation(inValueSet))
-            return inValueSet
-        }
-        @Suppress("ComplexCondition")
-        if (
-            right is CodeSystemRef ||
-                (isCompatibleWith("1.5") &&
-                    right.resultType!!.isCompatibleWith(
-                        resolveTypeName("System", "CodeSystem")!!
-                    ) &&
-                    right.resultType != resolveTypeName("System", "Any"))
-        ) {
-            if (left.resultType is ListType) {
-                val anyIn =
-                    objectFactory
-                        .createAnyInCodeSystem()
-                        .withCodes(left)
-                        .withCodesystem(right as? CodeSystemRef)
-                        .withCodesystemExpression(if (right is CodeSystemRef) null else right)
-                resolveCall("System", "AnyInCodeSystem", AnyInCodeSystemInvocation(anyIn))
-                return anyIn
-            }
-            val inCodeSystem =
-                objectFactory
-                    .createInCodeSystem()
-                    .withCode(left)
-                    .withCodesystem(right as? CodeSystemRef)
-                    .withCodesystemExpression(if (right is CodeSystemRef) null else right)
-            resolveCall("System", "InCodeSystem", InCodeSystemInvocation(inCodeSystem))
-            return inCodeSystem
-        }
-        val inExpression = objectFactory.createIn().withOperand(listOf(left, right))
-        resolveCall("System", "In", inExpression)
-        return inExpression
-    }
+    fun resolveIn(left: Expression, right: Expression): Expression =
+        semanticAnalyzer.resolveIn(left, right)
 
     @JsExport.Ignore
-    fun resolveContains(left: Expression, right: Expression): Expression {
-        // TODO: Add terminology overloads
-        val contains = objectFactory.createContains().withOperand(listOf(left, right))
-        resolveCall("System", "Contains", contains)
-        return contains
-    }
+    fun resolveContains(left: Expression, right: Expression): Expression =
+        semanticAnalyzer.resolveContains(left, right)
 
     @JsExport.Ignore
     fun resolveIn(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val result = resolveInInvocation(left, right, dateTimePrecision)
-        return result?.expression
-    }
-
-    private fun resolveInInvocation(
-        left: Expression,
-        right: Expression,
-        dateTimePrecision: DateTimePrecision?,
-    ): Invocation? {
-        val inExpression =
-            objectFactory
-                .createIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        return resolveBinaryInvocation("System", "In", inExpression)
-    }
+    ): Expression? = semanticAnalyzer.resolveIn(left, right, dateTimePrecision)
 
     fun resolveProperIn(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val result = resolveProperInInvocation(left, right, dateTimePrecision)
-        return result?.expression
-    }
-
-    private fun resolveProperInInvocation(
-        left: Expression,
-        right: Expression,
-        dateTimePrecision: DateTimePrecision?,
-    ): Invocation? {
-        val properIn =
-            objectFactory
-                .createProperIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        return resolveBinaryInvocation("System", "ProperIn", properIn)
-    }
+    ): Expression? = semanticAnalyzer.resolveProperIn(left, right, dateTimePrecision)
 
     @JsExport.Ignore
     fun resolveContains(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val result = resolveContainsInvocation(left, right, dateTimePrecision)
-        return result?.expression
-    }
-
-    private fun resolveContainsInvocation(
-        left: Expression,
-        right: Expression,
-        dateTimePrecision: DateTimePrecision?,
-    ): Invocation? {
-        val contains =
-            objectFactory
-                .createContains()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        return resolveBinaryInvocation("System", "Contains", contains)
-    }
+    ): Expression? = semanticAnalyzer.resolveContains(left, right, dateTimePrecision)
 
     fun resolveProperContains(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val result = resolveProperContainsInvocation(left, right, dateTimePrecision)
-        return result?.expression
-    }
-
-    private fun resolveProperContainsInvocation(
-        left: Expression,
-        right: Expression,
-        dateTimePrecision: DateTimePrecision?,
-    ): Invocation? {
-        val properContains =
-            objectFactory
-                .createProperContains()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        return resolveBinaryInvocation("System", "ProperContains", properContains)
-    }
-
-    private fun getTypeScore(resolution: OperatorResolution?): Int {
-        var typeScore = ConversionMap.ConversionScore.ExactMatch.score
-        for (operand in resolution!!.operator.signature.operandTypes) {
-            typeScore += ConversionMap.getTypePrecedenceScore(operand)
-        }
-        return typeScore
-    }
-
-    @Suppress("NestedBlockDepth")
-    private fun lowestScoringInvocation(primary: Invocation?, secondary: Invocation?): Expression? {
-        if (primary != null) {
-            if (secondary != null) {
-                if (secondary.resolution!!.score < primary.resolution!!.score) {
-                    return secondary.expression
-                } else if (primary.resolution!!.score < secondary.resolution!!.score) {
-                    return primary.expression
-                }
-                if (primary.resolution!!.score == secondary.resolution!!.score) {
-                    val primaryTypeScore = getTypeScore(primary.resolution)
-                    val secondaryTypeScore = getTypeScore(secondary.resolution)
-                    return if (secondaryTypeScore < primaryTypeScore) {
-                        secondary.expression
-                    } else if (primaryTypeScore < secondaryTypeScore) {
-                        primary.expression
-                    } else {
-                        // ERROR:
-                        val message =
-                            StringBuilder("Call to operator ")
-                                .append(primary.resolution!!.operator.name)
-                                .append("/")
-                                .append(secondary.resolution!!.operator.name)
-                                .append(" is ambiguous with: ")
-                                .append("\n  - ")
-                                .append(primary.resolution!!.operator.name)
-                                .append(primary.resolution!!.operator.signature)
-                                .append("\n  - ")
-                                .append(secondary.resolution!!.operator.name)
-                                .append(secondary.resolution!!.operator.signature)
-                        throw IllegalArgumentException(message.toString())
-                    }
-                }
-            }
-            return primary.expression
-        }
-        return secondary?.expression
-    }
+    ): Expression? = semanticAnalyzer.resolveProperContains(left, right, dateTimePrecision)
 
     fun resolveIncludes(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val includes =
-            objectFactory
-                .createIncludes()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val includesInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "Includes",
-                includes,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        val contains =
-            objectFactory
-                .createContains()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val containsInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "Contains",
-                contains,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        return lowestScoringInvocation(includesInvocation, containsInvocation)
-            ?: resolveCall("System", "Includes", includes)
-
-        // Neither operator resolved, so force a resolve to throw
-    }
+    ): Expression? = semanticAnalyzer.resolveIncludes(left, right, dateTimePrecision)
 
     fun resolveProperIncludes(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val properIncludes =
-            objectFactory
-                .createProperIncludes()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val properIncludesInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "ProperIncludes",
-                properIncludes,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        val properContains =
-            objectFactory
-                .createProperContains()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val properContainsInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "ProperContains",
-                properContains,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        return lowestScoringInvocation(properIncludesInvocation, properContainsInvocation)
-            ?: resolveCall("System", "ProperIncludes", properIncludes)
-
-        // Neither operator resolved, so force a resolve to throw
-    }
+    ): Expression? = semanticAnalyzer.resolveProperIncludes(left, right, dateTimePrecision)
 
     fun resolveIncludedIn(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val includedIn =
-            objectFactory
-                .createIncludedIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val includedInInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "IncludedIn",
-                includedIn,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        val inExpression =
-            objectFactory
-                .createIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val inInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "In",
-                inExpression,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        return lowestScoringInvocation(includedInInvocation, inInvocation)
-            ?: resolveCall("System", "IncludedIn", includedIn)
-
-        // Neither operator resolved, so force a resolve to throw
-    }
+    ): Expression? = semanticAnalyzer.resolveIncludedIn(left, right, dateTimePrecision)
 
     fun resolveProperIncludedIn(
         left: Expression,
         right: Expression,
         dateTimePrecision: DateTimePrecision?,
-    ): Expression? {
-        val properIncludedIn =
-            objectFactory
-                .createProperIncludedIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val properIncludedInInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "ProperIncludedIn",
-                properIncludedIn,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        val properIn =
-            objectFactory
-                .createProperIn()
-                .withOperand(listOf(left, right))
-                .withPrecision(dateTimePrecision)
-        val properInInvocation =
-            resolveBinaryInvocation(
-                "System",
-                "ProperIn",
-                properIn,
-                mustResolve = false,
-                allowPromotionAndDemotion = false,
-            )
-        return lowestScoringInvocation(properIncludedInInvocation, properInInvocation)
-            ?: resolveCall("System", "ProperIncludedIn", properIncludedIn)
+    ): Expression? = semanticAnalyzer.resolveProperIncludedIn(left, right, dateTimePrecision)
 
-        // Neither operator resolved, so force a resolve to throw
-    }
+    fun checkAccessLevel(
+        libraryName: String?,
+        objectName: String?,
+        accessModifier: AccessModifier,
+    ) = semanticAnalyzer.checkAccessLevel(libraryName, objectName, accessModifier)
+
+    @JsExport.Ignore
+    fun resolveFunction(
+        libraryName: String?,
+        functionName: String,
+        paramList: kotlin.collections.List<Expression>,
+    ): Expression? = semanticAnalyzer.resolveFunction(libraryName, functionName, paramList)
+
+    @JsExport.Ignore
+    @Suppress("LongParameterList")
+    fun resolveFunction(
+        libraryName: String?,
+        functionName: String,
+        paramList: kotlin.collections.List<Expression>,
+        mustResolve: Boolean,
+        allowPromotionAndDemotion: Boolean,
+        allowFluent: Boolean,
+    ): Invocation? =
+        semanticAnalyzer.resolveFunction(
+            libraryName,
+            functionName,
+            paramList,
+            mustResolve,
+            allowPromotionAndDemotion,
+            allowFluent,
+        )
 
     fun resolveCall(
         libraryName: String?,
@@ -1269,134 +899,6 @@ class LibraryBuilder(
 
     fun resolveFunctionDefinition(fd: FunctionDef): Operator? =
         semanticAnalyzer.resolveFunctionDefinition(fd)
-
-    private fun isInterFunctionAccess(f1: String, f2: String?): Boolean {
-        return if (f1.isNotBlank() && !f2.isNullOrBlank()) {
-            !f1.equals(f2, ignoreCase = true)
-        } else false
-    }
-
-    fun checkAccessLevel(
-        libraryName: String?,
-        objectName: String?,
-        accessModifier: AccessModifier,
-    ) {
-        if (
-            accessModifier == AccessModifier.PRIVATE &&
-                isInterFunctionAccess(library.identifier!!.id!!, libraryName)
-        ) {
-            // ERROR:
-            throw CqlSemanticException(
-                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library."
-            )
-        }
-    }
-
-    @JsExport.Ignore
-    fun resolveFunction(
-        libraryName: String?,
-        functionName: String,
-        paramList: kotlin.collections.List<Expression>,
-    ): Expression? {
-        return resolveFunction(
-                libraryName,
-                functionName,
-                paramList,
-                mustResolve = true,
-                allowPromotionAndDemotion = false,
-                allowFluent = false,
-            )
-            ?.expression
-    }
-
-    private fun buildFunctionRef(
-        libraryName: String?,
-        functionName: String,
-        paramList: Iterable<Expression>,
-    ): FunctionRef {
-        val functionRef =
-            objectFactory.createFunctionRef().withLibraryName(libraryName).withName(functionName)
-        for (param in paramList) {
-            functionRef.operand.add(param)
-        }
-        return functionRef
-    }
-
-    @JsExport.Ignore
-    @Suppress("LongParameterList")
-    fun resolveFunction(
-        libraryName: String?,
-        functionName: String,
-        paramList: kotlin.collections.List<Expression>,
-        mustResolve: Boolean,
-        allowPromotionAndDemotion: Boolean,
-        allowFluent: Boolean,
-    ): Invocation? {
-        var functionRef: FunctionRef? = buildFunctionRef(libraryName, functionName, paramList)
-
-        // Attempt normal resolution, but don't require one
-        var invocation: Invocation = FunctionRefInvocation(functionRef!!)
-        functionRef =
-            resolveCall(
-                functionRef.libraryName,
-                functionRef.name!!,
-                invocation,
-                false,
-                allowPromotionAndDemotion,
-                allowFluent,
-            )
-                as FunctionRef?
-        if (functionRef != null) {
-            if ("System" == invocation.resolution!!.operator.libraryName) {
-                val systemFun = buildFunctionRef(libraryName, functionName, paramList)
-                // Rebuild the fun from the original arguments, otherwise it will resolve with
-                // conversions in place
-                val systemFunctionInvocation =
-                    systemFunctionResolver.resolveSystemFunction(systemFun)
-                if (systemFunctionInvocation != null) {
-                    return systemFunctionInvocation
-                }
-            } else {
-                // If the invocation is to a local function or a function in a non-system library,
-                // check literal context
-                if (mustResolve) {
-                    checkLiteralContext()
-                }
-            }
-        }
-
-        // If it didn't resolve, there are two possibilities
-        // 1. It is a special system function resolution that only resolves with the
-        // systemFunctionResolver
-        // 2. It is an error condition that needs to be reported
-        if (functionRef == null) {
-            functionRef = buildFunctionRef(libraryName, functionName, paramList)
-            invocation = FunctionRefInvocation(functionRef)
-            if (!allowFluent) {
-                // Only attempt to resolve as a system function if this is not a fluent call, or it
-                // is a required resolution
-                val systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef)
-                if (systemFunction != null) {
-                    return systemFunction
-                }
-                checkLiteralContext()
-            }
-            functionRef =
-                resolveCall(
-                    functionRef.libraryName,
-                    functionRef.name!!,
-                    invocation,
-                    mustResolve,
-                    allowPromotionAndDemotion,
-                    allowFluent,
-                )
-                    as FunctionRef?
-            if (functionRef == null) {
-                return null
-            }
-        }
-        return invocation
-    }
 
     fun verifyComparable(dataType: DataType) {
         val left = objectFactory.createLiteral().withResultType(dataType) as Expression
