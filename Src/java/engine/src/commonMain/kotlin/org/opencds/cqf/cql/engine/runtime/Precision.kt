@@ -1,9 +1,14 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.util.ChronoField
 import org.opencds.cqf.cql.engine.util.ChronoUnit
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 enum class Precision {
     YEAR,
     MONTH,
@@ -23,6 +28,7 @@ enum class Precision {
         return if (this == WEEK) DAY else this
     }
 
+    @JsExport.Ignore
     fun toChronoField(): ChronoField {
         return when (this) {
             YEAR -> ChronoField.YEAR
@@ -35,6 +41,7 @@ enum class Precision {
         }
     }
 
+    @JsExport.Ignore
     fun toChronoUnit(): ChronoUnit {
         return when (this) {
             YEAR -> ChronoUnit.YEARS
@@ -153,6 +160,7 @@ enum class Precision {
             return fromDateTimeIndex(index + 3)
         }
 
+        @JsExport.Ignore
         fun getDateChronoFieldFromIndex(index: Int): ChronoField {
             return when (index) {
                 0 -> ChronoField.YEAR
@@ -162,6 +170,7 @@ enum class Precision {
             }
         }
 
+        @JsExport.Ignore
         fun getDateTimeChronoFieldFromIndex(index: Int): ChronoField {
             return when (index) {
                 0 -> ChronoField.YEAR
@@ -175,6 +184,7 @@ enum class Precision {
             }
         }
 
+        @JsExport.Ignore
         fun getTimeChronoFieldFromIndex(index: Int): ChronoField {
             return getDateTimeChronoFieldFromIndex(index + 3)
         }

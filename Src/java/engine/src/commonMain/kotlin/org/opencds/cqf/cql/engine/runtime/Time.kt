@@ -1,29 +1,34 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidTime
 import org.opencds.cqf.cql.engine.util.LocalTime
 import org.opencds.cqf.cql.engine.util.localTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Time : BaseTemporal {
+    @JsExport.Ignore
     var time: LocalTime
         private set
 
+    @JsExport.Ignore
     fun withTime(time: LocalTime): Time {
         this.time = time
         return this
     }
 
-    fun withPrecision(precision: Precision): Time {
-        this.precision = precision
-        return this
-    }
-
+    @JsExport.Ignore
     constructor(time: LocalTime, precision: Precision) {
         this.time = time
         this.precision = precision
     }
 
+    @JsName("fromDateString")
     constructor(dateString: String) {
         var dateString = dateString
         var size = 0
@@ -44,6 +49,7 @@ class Time : BaseTemporal {
         time = localTimeParse(dateString)
     }
 
+    @JsName("fromTimeElements")
     constructor(vararg timeElements: Int) {
         if (timeElements.isEmpty()) {
             throw InvalidTime("Time must include an hour")

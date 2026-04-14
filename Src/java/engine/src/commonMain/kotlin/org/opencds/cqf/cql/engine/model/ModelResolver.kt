@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.model
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 
 /**
@@ -8,6 +10,8 @@ import org.cqframework.cql.shared.QName
  * implementation schemes with the simplest example being classes in different package names, but
  * also possibly with different property naming schemes, etc.
  */
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 interface ModelResolver {
     /**
      * Get the path expression that expresses the relationship between the `targetType` and the

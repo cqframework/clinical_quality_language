@@ -310,9 +310,9 @@
     <ID>MaxLineLength:TodayEvaluator.kt$TodayEvaluator$/* Today() Date The Today operator returns the date (with no time component) of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the Today operator in this way. */</ID>
     <ID>MaxLineLength:TruncatedDivideEvaluator.kt$TruncatedDivideEvaluator$"TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal), TruncatedDivide(Quantity, Quantity)"</ID>
     <ID>MemberNameEqualsClassName:Code.kt$Code$var code: String? = null</ID>
-    <ID>MemberNameEqualsClassName:Date.kt$Date$var date: LocalDate? = null set(date) { if (date!!.getYear() &lt; 1) { throw InvalidDate( "The year: ${date.getYear()} falls below the accepted bounds of 0001-9999." ) } if (date.getYear() > 9999) { throw InvalidDate( "The year: ${date.getYear()} falls above the accepted bounds of 0001-9999." ) } if (this.precision == null) { this.precision = Precision.DAY } field = date }</ID>
-    <ID>MemberNameEqualsClassName:DateTime.kt$DateTime$var dateTime: OffsetDateTime? = null set(dateTime) { if (dateTime!!.getYear() &lt; 1) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls below the accepted bounds of 0001-9999." ) } if (dateTime.getYear() > 9999) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls above the accepted bounds of 0001-9999." ) } field = dateTime }</ID>
-    <ID>MemberNameEqualsClassName:Time.kt$Time$var time: LocalTime private set</ID>
+    <ID>MemberNameEqualsClassName:Date.kt$Date$@JsExport.Ignore var date: LocalDate? = null set(date) { if (date!!.getYear() &lt; 1) { throw InvalidDate( "The year: ${date.getYear()} falls below the accepted bounds of 0001-9999." ) } if (date.getYear() > 9999) { throw InvalidDate( "The year: ${date.getYear()} falls above the accepted bounds of 0001-9999." ) } if (this.precision == null) { this.precision = Precision.DAY } field = date }</ID>
+    <ID>MemberNameEqualsClassName:DateTime.kt$DateTime$@JsExport.Ignore var dateTime: OffsetDateTime? = null set(dateTime) { if (dateTime!!.getYear() &lt; 1) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls below the accepted bounds of 0001-9999." ) } if (dateTime.getYear() > 9999) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls above the accepted bounds of 0001-9999." ) } field = dateTime }</ID>
+    <ID>MemberNameEqualsClassName:Time.kt$Time$@JsExport.Ignore var time: LocalTime private set</ID>
     <ID>NestedBlockDepth:AllTrueEvaluator.kt$AllTrueEvaluator$@JvmStatic fun allTrue(src: Any?): Boolean?</ID>
     <ID>NestedBlockDepth:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Any?): Boolean?</ID>
     <ID>NestedBlockDepth:AvgEvaluator.kt$AvgEvaluator$@JvmStatic fun avg(source: Any?, state: State?): Any?</ID>
@@ -491,8 +491,8 @@
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$@JvmStatic fun unionInterval(left: Interval?, right: Interval?, state: State?): Interval?</ID>
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$fun unionIterable(left: Iterable&lt;*>?, right: Iterable&lt;*>?, state: State?): Iterable&lt;*>?</ID>
     <ID>ReturnCount:Value.kt$Value$fun validateDecimal(ret: BigDecimal, targetScale: Int?): BigDecimal?</ID>
-    <ID>ReturnCount:ValueSet.kt$ValueSet$fun getCodeSystem(id: String?): CodeSystem?</ID>
-    <ID>ReturnCount:ValueSet.kt$ValueSet$fun getCodeSystem(id: String?, version: String?): CodeSystem?</ID>
+    <ID>ReturnCount:ValueSet.kt$ValueSet$@JsName("getCodeSystemById") fun getCodeSystem(id: String?): CodeSystem?</ID>
+    <ID>ReturnCount:ValueSet.kt$ValueSet$@JsName("getCodeSystemByIdAndVersion") fun getCodeSystem(id: String?, version: String?): CodeSystem?</ID>
     <ID>SpreadOperator:DateTime.kt$DateTime$(*dateElements)</ID>
     <ID>SpreadOperator:DateTimeEvaluator.kt$DateTimeEvaluator$( timeZoneOffset!!, *TemporalHelper.cleanArray(year, month, day, hour, minute, second, milliSecond), )</ID>
     <ID>SpreadOperator:IntervalHelper.kt$IntervalHelper.Companion$( *(intervals .filter { obj -> obj != null } .flatMap { interval -> listOf( interval!!.start as BaseTemporal?, interval.end as BaseTemporal?, ) } .toTypedArray()) )</ID>

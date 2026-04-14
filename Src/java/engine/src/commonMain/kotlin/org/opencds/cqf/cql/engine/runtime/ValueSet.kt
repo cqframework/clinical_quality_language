@@ -1,5 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class ValueSet : Vocabulary() {
     fun withId(id: String?): ValueSet {
         this.id = id
@@ -44,6 +50,7 @@ class ValueSet : Vocabulary() {
         return this
     }
 
+    @JsName("getCodeSystemById")
     fun getCodeSystem(id: String?): CodeSystem? {
         if (id == null) {
             return null
@@ -58,6 +65,7 @@ class ValueSet : Vocabulary() {
         return null
     }
 
+    @JsName("getCodeSystemByIdAndVersion")
     fun getCodeSystem(id: String?, version: String?): CodeSystem? {
         if (id == null) {
             return null

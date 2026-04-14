@@ -1,6 +1,10 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidDate
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.util.Date
@@ -14,7 +18,10 @@ import org.opencds.cqf.cql.engine.util.offsetDateTimeOfInstant
 import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Date : BaseTemporal {
+    @JsExport.Ignore
     var date: LocalDate? = null
         set(date) {
             if (date!!.getYear() < 1) {
@@ -33,25 +40,30 @@ class Date : BaseTemporal {
             field = date
         }
 
+    @JsName("fromYear")
     constructor(year: Int) {
         this.date = (localDateOf(year, 1, 1))
         this.precision = Precision.YEAR
     }
 
+    @JsName("fromYearMonth")
     constructor(year: Int, month: Int) {
         this.date = (localDateOf(year, month, 1))
         this.precision = Precision.MONTH
     }
 
+    @JsName("fromYearMonthDay")
     constructor(year: Int, month: Int, day: Int) {
         this.date = (localDateOf(year, month, day))
     }
 
+    @JsExport.Ignore
     constructor(date: LocalDate, precision: Precision) {
         this.date = date
         this.precision = precision
     }
 
+    @JsName("fromDateString")
     constructor(dateString: String) {
         var dateString = dateString
         precision =
@@ -63,6 +75,7 @@ class Date : BaseTemporal {
         this.date = (localDateParse(dateString))
     }
 
+    @JsExport.Ignore
     constructor(date: LocalDate) {
         this.date = (date)
     }
@@ -222,6 +235,7 @@ class Date : BaseTemporal {
     }
 
     @JvmOverloads
+    @JsExport.Ignore
     fun toJavaDate(c: State? = null): Date {
         var zonedDateTime: ZonedDateTime? = null
         zonedDateTime =
@@ -236,6 +250,7 @@ class Date : BaseTemporal {
     }
 
     companion object {
+        @JsExport.Ignore
         fun fromJavaDate(date: Date): DateTime {
             val calendar = calendarGetInstance()
             calendar.setTime(date)

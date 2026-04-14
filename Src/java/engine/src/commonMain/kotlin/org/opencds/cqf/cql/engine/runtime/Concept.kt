@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Concept : CqlType {
     var display: String? = null
 
@@ -18,6 +23,7 @@ class Concept : CqlType {
             }
         }
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     fun withCodes(codes: Iterable<Code?>?): Concept {
         this.codes = codes?.toMutableList() ?: mutableListOf()
         return this

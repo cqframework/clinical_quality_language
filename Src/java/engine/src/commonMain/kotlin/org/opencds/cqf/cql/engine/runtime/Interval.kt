@@ -1,8 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.toString
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
@@ -16,8 +19,11 @@ import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.util.Date
 import org.opencds.cqf.cql.engine.util.javaClassName
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Interval
 @JvmOverloads
+@JsExport.Ignore
 constructor(
     var low: Any?,
     val lowClosed: Boolean,
@@ -131,6 +137,7 @@ constructor(
             }
         }
 
+    @JsExport.Ignore
     fun compareTo(other: Interval, state: State?): Int {
         val cqlList = CqlList(state)
         if (cqlList.compareTo(this.start, other.start) == 0) {
@@ -144,6 +151,7 @@ constructor(
     }
 
     companion object {
+        @JsExport.Ignore
         fun getSize(start: Any?, end: Any?, state: State?): Any? {
             if (start == null || end == null) {
                 return null

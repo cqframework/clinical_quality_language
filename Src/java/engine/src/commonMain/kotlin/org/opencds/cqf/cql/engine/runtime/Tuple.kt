@@ -1,7 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator.toString
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Tuple : CqlType {
     var elements = mutableMapOf<String, Any?>()
         set(value) {
