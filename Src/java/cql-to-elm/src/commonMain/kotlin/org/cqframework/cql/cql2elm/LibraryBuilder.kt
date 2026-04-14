@@ -88,6 +88,7 @@ class LibraryBuilder(
         ExpressionFactory(this, objectFactory)
     }
     private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this) }
+    private val typeResolver: TypeResolver by lazy { TypeResolver(this, objectFactory) }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -112,7 +113,9 @@ class LibraryBuilder(
     internal var listTraversal = true
     private val options: CqlCompilerOptions = libraryManager.cqlCompilerOptions
     private val cqlToElmInfo = af.createCqlToElmInfo()
-    private val typeBuilder = TypeBuilder(objectFactory, modelManager)
+    internal val typeBuilder = TypeBuilder(objectFactory, modelManager)
+    internal val typeBuilderInternal: TypeBuilder
+        get() = typeBuilder
 
     fun enableListTraversal() {
         listTraversal = true
@@ -1772,88 +1775,20 @@ class LibraryBuilder(
         return c.resultType is ChoiceType
     }
 
-    fun verifyType(actualType: DataType, expectedType: DataType) {
-        if (expectedType.isSuperTypeOf(actualType) || actualType.isCompatibleWith(expectedType)) {
-            return
-        }
-        val conversion =
-            findConversion(
-                actualType,
-                expectedType,
-                implicit = true,
-                allowPromotionAndDemotion = false,
-            )
-        if (conversion != null) {
-            return
-        }
-        DataTypes.verifyType(actualType, expectedType)
-    }
+    fun verifyType(actualType: DataType, expectedType: DataType) =
+        typeResolver.verifyType(actualType, expectedType)
 
-    fun findCompatibleType(first: DataType?, second: DataType?): DataType? {
-        if (first == null || second == null) {
-            return null
-        }
-        if (first == DataType.ANY) {
-            return second
-        }
-        if (second == DataType.ANY) {
-            return first
-        }
-        if (first.isSuperTypeOf(second) || second.isCompatibleWith(first)) {
-            return first
-        }
-        if (second.isSuperTypeOf(first) || first.isCompatibleWith(second)) {
-            return second
-        }
+    fun findCompatibleType(first: DataType?, second: DataType?): DataType? =
+        typeResolver.findCompatibleType(first, second)
 
-        // If either side is a choice type, don't allow conversions because they will incorrectly
-        // eliminate choices based on convertibility
-        if (!(first is ChoiceType || second is ChoiceType)) {
-            var conversion =
-                findConversion(second, first, implicit = true, allowPromotionAndDemotion = false)
-            if (conversion != null) {
-                return first
-            }
-            conversion =
-                findConversion(first, second, implicit = true, allowPromotionAndDemotion = false)
-            if (conversion != null) {
-                return second
-            }
-        }
-        return null
-    }
+    fun ensureCompatibleTypes(first: DataType?, second: DataType): DataType? =
+        typeResolver.ensureCompatibleTypes(first, second)
 
-    fun ensureCompatibleTypes(first: DataType?, second: DataType): DataType? {
-        val compatibleType = findCompatibleType(first, second)
-        if (compatibleType != null) {
-            return compatibleType
-        }
-        if (first != null && !second.isSubTypeOf(first)) {
-            return ChoiceType(first, second)
-        }
+    fun ensureCompatible(expression: Expression?, targetType: DataType?): Expression =
+        typeResolver.ensureCompatible(expression, targetType)
 
-        // The above construction of a choice type guarantees this will never be hit
-        DataTypes.verifyType(second, first)
-        return first
-    }
-
-    fun ensureCompatible(expression: Expression?, targetType: DataType?): Expression {
-        if (targetType == null) {
-            return objectFactory.createNull()
-        }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType!!)) {
-            convertExpression(expression, targetType, true)
-        } else expression
-    }
-
-    fun enforceCompatible(expression: Expression?, targetType: DataType?): Expression {
-        if (targetType == null) {
-            return objectFactory.createNull()
-        }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType!!)) {
-            convertExpression(expression, targetType, false)
-        } else expression
-    }
+    fun enforceCompatible(expression: Expression?, targetType: DataType?): Expression =
+        typeResolver.enforceCompatible(expression, targetType)
 
     @JsExport.Ignore
     fun createLiteral(string: String?): Literal = expressionFactory.createLiteral(string)
@@ -1935,38 +1870,17 @@ class LibraryBuilder(
         highClosed: Boolean,
     ): Interval = expressionFactory.createInterval(low, lowClosed, high, highClosed)
 
-    fun dataTypeToQName(type: DataType?): QName {
-        return typeBuilder.dataTypeToQName(type)
-    }
+    fun dataTypeToQName(type: DataType?): QName = typeResolver.dataTypeToQName(type)
 
     internal fun dataTypesToTypeSpecifiers(
         types: kotlin.collections.List<DataType>
-    ): kotlin.collections.List<TypeSpecifier> {
-        return typeBuilder.dataTypesToTypeSpecifiers(types)
-    }
+    ): kotlin.collections.List<TypeSpecifier> = typeResolver.dataTypesToTypeSpecifiers(types)
 
-    fun dataTypeToTypeSpecifier(type: DataType?): TypeSpecifier {
-        return typeBuilder.dataTypeToTypeSpecifier(type)
-    }
+    fun dataTypeToTypeSpecifier(type: DataType?): TypeSpecifier =
+        typeResolver.dataTypeToTypeSpecifier(type)
 
-    fun resolvePath(sourceType: DataType?, path: String): DataType? {
-        // TODO: This is using a naive implementation for now... needs full path support (but not
-        // full FluentPath support...)
-        var sourceType: DataType? = sourceType
-        val identifiers: Array<String> =
-            path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        for (i in identifiers.indices) {
-            val resolution: PropertyResolution? = resolveProperty(sourceType, identifiers[i])
-            sourceType = resolution!!.type
-            // Actually, this doesn't matter for this call, we're just resolving the type...
-            // if (!resolution.getTargetMap().equals(identifiers[i])) {
-            //    throw new IllegalArgumentException(String.format("Identifier %s references an
-            // element with a target mapping defined and cannot be resolved as part of a path",
-            // identifiers[i]));
-            // }
-        }
-        return sourceType
-    }
+    fun resolvePath(sourceType: DataType?, path: String): DataType? =
+        typeResolver.resolvePath(sourceType, path)
 
     // TODO: Support case-insensitive models
     @JvmOverloads
