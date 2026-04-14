@@ -35,32 +35,29 @@ class ConversionMap {
         ListPromotion(9),
     }
 
-    private val map: MutableMap<DataType, MutableList<Conversion>> = HashMap()
-    val genericConversions: MutableList<Conversion> = ArrayList()
+    private val map: MutableMap<DataType, MutableList<Conversion.OperatorConversion>> = HashMap()
+    val genericConversions: MutableList<Conversion.OperatorConversion> = ArrayList()
     var isListDemotionEnabled: Boolean = true
     var isListPromotionEnabled: Boolean = true
     var isIntervalDemotionEnabled: Boolean = false
     var isIntervalPromotionEnabled: Boolean = false
 
-    private fun hasConversion(conversion: Conversion, conversions: List<Conversion>): Boolean {
+    private fun hasConversion(
+        conversion: Conversion.OperatorConversion,
+        conversions: List<Conversion.OperatorConversion>,
+    ): Boolean {
         return conversions.any { it.toType == conversion.toType }
     }
 
     fun getConversionOperator(fromType: DataType, toType: DataType): Operator? {
-        return this.getConversions(fromType).firstOrNull { it.toType == toType }?.operator
+        return getConversions(fromType).firstOrNull { it.toType == toType }?.operator
     }
 
-    fun add(conversion: Conversion) {
+    fun add(conversion: Conversion.OperatorConversion) {
         // NOTE: The conversion map supports generic conversions, however, they turned out to be
-        // quite expensive
-        // computationally
-        // so we introduced list promotion and demotion instead (we should add interval promotion
-        // and demotion too,
-        // would be quite useful)
-        // Generic conversions could still be potentially useful, so I left the code, but it's never
-        // used because the
-        // generic conversions
-        // are not added in the SystemLibraryHelper.
+        // quite expensive computationally, so we introduced list promotion and demotion instead.
+        // Generic conversions could still be potentially useful, so I left the code, but it's
+        // never used because the generic conversions are not added in the SystemLibraryHelper.
         if (conversion.isGeneric) {
             val conversions = genericConversions
             check(!hasConversion(conversion, conversions)) {
@@ -78,15 +75,15 @@ class ConversionMap {
         }
     }
 
-    fun getConversions(fromType: DataType): MutableList<Conversion> {
+    fun getConversions(fromType: DataType): MutableList<Conversion.OperatorConversion> {
         return map.getOrPut(fromType) { ArrayList() }
     }
 
     /*
     Returns conversions for the given type, or any supertype, recursively
      */
-    private fun getAllConversions(fromType: DataType?): List<Conversion> {
-        val conversions: MutableList<Conversion> = ArrayList()
+    private fun getAllConversions(fromType: DataType?): List<Conversion.OperatorConversion> {
+        val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
         var currentType = fromType
         while (currentType != null && currentType != DataType.ANY) {
             conversions.addAll(getConversions(currentType))
@@ -97,7 +94,7 @@ class ConversionMap {
 
     private fun findCompatibleConversion(fromType: DataType, toType: DataType): Conversion? {
         if (fromType.isCompatibleWith(toType)) {
-            return Conversion(fromType, toType)
+            return Conversion.Cast(fromType, toType)
         }
 
         return null
@@ -109,20 +106,14 @@ class ConversionMap {
         allowPromotionAndDemotion: Boolean,
         operatorMap: OperatorMap,
     ): Conversion? {
-        var result: Conversion? = null
-        for (choice in fromType.types) {
-            val choiceConversion =
+        val matches =
+            fromType.types.mapNotNull { choice ->
                 findConversion(choice, toType, true, allowPromotionAndDemotion, operatorMap)
-            if (choiceConversion != null) {
-                if (result == null) {
-                    result = Conversion(fromType, toType, choiceConversion)
-                } else {
-                    result.addAlternativeConversion(choiceConversion)
-                }
             }
-        }
 
-        return result
+        if (matches.isEmpty()) return null
+
+        return Conversion.ChoiceNarrowingCast(fromType, toType, matches.first(), matches.drop(1))
     }
 
     private fun findTargetChoiceConversion(
@@ -133,7 +124,7 @@ class ConversionMap {
     ): Conversion? {
         for (choice in toType.types) {
             findConversion(fromType, choice, true, allowPromotionAndDemotion, operatorMap)?.let {
-                return Conversion(fromType, toType, it)
+                return Conversion.ChoiceWideningCast(fromType, toType, it)
             }
         }
 
@@ -152,7 +143,7 @@ class ConversionMap {
                 allowPromotionAndDemotion = false,
                 operatorMap = operatorMap,
             )
-            ?.let { Conversion(fromType, toType, it) }
+            ?.let { Conversion.ListConversion(fromType, toType, it) }
     }
 
     private fun findIntervalConversion(
@@ -167,7 +158,7 @@ class ConversionMap {
                 allowPromotionAndDemotion = false,
                 operatorMap = operatorMap,
             )
-            ?.let { Conversion(fromType, toType, it) }
+            ?.let { Conversion.IntervalConversion(fromType, toType, it) }
     }
 
     private fun findListDemotion(
@@ -177,7 +168,7 @@ class ConversionMap {
     ): Conversion? {
         val elementType = fromType.elementType
         return if (elementType.isSubTypeOf(toType)) {
-            Conversion(fromType, toType, null)
+            Conversion.ListDemotion(fromType, toType, null)
         } else {
             findConversion(
                     elementType,
@@ -186,7 +177,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.ListDemotion(fromType, toType, it) }
         }
     }
 
@@ -196,7 +187,7 @@ class ConversionMap {
         operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.elementType)) {
-            Conversion(fromType, toType, null)
+            Conversion.ListPromotion(fromType, toType, null)
         } else {
             findConversion(
                     fromType,
@@ -205,7 +196,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.ListPromotion(fromType, toType, it) }
         }
     }
 
@@ -216,7 +207,7 @@ class ConversionMap {
     ): Conversion? {
         val pointType = fromType.pointType
         return if (pointType.isSubTypeOf(toType)) {
-            Conversion(fromType, toType, null)
+            Conversion.IntervalDemotion(fromType, toType, null)
         } else {
             findConversion(
                     pointType,
@@ -225,7 +216,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.IntervalDemotion(fromType, toType, it) }
         }
     }
 
@@ -235,7 +226,7 @@ class ConversionMap {
         operatorMap: OperatorMap,
     ): Conversion? {
         return if (fromType.isSubTypeOf(toType.pointType)) {
-            Conversion(fromType, toType, null)
+            Conversion.IntervalPromotion(fromType, toType, null)
         } else {
             findConversion(
                     fromType,
@@ -244,7 +235,7 @@ class ConversionMap {
                     allowPromotionAndDemotion = false,
                     operatorMap = operatorMap,
                 )
-                ?.let { Conversion(fromType, toType, it) }
+                ?.let { Conversion.IntervalPromotion(fromType, toType, it) }
         }
     }
 
@@ -257,22 +248,20 @@ class ConversionMap {
     ): Boolean {
         var operatorsInstantiated = false
         for (c in genericConversions) {
-            if (c.operator != null) {
-                // instantiate the generic...
-                val instantiationResult =
-                    (c.operator as GenericOperator).instantiate(
-                        Signature(fromType),
-                        operatorMap,
-                        this,
-                        false,
-                    )
-                val operator = instantiationResult.operator
-                if (operator != null && !operatorMap.containsOperator(operator)) {
-                    operatorMap.addOperator(operator)
-                    val conversion = Conversion(operator, true)
-                    this.add(conversion)
-                    operatorsInstantiated = true
-                }
+            // instantiate the generic...
+            val instantiationResult =
+                (c.operator as GenericOperator).instantiate(
+                    Signature(fromType),
+                    operatorMap,
+                    this,
+                    false,
+                )
+            val operator = instantiationResult.operator
+            if (operator != null && !operatorMap.containsOperator(operator)) {
+                operatorMap.addOperator(operator)
+                val conversion = Conversion.OperatorConversion(operator, true)
+                this.add(conversion)
+                operatorsInstantiated = true
             }
         }
 
