@@ -5,7 +5,6 @@ package org.cqframework.cql.cql2elm
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
-import kotlin.reflect.KClass
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
@@ -827,51 +826,19 @@ class Cql2ElmContext(
      * @param element The element identified by the identifier, for example [ExpressionRef].
      * @param scope The scope of the current identifier
      */
+    private val identifierHidingChecker: IdentifierHidingChecker by lazy {
+        IdentifierHidingChecker(scopeManager) { message, expression ->
+            reportWarning(message, expression)
+        }
+    }
+
     @JvmOverloads
     fun pushIdentifier(
         identifierRef: IdentifierRef,
         element: Element?,
         scope: IdentifierScope = IdentifierScope.LOCAL,
     ) {
-        val identifier = identifierRef.name!!
-        val localStack = scopeManager.localIdentifierStack
-        val localMatch =
-            if (localStack.isNotEmpty())
-                findMatchingIdentifierContext(localStack.peek(), identifier)
-            else null
-        val globalMatch = findMatchingIdentifierContext(scopeManager.globalIdentifiers, identifier)
-        if (globalMatch != null || localMatch != null) {
-            val matchedContext = globalMatch ?: localMatch!!
-            val matchedOnFunctionOverloads =
-                matchedContext.trackableSubclass == FunctionDef::class && element is FunctionDef
-            if (!matchedOnFunctionOverloads) {
-                reportWarning(
-                    resolveWarningMessage(matchedContext.identifier, identifier, element),
-                    identifierRef,
-                )
-            }
-        }
-        if (shouldAddIdentifierContext(element)) {
-            val trackableOrNull: KClass<out Element>? =
-                if (element == null) null else element::class
-            // Sometimes the underlying Trackable doesn't resolve in the calling code
-            if (scope == IdentifierScope.GLOBAL) {
-                scopeManager.globalIdentifiers.add(
-                    IdentifierContext(identifierRef, trackableOrNull)
-                )
-            } else {
-                scopeManager.localIdentifierStack
-                    .peek()
-                    .add(IdentifierContext(identifierRef, trackableOrNull))
-            }
-        }
-    }
-
-    private fun findMatchingIdentifierContext(
-        identifierContext: Collection<IdentifierContext>,
-        identifier: String,
-    ): IdentifierContext? {
-        return identifierContext.firstOrNull { it.identifier == identifier }
+        identifierHidingChecker.pushIdentifier(identifierRef, element, scope)
     }
 
     /**
@@ -881,11 +848,7 @@ class Cql2ElmContext(
      */
     @JvmOverloads
     fun popIdentifier(scope: IdentifierScope = IdentifierScope.LOCAL) {
-        if (scope == IdentifierScope.GLOBAL) {
-            scopeManager.globalIdentifiers.removeLast()
-        } else {
-            scopeManager.localIdentifierStack.peek().removeLast()
-        }
+        identifierHidingChecker.popIdentifier(scope)
     }
 
     fun pushIdentifierScope() {
@@ -896,46 +859,9 @@ class Cql2ElmContext(
         scopeManager.popIdentifierScope()
     }
 
-    private fun shouldAddIdentifierContext(element: Element?): Boolean {
-        return element !is Literal
-    }
-
-    private fun resolveWarningMessage(
-        matchedIdentifier: String?,
-        identifierParam: String,
-        element: Element?,
-    ): String {
-        val elementString = lookupElementWarning(element)
-        return if (element is Literal) {
-            "String literal '$identifierParam' matches the identifier $matchedIdentifier. Consider whether the identifier was intended instead."
-        } else
-            "$elementString identifier $identifierParam is hiding another identifier of the same name."
-    }
-
     fun checkLiteralContext() {
         check(!scopeManager.inLiteralContext()) {
             "Expressions in this context must be able to be evaluated at compile-time."
-        }
-    }
-
-    companion object {
-        private fun lookupElementWarning(element: Any?): String {
-            return when (element) {
-                is ExpressionDef -> "An expression"
-                is ParameterDef -> "A parameter"
-                is ValueSetDef -> "A valueset"
-                is CodeSystemDef -> "A codesystem"
-                is CodeDef -> "A code"
-                is ConceptDef -> "A concept"
-                is IncludeDef -> "An include"
-                is AliasedQuerySource -> "An alias"
-                is LetClause -> "A let"
-                is OperandDef -> "An operand"
-                is UsingDef -> "A using"
-                is Literal -> "A literal"
-                // default message if no match is made:
-                else -> "An [unknown structure]"
-            }
         }
     }
 }
