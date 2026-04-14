@@ -170,9 +170,9 @@ class SemanticAnalyzer(private val lb: LibraryBuilder) {
         val resolution = resolveCall(callContext)
         if (resolution == null && !mustResolve) return null
         checkOperator(callContext, resolution)
+        resolution!!
         val convertedOperands: MutableList<Expression> = ArrayList()
         val operandIterator = operands.iterator()
-        val signatureTypes = resolution!!.operator.signature.operandTypes.iterator()
         val conversionIterator =
             if (resolution.hasConversions()) resolution.conversions.iterator() else null
         while (operandIterator.hasNext()) {
@@ -181,7 +181,6 @@ class SemanticAnalyzer(private val lb: LibraryBuilder) {
             if (conversion != null) {
                 operand = lb.convertExpression(operand, conversion)
             }
-            signatureTypes.next()
             convertedOperands.add(operand)
         }
         invocation.operands = convertedOperands
@@ -327,7 +326,4 @@ class SemanticAnalyzer(private val lb: LibraryBuilder) {
             "Invocation of operator ${callContext.operatorName} with signature ${callContext.signature} uses fluent syntax, but the operator is not defined as a fluent function."
         }
     }
-
-    @Suppress("UnusedParameter", "unused")
-    private fun pruneChoices(expression: Expression, targetType: DataType): Expression = expression
 }
