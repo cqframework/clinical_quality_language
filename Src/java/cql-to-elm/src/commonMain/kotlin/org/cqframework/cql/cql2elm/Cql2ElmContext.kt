@@ -275,92 +275,13 @@ class Cql2ElmContext(
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? =
         symbolTable.resolveNamespaceUri(namespaceName, mustResolve)
 
-    private fun toErrorSeverity(severity: CqlCompilerException.ErrorSeverity): ErrorSeverity {
-        return when (severity) {
-            CqlCompilerException.ErrorSeverity.Info -> {
-                ErrorSeverity.INFO
-            }
-            CqlCompilerException.ErrorSeverity.Warning -> {
-                ErrorSeverity.WARNING
-            }
-            CqlCompilerException.ErrorSeverity.Error -> {
-                ErrorSeverity.ERROR
-            }
-        }
+    private val errorReporter: ErrorReporter by lazy {
+        ErrorReporter(options, exceptions, errors, warnings, messages) { library }
     }
 
-    private fun addException(e: CqlCompilerException) {
-        // Always add to the list of all exceptions
-        exceptions.add(e)
-        when (e.severity) {
-            CqlCompilerException.ErrorSeverity.Error -> {
-                errors.add(e)
-            }
-            CqlCompilerException.ErrorSeverity.Warning -> {
-                warnings.add(e)
-            }
-            CqlCompilerException.ErrorSeverity.Info -> {
-                messages.add(e)
-            }
-        }
-    }
-
-    private fun shouldReport(errorSeverity: CqlCompilerException.ErrorSeverity): Boolean {
-        return when (options.errorLevel) {
-            CqlCompilerException.ErrorSeverity.Info ->
-                errorSeverity == CqlCompilerException.ErrorSeverity.Info ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Warning ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Error
-            CqlCompilerException.ErrorSeverity.Warning ->
-                (errorSeverity == CqlCompilerException.ErrorSeverity.Warning ||
-                    errorSeverity == CqlCompilerException.ErrorSeverity.Error)
-            CqlCompilerException.ErrorSeverity.Error ->
-                errorSeverity == CqlCompilerException.ErrorSeverity.Error
-            else -> throw IllegalArgumentException("Unknown error severity $errorSeverity")
-        }
-    }
-
-    /**
-     * Record any errors while parsing in both the list of errors but also in the library itself so
-     * they can be processed easily by a remote client
-     *
-     * @param e the exception to record
-     */
+    /** Record any errors while parsing in both the list of errors and in the library itself. */
     fun recordParsingException(e: CqlCompilerException) {
-        addException(e)
-        if (shouldReport(e.severity)) {
-            val err = af.createCqlToElmError()
-            err.message = e.message
-            err.errorSeverity = toErrorSeverity(e.severity)
-            if (e.locator != null) {
-                val loc = e.locator!!
-                if (loc.library != null) {
-                    val lib = loc.library
-                    err.librarySystem = lib.system
-                    err.libraryId = lib.id
-                    err.libraryVersion = lib.version
-                }
-                err.startLine = loc.startLine
-                err.endLine = loc.endLine
-                err.startChar = loc.startChar
-                err.endChar = loc.endChar
-            }
-            if (e is CqlIncludeException) {
-                err.targetIncludeLibrarySystem = e.librarySystem
-                err.targetIncludeLibraryId = e.libraryId
-                err.targetIncludeLibraryVersionId = e.versionId
-            }
-
-            err.errorType =
-                when (e) {
-                    is CqlSyntaxException -> ErrorType.SYNTAX
-                    is CqlIncludeException -> ErrorType.INCLUDE
-                    is CqlSemanticException -> ErrorType.SEMANTIC
-                    else -> ErrorType.INTERNAL
-                }
-
-            library.annotation.add(err)
-        }
+        errorReporter.recordParsingException(e)
     }
 
     fun beginTranslation() {
