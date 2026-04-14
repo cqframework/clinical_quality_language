@@ -1,16 +1,24 @@
+@file:OptIn(ExperimentalJsExport::class)
+
 package org.cqframework.cql.shared
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal as KtBigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode as KtRoundingMode
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 
 /** A minimal pure-Kotlin implementation of BigDecimal for non-Java environments. */
 @Suppress("TooManyFunctions")
-data class BigDecimalJs(private val value: KtBigDecimal) {
-    constructor(value: Int) : this(KtBigDecimal.fromInt(value))
+@JsOnlyExport
+@JsName("BigDecimal")
+class BigDecimalJs private constructor(private val value: KtBigDecimal) {
+    @JsName("fromInt") constructor(value: Int) : this(KtBigDecimal.fromInt(value))
 
-    constructor(value: Long) : this(KtBigDecimal.fromLong(value))
+    @JsName("fromLong") constructor(value: Long) : this(KtBigDecimal.fromLong(value))
 
+    @JsName("fromString")
     constructor(
         value: String
     ) : this(
@@ -25,7 +33,7 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
         )
     )
 
-    constructor(value: Double) : this(KtBigDecimal.fromDouble(value))
+    @JsName("fromDouble") constructor(value: Double) : this(KtBigDecimal.fromDouble(value))
 
     fun toPlainString(): String {
         return this.value.toPlainString()
@@ -43,10 +51,12 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
         return this.value.scale.toInt()
     }
 
+    @JsExport.Ignore
     fun setScale(scale: Int): BigDecimalJs {
         return BigDecimalJs(this.value.scale(scale.toLong()))
     }
 
+    @JsExport.Ignore
     fun setScale(scale: Int, roundingMode: RoundingModeJs): BigDecimalJs {
         return BigDecimalJs(
             KtBigDecimal.parseStringWithMode(
@@ -84,10 +94,12 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
         return BigDecimalJs(this.value.multiply(value.value))
     }
 
+    @JsExport.Ignore
     fun divide(value: BigDecimalJs): BigDecimalJs {
         return BigDecimalJs(this.value.divide(value.value))
     }
 
+    @JsExport.Ignore
     fun divide(value: BigDecimalJs, scale: Int, roundingMode: RoundingModeJs): BigDecimalJs {
         return BigDecimalJs(
             this.value.divide(
@@ -118,11 +130,27 @@ data class BigDecimalJs(private val value: KtBigDecimal) {
         return this.value.longValue()
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        if (other is BigDecimalJs) {
+            return this.value == other.value
+        }
+
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return this.value.hashCode()
+    }
+
     override fun toString(): String {
         return this.value.toString()
     }
 }
 
+@JsOnlyExport
+@JsName("RoundingMode")
 enum class RoundingModeJs {
     CEILING,
     FLOOR,
