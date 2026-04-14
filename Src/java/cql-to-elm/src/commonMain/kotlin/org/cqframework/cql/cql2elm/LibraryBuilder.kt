@@ -81,6 +81,12 @@ class LibraryBuilder(
         HashMap()
     internal val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
     private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
+    internal val systemFunctionResolverInternal: SystemFunctionResolver
+        get() = systemFunctionResolver
+
+    internal val expressionFactoryInternal: ExpressionFactory
+        get() = expressionFactory
+
     val scopeManager: ScopeManager = ScopeManager()
     private val propertyResolver: PropertyResolver by lazy { PropertyResolver(this, objectFactory) }
     private val symbolTable: SymbolTable by lazy { SymbolTable(this) }
@@ -89,6 +95,7 @@ class LibraryBuilder(
     }
     private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this) }
     private val typeResolver: TypeResolver by lazy { TypeResolver(this, objectFactory) }
+    private val conversionEngine: ConversionEngine by lazy { ConversionEngine(this, objectFactory) }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
@@ -677,15 +684,8 @@ class LibraryBuilder(
         toType: DataType,
         implicit: Boolean,
         allowPromotionAndDemotion: Boolean,
-    ): Conversion? {
-        return conversionMap.findConversion(
-            fromType,
-            toType,
-            implicit,
-            allowPromotionAndDemotion,
-            compiledLibrary.operatorMap,
-        )
-    }
+    ): Conversion? =
+        conversionEngine.findConversion(fromType, toType, implicit, allowPromotionAndDemotion)
 
     /**
      * Resolve an operator invocation, dispatching on the runtime type of [expression] to wrap it in
@@ -1412,47 +1412,7 @@ class LibraryBuilder(
         expression: Expression,
         targetType: DataType,
         implicit: Boolean = true,
-    ): Expression {
-        val conversion = findConversion(expression.resultType!!, targetType, implicit, false)
-        if (conversion != null) {
-            return convertExpression(expression, conversion)
-        }
-        DataTypes.verifyType(expression.resultType, targetType)
-        return expression
-    }
-
-    private fun convertListExpression(
-        expression: Expression?,
-        conversion: Conversion.ListConversion,
-    ): Expression {
-        return objectFactory
-            .createQuery()
-            .withSource(
-                listOf(
-                    objectFactory
-                        .createAliasedQuerySource()
-                        .withAlias("X")
-                        .withExpression(expression)
-                        .withResultType(conversion.fromType)
-                )
-            )
-            .withReturn(
-                objectFactory
-                    .createReturnClause()
-                    .withDistinct(false)
-                    .withExpression(
-                        convertExpression(
-                            objectFactory
-                                .createAliasRef()
-                                .withName("X")
-                                .withResultType(conversion.fromType.elementType),
-                            conversion.elementConversion,
-                        )
-                    )
-                    .withResultType(conversion.toType)
-            )
-            .withResultType(conversion.toType)
-    }
+    ): Expression = conversionEngine.convertExpression(expression, targetType, implicit)
 
     internal fun reportWarning(message: String, expression: Element?) {
         val trackback =
@@ -1463,173 +1423,8 @@ class LibraryBuilder(
         recordParsingException(warning)
     }
 
-    private fun demoteListExpression(
-        expression: Expression?,
-        conversion: Conversion.ListDemotion,
-    ): Expression {
-        val singletonFrom = objectFactory.createSingletonFrom().withOperand(expression)
-        singletonFrom.resultType = conversion.fromType.elementType
-        resolveCall("System", "SingletonFrom", singletonFrom)
-        // WARNING:
-        reportWarning("List-valued expression was demoted to a singleton.", expression)
-        val inner = conversion.elementConversion
-        return if (inner != null) {
-            convertExpression(singletonFrom, inner)
-        } else {
-            singletonFrom
-        }
-    }
-
-    private fun promoteListExpression(
-        expression: Expression,
-        conversion: Conversion.ListPromotion,
-    ): Expression {
-        var expression = expression
-        val inner = conversion.elementConversion
-        if (inner != null) {
-            expression = convertExpression(expression, inner)
-        }
-        if (expression.resultType == resolveTypeName("System", "Boolean")) {
-            // WARNING:
-            reportWarning("Boolean-valued expression was promoted to a list.", expression)
-        }
-        return resolveToList(expression)
-    }
-
-    fun resolveToList(expression: Expression?): Expression {
-        // Use a ToList operator here to avoid duplicate evaluation of the operand.
-        val toList = objectFactory.createToList().withOperand(expression)
-        toList.resultType = ListType(expression!!.resultType!!)
-        return toList
-    }
-
-    private fun demoteIntervalExpression(
-        expression: Expression?,
-        conversion: Conversion.IntervalDemotion,
-    ): Expression {
-        val pointFrom = objectFactory.createPointFrom().withOperand(expression)
-        pointFrom.resultType = conversion.fromType.pointType
-        resolveCall("System", "PointFrom", pointFrom)
-        // WARNING:
-        reportWarning("Interval-valued expression was demoted to a point.", expression)
-        val inner = conversion.pointConversion
-        return if (inner != null) {
-            convertExpression(pointFrom, inner)
-        } else {
-            pointFrom
-        }
-    }
-
-    private fun promoteIntervalExpression(
-        expression: Expression,
-        conversion: Conversion.IntervalPromotion,
-    ): Expression {
-        var expression = expression
-        val inner = conversion.pointConversion
-        if (inner != null) {
-            expression = convertExpression(expression, inner)
-        }
-        return resolveToInterval(expression)
-    }
-
-    // When promoting a point to an interval, if the point is null, the result is null, rather than
-    // constructing an interval with null boundaries
-    private fun resolveToInterval(expression: Expression?): Expression {
-        val condition = objectFactory.createIf()
-        condition.condition = expressionFactory.buildIsNull(expression)
-        condition.then = buildNull(IntervalType(expression!!.resultType!!))
-        val toInterval =
-            objectFactory
-                .createInterval()
-                .withLow(expression)
-                .withHigh(expression)
-                .withLowClosed(true)
-                .withHighClosed(true)
-        toInterval.resultType = IntervalType(expression.resultType!!)
-        condition.`else` = (toInterval)
-        condition.resultType = resolveTypeName("System", "Boolean")
-        return condition
-    }
-
-    private fun convertIntervalExpression(
-        expression: Expression?,
-        conversion: Conversion.IntervalConversion,
-    ): Expression {
-        // Optimization: when the expression is an Interval literal, directly convert the bounds
-        // and preserve the lowClosed/highClosed booleans. This avoids unnecessary runtime Property
-        // extraction for values known at compile time (constant folding).
-        // Also handles Interval literals wrapped in As casts (e.g., from cast+interval conversion
-        // chains where convertExpression applies a cast before the interval conversion).
-        val interval = unwrapIntervalLiteral(expression)
-        if (interval != null) {
-            return constantFoldIntervalConversion(interval, conversion)
-        }
-
-        // For non-literal intervals, extract bounds via Property access at runtime
-        return objectFactory
-            .createInterval()
-            .withLow(
-                convertExpression(
-                    objectFactory
-                        .createProperty()
-                        .withSource(expression)
-                        .withPath("low")
-                        .withResultType(conversion.fromType.pointType),
-                    conversion.pointConversion,
-                )
-            )
-            .withLowClosedExpression(
-                objectFactory
-                    .createProperty()
-                    .withSource(expression)
-                    .withPath("lowClosed")
-                    .withResultType(resolveTypeName("System", "Boolean"))
-            )
-            .withHigh(
-                convertExpression(
-                    objectFactory
-                        .createProperty()
-                        .withSource(expression)
-                        .withPath("high")
-                        .withResultType(conversion.fromType.pointType),
-                    conversion.pointConversion,
-                )
-            )
-            .withHighClosedExpression(
-                objectFactory
-                    .createProperty()
-                    .withSource(expression)
-                    .withPath("highClosed")
-                    .withResultType(resolveTypeName("System", "Boolean"))
-            )
-            .withResultType(conversion.toType)
-    }
-
-    /** Unwrap an expression to find an Interval literal, including through As casts. */
-    private fun unwrapIntervalLiteral(expression: Expression?): org.hl7.elm.r1.Interval? =
-        when (expression) {
-            is org.hl7.elm.r1.Interval -> expression
-            is org.hl7.elm.r1.As -> expression.operand as? org.hl7.elm.r1.Interval
-            else -> null
-        }
-
-    /** Constant-fold an interval conversion by directly converting the literal's bounds. */
-    private fun constantFoldIntervalConversion(
-        interval: org.hl7.elm.r1.Interval,
-        conversion: Conversion.IntervalConversion,
-    ): Expression {
-        val low = interval.low
-        val high = interval.high
-        return objectFactory
-            .createInterval()
-            .withLow(if (low != null) convertExpression(low, conversion.pointConversion) else null)
-            .withLowClosed(interval.lowClosed)
-            .withHigh(
-                if (high != null) convertExpression(high, conversion.pointConversion) else null
-            )
-            .withHighClosed(interval.highClosed)
-            .withResultType(conversion.toType)
-    }
+    fun resolveToList(expression: Expression?): Expression =
+        conversionEngine.resolveToList(expression)
 
     fun buildAs(expression: Expression?, asType: DataType?): As =
         expressionFactory.buildAs(expression, asType)
@@ -1652,128 +1447,8 @@ class LibraryBuilder(
     fun buildSuccessor(source: Expression?): Expression = expressionFactory.buildSuccessor(source)
 
     @JsExport.Ignore
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
-    fun convertExpression(expression: Expression, conversion: Conversion): Expression {
-        return when (conversion) {
-            is Conversion.Cast -> {
-                if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
-                    if (conversion.fromType.isSubSetOf(conversion.toType)) {
-                        // conversion between compatible choice types requires no cast (i.e.
-                        // choice<Integer, String> can be safely passed to choice<Integer, String,
-                        // DateTime>
-                        return expression
-                    }
-                    // Otherwise, the choice is narrowing and a run-time As is required (to use
-                    // only the expected target types)
-                }
-                collapseTypeCase(buildAs(expression, conversion.toType))
-            }
-            is Conversion.ChoiceNarrowingCast -> {
-                val castedOperand = buildAs(expression, conversion.innerConversion.fromType)
-                var result = convertExpression(castedOperand, conversion.innerConversion)
-                if (conversion.alternativeConversions.isNotEmpty()) {
-                    val caseResult = objectFactory.createCase()
-                    caseResult.resultType = result.resultType
-                    caseResult.caseItem.add(
-                        objectFactory
-                            .createCaseItem()
-                            .withWhen(buildIs(expression, conversion.innerConversion.fromType))
-                            .withThen(result)
-                    )
-                    for (alternative in conversion.alternativeConversions) {
-                        caseResult.caseItem.add(
-                            objectFactory
-                                .createCaseItem()
-                                .withWhen(buildIs(expression, alternative.fromType))
-                                .withThen(
-                                    convertExpression(
-                                        buildAs(expression, alternative.fromType),
-                                        alternative,
-                                    )
-                                )
-                        )
-                    }
-                    caseResult.withElse(buildNull(result.resultType))
-                    result = caseResult
-                }
-                result
-            }
-            is Conversion.ChoiceWideningCast -> {
-                val castedOperand = buildAs(expression, conversion.innerConversion.fromType)
-                convertExpression(castedOperand, conversion.innerConversion)
-            }
-            is Conversion.ListConversion -> convertListExpression(expression, conversion)
-            is Conversion.ListDemotion -> demoteListExpression(expression, conversion)
-            is Conversion.ListPromotion -> promoteListExpression(expression, conversion)
-            is Conversion.IntervalConversion -> convertIntervalExpression(expression, conversion)
-            is Conversion.IntervalDemotion -> demoteIntervalExpression(expression, conversion)
-            is Conversion.IntervalPromotion -> promoteIntervalExpression(expression, conversion)
-            is Conversion.OperatorConversion -> {
-                val functionRef =
-                    objectFactory
-                        .createFunctionRef()
-                        .withLibraryName(conversion.operator.libraryName)
-                        .withName(conversion.operator.name)
-                        .withOperand(listOf(expression))
-                val systemFunctionInvocation =
-                    systemFunctionResolver.resolveSystemFunction(functionRef)
-                if (systemFunctionInvocation != null) {
-                    systemFunctionInvocation.expression
-                } else {
-                    resolveCall(
-                        functionRef.libraryName,
-                        functionRef.name!!,
-                        FunctionRefInvocation(functionRef),
-                        allowPromotionAndDemotion = false,
-                        allowFluent = false,
-                    )
-                    functionRef
-                }
-            }
-        }
-    }
-
-    /**
-     * If the operand to an As is a "type case", meaning a case expression whose only cases have the
-     * form: when X is T then X as T If one of the type cases is the same type as the As, the
-     * operand of the As can be set to the operand of the type case with the same type, optimizing
-     * the case as effectively a no-op
-     *
-     * @param asExpression
-     * @return
-     */
-    @Suppress("NestedBlockDepth")
-    private fun collapseTypeCase(asExpression: As): Expression {
-        if (asExpression.operand is Case) {
-            val c = asExpression.operand as Case
-            if (isTypeCase(c)) {
-                for (ci in c.caseItem) {
-                    if (DataTypes.equal(asExpression.resultType, ci.then!!.resultType)) {
-                        return ci.then!!
-                    }
-                }
-            }
-        }
-        return asExpression
-    }
-
-    private fun isTypeCase(c: Case): Boolean {
-        if (c.comparand != null) {
-            return false
-        }
-        for (ci in c.caseItem) {
-            if (ci.`when` !is Is) {
-                return false
-            }
-            if (ci.then!!.resultType == null) {
-                return false
-            }
-        }
-        if (c.`else` !is Null) {
-            return false
-        }
-        return c.resultType is ChoiceType
-    }
+    fun convertExpression(expression: Expression, conversion: Conversion): Expression =
+        conversionEngine.convertExpression(expression, conversion)
 
     fun verifyType(actualType: DataType, expectedType: DataType) =
         typeResolver.verifyType(actualType, expectedType)
