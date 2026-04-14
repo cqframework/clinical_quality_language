@@ -30,6 +30,7 @@ data class JavaClassJs<T : Any>(private val kClass: KClass<T>) {
     fun getName(): String {
         return when (kClass) {
             Int::class -> "Integer"
+            Long::class -> "Long"
             BigDecimal::class -> "BigDecimal"
             else -> kClass.simpleName ?: unknownSimpleName
         }
