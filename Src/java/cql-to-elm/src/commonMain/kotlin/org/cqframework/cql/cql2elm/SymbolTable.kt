@@ -27,7 +27,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  * parse-error recording, library-manager access) that will move to focused collaborators once the
  * split completes.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass", "MaxLineLength", "ForbiddenComment")
 class SymbolTable(private val lb: LibraryBuilder) {
     fun addUsing(usingDef: UsingDef) {
         if (lb.library.usings == null) {
@@ -151,4 +151,213 @@ class SymbolTable(private val lb: LibraryBuilder) {
 
     fun resolveConceptRef(identifier: String): ConceptDef? =
         lb.compiledLibrary.resolveConceptRef(identifier)
+
+    fun resolveUsingRef(modelName: String): UsingDef? =
+        lb.compiledLibrary.resolveUsingRef(modelName)
+
+    // ========================================================================
+    // Namespace / well-known name queries. A "well-known" name resolves
+    // without a namespace qualifier when a namespaceInfo is active.
+    // ========================================================================
+
+    fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean =
+        if (lb.namespaceInfo == null) false
+        else lb.libraryManager.modelManager.isWellKnownModelName(unqualifiedIdentifier)
+
+    fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean =
+        if (lb.namespaceInfo == null) false
+        else lb.libraryManager.isWellKnownLibraryName(unqualifiedIdentifier)
+
+    fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
+        val namespaceUri = lb.libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
+        require(namespaceUri != null || !mustResolve) {
+            "Could not resolve namespace name $namespaceName"
+        }
+        return namespaceUri
+    }
+
+    // ========================================================================
+    // Model lifecycle. Loading a model caches it on LibraryBuilder.models,
+    // registers its conversions on the conversion map, and synthesizes a
+    // UsingDef so downstream `resolveUsingRef(modelName)` can find it.
+    // ========================================================================
+
+    private fun loadModel(
+        modelIdentifier: org.hl7.cql.model.ModelIdentifier
+    ): org.cqframework.cql.cql2elm.model.Model {
+        val model = lb.libraryManager.modelManager.resolveModel(modelIdentifier)
+        loadConversionMap(model)
+        return model
+    }
+
+    fun getModel(
+        modelIdentifier: org.hl7.cql.model.ModelIdentifier,
+        localIdentifier: String,
+    ): org.cqframework.cql.cql2elm.model.Model {
+        var model = lb.modelsInternal[localIdentifier]
+        if (model == null) {
+            model = loadModel(modelIdentifier)
+            lb.defaultModelInternal = model
+            lb.modelsInternal[localIdentifier] = model
+            buildUsingDef(modelIdentifier, model, localIdentifier)
+        }
+        require(
+            modelIdentifier.version == null || modelIdentifier.version == model!!.modelInfo.version
+        ) {
+            "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version} because version ${model!!.modelInfo.version} is already loaded."
+        }
+        return model!!
+    }
+
+    fun getModel(modelName: String): org.cqframework.cql.cql2elm.model.Model {
+        val usingDef = resolveUsingRef(modelName)
+        if (usingDef == null && modelName == "FHIR") {
+            // Special case: FHIR-derived models that include FHIR Helpers can ask for FHIR
+            // even when the active library doesn't explicitly `using FHIR`.
+            return lb.libraryManager.modelManager.resolveModelByUri("http://hl7.org/fhir")
+        }
+        requireNotNull(usingDef) { "Could not resolve model name $modelName" }
+        return getModel(usingDef)
+    }
+
+    fun getModel(usingDef: UsingDef): org.cqframework.cql.cql2elm.model.Model =
+        getModel(
+            org.hl7.cql.model.ModelIdentifier(
+                id = org.hl7.cql.model.NamespaceManager.getNamePart(usingDef.uri)!!,
+                system = org.hl7.cql.model.NamespaceManager.getUriPart(usingDef.uri),
+                version = usingDef.version,
+            ),
+            usingDef.localIdentifier!!,
+        )
+
+    val systemModel: org.cqframework.cql.cql2elm.model.SystemModel
+        // TODO: Support loading different versions of the system library
+        get() =
+            getModel(org.hl7.cql.model.ModelIdentifier("System"), "System")
+                as org.cqframework.cql.cql2elm.model.SystemModel
+
+    private fun buildUsingDef(
+        modelIdentifier: org.hl7.cql.model.ModelIdentifier,
+        model: org.cqframework.cql.cql2elm.model.Model?,
+        localIdentifier: String,
+    ): UsingDef {
+        val usingDef =
+            lb.objectFactory
+                .createUsingDef()
+                .withLocalIdentifier(localIdentifier)
+                .withVersion(modelIdentifier.version)
+                .withUri(model!!.modelInfo.url)
+        addUsing(usingDef)
+        return usingDef
+    }
+
+    fun hasUsings(): Boolean {
+        for (model in lb.modelsInternal.values) {
+            if (model!!.modelInfo.name != "System") return true
+        }
+        return false
+    }
+
+    // ========================================================================
+    // Library / include / translation lifecycle.
+    // ========================================================================
+
+    fun loadConversionMap(library: CompiledLibrary) {
+        for (conversion in library.getConversions()) {
+            lb.conversionMap.add(conversion)
+        }
+    }
+
+    private fun loadConversionMap(model: org.cqframework.cql.cql2elm.model.Model) {
+        for (conversion in model.getConversions()) {
+            lb.conversionMap.add(conversion)
+        }
+    }
+
+    fun loadSystemLibrary() {
+        val systemLibrary =
+            org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load(systemModel, lb.typeBuilder)
+        lb.libraries[systemLibrary.identifier!!.id!!] = systemLibrary
+        loadConversionMap(systemLibrary)
+    }
+
+    fun resolveLibrary(identifier: String?): CompiledLibrary {
+        if (identifier != "System") lb.checkLiteralContext()
+        return lb.libraries[identifier]
+            ?: throw IllegalArgumentException("Could not resolve library name $identifier.")
+    }
+
+    fun canResolveLibrary(includeDef: IncludeDef): Boolean {
+        val libraryIdentifier =
+            VersionedIdentifier()
+                .withSystem(org.hl7.cql.model.NamespaceManager.getUriPart(includeDef.path))
+                .withId(org.hl7.cql.model.NamespaceManager.getNamePart(includeDef.path))
+                .withVersion(includeDef.version)
+        return lb.libraryManager.canResolveLibrary(libraryIdentifier)
+    }
+
+    fun beginTranslation() {
+        loadSystemLibrary()
+    }
+
+    fun endTranslation() {
+        applyTargetModelMaps()
+    }
+
+    private fun applyTargetModelMaps() {
+        if (lb.library.usings != null) {
+            for (usingDef in lb.library.usings!!.def) {
+                val model = getModel(usingDef)
+                if (model.modelInfo.targetUrl != null) {
+                    usingDef.uri = model.modelInfo.targetUrl
+                    usingDef.version = model.modelInfo.targetVersion
+                }
+            }
+        }
+    }
+
+    @Suppress("NestedBlockDepth")
+    fun getModelMapping(sourceContext: org.hl7.elm.r1.Expression?): VersionedIdentifier? {
+        var result: VersionedIdentifier? = null
+        if (lb.library.usings != null) {
+            for (usingDef in lb.library.usings!!.def) {
+                val model = getModel(usingDef)
+                if (model.modelInfo.targetUrl != null) {
+                    if (result != null) {
+                        lb.reportWarning(
+                            "Duplicate mapped model ${model.modelInfo.name}:${model.modelInfo.targetUrl}${
+                                if (model.modelInfo.targetVersion != null) "|" + model.modelInfo.targetVersion
+                                else ""
+                            }",
+                            sourceContext,
+                        )
+                    }
+                    result =
+                        lb.objectFactory
+                            .createVersionedIdentifier()
+                            .withId(model.modelInfo.name)
+                            .withSystem(model.modelInfo.targetUrl)
+                            .withVersion(model.modelInfo.targetVersion)
+                }
+            }
+        }
+        return result
+    }
+
+    fun ensureLibraryIncluded(libraryName: String, sourceContext: org.hl7.elm.r1.Expression?) {
+        var includeDef = lb.compiledLibrary.resolveIncludeRef(libraryName)
+        if (includeDef == null) {
+            val modelMapping = getModelMapping(sourceContext)
+            var path = libraryName
+            if (lb.namespaceInfo != null && modelMapping != null && modelMapping.system != null) {
+                path = org.hl7.cql.model.NamespaceManager.getPath(modelMapping.system, path)
+            }
+            includeDef =
+                lb.objectFactory.createIncludeDef().withLocalIdentifier(libraryName).withPath(path)
+            if (modelMapping != null) {
+                includeDef.version = modelMapping.version
+            }
+            lb.compiledLibrary.add(includeDef)
+        }
+    }
 }

@@ -7,7 +7,6 @@ import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 import org.cqframework.cql.cql2elm.model.*
-import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
 import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
@@ -75,7 +74,10 @@ class LibraryBuilder(
     // All exceptions
     val exceptions: MutableList<CqlCompilerException> = ArrayList()
 
-    private val models: MutableMap<String, Model?> = LinkedHashMap()
+    internal val models: MutableMap<String, Model?> = LinkedHashMap()
+    internal val modelsInternal: MutableMap<String, Model?>
+        get() = models
+
     private val nameTypeSpecifiers:
         MutableMap<String, ResultWithPossibleError<NamedTypeSpecifier?>> =
         HashMap()
@@ -98,11 +100,17 @@ class LibraryBuilder(
     private val conversionEngine: ConversionEngine by lazy { ConversionEngine(this, objectFactory) }
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
-        private set(model) {
+        internal set(model) {
             // The default model is the first model that is not System
             if (field == null && model?.modelInfo?.name != "System") {
                 field = model
             }
+        }
+
+    internal var defaultModelInternal: Model?
+        get() = defaultModel
+        set(value) {
+            defaultModel = value
         }
 
     var library: Library =
@@ -197,45 +205,19 @@ class LibraryBuilder(
      * A "well-known" model name is one that is allowed to resolve without a namespace in a
      * namespace-aware context
      */
-    fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean {
-        return if (namespaceInfo == null) {
-            false
-        } else modelManager.isWellKnownModelName(unqualifiedIdentifier)
-    }
+    fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean =
+        symbolTable.isWellKnownModelName(unqualifiedIdentifier)
 
     /**
      * A "well-known" library name is a library name that is allowed to resolve without a namespace
      * in a namespace-aware context
      */
-    fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean {
-        return if (namespaceInfo == null) {
-            false
-        } else libraryManager.isWellKnownLibraryName(unqualifiedIdentifier)
-    }
-
-    private fun loadModel(modelIdentifier: ModelIdentifier): Model {
-        val model = modelManager.resolveModel(modelIdentifier)
-        loadConversionMap(model)
-        return model
-    }
+    fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean =
+        symbolTable.isWellKnownLibraryName(unqualifiedIdentifier)
 
     @JsExport.Ignore
-    fun getModel(modelIdentifier: ModelIdentifier, localIdentifier: String): Model {
-        var model: Model? = models[localIdentifier]
-        if (model == null) {
-            model = loadModel(modelIdentifier)
-            defaultModel = model
-            models[localIdentifier] = model
-            // Add the model using def to the output
-            buildUsingDef(modelIdentifier, model, localIdentifier)
-        }
-        require(
-            modelIdentifier.version == null || modelIdentifier.version == model.modelInfo.version
-        ) {
-            "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version} because version ${model.modelInfo.version} is already loaded."
-        }
-        return model
-    }
+    fun getModel(modelIdentifier: ModelIdentifier, localIdentifier: String): Model =
+        symbolTable.getModel(modelIdentifier, localIdentifier)
 
     fun getNamedTypeSpecifierResult(
         namedTypeSpecifierIdentifier: String
@@ -252,36 +234,7 @@ class LibraryBuilder(
         }
     }
 
-    private fun loadConversionMap(model: Model?) {
-        for (conversion in model!!.getConversions()) {
-            conversionMap.add(conversion)
-        }
-    }
-
-    private fun buildUsingDef(
-        modelIdentifier: ModelIdentifier,
-        model: Model?,
-        localIdentifier: String,
-    ): UsingDef {
-        val usingDef =
-            objectFactory
-                .createUsingDef()
-                .withLocalIdentifier(localIdentifier)
-                .withVersion(modelIdentifier.version)
-                .withUri(model!!.modelInfo.url)
-        // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
-        addUsing(usingDef)
-        return usingDef
-    }
-
-    fun hasUsings(): Boolean {
-        for (model in models.values) {
-            if (model!!.modelInfo.name != "System") {
-                return true
-            }
-        }
-        return false
-    }
+    fun hasUsings(): Boolean = symbolTable.hasUsings()
 
     private fun addUsing(usingDef: UsingDef) {
         symbolTable.addUsing(usingDef)
@@ -436,47 +389,15 @@ class LibraryBuilder(
         }
     }
 
-    fun resolveUsingRef(modelName: String): UsingDef? {
-        return compiledLibrary.resolveUsingRef(modelName)
-    }
+    fun resolveUsingRef(modelName: String): UsingDef? = symbolTable.resolveUsingRef(modelName)
 
     val systemModel: SystemModel
-        get() = // TODO: Support loading different versions of the system library
-        getModel(ModelIdentifier("System"), "System") as SystemModel
+        get() = symbolTable.systemModel
 
-    @JsExport.Ignore
-    fun getModel(modelName: String): Model {
-        val usingDef = resolveUsingRef(modelName)
-        if (usingDef == null && modelName == "FHIR") {
-            // Special case for FHIR-derived models that include FHIR Helpers
-            return modelManager.resolveModelByUri("http://hl7.org/fhir")
-        }
-        requireNotNull(usingDef) { "Could not resolve model name $modelName" }
-        return getModel(usingDef)
-    }
-
-    @JsExport.Ignore
-    private fun getModel(usingDef: UsingDef): Model {
-        return getModel(
-            ModelIdentifier(
-                id = NamespaceManager.getNamePart(usingDef.uri)!!,
-                system = NamespaceManager.getUriPart(usingDef.uri),
-                version = usingDef.version,
-            ),
-            usingDef.localIdentifier!!,
-        )
-    }
-
-    private fun loadSystemLibrary() {
-        val systemLibrary = load(systemModel, typeBuilder)
-        libraries[systemLibrary.identifier!!.id!!] = systemLibrary
-        loadConversionMap(systemLibrary)
-    }
+    @JsExport.Ignore fun getModel(modelName: String): Model = symbolTable.getModel(modelName)
 
     internal fun loadConversionMap(library: CompiledLibrary) {
-        for (conversion in library.getConversions()) {
-            conversionMap.add(conversion)
-        }
+        symbolTable.loadConversionMap(library)
     }
 
     private val systemLibrary: CompiledLibrary
@@ -485,21 +406,11 @@ class LibraryBuilder(
     internal val systemLibraryInternal: CompiledLibrary
         get() = systemLibrary
 
-    fun resolveLibrary(identifier: String?): CompiledLibrary {
-        if (identifier != "System") {
-            checkLiteralContext()
-        }
-        return libraries[identifier]
-            ?: throw IllegalArgumentException("Could not resolve library name $identifier.")
-    }
+    fun resolveLibrary(identifier: String?): CompiledLibrary =
+        symbolTable.resolveLibrary(identifier)
 
-    fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
-        val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
-        require(namespaceUri != null || !mustResolve) {
-            "Could not resolve namespace name $namespaceName"
-        }
-        return namespaceUri
-    }
+    fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? =
+        symbolTable.resolveNamespaceUri(namespaceName, mustResolve)
 
     private fun toErrorSeverity(severity: CqlCompilerException.ErrorSeverity): ErrorSeverity {
         return when (severity) {
@@ -590,7 +501,7 @@ class LibraryBuilder(
     }
 
     fun beginTranslation() {
-        loadSystemLibrary()
+        symbolTable.beginTranslation()
     }
 
     var libraryIdentifier: VersionedIdentifier?
@@ -601,17 +512,11 @@ class LibraryBuilder(
         }
 
     fun endTranslation() {
-        applyTargetModelMaps()
+        symbolTable.endTranslation()
     }
 
-    fun canResolveLibrary(includeDef: IncludeDef): Boolean {
-        val libraryIdentifier =
-            VersionedIdentifier()
-                .withSystem(NamespaceManager.getUriPart(includeDef.path))
-                .withId(NamespaceManager.getNamePart(includeDef.path))
-                .withVersion(includeDef.version)
-        return libraryManager.canResolveLibrary(libraryIdentifier)
-    }
+    fun canResolveLibrary(includeDef: IncludeDef): Boolean =
+        symbolTable.canResolveLibrary(includeDef)
 
     fun addInclude(includeDef: IncludeDef) {
         symbolTable.addInclude(includeDef)
@@ -1217,62 +1122,8 @@ class LibraryBuilder(
         resultType: DataType?,
     ): Property = propertyResolver.buildProperty(source, path, isSearch, resultType)
 
-    @Suppress("NestedBlockDepth")
-    private fun getModelMapping(sourceContext: Expression?): VersionedIdentifier? {
-        var result: VersionedIdentifier? = null
-        if (library.usings != null) {
-            for (usingDef in library.usings!!.def) {
-                val model = getModel(usingDef)
-                if (model.modelInfo.targetUrl != null) {
-                    if (result != null) {
-                        reportWarning(
-                            "Duplicate mapped model ${model.modelInfo.name}:${model.modelInfo.targetUrl}${
-                                if (model.modelInfo.targetVersion != null)
-                                    "|" + model.modelInfo.targetVersion
-                                else ""
-                            }",
-                            sourceContext,
-                        )
-                    }
-                    result =
-                        objectFactory
-                            .createVersionedIdentifier()
-                            .withId(model.modelInfo.name)
-                            .withSystem(model.modelInfo.targetUrl)
-                            .withVersion(model.modelInfo.targetVersion)
-                }
-            }
-        }
-        return result
-    }
-
     internal fun ensureLibraryIncluded(libraryName: String, sourceContext: Expression?) {
-        var includeDef = compiledLibrary.resolveIncludeRef(libraryName)
-        if (includeDef == null) {
-            val modelMapping = getModelMapping(sourceContext)
-            var path = libraryName
-            if (namespaceInfo != null && modelMapping != null && modelMapping.system != null) {
-                path = NamespaceManager.getPath(modelMapping.system, path)
-            }
-            includeDef =
-                objectFactory.createIncludeDef().withLocalIdentifier(libraryName).withPath(path)
-            if (modelMapping != null) {
-                includeDef.version = modelMapping.version
-            }
-            compiledLibrary.add(includeDef)
-        }
-    }
-
-    private fun applyTargetModelMaps() {
-        if (library.usings != null) {
-            for (usingDef in library.usings!!.def) {
-                val model = getModel(usingDef)
-                if (model.modelInfo.targetUrl != null) {
-                    usingDef.uri = model.modelInfo.targetUrl
-                    usingDef.version = model.modelInfo.targetVersion
-                }
-            }
-        }
+        symbolTable.ensureLibraryIncluded(libraryName, sourceContext)
     }
 
     fun resolveAccessor(left: Expression, memberIdentifier: String): Expression? =
