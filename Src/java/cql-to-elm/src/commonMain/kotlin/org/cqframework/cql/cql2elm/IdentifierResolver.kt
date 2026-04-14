@@ -56,7 +56,7 @@ internal class IdentifierResolver(
             ::resolveIterationVariable,
             ::resolveAliasIdentifier,
             ::resolveLetIdentifier,
-            ::resolveOperandIdentifier,
+            ::resolveOperandRef,
         )
 
     fun resolveIdentifier(identifier: String, mustResolve: Boolean): Expression? {
@@ -150,9 +150,6 @@ internal class IdentifierResolver(
         ref.resultType = let.resultType
         return ref
     }
-
-    private fun resolveOperandIdentifier(identifier: String): Expression? =
-        resolveOperandRef(identifier)
 
     private fun resolveImplicitContextProperty(identifier: String): Expression? {
         val parameterRef = resolveImplicitContext() ?: return null

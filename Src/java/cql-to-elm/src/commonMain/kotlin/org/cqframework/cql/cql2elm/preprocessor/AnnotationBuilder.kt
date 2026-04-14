@@ -33,10 +33,7 @@ import org.hl7.elm.r1.ValueSetDef
     "ReturnCount",
     "ComplexCondition",
 )
-class AnnotationBuilder(
-    private val libraryBuilder: Cql2ElmContext,
-    private val tokenStream: TokenStream,
-) {
+class AnnotationBuilder(private val context: Cql2ElmContext, private val tokenStream: TokenStream) {
     private val af = ObjectFactory()
     private val tagParser = TagParser()
     /**
@@ -90,9 +87,9 @@ class AnnotationBuilder(
                     newChunk.addChunk(definitionChunk)
                     newChunk.element = chunk.element
                     chunk = newChunk
-                    val a = getAnnotation(libraryBuilder.library)
+                    val a = getAnnotation(context.library)
                     a?.let { addNarrativeToAnnotation(it, chunk) }
-                        ?: libraryBuilder.library.annotation.add(buildAnnotation(chunk))
+                        ?: context.library.annotation.add(buildAnnotation(chunk))
                 }
             }
         }
@@ -102,7 +99,7 @@ class AnnotationBuilder(
     }
 
     fun processTags(tree: ParseTree, o: Any?) {
-        if (!libraryBuilder.isCompatibleWith("1.5")) return
+        if (!context.isCompatibleWith("1.5")) return
         if (o !is Element) return
         if (tree !is LibraryContext) {
             if (isAnnotatable(o)) {
@@ -124,10 +121,10 @@ class AnnotationBuilder(
             if (libraryInfo.definition != null && libraryInfo.headerInterval != null) {
                 val tags = tagParser.parseTags(tagParser.parseComments(libraryInfo.header))
                 if (tags.isNotEmpty()) {
-                    var a = getAnnotation(libraryBuilder.library)
+                    var a = getAnnotation(context.library)
                     if (a == null) {
                         a = buildEmptyAnnotation()
-                        libraryBuilder.library.annotation.add(a)
+                        context.library.annotation.add(a)
                     }
                     a.t.addAll(tags)
                 }

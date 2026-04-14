@@ -26,11 +26,7 @@ internal class IdentifierHidingChecker(
     private val scopeManager: ScopeManager,
     private val reportWarning: (String, Element?) -> Unit,
 ) {
-    fun pushIdentifier(
-        identifierRef: IdentifierRef,
-        element: Element?,
-        scope: Cql2ElmContext.IdentifierScope,
-    ) {
+    fun pushIdentifier(identifierRef: IdentifierRef, element: Element?, scope: IdentifierScope) {
         val identifier = identifierRef.name!!
         val localStack = scopeManager.localIdentifierStack
         val localMatch =
@@ -47,10 +43,10 @@ internal class IdentifierHidingChecker(
                 )
             }
         }
-        if (shouldAddIdentifierContext(element)) {
+        if (element !is Literal) {
             val trackableOrNull: KClass<out Element>? =
                 if (element == null) null else element::class
-            if (scope == Cql2ElmContext.IdentifierScope.GLOBAL) {
+            if (scope == IdentifierScope.GLOBAL) {
                 scopeManager.globalIdentifiers.add(
                     IdentifierContext(identifierRef, trackableOrNull)
                 )
@@ -62,8 +58,8 @@ internal class IdentifierHidingChecker(
         }
     }
 
-    fun popIdentifier(scope: Cql2ElmContext.IdentifierScope) {
-        if (scope == Cql2ElmContext.IdentifierScope.GLOBAL) {
+    fun popIdentifier(scope: IdentifierScope) {
+        if (scope == IdentifierScope.GLOBAL) {
             scopeManager.globalIdentifiers.removeLast()
         } else {
             scopeManager.localIdentifierStack.peek().removeLast()
@@ -74,8 +70,6 @@ internal class IdentifierHidingChecker(
         identifierContext: Collection<IdentifierContext>,
         identifier: String,
     ): IdentifierContext? = identifierContext.firstOrNull { it.identifier == identifier }
-
-    private fun shouldAddIdentifierContext(element: Element?): Boolean = element !is Literal
 
     private fun resolveWarningMessage(
         matchedIdentifier: String?,

@@ -125,8 +125,8 @@ object TestUtils {
     private fun createElmTranslatorVisitor(tokens: TokenStream, tree: ParseTree): Cql2ElmVisitor {
         val modelManager = ModelManager()
         val libraryManager = getLibraryManager(modelManager, null)
-        val libraryBuilder = Cql2ElmContext(libraryManager, IdObjectFactory())
-        return Cql2ElmVisitor(libraryBuilder, tokens)
+        val context = Cql2ElmContext(libraryManager, IdObjectFactory())
+        return Cql2ElmVisitor(context, tokens)
     }
 
     private fun parseTokenStream(tokens: TokenStream): ParseTree {

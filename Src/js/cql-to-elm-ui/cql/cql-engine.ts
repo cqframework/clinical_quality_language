@@ -125,7 +125,7 @@ export function createStatefulEngine() {
 
     libraryManager.cqlCompilerOptions.signatureLevel =
       // @ts-expect-error TypeScript error
-      cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
+      cqlToElmJs.Cql2ElmContext.SignatureLevel.valueOf(args.signatureLevel);
 
     const output = ((): TCqlEngineOutput => {
       try {

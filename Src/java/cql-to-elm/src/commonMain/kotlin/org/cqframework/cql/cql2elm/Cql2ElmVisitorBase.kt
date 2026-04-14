@@ -40,13 +40,12 @@ import org.hl7.elm.r1.*
     "ReturnCount",
 )
 abstract class Cql2ElmVisitorBase(
-    @JvmField protected val libraryBuilder: Cql2ElmContext,
+    @JvmField protected val context: Cql2ElmContext,
     protected val tokenStream: TokenStream,
 ) : cqlBaseVisitor<Any?>() {
-    @JvmField protected val of: IdObjectFactory = libraryBuilder.objectFactory
+    @JvmField protected val of: IdObjectFactory = context.objectFactory
     @JvmField
-    protected val annotationBuilder: AnnotationBuilder =
-        AnnotationBuilder(libraryBuilder, tokenStream)
+    protected val annotationBuilder: AnnotationBuilder = AnnotationBuilder(context, tokenStream)
     protected var implicitContextCreated = false
     protected var currentContext = "Unfiltered"
 
@@ -84,7 +83,7 @@ abstract class Cql2ElmVisitorBase(
 
     init {
         // Don't talk to strangers. Except when you have to.
-        setCompilerOptions(libraryBuilder.libraryManager.cqlCompilerOptions)
+        setCompilerOptions(context.libraryManager.cqlCompilerOptions)
     }
 
     protected fun saveCurrentContext(currentContext: String): String {
@@ -108,7 +107,7 @@ abstract class Cql2ElmVisitorBase(
                 }
             } catch (e: CqlCompilerException) {
                 e.locator = e.locator ?: getTrackBack(tree)
-                libraryBuilder.recordParsingException(e)
+                context.recordParsingException(e)
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                 val ex =
                     if (e.message == null) {
@@ -121,14 +120,14 @@ abstract class Cql2ElmVisitorBase(
                             e,
                         )
                     }
-                var rootCause = libraryBuilder.scopeManager.determineRootCause()
+                var rootCause = context.scopeManager.determineRootCause()
                 if (rootCause == null) {
                     rootCause = ex
-                    libraryBuilder.recordParsingException(ex)
-                    libraryBuilder.scopeManager.setRootCause(rootCause)
+                    context.recordParsingException(ex)
+                    context.scopeManager.setRootCause(rootCause)
                 } else {
                     if (isDetailedErrorsEnabled) {
-                        libraryBuilder.recordParsingException(ex)
+                        context.recordParsingException(ex)
                     }
                 }
                 o = of.createNull()
@@ -206,7 +205,7 @@ abstract class Cql2ElmVisitorBase(
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()))
                 .withContext(currentContext)
         if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
+            context.checkCompatibilityLevel("Fluent functions", "1.5")
             functionDef.fluent = true
         }
 
@@ -254,7 +253,7 @@ abstract class Cql2ElmVisitorBase(
         val modelVersion = version ?: libraryInfo.defaultUsingDefinition?.version
         val modelIdentifier =
             ModelIdentifier(id = modelId!!, version = modelVersion, system = modelNamespace?.uri)
-        return libraryBuilder.getModel(modelIdentifier, localIdentifier)
+        return context.getModel(modelIdentifier, localIdentifier)
     }
 
     private fun pushChunk(tree: ParseTree): Boolean = annotationBuilder.pushChunk(tree)
@@ -286,7 +285,7 @@ abstract class Cql2ElmVisitorBase(
 
     private fun getTrackBack(ctx: ParserRuleContext): TrackBack {
         return TrackBack(
-            libraryBuilder.libraryIdentifier,
+            context.libraryIdentifier,
             ctx.start?.line ?: 0,
             (ctx.start?.charPositionInLine ?: 0) + 1, // 1-based instead of 0-based
             ctx.stop?.line ?: 0,
@@ -311,10 +310,9 @@ abstract class Cql2ElmVisitorBase(
         }
         if (resultTypes && element.resultType != null) {
             if (element.resultType is NamedType) {
-                element.resultTypeName = libraryBuilder.dataTypeToQName(element.resultType)
+                element.resultTypeName = context.dataTypeToQName(element.resultType)
             } else {
-                element.resultTypeSpecifier =
-                    libraryBuilder.dataTypeToTypeSpecifier(element.resultType)
+                element.resultTypeSpecifier = context.dataTypeToTypeSpecifier(element.resultType)
             }
         }
     }
@@ -390,7 +388,7 @@ abstract class Cql2ElmVisitorBase(
         if (options.options.contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
             enableFromKeywordRequired()
         }
-        libraryBuilder.compatibilityLevel = options.compatibilityLevel
+        context.compatibilityLevel = options.compatibilityLevel
     }
 
     companion object {

@@ -24,7 +24,7 @@ data class OperatorResolution(var operator: Operator, val conversions: List<Conv
     var libraryIdentifier: VersionedIdentifier? = null
 
     /*
-    The local alias for the resolved library. This is set by the libraryBuilder to allow the invocation
+    The local alias for the resolved library. This is set by the context to allow the invocation
     to set the library alias if necessary.
      */
     var libraryName: String? = null

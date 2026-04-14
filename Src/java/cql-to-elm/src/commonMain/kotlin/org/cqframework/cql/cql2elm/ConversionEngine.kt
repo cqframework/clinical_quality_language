@@ -116,7 +116,7 @@ class ConversionEngine(private val lb: Cql2ElmContext, private val of: IdObjectF
                         .withName(conversion.operator.name)
                         .withOperand(listOf(expression))
                 val systemFunctionInvocation =
-                    lb.systemFunctionResolverInternal.resolveSystemFunction(functionRef)
+                    lb.systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunctionInvocation != null) {
                     systemFunctionInvocation.expression
                 } else {
@@ -222,7 +222,7 @@ class ConversionEngine(private val lb: Cql2ElmContext, private val of: IdObjectF
      */
     private fun resolveToInterval(expression: Expression?): Expression {
         val condition = of.createIf()
-        condition.condition = lb.expressionFactoryInternal.buildIsNull(expression)
+        condition.condition = lb.expressionFactory.buildIsNull(expression)
         condition.then = lb.buildNull(IntervalType(expression!!.resultType!!))
         val toInterval =
             of.createInterval()

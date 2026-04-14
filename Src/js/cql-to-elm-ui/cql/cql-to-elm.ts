@@ -212,7 +212,7 @@ export function createStatefulCompiler(sync: boolean) {
 
     libraryManagerJs.cqlCompilerOptions.signatureLevel =
       // @ts-expect-error TypeScript error
-      cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
+      cqlToElmJs.Cql2ElmContext.SignatureLevel.valueOf(args.signatureLevel);
     // @ts-expect-error TypeScript error
     cqlWasmJs.libraryManagerSetSignatureLevel(
       libraryManagerWasmJs,

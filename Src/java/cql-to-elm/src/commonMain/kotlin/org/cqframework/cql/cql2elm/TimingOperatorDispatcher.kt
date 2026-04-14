@@ -38,7 +38,7 @@ import org.hl7.elm.r1.Starts
  * [org.cqframework.cql.cql2elm.model.TimingOperatorContext]-like caller-owned state in place.
  */
 class TimingOperatorDispatcher(
-    private val libraryBuilder: Cql2ElmContext,
+    private val context: Cql2ElmContext,
     private val of: IdObjectFactory,
     private val track: (Element, ParseTree) -> TrackBack?,
     private val trackFromElement: (Element, Element) -> TrackBack?,
@@ -61,13 +61,7 @@ class TimingOperatorDispatcher(
         val op = ctor()
         applyPrecision(op, precision)
         op.withOperand(listOf(left, right))
-        libraryBuilder.resolveBinaryCall(
-            "System",
-            operatorName,
-            op,
-            true,
-            allowPromotionAndDemotion,
-        )
+        context.resolveBinaryCall("System", operatorName, op, true, allowPromotionAndDemotion)
         return op
     }
 
@@ -75,7 +69,7 @@ class TimingOperatorDispatcher(
     fun takeStart(source: Expression, trackNode: ParseTree): Start {
         val start = of.createStart().withOperand(source)
         track(start, trackNode)
-        libraryBuilder.resolveCall("System", "Start", start)
+        context.resolveCall("System", "Start", start)
         return start
     }
 
@@ -83,7 +77,7 @@ class TimingOperatorDispatcher(
     fun takeStart(source: Expression, trackFrom: Element): Start {
         val start = of.createStart().withOperand(source)
         trackFromElement(start, trackFrom)
-        libraryBuilder.resolveCall("System", "Start", start)
+        context.resolveCall("System", "Start", start)
         return start
     }
 
@@ -91,7 +85,7 @@ class TimingOperatorDispatcher(
     fun takeEnd(source: Expression, trackNode: ParseTree): End {
         val end = of.createEnd().withOperand(source)
         track(end, trackNode)
-        libraryBuilder.resolveCall("System", "End", end)
+        context.resolveCall("System", "End", end)
         return end
     }
 
@@ -99,7 +93,7 @@ class TimingOperatorDispatcher(
     fun takeEnd(source: Expression, trackFrom: Element): End {
         val end = of.createEnd().withOperand(source)
         trackFromElement(end, trackFrom)
-        libraryBuilder.resolveCall("System", "End", end)
+        context.resolveCall("System", "End", end)
         return end
     }
 

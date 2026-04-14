@@ -28,7 +28,7 @@ import org.hl7.elm.r1.Retrieve
  * as a distinct ELM transformation.
  */
 @Suppress("USELESS_CAST", "ComplexCondition", "ReturnCount", "TooManyFunctions")
-class DateRangeOptimizer(private val libraryBuilder: Cql2ElmContext) : ElmPass {
+class DateRangeOptimizer(private val context: Cql2ElmContext) : ElmPass {
     override val name: String = "DateRangeOptimizer"
 
     /**
@@ -126,7 +126,7 @@ class DateRangeOptimizer(private val libraryBuilder: Cql2ElmContext) : ElmPass {
                     (functionRef.operand[0].resultType != null)
             ) {
                 val o =
-                    libraryBuilder.conversionMap.getConversionOperator(
+                    context.conversionMap.getConversionOperator(
                         functionRef.operand[0].resultType!!,
                         functionRef.resultType!!,
                     )
@@ -162,7 +162,7 @@ class DateRangeOptimizer(private val libraryBuilder: Cql2ElmContext) : ElmPass {
                 (operand is IncludedIn || operand is In) &&
                     attemptDateRangeOptimization(operand as BinaryExpression, retrieve, alias)
             ) {
-                and.operand[i] = libraryBuilder.createLiteral(true)
+                and.operand[i] = context.createLiteral(true)
                 return true
             } else if (operand is And && attemptDateRangeOptimization(operand, retrieve, alias)) {
                 return true
@@ -186,13 +186,13 @@ class DateRangeOptimizer(private val libraryBuilder: Cql2ElmContext) : ElmPass {
 
     private fun isBooleanLiteral(expression: Expression, bool: Boolean): Boolean {
         if (expression !is Literal) return false
-        val booleanType = libraryBuilder.resolveTypeName("System", "Boolean")
-        if (expression.valueType != libraryBuilder.dataTypeToQName(booleanType)) return false
+        val booleanType = context.resolveTypeName("System", "Boolean")
+        if (expression.valueType != context.dataTypeToQName(booleanType)) return false
         return bool == expression.value.toBoolean()
     }
 
     private fun isRHSEligibleForDateRangeOptimization(rhs: Expression): Boolean {
-        val dateTime = libraryBuilder.resolveTypeName("System", "DateTime")!!
+        val dateTime = context.resolveTypeName("System", "DateTime")!!
         return rhs.resultType!!.isSubTypeOf(dateTime) ||
             rhs.resultType!!.isSubTypeOf(IntervalType(dateTime))
     }

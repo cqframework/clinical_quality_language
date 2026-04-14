@@ -31,10 +31,8 @@ internal class ErrorReporter(
             val err = af.createCqlToElmError()
             err.message = e.message
             err.errorSeverity = toErrorSeverity(e.severity)
-            if (e.locator != null) {
-                val loc = e.locator!!
-                if (loc.library != null) {
-                    val lib = loc.library
+            e.locator?.let { loc ->
+                loc.library?.let { lib ->
                     err.librarySystem = lib.system
                     err.libraryId = lib.id
                     err.libraryVersion = lib.version

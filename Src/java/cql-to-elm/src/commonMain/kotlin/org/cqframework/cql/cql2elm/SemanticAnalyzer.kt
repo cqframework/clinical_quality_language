@@ -312,11 +312,11 @@ class SemanticAnalyzer(private val lb: Cql2ElmContext, private val of: IdObjectF
         if (callContext.libraryName.isNullOrEmpty()) {
             result = lb.compiledLibrary.resolveCall(callContext, lb.conversionMap)
             if (result == null) {
-                result = lb.systemLibraryInternal.resolveCall(callContext, lb.conversionMap)
+                result = lb.systemLibrary.resolveCall(callContext, lb.conversionMap)
                 if (result == null && callContext.allowFluent) {
                     // First non-system inclusion that matches wins.
                     for (libCompiled in lb.libraries.values) {
-                        if (libCompiled != lb.systemLibraryInternal) {
+                        if (libCompiled != lb.systemLibrary) {
                             result = libCompiled.resolveCall(callContext, lb.conversionMap)
                             if (result != null) break
                         }
@@ -818,7 +818,7 @@ class SemanticAnalyzer(private val lb: Cql2ElmContext, private val of: IdObjectF
                 // Rebuild from the original arguments — otherwise resolution applied conversions.
                 val systemFun = buildFunctionRef(libraryName, functionName, paramList)
                 val systemFunctionInvocation =
-                    lb.systemFunctionResolverInternal.resolveSystemFunction(systemFun)
+                    lb.systemFunctionResolver.resolveSystemFunction(systemFun)
                 if (systemFunctionInvocation != null) return systemFunctionInvocation
             } else {
                 if (mustResolve) lb.checkLiteralContext()
@@ -831,8 +831,7 @@ class SemanticAnalyzer(private val lb: Cql2ElmContext, private val of: IdObjectF
             invocation = FunctionRefInvocation(functionRef)
             if (!allowFluent) {
                 // For non-fluent calls, try the system-function resolver's specials first.
-                val systemFunction =
-                    lb.systemFunctionResolverInternal.resolveSystemFunction(functionRef)
+                val systemFunction = lb.systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunction != null) return systemFunction
                 lb.checkLiteralContext()
             }

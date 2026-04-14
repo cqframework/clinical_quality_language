@@ -38,7 +38,7 @@ import org.hl7.elm.r1.ToList
     "MaxLineLength",
 )
 class RetrieveBuilder(
-    private val libraryBuilder: Cql2ElmContext,
+    private val context: Cql2ElmContext,
     private val of: IdObjectFactory,
     private val getTrackBack: (ParserRuleContext) -> TrackBack?,
 ) {
@@ -59,7 +59,7 @@ class RetrieveBuilder(
         var codeComparator: String? = codeComparatorIn
         val retrieve: Retrieve =
             of.createRetrieve()
-                .withDataType(libraryBuilder.dataTypeToQName(namedType as DataType?))
+                .withDataType(context.dataTypeToQName(namedType as DataType?))
                 .withTemplateId(classType.identifier)
                 .withCodeProperty(codePath)
         if (contextExpression != null) {
@@ -85,19 +85,18 @@ class RetrieveBuilder(
                 normalizeConceptListCodes(retrieve, ctx)
             } catch (e: Exception) {
                 if (
-                    ((libraryBuilder.isCompatibleWith("1.5") &&
+                    ((context.isCompatibleWith("1.5") &&
                         !(terminology.resultType!!.isSubTypeOf(
-                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
+                            context.resolveTypeName("System", "Vocabulary")!!
                         ))) ||
-                        (!libraryBuilder.isCompatibleWith("1.5") &&
-                            terminology.resultType !is ListType))
+                        (!context.isCompatibleWith("1.5") && terminology.resultType !is ListType))
                 ) {
-                    retrieve.codes = libraryBuilder.resolveToList(terminology)
+                    retrieve.codes = context.resolveToList(terminology)
                 } else {
                     retrieve.codes = terminology
                 }
                 retrieve.codeComparator = codeComparator
-                libraryBuilder.recordParsingException(
+                context.recordParsingException(
                     CqlSemanticException(
                         "Could not resolve membership operator for terminology target of the retrieve.",
                         getTrackBack(ctx),
@@ -113,8 +112,8 @@ class RetrieveBuilder(
 
     private fun inferCodeComparator(terminology: Expression, propertyType: DataType?): String {
         if (terminology.resultType is ListType) return "in"
-        if (!libraryBuilder.isCompatibleWith("1.5")) return "~"
-        val vocab = libraryBuilder.resolveTypeName("System", "Vocabulary")!!
+        if (!context.isCompatibleWith("1.5")) return "~"
+        val vocab = context.resolveTypeName("System", "Vocabulary")!!
         return if (propertyType != null && propertyType.isSubTypeOf(vocab)) {
             if (terminology.resultType!!.isSubTypeOf(vocab)) "~" else "contains"
         } else {
@@ -137,7 +136,7 @@ class RetrieveBuilder(
             "~" -> applyEquivalent(retrieve, property, terminology)
             "=" -> applyEqual(retrieve, property, terminology)
             else ->
-                libraryBuilder.recordParsingException(
+                context.recordParsingException(
                     CqlSemanticException(
                         "Unknown code comparator $codeComparator in retrieve",
                         getTrackBack(ctx.codeComparator()!!),
@@ -155,14 +154,14 @@ class RetrieveBuilder(
         ctx: org.cqframework.cql.gen.cqlParser.RetrieveContext,
         useStrictRetrieveTyping: Boolean,
     ) {
-        when (val inExpression: Expression = libraryBuilder.resolveIn(property, terminology)) {
+        when (val inExpression: Expression = context.resolveIn(property, terminology)) {
             is In -> retrieve.codes = inExpression.operand[1]
             is InValueSet -> retrieve.codes = inExpression.valueset
             is InCodeSystem -> retrieve.codes = inExpression.codesystem
             is AnyInValueSet -> retrieve.codes = inExpression.valueset
             is AnyInCodeSystem -> retrieve.codes = inExpression.codesystem
             else ->
-                libraryBuilder.recordParsingException(
+                context.recordParsingException(
                     CqlSemanticException(
                         "Unexpected membership operator ${inExpression::class.simpleName} in retrieve",
                         getTrackBack(ctx),
@@ -180,11 +179,11 @@ class RetrieveBuilder(
         ctx: org.cqframework.cql.gen.cqlParser.RetrieveContext,
         useStrictRetrieveTyping: Boolean,
     ) {
-        val contains: Expression = libraryBuilder.resolveContains(property, terminology)
+        val contains: Expression = context.resolveContains(property, terminology)
         if (contains is Contains) {
             retrieve.codes = contains.operand[1]
         }
-        libraryBuilder.recordParsingException(
+        context.recordParsingException(
             CqlSemanticException(
                 "Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
                 getTrackBack(ctx),
@@ -197,24 +196,22 @@ class RetrieveBuilder(
     private fun applyEquivalent(retrieve: Retrieve, property: Property, terminology: Expression) {
         val equivalent: BinaryExpression =
             of.createEquivalent().withOperand(listOf(property, terminology))
-        libraryBuilder.resolveCall("System", "Equivalent", equivalent)
+        context.resolveCall("System", "Equivalent", equivalent)
         retrieve.codes = promoteToList(equivalent.operand[1])
     }
 
     private fun applyEqual(retrieve: Retrieve, property: Property, terminology: Expression) {
         val equal: BinaryExpression = of.createEqual().withOperand(listOf(property, terminology))
-        libraryBuilder.resolveCall("System", "Equal", equal)
+        context.resolveCall("System", "Equal", equal)
         retrieve.codes = promoteToList(equal.operand[1])
     }
 
     private fun promoteToList(operand: Expression): Expression {
         val isList = operand.resultType is ListType
         val isVocab =
-            libraryBuilder.isCompatibleWith("1.5") &&
-                operand.resultType!!.isSubTypeOf(
-                    libraryBuilder.resolveTypeName("System", "Vocabulary")!!
-                )
-        return if (!isList && !isVocab) libraryBuilder.resolveToList(operand) else operand
+            context.isCompatibleWith("1.5") &&
+                operand.resultType!!.isSubTypeOf(context.resolveTypeName("System", "Vocabulary")!!)
+        return if (!isList && !isVocab) context.resolveToList(operand) else operand
     }
 
     private fun normalizeConceptListCodes(
@@ -224,21 +221,16 @@ class RetrieveBuilder(
         val codes = retrieve.codes ?: return
         val codesType = codes.resultType ?: return
         if (codesType !is ListType) return
-        if (codesType.elementType != libraryBuilder.resolveTypeName("System", "Concept")) return
+        if (codesType.elementType != context.resolveTypeName("System", "Concept")) return
         if (codes is ToList) {
             if (codes.operand is ToConcept) {
                 codes.operand = (codes.operand as ToConcept).operand
             } else {
                 retrieve.codes =
-                    libraryBuilder.buildProperty(
-                        codes.operand,
-                        "codes",
-                        false,
-                        codes.operand!!.resultType,
-                    )
+                    context.buildProperty(codes.operand, "codes", false, codes.operand!!.resultType)
             }
         } else {
-            libraryBuilder.recordParsingException(
+            context.recordParsingException(
                 CqlSemanticException(
                     "Terminology target is a list of concepts, but expects a list of codes",
                     getTrackBack(ctx),

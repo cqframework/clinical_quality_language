@@ -23,10 +23,7 @@ import org.hl7.elm.r1.Time
     "UseRequire",
     "MaxLineLength",
 )
-class DateTimeLiteralParser(
-    private val libraryBuilder: Cql2ElmContext,
-    private val of: IdObjectFactory,
-) {
+class DateTimeLiteralParser(private val context: Cql2ElmContext, private val of: IdObjectFactory) {
     /**
      * Parse a date or date/time literal (with optional time and timezone components).
      *
@@ -60,11 +57,11 @@ class DateTimeLiteralParser(
                 val year = matcher.groups[1]!!.value.toInt()
                 var month = -1
                 var hour = -1
-                result.year = libraryBuilder.createLiteral(year)
+                result.year = context.createLiteral(year)
                 if (matcher.groups[5] != null) {
                     month = matcher.groups[5]!!.value.toInt()
                     require(month in 0..12) { "Invalid month in date/time literal ($input)." }
-                    result.month = libraryBuilder.createLiteral(month)
+                    result.month = context.createLiteral(month)
                 }
                 if (matcher.groups[9] != null) {
                     val day = matcher.groups[9]!!.value.toInt()
@@ -77,36 +74,36 @@ class DateTimeLiteralParser(
                         11 -> maxDay = 30
                     }
                     require(day in 0..maxDay) { "Invalid day in date/time literal ($input)." }
-                    result.day = libraryBuilder.createLiteral(day)
+                    result.day = context.createLiteral(day)
                 }
                 if (matcher.groups[13] != null) {
                     hour = matcher.groups[13]!!.value.toInt()
                     require(hour in 0..24) { "Invalid hour in date/time literal ($input)." }
-                    result.hour = libraryBuilder.createLiteral(hour)
+                    result.hour = context.createLiteral(hour)
                 }
                 if (matcher.groups[15] != null) {
                     val minute = matcher.groups[15]!!.value.toInt()
                     require(minute in 0..60 && !(hour == 24 && minute > 0)) {
                         "Invalid minute in date/time literal ($input)."
                     }
-                    result.minute = libraryBuilder.createLiteral(minute)
+                    result.minute = context.createLiteral(minute)
                 }
                 if (matcher.groups[17] != null) {
                     val second = matcher.groups[17]!!.value.toInt()
                     require(second in 0..60 && !(hour == 24 && second > 0)) {
                         "Invalid second in date/time literal ($input)."
                     }
-                    result.second = libraryBuilder.createLiteral(second)
+                    result.second = context.createLiteral(second)
                 }
                 if (matcher.groups[19] != null) {
                     val millisecond = matcher.groups[19]!!.value.toInt()
                     require(millisecond >= 0 && !(hour == 24 && millisecond > 0)) {
                         "Invalid millisecond in date/time literal ($input)."
                     }
-                    result.millisecond = libraryBuilder.createLiteral(millisecond)
+                    result.millisecond = context.createLiteral(millisecond)
                 }
                 if (matcher.groups[23] != null && (matcher.groups[23]!!.value == "Z")) {
-                    result.timezoneOffset = libraryBuilder.createLiteral(0.0)
+                    result.timezoneOffset = context.createLiteral(0.0)
                 }
                 if (matcher.groups[25] != null) {
                     val offsetPolarity = if ((matcher.groups[25]!!.value == "+")) 1 else -1
@@ -120,7 +117,7 @@ class DateTimeLiteralParser(
                             "Timezone minute offset is out of range in date/time literal ($input)."
                         }
                         result.timezoneOffset =
-                            libraryBuilder.createLiteral(
+                            context.createLiteral(
                                 (hourOffset + (minuteOffset.toDouble() / 60)) * offsetPolarity
                             )
                     } else {
@@ -130,9 +127,7 @@ class DateTimeLiteralParser(
                                 "Timezone hour offset is out of range in date/time literal ($input)."
                             }
                             result.timezoneOffset =
-                                libraryBuilder.createLiteral(
-                                    (hourOffset * offsetPolarity).toDouble()
-                                )
+                                context.createLiteral((hourOffset * offsetPolarity).toDouble())
                         }
                     }
                 }
@@ -146,10 +141,10 @@ class DateTimeLiteralParser(
                     date.year = result.year
                     date.month = result.month
                     date.day = result.day
-                    date.resultType = libraryBuilder.resolveTypeName("System", "Date")
+                    date.resultType = context.resolveTypeName("System", "Date")
                     return date
                 }
-                result.resultType = libraryBuilder.resolveTypeName("System", "DateTime")
+                result.resultType = context.resolveTypeName("System", "DateTime")
                 result
             } catch (e: RuntimeException) {
                 throw IllegalArgumentException(
@@ -175,29 +170,29 @@ class DateTimeLiteralParser(
                 val result = of.createTime()
                 val hour = matcher.groups[1]!!.value.toInt()
                 require(hour in 0..24) { "Invalid hour in time literal ($hour)." }
-                result.hour = libraryBuilder.createLiteral(hour)
+                result.hour = context.createLiteral(hour)
                 if (matcher.groups[3] != null) {
                     val minute = matcher.groups[3]!!.value.toInt()
                     require(!((minute < 0) || (minute >= 60) || (hour == 24 && minute > 0))) {
                         "Invalid minute in time literal ($minute)."
                     }
-                    result.minute = libraryBuilder.createLiteral(minute)
+                    result.minute = context.createLiteral(minute)
                 }
                 if (matcher.groups[5] != null) {
                     val second = matcher.groups[5]!!.value.toInt()
                     require(!((second < 0) || (second >= 60) || (hour == 24 && second > 0))) {
                         "Invalid second in time literal ($second)."
                     }
-                    result.second = libraryBuilder.createLiteral(second)
+                    result.second = context.createLiteral(second)
                 }
                 if (matcher.groups[7] != null) {
                     val millisecond = matcher.groups[7]!!.value.toInt()
                     require(hour == 24 && millisecond == 0 || millisecond >= 0) {
                         "Invalid millisecond in time literal ($millisecond)."
                     }
-                    result.millisecond = libraryBuilder.createLiteral(millisecond)
+                    result.millisecond = context.createLiteral(millisecond)
                 }
-                result.resultType = libraryBuilder.resolveTypeName("System", "Time")
+                result.resultType = context.resolveTypeName("System", "Time")
                 result
             } catch (e: RuntimeException) {
                 throw IllegalArgumentException(

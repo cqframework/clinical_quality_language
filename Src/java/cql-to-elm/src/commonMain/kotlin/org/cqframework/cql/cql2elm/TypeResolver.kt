@@ -28,13 +28,13 @@ import org.hl7.elm.r1.TypeSpecifier
  */
 @Suppress("TooManyFunctions", "MaxLineLength")
 class TypeResolver(private val lb: Cql2ElmContext, private val of: IdObjectFactory) {
-    fun dataTypeToQName(type: DataType?): QName = lb.typeBuilderInternal.dataTypeToQName(type)
+    fun dataTypeToQName(type: DataType?): QName = lb.typeBuilder.dataTypeToQName(type)
 
     fun dataTypeToTypeSpecifier(type: DataType?): TypeSpecifier =
-        lb.typeBuilderInternal.dataTypeToTypeSpecifier(type)
+        lb.typeBuilder.dataTypeToTypeSpecifier(type)
 
     fun dataTypesToTypeSpecifiers(types: List<DataType>): List<TypeSpecifier> =
-        lb.typeBuilderInternal.dataTypesToTypeSpecifiers(types)
+        lb.typeBuilder.dataTypesToTypeSpecifiers(types)
 
     /**
      * Walk a dotted path expression against [sourceType], returning the terminal type. Uses the
@@ -127,7 +127,7 @@ class TypeResolver(private val lb: Cql2ElmContext, private val of: IdObjectFacto
     fun resolveLabel(modelName: String?, label: String): ClassType? {
         var result: ClassType? = null
         if (modelName == null || modelName == "") {
-            for (model: Model? in lb.modelsInternal.values) {
+            for (model: Model? in lb.models.values) {
                 val modelResult: ClassType? = model!!.resolveLabel(label)
                 if (modelResult != null) {
                     require(result == null) {
@@ -146,12 +146,11 @@ class TypeResolver(private val lb: Cql2ElmContext, private val of: IdObjectFacto
     fun resolveContextName(modelName: String?, contextName: String): ModelContext? {
         var result: ModelContext? = null
         if (modelName == null || modelName == "") {
-            if (lb.defaultModelInternal != null) {
-                val modelResult: ModelContext? =
-                    lb.defaultModelInternal!!.resolveContextName(contextName)
+            if (lb.defaultModel != null) {
+                val modelResult: ModelContext? = lb.defaultModel!!.resolveContextName(contextName)
                 if (modelResult != null) return modelResult
             }
-            for (model: Model? in lb.modelsInternal.values) {
+            for (model: Model? in lb.models.values) {
                 val modelResult: ModelContext? = model!!.resolveContextName(contextName)
                 if (modelResult != null) {
                     require(result == null) {
@@ -173,11 +172,11 @@ class TypeResolver(private val lb: Cql2ElmContext, private val of: IdObjectFacto
         var result: DataType? = resolveLabel(modelName, typeName)
         if (result == null) {
             if (modelName == null || modelName == "") {
-                if (lb.defaultModelInternal != null) {
-                    val modelResult: DataType? = lb.defaultModelInternal!!.resolveTypeName(typeName)
+                if (lb.defaultModel != null) {
+                    val modelResult: DataType? = lb.defaultModel!!.resolveTypeName(typeName)
                     if (modelResult != null) return modelResult
                 }
-                for (model: Model? in lb.modelsInternal.values) {
+                for (model: Model? in lb.models.values) {
                     val modelResult: DataType? = model!!.resolveTypeName(typeName)
                     if (modelResult != null) {
                         require(result == null) {

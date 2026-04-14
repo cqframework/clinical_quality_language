@@ -74,29 +74,18 @@ class Cql2ElmContext(
     val exceptions: MutableList<CqlCompilerException> = ArrayList()
 
     internal val models: MutableMap<String, Model?> = LinkedHashMap()
-    internal val modelsInternal: MutableMap<String, Model?>
-        get() = models
 
     internal val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
-    private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
-    internal val systemFunctionResolverInternal: SystemFunctionResolver
-        get() = systemFunctionResolver
-
-    internal val expressionFactoryInternal: ExpressionFactory
-        get() = expressionFactory
+    internal val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
 
     val scopeManager: ScopeManager = ScopeManager()
-    private val propertyResolver: PropertyResolver by lazy { PropertyResolver(this, objectFactory) }
-    private val symbolTable: SymbolTable by lazy { SymbolTable(this) }
-    private val expressionFactory: ExpressionFactory by lazy {
-        ExpressionFactory(this, objectFactory)
-    }
-    private val semanticAnalyzer: SemanticAnalyzer by lazy { SemanticAnalyzer(this, objectFactory) }
-    private val typeResolver: TypeResolver by lazy { TypeResolver(this, objectFactory) }
-    private val conversionEngine: ConversionEngine by lazy { ConversionEngine(this, objectFactory) }
-    private val identifierResolver: IdentifierResolver by lazy {
-        IdentifierResolver(this, objectFactory)
-    }
+    private val propertyResolver: PropertyResolver = PropertyResolver(this, objectFactory)
+    private val symbolTable: SymbolTable = SymbolTable(this)
+    internal val expressionFactory: ExpressionFactory = ExpressionFactory(this, objectFactory)
+    private val semanticAnalyzer: SemanticAnalyzer = SemanticAnalyzer(this, objectFactory)
+    private val typeResolver: TypeResolver = TypeResolver(this, objectFactory)
+    private val conversionEngine: ConversionEngine = ConversionEngine(this, objectFactory)
+    private val identifierResolver: IdentifierResolver = IdentifierResolver(this, objectFactory)
     private val modelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         internal set(model) {
@@ -104,12 +93,6 @@ class Cql2ElmContext(
             if (field == null && model?.modelInfo?.name != "System") {
                 field = model
             }
-        }
-
-    internal var defaultModelInternal: Model?
-        get() = defaultModel
-        set(value) {
-            defaultModel = value
         }
 
     var library: Library =
@@ -128,8 +111,6 @@ class Cql2ElmContext(
     private val options: CqlCompilerOptions = libraryManager.cqlCompilerOptions
     private val cqlToElmInfo = af.createCqlToElmInfo()
     internal val typeBuilder = TypeBuilder(objectFactory, modelManager)
-    internal val typeBuilderInternal: TypeBuilder
-        get() = typeBuilder
 
     fun enableListTraversal() {
         listTraversal = true
@@ -262,11 +243,8 @@ class Cql2ElmContext(
         symbolTable.loadConversionMap(library)
     }
 
-    private val systemLibrary: CompiledLibrary
+    internal val systemLibrary: CompiledLibrary
         get() = resolveLibrary("System")
-
-    internal val systemLibraryInternal: CompiledLibrary
-        get() = systemLibrary
 
     fun resolveLibrary(identifier: String?): CompiledLibrary =
         symbolTable.resolveLibrary(identifier)
@@ -274,9 +252,8 @@ class Cql2ElmContext(
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? =
         symbolTable.resolveNamespaceUri(namespaceName, mustResolve)
 
-    private val errorReporter: ErrorReporter by lazy {
+    private val errorReporter: ErrorReporter =
         ErrorReporter(options, exceptions, errors, warnings, messages) { library }
-    }
 
     /** Record any errors while parsing in both the list of errors and in the library itself. */
     fun recordParsingException(e: CqlCompilerException) {
@@ -799,39 +776,15 @@ class Cql2ElmContext(
         memberIdentifier: String,
     ): Expression = identifierResolver.resolveLibraryMemberAccessor(left, memberIdentifier)
 
-    enum class IdentifierScope {
-        GLOBAL,
-        LOCAL,
-    }
-
-    /**
-     * Add an identifier to the deque to indicate that we are considering it for consideration for
-     * identifier hiding and adding a compiler warning if this is the case.
-     *
-     * For example, if an alias within an expression body has the same name as a parameter,
-     * execution would have added the parameter identifier and the next execution would consider an
-     * alias with the same name, thus resulting in a warning.
-     *
-     * Exact case matching as well as case-insensitive matching are considered. If known, the type
-     * of the structure in question will be considered in crafting the warning message, as per the
-     * [Element] parameter.
-     *
-     * Also, special case function overloads so that only a single overloaded function name is taken
-     * into account.
-     *
-     * Default scope is [IdentifierScope.LOCAL]
-     *
-     * @param identifierRef An identifierRef representing the identifier and a trackback to its
-     *   definition
-     * @param element The element identified by the identifier, for example [ExpressionRef].
-     * @param scope The scope of the current identifier
-     */
-    private val identifierHidingChecker: IdentifierHidingChecker by lazy {
+    private val identifierHidingChecker: IdentifierHidingChecker =
         IdentifierHidingChecker(scopeManager) { message, expression ->
             reportWarning(message, expression)
         }
-    }
 
+    /**
+     * Add an identifier to the deque for identifier-hiding consideration, raising a warning when
+     * the new identifier shadows an existing one (excluding function overload matches).
+     */
     @JvmOverloads
     fun pushIdentifier(
         identifierRef: IdentifierRef,
@@ -849,14 +802,6 @@ class Cql2ElmContext(
     @JvmOverloads
     fun popIdentifier(scope: IdentifierScope = IdentifierScope.LOCAL) {
         identifierHidingChecker.popIdentifier(scope)
-    }
-
-    fun pushIdentifierScope() {
-        scopeManager.pushIdentifierScope()
-    }
-
-    fun popIdentifierScope() {
-        scopeManager.popIdentifierScope()
     }
 
     fun checkLiteralContext() {

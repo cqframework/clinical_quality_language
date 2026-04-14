@@ -6,7 +6,6 @@ import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
-import org.cqframework.cql.cql2elm.Cql2ElmContext.IdentifierScope
 import org.cqframework.cql.cql2elm.DataTypes.equal
 import org.cqframework.cql.cql2elm.DataTypes.subTypeOf
 import org.cqframework.cql.cql2elm.DataTypes.verifyCast
@@ -57,14 +56,14 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
     "LoopWithTooManyJumpStatements",
     "MagicNumber",
 )
-class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
-    Cql2ElmVisitorBase(libraryBuilder, tokenStream) {
-    private val systemMethodResolver = SystemMethodResolver(this, libraryBuilder)
-    private val dateTimeLiteralParser = DateTimeLiteralParser(libraryBuilder, of)
-    private val retrieveBuilder = RetrieveBuilder(libraryBuilder, of) { ctx -> getTrackBack(ctx) }
+class Cql2ElmVisitor(context: Cql2ElmContext, tokenStream: TokenStream) :
+    Cql2ElmVisitorBase(context, tokenStream) {
+    private val systemMethodResolver = SystemMethodResolver(this, context)
+    private val dateTimeLiteralParser = DateTimeLiteralParser(context, of)
+    private val retrieveBuilder = RetrieveBuilder(context, of) { ctx -> getTrackBack(ctx) }
     private val timing =
         TimingOperatorDispatcher(
-            libraryBuilder,
+            context,
             of,
             track = { element, pt -> track(element, pt) },
             trackFromElement = { element, from -> track(element, from) },
@@ -72,12 +71,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     /**
      * Resolve a System-library operator call against an already-constructed ELM node and return the
-     * node. Collapses the repeated `of.createX().withOperand(...);
-     * libraryBuilder.resolveCall("System", name, it); return it` pattern that dominates the simple
-     * expression visitors.
+     * node. Collapses the repeated `of.createX().withOperand(...); context.resolveCall("System",
+     * name, it); return it` pattern that dominates the simple expression visitors.
      */
     private inline fun <E : Expression> systemCall(operatorName: String, result: E): E {
-        libraryBuilder.resolveCall("System", operatorName, result)
+        context.resolveCall("System", operatorName, result)
         return result
     }
 
@@ -108,12 +106,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // compiledLibrary.identifier!!.id and must not NPE. preprocessLibrary below and the
         // main visitor's visitLibraryDefinition both overwrite this with the real identifier
         // when a library declaration is present.
-        libraryBuilder.libraryIdentifier = org.hl7.elm.r1.VersionedIdentifier()
+        context.libraryIdentifier = org.hl7.elm.r1.VersionedIdentifier()
 
         // beginTranslation() loads the System library and adds its UsingDef. Must run before
         // preprocessLibrary so that subsequent `using X` definitions append AFTER the System
         // entry — preserving the historical order [System, ...userUsings].
-        libraryBuilder.beginTranslation()
+        context.beginTranslation()
 
         // Pre-pass: walk top-level children once, populate libraryInfo with definition-index
         // entries (and trigger model loading / library-identifier assignment) so that forward
@@ -155,7 +153,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             // Return last result (consistent with super implementation and helps w/ testing)
             return lastResult
         } finally {
-            libraryBuilder.endTranslation()
+            context.endTranslation()
         }
     }
 
@@ -166,11 +164,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 .withId(identifiers.removeAt(identifiers.size - 1))
                 .withVersion(parseString(ctx.versionSpecifier()))
         if (identifiers.isNotEmpty()) {
-            vid.system = libraryBuilder.resolveNamespaceUri(identifiers.joinToString("."), true)
-        } else if (libraryBuilder.namespaceInfo != null) {
-            vid.system = libraryBuilder.namespaceInfo.uri
+            vid.system = context.resolveNamespaceUri(identifiers.joinToString("."), true)
+        } else if (context.namespaceInfo != null) {
+            vid.system = context.namespaceInfo.uri
         }
-        libraryBuilder.libraryIdentifier = vid
+        context.libraryIdentifier = vid
         return vid
     }
 
@@ -180,14 +178,14 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val namespaceName =
             when {
                 identifiers.isNotEmpty() -> identifiers.joinToString(".")
-                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) -> null
-                libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo.name
+                context.isWellKnownModelName(unqualifiedIdentifier) -> null
+                context.namespaceInfo != null -> context.namespaceInfo.name
                 else -> null
             }
         var path: String? = null
         var modelNamespace: NamespaceInfo? = null
         if (namespaceName != null) {
-            val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
+            val namespaceUri = context.resolveNamespaceUri(namespaceName, true)
             path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier)
             modelNamespace = NamespaceInfo(namespaceName, namespaceUri!!)
         } else {
@@ -201,7 +199,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
 
         // The model was already calculated by CqlPreprocessorVisitor
-        val usingDef = libraryBuilder.resolveUsingRef(localIdentifier)
+        val usingDef = context.resolveUsingRef(localIdentifier)
 
         val ir = of.createIdentifierRef().withName(localIdentifier)
         track(
@@ -209,7 +207,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
             else ctx.localIdentifier())!!,
         )
-        libraryBuilder.pushIdentifier(ir, usingDef, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, usingDef, IdentifierScope.GLOBAL)
 
         return usingDef
     }
@@ -229,12 +227,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
         val modelIdentifier =
             ModelIdentifier(id = modelName, version = version, system = modelNamespace?.uri)
-        return libraryBuilder.getModel(modelIdentifier, localIdentifier)
+        return context.getModel(modelIdentifier, localIdentifier)
     }
 
     private fun getLibraryPath(namespaceName: String?, unqualifiedIdentifier: String): String {
         if (namespaceName != null) {
-            val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
+            val namespaceUri = context.resolveNamespaceUri(namespaceName, true)
             return NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier)
         }
         return unqualifiedIdentifier
@@ -245,8 +243,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val unqualifiedIdentifier: String = identifiers.removeAt(identifiers.size - 1)
         var namespaceName =
             if (identifiers.isNotEmpty()) identifiers.joinToString(".")
-            else if (libraryBuilder.namespaceInfo != null) libraryBuilder.namespaceInfo.name
-            else null
+            else if (context.namespaceInfo != null) context.namespaceInfo.name else null
         var path = getLibraryPath(namespaceName, unqualifiedIdentifier)
         var library =
             of.createIncludeDef()
@@ -261,12 +258,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // source being loaded twice in the general case) But the full fix is to introduce source
         // resolution/caching to enable this layer to determine whether the library identifier
         // resolved with the namespace
-        if (!libraryBuilder.canResolveLibrary(library)) {
+        if (!context.canResolveLibrary(library)) {
             namespaceName =
                 when {
                     identifiers.isNotEmpty() -> identifiers.joinToString(".")
-                    libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) -> null
-                    libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo.name
+                    context.isWellKnownLibraryName(unqualifiedIdentifier) -> null
+                    context.namespaceInfo != null -> context.namespaceInfo.name
                     else -> null
                 }
             path = getLibraryPath(namespaceName, unqualifiedIdentifier)
@@ -279,7 +276,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     .withPath(path)
                     .withVersion(parseString(ctx.versionSpecifier()))
         }
-        libraryBuilder.addInclude(library)
+        context.addInclude(library)
 
         val ir = of.createIdentifierRef().withName(library.localIdentifier)
         track(
@@ -287,7 +284,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             (if (ctx.localIdentifier() == null) ctx.qualifiedIdentifier()
             else ctx.localIdentifier())!!,
         )
-        libraryBuilder.pushIdentifier(ir, library, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, library, IdentifierScope.GLOBAL)
 
         return library
     }
@@ -305,7 +302,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
         if (param.default != null) {
             if (paramType != null) {
-                libraryBuilder.verifyType(param.default!!.resultType!!, paramType)
+                context.verifyType(param.default!!.resultType!!, paramType)
             } else {
                 paramType = param.default!!.resultType
             }
@@ -315,13 +312,13 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
         param.resultType = paramType
         if (param.default != null) {
-            param.default = libraryBuilder.ensureCompatible(param.default, paramType)
+            param.default = context.ensureCompatible(param.default, paramType)
         }
-        libraryBuilder.addParameter(param)
+        context.addParameter(param)
 
         val ir = of.createIdentifierRef().withName(param.name)
         track(ir, ctx.identifier())
-        libraryBuilder.pushIdentifier(ir, param, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, param, IdentifierScope.GLOBAL)
 
         return param
     }
@@ -352,16 +349,16 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
                 .withVersion(parseString(ctx.versionSpecifier()))
-        if (libraryBuilder.isCompatibleWith("1.5")) {
-            cs.resultType = libraryBuilder.resolveTypeName("System", "CodeSystem")
+        if (context.isCompatibleWith("1.5")) {
+            cs.resultType = context.resolveTypeName("System", "CodeSystem")
         } else {
-            cs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
+            cs.resultType = ListType(context.resolveTypeName("System", "Code")!!)
         }
-        libraryBuilder.addCodeSystem(cs)
+        context.addCodeSystem(cs)
 
         val ir = of.createIdentifierRef().withName(cs.name)
         track(ir, ctx.identifier())
-        libraryBuilder.pushIdentifier(ir, cs, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, cs, IdentifierScope.GLOBAL)
 
         return cs
     }
@@ -371,12 +368,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val name = parseString(ctx.identifier())!!
         val def: CodeSystemDef?
         if (libraryName != null) {
-            def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name)
+            def = context.resolveLibrary(libraryName).resolveCodeSystemRef(name)
             if (def != null) {
-                libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel!!)
+                context.checkAccessLevel(libraryName, name, def.accessLevel!!)
             }
         } else {
-            def = libraryBuilder.resolveCodeSystemRef(name)
+            def = context.resolveCodeSystemRef(name)
         }
         requireNotNull(def) { "Could not resolve reference to code system $name." }
         return of.createCodeSystemRef()
@@ -390,12 +387,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val name = parseString(ctx.identifier())!!
         val def: CodeDef?
         if (libraryName != null) {
-            def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name)
+            def = context.resolveLibrary(libraryName).resolveCodeRef(name)
             if (def != null) {
-                libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel!!)
+                context.checkAccessLevel(libraryName, name, def.accessLevel!!)
             }
         } else {
-            def = libraryBuilder.resolveCodeRef(name)
+            def = context.resolveCodeRef(name)
         }
         requireNotNull(def) {
             // ERROR:
@@ -424,16 +421,16 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 vs.codeSystem.add(cs)
             }
         }
-        if (libraryBuilder.isCompatibleWith("1.5")) {
-            vs.resultType = libraryBuilder.resolveTypeName("System", "ValueSet")
+        if (context.isCompatibleWith("1.5")) {
+            vs.resultType = context.resolveTypeName("System", "ValueSet")
         } else {
-            vs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
+            vs.resultType = ListType(context.resolveTypeName("System", "Code")!!)
         }
-        libraryBuilder.addValueSet(vs)
+        context.addValueSet(vs)
 
         val ir = of.createIdentifierRef().withName(vs.name)
         track(ir, ctx.identifier())
-        libraryBuilder.pushIdentifier(ir, vs, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, vs, IdentifierScope.GLOBAL)
 
         return vs
     }
@@ -453,12 +450,12 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         if (ctx.displayClause() != null) {
             cd.display = parseString(ctx.displayClause()!!.STRING())
         }
-        cd.resultType = libraryBuilder.resolveTypeName("Code")
-        libraryBuilder.addCode(cd)
+        cd.resultType = context.resolveTypeName("Code")
+        context.addCode(cd)
 
         val ir = of.createIdentifierRef().withName(cd.name)
         track(ir, ctx.identifier())
-        libraryBuilder.pushIdentifier(ir, cd, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, cd, IdentifierScope.GLOBAL)
 
         return cd
     }
@@ -474,8 +471,8 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         if (ctx.displayClause() != null) {
             cd.display = parseString(ctx.displayClause()!!.STRING())
         }
-        cd.resultType = libraryBuilder.resolveTypeName("Concept")
-        libraryBuilder.addConcept(cd)
+        cd.resultType = context.resolveTypeName("Concept")
+        context.addConcept(cd)
         return cd
     }
 
@@ -484,21 +481,19 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val modelIdentifier = getModelIdentifier(qualifiers)
         val identifier =
             getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier())!!)
-        val retrievedResult =
-            libraryBuilder.getNamedTypeSpecifierResult("$modelIdentifier:$identifier")
+        val retrievedResult = context.getNamedTypeSpecifierResult("$modelIdentifier:$identifier")
         if (retrievedResult != null) {
             return if (retrievedResult.hasError()) {
                 null
             } else retrievedResult.underlyingResultIfExists
         }
         val resultType =
-            libraryBuilder.resolveTypeName(modelIdentifier, identifier)
+            context.resolveTypeName(modelIdentifier, identifier)
                 ?: throw CqlSemanticException(
                     "Could not find type for model: $modelIdentifier and name: $identifier",
                     getTrackBack(ctx),
                 )
-        val result =
-            of.createNamedTypeSpecifier().withName(libraryBuilder.dataTypeToQName(resultType))
+        val result = of.createNamedTypeSpecifier().withName(context.dataTypeToQName(resultType))
 
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.resultType = resultType
@@ -507,7 +502,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     private fun isUnfilteredContext(contextName: String?): Boolean {
         return contextName == "Unfiltered" ||
-            libraryBuilder.isCompatibilityLevel3 && contextName == "Population"
+            context.isCompatibilityLevel3 && contextName == "Population"
     }
 
     override fun visitContextDefinition(ctx: ContextDefinitionContext): Any {
@@ -518,29 +513,28 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             else (unqualifiedIdentifier)
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             val modelContext: ModelContext? =
-                libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier)
+                context.resolveContextName(modelIdentifier, unqualifiedIdentifier)
 
             // If this is the first time a context definition is encountered, construct a context
             // definition:
             // define <Context> = element of [<Context model type>]
             var modelContextDefinition: Element? = this.contextDefinitions[modelContext!!.name]
             if (modelContextDefinition == null) {
-                if (libraryBuilder.hasUsings()) {
+                if (context.hasUsings()) {
                     val modelInfo: ModelInfo =
                         if (modelIdentifier == null)
-                            libraryBuilder.getModel(this.libraryInfo.defaultModelName).modelInfo
-                        else libraryBuilder.getModel(modelIdentifier).modelInfo
+                            context.getModel(this.libraryInfo.defaultModelName).modelInfo
+                        else context.getModel(modelIdentifier).modelInfo
                     // String contextTypeName = modelContext.getName();
-                    // DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(),
+                    // DataType contextType = context.resolveTypeName(modelInfo.getName(),
                     // contextTypeName);
                     val contextType: DataType = modelContext.type
-                    modelContextDefinition = libraryBuilder.resolveParameterRef(modelContext.name)
+                    modelContextDefinition = context.resolveParameterRef(modelContext.name)
                     if (modelContextDefinition != null) {
                         this.contextDefinitions[modelContext.name] = modelContextDefinition
                     } else {
                         val contextRetrieve: Retrieve =
-                            of.createRetrieve()
-                                .withDataType(libraryBuilder.dataTypeToQName(contextType))
+                            of.createRetrieve().withDataType(context.dataTypeToQName(contextType))
                         track(contextRetrieve, ctx)
                         contextRetrieve.resultType = ListType(contextType)
                         val contextClassIdentifier: String? = (contextType as ClassType).identifier
@@ -557,7 +551,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         track(modelContextDefinition, ctx)
                         modelContextDefinition.expression!!.resultType = contextType
                         modelContextDefinition.resultType = contextType
-                        libraryBuilder.addExpression(modelContextDefinition)
+                        context.addExpression(modelContextDefinition)
                         this.contextDefinitions[modelContext.name] = modelContextDefinition
                     }
                 } else {
@@ -568,18 +562,18 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             .withExpression(of.createNull())
                     track(modelContextDefinition, ctx)
                     modelContextDefinition.expression!!.resultType =
-                        libraryBuilder.resolveTypeName("System", "Any")
+                        context.resolveTypeName("System", "Any")
                     modelContextDefinition.resultType =
                         modelContextDefinition.expression!!.resultType
-                    libraryBuilder.addExpression(modelContextDefinition)
+                    context.addExpression(modelContextDefinition)
                     this.contextDefinitions[modelContext.name] = modelContextDefinition
                 }
             }
         }
         val contextDef: ContextDef = of.createContextDef().withName(this.currentContext)
         track(contextDef, ctx)
-        if (libraryBuilder.isCompatibleWith("1.5")) {
-            libraryBuilder.addContext(contextDef)
+        if (context.isCompatibleWith("1.5")) {
+            context.addContext(contextDef)
         }
         return this.currentContext
     }
@@ -606,7 +600,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         ctx: ExpressionDefinitionContext
     ): ExpressionDef? {
         val identifier = parseString(ctx.identifier())!!
-        var def = libraryBuilder.resolveExpressionRef(identifier)
+        var def = context.resolveExpressionRef(identifier)
 
         // First time visiting this expression definition, create a lightweight ExpressionDef to be
         // used to output a hiding warning message
@@ -620,15 +614,15 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             val ir = of.createIdentifierRef().withName(identifier)
             track(ir, ctx.identifier())
 
-            libraryBuilder.pushIdentifier(ir, hollowExpressionDef, IdentifierScope.GLOBAL)
+            context.pushIdentifier(ir, hollowExpressionDef, IdentifierScope.GLOBAL)
         }
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
-                libraryBuilder.removeExpression(def)
+                context.removeExpression(def)
                 removeImplicitContextExpressionDef(def)
             }
-            libraryBuilder.scopeManager.withExpressionContext(this.currentContext) {
-                libraryBuilder.scopeManager.withExpressionDefinition(identifier) {
+            context.scopeManager.withExpressionContext(this.currentContext) {
+                context.scopeManager.withExpressionDefinition(identifier) {
                     val newDef =
                         of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
@@ -638,7 +632,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     if (newDef.expression != null) {
                         newDef.resultType = newDef.expression!!.resultType
                     }
-                    libraryBuilder.addExpression(newDef)
+                    context.addExpression(newDef)
                     def = newDef
                 }
             }
@@ -647,7 +641,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     }
 
     override fun visitExpressionDefinition(ctx: ExpressionDefinitionContext): ExpressionDef? {
-        return libraryBuilder.scopeManager.withIdentifierScope {
+        return context.scopeManager.withIdentifierScope {
             val expressionDef = internalVisitExpressionDefinition(ctx)
             if (this.forwards.isEmpty() || this.forwards.peek().name != expressionDef!!.name) {
                 require(!this.definedExpressionDefinitions.contains(expressionDef!!.name)) {
@@ -665,27 +659,27 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     }
 
     override fun visitStringLiteral(ctx: StringLiteralContext): Literal {
-        val stringLiteral = libraryBuilder.createLiteral(parseString(ctx.STRING()))
+        val stringLiteral = context.createLiteral(parseString(ctx.STRING()))
         // Literals are never actually pushed to the stack. This just emits a warning if the literal
         // is hiding something
 
         val ir = of.createIdentifierRef().withName(stringLiteral.value)
         track(ir, ctx.STRING())
-        libraryBuilder.pushIdentifier(ir, stringLiteral)
+        context.pushIdentifier(ir, stringLiteral)
 
         return stringLiteral
     }
 
     override fun visitSimpleStringLiteral(ctx: SimpleStringLiteralContext): Literal {
-        return libraryBuilder.createLiteral(parseString(ctx.STRING()))
+        return context.createLiteral(parseString(ctx.STRING()))
     }
 
     override fun visitBooleanLiteral(ctx: BooleanLiteralContext): Literal {
-        return libraryBuilder.createLiteral(ctx.text.toBoolean())
+        return context.createLiteral(ctx.text.toBoolean())
     }
 
     override fun visitIntervalSelector(ctx: IntervalSelectorContext): Any {
-        return libraryBuilder.createInterval(
+        return context.createInterval(
             parseExpression(ctx.expression(0)),
             ctx.getChild(1)!!.text == "[",
             parseExpression(ctx.expression(1)),
@@ -730,8 +724,8 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         for (elementContext in ctx.instanceElementSelector()) {
             val element = visit(elementContext) as InstanceElement
             val resolution: PropertyResolution? =
-                libraryBuilder.resolveProperty(classTypeSpecifier.resultType, element.name!!)
-            element.value = libraryBuilder.ensureCompatible(element.value, resolution!!.type)
+                context.resolveProperty(classTypeSpecifier.resultType, element.name!!)
+            element.value = context.ensureCompatible(element.value, resolution!!.type)
             element.name = resolution.name
             require(resolution.targetMap == null) {
                 "Target Mapping in instance selectors not yet supported"
@@ -748,7 +742,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         if (ctx.displayClause() != null) {
             code.display = parseString(ctx.displayClause()!!.STRING())
         }
-        code.resultType = libraryBuilder.resolveTypeName("System", "Code")
+        code.resultType = context.resolveTypeName("System", "Code")
         return code
     }
 
@@ -760,7 +754,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         for (codeContext in ctx.codeSelector()) {
             concept.code.add(visit(codeContext) as Code)
         }
-        concept.resultType = libraryBuilder.resolveTypeName("System", "Concept")
+        concept.resultType = context.resolveTypeName("System", "Concept")
         return concept
     }
 
@@ -785,7 +779,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     ?: @Suppress("TooGenericExceptionThrown")
                     throw RuntimeException("Element failed to parse")
             if (elementType != null) {
-                libraryBuilder.verifyType(element.resultType!!, elementType)
+                context.verifyType(element.resultType!!, elementType)
             } else {
                 if (initialInferredElementType == null) {
                     initialInferredElementType = element.resultType
@@ -795,37 +789,36 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     // The only potential exception to this is if the element responsible for the
                     // inferred type of Any is a null
                     val compatibleType =
-                        libraryBuilder.findCompatibleType(inferredElementType, element.resultType)
+                        context.findCompatibleType(inferredElementType, element.resultType)
                     inferredElementType =
                         if (
                             compatibleType != null &&
-                                (inferredElementType !=
-                                    libraryBuilder.resolveTypeName("System", "Any") ||
+                                (inferredElementType != context.resolveTypeName("System", "Any") ||
                                     initialInferredElementType ==
-                                        libraryBuilder.resolveTypeName("System", "Any"))
+                                        context.resolveTypeName("System", "Any"))
                         ) {
                             compatibleType
                         } else {
-                            libraryBuilder.resolveTypeName("System", "Any")
+                            context.resolveTypeName("System", "Any")
                         }
                 }
             }
             elements.add(element)
         }
         if (elementType == null) {
-            elementType = inferredElementType ?: libraryBuilder.resolveTypeName("System", "Any")
+            elementType = inferredElementType ?: context.resolveTypeName("System", "Any")
         }
         for (element in elements) {
             if (!elementType!!.isSuperTypeOf(element.resultType!!)) {
                 val conversion =
-                    libraryBuilder.findConversion(
+                    context.findConversion(
                         element.resultType!!,
                         elementType,
                         implicit = true,
                         allowPromotionAndDemotion = false,
                     )
                 if (conversion != null) {
-                    list.element.add(libraryBuilder.convertExpression(element, conversion))
+                    list.element.add(context.convertExpression(element, conversion))
                 } else {
                     list.element.add(element)
                 }
@@ -866,16 +859,16 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     override fun visitNullLiteral(ctx: NullLiteralContext): Null {
         val result = of.createNull()
-        result.resultType = libraryBuilder.resolveTypeName("System", "Any")
+        result.resultType = context.resolveTypeName("System", "Any")
         return result
     }
 
     override fun visitNumberLiteral(ctx: NumberLiteralContext): Expression {
-        return libraryBuilder.createNumberLiteral(ctx.NUMBER().text)
+        return context.createNumberLiteral(ctx.NUMBER().text)
     }
 
     override fun visitSimpleNumberLiteral(ctx: SimpleNumberLiteralContext): Expression {
-        return libraryBuilder.createNumberLiteral(ctx.NUMBER().text)
+        return context.createNumberLiteral(ctx.NUMBER().text)
     }
 
     override fun visitLongNumberLiteral(ctx: LongNumberLiteralContext): Literal {
@@ -883,7 +876,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         if (input.endsWith("L")) {
             input = input.substring(0, input.length - 1)
         }
-        return libraryBuilder.createLongNumberLiteral(input)
+        return context.createLongNumberLiteral(input)
     }
 
     private fun parseDecimal(value: String): BigDecimal {
@@ -896,18 +889,15 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     override fun visitQuantity(ctx: QuantityContext): Expression {
         return if (ctx.unit() != null) {
-            libraryBuilder.createQuantity(
-                parseDecimal(ctx.NUMBER().text),
-                (parseString(ctx.unit()))!!,
-            )
+            context.createQuantity(parseDecimal(ctx.NUMBER().text), (parseString(ctx.unit()))!!)
         } else {
-            libraryBuilder.createNumberLiteral(ctx.NUMBER().text)
+            context.createNumberLiteral(ctx.NUMBER().text)
         }
     }
 
     private fun getQuantity(source: Expression?): Quantity {
         if (source is Literal) {
-            return libraryBuilder.createQuantity(parseDecimal(source.value!!), "1")
+            return context.createQuantity(parseDecimal(source.value!!), "1")
         } else if (source is Quantity) {
             return source
         }
@@ -917,7 +907,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     override fun visitRatio(ctx: RatioContext): Ratio {
         val numerator = getQuantity(visit(ctx.quantity(0)!!) as Expression?)
         val denominator = getQuantity(visit(ctx.quantity(1)!!) as Expression?)
-        return libraryBuilder.createRatio(numerator, denominator)
+        return context.createRatio(numerator, denominator)
     }
 
     override fun visitNotExpression(ctx: NotExpressionContext): Not {
@@ -961,7 +951,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 parseExpression(ctx.expressionTerm(1))!!,
             )
         )
-        libraryBuilder.resolveCall("System", operatorName, (exp))
+        context.resolveCall("System", operatorName, (exp))
         return exp
     }
 
@@ -1011,8 +1001,8 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     parseExpression(ctx.expressionTerm(1))!!,
                 )
             )
-            libraryBuilder.resolveCall("System", operatorName, (exp as BinaryExpression?)!!)
-            if (exp.resultType === libraryBuilder.resolveTypeName("System", "String")) {
+            context.resolveCall("System", operatorName, (exp as BinaryExpression?)!!)
+            if (exp.resultType === context.resolveTypeName("System", "String")) {
                 val concatenate: Concatenate = of.createConcatenate()
                 concatenate.operand.addAll(exp.operand)
                 concatenate.resultType = exp.resultType
@@ -1028,24 +1018,24 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             )
             for (i in concatenate.operand.indices) {
                 val operand: Expression = concatenate.operand[i]
-                val empty: Literal = libraryBuilder.createLiteral("")
+                val empty: Literal = context.createLiteral("")
                 val params: ArrayList<Expression> = ArrayList()
                 params.add(operand)
                 params.add(empty)
-                val coalesce = libraryBuilder.resolveFunction("System", "Coalesce", params)!!
+                val coalesce = context.resolveFunction("System", "Coalesce", params)!!
                 concatenate.operand[i] = coalesce
             }
-            libraryBuilder.resolveCall("System", operatorName, concatenate)
+            context.resolveCall("System", operatorName, concatenate)
         }
         return exp
     }
 
     override fun visitPredecessorExpressionTerm(ctx: PredecessorExpressionTermContext): Any {
-        return libraryBuilder.buildPredecessor(parseExpression(ctx.expressionTerm()))
+        return context.buildPredecessor(parseExpression(ctx.expressionTerm()))
     }
 
     override fun visitSuccessorExpressionTerm(ctx: SuccessorExpressionTermContext): Any {
-        return libraryBuilder.buildSuccessor(parseExpression(ctx.expressionTerm()))
+        return context.buildSuccessor(parseExpression(ctx.expressionTerm()))
     }
 
     override fun visitElementExtractorExpressionTerm(
@@ -1067,10 +1057,10 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val targetType = parseTypeSpecifier(ctx.namedTypeSpecifier())
         return when (extent) {
             "minimum" -> {
-                libraryBuilder.buildMinimum(targetType!!.resultType)
+                context.buildMinimum(targetType!!.resultType)
             }
             "maximum" -> {
-                libraryBuilder.buildMaximum(targetType!!.resultType)
+                context.buildMaximum(targetType!!.resultType)
             }
             else -> throw IllegalArgumentException("Unknown extent: $extent")
         }
@@ -1086,7 +1076,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             result = of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
             operatorName = "End"
         }
-        libraryBuilder.resolveCall("System", operatorName, result)
+        context.resolveCall("System", operatorName, result)
         return result
     }
 
@@ -1160,7 +1150,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 operatorName = "TimeFrom"
             }
             "timezone" -> {
-                require(libraryBuilder.isCompatibilityLevel3) {
+                require(context.isCompatibilityLevel3) {
                     "Timezone keyword is only valid in 1.3 or lower"
                 }
                 result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()))
@@ -1188,7 +1178,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 throw IllegalArgumentException("Date/time values do not have a week component.")
             else -> throw IllegalArgumentException("Unknown precision '$component'.")
         }
-        libraryBuilder.resolveCall("System", operatorName, result)
+        context.resolveCall("System", operatorName, result)
         return result
     }
 
@@ -1196,9 +1186,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // duration in days of X <=> days between start of X and end of X
         val operand = parseExpression(ctx.expressionTerm())
         val start = of.createStart().withOperand(operand)
-        libraryBuilder.resolveCall("System", "Start", start)
+        context.resolveCall("System", "Start", start)
         val end = of.createEnd().withOperand(operand)
-        libraryBuilder.resolveCall("System", "End", end)
+        context.resolveCall("System", "End", end)
         val result =
             of.createDurationBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
@@ -1212,9 +1202,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // difference in days of X <=> difference in days between start of X and end of X
         val operand = parseExpression(ctx.expressionTerm())
         val start = of.createStart().withOperand(operand)
-        libraryBuilder.resolveCall("System", "Start", start)
+        context.resolveCall("System", "Start", start)
         val end = of.createEnd().withOperand(operand)
-        libraryBuilder.resolveCall("System", "End", end)
+        context.resolveCall("System", "End", end)
         val result =
             of.createDifferenceBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
@@ -1234,9 +1224,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 else
                     of.createIncludedIn()
                         .withOperand(
-                            listOf(first, libraryBuilder.createInterval(second, true, third, true))
+                            listOf(first, context.createInterval(second, true, third, true))
                         )
-            libraryBuilder.resolveCall(
+            context.resolveCall(
                 "System",
                 if (isProper) "ProperIncludedIn" else "IncludedIn",
                 result,
@@ -1254,17 +1244,17 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             ),
                         )
                     )
-            libraryBuilder.resolveCall(
+            context.resolveCall(
                 "System",
                 if (isProper) "Greater" else "GreaterOrEqual",
                 (result.operand[0] as BinaryExpression),
             )
-            libraryBuilder.resolveCall(
+            context.resolveCall(
                 "System",
                 if (isProper) "Less" else "LessOrEqual",
                 (result.operand[1] as BinaryExpression),
             )
-            libraryBuilder.resolveCall("System", "And", result)
+            context.resolveCall("System", "And", result)
             result
         }
     }
@@ -1327,7 +1317,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 } else {
                     val left: Expression? = parseExpression(ctx.expression(0))
                     val right: Expression? = parseExpression(ctx.expression(1))
-                    return libraryBuilder.resolveIn((left)!!, (right)!!)
+                    return context.resolveIn((left)!!, (right)!!)
                 }
             "contains" ->
                 if (ctx.dateTimePrecisionSpecifier() != null) {
@@ -1354,7 +1344,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                                 .withCode(right)
                                 .withValueset(left as ValueSetRef?)
                                 .withValuesetExpression(left)
-                        libraryBuilder.resolveCall(
+                        context.resolveCall(
                             "System",
                             "InValueSet",
                             InValueSetInvocation(inValueSet),
@@ -1367,7 +1357,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                                 .withCode(right)
                                 .withCodesystem(left as CodeSystemRef?)
                                 .withCodesystemExpression(left)
-                        libraryBuilder.resolveCall(
+                        context.resolveCall(
                             "System",
                             "InCodeSystem",
                             InCodeSystemInvocation(inCodeSystem),
@@ -1403,7 +1393,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             parseExpression(ctx.expression(1))!!,
                         )
                     )
-            libraryBuilder.resolveCall("System", "Xor", xor)
+            context.resolveCall("System", "Xor", xor)
             xor
         } else {
             val or =
@@ -1414,7 +1404,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             parseExpression(ctx.expression(1))!!,
                         )
                     )
-            libraryBuilder.resolveCall("System", "Or", or)
+            context.resolveCall("System", "Or", or)
             or
         }
     }
@@ -1437,9 +1427,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val right = parseExpression(ctx.expression(1))
         when (operator) {
             "|",
-            "union" -> return libraryBuilder.resolveUnion(left!!, right!!)
-            "intersect" -> return libraryBuilder.resolveIntersect(left!!, right!!)
-            "except" -> return libraryBuilder.resolveExcept(left!!, right!!)
+            "union" -> return context.resolveUnion(left!!, right!!)
+            "intersect" -> return context.resolveIntersect(left!!, right!!)
+            "except" -> return context.resolveExcept(left!!, right!!)
         }
         return of.createNull()
     }
@@ -1455,7 +1445,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             parseExpression(ctx.expression(1))!!,
                         )
                     )
-            libraryBuilder.resolveCall("System", "Equivalent", equivalent)
+            context.resolveCall("System", "Equivalent", equivalent)
             if ("~" != parseString(ctx.getChild(1))) {
                 track(equivalent, ctx)
                 val not = of.createNot().withOperand(equivalent)
@@ -1471,7 +1461,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             parseExpression(ctx.expression(1))!!,
                         )
                     )
-            libraryBuilder.resolveCall("System", "Equal", equal)
+            context.resolveCall("System", "Equal", equal)
             if ("=" != parseString(ctx.getChild(1))) {
                 track(equal, ctx)
                 val not = of.createNot().withOperand(equal)
@@ -1506,7 +1496,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         exp.withOperand(
             listOf(parseExpression(ctx.expression(0))!!, parseExpression(ctx.expression(1))!!)
         )
-        libraryBuilder.resolveCall("System", operatorName, exp)
+        context.resolveCall("System", operatorName, exp)
         return exp
     }
 
@@ -1594,7 +1584,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             val operand: Expression? = parseExpression(ctx.expression())
             if (!equal(operand!!.resultType, targetType!!.resultType)) {
                 val conversion: Conversion =
-                    libraryBuilder.findConversion(
+                    context.findConversion(
                         operand.resultType!!,
                         targetType.resultType!!,
                         implicit = false,
@@ -1604,19 +1594,19 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         throw IllegalArgumentException(
                             "Could not resolve conversion from type ${operand.resultType} to type ${targetType.resultType}."
                         )
-                return libraryBuilder.convertExpression((operand), conversion)
+                return context.convertExpression((operand), conversion)
             }
             return operand
         } else {
             var targetUnit: String? = parseString(ctx.unit())
-            targetUnit = libraryBuilder.ensureUcumUnit((targetUnit)!!)
+            targetUnit = context.ensureUcumUnit((targetUnit)!!)
             val operand = parseExpression(ctx.expression())!!
-            val unitOperand: Expression = libraryBuilder.createLiteral(targetUnit)
+            val unitOperand: Expression = context.createLiteral(targetUnit)
             track(unitOperand, ctx.unit()!!)
             val convertQuantity: ConvertQuantity =
                 of.createConvertQuantity().withOperand(listOf(operand, unitOperand))
             track(convertQuantity, ctx)
-            return libraryBuilder.resolveCall("System", "ConvertQuantity", convertQuantity)
+            return context.resolveCall("System", "ConvertQuantity", convertQuantity)
         }
     }
 
@@ -1628,7 +1618,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 of.createIs()
                     .withOperand(parseExpression(ctx.expression()))
                     .withIsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
-            isExpression.resultType = libraryBuilder.resolveTypeName("System", "Boolean")
+            isExpression.resultType = context.resolveTypeName("System", "Boolean")
             return isExpression
         }
         val asExpression =
@@ -1664,22 +1654,22 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         when (lastChild) {
             "null" -> {
                 exp = of.createIsNull().withOperand(left)
-                libraryBuilder.resolveCall("System", "IsNull", exp)
+                context.resolveCall("System", "IsNull", exp)
             }
             "true" -> {
                 exp = of.createIsTrue().withOperand(left)
-                libraryBuilder.resolveCall("System", "IsTrue", exp)
+                context.resolveCall("System", "IsTrue", exp)
             }
             "false" -> {
                 exp = of.createIsFalse().withOperand(left)
-                libraryBuilder.resolveCall("System", "IsFalse", exp)
+                context.resolveCall("System", "IsFalse", exp)
             }
             else -> throw IllegalArgumentException("Unknown boolean test predicate $lastChild.")
         }
         if ("not" == nextToLast) {
             track(exp, ctx)
             exp = of.createNot().withOperand(exp)
-            libraryBuilder.resolveCall("System", "Not", exp)
+            context.resolveCall("System", "Not", exp)
         }
 
         return exp
@@ -1768,26 +1758,26 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // }
         if (isRightPoint) {
             return if (isProper) {
-                libraryBuilder.resolveProperContains(
+                context.resolveProperContains(
                     timingOperator.left,
                     timingOperator.right,
                     parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
             } else
-                libraryBuilder.resolveContains(
+                context.resolveContains(
                     timingOperator.left,
                     timingOperator.right,
                     parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
         }
         return if (isProper) {
-            libraryBuilder.resolveProperIncludes(
+            context.resolveProperIncludes(
                 timingOperator.left,
                 timingOperator.right,
                 parseComparableDateTimePrecision(dateTimePrecision, false),
             )
         } else
-            libraryBuilder.resolveIncludes(
+            context.resolveIncludes(
                 timingOperator.left,
                 timingOperator.right,
                 parseComparableDateTimePrecision(dateTimePrecision, false),
@@ -1828,26 +1818,26 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // }
         if (isLeftPoint) {
             return if (isProper) {
-                libraryBuilder.resolveProperIn(
+                context.resolveProperIn(
                     timingOperator.left,
                     timingOperator.right,
                     parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
             } else
-                libraryBuilder.resolveIn(
+                context.resolveIn(
                     timingOperator.left,
                     timingOperator.right,
                     parseComparableDateTimePrecision(dateTimePrecision, false),
                 )
         }
         return if (isProper) {
-            libraryBuilder.resolveProperIncludedIn(
+            context.resolveProperIncludedIn(
                 timingOperator.left,
                 timingOperator.right,
                 parseComparableDateTimePrecision(dateTimePrecision, false),
             )
         } else
-            libraryBuilder.resolveIncludedIn(
+            context.resolveIncludedIn(
                 timingOperator.left,
                 timingOperator.right,
                 parseComparableDateTimePrecision(dateTimePrecision, false),
@@ -1985,7 +1975,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         if (isBefore) {
                             lowerBound = of.createSubtract().withOperand(listOf(right, quantity))
                             track(lowerBound, right)
-                            libraryBuilder.resolveCall(
+                            context.resolveCall(
                                 "System",
                                 "Subtract",
                                 (lowerBound as BinaryExpression?)!!,
@@ -1995,7 +1985,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             lowerBound = right
                             upperBound = of.createAdd().withOperand(listOf(right, quantity))
                             track(upperBound, right)
-                            libraryBuilder.resolveCall(
+                            context.resolveCall(
                                 "System",
                                 "Add",
                                 (upperBound as BinaryExpression?)!!,
@@ -2008,14 +1998,14 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         // less than 3 days after -> (B, B + 3 days)
                         val interval =
                             if (isBefore)
-                                libraryBuilder.createInterval(
+                                context.createInterval(
                                     lowerBound,
                                     isOffsetInclusive,
                                     upperBound,
                                     isInclusive,
                                 )
                             else
-                                libraryBuilder.createInterval(
+                                context.createInterval(
                                     lowerBound,
                                     isInclusive,
                                     upperBound,
@@ -2028,17 +2018,17 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             inExpression.precision = dateTimePrecision
                         }
                         track(inExpression, ctx.quantityOffset()!!)
-                        libraryBuilder.resolveCall("System", "In", inExpression)
+                        context.resolveCall("System", "In", inExpression)
 
                         // if the offset or comparison is inclusive, add a null check for B to
                         // ensure correct interpretation
                         if (isOffsetInclusive || isInclusive) {
                             val nullTest = of.createIsNull().withOperand(right)
                             track(nullTest, ctx.quantityOffset()!!)
-                            libraryBuilder.resolveCall("System", "IsNull", nullTest)
+                            context.resolveCall("System", "IsNull", nullTest)
                             val notNullTest = of.createNot().withOperand(nullTest)
                             track(notNullTest, ctx.quantityOffset()!!)
-                            libraryBuilder.resolveCall("System", "Not", notNullTest)
+                            context.resolveCall("System", "Not", notNullTest)
                             val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
                             track(and, ctx.quantityOffset()!!)
                             return systemCall("And", and)
@@ -2071,7 +2061,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             is Element -> track(shifted, trackSource)
             is ParseTree -> track(shifted, trackSource)
         }
-        libraryBuilder.resolveCall("System", if (subtract) "Subtract" else "Add", shifted)
+        context.resolveCall("System", if (subtract) "Subtract" else "Add", shifted)
         return shifted
     }
 
@@ -2111,20 +2101,20 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             shiftOperand(lowerBound, quantity, subtract = true, trackSource = ctx.quantity())
         upperBound =
             shiftOperand(upperBound, quantity, subtract = false, trackSource = ctx.quantity())
-        val interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper)
+        val interval = context.createInterval(lowerBound, !isProper, upperBound, !isProper)
         track(interval, ctx.quantity())
         val inExpression = of.createIn().withOperand(listOf(timingOperator.left, interval))
-        libraryBuilder.resolveCall("System", "In", inExpression)
+        context.resolveCall("System", "In", inExpression)
 
         // if the within is not proper and the interval is being constructed from a single point,
         // add a null check for that point to ensure correct interpretation
         if (!isProper && initialBound != null) {
             val nullTest = of.createIsNull().withOperand(initialBound)
             track(nullTest, ctx.quantity())
-            libraryBuilder.resolveCall("System", "IsNull", nullTest)
+            context.resolveCall("System", "IsNull", nullTest)
             val notNullTest = of.createNot().withOperand(nullTest)
             track(notNullTest, ctx.quantity())
-            libraryBuilder.resolveCall("System", "Not", notNullTest)
+            context.resolveCall("System", "Not", notNullTest)
             val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
             track(and, ctx.quantity())
             return systemCall("And", and)
@@ -2175,18 +2165,18 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     fun resolveIfThenElse(ifObject: If): Expression {
         ifObject.condition =
-            libraryBuilder.ensureCompatible(
+            context.ensureCompatible(
                 ifObject.condition,
-                libraryBuilder.resolveTypeName("System", "Boolean"),
+                context.resolveTypeName("System", "Boolean"),
             )
         val resultType: DataType? =
-            libraryBuilder.ensureCompatibleTypes(
+            context.ensureCompatibleTypes(
                 ifObject.then!!.resultType,
                 ifObject.`else`!!.resultType!!,
             )
         ifObject.resultType = resultType
-        ifObject.then = libraryBuilder.ensureCompatible(ifObject.then, resultType)
-        ifObject.`else` = (libraryBuilder.ensureCompatible(ifObject.`else`, resultType))
+        ifObject.then = context.ensureCompatible(ifObject.then, resultType)
+        ifObject.`else` = (context.ensureCompatible(ifObject.`else`, resultType))
         return ifObject
     }
 
@@ -2212,10 +2202,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 if (hitElse) {
                     result.`else` = (parseExpression(pt))
                     resultType =
-                        libraryBuilder.ensureCompatibleTypes(
-                            resultType,
-                            result.`else`!!.resultType!!,
-                        )
+                        context.ensureCompatibleTypes(resultType, result.`else`!!.resultType!!)
                 } else {
                     result.comparand = parseExpression(pt)
                 }
@@ -2223,24 +2210,21 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             if (pt is CaseExpressionItemContext) {
                 val caseItem = visit(pt) as CaseItem
                 if (result.comparand != null) {
-                    libraryBuilder.verifyType(
+                    context.verifyType(
                         caseItem.`when`!!.resultType!!,
                         result.comparand!!.resultType!!,
                     )
                 } else {
                     verifyType(
                         caseItem.`when`!!.resultType,
-                        libraryBuilder.resolveTypeName("System", "Boolean"),
+                        context.resolveTypeName("System", "Boolean"),
                     )
                 }
                 resultType =
                     if (resultType == null) {
                         caseItem.then!!.resultType
                     } else {
-                        libraryBuilder.ensureCompatibleTypes(
-                            resultType,
-                            caseItem.then!!.resultType!!,
-                        )
+                        context.ensureCompatibleTypes(resultType, caseItem.then!!.resultType!!)
                     }
                 result.caseItem.add(caseItem)
             }
@@ -2248,14 +2232,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         for (caseItem: CaseItem? in result.caseItem) {
             if (result.comparand != null) {
                 caseItem!!.`when` =
-                    (libraryBuilder.ensureCompatible(
-                        caseItem.`when`,
-                        result.comparand!!.resultType,
-                    ))
+                    (context.ensureCompatible(caseItem.`when`, result.comparand!!.resultType))
             }
-            caseItem!!.then = libraryBuilder.ensureCompatible(caseItem.then, resultType)
+            caseItem!!.then = context.ensureCompatible(caseItem.then, resultType)
         }
-        result.`else` = (libraryBuilder.ensureCompatible(result.`else`, resultType))
+        result.`else` = (context.ensureCompatible(result.`else`, resultType))
         result.resultType = resultType
         return result
     }
@@ -2284,11 +2265,10 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val source = parseExpression(ctx.expression(0))!!
 
         // If `per` is not set, it will remain `null as System.Quantity`.
-        var per: Expression? =
-            libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"))
+        var per: Expression? = context.buildNull(context.resolveTypeName("System", "Quantity"))
         if (ctx.dateTimePrecision() != null) {
             per =
-                libraryBuilder.createQuantity(
+                context.createQuantity(
                     BigDecimal("1.0"), // Always use BigDecimal(String) for exact precision
                     (parseString(ctx.dateTimePrecision()))!!,
                 )
@@ -2299,7 +2279,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             // up because it won't instantiate the generic signature because generic signature
             // instantiation logic is not considering implicit conversions to class types.
             if (perExpression is Literal) {
-                per = libraryBuilder.createQuantity(BigDecimal(perExpression.value!!), "1")
+                per = context.createQuantity(BigDecimal(perExpression.value!!), "1")
             } else {
                 per = perExpression
             }
@@ -2313,17 +2293,17 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
                     // TODO: Test this...
                     // // Successor(MinValue<T>) - MinValue<T>
-                    // MinValue minimum = libraryBuilder.buildMinimum(pointType);
+                    // MinValue minimum = context.buildMinimum(pointType);
                     // track(minimum, ctx);
                     //
-                    // Expression successor = libraryBuilder.buildSuccessor(minimum);
+                    // Expression successor = context.buildSuccessor(minimum);
                     // track(successor, ctx);
                     //
-                    // minimum = libraryBuilder.buildMinimum(pointType);
+                    // minimum = context.buildMinimum(pointType);
                     // track(minimum, ctx);
                     //
                     // Subtract subtract = of.createSubtract().withOperand(successor, minimum);
-                    // libraryBuilder.resolveCall("System", "Subtract", subtract);
+                    // context.resolveCall("System", "Subtract", subtract);
                     // per = subtract;
                 }
             }
@@ -2342,7 +2322,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     }
 
     override fun visitRetrieve(ctx: RetrieveContext): Expression? {
-        libraryBuilder.checkLiteralContext()
+        context.checkLiteralContext()
         val qualifiers: kotlin.collections.List<String> = parseQualifiers(ctx.namedTypeSpecifier())
         val model: String? = getModelIdentifier(qualifiers)
         val label: String =
@@ -2350,7 +2330,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 qualifiers,
                 (parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()))!!,
             )
-        val dataType = libraryBuilder.resolveTypeName(model, label)
+        val dataType = context.resolveTypeName(model, label)
 
         requireNotNull(dataType) { "Could not resolve type name $label." }
         require(dataType is ClassType && dataType.isRetrievable) {
@@ -2369,7 +2349,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         // NamedType namedType = profileType == null ? classType :
         // (NamedType)classType.getBaseType();
         val namedType: NamedType = classType
-        val modelInfo: ModelInfo = libraryBuilder.getModel(namedType.namespace).modelInfo
+        val modelInfo: ModelInfo = context.getModel(namedType.namespace).modelInfo
         val useStrictRetrieveTyping: Boolean =
             modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping()!!
         var codePath: String? = null
@@ -2394,11 +2374,10 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         if (useStrictRetrieveTyping) CqlCompilerException.ErrorSeverity.Error
                         else CqlCompilerException.ErrorSeverity.Warning,
                     )
-                libraryBuilder.recordParsingException(propertyException)
+                context.recordParsingException(propertyException)
             } else {
                 try {
-                    val codeType: DataType? =
-                        libraryBuilder.resolvePath(namedType as DataType, codePath)
+                    val codeType: DataType? = context.resolvePath(namedType as DataType, codePath)
                     property = of.createProperty().withPath(codePath)
                     property.resultType = codeType
                 } catch (e: Exception) {
@@ -2412,7 +2391,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             else CqlCompilerException.ErrorSeverity.Warning,
                             e,
                         )
-                    libraryBuilder.recordParsingException(propertyException)
+                    context.recordParsingException(propertyException)
                 }
             }
             if (ctx.terminology()!!.qualifiedIdentifierExpression() != null) {
@@ -2473,7 +2452,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             contextExpression,
                         )
                     mrRetrieve.resultType = ListType(namedType as DataType)
-                    val mDataType: DataType? = libraryBuilder.resolveTypeName(model, "Medication")
+                    val mDataType: DataType? = context.resolveTypeName(model, "Medication")
                     val mClassType = mDataType as ClassType
                     val mNamedType: NamedType = mClassType
                     val mRetrieve: Retrieve =
@@ -2504,37 +2483,34 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     w.resultType = w.expression!!.resultType
                     q.relationship.add(w)
                     val idPath = "id"
-                    val idType: DataType? = libraryBuilder.resolvePath(mDataType, idPath)
-                    val idProperty: Property =
-                        libraryBuilder.buildProperty("M", idPath, false, idType)
+                    val idType: DataType? = context.resolvePath(mDataType, idPath)
+                    val idProperty: Property = context.buildProperty("M", idPath, false, idType)
                     val refPath = "medication.reference"
-                    val refType: DataType? = libraryBuilder.resolvePath(dataType, refPath)
-                    val refProperty: Property =
-                        libraryBuilder.buildProperty("MR", refPath, false, refType)
+                    val refType: DataType? = context.resolvePath(dataType, refPath)
+                    val refProperty: Property = context.buildProperty("MR", refPath, false, refType)
                     val split: Split =
                         of.createSplit()
                             .withStringToSplit(refProperty)
-                            .withSeparator(libraryBuilder.createLiteral("/"))
-                    libraryBuilder.resolveCall("System", "Split", SplitInvocation(split))
+                            .withSeparator(context.createLiteral("/"))
+                    context.resolveCall("System", "Split", SplitInvocation(split))
                     val last: Last = of.createLast().withSource(split)
-                    libraryBuilder.resolveCall("System", "Last", LastInvocation(last))
+                    context.resolveCall("System", "Last", LastInvocation(last))
                     val e: Equal = of.createEqual().withOperand(listOf(idProperty, last))
-                    libraryBuilder.resolveCall("System", "Equal", e)
+                    context.resolveCall("System", "Equal", e)
 
                     // Apply target mapping if this is a profile-informed model info
-                    if (equal(idType, libraryBuilder.resolveTypeName("System", "String"))) {
+                    if (equal(idType, context.resolveTypeName("System", "String"))) {
                         idProperty.path = "id.value"
                     }
-                    if (equal(refType, libraryBuilder.resolveTypeName("System", "String"))) {
+                    if (equal(refType, context.resolveTypeName("System", "String"))) {
                         refProperty.path = "medication.reference.value"
                     }
-                    val mCodeType: DataType? =
-                        libraryBuilder.resolvePath(mNamedType as DataType?, "code")
-                    val mProperty = libraryBuilder.buildProperty("M", "code", false, mCodeType)
+                    val mCodeType: DataType? = context.resolvePath(mNamedType as DataType?, "code")
+                    val mProperty = context.buildProperty("M", "code", false, mCodeType)
                     var mCodeProperty: Expression = mProperty
 
                     // Apply target mapping if this is a profile-informed model info
-                    if (equal(mCodeType, libraryBuilder.resolveTypeName("System", "Concept"))) {
+                    if (equal(mCodeType, context.resolveTypeName("System", "Concept"))) {
                         val toConcept =
                             of.createFunctionRef()
                                 .withLibraryName("FHIRHelpers")
@@ -2547,11 +2523,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     var mCodeComparator = "~"
                     if (terminology!!.resultType is ListType) {
                         mCodeComparator = "in"
-                    } else if (libraryBuilder.isCompatibleWith("1.5")) {
+                    } else if (context.isCompatibleWith("1.5")) {
                         mCodeComparator =
                             if (
                                 terminology.resultType!!.isSubTypeOf(
-                                    libraryBuilder.resolveTypeName("System", "Vocabulary")!!
+                                    context.resolveTypeName("System", "Vocabulary")!!
                                 )
                             )
                                 "in"
@@ -2559,23 +2535,23 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     }
                     val terminologyComparison: Expression =
                         if ((mCodeComparator == "in")) {
-                            libraryBuilder.resolveIn(mCodeProperty, (terminology))
+                            context.resolveIn(mCodeProperty, (terminology))
                         } else {
                             val equivalent: BinaryExpression =
                                 of.createEquivalent()
                                     .withOperand(listOf(mCodeProperty, terminology))
-                            libraryBuilder.resolveCall("System", "Equivalent", equivalent)
+                            context.resolveCall("System", "Equivalent", equivalent)
                             equivalent
                         }
                     val a: And = of.createAnd().withOperand(listOf(e, terminologyComparison))
-                    libraryBuilder.resolveCall("System", "And", a)
+                    context.resolveCall("System", "And", a)
                     w.withSuchThat(a)
                     result =
                         if (result == null) {
                             q
                         } else {
                             track(q, ctx)
-                            libraryBuilder.resolveUnion(result, q)
+                            context.resolveUnion(result, q)
                         }
                 } else {
                     val retrieve: Retrieve =
@@ -2604,7 +2580,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             //     retrieve.getCodeComparator() != null &&
                             //     retrieve.getCodes() != null) {
                             track(retrieve, ctx)
-                            libraryBuilder.resolveUnion(result, retrieve)
+                            context.resolveUnion(result, retrieve)
                             // }
                         }
                 }
@@ -2647,7 +2623,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     override fun visitQuery(ctx: cqlParser.QueryContext): Query {
         val queryContext = QueryContext()
-        libraryBuilder.scopeManager.pushQueryContext(queryContext)
+        context.scopeManager.pushQueryContext(queryContext)
         var sources: kotlin.collections.List<AliasedQuerySource>? = null
         return try {
             queryContext.enterSourceClause()
@@ -2660,7 +2636,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             for (source: AliasedQuerySource in sources) {
                 val ir = of.createIdentifierRef().withName(source.alias)
                 track(ir, source)
-                libraryBuilder.pushIdentifier(ir, source)
+                context.pushIdentifier(ir, source)
             }
 
             // If we are evaluating a population-level query whose source ranges over any
@@ -2671,9 +2647,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             /*
              * TODO: Address the issue of referencing multiple context expressions within a
              * query (or even expression in general)
-             * if (libraryBuilder.inUnfilteredContext() &&
+             * if (context.inUnfilteredContext() &&
              * queryContext.referencesSpecificContext()) {
-             * libraryBuilder.scopeManager.pushExpressionContext("Patient");
+             * context.scopeManager.pushExpressionContext("Patient");
              * expressionContextPushed = true;
              * }
              */
@@ -2683,7 +2659,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 for (letClause: LetClause in dfcx) {
                     val ir = of.createIdentifierRef().withName(letClause.identifier)
                     track(ir, letClause)
-                    libraryBuilder.pushIdentifier(ir, letClause)
+                    context.pushIdentifier(ir, letClause)
                 }
                 val qicx: MutableList<RelationshipClause> = ArrayList()
                 for (queryInclusionClauseContext in ctx.queryInclusionClause()) {
@@ -2751,11 +2727,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                                 if (sortByItem is ByDirection) {
                                     // validate that there is a comparison operator defined for the
                                     // result element type of the query context
-                                    libraryBuilder.verifyComparable(
-                                        queryContext.resultElementType!!
-                                    )
+                                    context.verifyComparable(queryContext.resultElementType!!)
                                 } else {
-                                    libraryBuilder.verifyComparable(sortByItem!!.resultType!!)
+                                    context.verifyComparable(sortByItem!!.resultType!!)
                                 }
                             }
                         } finally {
@@ -2780,17 +2754,17 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 query
             } finally {
                 if (expressionContextPushed) {
-                    libraryBuilder.scopeManager.popExpressionContext()
+                    context.scopeManager.popExpressionContext()
                 }
                 for (letClause in dfcx) {
-                    libraryBuilder.popIdentifier()
+                    context.popIdentifier()
                 }
             }
         } finally {
-            libraryBuilder.scopeManager.popQueryContext()
+            context.scopeManager.popQueryContext()
             if (sources != null) {
                 for (source in sources) {
-                    libraryBuilder.popIdentifier()
+                    context.popIdentifier()
                 }
             }
         }
@@ -2810,7 +2784,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 .withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()))
         letClause.resultType = letClause.expression!!.resultType
-        libraryBuilder.scopeManager.peekQueryContext().addLetClause(letClause)
+        context.scopeManager.peekQueryContext().addLetClause(letClause)
         return letClause
     }
 
@@ -2825,37 +2799,37 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     override fun visitWithClause(ctx: WithClauseContext): Any {
         val aqs = visit(ctx.aliasedQuerySource()) as AliasedQuerySource
-        libraryBuilder.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
+        context.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
         return try {
             val expression = visit(ctx.expression()) as Expression
-            verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
+            verifyType(expression.resultType, context.resolveTypeName("System", "Boolean"))
             val result: RelationshipClause = of.createWith()
             result.withExpression(aqs.expression).withAlias(aqs.alias).withSuchThat(expression)
             result.resultType = aqs.resultType
             result
         } finally {
-            libraryBuilder.scopeManager.peekQueryContext().removeQuerySource(aqs)
+            context.scopeManager.peekQueryContext().removeQuerySource(aqs)
         }
     }
 
     override fun visitWithoutClause(ctx: WithoutClauseContext): Any {
         val aqs = visit(ctx.aliasedQuerySource()) as AliasedQuerySource
-        libraryBuilder.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
+        context.scopeManager.peekQueryContext().addRelatedQuerySource(aqs)
         return try {
             val expression = visit(ctx.expression()) as Expression
-            verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
+            verifyType(expression.resultType, context.resolveTypeName("System", "Boolean"))
             val result: RelationshipClause = of.createWithout()
             result.withExpression(aqs.expression).withAlias(aqs.alias).withSuchThat(expression)
             result.resultType = aqs.resultType
             result
         } finally {
-            libraryBuilder.scopeManager.peekQueryContext().removeQuerySource(aqs)
+            context.scopeManager.peekQueryContext().removeQuerySource(aqs)
         }
     }
 
     override fun visitWhereClause(ctx: WhereClauseContext): Any {
         val result = visit(ctx.expression()) as Expression
-        verifyType(result.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
+        verifyType(result.resultType, context.resolveTypeName("System", "Boolean"))
         return result
     }
 
@@ -2869,7 +2843,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
         returnClause.expression = parseExpression(ctx.expression())
         returnClause.resultType =
-            if (libraryBuilder.scopeManager.peekQueryContext().isSingular)
+            if (context.scopeManager.peekQueryContext().isSingular)
                 returnClause.expression!!.resultType
             else ListType(returnClause.expression!!.resultType!!)
         return returnClause
@@ -2888,7 +2862,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     }
 
     override fun visitAggregateClause(ctx: AggregateClauseContext): AggregateClause {
-        libraryBuilder.checkCompatibilityLevel("Aggregate query clause", "1.5")
+        context.checkCompatibilityLevel("Aggregate query clause", "1.5")
         val aggregateClause = of.createAggregateClause()
         if (ctx.getChild(1) is TerminalNode) {
             when (ctx.getChild(1)!!.text) {
@@ -2906,16 +2880,16 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         aggregateClause.identifier = parseString(ctx.identifier())
         val accumulator: Expression =
             if (aggregateClause.starting != null) {
-                libraryBuilder.buildNull(aggregateClause.starting!!.resultType)
+                context.buildNull(aggregateClause.starting!!.resultType)
             } else {
-                libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Any"))
+                context.buildNull(context.resolveTypeName("System", "Any"))
             }
         val letClause =
             of.createLetClause()
                 .withExpression(accumulator)
                 .withIdentifier(aggregateClause.identifier)
         letClause.resultType = letClause.expression!!.resultType
-        libraryBuilder.scopeManager.peekQueryContext().addLetClause(letClause)
+        context.scopeManager.peekQueryContext().addLetClause(letClause)
         aggregateClause.expression = parseExpression(ctx.expression())
         aggregateClause.resultType = aggregateClause.expression!!.resultType
         if (aggregateClause.starting == null) {
@@ -2994,17 +2968,17 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     override fun visitInvocationExpressionTerm(ctx: InvocationExpressionTermContext): Expression? {
         val left = parseExpression(ctx.expressionTerm())!!
-        return libraryBuilder.scopeManager.withExpressionTarget(left) {
+        return context.scopeManager.withExpressionTarget(left) {
             visit(ctx.qualifiedInvocation()) as Expression?
         }
     }
 
     override fun visitExternalConstant(ctx: ExternalConstantContext): Expression? {
-        return libraryBuilder.resolveIdentifier(ctx.text, true)
+        return context.resolveIdentifier(ctx.text, true)
     }
 
     override fun visitThisInvocation(ctx: ThisInvocationContext): Expression? {
-        return libraryBuilder.resolveIdentifier(ctx.text, true)
+        return context.resolveIdentifier(ctx.text, true)
     }
 
     override fun visitMemberInvocation(ctx: MemberInvocationContext): Expression? {
@@ -3028,19 +3002,19 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 if (current == null) {
                     resolveIdentifier(identifier)
                 } else {
-                    libraryBuilder.resolveAccessor(current, identifier)
+                    context.resolveAccessor(current, identifier)
                 }
         }
         return current
     }
 
     private fun resolveMemberIdentifier(identifier: String): Expression? {
-        if (libraryBuilder.scopeManager.hasExpressionTarget()) {
-            val target = libraryBuilder.scopeManager.popExpressionTarget()
+        if (context.scopeManager.hasExpressionTarget()) {
+            val target = context.scopeManager.popExpressionTarget()
             return try {
-                libraryBuilder.resolveAccessor(target, identifier)
+                context.resolveAccessor(target, identifier)
             } finally {
-                libraryBuilder.scopeManager.pushExpressionTarget(target)
+                context.scopeManager.pushExpressionTarget(target)
             }
         }
         return resolveIdentifier(identifier)
@@ -3049,7 +3023,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     private fun resolveIdentifier(identifier: String): Expression? {
         // If the identifier cannot be resolved in the library builder, check for forward
         // declarations for expressions and parameters
-        var result = libraryBuilder.resolveIdentifier(identifier, false)
+        var result = context.resolveIdentifier(identifier, false)
         if (result == null) {
             val expressionInfo = this.libraryInfo.resolveExpressionReference(identifier)
             if (expressionInfo != null) {
@@ -3078,7 +3052,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.definition)
             }
-            result = libraryBuilder.resolveIdentifier(identifier, true)
+            result = context.resolveIdentifier(identifier, true)
         }
         return result
     }
@@ -3133,7 +3107,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     ): Expression? {
         var name = functionName
         if (allowFluent) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
+            context.checkCompatibilityLevel("Fluent functions", "1.5")
         }
         name = ensureSystemFunctionName(libraryName, name)
 
@@ -3160,7 +3134,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
             }
         }
         val result =
-            libraryBuilder.resolveFunction(
+            context.resolveFunction(
                 libraryName,
                 name,
                 expressions,
@@ -3173,7 +3147,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                 result.resolution != null &&
                 (result.resolution!!.operator.libraryName == null ||
                     (result.resolution!!.operator.libraryName ==
-                        libraryBuilder.compiledLibrary.identifier!!.id))
+                        context.compiledLibrary.identifier!!.id))
         ) {
             val op = result.resolution!!.operator
             val fh = getFunctionHeader(op)
@@ -3207,8 +3181,8 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         identifier: String,
         paramListCtx: ParamListContext?,
     ): Expression? {
-        if (libraryBuilder.scopeManager.hasExpressionTarget()) {
-            val target: Expression = libraryBuilder.scopeManager.popExpressionTarget()
+        if (context.scopeManager.hasExpressionTarget()) {
+            val target: Expression = context.scopeManager.popExpressionTarget()
             try {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target is LibraryRef) {
@@ -3234,13 +3208,13 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     "Invalid invocation target: ${target::class.simpleName}"
                 )
             } finally {
-                libraryBuilder.scopeManager.pushExpressionTarget(target)
+                context.scopeManager.pushExpressionTarget(target)
             }
         }
 
         // If we are in an implicit $this context, the function may be resolved as a method
         // invocation
-        val thisRef: Expression? = libraryBuilder.resolveIdentifier("\$this", false)
+        val thisRef: Expression? = context.resolveIdentifier("\$this", false)
         if (thisRef != null) {
             val result: Expression? =
                 this.systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false)
@@ -3251,7 +3225,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
         // If we are in an implicit context (i.e. a context named the same as a parameter), the
         // function may be resolved as a method invocation
-        val parameterRef: ParameterRef? = libraryBuilder.resolveImplicitContext()
+        val parameterRef: ParameterRef? = context.resolveImplicitContext()
         if (parameterRef != null) {
             val result: Expression? =
                 this.systemMethodResolver.resolveMethod(
@@ -3312,7 +3286,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         for (dt in op.signature.operandTypes) {
             st.add(dt)
         }
-        val fds = libraryBuilder.compiledLibrary.resolveFunctionRef(op.name, st)
+        val fds = context.compiledLibrary.resolveFunctionRef(op.name, st)
         for (fd in fds) {
             if (fd.operand.size == op.signature.size) {
                 val signatureTypes = op.signature.operandTypes.iterator()
@@ -3358,8 +3332,8 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     private fun registerFunctionDefinition(ctx: FunctionDefinitionContext) {
         val fh = getFunctionHeader(ctx)
-        if (!libraryBuilder.compiledLibrary.contains(fh.functionDef)) {
-            libraryBuilder.addExpression(fh.functionDef)
+        if (!context.compiledLibrary.contains(fh.functionDef)) {
+            context.addExpression(fh.functionDef)
         }
     }
 
@@ -3368,26 +3342,26 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         val functionDef: FunctionDef = fh.functionDef
         val resultType: TypeSpecifier? = fh.resultType
         val op: Operator =
-            libraryBuilder.resolveFunctionDefinition(fh.functionDef)
+            context.resolveFunctionDefinition(fh.functionDef)
                 ?: throw IllegalArgumentException(
                     "Internal error: Could not resolve operator map entry for function header ${fh.mangledName}"
                 )
 
         val ir = of.createIdentifierRef().withName(functionDef.name)
         track(ir, ctx.identifierOrFunctionIdentifier())
-        libraryBuilder.pushIdentifier(ir, functionDef, IdentifierScope.GLOBAL)
+        context.pushIdentifier(ir, functionDef, IdentifierScope.GLOBAL)
 
         val operand = op.functionDef!!.operand as kotlin.collections.List<OperandDef>
         for (operandDef: OperandDef in operand) {
             val oir = of.createIdentifierRef().withName(operandDef.name)
             track(oir, operandDef)
-            libraryBuilder.pushIdentifier(oir, operandDef)
+            context.pushIdentifier(oir, operandDef)
         }
         try {
             if (ctx.functionBody() != null) {
-                libraryBuilder.scopeManager.withFunctionDef(functionDef) {
-                    libraryBuilder.scopeManager.withExpressionContext(this.currentContext) {
-                        libraryBuilder.scopeManager.withExpressionDefinition(fh.mangledName) {
+                context.scopeManager.withFunctionDef(functionDef) {
+                    context.scopeManager.withExpressionContext(this.currentContext) {
+                        context.scopeManager.withExpressionDefinition(fh.mangledName) {
                             functionDef.expression = parseExpression(ctx.functionBody())
                         }
                     }
@@ -3415,7 +3389,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         } finally {
             for (operandDef: OperandDef? in operand) {
                 try {
-                    libraryBuilder.popIdentifier()
+                    context.popIdentifier()
                 } catch (e: Exception) {
                     logger.warn(e) { "Error popping identifier" }
                 }
@@ -3425,14 +3399,14 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
     }
 
     override fun visitFunctionDefinition(ctx: FunctionDefinitionContext): Any {
-        return libraryBuilder.scopeManager.withIdentifierScope {
+        return context.scopeManager.withIdentifierScope {
             registerFunctionDefinition(ctx)
             compileFunctionDefinition(ctx)
         }
     }
 
     private fun parseLiteralExpression(pt: ParseTree?): Expression? {
-        return libraryBuilder.scopeManager.withLiteralContext { parseExpression(pt) }
+        return context.scopeManager.withLiteralContext { parseExpression(pt) }
     }
 
     private fun parseExpression(pt: ParseTree?): Expression? {
@@ -3450,7 +3424,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     private fun getTrackBack(node: TerminalNode): TrackBack {
         return TrackBack(
-            libraryBuilder.libraryIdentifier,
+            context.libraryIdentifier,
             node.symbol.line,
             node.symbol.charPositionInLine + 1, // 1-based instead of 0-based
             node.symbol.line,
@@ -3460,7 +3434,7 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
 
     private fun getTrackBack(ctx: ParserRuleContext): TrackBack {
         return TrackBack(
-            libraryBuilder.libraryIdentifier,
+            context.libraryIdentifier,
             ctx.start?.line ?: 0,
             ctx.start?.charPositionInLine?.inc() ?: 0, // 1-based instead of 0-based
             ctx.stop?.line ?: 0,
@@ -3475,10 +3449,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
         }
         if (resultTypesEnabled() && element.resultType != null) {
             if (element.resultType is NamedType) {
-                element.resultTypeName = libraryBuilder.dataTypeToQName(element.resultType)
+                element.resultTypeName = context.dataTypeToQName(element.resultType)
             } else {
-                element.resultTypeSpecifier =
-                    libraryBuilder.dataTypeToTypeSpecifier(element.resultType)
+                element.resultTypeSpecifier = context.dataTypeToTypeSpecifier(element.resultType)
             }
         }
     }
@@ -3577,12 +3550,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                         vid.system =
                             when {
                                 namespaceName != null ->
-                                    libraryBuilder.resolveNamespaceUri(namespaceName, true)
-                                libraryBuilder.namespaceInfo != null ->
-                                    libraryBuilder.namespaceInfo.uri
+                                    context.resolveNamespaceUri(namespaceName, true)
+                                context.namespaceInfo != null -> context.namespaceInfo.uri
                                 else -> null
                             }
-                        libraryBuilder.libraryIdentifier = vid
+                        context.libraryIdentifier = vid
                     }
                     is IncludeDefinitionContext -> {
                         @Suppress("UNCHECKED_CAST")
@@ -3635,11 +3607,11 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                             when {
                                 identifiers.isNotEmpty() -> {
                                     val nsName = identifiers.joinToString(".")
-                                    val uri = libraryBuilder.resolveNamespaceUri(nsName, true)
+                                    val uri = context.resolveNamespaceUri(nsName, true)
                                     NamespaceInfo(nsName, uri!!)
                                 }
-                                libraryBuilder.isWellKnownModelName(unqualified) -> null
-                                libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo
+                                context.isWellKnownModelName(unqualified) -> null
+                                context.namespaceInfo != null -> context.namespaceInfo
                                 else -> null
                             }
                         getModel(modelNamespace, unqualified, version, localName)
@@ -3711,9 +3683,9 @@ class Cql2ElmVisitor(libraryBuilder: Cql2ElmContext, tokenStream: TokenStream) :
                     }
                 }
             } catch (e: CqlCompilerException) {
-                libraryBuilder.recordParsingException(e)
+                context.recordParsingException(e)
             } catch (e: Exception) {
-                libraryBuilder.recordParsingException(
+                context.recordParsingException(
                     CqlSemanticException(
                         e.message ?: "Internal error processing top-level definition",
                         getTrackBack(raw),

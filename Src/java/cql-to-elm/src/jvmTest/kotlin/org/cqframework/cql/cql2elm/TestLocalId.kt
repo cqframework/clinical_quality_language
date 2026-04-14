@@ -54,7 +54,7 @@ internal class TestLocalId {
             )
         val libraryManager = LibraryManager(modelManager, options)
         libraryManager.librarySourceLoader.registerProvider(TestLibrarySourceProvider())
-        val libraryBuilder = Cql2ElmContext(libraryManager, brokenFactory)
+        val context = Cql2ElmContext(libraryManager, brokenFactory)
 
         // Simplest possible library, just to trigger a missing id error.
         val lexer = cqlLexer(CharStreams.fromString("library Test\ndefine \"One\": 1"))
@@ -62,10 +62,10 @@ internal class TestLocalId {
         val parser = cqlParser(tokens)
         parser.buildParseTree = true
         val tree = parser.library()
-        val visitor = Cql2ElmVisitor(libraryBuilder, tokens)
+        val visitor = Cql2ElmVisitor(context, tokens)
         visitor.visit(tree)
 
-        val exceptions = libraryBuilder.exceptions
+        val exceptions = context.exceptions
         // Exceptions for the literal and the define, plus the library itself
         Assertions.assertEquals(3, exceptions.size)
         val e = exceptions[0]

@@ -194,11 +194,11 @@ class SymbolTable(private val lb: Cql2ElmContext) {
         modelIdentifier: org.hl7.cql.model.ModelIdentifier,
         localIdentifier: String,
     ): org.cqframework.cql.cql2elm.model.Model {
-        var model = lb.modelsInternal[localIdentifier]
+        var model = lb.models[localIdentifier]
         if (model == null) {
             model = loadModel(modelIdentifier)
-            lb.defaultModelInternal = model
-            lb.modelsInternal[localIdentifier] = model
+            lb.defaultModel = model
+            lb.models[localIdentifier] = model
             buildUsingDef(modelIdentifier, model, localIdentifier)
         }
         require(
@@ -252,7 +252,7 @@ class SymbolTable(private val lb: Cql2ElmContext) {
     }
 
     fun hasUsings(): Boolean {
-        for (model in lb.modelsInternal.values) {
+        for (model in lb.models.values) {
             if (model!!.modelInfo.name != "System") return true
         }
         return false
