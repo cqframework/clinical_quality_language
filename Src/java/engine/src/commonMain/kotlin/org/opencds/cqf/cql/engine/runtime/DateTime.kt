@@ -40,6 +40,11 @@ class DateTime : BaseTemporal {
             field = dateTime
         }
 
+    override fun withPrecision(precision: Precision?): DateTime {
+        this.precision = precision
+        return this
+    }
+
     @JsExport.Ignore
     constructor(dateTime: OffsetDateTime?) {
         this.dateTime = (dateTime)

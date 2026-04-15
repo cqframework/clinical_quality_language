@@ -22,6 +22,11 @@ class Time : BaseTemporal {
         return this
     }
 
+    override fun withPrecision(precision: Precision?): Time {
+        this.precision = precision
+        return this
+    }
+
     @JsExport.Ignore
     constructor(time: LocalTime, precision: Precision) {
         this.time = time
