@@ -1,6 +1,6 @@
 {
   "name": "@cqframework/cql",
-  "version": "4.7.0",
+  "version": "5.0.0",
   "description": "JavaScript tools for the Clinical Quality Language (CQL).",
   "keywords": [
     "cql",
