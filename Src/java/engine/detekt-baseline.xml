@@ -21,7 +21,6 @@
     <ID>ComplexCondition:UnionEvaluator.kt$UnionEvaluator$leftStart == null || leftEnd == null || rightStart == null || rightEnd == null</ID>
     <ID>ComplexCondition:ValueSet.kt$ValueSet$id == cs.id &amp;&amp; ((version == null &amp;&amp; cs.version == null) || (version != null &amp;&amp; version == cs.version))</ID>
     <ID>CyclomaticComplexMethod:CollapseEvaluator.kt$CollapseEvaluator$fun collapse(list: Iterable&lt;Interval?>?, per: Quantity?, state: State?): List&lt;Interval?>?</ID>
-    <ID>CyclomaticComplexMethod:CqlValue.kt$fun getNamedTypeForCqlValue(value: Any?): QName?</ID>
     <ID>CyclomaticComplexMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>CyclomaticComplexMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>CyclomaticComplexMethod:EquivalentEvaluator.kt$EquivalentEvaluator$@JvmStatic @JvmOverloads fun equivalent(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
@@ -110,7 +109,6 @@
     <ID>LongMethod:DateTimeTest.kt$DateTimeTest$@Test fun offsetPrecisionsTest()</ID>
     <ID>LongMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>LongMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
-    <ID>LongMethod:EqualEvaluator.kt$EqualEvaluator$@JvmStatic @JvmOverloads fun equal(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
     <ID>LongMethod:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>LongMethod:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>LongMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Any?, precision: Any?): Any?</ID>
@@ -435,6 +433,7 @@
     <ID>ReturnCount:MinEvaluator.kt$MinEvaluator$@JvmStatic fun min(source: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ModuloEvaluator.kt$ModuloEvaluator$@JvmStatic fun modulo(left: Any?, right: Any?): Any?</ID>
+    <ID>ReturnCount:NamedCqlType.kt$fun getNamedTypeForCqlValue(value: Any?): QName?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun internalEvaluate( operand: Expression, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun negate(source: Any?): Any?</ID>
     <ID>ReturnCount:NodeMatcher.kt$NodeMatcher$override fun matchesSafely(node: Profile.Node): Boolean</ID>
@@ -561,7 +560,7 @@
     <ID>TooManyFunctions:TimeJs.kt$OffsetDateTimeJs : TemporalJs</ID>
     <ID>TooManyFunctions:TimeJs.kt$org.opencds.cqf.cql.engine.util.TimeJs.kt</ID>
     <ID>TooManyFunctions:TimeJvm.kt$org.opencds.cqf.cql.engine.util.TimeJvm.kt</ID>
-    <ID>TopLevelPropertyNaming:CqlValue.kt$const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"</ID>
+    <ID>TopLevelPropertyNaming:NamedCqlType.kt$const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownPackageName = "unknown"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownSimpleName = "Unknown"</ID>
     <ID>UnusedParameter:FunctionRefEvaluator.kt$FunctionRefEvaluator$state: State?</ID>

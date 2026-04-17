@@ -3,10 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.Property
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
@@ -118,7 +118,7 @@ object PropertyEvaluator {
                 }
             }
             is Tuple -> target.getElement(property)
-            is CqlClassInstance -> target.elements[property]
+            is ClassInstance -> target.elements[property]
             else -> throw IllegalArgumentException("Could not resolve path '$property' on $target.")
         }
     }

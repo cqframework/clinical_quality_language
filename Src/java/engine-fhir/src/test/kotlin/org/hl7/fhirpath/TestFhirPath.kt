@@ -31,7 +31,7 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Time
@@ -93,8 +93,8 @@ abstract class TestFhirPath {
         var actualResult = actualResult
 
         if (
-            actualResult is CqlClassInstance &&
-                actualResult.type.namespaceURI == "http://hl7.org/fhir"
+            actualResult is ClassInstance &&
+                actualResult.type.namespaceURI == FhirModelResolver.fhirModelNamespaceUri
         ) {
             val actualResultClass = resolver.resolveType(actualResult.type.localPart)!!
             if (

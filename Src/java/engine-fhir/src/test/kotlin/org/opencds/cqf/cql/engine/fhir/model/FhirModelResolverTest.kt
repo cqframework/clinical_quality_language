@@ -30,10 +30,10 @@ import org.hl7.fhir.r5.model.HumanName as R5HumanName
 import org.hl7.fhir.r5.model.Patient as R5Patient
 import org.hl7.fhir.r5.model.StringType as R5StringType
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelNamespaceUri
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -115,7 +115,7 @@ private fun validateCqlValueAgainstModel(
                     "System.ValueSet" -> assertIs<ValueSet>(cqlValue)
                     "System.CodeSystem" -> assertIs<CodeSystem>(cqlValue)
                     else -> {
-                        assertIs<CqlClassInstance>(cqlValue)
+                        assertIs<ClassInstance>(cqlValue)
                         val cqlValueType =
                             modelManager
                                 .resolveModelByUri(cqlValue.type.namespaceURI)
@@ -235,19 +235,19 @@ class FhirModelResolverTest {
             validateCqlValueAgainstModel(fhirVersion, "string", cqlValue)
 
             assertEquals(
-                CqlClassInstance(
+                ClassInstance(
                     QName(fhirModelNamespaceUri, "string"),
                     mutableMapOf(
                         "id" to null,
                         "extension" to
                             listOf(
-                                CqlClassInstance(
+                                ClassInstance(
                                     QName(fhirModelNamespaceUri, "Extension"),
                                     mutableMapOf(
                                         "id" to null,
                                         "extension" to null,
                                         "value" to
-                                            CqlClassInstance(
+                                            ClassInstance(
                                                 QName(fhirModelNamespaceUri, "string"),
                                                 mutableMapOf(
                                                     "id" to null,
@@ -256,7 +256,7 @@ class FhirModelResolverTest {
                                                 ),
                                             ),
                                         "url" to
-                                            CqlClassInstance(
+                                            ClassInstance(
                                                 QName(fhirModelNamespaceUri, "uri"),
                                                 mutableMapOf(
                                                     "id" to null,
@@ -311,7 +311,7 @@ class FhirModelResolverTest {
             validateCqlValueAgainstModel(fhirVersion, "string", cqlValue)
 
             assertEquals(
-                CqlClassInstance(
+                ClassInstance(
                     QName(fhirModelNamespaceUri, "string"),
                     mutableMapOf("id" to stringId, "extension" to null, "value" to null),
                 ),
@@ -340,7 +340,7 @@ class FhirModelResolverTest {
             validateCqlValueAgainstModel(fhirVersion, "NameUse", cqlValue)
 
             assertEquals(
-                CqlClassInstance(
+                ClassInstance(
                     QName(fhirModelNamespaceUri, "NameUse"),
                     mutableMapOf("id" to null, "extension" to null, "value" to "official"),
                 ),
@@ -384,7 +384,7 @@ class FhirModelResolverTest {
             validateCqlValueAgainstModel(fhirVersion, "NameUse", cqlValue)
 
             assertEquals(
-                CqlClassInstance(
+                ClassInstance(
                     QName(fhirModelNamespaceUri, "NameUse"),
                     mutableMapOf("id" to elementId, "extension" to null, "value" to null),
                 ),
@@ -410,11 +410,11 @@ class FhirModelResolverTest {
             if (fhirVersion == FhirVersionEnum.R4 || fhirVersion == FhirVersionEnum.R5) {
                 validateCqlValueAgainstModel(fhirVersion, "Patient", cqlValue)
 
-                assertIs<CqlClassInstance>(cqlValue)
+                assertIs<ClassInstance>(cqlValue)
                 val containedResources = cqlValue.elements["contained"]
                 assertIs<Iterable<*>>(containedResources)
                 val containedPatient = containedResources.elementAt(0)
-                assertIs<CqlClassInstance>(containedPatient)
+                assertIs<ClassInstance>(containedPatient)
                 assertEquals(QName(fhirModelNamespaceUri, "Patient"), containedPatient.type)
             }
         }
@@ -435,11 +435,11 @@ class FhirModelResolverTest {
 
             validateCqlValueAgainstModel(fhirVersion, "Patient", cqlValue)
 
-            assertIs<CqlClassInstance>(cqlValue)
+            assertIs<ClassInstance>(cqlValue)
             val modifierExtensions = cqlValue.elements["modifierExtension"]
             assertIs<Iterable<*>>(modifierExtensions)
             val modifierExtension = modifierExtensions.elementAt(0)
-            assertIs<CqlClassInstance>(modifierExtension)
+            assertIs<ClassInstance>(modifierExtension)
             assertEquals(QName(fhirModelNamespaceUri, "Extension"), modifierExtension.type)
         }
     }

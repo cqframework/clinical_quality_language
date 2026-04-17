@@ -78,7 +78,7 @@ object MessageEvaluator {
 
         val dataProvider =
             when (source) {
-                // Use the system data provider to obfuscate intervals, lists, and anonymous tuples
+                // Use the system data provider to obfuscate intervals, lists, and tuples
                 is Interval,
                 is Tuple,
                 is Iterable<*> ->

@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -38,21 +38,21 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
         val resultPatient = evaluate(cqlEngine, PATIENT, initialContext)
 
-        assertIs<CqlClassInstance>(resultPatient)
+        assertIs<ClassInstance>(resultPatient)
         assertEquals(QName("http://hl7.org/fhir", "Patient"), resultPatient.type)
         assertEquals(
             _PATIENT_123,
-            (resultPatient.elements["id"] as CqlClassInstance).elements["value"],
+            (resultPatient.elements["id"] as ClassInstance).elements["value"],
         )
 
         cqlEngine.state.clearEvaluatedResources()
 
         val resultPrimaryCareDoctor = evaluate(cqlEngine, PRIMARY_CARE_DOCTOR, initialContext)
-        assertIs<CqlClassInstance>(resultPrimaryCareDoctor)
+        assertIs<ClassInstance>(resultPrimaryCareDoctor)
         assertEquals(QName("http://hl7.org/fhir", "Practitioner"), resultPrimaryCareDoctor.type)
         assertEquals(
             XYZ,
-            (resultPrimaryCareDoctor.elements["id"] as CqlClassInstance).elements["value"],
+            (resultPrimaryCareDoctor.elements["id"] as ClassInstance).elements["value"],
         )
 
         cqlEngine.state.clearEvaluatedResources()
@@ -63,7 +63,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         assertIs<MutableList<*>>(resultAllPatientForGp)
 
         val patientsForPractitioner =
-            resultAllPatientForGp.filterIsInstance<CqlClassInstance>().filter {
+            resultAllPatientForGp.filterIsInstance<ClassInstance>().filter {
                 it.type == QName("http://hl7.org/fhir", "Patient")
             }
 
@@ -72,7 +72,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         assertEquals(
             setOf(PATIENT_123, PATIENT_456, PATIENT_789).map { it.getId() }.toSet(),
             patientsForPractitioner
-                .map { (it.elements["id"] as CqlClassInstance).elements["value"] }
+                .map { (it.elements["id"] as ClassInstance).elements["value"] }
                 .toSet(),
         )
     }

@@ -15,6 +15,8 @@ import org.opencds.cqf.cql.engine.util.toPaddedString
 import org.opencds.cqf.cql.engine.util.zoneOffsetOfHoursMinutes
 
 class DateTime : BaseTemporal {
+    override val type = dateTimeTypeName
+
     val zoneOffset: ZoneOffset
 
     var dateTime: OffsetDateTime? = null

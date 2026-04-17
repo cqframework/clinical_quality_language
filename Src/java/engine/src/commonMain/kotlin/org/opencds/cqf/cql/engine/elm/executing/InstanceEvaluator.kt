@@ -4,10 +4,10 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.cqframework.cql.shared.BigDecimal
 import org.hl7.elm.r1.Instance
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
@@ -92,7 +92,7 @@ object InstanceEvaluator {
                     else -> throw IllegalArgumentException("Could not set $path on $target.")
                 }
             }
-            is CqlClassInstance -> target.elements[path] = value
+            is ClassInstance -> target.elements[path] = value
             else -> throw IllegalArgumentException("Could not set $path on $target.")
         }
     }

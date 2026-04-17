@@ -31,7 +31,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
@@ -89,10 +89,10 @@ abstract class FhirModelResolver<
     }
 
     override fun resolveId(target: Any?): String? {
-        if (target is CqlClassInstance && target.type.namespaceURI == fhirModelNamespaceUri) {
+        if (target is ClassInstance && target.type.namespaceURI == fhirModelNamespaceUri) {
             val clazz = this.resolveType(target.type.localPart) ?: return null
             if (IBaseResource::class.java.isAssignableFrom(clazz)) {
-                val id = target.elements["id"] as? CqlClassInstance ?: return null
+                val id = target.elements["id"] as? ClassInstance ?: return null
                 return id.elements["value"] as? String
             }
         }
@@ -582,7 +582,7 @@ abstract class FhirModelResolver<
     fun toCqlValue(
         target: Any?,
         expandPrimitivesAndEnumerationsWithNoValues: Boolean = false,
-    ): CqlClassInstance? {
+    ): ClassInstance? {
         if (target == null) {
             return null
         }
@@ -629,7 +629,7 @@ abstract class FhirModelResolver<
 
             elements["value"] = target.valueAsString
 
-            return CqlClassInstance(QName(fhirModelNamespaceUri, typeName), elements)
+            return ClassInstance(QName(fhirModelNamespaceUri, typeName), elements)
         }
 
         if (target is IPrimitiveType<*>) {
@@ -647,7 +647,7 @@ abstract class FhirModelResolver<
 
             elements["value"] = toJavaPrimitive(target.value, target)
 
-            return CqlClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
+            return ClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
         }
 
         val definition = resolveRuntimeDefinition(target)
@@ -666,7 +666,7 @@ abstract class FhirModelResolver<
                     }
         }
 
-        return CqlClassInstance(QName(fhirModelNamespaceUri, definition.name), elements)
+        return ClassInstance(QName(fhirModelNamespaceUri, definition.name), elements)
     }
 
     companion object {

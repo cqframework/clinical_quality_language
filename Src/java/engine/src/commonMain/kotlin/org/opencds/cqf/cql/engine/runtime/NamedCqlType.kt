@@ -3,6 +3,10 @@ package org.opencds.cqf.cql.engine.runtime
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 
+interface NamedCqlType : CqlType {
+    val type: QName
+}
+
 const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"
 
 val anyTypeName = QName(systemModelNamespaceUri, "Any")
@@ -24,7 +28,7 @@ val vocabularyTypeName = QName(systemModelNamespaceUri, "Vocabulary")
 
 /**
  * Returns the type as a `QName` for instances of named types. Returns null for intervals, lists,
- * and anonymous tuples.
+ * and tuples.
  *
  * @param value The native CQL value to get the type for.
  */
@@ -33,22 +37,16 @@ fun getNamedTypeForCqlValue(value: Any?): QName? {
         return anyTypeName
     }
 
+    if (value is NamedCqlType) {
+        return value.type
+    }
+
     return when (value) {
         is Boolean -> booleanTypeName
         is Int -> integerTypeName
         is Long -> longTypeName
         is BigDecimal -> decimalTypeName
         is String -> stringTypeName
-        is Date -> dateTypeName
-        is DateTime -> dateTimeTypeName
-        is Time -> timeTypeName
-        is Quantity -> quantityTypeName
-        is Ratio -> ratioTypeName
-        is Code -> codeTypeName
-        is Concept -> conceptTypeName
-        is CodeSystem -> codeSystemTypeName
-        is ValueSet -> valueSetTypeName
-        is CqlClassInstance -> value.type
         else -> null
     }
 }

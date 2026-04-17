@@ -15,6 +15,8 @@ import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
 class Date : BaseTemporal {
+    override val type = dateTypeName
+
     var date: LocalDate? = null
         set(date) {
             if (date!!.getYear() < 1) {

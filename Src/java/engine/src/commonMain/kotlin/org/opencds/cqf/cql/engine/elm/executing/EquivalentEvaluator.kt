@@ -56,7 +56,7 @@ object EquivalentEvaluator {
             return false
         }
 
-        // Cases in which Java classes may differ
+        // Cases in which Kotlin classes may differ
 
         if (left is Iterable<*> && right is Iterable<*>) {
             return listEquivalent(left, right, state)
@@ -70,7 +70,7 @@ object EquivalentEvaluator {
             return intervalIntegerEquivalent(right, left, state)
         }
 
-        // Return false early if Java classes don't match (platform dependence)
+        // Return false early if Kotlin classes don't match
 
         if (left::class != right::class) {
             return false
@@ -131,16 +131,12 @@ object EquivalentEvaluator {
         }
 
         if (left is Tuple && right is Tuple) {
-            return tuplesEquivalent(left, right, state)
+            return structuredValueElementsEquivalent(left.elements, right.elements, state)
         }
 
-        if (left is CqlClassInstance && right is CqlClassInstance) {
+        if (left is ClassInstance && right is ClassInstance) {
             if (left.type == right.type) {
-                return tuplesEquivalent(
-                    Tuple().withElements(left.elements),
-                    Tuple().withElements(right.elements),
-                    state,
-                )
+                return structuredValueElementsEquivalent(left.elements, right.elements, state)
             }
             return false
         }
@@ -259,15 +255,18 @@ object EquivalentEvaluator {
         return !rightIterator.hasNext()
     }
 
-    fun tuplesEquivalent(left: Tuple, right: Tuple, state: State?): Boolean {
-        if (left.elements.size != right.elements.size) {
+    fun structuredValueElementsEquivalent(
+        left: Map<String, Any?>,
+        right: Map<String, Any?>,
+        state: State?,
+    ): Boolean {
+        if (left.size != right.size) {
             return false
         }
 
-        for (key in right.elements.keys) {
-            if (left.elements.containsKey(key)) {
-                val areKeyValsSame =
-                    equivalent(right.elements[key], left.elements[key], state) == true
+        for (key in right.keys) {
+            if (left.containsKey(key)) {
+                val areKeyValsSame = equivalent(right[key], left[key], state) == true
                 if (!areKeyValsSame) {
                     return false
                 }

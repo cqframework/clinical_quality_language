@@ -34,8 +34,8 @@ import org.opencds.cqf.cql.engine.execution.ExpressionResult
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -314,10 +314,10 @@ internal object EvaluatedResourceTestUtils {
         candidates: Collection<*>
     ): List<Pair<String, String>> {
         return candidates
-            .filterIsInstance<CqlClassInstance>()
+            .filterIsInstance<ClassInstance>()
             .map {
                 it.type.localPart to
-                    (it.elements["id"] as CqlClassInstance).elements["value"] as String
+                    (it.elements["id"] as ClassInstance).elements["value"] as String
             }
             .sortedBy { it.second }
     }

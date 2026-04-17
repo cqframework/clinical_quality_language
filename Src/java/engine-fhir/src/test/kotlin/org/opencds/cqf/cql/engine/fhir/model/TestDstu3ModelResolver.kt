@@ -18,7 +18,7 @@ import org.hl7.fhir.dstu3.model.Quantity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 
 internal class TestDstu3ModelResolver {
     @Test
@@ -225,7 +225,7 @@ internal class TestDstu3ModelResolver {
         val p = Patient()
 
         val patientAsCqlValue = resolver.toCqlValue(p)
-        assertIs<CqlClassInstance>(patientAsCqlValue)
+        assertIs<ClassInstance>(patientAsCqlValue)
         assertFalse(patientAsCqlValue.elements.containsKey("not-a-path"))
     }
 
@@ -239,7 +239,7 @@ internal class TestDstu3ModelResolver {
         val sq = resolver.castToSimpleQuantity(q)
 
         val value = resolver.toCqlValue(sq)
-        assertIs<CqlClassInstance>(value)
+        assertIs<ClassInstance>(value)
         assertNull(value.elements["comparator"])
     }
 

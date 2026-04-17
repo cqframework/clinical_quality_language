@@ -1,6 +1,17 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Code : CqlType {
+class Code : StructuredValue(), NamedCqlType {
+    override val type = codeTypeName
+
+    override val elements: MutableMap<String, Any?>
+        get() =
+            mutableMapOf(
+                "code" to code,
+                "system" to system,
+                "version" to version,
+                "display" to display,
+            )
+
     var code: String? = null
 
     fun withCode(code: String?): Code {

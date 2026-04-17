@@ -29,7 +29,7 @@ import org.hl7.fhir.r4.model.VisionPrescription
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
-import org.opencds.cqf.cql.engine.runtime.CqlClassInstance
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 
 internal class TestR4ModelResolver {
     @Test
@@ -296,7 +296,7 @@ internal class TestR4ModelResolver {
         val p = Patient()
 
         val patientAsCqlValue = resolver.toCqlValue(p)
-        assertIs<CqlClassInstance>(patientAsCqlValue)
+        assertIs<ClassInstance>(patientAsCqlValue)
         assertFalse(patientAsCqlValue.elements.containsKey("not-a-path"))
     }
 
@@ -308,10 +308,10 @@ internal class TestR4ModelResolver {
         p.setId("5")
 
         val patientAsCqlValue = resolver.toCqlValue(p)
-        assertIs<CqlClassInstance>(patientAsCqlValue)
+        assertIs<ClassInstance>(patientAsCqlValue)
 
         val id = patientAsCqlValue.elements["id"]
-        assertIs<CqlClassInstance>(id)
+        assertIs<ClassInstance>(id)
         assertEquals(QName("http://hl7.org/fhir", "id"), id.type)
 
         assertEquals("5", id.elements["value"])
@@ -326,9 +326,9 @@ internal class TestR4ModelResolver {
         vp.setDateWritten(time)
 
         val value = resolver.toCqlValue(vp)
-        assertIs<CqlClassInstance>(value)
+        assertIs<ClassInstance>(value)
         val dateWritten = value.elements["dateWritten"]
-        assertIs<CqlClassInstance>(dateWritten)
+        assertIs<ClassInstance>(dateWritten)
         assertEquals(QName("http://hl7.org/fhir", "dateTime"), dateWritten.type)
     }
 
@@ -342,7 +342,7 @@ internal class TestR4ModelResolver {
         val sq = resolver.castToSimpleQuantity(q)
 
         val value = resolver.toCqlValue(sq)
-        assertIs<CqlClassInstance>(value)
+        assertIs<ClassInstance>(value)
         assertNull(value.elements["comparator"])
     }
 
@@ -381,10 +381,10 @@ internal class TestR4ModelResolver {
         )
 
         val patientAsCqlValue = resolver.toCqlValue(patient)
-        assertIs<CqlClassInstance>(patientAsCqlValue)
+        assertIs<ClassInstance>(patientAsCqlValue)
 
         var result = patientAsCqlValue.elements["birthDate"]
-        assertIs<CqlClassInstance>(result)
+        assertIs<ClassInstance>(result)
         assertEquals(QName("http://hl7.org/fhir", "date"), result.type)
 
         result = result.elements["extension"]
@@ -392,7 +392,7 @@ internal class TestR4ModelResolver {
         assertEquals(1, result.count())
 
         val extension = result.first()
-        assertIs<CqlClassInstance>(extension)
+        assertIs<ClassInstance>(extension)
         assertEquals(QName("http://hl7.org/fhir", "Extension"), extension.type)
     }
 
