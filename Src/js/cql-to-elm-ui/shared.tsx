@@ -4,6 +4,10 @@ import * as cqlWasmJs from "cql-wasm-js";
 
 export type Nullable<T> = cqlJs.Nullable<T> | cqlWasmJs.Nullable<T>;
 
+export function isKtNull(ktValue: Nullable<unknown>) {
+  return ktValue === null || ktValue === undefined;
+}
+
 export type TElmContentType = "json" | "xml";
 
 export type TLibrarySource = "local" | "remote";
@@ -163,7 +167,7 @@ export type TCqlEngineOutput =
       type: "expressionResults";
       expressionResults: {
         expressionName: string;
-        expressionResult: string;
+        expressionResult: TJsCqlValue;
       }[];
     }
   | {
@@ -173,3 +177,23 @@ export type TCqlEngineOutput =
     };
 
 export const playgroundLibraryName = "Playground";
+
+export type TJsCqlValue =
+  | null // CQL null
+  | boolean // Boolean
+  | number // Integer
+  | bigint // Long
+  | { type: "Decimal"; value: string } // Decimal
+  | string // String
+  | { type: "Date"; value: string } // Date
+  | { type: "DateTime"; value: string } // DateTime
+  | { type: "Time"; value: string } // Time
+  | { type: "Tuple"; qName?: string; elements: Map<string, TJsCqlValue> } // structured types
+  | {
+      type: "Interval";
+      low: TJsCqlValue;
+      high: TJsCqlValue;
+      lowClosed: boolean;
+      highClosed: boolean;
+    }
+  | TJsCqlValue[];

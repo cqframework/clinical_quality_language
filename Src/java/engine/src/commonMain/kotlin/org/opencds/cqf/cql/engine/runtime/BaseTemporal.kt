@@ -8,7 +8,7 @@ import org.cqframework.cql.shared.JsOnlyExport
 abstract class BaseTemporal : CqlType, Comparable<BaseTemporal> {
     var precision: Precision? = null
 
-    fun withPrecision(precision: Precision?): BaseTemporal {
+    open fun withPrecision(precision: Precision?): BaseTemporal {
         this.precision = precision
         return this
     }

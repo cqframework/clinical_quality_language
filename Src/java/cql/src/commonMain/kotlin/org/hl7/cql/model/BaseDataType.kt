@@ -1,5 +1,10 @@
 package org.hl7.cql.model
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 abstract class BaseDataType protected constructor(private val base: DataType? = null) : DataType {
     override val baseType
         get() = base ?: DataType.ANY
