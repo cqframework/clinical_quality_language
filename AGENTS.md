@@ -32,6 +32,16 @@ cd Src/java
 
 **Java version:** JDK 17 (toolchain target), CI runs on JDK 21.
 
+## Versioning
+
+The project version is derived from git state at configuration time (see `Src/java/build-logic/src/main/kotlin/GitVersion.kt` and the `cql.git-version` precompiled plugin). There is no hardcoded `version` in `gradle.properties`. Rules:
+
+1. Tag `vX.Y.Z` at HEAD → `X.Y.Z` (release, signed on publish)
+2. On `main`, no tag → latest `vX.Y.Z` tag with minor bumped, patch reset to 0, `-SNAPSHOT` appended
+3. Any other branch / detached HEAD → `<bumped>-<sanitized-branch>-<short-sha>-SNAPSHOT`
+
+Releases are cut by pushing a `vX.Y.Z` tag. See `Src/java/README.md` for the full description.
+
 ## Formatting
 
 Uses **Spotless** with Palantir Java Format and ktfmt (kotlinlang style). Generated code (`**/generated/**`) is excluded.
