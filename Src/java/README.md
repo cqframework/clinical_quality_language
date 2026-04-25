@@ -40,8 +40,9 @@ To clean up the build artifacts:
 The project version is derived from git state at configuration time — there is no hardcoded
 `version` in `gradle.properties`. The logic lives in
 [`build-logic/src/main/kotlin/GitVersion.kt`](build-logic/src/main/kotlin/GitVersion.kt) and is
-applied by the `cql.git-version` precompiled plugin. The resolved version is logged once per build
-(`Resolved project version: ...`).
+applied by the `cqf.git-version` precompiled plugin (a shared convention plugin vendored in from
+[`home/shared/gradle/conventions/`](https://gitlab.com/simpatico.ai/clinical-intelligence/shared)).
+The resolved version is logged once per build (`Resolved project version: ...`).
 
 Resolution rules, in order:
 
@@ -53,10 +54,10 @@ Resolution rules, in order:
    Example: last tag `v4.6.0` → `4.7.0-SNAPSHOT`.
 3. **Branch SNAPSHOT** — any other branch (or detached HEAD) gets a per-branch identifier:
    `<bumped>-<sanitized-branch>-<short-sha>-SNAPSHOT`. Example:
-   `4.7.0-my-feature-5ac419a5d-SNAPSHOT`. The branch name comes from `GITHUB_REF_NAME` if set
-   (CI), otherwise from `git rev-parse --abbrev-ref HEAD`; detached HEAD falls back to `detached`.
-   The name is lowercased by git conventions and sanitized (non-alphanumerics → `-`, capped at 40
-   chars) before being embedded.
+   `4.7.0-my-feature-5ac419a5d-SNAPSHOT`. The branch name comes from `GITHUB_REF_NAME` (or
+   `CI_COMMIT_REF_NAME`) if set, otherwise from `git rev-parse --abbrev-ref HEAD`; detached HEAD
+   falls back to `detached`. The name is sanitized (non-alphanumerics → `-`, capped at 40 chars)
+   before being embedded.
 
 To cut a release, push a tag of the form `vX.Y.Z` at the commit you want to release; the build on
 that commit will produce `X.Y.Z` and the publish step will sign the artifacts.

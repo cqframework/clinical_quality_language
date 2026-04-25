@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("cql.git-version")
+    id("cqf.git-version")
     id("com.vanniktech.maven.publish") apply false
     id("org.sonarqube") version "7.2.2.6593"
     id("com.dorongold.task-tree") version "4.0.1"
