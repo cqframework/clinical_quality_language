@@ -6,14 +6,13 @@ import org.opencds.cqf.cql.engine.elm.executing.PropertyEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidComparison
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 class CqlList {
     private var state: State? = null
-    private var alias: String? = null
+    private var alias: kotlin.String? = null
     private var expression: Expression? = null
-    private var visitor: ElmLibraryVisitor<Any?, State?>? = null
-    private var path: String? = null
+    private var visitor: ElmLibraryVisitor<CqlType?, State?>? = null
+    private var path: kotlin.String? = null
 
     constructor()
 
@@ -23,8 +22,8 @@ class CqlList {
 
     constructor(
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-        alias: String?,
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+        alias: kotlin.String?,
         expression: Expression,
     ) {
         this.state = state
@@ -33,15 +32,15 @@ class CqlList {
         this.expression = expression
     }
 
-    constructor(state: State?, path: String?) {
+    constructor(state: State?, path: kotlin.String?) {
         this.state = state
         this.path = path
     }
 
-    var valueSort: Comparator<Any?> = Comparator { left, right -> this.compareTo(left, right) }
+    var valueSort: Comparator<CqlType?> = Comparator { left, right -> this.compareTo(left, right) }
 
-    var expressionSort: Comparator<Any?> = Comparator { left, right ->
-        var leftResult: Any? = null
+    var expressionSort: Comparator<CqlType?> = Comparator { left, right ->
+        var leftResult: CqlType? = null
         try {
             state!!.push(Variable(alias!!).withValue(left))
             leftResult = visitor!!.visitExpression(expression!!, state)
@@ -49,7 +48,7 @@ class CqlList {
             state!!.pop()
         }
 
-        var rightResult: Any? = null
+        var rightResult: CqlType? = null
         try {
             state!!.push(Variable(alias!!).withValue(right))
             rightResult = visitor!!.visitExpression(expression!!, state)
@@ -60,16 +59,40 @@ class CqlList {
         compareTo(leftResult, rightResult)
     }
 
-    val columnSort: Comparator<Any?> = Comparator { left, right ->
+    val columnSort: Comparator<CqlType?> = Comparator { left, right ->
         val leftCol = PropertyEvaluator.resolvePath(left, path!!)
         val rightCol = PropertyEvaluator.resolvePath(right, path!!)
 
         compareTo(leftCol, rightCol)
     }
 
-    fun compareTo(left: Any?, right: Any?): Int {
+    fun compareTo(left: CqlType?, right: CqlType?): Int {
         if (left == null && right == null) return 0
         else if (left == null) return -1 else if (right == null) return 1
+
+        if (left is Boolean && right is Boolean) {
+            return left.value.compareTo(right.value)
+        }
+
+        if (left is Integer && right is Integer) {
+            return left.value.compareTo(right.value)
+        }
+
+        if (left is Long && right is Long) {
+            return left.value.compareTo(right.value)
+        }
+
+        if (left is Decimal && right is Decimal) {
+            return left.value.compareTo(right.value)
+        }
+
+        if (left is String && right is String) {
+            return left.value.compareTo(right.value)
+        }
+
+        if (left is BaseTemporal && right is BaseTemporal) {
+            return left.compareTo(right)
+        }
 
         // TODO(jmoringe): test is something like
         // ({5 'ml',0.001 'l',0.02 'dl',3 'ml',4 'ml',6 'ml'}) l sort desc
@@ -86,17 +109,13 @@ class CqlList {
             return left.compareTo(right, state)
         }
 
-        try {
-            // The exception handling below handles the case where left is not Comparable
-            @Suppress("UNCHECKED_CAST")
-            return (left as Comparable<Any?>).compareTo(right)
-        } catch (_: ClassCastException) {
-            throw InvalidComparison("Type ${left.javaClassName} is not comparable")
-        }
+        throw InvalidComparison(
+            "Values ${left.typeAsString} and ${right.typeAsString} are not comparable"
+        )
     }
 
     companion object {
-        fun <T> toList(iterable: Iterable<T>, includeNullElements: Boolean): MutableList<T> {
+        fun <T> toList(iterable: Iterable<T>, includeNullElements: kotlin.Boolean): MutableList<T> {
             val ret = mutableListOf<T>()
             for (element in iterable) {
                 if (element != null || includeNullElements) {

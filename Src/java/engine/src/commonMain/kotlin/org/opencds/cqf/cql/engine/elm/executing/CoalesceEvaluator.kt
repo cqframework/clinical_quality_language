@@ -1,5 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
+
 /*
 Coalesce<T>(argument1 T, argument2 T) T
 Coalesce<T>(argument1 T, argument2 T, argument3 T) T
@@ -12,10 +15,10 @@ If all arguments evaluate to null, the result is null.
 The static type of the first argument determines the type of the result, and all subsequent arguments must be of that same type.
 */
 object CoalesceEvaluator {
-    fun coalesce(operands: List<Any?>): Any? {
+    fun coalesce(operands: kotlin.collections.List<CqlType?>): CqlType? {
         for (operand in operands) {
             if (operand != null) {
-                if (operand is Iterable<*> && operands.size == 1) {
+                if (operand is List && operands.count() == 1) {
                     for (obj in operand) {
                         if (obj != null) {
                             return obj

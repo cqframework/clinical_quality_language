@@ -1,9 +1,14 @@
 package org.opencds.cqf.cql.engine.data
 
+import org.opencds.cqf.cql.engine.runtime.CqlType
+
 class SystemExternalFunctionProvider(private val staticFunctions: List<StaticFunction>) :
     ExternalFunctionProvider {
     // TODO: Support adding more functions to an existing provider object.
-    override fun evaluate(staticFunctionName: String?, arguments: MutableList<Any?>?): Any? {
+    override fun evaluate(
+        staticFunctionName: String?,
+        arguments: MutableList<CqlType?>?,
+    ): CqlType? {
         for (staticFunction in staticFunctions) {
             if (staticFunction.name == staticFunctionName) {
                 try {
@@ -22,4 +27,4 @@ class SystemExternalFunctionProvider(private val staticFunctions: List<StaticFun
     }
 }
 
-data class StaticFunction(val name: String, val function: (MutableList<Any?>?) -> Any?)
+data class StaticFunction(val name: String, val function: (MutableList<CqlType?>?) -> CqlType?)

@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.collections.containsKey
 import kotlin.collections.get
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.Expression
@@ -12,14 +11,21 @@ import org.hl7.elm.r1.ListTypeSpecifier
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TupleTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.ValueSet
@@ -47,8 +53,8 @@ object TypeChecker {
     }
 
     /** Checks the runtime value type against the expected Java type T. */
-    private inline fun <reified T : Any> Any.checkType(
-        logMismatch: Boolean,
+    private inline fun <reified T : CqlType> CqlType.checkType(
+        logMismatch: kotlin.Boolean,
         additionalCheck: (T) -> TypeCheckResult = { TypeCheckResult.MATCH },
     ): TypeCheckResult {
         if (this is T) {
@@ -66,7 +72,7 @@ object TypeChecker {
      * Checks the value type against the expected type defined in the ELM expression. Logs any type
      * mismatches.
      */
-    fun checkType(expressionWithExpectedResultType: Expression, actualValue: Any?) {
+    fun checkType(expressionWithExpectedResultType: Expression, actualValue: CqlType?) {
         actualValue?.let {
             expressionWithExpectedResultType.resultTypeSpecifier?.let { expectedResultTypeSpecifier
                 ->
@@ -80,17 +86,17 @@ object TypeChecker {
 
     fun checkType(
         expectedResultTypeName: QName,
-        actualValue: Any,
-        logMismatch: Boolean = false,
+        actualValue: CqlType,
+        logMismatch: kotlin.Boolean = false,
     ): TypeCheckResult {
         return when (expectedResultTypeName.getNamespaceURI()) {
             "urn:hl7-org:elm-types:r1" ->
                 when (expectedResultTypeName.getLocalPart()) {
                     "Any" -> TypeCheckResult.MATCH
                     "Boolean" -> actualValue.checkType<Boolean>(logMismatch)
-                    "Integer" -> actualValue.checkType<Int>(logMismatch)
+                    "Integer" -> actualValue.checkType<Integer>(logMismatch)
                     "Long" -> actualValue.checkType<Long>(logMismatch)
-                    "Decimal" -> actualValue.checkType<BigDecimal>(logMismatch)
+                    "Decimal" -> actualValue.checkType<Decimal>(logMismatch)
                     "Quantity" -> actualValue.checkType<Quantity>(logMismatch)
                     "String" -> actualValue.checkType<String>(logMismatch)
                     "Date" -> actualValue.checkType<Date>(logMismatch)
@@ -110,8 +116,8 @@ object TypeChecker {
 
     fun checkType(
         expectedTypeSpecifier: TypeSpecifier,
-        actualValue: Any,
-        logMismatch: Boolean = false,
+        actualValue: CqlType,
+        logMismatch: kotlin.Boolean = false,
     ): TypeCheckResult {
         when (expectedTypeSpecifier) {
             is NamedTypeSpecifier -> {
@@ -122,8 +128,7 @@ object TypeChecker {
                 return checkType(expectedTypeName, actualValue, logMismatch)
             }
             is ListTypeSpecifier -> {
-                return actualValue.checkType<Iterable<*>>(logMismatch) iterableCheck@{
-                    actualIterable ->
+                return actualValue.checkType<List>(logMismatch) iterableCheck@{ actualIterable ->
                     val expectedListElementType = expectedTypeSpecifier.elementType
                     if (expectedListElementType == null) {
                         return@iterableCheck TypeCheckResult.MATCH

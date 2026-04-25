@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution.trace
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /**
  * Represents a sub-expression that was evaluated during detailed tracing. Captures the ELM node
@@ -14,7 +15,7 @@ class SubExpressionTraceFrame(
     variables: List<Variable>,
     context: Pair<String, Any?>,
     /** Result of evaluating the sub-expression. */
-    val result: Any?,
+    val result: CqlType?,
     /** Nested trace frames (sub-expressions and/or expression def calls). */
     val subframes: List<TraceFrame>,
 ) : TraceFrame(library, expression, variables, context) {

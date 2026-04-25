@@ -1,6 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
 
@@ -16,11 +19,26 @@ CQL also supports partial time values. For example, the time @T03 represents som
 */
 object TimeEvaluator {
     @JvmStatic
-    fun time(hour: Int?, minute: Int?, second: Int?, miliSecond: Int?): Any? {
+    fun time(hour: CqlType?, minute: CqlType?, second: CqlType?, miliSecond: CqlType?): Time? {
         if (hour == null) {
             return null
         }
 
-        return Time(*TemporalHelper.cleanArray(hour, minute, second, miliSecond))
+        if (hour is Integer && minute is Integer? && second is Integer? && miliSecond is Integer?) {
+
+            return Time(
+                *TemporalHelper.cleanArray(
+                    hour.value,
+                    minute?.value,
+                    second?.value,
+                    miliSecond?.value,
+                )
+            )
+        }
+
+        throw InvalidOperatorArgument(
+            "Time(Integer, Integer, Integer, Integer)",
+            "Time(${hour.typeAsString}, ${minute?.typeAsString}, ${second?.typeAsString}, ${miliSecond?.typeAsString})",
+        )
     }
 }

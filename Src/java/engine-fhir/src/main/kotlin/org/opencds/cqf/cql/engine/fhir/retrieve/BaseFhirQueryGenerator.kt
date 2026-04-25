@@ -279,14 +279,8 @@ protected constructor(
             }
 
             codeCount++
-            // We have a couple cases where types are erased and code
-            // is secretly a String, which the compiler can't detect
-            // We need to fix that in the corresponding places.
-            @Suppress("USELESS_IS_CHECK")
-            if (code is Code) {
+            if (code != null) {
                 codeParams!!.addOr(TokenParam(code.system, code.code))
-            } else if (code is String) {
-                codeParams!!.addOr(TokenParam(code))
             }
         }
 

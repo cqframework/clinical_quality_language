@@ -2,15 +2,21 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 object RepeatEvaluator {
-    fun repeat(source: Any?, element: Any?, scope: String?): Any {
+    fun repeat(source: CqlType?, element: CqlType?, scope: kotlin.String?): CqlType {
         // TODO
         throw NotImplementedError("Repeat operation not yet implemented")
     }
 
     @JvmStatic
-    fun internalEvaluate(source: Any?, element: Any?, scope: String?, state: State?): Any {
+    fun internalEvaluate(
+        source: CqlType?,
+        element: CqlType?,
+        scope: kotlin.String?,
+        state: State?,
+    ): CqlType {
         return repeat(source, element, scope)
     }
 }

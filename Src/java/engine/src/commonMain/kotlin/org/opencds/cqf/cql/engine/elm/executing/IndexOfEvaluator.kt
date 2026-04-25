@@ -2,6 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 IndexOf(argument List<T>, element T) Integer
@@ -14,29 +18,22 @@ If either argument is null, the result is null.
 */
 object IndexOfEvaluator {
     @JvmStatic
-    fun indexOf(source: Any?, elementToFind: Any?, state: State?): Any? {
+    fun indexOf(source: CqlType?, elementToFind: CqlType?, state: State?): Integer? {
         if (source == null || elementToFind == null) {
             return null
         }
 
         var index = -1
-        var nullSwitch = false
 
-        for (element in source as Iterable<*>) {
+        for (element in source as List) {
             index++
             val equiv = EquivalentEvaluator.equivalent(element, elementToFind, state)
 
-            if (equiv == null) {
-                nullSwitch = true
-            } else if (equiv) {
-                return index
+            if (equiv.value) {
+                return index.toCqlInteger()
             }
         }
 
-        if (nullSwitch) {
-            return null
-        }
-
-        return -1
+        return (-1).toCqlInteger()
     }
 }

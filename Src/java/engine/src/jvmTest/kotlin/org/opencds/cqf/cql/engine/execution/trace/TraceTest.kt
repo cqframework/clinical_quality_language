@@ -16,6 +16,8 @@ import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.CqlTestBase
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 class TraceTest : CqlTestBase() {
 
@@ -38,7 +40,9 @@ class TraceTest : CqlTestBase() {
         val retrieveActivationFrame =
             State.ActivationFrame(Retrieve(), libraryIdentifier, contextName, 0)
         // Starting with a patient with 4 encounters
-        retrieveActivationFrame.result = listOf(1, 2, 3, 4)
+        retrieveActivationFrame.result =
+            listOf(1.toCqlInteger(), 2.toCqlInteger(), 3.toCqlInteger(), 4.toCqlInteger())
+                .toCqlList()
 
         val func1ActivationFrame =
             State.ActivationFrame(
@@ -47,8 +51,8 @@ class TraceTest : CqlTestBase() {
                 contextName,
                 0,
             )
-        func1ActivationFrame.variables.addFirst(Variable("a").withValue(6))
-        func1ActivationFrame.result = 7
+        func1ActivationFrame.variables.addFirst(Variable("a").withValue(6.toCqlInteger()))
+        func1ActivationFrame.result = 7.toCqlInteger()
 
         val expr1ActivationFrame =
             State.ActivationFrame(
@@ -59,7 +63,7 @@ class TraceTest : CqlTestBase() {
             )
         expr1ActivationFrame.innerActivationFrames.add(retrieveActivationFrame)
         expr1ActivationFrame.innerActivationFrames.add(func1ActivationFrame)
-        expr1ActivationFrame.result = 21
+        expr1ActivationFrame.result = 21.toCqlInteger()
 
         val trace =
             Trace.fromActivationFrames(listOf(expr1ActivationFrame), mapOf("Patient" to null))
@@ -124,7 +128,7 @@ class TraceTest : CqlTestBase() {
         val expr1Frame =
             trace.frames.find { it is ExpressionDefTraceFrame && it.element.name == "expr1" }
                 as ExpressionDefTraceFrame
-        assertEquals(18, expr1Frame.result)
+        assertEquals(18.toCqlInteger(), expr1Frame.result)
 
         // expr1 should have sub-expression frames (Multiply at minimum)
         assertTrue(
@@ -137,7 +141,7 @@ class TraceTest : CqlTestBase() {
             expr1Frame.subframes.find { it is SubExpressionTraceFrame && it.element is Multiply }
                 as? SubExpressionTraceFrame
         assertNotNull(multiplyFrame, "Should have a Multiply sub-expression frame")
-        assertEquals(18, multiplyFrame.result)
+        assertEquals(18.toCqlInteger(), multiplyFrame.result)
 
         // Inside the Multiply, there should be a FunctionRef sub-expression and within it
         // an ExpressionDef for func1
@@ -153,7 +157,7 @@ class TraceTest : CqlTestBase() {
             }
                 as? ExpressionDefTraceFrame
         assertNotNull(func1Frame, "Should have a func1 ExpressionDef frame nested under expr1")
-        assertEquals(6, func1Frame.result)
+        assertEquals(6.toCqlInteger(), func1Frame.result)
     }
 
     /**
@@ -199,7 +203,7 @@ class TraceTest : CqlTestBase() {
             trace.frames.find { it is ExpressionDefTraceFrame && it.element.name == "expr3" }
                 as? ExpressionDefTraceFrame
         assertNotNull(expr3Frame)
-        assertEquals(2, expr3Frame.result)
+        assertEquals(2.toCqlInteger(), expr3Frame.result)
 
         // expr3 body is a Literal, which is filtered by default, so no sub-expression frames
         assertTrue(
@@ -215,7 +219,7 @@ class TraceTest : CqlTestBase() {
 
         val addFrame =
             State.ActivationFrame(Add().withLocator("1:18-1:22"), libraryIdentifier, contextName, 0)
-        addFrame.result = 5
+        addFrame.result = 5.toCqlInteger()
 
         val multiplyFrame =
             State.ActivationFrame(
@@ -225,7 +229,7 @@ class TraceTest : CqlTestBase() {
                 0,
             )
         multiplyFrame.innerActivationFrames.add(addFrame)
-        multiplyFrame.result = 15
+        multiplyFrame.result = 15.toCqlInteger()
 
         val func1ActivationFrame =
             State.ActivationFrame(
@@ -234,8 +238,8 @@ class TraceTest : CqlTestBase() {
                 contextName,
                 0,
             )
-        func1ActivationFrame.variables.addFirst(Variable("a").withValue(5))
-        func1ActivationFrame.result = 6
+        func1ActivationFrame.variables.addFirst(Variable("a").withValue(5.toCqlInteger()))
+        func1ActivationFrame.result = 6.toCqlInteger()
 
         val funcRefFrame =
             State.ActivationFrame(
@@ -245,7 +249,7 @@ class TraceTest : CqlTestBase() {
                 0,
             )
         funcRefFrame.innerActivationFrames.add(func1ActivationFrame)
-        funcRefFrame.result = 6
+        funcRefFrame.result = 6.toCqlInteger()
 
         val expr1 =
             State.ActivationFrame(
@@ -256,7 +260,7 @@ class TraceTest : CqlTestBase() {
             )
         expr1.innerActivationFrames.add(funcRefFrame)
         expr1.innerActivationFrames.add(multiplyFrame)
-        expr1.result = 15
+        expr1.result = 15.toCqlInteger()
         return expr1
     }
 

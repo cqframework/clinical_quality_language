@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.model
 
 import java.lang.AutoCloseable
-import java.util.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -11,6 +10,9 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 // TODO: Extend testing to cover more of the CachedModelResolver
 internal class CachingModelResolverDecoratorTest {
@@ -49,12 +51,12 @@ internal class CachingModelResolverDecoratorTest {
         val `object` = "object"
         val id = "text"
 
-        Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)
+        Mockito.`when`(mockModelResolver!!.resolveId(`object`.toCqlString())).thenReturn(id)
 
         val compositeDataProvider = CompositeDataProvider(mockModelResolver, mockRetrieveProvider)
 
-        Assertions.assertEquals(id, compositeDataProvider.resolveId(`object`))
-        Mockito.verify(mockModelResolver, Mockito.times(1)).resolveId(`object`)
+        Assertions.assertEquals(id, compositeDataProvider.resolveId(`object`.toCqlString()))
+        Mockito.verify(mockModelResolver, Mockito.times(1)).resolveId(`object`.toCqlString())
     }
 
     @Test
@@ -62,17 +64,17 @@ internal class CachingModelResolverDecoratorTest {
         val `object` = 1L
         val id = "oneL"
 
-        Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)
+        Mockito.`when`(mockModelResolver!!.resolveId(`object`.toCqlLong())).thenReturn(id)
 
         val compositeDataProvider = CompositeDataProvider(mockModelResolver, mockRetrieveProvider)
 
-        Assertions.assertEquals(id, compositeDataProvider.resolveId(`object`))
-        Mockito.verify(mockModelResolver, Mockito.times(1)).resolveId(`object`)
+        Assertions.assertEquals(id, compositeDataProvider.resolveId(`object`.toCqlLong()))
+        Mockito.verify(mockModelResolver, Mockito.times(1)).resolveId(`object`.toCqlLong())
     }
 
     @Test
     fun resolveIdDate() {
-        val `object` = Date()
+        val `object` = Date(2030)
         val id = "now"
 
         Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)

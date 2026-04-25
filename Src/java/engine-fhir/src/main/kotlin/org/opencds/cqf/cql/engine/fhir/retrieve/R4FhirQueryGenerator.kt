@@ -15,6 +15,7 @@ import org.opencds.cqf.cql.engine.elm.executing.SubtractEvaluator
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
@@ -143,9 +144,9 @@ class R4FhirQueryGenerator(
                             dateHighPath = "valueDateTime"
                             dateRange =
                                 Interval(
-                                    dateFilterValue.getStart(),
+                                    Date.fromJavaDate(dateFilterValue.getStart()),
                                     true,
-                                    dateFilterValue.getEnd(),
+                                    Date.fromJavaDate(dateFilterValue.getEnd()),
                                     true,
                                 )
                         }

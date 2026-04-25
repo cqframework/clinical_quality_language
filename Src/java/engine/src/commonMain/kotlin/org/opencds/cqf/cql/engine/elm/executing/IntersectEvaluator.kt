@@ -4,8 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -28,19 +30,16 @@ If either argument is null, the result is null.
 */
 object IntersectEvaluator {
     @JvmStatic
-    fun intersect(left: Any?, right: Any?, state: State?): Any? {
+    fun intersect(left: CqlType?, right: CqlType?, state: State?): CqlType? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Interval) {
-            val leftInterval = left
-            val rightInterval = right as Interval
-
-            val leftStart = leftInterval.start
-            val leftEnd = leftInterval.end
-            val rightStart = rightInterval.start
-            val rightEnd = rightInterval.end
+        if (left is Interval && right is Interval) {
+            val leftStart = left.start
+            val leftEnd = left.end
+            val rightStart = right.start
+            val rightEnd = right.end
 
             var precision: String? = null
             if (leftStart is BaseTemporal && rightStart is BaseTemporal) {
@@ -53,15 +52,15 @@ object IntersectEvaluator {
                     )
             }
 
-            val overlaps = OverlapsEvaluator.overlaps(leftInterval, rightInterval, precision, state)
-            if (overlaps != null && !overlaps) {
+            val overlaps = OverlapsEvaluator.overlaps(left, right, precision, state)
+            if (overlaps != null && !overlaps.value) {
                 return null
             }
 
             val leftStartGtRightStart = GreaterEvaluator.greater(leftStart, rightStart, state)
             val leftEndLtRightEnd = LessEvaluator.less(leftEnd, rightEnd, state)
 
-            val max: Any?
+            val max: CqlType?
             if (leftStart == null || rightStart == null) {
                 // If either of the start points is null, the start point of the intersection is
                 // null because the
@@ -78,10 +77,10 @@ object IntersectEvaluator {
             } else {
                 max =
                     if (leftStartGtRightStart == null) null
-                    else if (leftStartGtRightStart) leftStart else rightStart
+                    else if (leftStartGtRightStart.value) leftStart else rightStart
             }
 
-            val min: Any?
+            val min: CqlType?
             if (leftEnd == null || rightEnd == null) {
                 min = null
             } else if (leftEndLtRightEnd == null && precision != null) {
@@ -91,29 +90,26 @@ object IntersectEvaluator {
             } else {
                 min =
                     if (leftEndLtRightEnd == null) null
-                    else if (leftEndLtRightEnd) leftEnd else rightEnd
+                    else if (leftEndLtRightEnd.value) leftEnd else rightEnd
             }
 
             return Interval(max, max != null, min, min != null, state)
-        } else if (left is Iterable<*>) {
-            val leftArr = left
-            val rightArr = right as Iterable<*>
+        } else if (left is List && right is List) {
 
-            val result: MutableList<Any?> = ArrayList<Any?>()
-            var `in`: Boolean?
-            for (leftItem in leftArr) {
-                `in` = InEvaluator.`in`(leftItem, rightArr, null, state)
-                if (`in` != null && `in`) {
+            val result = mutableListOf<CqlType?>()
+            for (leftItem in left) {
+                val `in` = InEvaluator.`in`(leftItem, right, null, state)
+                if (`in` != null && `in`.value) {
                     result.add(leftItem)
                 }
             }
 
-            return DistinctEvaluator.distinct(result, state)
+            return DistinctEvaluator.distinct(result.toCqlList(), state)
         }
 
         throw InvalidOperatorArgument(
             "Intersect(Interval<T>, Interval<T>) or Intersect(List<T>, List<T>)",
-            "Intersect(${left.javaClassName}, ${right.javaClassName})",
+            "Intersect(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

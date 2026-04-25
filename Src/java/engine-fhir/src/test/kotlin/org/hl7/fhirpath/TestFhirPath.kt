@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.util.*
 import java.util.function.Function
-import kotlin.Any
 import kotlin.Exception
 import kotlin.IllegalArgumentException
 import kotlin.RuntimeException
@@ -32,9 +31,16 @@ import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -49,7 +55,7 @@ abstract class TestFhirPath {
         name: String?,
         cql: String?,
         val resource: IBaseResource?,
-        val results: MutableList<Any?>?,
+        val results: MutableList<CqlType?>?,
     ) : TestCase(name, cql) // Successful execution
 
     private val libraryId = toElmIdentifier("TestFHIRPath")
@@ -84,8 +90,8 @@ abstract class TestFhirPath {
             .trimIndent()
 
     fun compareResults(
-        expectedResult: Any?,
-        actualResult: Any?,
+        expectedResult: CqlType?,
+        actualResult: CqlType?,
         state: State?,
         resolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
     ): Boolean? {
@@ -105,7 +111,7 @@ abstract class TestFhirPath {
             }
         }
 
-        return EqualEvaluator.equal(expectedResult, actualResult, state)
+        return EqualEvaluator.equal(expectedResult, actualResult, state)?.value
     }
 
     protected fun runTest(
@@ -141,7 +147,7 @@ abstract class TestFhirPath {
                 throw failWithContext(
                     "Runtime error and was expecting a result",
                     testCase,
-                    "N/A",
+                    "N/A".toCqlString(),
                     e,
                 )
             }
@@ -171,8 +177,8 @@ abstract class TestFhirPath {
 
         val testValue = result["Test"]!!.value
         val actualList =
-            testValue as? MutableList<*>
-                ?: if (testValue == null) mutableListOf() else listOf<Any?>(testValue)
+            if (testValue == null) List.EMPTY_LIST
+            else if (testValue is List) testValue else listOf(testValue).toCqlList()
 
         // Catch-all to prevent ClassCastException
         if (testCase !is Pass) {
@@ -186,19 +192,19 @@ abstract class TestFhirPath {
         }
 
         // Invalid and Semantic errors have been handled above, so we can assume Pass here
-        if (actualList.size != testCase.results!!.size) {
+        if (actualList.count() != testCase.results!!.size) {
             throw failWithContext(
                 "Incorrect number of results. Expected %d, Actual %d"
-                    .format(testCase.results.size, actualList.size),
+                    .format(testCase.results.size, actualList.count()),
                 testCase,
                 actualList,
                 null,
             )
         }
 
-        for (i in actualList.indices) {
+        for (i in actualList.toList().indices) {
             val expected = testCase.results[i]
-            val actual: Any? = actualList[i]
+            val actual = actualList.elementAt(i)
             val comparison = compareResults(expected, actual, engine.state, resolver)
             if (true != comparison) {
                 throw failWithContext(
@@ -278,10 +284,11 @@ abstract class TestFhirPath {
     private fun failWithContext(
         message: String?,
         test: TestCase,
-        actual: Any?,
+        actual: CqlType?,
         e: Exception?,
     ): RuntimeException {
-        val expectedString = if (test is Pass) ToStringEvaluator.toString(test.results) else "N/A"
+        val expectedString =
+            if (test is Pass) ToStringEvaluator.toString(test.results?.toCqlList()) else "N/A"
         val actualString = ToStringEvaluator.toString(actual)
         val error =
             """
@@ -307,14 +314,14 @@ abstract class TestFhirPath {
             )
     }
 
-    private fun readOutput(output: Output): Any? {
+    private fun readOutput(output: Output): CqlType? {
         if (output.getType() == null) {
             return null
         }
 
         return when (output.getType()) {
-            OutputType.BOOLEAN -> output.getValue().toBoolean()
-            OutputType.DECIMAL -> BigDecimal(output.getValue())
+            OutputType.BOOLEAN -> output.getValue().toBoolean().toCqlBoolean()
+            OutputType.DECIMAL -> BigDecimal(output.getValue()).toCqlDecimal()
             OutputType.DATE -> Date(output.getValue())
             OutputType.DATE_TIME ->
                 DateTime(
@@ -323,9 +330,9 @@ abstract class TestFhirPath {
                 )
 
             OutputType.TIME -> Time(output.getValue())
-            OutputType.INTEGER -> output.getValue().toInt()
+            OutputType.INTEGER -> output.getValue().toInt().toCqlInteger()
             OutputType.STRING,
-            OutputType.CODE -> output.getValue()
+            OutputType.CODE -> output.getValue().toCqlString()
             OutputType.QUANTITY -> ToQuantityEvaluator.toQuantity(output.getValue())
             else ->
                 throw IllegalArgumentException(
@@ -335,11 +342,11 @@ abstract class TestFhirPath {
         }
     }
 
-    private fun loadExpectedResults(test: Test): MutableList<Any?> {
+    private fun loadExpectedResults(test: Test): MutableList<CqlType?> {
         // Special case for tests are "expression output" tests, which have a single output with no
         // type
         if (test.getOutput().size == 1 && test.getOutput()[0].getType() == null) {
-            return mutableListOf(true)
+            return mutableListOf(org.opencds.cqf.cql.engine.runtime.Boolean.TRUE)
         }
 
         return test.getOutput()!!.map { this.readOutput(it) }.toMutableList()

@@ -5,8 +5,13 @@ import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.CqlList
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 Median(argument List<Decimal>) Decimal
@@ -18,19 +23,19 @@ If the source is null, the result is null.
 */
 object MedianEvaluator {
     @JvmStatic
-    fun median(source: Any?, state: State?): Any? {
+    fun median(source: CqlType?, state: State?): CqlType? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
+        if (source is List) {
             val itr = source.iterator()
 
             if (!itr.hasNext()) { // empty
                 return null
             }
 
-            val values = ArrayList<Any?>()
+            val values = mutableListOf<CqlType?>()
             while (itr.hasNext()) {
                 val value = itr.next()
                 if (value != null) {
@@ -47,24 +52,24 @@ object MedianEvaluator {
             if (values.size % 2 != 0) {
                 return values[values.size / 2]
             } else {
-                if (values[0] is Int) { // size of list is even
+                if (values[0] is Integer) { // size of list is even
                     return TruncatedDivideEvaluator.div(
                         AddEvaluator.add(
                             values[values.size / 2],
                             values[(values.size / 2) - 1],
                             state,
                         ),
-                        2,
+                        (2).toCqlInteger(),
                         state,
                     )
-                } else if (values[0] is BigDecimal || values[0] is Quantity) {
+                } else if (values[0] is Decimal || values[0] is Quantity) {
                     return DivideEvaluator.divide(
                         AddEvaluator.add(
                             values[values.size / 2],
                             values[(values.size / 2) - 1],
                             state,
                         ),
-                        BigDecimal("2.0"),
+                        BigDecimal("2.0").toCqlDecimal(),
                         state,
                     )
                 }
@@ -73,7 +78,7 @@ object MedianEvaluator {
 
         throw InvalidOperatorArgument(
             "Median(List<Decimal>) or Median(List<Quantity>)",
-            "Median(${source.javaClassName})",
+            "Median(${source.typeAsString})",
         )
     }
 }

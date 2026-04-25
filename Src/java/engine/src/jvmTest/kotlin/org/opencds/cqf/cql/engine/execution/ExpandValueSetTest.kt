@@ -1,11 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.ModelManager
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
@@ -37,9 +38,10 @@ internal class ExpandValueSetTest {
         val engine = CqlEngine(environment)
         val results = engine.evaluate { library("ExpandValueSetTest") }.onlyResultOrThrow
 
-        val actual = results["ExpandValueSet"]!!.value as MutableList<*>
-        Assertions.assertEquals(1, actual.size)
+        val actual = results["ExpandValueSet"]!!.value
+        assertIs<List>(actual)
+        assertEquals(1, actual.count())
 
-        CqlConceptTest.assertEqual(expected, actual[0] as CqlType)
+        CqlConceptTest.assertEqual(expected, actual.elementAt(0))
     }
 }

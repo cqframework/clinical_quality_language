@@ -1,9 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
-import org.hl7.elm.r1.Ratio
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Ratio
 
 /*
 
@@ -19,16 +20,13 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 */
 object RatioEvaluator {
     fun internalEvaluate(
-        elm: Ratio?,
+        elm: org.hl7.elm.r1.Ratio?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any? {
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+    ): Ratio {
         val numerator = visitor.visitExpression(elm!!.numerator!!, state) as Quantity
         val denominator = visitor.visitExpression(elm.denominator!!, state) as Quantity
 
-        return org.opencds.cqf.cql.engine.runtime
-            .Ratio()
-            .withNumerator(numerator)
-            .withDenominator(denominator)
+        return Ratio().withNumerator(numerator).withDenominator(denominator)
     }
 }

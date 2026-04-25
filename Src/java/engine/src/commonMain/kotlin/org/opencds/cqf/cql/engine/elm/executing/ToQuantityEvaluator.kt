@@ -3,10 +3,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 ToQuantity(argument Decimal) Quantity
@@ -47,7 +50,7 @@ define IsNull: ToQuantity('444 \'cm')
 */
 object ToQuantityEvaluator {
     @JvmStatic
-    fun toQuantity(str: String): Quantity? {
+    fun toQuantity(str: kotlin.String): Quantity? {
         // Tabs are treated like spaces for Units
         var str = str
         str = str.replace("[\t]".toRegex(), " ").trim { it <= ' ' }
@@ -65,7 +68,7 @@ object ToQuantityEvaluator {
         return quantity
     }
 
-    private fun setValue(quantity: Quantity, str: String): Quantity? {
+    private fun setValue(quantity: Quantity, str: kotlin.String): Quantity? {
         try {
             val number = BigDecimal(str)
             if (Value.validateDecimal(number, null) == null) {
@@ -79,7 +82,7 @@ object ToQuantityEvaluator {
     }
 
     @JvmStatic
-    fun toQuantity(operand: Any?, state: State?): Quantity? {
+    fun toQuantity(operand: CqlType?, state: State?): Quantity? {
         if (operand == null) {
             return null
         }
@@ -89,26 +92,25 @@ object ToQuantityEvaluator {
         }
 
         if (operand is String) {
-            val str = operand
-            return toQuantity(str)
-        } else if (operand is Int) {
-            val ret = BigDecimal(operand)
+            return toQuantity(operand.value)
+        } else if (operand is Integer) {
+            val ret = BigDecimal(operand.value)
             if (Value.validateDecimal(ret, null) == null) {
                 return null
             }
             return Quantity().withValue(ret).withDefaultUnit()
-        } else if (operand is BigDecimal) {
-            if (Value.validateDecimal(operand, null) == null) {
+        } else if (operand is Decimal) {
+            if (Value.validateDecimal(operand.value, null) == null) {
                 return null
             }
-            return Quantity().withValue(operand).withDefaultUnit()
+            return Quantity().withValue(operand.value).withDefaultUnit()
         } else if (operand is Ratio) {
             return DivideEvaluator.divide(operand.numerator, operand.denominator, state)
                 as Quantity?
         }
 
         throw IllegalArgumentException(
-            "Cannot cast a value of type ${operand.javaClassName} as Quantity - use String, Integer, Decimal, or Ratio values."
+            "Cannot cast a value of type ${operand.typeAsString} as Quantity - use String, Integer, Decimal, or Ratio values."
         )
     }
 }

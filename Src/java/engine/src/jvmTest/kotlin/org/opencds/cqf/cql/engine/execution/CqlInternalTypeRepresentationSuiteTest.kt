@@ -5,18 +5,31 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
-import org.junit.jupiter.api.Assertions
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
     @ParameterizedTest
@@ -33,302 +46,123 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         val bigDecimalZoneOffset = bigDecimalZoneOffset
 
         var value = results["BoolTrue"]!!.value
-        Assertions.assertTrue(value is Boolean)
-        Assertions.assertTrue(value as Boolean)
+        assertIs<Boolean>(value)
+        assertTrue(value.value)
 
         value = results["BoolFalse"]!!.value
-        Assertions.assertTrue(value is Boolean)
-        Assertions.assertFalse(value as Boolean)
+        assertIs<Boolean>(value)
+        assertFalse(value.value)
 
         value = results["IntOne"]!!.value
-        Assertions.assertTrue(value is Int)
-        Assertions.assertTrue(value as Int == 1)
+        assertIs<Integer>(value)
+        assertEquals(1, value.value)
 
         value = results["DecimalTenth"]!!.value
-        Assertions.assertTrue(value is BigDecimal)
-        Assertions.assertEquals(0, (value as BigDecimal).compareTo(BigDecimal("0.1")))
+        assertIs<Decimal>(value)
+        assertEquals(0, (value.value).compareTo(BigDecimal("0.1")))
 
         value = results["StringTrue"]!!.value
-        Assertions.assertTrue(value is String)
-        Assertions.assertEquals("true", value)
+        assertIs<String>(value)
+        assertEquals("true", value.value)
 
         value = results["DateTimeX"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) == true
+        assertIs<DateTime>(value)
+        assertTrue(
+            equal(value, DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456))?.value == true
         )
 
         value = results["DateTimeFX"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)) == true
+        assertIs<DateTime>(value)
+        assertTrue(
+            equal(value, DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456))?.value == true
         )
 
         value = results["TimeX"]!!.value
-        Assertions.assertTrue(value is Time)
-        Assertions.assertTrue(equal(value, Time(12, 10, 59, 456)) == true)
+        assertIs<Time>(value)
+        assertTrue(equal(value, Time(12, 10, 59, 456))?.value == true)
 
         value = results["DateTime_Year"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012)) == true)
+        assertIs<DateTime>(value)
+        assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012))?.value == true)
 
         value = results["DateTime_Month"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2)) == true)
+        assertIs<DateTime>(value)
+        assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2))?.value == true)
 
         value = results["DateTime_Day"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15)) == true)
+        assertIs<DateTime>(value)
+        assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15))?.value == true)
 
         value = results["DateTime_Hour"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12)) == true)
+        assertIs<DateTime>(value)
+        assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12))?.value == true)
 
         value = results["DateTime_Minute"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10)) == true
-        )
+        assertIs<DateTime>(value)
+        assertTrue(equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10))?.value == true)
 
         value = results["DateTime_Second"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59)) == true
+        assertIs<DateTime>(value)
+        assertTrue(
+            equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59))?.value == true
         )
 
         value = results["DateTime_Millisecond"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456)) == true
+        assertIs<DateTime>(value)
+        assertTrue(
+            equal(value, DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456))?.value ==
+                true
         )
 
         value = results["DateTime_TimezoneOffset"]!!.value
-        Assertions.assertTrue(value is DateTime)
-        Assertions.assertTrue(
-            equal(value, DateTime(BigDecimal("-8.0"), 2012, 2, 15, 12, 10, 59, 456)) == true
+        assertIs<DateTime>(value)
+        assertTrue(
+            equal(value, DateTime(BigDecimal("-8.0"), 2012, 2, 15, 12, 10, 59, 456))?.value == true
         )
 
         value = results["Time_Hour"]!!.value
-        Assertions.assertTrue(value is Time)
-        Assertions.assertTrue(equal(value, Time(12)) == true)
+        assertIs<Time>(value)
+        assertTrue(equal(value, Time(12))?.value == true)
 
         value = results["Time_Minute"]!!.value
-        Assertions.assertTrue(value is Time)
-        Assertions.assertTrue(equal(value, Time(12, 10)) == true)
+        assertIs<Time>(value)
+        assertTrue(equal(value, Time(12, 10))?.value == true)
 
         value = results["Time_Second"]!!.value
-        Assertions.assertTrue(value is Time)
-        Assertions.assertTrue(equal(value, Time(12, 10, 59)) == true)
+        assertIs<Time>(value)
+        assertTrue(equal(value, Time(12, 10, 59))?.value == true)
 
         value = results["Time_Millisecond"]!!.value
-        Assertions.assertTrue(value is Time)
-        Assertions.assertTrue(equal(value, Time(12, 10, 59, 456)) == true)
+        assertIs<Time>(value)
+        assertTrue(equal(value, Time(12, 10, 59, 456))?.value == true)
 
         value = results["Clinical_quantity"]!!.value
-        Assertions.assertTrue(value is Quantity)
-        Assertions.assertTrue(
-            equal(value, Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
-        )
+        assertIs<Quantity>(value)
+        assertTrue(equal(value, Quantity().withValue(BigDecimal(12)).withUnit("a"))?.value == true)
 
         value = results["Clinical_QuantityA"]!!.value
-        Assertions.assertTrue(value is Quantity)
-        Assertions.assertTrue(
-            equal(value, Quantity().withValue(BigDecimal(12)).withUnit("a")) == true
-        )
+        assertIs<Quantity>(value)
+        assertTrue(equal(value, Quantity().withValue(BigDecimal(12)).withUnit("a"))?.value == true)
 
         value = results["Clinical_CodeA"]!!.value
-        Assertions.assertTrue(value is Code)
-        Assertions.assertTrue(
+        assertIs<Code>(value)
+        assertTrue(
             equal(
-                value,
-                Code()
-                    .withCode("12345")
-                    .withSystem("http://loinc.org")
-                    .withVersion("1")
-                    .withDisplay("Test Code"),
-            ) == true
-        )
-
-        value = results["Clinical_ConceptA"]!!.value
-        Assertions.assertTrue(value is Concept)
-        Assertions.assertTrue(
-            equal(
-                value,
-                Concept()
-                    .withCode(
-                        Code()
-                            .withCode("12345")
-                            .withSystem("http://loinc.org")
-                            .withVersion("1")
-                            .withDisplay("Test Code")
-                    )
-                    .withDisplay("Test Concept"),
-            ) == true
-        )
-
-        val elements = LinkedHashMap<String, Any?>()
-        elements["a"] = 1
-        elements["b"] = 2
-        value = results["Structured_tuple"]!!.value
-        Assertions.assertTrue(value is Tuple)
-        Assertions.assertTrue(equal(value, Tuple().withElements(elements)) == true)
-
-        elements.clear()
-        elements["class"] = "Portable CQL Test Suite"
-        elements["versionNum"] = BigDecimal("1.0")
-        elements["date"] = DateTime(bigDecimalZoneOffset, 2018, 7, 18)
-        elements["developer"] = "Christopher Schuler"
-
-        value = results["Structured_TupleA"]!!.value
-        Assertions.assertTrue(value is Tuple)
-        Assertions.assertTrue(equal(value, Tuple().withElements(elements)) == true)
-
-        value = results["Interval_Open"]!!.value
-        Assertions.assertTrue(value is Interval)
-        Assertions.assertTrue(
-            equal(
-                value,
-                Interval(
-                    DateTime(bigDecimalZoneOffset, 2012, 1, 1),
-                    false,
-                    DateTime(bigDecimalZoneOffset, 2013, 1, 1),
-                    false,
-                ),
-            ) == true
-        )
-
-        value = results["Interval_LeftOpen"]!!.value
-        Assertions.assertTrue(value is Interval)
-        Assertions.assertTrue(
-            equal(
-                value,
-                Interval(
-                    DateTime(bigDecimalZoneOffset, 2012, 1, 1),
-                    false,
-                    DateTime(bigDecimalZoneOffset, 2013, 1, 1),
-                    true,
-                ),
-            ) == true
-        )
-
-        value = results["Interval_RightOpen"]!!.value
-        Assertions.assertTrue(value is Interval)
-        Assertions.assertTrue(
-            equal(
-                value,
-                Interval(
-                    DateTime(bigDecimalZoneOffset, 2012, 1, 1),
-                    true,
-                    DateTime(bigDecimalZoneOffset, 2013, 1, 1),
-                    false,
-                ),
-            ) == true
-        )
-
-        value = results["Interval_Closed"]!!.value
-        Assertions.assertTrue(value is Interval)
-        Assertions.assertTrue(
-            equal(
-                value,
-                Interval(
-                    DateTime(bigDecimalZoneOffset, 2012, 1, 1),
-                    true,
-                    DateTime(bigDecimalZoneOffset, 2013, 1, 1),
-                    true,
-                ),
-            ) == true
-        )
-
-        value = results["List_BoolList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        var listComp = equal(value, listOf(true, false, true), engine.state)
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_IntList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp = equal(value, listOf(9, 7, 8), engine.state)
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_DecimalList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(BigDecimal("1.0"), BigDecimal("2.1"), BigDecimal("3.2")),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_StringList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp = equal(value, listOf("a", "bee", "see"), engine.state)
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_DateTimeList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(
-                    DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456),
-                    DateTime(BigDecimal("0.0"), 2012, 3, 15, 12, 10, 59, 456),
-                    DateTime(BigDecimal("0.0"), 2012, 4, 15, 12, 10, 59, 456),
-                ),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_TimeList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(Time(12, 10, 59, 456), Time(13, 10, 59, 456), Time(14, 10, 59, 456)),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_QuantityList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(
-                    Quantity().withValue(BigDecimal("1.0")).withUnit("m"),
-                    Quantity().withValue(BigDecimal("2.1")).withUnit("m"),
-                    Quantity().withValue(BigDecimal("3.2")).withUnit("m"),
-                ),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_CodeList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(
+                    value,
                     Code()
                         .withCode("12345")
                         .withSystem("http://loinc.org")
                         .withVersion("1")
                         .withDisplay("Test Code"),
-                    Code()
-                        .withCode("123456")
-                        .withSystem("http://loinc.org")
-                        .withVersion("1")
-                        .withDisplay("Another Test Code"),
-                ),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
+                )
+                ?.value == true
+        )
 
-        value = results["List_ConceptList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
+        value = results["Clinical_ConceptA"]!!.value
+        assertIs<Concept>(value)
+        assertTrue(
             equal(
-                value,
-                listOf(
+                    value,
                     Concept()
                         .withCode(
                             Code()
@@ -338,69 +172,291 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                                 .withDisplay("Test Code")
                         )
                         .withDisplay("Test Concept"),
-                    Concept()
-                        .withCode(
-                            Code()
-                                .withCode("123456")
-                                .withSystem("http://loinc.org")
-                                .withVersion("1")
-                                .withDisplay("Another Test Code")
-                        )
-                        .withDisplay("Another Test Concept"),
-                ),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
+                )
+                ?.value == true
+        )
+
+        val elements = LinkedHashMap<kotlin.String, CqlType?>()
+        elements["a"] = 1.toCqlInteger()
+        elements["b"] = 2.toCqlInteger()
+        value = results["Structured_tuple"]!!.value
+        assertIs<Tuple>(value)
+        assertTrue(equal(value, Tuple().withElements(elements))?.value == true)
 
         elements.clear()
-        elements["a"] = 1
-        elements["b"] = "2"
-        val elements2 = mutableMapOf<String, Any?>()
-        elements2["x"] = 2
-        elements2["z"] = "3"
-        value = results["List_TupleList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
+        elements["class"] = "Portable CQL Test Suite".toCqlString()
+        elements["versionNum"] = BigDecimal("1.0").toCqlDecimal()
+        elements["date"] = DateTime(bigDecimalZoneOffset, 2018, 7, 18)
+        elements["developer"] = "Christopher Schuler".toCqlString()
+
+        value = results["Structured_TupleA"]!!.value
+        assertIs<Tuple>(value)
+        assertTrue(equal(value, Tuple().withElements(elements))?.value == true)
+
+        value = results["Interval_Open"]!!.value
+        assertIs<Interval>(value)
+        assertTrue(
+            equal(
+                    value,
+                    Interval(
+                        DateTime(bigDecimalZoneOffset, 2012, 1, 1),
+                        false,
+                        DateTime(bigDecimalZoneOffset, 2013, 1, 1),
+                        false,
+                    ),
+                )
+                ?.value == true
+        )
+
+        value = results["Interval_LeftOpen"]!!.value
+        assertIs<Interval>(value)
+        assertTrue(
+            equal(
+                    value,
+                    Interval(
+                        DateTime(bigDecimalZoneOffset, 2012, 1, 1),
+                        false,
+                        DateTime(bigDecimalZoneOffset, 2013, 1, 1),
+                        true,
+                    ),
+                )
+                ?.value == true
+        )
+
+        value = results["Interval_RightOpen"]!!.value
+        assertIs<Interval>(value)
+        assertTrue(
+            equal(
+                    value,
+                    Interval(
+                        DateTime(bigDecimalZoneOffset, 2012, 1, 1),
+                        true,
+                        DateTime(bigDecimalZoneOffset, 2013, 1, 1),
+                        false,
+                    ),
+                )
+                ?.value == true
+        )
+
+        value = results["Interval_Closed"]!!.value
+        assertIs<Interval>(value)
+        assertTrue(
+            equal(
+                    value,
+                    Interval(
+                        DateTime(bigDecimalZoneOffset, 2012, 1, 1),
+                        true,
+                        DateTime(bigDecimalZoneOffset, 2013, 1, 1),
+                        true,
+                    ),
+                )
+                ?.value == true
+        )
+
+        value = results["List_BoolList"]!!.value
+        assertIs<List>(value)
+        var listComp =
+            equal(
+                value,
+                listOf(
+                        org.opencds.cqf.cql.engine.runtime.Boolean.TRUE,
+                        org.opencds.cqf.cql.engine.runtime.Boolean.FALSE,
+                        org.opencds.cqf.cql.engine.runtime.Boolean.TRUE,
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_IntList"]!!.value
+        assertIs<List>(value)
         listComp =
             equal(
                 value,
-                listOf(Tuple().withElements(elements), Tuple().withElements(elements2)),
+                listOf(9.toCqlInteger(), 7.toCqlInteger(), 8.toCqlInteger()).toCqlList(),
                 engine.state,
             )
-        Assertions.assertTrue(listComp != null && listComp)
+        assertTrue(listComp != null && listComp.value)
 
-        value = results["List_ListList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp =
-            equal(
-                value,
-                listOf(mutableListOf<Int?>(1, 2, 3), mutableListOf<String?>("a", "b", "c")),
-                engine.state,
-            )
-        Assertions.assertTrue(listComp != null && listComp)
-
-        value = results["List_IntervalList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
+        value = results["List_DecimalList"]!!.value
+        assertIs<List>(value)
         listComp =
             equal(
                 value,
                 listOf(
-                    Interval(1, true, 5, true),
-                    Interval(5, false, 9, false),
-                    Interval(8, true, 10, false),
-                ),
+                        BigDecimal("1.0").toCqlDecimal(),
+                        BigDecimal("2.1").toCqlDecimal(),
+                        BigDecimal("3.2").toCqlDecimal(),
+                    )
+                    .toCqlList(),
                 engine.state,
             )
-        Assertions.assertTrue(listComp != null && listComp)
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_StringList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf("a".toCqlString(), "bee".toCqlString(), "see".toCqlString()).toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_DateTimeList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        DateTime(BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456),
+                        DateTime(BigDecimal("0.0"), 2012, 3, 15, 12, 10, 59, 456),
+                        DateTime(BigDecimal("0.0"), 2012, 4, 15, 12, 10, 59, 456),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_TimeList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(Time(12, 10, 59, 456), Time(13, 10, 59, 456), Time(14, 10, 59, 456))
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_QuantityList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        Quantity().withValue(BigDecimal("1.0")).withUnit("m"),
+                        Quantity().withValue(BigDecimal("2.1")).withUnit("m"),
+                        Quantity().withValue(BigDecimal("3.2")).withUnit("m"),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_CodeList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        Code()
+                            .withCode("12345")
+                            .withSystem("http://loinc.org")
+                            .withVersion("1")
+                            .withDisplay("Test Code"),
+                        Code()
+                            .withCode("123456")
+                            .withSystem("http://loinc.org")
+                            .withVersion("1")
+                            .withDisplay("Another Test Code"),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_ConceptList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        Concept()
+                            .withCode(
+                                Code()
+                                    .withCode("12345")
+                                    .withSystem("http://loinc.org")
+                                    .withVersion("1")
+                                    .withDisplay("Test Code")
+                            )
+                            .withDisplay("Test Concept"),
+                        Concept()
+                            .withCode(
+                                Code()
+                                    .withCode("123456")
+                                    .withSystem("http://loinc.org")
+                                    .withVersion("1")
+                                    .withDisplay("Another Test Code")
+                            )
+                            .withDisplay("Another Test Concept"),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        elements.clear()
+        elements["a"] = 1.toCqlInteger()
+        elements["b"] = "2".toCqlString()
+        val elements2 = mutableMapOf<kotlin.String, CqlType?>()
+        elements2["x"] = 2.toCqlInteger()
+        elements2["z"] = "3".toCqlString()
+        value = results["List_TupleList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(Tuple().withElements(elements), Tuple().withElements(elements2)).toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_ListList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        mutableListOf(1.toCqlInteger(), 2.toCqlInteger(), 3.toCqlInteger())
+                            .toCqlList(),
+                        mutableListOf("a".toCqlString(), "b".toCqlString(), "c".toCqlString())
+                            .toCqlList(),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
+
+        value = results["List_IntervalList"]!!.value
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(
+                        Interval(1.toCqlInteger(), true, 5.toCqlInteger(), true),
+                        Interval(5.toCqlInteger(), false, 9.toCqlInteger(), false),
+                        Interval(8.toCqlInteger(), true, 10.toCqlInteger(), false),
+                    )
+                    .toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
 
         value = results["List_MixedList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp = equal(value, listOf(1, "two", 3), engine.state)
-        Assertions.assertTrue(listComp != null && listComp)
+        assertIs<List>(value)
+        listComp =
+            equal(
+                value,
+                listOf(1.toCqlInteger(), "two".toCqlString(), 3.toCqlInteger()).toCqlList(),
+                engine.state,
+            )
+        assertTrue(listComp != null && listComp.value)
 
         value = results["List_EmptyList"]!!.value
-        Assertions.assertTrue(value is Iterable<*>)
-        listComp = equal(value, emptyList<Any>(), engine.state)
-        Assertions.assertNull(listComp)
+        assertIs<List>(value)
+        listComp = equal(value, List.EMPTY_LIST, engine.state)
+        assertNull(listComp)
     }
 
     companion object {

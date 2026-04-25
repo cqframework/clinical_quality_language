@@ -3,7 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 
 /*
 Max(argument List<Integer>) Integer
@@ -24,12 +25,12 @@ If the source is null, the result is null.
 */
 object MaxEvaluator {
     @JvmStatic
-    fun max(source: Any?, state: State?): Any? {
+    fun max(source: CqlType?, state: State?): CqlType? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
+        if (source is List) {
             val element = source
             val itr = element.iterator()
 
@@ -50,7 +51,7 @@ object MaxEvaluator {
                 }
 
                 val greater = GreaterEvaluator.greater(value, max, state)
-                if (greater != null && greater) {
+                if (greater != null && greater.value) {
                     max = value
                 }
             }
@@ -59,7 +60,7 @@ object MaxEvaluator {
 
         throw InvalidOperatorArgument(
             "Max(List<Integer>), Max(List<Long>, Max(List<Decimal>, Max(List<Quantity>), Max(List<Date>), Max(List<DateTime>), Max(List<Time>) or Max(List<String>))",
-            "Max(${source.javaClassName})",
+            "Max(${source.typeAsString})",
         )
     }
 }

@@ -1,11 +1,24 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 
@@ -56,20 +69,19 @@ NOTE: see note in AddEvaluator
 @Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object SubtractEvaluator {
     @JvmStatic
-    fun subtract(left: Any?, right: Any?, state: State?): Any? {
+    fun subtract(left: CqlType?, right: CqlType?, state: State?): CqlType? {
         if (left == null || right == null) {
             return null
         }
 
         // -(Integer, Integer)
-        if (left is Int) {
-            return left - right as Int
-        } else if (left is Long) {
-            return left - right as Long
-        } else if (left is BigDecimal) {
-            return left.subtract(right as BigDecimal)
-        } else if (left is Quantity) {
-            right as Quantity
+        if (left is Integer && right is Integer) {
+            return (left.value - right.value).toCqlInteger()
+        } else if (left is Long && right is Long) {
+            return (left.value - right.value).toCqlLong()
+        } else if (left is Decimal && right is Decimal) {
+            return left.value.subtract(right.value).toCqlDecimal()
+        } else if (left is Quantity && right is Quantity) {
             return computeWithConvertedUnits(
                 left,
                 right,
@@ -138,7 +150,7 @@ object SubtractEvaluator {
 
         throw InvalidOperatorArgument(
             "Subtract(Integer, Integer), Subtract(Long, Long) Subtract(Decimal, Decimal), Subtract(Quantity, Quantity), Subtract(Date, Quantity), Subtract(DateTime, Quantity), Subtract(Time, Quantity)",
-            "Subtract(${left.javaClassName}, ${right.javaClassName})",
+            "Subtract(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

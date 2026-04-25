@@ -2,10 +2,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.As
+import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.IntervalTypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /*
 contains(argument List<T>, element T) Boolean
@@ -23,27 +25,32 @@ If precision is specified and the point type is a date/time type, comparisons us
 If either argument is null, the result is null.
 */
 object ContainsEvaluator {
-    fun contains(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun contains(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         try {
             return InEvaluator.`in`(right, left, precision, state)
         } catch (e: InvalidOperatorArgument) {
             throw InvalidOperatorArgument(
                 "Contains(List<T>, T)",
-                "Contains(${left?.javaClassName}, ${right?.javaClassName})",
+                "Contains(${left?.typeAsString}, ${right?.typeAsString})",
             )
         }
     }
 
     @JvmStatic
     fun internalEvaluate(
-        left: Any?,
-        right: Any?,
-        expression: Any?,
-        precision: String?,
+        left: CqlType?,
+        right: CqlType?,
+        expression: Expression?,
+        precision: kotlin.String?,
         state: State?,
-    ): Any? {
+    ): Boolean? {
         if (left == null && right != null) {
-            return false
+            return Boolean.FALSE
         }
 
         // null left operand case

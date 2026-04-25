@@ -10,12 +10,19 @@ import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
@@ -36,7 +43,7 @@ interface FhirTypeConverter {
      * @return true if value is a FHIR structure, false otherwise
      * @throws NullPointerException if value is null
      */
-    fun isFhirType(value: Any): Boolean
+    fun isFhirType(value: Any): kotlin.Boolean
 
     /**
      * Converts an Object to a FHIR structure.
@@ -45,7 +52,7 @@ interface FhirTypeConverter {
      * @return a FHIR structure
      * @throws IllegalArgumentException is value is an Iterable
      */
-    fun toFhirType(value: Any?): IBase?
+    fun toFhirType(value: CqlType?): IBase?
 
     /**
      * Converts an iterable of Objects to FHIR structures. Preserves ordering, nulls, and sublist
@@ -54,7 +61,7 @@ interface FhirTypeConverter {
      * @param values an Iterable containing CQL structures, nulls, or sublists
      * @return n List containing FHIR types, nulls, and sublists
      */
-    fun toFhirTypes(values: Iterable<*>): MutableList<Any?>?
+    fun toFhirTypes(values: List): MutableList<Any?>?
 
     /**
      * Converts an Object to the equivalent CQL representation. This is used for arbitrary types
@@ -67,7 +74,7 @@ interface FhirTypeConverter {
      * @return a FHIR String
      * @return
      */
-    fun toCqlText(value: Any?): IBaseDatatype?
+    fun toCqlText(value: CqlType?): IBaseDatatype?
 
     /**
      * Converts an Exception to a FHIR OperationOutcome.
@@ -95,7 +102,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR Boolean
      */
-    fun toFhirBoolean(value: Boolean?): IPrimitiveType<Boolean>?
+    fun toFhirBoolean(value: Boolean?): IPrimitiveType<kotlin.Boolean>?
 
     /**
      * Converts an Integer to a FHIR Integer
@@ -103,7 +110,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR Integer
      */
-    fun toFhirInteger(value: Int?): IPrimitiveType<Int>?
+    fun toFhirInteger(value: Integer?): IPrimitiveType<Int>?
 
     /**
      * Converts a Long to a FHIR Integer64
@@ -111,7 +118,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR Integer64
      */
-    fun toFhirInteger64(value: Long?): IPrimitiveType<Long>?
+    fun toFhirInteger64(value: Long?): IPrimitiveType<kotlin.Long>?
 
     /**
      * Converts a BigDecimal to a FHIR Decimal
@@ -119,7 +126,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR Decimal
      */
-    fun toFhirDecimal(value: BigDecimal?): IPrimitiveType<BigDecimal>?
+    fun toFhirDecimal(value: Decimal?): IPrimitiveType<BigDecimal>?
 
     /**
      * Converts a CQL Date to a FHIR Date
@@ -143,7 +150,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR Time
      */
-    fun toFhirTime(value: Time?): IPrimitiveType<String>?
+    fun toFhirTime(value: Time?): IPrimitiveType<kotlin.String>?
 
     /**
      * Converts a String to a FHIR String
@@ -151,7 +158,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a FHIR String
      */
-    fun toFhirString(value: String?): IPrimitiveType<String>?
+    fun toFhirString(value: String?): IPrimitiveType<kotlin.String>?
 
     /**
      * Converts a CQL Quantity to a FHIR Quantity
@@ -167,7 +174,7 @@ interface FhirTypeConverter {
      * @param unit
      * @return true if the given unit is a CQL calendar unit
      */
-    fun isCqlCalendarUnit(unit: String?): Boolean
+    fun isCqlCalendarUnit(unit: kotlin.String?): kotlin.Boolean
 
     /**
      * Converts the given CQL unit to a UCUM definite-time duration unit according to the table and
@@ -177,7 +184,7 @@ interface FhirTypeConverter {
      * @return An equivalent UCUM unit for the given CQL calendar duration unit, if the input is a
      *   CQL calendar duration unit, otherwise returns the input unit.
      */
-    fun toUcumUnit(unit: String?): String?
+    fun toUcumUnit(unit: kotlin.String?): kotlin.String?
 
     /**
      * Converts an Ucum unit to the equivalent CQL unit according to the table defined in the CQL
@@ -187,7 +194,7 @@ interface FhirTypeConverter {
      * @return A CQL calendar unit if the input unit is an Ucum definite-duration unit, otherwise,
      *   the input unit
      */
-    fun toCqlCalendarUnit(unit: String?): String?
+    fun toCqlCalendarUnit(unit: kotlin.String?): kotlin.String?
 
     /**
      * Converts a CQL Ratio to a FHIR Ratio
@@ -196,14 +203,6 @@ interface FhirTypeConverter {
      * @return a FHIR Ratio
      */
     fun toFhirRatio(value: Ratio?): ICompositeType?
-
-    /**
-     * Converts a CQL Any to a FHIR Any
-     *
-     * @param value the value to convert
-     * @return a FHIR Any
-     */
-    fun toFhirAny(value: Any?): IBase?
 
     /**
      * Converts a CQL Code to a FHIR Coding
@@ -261,7 +260,7 @@ interface FhirTypeConverter {
      * @return true if value is a CQL type, false otherwise
      * @throws NullPointerException if value is null
      */
-    fun isCqlType(value: Any): Boolean
+    fun isCqlType(value: Any): kotlin.Boolean
 
     /**
      * Converts an Object to a CQL type.
@@ -296,7 +295,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a Boolean
      */
-    fun toCqlBoolean(value: IPrimitiveType<Boolean>?): Boolean?
+    fun toCqlBoolean(value: IPrimitiveType<kotlin.Boolean>?): Boolean?
 
     /**
      * Converts a FHIR Integer to a CQL Integer
@@ -304,7 +303,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return an Integer
      */
-    fun toCqlInteger(value: IPrimitiveType<Int>?): Int?
+    fun toCqlInteger(value: IPrimitiveType<Int>?): Integer?
 
     /**
      * Converts a FHIR Integer64 to a CQL Long
@@ -312,7 +311,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a Long
      */
-    fun toCqlLong(value: IPrimitiveType<Long>?): Long?
+    fun toCqlLong(value: IPrimitiveType<kotlin.Long>?): Long?
 
     /**
      * Converts a FHIR Decimal to a CQL Decimal
@@ -320,7 +319,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a BigDecimal
      */
-    fun toCqlDecimal(value: IPrimitiveType<BigDecimal>?): BigDecimal?
+    fun toCqlDecimal(value: IPrimitiveType<BigDecimal>?): Decimal?
 
     /**
      * Converts a FHIR Date to a CQL Date
@@ -356,7 +355,7 @@ interface FhirTypeConverter {
      * @return a CQL Time
      * @throws IllegalArgumentException if value is not a Time
      */
-    fun toCqlTime(value: IPrimitiveType<String>?): Time?
+    fun toCqlTime(value: IPrimitiveType<kotlin.String>?): Time?
 
     /**
      * Converts a FHIR String to a CQL String
@@ -364,7 +363,7 @@ interface FhirTypeConverter {
      * @param value the value to convert
      * @return a String
      */
-    fun toCqlString(value: IPrimitiveType<String>?): String?
+    fun toCqlString(value: IPrimitiveType<kotlin.String>?): String?
 
     /**
      * Converts a FHIR Quantity to a CQL Quantity
@@ -427,21 +426,19 @@ interface FhirTypeConverter {
     fun toCqlTuple(value: IBase?): Tuple?
 
     companion object {
-        const val EMPTY_LIST_EXT_URL: String =
-            "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList"
-        const val EMPTY_TUPLE_EXT_URL: String =
-            "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyTuple"
-        const val DATA_ABSENT_REASON_EXT_URL: String =
+        const val EMPTY_LIST_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList"
+        const val EMPTY_TUPLE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyTuple"
+        const val DATA_ABSENT_REASON_EXT_URL =
             "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
-        const val DATA_ABSENT_REASON_UNKNOWN_CODE: String = "unknown"
-        const val CQL_TYPE_EXT_URL: String = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType"
+        const val DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown"
+        const val CQL_TYPE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType"
 
         // Stacktrace of an exception that occurred during CQL evaluation, as the native platform
         // represents it (e.g. Java)
-        const val NATIVE_STACK_TRACE_EXT_URL: String =
+        const val NATIVE_STACK_TRACE_EXT_URL =
             "http://hl7.org/fhir/StructureDefinition/cqf-nativeStackTrace"
 
         // The CQL representation of a FHIR structure.
-        const val CQL_TEXT_EXT_URL: String = "http://hl7.org/fhir/StructureDefinition/cqf-cqlText"
+        const val CQL_TEXT_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlText"
     }
 }

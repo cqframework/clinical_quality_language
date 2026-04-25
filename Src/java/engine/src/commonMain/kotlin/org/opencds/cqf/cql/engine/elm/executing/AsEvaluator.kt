@@ -6,6 +6,7 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidCast
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /*
 as<T>(argument Any) T
@@ -28,12 +29,22 @@ define RuntimeError:
 */
 object AsEvaluator {
     @JvmStatic
-    fun internalEvaluate(operand: Any?, `as`: As, isStrict: Boolean, state: State?): Any? {
+    fun internalEvaluate(
+        operand: CqlType?,
+        `as`: As,
+        isStrict: kotlin.Boolean,
+        state: State?,
+    ): CqlType? {
         val type = `as`.asTypeSpecifier ?: NamedTypeSpecifier().withName(`as`.asType)
         return `as`(operand, type, isStrict, state)
     }
 
-    fun `as`(operand: Any?, type: TypeSpecifier, isStrict: Boolean, state: State?): Any? {
+    fun `as`(
+        operand: CqlType?,
+        type: TypeSpecifier,
+        isStrict: kotlin.Boolean,
+        state: State?,
+    ): CqlType? {
         if (IsEvaluator.`is`(operand, type, state) == true) {
             return operand
         }

@@ -5,6 +5,8 @@ import org.hl7.elm.r1.AggregateClause
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
 /*
@@ -20,21 +22,21 @@ object AggregateClauseEvaluator {
     fun aggregate(
         elm: AggregateClause,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-        elements: List<Any?>?,
-    ): Any? {
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+        elements: List,
+    ): CqlType? {
         var elements = elements
 
         if (elm.isDistinct() == true) {
             elements = DistinctEvaluator.distinct(elements, state)!!
         }
 
-        var aggregatedValue: Any? = null
+        var aggregatedValue: CqlType? = null
         if (elm.starting != null) {
             aggregatedValue = visitor.visitExpression(elm.starting!!, state)
         }
 
-        for (e in elements!!) {
+        for (e in elements) {
             if (e !is Tuple) {
                 throw CqlException("expected aggregation source to be a Tuple")
             }

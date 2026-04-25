@@ -6,6 +6,7 @@ import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /** Represents an expression def or function def that was evaluated. */
 class ExpressionDefTraceFrame(
@@ -18,7 +19,7 @@ class ExpressionDefTraceFrame(
     /** Context name and value. */
     context: Pair<String, Any?>,
     /** Result of evaluating the expression or function. Only used if tracing is enabled. */
-    val result: Any?,
+    val result: CqlType?,
     /** Inner expression and function calls. */
     val subframes: List<TraceFrame>,
 ) : TraceFrame(library, expressionDef, variables, context) {

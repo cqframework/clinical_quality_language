@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 flatten(argument List<List<T>>) List<T>
@@ -11,26 +13,26 @@ The flatten operator flattens a list of lists into a single list.
 */
 object FlattenEvaluator {
     @JvmStatic
-    fun flatten(operand: Any?): List<Any?>? {
+    fun flatten(operand: CqlType?): List? {
         if (operand == null) {
             return null
         }
 
-        if (operand is Iterable<*>) {
-            val resultList = mutableListOf<Any?>()
+        if (operand is List) {
+            val resultList = mutableListOf<CqlType?>()
             for (element in operand) {
                 if (element == null) {
                     resultList.add(null)
                 } else {
-                    for (subElement in element as Iterable<*>) {
+                    for (subElement in element as List) {
                         resultList.add(subElement)
                     }
                 }
             }
 
-            return resultList
+            return resultList.toCqlList()
         }
 
-        throw InvalidOperatorArgument("Flatten(List<List<T>>)", "Flatten(${operand.javaClassName})")
+        throw InvalidOperatorArgument("Flatten(List<List<T>>)", "Flatten(${operand.typeAsString})")
     }
 }

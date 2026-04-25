@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 
 internal class IncludedConceptRefTest : CqlTestBase() {
     @Test
@@ -18,7 +17,7 @@ internal class IncludedConceptRefTest : CqlTestBase() {
             Concept().withDisplay("concept-display").withCodes(mutableListOf<Code?>(code))
 
         val results = engine.evaluate { library("IncludedConceptRefTest") }.onlyResultOrThrow
-        val actual = results["testIncludedConceptRef"]!!.value as CqlType?
+        val actual = results["testIncludedConceptRef"]!!.value
 
         CqlConceptTest.assertEqual(expected, actual)
     }

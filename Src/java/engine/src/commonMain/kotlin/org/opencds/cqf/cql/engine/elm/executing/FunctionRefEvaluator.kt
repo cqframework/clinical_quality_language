@@ -10,11 +10,12 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 object FunctionRefEvaluator {
     private val logger = KotlinLogging.logger("FunctionRefEvaluator")
@@ -22,9 +23,9 @@ object FunctionRefEvaluator {
     fun internalEvaluate(
         functionRef: FunctionRef?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any? {
-        val arguments: ArrayList<Any?> = ArrayList(functionRef!!.operand.size)
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+    ): CqlType? {
+        val arguments: ArrayList<CqlType?> = ArrayList(functionRef!!.operand.size)
         for (operand in functionRef.operand) {
             arguments.add(visitor.visitExpression(operand, state))
         }
@@ -42,9 +43,9 @@ object FunctionRefEvaluator {
     fun evaluateFunctionDef(
         functionDef: FunctionDef,
         state: State,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-        arguments: MutableList<Any?>,
-    ): Any? {
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+        arguments: MutableList<CqlType?>,
+    ): CqlType? {
         if (true == functionDef.isExternal()) {
             return state.environment
                 .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
@@ -69,7 +70,7 @@ object FunctionRefEvaluator {
     internal fun resolveOrCacheFunctionDef(
         state: State?,
         functionRef: FunctionRef,
-        arguments: kotlin.collections.List<Any?>,
+        arguments: kotlin.collections.List<CqlType?>,
     ): FunctionDef {
         // We can cache a function ref if:
         // 1. ELM signatures are provided OR
@@ -94,7 +95,7 @@ object FunctionRefEvaluator {
     internal fun resolveFunctionRef(
         state: State?,
         functionRef: FunctionRef,
-        arguments: kotlin.collections.List<Any?>,
+        arguments: kotlin.collections.List<CqlType?>,
     ): FunctionDef {
         val name = functionRef.name
         val signature = functionRef.signature
@@ -107,7 +108,7 @@ object FunctionRefEvaluator {
     fun resolveFunctionRef(
         state: State?,
         name: String?,
-        arguments: kotlin.collections.List<Any?>,
+        arguments: kotlin.collections.List<CqlType?>,
         signature: kotlin.collections.List<TypeSpecifier>,
     ): kotlin.collections.List<FunctionDef> {
         val namedDefs = Libraries.getFunctionDefs(name, state!!.getCurrentLibrary()!!)
@@ -156,15 +157,20 @@ object FunctionRefEvaluator {
     fun pickFunctionDef(
         state: State?,
         name: String?,
-        arguments: kotlin.collections.List<Any?>?,
+        arguments: kotlin.collections.List<CqlType?>,
         signature: kotlin.collections.List<TypeSpecifier>,
         functionDefs: kotlin.collections.List<FunctionDef>,
     ): FunctionDef {
-        val types = signature.ifEmpty { arguments }
+        val types =
+            if (signature.isEmpty()) {
+                arguments.joinToString(", ") { it?.typeAsString ?: "null" }
+            } else {
+                signature.joinToString(", ")
+            }
 
         if (functionDefs.isEmpty()) {
             throw CqlException(
-                "Could not resolve call to operator '${name}(${typesToString(state, types)})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
+                "Could not resolve call to operator '${name}(${types})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
             )
         }
 
@@ -174,20 +180,8 @@ object FunctionRefEvaluator {
         }
 
         throw CqlException(
-            "Ambiguous call to operator '${name}(${typesToString(state, types)})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
+            "Ambiguous call to operator '${name}(${types})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."
         )
-    }
-
-    fun typesToString(state: State?, arguments: kotlin.collections.List<Any?>?): String {
-        val argStr = StringBuilder()
-        if (arguments != null) {
-            arguments.forEach { a ->
-                argStr.append(if (argStr.isNotEmpty()) ", " else "")
-                argStr.append(a?.javaClassName ?: "null")
-            }
-        }
-
-        return argStr.toString()
     }
 
     fun resolveOperandType(operandDef: OperandDef): TypeSpecifier {
@@ -200,7 +194,7 @@ object FunctionRefEvaluator {
 
     fun matchesTypes(
         functionDef: FunctionDef,
-        arguments: kotlin.collections.List<*>,
+        arguments: kotlin.collections.List<CqlType?>,
         state: State?,
     ): Boolean {
         val operands = functionDef.operand
@@ -221,7 +215,7 @@ object FunctionRefEvaluator {
      * be passed to a function expecting the specified type). Returns null if we cannot determine
      * compatibility. This is not the same as is-checking (see [IsEvaluator.`is`]).
      */
-    fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean? {
+    fun isCompatible(value: CqlType?, type: TypeSpecifier, state: State?): Boolean? {
         // System.Any is a supertype of all types
         if (type is NamedTypeSpecifier && type.name == anyTypeName) {
             return true
@@ -259,7 +253,7 @@ object FunctionRefEvaluator {
                 return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
             }
             is ListTypeSpecifier -> {
-                if (value is Iterable<*>) {
+                if (value is List) {
                     if (value.any()) {
                         for (item in value) {
                             val result = isCompatible(item, type.elementType!!, state)

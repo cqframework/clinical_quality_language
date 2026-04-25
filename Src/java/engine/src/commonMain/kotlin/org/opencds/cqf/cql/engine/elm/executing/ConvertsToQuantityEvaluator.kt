@@ -1,12 +1,15 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.String
 
 /*
 
@@ -25,30 +28,30 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToQuantityEvaluator {
     @JvmStatic
-    fun convertsToQuantity(argument: Any?, state: State?): Boolean? {
+    fun convertsToQuantity(argument: CqlType?, state: State?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Quantity) {
-            return true
+            return Boolean.TRUE
         }
 
-        if (argument is String || argument is Ratio || argument is BigDecimal || argument is Int) {
+        if (argument is String || argument is Ratio || argument is Decimal || argument is Integer) {
             try {
-                val response: Any? = ToQuantityEvaluator.toQuantity(argument, state)
+                val response = ToQuantityEvaluator.toQuantity(argument, state)
                 if (response == null) {
-                    return false
+                    return Boolean.FALSE
                 }
             } catch (e: Exception) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToQuantity(String) or ConvertsToQuantity(Ratio) or ConvertsToQuantity(Integer) or ConvertsToQuantity(Decimal)",
-            "ConvertsToQuantity(${argument.javaClassName})",
+            "ConvertsToQuantity(${argument.typeAsString})",
         )
     }
 }

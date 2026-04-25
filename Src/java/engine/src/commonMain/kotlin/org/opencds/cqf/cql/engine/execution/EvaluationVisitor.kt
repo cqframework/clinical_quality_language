@@ -2,11 +2,9 @@ package org.opencds.cqf.cql.engine.execution
 
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor
-import org.cqframework.cql.shared.BigDecimal
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.*
-import org.hl7.elm.r1.List
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.elm.executing.*
 import org.opencds.cqf.cql.engine.elm.executing.AbsEvaluator.abs
@@ -167,13 +165,19 @@ import org.opencds.cqf.cql.engine.elm.executing.XorEvaluator.xor
 import org.opencds.cqf.cql.engine.exception.Backtrace
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
-class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
-    override fun visitExpression(elm: Expression, context: State?): Any? {
+class EvaluationVisitor : BaseElmLibraryVisitor<CqlType?, State?>() {
+    override fun visitExpression(elm: Expression, context: State?): CqlType? {
         context?.markElementAsVisitedForCoverageReport(elm)
 
         // Capture the non-null state for detailed tracing to allow smart-cast
@@ -230,31 +234,31 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         }
     }
 
-    override fun visitExpressionDef(elm: ExpressionDef, context: State?): Any? {
+    override fun visitExpressionDef(elm: ExpressionDef, context: State?): CqlType? {
         return internalEvaluate(elm, context, this)
     }
 
-    override fun visitExpressionRef(elm: ExpressionRef, context: State?): Any? {
+    override fun visitExpressionRef(elm: ExpressionRef, context: State?): CqlType? {
         return ExpressionRefEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitFunctionRef(elm: FunctionRef, context: State?): Any? {
+    override fun visitFunctionRef(elm: FunctionRef, context: State?): CqlType? {
         return FunctionRefEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitAdd(elm: Add, context: State?): Any? {
+    override fun visitAdd(elm: Add, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return add(left, right, context)
     }
 
-    override fun visitAbs(elm: Abs, context: State?): Any? {
+    override fun visitAbs(elm: Abs, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return abs(operand)
     }
 
-    override fun visitAfter(elm: After, context: State?): Any? {
+    override fun visitAfter(elm: After, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -262,25 +266,25 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return after(left, right, precision, context)
     }
 
-    override fun visitAliasRef(elm: AliasRef, context: State?): Any? {
+    override fun visitAliasRef(elm: AliasRef, context: State?): CqlType? {
         return AliasRefEvaluator.internalEvaluate(elm.name, context)
     }
 
-    override fun visitAllTrue(elm: AllTrue, context: State?): Any? {
+    override fun visitAllTrue(elm: AllTrue, context: State?): CqlType {
         val src = visitExpression(elm.source!!, context)
         return allTrue(src)
     }
 
-    override fun visitAnd(elm: And, context: State?): Any? {
+    override fun visitAnd(elm: And, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return and(left, right)
     }
 
-    override fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: State?): Any? {
+    override fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: State?): CqlType? {
         val codes = visitExpression(elm.codes!!, context)
-        val codeSystem: Any? =
+        val codeSystem =
             if (elm.codesystem != null) {
                 CodeSystemRefEvaluator.toCodeSystem(elm.codesystem, context)
             } else {
@@ -290,9 +294,9 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return internalEvaluate(codes, elm.codesystem, codeSystem, context)
     }
 
-    override fun visitInCodeSystem(elm: InCodeSystem, context: State?): Any? {
+    override fun visitInCodeSystem(elm: InCodeSystem, context: State?): CqlType? {
         val code = visitExpression(elm.code!!, context)
-        var cs: Any? = null
+        var cs: CqlType? = null
         if (elm.codesystem != null) {
             cs = CodeSystemRefEvaluator.toCodeSystem(elm.codesystem!!, context)
         } else if (elm.codesystemExpression != null) {
@@ -302,9 +306,9 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return inCodeSystem(code, cs, context)
     }
 
-    override fun visitAnyInValueSet(elm: AnyInValueSet, context: State?): Any? {
+    override fun visitAnyInValueSet(elm: AnyInValueSet, context: State?): CqlType? {
         val codes = visitExpression(elm.codes!!, context)
-        val valueSet: Any? =
+        val valueSet =
             if (elm.valueset != null) {
                 ValueSetRefEvaluator.toValueSet(context, elm.valueset!!)
             } else {
@@ -314,9 +318,9 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return internalEvaluate(codes, elm.valueset, valueSet, context)
     }
 
-    override fun visitInValueSet(elm: InValueSet, context: State?): Any? {
+    override fun visitInValueSet(elm: InValueSet, context: State?): CqlType? {
         val code = visitExpression(elm.code!!, context)
-        var vs: Any? = null
+        var vs: CqlType? = null
         if (elm.valueset != null) {
             vs = ValueSetRefEvaluator.toValueSet(context, elm.valueset!!)
         } else if (elm.valuesetExpression != null) {
@@ -325,43 +329,43 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return inValueSet(code, vs, context)
     }
 
-    override fun visitValueSetRef(elm: ValueSetRef, context: State?): Any? {
+    override fun visitValueSetRef(elm: ValueSetRef, context: State?): CqlType {
         return internalEvaluate(context, elm)
     }
 
-    override fun visitXor(elm: Xor, context: State?): Any? {
+    override fun visitXor(elm: Xor, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return xor(left, right)
     }
 
-    override fun visitWidth(elm: Width, context: State?): Any? {
+    override fun visitWidth(elm: Width, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return width(operand, context)
     }
 
-    override fun visitVariance(elm: Variance, context: State?): Any? {
+    override fun visitVariance(elm: Variance, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return variance(source, context)
     }
 
-    override fun visitAvg(elm: Avg, context: State?): Any? {
+    override fun visitAvg(elm: Avg, context: State?): CqlType? {
         val src = visitExpression(elm.source!!, context)
         return avg(src, context)
     }
 
-    override fun visitDivide(elm: Divide, context: State?): Any? {
+    override fun visitDivide(elm: Divide, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return divide(left, right, context)
     }
 
-    override fun visitUpper(elm: Upper, context: State?): Any? {
+    override fun visitUpper(elm: Upper, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return upper(operand)
     }
 
-    override fun visitUnion(elm: Union, context: State?): Any? {
+    override fun visitUnion(elm: Union, context: State?): CqlType? {
         val left = elm.operand[0]
         val right = elm.operand[1]
         val leftResult = visitExpression(left, context)
@@ -379,7 +383,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return if (
             leftResultType is ListType || rightResultType is ListType || elmResultType is ListType
         ) {
-            unionIterable(leftResult as Iterable<*>?, rightResult as Iterable<*>?, context)
+            unionIterable(leftResult as List?, rightResult as List?, context)
         } else if (
             leftResultType is IntervalType ||
                 rightResultType is IntervalType ||
@@ -391,14 +395,14 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         }
     }
 
-    override fun visitGreater(elm: Greater, context: State?): Any? {
+    override fun visitGreater(elm: Greater, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return greater(left, right, context)
     }
 
-    override fun visitMeets(elm: Meets, context: State?): Any? {
+    override fun visitMeets(elm: Meets, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -406,12 +410,12 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return meets(left, right, precision, context)
     }
 
-    override fun visitDistinct(elm: Distinct, context: State?): Any? {
+    override fun visitDistinct(elm: Distinct, context: State?): CqlType? {
         val value = visitExpression(elm.operand!!, context)
-        return distinct(value as Iterable<*>?, context)
+        return distinct(value, context)
     }
 
-    override fun visitMeetsAfter(elm: MeetsAfter, context: State?): Any? {
+    override fun visitMeetsAfter(elm: MeetsAfter, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -420,7 +424,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     }
 
     // SameAs
-    override fun visitMeetsBefore(elm: MeetsBefore, context: State?): Any? {
+    override fun visitMeetsBefore(elm: MeetsBefore, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -428,7 +432,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return meetsBefore(left, right, precision, context)
     }
 
-    override fun visitSameAs(elm: SameAs, context: State?): Any? {
+    override fun visitSameAs(elm: SameAs, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -436,7 +440,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return sameAs(left, right, precision, context)
     }
 
-    override fun visitSameOrAfter(elm: SameOrAfter, context: State?): Any? {
+    override fun visitSameOrAfter(elm: SameOrAfter, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -444,7 +448,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return sameOrAfter(left, right, precision, context)
     }
 
-    override fun visitSameOrBefore(elm: SameOrBefore, context: State?): Any? {
+    override fun visitSameOrBefore(elm: SameOrBefore, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -452,52 +456,51 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return sameOrBefore(left, right, precision, context)
     }
 
-    override fun visitGreaterOrEqual(elm: GreaterOrEqual, context: State?): Any? {
+    override fun visitGreaterOrEqual(elm: GreaterOrEqual, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return greaterOrEqual(left, right, context)
     }
 
-    override fun visitSingletonFrom(elm: SingletonFrom, context: State?): Any? {
+    override fun visitSingletonFrom(elm: SingletonFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return singletonFrom(operand)
     }
 
-    override fun visitSize(elm: Size, context: State?): Any? {
+    override fun visitSize(elm: Size, context: State?): CqlType? {
         val argument = visitExpression(elm.operand!!, context)
         return size(argument, context)
     }
 
-    override fun visitSlice(elm: Slice, context: State?): Any? {
+    override fun visitSlice(elm: Slice, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
-        val start = visitExpression(elm.startIndex!!, context) as Int?
-        val end =
-            if (elm.endIndex == null) null else visitExpression(elm.endIndex!!, context) as Int?
+        val start = visitExpression(elm.startIndex!!, context)
+        val end = if (elm.endIndex == null) null else visitExpression(elm.endIndex!!, context)
 
         return slice(source, start, end)
     }
 
-    override fun visitSplit(elm: Split, context: State?): Any? {
+    override fun visitSplit(elm: Split, context: State?): CqlType? {
         val stringToSplit = visitExpression(elm.stringToSplit!!, context)
         val separator = visitExpression(elm.separator!!, context)
 
         return split(stringToSplit, separator)
     }
 
-    override fun visitSplitOnMatches(elm: SplitOnMatches, context: State?): Any? {
+    override fun visitSplitOnMatches(elm: SplitOnMatches, context: State?): CqlType? {
         val stringToSplit = visitExpression(elm.stringToSplit!!, context)
         val separator = visitExpression(elm.separatorPattern!!, context)
 
         return splitOnMatches(stringToSplit, separator)
     }
 
-    override fun visitStart(elm: Start, context: State?): Any? {
+    override fun visitStart(elm: Start, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return start(operand)
     }
 
-    override fun visitStarts(elm: Starts, context: State?): Any? {
+    override fun visitStarts(elm: Starts, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -505,19 +508,19 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return starts(left, right, precision, context)
     }
 
-    override fun visitStartsWith(elm: StartsWith, context: State?): Any? {
+    override fun visitStartsWith(elm: StartsWith, context: State?): CqlType? {
         val argument = visitExpression(elm.operand[0], context)
         val prefix = visitExpression(elm.operand[1], context)
 
         return startsWith(argument, prefix)
     }
 
-    override fun visitStdDev(elm: StdDev, context: State?): Any? {
+    override fun visitStdDev(elm: StdDev, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return stdDev(source, context)
     }
 
-    override fun visitSubstring(elm: Substring, context: State?): Any? {
+    override fun visitSubstring(elm: Substring, context: State?): CqlType? {
         val stringValue = visitExpression(elm.stringToSub!!, context)
         val startIndexValue = visitExpression(elm.startIndex!!, context)
         val lengthValue = if (elm.length == null) null else visitExpression(elm.length!!, context)
@@ -525,162 +528,159 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return substring(stringValue, startIndexValue, lengthValue)
     }
 
-    override fun visitSubtract(elm: Subtract, context: State?): Any? {
+    override fun visitSubtract(elm: Subtract, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return subtract(left, right, context)
     }
 
-    override fun visitSuccessor(elm: Successor, context: State?): Any? {
+    override fun visitSuccessor(elm: Successor, context: State?): CqlType? {
         val value = visitExpression(elm.operand!!, context)
         return successor(value)
     }
 
-    override fun visitSum(elm: Sum, context: State?): Any? {
+    override fun visitSum(elm: Sum, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return sum(source, context)
     }
 
-    override fun visitTime(elm: Time, context: State?): Any? {
+    override fun visitTime(elm: Time, context: State?): CqlType? {
         if (elm.hour == null) {
             return null
         }
 
-        val hour = visitExpression(elm.hour!!, context) as Int?
-        val minute =
-            if (elm.minute == null) null else visitExpression(elm.minute!!, context) as Int?
-        val second =
-            if (elm.second == null) null else visitExpression(elm.second!!, context) as Int?
+        val hour = visitExpression(elm.hour!!, context)
+        val minute = if (elm.minute == null) null else visitExpression(elm.minute!!, context)
+        val second = if (elm.second == null) null else visitExpression(elm.second!!, context)
         val millisecond =
-            if (elm.millisecond == null) null
-            else visitExpression(elm.millisecond!!, context) as Int?
+            if (elm.millisecond == null) null else visitExpression(elm.millisecond!!, context)
 
         return time(hour, minute, second, millisecond)
     }
 
-    override fun visitTimeFrom(elm: TimeFrom, context: State?): Any? {
+    override fun visitTimeFrom(elm: TimeFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return timeFrom(operand)
     }
 
-    override fun visitTimeOfDay(elm: TimeOfDay, context: State?): Any? {
+    override fun visitTimeOfDay(elm: TimeOfDay, context: State?): CqlType? {
         return TimeOfDayEvaluator.internalEvaluate(context)
     }
 
-    override fun visitTimezoneFrom(elm: TimezoneFrom, context: State?): Any? {
+    override fun visitTimezoneFrom(elm: TimezoneFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return internalEvaluate(operand)
     }
 
-    override fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: State?): Any? {
+    override fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return timezoneOffsetFrom(operand)
     }
 
-    override fun visitToBoolean(elm: ToBoolean, context: State?): Any? {
+    override fun visitToBoolean(elm: ToBoolean, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toBoolean(operand)
     }
 
-    override fun visitToConcept(elm: ToConcept, context: State?): Any? {
+    override fun visitToConcept(elm: ToConcept, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toConcept(operand)
     }
 
-    override fun visitToChars(elm: ToChars, context: State?): Any? {
+    override fun visitToChars(elm: ToChars, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toChars(operand)
     }
 
-    override fun visitToDate(elm: ToDate, context: State?): Any? {
+    override fun visitToDate(elm: ToDate, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toDate(operand)
     }
 
-    override fun visitToDateTime(elm: ToDateTime, context: State?): Any? {
+    override fun visitToDateTime(elm: ToDateTime, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toDateTime(operand, context)
     }
 
-    override fun visitToday(elm: Today, context: State?): Any? {
+    override fun visitToday(elm: Today, context: State?): CqlType? {
         return today(context)
     }
 
-    override fun visitToDecimal(elm: ToDecimal, context: State?): Any? {
+    override fun visitToDecimal(elm: ToDecimal, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toDecimal(operand)
     }
 
-    override fun visitToInteger(elm: ToInteger, context: State?): Any? {
+    override fun visitToInteger(elm: ToInteger, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toInteger(operand)
     }
 
-    override fun visitToList(elm: ToList, context: State?): Any? {
+    override fun visitToList(elm: ToList, context: State?): CqlType {
         val operand = visitExpression(elm.operand!!, context)
         return toList(operand)
     }
 
-    override fun visitToLong(elm: ToLong, context: State?): Any? {
+    override fun visitToLong(elm: ToLong, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toLong(operand)
     }
 
-    override fun visitToQuantity(elm: ToQuantity, context: State?): Any? {
+    override fun visitToQuantity(elm: ToQuantity, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toQuantity(operand, context)
     }
 
-    override fun visitToRatio(elm: ToRatio, context: State?): Any? {
+    override fun visitToRatio(elm: ToRatio, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toRatio(operand)
     }
 
-    override fun visitToString(elm: ToString, context: State?): Any? {
+    override fun visitToString(elm: ToString, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toString(operand)
     }
 
-    override fun visitToTime(elm: ToTime, context: State?): Any? {
+    override fun visitToTime(elm: ToTime, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return toTime(operand)
     }
 
-    override fun visitTruncatedDivide(elm: TruncatedDivide, context: State?): Any? {
+    override fun visitTruncatedDivide(elm: TruncatedDivide, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return div(left, right, context)
     }
 
-    override fun visitMedian(elm: Median, context: State?): Any? {
+    override fun visitMedian(elm: Median, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return median(source, context)
     }
 
-    override fun visitTruncate(elm: Truncate, context: State?): Any? {
+    override fun visitTruncate(elm: Truncate, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return truncate(operand)
     }
 
-    override fun visitTuple(elm: Tuple, context: State?): Any {
-        val ret = LinkedHashMap<String, Any?>()
+    override fun visitTuple(elm: Tuple, context: State?): CqlType {
+        val ret = mutableMapOf<kotlin.String, CqlType?>()
         for (element in elm.element) {
             ret[element.name!!] = visitExpression(element.value!!, context)
         }
         return TupleEvaluator.internalEvaluate(ret)
     }
 
-    override fun visitAnyTrue(elm: AnyTrue, context: State?): Any? {
+    override fun visitAnyTrue(elm: AnyTrue, context: State?): CqlType {
         val source = visitExpression(elm.source!!, context)
         return anyTrue(source)
     }
 
-    override fun visitAs(elm: As, context: State?): Any? {
+    override fun visitAs(elm: As, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return AsEvaluator.internalEvaluate(operand, elm, elm.isStrict()!!, context)
     }
 
-    override fun visitBefore(elm: Before, context: State?): Any? {
+    override fun visitBefore(elm: Before, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
@@ -688,25 +688,25 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return before(left, right, precision, context)
     }
 
-    override fun visitCalculateAgeAt(elm: CalculateAgeAt, context: State?): Any? {
+    override fun visitCalculateAgeAt(elm: CalculateAgeAt, context: State?): CqlType? {
         val birthDate = visitExpression(elm.operand[0], context)
         val asOf = visitExpression(elm.operand[1], context)
         val precision = elm.precision!!.value()
         return calculateAgeAt(birthDate, asOf, precision)
     }
 
-    override fun visitCalculateAge(elm: CalculateAge, context: State?): Any? {
+    override fun visitCalculateAge(elm: CalculateAge, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         val precision = elm.precision!!.value()
         return internalEvaluate(operand, precision, context)
     }
 
-    override fun visitCase(elm: Case, context: State?): Any? {
+    override fun visitCase(elm: Case, context: State?): CqlType? {
         if (elm.comparand == null) {
             for (caseItem in elm.caseItem) {
-                val `when` = visitExpression(caseItem.`when`!!, context) as Boolean? ?: continue
+                val `when` = visitExpression(caseItem.`when`!!, context) ?: continue
 
-                if (`when`) {
+                if ((`when` as Boolean).value) {
                     return visitExpression(caseItem.then!!, context)
                 }
             }
@@ -716,9 +716,9 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
 
             for (caseItem in elm.caseItem) {
                 val `when` = visitExpression(caseItem.`when`!!, context)
-                val check = equivalent(comparand, `when`, context) ?: continue
+                val check = equivalent(comparand, `when`, context)
 
-                if (check) {
+                if (check.value) {
                     return visitElement(caseItem.then!!, context)
                 }
             }
@@ -727,182 +727,171 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         }
     }
 
-    override fun visitCeiling(elm: Ceiling, context: State?): Any? {
+    override fun visitCeiling(elm: Ceiling, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return ceiling(operand)
     }
 
-    override fun visitChildren(elm: Children, context: State?): Any? {
+    override fun visitChildren(elm: Children, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return children(source)
     }
 
-    override fun visitCoalesce(elm: Coalesce, context: State?): Any? {
-        val operands = mutableListOf<Any?>()
+    override fun visitCoalesce(elm: Coalesce, context: State?): CqlType? {
+        val operands = mutableListOf<CqlType?>()
         for (operand in elm.operand) {
             operands.add(visitExpression(operand, context))
         }
         return coalesce(operands)
     }
 
-    override fun visitCode(elm: Code, context: State?): Any? {
+    override fun visitCode(elm: Code, context: State?): CqlType {
         return CodeEvaluator.internalEvaluate(elm.system, elm.code, elm.display, context)
     }
 
-    override fun visitCodeRef(elm: CodeRef, context: State?): Any? {
+    override fun visitCodeRef(elm: CodeRef, context: State?): CqlType {
         return toCode(elm, context)
     }
 
-    override fun visitConcept(elm: Concept, context: State?): Any? {
-        val codes = ArrayList<org.opencds.cqf.cql.engine.runtime.Code?>()
+    override fun visitConcept(elm: Concept, context: State?): CqlType {
+        val codes = mutableListOf<CqlType?>()
         for (i in 0..<elm.code.size) {
-            codes.add(
-                visitExpression(elm.code[i], context) as org.opencds.cqf.cql.engine.runtime.Code?
-            )
+            codes.add(visitExpression(elm.code[i], context))
         }
 
-        return internalEvaluate(codes, elm.display)
+        return internalEvaluate(codes.toCqlList(), elm.display)
     }
 
-    override fun visitConceptRef(elm: ConceptRef, context: State?): Any {
+    override fun visitConceptRef(elm: ConceptRef, context: State?): CqlType {
         return toConcept(elm, context)
     }
 
-    override fun visitCollapse(elm: Collapse, context: State?): Any? {
+    override fun visitCollapse(elm: Collapse, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
-        // Due to type erasure this is the best
-        // we can for now. We'll address this
-        // by introducing CqlType metadata
-        // in a future release.
-        @Suppress("UNCHECKED_CAST") val list = left as Iterable<Interval?>?
-        val per = right as Quantity?
-
-        return collapse(list, per, context)
+        return collapse(left, right, context)
     }
 
-    override fun visitCombine(elm: Combine, context: State?): Any? {
+    override fun visitCombine(elm: Combine, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         val separator =
-            if (elm.separator == null) "" else visitExpression(elm.separator!!, context) as String?
+            if (elm.separator == null) String.EMPTY_STRING
+            else visitExpression(elm.separator!!, context)
 
         return combine(source, separator)
     }
 
-    override fun visitConcatenate(elm: Concatenate, context: State?): Any? {
+    override fun visitConcatenate(elm: Concatenate, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return concatenate(left, right)
     }
 
-    override fun visitContains(elm: Contains, context: State?): Any? {
+    override fun visitContains(elm: Contains, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
         return internalEvaluate(left, right, elm.operand[0], precision, context)
     }
 
-    override fun visitConvert(elm: Convert, context: State?): Any? {
+    override fun visitConvert(elm: Convert, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return internalEvaluate(operand, elm.toType, elm.toTypeSpecifier, context)
     }
 
-    override fun visitConvertQuantity(elm: ConvertQuantity, context: State?): Any? {
+    override fun visitConvertQuantity(elm: ConvertQuantity, context: State?): CqlType? {
         val argument = visitExpression(elm.operand[0], context)
         val unit = visitExpression(elm.operand[1], context)
         return convertQuantity(argument, unit, context!!.environment.libraryManager!!.ucumService)
     }
 
-    override fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: State?): Any? {
+    override fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToBoolean(operand)
     }
 
-    override fun visitConvertsToDate(elm: ConvertsToDate, context: State?): Any? {
+    override fun visitConvertsToDate(elm: ConvertsToDate, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToDate(operand)
     }
 
-    override fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: State?): Any? {
+    override fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToDateTime(operand, context!!.evaluationDateTime!!.zoneOffset)
     }
 
-    override fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: State?): Any? {
+    override fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToDecimal(operand)
     }
 
-    override fun visitConvertsToInteger(elm: ConvertsToInteger, context: State?): Any? {
+    override fun visitConvertsToInteger(elm: ConvertsToInteger, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToInteger(operand)
     }
 
-    override fun visitConvertsToLong(elm: ConvertsToLong, context: State?): Any? {
+    override fun visitConvertsToLong(elm: ConvertsToLong, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToLong(operand)
     }
 
-    override fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: State?): Any? {
+    override fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToQuantity(operand, context)
     }
 
-    override fun visitConvertsToString(elm: ConvertsToString, context: State?): Any? {
+    override fun visitConvertsToString(elm: ConvertsToString, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToString(operand)
     }
 
-    override fun visitConvertsToTime(elm: ConvertsToTime, context: State?): Any? {
+    override fun visitConvertsToTime(elm: ConvertsToTime, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return convertsToTime(operand)
     }
 
-    override fun visitCount(elm: Count, context: State?): Any? {
+    override fun visitCount(elm: Count, context: State?): CqlType {
         val source = visitExpression(elm.source!!, context)
         return count(source)
     }
 
-    override fun visitDate(elm: Date, context: State?): Any? {
-        val year = if (elm.year == null) null else visitExpression(elm.year!!, context) as Int?
-        val month = if (elm.month == null) null else visitExpression(elm.month!!, context) as Int?
-        val day = if (elm.day == null) null else visitExpression(elm.day!!, context) as Int?
+    override fun visitDate(elm: Date, context: State?): CqlType? {
+        val year = if (elm.year == null) null else visitExpression(elm.year!!, context)
+        val month = if (elm.month == null) null else visitExpression(elm.month!!, context)
+        val day = if (elm.day == null) null else visitExpression(elm.day!!, context)
         return internalEvaluate(year, month, day)
     }
 
-    override fun visitDateFrom(elm: DateFrom, context: State?): Any? {
+    override fun visitDateFrom(elm: DateFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return dateFrom(operand)
     }
 
-    override fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: State?): Any? {
+    override fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         val precision = elm.precision!!.value()
         return dateTimeComponentFrom(operand, precision)
     }
 
-    override fun visitDateTime(elm: DateTime, context: State?): Any? {
-        val year = if (elm.year == null) null else visitExpression(elm.year!!, context) as Int?
-        val month = if (elm.month == null) null else visitExpression(elm.month!!, context) as Int?
-        val day = if (elm.day == null) null else visitExpression(elm.day!!, context) as Int?
-        val hour = if (elm.hour == null) null else visitExpression(elm.hour!!, context) as Int?
-        val minute =
-            if (elm.minute == null) null else visitExpression(elm.minute!!, context) as Int?
-        val second =
-            if (elm.second == null) null else visitExpression(elm.second!!, context) as Int?
+    override fun visitDateTime(elm: DateTime, context: State?): CqlType? {
+        val year = if (elm.year == null) null else visitExpression(elm.year!!, context)
+        val month = if (elm.month == null) null else visitExpression(elm.month!!, context)
+        val day = if (elm.day == null) null else visitExpression(elm.day!!, context)
+        val hour = if (elm.hour == null) null else visitExpression(elm.hour!!, context)
+        val minute = if (elm.minute == null) null else visitExpression(elm.minute!!, context)
+        val second = if (elm.second == null) null else visitExpression(elm.second!!, context)
         val milliSecond =
-            if (elm.millisecond == null) null
-            else visitExpression(elm.millisecond!!, context) as Int?
+            if (elm.millisecond == null) null else visitExpression(elm.millisecond!!, context)
         val timeZoneOffset =
             (if (elm.timezoneOffset == null)
-                TemporalHelper.zoneToOffset(
-                    context!!.evaluationDateTime!!.zoneOffset
-                ) // Previously, we relied on null to trigger DateTime instantiation off the default
+                TemporalHelper.zoneToOffset(context!!.evaluationDateTime!!.zoneOffset)
+                    .toCqlDecimal() // Previously, we relied on null to trigger DateTime
+            // instantiation off the default
             // TimeZone
             // Now, we compute the Offset explicitly from the State evaluation time.
-            else visitExpression(elm.timezoneOffset!!, context) as BigDecimal?)
+            else visitExpression(elm.timezoneOffset!!, context))
         return internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset)
     }
 
@@ -914,17 +903,17 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
      * @deprecated since 3.28.0
      */
     @Deprecated("")
-    override fun visitDescendents(elm: Descendents, context: State?): Any? {
+    override fun visitDescendents(elm: Descendents, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return descendents(source)
     }
 
-    override fun visitDescendants(elm: Descendants, context: State?): Any? {
+    override fun visitDescendants(elm: Descendants, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return descendents(source)
     }
 
-    override fun visitDifferenceBetween(elm: DifferenceBetween, context: State?): Any? {
+    override fun visitDifferenceBetween(elm: DifferenceBetween, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
@@ -932,7 +921,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return difference(left, right, Precision.fromString(precision))
     }
 
-    override fun visitDurationBetween(elm: DurationBetween, context: State?): Any? {
+    override fun visitDurationBetween(elm: DurationBetween, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
@@ -940,12 +929,12 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return duration(left, right, Precision.fromString(precision))
     }
 
-    override fun visitEnd(elm: End, context: State?): Any? {
+    override fun visitEnd(elm: End, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return end(operand)
     }
 
-    override fun visitEnds(elm: Ends, context: State?): Any? {
+    override fun visitEnds(elm: Ends, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
@@ -953,451 +942,451 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
         return ends(left, right, precision, context)
     }
 
-    override fun visitEndsWith(elm: EndsWith, context: State?): Any? {
-        val argument = visitExpression(elm.operand[0], context) as String?
-        val suffix = visitExpression(elm.operand[1], context) as String?
+    override fun visitEndsWith(elm: EndsWith, context: State?): CqlType? {
+        val argument = visitExpression(elm.operand[0], context)
+        val suffix = visitExpression(elm.operand[1], context)
         return endsWith(argument, suffix)
     }
 
-    override fun visitEqual(elm: Equal, context: State?): Any? {
+    override fun visitEqual(elm: Equal, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return equal(left, right, context)
     }
 
-    override fun visitEquivalent(elm: Equivalent, context: State?): Any? {
+    override fun visitEquivalent(elm: Equivalent, context: State?): CqlType {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return equivalent(left, right, context)
     }
 
-    override fun visitExcept(elm: Except, context: State?): Any? {
+    override fun visitExcept(elm: Except, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return except(left, right, context)
     }
 
-    override fun visitExists(elm: Exists, context: State?): Any? {
+    override fun visitExists(elm: Exists, context: State?): CqlType {
         val operand = visitExpression(elm.operand!!, context)
         return exists(operand)
     }
 
-    override fun visitExpand(elm: Expand, context: State?): Any? {
+    override fun visitExpand(elm: Expand, context: State?): CqlType? {
         val listOrInterval = visitExpression(elm.operand[0], context)
-        val per = visitExpression(elm.operand[1], context) as Quantity?
+        val per = visitExpression(elm.operand[1], context)
         return expand(listOrInterval, per, context)
     }
 
-    override fun visitExpandValueSet(elm: ExpandValueSet, context: State?): Any? {
+    override fun visitExpandValueSet(elm: ExpandValueSet, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return expand(operand, context)
     }
 
-    override fun visitExp(elm: Exp, context: State?): Any? {
+    override fun visitExp(elm: Exp, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return exp(operand)
     }
 
-    override fun visitFilter(elm: Filter, context: State?): Any? {
+    override fun visitFilter(elm: Filter, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         val condition = visitExpression(elm.condition!!, context)
         return filter(elm, source, condition, context)
     }
 
-    override fun visitFirst(elm: First, context: State?): Any? {
+    override fun visitFirst(elm: First, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return first(source)
     }
 
-    override fun visitFlatten(elm: Flatten, context: State?): Any? {
+    override fun visitFlatten(elm: Flatten, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return flatten(operand)
     }
 
-    override fun visitFloor(elm: Floor, context: State?): Any? {
+    override fun visitFloor(elm: Floor, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return floor(operand)
     }
 
-    override fun visitForEach(elm: ForEach, context: State?): Any? {
+    override fun visitForEach(elm: ForEach, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         val element = visitExpression(elm.element!!, context)
         return forEach(source, element)
     }
 
-    override fun visitGeometricMean(elm: GeometricMean, context: State?): Any? {
-        val source = visitExpression(elm.source!!, context) as Iterable<*>?
+    override fun visitGeometricMean(elm: GeometricMean, context: State?): CqlType? {
+        val source = visitExpression(elm.source!!, context)
         return geometricMean(source, context)
     }
 
-    override fun visitHighBoundary(elm: HighBoundary, context: State?): Any? {
+    override fun visitHighBoundary(elm: HighBoundary, context: State?): CqlType? {
         val input = visitExpression(elm.operand[0], context)
         val precision = visitExpression(elm.operand[1], context)
         return highBoundary(input, precision)
     }
 
-    override fun visitIdentifierRef(elm: IdentifierRef, context: State?): Any? {
+    override fun visitIdentifierRef(elm: IdentifierRef, context: State?): CqlType? {
         return IdentifierRefEvaluator.internalEvaluate(elm.name, context)
     }
 
-    override fun visitIf(elm: If, context: State?): Any? {
+    override fun visitIf(elm: If, context: State?): CqlType? {
         return IfEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitImplies(elm: Implies, context: State?): Any? {
-        val left = visitExpression(elm.operand[0], context) as Boolean?
-        val right = visitExpression(elm.operand[1], context) as Boolean?
+    override fun visitImplies(elm: Implies, context: State?): CqlType? {
+        val left = visitExpression(elm.operand[0], context)
+        val right = visitExpression(elm.operand[1], context)
         return implies(left, right)
     }
 
-    override fun visitIncludedIn(elm: IncludedIn, context: State?): Any? {
+    override fun visitIncludedIn(elm: IncludedIn, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return IncludedInEvaluator.internalEvaluate(left, right, precision, context)
     }
 
-    override fun visitIncludes(elm: Includes, context: State?): Any? {
+    override fun visitIncludes(elm: Includes, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return IncludesEvaluator.internalEvaluate(left, right, precision, context)
     }
 
-    override fun visitIndexOf(elm: IndexOf, context: State?): Any? {
+    override fun visitIndexOf(elm: IndexOf, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         val element = visitExpression(elm.element!!, context)
         return indexOf(source, element, context)
     }
 
-    override fun visitIndexer(elm: Indexer, context: State?): Any? {
+    override fun visitIndexer(elm: Indexer, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return indexer(left, right)
     }
 
-    override fun visitIn(elm: In, context: State?): Any? {
+    override fun visitIn(elm: In, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return InEvaluator.internalEvaluate(left, right, precision, context)
     }
 
-    override fun visitInstance(elm: Instance, context: State?): Any? {
+    override fun visitInstance(elm: Instance, context: State?): CqlType? {
         return InstanceEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitIntersect(elm: Intersect, context: State?): Any? {
+    override fun visitIntersect(elm: Intersect, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return intersect(left, right, context)
     }
 
-    override fun visitInterval(elm: org.hl7.elm.r1.Interval, context: State?): Any? {
+    override fun visitInterval(elm: org.hl7.elm.r1.Interval, context: State?): CqlType? {
         return IntervalEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitIs(elm: Is, context: State?): Any? {
+    override fun visitIs(elm: Is, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return internalEvaluate(elm, operand, context)
     }
 
-    override fun visitIsFalse(elm: IsFalse, context: State?): Any? {
-        val operand = visitExpression(elm.operand!!, context) as Boolean?
+    override fun visitIsFalse(elm: IsFalse, context: State?): CqlType {
+        val operand = visitExpression(elm.operand!!, context)
         return IsFalseEvaluator.isFalse(operand)
     }
 
-    override fun visitIsNull(elm: IsNull, context: State?): Any? {
+    override fun visitIsNull(elm: IsNull, context: State?): CqlType {
         val operand = visitExpression(elm.operand!!, context)
         return isNull(operand)
     }
 
-    override fun visitIsTrue(elm: IsTrue, context: State?): Any? {
-        val operand = visitExpression(elm.operand!!, context) as Boolean?
+    override fun visitIsTrue(elm: IsTrue, context: State?): CqlType {
+        val operand = visitExpression(elm.operand!!, context)
         return IsTrueEvaluator.isTrue(operand)
     }
 
-    override fun visitLast(elm: Last, context: State?): Any? {
+    override fun visitLast(elm: Last, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return last(source)
     }
 
-    override fun visitLastPositionOf(elm: LastPositionOf, context: State?): Any? {
+    override fun visitLastPositionOf(elm: LastPositionOf, context: State?): CqlType? {
         val string = visitExpression(elm.string!!, context)
         val pattern = visitExpression(elm.pattern!!, context)
         return lastPositionOf(string, pattern)
     }
 
-    override fun visitLength(elm: Length, context: State?): Any? {
+    override fun visitLength(elm: Length, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return internalEvaluate(operand, elm, context)
     }
 
-    override fun visitLess(elm: Less, context: State?): Any? {
+    override fun visitLess(elm: Less, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return less(left, right, context)
     }
 
-    override fun visitLessOrEqual(elm: LessOrEqual, context: State?): Any? {
+    override fun visitLessOrEqual(elm: LessOrEqual, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return lessOrEqual(left, right, context)
     }
 
-    override fun visitLiteral(elm: Literal, context: State?): Any? {
+    override fun visitLiteral(elm: Literal, context: State?): CqlType? {
         return LiteralEvaluator.internalEvaluate(elm.valueType!!, elm.value!!, context)
     }
 
-    override fun visitList(elm: List, context: State?): Any {
+    override fun visitList(elm: org.hl7.elm.r1.List, context: State?): CqlType {
         return ListEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitLn(elm: Ln, context: State?): Any? {
+    override fun visitLn(elm: Ln, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return ln(operand)
     }
 
-    override fun visitLog(elm: Log, context: State?): Any? {
+    override fun visitLog(elm: Log, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return log(left, right)
     }
 
-    override fun visitLowBoundary(elm: LowBoundary, context: State?): Any? {
+    override fun visitLowBoundary(elm: LowBoundary, context: State?): CqlType? {
         val input = visitExpression(elm.operand[0], context)
         val precision = visitExpression(elm.operand[1], context)
         return lowBoundary(input, precision)
     }
 
-    override fun visitLower(elm: Lower, context: State?): Any? {
+    override fun visitLower(elm: Lower, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return lower(operand)
     }
 
-    override fun visitMatches(elm: Matches, context: State?): Any? {
-        val argument = visitExpression(elm.operand[0], context) as String?
-        val pattern = visitExpression(elm.operand[1], context) as String?
+    override fun visitMatches(elm: Matches, context: State?): CqlType? {
+        val argument = visitExpression(elm.operand[0], context)
+        val pattern = visitExpression(elm.operand[1], context)
         return matches(argument, pattern)
     }
 
-    override fun visitMax(elm: Max, context: State?): Any? {
+    override fun visitMax(elm: Max, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return max(source, context)
     }
 
-    override fun visitMaxValue(elm: MaxValue, context: State?): Any? {
+    override fun visitMaxValue(elm: MaxValue, context: State?): CqlType? {
         return MaxValueEvaluator.internalEvaluate(elm.valueType!!, context)
     }
 
-    override fun visitMessage(elm: Message, context: State?): Any? {
+    override fun visitMessage(elm: Message, context: State?): CqlType? {
         return MessageEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitMin(elm: Min, context: State?): Any? {
+    override fun visitMin(elm: Min, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return min(source, context)
     }
 
-    override fun visitMinValue(elm: MinValue, context: State?): Any? {
+    override fun visitMinValue(elm: MinValue, context: State?): CqlType? {
         return MinValueEvaluator.internalEvaluate(elm.valueType!!, context)
     }
 
-    override fun visitMode(elm: Mode, context: State?): Any? {
+    override fun visitMode(elm: Mode, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return mode(source, context)
     }
 
-    override fun visitModulo(elm: Modulo, context: State?): Any? {
+    override fun visitModulo(elm: Modulo, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return modulo(left, right)
     }
 
-    override fun visitMultiply(elm: Multiply, context: State?): Any? {
+    override fun visitMultiply(elm: Multiply, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
 
         return multiply(left, right, context)
     }
 
-    override fun visitNegate(elm: Negate, context: State?): Any? {
+    override fun visitNegate(elm: Negate, context: State?): CqlType? {
         return NegateEvaluator.internalEvaluate(elm.operand!!, context, this)
     }
 
-    override fun visitNotEqual(elm: NotEqual, context: State?): Any? {
+    override fun visitNotEqual(elm: NotEqual, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return notEqual(left, right, context)
     }
 
-    override fun visitNot(elm: Not, context: State?): Any? {
+    override fun visitNot(elm: Not, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return not(operand)
     }
 
-    override fun visitNow(elm: Now, context: State?): Any? {
+    override fun visitNow(elm: Now, context: State?): CqlType? {
         return NowEvaluator.internalEvaluate(context)
     }
 
-    override fun visitNull(elm: Null, context: State?): Any? {
+    override fun visitNull(elm: Null, context: State?): CqlType? {
         return NullEvaluator.internalEvaluate(context)
     }
 
-    override fun visitOperandRef(elm: OperandRef, context: State?): Any? {
+    override fun visitOperandRef(elm: OperandRef, context: State?): CqlType? {
         return OperandRefEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitOr(elm: Or, context: State?): Any? {
+    override fun visitOr(elm: Or, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return or(left, right)
     }
 
-    override fun visitOverlapsAfter(elm: OverlapsAfter, context: State?): Any? {
+    override fun visitOverlapsAfter(elm: OverlapsAfter, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
         return overlapsAfter(left, right, precision, context)
     }
 
-    override fun visitOverlapsBefore(elm: OverlapsBefore, context: State?): Any? {
+    override fun visitOverlapsBefore(elm: OverlapsBefore, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
         return overlapsBefore(left, right, precision, context)
     }
 
-    override fun visitOverlaps(elm: Overlaps, context: State?): Any? {
+    override fun visitOverlaps(elm: Overlaps, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision == null) null else elm.precision!!.value()
         return overlaps(left, right, precision, context)
     }
 
-    override fun visitParameterRef(elm: ParameterRef, context: State?): Any? {
+    override fun visitParameterRef(elm: ParameterRef, context: State?): CqlType? {
         return ParameterRefEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitPointFrom(elm: PointFrom, context: State?): Any? {
+    override fun visitPointFrom(elm: PointFrom, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         return pointFrom(operand, context)
     }
 
-    override fun visitPopulationStdDev(elm: PopulationStdDev, context: State?): Any? {
+    override fun visitPopulationStdDev(elm: PopulationStdDev, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return popStdDev(source, context)
     }
 
-    override fun visitPopulationVariance(elm: PopulationVariance, context: State?): Any? {
+    override fun visitPopulationVariance(elm: PopulationVariance, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return popVariance(source, context)
     }
 
-    override fun visitPositionOf(elm: PositionOf, context: State?): Any? {
+    override fun visitPositionOf(elm: PositionOf, context: State?): CqlType? {
         val pattern = visitExpression(elm.pattern!!, context)
         val string = visitExpression(elm.string!!, context)
         return positionOf(pattern, string)
     }
 
-    override fun visitPower(elm: Power, context: State?): Any? {
+    override fun visitPower(elm: Power, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         return power(left, right)
     }
 
-    override fun visitPrecision(elm: org.hl7.elm.r1.Precision, context: State?): Any? {
+    override fun visitPrecision(elm: org.hl7.elm.r1.Precision, context: State?): CqlType? {
         val argument = visitExpression(elm.operand!!, context)
         return precision(argument)
     }
 
-    override fun visitPredecessor(elm: Predecessor, context: State?): Any? {
+    override fun visitPredecessor(elm: Predecessor, context: State?): CqlType? {
         val argument = visitExpression(elm.operand!!, context)
         return predecessor(argument)
     }
 
-    override fun visitProduct(elm: Product, context: State?): Any? {
+    override fun visitProduct(elm: Product, context: State?): CqlType? {
         val source = visitExpression(elm.source!!, context)
         return product(source, context)
     }
 
-    override fun visitProperContains(elm: ProperContains, context: State?): Any? {
+    override fun visitProperContains(elm: ProperContains, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return properContains(left, right, precision, context)
     }
 
-    override fun visitProperIncludedIn(elm: ProperIncludedIn, context: State?): Any? {
+    override fun visitProperIncludedIn(elm: ProperIncludedIn, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return properlyIncludedIn(left, right, precision, context)
     }
 
-    override fun visitProperIncludes(elm: ProperIncludes, context: State?): Any? {
+    override fun visitProperIncludes(elm: ProperIncludes, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return properlyIncludes(left, right, precision, context)
     }
 
-    override fun visitProperIn(elm: ProperIn, context: State?): Any? {
+    override fun visitProperIn(elm: ProperIn, context: State?): CqlType? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
         val precision = if (elm.precision != null) elm.precision!!.value() else null
         return ProperInEvaluator.internalEvaluate(left, right, precision, context)
     }
 
-    override fun visitProperty(elm: Property, context: State?): Any? {
+    override fun visitProperty(elm: Property, context: State?): CqlType? {
         return PropertyEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitQuantity(elm: org.hl7.elm.r1.Quantity, context: State?): Any? {
+    override fun visitQuantity(elm: org.hl7.elm.r1.Quantity, context: State?): CqlType {
         return internalEvaluate(elm, context)
     }
 
-    override fun visitRound(elm: Round, context: State?): Any? {
+    override fun visitRound(elm: Round, context: State?): CqlType? {
         val operand = visitExpression(elm.operand!!, context)
         val precision =
             if (elm.precision == null) null else visitExpression(elm.precision!!, context)
         return round(operand, precision)
     }
 
-    override fun visitRetrieve(elm: Retrieve, context: State?): Any {
+    override fun visitRetrieve(elm: Retrieve, context: State?): CqlType? {
         return RetrieveEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitReplaceMatches(elm: ReplaceMatches, context: State?): Any? {
-        val argument = visitExpression(elm.operand[0], context) as String?
-        val pattern = visitExpression(elm.operand[1], context) as String?
-        val substitution = visitExpression(elm.operand[2], context) as String?
+    override fun visitReplaceMatches(elm: ReplaceMatches, context: State?): CqlType? {
+        val argument = visitExpression(elm.operand[0], context)
+        val pattern = visitExpression(elm.operand[1], context)
+        val substitution = visitExpression(elm.operand[2], context)
         return replaceMatches(argument, pattern, substitution)
     }
 
-    override fun visitRepeat(elm: Repeat, context: State?): Any {
+    override fun visitRepeat(elm: Repeat, context: State?): CqlType {
         val source = visitExpression(elm.source!!, context)
         val element = visitExpression(elm.element!!, context)
         val scope = elm.scope
         return RepeatEvaluator.internalEvaluate(source, element, scope, context)
     }
 
-    override fun visitRatio(elm: Ratio, context: State?): Any? {
+    override fun visitRatio(elm: Ratio, context: State?): CqlType {
         return RatioEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun visitQueryLetRef(elm: QueryLetRef, context: State?): Any? {
+    override fun visitQueryLetRef(elm: QueryLetRef, context: State?): CqlType? {
         return internalEvaluate(elm, context)
     }
 
-    override fun visitQuery(elm: Query, context: State?): Any? {
+    override fun visitQuery(elm: Query, context: State?): CqlType? {
         return QueryEvaluator.internalEvaluate(elm, context, this)
     }
 
-    override fun defaultResult(elm: Element, context: State?): Any? {
+    override fun defaultResult(elm: Element, context: State?): CqlType? {
         return null
     }
 }

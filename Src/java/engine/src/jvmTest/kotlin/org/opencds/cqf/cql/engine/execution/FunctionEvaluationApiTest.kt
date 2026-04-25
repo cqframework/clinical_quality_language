@@ -8,32 +8,37 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.opencds.cqf.cql.engine.data.StaticFunction
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 private val integerOperandType =
     NamedTypeSpecifier().apply { name = QName("urn:hl7-org:elm-types:r1", "Integer") }
 
 object ExternalFunctions {
-    @JvmStatic @Suppress("FunctionOnlyReturningConstant") fun externalFunc() = 5
+    @JvmStatic @Suppress("FunctionOnlyReturningConstant") fun externalFunc() = 5.toCqlInteger()
 }
 
 class FunctionEvaluationApiTest : CqlTestBase() {
 
     @Test
     fun evaluateSimpleFunctionOnce() {
-        val evaluationFunctionRef = EvaluationFunctionRef("func", null, listOf(1, 2))
+        val evaluationFunctionRef =
+            EvaluationFunctionRef("func", null, listOf(1.toCqlInteger(), 2.toCqlInteger()))
         val results =
             engine
                 .evaluate {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-        assertEquals(3, results[evaluationFunctionRef]!!.value)
+        assertEquals(3.toCqlInteger(), results[evaluationFunctionRef]!!.value)
     }
 
     @Test
     fun evaluateSameFunctionMultipleTimesWithDifferentArgs() {
-        val evaluationFunctionRef1 = EvaluationFunctionRef("func", null, listOf(1, 2))
-        val evaluationFunctionRef2 = EvaluationFunctionRef("func", null, listOf(3, 4))
+        val evaluationFunctionRef1 =
+            EvaluationFunctionRef("func", null, listOf(1.toCqlInteger(), 2.toCqlInteger()))
+        val evaluationFunctionRef2 =
+            EvaluationFunctionRef("func", null, listOf(3.toCqlInteger(), 4.toCqlInteger()))
         val results =
             engine
                 .evaluate {
@@ -42,13 +47,14 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     }
                 }
                 .onlyResultOrThrow
-        assertEquals(3, results[evaluationFunctionRef1]!!.value)
-        assertEquals(7, results[evaluationFunctionRef2]!!.value)
+        assertEquals(3.toCqlInteger(), results[evaluationFunctionRef1]!!.value)
+        assertEquals(7.toCqlInteger(), results[evaluationFunctionRef2]!!.value)
     }
 
     @Test
     fun evaluateFunctionAndExpression() {
-        val evaluationFunctionRef = EvaluationFunctionRef("func", null, listOf(1, 2))
+        val evaluationFunctionRef =
+            EvaluationFunctionRef("func", null, listOf(1.toCqlInteger(), 2.toCqlInteger()))
         val evaluationExpressionRef = EvaluationExpressionRef("expr")
         val results =
             engine
@@ -58,8 +64,8 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     }
                 }
                 .onlyResultOrThrow
-        assertEquals(3, results[evaluationFunctionRef]!!.value)
-        assertEquals(5, results[evaluationExpressionRef]!!.value)
+        assertEquals(3.toCqlInteger(), results[evaluationFunctionRef]!!.value)
+        assertEquals(5.toCqlInteger(), results[evaluationExpressionRef]!!.value)
     }
 
     @Test
@@ -80,7 +86,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
             EvaluationFunctionRef(
                 "funcWithOverloads",
                 listOf(integerOperandType, integerOperandType),
-                listOf(1, 2),
+                listOf(1.toCqlInteger(), 2.toCqlInteger()),
             )
         val results =
             engine
@@ -88,7 +94,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-        assertEquals(3, results[evaluationFunctionRef]!!.value)
+        assertEquals(3.toCqlInteger(), results[evaluationFunctionRef]!!.value)
     }
 
     @Test
@@ -105,7 +111,12 @@ class FunctionEvaluationApiTest : CqlTestBase() {
 
     @Test
     fun throwsWhenFunctionHasOverloadsButSignatureNotProvided() {
-        val evaluationFunctionRef = EvaluationFunctionRef("funcWithOverloads", null, listOf(1, 2))
+        val evaluationFunctionRef =
+            EvaluationFunctionRef(
+                "funcWithOverloads",
+                null,
+                listOf(1.toCqlInteger(), 2.toCqlInteger()),
+            )
         assertFailsWith<CqlException> {
             engine
                 .evaluate {
@@ -117,14 +128,15 @@ class FunctionEvaluationApiTest : CqlTestBase() {
 
     @Test
     fun evaluateFluentFunction() {
-        val evaluationFunctionRef = EvaluationFunctionRef("fluentFunc", null, listOf(1))
+        val evaluationFunctionRef =
+            EvaluationFunctionRef("fluentFunc", null, listOf(1.toCqlInteger()))
         val results =
             engine
                 .evaluate {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-        assertEquals(2, results[evaluationFunctionRef]!!.value)
+        assertEquals(2.toCqlInteger(), results[evaluationFunctionRef]!!.value)
     }
 
     @Test
@@ -135,7 +147,9 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                 ExternalFunctions.javaClass.declaredMethods.map {
                     StaticFunction(
                         it.name,
-                        { arguments -> it.invoke(it.declaringClass, *arguments!!.toTypedArray()) },
+                        { arguments ->
+                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as CqlType?
+                        },
                     )
                 }
             ),
@@ -148,6 +162,6 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     library("FunctionEvaluationApiTest") { expressions(evaluationFunctionRef) }
                 }
                 .onlyResultOrThrow
-        assertEquals(5, results[evaluationFunctionRef]!!.value)
+        assertEquals(5.toCqlInteger(), results[evaluationFunctionRef]!!.value)
     }
 }

@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
  * The ELM Slice operation is the foundation for 3 CQL operators:
@@ -27,9 +30,8 @@ import org.opencds.cqf.cql.engine.util.javaClassName
  * */
 object SliceEvaluator {
     @JvmStatic
-    fun slice(source: Any?, start: Int?, end: Int?): Any? {
-        var start = start
-        var end = end
+    fun slice(source: CqlType?, start: CqlType?, end: CqlType?): List? {
+
         if (source == null) {
             return null
         }
@@ -41,28 +43,30 @@ object SliceEvaluator {
         //        if (start == null) {
         //            return source;
         //        }
-        if (source is Iterable<*>) {
-            val ret: MutableList<Any?> = ArrayList<Any?>()
+        if (source is List && start is Integer? && end is Integer?) {
+            var start = start?.value
+            var end = end?.value
+            val ret = mutableListOf<CqlType?>()
 
-            if (end == null || end > (source as MutableList<*>).size) {
-                end = (source as MutableList<*>).size
+            if (end == null || end > source.count()) {
+                end = source.count()
             }
 
             if (end < 0) {
-                return ret
+                return ret.toCqlList()
             }
 
             while (start!! < end) {
-                ret.add(source.get(start))
+                ret.add(source.elementAt(start))
                 ++start
             }
 
-            return ret
+            return ret.toCqlList()
         }
 
         throw InvalidOperatorArgument(
             "Slice(List<T>, Integer, Integer)",
-            "Slice(${source.javaClassName}, ${start!!.javaClassName}, ${end!!.javaClassName})",
+            "Slice(${source.typeAsString}, ${start!!.typeAsString}, ${end!!.typeAsString})",
         )
     }
 }

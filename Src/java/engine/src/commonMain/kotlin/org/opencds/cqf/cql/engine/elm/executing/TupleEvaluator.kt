@@ -1,9 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Tuple
 
 object TupleEvaluator {
-    fun internalEvaluate(ret: MutableMap<String, Any?>?): Tuple {
+    fun internalEvaluate(ret: MutableMap<kotlin.String, CqlType?>?): Tuple {
         return Tuple().withElements(ret!!)
     }
 }

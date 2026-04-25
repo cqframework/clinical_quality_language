@@ -3,7 +3,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -22,34 +27,36 @@ object ConvertsToBooleanEvaluator {
     private val validFalseValues = arrayOf("false", "f", "no", "n", "0")
 
     @JvmStatic
-    fun convertsToBoolean(argument: Any?): Boolean? {
+    fun convertsToBoolean(argument: CqlType?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Boolean) {
-            return true
+            return Boolean.TRUE
         }
 
-        if (argument is Int) {
+        if (argument is Integer) {
             val value = argument
-            return (value == 0 || value == 1)
+            return (value.value == 0 || value.value == 1).toCqlBoolean()
         }
 
-        if (argument is BigDecimal) {
+        if (argument is Decimal) {
             val value = argument
-            return (value.compareTo(BigDecimal("1.0")) == 0 ||
-                value.compareTo(BigDecimal("0.0")) == 0)
+            return (value.value.compareTo(BigDecimal("1.0")) == 0 ||
+                    value.value.compareTo(BigDecimal("0.0")) == 0)
+                .toCqlBoolean()
         }
 
         if (argument is String) {
-            return validTrueValues.contains(argument.lowercase()) ||
-                validFalseValues.contains(argument.lowercase())
+            return (validTrueValues.contains(argument.value.lowercase()) ||
+                    validFalseValues.contains(argument.value.lowercase()))
+                .toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToBoolean(String)",
-            "ConvertsToBoolean(${argument.javaClassName})",
+            "ConvertsToBoolean(${argument.typeAsString})",
         )
     }
 }

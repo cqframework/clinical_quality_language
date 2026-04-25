@@ -4,7 +4,8 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 
 /*
 ToConcept(argument Code) Concept
@@ -15,14 +16,14 @@ If the argument is null, the result is null.
 */
 object ToConceptEvaluator {
     @JvmStatic
-    fun toConcept(operand: Any?): Any? {
+    fun toConcept(operand: CqlType?): Concept? {
         if (operand == null) {
             return null
         }
 
         val result = Concept()
 
-        if (operand is Iterable<*>) {
+        if (operand is List) {
             for (code in operand) {
                 result.withCode(code as Code?)
             }
@@ -32,6 +33,6 @@ object ToConceptEvaluator {
             return result
         }
 
-        throw InvalidOperatorArgument("ToConcept(Code)", "ToConcept(${operand.javaClassName})")
+        throw InvalidOperatorArgument("ToConcept(Code)", "ToConcept(${operand.typeAsString})")
     }
 }

@@ -4,10 +4,16 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 *(left Integer, right Integer) Integer
@@ -28,18 +34,18 @@ If either argument is null, the result is null.
 @Suppress("CyclomaticComplexMethod", "ReturnCount")
 object MultiplyEvaluator {
     @JvmStatic
-    fun multiply(left: Any?, right: Any?, state: State?): Any? {
+    fun multiply(left: CqlType?, right: CqlType?, state: State?): CqlType? {
         if (left == null || right == null) {
             return null
         }
 
         // *(Integer, Integer)
-        if (left is Int) {
-            return left * right as Int
-        } else if (left is Long) {
-            return left * right as Long
-        } else if (left is BigDecimal && right is BigDecimal) {
-            return Value.verifyPrecision(left.multiply(right), null)
+        if (left is Integer && right is Integer) {
+            return (left.value * right.value).toCqlInteger()
+        } else if (left is Long && right is Long) {
+            return (left.value * right.value).toCqlLong()
+        } else if (left is Decimal && right is Decimal) {
+            return Value.verifyPrecision(left.value.multiply(right.value), null).toCqlDecimal()
         } else if (left is Quantity && right is Quantity) {
             val leftValue = left.value!!
             val leftUnit = left.unit!!
@@ -69,11 +75,11 @@ object MultiplyEvaluator {
             }
             val resultValue = Value.verifyPrecision(unverifiedResultValue, null)
             return Quantity().withValue(resultValue).withUnit(resultUnit)
-        } else if (left is BigDecimal && right is Quantity) {
-            val value = Value.verifyPrecision(left.multiply(right.value!!), null)
+        } else if (left is Decimal && right is Quantity) {
+            val value = Value.verifyPrecision(left.value.multiply(right.value!!), null)
             return right.withValue(value)
-        } else if (left is Quantity && right is BigDecimal) {
-            val value = Value.verifyPrecision((left.value)!!.multiply(right), null)
+        } else if (left is Quantity && right is Decimal) {
+            val value = Value.verifyPrecision((left.value)!!.multiply(right.value), null)
             return left.withValue(value)
         } else if (left is Interval && right is Interval) {
             return Interval(
@@ -87,7 +93,7 @@ object MultiplyEvaluator {
 
         throw InvalidOperatorArgument(
             "Multiply(Integer, Integer), Multiply(Long, Long), Multiply(Decimal, Decimal), Multiply(Decimal, Quantity), Multiply(Quantity, Decimal) or Multiply(Quantity, Quantity)",
-            "Multiply(${left.javaClassName}, ${right.javaClassName})",
+            "Multiply(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

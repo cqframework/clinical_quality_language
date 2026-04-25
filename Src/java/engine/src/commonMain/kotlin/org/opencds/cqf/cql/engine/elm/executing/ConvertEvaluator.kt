@@ -6,6 +6,7 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidConversion
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /*
 convert to<T>(argument Any) T
@@ -42,11 +43,11 @@ For specific semantics for each conversion, refer to the explicit conversion ope
 object ConvertEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        operand: Any?,
+        operand: CqlType?,
         toType: QName?,
         typeSpecifier: TypeSpecifier?,
         state: State?,
-    ): Any? {
+    ): CqlType? {
         val type = typeSpecifier ?: NamedTypeSpecifier().withName(toType)
         try {
             return AsEvaluator.`as`(operand, type, true, state)

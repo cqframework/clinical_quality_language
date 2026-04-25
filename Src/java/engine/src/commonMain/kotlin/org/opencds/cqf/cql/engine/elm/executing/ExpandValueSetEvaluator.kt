@@ -3,9 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 expand(valueSet ValueSet) List<Code>
@@ -14,19 +16,19 @@ The ExpandValueSet function expands the given value set using the terminology pr
 */
 object ExpandValueSetEvaluator {
     @JvmStatic
-    fun expand(valueset: Any?, state: State?): Any? {
+    fun expand(valueset: CqlType?, state: State?): List? {
         if (valueset == null) {
             return null
         }
 
         if (valueset is ValueSet) {
             val tp = state!!.environment.terminologyProvider
-            return tp!!.expand(ValueSetInfo.fromValueSet(valueset))
+            return tp!!.expand(ValueSetInfo.fromValueSet(valueset)).toCqlList()
         }
 
         throw InvalidOperatorArgument(
             "ExpandValueSet(ValueSet)",
-            "ExpandValueSet(${valueset.javaClassName})",
+            "ExpandValueSet(${valueset.typeAsString})",
         )
     }
 }

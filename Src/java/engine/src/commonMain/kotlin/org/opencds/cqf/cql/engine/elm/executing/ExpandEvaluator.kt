@@ -1,13 +1,24 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlList
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.IntervalHelper
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 
@@ -34,20 +45,20 @@ If the per argument is null, the default unit interval for the point type of the
 The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 object ExpandEvaluator {
-    private fun addPer(addTo: Any, per: Quantity, state: State?): Any? {
+    private fun addPer(addTo: CqlType, per: Quantity, state: State?): CqlType? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
         val rhs =
             when (addTo) {
-                is Int -> per.value!!.setScale(0, RoundingMode.CEILING).toInt()
-                is Long -> per.value!!.setScale(0, RoundingMode.CEILING).toLong()
-                is BigDecimal -> per.value
+                is Integer -> per.value!!.setScale(0, RoundingMode.CEILING).toInt().toCqlInteger()
+                is Long -> per.value!!.setScale(0, RoundingMode.CEILING).toLong().toCqlLong()
+                is Decimal -> per.value?.toCqlDecimal()
                 is Quantity,
                 is BaseTemporal -> per
                 else ->
                     throw InvalidOperatorArgument(
                         "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-                        "Expand(${addTo.javaClassName}, ${per.javaClassName})",
+                        "Expand(${addTo.typeAsString}, ${per.typeAsString})",
                     )
             }
         return AddEvaluator.add(addTo, rhs, state)
@@ -65,23 +76,23 @@ object ExpandEvaluator {
         interval: Interval,
         per: Quantity,
         state: State?,
-    ): List<Interval?>? {
+    ): kotlin.collections.List<Interval>? {
         var start = interval.start
         var nextStart = addPer(start!!, per, state)
 
         // per may be too small
-        if (true != LessEvaluator.less(start, nextStart, state)) {
+        if (true != LessEvaluator.less(start, nextStart, state)?.value) {
             return null
         }
 
-        val returnedIntervals = ArrayList<Interval?>()
+        val returnedIntervals = mutableListOf<Interval>()
         val endSuccessor = SuccessorEvaluator.successor(interval.end, per)
         while (true) {
             val lessOrEqual = LessOrEqualEvaluator.lessOrEqual(nextStart, endSuccessor, state)
             if (lessOrEqual == null) {
                 return null
             }
-            if (lessOrEqual) {
+            if (lessOrEqual.value) {
                 returnedIntervals.add(
                     Interval(
                         start,
@@ -115,14 +126,14 @@ object ExpandEvaluator {
         interval: Interval?,
         per: Quantity?,
         state: State?,
-    ): List<Any?>? {
+    ): kotlin.collections.List<CqlType?>? {
         val returnedIntervals = expandIntervalsIntoIntervals(mutableListOf(interval), per, state)
 
         if (returnedIntervals == null) {
             return null
         }
 
-        return returnedIntervals.map { obj -> obj!!.start }
+        return returnedIntervals.map { obj -> obj.start }
     }
 
     /**
@@ -134,19 +145,17 @@ object ExpandEvaluator {
      * @return the prepared list of intervals
      */
     private fun prepareIntervals(
-        intervals: List<Interval?>?,
+        intervals: kotlin.collections.List<Interval>,
         per: Quantity,
         state: State?,
-    ): List<Interval?>? {
+    ): kotlin.collections.List<Interval> {
         // Ignore intervals with null boundaries and truncate the boundaries.
         var intervals = intervals
         intervals =
-            intervals!!
-                .filter { interval -> interval!!.low != null && interval.high != null }
-                .map { interval ->
-                    IntervalHelper.truncateIntervalBoundaries(interval!!, per, state)
-                }
-                .filter { obj -> obj != null }
+            intervals
+                .filter { interval -> interval.low != null && interval.high != null }
+                .map { interval -> IntervalHelper.truncateIntervalBoundaries(interval, per, state) }
+                .filterNotNull()
 
         // Collapse overlapping intervals to avoid returning duplicate intervals
         intervals =
@@ -155,10 +164,6 @@ object ExpandEvaluator {
                 Quantity().withValue(ZERO).withUnit(per.unit),
                 state,
             )
-
-        if (intervals == null) {
-            return null
-        }
 
         // Sort the intervals so that the expansion results are returned in order
         intervals = intervals.sortedWith(CqlList(state).valueSort)
@@ -178,8 +183,8 @@ object ExpandEvaluator {
         list: Iterable<Interval?>,
         per: Quantity?,
         state: State?,
-    ): List<Interval?>? {
-        var intervals: List<Interval?> = CqlList.toList(list, false)
+    ): kotlin.collections.List<Interval>? {
+        var intervals = list.filterNotNull()
 
         if (intervals.isEmpty()) {
             return intervals
@@ -215,9 +220,9 @@ object ExpandEvaluator {
                 }
             }
 
-        intervals = prepareIntervals(intervals, convertedPerOrDefault, state)!!
+        intervals = prepareIntervals(intervals, convertedPerOrDefault, state)
 
-        return intervals.filterNotNull().flatMap { interval ->
+        return intervals.flatMap { interval ->
             val returnedIntervals =
                 expandIntervalIntoIntervals(interval, convertedPerOrDefault, state)
             returnedIntervals ?: listOf()
@@ -225,24 +230,23 @@ object ExpandEvaluator {
     }
 
     @JvmStatic
-    fun expand(listOrInterval: Any?, per: Quantity?, state: State?): Any? {
+    fun expand(listOrInterval: CqlType?, per: CqlType?, state: State?): List? {
         if (listOrInterval == null) {
             return null
         }
 
-        if (listOrInterval is Interval) {
-            return expandIntervalIntoPoints(listOrInterval, per, state)
-        } else if (listOrInterval is Iterable<*>) {
-            // We'll address this by introducing
-            // a CqlType interface for all the internal engine types
-            // So that we're not using "Any" everywhere.
-            @Suppress("UNCHECKED_CAST") val list = listOrInterval as Iterable<Interval?>
-            return expandIntervalsIntoIntervals(list, per, state)
+        if (per is Quantity?) {
+            if (listOrInterval is Interval) {
+                return expandIntervalIntoPoints(listOrInterval, per, state)?.toCqlList()
+            } else if (listOrInterval is List && listOrInterval.all { it is Interval? }) {
+                val list = listOrInterval.filterIsInstance<Interval?>()
+                return expandIntervalsIntoIntervals(list, per, state)?.toCqlList()
+            }
         }
 
         throw InvalidOperatorArgument(
             "Expand(List<Interval<T>>, Quantity), Expand(Interval<T>, Quantity)",
-            "Expand(${listOrInterval.javaClassName}, ${per?.javaClassName})",
+            "Expand(${listOrInterval.typeAsString}, ${per?.typeAsString})",
         )
     }
 }

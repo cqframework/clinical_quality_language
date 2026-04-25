@@ -3,11 +3,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 in(code String, valueset ValueSetRef) Boolean
@@ -22,9 +24,9 @@ If the code argument is null, the result is null.
 */
 object InValueSetEvaluator {
     @JvmStatic
-    fun inValueSet(code: Any?, valueset: Any?, state: State?): Any? {
+    fun inValueSet(code: CqlType?, valueset: CqlType?, state: State?): Boolean? {
         if (code == null) {
-            return false
+            return Boolean.FALSE
         }
         if (valueset == null) {
             return null
@@ -36,27 +38,27 @@ object InValueSetEvaluator {
 
             // perform operation
             if (code is String) {
-                if (provider!!.`in`(Code().withCode(code), vsi) == true) {
-                    return true
+                if (provider!!.`in`(Code().withCode(code.value), vsi) == true) {
+                    return Boolean.TRUE
                 }
-                return false
+                return Boolean.FALSE
             } else if (code is Code) {
                 if (provider!!.`in`(code, vsi) == true) {
-                    return true
+                    return Boolean.TRUE
                 }
-                return false
+                return Boolean.FALSE
             } else if (code is Concept) {
                 for (codes in code.codes!!) {
                     if (codes == null) return null
-                    if (provider!!.`in`(codes, vsi) == true) return true
+                    if (provider!!.`in`(codes, vsi) == true) return Boolean.TRUE
                 }
-                return false
+                return Boolean.FALSE
             }
         }
 
         throw InvalidOperatorArgument(
             "In(String, ValueSetRef), In(Code, ValueSetRef) or In(Concept, ValueSetRef)",
-            "In(${code.javaClassName}, ${valueset.javaClassName})",
+            "In(${code.typeAsString}, ${valueset.typeAsString})",
         )
     }
 }

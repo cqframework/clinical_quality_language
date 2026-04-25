@@ -8,6 +8,7 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.retrieve.TerminologyAwareRetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 abstract class SearchParamFhirRetrieveProvider
@@ -56,7 +57,7 @@ protected constructor(
         dateLowPath: String?,
         dateHighPath: String?,
         dateRange: Interval?,
-    ): Iterable<Any?>? {
+    ): Iterable<CqlType?>? {
 
         try {
             if (this.fhirContext.version.version == FhirVersionEnum.DSTU3) {

@@ -6,7 +6,11 @@ import org.hl7.elm.r1.Length
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 *** LIST NOTES ***
@@ -22,46 +26,46 @@ The Length operator returns the number of characters in a string.
 If the argument is null, the result is null.
 */
 object LengthEvaluator {
-    fun length(operand: Any?): Any? {
+    fun length(operand: CqlType?): Integer? {
         if (operand is String) {
             return stringLength(operand)
         }
 
-        if (operand is Iterable<*>) {
+        if (operand is List) {
             return listLength(operand)
         }
 
         throw InvalidOperatorArgument(
             "Length(List<T>) or Length(String)",
-            "Length(${operand?.javaClassName} )",
+            "Length(${operand?.typeAsString} )",
         )
     }
 
-    fun stringLength(operand: String?): Int? {
+    fun stringLength(operand: String?): Integer? {
         if (operand == null) {
             return null
         }
 
-        return operand.length
+        return operand.length.toCqlInteger()
     }
 
-    fun listLength(operand: Iterable<*>?): Int? {
+    fun listLength(operand: List?): Integer {
         if (operand == null) {
-            return 0
+            return (0).toCqlInteger()
         }
 
-        return operand.count()
+        return operand.count().toCqlInteger()
     }
 
     @JvmStatic
-    fun internalEvaluate(operand: Any?, length: Length?, state: State?): Any? {
+    fun internalEvaluate(operand: CqlType?, length: Length?, state: State?): Integer? {
         // null operand case
 
         if (length!!.operand is As) {
             if ((length.operand as As).asTypeSpecifier is NamedTypeSpecifier) {
                 return stringLength(operand as String?)
             } else {
-                return listLength(operand as Iterable<*>?)
+                return listLength(operand as List?)
             }
         }
 

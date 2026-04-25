@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.debug
 
 import org.hl7.elm.r1.Element
 import org.opencds.cqf.cql.engine.debug.DebugLocator.DebugLocatorType
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 class DebugLibraryResultEntry(val libraryName: String?) {
     val results: MutableMap<DebugLocator?, MutableList<DebugResultEntry?>>
@@ -10,7 +11,7 @@ class DebugLibraryResultEntry(val libraryName: String?) {
         this.results = HashMap<DebugLocator?, MutableList<DebugResultEntry?>>()
     }
 
-    private fun logDebugResult(locator: DebugLocator?, result: Any?) {
+    private fun logDebugResult(locator: DebugLocator?, result: CqlType?) {
         if (!results.containsKey(locator)) {
             results.put(locator, ArrayList<DebugResultEntry?>())
         }
@@ -18,7 +19,7 @@ class DebugLibraryResultEntry(val libraryName: String?) {
         debugResults.add(DebugResultEntry(result))
     }
 
-    fun logDebugResultEntry(node: Element, result: Any?) {
+    fun logDebugResultEntry(node: Element, result: CqlType?) {
         if (node.localId != null) {
             val locator = DebugLocator(DebugLocatorType.NODE_ID, node.localId!!)
             logDebugResult(locator, result)

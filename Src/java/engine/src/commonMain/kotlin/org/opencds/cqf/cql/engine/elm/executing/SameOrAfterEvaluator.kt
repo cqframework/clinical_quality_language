@@ -4,9 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 *** SameOrAfter Temporal Overload ***
@@ -103,7 +105,12 @@ If either argument is null, the result is null.
 Note that this operator can be invoked using either the on or after or the after or on syntax.
 */
 object SameOrAfterEvaluator {
-    fun onOrAfter(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun onOrAfter(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         // Interval, Interval
         if (left is Interval && right is Interval) {
             if (left.start is BaseTemporal) {
@@ -124,12 +131,17 @@ object SameOrAfterEvaluator {
 
         throw InvalidOperatorArgument(
             "OnOrAfter(Date, Date), OnOrAfter(DateTime, DateTime), OnOrAfter(Time, Time), OnOrAfter(Interval<T>, Interval<T>), OnOrAfter(T, Interval<T>) or OnOrAfter(Interval<T>, T)",
-            "OnOrAfter(${left!!.javaClassName}, ${right!!.javaClassName})",
+            "OnOrAfter(${left!!.typeAsString}, ${right!!.typeAsString})",
         )
     }
 
     @JvmStatic
-    fun sameOrAfter(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun sameOrAfter(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -147,12 +159,12 @@ object SameOrAfterEvaluator {
 
         if (left is BaseTemporal && right is BaseTemporal) {
             val result = left.compareToPrecision(right, Precision.fromString(precision))
-            return if (result == null) null else result == 0 || result > 0
+            return (if (result == null) null else result == 0 || result > 0)?.toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "SameOrAfter(Date, Date), SameOrAfter(DateTime, DateTime), SameOrAfter(Time, Time), SameOrAfter(Interval<T>, Interval<T>), SameOrAfter(T, Interval<T>) or SameOrAfter(Interval<T>, T)",
-            "SameOrAfter(${left.javaClassName}, ${right.javaClassName})",
+            "SameOrAfter(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

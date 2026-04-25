@@ -2,6 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /*
    There are two overloads of this operator:
@@ -19,16 +21,21 @@ import org.opencds.cqf.cql.engine.execution.State
 */
 
 object ProperInEvaluator {
-    fun properIn(left: Any?, right: Any?, state: State?): Boolean? {
+    fun properIn(left: CqlType?, right: CqlType?, state: State?): Boolean? {
         return ProperContainsEvaluator.properContains(right, left, state)
     }
 
-    fun properIn(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun properIn(left: CqlType?, right: CqlType?, precision: String?, state: State?): Boolean? {
         return ProperContainsEvaluator.properContains(right, left, precision, state)
     }
 
     @JvmStatic
-    fun internalEvaluate(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun internalEvaluate(
+        left: CqlType?,
+        right: CqlType?,
+        precision: String?,
+        state: State?,
+    ): Boolean? {
         if (precision != null) {
             return properIn(left, right, precision, state)
         }

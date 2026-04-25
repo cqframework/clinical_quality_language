@@ -9,7 +9,10 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TupleTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
@@ -24,10 +27,10 @@ If the run-time type of the argument is of the type being tested, the result of 
 object IsEvaluator {
 
     @JvmStatic
-    fun internalEvaluate(`is`: Is?, operand: Any?, state: State?): Any? {
+    fun internalEvaluate(`is`: Is?, operand: CqlType?, state: State?): CqlType? {
         val type = `is`?.isTypeSpecifier ?: NamedTypeSpecifier().withName(`is`?.isType)
 
-        return `is`(operand, type, state)
+        return `is`(operand, type, state)?.let { Boolean(it) }
     }
 
     /**
@@ -35,7 +38,7 @@ object IsEvaluator {
      * be determined. This is not the same as type compatibility (see
      * [FunctionRefEvaluator.isCompatible]).
      */
-    fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean? {
+    fun `is`(value: CqlType?, type: TypeSpecifier, state: State?): kotlin.Boolean? {
         // System.Any is a supertype of all types
         if (type is NamedTypeSpecifier && type.name == anyTypeName) {
             return true
@@ -73,7 +76,7 @@ object IsEvaluator {
                 return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
             }
             is ListTypeSpecifier -> {
-                if (value is Iterable<*>) {
+                if (value is List) {
                     if (value.any()) {
                         for (item in value) {
                             val result = `is`(item, type.elementType!!, state)

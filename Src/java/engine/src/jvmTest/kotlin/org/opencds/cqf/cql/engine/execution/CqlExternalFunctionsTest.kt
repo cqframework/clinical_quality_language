@@ -1,11 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.opencds.cqf.cql.engine.data.StaticFunction
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider
 import org.opencds.cqf.cql.engine.execution.external.MyMath
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class CqlExternalFunctionsTest : CqlTestBase() {
     @Test
@@ -19,7 +20,9 @@ internal class CqlExternalFunctionsTest : CqlTestBase() {
                 MyMath::class.java.declaredMethods.map {
                     StaticFunction(
                         it.name,
-                        { arguments -> it.invoke(it.declaringClass, *arguments!!.toTypedArray()) },
+                        { arguments ->
+                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as CqlType?
+                        },
                     )
                 }
             ),
@@ -27,9 +30,9 @@ internal class CqlExternalFunctionsTest : CqlTestBase() {
 
         val results = engine.evaluate { library(identifier) }.onlyResultOrThrow
         var value = results["CallMyPlus"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(10))
+        assertEquals(10.toCqlInteger(), value)
 
         value = results["CallMyMinus"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(-2))
+        assertEquals((-2).toCqlInteger(), value)
     }
 }

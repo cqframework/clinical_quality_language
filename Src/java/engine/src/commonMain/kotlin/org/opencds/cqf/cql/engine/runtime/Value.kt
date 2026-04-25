@@ -3,18 +3,16 @@ package org.opencds.cqf.cql.engine.runtime
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
-import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
-import org.opencds.cqf.cql.engine.elm.executing.MinValueEvaluator.minValue
 
 object Value {
-    const val MAX_INT: Int = Int.MAX_VALUE
-    const val MAX_LONG: Long = Long.MAX_VALUE
+    const val MAX_INT = Int.MAX_VALUE
+    const val MAX_LONG = kotlin.Long.MAX_VALUE
 
     /** Set to (10<sup>28</sup> - 1) / 10<sup>8</sup>. */
-    val MAX_DECIMAL: BigDecimal = BigDecimal("99999999999999999999.99999999")
+    val MAX_DECIMAL = BigDecimal("99999999999999999999.99999999")
 
-    const val MIN_INT: Int = Int.MIN_VALUE
-    const val MIN_LONG: Long = Long.MIN_VALUE
+    const val MIN_INT = Int.MIN_VALUE
+    const val MIN_LONG = kotlin.Long.MIN_VALUE
 
     /** Set to (-10<sup>28</sup> + 1) / 10<sup>8</sup>. */
     val MIN_DECIMAL: BigDecimal = BigDecimal("-99999999999999999999.99999999")
@@ -48,9 +46,9 @@ object Value {
     }
 
     fun validateDecimal(ret: BigDecimal, targetScale: Int?): BigDecimal? {
-        if (ret.compareTo(maxValue(decimalTypeName) as BigDecimal) > 0) {
+        if (ret.compareTo(MAX_DECIMAL) > 0) {
             return null
-        } else if (ret.compareTo(minValue(decimalTypeName) as BigDecimal) < 0) {
+        } else if (ret.compareTo(MIN_DECIMAL) < 0) {
             return null
         } else {
             return verifyPrecision(ret, targetScale)
@@ -71,14 +69,14 @@ object Value {
         return ret.toInt()
     }
 
-    fun validateLong(ret: Long): Long? {
+    fun validateLong(ret: kotlin.Long): kotlin.Long? {
         if (ret > MAX_LONG || ret < MIN_LONG) {
             return null
         }
         return ret
     }
 
-    fun validateLong(ret: Double): Long? {
+    fun validateLong(ret: Double): kotlin.Long? {
         if (ret > MAX_LONG || ret < MIN_LONG) {
             return null
         }
@@ -91,7 +89,7 @@ object Value {
      * @param values the stream of decimal values
      * @return the coarsest scale
      */
-    fun getCoarsestScale(values: List<BigDecimal?>): Int {
+    fun getCoarsestScale(values: kotlin.collections.List<BigDecimal?>): Int {
         return values.filterNotNull().minOfOrNull { obj -> obj.scale() } ?: 0
     }
 
@@ -104,7 +102,7 @@ object Value {
      * @return the rounded value
      */
     @JvmStatic
-    fun roundToScale(value: BigDecimal, scale: Int, useCeiling: Boolean): BigDecimal {
+    fun roundToScale(value: BigDecimal, scale: Int, useCeiling: kotlin.Boolean): BigDecimal {
         if (scale < value.scale()) {
             return value.setScale(
                 scale,

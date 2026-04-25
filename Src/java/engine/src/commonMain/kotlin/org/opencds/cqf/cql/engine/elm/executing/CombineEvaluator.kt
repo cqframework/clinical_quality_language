@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 Combine(source List<String>) String
@@ -13,43 +16,43 @@ If either argument is null, or any element in the source list of strings is null
 */
 object CombineEvaluator {
     @JvmStatic
-    fun combine(source: Any?, separator: String?): Any? {
+    fun combine(source: CqlType?, separator: CqlType?): String? {
         if (source == null || separator == null) {
             return null
-        } else {
-            if (source is Iterable<*>) {
-                val buffer = StringBuilder("")
-                val iterator = source.iterator()
-                var first = true
+        }
 
-                while (iterator.hasNext()) {
-                    val item = iterator.next()
+        if (source is List && separator is String) {
+            val buffer = StringBuilder("")
+            val iterator = source.iterator()
+            var first = true
 
-                    if (item == null) {
-                        return null
-                    }
+            while (iterator.hasNext()) {
+                val item = iterator.next()
 
-                    if (item is String) {
-                        if (!first) {
-                            buffer.append(separator)
-                        } else {
-                            first = false
-                        }
-                        buffer.append(item)
-                    } else {
-                        throw InvalidOperatorArgument(
-                            "Combine(List<String>) or Combine(List<String>, String)",
-                            "Combine(List<${item.javaClassName}>${if (separator == "") "" else ", " + separator})",
-                        )
-                    }
+                if (item == null) {
+                    return null
                 }
-                return buffer.toString()
+
+                if (item is String) {
+                    if (!first) {
+                        buffer.append(separator)
+                    } else {
+                        first = false
+                    }
+                    buffer.append(item)
+                } else {
+                    throw InvalidOperatorArgument(
+                        "Combine(List<String>) or Combine(List<String>, String)",
+                        "Combine(List<${item.typeAsString}>${if (separator.value == "") "" else ", " + separator})",
+                    )
+                }
             }
+            return buffer.toString().toCqlString()
         }
 
         throw InvalidOperatorArgument(
             "Combine(List<String>) or Combine(List<String>, String)",
-            "Combine(${source.javaClassName}${if (separator == "") "" else ", " + separator})",
+            "Combine(${source.typeAsString}, ${separator.typeAsString})",
         )
     }
 }

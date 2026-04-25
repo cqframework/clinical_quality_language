@@ -3,8 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -30,7 +32,12 @@ Note that the order of elements does not matter for the purposes of determining 
 */
 object ProperIncludedInEvaluator {
     @JvmStatic
-    fun properlyIncludedIn(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun properlyIncludedIn(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left == null && right == null) {
             return null
         }
@@ -39,20 +46,20 @@ object ProperIncludedInEvaluator {
             if (left == null) {
                 return if (right is Interval)
                     ProperIncludesEvaluator.intervalProperlyIncludes(right, null, precision, state)
-                else ProperIncludesEvaluator.listProperlyIncludes(right as Iterable<*>, null, state)
+                else ProperIncludesEvaluator.listProperlyIncludes(right as List, null, state)
             }
 
             if (right == null) {
                 return if (left is Interval)
                     ProperIncludesEvaluator.intervalProperlyIncludes(null, left, precision, state)
-                else ProperIncludesEvaluator.listProperlyIncludes(null, left as Iterable<*>, state)
+                else ProperIncludesEvaluator.listProperlyIncludes(null, left as List, state)
             }
 
             return ProperIncludesEvaluator.properlyIncludes(right, left, precision, state)
         } catch (e: InvalidOperatorArgument) {
             throw InvalidOperatorArgument(
                 "ProperIncludedIn(Interval<T>, Interval<T>) or ProperIncludedIn(List<T>, List<T>)",
-                "ProperlyIncludedIn(${left!!.javaClassName}, ${right!!.javaClassName})",
+                "ProperlyIncludedIn(${left!!.typeAsString}, ${right!!.typeAsString})",
             )
         }
     }

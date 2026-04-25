@@ -26,7 +26,7 @@ class Time : BaseTemporal {
         this.precision = precision
     }
 
-    constructor(dateString: String) {
+    constructor(dateString: kotlin.String) {
         var dateString = dateString
         var size = 0
         if (
@@ -112,7 +112,7 @@ class Time : BaseTemporal {
         return Time(ot, precision ?: Precision.MILLISECOND)
     }
 
-    override fun isUncertain(p: Precision): Boolean {
+    override fun isUncertain(p: Precision): kotlin.Boolean {
         return this.precision!!.toTimeIndex() < p.toTimeIndex()
     }
 
@@ -122,7 +122,7 @@ class Time : BaseTemporal {
         return Interval(start, true, end, true)
     }
 
-    override fun roundToPrecision(precision: Precision, useCeiling: Boolean): BaseTemporal? {
+    override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal? {
         val originalPrecision = this.precision
         val originalLocalTime = this.time.truncatedTo(originalPrecision!!.toChronoUnit())
         when (precision) {
@@ -144,7 +144,7 @@ class Time : BaseTemporal {
         }
     }
 
-    override fun compare(other: BaseTemporal, forSort: Boolean): Int? {
+    override fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int? {
         val differentPrecisions = this.precision != other.precision
 
         if (differentPrecisions) {
@@ -199,7 +199,7 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return when (precision) {
             Precision.HOUR -> time.getHour().toPaddedString(2)
             Precision.MINUTE ->

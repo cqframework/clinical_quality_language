@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
 
 /*
 
@@ -16,31 +19,31 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToLongEvaluator {
     @JvmStatic
-    fun convertsToLong(argument: Any?): Boolean? {
+    fun convertsToLong(argument: CqlType?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Boolean) {
-            return true
+            return Boolean.TRUE
         }
 
-        if (argument is Int) {
-            return true
+        if (argument is Integer) {
+            return Boolean.TRUE
         }
 
         if (argument is String) {
             try {
-                argument.toLong()
+                argument.value.toLong()
             } catch (nfe: NumberFormatException) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToLong(String)",
-            "ConvertsToLong(${argument.javaClassName})",
+            "ConvertsToLong(${argument.typeAsString})",
         )
     }
 }

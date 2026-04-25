@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 /*
 
@@ -22,15 +24,15 @@ NULL	| TRUE	NULL	NULL
 
 object ImpliesEvaluator {
     @JvmStatic
-    fun implies(left: Boolean?, right: Boolean?): Any? {
+    fun implies(left: CqlType?, right: CqlType?): Boolean? {
         if (left == null) {
-            return if (right == null || !right) null else true
+            return if (right == null || !(right as Boolean).value) null else Boolean.TRUE
         }
 
-        if (left) {
-            return right
+        if ((left as Boolean).value) {
+            return right as Boolean?
         }
 
-        return true
+        return Boolean.TRUE
     }
 }

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlAggregateFunctionsTest : CqlTestBase() {
     @Test
@@ -12,14 +14,23 @@ internal class CqlAggregateFunctionsTest : CqlTestBase() {
         var value: Any?
 
         try {
-            value = AnyTrueEvaluator.anyTrue(mutableListOf<String?>("this", "is", "error"))
+            value =
+                AnyTrueEvaluator.anyTrue(
+                    mutableListOf("this".toCqlString(), "is".toCqlString(), "error".toCqlString())
+                        .toCqlList()
+                )
             Assertions.fail<Any?>()
         } catch (e: InvalidOperatorArgument) {
             // pass
         }
 
         try {
-            value = AvgEvaluator.avg(mutableListOf<String?>("this", "is", "error"), engine.state)
+            value =
+                AvgEvaluator.avg(
+                    mutableListOf("this".toCqlString(), "is".toCqlString(), "error".toCqlString())
+                        .toCqlList(),
+                    engine.state,
+                )
             Assertions.fail<Any?>()
         } catch (e: InvalidOperatorArgument) {
             // pass

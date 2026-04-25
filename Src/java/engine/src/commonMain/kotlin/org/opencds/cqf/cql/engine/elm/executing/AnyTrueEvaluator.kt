@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 
 /*
 AnyTrue(argument List<Boolean>) Boolean
@@ -13,17 +15,17 @@ If the source is null, the result is null.
 */
 object AnyTrueEvaluator {
     @JvmStatic
-    fun anyTrue(src: Any?): Boolean? {
+    fun anyTrue(src: CqlType?): Boolean {
         if (src == null) {
-            return false
+            return Boolean.FALSE
         }
 
-        if (src is Iterable<*>) {
+        if (src is List) {
             val element = src
             val elemsItr = element.iterator()
 
             if (!elemsItr.hasNext()) { // empty list
-                return false
+                return Boolean.FALSE
             }
 
             while (elemsItr.hasNext()) {
@@ -36,20 +38,20 @@ object AnyTrueEvaluator {
                 if (exp is Boolean) {
                     val boolVal = exp
 
-                    if (boolVal) {
-                        return true
+                    if (boolVal.value) {
+                        return Boolean.TRUE
                     }
                 } else {
                     throw InvalidOperatorArgument(
                         "AnyTrue(List<Boolean>)",
-                        "AnyTrue(List<${exp.javaClassName}>)",
+                        "AnyTrue(List<${exp.typeAsString}>)",
                     )
                 }
             }
 
-            return false // all null or all false
+            return Boolean.FALSE // all null or all false
         }
 
-        throw InvalidOperatorArgument("AnyTrue(List<Boolean>)", "AnyTrue(${src.javaClassName})")
+        throw InvalidOperatorArgument("AnyTrue(List<Boolean>)", "AnyTrue(${src.typeAsString})")
     }
 }

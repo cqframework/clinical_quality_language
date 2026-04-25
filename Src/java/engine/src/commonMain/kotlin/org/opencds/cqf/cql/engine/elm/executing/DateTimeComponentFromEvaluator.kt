@@ -2,11 +2,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 
@@ -42,7 +44,7 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object DateTimeComponentFromEvaluator {
     @JvmStatic
-    fun dateTimeComponentFrom(operand: Any?, precision: String?): Any? {
+    fun dateTimeComponentFrom(operand: CqlType?, precision: kotlin.String?): Integer? {
         if (operand == null) {
             return null
         }
@@ -62,7 +64,7 @@ object DateTimeComponentFromEvaluator {
                 return null
             }
 
-            return date.date!!.get(p.toChronoField())
+            return date.date!!.get(p.toChronoField()).toCqlInteger()
         } else if (operand is DateTime) {
             val dateTime = operand
 
@@ -70,7 +72,7 @@ object DateTimeComponentFromEvaluator {
                 return null
             }
 
-            return dateTime.dateTime!!.get(p.toChronoField())
+            return dateTime.dateTime!!.get(p.toChronoField()).toCqlInteger()
         } else if (operand is Time) {
             val time = operand
 
@@ -78,12 +80,12 @@ object DateTimeComponentFromEvaluator {
                 return null
             }
 
-            return time.time.get(p.toChronoField())
+            return time.time.get(p.toChronoField()).toCqlInteger()
         }
 
         throw InvalidOperatorArgument(
             "_precision_ from(Date), _precision_ from(DateTime) or _precision_ from(Time)",
-            "${precision.lowercase()} from(${operand.javaClassName})",
+            "${precision.lowercase()} from(${operand.typeAsString})",
         )
     }
 }

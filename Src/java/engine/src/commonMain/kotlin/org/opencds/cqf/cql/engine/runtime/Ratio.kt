@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 class Ratio : StructuredValue(), NamedCqlType {
     override val type = ratioTypeName
 
-    override val elements: MutableMap<String, Any?>
+    override val elements: MutableMap<kotlin.String, CqlType?>
         get() = mutableMapOf("numerator" to numerator, "denominator" to denominator)
 
     var numerator: Quantity? = null
@@ -20,7 +20,7 @@ class Ratio : StructuredValue(), NamedCqlType {
         return this
     }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return "${this.numerator.toString()}:${this.denominator.toString()}"
     }
 }

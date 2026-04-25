@@ -2,8 +2,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Time
 
 /*
 
@@ -31,7 +37,7 @@ days between DateTime(2011, 5, 1) and DateTime(2012, 5, 6) = 365 + 5 = 370 days
 */
 object DurationBetweenEvaluator {
     @JvmStatic
-    fun duration(left: Any?, right: Any?, precision: Precision?): Any? {
+    fun duration(left: CqlType?, right: CqlType?, precision: Precision?): CqlType? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -88,43 +94,46 @@ object DurationBetweenEvaluator {
             if (left is DateTime && right is DateTime) {
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return if (isWeeks)
-                        (precision
-                            .toChronoUnit()
-                            .between(
-                                left.dateTime!!.toLocalDateTime(),
-                                right.dateTime!!.toLocalDateTime(),
-                            )
-                            .toInt() / 7)
+                        Integer(
+                            precision
+                                .toChronoUnit()
+                                .between(
+                                    left.dateTime!!.toLocalDateTime(),
+                                    right.dateTime!!.toLocalDateTime(),
+                                )
+                                .toInt() / 7
+                        )
                     else
-                        precision
-                            .toChronoUnit()
-                            .between(
-                                left.dateTime!!.toLocalDateTime(),
-                                right.dateTime!!.toLocalDateTime(),
-                            )
-                            .toInt()
+                        Integer(
+                            precision
+                                .toChronoUnit()
+                                .between(
+                                    left.dateTime!!.toLocalDateTime(),
+                                    right.dateTime!!.toLocalDateTime(),
+                                )
+                                .toInt()
+                        )
                 } else {
-                    return precision
-                        .toChronoUnit()
-                        .between(left.dateTime!!, right.dateTime!!)
-                        .toInt()
+                    return Integer(
+                        precision.toChronoUnit().between(left.dateTime!!, right.dateTime!!).toInt()
+                    )
                 }
             }
 
             if (left is Date && right is Date) {
                 return if (isWeeks)
-                    precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7
-                else precision.toChronoUnit().between(left.date!!, right.date!!).toInt()
+                    Integer(precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7)
+                else Integer(precision.toChronoUnit().between(left.date!!, right.date!!).toInt())
             }
 
             if (left is Time && right is Time) {
-                return precision.toChronoUnit().between(left.time, right.time).toInt()
+                return Integer(precision.toChronoUnit().between(left.time, right.time).toInt())
             }
         }
 
         throw InvalidOperatorArgument(
             "DurationBetween(Date, Date), DurationBetween(DateTime, DateTime), DurationBetween(Time, Time)",
-            "DurationBetween(${left.javaClassName}, ${right.javaClassName})",
+            "DurationBetween(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

@@ -2,8 +2,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 ToInteger(argument String) Integer
@@ -18,35 +22,35 @@ If the argument is null, the result is null.
 */
 object ToIntegerEvaluator {
     @JvmStatic
-    fun toInteger(operand: Any?): Any? {
+    fun toInteger(operand: CqlType?): Integer? {
         if (operand == null) {
             return null
         }
 
         if (operand is Boolean) {
-            return if (operand) 1 else 0
+            return (if (operand.value) 1 else 0).toCqlInteger()
         }
 
-        if (operand is Int) {
+        if (operand is Integer) {
             return operand
         }
 
         if (operand is String) {
             try {
-                return operand.toInt()
+                return operand.value.toInt().toCqlInteger()
             } catch (nfe: NumberFormatException) {
                 try {
-                    val ret = operand.toDouble()
+                    val ret = operand.value.toDouble()
                     if (Value.validateInteger(ret) == null) {
                         return null
                     }
-                    return ret.toInt()
+                    return ret.toInt().toCqlInteger()
                 } catch (e: NumberFormatException) {
                     return null
                 }
             }
         }
 
-        throw InvalidOperatorArgument("ToInteger(String)", "ToInteger(${operand.javaClassName})")
+        throw InvalidOperatorArgument("ToInteger(String)", "ToInteger(${operand.typeAsString})")
     }
 }

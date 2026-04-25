@@ -1,14 +1,14 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.Boolean
 
 internal class DateComparatorTest : CqlTestBase() {
     @Test
     fun date_comparator() {
         val results = engine.evaluate { library("DateComparatorTest") }.onlyResultOrThrow
         val value = results["Date Comparator Test"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
     }
 }

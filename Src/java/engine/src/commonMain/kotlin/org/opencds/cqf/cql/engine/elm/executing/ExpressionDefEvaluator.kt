@@ -4,13 +4,14 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.ExpressionDef
 import org.opencds.cqf.cql.engine.execution.ExpressionResult
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 object ExpressionDefEvaluator {
     fun internalEvaluate(
         expressionDef: ExpressionDef?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any? {
+        visitor: ElmLibraryVisitor<CqlType?, State?>,
+    ): CqlType? {
         var isEnteredContext = false
         if (expressionDef!!.context != null) {
             isEnteredContext = state!!.enterContext(expressionDef.context)

@@ -4,7 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 Round(argument Decimal) Decimal
@@ -19,28 +22,28 @@ If precision is not specified or null, 0 is assumed.
 */
 object RoundEvaluator {
     @JvmStatic
-    fun round(operand: Any?, precision: Any?): Any? {
+    fun round(operand: CqlType?, precision: CqlType?): Decimal? {
         var rm = RoundingMode.HALF_UP
 
         if (operand == null) {
             return null
         }
 
-        if (operand is BigDecimal) {
-            if (operand.compareTo(BigDecimal(0)) < 0) {
+        if (operand is Decimal && precision is Integer?) {
+            if (operand.value.compareTo(BigDecimal(0)) < 0) {
                 rm = RoundingMode.HALF_DOWN
             }
 
-            if (precision == null || (precision as Int == 0)) {
-                return operand.setScale(0, rm)
+            if (precision == null || (precision.value == 0)) {
+                return operand.value.setScale(0, rm).toCqlDecimal()
             } else {
-                return operand.setScale(precision, rm)
+                return operand.value.setScale(precision.value, rm).toCqlDecimal()
             }
         }
 
         throw InvalidOperatorArgument(
             "Round(Decimal) or Round(Decimal, Integer)",
-            "Round(${operand.javaClassName}${if (precision == null) "" else ", " + precision.javaClassName})",
+            "Round(${operand.typeAsString}${if (precision == null) "" else ", " + precision.typeAsString})",
         )
     }
 }

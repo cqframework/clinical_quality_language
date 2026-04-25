@@ -151,7 +151,7 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
         return super.resolveType(typeName)
     }
 
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(contextType: String?, targetType: String?): String? {
         if (targetType == null || contextType == null) {
             return null
         }

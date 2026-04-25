@@ -32,12 +32,19 @@ import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 // TODO: Probably quite a bit of redundancy here. Probably only really need the BaseType and the
 // PrimitiveType
@@ -88,18 +95,21 @@ abstract class FhirModelResolver<
         this.initialize()
     }
 
-    override fun resolveId(target: Any?): String? {
+    override fun resolveId(target: CqlType?): kotlin.String? {
         if (target is ClassInstance && target.type.namespaceURI == fhirModelNamespaceUri) {
             val clazz = this.resolveType(target.type.localPart) ?: return null
             if (IBaseResource::class.java.isAssignableFrom(clazz)) {
                 val id = target.elements["id"] as? ClassInstance ?: return null
-                return id.elements["value"] as? String
+                return (id.elements["value"] as? org.opencds.cqf.cql.engine.runtime.String)?.value
             }
         }
         return null
     }
 
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(
+        contextType: kotlin.String?,
+        targetType: kotlin.String?,
+    ): kotlin.String? {
         if (targetType == null || contextType == null) {
             return null
         }
@@ -193,7 +203,7 @@ abstract class FhirModelResolver<
         return typeClass.isAssignableFrom(valueTypeClass)
     }
 
-    override fun createInstance(typeName: String?): Any {
+    override fun createInstance(typeName: String?): CqlType {
         return toCqlValue(createHapiInstance(typeName!!), true)!!
     }
 
@@ -553,21 +563,34 @@ abstract class FhirModelResolver<
      * if (value instanceof Time) { return ((Time) value).toString(); } else {
      * return value; } }
      */
-    fun toJavaPrimitive(result: Any?, source: Any): Any? {
-        if (source is IPrimitiveType<*> && !source.hasValue()) {
+    fun toSimpleCqlType(primitiveType: IPrimitiveType<*>): CqlType? {
+        val value = primitiveType.value
+
+        if (value == null) {
             return null
         }
 
-        val simpleName = source.javaClass.getSimpleName()
+        val simpleName = primitiveType.javaClass.getSimpleName()
         @Suppress("UNCHECKED_CAST")
         return when (simpleName) {
             "InstantType",
-            "DateTimeType" -> toDateTime(source as BaseDateTimeType)
-            "DateType" -> toDate(source as BaseDateTimeType)
-            "TimeType" -> toTime(source as TimeType)
-            "IdType" -> this.idToString(source as IdType)
-            "Base64BinaryType" -> (source as IPrimitiveType<*>).valueAsString
-            else -> result
+            "DateTimeType" -> toDateTime(primitiveType as BaseDateTimeType)
+            "DateType" -> toDate(primitiveType as BaseDateTimeType)
+            "TimeType" -> toTime(primitiveType as TimeType)
+            "IdType" -> this.idToString(primitiveType as IdType).toCqlString()
+            "Base64BinaryType" -> primitiveType.valueAsString?.toCqlString()
+            else ->
+                when (value) {
+                    is kotlin.Boolean -> value.toCqlBoolean()
+                    is kotlin.Int -> value.toCqlInteger()
+                    is kotlin.Long -> value.toCqlLong()
+                    is java.math.BigDecimal -> value.toCqlDecimal()
+                    is kotlin.String -> value.toCqlString()
+                    else ->
+                        throw IllegalArgumentException(
+                            "Unable to convert a value of type ${value.javaClass.name} to a CQL simple type."
+                        )
+                }
         }
     }
 
@@ -593,20 +616,23 @@ abstract class FhirModelResolver<
             )
         }
 
-        val elements = mutableMapOf<String, Any?>()
+        val elements = mutableMapOf<kotlin.String, CqlType?>()
 
         if (target is IBaseHasExtensions) {
             val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
-            elements["extension"] = extensionsAsCqlValues.ifEmpty { null }
+            elements["extension"] =
+                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
         }
 
         if (target is IBaseHasModifierExtensions) {
             val modifierExtensionsAsCqlValues = target.modifierExtension.map { toCqlValue(it) }
-            elements["extension"] = modifierExtensionsAsCqlValues.ifEmpty { null }
+            elements["extension"] =
+                if (modifierExtensionsAsCqlValues.isEmpty()) null
+                else modifierExtensionsAsCqlValues.toCqlList()
         }
 
         if (target is IBaseElement) {
-            elements["id"] = target.id
+            elements["id"] = target.id?.toCqlString()
         }
 
         if (this.enumChecker(target)) {
@@ -627,7 +653,7 @@ abstract class FhirModelResolver<
             val factoryName = this.enumFactoryTypeGetter(target).simpleName
             val typeName = factoryName.substringBefore("EnumFactory")
 
-            elements["value"] = target.valueAsString
+            elements["value"] = target.valueAsString?.toCqlString()
 
             return ClassInstance(QName(fhirModelNamespaceUri, typeName), elements)
         }
@@ -645,7 +671,7 @@ abstract class FhirModelResolver<
 
             val elementDefinition = this.fhirContext.getElementDefinition(target.javaClass)
 
-            elements["value"] = toJavaPrimitive(target.value, target)
+            elements["value"] = toSimpleCqlType(target)
 
             return ClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
         }
@@ -661,7 +687,7 @@ abstract class FhirModelResolver<
                         if (child.max == 1) {
                             it.firstOrNull()
                         } else {
-                            it.ifEmpty { null }
+                            if (it.isEmpty()) null else it.toCqlList()
                         }
                     }
         }

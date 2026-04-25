@@ -4,8 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -58,21 +60,23 @@ object UnionEvaluator {
                 OverlapsEvaluator.overlaps(left, right, precision, state),
                 MeetsEvaluator.meets(left, right, precision, state),
             )
-        if (overlapsOrMeets == null || !overlapsOrMeets) {
+        if (overlapsOrMeets == null || !overlapsOrMeets.value) {
             return null
         }
 
         val min =
-            if (LessEvaluator.less(leftStart, rightStart, state) == true) leftStart else rightStart
+            if (LessEvaluator.less(leftStart, rightStart, state)?.value == true) leftStart
+            else rightStart
         val max =
-            if (GreaterEvaluator.greater(leftEnd, rightEnd, state) == true) leftEnd else rightEnd
+            if (GreaterEvaluator.greater(leftEnd, rightEnd, state)?.value == true) leftEnd
+            else rightEnd
 
         return Interval(min, true, max, true, state)
     }
 
-    fun unionIterable(left: Iterable<*>?, right: Iterable<*>?, state: State?): Iterable<*>? {
+    fun unionIterable(left: List?, right: List?, state: State?): List? {
         if (left == null && right == null) {
-            return mutableListOf<Any?>()
+            return mutableListOf<CqlType?>().toCqlList()
         }
 
         if (left == null) {
@@ -84,7 +88,7 @@ object UnionEvaluator {
         }
 
         // List Logic
-        val result: MutableList<Any?> = ArrayList<Any?>()
+        val result = mutableListOf<CqlType?>()
         for (leftElement in left) {
             result.add(leftElement)
         }
@@ -92,23 +96,20 @@ object UnionEvaluator {
         for (rightElement in right) {
             result.add(rightElement)
         }
-        return DistinctEvaluator.distinct(result, state)
+        return DistinctEvaluator.distinct(result.toCqlList(), state)
     }
 
     @JvmStatic
-    fun union(left: Any?, right: Any?, state: State?): Any? {
-        if (left is Interval || right is Interval) {
-            return unionInterval(left as Interval?, right as Interval?, state)
-        } else if (left is Iterable<*> || right is Iterable<*>) {
-            return unionIterable(left as Iterable<*>?, right as Iterable<*>?, state)
+    fun union(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+        if (left is Interval? && right is Interval?) {
+            return unionInterval(left, right, state)
+        } else if (left is List? && right is List?) {
+            return unionIterable(left, right, state)
         }
-
-        val leftName = if (left != null) left.javaClassName else "<unknown>"
-        val rightName = if (right != null) right.javaClassName else "<unknown>"
 
         throw InvalidOperatorArgument(
             "Union(Interval<T>, Interval<T>) or Union(List<T>, List<T>)",
-            "Union(${leftName}, ${rightName})",
+            "Union(${left?.typeAsString}, ${right?.typeAsString})",
         )
     }
 }

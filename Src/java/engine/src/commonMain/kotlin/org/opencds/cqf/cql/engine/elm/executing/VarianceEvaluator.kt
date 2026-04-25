@@ -4,8 +4,12 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 Variance(argument List<Decimal>) Decimal
@@ -24,18 +28,18 @@ operations) is to avoid squared units in the intermediate results.
 object VarianceEvaluator {
     @JvmStatic
     fun sumOfSquaredDifferences(
-        source: Any?,
+        source: CqlType?,
         state: State?,
-        stripSquareFromUnit: Boolean = false,
-        context: String = "Variance",
-    ): List<Any?>? {
+        stripSquareFromUnit: kotlin.Boolean = false,
+        context: kotlin.String = "Variance",
+    ): List? {
         if (source == null) {
             return null
         }
-        if (source !is Iterable<*>) {
+        if (source !is List) {
             throw InvalidOperatorArgument(
                 "$context(List<Decimal>) or $context(List<Quantity>)",
-                "$context(${source.javaClassName})",
+                "$context(${source.typeAsString})",
             )
         }
         if (!source.iterator().hasNext()) {
@@ -43,14 +47,14 @@ object VarianceEvaluator {
         }
 
         val mean = AvgEvaluator.avg(source, state)
-        val sumOfSquaredDifferences = mutableListOf<Any?>()
+        val sumOfSquaredDifferences = mutableListOf<CqlType?>()
         for (element in source) {
             if (element == null) {
                 // Skip the element
-            } else if (!(element is BigDecimal || element is Quantity)) {
+            } else if (!(element is Decimal || element is Quantity)) {
                 throw InvalidOperatorArgument(
                     "$context(List<Decimal>) or $context(List<Quantity>)",
-                    "$context(List<${element.javaClassName}>)",
+                    "$context(List<${element.typeAsString}>)",
                 )
             } else if (element is Quantity && stripSquareFromUnit) {
                 val diff = SubtractEvaluator.subtract(element, mean, state) as Quantity
@@ -66,22 +70,22 @@ object VarianceEvaluator {
                 sumOfSquaredDifferences.add(squared)
             }
         }
-        return sumOfSquaredDifferences
+        return sumOfSquaredDifferences.toCqlList()
     }
 
     @JvmStatic
     fun variance(
-        source: Any?,
+        source: CqlType?,
         state: State?,
-        stripSquareFromUnit: Boolean = false,
-        context: String = "Variance",
-    ): Any? {
+        stripSquareFromUnit: kotlin.Boolean = false,
+        context: kotlin.String = "Variance",
+    ): CqlType? {
         val sumOfSquaredDifferences =
             sumOfSquaredDifferences(source, state, stripSquareFromUnit, context)
         return if (sumOfSquaredDifferences != null)
             DivideEvaluator.divide(
                 SumEvaluator.sum(sumOfSquaredDifferences, state),
-                BigDecimal(sumOfSquaredDifferences.size - 1),
+                BigDecimal(sumOfSquaredDifferences.count() - 1).toCqlDecimal(),
                 state,
             ) // slight variation to Avg
         else null

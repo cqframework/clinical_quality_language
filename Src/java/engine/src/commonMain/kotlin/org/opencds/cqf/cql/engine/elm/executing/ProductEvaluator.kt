@@ -1,11 +1,15 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 
@@ -24,13 +28,13 @@ If the source is null, the result is null.
 @Suppress("CyclomaticComplexMethod", "ReturnCount")
 object ProductEvaluator {
     @JvmStatic
-    fun product(source: Any?, state: State?): Any? {
+    fun product(source: CqlType?, state: State?): CqlType? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
-            var result: Any? = null
+        if (source is List) {
+            var result: CqlType? = null
             for (element in source) {
                 if (element == null) return null
                 if (result == null) {
@@ -38,9 +42,9 @@ object ProductEvaluator {
                     continue
                 }
                 if (
-                    (element is Int && result is Int) ||
+                    (element is Integer && result is Integer) ||
                         (element is Long && result is Long) ||
-                        (element is BigDecimal && result is BigDecimal)
+                        (element is Decimal && result is Decimal)
                 ) {
                     result = MultiplyEvaluator.multiply(result, element, state)
                 } else if (element is Quantity && result is Quantity) {
@@ -48,11 +52,16 @@ object ProductEvaluator {
                         "Found different units during Quantity product evaluation: ${element.unit} and ${result.unit}"
                     }
                     result.value =
-                        MultiplyEvaluator.multiply(result.value, element.value, state) as BigDecimal
+                        (MultiplyEvaluator.multiply(
+                                result.value?.toCqlDecimal(),
+                                element.value?.toCqlDecimal(),
+                                state,
+                            ) as Decimal)
+                            .value
                 } else {
                     throw InvalidOperatorArgument(
                         "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-                        "Product(List<${element.javaClassName}>)",
+                        "Product(List<${element.typeAsString}>)",
                     )
                 }
             }
@@ -62,7 +71,7 @@ object ProductEvaluator {
 
         throw InvalidOperatorArgument(
             "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-            "Product(${source.javaClassName})",
+            "Product(${source.typeAsString})",
         )
     }
 }

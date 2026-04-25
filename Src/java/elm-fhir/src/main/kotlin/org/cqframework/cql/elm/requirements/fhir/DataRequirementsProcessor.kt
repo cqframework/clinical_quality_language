@@ -3,7 +3,6 @@ package org.cqframework.cql.elm.requirements.fhir
 import ca.uhn.fhir.context.FhirVersionEnum
 import java.time.ZonedDateTime
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.Any
 import kotlin.Boolean
 import kotlin.Exception
 import kotlin.IllegalArgumentException
@@ -88,6 +87,7 @@ import org.hl7.fhir.r5.model.RelatedArtifact
 import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.utilities.validation.ValidationMessage
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory
+import org.opencds.cqf.cql.engine.runtime.CqlType
 
 @Suppress("MaxLineLength", "ReturnCount", "ForbiddenComment", "NestedBlockDepth", "UnusedParameter")
 class DataRequirementsProcessor {
@@ -127,7 +127,7 @@ class DataRequirementsProcessor {
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
         expressions: Set<String>?,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, CqlType?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
     ): Library {
@@ -169,7 +169,7 @@ class DataRequirementsProcessor {
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
         expressions: Set<String>?,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, CqlType?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -400,7 +400,7 @@ class DataRequirementsProcessor {
         requirements: ElmRequirements,
         libraryIdentifier: VersionedIdentifier,
         expressionDefs: Iterable<ExpressionDef?>,
-        parameters: Map<String, Any?>?,
+        parameters: Map<String, CqlType?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {

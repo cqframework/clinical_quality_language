@@ -4,8 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.exception.UndefinedResult
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 Ln(argument Decimal) Decimal
@@ -16,27 +18,27 @@ If the argument is null, the result is null.
 */
 object LnEvaluator {
     @JvmStatic
-    fun ln(operand: Any?): Any? {
+    fun ln(operand: CqlType?): Decimal? {
         if (operand == null) {
             return null
         }
 
-        if (operand is BigDecimal) {
+        if (operand is Decimal) {
             val retVal: BigDecimal?
             try {
-                retVal = BigDecimal(kotlin.math.ln(operand.toDouble()))
+                retVal = BigDecimal(kotlin.math.ln(operand.value.toDouble()))
             } catch (nfe: NumberFormatException) {
-                if (operand.compareTo(BigDecimal(0)) < 0) {
+                if (operand.value.compareTo(BigDecimal(0)) < 0) {
                     return null
-                } else if (operand.compareTo(BigDecimal(0)) == 0) {
+                } else if (operand.value.compareTo(BigDecimal(0)) == 0) {
                     throw UndefinedResult("Results in negative infinity")
                 } else {
                     throw UndefinedResult(nfe.message)
                 }
             }
-            return Value.verifyPrecision(retVal, null)
+            return Value.verifyPrecision(retVal, null).toCqlDecimal()
         }
 
-        throw InvalidOperatorArgument("Ln(Decimal)", "Ln(${operand.javaClassName})")
+        throw InvalidOperatorArgument("Ln(Decimal)", "Ln(${operand.typeAsString})")
     }
 }

@@ -4,8 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -30,17 +33,22 @@ If either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 object IncludedInEvaluator {
-    fun includedIn(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun includedIn(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left is Interval && right is Interval) {
             return intervalIncludedIn(left, right, precision, state)
         }
-        if (left is Iterable<*> && right is Iterable<*>) {
+        if (left is List && right is List) {
             return listIncludedIn(left, right, state)
         }
 
         throw InvalidOperatorArgument(
             "IncludedIn(Interval<T>, Interval<T>), IncludedIn(List<T>, List<T>) or IncludedIn(T, List<T>)",
-            "IncludedIn(${left!!.javaClassName}, ${right!!.javaClassName})",
+            "IncludedIn(${left!!.typeAsString}, ${right!!.typeAsString})",
         )
     }
 
@@ -65,8 +73,8 @@ object IncludedInEvaluator {
                 InEvaluator.`in`(leftEnd, right, precision, state),
             )
 
-        if (boundaryCheck != null && boundaryCheck) {
-            return true
+        if (boundaryCheck != null && boundaryCheck.value) {
+            return Boolean.TRUE
         }
 
         if (
@@ -77,13 +85,15 @@ object IncludedInEvaluator {
         ) {
             if (
                 AnyTrueEvaluator.anyTrue(
-                    listOf<Boolean?>(
-                        BeforeEvaluator.before(leftStart, rightStart, precision, state),
-                        AfterEvaluator.after(leftEnd, rightEnd, precision, state),
+                        listOf(
+                                BeforeEvaluator.before(leftStart, rightStart, precision, state),
+                                AfterEvaluator.after(leftEnd, rightEnd, precision, state),
+                            )
+                            .toCqlList()
                     )
-                ) == true
+                    .value == true
             ) {
-                return false
+                return Boolean.FALSE
             }
             return AndEvaluator.and(
                 SameOrAfterEvaluator.sameOrAfter(leftStart, rightStart, precision, state),
@@ -93,13 +103,15 @@ object IncludedInEvaluator {
 
         if (
             AnyTrueEvaluator.anyTrue(
-                listOf<Boolean?>(
-                    LessEvaluator.less(leftStart, rightStart, state),
-                    GreaterEvaluator.greater(leftEnd, rightEnd, state),
+                    listOf(
+                            LessEvaluator.less(leftStart, rightStart, state),
+                            GreaterEvaluator.greater(leftEnd, rightEnd, state),
+                        )
+                        .toCqlList()
                 )
-            ) == true
+                .value == true
         ) {
-            return false
+            return Boolean.FALSE
         }
         return AndEvaluator.and(
             GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
@@ -107,9 +119,9 @@ object IncludedInEvaluator {
         )
     }
 
-    fun listIncludedIn(left: Iterable<*>?, right: Iterable<*>?, state: State?): Boolean? {
+    fun listIncludedIn(left: List?, right: List?, state: State?): Boolean? {
         if (right == null) {
-            return false
+            return Boolean.FALSE
         }
 
         if (left == null) {
@@ -118,31 +130,36 @@ object IncludedInEvaluator {
         }
 
         for (element in left) {
-            val `in`: Any? = InEvaluator.`in`(element, right, null, state)
+            val `in` = InEvaluator.`in`(element, right, null, state)
 
             if (`in` == null) continue
 
-            if (!(`in` as Boolean)) {
-                return false
+            if (!`in`.value) {
+                return Boolean.FALSE
             }
         }
-        return true
+        return Boolean.TRUE
     }
 
     @JvmStatic
-    fun internalEvaluate(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun internalEvaluate(
+        left: CqlType?,
+        right: CqlType?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left == null && right == null) {
             return null
         }
 
         if (left == null) {
             return if (right is Interval) intervalIncludedIn(null, right, precision, state)
-            else listIncludedIn(null, right as Iterable<*>, state)
+            else listIncludedIn(null, right as List, state)
         }
 
         if (right == null) {
             return if (left is Interval) intervalIncludedIn(left, null, precision, state)
-            else listIncludedIn(left as Iterable<*>, null, state)
+            else listIncludedIn(left as List, null, state)
         }
 
         return includedIn(left, right, precision, state)

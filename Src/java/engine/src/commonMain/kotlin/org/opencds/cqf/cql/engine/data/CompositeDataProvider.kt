@@ -4,42 +4,46 @@ import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 open class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
     protected var retrieveProvider: RetrieveProvider?,
 ) : DataProvider {
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(
+        contextType: kotlin.String?,
+        targetType: kotlin.String?,
+    ): kotlin.String? {
         return this.modelResolver!!.getContextPath(contextType, targetType)
     }
 
-    override fun `is`(valueType: String, type: QName): Boolean? {
+    override fun `is`(valueType: kotlin.String, type: QName): Boolean? {
         return this.modelResolver!!.`is`(valueType, type)
     }
 
-    override fun createInstance(typeName: String?): Any? {
+    override fun createInstance(typeName: kotlin.String?): CqlType? {
         return this.modelResolver!!.createInstance(typeName)
     }
 
-    override fun resolveId(target: Any?): String? {
+    override fun resolveId(target: CqlType?): kotlin.String? {
         return this.modelResolver!!.resolveId(target)
     }
 
     override fun retrieve(
-        context: String?,
-        contextPath: String?,
+        context: kotlin.String?,
+        contextPath: kotlin.String?,
         contextValue: Any?,
-        dataType: String,
-        templateId: String?,
-        codePath: String?,
+        dataType: kotlin.String,
+        templateId: kotlin.String?,
+        codePath: kotlin.String?,
         codes: Iterable<Code>?,
-        valueSet: String?,
-        datePath: String?,
-        dateLowPath: String?,
-        dateHighPath: String?,
+        valueSet: kotlin.String?,
+        datePath: kotlin.String?,
+        dateLowPath: kotlin.String?,
+        dateHighPath: kotlin.String?,
         dateRange: Interval?,
-    ): Iterable<Any?>? {
+    ): Iterable<CqlType?>? {
         return this.retrieveProvider!!.retrieve(
             context,
             contextPath,

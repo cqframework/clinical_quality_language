@@ -4,9 +4,15 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 div(left Integer, right Integer) Integer
@@ -20,31 +26,40 @@ If either argument is null, the result is null.
 */
 object TruncatedDivideEvaluator {
     @JvmStatic
-    fun div(left: Any?, right: Any?, state: State?): Any? {
+    fun div(left: CqlType?, right: CqlType?, state: State?): CqlType? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Int) {
-            if (right as Int == 0) {
+        if (left is Integer && right is Integer) {
+            if (right.value == 0) {
                 return null
             }
 
-            return left / right
-        } else if (left is Long) {
-            if (right as Long == 0L) {
+            return (left.value / right.value).toCqlInteger()
+        } else if (left is Long && right is Long) {
+            if (right.value == 0L) {
                 return null
             }
 
-            return left / right
-        } else if (left is BigDecimal) {
-            if (EqualEvaluator.equal(right, BigDecimal("0.0"), state) == true) {
+            return (left.value / right.value).toCqlLong()
+        } else if (left is Decimal && right is Decimal) {
+            if (
+                EqualEvaluator.equal(right, BigDecimal("0.0").toCqlDecimal(), state)?.value == true
+            ) {
                 return null
             }
 
-            return left.divideAndRemainder(right as BigDecimal)[0]
-        } else if (left is Quantity) {
-            if (EqualEvaluator.equal((right as Quantity).value, BigDecimal("0.0"), state) == true) {
+            return left.value.divideAndRemainder(right.value)[0].toCqlDecimal()
+        } else if (left is Quantity && right is Quantity) {
+            if (
+                EqualEvaluator.equal(
+                        right.value?.toCqlDecimal(),
+                        BigDecimal("0.0").toCqlDecimal(),
+                        state,
+                    )
+                    ?.value == true
+            ) {
                 return null
             }
             return Quantity()
@@ -64,7 +79,7 @@ object TruncatedDivideEvaluator {
 
         throw InvalidOperatorArgument(
             "TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal),  TruncatedDivide(Quantity, Quantity)",
-            "TruncatedDivide(${left.javaClassName}, ${right.javaClassName})",
+            "TruncatedDivide(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

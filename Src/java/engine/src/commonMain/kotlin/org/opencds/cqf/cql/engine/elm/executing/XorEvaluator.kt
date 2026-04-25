@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 xor (left Boolean, right Boolean) Boolean
@@ -12,18 +14,18 @@ If both arguments are true or both arguments are false, the result is false. Oth
 */
 object XorEvaluator {
     @JvmStatic
-    fun xor(left: Any?, right: Any?): Any? {
+    fun xor(left: CqlType?, right: CqlType?): Boolean? {
         if (left == null || right == null) {
             return null
         }
 
         if (left is Boolean && right is Boolean) {
-            return (left xor right)
+            return (left.value xor right.value).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "Xor(Boolean, Boolean)",
-            "Xor(${left.javaClassName}, ${right.javaClassName})",
+            "Xor(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

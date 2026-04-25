@@ -3,11 +3,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 in(code String, codesystem CodeSystemRef) Boolean
@@ -22,7 +25,7 @@ If the code argument is null, the result is null.
 */
 object InCodeSystemEvaluator {
     @JvmStatic
-    fun inCodeSystem(code: Any?, codeSystem: Any?, state: State?): Any? {
+    fun inCodeSystem(code: CqlType?, codeSystem: CqlType?, state: State?): Boolean? {
         if (code == null || codeSystem == null) {
             return null
         }
@@ -33,22 +36,22 @@ object InCodeSystemEvaluator {
             val provider = state!!.environment.terminologyProvider
 
             if (code is String) {
-                return provider!!.lookup(Code().withCode(code), csi) != null
+                return (provider!!.lookup(Code().withCode(code.value), csi) != null).toCqlBoolean()
             } else if (code is Code) {
-                return provider!!.lookup(code, csi) != null
+                return (provider!!.lookup(code, csi) != null).toCqlBoolean()
             } else if (code is Concept) {
                 for (codes in code.codes!!) {
                     if (provider!!.lookup(codes!!, csi) != null) {
-                        return true
+                        return Boolean.TRUE
                     }
                 }
-                return false
+                return Boolean.FALSE
             }
         }
 
         throw InvalidOperatorArgument(
             "In(String, CodeSystemRef), In(Code, CodeSystemRef) or In(Concept, CodeSystemRef)",
-            "In(${code.javaClassName}, ${codeSystem.javaClassName})",
+            "In(${code.typeAsString}, ${codeSystem.typeAsString})",
         )
     }
 }

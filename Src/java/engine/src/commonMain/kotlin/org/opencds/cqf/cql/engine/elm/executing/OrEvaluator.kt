@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 or (left Boolean, right Boolean) Boolean
@@ -12,26 +14,26 @@ If both arguments are false, the result is false. Otherwise, the result is null.
 */
 object OrEvaluator {
     @JvmStatic
-    fun or(left: Any?, right: Any?): Boolean? {
+    fun or(left: CqlType?, right: CqlType?): Boolean? {
         if (left == null && right == null) {
             return null
         }
 
         if (left == null && right is Boolean) {
-            return if (right) true else null
+            return if (right.value) Boolean.TRUE else null
         }
 
         if (right == null && left is Boolean) {
-            return if (left) true else null
+            return if (left.value) Boolean.TRUE else null
         }
 
         if (left is Boolean && right is Boolean) {
-            return left || right
+            return (left.value || right.value).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "Or(Boolean, Boolean)",
-            "Or(${if (left == null) "Null" else left.javaClassName}, ${if (right == null) "Null" else right.javaClassName})",
+            "Or(${if (left == null) "Null" else left.typeAsString}, ${if (right == null) "Null" else right.typeAsString})",
         )
     }
 }

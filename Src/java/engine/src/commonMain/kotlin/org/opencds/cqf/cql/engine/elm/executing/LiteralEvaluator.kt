@@ -6,13 +6,19 @@ import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.InvalidLiteral
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 object LiteralEvaluator {
     @JvmStatic
-    fun internalEvaluate(valueT: QName?, value: String?, state: State?): Any? {
+    fun internalEvaluate(valueT: QName?, value: kotlin.String?, state: State?): CqlType? {
         val valueType = state!!.environment.fixupQName(valueT!!)
         when (valueType.getLocalPart()) {
-            "Boolean" -> return value.toBoolean()
+            "Boolean" -> return value.toBoolean().toCqlBoolean()
             "Integer" -> {
                 val intValue: Int
                 try {
@@ -20,7 +26,7 @@ object LiteralEvaluator {
                 } catch (e: NumberFormatException) {
                     throw CqlException("Bad format for Integer literal")
                 }
-                return intValue
+                return intValue.toCqlInteger()
             }
             "Long" -> {
                 val longValue: Long
@@ -29,7 +35,7 @@ object LiteralEvaluator {
                 } catch (e: NumberFormatException) {
                     throw CqlException("Bad format for Long literal")
                 }
-                return longValue
+                return longValue.toCqlLong()
             }
             "Decimal" -> {
                 val bigDecimalValue: BigDecimal?
@@ -39,9 +45,9 @@ object LiteralEvaluator {
                 } catch (nfe: NumberFormatException) {
                     throw CqlException(nfe.message)
                 }
-                return bigDecimalValue
+                return bigDecimalValue.toCqlDecimal()
             }
-            "String" -> return value
+            "String" -> return value?.toCqlString()
             else ->
                 throw InvalidLiteral(
                     "Cannot construct literal value for type '${valueType.toString()}'."

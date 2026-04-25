@@ -2,7 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.opencds.cqf.cql.engine.util.stringUtilsSplit
 
 /*
@@ -16,21 +20,23 @@ If the stringToSplit argument does not contain any appearances of the separator,
 object SplitEvaluator {
     @JvmStatic
     @Suppress("ReturnCount")
-    fun split(stringToSplit: Any?, separator: Any?): Any? {
+    fun split(stringToSplit: CqlType?, separator: CqlType?): List? {
         if (stringToSplit == null) {
             return null
         }
 
-        if (stringToSplit is String) {
+        if (stringToSplit is String && separator is String?) {
             if (separator == null) {
-                return mutableListOf(stringToSplit)
+                return mutableListOf(stringToSplit).toCqlList()
             }
-            return stringUtilsSplit(stringToSplit, separator as String).toMutableList()
+            return stringUtilsSplit(stringToSplit.value, separator.value)
+                .map { it.toCqlString() }
+                .toCqlList()
         }
 
         throw InvalidOperatorArgument(
             "Split(String, String)",
-            "Split(${stringToSplit.javaClassName}, ${separator!!.javaClassName})",
+            "Split(${stringToSplit.typeAsString}, ${separator!!.typeAsString})",
         )
     }
 }

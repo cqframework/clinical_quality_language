@@ -1,8 +1,23 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 
@@ -15,57 +30,61 @@ If the source is null, the result is null.
 
 */
 object ChildrenEvaluator {
-    private fun addQuantity(list: MutableList<Any?>, quantity: Quantity) {
-        list.add(quantity.value)
-        list.add(quantity.unit)
+    private fun addQuantity(list: MutableList<CqlType?>, quantity: Quantity) {
+        list.add(quantity.value?.toCqlDecimal())
+        list.add(quantity.unit?.toCqlString())
     }
 
-    private fun addCode(list: MutableList<Any?>, code: Code?) {
-        list.add(code!!.system)
-        list.add(code.version)
-        list.add(code.code)
-        list.add(code.system)
+    private fun addCode(list: MutableList<CqlType?>, code: Code?) {
+        list.add(code!!.system?.toCqlString())
+        list.add(code.version?.toCqlString())
+        list.add(code.code?.toCqlString())
+        list.add(code.system?.toCqlString())
     }
 
-    private fun addConcept(list: MutableList<Any?>, concept: Concept) {
+    private fun addConcept(list: MutableList<CqlType?>, concept: Concept) {
         for (code in concept.codes!!) {
             addCode(list, code)
         }
 
-        list.add(concept.display)
+        list.add(concept.display?.toCqlString())
     }
 
-    private fun addDateTime(list: MutableList<Any?>, dateTime: DateTime) {
+    private fun addDateTime(list: MutableList<CqlType?>, dateTime: DateTime) {
         for (i in 0..<dateTime.precision!!.toDateTimeIndex() + 1) {
-            list.add(dateTime.dateTime!!.get(Precision.fromDateTimeIndex(i).toChronoField()))
+            list.add(
+                dateTime.dateTime!!
+                    .get(Precision.fromDateTimeIndex(i).toChronoField())
+                    .toCqlInteger()
+            )
         }
 
-        list.add(TemporalHelper.zoneToOffset(dateTime.dateTime!!.getOffset()))
+        list.add(TemporalHelper.zoneToOffset(dateTime.dateTime!!.getOffset()).toCqlDecimal())
     }
 
-    private fun addTime(list: MutableList<Any?>, time: Time) {
+    private fun addTime(list: MutableList<CqlType?>, time: Time) {
         for (i in 0..<time.precision!!.toTimeIndex() + 1) {
-            list.add(time.time.get(Precision.fromTimeIndex(i).toChronoField()))
+            list.add(time.time.get(Precision.fromTimeIndex(i).toChronoField()).toCqlInteger())
         }
     }
 
-    private fun addList(list: MutableList<Any?>, listToProcess: Iterable<*>) {
+    private fun addList(list: MutableList<CqlType?>, listToProcess: List) {
         for (o in listToProcess) {
             list.add(children(o))
         }
     }
 
     @JvmStatic
-    fun children(source: Any?): Any? {
+    fun children(source: CqlType?): List? {
         if (source == null) {
             return null
         }
 
-        val ret: MutableList<Any?> = ArrayList()
+        val ret: MutableList<CqlType?> = ArrayList()
 
         when (source) {
-            is Int,
-            is BigDecimal,
+            is Integer,
+            is Decimal,
             is String,
             is Boolean -> ret.add(source)
 
@@ -79,10 +98,12 @@ object ChildrenEvaluator {
 
             is Time -> addTime(ret, source)
 
-            is Iterable<*> -> addList(ret, source)
+            is List -> addList(ret, source)
+
+            else -> {}
         }
 
         // TODO: Intervals and Tuples?
-        return ret
+        return ret.toCqlList()
     }
 }

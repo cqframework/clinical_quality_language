@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 Count(argument List<T>) Integer
@@ -14,19 +17,19 @@ Count(argument List<T>) Integer
 */
 object CountEvaluator {
     @JvmStatic
-    fun count(source: Any?): Any? {
+    fun count(source: CqlType?): Integer {
         if (source == null) {
-            return 0
+            return Integer(0)
         }
 
         var size = 0
 
-        if (source is Iterable<*>) {
+        if (source is List) {
             val element = source
             val itr = element.iterator()
 
             if (!itr.hasNext()) { // empty list
-                return size
+                return size.toCqlInteger()
             }
 
             while (itr.hasNext()) {
@@ -39,9 +42,9 @@ object CountEvaluator {
                 ++size
             }
 
-            return size
+            return size.toCqlInteger()
         }
 
-        throw InvalidOperatorArgument("Count(List<T>)", "Count(${source.javaClassName})")
+        throw InvalidOperatorArgument("Count(List<T>)", "Count(${source.typeAsString})")
     }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 
 // https://github.com/cqframework/clinical_quality_language/issues/1441
@@ -34,11 +35,11 @@ internal class Issue1441 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<Any?>? {
+                ): Iterable<CqlType?>? {
                     return when (dataType) {
-                        "Patient" -> mutableListOf(patient)
-                        "Observation" -> mutableListOf(observation)
-                        "Procedure" -> mutableListOf(procedure)
+                        "Patient" -> mutableListOf(r4ModelResolver!!.toCqlValue(patient))
+                        "Observation" -> mutableListOf(r4ModelResolver!!.toCqlValue(observation))
+                        "Procedure" -> mutableListOf(r4ModelResolver!!.toCqlValue(procedure))
                         else -> mutableListOf()
                     }
                 }

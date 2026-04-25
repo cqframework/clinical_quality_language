@@ -35,7 +35,7 @@ internal class CqlConceptTest : CqlTestBase() {
         }
 
         fun assertEqual(expected: CqlType, actual: CqlType?) {
-            if (equal(expected, actual) != true) {
+            if (equal(expected, actual)?.value != true) {
                 val message = "Expected $expected but got $actual"
                 Assertions.fail<Any?>(message)
             }

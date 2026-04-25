@@ -4,25 +4,25 @@ import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator.toString
 
 /** Represents a structured CQL value. */
 sealed class StructuredValue : CqlType {
-    abstract val elements: MutableMap<String, Any?>
+    abstract val elements: MutableMap<kotlin.String, CqlType?>
 
     /** Returns true if the structured value has an element with the given name, false otherwise. */
-    fun has(elementName: String): Boolean {
+    fun has(elementName: kotlin.String): kotlin.Boolean {
         return elements.containsKey(elementName)
     }
 
     /** Returns the value of the element of the structured value. */
-    operator fun get(elementName: String): Any? {
+    operator fun get(elementName: kotlin.String): CqlType? {
         return elements[elementName]
     }
 
     /** Returns the value of the element of the structured value. */
-    fun getElement(elementName: String): Any? {
+    fun getElement(elementName: kotlin.String): CqlType? {
         return elements[elementName]
     }
 
     /** Returns a string representation of the elements of the structured value. */
-    protected fun toPrettyString(label: String): String {
+    protected fun toPrettyString(label: kotlin.String): kotlin.String {
         if (elements.isEmpty()) {
             return "$label {}"
         }
@@ -37,7 +37,7 @@ sealed class StructuredValue : CqlType {
         }
     }
 
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): kotlin.Boolean {
         if (this === other) return true
         if (other !is StructuredValue) return false
 

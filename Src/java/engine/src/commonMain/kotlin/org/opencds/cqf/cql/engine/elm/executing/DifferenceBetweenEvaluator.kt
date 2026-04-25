@@ -2,8 +2,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 
@@ -41,7 +47,7 @@ DateTime(2014, 5, 12) and DateTime(2014, 5, 25) respectively
 */
 object DifferenceBetweenEvaluator {
     @JvmStatic
-    fun difference(left: Any?, right: Any?, precision: Precision): Any? {
+    fun difference(left: CqlType?, right: CqlType?, precision: Precision): CqlType? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -99,18 +105,19 @@ object DifferenceBetweenEvaluator {
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return if (isWeeks)
                         (precision
-                            .toChronoUnit()
-                            .between(
-                                left
-                                    .expandPartialMinFromPrecision(precision)
-                                    .dateTime!!
-                                    .toLocalDate(),
-                                right
-                                    .expandPartialMinFromPrecision(precision)
-                                    .dateTime!!
-                                    .toLocalDate(),
-                            )
-                            .toInt() / 7)
+                                .toChronoUnit()
+                                .between(
+                                    left
+                                        .expandPartialMinFromPrecision(precision)
+                                        .dateTime!!
+                                        .toLocalDate(),
+                                    right
+                                        .expandPartialMinFromPrecision(precision)
+                                        .dateTime!!
+                                        .toLocalDate(),
+                                )
+                                .toInt() / 7)
+                            .toCqlInteger()
                     else
                         precision
                             .toChronoUnit()
@@ -125,6 +132,7 @@ object DifferenceBetweenEvaluator {
                                     .toLocalDate(),
                             )
                             .toInt()
+                            .toCqlInteger()
                 } else {
                     return precision
                         .toChronoUnit()
@@ -133,18 +141,20 @@ object DifferenceBetweenEvaluator {
                             right.expandPartialMinFromPrecision(precision).dateTime!!,
                         )
                         .toInt()
+                        .toCqlInteger()
                 }
             }
 
             if (left is Date && right is Date) {
                 return if (isWeeks)
                     (precision
-                        .toChronoUnit()
-                        .between(
-                            left.expandPartialMinFromPrecision(precision).date!!,
-                            right.expandPartialMinFromPrecision(precision).date!!,
-                        )
-                        .toInt() / 7)
+                            .toChronoUnit()
+                            .between(
+                                left.expandPartialMinFromPrecision(precision).date!!,
+                                right.expandPartialMinFromPrecision(precision).date!!,
+                            )
+                            .toInt() / 7)
+                        .toCqlInteger()
                 else
                     precision
                         .toChronoUnit()
@@ -153,6 +163,7 @@ object DifferenceBetweenEvaluator {
                             right.expandPartialMinFromPrecision(precision).date!!,
                         )
                         .toInt()
+                        .toCqlInteger()
             }
 
             if (left is Time && right is Time) {
@@ -163,12 +174,13 @@ object DifferenceBetweenEvaluator {
                         right.expandPartialMinFromPrecision(precision).time,
                     )
                     .toInt()
+                    .toCqlInteger()
             }
         }
 
         throw InvalidOperatorArgument(
             "DifferenceBetween(Date, Date), DifferenceBetween(DateTime, DateTime), DifferenceBetween(Time, Time)",
-            "DifferenceBetween(${left.javaClassName}, ${right.javaClassName})",
+            "DifferenceBetween(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

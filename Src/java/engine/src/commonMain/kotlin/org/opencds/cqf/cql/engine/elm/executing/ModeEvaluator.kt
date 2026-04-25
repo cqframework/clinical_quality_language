@@ -4,7 +4,8 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.List
 
 /*
 Mode(argument List<T>) T
@@ -15,12 +16,12 @@ If the source is null, the result is null.
 */
 object ModeEvaluator {
     @JvmStatic
-    fun mode(source: Any?, state: State?): Any? {
+    fun mode(source: CqlType?, state: State?): CqlType? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
+        if (source is List) {
             val element = source
             val itr = element.iterator()
 
@@ -28,7 +29,7 @@ object ModeEvaluator {
                 return null
             }
 
-            val values = ArrayList<Any?>()
+            val values = mutableListOf<CqlType?>()
             while (itr.hasNext()) {
                 val value = itr.next()
                 if (value != null) {
@@ -43,12 +44,12 @@ object ModeEvaluator {
             values.sortWith(CqlList(state).valueSort)
 
             var max = 0
-            var mode: Any? = Any()
+            var mode: CqlType? = null
             for (i in values.indices) {
                 var count = 0
                 for (j in i..<values.size) {
                     val equal = EqualEvaluator.equal(values.get(i), values.get(j), state)
-                    if (equal != null && equal) {
+                    if (equal != null && equal.value) {
                         ++count
                     }
                 }
@@ -59,6 +60,6 @@ object ModeEvaluator {
             }
             return mode
         }
-        throw InvalidOperatorArgument("Mode(List<T>)", "Mode(${source.javaClassName})")
+        throw InvalidOperatorArgument("Mode(List<T>)", "Mode(${source.typeAsString})")
     }
 }
