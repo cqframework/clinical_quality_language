@@ -1,6 +1,4 @@
-plugins {
-    id("com.vanniktech.maven.publish")
-}
+plugins { id("com.vanniktech.maven.publish") }
 
 /*
 A few things:
@@ -26,7 +24,8 @@ mavenPublishing {
     coordinates(project.group.toString(), project.name, project.version.toString())
     pom {
         name = project.name
-        description = "The ${project.name} library for the Clinical Quality Language Java reference implementation"
+        description =
+            "The ${project.name} library for the Clinical Quality Language Java reference implementation"
         url = "http://cqframework.org"
 
         licenses {
@@ -43,30 +42,14 @@ mavenPublishing {
         }
 
         developers {
-            developer {
-                name = "Bryn Rhodes"
-            }
-            developer {
-                name = "Chris Moesel"
-            }
-            developer {
-                name = "Rob Dingwell"
-            }
-            developer {
-                name = "Jason Walonoski"
-            }
-            developer {
-                name = "Marc Hadley"
-            }
-            developer {
-                name = "Jonathan Percival"
-            }
-            developer {
-                name = "Anton Vasetenkov"
-            }
-            developer {
-                name = "Luke deGruchy"
-            }
+            developer { name = "Bryn Rhodes" }
+            developer { name = "Chris Moesel" }
+            developer { name = "Rob Dingwell" }
+            developer { name = "Jason Walonoski" }
+            developer { name = "Marc Hadley" }
+            developer { name = "Jonathan Percival" }
+            developer { name = "Anton Vasetenkov" }
+            developer { name = "Luke deGruchy" }
         }
     }
 }

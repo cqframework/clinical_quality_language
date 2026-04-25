@@ -14,9 +14,7 @@ val scheme: VersionScheme =
         "semver" -> SemverScheme
         "calendar" -> CalendarReleaseScheme
         else ->
-            error(
-                "Unknown cqf.gitVersion.scheme: '$schemeName' (expected 'semver' or 'calendar')"
-            )
+            error("Unknown cqf.gitVersion.scheme: '$schemeName' (expected 'semver' or 'calendar')")
     }
 val resolvedVersion = gitVersion(rootDir, scheme, providers)
 

@@ -1,6 +1,4 @@
-plugins {
-    `kotlin-dsl`
-}
+plugins { `kotlin-dsl` }
 
 repositories {
     mavenCentral()
@@ -18,10 +16,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-serialization:2.3.10")
     implementation("org.glassfish.jaxb:xsom:4.0.6")
     implementation("com.squareup:kotlinpoet:2.2.0")
-    implementation("com.github.gmazzo.buildconfig:com.github.gmazzo.buildconfig.gradle.plugin:6.0.7")
+    implementation(
+        "com.github.gmazzo.buildconfig:com.github.gmazzo.buildconfig.gradle.plugin:6.0.7"
+    )
     implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.26.0")
+    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.4.0")
 }
 
-kotlin {
-    jvmToolchain(17)
-}
+kotlin { jvmToolchain(17) }
