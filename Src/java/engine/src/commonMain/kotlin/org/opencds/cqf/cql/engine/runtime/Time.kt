@@ -6,6 +6,8 @@ import org.opencds.cqf.cql.engine.util.localTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
 class Time : BaseTemporal {
+    override val type = timeTypeName
+
     var time: LocalTime
         private set
 

@@ -1,6 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Ratio : CqlType {
+class Ratio : StructuredValue(), NamedCqlType {
+    override val type = ratioTypeName
+
+    override val elements: MutableMap<String, Any?>
+        get() = mutableMapOf("numerator" to numerator, "denominator" to denominator)
+
     var numerator: Quantity? = null
 
     var denominator: Quantity? = null

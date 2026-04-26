@@ -6,11 +6,9 @@ import kotlin.math.min
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEquivalent
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -58,7 +56,7 @@ object EquivalentEvaluator {
             return false
         }
 
-        // Cases in which Java classes may differ
+        // Cases in which Kotlin classes may differ
 
         if (left is Iterable<*> && right is Iterable<*>) {
             return listEquivalent(left, right, state)
@@ -72,7 +70,7 @@ object EquivalentEvaluator {
             return intervalIntegerEquivalent(right, left, state)
         }
 
-        // Return false early if Java classes don't match (platform dependence)
+        // Return false early if Kotlin classes don't match
 
         if (left::class != right::class) {
             return false
@@ -133,18 +131,17 @@ object EquivalentEvaluator {
         }
 
         if (left is Tuple && right is Tuple) {
-            return tuplesEquivalent(left, right, state)
+            return structuredValueElementsEquivalent(left.elements, right.elements, state)
         }
 
-        // Fallback to data provider's `objectEquivalent()`
-
-        if (state != null) {
-            return state.environment.objectEquivalent(left, right)
+        if (left is ClassInstance && right is ClassInstance) {
+            if (left.type == right.type) {
+                return structuredValueElementsEquivalent(left.elements, right.elements, state)
+            }
+            return false
         }
 
-        throw InvalidOperatorArgument(
-            "Equivalent(${left.javaClassName}, ${right.javaClassName}) requires Context and context was null"
-        )
+        return false
     }
 
     fun quantitiesEquivalent(left: Quantity, right: Quantity, state: State?): Boolean? {
@@ -258,15 +255,18 @@ object EquivalentEvaluator {
         return !rightIterator.hasNext()
     }
 
-    fun tuplesEquivalent(left: Tuple, right: Tuple, state: State?): Boolean {
-        if (left.elements.size != right.elements.size) {
+    fun structuredValueElementsEquivalent(
+        left: Map<String, Any?>,
+        right: Map<String, Any?>,
+        state: State?,
+    ): Boolean {
+        if (left.size != right.size) {
             return false
         }
 
-        for (key in right.elements.keys) {
-            if (left.elements.containsKey(key)) {
-                val areKeyValsSame =
-                    equivalent(right.elements[key], left.elements[key], state) == true
+        for (key in right.keys) {
+            if (left.containsKey(key)) {
+                val areKeyValsSame = equivalent(right[key], left[key], state) == true
                 if (!areKeyValsSame) {
                     return false
                 }

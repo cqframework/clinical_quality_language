@@ -8,6 +8,8 @@ import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.CqlList
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.decimalTypeName
+import org.opencds.cqf.cql.engine.runtime.integerTypeName
 
 /*
 collapse(argument List<Interval<T>>) List<Interval<T>>
@@ -40,7 +42,7 @@ object CollapseEvaluator {
     ): Interval {
         if (per.value == BigDecimal("0")) {
             return interval
-        } else if (interval.pointType!!.getTypeName().contains("Integer")) {
+        } else if (interval.pointType == integerTypeName) {
             return Interval(
                 interval.start,
                 true,
@@ -48,7 +50,7 @@ object CollapseEvaluator {
                 true,
                 state,
             )
-        } else if (interval.pointType!!.getTypeName().contains("BigDecimal")) {
+        } else if (interval.pointType == decimalTypeName) {
             return Interval(
                 interval.start,
                 true,

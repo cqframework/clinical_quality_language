@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.util
 
 import kotlin.reflect.KClass
-import kotlin.reflect.cast
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
@@ -56,17 +55,5 @@ data class JavaClassJs<T : Any>(private val kClass: KClass<T>) {
             Tuple::class -> "org.opencds.cqf.cql.engine.runtime"
             else -> unknownPackageName
         }
-    }
-
-    fun isInstance(value: Any?): Boolean {
-        return kClass.isInstance(value)
-    }
-
-    fun cast(value: Any?): T {
-        return kClass.cast(value)
-    }
-
-    fun isAssignableFrom(clazz: JavaClassJs<*>): Boolean {
-        return kClass == clazz.kClass
     }
 }

@@ -5,37 +5,36 @@ import ca.uhn.fhir.context.FhirVersionEnum
 import java.math.BigDecimal
 import java.text.ParseException
 import java.util.*
+import javax.xml.namespace.QName
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 import org.apache.commons.lang3.time.DateUtils
 import org.cqframework.cql.cql2elm.ModelManager
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm_modelinfo.r1.ClassInfo
 import org.hl7.elm_modelinfo.r1.TypeInfo
-import org.hl7.fhir.r4.model.Base
 import org.hl7.fhir.r4.model.DateTimeType
-import org.hl7.fhir.r4.model.DateType
 import org.hl7.fhir.r4.model.Enumeration
 import org.hl7.fhir.r4.model.Enumerations
 import org.hl7.fhir.r4.model.Enumerations.DefinitionResourceType
 import org.hl7.fhir.r4.model.Enumerations.EventResourceType
 import org.hl7.fhir.r4.model.Enumerations.KnowledgeResourceType
-import org.hl7.fhir.r4.model.Extension
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Procedure
 import org.hl7.fhir.r4.model.Quantity
-import org.hl7.fhir.r4.model.SimpleQuantity
 import org.hl7.fhir.r4.model.StringType
 import org.hl7.fhir.r4.model.VisionPrescription
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
-import org.opencds.cqf.cql.engine.model.ModelResolver
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 
 internal class TestR4ModelResolver {
     @Test
     fun resolverThrowsExceptionForUnknownType() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
         Assertions.assertThrows(UnknownType::class.java) {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
@@ -43,7 +42,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun resolveTypeTests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -75,7 +74,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun modelInfoSpecialCaseTests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         // This tests resolution of inner classes. They aren't registered directly.
         resolver.resolveType("TestScriptRequestMethodCode")
@@ -113,7 +112,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun modelInfo400Tests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
         val mm = ModelManager()
         val m = mm.resolveModel(ModelIdentifier("FHIR", null, "4.0.1"))
 
@@ -145,7 +144,7 @@ internal class TestR4ModelResolver {
     @Test
     @Throws(Exception::class)
     fun modelInfo401Tests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
         val mm = ModelManager()
         val m = mm.resolveModel(ModelIdentifier("FHIR", null, "4.0.1"))
 
@@ -184,7 +183,7 @@ internal class TestR4ModelResolver {
 
     @Test
     fun createInstanceTests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -195,7 +194,7 @@ internal class TestR4ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -209,7 +208,7 @@ internal class TestR4ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -217,7 +216,7 @@ internal class TestR4ModelResolver {
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct type to
             // be created.
-            val instance = resolver.createInstance(enumType.getSimpleName()) as Enumeration<*>?
+            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
             Assertions.assertNotNull(instance)
 
             Assertions.assertEquals(
@@ -228,16 +227,16 @@ internal class TestR4ModelResolver {
 
         // These are some inner classes that don't appear in the enums above
         // This list is not exhaustive. It's meant as a spot check for the resolution code.
-        var instance = resolver.createInstance("TestScriptRequestMethodCode")
+        var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
         Assertions.assertNotNull(instance)
 
-        instance = resolver.createInstance("FHIRDeviceStatus")
+        instance = resolver.createHapiInstance("FHIRDeviceStatus")
         Assertions.assertNotNull(instance)
     }
 
     @Test
     fun contextPathTests() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         var path = resolver.getContextPath("Patient", "Patient") as String?
         Assertions.assertNotNull(path)
@@ -292,58 +291,59 @@ internal class TestR4ModelResolver {
 
     @Test
     fun resolveMissingPropertyReturnsNull() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val p = Patient()
 
-        val value = resolver.resolvePath(p, "not-a-path")
-        Assertions.assertNull(value)
+        val patientAsCqlValue = resolver.toCqlValue(p)
+        assertIs<ClassInstance>(patientAsCqlValue)
+        assertFalse(patientAsCqlValue.elements.containsKey("not-a-path"))
     }
 
     @Test
     fun resolveIdPropertyReturnsString() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val p = Patient()
         p.setId("5")
-        val idType = p.idElement
 
-        var value = resolver.resolvePath(p, "id")
-        Assertions.assertNotNull(value)
-        MatcherAssert.assertThat(value, Matchers.`is`(idType))
+        val patientAsCqlValue = resolver.toCqlValue(p)
+        assertIs<ClassInstance>(patientAsCqlValue)
 
-        value = resolver.resolvePath(p, "id.value")
-        Assertions.assertNotNull(value)
-        MatcherAssert.assertThat(value, Matchers.`is`("5"))
+        val id = patientAsCqlValue.elements["id"]
+        assertIs<ClassInstance>(id)
+        assertEquals(QName("http://hl7.org/fhir", "id"), id.type)
+
+        assertEquals("5", id.elements["value"])
     }
 
     @Test
     fun resolveDateTimeProviderReturnsDate() {
-        val resolver: ModelResolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val vp = VisionPrescription()
         val time = GregorianCalendar(1999, 3, 31).getTime()
         vp.setDateWritten(time)
 
-        val dateTimeType = vp.dateWrittenElement
-
-        val value = resolver.resolvePath(vp, "dateWritten")
-        Assertions.assertNotNull(value)
-        MatcherAssert.assertThat(value, Matchers.`is`(dateTimeType))
+        val value = resolver.toCqlValue(vp)
+        assertIs<ClassInstance>(value)
+        val dateWritten = value.elements["dateWritten"]
+        assertIs<ClassInstance>(dateWritten)
+        assertEquals(QName("http://hl7.org/fhir", "dateTime"), dateWritten.type)
     }
 
     @Test
     fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base, *, *, SimpleQuantity, *, *, *, *> =
-            R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
+        val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         val q = Quantity()
         q.setValue(BigDecimal("10.0"))
         q.setUnit("1")
         val sq = resolver.castToSimpleQuantity(q)
 
-        val value = resolver.resolvePath(sq, "comparator")
-        Assertions.assertNull(value)
+        val value = resolver.toCqlValue(sq)
+        assertIs<ClassInstance>(value)
+        assertNull(value.elements["comparator"])
     }
 
     @Test
@@ -352,8 +352,8 @@ internal class TestR4ModelResolver {
 
         val dt = DateTimeType()
 
-        val value = resolver.resolvePath(dt, "value")
-        Assertions.assertNull(value)
+        val value = resolver.toCqlValue(dt)
+        assertNull(value)
     }
 
     @Test
@@ -364,7 +364,7 @@ internal class TestR4ModelResolver {
         val patient = Patient()
         patient.setId(expectedId)
 
-        Assertions.assertEquals(resolver.resolveId(patient), expectedId)
+        Assertions.assertEquals(resolver.resolveId(resolver.toCqlValue(patient)), expectedId)
     }
 
     @Test
@@ -379,12 +379,21 @@ internal class TestR4ModelResolver {
             "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
             DateTimeType("1974-12-25T14:35:45-05:00"),
         )
-        var result = resolver.resolvePath(patient, "birthDate")
-        Assertions.assertInstanceOf(DateType::class.java, result)
-        result = resolver.resolvePath(patient, "birthDate.extension")
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(1, (result as MutableList<*>).size)
-        Assertions.assertInstanceOf(Extension::class.java, result[0])
+
+        val patientAsCqlValue = resolver.toCqlValue(patient)
+        assertIs<ClassInstance>(patientAsCqlValue)
+
+        var result = patientAsCqlValue.elements["birthDate"]
+        assertIs<ClassInstance>(result)
+        assertEquals(QName("http://hl7.org/fhir", "date"), result.type)
+
+        result = result.elements["extension"]
+        assertIs<Iterable<*>>(result)
+        assertEquals(1, result.count())
+
+        val extension = result.first()
+        assertIs<ClassInstance>(extension)
+        assertEquals(QName("http://hl7.org/fhir", "Extension"), extension.type)
     }
 
     @Test
@@ -395,7 +404,7 @@ internal class TestR4ModelResolver {
         val procedure = Procedure()
         procedure.setId(expectedId)
 
-        Assertions.assertEquals(resolver.resolveId(procedure), expectedId)
+        Assertions.assertEquals(resolver.resolveId(resolver.toCqlValue(procedure)), expectedId)
     }
 
     @Test

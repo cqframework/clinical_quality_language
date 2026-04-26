@@ -3,27 +3,27 @@ package org.opencds.cqf.cql.engine.fhir.model
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.elm_modelinfo.r1.ClassInfo
 import org.hl7.elm_modelinfo.r1.TypeInfo
-import org.hl7.fhir.dstu3.model.Base
 import org.hl7.fhir.dstu3.model.DateTimeType
 import org.hl7.fhir.dstu3.model.Enumeration
 import org.hl7.fhir.dstu3.model.Enumerations
 import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Quantity
-import org.hl7.fhir.dstu3.model.SimpleQuantity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
-import org.opencds.cqf.cql.engine.model.ModelResolver
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 
 internal class TestDstu3ModelResolver {
     @Test
     fun resolverThrowsExceptionForUnknownType() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
         Assertions.assertThrows(UnknownType::class.java) {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
@@ -32,8 +32,7 @@ internal class TestDstu3ModelResolver {
     // This tests all the top-level types HAPI knows about.
     @Test
     fun resolveTypeTests() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -66,8 +65,7 @@ internal class TestDstu3ModelResolver {
     // This tests all the types that are present in the ModelInfo.
     @Test
     fun resolveModelInfoTests() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
         val mm = ModelManager()
         val m = mm.resolveModel(ModelIdentifier("FHIR", null, "3.0.0"))
 
@@ -94,8 +92,7 @@ internal class TestDstu3ModelResolver {
     // on the FhirContext or generalized logic, or fixed-up ModelInfos
     @Test
     fun modelInfoSpecialCaseTests() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         // This tests resolution of inner classes. They aren't registered directly.
         resolver.resolveType("TestScriptRequestMethodCode")
@@ -117,8 +114,7 @@ internal class TestDstu3ModelResolver {
 
     @Test
     fun createInstanceTests() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -129,7 +125,7 @@ internal class TestDstu3ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -143,7 +139,7 @@ internal class TestDstu3ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -151,7 +147,7 @@ internal class TestDstu3ModelResolver {
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct
             // type to be created.
-            val instance = resolver.createInstance(enumType.getSimpleName()) as Enumeration<*>?
+            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
             Assertions.assertNotNull(instance)
 
             Assertions.assertEquals(
@@ -163,17 +159,16 @@ internal class TestDstu3ModelResolver {
         // These are some inner classes that don't appear in the enums above
         // This list is not exhaustive. It's meant as a spot check for the resolution
         // code.
-        var instance = resolver.createInstance("TestScriptRequestMethodCode")
+        var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
         Assertions.assertNotNull(instance)
 
-        instance = resolver.createInstance("FHIRDeviceStatus")
+        instance = resolver.createHapiInstance("FHIRDeviceStatus")
         Assertions.assertNotNull(instance)
     }
 
     @Test
     fun contextPathTests() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         var path = resolver.getContextPath("Patient", "Patient") as String?
         Assertions.assertNotNull(path)
@@ -225,27 +220,27 @@ internal class TestDstu3ModelResolver {
 
     @Test
     fun resolveMissingPropertyReturnsNull() {
-        val resolver: ModelResolver =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         val p = Patient()
 
-        val value = resolver.resolvePath(p, "not-a-path")
-        Assertions.assertNull(value)
+        val patientAsCqlValue = resolver.toCqlValue(p)
+        assertIs<ClassInstance>(patientAsCqlValue)
+        assertFalse(patientAsCqlValue.elements.containsKey("not-a-path"))
     }
 
     @Test
     fun resolveNullEnumerationReturnsNull() {
-        val resolver: FhirModelResolver<Base, *, *, SimpleQuantity, *, *, *, *> =
-            Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
+        val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         val q = Quantity()
         q.setValue(BigDecimal("10.0"))
         q.setUnit("1")
         val sq = resolver.castToSimpleQuantity(q)
 
-        val value = resolver.resolvePath(sq, "comparator")
-        Assertions.assertNull(value)
+        val value = resolver.toCqlValue(sq)
+        assertIs<ClassInstance>(value)
+        assertNull(value.elements["comparator"])
     }
 
     @Test
@@ -254,8 +249,8 @@ internal class TestDstu3ModelResolver {
 
         val dt = DateTimeType()
 
-        val value = resolver.resolvePath(dt, "value")
-        Assertions.assertNull(value)
+        val value = resolver.toCqlValue(dt)
+        assertNull(value)
     }
 
     companion object {

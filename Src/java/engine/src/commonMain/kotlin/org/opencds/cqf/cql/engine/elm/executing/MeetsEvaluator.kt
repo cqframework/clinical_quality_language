@@ -26,7 +26,7 @@ object MeetsEvaluator {
 
         val maxValue =
             MaxValueEvaluator.maxValue(
-                if (left != null) left.javaClassName else right!!.javaClassName
+                if (left != null) getNamedTypeForCqlValue(left) else getNamedTypeForCqlValue(right)
             )
         if (left is BaseTemporal && right is BaseTemporal) {
             val isMax = SameAsEvaluator.sameAs(left, maxValue, precision, state)

@@ -33,6 +33,8 @@ class Issue1577 {
                     .trimIndent()
             )
 
+        val r4ModelResolver = CachedR4FhirModelResolver()
+
         val retrieveProvider =
             object : RetrieveProvider {
                 override fun retrieve(
@@ -50,19 +52,25 @@ class Issue1577 {
                     dateRange: Interval?,
                 ): Iterable<*> =
                     when (dataType) {
-                        "Patient" -> listOf(Patient().setId("pat1"))
+                        "Patient" -> listOf(r4ModelResolver.toCqlValue(Patient().setId("pat1")))
                         // Note: returning an Iterable implementation and not a list to test the
                         // handling of different Iterable types
                         "Condition" ->
                             object : Iterable<Any?> {
                                 override fun iterator(): Iterator<*> {
-                                    return listOf(Condition().setId("cond1")).iterator()
+                                    return listOf(
+                                            r4ModelResolver.toCqlValue(Condition().setId("cond1"))
+                                        )
+                                        .iterator()
                                 }
                             }
                         "Observation" ->
                             object : Iterable<Any?> {
                                 override fun iterator(): Iterator<*> {
-                                    return listOf(Observation().setId("obs1")).iterator()
+                                    return listOf(
+                                            r4ModelResolver.toCqlValue(Observation().setId("obs1"))
+                                        )
+                                        .iterator()
                                 }
                             }
                         else -> listOf<Any?>()
@@ -70,7 +78,7 @@ class Issue1577 {
             }
         engine.state.environment.registerDataProvider(
             "http://hl7.org/fhir",
-            CompositeDataProvider(CachedR4FhirModelResolver(), retrieveProvider),
+            CompositeDataProvider(r4ModelResolver, retrieveProvider),
         )
         val evaluationResult = engine.evaluate { library("Issue1577") }.onlyResultOrThrow
 

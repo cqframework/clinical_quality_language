@@ -7,7 +7,10 @@ import org.opencds.cqf.cql.engine.debug.SourceLocator
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassPackageName
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
+import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 
 object MessageEvaluator {
     val logger = KotlinLogging.logger("MessageEvaluator")
@@ -74,7 +77,19 @@ object MessageEvaluator {
         }
 
         val dataProvider =
-            state!!.environment.resolveDataProvider(source.javaClassPackageName, false)
+            when (source) {
+                // Use the system data provider to obfuscate intervals, lists, and tuples
+                is Interval,
+                is Tuple,
+                is Iterable<*> ->
+                    state!!.environment.resolveDataProviderByModelUriOrNull(systemModelNamespaceUri)
+                else ->
+                    state!!
+                        .environment
+                        .resolveDataProviderByModelUriOrNull(
+                            getNamedTypeForCqlValue(source)?.getNamespaceURI()
+                        )
+            }
 
         return dataProvider?.phiObfuscationSupplier()?.invoke()?.obfuscate(source) ?: ""
     }

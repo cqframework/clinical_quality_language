@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime
 
-abstract class BaseTemporal : CqlType, Comparable<BaseTemporal> {
+sealed class BaseTemporal : NamedCqlType, Comparable<BaseTemporal> {
     var precision: Precision? = null
 
     fun withPrecision(precision: Precision?): BaseTemporal {

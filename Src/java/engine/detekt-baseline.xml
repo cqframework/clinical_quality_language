@@ -25,29 +25,29 @@
     <ID>CyclomaticComplexMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>CyclomaticComplexMethod:EquivalentEvaluator.kt$EquivalentEvaluator$@JvmStatic @JvmOverloads fun equivalent(left: Any?, right: Any?, state: State? = null): Boolean?</ID>
     <ID>CyclomaticComplexMethod:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
+    <ID>CyclomaticComplexMethod:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:GreaterEvaluator.kt$GreaterEvaluator$@JvmStatic fun greater(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:GreaterOrEqualEvaluator.kt$GreaterOrEqualEvaluator$@JvmStatic fun greaterOrEqual(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Any?, precision: Any?): Any?</ID>
+    <ID>CyclomaticComplexMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Any?, path: String, value: Any?)</ID>
     <ID>CyclomaticComplexMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Any?, right: Any?, state: State?): Any?</ID>
+    <ID>CyclomaticComplexMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:LessEvaluator.kt$LessEvaluator$@JvmStatic fun less(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:LessOrEqualEvaluator.kt$LessOrEqualEvaluator$@JvmStatic fun lessOrEqual(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:LowBoundaryEvaluator.kt$LowBoundaryEvaluator$@JvmStatic fun lowBoundary(input: Any?, precision: Any?): Any?</ID>
     <ID>CyclomaticComplexMethod:MeetsEvaluator.kt$MeetsEvaluator$fun meetsOperation(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Any?): Any?</ID>
     <ID>CyclomaticComplexMethod:ProperContainsEvaluator.kt$ProperContainsEvaluator$fun properContains(left: Any?, right: Any?, state: State?): Boolean?</ID>
+    <ID>CyclomaticComplexMethod:PropertyEvaluator.kt$PropertyEvaluator$private fun resolveProperty(target: Any?, property: String): Any?</ID>
     <ID>CyclomaticComplexMethod:Quantity.kt$Quantity.Companion$fun unitsEqual(leftUnit: String?, rightUnit: String?): Boolean</ID>
     <ID>CyclomaticComplexMethod:Quantity.kt$Quantity.Companion$fun unitsEquivalent(leftUnit: String?, rightUnit: String?): Boolean</ID>
     <ID>CyclomaticComplexMethod:QueryEvaluator.kt$QueryEvaluator$fun internalEvaluate( elm: Query, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>CyclomaticComplexMethod:SameAsEvaluator.kt$SameAsEvaluator$@JvmStatic fun sameAs(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
-    <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolvePath(target: Any?, path: String?): Any?</ID>
-    <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolveType(typeName: String?): JavaClass&lt;*></ID>
-    <ID>CyclomaticComplexMethod:SystemDataProvider.kt$SystemDataProvider$override fun setValue(target: Any?, path: String?, value: Any?)</ID>
     <ID>CyclomaticComplexMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
     <ID>CyclomaticComplexMethod:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>CyclomaticComplexMethod:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Any?): Any?</ID>
     <ID>DestructuringDeclarationWithTooManyEntries:DateTimeTest.kt$DateTimeTest$( localDateTime, zoneOffsetInit, zonedOffsetGetNormalized, precision, )</ID>
-    <ID>EmptyIfBlock:PropertyEvaluator.kt$PropertyEvaluator${}</ID>
     <ID>ForbiddenComment:CachingModelResolverDecoratorTest.kt$CachingModelResolverDecoratorTest$// TODO: Extend testing to cover more of the CachedModelResolver</ID>
     <ID>ForbiddenComment:ChildrenEvaluator.kt$ChildrenEvaluator$// TODO: Intervals and Tuples?</ID>
     <ID>ForbiddenComment:CqlDateTimeOperatorsTest.kt$CqlDateTimeOperatorsTest$// TODO: uncomment once Time(x,x,x,x,x) format is fixed</ID>
@@ -57,11 +57,6 @@
     <ID>ForbiddenComment:CqlMainSuiteTest.kt$CqlMainSuiteTest$// TODO: It'd be interesting to be able to inspect the</ID>
     <ID>ForbiddenComment:CqlPerformanceIT.kt$CqlPerformanceIT$// TODO: Ratio type not implemented error</ID>
     <ID>ForbiddenComment:DateTimeTest.kt$DateTimeTest$// TODO: It'd be good to extend these across different types of constructors, for example,</ID>
-    <ID>ForbiddenComment:Environment.kt$Environment$// TODO: Path may include .'s and []'s.</ID>
-    <ID>ForbiddenComment:Environment.kt$Environment$// TODO: This doesn't allow for choice-distinguished overloads...</ID>
-    <ID>ForbiddenComment:Environment.kt$Environment$// TODO: This doesn't allow for interval-distinguished overloads</ID>
-    <ID>ForbiddenComment:Environment.kt$Environment$// TODO: This doesn't allow for list-distinguished overloads...</ID>
-    <ID>ForbiddenComment:Environment.kt$Environment$// TODO: This doesn't allow for tuple-distinguished overloads....</ID>
     <ID>ForbiddenComment:FilterEvaluator.kt$FilterEvaluator$// TODO: verify this works for all cases -> will scope always be present?</ID>
     <ID>ForbiddenComment:GeometricMeanEvaluator.kt$GeometricMeanEvaluator$// remove nulls - operation is on non-null list elements ... TODO: generify and move this to</ID>
     <ID>ForbiddenComment:IntervalEvaluator.kt$IntervalEvaluator$// TODO: the spec states that it is possible to have an interval with null boundaries, but</ID>
@@ -73,11 +68,10 @@
     <ID>ForbiddenComment:RetrieveEvaluator.kt$RetrieveEvaluator$// TODO: We probably shouldn't eagerly load this, but we need to track</ID>
     <ID>ForbiddenComment:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$// TODO: Support adding more functions to an existing provider object.</ID>
     <ID>ForbiddenComment:TerminologyAwareRetrieveProvider.kt$TerminologyAwareRetrieveProvider$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
-    <ID>FunctionNaming:Environment.kt$Environment$fun `as`(operand: Any?, type: JavaClass&lt;*>, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:Environment.kt$Environment$fun `is`(operand: Any?, type: JavaClass&lt;*>): Boolean?</ID>
+    <ID>FunctionNaming:AsEvaluator.kt$AsEvaluator$fun `as`(operand: Any?, type: TypeSpecifier, isStrict: Boolean, state: State?): Any?</ID>
     <ID>FunctionNaming:InEvaluator.kt$InEvaluator$fun `in`(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
-    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `as`(value: Any?, type: JavaClass&lt;*>?, isStrict: Boolean): Any?</ID>
-    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(value: Any?, type: JavaClass&lt;*>?): Boolean?</ID>
+    <ID>FunctionNaming:IsEvaluator.kt$IsEvaluator$fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
+    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(valueType: String, type: QName): Boolean?</ID>
     <ID>FunctionNaming:TerminologyProvider.kt$TerminologyProvider$fun `in`(code: Code, valueSet: ValueSetInfo): Boolean</ID>
     <ID>FunctionOnlyReturningConstant:NullEvaluator.kt$NullEvaluator$@JvmStatic fun internalEvaluate(state: State?): Any?</ID>
     <ID>FunctionParameterNaming:AsEvaluator.kt$AsEvaluator$`as`: As</ID>
@@ -85,9 +79,9 @@
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format( "400: This source should be redacted\n%s", RedactingPHIObfuscator.REDACTED_MESSAGE, )</ID>
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message\n")</ID>
     <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: This is a message\nnull")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: null\n")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("400: This is an error!\n")</ID>
-    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("This is a message\n")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("1: null\n1")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("400: This is an error!\n4")</ID>
+    <ID>ImplicitDefaultLocale:CqlErrorsAndMessagingOperatorsTest.kt$CqlErrorsAndMessagingOperatorsTest$String.format("This is a message\n1")</ID>
     <ID>ImplicitDefaultLocale:CqlMainSuiteTest.kt$CqlMainSuiteTest$String.format( "Test library compiled with the following errors : %s", this.toString(errors), )</ID>
     <ID>ImplicitDefaultLocale:CqlPerformanceIT.kt$CqlPerformanceIT$String.format( "%s took longer per iteration than allowed. max: %3.2f, actual: %3.2f", libraryId.id, maxPerIterationMs, perIteration, )</ID>
     <ID>ImplicitDefaultLocale:ListOperatorsTest.kt$ListOperatorsTest$String.format( "Test library compiled with the following errors : %s", this.toString(errors), )</ID>
@@ -116,20 +110,22 @@
     <ID>LongMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Any?, right: Any?, precision: Precision): Any?</ID>
     <ID>LongMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>LongMethod:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
+    <ID>LongMethod:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>LongMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Any?, precision: Any?): Any?</ID>
     <ID>LongMethod:InEvaluator.kt$InEvaluator$private fun intervalIn( left: Any?, right: Interval, precision: String?, state: State?, ): Boolean?</ID>
+    <ID>LongMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Any?, path: String, value: Any?)</ID>
     <ID>LongMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>LongMethod:IntervalOperatorsTest.kt$IntervalOperatorsTest$@Test fun all_interval_operators()</ID>
+    <ID>LongMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>LongMethod:ListOperatorsTest.kt$ListOperatorsTest$@Test fun all_interval_operators()</ID>
     <ID>LongMethod:LowBoundaryEvaluator.kt$LowBoundaryEvaluator$@JvmStatic fun lowBoundary(input: Any?, precision: Any?): Any?</ID>
     <ID>LongMethod:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Any?): Any?</ID>
     <ID>LongMethod:ProfilingTest.kt$ProfilingTest$@Test fun profilingSmoke()</ID>
+    <ID>LongMethod:PropertyEvaluator.kt$PropertyEvaluator$private fun resolveProperty(target: Any?, property: String): Any?</ID>
     <ID>LongMethod:QueryEvaluator.kt$QueryEvaluator$fun internalEvaluate( elm: Query, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>LongMethod:RetrieveEvaluator.kt$RetrieveEvaluator$fun internalEvaluate( elm: Retrieve?, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any</ID>
     <ID>LongMethod:SameAsEvaluator.kt$SameAsEvaluator$@JvmStatic fun sameAs(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>LongMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
-    <ID>LongMethod:SystemDataProvider.kt$SystemDataProvider$override fun resolvePath(target: Any?, path: String?): Any?</ID>
-    <ID>LongMethod:SystemDataProvider.kt$SystemDataProvider$override fun setValue(target: Any?, path: String?, value: Any?)</ID>
     <ID>LongMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
     <ID>LongParameterList:DateTimeEvaluator.kt$DateTimeEvaluator$( year: Int?, month: Int?, day: Int?, hour: Int?, minute: Int?, second: Int?, milliSecond: Int?, timeZoneOffset: BigDecimal?, )</ID>
     <ID>LongParameterList:MessageEvaluator.kt$MessageEvaluator$( state: State?, sourceLocator: SourceLocator?, source: Any?, condition: Boolean?, code: String?, severity: String?, message: String?, )</ID>
@@ -249,7 +245,7 @@
     <ID>MaxLineLength:InValueSetEvaluator.kt$InValueSetEvaluator$/* in(code String, valueset ValueSetRef) Boolean in(code Code, valueset ValueSetRef) Boolean in(concept Concept, valueset ValueSetRef) Boolean The in (Valueset) operators determine whether or not a given code is in a particular valueset. For the String overload, if the given valueset contains a code with an equivalent code element, the result is true. For the Code overload, if the given valueset contains an equivalent code, the result is true. For the Concept overload, if the given valueset contains a code equivalent to any code in the given concept, the result is true. If the code argument is null, the result is null. */</ID>
     <ID>MaxLineLength:IncludedInEvaluator.kt$IncludedInEvaluator$/* *** NOTES FOR INTERVAL *** included in _precision_ (left Interval&lt;T>, right Interval&lt;T>) Boolean The included in operator for intervals returns true if the first interval is completely included in the second. More precisely, if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. This operator uses the semantics described in the Start and End operators to determine interval boundaries. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision. If either argument is null, the result is null. Note that during is a synonym for included in and may be used to invoke the same operation whenever included in may appear. *** NOTES FOR LIST *** included in(left List&lt;T>, right list&lt;T>) Boolean included in(left T, right list&lt;T>) Boolean The included in operator for lists returns true if every element of the first list is in the second list using equality semantics. For the singleton overload, this operator returns true if the singleton is included in (i.e. in) the list. If either argument is null, the result is null. Note that the order of elements does not matter for the purposes of determining inclusion. */</ID>
     <ID>MaxLineLength:IncludesEvaluator.kt$IncludesEvaluator$/* *** NOTES FOR INTERVAL *** includes _precision_ (left Interval&lt;T>, right Interval&lt;T>) Boolean The includes operator for intervals returns true if the first interval completely includes the second. More precisely, if the starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. This operator uses the semantics described in the Start and End operators to determine interval boundaries. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision. If either argument is null, the result is null. *** NOTES FOR LIST *** includes(left List&lt;T>, right List&lt;T>) Boolean includes(left List&lt;T>, right T) Boolean The includes operator for lists returns true if the first list contains every element of the second list using equality semantics. For the singleton overload, this operator returns true if the list includes (i.e. contains) the singleton. If either argument is null, the result is null. Note that the order of elements does not matter for the purposes of determining inclusion. */</ID>
-    <ID>MaxLineLength:Interval.kt$Interval$"Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."</ID>
+    <ID>MaxLineLength:Interval.kt$Interval$"Invalid Interval - the ending boundary ($high) must be greater than or equal to the starting boundary ($low)."</ID>
     <ID>MaxLineLength:Interval.kt$Interval$return "Interval${if (this.lowClosed) "[" else "("}${if (this.low == null) "null" else this.low.toString()}, ${if (this.high == null) "null" else this.high.toString()}${if (this.highClosed) "]" else ")"}"</ID>
     <ID>MaxLineLength:InvalidCqlLibraryIdentifierMismatchTest.kt$InvalidCqlLibraryIdentifierMismatchTest.Companion$"Library InvalidCqlLibraryIdentifierMismatch was included with version 1.0.0, but id: Mismatched and version null of the library was found."</ID>
     <ID>MaxLineLength:InvalidCqlLibraryIdentifierMismatchTest.kt$InvalidCqlLibraryIdentifierMismatchTest.Companion$"Library InvalidCqlLibraryIdentifierMismatch was included with version null, but id: Mismatched and version null of the library was found."</ID>
@@ -325,9 +321,11 @@
     <ID>NestedBlockDepth:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>NestedBlockDepth:FilterEvaluator.kt$FilterEvaluator$@JvmStatic fun filter(elm: Filter?, source: Any?, condition: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:FlattenEvaluator.kt$FlattenEvaluator$@JvmStatic fun flatten(operand: Any?): List&lt;Any?>?</ID>
+    <ID>NestedBlockDepth:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>NestedBlockDepth:InCodeSystemEvaluator.kt$InCodeSystemEvaluator$@JvmStatic fun inCodeSystem(code: Any?, codeSystem: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:InValueSetEvaluator.kt$InValueSetEvaluator$@JvmStatic fun inValueSet(code: Any?, valueset: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:IndexerEvaluator.kt$IndexerEvaluator$@JvmStatic fun indexer(left: Any?, right: Any?): Any?</ID>
+    <ID>NestedBlockDepth:IsEvaluator.kt$IsEvaluator$fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>NestedBlockDepth:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Any?, state: State?): Any?</ID>
     <ID>NestedBlockDepth:NodeMatcher.kt$NodeMatcher$override fun matchesSafely(node: Profile.Node): Boolean</ID>
     <ID>NestedBlockDepth:ProperContainsEvaluator.kt$ProperContainsEvaluator$fun properContains(left: Any?, right: Any?, state: State?): Boolean?</ID>
@@ -359,11 +357,8 @@
     <ID>ReturnCount:AnyInCodeSystemEvaluator.kt$AnyInCodeSystemEvaluator$@JvmStatic fun internalEvaluate( codes: Any?, codeSystemRef: CodeSystemRef?, codeSystem: Any?, state: State?, ): Any?</ID>
     <ID>ReturnCount:AnyInValueSetEvaluator.kt$AnyInValueSetEvaluator$@JvmStatic fun internalEvaluate( codes: Any?, valueSetRef: ValueSetRef?, valueset: Any?, state: State?, ): Any?</ID>
     <ID>ReturnCount:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Any?): Boolean?</ID>
-    <ID>ReturnCount:BaseModelResolver.kt$BaseModelResolver$override fun `as`(value: Any?, type: JavaClass&lt;*>?, isStrict: Boolean): Any?</ID>
     <ID>ReturnCount:BeforeEvaluator.kt$BeforeEvaluator$@JvmStatic fun before(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun getContextPath(contextType: String?, targetType: String?): Any?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(typeName: String?): JavaClass&lt;*>?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun resolveType(value: Any?): JavaClass&lt;*>?</ID>
     <ID>ReturnCount:CeilingEvaluator.kt$CeilingEvaluator$@JvmStatic fun ceiling(operand: Any?): Any?</ID>
     <ID>ReturnCount:CoalesceEvaluator.kt$CoalesceEvaluator$fun coalesce(operands: List&lt;Any?>): Any?</ID>
     <ID>ReturnCount:CollapseEvaluator.kt$CollapseEvaluator$fun collapse(list: Iterable&lt;Interval?>?, per: Quantity?, state: State?): List&lt;Interval?>?</ID>
@@ -394,10 +389,6 @@
     <ID>ReturnCount:DivideEvaluator.kt$DivideEvaluator$@JvmStatic fun divide(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Any?, right: Any?, precision: Precision?): Any?</ID>
     <ID>ReturnCount:EndsEvaluator.kt$EndsEvaluator$@JvmStatic fun ends(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun `as`(operand: Any?, type: JavaClass&lt;*>, isStrict: Boolean): Any?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun `is`(operand: Any?, type: JavaClass&lt;*>): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun objectEquivalent(left: Any?, right: Any?): Boolean?</ID>
-    <ID>ReturnCount:Environment.kt$Environment$fun resolveType(value: Any?): JavaClass&lt;*>?</ID>
     <ID>ReturnCount:EvaluationVisitor.kt$EvaluationVisitor$override fun visitCase(elm: Case, context: State?): Any?</ID>
     <ID>ReturnCount:ExceptEvaluator.kt$ExceptEvaluator$@JvmStatic fun except(left: Any?, right: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$@JvmStatic fun expand(listOrInterval: Any?, per: Quantity?, state: State?): Any?</ID>
@@ -405,6 +396,7 @@
     <ID>ReturnCount:ExpandEvaluator.kt$ExpandEvaluator$private fun expandIntervalsIntoIntervals( list: Iterable&lt;Interval?>, per: Quantity?, state: State?, ): List&lt;Interval?>?</ID>
     <ID>ReturnCount:FirstEvaluator.kt$FirstEvaluator$@JvmStatic fun first(source: Any?): Any?</ID>
     <ID>ReturnCount:FloorEvaluator.kt$FloorEvaluator$@JvmStatic fun floor(operand: Any?): Any?</ID>
+    <ID>ReturnCount:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>ReturnCount:GreaterEvaluator.kt$GreaterEvaluator$@JvmStatic fun greater(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>ReturnCount:GreaterOrEqualEvaluator.kt$GreaterOrEqualEvaluator$@JvmStatic fun greaterOrEqual(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>ReturnCount:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Any?, precision: Any?): Any?</ID>
@@ -424,6 +416,7 @@
     <ID>ReturnCount:IntervalHelper.kt$IntervalHelper.Companion$fun isQuantityCompatibleWithBoundaries( quantity: Quantity, intervals: List&lt;Interval?>, ): Boolean</ID>
     <ID>ReturnCount:IntervalHelper.kt$IntervalHelper.Companion$fun quantityFromCoarsestPrecisionOfBoundaries(intervals: List&lt;Interval?>): Quantity</ID>
     <ID>ReturnCount:IntervalHelper.kt$IntervalHelper.Companion$fun truncateIntervalBoundaries( interval: Interval, quantity: Quantity, state: State?, ): Interval?</ID>
+    <ID>ReturnCount:IsEvaluator.kt$IsEvaluator$fun `is`(value: Any?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>ReturnCount:LengthEvaluator.kt$LengthEvaluator$@JvmStatic fun internalEvaluate(operand: Any?, length: Length?, state: State?): Any?</ID>
     <ID>ReturnCount:LessEvaluator.kt$LessEvaluator$@JvmStatic fun less(left: Any?, right: Any?, state: State?): Boolean?</ID>
     <ID>ReturnCount:LessOrEqualEvaluator.kt$LessOrEqualEvaluator$@JvmStatic fun lessOrEqual(left: Any?, right: Any?, state: State?): Boolean?</ID>
@@ -432,16 +425,15 @@
     <ID>ReturnCount:LogEvaluator.kt$LogEvaluator$@JvmStatic fun log(left: Any?, right: Any?): Any?</ID>
     <ID>ReturnCount:LowBoundaryEvaluator.kt$LowBoundaryEvaluator$@JvmStatic fun lowBoundary(input: Any?, precision: Any?): Any?</ID>
     <ID>ReturnCount:MaxEvaluator.kt$MaxEvaluator$@JvmStatic fun max(source: Any?, state: State?): Any?</ID>
-    <ID>ReturnCount:MaxValueEvaluator.kt$MaxValueEvaluator$@JvmStatic fun maxValue(type: String?): Any?</ID>
     <ID>ReturnCount:MedianEvaluator.kt$MedianEvaluator$@JvmStatic fun median(source: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:MeetsAfterEvaluator.kt$MeetsAfterEvaluator$@JvmStatic fun meetsAfter(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:MeetsBeforeEvaluator.kt$MeetsBeforeEvaluator$@JvmStatic fun meetsBefore(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:MeetsEvaluator.kt$MeetsEvaluator$@JvmStatic fun meets(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:MeetsEvaluator.kt$MeetsEvaluator$fun meetsOperation(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:MinEvaluator.kt$MinEvaluator$@JvmStatic fun min(source: Any?, state: State?): Any?</ID>
-    <ID>ReturnCount:MinValueEvaluator.kt$MinValueEvaluator$@JvmStatic fun minValue(type: String?): Any?</ID>
     <ID>ReturnCount:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Any?, state: State?): Any?</ID>
     <ID>ReturnCount:ModuloEvaluator.kt$ModuloEvaluator$@JvmStatic fun modulo(left: Any?, right: Any?): Any?</ID>
+    <ID>ReturnCount:NamedCqlType.kt$fun getNamedTypeForCqlValue(value: Any?): QName?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun internalEvaluate( operand: Expression, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun negate(source: Any?): Any?</ID>
     <ID>ReturnCount:NodeMatcher.kt$NodeMatcher$override fun matchesSafely(node: Profile.Node): Boolean</ID>
@@ -461,7 +453,6 @@
     <ID>ReturnCount:ProperIncludesEvaluator.kt$ProperIncludesEvaluator$@JvmStatic fun properlyIncludes(left: Any?, right: Any?, precision: String?, state: State?): Boolean?</ID>
     <ID>ReturnCount:ProperIncludesEvaluator.kt$ProperIncludesEvaluator$fun intervalProperlyIncludes( left: Interval?, right: Interval?, precision: String?, state: State?, ): Boolean?</ID>
     <ID>ReturnCount:ProperIncludesEvaluator.kt$ProperIncludesEvaluator$fun listProperlyIncludes(left: Iterable&lt;*>?, right: Iterable&lt;*>?, state: State?): Boolean?</ID>
-    <ID>ReturnCount:PropertyEvaluator.kt$PropertyEvaluator$fun internalEvaluate( elm: Property?, state: State?, visitor: ElmLibraryVisitor&lt;Any?, State?>, ): Any?</ID>
     <ID>ReturnCount:Quantity.kt$Quantity.Companion$fun unitsEqual(leftUnit: String?, rightUnit: String?): Boolean</ID>
     <ID>ReturnCount:Quantity.kt$Quantity.Companion$fun unitsEquivalent(leftUnit: String?, rightUnit: String?): Boolean</ID>
     <ID>ReturnCount:RoundEvaluator.kt$RoundEvaluator$@JvmStatic fun round(operand: Any?, precision: Any?): Any?</ID>
@@ -477,8 +468,6 @@
     <ID>ReturnCount:SubstringEvaluator.kt$SubstringEvaluator$@JvmStatic fun substring(stringValue: Any?, startIndexValue: Any?, lengthValue: Any?): Any?</ID>
     <ID>ReturnCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?): Any?</ID>
     <ID>ReturnCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Any?, quantity: Quantity?): Any?</ID>
-    <ID>ReturnCount:SystemDataProvider.kt$SystemDataProvider$override fun objectEqual(left: Any?, right: Any?): Boolean?</ID>
-    <ID>ReturnCount:SystemDataProvider.kt$SystemDataProvider$override fun objectEquivalent(left: Any?, right: Any?): Boolean?</ID>
     <ID>ReturnCount:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: Long, precision: Precision, targetPrecision: Precision?, ): Long</ID>
     <ID>ReturnCount:Time.kt$Time$override fun compare(other: BaseTemporal, forSort: Boolean): Int?</ID>
     <ID>ReturnCount:Time.kt$Time$override fun compareToPrecision(other: BaseTemporal, p: Precision): Int?</ID>
@@ -528,6 +517,7 @@
     <ID>SwallowedException:ToDateTimeEvaluator.kt$ToDateTimeEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ToTimeEvaluator.kt$ToTimeEvaluator$dtpe: Exception</ID>
     <ID>ThrowsCount:ExpEvaluator.kt$ExpEvaluator$@JvmStatic fun exp(operand: Any?): Any?</ID>
+    <ID>ThrowsCount:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Any?, path: String, value: Any?)</ID>
     <ID>ThrowsCount:LiteralEvaluator.kt$LiteralEvaluator$@JvmStatic fun internalEvaluate(valueT: QName?, value: String?, state: State?): Any?</ID>
     <ID>ThrowsCount:LnEvaluator.kt$LnEvaluator$@JvmStatic fun ln(operand: Any?): Any?</ID>
     <ID>ThrowsCount:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Any?): Any?</ID>
@@ -554,14 +544,11 @@
     <ID>TooGenericExceptionThrown:State.kt$State$throw RuntimeException("Not supported")</ID>
     <ID>TooGenericExceptionThrown:State.kt$State$throw RuntimeException("Stack underflow")</ID>
     <ID>TooGenericExceptionThrown:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$throw RuntimeException( "Error when executing function [" + staticFunctionName + "]: \n" + e.toString() )</ID>
-    <ID>TooManyFunctions:CachingModelResolverDecorator.kt$CachingModelResolverDecorator : ModelResolver</ID>
-    <ID>TooManyFunctions:CompositeDataProvider.kt$CompositeDataProvider : DataProvider</ID>
     <ID>TooManyFunctions:CqlEngine.kt$CqlEngine</ID>
     <ID>TooManyFunctions:Date.kt$Date : BaseTemporal</ID>
     <ID>TooManyFunctions:DateTime.kt$DateTime : BaseTemporal</ID>
-    <ID>TooManyFunctions:Environment.kt$Environment</ID>
     <ID>TooManyFunctions:EvaluationVisitor.kt$EvaluationVisitor : BaseElmLibraryVisitor</ID>
-    <ID>TooManyFunctions:ModelResolver.kt$ModelResolver</ID>
+    <ID>TooManyFunctions:FunctionRefEvaluator.kt$FunctionRefEvaluator</ID>
     <ID>TooManyFunctions:Precision.kt$Precision$Companion</ID>
     <ID>TooManyFunctions:State.kt$State</ID>
     <ID>TooManyFunctions:TemporalHelper.kt$TemporalHelper</ID>
@@ -573,8 +560,10 @@
     <ID>TooManyFunctions:TimeJs.kt$OffsetDateTimeJs : TemporalJs</ID>
     <ID>TooManyFunctions:TimeJs.kt$org.opencds.cqf.cql.engine.util.TimeJs.kt</ID>
     <ID>TooManyFunctions:TimeJvm.kt$org.opencds.cqf.cql.engine.util.TimeJvm.kt</ID>
+    <ID>TopLevelPropertyNaming:NamedCqlType.kt$const val systemModelNamespaceUri = "urn:hl7-org:elm-types:r1"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownPackageName = "unknown"</ID>
     <ID>TopLevelPropertyNaming:ReflectionJs.kt$const val unknownSimpleName = "Unknown"</ID>
+    <ID>UnusedParameter:FunctionRefEvaluator.kt$FunctionRefEvaluator$state: State?</ID>
     <ID>UnusedParameter:LengthEvaluator.kt$LengthEvaluator$state: State?</ID>
     <ID>UnusedParameter:NullEvaluator.kt$NullEvaluator$state: State?</ID>
     <ID>UnusedParameter:QuantityEvaluator.kt$QuantityEvaluator$state: State?</ID>

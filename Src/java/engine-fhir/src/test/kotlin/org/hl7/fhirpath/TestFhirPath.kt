@@ -3,7 +3,6 @@ package org.hl7.fhirpath
 import ca.uhn.fhir.context.FhirContext
 import jakarta.xml.bind.JAXB
 import java.io.InputStreamReader
-import java.lang.Boolean
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneOffset
@@ -17,6 +16,7 @@ import kotlin.String
 import kotlin.plus
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.fhir.instance.model.api.IBaseResource
+import org.hl7.fhir.instance.model.api.IPrimitiveType
 import org.hl7.fhirpath.TranslatorHelper.toElmIdentifier
 import org.hl7.fhirpath.tests.InvalidType
 import org.hl7.fhirpath.tests.Output
@@ -24,12 +24,14 @@ import org.hl7.fhirpath.tests.OutputType
 import org.hl7.fhirpath.tests.Test
 import org.hl7.fhirpath.tests.Tests
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.ToQuantityEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Time
@@ -81,12 +83,30 @@ abstract class TestFhirPath {
         """
             .trimIndent()
 
-    abstract fun compareResults(
+    fun compareResults(
         expectedResult: Any?,
         actualResult: Any?,
         state: State?,
         resolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
-    ): kotlin.Boolean?
+    ): Boolean? {
+        // Perform FHIR system-defined type conversions
+        var actualResult = actualResult
+
+        if (
+            actualResult is ClassInstance &&
+                actualResult.type.namespaceURI == FhirModelResolver.fhirModelNamespaceUri
+        ) {
+            val actualResultClass = resolver.resolveType(actualResult.type.localPart)!!
+            if (
+                actualResultClass.isEnum ||
+                    IPrimitiveType::class.java.isAssignableFrom(actualResultClass)
+            ) {
+                actualResult = actualResult.elements["value"]
+            }
+        }
+
+        return EqualEvaluator.equal(expectedResult, actualResult, state)
+    }
 
     protected fun runTest(
         test: Test,
@@ -100,10 +120,11 @@ abstract class TestFhirPath {
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", provider)
         if (testCase is Pass && testCase.resource != null) {
             val resource = testCase.resource
-            engine.state.setParameter(null, resource.fhirType(), resource)
-            engine.state.setParameter(null, "%context", resource)
-            engine.state.setParameter(null, "%resource", resource)
-            engine.state.setParameter(null, "%rootResource", resource)
+            val resourceAsCqlValue = resolver.toCqlValue(resource)
+            engine.state.setParameter(null, resource.fhirType(), resourceAsCqlValue)
+            engine.state.setParameter(null, "%context", resourceAsCqlValue)
+            engine.state.setParameter(null, "%resource", resourceAsCqlValue)
+            engine.state.setParameter(null, "%rootResource", resourceAsCqlValue)
         }
 
         var result: EvaluationResult?
@@ -179,7 +200,7 @@ abstract class TestFhirPath {
             val expected = testCase.results[i]
             val actual: Any? = actualList[i]
             val comparison = compareResults(expected, actual, engine.state, resolver)
-            if (Boolean.TRUE != comparison) {
+            if (true != comparison) {
                 throw failWithContext(
                     "Result mismatch at index %d".format(i),
                     testCase,

@@ -4,11 +4,9 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator.or
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.*
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEqual
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -46,7 +44,7 @@ object EqualEvaluator {
             return null
         }
 
-        // Cases in which Java classes may differ
+        // Cases in which Kotlin classes may differ
 
         if (left is Iterable<*> && right is Iterable<*>) {
             return listsEqual(left, right, state)
@@ -60,7 +58,7 @@ object EqualEvaluator {
             return intervalIntegerEqual(right, left, state)
         }
 
-        // Return false early if Java classes don't match (platform dependence)
+        // Return false early if Kotlin classes don't match
 
         if (left::class != right::class) {
             return false
@@ -109,18 +107,17 @@ object EqualEvaluator {
         }
 
         if (left is Tuple && right is Tuple) {
-            return tuplesEqual(left, right, state)
+            return structuredValueElementsEqual(left.elements, right.elements, state)
         }
 
-        // Fallback to data provider's `objectEqual()`
-
-        if (state != null) {
-            return state.environment.objectEqual(left, right)
+        if (left is ClassInstance && right is ClassInstance) {
+            if (left.type == right.type) {
+                return structuredValueElementsEqual(left.elements, right.elements, state)
+            }
+            return false
         }
 
-        throw InvalidOperatorArgument(
-            "Equal(${left.javaClassName}, ${right.javaClassName}) requires Context and state was null"
-        )
+        return false
     }
 
     fun quantitiesEqual(left: Quantity, right: Quantity, state: State?): Boolean? {
@@ -263,17 +260,21 @@ object EqualEvaluator {
         return true
     }
 
-    fun tuplesEqual(left: Tuple, right: Tuple, state: State?): Boolean? {
-        if (left.elements.size != right.elements.size) {
+    fun structuredValueElementsEqual(
+        left: Map<String, Any?>,
+        right: Map<String, Any?>,
+        state: State?,
+    ): Boolean? {
+        if (left.size != right.size) {
             return false
         }
 
-        for (key in right.elements.keys) {
-            if (left.elements.containsKey(key)) {
-                if (right.elements[key] == null && left.elements[key] == null) {
+        for (key in right.keys) {
+            if (left.containsKey(key)) {
+                if (right[key] == null && left[key] == null) {
                     continue
                 }
-                val equal = equal(right.elements[key], left.elements[key], state)
+                val equal = equal(right[key], left[key], state)
                 if (equal == null) {
                     return null
                 } else if (!equal) {

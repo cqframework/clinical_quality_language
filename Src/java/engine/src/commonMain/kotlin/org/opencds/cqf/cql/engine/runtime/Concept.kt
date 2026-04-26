@@ -1,6 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Concept : CqlType {
+class Concept : StructuredValue(), NamedCqlType {
+    override val type = conceptTypeName
+
+    override val elements: MutableMap<String, Any?>
+        get() = mutableMapOf("codes" to codes)
+
     var display: String? = null
 
     fun withDisplay(display: String?): Concept {
@@ -29,11 +34,6 @@ class Concept : CqlType {
     }
 
     override fun toString(): String {
-        val builder = StringBuilder().append("Concept {\n")
-        for (code in codes!!) {
-            builder.append("\t").append(code.toString()).append("\n")
-        }
-
-        return builder.append("}").toString()
+        return toPrettyString("Concept")
     }
 }

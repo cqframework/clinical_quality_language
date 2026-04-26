@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 import kotlin.jvm.JvmOverloads
 import kotlin.toString
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
 import org.opencds.cqf.cql.engine.elm.executing.MinValueEvaluator.minValue
@@ -13,8 +14,6 @@ import org.opencds.cqf.cql.engine.exception.InvalidInterval
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.util.Date
-import org.opencds.cqf.cql.engine.util.JavaClass
-import org.opencds.cqf.cql.engine.util.javaClass
 import org.opencds.cqf.cql.engine.util.javaClassName
 
 class Interval
@@ -26,43 +25,57 @@ constructor(
     val highClosed: Boolean,
     state: State? = null,
 ) : CqlType {
-    var pointType: JavaClass<*>? = null
+    /** Inferred from the runtime values of the low and/or high boundaries. */
+    var pointType: QName
 
     var isUncertain: Boolean = false
         private set
 
     init {
-        if (this.low != null) {
-            pointType = this.low!!.javaClass
-        } else if (this.high != null) {
-            pointType = this.high!!.javaClass
-        }
-
-        if (pointType == null) {
+        if (low == null && high == null) {
             throw InvalidInterval("Low or high boundary of an interval must be present.")
         }
 
-        if (this.low != null && this.high != null && (this.low!!::class != this.high!!::class)) {
+        // Special case for measure processing - MeasurementPeriod is a java date
+        if (low is Date) {
+            low = org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(low as Date)
+        }
+        if (high is Date) {
+            high = org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(high as Date)
+        }
+
+        val lowNamedType = getNamedTypeForCqlValue(low)
+        val highNamedType = getNamedTypeForCqlValue(high)
+
+        if (lowNamedType == null) {
             throw InvalidInterval(
-                "Low and high boundary values of an interval must be of the same type."
+                "The low boundary value of the interval must be an instance of a CQL named type."
+            )
+        }
+        if (highNamedType == null) {
+            throw InvalidInterval(
+                "The high boundary value of the interval must be an instance of a CQL named type."
             )
         }
 
-        // Special case for measure processing - MeasurementPeriod is a java date
-        if (low is Date && high is Date) {
-            if ((low as Date).after(high as Date)) {
+        if (low != null && high != null) {
+            // Make sure low and high are of the same type
+            if (lowNamedType != highNamedType) {
                 throw InvalidInterval(
-                    "Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."
+                    "Low and high boundary values of an interval must be of the same type."
                 )
             }
-        } else if (low != null && high != null) {
+
             val isStartGreater = greater(this.start, this.end, state)
             if (isStartGreater == null || isStartGreater) {
                 throw InvalidInterval(
-                    "Invalid Interval - the ending boundary (${high}) must be greater than or equal to the starting boundary (${low})."
+                    "Invalid Interval - the ending boundary ($high) must be greater than or equal to the starting boundary ($low)."
                 )
             }
         }
+
+        // Use the type of the non-null boundary
+        pointType = if (low == null) highNamedType else lowNamedType
     }
 
     fun setUncertain(uncertain: Boolean): Interval {
@@ -90,7 +103,7 @@ constructor(
                 val highQuantity = high as Quantity
                 Quantity().withValue(Value.MIN_DECIMAL).withUnit(highQuantity.unit)
             } else {
-                minValue(pointType!!.getTypeName())
+                minValue(pointType)
             }
         }
 
@@ -114,7 +127,7 @@ constructor(
                 val lowQuantity = low as Quantity
                 Quantity().withValue(Value.MAX_DECIMAL).withUnit(lowQuantity.unit)
             } else {
-                maxValue(pointType!!.getTypeName())
+                maxValue(pointType)
             }
         }
 

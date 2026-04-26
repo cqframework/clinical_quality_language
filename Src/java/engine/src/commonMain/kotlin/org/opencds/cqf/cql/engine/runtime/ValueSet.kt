@@ -1,6 +1,17 @@
 package org.opencds.cqf.cql.engine.runtime
 
 class ValueSet : Vocabulary() {
+    override val type = valueSetTypeName
+
+    override val elements: MutableMap<String, Any?>
+        get() =
+            mutableMapOf(
+                "id" to id,
+                "version" to version,
+                "name" to name,
+                "codesystems" to codeSystems,
+            )
+
     fun withId(id: String?): ValueSet {
         this.id = id
         return this

@@ -8,8 +8,8 @@ import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.util.javaClassName
-import org.opencds.cqf.cql.engine.util.javaClassPackageName
 
 object RetrieveEvaluator {
     fun internalEvaluate(
@@ -27,10 +27,14 @@ object RetrieveEvaluator {
                This whole block is a bit a hack in the sense that the need to switch to the context (e.g. Practitioner) identifies itself in a non-domain specific way
             */
             val contextValue: Any = visitor.visitExpression(context, state)!!
-            val name = contextValue.javaClassPackageName
-            val dataProvider = state!!.environment.resolveDataProvider(name)
-            val contextTypeName = contextValue::class.simpleName!!
-            val contextId = dataProvider!!.resolveId(contextValue)
+            val dataProvider =
+                state!!
+                    .environment
+                    .resolveDataProviderByModelUri(
+                        getNamedTypeForCqlValue(contextValue)?.getNamespaceURI()
+                    )
+            val contextTypeName = getNamedTypeForCqlValue(contextValue)!!.getLocalPart()
+            val contextId = dataProvider.resolveId(contextValue)
 
             state.setContextValue(contextTypeName, contextId!!)
             isEnteredContext = state.enterContext(contextTypeName)

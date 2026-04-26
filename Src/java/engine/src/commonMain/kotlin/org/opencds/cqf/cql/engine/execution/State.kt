@@ -28,6 +28,7 @@ import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
 import org.opencds.cqf.cql.engine.debug.SourceLocator
+import org.opencds.cqf.cql.engine.elm.executing.PropertyEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
 import org.opencds.cqf.cql.engine.execution.CqlEngine.Options
@@ -563,7 +564,7 @@ constructor(
                     }
                 }
                 try {
-                    return environment.resolvePath(value, name)
+                    return PropertyEvaluator.resolvePath(value, name)
                 } catch (ignored: Exception) {}
             }
         }
