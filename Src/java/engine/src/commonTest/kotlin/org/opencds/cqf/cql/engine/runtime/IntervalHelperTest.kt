@@ -9,13 +9,27 @@ import org.cqframework.cql.shared.BigDecimal
 class IntervalHelperTest {
     @Test
     fun findNonNullBoundary() {
-        val intervals = listOf(null, Interval(5, true, null, true), Interval(null, false, 6, true))
-        assertEquals(5, IntervalHelper.findNonNullBoundary(intervals))
+        val intervals =
+            listOf(
+                null,
+                Interval(5.toCqlInteger(), true, null, true),
+                Interval(null, false, 6.toCqlInteger(), true),
+            )
+        assertEquals(5.toCqlInteger(), IntervalHelper.findNonNullBoundary(intervals))
     }
 
     @Test
     fun quantityFromCoarsestPrecisionOfBoundaries() {
-        var intervals = listOf(null, Interval(BigDecimal("1.12"), true, BigDecimal("1.1234"), true))
+        var intervals =
+            listOf(
+                null,
+                Interval(
+                    BigDecimal("1.12").toCqlDecimal(),
+                    true,
+                    BigDecimal("1.1234").toCqlDecimal(),
+                    true,
+                ),
+            )
         var quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
         assertEquals(2, quantity.value!!.scale())
@@ -36,7 +50,7 @@ class IntervalHelperTest {
         assertEquals(0, quantity.value!!.scale())
         assertEquals("month", quantity.unit)
 
-        intervals = listOf(Interval(10, true, null, true))
+        intervals = listOf(Interval(10.toCqlInteger(), true, null, true))
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
         assertEquals(0, quantity.value!!.scale())
@@ -49,19 +63,19 @@ class IntervalHelperTest {
         val gramsQuantity = Quantity().withValue(BigDecimal("1.123")).withUnit("g")
         val monthsQuantity = Quantity().withValue(BigDecimal("10")).withUnit("month")
 
-        var intervals = listOf<Interval?>(Interval(10, true, null, false))
+        var intervals = listOf<Interval?>(Interval(10.toCqlInteger(), true, null, false))
         assertTrue(
             IntervalHelper.isQuantityCompatibleWithBoundaries(quantityWithDefaultUnit, intervals)
         )
         assertFalse(IntervalHelper.isQuantityCompatibleWithBoundaries(gramsQuantity, intervals))
 
-        intervals = listOf(Interval(1L, true, null, true))
+        intervals = listOf(Interval(1L.toCqlLong(), true, null, true))
         assertTrue(
             IntervalHelper.isQuantityCompatibleWithBoundaries(quantityWithDefaultUnit, intervals)
         )
         assertFalse(IntervalHelper.isQuantityCompatibleWithBoundaries(gramsQuantity, intervals))
 
-        intervals = listOf(null, Interval(BigDecimal("1.1"), true, null, true))
+        intervals = listOf(null, Interval(BigDecimal("1.1").toCqlDecimal(), true, null, true))
         assertTrue(
             IntervalHelper.isQuantityCompatibleWithBoundaries(quantityWithDefaultUnit, intervals)
         )

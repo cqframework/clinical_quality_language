@@ -10,6 +10,9 @@ import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.trace.ExpressionDefTraceFrame
 import org.opencds.cqf.cql.engine.execution.trace.TraceFrame
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 class BacktraceTest : CqlTestBase() {
 
@@ -37,11 +40,17 @@ class BacktraceTest : CqlTestBase() {
         assertIs<ExpressionDefTraceFrame>(gFrame)
         assertEquals("G", gFrame.element.name)
         assertEquals(
-            listOf(Variable("Y").withValue(2), Variable("Z").withValue("hi")),
+            listOf(
+                Variable("Y").withValue(2.toCqlInteger()),
+                Variable("Z").withValue("hi".toCqlString()),
+            ),
             gFrame.arguments,
         )
         assertEquals(
-            listOf(Variable("Y").withValue(2), Variable("Z").withValue("hi")),
+            listOf(
+                Variable("Y").withValue(2.toCqlInteger()),
+                Variable("Z").withValue("hi".toCqlString()),
+            ),
             gFrame.variables,
         )
         assertEquals(libraryIdentifier, gFrame.library)
@@ -50,12 +59,12 @@ class BacktraceTest : CqlTestBase() {
         val fFrame = gFrame.subframes.single()
         assertIs<ExpressionDefTraceFrame>(fFrame)
         assertEquals("F", fFrame.element.name)
-        assertEquals(listOf(Variable("X").withValue(3)), fFrame.arguments)
+        assertEquals(listOf(Variable("X").withValue(3.toCqlInteger())), fFrame.arguments)
         assertEquals(
             listOf(
-                Variable("X").withValue(3),
-                Variable("_").withValue(1),
-                Variable("A").withValue(7),
+                Variable("X").withValue(3.toCqlInteger()),
+                Variable("_").withValue(Integer.ONE),
+                Variable("A").withValue(7.toCqlInteger()),
             ),
             fFrame.variables,
         )
@@ -68,9 +77,9 @@ class BacktraceTest : CqlTestBase() {
         assertIs<Message>(messageElement)
         assertEquals(
             listOf(
-                Variable("X").withValue(3),
-                Variable("_").withValue(1),
-                Variable("A").withValue(7),
+                Variable("X").withValue(3.toCqlInteger()),
+                Variable("_").withValue(Integer.ONE),
+                Variable("A").withValue(7.toCqlInteger()),
             ),
             messageFrame.variables,
         )

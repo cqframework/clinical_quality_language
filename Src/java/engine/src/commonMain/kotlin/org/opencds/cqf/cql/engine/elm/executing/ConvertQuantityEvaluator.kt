@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.cql2elm.ucum.UcumService
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
     convert <quantity> to <unit>
@@ -27,19 +27,18 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertQuantityEvaluator {
     @JvmStatic
-    fun convertQuantity(argument: Any?, unit: Any?, ucumService: UcumService?): Any? {
+    fun convertQuantity(argument: Value?, unit: Value?, ucumService: UcumService?): Quantity? {
         if (argument == null || unit == null) {
             return null
         }
 
-        if (argument is Quantity) {
+        if (argument is Quantity && unit is String) {
             if (ucumService == null) {
                 return null
             }
             try {
-                val result: BigDecimal =
-                    ucumService.convert(argument.value!!, argument.unit!!, unit as String)
-                return Quantity().withValue(result).withUnit(unit)
+                val result = ucumService.convert(argument.value!!, argument.unit!!, unit.value)
+                return Quantity().withValue(result).withUnit(unit.value)
             } catch (e: Exception) {
                 return null
             }
@@ -47,7 +46,7 @@ object ConvertQuantityEvaluator {
 
         throw InvalidOperatorArgument(
             "ConvertQuantity(Quantity, String)",
-            "ConvertQuantity(${argument.javaClassName}, ${unit.javaClassName})",
+            "ConvertQuantity(${argument.typeAsString}, ${unit.typeAsString})",
         )
     }
 }

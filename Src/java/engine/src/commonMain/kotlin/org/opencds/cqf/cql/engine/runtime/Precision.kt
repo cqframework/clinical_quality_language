@@ -89,7 +89,7 @@ enum class Precision {
             }
         }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return when (this) {
             YEAR -> "year"
             MONTH -> "month"
@@ -103,7 +103,7 @@ enum class Precision {
     }
 
     companion object {
-        fun fromString(precision: String): Precision {
+        fun fromString(precision: kotlin.String): Precision {
             var precision = precision
             precision = precision.lowercase()
             if (precision.startsWith("year")) {

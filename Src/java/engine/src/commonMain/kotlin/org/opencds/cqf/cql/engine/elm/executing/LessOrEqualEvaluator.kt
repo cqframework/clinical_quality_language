@@ -1,14 +1,19 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.compareQuantities
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 <=(left Integer, right Integer) Boolean
@@ -38,37 +43,39 @@ For date/time values, the comparison is performed by considering each precision 
 */
 object LessOrEqualEvaluator {
     @JvmStatic
-    fun lessOrEqual(left: Any?, right: Any?, state: State?): Boolean? {
+    fun lessOrEqual(left: Value?, right: Value?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Int && right is Int) {
-            return left.compareTo(right) <= 0
+        if (left is Integer && right is Integer) {
+            return (left.value.compareTo(right.value) <= 0).toCqlBoolean()
         }
 
         if (left is Long && right is Long) {
-            return left.compareTo(right) <= 0
-        } else if (left is BigDecimal && right is BigDecimal) {
-            return left.compareTo(right) <= 0
+            return (left.value.compareTo(right.value) <= 0).toCqlBoolean()
+        } else if (left is Decimal && right is Decimal) {
+            return (left.value.compareTo(right.value) <= 0).toCqlBoolean()
         } else if (left is Quantity && right is Quantity) {
             if (left.value == null || right.value == null) {
                 return null
             }
             val nullableCompareTo = compareQuantities(left, right, state)
-            return if (nullableCompareTo == null) null else nullableCompareTo <= 0
+            return (if (nullableCompareTo == null) null else nullableCompareTo <= 0)?.toCqlBoolean()
         } else if (left is BaseTemporal && right is BaseTemporal) {
             val i = left.compare(right, false)
-            return if (i == null) null else i <= 0
+            return (if (i == null) null else i <= 0)?.toCqlBoolean()
         } else if (left is String && right is String) {
-            return left.compareTo(right) <= 0
-        } else if ((left is Interval && right is Int) || (left is Int && right is Interval)) {
+            return (left.value.compareTo(right.value) <= 0).toCqlBoolean()
+        } else if (
+            (left is Interval && right is Integer) || (left is Integer && right is Interval)
+        ) {
             return LessEvaluator.less(left, right, state)
         }
 
         throw InvalidOperatorArgument(
             "LessOrEqual(Integer, Integer), LessOrEqual(Long, Long), LessOrEqual(Decimal, Decimal), LessOrEqual(Quantity, Quantity), LessOrEqual(Date, Date), LessOrEqual(DateTime, DateTime), LessOrEqual(Time, Time) or LessOrEqual(String, String)",
-            "LessOrEqual(${left.javaClassName}, ${right.javaClassName})",
+            "LessOrEqual(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

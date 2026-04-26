@@ -2,13 +2,19 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.compareQuantities
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -45,40 +51,40 @@ object GreaterEvaluator {
     private val logger = KotlinLogging.logger("GreaterEvaluator")
 
     @JvmStatic
-    fun greater(left: Any?, right: Any?, state: State?): Boolean? {
+    fun greater(left: Value?, right: Value?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Int && right is Int) {
-            return left.compareTo(right) > 0
+        if (left is Integer && right is Integer) {
+            return (left.value.compareTo(right.value) > 0).toCqlBoolean()
         }
 
         if (left is Long && right is Long) {
-            return left.compareTo(right) > 0
-        } else if (left is BigDecimal && right is BigDecimal) {
-            return left.compareTo(right) > 0
+            return (left.value.compareTo(right.value) > 0).toCqlBoolean()
+        } else if (left is Decimal && right is Decimal) {
+            return (left.value.compareTo(right.value) > 0).toCqlBoolean()
         } else if (left is Quantity && right is Quantity) {
             if (left.value == null || right.value == null) {
                 return null
             }
             val nullableCompareTo = compareQuantities(left, right, state)
-            return if (nullableCompareTo == null) null else nullableCompareTo > 0
+            return (if (nullableCompareTo == null) null else nullableCompareTo > 0)?.toCqlBoolean()
         } else if (left is BaseTemporal && right is BaseTemporal) {
             val i = left.compare(right, false)
-            return if (i == null) null else i > 0
+            return (if (i == null) null else i > 0)?.toCqlBoolean()
         } else if (left is String && right is String) {
-            return left.compareTo(right) > 0
-        } else if (left is Interval && right is Int) {
-            if (InEvaluator.`in`(right, left, null, state) == true) {
+            return (left.value.compareTo(right.value) > 0).toCqlBoolean()
+        } else if (left is Interval && right is Integer) {
+            if (InEvaluator.`in`(right, left, null, state)?.value == true) {
                 return null
             }
-            return (left.start as Int).compareTo(right) > 0
-        } else if (left is Int && right is Interval) {
-            if (InEvaluator.`in`(left, right, null, state) == true) {
+            return ((left.start as Integer).value.compareTo(right.value) > 0).toCqlBoolean()
+        } else if (left is Integer && right is Interval) {
+            if (InEvaluator.`in`(left, right, null, state)?.value == true) {
                 return null
             }
-            return left.compareTo((right.end as kotlin.Int?)!!) > 0
+            return (left.value.compareTo((right.end as Integer).value) > 0).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(

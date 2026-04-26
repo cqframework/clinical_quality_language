@@ -6,6 +6,7 @@ import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugMap
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
 
 /**
@@ -24,8 +25,8 @@ import org.opencds.cqf.cql.engine.util.ZonedDateTime
 @Suppress("NON_EXPORTABLE_TYPE")
 class EvaluationParams(
     val expressions: Map<VersionedIdentifier, List<EvaluationExpressionRef>?>,
-    val contextParameter: Pair<String, Any?>? = null,
-    val parameters: Map<String, Any?>? = null,
+    val contextParameter: Pair<String, String?>? = null,
+    val parameters: Map<String, Value?>? = null,
     val debugMap: DebugMap? = null,
     val evaluationDateTime: ZonedDateTime? = null,
 ) {
@@ -33,8 +34,8 @@ class EvaluationParams(
         private val expressions =
             mutableMapOf<VersionedIdentifier, List<EvaluationExpressionRef>?>()
 
-        var contextParameter: Pair<String, Any?>? = null
-        var parameters: Map<String, Any?>? = null
+        var contextParameter: Pair<String, String?>? = null
+        var parameters: Map<String, Value?>? = null
         var debugMap: DebugMap? = null
         var evaluationDateTime: ZonedDateTime? = null
 

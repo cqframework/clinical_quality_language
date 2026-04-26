@@ -1,11 +1,12 @@
 package org.opencds.cqf.cql.engine.model
 
 import org.cqframework.cql.shared.QName
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.createConcurrentHashMap
 
 open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
 
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(contextType: String?, targetType: String?): String? {
         if (contextType == null) {
             return null
         }
@@ -27,11 +28,11 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         return null
     }
 
-    override fun createInstance(typeName: String?): Any? {
+    override fun createInstance(typeName: String?): Value? {
         return this.innerResolver.createInstance(typeName)
     }
 
-    override fun resolveId(target: Any?): String? {
+    override fun resolveId(target: Value?): String? {
         return innerResolver.resolveId(target)
     }
 
@@ -41,6 +42,6 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
 
     companion object {
         private val contextResolutions =
-            createConcurrentHashMap<String, MutableMap<String?, Any?>>()
+            createConcurrentHashMap<String, MutableMap<String?, String?>>()
     }
 }

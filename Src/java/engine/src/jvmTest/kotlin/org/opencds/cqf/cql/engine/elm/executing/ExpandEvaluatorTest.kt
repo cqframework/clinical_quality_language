@@ -1,18 +1,30 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import java.math.BigDecimal
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 class ExpandEvaluatorTest {
     @Test
     fun testExpand() {
-        val interval = Interval(1, true, 5, true)
+        val interval = Interval(Integer.ONE, true, 5.toCqlInteger(), true)
         val per = Quantity().withUnit("1").withValue(BigDecimal.ONE)
         val result = ExpandEvaluator.expand(interval, per, null)
-        val value = Assertions.assertInstanceOf(java.util.ArrayList::class.java, result)
-        Assertions.assertIterableEquals(value, listOf(1, 2, 3, 4, 5))
+        assertEquals(
+            listOf(
+                    Integer.ONE,
+                    2.toCqlInteger(),
+                    3.toCqlInteger(),
+                    4.toCqlInteger(),
+                    5.toCqlInteger(),
+                )
+                .toCqlList(),
+            result,
+        )
     }
 }

@@ -18,7 +18,7 @@ object ConceptRefEvaluator {
             for (r in cd.code) {
                 val codeDef = Libraries.resolveCodeRef(r.name, state.getCurrentLibrary()!!)
                 val cs = CodeSystemRefEvaluator.toCodeSystem(codeDef.codeSystem!!, state)
-                val c = CodeRefEvaluator.toCode(codeDef, cs!!)
+                val c = CodeRefEvaluator.toCode(codeDef, cs)
                 codeList.add(c)
             }
 

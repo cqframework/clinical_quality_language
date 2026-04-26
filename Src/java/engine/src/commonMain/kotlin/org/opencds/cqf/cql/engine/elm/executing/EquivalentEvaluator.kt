@@ -3,12 +3,33 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.math.min
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CodeSystem
+import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEquivalent
+import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.Vocabulary
+import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -47,55 +68,52 @@ least precise operand; trailing zeroes after the decimal are ignored in determin
 object EquivalentEvaluator {
     @JvmStatic
     @JvmOverloads
-    fun equivalent(left: Any?, right: Any?, state: State? = null): Boolean? {
+    fun equivalent(left: Value?, right: Value?, state: State? = null): Boolean {
         if (left == null && right == null) {
-            return true
+            return Boolean.TRUE
         }
 
         if (left == null || right == null) {
-            return false
+            return Boolean.FALSE
         }
 
         // Cases in which Kotlin classes may differ
 
-        if (left is Iterable<*> && right is Iterable<*>) {
-            return listEquivalent(left, right, state)
-        }
-
-        if (left is Interval && right is Int) {
+        if (left is Interval && right is Integer) {
             return intervalIntegerEquivalent(left, right, state)
         }
 
-        if (right is Interval && left is Int) {
+        if (right is Interval && left is Integer) {
             return intervalIntegerEquivalent(right, left, state)
         }
 
         // Return false early if Kotlin classes don't match
 
         if (left::class != right::class) {
-            return false
+            return Boolean.FALSE
         }
 
         // The rest of the cases
 
-        if (left is Boolean || left is Int || left is Long) {
-            return left == right
+        if (left is Boolean || left is Integer || left is Long) {
+            return (left == right).toCqlBoolean()
         }
 
-        if (left is BigDecimal && right is BigDecimal) {
-            val leftDecimal = Value.verifyPrecision(left, 0)
-            val rightDecimal = Value.verifyPrecision(right, 0)
+        if (left is Decimal && right is Decimal) {
+            val leftDecimal = DecimalHelper.verifyPrecision(left.value, 0)
+            val rightDecimal = DecimalHelper.verifyPrecision(right.value, 0)
             val minScale = min(leftDecimal.scale(), rightDecimal.scale())
             if (minScale >= 0) {
                 return (leftDecimal
-                    .setScale(minScale, RoundingMode.HALF_UP)
-                    .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP)) == 0)
+                        .setScale(minScale, RoundingMode.HALF_UP)
+                        .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP)) == 0)
+                    .toCqlBoolean()
             }
-            return leftDecimal.compareTo(rightDecimal) == 0
+            return (leftDecimal.compareTo(rightDecimal) == 0).toCqlBoolean()
         }
 
         if (left is String && right is String) {
-            return left.equals(right, ignoreCase = true)
+            return left.value.equals(right.value, ignoreCase = true).toCqlBoolean()
         }
 
         if (left is Quantity && right is Quantity) {
@@ -126,6 +144,10 @@ object EquivalentEvaluator {
             return conceptsEquivalent(left, right)
         }
 
+        if (left is List && right is List) {
+            return listEquivalent(left, right, state)
+        }
+
         if (left is Interval && right is Interval) {
             return intervalsEquivalent(left, right, state)
         }
@@ -138,19 +160,20 @@ object EquivalentEvaluator {
             if (left.type == right.type) {
                 return structuredValueElementsEquivalent(left.elements, right.elements, state)
             }
-            return false
+            return Boolean.FALSE
         }
 
-        return false
+        return Boolean.FALSE
     }
 
-    fun quantitiesEquivalent(left: Quantity, right: Quantity, state: State?): Boolean? {
+    fun quantitiesEquivalent(left: Quantity, right: Quantity, state: State?): Boolean {
         // Try the "simple" rule (equality of alternate spellings for "week" or "month").
         val simpleResult =
-            if (unitsEquivalent(left.unit, right.unit)) equivalent(left.value, right.value)
+            if (unitsEquivalent(left.unit, right.unit))
+                equivalent(left.value?.toCqlDecimal(), right.value?.toCqlDecimal()).value
             else false
-        if (simpleResult != false) {
-            return simpleResult // true or null
+        if (simpleResult) {
+            return Boolean.TRUE
         } else {
             // The simple rule indicated that the units are not comparable, try to convert the value
             // of right Quantity to the unit of left Quantity and check for equivalence again if the
@@ -159,10 +182,12 @@ object EquivalentEvaluator {
                 computeWithConvertedUnits(
                     left,
                     right,
-                    { _, leftValue, rightValue -> equivalent(leftValue, rightValue) },
+                    { _, leftValue, rightValue ->
+                        equivalent(leftValue.toCqlDecimal(), rightValue.toCqlDecimal()).value
+                    },
                     state!!,
                 )
-            return fullResult ?: false
+            return fullResult?.toCqlBoolean() ?: Boolean.FALSE
         }
     }
 
@@ -170,7 +195,7 @@ object EquivalentEvaluator {
      * For ratios, equivalent means that the numerator and denominator represent the same ratio
      * (e.g. 1:100 ~ 10:1000).
      */
-    fun ratiosEquivalent(left: Ratio, right: Ratio, state: State?): Boolean? {
+    fun ratiosEquivalent(left: Ratio, right: Ratio, state: State?): Boolean {
         return equivalent(
             multiply(left.numerator, right.denominator, state),
             multiply(right.numerator, left.denominator, state),
@@ -179,63 +204,67 @@ object EquivalentEvaluator {
     }
 
     fun baseTemporalsEquivalent(left: BaseTemporal, right: BaseTemporal): Boolean {
-        return left.compare(right, false) == 0
+        return (left.compare(right, false) == 0).toCqlBoolean()
     }
 
     fun codesEquivalent(left: Code, right: Code): Boolean {
-        return equivalent(left.code, right.code) == true &&
-            equivalent(left.system, right.system) == true
+        return AndEvaluator.and(
+            equivalent(left.code?.toCqlString(), right.code?.toCqlString()),
+            equivalent(left.system?.toCqlString(), right.system?.toCqlString()),
+        )
     }
 
-    fun codeSystemsEquivalent(left: CodeSystem, right: CodeSystem): Boolean? {
+    fun codeSystemsEquivalent(left: CodeSystem, right: CodeSystem): Boolean {
         return vocabulariesEquivalent(left, right)
     }
 
     fun valueSetsEquivalent(left: ValueSet, right: ValueSet): Boolean {
         val equivalent =
-            vocabulariesEquivalent(left, right) == true &&
+            vocabulariesEquivalent(left, right).value == true &&
                 left.codeSystems.size == right.codeSystems.size
         if (equivalent) {
             for (cs in left.codeSystems) {
                 val otherC = right.getCodeSystem(cs.id)
                 if (otherC == null) {
-                    return false
+                    return Boolean.FALSE
                 }
             }
         }
-        return equivalent
+        return equivalent.toCqlBoolean()
     }
 
-    fun vocabulariesEquivalent(left: Vocabulary, right: Vocabulary): Boolean? {
-        return equivalent(left.version, right.version)
+    fun vocabulariesEquivalent(left: Vocabulary, right: Vocabulary): Boolean {
+        return equivalent(left.version?.toCqlString(), right.version?.toCqlString())
     }
 
     fun conceptsEquivalent(left: Concept, right: Concept): Boolean {
         if (left.codes == null || right.codes == null) {
-            return false
+            return Boolean.FALSE
         }
 
         for (code in left.codes) {
             for (otherCode in right.codes!!) {
-                if (equivalent(code, otherCode) == true) {
-                    return true
+                if (equivalent(code, otherCode).value) {
+                    return Boolean.TRUE
                 }
             }
         }
 
-        return false
+        return Boolean.FALSE
     }
 
     fun intervalsEquivalent(left: Interval, right: Interval, state: State?): Boolean {
-        return equivalent(left.start, right.start, state) == true &&
-            equivalent(left.end, right.end, state) == true
+        return AndEvaluator.and(
+            equivalent(left.start, right.start, state),
+            equivalent(left.end, right.end, state),
+        )
     }
 
-    fun intervalIntegerEquivalent(interval: Interval, integer: Int, state: State?): Boolean {
+    fun intervalIntegerEquivalent(interval: Interval, integer: Integer, state: State?): Boolean {
         return intervalsEquivalent(interval, Interval(integer, true, integer, true, state), state)
     }
 
-    fun listEquivalent(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean {
+    fun listEquivalent(left: List, right: List, state: State?): Boolean {
         val leftIterator = left.iterator()
         val rightIterator = right.iterator()
 
@@ -244,36 +273,36 @@ object EquivalentEvaluator {
             if (rightIterator.hasNext()) {
                 val rightObject = rightIterator.next()
                 val elementEquivalent = equivalent(leftObject, rightObject, state)
-                if (!elementEquivalent!!) {
-                    return false
+                if (!elementEquivalent.value) {
+                    return Boolean.FALSE
                 }
             } else {
-                return false
+                return Boolean.FALSE
             }
         }
 
-        return !rightIterator.hasNext()
+        return (!rightIterator.hasNext()).toCqlBoolean()
     }
 
     fun structuredValueElementsEquivalent(
-        left: Map<String, Any?>,
-        right: Map<String, Any?>,
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
         state: State?,
     ): Boolean {
         if (left.size != right.size) {
-            return false
+            return Boolean.FALSE
         }
 
         for (key in right.keys) {
             if (left.containsKey(key)) {
-                val areKeyValsSame = equivalent(right[key], left[key], state) == true
-                if (!areKeyValsSame) {
-                    return false
+                val areKeyValsSame = equivalent(right[key], left[key], state)
+                if (!areKeyValsSame.value) {
+                    return Boolean.FALSE
                 }
             } else {
-                return false
+                return Boolean.FALSE
             }
         }
-        return true
+        return Boolean.TRUE
     }
 }

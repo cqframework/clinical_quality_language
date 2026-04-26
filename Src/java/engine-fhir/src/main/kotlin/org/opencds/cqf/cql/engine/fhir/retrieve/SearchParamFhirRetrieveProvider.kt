@@ -9,6 +9,7 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.retrieve.TerminologyAwareRetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 abstract class SearchParamFhirRetrieveProvider
 protected constructor(
@@ -46,7 +47,7 @@ protected constructor(
     override fun retrieve(
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
         dataType: String,
         templateId: String?,
         codePath: String?,
@@ -56,7 +57,7 @@ protected constructor(
         dateLowPath: String?,
         dateHighPath: String?,
         dateRange: Interval?,
-    ): Iterable<Any?>? {
+    ): Iterable<Value?>? {
 
         try {
             if (this.fhirContext.version.version == FhirVersionEnum.DSTU3) {

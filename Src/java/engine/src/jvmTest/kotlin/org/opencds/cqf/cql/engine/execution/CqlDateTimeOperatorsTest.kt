@@ -2,23 +2,32 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
 import org.hl7.elm.r1.VersionedIdentifier
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.elm.executing.AfterEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     /** [org.opencds.cqf.cql.engine.elm.execution.AfterEvaluator.evaluate] */
     @Test
     fun after() {
-        Assertions.assertThrows(CqlException::class.java) {
-            AfterEvaluator.after(12, "This is an error", null, engine.state)
+        assertFailsWith<CqlException> {
+            AfterEvaluator.after(
+                12.toCqlInteger(),
+                "This is an error".toCqlString(),
+                null,
+                engine.state,
+            )
         }
     }
 
@@ -26,35 +35,40 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     @Test
     fun duration() {
         var value = engine.expression(library, "DateTimeDurationBetweenYear")
-        MatcherAssert.assertThat(value, Matchers.`is`(5))
+        assertEquals(5.toCqlInteger(), value)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval")
-        Assertions.assertEquals(17, (value as Interval).start)
-        Assertions.assertEquals(44, value.end)
+        assertIs<Interval>(value)
+        assertEquals(17.toCqlInteger(), value.start)
+        assertEquals(44.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval2")
-        Assertions.assertEquals(5, (value as Interval).start)
-        Assertions.assertEquals(16, value.end)
+        assertIs<Interval>(value)
+        assertEquals(5.toCqlInteger(), value.start)
+        assertEquals(16.toCqlInteger(), value.end)
 
         //        assertThat(((Uncertainty)result).getUncertaintyInterval(), is(new Interval(5,
         // true, 17, true)));
         value = engine.expression(library, "DateTimeDurationBetweenUncertainAdd")
-        Assertions.assertEquals(34, (value as Interval).start)
-        Assertions.assertEquals(88, value.end)
+        assertIs<Interval>(value)
+        assertEquals(34.toCqlInteger(), value.start)
+        assertEquals(88.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract")
-        Assertions.assertEquals(12, (value as Interval).start)
-        Assertions.assertEquals(28, value.end)
+        assertIs<Interval>(value)
+        assertEquals(12.toCqlInteger(), value.start)
+        assertEquals(28.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply")
-        Assertions.assertEquals(289, (value as Interval).start)
-        Assertions.assertEquals(1936, value.end)
+        assertIs<Interval>(value)
+        assertEquals(289.toCqlInteger(), value.start)
+        assertEquals(1936.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DurationInDaysA")
-        MatcherAssert.assertThat(value, Matchers.`is`(1))
+        assertEquals(Integer.ONE, value)
 
         value = engine.expression(library, "DurationInDaysAA")
-        MatcherAssert.assertThat(value, Matchers.`is`(1))
+        assertEquals(Integer.ONE, value)
     }
 
     /** [org.opencds.cqf.cql.engine.elm.execution.NowEvaluator.evaluate] */
@@ -63,11 +77,8 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
         val evaluationDateTime = DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 5, 4, 999)
         val value =
             engine.expression(library, "Issue34A", evaluationDateTime.dateTime!!.toZonedDateTime())
-        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, evaluationDateTime) == true)
-        Assertions.assertEquals(
-            (value as DateTime).dateTime!!.offset,
-            evaluationDateTime.dateTime!!.offset,
-        )
+        assertTrue(EquivalentEvaluator.equivalent(value, evaluationDateTime).value == true)
+        assertEquals((value as DateTime).dateTime!!.offset, evaluationDateTime.dateTime!!.offset)
     }
 
     /** [org.opencds.cqf.cql.engine.elm.execution.TimeOfDayEvaluator.evaluate] */
@@ -113,7 +124,7 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
             // complex scenario.
             val value = engine.expression(library, "Issue1420", evaluationZonedDateTime)
             val expected = evaluationZonedDateTime.offset.totalSeconds / 3600
-            Assertions.assertEquals(expected, value)
+            assertEquals(expected.toCqlInteger(), value)
         }
     }
 

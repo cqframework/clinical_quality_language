@@ -2,7 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 *** STRING NOTES ***
@@ -23,27 +27,27 @@ If either argument is null, the result is null.
 */
 object IndexerEvaluator {
     @JvmStatic
-    fun indexer(left: Any?, right: Any?): Any? {
+    fun indexer(left: Value?, right: Value?): Value? {
         if (left == null || right == null) {
             return null
         }
 
         if (left is String) {
-            if (right is Int) {
-                if (right < 0 || right >= left.length) {
+            if (right is Integer) {
+                if (right.value < 0 || right.value >= left.length) {
                     return null
                 }
 
-                return "" + left.get(right)
+                return ("" + left.get(right.value)).toCqlString()
             }
         }
 
-        if (left is Iterable<*>) {
-            if (right is Int) {
+        if (left is List) {
+            if (right is Integer) {
                 var index = -1
                 for (element in left) {
                     index++
-                    if (right == index) {
+                    if (right.value == index) {
                         return element
                     }
                 }
@@ -53,7 +57,7 @@ object IndexerEvaluator {
 
         throw InvalidOperatorArgument(
             "Indexer(String, Integer) or Indexer(List<T>, Integer)",
-            "Indexer(${left.javaClassName}, ${right.javaClassName})",
+            "Indexer(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

@@ -13,7 +13,7 @@ open class TraceFrame(
     /** Variables in scope when the element was evaluated. */
     val variables: List<Variable>,
     /** Context name and value. */
-    val context: Pair<String, Any?>,
+    val context: Pair<String, String?>,
 ) {
     /** Stringifies the trace frame with indentation. */
     open fun toIndentedString(indentLevel: Int, showResults: Boolean): String {

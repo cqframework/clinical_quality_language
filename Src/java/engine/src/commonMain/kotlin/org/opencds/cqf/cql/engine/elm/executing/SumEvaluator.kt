@@ -3,7 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 Sum(argument List<Integer>) Integer
@@ -18,13 +19,13 @@ Return types: Integer, BigDecimal & Quantity
 */
 object SumEvaluator {
     @JvmStatic
-    fun sum(source: Any?, state: State?): Any? {
+    fun sum(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
-            var sum: Any? = null
+        if (source is List) {
+            var sum: Value? = null
             for (element in source) {
                 if (element == null) {
                     continue
@@ -43,7 +44,7 @@ object SumEvaluator {
 
         throw InvalidOperatorArgument(
             "Sum(List<Integer>), Sum(List<Long>), Sum(List<Decimal>) or Sum(List<Quantity>)",
-            "Sum(${source.javaClassName})",
+            "Sum(${source.typeAsString})",
         )
     }
 }

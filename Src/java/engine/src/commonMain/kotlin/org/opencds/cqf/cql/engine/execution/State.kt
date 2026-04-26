@@ -35,6 +35,7 @@ import org.opencds.cqf.cql.engine.execution.CqlEngine.Options
 import org.opencds.cqf.cql.engine.execution.trace.Trace
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
@@ -77,7 +78,7 @@ constructor(
          * The result of the expression evaluation for this frame. Only used when tracing is
          * enabled.
          */
-        var result: Any? = null
+        var result: Value? = null
 
         /**
          * Frames representing nested expressions, function calls, and retrieves. Only used when
@@ -128,10 +129,10 @@ constructor(
      */
     var traceExpressionFilter: ((Expression) -> Boolean)? = null
 
-    private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
+    private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
-    val parameters = mutableMapOf<String, Any?>()
-    var contextValues = mutableMapOf<String, Any?>()
+    val parameters = mutableMapOf<kotlin.String, Value?>()
+    var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
         private set
@@ -175,7 +176,7 @@ constructor(
         subExpressionStack.addFirst(frame)
     }
 
-    fun storeSubExpressionResult(result: Any?) {
+    fun storeSubExpressionResult(result: Value?) {
         subExpressionStack.first().result = result
     }
 
@@ -189,7 +190,7 @@ constructor(
         return currentLibrary.firstOrNull()
     }
 
-    fun setParameters(library: Library?, parameters: Map<String, Any?>?) {
+    fun setParameters(library: Library?, parameters: Map<String, Value?>?) {
         if (parameters != null) {
             for (parameterValue in parameters.entries) {
                 setParameter(null, parameterValue.key, parameterValue.value)
@@ -197,7 +198,7 @@ constructor(
         }
     }
 
-    fun setParameter(libraryName: String?, name: String, value: Any?) {
+    fun setParameter(libraryName: String?, name: String, value: Value?) {
         val enteredLibrary = enterLibrary(libraryName)
         try {
             val fullName =
@@ -425,7 +426,7 @@ constructor(
     }
 
     /** Stores the intermediate result in the activation frame. */
-    fun storeIntermediateResultForTracing(result: Any?) {
+    fun storeIntermediateResultForTracing(result: Value?) {
         if (isTracingEnabled) {
             topActivationFrame.result = result
         }
@@ -441,7 +442,7 @@ constructor(
             return topActivationFrame
         }
 
-    fun setContextValue(context: String, contextValue: Any?) {
+    fun setContextValue(context: String, contextValue: String?) {
         val containsKey = contextValues.containsKey(context)
         val valueFromContextValues = contextValues[context]
         val valuesAreEqual = contextValue == valueFromContextValues
@@ -480,7 +481,7 @@ constructor(
         return currentContext.firstOrNull()
     }
 
-    val currentContextValue: Any?
+    val currentContextValue: String?
         get() {
             val context = getCurrentContext()
             if (context != null && this.contextValues.containsKey(context)) {
@@ -490,7 +491,7 @@ constructor(
             return null
         }
 
-    val evaluatedResources: MutableSet<Any?>?
+    val evaluatedResources: MutableSet<Value?>?
         get() {
             check(!evaluatedResourceStack.isEmpty()) {
                 "Attempted to get the evaluatedResource stack when it's empty"
@@ -505,7 +506,7 @@ constructor(
     }
 
     fun pushEvaluatedResourceStack() {
-        evaluatedResourceStack.addFirst(HashSet<Any?>())
+        evaluatedResourceStack.addFirst(HashSet<Value?>())
     }
 
     /**
@@ -535,7 +536,7 @@ constructor(
         currentStackEvaluatedResources.addAll(previousStackEvaluatedResources)
     }
 
-    fun resolveAlias(name: String?): Any? {
+    fun resolveAlias(name: String?): Value? {
         // This method needs to account for multiple variables on the stack with the same name
         for (v in this.topActivationFrame.variables) {
             if (v.name == name) {
@@ -548,7 +549,7 @@ constructor(
         )
     }
 
-    fun resolveIdentifierRef(name: String): Any? {
+    fun resolveIdentifierRef(name: String): Value? {
         for (frame in this.stack) {
             for (v in frame.variables) {
                 if (v.name == name) {
@@ -572,7 +573,7 @@ constructor(
         throw CqlException("Cannot resolve identifier $name")
     }
 
-    fun logDebugResult(node: Element, result: Any?, action: DebugAction?) {
+    fun logDebugResult(node: Element, result: Value?, action: DebugAction?) {
         ensureDebugResult()
         debugResult!!.logDebugResult(node, this.getCurrentLibrary()!!, result, action)
     }
@@ -607,7 +608,7 @@ constructor(
         }
     }
 
-    fun checkType(expressionWithExpectedResultType: Expression, actualValue: Any?) {
+    fun checkType(expressionWithExpectedResultType: Expression, actualValue: Value?) {
         if (engineOptions.contains(Options.EnableTypeChecking)) {
             TypeChecker.checkType(expressionWithExpectedResultType, actualValue)
         }

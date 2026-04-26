@@ -3,11 +3,11 @@ package org.opencds.cqf.cql.engine.runtime
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 
-class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
+class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
     override val type = quantityTypeName
 
-    override val elements: MutableMap<String, Any?>
-        get() = mutableMapOf("value" to value, "unit" to unit)
+    override val elements: MutableMap<kotlin.String, Value?>
+        get() = mutableMapOf("value" to value?.toCqlDecimal(), "unit" to unit?.toCqlString())
 
     var value: BigDecimal? = BigDecimal("0.0")
 
@@ -16,9 +16,9 @@ class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
         return this
     }
 
-    var unit: String? = DEFAULT_UNIT
+    var unit: kotlin.String? = DEFAULT_UNIT
 
-    fun withUnit(unit: String?): Quantity {
+    fun withUnit(unit: kotlin.String?): Quantity {
         this.unit = unit
         return this
     }
@@ -42,7 +42,7 @@ class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
         return null
     }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return "${this.value} '${this.unit}'"
     }
 
@@ -50,11 +50,11 @@ class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
         private const val DEFAULT_UNIT = "1"
 
         @JvmStatic
-        fun isDefaultUnit(unit: String?): Boolean {
+        fun isDefaultUnit(unit: kotlin.String?): kotlin.Boolean {
             return unit == null || unit == "" || unit == DEFAULT_UNIT
         }
 
-        fun unitsEqual(leftUnit: String?, rightUnit: String?): Boolean {
+        fun unitsEqual(leftUnit: kotlin.String?, rightUnit: kotlin.String?): kotlin.Boolean {
             if (isDefaultUnit(leftUnit) && isDefaultUnit(rightUnit)) {
                 return true
             }
@@ -94,7 +94,7 @@ class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
             }
         }
 
-        fun unitsEquivalent(leftUnit: String?, rightUnit: String?): Boolean {
+        fun unitsEquivalent(leftUnit: kotlin.String?, rightUnit: kotlin.String?): kotlin.Boolean {
             if (isDefaultUnit(leftUnit) && isDefaultUnit(rightUnit)) {
                 return true
             }

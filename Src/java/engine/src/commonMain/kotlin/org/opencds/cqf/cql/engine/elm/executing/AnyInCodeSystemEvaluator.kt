@@ -3,16 +3,19 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.CodeSystemRef
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object AnyInCodeSystemEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        codes: Any?,
+        codes: Value?,
         codeSystemRef: CodeSystemRef?,
-        codeSystem: Any?,
+        codeSystem: Value?,
         state: State?,
-    ): Any? {
-        var cs: Any? = null
+    ): Boolean? {
+        var cs: Value? = null
         if (codeSystemRef != null) {
             cs = CodeSystemRefEvaluator.toCodeSystem(codeSystemRef, state)
         } else if (codeSystem != null) {
@@ -21,16 +24,14 @@ object AnyInCodeSystemEvaluator {
 
         if (codes == null || cs == null) return null
 
-        if (codes is Iterable<*>) {
-            var result: Any?
+        if (codes is List) {
             for (code in codes) {
-                result = InCodeSystemEvaluator.inCodeSystem(code, cs, state)
-                if (result is Boolean && result) {
-                    return true
+                if (InCodeSystemEvaluator.inCodeSystem(code, cs, state)?.value == true) {
+                    return Boolean.TRUE
                 }
             }
         }
 
-        return false
+        return Boolean.FALSE
     }
 }

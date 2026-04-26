@@ -1,7 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.runtime.CqlList
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 exists(argument List<T>) Boolean
@@ -11,13 +15,16 @@ If the argument is null, the result is null.
 */
 object ExistsEvaluator {
     @JvmStatic
-    fun exists(operand: Any?): Any? {
-        val value = operand as Iterable<Any?>?
+    fun exists(operand: Value?): Boolean {
 
-        if (value == null) {
-            return false
+        if (operand == null) {
+            return Boolean.FALSE
         }
 
-        return !CqlList.toList<Any?>(value, false).isEmpty()
+        if (operand is List) {
+            return operand.any { it != null }.toCqlBoolean()
+        }
+
+        throw InvalidOperatorArgument("Exists(List<T>)", "Exists(${operand.typeAsString})")
     }
 }

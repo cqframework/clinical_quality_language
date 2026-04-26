@@ -1,24 +1,26 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.math.BigDecimal
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlFunctionOverloadTest : CqlTestBase() {
     @Test
     fun function_overloads() {
         val results = engine.evaluate { library("FunctionOverloadTest") }.onlyResultOrThrow
         var value = results["TestAnyFunctionWithInteger"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(1))
+        assertEquals(1.toCqlInteger(), value)
 
         value = results["TestAnyFunctionWithString"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("joe"))
+        assertEquals("joe".toCqlString(), value)
 
         value = results["TestAnyFunctionWithDecimal"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("12.3")))
+        assertEquals(BigDecimal("12.3").toCqlDecimal(), value)
 
         value = results["TestAnyFunctionWithNoArgs"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("any"))
+        assertEquals("any".toCqlString(), value)
     }
 }

@@ -1,12 +1,14 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Time
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 
@@ -32,29 +34,30 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object PrecisionEvaluator {
     @JvmStatic
-    fun precision(argument: Any?): Int? {
+    fun precision(argument: Value?): Integer? {
         if (argument == null) {
             return null
         }
 
-        if (argument is BigDecimal) {
-            val string = argument.toPlainString()
+        if (argument is Decimal) {
+            val string = argument.value.toPlainString()
             val index = string.indexOf(".")
-            return if (index < 0) 0 else string.length - index - 1
+            return (if (index < 0) 0 else string.length - index - 1).toCqlInteger()
         } else if (argument is Date) {
-            return argument.toString().replace("-".toRegex(), "").length
+            return argument.toString().replace("-".toRegex(), "").length.toCqlInteger()
         } else if (argument is DateTime) {
             return argument
                 .toString()
                 .replace("(:?[+-][0-9]{2}:[0-9]{2}$|[T.:-]|)".toRegex(), "")
                 .length
+                .toCqlInteger()
         } else if (argument is Time) {
-            return argument.toString().replace("[T.:]".toRegex(), "").length
+            return argument.toString().replace("[T.:]".toRegex(), "").length.toCqlInteger()
         }
 
         throw InvalidOperatorArgument(
             "Precision(Decimal), Precision(Date), Precision(DateTime) or Precision(Time)",
-            "Precision(${argument.javaClassName})",
+            "Precision(${argument.typeAsString})",
         )
     }
 }

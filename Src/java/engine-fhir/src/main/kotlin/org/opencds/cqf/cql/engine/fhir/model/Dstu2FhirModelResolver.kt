@@ -139,7 +139,7 @@ open class Dstu2FhirModelResolver(fhirContext: FhirContext) :
         }
     }
 
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(contextType: String?, targetType: String?): String? {
         if (targetType == null || contextType == null) {
             return null
         }

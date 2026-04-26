@@ -1,13 +1,15 @@
 package org.opencds.cqf.cql.engine.fhir.data
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.hl7.fhir.r4.model.Address
 import org.hl7.fhir.r4.model.Patient
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 // https://github.com/cqframework/clinical_quality_language/issues/1225
 internal class Issue1225 : FhirExecutionTestBase() {
@@ -18,7 +20,7 @@ internal class Issue1225 : FhirExecutionTestBase() {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
@@ -28,7 +30,7 @@ internal class Issue1225 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<Any?> {
+                ): Iterable<Value?> {
                     if (dataType == "Patient") {
                         val p = Patient()
                         p.getAddress().add(Address().addLine("123").addLine("456"))
@@ -45,6 +47,6 @@ internal class Issue1225 : FhirExecutionTestBase() {
         )
         val result = engine.evaluate { library("Issue1225") }.onlyResultOrThrow
 
-        Assertions.assertEquals("123", result["Address Line 1"]!!.value)
+        assertEquals("123".toCqlString(), result["Address Line 1"]!!.value)
     }
 }

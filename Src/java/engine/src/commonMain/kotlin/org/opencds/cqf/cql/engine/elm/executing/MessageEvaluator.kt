@@ -6,9 +6,14 @@ import org.hl7.elm.r1.Message
 import org.opencds.cqf.cql.engine.debug.SourceLocator
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 
@@ -18,18 +23,18 @@ object MessageEvaluator {
     fun message(
         state: State?,
         sourceLocator: SourceLocator?,
-        source: Any?,
+        source: Value?,
         condition: Boolean?,
         code: String?,
         severity: String?,
         message: String?,
-    ): Any? {
-        var severity = severity
+    ): Value? {
+        var severity = severity?.value
         if (severity == null) {
             severity = "message"
         }
 
-        if (condition != null && condition) {
+        if (condition != null && condition.value) {
             val messageBuilder = StringBuilder()
             if (code != null) {
                 messageBuilder.append(code).append(": ")
@@ -71,7 +76,7 @@ object MessageEvaluator {
         return source
     }
 
-    private fun stripPHI(state: State?, source: Any?): String? {
+    private fun stripPHI(state: State?, source: Value?): kotlin.String? {
         if (source == null) {
             return null
         }
@@ -81,7 +86,7 @@ object MessageEvaluator {
                 // Use the system data provider to obfuscate intervals, lists, and tuples
                 is Interval,
                 is Tuple,
-                is Iterable<*> ->
+                is List ->
                     state!!.environment.resolveDataProviderByModelUriOrNull(systemModelNamespaceUri)
                 else ->
                     state!!
@@ -97,22 +102,35 @@ object MessageEvaluator {
     fun internalEvaluate(
         elm: Message?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val source = visitor.visitExpression(elm!!.source!!, state)
-        val condition = visitor.visitExpression(elm.condition!!, state) as Boolean?
-        val code = visitor.visitExpression(elm.code!!, state) as String?
-        val severity = visitor.visitExpression(elm.severity!!, state) as String?
-        val msg = visitor.visitExpression(elm.message!!, state) as String?
+        val condition = visitor.visitExpression(elm.condition!!, state)
+        val code = visitor.visitExpression(elm.code!!, state)
+        val severity = visitor.visitExpression(elm.severity!!, state)
+        val msg = visitor.visitExpression(elm.message!!, state)
 
-        return message(
-            state,
-            fromNode(elm, state!!.getCurrentLibrary()),
-            source,
-            condition,
-            code,
-            severity,
-            msg,
+        if (condition is Boolean? && code is String? && severity is String? && msg is String?) {
+
+            return message(
+                state,
+                fromNode(elm, state!!.getCurrentLibrary()),
+                source,
+                condition,
+                code,
+                severity,
+                msg,
+            )
+        }
+
+        //        throw InvalidOperatorArgument(
+        //            "Collapse(List<Interval<T>>, Quantity)",
+        //            "Collapse(${list.javaClassName}, ${per?.javaClassName})",
+        //        )
+
+        throw InvalidOperatorArgument(
+            "Message(T, Boolean, String, String, String)",
+            "Message(${source?.typeAsString}, ${condition?.typeAsString}, ${code?.typeAsString}, ${severity?.typeAsString}, ${msg?.typeAsString})",
         )
     }
 }

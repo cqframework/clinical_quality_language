@@ -3,8 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 Floor(argument Decimal) Integer
@@ -15,17 +18,17 @@ If the argument is null, the result is null.
 */
 object FloorEvaluator {
     @JvmStatic
-    fun floor(operand: Any?): Any? {
+    fun floor(operand: Value?): Integer? {
         if (operand == null) {
             return null
         }
 
-        if (operand is BigDecimal) {
-            return BigDecimal(kotlin.math.floor(operand.toDouble())).toInt()
+        if (operand is Decimal) {
+            return BigDecimal(kotlin.math.floor(operand.value.toDouble())).toInt().toCqlInteger()
         } else if (operand is Quantity) {
-            return BigDecimal(kotlin.math.floor(operand.value!!.toDouble())).toInt()
+            return BigDecimal(kotlin.math.floor(operand.value!!.toDouble())).toInt().toCqlInteger()
         }
 
-        throw InvalidOperatorArgument("Floor(Decimal)", "Floor(${operand.javaClassName})")
+        throw InvalidOperatorArgument("Floor(Decimal)", "Floor(${operand.typeAsString})")
     }
 }

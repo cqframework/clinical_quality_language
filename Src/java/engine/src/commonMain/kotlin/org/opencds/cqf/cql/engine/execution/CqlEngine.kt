@@ -19,6 +19,7 @@ import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.elm.executing.FunctionRefEvaluator.evaluateFunctionDef
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
@@ -257,7 +258,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         def: ExpressionDef,
         expression: EvaluationExpressionRef,
         result: EvaluationResult,
-        eval: () -> Any?,
+        eval: () -> Value?,
     ) {
         try {
             val action = this.state.shouldDebug(def)
@@ -444,7 +445,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     }
 
     @JsExport.Ignore
-    fun processException(e: CqlException, element: Element) {
+    fun processException(e: CqlException, element: Element): Nothing {
         if (e.sourceLocator == null) {
             e.sourceLocator = fromNode(element, this.state.getCurrentLibrary())
             val action = state.shouldDebug(e)
@@ -457,7 +458,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
     }
 
     @JsExport.Ignore
-    fun processException(e: Exception?, element: Element, message: String?) {
+    fun processException(e: Exception?, element: Element, message: String?): Nothing {
         val ce = CqlException(message, e, fromNode(element, this.state.getCurrentLibrary()))
         val action = state.shouldDebug(ce)
         if (action != DebugAction.NONE) {
@@ -527,7 +528,7 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         libraryIdentifier: VersionedIdentifier,
         parameterName: String,
         evaluationDateTime: ZonedDateTime? = null,
-    ): Any? {
+    ): Value? {
         val library =
             environment.resolveLibrary(libraryIdentifier)
                 ?: throw CqlException("Unable to resolve library: ${libraryIdentifier.id}")

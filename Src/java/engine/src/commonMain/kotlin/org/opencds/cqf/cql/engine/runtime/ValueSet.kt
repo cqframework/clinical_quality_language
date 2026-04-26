@@ -3,26 +3,26 @@ package org.opencds.cqf.cql.engine.runtime
 class ValueSet : Vocabulary() {
     override val type = valueSetTypeName
 
-    override val elements: MutableMap<String, Any?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() =
             mutableMapOf(
-                "id" to id,
-                "version" to version,
-                "name" to name,
-                "codesystems" to codeSystems,
+                "id" to id?.toCqlString(),
+                "version" to version?.toCqlString(),
+                "name" to name?.toCqlString(),
+                "codesystems" to codeSystems.toCqlList(),
             )
 
-    fun withId(id: String?): ValueSet {
+    fun withId(id: kotlin.String?): ValueSet {
         this.id = id
         return this
     }
 
-    fun withVersion(version: String?): ValueSet {
+    fun withVersion(version: kotlin.String?): ValueSet {
         this.version = version
         return this
     }
 
-    fun withName(name: String?): ValueSet {
+    fun withName(name: kotlin.String?): ValueSet {
         this.name = name
         return this
     }
@@ -30,7 +30,7 @@ class ValueSet : Vocabulary() {
     var codeSystems = mutableListOf<CodeSystem>()
         private set
 
-    fun setCodeSystems(codeSystems: MutableList<CodeSystem?>?) {
+    fun setCodeSystems(codeSystems: Iterable<CodeSystem?>?) {
         this.codeSystems = mutableListOf()
         if (codeSystems != null) {
             for (cs in codeSystems) {
@@ -55,7 +55,7 @@ class ValueSet : Vocabulary() {
         return this
     }
 
-    fun getCodeSystem(id: String?): CodeSystem? {
+    fun getCodeSystem(id: kotlin.String?): CodeSystem? {
         if (id == null) {
             return null
         }
@@ -69,7 +69,7 @@ class ValueSet : Vocabulary() {
         return null
     }
 
-    fun getCodeSystem(id: String?, version: String?): CodeSystem? {
+    fun getCodeSystem(id: kotlin.String?, version: kotlin.String?): CodeSystem? {
         if (id == null) {
             return null
         }

@@ -26,7 +26,7 @@ class Backtrace(
         fun fromActivationFrames(
             activationFrameStack: ArrayDeque<ActivationFrame>,
             expression: Expression,
-            contextValues: Map<String, Any?>,
+            contextValues: Map<String, String?>,
         ): Backtrace {
             val topActivationFrame = activationFrameStack.first()
 

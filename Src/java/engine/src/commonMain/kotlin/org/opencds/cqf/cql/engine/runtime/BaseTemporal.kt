@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime
 
-sealed class BaseTemporal : NamedCqlType, Comparable<BaseTemporal> {
+sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
     var precision: Precision? = null
 
     fun withPrecision(precision: Precision?): BaseTemporal {
@@ -8,11 +8,11 @@ sealed class BaseTemporal : NamedCqlType, Comparable<BaseTemporal> {
         return this
     }
 
-    abstract fun compare(other: BaseTemporal, forSort: Boolean): Int?
+    abstract fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int?
 
     abstract fun compareToPrecision(other: BaseTemporal, p: Precision): Int?
 
-    abstract fun isUncertain(p: Precision): Boolean
+    abstract fun isUncertain(p: Precision): kotlin.Boolean
 
     abstract fun getUncertaintyInterval(p: Precision): Interval?
 
@@ -24,10 +24,10 @@ sealed class BaseTemporal : NamedCqlType, Comparable<BaseTemporal> {
      * @param useCeiling whether to return the ceiling or floor value when rounding
      * @return the rounded copy
      */
-    abstract fun roundToPrecision(precision: Precision, useCeiling: Boolean): BaseTemporal?
+    abstract fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal?
 
     companion object {
-        fun getHighestPrecision(vararg values: BaseTemporal?): String {
+        fun getHighestPrecision(vararg values: BaseTemporal?): kotlin.String {
             var max = -1
             var isDateTime = true
             var isDate = false
@@ -59,7 +59,7 @@ sealed class BaseTemporal : NamedCqlType, Comparable<BaseTemporal> {
             else Precision.fromTimeIndex(max).toString()
         }
 
-        fun getLowestPrecision(vararg values: BaseTemporal?): String {
+        fun getLowestPrecision(vararg values: BaseTemporal?): kotlin.String {
             var min = 99
             var isDateTime = true
             var isDate = false
