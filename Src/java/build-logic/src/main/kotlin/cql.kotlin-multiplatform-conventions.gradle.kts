@@ -9,12 +9,9 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-    }
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
 }
 
 detekt {
@@ -28,7 +25,7 @@ detekt {
         "src/jsMain/kotlin",
         "src/commonTest/kotlin",
         "src/jvmTest/kotlin",
-        "src/jsTest/kotlin"
+        "src/jsTest/kotlin",
     )
 
     // Custom config with overrides.
@@ -53,34 +50,16 @@ kotlin {
             freeCompilerArgs.add("-Xes-long-as-bigint")
         }
         useEsModules()
-        browser {
-            testTask {
-                enabled = false
-            }
-        }
-        nodejs {
-            testTask {
-                useMocha {
-                    timeout = "30s"
-                }
-            }
-        }
+        browser { testTask { enabled = false } }
+        nodejs { testTask { useMocha { timeout = "30s" } } }
         binaries.library()
         generateTypeScriptDefinitions()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser {
-            testTask {
-                enabled = false
-            }
-        }
-        nodejs {
-            testTask {
-                enabled = false
-            }
-        }
+        browser { testTask { enabled = false } }
+        nodejs { testTask { enabled = false } }
         binaries.library()
         generateTypeScriptDefinitions()
     }
@@ -95,17 +74,9 @@ kotlin {
             }
         }
 
-        jvmMain {
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.0")
-            }
-        }
+        jvmMain { dependencies { api("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.0") } }
 
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
+        commonTest { dependencies { implementation(kotlin("test")) } }
 
         jvmTest {
             dependencies {
@@ -118,9 +89,7 @@ kotlin {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+tasks.withType<Test> { useJUnitPlatform() }
 
 tasks.register<Jar>("dokkaHtmlJar") {
     dependsOn(tasks.named("dokkaGeneratePublicationHtml"))
@@ -132,12 +101,11 @@ tasks.register<Jar>("dokkaHtmlJar") {
 // which causes Gradle to select them instead of the actual JVM runtime variant in composite
 // builds (KT-52172 workaround). Mark them as non-consumable.
 afterEvaluate {
-    configurations.matching { it.name.startsWith("dokka") && it.isCanBeConsumed }.configureEach {
-        isCanBeConsumed = false
-    }
+    configurations
+        .matching { it.name.startsWith("dokka") && it.isCanBeConsumed }
+        .configureEach { isCanBeConsumed = false }
 }
 
-// JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build config is needed.
-buildConfig {
-    buildConfigField("IMPLEMENTATION_VERSION", project.version.toString())
-}
+// JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build
+// config is needed.
+buildConfig { buildConfigField("IMPLEMENTATION_VERSION", project.version.toString()) }
