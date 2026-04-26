@@ -19,6 +19,7 @@ import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 class R4FhirQueryGenerator(
@@ -38,8 +39,8 @@ class R4FhirQueryGenerator(
     override fun generateFhirQueries(
         dataRequirement: ICompositeType?,
         evaluationDateTime: DateTime?,
-        contextValues: MutableMap<String, Any?>?,
-        parameters: MutableMap<String, Any?>?,
+        contextValues: MutableMap<String, String?>?,
+        parameters: MutableMap<String, Value?>?,
         capabilityStatement: IBaseConformance?,
     ): MutableList<String> {
         require(dataRequirement is DataRequirement) {

@@ -132,7 +132,7 @@ constructor(
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
     val parameters = mutableMapOf<kotlin.String, Value?>()
-    var contextValues = mutableMapOf<kotlin.String, Any?>()
+    var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
         private set
@@ -442,7 +442,7 @@ constructor(
             return topActivationFrame
         }
 
-    fun setContextValue(context: String, contextValue: Any?) {
+    fun setContextValue(context: String, contextValue: String?) {
         val containsKey = contextValues.containsKey(context)
         val valueFromContextValues = contextValues[context]
         val valuesAreEqual = contextValue == valueFromContextValues
@@ -481,7 +481,7 @@ constructor(
         return currentContext.firstOrNull()
     }
 
-    val currentContextValue: Any?
+    val currentContextValue: String?
         get() {
             val context = getCurrentContext()
             if (context != null && this.contextValues.containsKey(context)) {

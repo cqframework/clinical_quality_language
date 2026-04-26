@@ -8,7 +8,7 @@ interface RetrieveProvider {
     fun retrieve(
         context: kotlin.String?,
         contextPath: kotlin.String?,
-        contextValue: Any?,
+        contextValue: kotlin.String?,
         dataType: kotlin.String,
         templateId: kotlin.String?,
         codePath: kotlin.String?,

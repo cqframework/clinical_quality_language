@@ -62,7 +62,7 @@ internal object EvaluatedResourceTestUtils {
             override fun retrieve(
                 context: String?,
                 contextPath: String?,
-                contextValue: Any?,
+                contextValue: String?,
                 dataType: String,
                 templateId: String?,
                 codePath: String?,
@@ -375,7 +375,7 @@ internal object EvaluatedResourceTestUtils {
         override fun retrieve(
             context: String?,
             contextPath: String?,
-            contextValue: Any?,
+            contextValue: String?,
             dataType: String,
             templateId: String?,
             codePath: String?,

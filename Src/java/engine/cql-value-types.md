@@ -1,37 +1,36 @@
 # CQL Value Types
 
-The engine supports a fixed set of CQL value types that are represented using the following Kotlin classes:
+The engine supports a fixed set of CQL value types that are represented using the following Kotlin classes from the `org.opencds.cqf.cql.engine.runtime` package:
 
-- `null` value: represented using Kotlin's `null` and has type `System.Any`
 - Simple types
-  - Boolean: `kotlin.Boolean`
-  - Integer: `kotlin.Int`
-  - Long: `kotlin.Long`
-  - Decimal: `org.cqframework.cql.shared.BigDecimal`
-  - String: `kotlin.String`
+  - Boolean: `Boolean`
+  - Integer: `Integer`
+  - Long: `Long`
+  - Decimal: `Decimal`
+  - String: `String`
   - Temporal types
-    - DateTime: `org.opencds.cqf.cql.engine.runtime.DateTime`
-    - Date: `org.opencds.cqf.cql.engine.runtime.Date`
-    - Time: `org.opencds.cqf.cql.engine.runtime.Time`
+    - DateTime: `DateTime`
+    - Date: `Date`
+    - Time: `Time`
 - Structured types
-  - Tuple: `org.opencds.cqf.cql.engine.runtime.Tuple`
+  - Tuple: `Tuple`
   - Class types (a.k.a. named structured types)
     - System class types (clinical values)
-      - Quantity: `org.opencds.cqf.cql.engine.runtime.Quantity`
-      - Ratio: `org.opencds.cqf.cql.engine.runtime.Ratio`
-      - Code: `org.opencds.cqf.cql.engine.runtime.Code`
-      - Concept: `org.opencds.cqf.cql.engine.runtime.Concept`
+      - Quantity: `Quantity`
+      - Ratio: `Ratio`
+      - Code: `Code`
+      - Concept: `Concept`
       - Vocabulary types
-        - CodeSystem: `org.opencds.cqf.cql.engine.runtime.CodeSystem`
-        - ValueSet: `org.opencds.cqf.cql.engine.runtime.ValueSet`
-    - Non-system classes (e.g. instances of `FHIR.Patient`): `org.opencds.cqf.cql.engine.runtime.ClassInstance`
-- List: represented using Kotlin's `Iterable<T>`
-- Interval: `org.opencds.cqf.cql.engine.runtime.Interval`
+        - CodeSystem: `CodeSystem`
+        - ValueSet: `ValueSet`
+    - Non-system classes (e.g. instances of `FHIR.Patient`): `ClassInstance`
+- List: `List`
+- Interval: `Interval`
+
+CQL's `null` value is represented using Kotlin's `null`.
 
 ## Class types (named structured types)
 
-Class types are structured types with an associated type name. They are represented using `ClassInstance` (except for the system class types) and not e.g. HAPI FHIR structures or other custom classes.
-
-When the engine produces a structured type instance (e.g. when evaluating an expression), it will return a `ClassInstance` with the appropriate `QName` type. Same goes for the structured types expected as inputs to the engine, e.g. as context or parameter values.
+A class type is a structured type with an associated type name. Instances of class types are represented using `ClassInstance` (except for the system class types) and not HAPI FHIR structures or other custom classes.
 
 System class types have specific semantics and behavior defined by the CQL specification. They are therefore represented using their own dedicated classes like `Quantity` and `Code`.

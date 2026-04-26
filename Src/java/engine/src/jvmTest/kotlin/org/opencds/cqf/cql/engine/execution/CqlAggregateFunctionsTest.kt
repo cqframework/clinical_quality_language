@@ -5,13 +5,14 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlAggregateFunctionsTest : CqlTestBase() {
     @Test
     fun all_aggregate_function_tests() {
-        var value: Any?
+        var value: Value?
 
         try {
             value =

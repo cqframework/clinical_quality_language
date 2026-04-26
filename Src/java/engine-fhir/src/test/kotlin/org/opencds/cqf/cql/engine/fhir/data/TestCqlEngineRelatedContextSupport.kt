@@ -82,7 +82,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
     private fun evaluate(
         cqlEngine: CqlEngine,
         expression: String,
-        initialContext: Pair<String, Any?>?,
+        initialContext: Pair<String, String?>?,
     ): Value? {
         val evaluateResult =
             cqlEngine
@@ -99,7 +99,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
             override fun retrieve(
                 context: String?,
                 contextPath: String?,
-                contextValue: Any?,
+                contextValue: String?,
                 dataType: String,
                 templateId: String?,
                 codePath: String?,

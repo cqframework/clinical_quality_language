@@ -13,7 +13,7 @@ class SubExpressionTraceFrame(
     library: VersionedIdentifier?,
     expression: Expression,
     variables: List<Variable>,
-    context: Pair<String, Any?>,
+    context: Pair<String, String?>,
     /** Result of evaluating the sub-expression. */
     val result: Value?,
     /** Nested trace frames (sub-expressions and/or expression def calls). */

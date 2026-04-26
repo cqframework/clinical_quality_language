@@ -26,14 +26,15 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.fhir.terminology.R4FhirTerminologyProvider
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 internal class TestR4FhirQueryGenerator : R4FhirTest() {
     var generator: R4FhirQueryGenerator? = null
     var evaluationOffsetDateTime: OffsetDateTime? = null
     var evaluationDateTime: DateTime? = null
-    var contextValues: MutableMap<String, Any?>? = null
-    var parameters: MutableMap<String, Any?>? = null
+    var contextValues: MutableMap<String, String?>? = null
+    var parameters: MutableMap<String, Value?>? = null
 
     @BeforeEach
     @Throws(FhirVersionMisMatchException::class)
@@ -47,8 +48,8 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
         this.evaluationOffsetDateTime =
             OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 0, ZoneOffset.ofHours(-7))
         this.evaluationDateTime = DateTime(evaluationOffsetDateTime)
-        this.contextValues = HashMap<String, Any?>()
-        this.parameters = HashMap<String, Any?>()
+        this.contextValues = HashMap<String, String?>()
+        this.parameters = HashMap<String, Value?>()
     }
 
     @Test

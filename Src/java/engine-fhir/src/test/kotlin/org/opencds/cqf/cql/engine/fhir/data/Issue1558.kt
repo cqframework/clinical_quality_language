@@ -27,7 +27,7 @@ internal class Issue1558 : FhirExecutionTestBase() {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,

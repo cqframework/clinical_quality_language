@@ -39,7 +39,7 @@ object RetrieveEvaluator {
             val contextTypeName = getNamedTypeForCqlValue(contextValue)!!.getLocalPart()
             val contextId = dataProvider.resolveId(contextValue)
 
-            state.setContextValue(contextTypeName, contextId!!)
+            state.setContextValue(contextTypeName, contextId)
             isEnteredContext = state.enterContext(contextTypeName)
         }
 
