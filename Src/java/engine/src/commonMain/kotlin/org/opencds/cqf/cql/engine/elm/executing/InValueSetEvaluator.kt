@@ -6,8 +6,8 @@ import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
 
@@ -24,7 +24,7 @@ If the code argument is null, the result is null.
 */
 object InValueSetEvaluator {
     @JvmStatic
-    fun inValueSet(code: CqlType?, valueset: CqlType?, state: State?): Boolean? {
+    fun inValueSet(code: Value?, valueset: Value?, state: State?): Boolean? {
         if (code == null) {
             return Boolean.FALSE
         }

@@ -87,7 +87,7 @@ import org.hl7.fhir.r5.model.RelatedArtifact
 import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.utilities.validation.ValidationMessage
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 @Suppress("MaxLineLength", "ReturnCount", "ForbiddenComment", "NestedBlockDepth", "UnusedParameter")
 class DataRequirementsProcessor {
@@ -127,7 +127,7 @@ class DataRequirementsProcessor {
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
         expressions: Set<String>?,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
     ): Library {
@@ -169,7 +169,7 @@ class DataRequirementsProcessor {
         translatedLibrary: CompiledLibrary,
         options: CqlCompilerOptions,
         expressions: Set<String>?,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -400,7 +400,7 @@ class DataRequirementsProcessor {
         requirements: ElmRequirements,
         libraryIdentifier: VersionedIdentifier,
         expressionDefs: Iterable<ExpressionDef?>,
-        parameters: Map<String, CqlType?>?,
+        parameters: Map<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {

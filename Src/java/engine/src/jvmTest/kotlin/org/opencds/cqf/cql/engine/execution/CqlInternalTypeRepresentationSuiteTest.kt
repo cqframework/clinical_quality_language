@@ -16,7 +16,6 @@ import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
@@ -26,6 +25,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlList
@@ -176,7 +176,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
                 ?.value == true
         )
 
-        val elements = LinkedHashMap<kotlin.String, CqlType?>()
+        val elements = LinkedHashMap<kotlin.String, Value?>()
         elements["a"] = 1.toCqlInteger()
         elements["b"] = 2.toCqlInteger()
         value = results["Structured_tuple"]!!.value
@@ -399,7 +399,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         elements.clear()
         elements["a"] = 1.toCqlInteger()
         elements["b"] = "2".toCqlString()
-        val elements2 = mutableMapOf<kotlin.String, CqlType?>()
+        val elements2 = mutableMapOf<kotlin.String, Value?>()
         elements2["x"] = 2.toCqlInteger()
         elements2["z"] = "3".toCqlString()
         value = results["List_TupleList"]!!.value

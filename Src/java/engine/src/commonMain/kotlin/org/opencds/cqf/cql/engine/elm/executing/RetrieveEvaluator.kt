@@ -6,10 +6,10 @@ import org.hl7.elm.r1.ValueSetRef
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.runtime.toCqlList
@@ -18,12 +18,12 @@ object RetrieveEvaluator {
     fun internalEvaluate(
         elm: Retrieve?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
+        visitor: ElmLibraryVisitor<Value?, State?>,
     ): List? {
         val context = elm!!.context
 
         var isEnteredContext = false
-        var result: Iterable<CqlType?>?
+        var result: Iterable<Value?>?
 
         if (context != null) {
             /*

@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 CalculateAgeInYearsAt(birthDate Date, asOf Date) Integer
@@ -28,7 +28,7 @@ The CalculateAgeAt operators are defined in terms of a date/time duration calcul
 */
 object CalculateAgeAtEvaluator {
     @JvmStatic
-    fun calculateAgeAt(birthDate: CqlType?, asOf: CqlType?, precision: String?): CqlType? {
+    fun calculateAgeAt(birthDate: Value?, asOf: Value?, precision: String?): Value? {
         if (birthDate == null || asOf == null) {
             return null
         }

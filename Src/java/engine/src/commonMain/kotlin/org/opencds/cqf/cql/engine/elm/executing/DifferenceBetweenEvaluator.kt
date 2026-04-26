@@ -3,12 +3,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -47,7 +47,7 @@ DateTime(2014, 5, 12) and DateTime(2014, 5, 25) respectively
 */
 object DifferenceBetweenEvaluator {
     @JvmStatic
-    fun difference(left: CqlType?, right: CqlType?, precision: Precision): CqlType? {
+    fun difference(left: Value?, right: Value?, precision: Precision): Value? {
         var precision = precision
         if (left == null || right == null) {
             return null

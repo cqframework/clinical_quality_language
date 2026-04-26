@@ -47,7 +47,6 @@ import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
 import org.opencds.cqf.cql.engine.fhir.converter.ConverterTestUtils.YYYY_MM_DD
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
@@ -56,6 +55,7 @@ import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
@@ -98,8 +98,8 @@ internal class R5TypeConverterTests {
             return compareIterables(left, right as Iterable<Any?>)
         }
 
-        if (left is CqlType) {
-            return left == right as CqlType
+        if (left is Value) {
+            return left == right as Value
         }
 
         if (left is Base) {

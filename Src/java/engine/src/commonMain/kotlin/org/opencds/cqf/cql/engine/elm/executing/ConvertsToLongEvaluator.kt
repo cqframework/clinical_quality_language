@@ -3,9 +3,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -19,7 +19,7 @@ import org.opencds.cqf.cql.engine.runtime.String
 */
 object ConvertsToLongEvaluator {
     @JvmStatic
-    fun convertsToLong(argument: CqlType?): Boolean? {
+    fun convertsToLong(argument: Value?): Boolean? {
         if (argument == null) {
             return null
         }

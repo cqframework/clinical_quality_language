@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 date from(argument DateTime) Date
@@ -15,7 +15,7 @@ NOTE: this is within the purview of DateTimeComponentFrom
 */
 object DateFromEvaluator {
     @JvmStatic
-    fun dateFrom(operand: CqlType?): Date? {
+    fun dateFrom(operand: Value?): Date? {
         if (operand == null) {
             return null
         }

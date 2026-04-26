@@ -3,10 +3,10 @@ package org.opencds.cqf.cql.engine.runtime
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 
-class Quantity : StructuredValue(), NamedCqlType, Comparable<Quantity> {
+class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
     override val type = quantityTypeName
 
-    override val elements: MutableMap<kotlin.String, CqlType?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() = mutableMapOf("value" to value?.toCqlDecimal(), "unit" to unit?.toCqlString())
 
     var value: BigDecimal? = BigDecimal("0.0")

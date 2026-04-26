@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 Max(argument List<Integer>) Integer
@@ -25,7 +25,7 @@ If the source is null, the result is null.
 */
 object MaxEvaluator {
     @JvmStatic
-    fun max(source: CqlType?, state: State?): CqlType? {
+    fun max(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }

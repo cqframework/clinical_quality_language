@@ -4,9 +4,9 @@ package org.opencds.cqf.cql.engine.runtime
 class Tuple : StructuredValue() {
     override val typeAsString = "Tuple"
 
-    override val elements: MutableMap<kotlin.String, CqlType?> = mutableMapOf()
+    override val elements: MutableMap<kotlin.String, Value?> = mutableMapOf()
 
-    fun withElements(elements: MutableMap<kotlin.String, CqlType?>): Tuple {
+    fun withElements(elements: MutableMap<kotlin.String, Value?>): Tuple {
         this.elements.clear()
         this.elements.putAll(elements)
         return this

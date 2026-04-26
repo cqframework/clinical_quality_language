@@ -5,9 +5,9 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -105,8 +105,8 @@ Note that this operator can be invoked using either the on or before or the befo
 */
 object SameOrBeforeEvaluator {
     fun onOrBefore(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {
@@ -136,8 +136,8 @@ object SameOrBeforeEvaluator {
 
     @JvmStatic
     fun sameOrBefore(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {

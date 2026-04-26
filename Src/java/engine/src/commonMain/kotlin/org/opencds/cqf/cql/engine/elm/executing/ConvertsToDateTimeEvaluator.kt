@@ -3,11 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.ZoneOffset
 
 /*
@@ -28,7 +28,7 @@ import org.opencds.cqf.cql.engine.util.ZoneOffset
 */
 object ConvertsToDateTimeEvaluator {
     @JvmStatic
-    fun convertsToDateTime(argument: CqlType?, offset: ZoneOffset?): Boolean? {
+    fun convertsToDateTime(argument: Value?, offset: ZoneOffset?): Boolean? {
         if (argument == null) {
             return null
         }

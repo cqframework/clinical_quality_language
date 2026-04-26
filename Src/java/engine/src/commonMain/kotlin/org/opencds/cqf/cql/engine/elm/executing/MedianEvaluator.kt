@@ -4,12 +4,12 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.SortHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
@@ -23,7 +23,7 @@ If the source is null, the result is null.
 */
 object MedianEvaluator {
     @JvmStatic
-    fun median(source: CqlType?, state: State?): CqlType? {
+    fun median(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
@@ -35,7 +35,7 @@ object MedianEvaluator {
                 return null
             }
 
-            val values = mutableListOf<CqlType?>()
+            val values = mutableListOf<Value?>()
             while (itr.hasNext()) {
                 val value = itr.next()
                 if (value != null) {
@@ -47,7 +47,7 @@ object MedianEvaluator {
                 return null
             }
 
-            values.sortWith(CqlList(state).valueSort)
+            values.sortWith { left, right -> SortHelper.compare(left, right, state) }
 
             if (values.size % 2 != 0) {
                 return values[values.size / 2]

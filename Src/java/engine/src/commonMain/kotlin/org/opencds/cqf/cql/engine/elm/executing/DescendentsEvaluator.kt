@@ -1,16 +1,16 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 object DescendentsEvaluator {
 
     @JvmStatic
-    fun descendents(source: CqlType?): List? {
+    fun descendents(source: Value?): List? {
         if (source == null) {
             return null
         }
@@ -18,8 +18,8 @@ object DescendentsEvaluator {
         return getDescendents(source)
     }
 
-    fun getDescendents(source: CqlType?): List {
-        val descendents = mutableListOf<CqlType?>()
+    fun getDescendents(source: Value?): List {
+        val descendents = mutableListOf<Value?>()
 
         if (source is List) {
             for (element in source) {

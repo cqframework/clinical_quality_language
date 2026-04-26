@@ -5,19 +5,19 @@ import org.hl7.elm.r1.Filter
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 object FilterEvaluator {
     @JvmStatic
-    fun filter(elm: Filter?, source: CqlType?, condition: CqlType?, state: State?): List? {
+    fun filter(elm: Filter?, source: Value?, condition: Value?, state: State?): List? {
 
         if (source == null) {
             return null
         }
 
-        val ret = mutableListOf<CqlType?>()
+        val ret = mutableListOf<Value?>()
 
         if (source is List) {
             for (obj in source) {

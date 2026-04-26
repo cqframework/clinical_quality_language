@@ -4,18 +4,18 @@ import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.CodeSystemRef
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object AnyInCodeSystemEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        codes: CqlType?,
+        codes: Value?,
         codeSystemRef: CodeSystemRef?,
-        codeSystem: CqlType?,
+        codeSystem: Value?,
         state: State?,
     ): Boolean? {
-        var cs: CqlType? = null
+        var cs: Value? = null
         if (codeSystemRef != null) {
             cs = CodeSystemRefEvaluator.toCodeSystem(codeSystemRef, state)
         } else if (codeSystem != null) {

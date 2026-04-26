@@ -4,8 +4,8 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.exception.UndefinedResult
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
@@ -18,7 +18,7 @@ If the argument is null, the result is null.
 */
 object LnEvaluator {
     @JvmStatic
-    fun ln(operand: CqlType?): Decimal? {
+    fun ln(operand: Value?): Decimal? {
         if (operand == null) {
             return null
         }
@@ -36,7 +36,7 @@ object LnEvaluator {
                     throw UndefinedResult(nfe.message)
                 }
             }
-            return Value.verifyPrecision(retVal, null).toCqlDecimal()
+            return DecimalHelper.verifyPrecision(retVal, null).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument("Ln(Decimal)", "Ln(${operand.typeAsString})")

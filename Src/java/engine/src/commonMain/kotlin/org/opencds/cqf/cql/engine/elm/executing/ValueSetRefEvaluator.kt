@@ -4,7 +4,7 @@ import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.ValueSetRef
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
@@ -27,7 +27,7 @@ object ValueSetRefEvaluator {
     }
 
     @JvmStatic
-    fun internalEvaluate(state: State?, vsr: ValueSetRef?): CqlType {
+    fun internalEvaluate(state: State?, vsr: ValueSetRef?): Value {
         val vs = toValueSet(state, vsr)
 
         if (vsr!!.isPreserve() != null && vsr.isPreserve()!!) {

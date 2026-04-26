@@ -188,7 +188,7 @@ class R4FhirQueryGenerator(
         val maps =
             setupQueries(
                 contextType,
-                contextPath as String?,
+                contextPath,
                 contextValue,
                 dataRequirement.getType(),
                 templateId,

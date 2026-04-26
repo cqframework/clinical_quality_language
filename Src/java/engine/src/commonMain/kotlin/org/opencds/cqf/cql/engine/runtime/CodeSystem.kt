@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 class CodeSystem : Vocabulary() {
     override val type = codeSystemTypeName
 
-    override val elements: MutableMap<kotlin.String, CqlType?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() =
             mutableMapOf(
                 "id" to id?.toCqlString(),

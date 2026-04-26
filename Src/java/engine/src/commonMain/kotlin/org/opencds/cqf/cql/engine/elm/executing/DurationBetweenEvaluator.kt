@@ -3,13 +3,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -37,7 +37,7 @@ days between DateTime(2011, 5, 1) and DateTime(2012, 5, 6) = 365 + 5 = 370 days
 */
 object DurationBetweenEvaluator {
     @JvmStatic
-    fun duration(left: CqlType?, right: CqlType?, precision: Precision?): CqlType? {
+    fun duration(left: Value?, right: Value?, precision: Precision?): Value? {
         var precision = precision
         if (left == null || right == null) {
             return null

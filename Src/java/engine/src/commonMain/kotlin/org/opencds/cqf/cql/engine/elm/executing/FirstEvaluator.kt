@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 First(argument List<T>) T
@@ -12,7 +12,7 @@ If the argument is null, the result is null.
 */
 object FirstEvaluator {
     @JvmStatic
-    fun first(source: CqlType?): CqlType? {
+    fun first(source: Value?): Value? {
         if (source == null) {
             return null
         }

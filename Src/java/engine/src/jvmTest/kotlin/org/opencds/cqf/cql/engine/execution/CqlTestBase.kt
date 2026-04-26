@@ -13,8 +13,8 @@ import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.BeforeEach
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 
 open class CqlTestBase {
     protected open val cqlSubdirectory: String?
@@ -108,7 +108,7 @@ open class CqlTestBase {
         libraryIdentifier: VersionedIdentifier,
         expressionName: String,
         evaluationDateTime: ZonedDateTime? = null,
-    ): CqlType? {
+    ): Value? {
         return evaluate {
                 library(libraryIdentifier) { expressions(expressionName) }
                 this.evaluationDateTime = evaluationDateTime

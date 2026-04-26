@@ -3,14 +3,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object DateEvaluator {
     @JvmStatic
-    fun internalEvaluate(year: CqlType?, month: CqlType?, day: CqlType?): BaseTemporal? {
+    fun internalEvaluate(year: Value?, month: Value?, day: Value?): BaseTemporal? {
         if (year is Integer? && month is Integer? && day is Integer?) {
             val year = year?.value
             var month = month?.value

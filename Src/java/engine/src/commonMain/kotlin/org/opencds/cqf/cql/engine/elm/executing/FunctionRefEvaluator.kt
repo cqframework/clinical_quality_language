@@ -10,12 +10,12 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.NamedTypeValue
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
-import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 
 object FunctionRefEvaluator {
     private val logger = KotlinLogging.logger("FunctionRefEvaluator")
@@ -23,9 +23,9 @@ object FunctionRefEvaluator {
     fun internalEvaluate(
         functionRef: FunctionRef?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
-        val arguments: ArrayList<CqlType?> = ArrayList(functionRef!!.operand.size)
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
+        val arguments: ArrayList<Value?> = ArrayList(functionRef!!.operand.size)
         for (operand in functionRef.operand) {
             arguments.add(visitor.visitExpression(operand, state))
         }
@@ -43,9 +43,9 @@ object FunctionRefEvaluator {
     fun evaluateFunctionDef(
         functionDef: FunctionDef,
         state: State,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-        arguments: MutableList<CqlType?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+        arguments: MutableList<Value?>,
+    ): Value? {
         if (true == functionDef.isExternal()) {
             return state.environment
                 .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
@@ -70,7 +70,7 @@ object FunctionRefEvaluator {
     internal fun resolveOrCacheFunctionDef(
         state: State?,
         functionRef: FunctionRef,
-        arguments: kotlin.collections.List<CqlType?>,
+        arguments: kotlin.collections.List<Value?>,
     ): FunctionDef {
         // We can cache a function ref if:
         // 1. ELM signatures are provided OR
@@ -95,7 +95,7 @@ object FunctionRefEvaluator {
     internal fun resolveFunctionRef(
         state: State?,
         functionRef: FunctionRef,
-        arguments: kotlin.collections.List<CqlType?>,
+        arguments: kotlin.collections.List<Value?>,
     ): FunctionDef {
         val name = functionRef.name
         val signature = functionRef.signature
@@ -108,7 +108,7 @@ object FunctionRefEvaluator {
     fun resolveFunctionRef(
         state: State?,
         name: String?,
-        arguments: kotlin.collections.List<CqlType?>,
+        arguments: kotlin.collections.List<Value?>,
         signature: kotlin.collections.List<TypeSpecifier>,
     ): kotlin.collections.List<FunctionDef> {
         val namedDefs = Libraries.getFunctionDefs(name, state!!.getCurrentLibrary()!!)
@@ -157,7 +157,7 @@ object FunctionRefEvaluator {
     fun pickFunctionDef(
         state: State?,
         name: String?,
-        arguments: kotlin.collections.List<CqlType?>,
+        arguments: kotlin.collections.List<Value?>,
         signature: kotlin.collections.List<TypeSpecifier>,
         functionDefs: kotlin.collections.List<FunctionDef>,
     ): FunctionDef {
@@ -194,7 +194,7 @@ object FunctionRefEvaluator {
 
     fun matchesTypes(
         functionDef: FunctionDef,
-        arguments: kotlin.collections.List<CqlType?>,
+        arguments: kotlin.collections.List<Value?>,
         state: State?,
     ): Boolean {
         val operands = functionDef.operand
@@ -215,7 +215,7 @@ object FunctionRefEvaluator {
      * be passed to a function expecting the specified type). Returns null if we cannot determine
      * compatibility. This is not the same as is-checking (see [IsEvaluator.`is`]).
      */
-    fun isCompatible(value: CqlType?, type: TypeSpecifier, state: State?): Boolean? {
+    fun isCompatible(value: Value?, type: TypeSpecifier, state: State?): Boolean? {
         // System.Any is a supertype of all types
         if (type is NamedTypeSpecifier && type.name == anyTypeName) {
             return true
@@ -228,29 +228,29 @@ object FunctionRefEvaluator {
 
         when (type) {
             is NamedTypeSpecifier -> {
-                val valueNamedType = getNamedTypeForCqlValue(value)
+                if (value is NamedTypeValue) {
+                    val valueNamedType = value.type
 
-                if (valueNamedType == null) {
-                    // value is not an instance of a named type
-                    return false
+                    if (valueNamedType == type.name) {
+                        // Types are the same
+                        return true
+                    }
+
+                    val provider =
+                        state!!
+                            .environment
+                            .resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
+
+                    if (provider == null) {
+                        // Cannot determine compatibility
+                        return null
+                    }
+
+                    return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
                 }
 
-                if (valueNamedType == type.name) {
-                    // Types are the same
-                    return true
-                }
-
-                val provider =
-                    state!!
-                        .environment
-                        .resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
-
-                if (provider == null) {
-                    // Cannot determine compatibility
-                    return null
-                }
-
-                return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
+                // value is not an instance of a named type
+                return false
             }
             is ListTypeSpecifier -> {
                 if (value is List) {

@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -18,7 +18,7 @@ If either argument is null, the result is null.
 */
 object IndexOfEvaluator {
     @JvmStatic
-    fun indexOf(source: CqlType?, elementToFind: CqlType?, state: State?): Integer? {
+    fun indexOf(source: Value?, elementToFind: Value?, state: State?): Integer? {
         if (source == null || elementToFind == null) {
             return null
         }

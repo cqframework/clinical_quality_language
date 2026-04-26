@@ -3,12 +3,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
@@ -28,13 +28,13 @@ If the source is null, the result is null.
 @Suppress("CyclomaticComplexMethod", "ReturnCount")
 object ProductEvaluator {
     @JvmStatic
-    fun product(source: CqlType?, state: State?): CqlType? {
+    fun product(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
 
         if (source is List) {
-            var result: CqlType? = null
+            var result: Value? = null
             for (element in source) {
                 if (element == null) return null
                 if (result == null) {

@@ -7,7 +7,7 @@ import org.hl7.elm.r1.IntervalTypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 contains(argument List<T>, element T) Boolean
@@ -25,12 +25,7 @@ If precision is specified and the point type is a date/time type, comparisons us
 If either argument is null, the result is null.
 */
 object ContainsEvaluator {
-    fun contains(
-        left: CqlType?,
-        right: CqlType?,
-        precision: kotlin.String?,
-        state: State?,
-    ): Boolean? {
+    fun contains(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         try {
             return InEvaluator.`in`(right, left, precision, state)
         } catch (e: InvalidOperatorArgument) {
@@ -43,8 +38,8 @@ object ContainsEvaluator {
 
     @JvmStatic
     fun internalEvaluate(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         expression: Expression?,
         precision: kotlin.String?,
         state: State?,

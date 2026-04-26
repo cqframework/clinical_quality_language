@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
@@ -22,7 +22,7 @@ If precision is not specified or null, 0 is assumed.
 */
 object RoundEvaluator {
     @JvmStatic
-    fun round(operand: CqlType?, precision: CqlType?): Decimal? {
+    fun round(operand: Value?, precision: Value?): Decimal? {
         var rm = RoundingMode.HALF_UP
 
         if (operand == null) {

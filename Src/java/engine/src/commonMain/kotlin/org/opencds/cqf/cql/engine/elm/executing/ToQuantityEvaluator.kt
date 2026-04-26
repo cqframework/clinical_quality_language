@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
@@ -71,7 +71,7 @@ object ToQuantityEvaluator {
     private fun setValue(quantity: Quantity, str: kotlin.String): Quantity? {
         try {
             val number = BigDecimal(str)
-            if (Value.validateDecimal(number, null) == null) {
+            if (DecimalHelper.validateDecimal(number, null) == null) {
                 return null
             }
             quantity.value = number
@@ -82,7 +82,7 @@ object ToQuantityEvaluator {
     }
 
     @JvmStatic
-    fun toQuantity(operand: CqlType?, state: State?): Quantity? {
+    fun toQuantity(operand: Value?, state: State?): Quantity? {
         if (operand == null) {
             return null
         }
@@ -95,12 +95,12 @@ object ToQuantityEvaluator {
             return toQuantity(operand.value)
         } else if (operand is Integer) {
             val ret = BigDecimal(operand.value)
-            if (Value.validateDecimal(ret, null) == null) {
+            if (DecimalHelper.validateDecimal(ret, null) == null) {
                 return null
             }
             return Quantity().withValue(ret).withDefaultUnit()
         } else if (operand is Decimal) {
-            if (Value.validateDecimal(operand.value, null) == null) {
+            if (DecimalHelper.validateDecimal(operand.value, null) == null) {
                 return null
             }
             return Quantity().withValue(operand.value).withDefaultUnit()

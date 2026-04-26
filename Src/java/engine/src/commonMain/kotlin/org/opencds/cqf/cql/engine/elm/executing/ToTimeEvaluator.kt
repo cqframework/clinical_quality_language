@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -29,7 +29,7 @@ If the argument is null, the result is null.
 */
 object ToTimeEvaluator {
     @JvmStatic
-    fun toTime(operand: CqlType?): Time? {
+    fun toTime(operand: Value?): Time? {
         if (operand == null) {
             return null
         }

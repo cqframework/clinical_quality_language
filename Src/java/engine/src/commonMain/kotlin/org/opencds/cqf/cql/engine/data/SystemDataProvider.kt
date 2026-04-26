@@ -4,10 +4,10 @@ import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
 import org.opencds.cqf.cql.engine.runtime.codeSystemTypeName
@@ -29,7 +29,7 @@ open class SystemDataProvider : DataProvider {
         dateLowPath: kotlin.String?,
         dateHighPath: kotlin.String?,
         dateRange: Interval?,
-    ): Iterable<CqlType?>? {
+    ): Iterable<Value?>? {
         throw IllegalArgumentException("SystemDataProvider does not support retrieval.")
     }
 
@@ -48,7 +48,7 @@ open class SystemDataProvider : DataProvider {
                 valueType == codeSystemTypeName.getLocalPart()) && type == vocabularyTypeName
     }
 
-    override fun createInstance(typeName: String?): CqlType? {
+    override fun createInstance(typeName: String?): Value? {
         return when (typeName) {
             "Quantity" -> Quantity()
             "Ratio" -> Ratio()
@@ -60,7 +60,7 @@ open class SystemDataProvider : DataProvider {
         }
     }
 
-    override fun resolveId(target: CqlType?): String? {
+    override fun resolveId(target: Value?): String? {
         return null
     }
 

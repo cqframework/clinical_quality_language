@@ -5,11 +5,11 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 
 /*
@@ -25,8 +25,8 @@ If either argument is null, the result is null.
 */
 object MeetsEvaluator {
     fun meetsOperation(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {
@@ -90,7 +90,7 @@ object MeetsEvaluator {
     }
 
     @JvmStatic
-    fun meets(left: CqlType?, right: CqlType?, precision: kotlin.String?, state: State?): Boolean? {
+    fun meets(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }

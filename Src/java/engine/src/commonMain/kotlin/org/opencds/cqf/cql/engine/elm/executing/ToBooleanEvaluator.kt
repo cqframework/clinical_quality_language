@@ -4,10 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 ToBoolean(argument String) Boolean
@@ -22,7 +22,7 @@ If the argument is null, the result is null.
 */
 object ToBooleanEvaluator {
     @JvmStatic
-    fun toBoolean(operand: CqlType?): Boolean? {
+    fun toBoolean(operand: Value?): Boolean? {
         if (operand == null) {
             return null
         }

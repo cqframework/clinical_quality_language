@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -18,7 +18,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
  */
 object StartsWithEvaluator {
     @JvmStatic
-    fun startsWith(argument: CqlType?, prefix: CqlType?): Boolean? {
+    fun startsWith(argument: Value?, prefix: Value?): Boolean? {
         if (argument == null || prefix == null) {
             return null
         }

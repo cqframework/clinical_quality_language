@@ -15,7 +15,6 @@ import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -30,6 +29,7 @@ import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
 import org.opencds.cqf.cql.engine.runtime.dateTypeName
 import org.opencds.cqf.cql.engine.runtime.quantityTypeName
@@ -63,7 +63,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         return converted
     }
 
-    override fun toFhirType(value: CqlType?): IBase? {
+    override fun toFhirType(value: Value?): IBase? {
         if (value == null) {
             return null
         }
@@ -202,18 +202,18 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
     }
 
     override fun isCqlType(value: Any): kotlin.Boolean {
-        return value is CqlType
+        return value is Value
     }
 
-    override fun toCqlTypes(values: Iterable<*>): Iterable<CqlType?> {
-        val converted = mutableListOf<CqlType?>()
+    override fun toCqlTypes(values: Iterable<*>): Iterable<Value?> {
+        val converted = mutableListOf<Value?>()
         for (value in values) {
             if (value == null) {
                 converted.add(null)
             } else if (value is Iterable<*>) {
                 converted.add(toCqlTypes(value).toCqlList())
             } else if (isCqlType(value)) {
-                converted.add(value as CqlType)
+                converted.add(value as Value)
             } else {
                 converted.add(toCqlType(value))
             }
@@ -222,7 +222,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         return converted
     }
 
-    override fun toCqlType(value: Any?): CqlType? {
+    override fun toCqlType(value: Any?): Value? {
         if (value == null) {
             return null
         }
@@ -230,7 +230,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         require(value !is Iterable<*>) { "use toCqlTypes(Iterable<Object>) for iterables" }
 
         if (isCqlType(value)) {
-            return value as CqlType
+            return value as Value
         }
 
         require(isFhirType(value)) { "can't convert ${value.javaClass.name} to CQL type" }

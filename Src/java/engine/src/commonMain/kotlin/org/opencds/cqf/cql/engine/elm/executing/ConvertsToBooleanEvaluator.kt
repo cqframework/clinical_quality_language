@@ -4,10 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -27,7 +27,7 @@ object ConvertsToBooleanEvaluator {
     private val validFalseValues = arrayOf("false", "f", "no", "n", "0")
 
     @JvmStatic
-    fun convertsToBoolean(argument: CqlType?): Boolean? {
+    fun convertsToBoolean(argument: Value?): Boolean? {
         if (argument == null) {
             return null
         }

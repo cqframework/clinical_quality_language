@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.math.BigDecimal
 import java.time.OffsetDateTime
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -14,13 +13,13 @@ import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlList
@@ -76,7 +75,7 @@ internal class CqlTypesTest : CqlTestBase() {
 
         value = results["AnyTuple"]!!.value
         assertEquals(
-            mutableMapOf<kotlin.String, CqlType?>(
+            mutableMapOf<kotlin.String, Value?>(
                 "id" to 5.toCqlInteger(),
                 "name" to "Chris".toCqlString(),
             ),

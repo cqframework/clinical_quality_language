@@ -6,9 +6,9 @@ import org.opencds.cqf.cql.engine.exception.UndefinedResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -33,7 +33,7 @@ If either argument is null, the result is null.
 */
 object ExceptEvaluator {
     @JvmStatic
-    fun except(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun except(left: Value?, right: Value?, state: State?): Value? {
         if (left == null) {
             return null
         }
@@ -154,7 +154,7 @@ object ExceptEvaluator {
         } else if (left is List) {
             val rightArr = right as List?
 
-            val result = mutableListOf<CqlType?>()
+            val result = mutableListOf<Value?>()
             var `in`: Boolean?
             for (leftItem in left) {
                 `in` = InEvaluator.`in`(leftItem, rightArr, null, state)

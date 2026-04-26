@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 // Fluent functions were not sorting correctly due
 // to the engine not looking in the variable stack
@@ -56,7 +56,7 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<CqlType?>? {
+                ): Iterable<Value?>? {
                     return when (dataType) {
                         "Patient" -> mutableListOf(patientCqlValue)
                         "Observation" ->

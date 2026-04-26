@@ -8,7 +8,7 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.opencds.cqf.cql.engine.data.StaticFunction
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 private val integerOperandType =
@@ -148,7 +148,7 @@ class FunctionEvaluationApiTest : CqlTestBase() {
                     StaticFunction(
                         it.name,
                         { arguments ->
-                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as CqlType?
+                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as Value?
                         },
                     )
                 }

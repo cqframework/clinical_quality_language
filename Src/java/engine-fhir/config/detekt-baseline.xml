@@ -7,8 +7,8 @@
     <ID>ComplexCondition:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.&lt;no name provided>$PATIENT == dataType &amp;&amp; PRACTITIONER == context &amp;&amp; GENERAL_PRACTITIONER == contextPath &amp;&amp; equals</ID>
     <ID>ComplexCondition:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.&lt;no name provided>$PRACTITIONER == dataType &amp;&amp; PATIENT == context &amp;&amp; ID == codePath &amp;&amp; codesEqual(codes, PRACTITIONER_SLASH + XYZ)</ID>
     <ID>CyclomaticComplexMethod:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( codes: Iterable&lt;Code?>?, valueSet: String?, ): MutableList&lt;TokenOrListParam></ID>
-    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): CqlType?</ID>
-    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: CqlType?): IBase?</ID>
+    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): Value?</ID>
+    <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: Value?): IBase?</ID>
     <ID>CyclomaticComplexMethod:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, Any?>?, parameters: MutableMap&lt;String, Any?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
     <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: Boolean = false, ): ClassInstance?</ID>
     <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$open fun resolveType(typeName: String?): Class&lt;*>?</ID>
@@ -141,8 +141,8 @@
     <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( codes: Iterable&lt;Code?>?, valueSet: String?, ): MutableList&lt;TokenOrListParam></ID>
     <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun getCodeParams( dataType: String?, codePath: String?, codes: Iterable&lt;Code?>?, valueSet: String?, ): Pair&lt;String, MutableList&lt;TokenOrListParam>>?</ID>
     <ID>ReturnCount:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$protected fun innerSetupQueries( templateParam: Pair&lt;String, IQueryParameterType>?, contextParam: Pair&lt;String, IQueryParameterType>?, dateRangeParams: MutableList&lt;Pair&lt;String, DateRangeParam>>?, codeParams: MutableList&lt;Pair&lt;String, MutableList&lt;TokenOrListParam>>>?, ): MutableList&lt;SearchParameterMap></ID>
-    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): CqlType?</ID>
-    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: CqlType?): IBase?</ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): Value?</ID>
+    <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: Value?): IBase?</ID>
     <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$protected fun toDateTime(calendar: Calendar, calendarConstant: Int): DateTime</ID>
     <ID>ReturnCount:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$protected fun toTime(calendar: Calendar, calendarConstant: Int): Time</ID>
     <ID>ReturnCount:Dstu2FhirModelResolver.kt$Dstu2FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
@@ -159,11 +159,11 @@
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$open fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun `is`(valueType: String, type: QName): Boolean?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun getContextPath( contextType: kotlin.String?, targetType: kotlin.String?, ): kotlin.String?</ID>
-    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun resolveId(target: CqlType?): kotlin.String?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun resolveId(target: Value?): kotlin.String?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun innerGetContextPath( visitedElements: MutableSet&lt;String?>, child: BaseRuntimeChildDefinition, type: Class&lt;out IBase?>?, ): String?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun resolveRuntimeDefinition(base: IBase): BaseRuntimeElementCompositeDefinition&lt;*></ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun toDateTime( value: BaseDateTimeType, calendarConstant: Int = this.getCalendarConstant(value), ): DateTime</ID>
-    <ID>ReturnCount:Issue1226.kt$Issue1226.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;CqlType?></ID>
+    <ID>ReturnCount:Issue1226.kt$Issue1226.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;Value?></ID>
     <ID>ReturnCount:R4FhirModelResolver.kt$R4FhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
     <ID>ReturnCount:R4FhirTypeConverter.kt$R4FhirTypeConverter$override fun toCqlInterval(value: ICompositeType?): Interval?</ID>
     <ID>ReturnCount:R4FhirTypeConverter.kt$R4FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
@@ -176,7 +176,7 @@
     <ID>ReturnCount:R5TypeConverterTests.kt$R5TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
     <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun createSearchParameter( context: String?, dataType: String?, path: String?, value: String?, ): Pair&lt;String, IQueryParameterType>?</ID>
     <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun getSearchParameterDefinition( dataType: String?, path: String?, paramType: RestSearchParameterTypeEnum?, ): RuntimeSearchParam?</ID>
-    <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;CqlType?>?</ID>
+    <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: Any?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;Value?>?</ID>
     <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion$private fun codesEqual(codes: Iterable&lt;Code>?, equalTo: String): Boolean</ID>
     <ID>ReturnCount:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
     <ID>SpreadOperator:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$(*codings)</ID>

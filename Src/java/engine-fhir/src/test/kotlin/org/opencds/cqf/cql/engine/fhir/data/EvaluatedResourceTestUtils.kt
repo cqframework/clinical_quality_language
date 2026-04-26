@@ -36,8 +36,8 @@ import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -72,7 +72,7 @@ internal object EvaluatedResourceTestUtils {
                 dateLowPath: String?,
                 dateHighPath: String?,
                 dateRange: Interval?,
-            ): Iterable<CqlType?>? {
+            ): Iterable<Value?>? {
                 return when (dataType) {
                     "Encounter" -> mutableListOf(fhirModelResolver.toCqlValue(ENCOUNTER))
                     "Condition" -> mutableListOf(fhirModelResolver.toCqlValue(CONDITION))
@@ -322,7 +322,7 @@ internal object EvaluatedResourceTestUtils {
             .sortedBy { it.second }
     }
 
-    private fun assertValuesEqual(expectedValue: Collection<IBaseResource>, actualValue: CqlType?) {
+    private fun assertValuesEqual(expectedValue: Collection<IBaseResource>, actualValue: Value?) {
         assertIs<org.opencds.cqf.cql.engine.runtime.List>(actualValue)
 
         assertResourcesEqual(expectedValue, actualValue)
@@ -385,7 +385,7 @@ internal object EvaluatedResourceTestUtils {
             dateLowPath: String?,
             dateHighPath: String?,
             dateRange: Interval?,
-        ): Iterable<CqlType?>? {
+        ): Iterable<Value?>? {
             return null
         }
 

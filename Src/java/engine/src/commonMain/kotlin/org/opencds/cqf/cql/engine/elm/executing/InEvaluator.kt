@@ -6,9 +6,9 @@ import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -34,7 +34,7 @@ If either argument is null, the result is null.
 
 */
 object InEvaluator {
-    fun `in`(left: CqlType?, right: CqlType?, precision: kotlin.String?, state: State?): Boolean? {
+    fun `in`(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         if (right == null) {
             return Boolean.FALSE
         }
@@ -52,7 +52,7 @@ object InEvaluator {
     }
 
     private fun intervalIn(
-        left: CqlType?,
+        left: Value?,
         right: Interval,
         precision: kotlin.String?,
         state: State?,
@@ -143,7 +143,7 @@ object InEvaluator {
         return AndEvaluator.and(greaterOrEqual, lessOrEqual)
     }
 
-    private fun listIn(left: CqlType?, right: List, state: State?): Boolean {
+    private fun listIn(left: Value?, right: List, state: State?): Boolean {
         var isEqual: Boolean?
         for (element in right) {
             // Nulls are considered equivalent in lists
@@ -168,8 +168,8 @@ object InEvaluator {
 
     @JvmStatic
     fun internalEvaluate(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {

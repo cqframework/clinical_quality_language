@@ -2,11 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlLong
@@ -23,7 +23,7 @@ If the argument is null, the result is null.
 */
 object AbsEvaluator {
     @JvmStatic
-    fun abs(operand: CqlType?): CqlType? {
+    fun abs(operand: Value?): Value? {
         if (operand == null) {
             return null
         }

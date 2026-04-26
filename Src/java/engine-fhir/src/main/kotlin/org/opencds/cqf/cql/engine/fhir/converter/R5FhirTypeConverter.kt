@@ -43,7 +43,6 @@ import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
@@ -55,6 +54,7 @@ import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
 import org.opencds.cqf.cql.engine.runtime.dateTypeName
 import org.opencds.cqf.cql.engine.runtime.quantityTypeName
@@ -254,7 +254,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
     private fun addElementToParameter(
         param: Parameters.ParametersParameterComponent,
         key: kotlin.String?,
-        value: CqlType?,
+        value: Value?,
     ) {
         if (value == null) {
             // Null value, add a single empty value with an extension indicating the reason
@@ -499,7 +499,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
         return outcome
     }
 
-    override fun toCqlText(value: CqlType?): IBaseDatatype? {
+    override fun toCqlText(value: Value?): IBaseDatatype? {
         if (value == null) {
             return null
         }

@@ -5,9 +5,9 @@ import org.cqframework.cql.shared.QName
 import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Constants
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
-import org.opencds.cqf.cql.engine.runtime.NamedCqlType
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Value
@@ -36,20 +36,20 @@ For any other type, attempting to invoke minimum results in an error.
 */
 object MinValueEvaluator {
     @JvmStatic
-    fun minValue(type: QName?): NamedCqlType? {
+    fun minValue(type: QName?): Value? {
         if (type == null) {
             return null
         }
 
         return when (type) {
-            integerTypeName -> Value.MIN_INT.toCqlInteger()
-            longTypeName -> Value.MIN_LONG.toCqlLong()
-            decimalTypeName -> Value.MIN_DECIMAL.toCqlDecimal()
+            integerTypeName -> Constants.MIN_INT.toCqlInteger()
+            longTypeName -> Constants.MIN_LONG.toCqlLong()
+            decimalTypeName -> Constants.MIN_DECIMAL.toCqlDecimal()
             dateTypeName -> Date(1, 1, 1)
             dateTimeTypeName -> DateTime(ZERO, 1, 1, 1, 0, 0, 0, 0)
             timeTypeName -> Time(0, 0, 0, 0)
             // NOTE: Quantity min is not standard
-            quantityTypeName -> Quantity().withValue(Value.MIN_DECIMAL).withUnit("1")
+            quantityTypeName -> Quantity().withValue(Constants.MIN_DECIMAL).withUnit("1")
             else ->
                 throw InvalidOperatorArgument(
                     "The Minimum operator is not implemented for type $type"
@@ -58,7 +58,7 @@ object MinValueEvaluator {
     }
 
     @JvmStatic
-    fun internalEvaluate(vtype: QName?, state: State?): NamedCqlType? {
+    fun internalEvaluate(vtype: QName?, state: State?): Value? {
         val valueType = state!!.environment.fixupQName(vtype!!)
         return minValue(valueType)
     }

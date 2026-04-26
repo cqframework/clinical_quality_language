@@ -31,11 +31,11 @@ import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
@@ -55,7 +55,7 @@ abstract class TestFhirPath {
         name: String?,
         cql: String?,
         val resource: IBaseResource?,
-        val results: MutableList<CqlType?>?,
+        val results: MutableList<Value?>?,
     ) : TestCase(name, cql) // Successful execution
 
     private val libraryId = toElmIdentifier("TestFHIRPath")
@@ -90,8 +90,8 @@ abstract class TestFhirPath {
             .trimIndent()
 
     fun compareResults(
-        expectedResult: CqlType?,
-        actualResult: CqlType?,
+        expectedResult: Value?,
+        actualResult: Value?,
         state: State?,
         resolver: FhirModelResolver<*, *, *, *, *, *, *, *>,
     ): Boolean? {
@@ -284,7 +284,7 @@ abstract class TestFhirPath {
     private fun failWithContext(
         message: String?,
         test: TestCase,
-        actual: CqlType?,
+        actual: Value?,
         e: Exception?,
     ): RuntimeException {
         val expectedString =
@@ -314,7 +314,7 @@ abstract class TestFhirPath {
             )
     }
 
-    private fun readOutput(output: Output): CqlType? {
+    private fun readOutput(output: Output): Value? {
         if (output.getType() == null) {
             return null
         }
@@ -342,7 +342,7 @@ abstract class TestFhirPath {
         }
     }
 
-    private fun loadExpectedResults(test: Test): MutableList<CqlType?> {
+    private fun loadExpectedResults(test: Test): MutableList<Value?> {
         // Special case for tests are "expression output" tests, which have a single output with no
         // type
         if (test.getOutput().size == 1 && test.getOutput()[0].getType() == null) {

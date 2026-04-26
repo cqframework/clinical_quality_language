@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -30,7 +30,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlList
  * */
 object SliceEvaluator {
     @JvmStatic
-    fun slice(source: CqlType?, start: CqlType?, end: CqlType?): List? {
+    fun slice(source: Value?, start: Value?, end: Value?): List? {
 
         if (source == null) {
             return null
@@ -46,7 +46,7 @@ object SliceEvaluator {
         if (source is List && start is Integer? && end is Integer?) {
             var start = start?.value
             var end = end?.value
-            val ret = mutableListOf<CqlType?>()
+            val ret = mutableListOf<Value?>()
 
             if (end == null || end > source.count()) {
                 end = source.count()

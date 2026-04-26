@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -30,7 +30,7 @@ If either argument is null, the result is null.
 */
 object IntersectEvaluator {
     @JvmStatic
-    fun intersect(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun intersect(left: Value?, right: Value?, state: State?): Value? {
         if (left == null || right == null) {
             return null
         }
@@ -60,7 +60,7 @@ object IntersectEvaluator {
             val leftStartGtRightStart = GreaterEvaluator.greater(leftStart, rightStart, state)
             val leftEndLtRightEnd = LessEvaluator.less(leftEnd, rightEnd, state)
 
-            val max: CqlType?
+            val max: Value?
             if (leftStart == null || rightStart == null) {
                 // If either of the start points is null, the start point of the intersection is
                 // null because the
@@ -80,7 +80,7 @@ object IntersectEvaluator {
                     else if (leftStartGtRightStart.value) leftStart else rightStart
             }
 
-            val min: CqlType?
+            val min: Value?
             if (leftEnd == null || rightEnd == null) {
                 min = null
             } else if (leftEndLtRightEnd == null && precision != null) {
@@ -96,7 +96,7 @@ object IntersectEvaluator {
             return Interval(max, max != null, min, min != null, state)
         } else if (left is List && right is List) {
 
-            val result = mutableListOf<CqlType?>()
+            val result = mutableListOf<Value?>()
             for (leftItem in left) {
                 val `in` = InEvaluator.`in`(leftItem, right, null, state)
                 if (`in` != null && `in`.value) {

@@ -6,11 +6,11 @@ import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.SortHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.decimalTypeName
 import org.opencds.cqf.cql.engine.runtime.integerTypeName
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
@@ -75,7 +75,7 @@ object CollapseEvaluator {
         }
     }
 
-    fun collapse(list: CqlType?, per: CqlType?, state: State?): List? {
+    fun collapse(list: Value?, per: Value?, state: State?): List? {
         if (list == null) {
             return null
         }
@@ -105,7 +105,7 @@ object CollapseEvaluator {
         val first = intervals[0]
         val isTemporal = first.start is BaseTemporal || first.end is BaseTemporal
 
-        intervals.sortWith(CqlList(state).valueSort)
+        intervals.sortWith { left, right -> SortHelper.compare(left, right, state) }
         val effectivePer = per ?: Quantity().withValue(BigDecimal(0)).withDefaultUnit()
         var precision = if (effectivePer.unit == "1") null else effectivePer.unit
 

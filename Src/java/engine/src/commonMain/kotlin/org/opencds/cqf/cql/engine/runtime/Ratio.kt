@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Ratio : StructuredValue(), NamedCqlType {
+class Ratio : StructuredValue(), NamedTypeValue {
     override val type = ratioTypeName
 
-    override val elements: MutableMap<kotlin.String, CqlType?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() = mutableMapOf("numerator" to numerator, "denominator" to denominator)
 
     var numerator: Quantity? = null

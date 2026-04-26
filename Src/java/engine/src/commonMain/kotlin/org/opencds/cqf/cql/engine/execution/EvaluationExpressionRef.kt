@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.execution
 import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.TypeSpecifier
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /** Represents a reference to an expression or function to be evaluated. */
 @OptIn(ExperimentalJsExport::class)
@@ -20,5 +20,5 @@ open class EvaluationExpressionRef(val name: String)
 class EvaluationFunctionRef(
     name: String,
     val signature: List<TypeSpecifier>?,
-    val arguments: List<CqlType?>,
+    val arguments: List<Value?>,
 ) : EvaluationExpressionRef(name)

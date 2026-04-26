@@ -4,10 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
@@ -21,13 +21,13 @@ Avg(argument List<Quantity>) Quantity
 */
 object AvgEvaluator {
     @JvmStatic
-    fun avg(source: CqlType?, state: State?): CqlType? {
+    fun avg(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
 
         if (source is List) {
-            var avg: CqlType? = null
+            var avg: Value? = null
             var size = 1
 
             for (element in source) {

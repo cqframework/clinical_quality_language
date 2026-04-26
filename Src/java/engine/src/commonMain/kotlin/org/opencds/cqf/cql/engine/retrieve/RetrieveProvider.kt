@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.retrieve
 
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 interface RetrieveProvider {
     fun retrieve(
@@ -18,5 +18,5 @@ interface RetrieveProvider {
         dateLowPath: kotlin.String?,
         dateHighPath: kotlin.String?,
         dateRange: Interval?,
-    ): Iterable<CqlType?>?
+    ): Iterable<Value?>?
 }

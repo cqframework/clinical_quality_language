@@ -5,7 +5,7 @@ import org.cqframework.cql.shared.QName
 import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Constants
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Quantity
@@ -37,21 +37,21 @@ For any other type, attempting to invoke maximum results in an error.
 @Suppress("MagicNumber")
 object MaxValueEvaluator {
     @JvmStatic
-    fun maxValue(type: QName?): CqlType? {
+    fun maxValue(type: QName?): Value? {
         if (type == null) {
             return null
         }
 
         return when (type) {
-            integerTypeName -> Value.MAX_INT.toCqlInteger()
-            longTypeName -> Value.MAX_LONG.toCqlLong()
-            decimalTypeName -> Value.MAX_DECIMAL.toCqlDecimal()
+            integerTypeName -> Constants.MAX_INT.toCqlInteger()
+            longTypeName -> Constants.MAX_LONG.toCqlLong()
+            decimalTypeName -> Constants.MAX_DECIMAL.toCqlDecimal()
             dateTypeName -> Date(9999, 12, 31)
             dateTimeTypeName -> DateTime(ZERO, 9999, 12, 31, 23, 59, 59, 999)
             timeTypeName -> Time(23, 59, 59, 999)
             // NOTE: Quantity max is not standard
             quantityTypeName -> {
-                Quantity().withValue(Value.MAX_DECIMAL).withUnit("1")
+                Quantity().withValue(Constants.MAX_DECIMAL).withUnit("1")
             }
             else ->
                 throw InvalidOperatorArgument(
@@ -61,7 +61,7 @@ object MaxValueEvaluator {
     }
 
     @JvmStatic
-    fun internalEvaluate(typeName: QName?, state: State?): CqlType? {
+    fun internalEvaluate(typeName: QName?, state: State?): Value? {
         val valueType = state!!.environment.fixupQName(typeName!!)
         return maxValue(valueType)
     }

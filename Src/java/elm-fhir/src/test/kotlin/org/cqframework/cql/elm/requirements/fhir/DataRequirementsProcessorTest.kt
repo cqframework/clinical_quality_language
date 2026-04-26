@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -1070,7 +1070,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
@@ -1095,7 +1095,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
@@ -1123,7 +1123,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {
@@ -1152,7 +1152,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, CqlType?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,

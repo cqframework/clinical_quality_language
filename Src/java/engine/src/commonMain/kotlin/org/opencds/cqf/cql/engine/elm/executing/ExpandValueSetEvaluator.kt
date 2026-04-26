@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
@@ -16,7 +16,7 @@ The ExpandValueSet function expands the given value set using the terminology pr
 */
 object ExpandValueSetEvaluator {
     @JvmStatic
-    fun expand(valueset: CqlType?, state: State?): List? {
+    fun expand(valueset: Value?, state: State?): List? {
         if (valueset == null) {
             return null
         }

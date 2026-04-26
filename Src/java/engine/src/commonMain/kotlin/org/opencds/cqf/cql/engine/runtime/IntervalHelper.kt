@@ -19,7 +19,7 @@ class IntervalHelper private constructor() {
          * @param intervals the list of intervals to search
          * @return the first non-null boundary found
          */
-        fun findNonNullBoundary(intervals: kotlin.collections.List<Interval?>): CqlType? {
+        fun findNonNullBoundary(intervals: kotlin.collections.List<Interval?>): Value? {
             return intervals
                 .filterNotNull()
                 .flatMap { interval -> listOf(interval.start, interval.end) }
@@ -42,7 +42,7 @@ class IntervalHelper private constructor() {
             when (nonNullBoundary) {
                 is Decimal -> {
                     val scale =
-                        Value.getCoarsestScale(
+                        DecimalHelper.getCoarsestScale(
                             intervals.filterNotNull().flatMap { interval ->
                                 listOf(
                                     (interval.start as Decimal?)?.value,
@@ -57,7 +57,7 @@ class IntervalHelper private constructor() {
 
                 is Quantity -> {
                     val scale =
-                        Value.getCoarsestScale(
+                        DecimalHelper.getCoarsestScale(
                             intervals
                                 .filterNotNull()
                                 .flatMap { interval ->
@@ -155,8 +155,9 @@ class IntervalHelper private constructor() {
             when (start) {
                 is Decimal if end is Decimal -> {
                     val quantityScale = quantity.value!!.scale()
-                    val truncatedStart = Value.roundToScale(start.value, quantityScale, true)
-                    val truncatedEnd = Value.roundToScale(end.value, quantityScale, false)
+                    val truncatedStart =
+                        DecimalHelper.roundToScale(start.value, quantityScale, true)
+                    val truncatedEnd = DecimalHelper.roundToScale(end.value, quantityScale, false)
 
                     if (truncatedStart <= truncatedEnd) {
                         return Interval(
@@ -175,11 +176,15 @@ class IntervalHelper private constructor() {
                     val quantityScale = quantity.value!!.scale()
                     val truncatedStart =
                         Quantity()
-                            .withValue(Value.roundToScale(start.value!!, quantityScale, true))
+                            .withValue(
+                                DecimalHelper.roundToScale(start.value!!, quantityScale, true)
+                            )
                             .withUnit(start.unit)
                     val truncatedEnd =
                         Quantity()
-                            .withValue(Value.roundToScale(end.value!!, quantityScale, false))
+                            .withValue(
+                                DecimalHelper.roundToScale(end.value!!, quantityScale, false)
+                            )
                             .withUnit(end.unit)
 
                     if (truncatedStart <= truncatedEnd) {

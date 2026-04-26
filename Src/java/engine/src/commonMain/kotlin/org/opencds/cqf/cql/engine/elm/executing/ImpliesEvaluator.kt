@@ -2,7 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -24,7 +24,7 @@ NULL	| TRUE	NULL	NULL
 
 object ImpliesEvaluator {
     @JvmStatic
-    fun implies(left: CqlType?, right: CqlType?): Boolean? {
+    fun implies(left: Value?, right: Value?): Boolean? {
         if (left == null) {
             return if (right == null || !(right as Boolean).value) null else Boolean.TRUE
         }

@@ -4,22 +4,22 @@ import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.ValueSetRef
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object AnyInValueSetEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        codes: CqlType?,
+        codes: Value?,
         valueSetRef: ValueSetRef?,
-        valueset: CqlType?,
+        valueset: Value?,
         state: State?,
     ): Boolean? {
         if (codes == null) {
             return Boolean.FALSE
         }
 
-        var vs: CqlType? = null
+        var vs: Value? = null
         if (valueSetRef != null) {
             vs = ValueSetRefEvaluator.toValueSet(state, valueSetRef)
         } else if (valueset != null) {

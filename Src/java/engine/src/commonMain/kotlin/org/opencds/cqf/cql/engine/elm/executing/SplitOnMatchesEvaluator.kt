@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
@@ -25,7 +25,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlString
 */
 object SplitOnMatchesEvaluator {
     @JvmStatic
-    fun splitOnMatches(stringToSplit: CqlType?, separator: CqlType?): List? {
+    fun splitOnMatches(stringToSplit: Value?, separator: Value?): List? {
         if (stringToSplit == null) {
             return null
         }

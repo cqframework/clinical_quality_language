@@ -6,7 +6,7 @@ import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.debug.DebugMap
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
 
 /**
@@ -26,7 +26,7 @@ import org.opencds.cqf.cql.engine.util.ZonedDateTime
 class EvaluationParams(
     val expressions: Map<VersionedIdentifier, List<EvaluationExpressionRef>?>,
     val contextParameter: Pair<String, Any?>? = null,
-    val parameters: Map<String, CqlType?>? = null,
+    val parameters: Map<String, Value?>? = null,
     val debugMap: DebugMap? = null,
     val evaluationDateTime: ZonedDateTime? = null,
 ) {
@@ -35,7 +35,7 @@ class EvaluationParams(
             mutableMapOf<VersionedIdentifier, List<EvaluationExpressionRef>?>()
 
         var contextParameter: Pair<String, Any?>? = null
-        var parameters: Map<String, CqlType?>? = null
+        var parameters: Map<String, Value?>? = null
         var debugMap: DebugMap? = null
         var evaluationDateTime: ZonedDateTime? = null
 

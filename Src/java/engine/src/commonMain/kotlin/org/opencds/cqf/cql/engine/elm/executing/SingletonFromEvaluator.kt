@@ -2,8 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 singleton from(argument List<T>) T
@@ -16,12 +16,12 @@ If the source list is null, the result is null.
 */
 object SingletonFromEvaluator {
     @JvmStatic
-    fun singletonFrom(operand: CqlType?): CqlType? {
+    fun singletonFrom(operand: Value?): Value? {
         if (operand == null) {
             return null
         }
 
-        var result: CqlType? = null
+        var result: Value? = null
         var first = true
         if (operand is List) {
             for (element in operand) {

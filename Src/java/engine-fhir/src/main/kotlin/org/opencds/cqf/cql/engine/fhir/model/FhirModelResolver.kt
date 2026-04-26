@@ -32,12 +32,12 @@ import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
@@ -95,7 +95,7 @@ abstract class FhirModelResolver<
         this.initialize()
     }
 
-    override fun resolveId(target: CqlType?): kotlin.String? {
+    override fun resolveId(target: Value?): kotlin.String? {
         if (target is ClassInstance && target.type.namespaceURI == fhirModelNamespaceUri) {
             val clazz = this.resolveType(target.type.localPart) ?: return null
             if (IBaseResource::class.java.isAssignableFrom(clazz)) {
@@ -203,7 +203,7 @@ abstract class FhirModelResolver<
         return typeClass.isAssignableFrom(valueTypeClass)
     }
 
-    override fun createInstance(typeName: String?): CqlType {
+    override fun createInstance(typeName: String?): Value {
         return toCqlValue(createHapiInstance(typeName!!), true)!!
     }
 
@@ -563,7 +563,7 @@ abstract class FhirModelResolver<
      * if (value instanceof Time) { return ((Time) value).toString(); } else {
      * return value; } }
      */
-    fun toSimpleCqlType(primitiveType: IPrimitiveType<*>): CqlType? {
+    fun toSimpleCqlType(primitiveType: IPrimitiveType<*>): Value? {
         val value = primitiveType.value
 
         if (value == null) {
@@ -616,7 +616,7 @@ abstract class FhirModelResolver<
             )
         }
 
-        val elements = mutableMapOf<kotlin.String, CqlType?>()
+        val elements = mutableMapOf<kotlin.String, Value?>()
 
         if (target is IBaseHasExtensions) {
             val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }

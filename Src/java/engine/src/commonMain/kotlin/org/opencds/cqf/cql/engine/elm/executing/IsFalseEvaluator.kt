@@ -2,7 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -13,7 +13,7 @@ If the argument evaluates to false, the result is true; otherwise, the result is
 */
 
 object IsFalseEvaluator {
-    fun isFalse(operand: CqlType?): Boolean {
+    fun isFalse(operand: Value?): Boolean {
         if (operand is Boolean?) {
             return (operand?.value == false).toCqlBoolean()
         }

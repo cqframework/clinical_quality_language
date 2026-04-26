@@ -3,9 +3,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.SortHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 Mode(argument List<T>) T
@@ -16,7 +16,7 @@ If the source is null, the result is null.
 */
 object ModeEvaluator {
     @JvmStatic
-    fun mode(source: CqlType?, state: State?): CqlType? {
+    fun mode(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
@@ -29,7 +29,7 @@ object ModeEvaluator {
                 return null
             }
 
-            val values = mutableListOf<CqlType?>()
+            val values = mutableListOf<Value?>()
             while (itr.hasNext()) {
                 val value = itr.next()
                 if (value != null) {
@@ -41,10 +41,10 @@ object ModeEvaluator {
                 return null
             }
 
-            values.sortWith(CqlList(state).valueSort)
+            values.sortWith { left, right -> SortHelper.compare(left, right, state) }
 
             var max = 0
-            var mode: CqlType? = null
+            var mode: Value? = null
             for (i in values.indices) {
                 var count = 0
                 for (j in i..<values.size) {

@@ -2,7 +2,7 @@ package org.opencds.cqf.cql.engine.runtime
 
 import org.cqframework.cql.shared.QName
 
-sealed interface NamedCqlType : CqlType {
+sealed interface NamedTypeValue : Value {
     override val typeAsString: kotlin.String
         get() = type.toString()
 
@@ -34,12 +34,12 @@ val vocabularyTypeName = QName(systemModelNamespaceUri, "Vocabulary")
  *
  * @param value The native CQL value to get the type for.
  */
-fun getNamedTypeForCqlValue(value: CqlType?): QName? {
+fun getNamedTypeForCqlValue(value: Value?): QName? {
     if (value == null) {
         return anyTypeName
     }
 
-    if (value is NamedCqlType) {
+    if (value is NamedTypeValue) {
         return value.type
     }
 

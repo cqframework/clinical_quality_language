@@ -10,7 +10,6 @@ import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -21,6 +20,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEqual
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.Vocabulary
 import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
@@ -57,7 +57,7 @@ If either argument is null, or contains null elements, the result is null.
 object EqualEvaluator {
     @JvmStatic
     @JvmOverloads
-    fun equal(left: CqlType?, right: CqlType?, state: State? = null): Boolean? {
+    fun equal(left: Value?, right: Value?, state: State? = null): Boolean? {
 
         // If either argument is null, the result is null
 
@@ -293,8 +293,8 @@ object EqualEvaluator {
     }
 
     fun structuredValueElementsEqual(
-        left: Map<kotlin.String, CqlType?>,
-        right: Map<kotlin.String, CqlType?>,
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
         state: State?,
     ): Boolean? {
         if (left.size != right.size) {

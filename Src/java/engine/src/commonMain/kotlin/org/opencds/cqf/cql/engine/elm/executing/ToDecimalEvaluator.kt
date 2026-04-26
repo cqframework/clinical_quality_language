@@ -4,8 +4,8 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.String
@@ -29,7 +29,7 @@ If the argument is null, the result is null.
 */
 object ToDecimalEvaluator {
     @JvmStatic
-    fun toDecimal(operand: CqlType?): CqlType? {
+    fun toDecimal(operand: Value?): Value? {
         if (operand == null) {
             return null
         }
@@ -64,7 +64,8 @@ object ToDecimalEvaluator {
                         return null
                     }
                 }
-                return Value.validateDecimal(BigDecimal(operand.value), null)?.toCqlDecimal()
+                return DecimalHelper.validateDecimal(BigDecimal(operand.value), null)
+                    ?.toCqlDecimal()
             } catch (nfe: NumberFormatException) {
                 return null
             }

@@ -7,21 +7,21 @@ import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 
 object InstanceEvaluator {
     fun internalEvaluate(
         instance: Instance?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val `object` = state!!.environment.createInstance(instance!!.classType!!)
         for (element in instance.element) {
             val value = visitor.visitExpression(element.value!!, state)
@@ -31,7 +31,7 @@ object InstanceEvaluator {
         return `object`
     }
 
-    fun setValue(target: CqlType?, path: kotlin.String, value: CqlType?) {
+    fun setValue(target: Value?, path: kotlin.String, value: Value?) {
         if (target == null) {
             return
         }

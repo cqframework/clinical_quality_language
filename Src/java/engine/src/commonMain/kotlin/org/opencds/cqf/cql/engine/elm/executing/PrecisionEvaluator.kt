@@ -2,12 +2,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -34,7 +34,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 */
 object PrecisionEvaluator {
     @JvmStatic
-    fun precision(argument: CqlType?): Integer? {
+    fun precision(argument: Value?): Integer? {
         if (argument == null) {
             return null
         }

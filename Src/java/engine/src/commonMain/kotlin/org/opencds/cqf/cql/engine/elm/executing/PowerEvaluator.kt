@@ -5,8 +5,8 @@ import kotlin.math.abs
 import kotlin.math.pow
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Value
@@ -24,7 +24,7 @@ If either argument is null, the result is null.
 */
 object PowerEvaluator {
     @JvmStatic
-    fun power(left: CqlType?, right: CqlType?): CqlType? {
+    fun power(left: Value?, right: Value?): Value? {
         if (left == null || right == null) {
             return null
         }
@@ -49,7 +49,7 @@ object PowerEvaluator {
         }
 
         if (left is Decimal && right is Decimal) {
-            return Value.verifyPrecision(
+            return DecimalHelper.verifyPrecision(
                     BigDecimal((left.value.toDouble()).pow(right.value.toDouble())),
                     null,
                 )

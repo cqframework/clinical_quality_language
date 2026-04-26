@@ -5,13 +5,13 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.compareQuantities
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
@@ -43,7 +43,7 @@ For date/time values, the comparison is performed by considering each precision 
 */
 object LessEvaluator {
     @JvmStatic
-    fun less(left: CqlType?, right: CqlType?, state: State?): Boolean? {
+    fun less(left: Value?, right: Value?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }

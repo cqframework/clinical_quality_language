@@ -3,13 +3,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
@@ -39,7 +39,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 @Suppress("MagicNumber")
 object LowBoundaryEvaluator {
     @JvmStatic
-    fun lowBoundary(input: CqlType?, precision: CqlType?): CqlType? {
+    fun lowBoundary(input: Value?, precision: Value?): Value? {
 
         if (input == null) {
             return null

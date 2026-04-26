@@ -5,9 +5,9 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -70,12 +70,7 @@ same _precision_ as(left Interval<T>, right Interval<T>) Boolean
 */
 object SameAsEvaluator {
     @JvmStatic
-    fun sameAs(
-        left: CqlType?,
-        right: CqlType?,
-        precision: kotlin.String?,
-        state: State?,
-    ): Boolean? {
+    fun sameAs(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         var precision = precision
         if (left == null || right == null) {
             return null

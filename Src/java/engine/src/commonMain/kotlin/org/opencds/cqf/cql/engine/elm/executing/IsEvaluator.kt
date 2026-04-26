@@ -10,12 +10,12 @@ import org.hl7.elm.r1.TupleTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.NamedTypeValue
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
-import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 
 /*
 is<T>(argument Any) Boolean
@@ -27,7 +27,7 @@ If the run-time type of the argument is of the type being tested, the result of 
 object IsEvaluator {
 
     @JvmStatic
-    fun internalEvaluate(`is`: Is?, operand: CqlType?, state: State?): CqlType? {
+    fun internalEvaluate(`is`: Is?, operand: Value?, state: State?): Value? {
         val type = `is`?.isTypeSpecifier ?: NamedTypeSpecifier().withName(`is`?.isType)
 
         return `is`(operand, type, state)?.let { Boolean(it) }
@@ -38,7 +38,7 @@ object IsEvaluator {
      * be determined. This is not the same as type compatibility (see
      * [FunctionRefEvaluator.isCompatible]).
      */
-    fun `is`(value: CqlType?, type: TypeSpecifier, state: State?): kotlin.Boolean? {
+    fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean? {
         // System.Any is a supertype of all types
         if (type is NamedTypeSpecifier && type.name == anyTypeName) {
             return true
@@ -51,29 +51,29 @@ object IsEvaluator {
 
         when (type) {
             is NamedTypeSpecifier -> {
-                val valueNamedType = getNamedTypeForCqlValue(value)
+                if (value is NamedTypeValue) {
+                    val valueNamedType = value.type
 
-                if (valueNamedType == null) {
-                    // value is not an instance of a named type
-                    return false
+                    if (valueNamedType == type.name) {
+                        // Types are the same
+                        return true
+                    }
+
+                    val provider =
+                        state!!
+                            .environment
+                            .resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
+
+                    if (provider == null) {
+                        // Cannot determine relationship between types
+                        return null
+                    }
+
+                    return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
                 }
 
-                if (valueNamedType == type.name) {
-                    // Types are the same
-                    return true
-                }
-
-                val provider =
-                    state!!
-                        .environment
-                        .resolveDataProviderByModelUriOrNull(valueNamedType.getNamespaceURI())
-
-                if (provider == null) {
-                    // Cannot determine relationship between types
-                    return null
-                }
-
-                return provider.`is`(valueNamedType.getLocalPart(), type.name!!)
+                // value is not an instance of a named type
+                return false
             }
             is ListTypeSpecifier -> {
                 if (value is List) {

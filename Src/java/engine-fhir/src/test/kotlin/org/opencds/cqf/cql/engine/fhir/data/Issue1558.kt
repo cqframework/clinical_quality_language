@@ -8,9 +8,9 @@ import org.hl7.fhir.r4.model.Patient
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 // https://github.com/cqframework/clinical_quality_language/issues/1558
 // care team cardinality bug for QI Core 6.0.0
@@ -37,7 +37,7 @@ internal class Issue1558 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<CqlType?>? {
+                ): Iterable<Value?>? {
                     return when (dataType) {
                         "Patient" -> mutableListOf(r4ModelResolver!!.toCqlValue(patient))
                         "CareTeam" -> mutableListOf(r4ModelResolver!!.toCqlValue(careTeam))

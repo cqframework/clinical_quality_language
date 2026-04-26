@@ -3,11 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 simple type DateTime
@@ -18,14 +18,14 @@ CQL supports date and time values in the range @0001-01-01T00:00:00.0 to @9999-1
 object DateTimeEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        year: CqlType?,
-        month: CqlType?,
-        day: CqlType?,
-        hour: CqlType?,
-        minute: CqlType?,
-        second: CqlType?,
-        milliSecond: CqlType?,
-        timeZoneOffset: CqlType?,
+        year: Value?,
+        month: Value?,
+        day: Value?,
+        hour: Value?,
+        minute: Value?,
+        second: Value?,
+        milliSecond: Value?,
+        timeZoneOffset: Value?,
     ): DateTime? {
         if (
             year is Integer? &&

@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
@@ -18,7 +19,6 @@ internal class IncludedConceptRefTest : CqlTestBase() {
 
         val results = engine.evaluate { library("IncludedConceptRefTest") }.onlyResultOrThrow
         val actual = results["testIncludedConceptRef"]!!.value
-
-        CqlConceptTest.assertEqual(expected, actual)
+        assertEquals(expected, actual)
     }
 }

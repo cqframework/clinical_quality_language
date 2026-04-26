@@ -5,9 +5,9 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -105,12 +105,7 @@ If either argument is null, the result is null.
 Note that this operator can be invoked using either the on or after or the after or on syntax.
 */
 object SameOrAfterEvaluator {
-    fun onOrAfter(
-        left: CqlType?,
-        right: CqlType?,
-        precision: kotlin.String?,
-        state: State?,
-    ): Boolean? {
+    fun onOrAfter(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         // Interval, Interval
         if (left is Interval && right is Interval) {
             if (left.start is BaseTemporal) {
@@ -137,8 +132,8 @@ object SameOrAfterEvaluator {
 
     @JvmStatic
     fun sameOrAfter(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {

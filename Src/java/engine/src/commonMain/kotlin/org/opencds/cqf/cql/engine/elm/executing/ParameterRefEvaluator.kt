@@ -5,7 +5,7 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.ParameterRef
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object ParameterRefEvaluator {
     private val log = KotlinLogging.logger("ParameterRefEvaluator")
@@ -13,8 +13,8 @@ object ParameterRefEvaluator {
     fun internalEvaluate(
         parameterRef: ParameterRef?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val enteredLibrary = state!!.enterLibrary(parameterRef!!.libraryName)
         try {
             val parameterDef =

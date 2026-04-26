@@ -4,12 +4,12 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -28,7 +28,7 @@ import org.opencds.cqf.cql.engine.runtime.String
 */
 object ConvertsToQuantityEvaluator {
     @JvmStatic
-    fun convertsToQuantity(argument: CqlType?, state: State?): Boolean? {
+    fun convertsToQuantity(argument: Value?, state: State?): Boolean? {
         if (argument == null) {
             return null
         }

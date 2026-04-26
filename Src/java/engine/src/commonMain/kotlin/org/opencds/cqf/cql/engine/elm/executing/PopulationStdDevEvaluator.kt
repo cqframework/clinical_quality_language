@@ -3,9 +3,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
@@ -19,7 +19,7 @@ Return types: BigDecimal & Quantity
 */
 object PopulationStdDevEvaluator {
     @JvmStatic
-    fun popStdDev(source: CqlType?, state: State?): CqlType? {
+    fun popStdDev(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }

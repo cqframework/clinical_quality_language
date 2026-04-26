@@ -5,9 +5,9 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -34,8 +34,8 @@ Note that the order of elements does not matter for the purposes of determining 
 object ProperIncludesEvaluator {
     @JvmStatic
     fun properlyIncludes(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {

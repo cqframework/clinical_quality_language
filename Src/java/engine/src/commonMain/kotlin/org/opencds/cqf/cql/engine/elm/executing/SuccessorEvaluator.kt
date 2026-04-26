@@ -5,7 +5,7 @@ import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.ONE
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.exception.TypeOverflow
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Constants
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -41,7 +41,7 @@ object SuccessorEvaluator {
      * @throws TypeOverflow if the value exceeds the maximum allowed for Decimal type
      */
     private fun checkMaxDecimal(value: BigDecimal): BigDecimal {
-        if (value.compareTo(Value.MAX_DECIMAL) > 0) {
+        if (value.compareTo(Constants.MAX_DECIMAL) > 0) {
             throw TypeOverflow(
                 "The result of the successor operation exceeds the maximum value allowed for the Decimal type"
             )
@@ -50,20 +50,20 @@ object SuccessorEvaluator {
     }
 
     @JvmStatic
-    fun successor(value: CqlType?): CqlType? {
+    fun successor(value: Value?): Value? {
         if (value == null) {
             return null
         }
 
         if (value is Integer) {
-            if (value.value >= Value.MAX_INT) {
+            if (value.value >= Constants.MAX_INT) {
                 throw TypeOverflow(
                     "The result of the successor operation exceeds the maximum value allowed for the Integer type"
                 )
             }
             return (value.value + 1).toCqlInteger()
         } else if (value is Long) {
-            if (value.value >= Value.MAX_LONG) {
+            if (value.value >= Constants.MAX_LONG) {
                 throw TypeOverflow(
                     "The result of the successor operation exceeds the maximum value allowed for the Long type"
                 )
@@ -72,7 +72,7 @@ object SuccessorEvaluator {
         } else if (value is Decimal) {
             return checkMaxDecimal(value.value.add(BigDecimal("0.00000001"))).toCqlDecimal()
         } else if (value is Quantity) {
-            if (value.value!!.compareTo(Value.MAX_DECIMAL) >= 0) {
+            if (value.value!!.compareTo(Constants.MAX_DECIMAL) >= 0) {
                 throw TypeOverflow(
                     "The result of the successor operation exceeds the maximum value allowed for the Decimal type"
                 )
@@ -145,7 +145,7 @@ object SuccessorEvaluator {
      * @return the successor of the value
      */
     @JvmStatic
-    fun successor(value: CqlType?, quantity: Quantity?): CqlType? {
+    fun successor(value: Value?, quantity: Quantity?): Value? {
         if (value is Decimal) {
             if (quantity!!.value!!.scale() > 0) {
                 return checkMaxDecimal(

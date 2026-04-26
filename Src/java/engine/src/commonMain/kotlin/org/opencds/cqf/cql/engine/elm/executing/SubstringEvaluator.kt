@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
@@ -18,11 +18,7 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 */
 object SubstringEvaluator {
     @JvmStatic
-    fun substring(
-        stringValue: CqlType?,
-        startIndexValue: CqlType?,
-        lengthValue: CqlType?,
-    ): String? {
+    fun substring(stringValue: Value?, startIndexValue: Value?, lengthValue: Value?): String? {
         if (stringValue == null || startIndexValue == null) {
             return null
         }

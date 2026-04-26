@@ -12,8 +12,8 @@ import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
@@ -68,7 +68,7 @@ least precise operand; trailing zeroes after the decimal are ignored in determin
 object EquivalentEvaluator {
     @JvmStatic
     @JvmOverloads
-    fun equivalent(left: CqlType?, right: CqlType?, state: State? = null): Boolean {
+    fun equivalent(left: Value?, right: Value?, state: State? = null): Boolean {
         if (left == null && right == null) {
             return Boolean.TRUE
         }
@@ -100,8 +100,8 @@ object EquivalentEvaluator {
         }
 
         if (left is Decimal && right is Decimal) {
-            val leftDecimal = Value.verifyPrecision(left.value, 0)
-            val rightDecimal = Value.verifyPrecision(right.value, 0)
+            val leftDecimal = DecimalHelper.verifyPrecision(left.value, 0)
+            val rightDecimal = DecimalHelper.verifyPrecision(right.value, 0)
             val minScale = min(leftDecimal.scale(), rightDecimal.scale())
             if (minScale >= 0) {
                 return (leftDecimal
@@ -285,8 +285,8 @@ object EquivalentEvaluator {
     }
 
     fun structuredValueElementsEquivalent(
-        left: Map<kotlin.String, CqlType?>,
-        right: Map<kotlin.String, CqlType?>,
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
         state: State?,
     ): Boolean {
         if (left.size != right.size) {

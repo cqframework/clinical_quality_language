@@ -6,8 +6,6 @@ import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlList
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
@@ -15,6 +13,8 @@ import org.opencds.cqf.cql.engine.runtime.IntervalHelper
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.SortHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlList
@@ -45,7 +45,7 @@ If the per argument is null, the default unit interval for the point type of the
 The interval overload of the expand operator will return a list of the start values of the expanded intervals.
 */
 object ExpandEvaluator {
-    private fun addPer(addTo: CqlType, per: Quantity, state: State?): CqlType? {
+    private fun addPer(addTo: Value, per: Quantity, state: State?): Value? {
         // Point types must stay the same, so for Integer and Long intervals, the per quantity is
         // rounded up.
         val rhs =
@@ -126,7 +126,7 @@ object ExpandEvaluator {
         interval: Interval?,
         per: Quantity?,
         state: State?,
-    ): kotlin.collections.List<CqlType?>? {
+    ): kotlin.collections.List<Value?>? {
         val returnedIntervals = expandIntervalsIntoIntervals(mutableListOf(interval), per, state)
 
         if (returnedIntervals == null) {
@@ -166,7 +166,7 @@ object ExpandEvaluator {
             )
 
         // Sort the intervals so that the expansion results are returned in order
-        intervals = intervals.sortedWith(CqlList(state).valueSort)
+        intervals = intervals.sortedWith { left, right -> SortHelper.compare(left, right, state) }
 
         return intervals
     }
@@ -230,7 +230,7 @@ object ExpandEvaluator {
     }
 
     @JvmStatic
-    fun expand(listOrInterval: CqlType?, per: CqlType?, state: State?): List? {
+    fun expand(listOrInterval: Value?, per: Value?, state: State?): List? {
         if (listOrInterval == null) {
             return null
         }

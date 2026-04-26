@@ -7,8 +7,8 @@ import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo
 
@@ -25,7 +25,7 @@ If the code argument is null, the result is null.
 */
 object InCodeSystemEvaluator {
     @JvmStatic
-    fun inCodeSystem(code: CqlType?, codeSystem: CqlType?, state: State?): Boolean? {
+    fun inCodeSystem(code: Value?, codeSystem: Value?, state: State?): Boolean? {
         if (code == null || codeSystem == null) {
             return null
         }

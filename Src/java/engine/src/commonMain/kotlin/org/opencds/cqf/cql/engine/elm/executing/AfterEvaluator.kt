@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -55,7 +55,7 @@ If either or both arguments are null, the result is null.
 */
 object AfterEvaluator {
     @JvmStatic
-    fun after(left: CqlType?, right: CqlType?, precision: String?, state: State?): Boolean? {
+    fun after(left: Value?, right: Value?, precision: String?, state: State?): Boolean? {
         var precision = precision
         if (left == null || right == null) {
             return null

@@ -15,7 +15,6 @@ import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -28,6 +27,7 @@ import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 
 /**
@@ -53,7 +53,7 @@ object TypeChecker {
     }
 
     /** Checks the runtime value type against the expected Java type T. */
-    private inline fun <reified T : CqlType> CqlType.checkType(
+    private inline fun <reified T : Value> Value.checkType(
         logMismatch: kotlin.Boolean,
         additionalCheck: (T) -> TypeCheckResult = { TypeCheckResult.MATCH },
     ): TypeCheckResult {
@@ -72,7 +72,7 @@ object TypeChecker {
      * Checks the value type against the expected type defined in the ELM expression. Logs any type
      * mismatches.
      */
-    fun checkType(expressionWithExpectedResultType: Expression, actualValue: CqlType?) {
+    fun checkType(expressionWithExpectedResultType: Expression, actualValue: Value?) {
         actualValue?.let {
             expressionWithExpectedResultType.resultTypeSpecifier?.let { expectedResultTypeSpecifier
                 ->
@@ -86,7 +86,7 @@ object TypeChecker {
 
     fun checkType(
         expectedResultTypeName: QName,
-        actualValue: CqlType,
+        actualValue: Value,
         logMismatch: kotlin.Boolean = false,
     ): TypeCheckResult {
         return when (expectedResultTypeName.getNamespaceURI()) {
@@ -116,7 +116,7 @@ object TypeChecker {
 
     fun checkType(
         expectedTypeSpecifier: TypeSpecifier,
-        actualValue: CqlType,
+        actualValue: Value,
         logMismatch: kotlin.Boolean = false,
     ): TypeCheckResult {
         when (expectedTypeSpecifier) {

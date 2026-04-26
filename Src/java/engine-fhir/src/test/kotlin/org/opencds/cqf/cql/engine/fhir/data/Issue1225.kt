@@ -7,8 +7,8 @@ import org.hl7.fhir.r4.model.Patient
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 // https://github.com/cqframework/clinical_quality_language/issues/1225
@@ -30,7 +30,7 @@ internal class Issue1225 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<CqlType?> {
+                ): Iterable<Value?> {
                     if (dataType == "Patient") {
                         val p = Patient()
                         p.getAddress().add(Address().addLine("123").addLine("456"))

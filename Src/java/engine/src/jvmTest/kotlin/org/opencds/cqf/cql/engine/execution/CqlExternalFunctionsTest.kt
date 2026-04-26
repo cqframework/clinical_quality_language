@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import org.opencds.cqf.cql.engine.data.StaticFunction
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider
 import org.opencds.cqf.cql.engine.execution.external.MyMath
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class CqlExternalFunctionsTest : CqlTestBase() {
@@ -21,7 +21,7 @@ internal class CqlExternalFunctionsTest : CqlTestBase() {
                     StaticFunction(
                         it.name,
                         { arguments ->
-                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as CqlType?
+                            it.invoke(it.declaringClass, *arguments!!.toTypedArray()) as Value?
                         },
                     )
                 }

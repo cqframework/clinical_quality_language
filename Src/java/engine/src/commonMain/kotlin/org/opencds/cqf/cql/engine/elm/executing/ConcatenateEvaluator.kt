@@ -2,8 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
@@ -14,7 +14,7 @@ If either argument is null, the result is null.
 */
 object ConcatenateEvaluator {
     @JvmStatic
-    fun concatenate(left: CqlType?, right: CqlType?): CqlType? {
+    fun concatenate(left: Value?, right: Value?): Value? {
         if (left == null || right == null) {
             return null
         }

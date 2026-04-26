@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 time from(argument DateTime) Time
@@ -16,7 +16,7 @@ NOTE: this is within the purview of DateTimeComponentFrom
 @Suppress("MagicNumber")
 object TimeFromEvaluator {
     @JvmStatic
-    fun timeFrom(operand: CqlType?): Time? {
+    fun timeFrom(operand: Value?): Time? {
         if (operand == null) {
             return null
         }

@@ -6,7 +6,7 @@ import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.InvalidLiteral
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
@@ -15,7 +15,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 object LiteralEvaluator {
     @JvmStatic
-    fun internalEvaluate(valueT: QName?, value: kotlin.String?, state: State?): CqlType? {
+    fun internalEvaluate(valueT: QName?, value: kotlin.String?, state: State?): Value? {
         val valueType = state!!.environment.fixupQName(valueT!!)
         when (valueType.getLocalPart()) {
             "Boolean" -> return value.toBoolean().toCqlBoolean()

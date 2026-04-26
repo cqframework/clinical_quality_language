@@ -4,10 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
@@ -28,7 +28,7 @@ operations) is to avoid squared units in the intermediate results.
 object VarianceEvaluator {
     @JvmStatic
     fun sumOfSquaredDifferences(
-        source: CqlType?,
+        source: Value?,
         state: State?,
         stripSquareFromUnit: kotlin.Boolean = false,
         context: kotlin.String = "Variance",
@@ -47,7 +47,7 @@ object VarianceEvaluator {
         }
 
         val mean = AvgEvaluator.avg(source, state)
-        val sumOfSquaredDifferences = mutableListOf<CqlType?>()
+        val sumOfSquaredDifferences = mutableListOf<Value?>()
         for (element in source) {
             if (element == null) {
                 // Skip the element
@@ -75,11 +75,11 @@ object VarianceEvaluator {
 
     @JvmStatic
     fun variance(
-        source: CqlType?,
+        source: Value?,
         state: State?,
         stripSquareFromUnit: kotlin.Boolean = false,
         context: kotlin.String = "Variance",
-    ): CqlType? {
+    ): Value? {
         val sumOfSquaredDifferences =
             sumOfSquaredDifferences(source, state, stripSquareFromUnit, context)
         return if (sumOfSquaredDifferences != null)

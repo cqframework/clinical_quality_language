@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 class ValueSet : Vocabulary() {
     override val type = valueSetTypeName
 
-    override val elements: MutableMap<kotlin.String, CqlType?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() =
             mutableMapOf(
                 "id" to id?.toCqlString(),

@@ -2,7 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -14,7 +14,7 @@ If the argument evaluates to null, the result is true; otherwise, the result is 
 
 object IsNullEvaluator {
     @JvmStatic
-    fun isNull(operand: CqlType?): Boolean {
+    fun isNull(operand: Value?): Boolean {
         return (operand == null).toCqlBoolean()
     }
 }

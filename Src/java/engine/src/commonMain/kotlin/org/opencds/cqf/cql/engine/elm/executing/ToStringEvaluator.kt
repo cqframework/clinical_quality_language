@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -12,6 +11,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
@@ -42,7 +42,7 @@ If the argument is null, the result is null.
 */
 object ToStringEvaluator {
     @JvmStatic
-    fun toString(operand: CqlType?): String? {
+    fun toString(operand: Value?): String? {
         if (operand == null) {
             return null
         }

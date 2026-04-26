@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -30,12 +30,7 @@ If either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 object IncludesEvaluator {
-    fun includes(
-        left: CqlType?,
-        right: CqlType?,
-        precision: kotlin.String?,
-        state: State?,
-    ): Boolean? {
+    fun includes(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         try {
             return IncludedInEvaluator.includedIn(right, left, precision, state)
         } catch (e: IllegalArgumentException) {
@@ -48,8 +43,8 @@ object IncludesEvaluator {
 
     @JvmStatic
     fun internalEvaluate(
-        left: CqlType?,
-        right: CqlType?,
+        left: Value?,
+        right: Value?,
         precision: kotlin.String?,
         state: State?,
     ): Boolean? {

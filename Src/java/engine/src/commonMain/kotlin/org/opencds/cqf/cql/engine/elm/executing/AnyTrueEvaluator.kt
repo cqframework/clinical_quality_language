@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 AnyTrue(argument List<Boolean>) Boolean
@@ -15,7 +15,7 @@ If the source is null, the result is null.
 */
 object AnyTrueEvaluator {
     @JvmStatic
-    fun anyTrue(src: CqlType?): Boolean {
+    fun anyTrue(src: Value?): Boolean {
         if (src == null) {
             return Boolean.FALSE
         }

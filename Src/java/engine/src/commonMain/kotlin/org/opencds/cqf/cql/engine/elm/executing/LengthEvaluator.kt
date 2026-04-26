@@ -6,10 +6,10 @@ import org.hl7.elm.r1.Length
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -26,7 +26,7 @@ The Length operator returns the number of characters in a string.
 If the argument is null, the result is null.
 */
 object LengthEvaluator {
-    fun length(operand: CqlType?): Integer? {
+    fun length(operand: Value?): Integer? {
         if (operand is String) {
             return stringLength(operand)
         }
@@ -58,7 +58,7 @@ object LengthEvaluator {
     }
 
     @JvmStatic
-    fun internalEvaluate(operand: CqlType?, length: Length?, state: State?): Integer? {
+    fun internalEvaluate(operand: Value?, length: Length?, state: State?): Integer? {
         // null operand case
 
         if (length!!.operand is As) {

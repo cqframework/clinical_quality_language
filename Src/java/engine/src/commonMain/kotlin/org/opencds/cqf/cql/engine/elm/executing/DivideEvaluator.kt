@@ -5,8 +5,8 @@ import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
@@ -33,14 +33,14 @@ object DivideEvaluator {
         }
 
         return try {
-            Value.verifyPrecision(left.value.divide(right!!.value), null).toCqlDecimal()
+            DecimalHelper.verifyPrecision(left.value.divide(right!!.value), null).toCqlDecimal()
         } catch (e: ArithmeticException) {
             left.value.divide(right!!.value, 8, RoundingMode.FLOOR).toCqlDecimal()
         }
     }
 
     @JvmStatic
-    fun divide(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun divide(left: Value?, right: Value?, state: State?): Value? {
         if (left == null || right == null) {
             return null
         }
@@ -74,7 +74,8 @@ object DivideEvaluator {
                     val result =
                         ucumService.divideBy(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
                     val unverifiedResultValue = result.first
-                    resultValue = Value.verifyPrecision(unverifiedResultValue, null).toCqlDecimal()
+                    resultValue =
+                        DecimalHelper.verifyPrecision(unverifiedResultValue, null).toCqlDecimal()
                     val rawResultUnit = result.second
                     resultUnit = rawResultUnit.ifEmpty { "1" }
                 } catch (e: Exception) {

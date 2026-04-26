@@ -9,11 +9,11 @@ import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 
@@ -23,12 +23,12 @@ object MessageEvaluator {
     fun message(
         state: State?,
         sourceLocator: SourceLocator?,
-        source: CqlType?,
+        source: Value?,
         condition: Boolean?,
         code: String?,
         severity: String?,
         message: String?,
-    ): CqlType? {
+    ): Value? {
         var severity = severity?.value
         if (severity == null) {
             severity = "message"
@@ -76,7 +76,7 @@ object MessageEvaluator {
         return source
     }
 
-    private fun stripPHI(state: State?, source: CqlType?): kotlin.String? {
+    private fun stripPHI(state: State?, source: Value?): kotlin.String? {
         if (source == null) {
             return null
         }
@@ -102,8 +102,8 @@ object MessageEvaluator {
     fun internalEvaluate(
         elm: Message?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val source = visitor.visitExpression(elm!!.source!!, state)
         val condition = visitor.visitExpression(elm.condition!!, state)
         val code = visitor.visitExpression(elm.code!!, state)

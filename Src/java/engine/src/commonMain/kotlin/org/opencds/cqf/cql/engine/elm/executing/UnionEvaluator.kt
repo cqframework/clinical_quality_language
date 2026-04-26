@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -76,7 +76,7 @@ object UnionEvaluator {
 
     fun unionIterable(left: List?, right: List?, state: State?): List? {
         if (left == null && right == null) {
-            return mutableListOf<CqlType?>().toCqlList()
+            return mutableListOf<Value?>().toCqlList()
         }
 
         if (left == null) {
@@ -88,7 +88,7 @@ object UnionEvaluator {
         }
 
         // List Logic
-        val result = mutableListOf<CqlType?>()
+        val result = mutableListOf<Value?>()
         for (leftElement in left) {
             result.add(leftElement)
         }
@@ -100,7 +100,7 @@ object UnionEvaluator {
     }
 
     @JvmStatic
-    fun union(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun union(left: Value?, right: Value?, state: State?): Value? {
         if (left is Interval? && right is Interval?) {
             return unionInterval(left, right, state)
         } else if (left is List? && right is List?) {

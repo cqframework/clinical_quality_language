@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -17,7 +17,7 @@ Count(argument List<T>) Integer
 */
 object CountEvaluator {
     @JvmStatic
-    fun count(source: CqlType?): Integer {
+    fun count(source: Value?): Integer {
         if (source == null) {
             return Integer(0)
         }

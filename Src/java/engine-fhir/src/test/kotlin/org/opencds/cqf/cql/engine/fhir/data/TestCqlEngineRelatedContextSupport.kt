@@ -19,8 +19,8 @@ import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.slf4j.LoggerFactory
 
@@ -83,7 +83,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         cqlEngine: CqlEngine,
         expression: String,
         initialContext: Pair<String, Any?>?,
-    ): CqlType? {
+    ): Value? {
         val evaluateResult =
             cqlEngine
                 .evaluate {
@@ -109,7 +109,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 dateLowPath: String?,
                 dateHighPath: String?,
                 dateRange: Interval?,
-            ): Iterable<CqlType?>? {
+            ): Iterable<Value?>? {
                 val allPatients =
                     setOf(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
                 val allPractitioners = setOf(PRACTITIONER_XYZ, PRACTITIONER_ZULU)

@@ -4,8 +4,8 @@ import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 open class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
@@ -22,11 +22,11 @@ open class CompositeDataProvider(
         return this.modelResolver!!.`is`(valueType, type)
     }
 
-    override fun createInstance(typeName: kotlin.String?): CqlType? {
+    override fun createInstance(typeName: kotlin.String?): Value? {
         return this.modelResolver!!.createInstance(typeName)
     }
 
-    override fun resolveId(target: CqlType?): kotlin.String? {
+    override fun resolveId(target: Value?): kotlin.String? {
         return this.modelResolver!!.resolveId(target)
     }
 
@@ -43,7 +43,7 @@ open class CompositeDataProvider(
         dateLowPath: kotlin.String?,
         dateHighPath: kotlin.String?,
         dateRange: Interval?,
-    ): Iterable<CqlType?>? {
+    ): Iterable<Value?>? {
         return this.retrieveProvider!!.retrieve(
             context,
             contextPath,

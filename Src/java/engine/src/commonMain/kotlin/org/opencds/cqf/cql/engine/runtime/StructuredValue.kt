@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.runtime
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator.toString
 
 /** Represents a structured CQL value. */
-sealed class StructuredValue : CqlType {
-    abstract val elements: MutableMap<kotlin.String, CqlType?>
+sealed class StructuredValue : Value {
+    abstract val elements: MutableMap<kotlin.String, Value?>
 
     /** Returns true if the structured value has an element with the given name, false otherwise. */
     fun has(elementName: kotlin.String): kotlin.Boolean {
@@ -12,12 +12,12 @@ sealed class StructuredValue : CqlType {
     }
 
     /** Returns the value of the element of the structured value. */
-    operator fun get(elementName: kotlin.String): CqlType? {
+    operator fun get(elementName: kotlin.String): Value? {
         return elements[elementName]
     }
 
     /** Returns the value of the element of the structured value. */
-    fun getElement(elementName: kotlin.String): CqlType? {
+    fun getElement(elementName: kotlin.String): Value? {
         return elements[elementName]
     }
 
@@ -41,8 +41,8 @@ sealed class StructuredValue : CqlType {
         if (this === other) return true
         if (other !is StructuredValue) return false
 
-        if (this is NamedCqlType) {
-            if (other !is NamedCqlType) return false
+        if (this is NamedTypeValue) {
+            if (other !is NamedTypeValue) return false
             if (type != other.type) return false
         }
 
@@ -52,7 +52,7 @@ sealed class StructuredValue : CqlType {
     }
 
     override fun hashCode(): Int {
-        var result = if (this is NamedCqlType) type.hashCode() else 0
+        var result = if (this is NamedTypeValue) type.hashCode() else 0
         result = 31 * result + elements.hashCode()
         return result
     }

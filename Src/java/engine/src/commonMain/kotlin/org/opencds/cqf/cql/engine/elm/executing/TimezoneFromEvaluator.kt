@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 timezone from(argument DateTime) Decimal
@@ -12,7 +12,7 @@ NOTE: This operator is _not_ part of CQL 1.4, it was renamed from 1.3 and is inc
 
 object TimezoneFromEvaluator {
     @JvmStatic
-    fun internalEvaluate(operand: CqlType?): Decimal? {
+    fun internalEvaluate(operand: Value?): Decimal? {
         return TimezoneOffsetFromEvaluator.timezoneOffsetFrom(operand)
     }
 }

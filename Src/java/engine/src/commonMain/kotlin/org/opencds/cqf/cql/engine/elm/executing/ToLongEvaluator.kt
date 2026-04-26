@@ -3,7 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Constants.MAX_LONG
+import org.opencds.cqf.cql.engine.runtime.Constants.MIN_LONG
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.String
@@ -23,7 +24,7 @@ If the argument is null, the result is null.
 */
 object ToLongEvaluator {
     @JvmStatic
-    fun toLong(operand: CqlType?): Long? {
+    fun toLong(operand: Value?): Long? {
         if (operand == null) {
             return null
         }
@@ -42,7 +43,7 @@ object ToLongEvaluator {
             } catch (nfe: NumberFormatException) {
                 try {
                     val ret = operand.value.toDouble()
-                    if (Value.validateLong(ret) == null) {
+                    if (ret > MAX_LONG || ret < MIN_LONG) {
                         return null
                     }
                     return ret.toLong().toCqlLong()

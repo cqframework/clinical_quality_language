@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.model
 
 import org.cqframework.cql.shared.QName
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.createConcurrentHashMap
 
 open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
@@ -28,11 +28,11 @@ open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : Mod
         return null
     }
 
-    override fun createInstance(typeName: String?): CqlType? {
+    override fun createInstance(typeName: String?): Value? {
         return this.innerResolver.createInstance(typeName)
     }
 
-    override fun resolveId(target: CqlType?): String? {
+    override fun resolveId(target: Value?): String? {
         return innerResolver.resolveId(target)
     }
 

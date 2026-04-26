@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 structured type Concept
@@ -17,7 +17,7 @@ The Concept type represents a single terminological concept within CQL.
 */
 object ConceptEvaluator {
     // codes: List<Code?>?
-    fun internalEvaluate(codes: CqlType?, display: kotlin.String?): Concept {
+    fun internalEvaluate(codes: Value?, display: kotlin.String?): Concept {
         if (codes == null) {
             return Concept().withDisplay(display)
         }

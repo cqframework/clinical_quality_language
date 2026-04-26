@@ -4,10 +4,10 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Long
@@ -26,7 +26,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlString
 @Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object AddEvaluator {
     @JvmStatic
-    fun add(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun add(left: Value?, right: Value?, state: State?): Value? {
         if (left == null || right == null) {
             return null
         }
@@ -36,7 +36,7 @@ object AddEvaluator {
         } else if (left is Long && right is Long) {
             return (left.value + right.value).toCqlLong()
         } else if (left is Decimal && right is Decimal) {
-            return Value.verifyPrecision(left.value.add(right.value), null).toCqlDecimal()
+            return DecimalHelper.verifyPrecision(left.value.add(right.value), null).toCqlDecimal()
         } else if (left is Quantity && right is Quantity) {
             return computeWithConvertedUnits(
                 left,

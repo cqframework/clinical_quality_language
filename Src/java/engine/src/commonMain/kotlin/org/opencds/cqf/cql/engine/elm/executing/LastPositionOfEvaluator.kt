@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
@@ -18,7 +18,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlInteger
  */
 object LastPositionOfEvaluator {
     @JvmStatic
-    fun lastPositionOf(string: CqlType?, pattern: CqlType?): Integer? {
+    fun lastPositionOf(string: Value?, pattern: Value?): Integer? {
         if (pattern == null || string == null) {
             return null
         }

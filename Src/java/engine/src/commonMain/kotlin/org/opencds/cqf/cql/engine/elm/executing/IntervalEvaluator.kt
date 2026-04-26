@@ -4,14 +4,14 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.Interval
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object IntervalEvaluator {
     fun internalEvaluate(
         interval: Interval?,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val low =
             if (interval!!.low != null) visitor.visitExpression(interval.low!!, state) else null
 

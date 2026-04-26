@@ -4,7 +4,6 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
@@ -14,6 +13,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlList
@@ -30,19 +30,19 @@ If the source is null, the result is null.
 
 */
 object ChildrenEvaluator {
-    private fun addQuantity(list: MutableList<CqlType?>, quantity: Quantity) {
+    private fun addQuantity(list: MutableList<Value?>, quantity: Quantity) {
         list.add(quantity.value?.toCqlDecimal())
         list.add(quantity.unit?.toCqlString())
     }
 
-    private fun addCode(list: MutableList<CqlType?>, code: Code?) {
+    private fun addCode(list: MutableList<Value?>, code: Code?) {
         list.add(code!!.system?.toCqlString())
         list.add(code.version?.toCqlString())
         list.add(code.code?.toCqlString())
         list.add(code.system?.toCqlString())
     }
 
-    private fun addConcept(list: MutableList<CqlType?>, concept: Concept) {
+    private fun addConcept(list: MutableList<Value?>, concept: Concept) {
         for (code in concept.codes!!) {
             addCode(list, code)
         }
@@ -50,7 +50,7 @@ object ChildrenEvaluator {
         list.add(concept.display?.toCqlString())
     }
 
-    private fun addDateTime(list: MutableList<CqlType?>, dateTime: DateTime) {
+    private fun addDateTime(list: MutableList<Value?>, dateTime: DateTime) {
         for (i in 0..<dateTime.precision!!.toDateTimeIndex() + 1) {
             list.add(
                 dateTime.dateTime!!
@@ -62,25 +62,25 @@ object ChildrenEvaluator {
         list.add(TemporalHelper.zoneToOffset(dateTime.dateTime!!.getOffset()).toCqlDecimal())
     }
 
-    private fun addTime(list: MutableList<CqlType?>, time: Time) {
+    private fun addTime(list: MutableList<Value?>, time: Time) {
         for (i in 0..<time.precision!!.toTimeIndex() + 1) {
             list.add(time.time.get(Precision.fromTimeIndex(i).toChronoField()).toCqlInteger())
         }
     }
 
-    private fun addList(list: MutableList<CqlType?>, listToProcess: List) {
+    private fun addList(list: MutableList<Value?>, listToProcess: List) {
         for (o in listToProcess) {
             list.add(children(o))
         }
     }
 
     @JvmStatic
-    fun children(source: CqlType?): List? {
+    fun children(source: Value?): List? {
         if (source == null) {
             return null
         }
 
-        val ret: MutableList<CqlType?> = ArrayList()
+        val ret: MutableList<Value?> = ArrayList()
 
         when (source) {
             is Integer,

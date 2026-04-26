@@ -3,11 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -29,7 +29,7 @@ If the argument is null, the result is null.
 */
 object ToDateEvaluator {
     @JvmStatic
-    fun toDate(operand: CqlType?): BaseTemporal? {
+    fun toDate(operand: Value?): BaseTemporal? {
         if (operand == null) {
             return null
         }

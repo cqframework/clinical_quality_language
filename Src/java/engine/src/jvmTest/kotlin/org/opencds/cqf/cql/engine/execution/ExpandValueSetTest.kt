@@ -41,7 +41,6 @@ internal class ExpandValueSetTest {
         val actual = results["ExpandValueSet"]!!.value
         assertIs<List>(actual)
         assertEquals(1, actual.count())
-
-        CqlConceptTest.assertEqual(expected, actual.elementAt(0))
+        assertEquals(expected, actual.elementAt(0))
     }
 }

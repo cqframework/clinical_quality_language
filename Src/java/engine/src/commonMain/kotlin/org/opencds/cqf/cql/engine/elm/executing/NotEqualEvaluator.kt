@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
@@ -21,7 +21,7 @@ The not equal operator is a shorthand for invocation of logical negation (not) o
 */
 object NotEqualEvaluator {
     @JvmStatic
-    fun notEqual(left: CqlType?, right: CqlType?, state: State?): Boolean? {
+    fun notEqual(left: Value?, right: Value?, state: State?): Boolean? {
         val result = EqualEvaluator.equal(left, right, state)
         return if (result == null) null else (!result.value).toCqlBoolean()
     }

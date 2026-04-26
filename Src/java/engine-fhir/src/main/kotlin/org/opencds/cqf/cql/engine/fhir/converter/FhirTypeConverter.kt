@@ -13,7 +13,6 @@ import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
@@ -25,6 +24,7 @@ import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /**
  * Provides functions for converting from CQL-to-FHIR and vice versa. The return types on the
@@ -52,7 +52,7 @@ interface FhirTypeConverter {
      * @return a FHIR structure
      * @throws IllegalArgumentException is value is an Iterable
      */
-    fun toFhirType(value: CqlType?): IBase?
+    fun toFhirType(value: Value?): IBase?
 
     /**
      * Converts an iterable of Objects to FHIR structures. Preserves ordering, nulls, and sublist
@@ -74,7 +74,7 @@ interface FhirTypeConverter {
      * @return a FHIR String
      * @return
      */
-    fun toCqlText(value: CqlType?): IBaseDatatype?
+    fun toCqlText(value: Value?): IBaseDatatype?
 
     /**
      * Converts an Exception to a FHIR OperationOutcome.

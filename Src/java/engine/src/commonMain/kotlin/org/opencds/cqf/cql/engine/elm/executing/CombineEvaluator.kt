@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
@@ -16,7 +16,7 @@ If either argument is null, or any element in the source list of strings is null
 */
 object CombineEvaluator {
     @JvmStatic
-    fun combine(source: CqlType?, separator: CqlType?): String? {
+    fun combine(source: Value?, separator: Value?): String? {
         if (source == null || separator == null) {
             return null
         }

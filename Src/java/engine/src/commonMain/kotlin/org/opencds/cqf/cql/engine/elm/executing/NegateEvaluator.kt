@@ -5,11 +5,11 @@ import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.Literal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlLong
@@ -25,7 +25,7 @@ When negating quantities, the unit is unchanged.
 If the argument is null, the result is null.
 */
 object NegateEvaluator {
-    fun negate(source: CqlType?): CqlType? {
+    fun negate(source: Value?): Value? {
         if (source == null) {
             return null
         }
@@ -56,8 +56,8 @@ object NegateEvaluator {
     fun internalEvaluate(
         operand: Expression,
         state: State?,
-        visitor: ElmLibraryVisitor<CqlType?, State?>,
-    ): CqlType? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         // Special case to handle literals of the minimum Integer value
         // since usual implementation would try to cast 2147483648 as a
         // signed 32 bit signed integer and throw

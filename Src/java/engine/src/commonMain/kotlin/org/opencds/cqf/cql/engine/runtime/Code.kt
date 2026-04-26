@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Code : StructuredValue(), NamedCqlType {
+class Code : StructuredValue(), NamedTypeValue {
     override val type = codeTypeName
 
-    override val elements: MutableMap<kotlin.String, CqlType?>
+    override val elements: MutableMap<kotlin.String, Value?>
         get() =
             mutableMapOf(
                 "code" to code?.toCqlString(),

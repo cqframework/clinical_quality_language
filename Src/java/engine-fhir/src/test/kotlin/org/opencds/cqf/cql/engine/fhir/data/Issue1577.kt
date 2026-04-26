@@ -13,9 +13,9 @@ import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /**
  * Tests the implementation of [org.opencds.cqf.cql.engine.execution.Environment.is] and
@@ -53,14 +53,14 @@ class Issue1577 {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<CqlType?> =
+                ): Iterable<Value?> =
                     when (dataType) {
                         "Patient" -> listOf(r4ModelResolver.toCqlValue(Patient().setId("pat1")))
                         // Note: returning an Iterable implementation and not a list to test the
                         // handling of different Iterable types
                         "Condition" ->
-                            object : Iterable<CqlType?> {
-                                override fun iterator(): Iterator<CqlType?> {
+                            object : Iterable<Value?> {
+                                override fun iterator(): Iterator<Value?> {
                                     return listOf(
                                             r4ModelResolver.toCqlValue(Condition().setId("cond1"))
                                         )
@@ -68,8 +68,8 @@ class Issue1577 {
                                 }
                             }
                         "Observation" ->
-                            object : Iterable<CqlType?> {
-                                override fun iterator(): Iterator<CqlType?> {
+                            object : Iterable<Value?> {
+                                override fun iterator(): Iterator<Value?> {
                                     return listOf(
                                             r4ModelResolver.toCqlValue(Observation().setId("obs1"))
                                         )

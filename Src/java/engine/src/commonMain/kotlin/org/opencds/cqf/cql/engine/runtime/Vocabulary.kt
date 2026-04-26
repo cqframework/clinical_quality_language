@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime
 
-sealed class Vocabulary : StructuredValue(), NamedCqlType {
+sealed class Vocabulary : StructuredValue(), NamedTypeValue {
     var id: kotlin.String? = null
 
     var version: kotlin.String? = null

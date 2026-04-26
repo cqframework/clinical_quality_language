@@ -11,7 +11,7 @@ import org.opencds.cqf.cql.engine.data.DataProvider
 import org.opencds.cqf.cql.engine.data.ExternalFunctionProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
-import org.opencds.cqf.cql.engine.runtime.CqlType
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
@@ -67,7 +67,7 @@ constructor(
 
     // -- DataProvider "Helpers"
 
-    fun createInstance(typeName: QName): CqlType? {
+    fun createInstance(typeName: QName): Value? {
         var typeName = typeName
         typeName = fixupQName(typeName)
         val dataProvider = resolveDataProvider(typeName)

@@ -2,8 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
@@ -14,13 +14,13 @@ The distinct operator returns the given list with duplicates eliminated using eq
 If the argument is null, the result is null.
 */
 object DistinctEvaluator {
-    fun distinct(source: CqlType?, state: State?): List? {
+    fun distinct(source: Value?, state: State?): List? {
         if (source == null) {
             return null
         }
 
         if (source is List) {
-            val result = mutableListOf<CqlType?>()
+            val result = mutableListOf<Value?>()
             for (element in source) {
                 if (element == null && result.none { obj -> obj == null }) {
                     result.add(null)

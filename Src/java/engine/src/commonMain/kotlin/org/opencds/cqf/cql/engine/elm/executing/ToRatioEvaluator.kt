@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -26,7 +26,7 @@ import org.opencds.cqf.cql.engine.runtime.String
 */
 object ToRatioEvaluator {
     @JvmStatic
-    fun toRatio(operand: CqlType?): Ratio? {
+    fun toRatio(operand: Value?): Ratio? {
         if (operand == null) {
             return null
         }

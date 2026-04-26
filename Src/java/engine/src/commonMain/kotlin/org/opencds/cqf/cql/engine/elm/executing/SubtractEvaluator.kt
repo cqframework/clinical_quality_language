@@ -4,7 +4,6 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlType
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -15,6 +14,7 @@ import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
@@ -69,7 +69,7 @@ NOTE: see note in AddEvaluator
 @Suppress("LongMethod", "CyclomaticComplexMethod", "ReturnCount")
 object SubtractEvaluator {
     @JvmStatic
-    fun subtract(left: CqlType?, right: CqlType?, state: State?): CqlType? {
+    fun subtract(left: Value?, right: Value?, state: State?): Value? {
         if (left == null || right == null) {
             return null
         }

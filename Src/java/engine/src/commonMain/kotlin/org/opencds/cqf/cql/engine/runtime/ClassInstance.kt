@@ -8,8 +8,8 @@ import org.cqframework.cql.shared.QName
  */
 class ClassInstance(
     override val type: QName,
-    override val elements: MutableMap<kotlin.String, CqlType?>,
-) : StructuredValue(), NamedCqlType {
+    override val elements: MutableMap<kotlin.String, Value?>,
+) : StructuredValue(), NamedTypeValue {
     override fun toString(): kotlin.String {
         return toPrettyString(type.toString())
     }
