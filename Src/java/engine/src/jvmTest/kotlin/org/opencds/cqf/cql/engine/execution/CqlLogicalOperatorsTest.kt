@@ -1,101 +1,103 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import org.opencds.cqf.cql.engine.runtime.Boolean
 
 internal class CqlLogicalOperatorsTest : CqlTestBase() {
     @Test
     fun all_logical_operators() {
         val results = engine.evaluate { library("CqlLogicalOperatorsTest") }.onlyResultOrThrow
         var value = results["TrueAndTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
+        assertEquals(Boolean.TRUE, value)
 
         value = results["TrueAndFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["TrueAndNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FalseAndTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["FalseAndFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["FalseAndNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["NullAndTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullAndFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["NullAndNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NotTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["NotFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["NotNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["TrueOrTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["TrueOrFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["TrueOrNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["FalseOrTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["FalseOrFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["FalseOrNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullOrTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["NullOrFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullOrNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["TrueXorTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["TrueXorFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["TrueXorNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FalseXorTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["FalseXorFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["FalseXorNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullXorTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullXorFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["NullXorNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
     }
 }

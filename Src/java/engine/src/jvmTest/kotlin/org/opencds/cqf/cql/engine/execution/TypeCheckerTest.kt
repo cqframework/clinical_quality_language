@@ -11,6 +11,7 @@ import org.hl7.elm.r1.ListTypeSpecifier
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TupleElementDefinition
 import org.hl7.elm.r1.TupleTypeSpecifier
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
@@ -22,6 +23,11 @@ import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 @Suppress("LongMethod")
 class TypeCheckerTest {
@@ -29,23 +35,26 @@ class TypeCheckerTest {
     fun checkResultTypeNameMatch() {
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Any"), 10),
+            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Any"), 10.toCqlInteger()),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Boolean"), true),
+            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Boolean"), Boolean.TRUE),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Integer"), 10),
+            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Integer"), 10.toCqlInteger()),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Long"), 10L),
+            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Long"), 10L.toCqlLong()),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Decimal"), BigDecimal("10.5")),
+            TypeChecker.checkType(
+                QName("urn:hl7-org:elm-types:r1", "Decimal"),
+                BigDecimal("10.5").toCqlDecimal(),
+            ),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
@@ -53,7 +62,7 @@ class TypeCheckerTest {
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "String"), "test"),
+            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "String"), "test".toCqlString()),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
@@ -96,7 +105,10 @@ class TypeCheckerTest {
     fun checkResultTypeNameMismatch() {
         assertEquals(
             TypeChecker.TypeCheckResult.MISMATCH,
-            TypeChecker.checkType(QName("urn:hl7-org:elm-types:r1", "Integer"), "not an integer"),
+            TypeChecker.checkType(
+                QName("urn:hl7-org:elm-types:r1", "Integer"),
+                "not an integer".toCqlString(),
+            ),
         )
     }
 
@@ -109,20 +121,20 @@ class TypeCheckerTest {
 
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
-            TypeChecker.checkType(integerTypeSpecifier, 10),
+            TypeChecker.checkType(integerTypeSpecifier, 10.toCqlInteger()),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
             TypeChecker.checkType(
                 ListTypeSpecifier().withElementType(integerTypeSpecifier),
-                listOf(10, 20, 30),
+                listOf(10.toCqlInteger(), 20.toCqlInteger(), 30.toCqlInteger()).toCqlList(),
             ),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
             TypeChecker.checkType(
                 IntervalTypeSpecifier().withPointType(integerTypeSpecifier),
-                Interval(1, true, 10, true),
+                Interval(1.toCqlInteger(), true, 10.toCqlInteger(), true),
             ),
         )
         assertEquals(
@@ -136,14 +148,14 @@ class TypeCheckerTest {
                                 .withElementType(integerTypeSpecifier)
                         )
                     ),
-                Tuple().withElements(mutableMapOf("field1" to 10)),
+                Tuple().withElements(mutableMapOf("field1" to 10.toCqlInteger())),
             ),
         )
         assertEquals(
             TypeChecker.TypeCheckResult.MATCH,
             TypeChecker.checkType(
                 ChoiceTypeSpecifier().withChoice(listOf(integerTypeSpecifier, stringTypeSpecifier)),
-                "test",
+                "test".toCqlString(),
             ),
         )
     }
@@ -159,7 +171,7 @@ class TypeCheckerTest {
             TypeChecker.TypeCheckResult.MISMATCH,
             TypeChecker.checkType(
                 ListTypeSpecifier().withElementType(integerTypeSpecifier),
-                listOf("test"),
+                listOf("test".toCqlString()).toCqlList(),
             ),
         )
         assertEquals(
@@ -180,7 +192,7 @@ class TypeCheckerTest {
                                 .withElementType(integerTypeSpecifier)
                         )
                     ),
-                Tuple().withElements(mutableMapOf("field2" to 10)),
+                Tuple().withElements(mutableMapOf("field2" to 10.toCqlInteger())),
             ),
         )
         assertEquals(

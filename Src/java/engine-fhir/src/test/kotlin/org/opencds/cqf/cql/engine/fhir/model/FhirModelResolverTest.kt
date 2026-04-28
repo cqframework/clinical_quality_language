@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.model
 
 import ca.uhn.fhir.context.FhirVersionEnum
-import java.math.BigDecimal
 import javax.xml.namespace.QName
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,13 +29,17 @@ import org.hl7.fhir.r5.model.HumanName as R5HumanName
 import org.hl7.fhir.r5.model.Patient as R5Patient
 import org.hl7.fhir.r5.model.StringType as R5StringType
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelNamespaceUri
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
 import org.opencds.cqf.cql.engine.runtime.Time
@@ -44,6 +47,8 @@ import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 import org.opencds.cqf.cql.engine.runtime.Vocabulary
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 private val resolvers =
     mapOf(
@@ -135,10 +140,10 @@ private fun validateCqlValueAgainstModel(
             is SimpleType -> {
                 when (modelType.name) {
                     "System.Boolean" -> assertIs<Boolean>(cqlValue)
-                    "System.Integer" -> assertIs<Int>(cqlValue)
+                    "System.Integer" -> assertIs<Integer>(cqlValue)
                     "System.Long" -> assertIs<Long>(cqlValue)
-                    "System.Decimal" -> assertIs<BigDecimal>(cqlValue)
-                    "System.String" -> assertIs<String>(cqlValue)
+                    "System.Decimal" -> assertIs<Decimal>(cqlValue)
+                    "System.String" -> assertIs<org.opencds.cqf.cql.engine.runtime.String>(cqlValue)
                     "System.DateTime" -> assertIs<DateTime>(cqlValue)
                     "System.Date" -> assertIs<Date>(cqlValue)
                     "System.Time" -> assertIs<Time>(cqlValue)
@@ -241,33 +246,34 @@ class FhirModelResolverTest {
                         "id" to null,
                         "extension" to
                             listOf(
-                                ClassInstance(
-                                    QName(fhirModelNamespaceUri, "Extension"),
-                                    mutableMapOf(
-                                        "id" to null,
-                                        "extension" to null,
-                                        "value" to
-                                            ClassInstance(
-                                                QName(fhirModelNamespaceUri, "string"),
-                                                mutableMapOf(
-                                                    "id" to null,
-                                                    "extension" to null,
-                                                    "value" to extensionValue,
+                                    ClassInstance(
+                                        QName(fhirModelNamespaceUri, "Extension"),
+                                        mutableMapOf(
+                                            "id" to null,
+                                            "extension" to null,
+                                            "value" to
+                                                ClassInstance(
+                                                    QName(fhirModelNamespaceUri, "string"),
+                                                    mutableMapOf(
+                                                        "id" to null,
+                                                        "extension" to null,
+                                                        "value" to extensionValue.toCqlString(),
+                                                    ),
                                                 ),
-                                            ),
-                                        "url" to
-                                            ClassInstance(
-                                                QName(fhirModelNamespaceUri, "uri"),
-                                                mutableMapOf(
-                                                    "id" to null,
-                                                    "extension" to null,
-                                                    "value" to extensionUrl,
+                                            "url" to
+                                                ClassInstance(
+                                                    QName(fhirModelNamespaceUri, "uri"),
+                                                    mutableMapOf(
+                                                        "id" to null,
+                                                        "extension" to null,
+                                                        "value" to extensionUrl.toCqlString(),
+                                                    ),
                                                 ),
-                                            ),
-                                    ),
+                                        ),
+                                    )
                                 )
-                            ),
-                        "value" to stringValue,
+                                .toCqlList(),
+                        "value" to stringValue.toCqlString(),
                     ),
                 ),
                 cqlValue,
@@ -313,7 +319,11 @@ class FhirModelResolverTest {
             assertEquals(
                 ClassInstance(
                     QName(fhirModelNamespaceUri, "string"),
-                    mutableMapOf("id" to stringId, "extension" to null, "value" to null),
+                    mutableMapOf(
+                        "id" to stringId.toCqlString(),
+                        "extension" to null,
+                        "value" to null,
+                    ),
                 ),
                 cqlValue,
             )
@@ -342,7 +352,11 @@ class FhirModelResolverTest {
             assertEquals(
                 ClassInstance(
                     QName(fhirModelNamespaceUri, "NameUse"),
-                    mutableMapOf("id" to null, "extension" to null, "value" to "official"),
+                    mutableMapOf(
+                        "id" to null,
+                        "extension" to null,
+                        "value" to "official".toCqlString(),
+                    ),
                 ),
                 cqlValue,
             )
@@ -386,7 +400,11 @@ class FhirModelResolverTest {
             assertEquals(
                 ClassInstance(
                     QName(fhirModelNamespaceUri, "NameUse"),
-                    mutableMapOf("id" to elementId, "extension" to null, "value" to null),
+                    mutableMapOf(
+                        "id" to elementId.toCqlString(),
+                        "extension" to null,
+                        "value" to null,
+                    ),
                 ),
                 cqlValue,
             )

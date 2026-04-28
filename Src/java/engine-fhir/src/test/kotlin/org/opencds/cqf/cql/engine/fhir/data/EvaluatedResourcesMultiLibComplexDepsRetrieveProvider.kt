@@ -13,6 +13,7 @@ import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(
     val fhirModelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>
@@ -20,7 +21,7 @@ class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(
     override fun retrieve(
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
         dataType: String,
         templateId: String?,
         codePath: String?,
@@ -30,7 +31,7 @@ class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(
         dateLowPath: String?,
         dateHighPath: String?,
         dateRange: Interval?,
-    ): Iterable<Any?>? {
+    ): Iterable<Value?>? {
         return when (dataType) {
             "Encounter" -> this.encounters.map { fhirModelResolver.toCqlValue(it) }
             "Condition" -> this.conditions?.map { fhirModelResolver.toCqlValue(it) }

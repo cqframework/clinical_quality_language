@@ -3,13 +3,19 @@ package org.opencds.cqf.cql.engine.elm.executing
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.ONE
 import org.cqframework.cql.shared.ZERO
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.CqlList
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.SortHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.decimalTypeName
 import org.opencds.cqf.cql.engine.runtime.integerTypeName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 collapse(argument List<Interval<T>>) List<Interval<T>>
@@ -46,7 +52,7 @@ object CollapseEvaluator {
             return Interval(
                 interval.start,
                 true,
-                AddEvaluator.add(interval.end, per.value!!.toInt(), state),
+                AddEvaluator.add(interval.end, per.value!!.toInt().toCqlInteger(), state),
                 true,
                 state,
             )
@@ -54,7 +60,7 @@ object CollapseEvaluator {
             return Interval(
                 interval.start,
                 true,
-                AddEvaluator.add(interval.end, per.value, state),
+                AddEvaluator.add(interval.end, per.value?.toCqlDecimal(), state),
                 true,
                 state,
             )
@@ -69,24 +75,43 @@ object CollapseEvaluator {
         }
     }
 
-    fun collapse(list: Iterable<Interval?>?, per: Quantity?, state: State?): List<Interval?>? {
+    fun collapse(list: Value?, per: Value?, state: State?): List? {
         if (list == null) {
             return null
         }
-        val intervals = CqlList.toList(list, false)
+
+        if (!(list is List && list.all { it is Interval? } && per is Quantity?)) {
+            throw InvalidOperatorArgument(
+                "Collapse(List<Interval<T>>, Quantity)",
+                "Collapse(${list.typeAsString}, ${per?.typeAsString})",
+            )
+        }
+
+        val intervals = list.filterIsInstance<Interval>().toMutableList()
+
+        return collapse(intervals, per, state).toCqlList()
+    }
+
+    fun collapse(
+        intervals: kotlin.collections.List<Interval>,
+        per: Quantity?,
+        state: State?,
+    ): kotlin.collections.List<Interval> {
+        val intervals = intervals.toMutableList()
+
         if (intervals.size == 1 || intervals.isEmpty()) {
             return intervals
         }
-        val first = intervals[0]!!
+        val first = intervals[0]
         val isTemporal = first.start is BaseTemporal || first.end is BaseTemporal
 
-        intervals.sortWith(CqlList(state).valueSort)
+        intervals.sortWith { left, right -> SortHelper.compare(left, right, state) }
         val effectivePer = per ?: Quantity().withValue(BigDecimal(0)).withDefaultUnit()
         var precision = if (effectivePer.unit == "1") null else effectivePer.unit
 
         var i = 0
         while (i < intervals.size - 1) {
-            var applyPer = getIntervalWithPerApplied(intervals[i]!!, effectivePer, state)
+            var applyPer = getIntervalWithPerApplied(intervals[i], effectivePer, state)
 
             if (isTemporal) {
                 if (
@@ -99,7 +124,7 @@ object CollapseEvaluator {
                     // But they can only do full units (ms, seconds, days): They cannot do "4 days"
                     // of precision.
                     // The getIntervalWithPerApplied takes that into account.
-                    applyPer = intervals[i]!!
+                    applyPer = intervals[i]
                 } else {
                     precision = "millisecond"
                 }
@@ -107,28 +132,31 @@ object CollapseEvaluator {
 
             val doMerge =
                 AnyTrueEvaluator.anyTrue(
-                    listOf(
-                        OverlapsEvaluator.overlaps(applyPer, intervals[i + 1], precision, state),
-                        MeetsEvaluator.meets(applyPer, intervals[i + 1], precision, state),
+                        listOf(
+                                OverlapsEvaluator.overlaps(
+                                    applyPer,
+                                    intervals[i + 1],
+                                    precision,
+                                    state,
+                                ),
+                                MeetsEvaluator.meets(applyPer, intervals[i + 1], precision, state),
+                            )
+                            .toCqlList()
                     )
-                )
-
-            if (doMerge == null) {
-                ++i
-                continue
-            }
+                    .value
 
             if (doMerge) {
                 val isNextEndGreater =
                     if (isTemporal)
-                        AfterEvaluator.after(intervals[i + 1]!!.end, applyPer.end, precision, state)
-                    else GreaterEvaluator.greater(intervals[i + 1]!!.end, applyPer.end, state)
+                        AfterEvaluator.after(intervals[i + 1].end, applyPer.end, precision, state)
+                            ?.value
+                    else GreaterEvaluator.greater(intervals[i + 1].end, applyPer.end, state)?.value
 
                 intervals[i] =
                     Interval(
                         applyPer.start,
                         true,
-                        if (isNextEndGreater != null && isNextEndGreater) (intervals[i + 1])!!.end
+                        if (isNextEndGreater != null && isNextEndGreater) (intervals[i + 1]).end
                         else applyPer.end,
                         true,
                         state,

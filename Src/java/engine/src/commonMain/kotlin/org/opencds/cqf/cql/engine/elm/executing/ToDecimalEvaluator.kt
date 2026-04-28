@@ -3,8 +3,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 
@@ -23,47 +29,48 @@ If the argument is null, the result is null.
 */
 object ToDecimalEvaluator {
     @JvmStatic
-    fun toDecimal(operand: Any?): Any? {
+    fun toDecimal(operand: Value?): Value? {
         if (operand == null) {
             return null
         }
 
         if (operand is Boolean) {
-            return if (operand) BigDecimal("1.0") else BigDecimal("0.0")
+            return if (operand.value) BigDecimal("1.0").toCqlDecimal()
+            else BigDecimal("0.0").toCqlDecimal()
         }
 
-        if (operand is BigDecimal) {
+        if (operand is Decimal) {
             return operand
         }
 
-        if (operand is Int) {
-            return BigDecimal(operand)
+        if (operand is Integer) {
+            return BigDecimal(operand.value).toCqlDecimal()
         }
 
         if (operand is Long) {
-            return BigDecimal(operand)
+            return BigDecimal(operand.value).toCqlDecimal()
         }
 
         if (operand is String) {
             try {
                 if (operand.contains(".")) {
-                    val decimalSplit: Array<String?> =
-                        operand.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val decimalSplit = operand.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
                     if (
-                        (decimalSplit[0]!!.contains("-") || decimalSplit[0]!!.contains("+")) &&
-                            decimalSplit[0]!!.length == 1
+                        (decimalSplit[0].contains("-") || decimalSplit[0].contains("+")) &&
+                            decimalSplit[0].length == 1
                     ) {
                         return null
-                    } else if (decimalSplit[0]!!.length == 0) {
+                    } else if (decimalSplit[0].length == 0) {
                         return null
                     }
                 }
-                return Value.validateDecimal(BigDecimal(operand), null)
+                return DecimalHelper.validateDecimal(BigDecimal(operand.value), null)
+                    ?.toCqlDecimal()
             } catch (nfe: NumberFormatException) {
                 return null
             }
         }
 
-        throw InvalidOperatorArgument("ToDecimal(String)", "ToDecimal(${operand.javaClassName})")
+        throw InvalidOperatorArgument("ToDecimal(String)", "ToDecimal(${operand.typeAsString})")
     }
 }

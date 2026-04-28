@@ -54,7 +54,7 @@ class Date : BaseTemporal {
         this.precision = precision
     }
 
-    constructor(dateString: String) {
+    constructor(dateString: kotlin.String) {
         var dateString = dateString
         precision =
             Precision.fromDateIndex(
@@ -113,7 +113,7 @@ class Date : BaseTemporal {
             .withPrecision(precision) as org.opencds.cqf.cql.engine.runtime.Date
     }
 
-    override fun compare(other: BaseTemporal, forSort: Boolean): Int? {
+    override fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int? {
         val differentPrecisions = this.precision != other.precision
 
         if (differentPrecisions) {
@@ -163,7 +163,7 @@ class Date : BaseTemporal {
         return null
     }
 
-    override fun isUncertain(p: Precision): Boolean {
+    override fun isUncertain(p: Precision): kotlin.Boolean {
         var precision = p
         if (precision == Precision.WEEK) {
             precision = Precision.DAY
@@ -178,7 +178,7 @@ class Date : BaseTemporal {
         return Interval(start, true, end, true)
     }
 
-    override fun roundToPrecision(precision: Precision, useCeiling: Boolean): BaseTemporal {
+    override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal {
         var precision = precision
         val originalPrecision = this.precision
         val originalLocalDate = TemporalHelper.truncateToPrecision(this.date!!, originalPrecision!!)
@@ -209,7 +209,7 @@ class Date : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return when (precision) {
             Precision.YEAR -> date!!.getYear().toPaddedString(4)
             Precision.MONTH ->

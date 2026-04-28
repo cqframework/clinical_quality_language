@@ -1,12 +1,19 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResultEntry
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.List
 
 internal class CqlEngineTest : CqlTestBase() {
     @Test
@@ -25,30 +32,27 @@ internal class CqlEngineTest : CqlTestBase() {
 
         val libraryDebug = results.debugResult!!.libraryResults["CqlEngineTest"]!!.results
 
-        Assertions.assertNotNull(libraryDebug)
+        assertNotNull(libraryDebug)
 
         // Find the debug result for the AnInteger expression
         // It's indexed by location
         val result =
             libraryDebug.keys.stream().filter { e -> e!!.locator == "6:1-6:21" }.findFirst()
 
-        Assertions.assertTrue(result.isPresent)
+        assertTrue(result.isPresent)
 
         val debugResult: MutableList<DebugResultEntry?> = libraryDebug[result.get()]!!
-        Assertions.assertEquals(1, debugResult.size)
+        assertEquals(1, debugResult.size)
     }
 
     @Test
     fun invalidCql() {
         val versionedIdentifier = toElmIdentifier("Invalid")
         val exception =
-            Assertions.assertThrows(CqlException::class.java) {
+            assertFailsWith<CqlException> {
                 engine.evaluate { library(versionedIdentifier) }.onlyResultOrThrow
             }
-        MatcherAssert.assertThat<String?>(
-            exception.message,
-            CoreMatchers.containsString("Library Invalid loaded, but had errors:"),
-        )
+        assertContains(exception.message!!, "Library Invalid loaded, but had errors:")
     }
 
     @Test
@@ -59,54 +63,54 @@ internal class CqlEngineTest : CqlTestBase() {
 
         val singleLibResult =
             engine.evaluate { library(versionedIdentifierWithVersion) }.onlyResultOrThrow
-        Assertions.assertNotNull(singleLibResult)
+        assertNotNull(singleLibResult)
 
         val multiLibResults = engine.evaluate { library(versionedIdentifierWithVersion) }
-        Assertions.assertNotNull(multiLibResults)
-        Assertions.assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion))
+        assertNotNull(multiLibResults)
+        assertNotNull(multiLibResults.getResultFor(versionedIdentifierNoVersion))
     }
 
     @Test
     fun hedisCompatibility() {
         var libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
         var result = libraryResult["QuantityListIncludes"]!!.value
-        Assertions.assertFalse((result as Boolean?)!!)
+        assertFalse((result as Boolean).value)
 
         result = libraryResult["ReturnUnspecified"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(2, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(2, result.count())
 
         result = libraryResult["ReturnAll"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(5, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(5, result.count())
 
         result = libraryResult["ReturnDistinct"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(2, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(2, result.count())
 
         result = libraryResult["Test Null Tuple"]!!.value
-        Assertions.assertNull(result)
+        assertNull(result)
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableHedisCompatibilityMode)
         libraryResult = engine.evaluate { library("HedisCompatibilityTest") }.onlyResultOrThrow
         // equivalent semantics for lists
         result = libraryResult["QuantityListIncludes"]!!.value
-        Assertions.assertTrue((result as Boolean?)!!)
+        assertTrue((result as Boolean).value)
 
         // no "distinct" behavior for lists
         result = libraryResult["ReturnUnspecified"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(5, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(5, result.count())
 
         result = libraryResult["ReturnAll"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(5, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(5, result.count())
 
         result = libraryResult["ReturnDistinct"]!!.value
-        Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(5, (result as MutableList<*>).size)
+        assertIs<List>(result)
+        assertEquals(5, result.count())
 
         result = libraryResult["Test Null Tuple"]!!.value
-        Assertions.assertNull(result)
+        assertNull(result)
     }
 }

@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Time
 
 /*
 TimeOfDay() Time
@@ -11,7 +12,7 @@ See the Now operator for more information on the rationale for defining the Time
 */
 object TimeOfDayEvaluator {
     @JvmStatic
-    fun internalEvaluate(state: State?): Any? {
+    fun internalEvaluate(state: State?): Time? {
         return TimeFromEvaluator.timeFrom(state!!.evaluationDateTime)
     }
 }

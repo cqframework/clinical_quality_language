@@ -4,8 +4,14 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 mod(left Integer, right Integer) Integer
@@ -19,30 +25,30 @@ If either argument is null, the result is null.
 */
 object ModuloEvaluator {
     @JvmStatic
-    fun modulo(left: Any?, right: Any?): Any? {
+    fun modulo(left: Value?, right: Value?): Value? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Int) {
-            if (right as Int == 0) {
+        if (left is Integer && right is Integer) {
+            if (right.value == 0) {
                 return null
             }
-            return left % right
+            return (left.value % right.value).toCqlInteger()
         }
 
-        if (left is Long) {
-            if (right as Long == 0L) {
+        if (left is Long && right is Long) {
+            if (right.value == 0L) {
                 return null
             }
-            return left % right
+            return (left.value % right.value).toCqlLong()
         }
 
-        if (left is BigDecimal) {
-            if (right === BigDecimal("0.0")) {
+        if (left is Decimal && right is Decimal) {
+            if (right.value == BigDecimal("0.0")) {
                 return null
             }
-            return left.remainder(right as BigDecimal).setScale(8, RoundingMode.FLOOR)
+            return left.value.remainder(right.value).setScale(8, RoundingMode.FLOOR).toCqlDecimal()
         }
 
         if (left is Quantity) {
@@ -57,7 +63,7 @@ object ModuloEvaluator {
 
         throw InvalidOperatorArgument(
             "Modulo(Integer, Integer), Modulo(Long, Long) or Modulo(Decimal, Decimal), , Modulo(Quantity, Quantity)",
-            "Modulo(${left.javaClassName}, ${right.javaClassName})",
+            "Modulo(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

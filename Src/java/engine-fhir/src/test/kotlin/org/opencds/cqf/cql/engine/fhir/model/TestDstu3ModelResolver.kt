@@ -170,51 +170,51 @@ internal class TestDstu3ModelResolver {
     fun contextPathTests() {
         val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
-        var path = resolver.getContextPath("Patient", "Patient") as String?
+        var path = resolver.getContextPath("Patient", "Patient")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("id", path)
 
-        path = resolver.getContextPath(null, "Encounter") as String?
+        path = resolver.getContextPath(null, "Encounter")
         Assertions.assertNull(path)
 
         // TODO: Consider making this an exception on the resolver because
         // if this happens it means something went wrong in the context.
-        path = resolver.getContextPath("Patient", null) as String?
+        path = resolver.getContextPath("Patient", null)
         Assertions.assertNull(path)
 
-        path = resolver.getContextPath("Patient", "Condition") as String?
+        path = resolver.getContextPath("Patient", "Condition")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("subject", path)
 
-        path = resolver.getContextPath("Patient", "Appointment") as String?
+        path = resolver.getContextPath("Patient", "Appointment")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("participant.actor", path)
 
-        path = resolver.getContextPath("Patient", "Account") as String?
+        path = resolver.getContextPath("Patient", "Account")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("subject", path)
 
-        path = resolver.getContextPath("Patient", "Encounter") as String?
+        path = resolver.getContextPath("Patient", "Encounter")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("subject", path)
 
-        path = resolver.getContextPath("Patient", "MedicationStatement") as String?
+        path = resolver.getContextPath("Patient", "MedicationStatement")
         Assertions.assertEquals("subject", path)
 
-        path = resolver.getContextPath("Patient", "Task") as String?
+        path = resolver.getContextPath("Patient", "Task")
         Assertions.assertEquals("for", path)
 
-        path = resolver.getContextPath("Patient", "Coverage") as String?
+        path = resolver.getContextPath("Patient", "Coverage")
         Assertions.assertEquals("beneficiary", path)
 
-        path = resolver.getContextPath("Patient", "QuestionnaireResponse") as String?
+        path = resolver.getContextPath("Patient", "QuestionnaireResponse")
         Assertions.assertEquals("subject", path)
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
-        path = resolver.getContextPath("Unfiltered", "MedicationStatement") as String?
+        path = resolver.getContextPath("Unfiltered", "MedicationStatement")
         Assertions.assertNull(path)
 
-        path = resolver.getContextPath("Unspecified", "MedicationStatement") as String?
+        path = resolver.getContextPath("Unspecified", "MedicationStatement")
         Assertions.assertNull(path)
     }
 

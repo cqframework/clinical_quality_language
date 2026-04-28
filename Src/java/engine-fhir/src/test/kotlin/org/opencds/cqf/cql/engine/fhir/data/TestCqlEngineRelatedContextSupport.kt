@@ -4,23 +4,24 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.util.*
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 import org.cqframework.cql.shared.QName
 import org.hl7.fhir.r4.model.HumanName
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
 import org.hl7.fhir.r4.model.StringType
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.slf4j.Logger
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.slf4j.LoggerFactory
 
 internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
@@ -41,7 +42,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         assertIs<ClassInstance>(resultPatient)
         assertEquals(QName("http://hl7.org/fhir", "Patient"), resultPatient.type)
         assertEquals(
-            _PATIENT_123,
+            _PATIENT_123.toCqlString(),
             (resultPatient.elements["id"] as ClassInstance).elements["value"],
         )
 
@@ -51,7 +52,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         assertIs<ClassInstance>(resultPrimaryCareDoctor)
         assertEquals(QName("http://hl7.org/fhir", "Practitioner"), resultPrimaryCareDoctor.type)
         assertEquals(
-            XYZ,
+            XYZ.toCqlString(),
             (resultPrimaryCareDoctor.elements["id"] as ClassInstance).elements["value"],
         )
 
@@ -60,7 +61,8 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         val resultAllPatientForGp = evaluate(cqlEngine, ALL_PATIENT_FOR_GP, initialContext)
         cqlEngine.state.clearEvaluatedResources()
 
-        assertIs<MutableList<*>>(resultAllPatientForGp)
+        assertIs<org.opencds.cqf.cql.engine.runtime.List>(resultAllPatientForGp)
+        assertTrue(resultAllPatientForGp.all { it is ClassInstance })
 
         val patientsForPractitioner =
             resultAllPatientForGp.filterIsInstance<ClassInstance>().filter {
@@ -70,7 +72,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         assertEquals(3, patientsForPractitioner.size)
 
         assertEquals(
-            setOf(PATIENT_123, PATIENT_456, PATIENT_789).map { it.getId() }.toSet(),
+            setOf(PATIENT_123, PATIENT_456, PATIENT_789).map { it.getId().toCqlString() }.toSet(),
             patientsForPractitioner
                 .map { (it.elements["id"] as ClassInstance).elements["value"] }
                 .toSet(),
@@ -80,8 +82,8 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
     private fun evaluate(
         cqlEngine: CqlEngine,
         expression: String,
-        initialContext: Pair<String, Any?>?,
-    ): Any? {
+        initialContext: Pair<String, String?>?,
+    ): Value? {
         val evaluateResult =
             cqlEngine
                 .evaluate {
@@ -97,7 +99,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
             override fun retrieve(
                 context: String?,
                 contextPath: String?,
-                contextValue: Any?,
+                contextValue: String?,
                 dataType: String,
                 templateId: String?,
                 codePath: String?,
@@ -107,7 +109,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 dateLowPath: String?,
                 dateHighPath: String?,
                 dateRange: Interval?,
-            ): Iterable<Any?>? {
+            ): Iterable<Value?>? {
                 val allPatients =
                     setOf(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
                 val allPractitioners = setOf(PRACTITIONER_XYZ, PRACTITIONER_ZULU)
@@ -120,7 +122,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                         _PATIENT_123 == contextValue
                 ) {
                     return allPatients
-                        .filter { patient -> _PATIENT_123 == patient.getId() }
+                        .filter { _PATIENT_123 == it.getId() }
                         .map { r4ModelResolver!!.toCqlValue(it) }
                 }
 
@@ -131,25 +133,21 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                         ID == codePath &&
                         codesEqual(codes, PRACTITIONER_SLASH + XYZ)
                 ) {
-                    val optPatient123 =
-                        allPatients.firstOrNull { patient -> _PATIENT_123 == patient.getId() }
+                    val optPatient123 = allPatients.firstOrNull { _PATIENT_123 == it.getId() }
 
                     if (optPatient123 != null) {
                         val generalPractitionerIds =
                             optPatient123
                                 .getGeneralPractitioner()
-                                .map { obj -> obj!!.getReference() }
-                                .map { ref ->
-                                    ref!!
-                                        .split(PRACTITIONER_SLASH.toRegex())
+                                .map { it.getReference() }
+                                .map {
+                                    it.split(PRACTITIONER_SLASH.toRegex())
                                         .dropLastWhile { it.isEmpty() }
-                                        .toTypedArray()[1]
+                                        .elementAt(1)
                                 }
 
                         return allPractitioners
-                            .filter { practitioner ->
-                                generalPractitionerIds.contains(practitioner.getId())
-                            }
+                            .filter { generalPractitionerIds.contains(it.getId()) }
                             .map { r4ModelResolver!!.toCqlValue(it) }
                     }
                 }
@@ -164,9 +162,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 ) {
                     logger.info(">>> patients for practitioner xyz")
                     return allPatients
-                        .filter { patient ->
-                            getMatchingPractitioners(patient).contains(PRACTITIONER_XYZ.getId())
-                        }
+                        .filter { getMatchingPractitioners(it).contains(PRACTITIONER_XYZ.getId()) }
                         .map { r4ModelResolver!!.toCqlValue(it) }
                 }
                 return null
@@ -174,8 +170,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         }
 
     companion object {
-        private val logger: Logger =
-            LoggerFactory.getLogger(TestCqlEngineRelatedContextSupport::class.java)
+        private val logger = LoggerFactory.getLogger(TestCqlEngineRelatedContextSupport::class.java)
         private const val PATIENT = "Patient"
         private const val PRACTITIONER = "Practitioner"
         private val PRACTITIONER_SLASH: String = "$PRACTITIONER/"
@@ -189,19 +184,19 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         private const val _PATIENT_123 = "123"
         private const val ID = "id"
 
-        private val PRACTITIONER_XYZ: Practitioner = getPractitioner(XYZ, "Nick", "Riviera")
-        private val PRACTITIONER_ZULU: Practitioner = getPractitioner("zulu", "Leonard", "McCoy")
+        private val PRACTITIONER_XYZ = getPractitioner(XYZ, "Nick", "Riviera")
+        private val PRACTITIONER_ZULU = getPractitioner("zulu", "Leonard", "McCoy")
 
-        private val PATIENT_123: Patient =
+        private val PATIENT_123 =
             getPatient(_PATIENT_123, LocalDate.of(1980, Month.JANUARY, 19), PRACTITIONER_XYZ)
-        private val PATIENT_456: Patient =
+        private val PATIENT_456 =
             getPatient("456", LocalDate.of(1985, Month.APRIL, 19), PRACTITIONER_XYZ)
-        private val PATIENT_789: Patient =
+        private val PATIENT_789 =
             getPatient("789", LocalDate.of(1990, Month.JULY, 19), PRACTITIONER_XYZ)
 
-        private val PATIENT_ABC: Patient =
+        private val PATIENT_ABC =
             getPatient("abc", LocalDate.of(1970, Month.MARCH, 21), PRACTITIONER_ZULU)
-        private val PATIENT_DEF: Patient =
+        private val PATIENT_DEF =
             getPatient("def", LocalDate.of(1975, Month.AUGUST, 21), PRACTITIONER_ZULU)
 
         // TODO: LD: Due to a type erasure and the CQL compiler historically being in separate
@@ -209,7 +204,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         // code paths were merged, resulting in an insidious condition where type erasure has
         // resulted in the declared
         // variable's type being wrong in this instance:  It's actually an Iterable<String>
-        private fun codesEqual(codes: Iterable<*>?, equalTo: String): Boolean {
+        private fun codesEqual(codes: Iterable<Code>?, equalTo: String): Boolean {
             if (codes == null) {
                 return false
             }
@@ -222,20 +217,11 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
             val next = iterator.next()
 
-            // Ignore the javac warning here
-            if (!String::class.java.isInstance(next)) {
-                Assertions.fail<Any?>("Expected codes to contain Strings but does not: $codes")
-            }
-
-            val nextCode = next as String
-
-            return equalTo == nextCode
+            return equalTo == next.code
         }
 
         private fun getMatchingPractitioners(thePatient: Patient): List<String> {
-            return thePatient.getGeneralPractitioner().map { theInnerReference ->
-                getIdFromReference(theInnerReference!!)
-            }
+            return thePatient.getGeneralPractitioner().map { getIdFromReference(it) }
         }
 
         private fun getIdFromReference(theInnerReference: Reference): String {
@@ -243,7 +229,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 .getReference()
                 .split(PRACTITIONER_SLASH.toRegex())
                 .dropLastWhile { it.isEmpty() }
-                .toTypedArray()[1]
+                .elementAt(1)
         }
 
         private fun getPractitioner(
@@ -256,11 +242,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
             practitioner.setId(practitionerId)
 
             practitioner.setName(
-                listOf<HumanName?>(
-                    HumanName()
-                        .setFamily(lastName)
-                        .setGiven(listOf<StringType?>(StringType(firstName)))
-                )
+                listOf(HumanName().setFamily(lastName).setGiven(listOf(StringType(firstName))))
             )
 
             return practitioner
@@ -281,7 +263,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
             if (nullablePractitioner != null) {
                 patient.setGeneralPractitioner(
-                    listOf<Reference?>(
+                    listOf(
                         Reference().setReference(PRACTITIONER_SLASH + nullablePractitioner.getId())
                     )
                 )

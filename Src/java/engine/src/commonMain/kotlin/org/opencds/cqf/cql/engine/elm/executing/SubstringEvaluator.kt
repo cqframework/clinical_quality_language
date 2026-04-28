@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 Substring(stringToSub String, startIndex Integer) String
@@ -15,23 +18,23 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 */
 object SubstringEvaluator {
     @JvmStatic
-    fun substring(stringValue: Any?, startIndexValue: Any?, lengthValue: Any?): Any? {
+    fun substring(stringValue: Value?, startIndexValue: Value?, lengthValue: Value?): String? {
         if (stringValue == null || startIndexValue == null) {
             return null
         }
 
-        if (stringValue is String && startIndexValue is Int) {
+        if (stringValue is String && startIndexValue is Integer && lengthValue is Integer?) {
             val string = stringValue
-            val startIndex = startIndexValue
+            val startIndex = startIndexValue.value
 
             if (startIndex < 0 || startIndex >= string.length) {
                 return null
             }
 
             if (lengthValue == null) {
-                return string.substring(startIndex)
+                return string.substring(startIndex).toCqlString()
             } else {
-                var endIndex = startIndex + lengthValue as Int
+                var endIndex = startIndex + lengthValue.value
                 if (endIndex > string.length) {
                     endIndex = string.length
                 }
@@ -40,13 +43,13 @@ object SubstringEvaluator {
                     endIndex = startIndex
                 }
 
-                return string.substring(startIndex, endIndex)
+                return string.substring(startIndex, endIndex).toCqlString()
             }
         }
 
         throw InvalidOperatorArgument(
             "Substring(String, Integer) or Substring(String, Integer, Integer)",
-            "Substring(${stringValue.javaClassName}, ${startIndexValue.javaClassName}${if (lengthValue == null) "" else ", " + lengthValue.javaClassName})",
+            "Substring(${stringValue.typeAsString}, ${startIndexValue.typeAsString}${if (lengthValue == null) "" else ", " + lengthValue.typeAsString})",
         )
     }
 }

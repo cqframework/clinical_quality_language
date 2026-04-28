@@ -3,8 +3,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 meets before _precision_ (left Interval<T>, right Interval<T>) Boolean
@@ -16,31 +17,36 @@ If either argument is null, the result is null.
 */
 object MeetsBeforeEvaluator {
     @JvmStatic
-    fun meetsBefore(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun meetsBefore(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left == null || right == null) {
             return null
         }
 
         if (left is Interval && right is Interval) {
             val isLeftStartGreater = GreaterEvaluator.greater(left.start, right.end, state)
-            if (isLeftStartGreater != null && isLeftStartGreater) {
-                return false
+            if (isLeftStartGreater != null && isLeftStartGreater.value) {
+                return Boolean.FALSE
             }
 
             val leftEnd = left.end
             val rightStart = right.start
 
             var isIn = InEvaluator.`in`(leftEnd, right, precision, state)
-            if (isIn != null && isIn) {
-                return false
+            if (isIn != null && isIn.value) {
+                return Boolean.FALSE
             }
             isIn = InEvaluator.`in`(left.start, right, precision, state)
-            if (isIn != null && isIn) {
-                return false
+            if (isIn != null && isIn.value) {
+                return Boolean.FALSE
             }
             isIn = InEvaluator.`in`(leftEnd, right, precision, state)
-            if (isIn != null && isIn) {
-                return false
+            if (isIn != null && isIn.value) {
+                return Boolean.FALSE
             }
 
             return MeetsEvaluator.meetsOperation(leftEnd, rightStart, precision, state)
@@ -48,7 +54,7 @@ object MeetsBeforeEvaluator {
 
         throw InvalidOperatorArgument(
             "MeetsBefore(Interval<T>, Interval<T>)",
-            "MeetsBefore(${left.javaClassName}, ${right.javaClassName})",
+            "MeetsBefore(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

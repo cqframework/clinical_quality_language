@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class FunctionRefEvaluatorTest {
     @Test
@@ -26,13 +27,13 @@ internal class FunctionRefEvaluatorTest {
                 FunctionRefEvaluator.pickFunctionDef(
                     state,
                     "func",
-                    mutableListOf<Any?>(1, 2, 3),
+                    listOf(1, 2, 3).map { it.toCqlInteger() },
                     listOf(),
                     listOf(),
                 )
             }
         Assertions.assertEquals(
-            "Could not resolve call to operator 'func(java.lang.Integer, java.lang.Integer, java.lang.Integer)' in library 'lib'.",
+            "Could not resolve call to operator 'func({urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer)' in library 'lib'.",
             cqlException.message,
         )
     }
@@ -90,21 +91,5 @@ internal class FunctionRefEvaluatorTest {
         Assertions.assertTrue(
             FunctionRefEvaluator.functionDefOperandsSignatureEqual(functionDef, listOf(sigChoice))
         )
-    }
-
-    @Test
-    fun typesToString() {
-        val env = Environment(null)
-        val state = State(env)
-
-        var actual =
-            FunctionRefEvaluator.typesToString(state, mutableListOf<String?>("a", "b", "c"))
-        Assertions.assertEquals("java.lang.String, java.lang.String, java.lang.String", actual)
-
-        actual = FunctionRefEvaluator.typesToString(state, mutableListOf(1, 2, null))
-        Assertions.assertEquals("java.lang.Integer, java.lang.Integer, null", actual)
-
-        actual = FunctionRefEvaluator.typesToString(state, null)
-        Assertions.assertEquals("", actual)
     }
 }

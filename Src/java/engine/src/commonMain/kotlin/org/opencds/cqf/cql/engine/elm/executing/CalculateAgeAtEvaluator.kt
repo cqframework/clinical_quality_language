@@ -5,7 +5,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 CalculateAgeInYearsAt(birthDate Date, asOf Date) Integer
@@ -28,7 +28,7 @@ The CalculateAgeAt operators are defined in terms of a date/time duration calcul
 */
 object CalculateAgeAtEvaluator {
     @JvmStatic
-    fun calculateAgeAt(birthDate: Any?, asOf: Any?, precision: String?): Any? {
+    fun calculateAgeAt(birthDate: Value?, asOf: Value?, precision: String?): Value? {
         if (birthDate == null || asOf == null) {
             return null
         }
@@ -43,7 +43,7 @@ object CalculateAgeAtEvaluator {
 
         throw InvalidOperatorArgument(
             "CalculateAgeInYearsAt(Date, Date), CalculateAgeInYearsAt(DateTime, DateTime), CalculateAgeInMonthsAt(Date, Date), CalculateAgeInMonthsAt(DateTime, DateTime), CalculateAgeInWeeksAt(Date, Date), CalculateAgeInWeeksAt(DateTime, DateTime), CalculateAgeInDaysAt(Date, Date), CalculateAgeInDaysAt(DateTime, DateTime), CalculateAgeInHoursAt(Date, Date), CalculateAgeInHoursAt(DateTime, DateTime), CalculateAgeInMinutesAt(Date, Date), CalculateAgeInMinutesAt(DateTime, DateTime), CalculateAgeInSecondsAt(Date, Date), CalculateAgeInSecondsAt(DateTime, DateTime)",
-            "CalculateAgeIn${precision}sAt(${birthDate.javaClassName}, ${asOf.javaClassName})",
+            "CalculateAgeIn${precision}sAt(${birthDate.typeAsString}, ${asOf.typeAsString})",
         )
     }
 }

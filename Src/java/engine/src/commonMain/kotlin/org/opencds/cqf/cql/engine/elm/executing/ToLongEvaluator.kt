@@ -2,8 +2,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Constants.MAX_LONG
+import org.opencds.cqf.cql.engine.runtime.Constants.MIN_LONG
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 ToLong(argument String) Long
@@ -18,35 +24,35 @@ If the argument is null, the result is null.
 */
 object ToLongEvaluator {
     @JvmStatic
-    fun toLong(operand: Any?): Any? {
+    fun toLong(operand: Value?): Long? {
         if (operand == null) {
             return null
         }
 
         if (operand is Boolean) {
-            return if (operand) 1 else 0
+            return (if (operand.value) 1L else 0L).toCqlLong()
         }
 
-        if (operand is Int) {
-            return operand.toLong()
+        if (operand is Integer) {
+            return operand.value.toLong().toCqlLong()
         }
 
         if (operand is String) {
             try {
-                return operand.toLong()
+                return operand.value.toLong().toCqlLong()
             } catch (nfe: NumberFormatException) {
                 try {
-                    val ret = operand.toDouble()
-                    if (Value.validateLong(ret) == null) {
+                    val ret = operand.value.toDouble()
+                    if (ret > MAX_LONG || ret < MIN_LONG) {
                         return null
                     }
-                    return ret.toLong()
+                    return ret.toLong().toCqlLong()
                 } catch (e: NumberFormatException) {
                     return null
                 }
             }
         }
 
-        throw InvalidOperatorArgument("ToLong(String)", "ToLong(${operand.javaClassName})")
+        throw InvalidOperatorArgument("ToLong(String)", "ToLong(${operand.typeAsString})")
     }
 }

@@ -26,7 +26,7 @@ internal class DateTimeTest {
     @Test
     fun dateStringsTest() {
         data class TestParameters(
-            val dateString: String,
+            val dateString: kotlin.String,
             val zoneOffset: ZoneOffset,
             val precision: Precision,
         )
@@ -339,7 +339,7 @@ internal class DateTimeTest {
     private data class BigDecimalParameters(
         val offset: BigDecimal,
         val precision: Precision,
-        val dateElements: List<Int>,
+        val dateElements: kotlin.collections.List<Int>,
     )
 
     @Test
@@ -579,7 +579,7 @@ internal class DateTimeTest {
         private val NON_DST_2024_02_27_07_28_0 = localDateTimeOf(2024, 2, 27, 7, 28, 0)
         private val DST_2024_06_15_23_32_0 = localDateTimeOf(2024, 7, 15, 23, 32, 0)
 
-        private fun formatLocalDateTime(localDateTime: LocalDateTime): String {
+        private fun formatLocalDateTime(localDateTime: LocalDateTime): kotlin.String {
             return "${localDateTime.getYear().toPaddedString(4)}-${localDateTime.getMonthValue().toPaddedString(2)}-${localDateTime.getDayOfMonth().toPaddedString(2)}T${localDateTime.getHour().toPaddedString(2)}:${localDateTime.getMinute().toPaddedString(2)}:${localDateTime.getSecond().toPaddedString(2)}"
         }
 
@@ -624,7 +624,7 @@ internal class DateTimeTest {
             return offsetMinutes.divide(BigDecimal(60), 2, RoundingMode.CEILING)
         }
 
-        private fun toList(localDateTime: LocalDateTime): List<Int> {
+        private fun toList(localDateTime: LocalDateTime): kotlin.collections.List<Int> {
             return listOf(
                 localDateTime.getYear(),
                 localDateTime.getMonthValue(),

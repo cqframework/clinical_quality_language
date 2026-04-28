@@ -3,7 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 ToBoolean(argument String) Boolean
@@ -18,7 +22,7 @@ If the argument is null, the result is null.
 */
 object ToBooleanEvaluator {
     @JvmStatic
-    fun toBoolean(operand: Any?): Any? {
+    fun toBoolean(operand: Value?): Boolean? {
         if (operand == null) {
             return null
         }
@@ -27,31 +31,31 @@ object ToBooleanEvaluator {
             return operand
         }
 
-        if (operand is Int) {
-            if (operand == 1) {
-                return true
+        if (operand is Integer) {
+            if (operand.value == 1) {
+                return Boolean.TRUE
             }
-            if (operand == 0) {
-                return false
+            if (operand.value == 0) {
+                return Boolean.FALSE
             }
 
             return null
         }
 
-        if (operand is BigDecimal) {
-            if (operand.compareTo(BigDecimal("0.0")) == 0) {
-                return false
+        if (operand is Decimal) {
+            if (operand.value.compareTo(BigDecimal("0.0")) == 0) {
+                return Boolean.FALSE
             }
 
-            if (operand.compareTo(BigDecimal("1.0")) == 0) {
-                return true
+            if (operand.value.compareTo(BigDecimal("1.0")) == 0) {
+                return Boolean.TRUE
             }
 
             return null
         }
 
         if (operand is String) {
-            val compare = operand.lowercase()
+            val compare = operand.value.lowercase()
             if (
                 compare == "true" ||
                     compare == "t" ||
@@ -59,7 +63,7 @@ object ToBooleanEvaluator {
                     compare == "y" ||
                     compare == "1"
             ) {
-                return true
+                return Boolean.TRUE
             } else if (
                 compare == "false" ||
                     compare == "f" ||
@@ -67,12 +71,12 @@ object ToBooleanEvaluator {
                     compare == "n" ||
                     compare == "0"
             ) {
-                return false
+                return Boolean.FALSE
             }
 
             return null
         }
 
-        throw InvalidOperatorArgument("ToBoolean(String)", "ToBoolean(${operand.javaClassName})")
+        throw InvalidOperatorArgument("ToBoolean(String)", "ToBoolean(${operand.typeAsString})")
     }
 }

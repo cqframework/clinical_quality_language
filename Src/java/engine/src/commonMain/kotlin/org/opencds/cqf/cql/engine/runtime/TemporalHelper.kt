@@ -10,8 +10,8 @@ import org.opencds.cqf.cql.engine.util.ZoneOffset
 
 @Suppress("MagicNumber")
 object TemporalHelper {
-    fun normalizeDateTimeElements(vararg elements: Int): Array<String?> {
-        val ret = arrayOfNulls<String>(elements.size)
+    fun normalizeDateTimeElements(vararg elements: Int): Array<kotlin.String?> {
+        val ret = arrayOfNulls<kotlin.String>(elements.size)
         for (i in elements.indices) {
             when (i) {
                 0 -> ret[i] = addLeadingZeroes(elements[i], 4)
@@ -23,8 +23,8 @@ object TemporalHelper {
         return ret
     }
 
-    fun normalizeTimeElements(vararg elements: Int): Array<String?> {
-        val ret = arrayOfNulls<String>(elements.size)
+    fun normalizeTimeElements(vararg elements: Int): Array<kotlin.String?> {
+        val ret = arrayOfNulls<kotlin.String>(elements.size)
         for (i in elements.indices) {
             when (i) {
                 3 -> ret[i] = addLeadingZeroes(elements[i], 3)
@@ -35,12 +35,12 @@ object TemporalHelper {
         return ret
     }
 
-    fun addLeadingZeroes(element: Int, length: Int): String {
+    fun addLeadingZeroes(element: Int, length: Int): kotlin.String {
         val strElement = element.toString()
         return "0".repeat(length - strElement.length) + strElement
     }
 
-    fun autoCompleteDateTimeString(dateString: String, precision: Precision): String {
+    fun autoCompleteDateTimeString(dateString: kotlin.String, precision: Precision): kotlin.String {
         return when (precision) {
             Precision.YEAR -> dateString + "-01-01T00:00:00.000"
             Precision.MONTH -> dateString + "-01T00:00:00.000"
@@ -52,7 +52,7 @@ object TemporalHelper {
         }
     }
 
-    fun autoCompleteDateString(dateString: String, precision: Precision): String {
+    fun autoCompleteDateString(dateString: kotlin.String, precision: Precision): kotlin.String {
         return when (precision) {
             Precision.YEAR -> dateString + "-01-01"
             Precision.MONTH -> dateString + "-01"
@@ -60,7 +60,7 @@ object TemporalHelper {
         }
     }
 
-    fun autoCompleteTimeString(timeString: String, precision: Precision): String {
+    fun autoCompleteTimeString(timeString: kotlin.String, precision: Precision): kotlin.String {
         return when (precision) {
             Precision.HOUR,
             Precision.MINUTE -> timeString + ":00.000"
@@ -91,10 +91,10 @@ object TemporalHelper {
     }
 
     fun truncateValueToTargetPrecision(
-        value: Long,
+        value: kotlin.Long,
         precision: Precision,
         targetPrecision: Precision?,
-    ): Long {
+    ): kotlin.Long {
         when (targetPrecision) {
             Precision.YEAR -> {
                 return when (precision) {

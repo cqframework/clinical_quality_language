@@ -3,20 +3,25 @@ package org.opencds.cqf.cql.engine.runtime
 class CodeSystem : Vocabulary() {
     override val type = codeSystemTypeName
 
-    override val elements: MutableMap<String, Any?>
-        get() = mutableMapOf("id" to id, "version" to version, "name" to name)
+    override val elements: MutableMap<kotlin.String, Value?>
+        get() =
+            mutableMapOf(
+                "id" to id?.toCqlString(),
+                "version" to version?.toCqlString(),
+                "name" to name?.toCqlString(),
+            )
 
-    fun withId(id: String?): CodeSystem {
+    fun withId(id: kotlin.String?): CodeSystem {
         this.id = id
         return this
     }
 
-    fun withVersion(version: String?): CodeSystem {
+    fun withVersion(version: kotlin.String?): CodeSystem {
         this.version = version
         return this
     }
 
-    fun withName(name: String?): CodeSystem {
+    fun withName(name: kotlin.String?): CodeSystem {
         this.name = name
         return this
     }

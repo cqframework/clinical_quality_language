@@ -1,20 +1,22 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class EmptyStringsTest : CqlTestBase() {
     @Test
     fun all_empty_string() {
         val results = engine.evaluate { library("EmptyStringsTest") }.onlyResultOrThrow
         var value = results["Null"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["Space"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(" "))
+        assertEquals(" ".toCqlString(), value)
 
         value = results["Empty"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(""))
+        assertEquals(String.EMPTY_STRING, value)
     }
 }

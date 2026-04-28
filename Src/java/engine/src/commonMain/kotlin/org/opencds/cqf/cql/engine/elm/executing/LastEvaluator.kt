@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 Last(argument List<T>) T
@@ -12,16 +14,11 @@ If the argument is null, the result is null.
 
 object LastEvaluator {
     @JvmStatic
-    fun last(source: Any?): Any? {
+    fun last(source: Value?): Value? {
         if (source == null) {
             return null
         }
 
-        var result: Any? = null
-        for (element in source as Iterable<*>) {
-            result = element
-        }
-
-        return result
+        return (source as List).lastOrNull()
     }
 }

@@ -4,13 +4,14 @@ import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.ExpressionRef
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object ExpressionRefEvaluator {
     fun internalEvaluate(
         expressionRef: ExpressionRef?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any? {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): Value? {
         val enteredLibrary = state!!.enterLibrary(expressionRef!!.libraryName)
         try {
             val def =

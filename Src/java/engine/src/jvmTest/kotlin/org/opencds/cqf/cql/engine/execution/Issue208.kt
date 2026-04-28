@@ -1,59 +1,103 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertTrue
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class Issue208 : CqlTestBase() {
     @Test
     fun interval() {
         val results = engine.evaluate { library("Issue208") }.onlyResultOrThrow
         var value = results["Let Test 1"]!!.value
-        Assertions.assertTrue(
+        assertTrue(
             EquivalentEvaluator.equivalent(
-                (((value as MutableList<*>)[0]) as MutableList<*>)[0],
-                1,
-            ) == true
+                    ((value as List).elementAt(0) as List).elementAt(0),
+                    1.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[0]) as MutableList<*>)[1], 2) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(0) as List).elementAt(1),
+                    2.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[0]) as MutableList<*>)[2], 3) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(0) as List).elementAt(2),
+                    3.toCqlInteger(),
+                )
+                .value == true
         )
 
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[0], 4) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(0),
+                    4.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[1], 5) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(1),
+                    5.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[2], 6) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(2),
+                    6.toCqlInteger(),
+                )
+                .value == true
         )
 
         value = results["Let Test 2"]!!.value
-        Assertions.assertTrue(
+        assertTrue(
             EquivalentEvaluator.equivalent(
-                (((value as MutableList<*>)[0]) as MutableList<*>)[0],
-                1,
-            ) == true
+                    ((value as List).elementAt(0) as List).elementAt(0),
+                    1.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[0]) as MutableList<*>)[1], 2) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(0) as List).elementAt(1),
+                    2.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[0]) as MutableList<*>)[2], 3) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(0) as List).elementAt(2),
+                    3.toCqlInteger(),
+                )
+                .value == true
         )
 
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[0], 4) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(0),
+                    4.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[1], 5) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(1),
+                    5.toCqlInteger(),
+                )
+                .value == true
         )
-        Assertions.assertTrue(
-            EquivalentEvaluator.equivalent(((value[1]) as MutableList<*>)[2], 6) == true
+        assertTrue(
+            EquivalentEvaluator.equivalent(
+                    (value.elementAt(1) as List).elementAt(2),
+                    6.toCqlInteger(),
+                )
+                .value == true
         )
     }
 }

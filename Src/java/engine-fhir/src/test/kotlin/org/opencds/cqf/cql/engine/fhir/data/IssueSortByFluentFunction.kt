@@ -1,15 +1,18 @@
 package org.opencds.cqf.cql.engine.fhir.data
 
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Period
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 // Fluent functions were not sorting correctly due
 // to the engine not looking in the variable stack
@@ -43,7 +46,7 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
@@ -53,7 +56,7 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<Any?>? {
+                ): Iterable<Value?>? {
                     return when (dataType) {
                         "Patient" -> mutableListOf(patientCqlValue)
                         "Observation" ->
@@ -76,8 +79,8 @@ internal class IssueSortByFluentFunction : FhirExecutionTestBase() {
                 .onlyResultOrThrow["Ordered Observations"]!!
                 .value
 
-        val obs = Assertions.assertInstanceOf(MutableList::class.java, result)
-        Assertions.assertEquals(obs1CqlValue, obs!![0])
-        Assertions.assertEquals(obs2CqlValue, obs[1])
+        assertIs<List>(result)
+        assertEquals(obs1CqlValue, result.elementAt(0))
+        assertEquals(obs2CqlValue, result.elementAt(1))
     }
 }

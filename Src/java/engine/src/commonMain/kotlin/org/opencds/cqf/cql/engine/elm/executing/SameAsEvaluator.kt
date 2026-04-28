@@ -4,9 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -68,7 +70,7 @@ same _precision_ as(left Interval<T>, right Interval<T>) Boolean
 */
 object SameAsEvaluator {
     @JvmStatic
-    fun sameAs(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun sameAs(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -103,36 +105,38 @@ object SameAsEvaluator {
                 if (startResult == null && endResult == null) {
                     return null
                 } else if (startResult == null && endResult != 0) {
-                    return false
+                    return Boolean.FALSE
                 } else if (endResult == null && startResult != 0) {
-                    return false
+                    return Boolean.FALSE
                 }
-                return if (startResult == null || endResult == null) null
-                else startResult == 0 && endResult == 0
+                return (if (startResult == null || endResult == null) null
+                    else startResult == 0 && endResult == 0)
+                    ?.toCqlBoolean()
             } else {
                 val startResult = EqualEvaluator.equal(leftStart, rightStart, state)
                 val endResult = EqualEvaluator.equal(leftEnd, rightEnd, state)
                 if (startResult == null && endResult == null) {
                     return null
-                } else if (startResult == null && !endResult!!) {
-                    return false
-                } else if (endResult == null && !startResult!!) {
-                    return false
+                } else if (startResult == null && !endResult!!.value) {
+                    return Boolean.FALSE
+                } else if (endResult == null && !startResult!!.value) {
+                    return Boolean.FALSE
                 }
-                return if (startResult == null || endResult == null) null
-                else startResult && endResult
+                return (if (startResult == null || endResult == null) null
+                    else startResult.value && endResult.value)
+                    ?.toCqlBoolean()
             }
         } else if (left is BaseTemporal && right is BaseTemporal) {
             if (precision == null) {
                 precision = BaseTemporal.getHighestPrecision(left, right)
             }
             val result = left.compareToPrecision(right, Precision.fromString(precision))
-            return if (result == null) null else result == 0
+            return (if (result == null) null else result == 0)?.toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "SameAs(Date, Date), SameAs(DateTime, DateTime), SameAs(Time, Time) or SameAs(Interval<T>, Interval<T>)",
-            "SameAs(${left.javaClassName}, ${right.javaClassName})",
+            "SameAs(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

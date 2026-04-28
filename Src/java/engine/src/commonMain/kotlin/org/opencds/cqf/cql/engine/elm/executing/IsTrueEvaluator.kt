@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+
 /*
 is true(argument Boolean) Boolean
 
@@ -8,7 +13,11 @@ If the argument evaluates to true, the result is true; otherwise, the result is 
 */
 
 object IsTrueEvaluator {
-    fun isTrue(operand: Boolean?): Any? {
-        return true == operand
+    fun isTrue(operand: Value?): Boolean {
+        if (operand is Boolean?) {
+            return (operand?.value == true).toCqlBoolean()
+        }
+
+        throw InvalidOperatorArgument("IsTrue(Boolean)", "IsTrue(${operand.typeAsString})")
     }
 }

@@ -1,9 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 
-interface NamedCqlType : CqlType {
+sealed interface NamedTypeValue : Value {
+    override val typeAsString: kotlin.String
+        get() = type.toString()
+
     val type: QName
 }
 
@@ -32,21 +34,14 @@ val vocabularyTypeName = QName(systemModelNamespaceUri, "Vocabulary")
  *
  * @param value The native CQL value to get the type for.
  */
-fun getNamedTypeForCqlValue(value: Any?): QName? {
+fun getNamedTypeForCqlValue(value: Value?): QName? {
     if (value == null) {
         return anyTypeName
     }
 
-    if (value is NamedCqlType) {
+    if (value is NamedTypeValue) {
         return value.type
     }
 
-    return when (value) {
-        is Boolean -> booleanTypeName
-        is Int -> integerTypeName
-        is Long -> longTypeName
-        is BigDecimal -> decimalTypeName
-        is String -> stringTypeName
-        else -> null
-    }
+    return null
 }

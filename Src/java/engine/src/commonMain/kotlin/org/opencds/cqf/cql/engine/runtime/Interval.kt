@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.jvm.JvmOverloads
 import kotlin.toString
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
@@ -13,35 +12,28 @@ import org.opencds.cqf.cql.engine.elm.executing.SuccessorEvaluator.successor
 import org.opencds.cqf.cql.engine.exception.InvalidInterval
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.Date
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 class Interval
 @JvmOverloads
 constructor(
-    var low: Any?,
-    val lowClosed: Boolean,
-    var high: Any?,
-    val highClosed: Boolean,
+    var low: Value?,
+    val lowClosed: kotlin.Boolean,
+    var high: Value?,
+    val highClosed: kotlin.Boolean,
     state: State? = null,
-) : CqlType {
+) : Value {
+    override val typeAsString: kotlin.String
+        get() = "Interval<${this.pointType}>"
+
     /** Inferred from the runtime values of the low and/or high boundaries. */
     var pointType: QName
 
-    var isUncertain: Boolean = false
+    var isUncertain: kotlin.Boolean = false
         private set
 
     init {
         if (low == null && high == null) {
             throw InvalidInterval("Low or high boundary of an interval must be present.")
-        }
-
-        // Special case for measure processing - MeasurementPeriod is a java date
-        if (low is Date) {
-            low = org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(low as Date)
-        }
-        if (high is Date) {
-            high = org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(high as Date)
         }
 
         val lowNamedType = getNamedTypeForCqlValue(low)
@@ -67,7 +59,7 @@ constructor(
             }
 
             val isStartGreater = greater(this.start, this.end, state)
-            if (isStartGreater == null || isStartGreater) {
+            if (isStartGreater == null || isStartGreater.value) {
                 throw InvalidInterval(
                     "Invalid Interval - the ending boundary ($high) must be greater than or equal to the starting boundary ($low)."
                 )
@@ -78,12 +70,12 @@ constructor(
         pointType = if (low == null) highNamedType else lowNamedType
     }
 
-    fun setUncertain(uncertain: Boolean): Interval {
+    fun setUncertain(uncertain: kotlin.Boolean): Interval {
         this.isUncertain = uncertain
         return this
     }
 
-    val start: Any?
+    val start: Value?
         /*
         Returns the starting point of the interval.
 
@@ -101,13 +93,13 @@ constructor(
                 low
             } else if (high is Quantity) {
                 val highQuantity = high as Quantity
-                Quantity().withValue(Value.MIN_DECIMAL).withUnit(highQuantity.unit)
+                Quantity().withValue(Constants.MIN_DECIMAL).withUnit(highQuantity.unit)
             } else {
                 minValue(pointType)
             }
         }
 
-    val end: Any?
+    val end: Value?
         /*
         Returns the ending point of an interval.
 
@@ -125,36 +117,28 @@ constructor(
                 high
             } else if (low is Quantity) {
                 val lowQuantity = low as Quantity
-                Quantity().withValue(Value.MAX_DECIMAL).withUnit(lowQuantity.unit)
+                Quantity().withValue(Constants.MAX_DECIMAL).withUnit(lowQuantity.unit)
             } else {
                 maxValue(pointType)
             }
         }
 
-    fun compareTo(other: Interval, state: State?): Int {
-        val cqlList = CqlList(state)
-        if (cqlList.compareTo(this.start, other.start) == 0) {
-            return cqlList.compareTo(this.end, other.end)
-        }
-        return cqlList.compareTo(this.start, other.start)
-    }
-
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return "Interval${if (this.lowClosed) "[" else "("}${if (this.low == null) "null" else this.low.toString()}, ${if (this.high == null) "null" else this.high.toString()}${if (this.highClosed) "]" else ")"}"
     }
 
     companion object {
-        fun getSize(start: Any?, end: Any?, state: State?): Any? {
+        fun getSize(start: Value?, end: Value?, state: State?): Value? {
             if (start == null || end == null) {
                 return null
             }
 
-            if (start is Int || start is BigDecimal || start is Quantity) {
+            if (start is Integer || start is Decimal || start is Quantity) {
                 return subtract(end, start, state)
             }
 
             throw InvalidOperatorArgument(
-                "Cannot perform width operator with argument of type '${start.javaClassName}'."
+                "Cannot perform width operator with argument of type '${start.typeAsString}'."
             )
         }
     }

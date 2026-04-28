@@ -2,11 +2,13 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.ZoneOffset
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 
@@ -26,22 +28,22 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToDateTimeEvaluator {
     @JvmStatic
-    fun convertsToDateTime(argument: Any?, offset: ZoneOffset?): Boolean? {
+    fun convertsToDateTime(argument: Value?, offset: ZoneOffset?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is DateTime) {
-            return true
+            return Boolean.TRUE
         }
 
         if (argument is String) {
             try {
-                DateTime(argument, offset!!)
+                DateTime(argument.value, offset!!)
             } catch (dtpe: Exception) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         } else if (argument is Date) {
             try {
                 DateTime(
@@ -55,14 +57,14 @@ object ConvertsToDateTimeEvaluator {
                     0,
                 )
             } catch (e: Exception) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToDateTime(String) or ConvertsToDateTime(Date)",
-            "ConvertsToDateTime(${argument.javaClassName})",
+            "ConvertsToDateTime(${argument.typeAsString})",
         )
     }
 }

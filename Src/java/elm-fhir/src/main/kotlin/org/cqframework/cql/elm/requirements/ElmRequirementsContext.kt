@@ -44,19 +44,20 @@ import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.runtime.Value
 
 class ElmRequirementsContext(
     libraryManager: LibraryManager,
     options: CqlCompilerOptions?,
     visitor: ElmRequirementsVisitor,
-    parameters: MutableMap<String, Any?>?,
+    parameters: MutableMap<String, Value?>?,
     evaluationDateTime: ZonedDateTime?,
 ) {
     var options: CqlCompilerOptions?
 
     val libraryManager: LibraryManager
 
-    val parameters: MutableMap<String, Any?>?
+    val parameters: MutableMap<String, Value?>?
 
     val evaluationDateTime: ZonedDateTime?
 

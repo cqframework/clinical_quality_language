@@ -14,6 +14,7 @@ import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.BeforeEach
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 
 open class CqlTestBase {
     protected open val cqlSubdirectory: String?
@@ -107,7 +108,7 @@ open class CqlTestBase {
         libraryIdentifier: VersionedIdentifier,
         expressionName: String,
         evaluationDateTime: ZonedDateTime? = null,
-    ): Any? {
+    ): Value? {
         return evaluate {
                 library(libraryIdentifier) { expressions(expressionName) }
                 this.evaluationDateTime = evaluationDateTime
@@ -117,20 +118,20 @@ open class CqlTestBase {
     }
 
     companion object {
-        const val NORTH_AMERICA_MOUNTAIN: String =
+        const val NORTH_AMERICA_MOUNTAIN =
             "America/Denver" // This is the baseline:  Normal hour on the hour timezone
-        const val NEWFOUNDLAND: String = "America/St_Johns"
-        const val INDIA: String = "Asia/Kolkata"
-        const val AUSTRALIA_NORTHERN_TERRITORY: String = "Australia/Darwin"
-        const val AUSTRALIA_EUCLA: String = "Australia/Eucla"
-        const val AUSTRALIA_BROKEN_HILL: String = "Australia/Broken_Hill"
-        const val AUSTRALIA_LORD_HOWE: String = "Australia/Lord_Howe"
-        const val AUSTRALIA_SOUTH: String = "Australia/Adelaide"
-        const val INDIAN_COCOS: String = "Indian/Cocos"
-        const val PACIFIC_CHATHAM: String = "Pacific/Chatham"
+        const val NEWFOUNDLAND = "America/St_Johns"
+        const val INDIA = "Asia/Kolkata"
+        const val AUSTRALIA_NORTHERN_TERRITORY = "Australia/Darwin"
+        const val AUSTRALIA_EUCLA = "Australia/Eucla"
+        const val AUSTRALIA_BROKEN_HILL = "Australia/Broken_Hill"
+        const val AUSTRALIA_LORD_HOWE = "Australia/Lord_Howe"
+        const val AUSTRALIA_SOUTH = "Australia/Adelaide"
+        const val INDIAN_COCOS = "Indian/Cocos"
+        const val PACIFIC_CHATHAM = "Pacific/Chatham"
 
         @JvmStatic
-        fun timezones(): Array<Array<Any>> {
+        fun timezones(): Array<Array<String>> {
             return arrayOf(
                 arrayOf(NORTH_AMERICA_MOUNTAIN),
                 arrayOf(NEWFOUNDLAND),

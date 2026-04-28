@@ -5,10 +5,12 @@ import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 /(left Decimal, right Decimal) Decimal
@@ -25,38 +27,46 @@ If either argument is null, the result is null.
 */
 @Suppress("CyclomaticComplexMethod")
 object DivideEvaluator {
-    private fun divideHelper(left: BigDecimal, right: BigDecimal?, state: State?): BigDecimal? {
-        if (EqualEvaluator.equal(right, BigDecimal("0.0"), state) == true) {
+    private fun divideHelper(left: Decimal, right: Decimal?, state: State?): Decimal? {
+        if (EqualEvaluator.equal(right, BigDecimal("0.0").toCqlDecimal(), state)?.value == true) {
             return null
         }
 
         return try {
-            Value.verifyPrecision(left.divide(right!!), null)
+            DecimalHelper.verifyPrecision(left.value.divide(right!!.value), null).toCqlDecimal()
         } catch (e: ArithmeticException) {
-            left.divide(right!!, 8, RoundingMode.FLOOR)
+            left.value.divide(right!!.value, 8, RoundingMode.FLOOR).toCqlDecimal()
         }
     }
 
     @JvmStatic
-    fun divide(left: Any?, right: Any?, state: State?): Any? {
+    fun divide(left: Value?, right: Value?, state: State?): Value? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is BigDecimal && right is BigDecimal) {
+        if (left is Decimal && right is Decimal) {
             return divideHelper(left, right, state)
         } else if (left is Quantity && right is Quantity) {
             val leftValue = left.value!!
             val leftUnit = left.unit!!
             val rightValue = right.value!!
             val rightUnit = right.unit!!
-            if (EqualEvaluator.equal(rightValue, BigDecimal("0.0"), state) != false) {
+            if (
+                EqualEvaluator.equal(
+                        rightValue.toCqlDecimal(),
+                        BigDecimal("0.0").toCqlDecimal(),
+                        state,
+                    )
+                    ?.value != false
+            ) {
                 return null
             }
-            val resultValue: BigDecimal?
+            val resultValue: Decimal?
             val resultUnit: String
             if (rightUnit == "1") {
-                resultValue = divideHelper(leftValue, rightValue, state)
+                resultValue =
+                    divideHelper(leftValue.toCqlDecimal(), rightValue.toCqlDecimal(), state)
                 resultUnit = leftUnit
             } else {
                 val ucumService = state?.environment?.libraryManager?.ucumService!!
@@ -64,17 +74,19 @@ object DivideEvaluator {
                     val result =
                         ucumService.divideBy(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
                     val unverifiedResultValue = result.first
-                    resultValue = Value.verifyPrecision(unverifiedResultValue, null)
+                    resultValue =
+                        DecimalHelper.verifyPrecision(unverifiedResultValue, null).toCqlDecimal()
                     val rawResultUnit = result.second
                     resultUnit = rawResultUnit.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }
             }
-            return Quantity().withValue(resultValue).withUnit(resultUnit)
-        } else if (left is Quantity && right is BigDecimal) {
-            val value = divideHelper(left.value!!, right, state)
-            return if (value != null) Quantity().withValue(value).withUnit(left.unit) else null
+            return Quantity().withValue(resultValue?.value).withUnit(resultUnit)
+        } else if (left is Quantity && right is Decimal) {
+            val value = divideHelper(left.value!!.toCqlDecimal(), right, state)
+            return if (value != null) Quantity().withValue(value.value).withUnit(left.unit)
+            else null
         } else if (left is Interval && right is Interval) {
             return Interval(
                 divide(left.start, right.start, state),
@@ -87,7 +99,7 @@ object DivideEvaluator {
 
         throw InvalidOperatorArgument(
             "Divide(Decimal, Decimal), Divide(Quantity, Decimal), Divide(Quantity, Quantity)",
-            "Divide(${left.javaClassName}, ${right.javaClassName})",
+            "Divide(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

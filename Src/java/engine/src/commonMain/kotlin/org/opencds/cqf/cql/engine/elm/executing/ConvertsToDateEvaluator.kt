@@ -2,8 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Date
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -21,27 +23,27 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToDateEvaluator {
     @JvmStatic
-    fun convertsToDate(argument: Any?): Boolean? {
+    fun convertsToDate(argument: Value?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Date) {
-            return true
+            return Boolean.TRUE
         }
 
         if (argument is String) {
             try {
-                Date(argument)
+                Date(argument.value)
             } catch (e: Exception) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToDate(String)",
-            "ConvertsToDate(${argument.javaClassName})",
+            "ConvertsToDate(${argument.typeAsString})",
         )
     }
 }

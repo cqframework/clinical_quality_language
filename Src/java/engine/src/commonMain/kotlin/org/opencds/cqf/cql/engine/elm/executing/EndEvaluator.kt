@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 end of(argument Interval<T>) T
@@ -16,7 +17,7 @@ If the argument is null, the result is null.
 */
 object EndEvaluator {
     @JvmStatic
-    fun end(operand: Any?): Any? {
+    fun end(operand: Value?): Value? {
         val argument = operand as Interval?
 
         if (argument == null) {

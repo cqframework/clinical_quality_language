@@ -3,8 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -28,19 +30,24 @@ If either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 object IncludesEvaluator {
-    fun includes(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun includes(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         try {
             return IncludedInEvaluator.includedIn(right, left, precision, state)
         } catch (e: IllegalArgumentException) {
             throw InvalidOperatorArgument(
                 "Includes(Interval<T>, Interval<T>), Includes(List<T>, List<T>) or Includes(List<T>, T)",
-                "Includes(${left!!.javaClassName}, ${right!!.javaClassName})",
+                "Includes(${left!!.typeAsString}, ${right!!.typeAsString})",
             )
         }
     }
 
     @JvmStatic
-    fun internalEvaluate(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun internalEvaluate(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left == null && right == null) {
             return null
         }
@@ -48,13 +55,13 @@ object IncludesEvaluator {
         if (left == null) {
             return if (right is Interval)
                 IncludedInEvaluator.intervalIncludedIn(right, null, precision, state)
-            else IncludedInEvaluator.listIncludedIn(right as Iterable<*>, null, state)
+            else IncludedInEvaluator.listIncludedIn(right as List, null, state)
         }
 
         if (right == null) {
             return if (left is Interval)
                 IncludedInEvaluator.intervalIncludedIn(null, left, precision, state)
-            else IncludedInEvaluator.listIncludedIn(null, left as Iterable<*>, state)
+            else IncludedInEvaluator.listIncludedIn(null, left as List, state)
         }
 
         return includes(left, right, precision, state)
