@@ -1,12 +1,13 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
-import java.util.*
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import java.util.TimeZone
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class CqlClinicalOperatorsTest : CqlTestBase() {
     @Test
@@ -21,37 +22,37 @@ internal class CqlClinicalOperatorsTest : CqlTestBase() {
                 .onlyResultOrThrow
 
         var value = results["CalculateAgeYears"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(6))
+        assertEquals(6.toCqlInteger(), value)
 
         value = results["CalculateAgeMonths"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(72))
+        assertEquals(72.toCqlInteger(), value)
 
         value = results["CalculateAgeDays"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(2191))
+        assertEquals(2191.toCqlInteger(), value)
 
         value = results["CalculateAgeHours"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(52583))
+        assertEquals(52583.toCqlInteger(), value)
 
         value = results["CalculateAgeMinutes"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(3155040))
+        assertEquals(3155040.toCqlInteger(), value)
 
         value = results["CalculateAgeSeconds"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(189302400))
+        assertEquals(189302400.toCqlInteger(), value)
 
         value = results["CalculateAgeUncertain"]!!.value
-        MatcherAssert.assertThat(
+        assertEquals(
+            Interval(61.toCqlInteger(), true, 72.toCqlInteger(), true).toString(),
             value.toString(),
-            Matchers.`is`((Interval(61, true, 72, true)).toString()),
         )
 
         value = results["CalculateAgeAtYears"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(17))
+        assertEquals(17.toCqlInteger(), value)
 
         value = results["CalculateAgeAtMonths"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(197))
+        assertEquals(197.toCqlInteger(), value)
 
         value = results["CalculateAgeAtDays"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(6038))
+        assertEquals(6038.toCqlInteger(), value)
 
         // BTR -> 2020-10-09
         // Was 144912, but that doesn't account for time zones.
@@ -62,86 +63,86 @@ internal class CqlClinicalOperatorsTest : CqlTestBase() {
         // timezone behavior is different
         // So, changing this test to be a more reasonable test of hours calculation
         value = results["CalculateAgeAtHours"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(27))
+        assertEquals(27.toCqlInteger(), value)
 
         // BTR -> 2020-10-09
         // Was 8694720, same as SQL Server, but again, edge case, changing
         value = results["CalculateAgeAtMinutes"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(27 * 60 + 10))
+        assertEquals((27 * 60 + 10).toCqlInteger(), value)
 
         // BTR -> 2020-10-09
         // Was 521683200, same as SQL Server, but again, edge case, changing
         value = results["CalculateAgeAtSeconds"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`((27 * 60 + 10) * 60 + 15))
+        assertEquals(((27 * 60 + 10) * 60 + 15).toCqlInteger(), value)
 
         value = results["CalculateAgeAtUncertain"]!!.value
-        Assertions.assertEquals(187, (value as Interval).start)
-        Assertions.assertEquals(198, value.end)
+        assertEquals(187.toCqlInteger(), (value as Interval).start)
+        assertEquals(198.toCqlInteger(), value.end)
 
         value = results["Issue70A"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["Issue70B"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["CodeEqualTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["CodeEqualFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["CodeEqualNullVersion"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["ConceptEqualTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptEqualFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ConceptEqualNullDisplay"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["CodeEqualNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["ConceptEqualNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["CodeEquivalentTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["CodeEquivalentFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ConceptEquivalentTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptEquivalentTrueDisplayMismatch"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptEquivalentTrueIntersection1And4"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptEquivalentTrueIntersection2And4"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptEquivalentFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["CodeEquivalentNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ConceptEquivalentNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["CodeToConceptEquivalentFalse"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(false))
+        assertEquals(Boolean.FALSE, value)
 
         value = results["CodeToConceptEquivalentTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
 
         value = results["ConceptToConceptMismatchedDisplayTrue"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
     }
 }

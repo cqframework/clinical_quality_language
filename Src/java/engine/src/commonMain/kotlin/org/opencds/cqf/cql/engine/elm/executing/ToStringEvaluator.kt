@@ -1,8 +1,18 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 
@@ -32,7 +42,7 @@ If the argument is null, the result is null.
 */
 object ToStringEvaluator {
     @JvmStatic
-    fun toString(operand: Any?): Any? {
+    fun toString(operand: Value?): String? {
         if (operand == null) {
             return null
         }
@@ -41,26 +51,26 @@ object ToStringEvaluator {
             return operand
         }
 
-        if (operand is Int) {
-            return operand.toString()
+        if (operand is Integer) {
+            return operand.value.toString().toCqlString()
         } else if (operand is Long) {
-            return operand.toString()
-        } else if (operand is BigDecimal) {
-            return operand.toString()
+            return operand.value.toString().toCqlString()
+        } else if (operand is Decimal) {
+            return operand.value.toString().toCqlString()
         } else if (operand is Quantity) {
-            return operand.toString()
+            return operand.toString().toCqlString()
         } else if (operand is Ratio) {
-            return operand.toString()
+            return operand.toString().toCqlString()
         } else if (operand is Boolean) {
-            return operand.toString()
+            return operand.value.toString().toCqlString()
         } else if (operand is Date) {
-            return operand.toString()
+            return operand.toString().toCqlString()
         } else if (operand is DateTime) {
-            return operand.toString()
+            return operand.toString().toCqlString()
         } else if (operand is Time) {
-            return operand.toString()
+            return operand.toString().toCqlString()
         } else {
-            return operand.toString()
+            return operand.toString().toCqlString()
         }
     }
 }

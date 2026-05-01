@@ -1,9 +1,19 @@
 package org.opencds.cqf.cql.engine.runtime
 
-class Concept : CqlType {
-    var display: String? = null
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
 
-    fun withDisplay(display: String?): Concept {
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+class Concept : StructuredValue(), NamedTypeValue {
+    override val type = conceptTypeName
+
+    override val elements: MutableMap<kotlin.String, Value?>
+        get() = mutableMapOf("codes" to codes?.toCqlList())
+
+    var display: kotlin.String? = null
+
+    fun withDisplay(display: kotlin.String?): Concept {
         this.display = display
         return this
     }
@@ -18,6 +28,7 @@ class Concept : CqlType {
             }
         }
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     fun withCodes(codes: Iterable<Code?>?): Concept {
         this.codes = codes?.toMutableList() ?: mutableListOf()
         return this
@@ -28,12 +39,7 @@ class Concept : CqlType {
         return this
     }
 
-    override fun toString(): String {
-        val builder = StringBuilder().append("Concept {\n")
-        for (code in codes!!) {
-            builder.append("\t").append(code.toString()).append("\n")
-        }
-
-        return builder.append("}").toString()
+    override fun toString(): kotlin.String {
+        return toPrettyString("Concept")
     }
 }

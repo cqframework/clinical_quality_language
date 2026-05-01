@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.data
 
 import java.lang.AutoCloseable
-import java.util.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -11,6 +10,9 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CompositeDataProviderTest {
     @Mock private val mockModelResolver: ModelResolver? = null
@@ -32,7 +34,7 @@ internal class CompositeDataProviderTest {
 
     @Test
     fun resolveIdString() {
-        val `object` = "object"
+        val `object` = "object".toCqlString()
         val id = "text"
 
         Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)
@@ -45,7 +47,7 @@ internal class CompositeDataProviderTest {
 
     @Test
     fun resolveIdIntLong() {
-        val `object` = 1L
+        val `object` = 1L.toCqlLong()
         val id = "oneL"
 
         Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)
@@ -58,7 +60,7 @@ internal class CompositeDataProviderTest {
 
     @Test
     fun resolveIdDate() {
-        val `object` = Date()
+        val `object` = Date(2010)
         val id = "now"
 
         Mockito.`when`(mockModelResolver!!.resolveId(`object`)).thenReturn(id)

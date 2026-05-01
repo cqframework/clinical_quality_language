@@ -1,16 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
-import java.io.IOException
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator.equal
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
-import org.opencds.cqf.cql.engine.runtime.CqlType
 
 internal class CqlConceptTest : CqlTestBase() {
     @Test
-    @Throws(IOException::class)
     fun all_cql_concept_tests() {
         val environment = Environment(libraryManager)
         val engine = CqlEngine(environment)
@@ -20,9 +16,9 @@ internal class CqlConceptTest : CqlTestBase() {
         val codes = listOf(createCode("123", "1"), createCode("234", "1"), createCode("abc", "a"))
         val expected = Concept().withDisplay("test-concept-display").withCodes(codes)
 
-        val actual = results["testConceptRef"]!!.value as CqlType?
+        val actual = results["testConceptRef"]!!.value
 
-        assertEqual(expected, actual)
+        assertEquals(expected, actual)
     }
 
     companion object {
@@ -32,13 +28,6 @@ internal class CqlConceptTest : CqlTestBase() {
                 .withSystem("http://system-$systemVal.org")
                 .withVersion(systemVal)
                 .withDisplay("$prefix-display")
-        }
-
-        fun assertEqual(expected: CqlType, actual: CqlType?) {
-            if (equal(expected, actual) != true) {
-                val message = "Expected $expected but got $actual"
-                Assertions.fail<Any?>(message)
-            }
         }
     }
 }

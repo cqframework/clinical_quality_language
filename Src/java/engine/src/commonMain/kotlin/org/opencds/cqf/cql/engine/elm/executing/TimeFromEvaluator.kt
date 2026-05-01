@@ -5,7 +5,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 time from(argument DateTime) Time
@@ -16,7 +16,7 @@ NOTE: this is within the purview of DateTimeComponentFrom
 @Suppress("MagicNumber")
 object TimeFromEvaluator {
     @JvmStatic
-    fun timeFrom(operand: Any?): Any? {
+    fun timeFrom(operand: Value?): Time? {
         if (operand == null) {
             return null
         }
@@ -53,6 +53,6 @@ object TimeFromEvaluator {
             return Time(hour, minute, second, millisecond)
         }
 
-        throw InvalidOperatorArgument("TimeFrom(DateTime)", "TimeFrom(${operand.javaClassName})")
+        throw InvalidOperatorArgument("TimeFrom(DateTime)", "TimeFrom(${operand.typeAsString})")
     }
 }

@@ -3,8 +3,14 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 
 /*
 meets _precision_ (left Interval<T>, right Interval<T>) Boolean
@@ -18,7 +24,12 @@ If precision is specified and the point type is a date/time type, comparisons us
 If either argument is null, the result is null.
 */
 object MeetsEvaluator {
-    fun meetsOperation(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun meetsOperation(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         var precision = precision
         if (left == null && right == null) {
             return null
@@ -26,12 +37,12 @@ object MeetsEvaluator {
 
         val maxValue =
             MaxValueEvaluator.maxValue(
-                if (left != null) left.javaClassName else right!!.javaClassName
+                if (left != null) getNamedTypeForCqlValue(left) else getNamedTypeForCqlValue(right)
             )
         if (left is BaseTemporal && right is BaseTemporal) {
             val isMax = SameAsEvaluator.sameAs(left, maxValue, precision, state)
-            if (isMax != null && isMax) {
-                return false
+            if (isMax != null && isMax.value) {
+                return Boolean.FALSE
             }
 
             val tempPrecision = BaseTemporal.getHighestPrecision(left, right)
@@ -71,15 +82,15 @@ object MeetsEvaluator {
         }
 
         val isMax = EqualEvaluator.equal(left, maxValue, state)
-        if (isMax != null && isMax) {
-            return false
+        if (isMax != null && isMax.value) {
+            return Boolean.FALSE
         }
         // the following gets the successor of left and check with Equal for params Date
         return EqualEvaluator.equal(SuccessorEvaluator.successor(left), right, state)
     }
 
     @JvmStatic
-    fun meets(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun meets(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }
@@ -89,12 +100,12 @@ object MeetsEvaluator {
             val leftEnd = left.end
 
             var `in` = InEvaluator.`in`(leftStart, right, precision, state)
-            if (`in` != null && `in`) {
-                return false
+            if (`in` != null && `in`.value) {
+                return Boolean.FALSE
             }
             `in` = InEvaluator.`in`(leftEnd, right, precision, state)
-            if (`in` != null && `in`) {
-                return false
+            if (`in` != null && `in`.value) {
+                return Boolean.FALSE
             }
 
             return OrEvaluator.or(
@@ -105,7 +116,7 @@ object MeetsEvaluator {
 
         throw InvalidOperatorArgument(
             "Meets(Interval<T>, Interval<T>)",
-            "Meets(${left.javaClassName}, ${right.javaClassName})",
+            "Meets(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

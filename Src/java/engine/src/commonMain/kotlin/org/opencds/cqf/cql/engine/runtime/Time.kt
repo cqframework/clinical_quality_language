@@ -1,30 +1,43 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidTime
 import org.opencds.cqf.cql.engine.util.LocalTime
 import org.opencds.cqf.cql.engine.util.localTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Time : BaseTemporal {
+    override val type = timeTypeName
+
+    @JsExport.Ignore
     var time: LocalTime
         private set
 
+    @JsExport.Ignore
     fun withTime(time: LocalTime): Time {
         this.time = time
         return this
     }
 
-    fun withPrecision(precision: Precision): Time {
+    @JsExport.Ignore
+    override fun withPrecision(precision: Precision?): Time {
         this.precision = precision
         return this
     }
 
+    @JsExport.Ignore
     constructor(time: LocalTime, precision: Precision) {
         this.time = time
         this.precision = precision
     }
 
-    constructor(dateString: String) {
+    @JsName("fromDateString")
+    constructor(dateString: kotlin.String) {
         var dateString = dateString
         var size = 0
         if (
@@ -44,6 +57,7 @@ class Time : BaseTemporal {
         time = localTimeParse(dateString)
     }
 
+    @JsName("fromTimeElements")
     constructor(vararg timeElements: Int) {
         if (timeElements.isEmpty()) {
             throw InvalidTime("Time must include an hour")
@@ -74,6 +88,7 @@ class Time : BaseTemporal {
         time = localTimeParse(timeString.toString())
     }
 
+    @JsExport.Ignore
     fun expandPartialMinFromPrecision(precision: Precision): Time {
         var ot = this.time.plusHours(0)
         for (i in precision.toTimeIndex() + 1..3) {
@@ -86,11 +101,13 @@ class Time : BaseTemporal {
         return Time(ot, this.precision!!)
     }
 
+    @JsExport.Ignore
     fun expandPartialMin(precision: Precision?): Time {
         val ot = this.time.plusHours(0)
         return Time(ot, precision ?: Precision.MILLISECOND)
     }
 
+    @JsExport.Ignore
     fun expandPartialMax(precision: Precision?): Time {
         var ot = this.time.plusHours(0)
         for (i in this.precision!!.toTimeIndex() + 1..3) {
@@ -110,17 +127,20 @@ class Time : BaseTemporal {
         return Time(ot, precision ?: Precision.MILLISECOND)
     }
 
-    override fun isUncertain(p: Precision): Boolean {
+    @JsExport.Ignore
+    override fun isUncertain(p: Precision): kotlin.Boolean {
         return this.precision!!.toTimeIndex() < p.toTimeIndex()
     }
 
+    @JsExport.Ignore
     override fun getUncertaintyInterval(p: Precision): Interval {
         val start = expandPartialMin(p)
         val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
-    override fun roundToPrecision(precision: Precision, useCeiling: Boolean): BaseTemporal? {
+    @JsExport.Ignore
+    override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal? {
         val originalPrecision = this.precision
         val originalLocalTime = this.time.truncatedTo(originalPrecision!!.toChronoUnit())
         when (precision) {
@@ -142,7 +162,7 @@ class Time : BaseTemporal {
         }
     }
 
-    override fun compare(other: BaseTemporal, forSort: Boolean): Int? {
+    override fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int? {
         val differentPrecisions = this.precision != other.precision
 
         if (differentPrecisions) {
@@ -161,6 +181,7 @@ class Time : BaseTemporal {
         }
     }
 
+    @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
         var precision = p
         val leftMeetsPrecisionRequirements =
@@ -197,7 +218,7 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun toString(): String {
+    override fun toString(): kotlin.String {
         return when (precision) {
             Precision.HOUR -> time.getHour().toPaddedString(2)
             Precision.MINUTE ->

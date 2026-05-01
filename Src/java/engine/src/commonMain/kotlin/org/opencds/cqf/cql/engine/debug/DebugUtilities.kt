@@ -3,11 +3,13 @@ package org.opencds.cqf.cql.engine.debug
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object DebugUtilities {
     private val logger = KotlinLogging.logger("DebugUtilities")
 
-    fun logDebugResult(node: Element, currentLibrary: Library?, result: Any?) {
+    fun logDebugResult(node: Element, currentLibrary: Library?, result: Value?) {
         val debugLocation = toDebugLocation(node)
         val debugString = toDebugString(result)
         logger.debug {
@@ -27,8 +29,8 @@ object DebugUtilities {
     }
 
     @Suppress("ReturnCount")
-    fun toDebugString(result: Any?): String {
-        if (result is Iterable<*>) {
+    fun toDebugString(result: Value?): String {
+        if (result is List) {
             val iterable = result
             return ("{" + iterable.joinToString(",") { item -> toDebugString(item) } + "}")
         }

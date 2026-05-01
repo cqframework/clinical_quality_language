@@ -2,13 +2,32 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator.or
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.CodeSystem
+import org.opencds.cqf.cql.engine.runtime.Concept
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Quantity.Companion.unitsEqual
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.ValueSet
+import org.opencds.cqf.cql.engine.runtime.Vocabulary
+import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -38,7 +57,7 @@ If either argument is null, or contains null elements, the result is null.
 object EqualEvaluator {
     @JvmStatic
     @JvmOverloads
-    fun equal(left: Any?, right: Any?, state: State? = null): Boolean? {
+    fun equal(left: Value?, right: Value?, state: State? = null): Boolean? {
 
         // If either argument is null, the result is null
 
@@ -46,34 +65,30 @@ object EqualEvaluator {
             return null
         }
 
-        // Cases in which Java classes may differ
+        // Cases in which Kotlin classes may differ
 
-        if (left is Iterable<*> && right is Iterable<*>) {
-            return listsEqual(left, right, state)
-        }
-
-        if (left is Interval && right is Int) {
+        if (left is Interval && right is Integer) {
             return intervalIntegerEqual(left, right, state)
         }
 
-        if (right is Interval && left is Int) {
+        if (right is Interval && left is Integer) {
             return intervalIntegerEqual(right, left, state)
         }
 
-        // Return false early if Java classes don't match (platform dependence)
+        // Return false early if Kotlin classes don't match
 
         if (left::class != right::class) {
-            return false
+            return Boolean.FALSE
         }
 
         // The rest of the cases
 
-        if (left is Boolean || left is Int || left is Long || left is String) {
-            return left == right
+        if (left is Boolean || left is Integer || left is Long || left is String) {
+            return (left == right).toCqlBoolean()
         }
 
-        if (left is BigDecimal && right is BigDecimal) {
-            return left.compareTo(right) == 0
+        if (left is Decimal && right is Decimal) {
+            return (left.value.compareTo(right.value) == 0).toCqlBoolean()
         }
 
         if (left is Quantity && right is Quantity) {
@@ -104,29 +119,32 @@ object EqualEvaluator {
             return conceptsEqual(left, right)
         }
 
+        if (left is List && right is List) {
+            return listsEqual(left, right, state)
+        }
+
         if (left is Interval && right is Interval) {
             return intervalsEqual(left, right, state)
         }
 
         if (left is Tuple && right is Tuple) {
-            return tuplesEqual(left, right, state)
+            return structuredValueElementsEqual(left.elements, right.elements, state)
         }
 
-        // Fallback to data provider's `objectEqual()`
-
-        if (state != null) {
-            return state.environment.objectEqual(left, right)
+        if (left is ClassInstance && right is ClassInstance) {
+            if (left.type == right.type) {
+                return structuredValueElementsEqual(left.elements, right.elements, state)
+            }
+            return Boolean.FALSE
         }
 
-        throw InvalidOperatorArgument(
-            "Equal(${left.javaClassName}, ${right.javaClassName}) requires Context and state was null"
-        )
+        return Boolean.FALSE
     }
 
     fun quantitiesEqual(left: Quantity, right: Quantity, state: State?): Boolean? {
         // Try the "simple" rule (equality of alternate spellings for "week" or "month")
         if (unitsEqual(left.unit, right.unit)) {
-            return equal(left.value, right.value)
+            return equal(left.value?.toCqlDecimal(), right.value?.toCqlDecimal())
         }
 
         // The simple rule indicated that the units are not comparable, try to convert the value of
@@ -135,26 +153,29 @@ object EqualEvaluator {
         return computeWithConvertedUnits(
             left,
             right,
-            { _, leftValue, rightValue -> equal(leftValue, rightValue) },
+            { _, leftValue, rightValue ->
+                equal(leftValue.toCqlDecimal(), rightValue.toCqlDecimal())
+            },
             state,
         )
     }
 
     fun ratiosEqual(left: Ratio, right: Ratio, state: State?): Boolean {
-        return equal(left.numerator, right.numerator, state) == true &&
-            equal(left.denominator, right.denominator, state) == true
+        return (equal(left.numerator, right.numerator, state)?.value == true &&
+                equal(left.denominator, right.denominator, state)?.value == true)
+            .toCqlBoolean()
     }
 
     fun baseTemporalsEqual(left: BaseTemporal, right: BaseTemporal): Boolean? {
         val comparison = left.compare(right, false)
-        return if (comparison == null) null else comparison == 0
+        return (if (comparison == null) null else comparison == 0)?.toCqlBoolean()
     }
 
     fun codesEqual(left: Code, right: Code): Boolean? {
-        var codeIsEqual = equal(left.code, right.code)
-        var systemIsEqual = equal(left.system, right.system)
-        var versionIsEqual = equal(left.version, right.version)
-        var displayIsEqual = equal(left.display, right.display)
+        var codeIsEqual = equal(left.code?.toCqlString(), right.code?.toCqlString())?.value
+        var systemIsEqual = equal(left.system?.toCqlString(), right.system?.toCqlString())?.value
+        var versionIsEqual = equal(left.version?.toCqlString(), right.version?.toCqlString())?.value
+        var displayIsEqual = equal(left.display?.toCqlString(), right.display?.toCqlString())?.value
         if (codeIsEqual == null && left.code == null && right.code == null) {
             codeIsEqual = true
         }
@@ -167,14 +188,15 @@ object EqualEvaluator {
         if (displayIsEqual == null && left.display == null && right.display == null) {
             displayIsEqual = true
         }
-        return if (
-            codeIsEqual == null ||
-                systemIsEqual == null ||
-                versionIsEqual == null ||
-                displayIsEqual == null
-        )
-            null
-        else codeIsEqual && systemIsEqual && versionIsEqual && displayIsEqual
+        return (if (
+                codeIsEqual == null ||
+                    systemIsEqual == null ||
+                    versionIsEqual == null ||
+                    displayIsEqual == null
+            )
+                null
+            else codeIsEqual && systemIsEqual && versionIsEqual && displayIsEqual)
+            ?.toCqlBoolean()
     }
 
     fun codeSystemsEqual(left: CodeSystem, right: CodeSystem): Boolean? {
@@ -183,34 +205,41 @@ object EqualEvaluator {
 
     fun valueSetsEqual(left: ValueSet, right: ValueSet): Boolean {
         val equal =
-            vocabulariesEqual(left, right) == true &&
+            vocabulariesEqual(left, right)?.value == true &&
                 left.codeSystems.size == right.codeSystems.size
         if (equal) {
             for (cs in left.codeSystems) {
                 val otherC = right.getCodeSystem(cs.id, cs.version)
                 if (otherC == null) {
-                    return false
+                    return Boolean.FALSE
                 }
             }
         }
-        return equal
+        return equal.toCqlBoolean()
     }
 
     fun vocabulariesEqual(left: Vocabulary, right: Vocabulary): Boolean? {
         return AndEvaluator.and(
-            or(left.id == null && right.id == null, equal(left.id, right.id)),
-            or(left.version == null && right.version == null, equal(left.version, right.version)),
+            or(
+                (left.id == null && right.id == null).toCqlBoolean(),
+                equal(left.id?.toCqlString(), right.id?.toCqlString()),
+            ),
+            or(
+                (left.version == null && right.version == null).toCqlBoolean(),
+                equal(left.version?.toCqlString(), right.version?.toCqlString()),
+            ),
         )
     }
 
     fun conceptsEqual(left: Concept, right: Concept): Boolean? {
-        val codesAreEqual = equal(left.codes, right.codes)
-        var displayIsEqual = equal(left.display, right.display)
+        val codesAreEqual = equal(left.codes?.toCqlList(), right.codes?.toCqlList())?.value
+        var displayIsEqual = equal(left.display?.toCqlString(), right.display?.toCqlString())?.value
         if (displayIsEqual == null && left.display == null && right.display == null) {
             displayIsEqual = true
         }
-        return if (codesAreEqual == null || displayIsEqual == null) null
-        else codesAreEqual && displayIsEqual
+        return (if (codesAreEqual == null || displayIsEqual == null) null
+            else codesAreEqual && displayIsEqual)
+            ?.toCqlBoolean()
     }
 
     fun intervalsEqual(left: Interval, right: Interval, state: State?): Boolean? {
@@ -226,11 +255,11 @@ object EqualEvaluator {
         )
     }
 
-    fun intervalIntegerEqual(interval: Interval, integer: Int, state: State?): Boolean? {
+    fun intervalIntegerEqual(interval: Interval, integer: Integer, state: State?): Boolean? {
         return intervalsEqual(interval, Interval(integer, true, integer, true, state), state)
     }
 
-    fun listsEqual(left: Iterable<*>, right: Iterable<*>, state: State?): Boolean? {
+    fun listsEqual(left: List, right: List, state: State?): Boolean? {
         val leftIterator = left.iterator()
         val rightIterator = right.iterator()
 
@@ -246,44 +275,48 @@ object EqualEvaluator {
                     continue
                 }
                 val elementEquals = equal(leftObject, rightObject, state)
-                if (elementEquals == null || !elementEquals) {
+                if (elementEquals == null || !elementEquals.value) {
                     return elementEquals
                 }
             } else if (leftObject == null) {
                 return null
             } else {
-                return false
+                return Boolean.FALSE
             }
         }
 
         if (rightIterator.hasNext()) {
-            return if (rightIterator.next() == null) null else false
+            return if (rightIterator.next() == null) null else Boolean.FALSE
         }
 
-        return true
+        return Boolean.TRUE
     }
 
-    fun tuplesEqual(left: Tuple, right: Tuple, state: State?): Boolean? {
-        if (left.elements.size != right.elements.size) {
-            return false
+    fun structuredValueElementsEqual(
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
+        state: State?,
+    ): Boolean? {
+        if (left.size != right.size) {
+            return Boolean.FALSE
         }
 
-        for (key in right.elements.keys) {
-            if (left.elements.containsKey(key)) {
-                if (right.elements[key] == null && left.elements[key] == null) {
+        for (key in right.keys) {
+            if (left.containsKey(key)) {
+                if (right[key] == null && left[key] == null) {
                     continue
                 }
-                val equal = equal(right.elements[key], left.elements[key], state)
+                val equal = equal(right[key], left[key], state)
                 if (equal == null) {
                     return null
-                } else if (!equal) {
-                    return false
+                } else if (!equal.value) {
+                    return Boolean.FALSE
                 }
             } else {
-                return false
+                return Boolean.FALSE
             }
         }
 
-        return true
+        return Boolean.TRUE
     }
 }

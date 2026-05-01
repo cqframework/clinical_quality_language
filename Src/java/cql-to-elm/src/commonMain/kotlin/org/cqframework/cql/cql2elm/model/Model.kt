@@ -1,14 +1,21 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.ModelManager
+import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ModelContext
 import org.hl7.cql.model.NamedType
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
-open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+open class Model
+@JsExport.Ignore
+constructor(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     private var index: Map<String, DataType> = HashMap()
     private val classIndex: MutableMap<String, ClassType> = HashMap()
     private val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
@@ -42,6 +49,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
         }
     }
 
+    @JsExport.Ignore
     fun getConversions(): List<Conversion.OperatorConversion> {
         return conversions
     }
@@ -52,6 +60,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     }
 
     @Suppress("ReturnCount")
+    @JsExport.Ignore
     @JvmOverloads
     fun resolveContextName(contextName: String, mustResolve: Boolean = true): ModelContext? {
         for (context in contexts) {

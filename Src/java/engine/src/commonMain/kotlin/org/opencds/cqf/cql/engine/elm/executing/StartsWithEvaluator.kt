@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
  * StartsWith(argument String, prefix String) Boolean
@@ -15,18 +18,18 @@ import org.opencds.cqf.cql.engine.util.javaClassName
  */
 object StartsWithEvaluator {
     @JvmStatic
-    fun startsWith(argument: Any?, prefix: Any?): Any? {
+    fun startsWith(argument: Value?, prefix: Value?): Boolean? {
         if (argument == null || prefix == null) {
             return null
         }
 
         if (argument is String && prefix is String) {
-            return argument.startsWith(prefix)
+            return argument.startsWith(prefix).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
             "StartsWith(String, String)",
-            "StartsWith(${argument.javaClassName}, ${prefix.javaClassName})",
+            "StartsWith(${argument.typeAsString}, ${prefix.typeAsString})",
         )
     }
 }

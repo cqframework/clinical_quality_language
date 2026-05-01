@@ -6,8 +6,19 @@ import org.cqframework.cql.shared.ONE
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.exception.TypeOverflow
 import org.opencds.cqf.cql.engine.exception.TypeUnderflow
-import org.opencds.cqf.cql.engine.runtime.*
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Constants
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 predecessor of<T>(argument T) T
@@ -31,7 +42,7 @@ object PredecessorEvaluator {
      * @throws TypeOverflow if the value is less than the minimum allowed for Decimal type
      */
     private fun checkMinDecimal(value: BigDecimal): BigDecimal {
-        if (value.compareTo(Value.MIN_DECIMAL) < 0) {
+        if (value.compareTo(Constants.MIN_DECIMAL) < 0) {
             throw TypeUnderflow(
                 "The result of the predecessor operation precedes the minimum value allowed for the Decimal type"
             )
@@ -40,36 +51,36 @@ object PredecessorEvaluator {
     }
 
     @JvmStatic
-    fun predecessor(value: Any?): Any? {
+    fun predecessor(value: Value?): Value? {
         if (value == null) {
             return null
         }
 
-        if (value is Int) {
-            if (value <= Value.MIN_INT) {
+        if (value is Integer) {
+            if (value.value <= Constants.MIN_INT) {
                 throw TypeUnderflow(
                     "The result of the predecessor operation precedes the minimum value allowed for the Integer type"
                 )
             }
-            return value - 1
+            return (value.value - 1).toCqlInteger()
         } else if (value is Long) {
-            if (value <= Value.MIN_LONG) {
+            if (value.value <= Constants.MIN_LONG) {
                 throw TypeUnderflow(
                     "The result of the predecessor operation precedes the minimum value allowed for the Long type"
                 )
             }
-            return value - 1
-        } else if (value is BigDecimal) {
-            return checkMinDecimal(value.subtract(BigDecimal("0.00000001")))
+            return (value.value - 1).toCqlLong()
+        } else if (value is Decimal) {
+            return checkMinDecimal(value.value.subtract(BigDecimal("0.00000001"))).toCqlDecimal()
         } else if (value is Quantity) {
-            if (value.value!!.compareTo(Value.MIN_DECIMAL) <= 0) {
+            if (value.value!!.compareTo(Constants.MIN_DECIMAL) <= 0) {
                 throw TypeUnderflow(
                     "The result of the predecessor operation precedes the minimum value allowed for the Decimal type"
                 )
             }
             val quantity = value
             return Quantity()
-                .withValue(predecessor(quantity.value) as BigDecimal)
+                .withValue((predecessor(quantity.value?.toCqlDecimal()) as Decimal).value)
                 .withUnit(quantity.unit)
         } else if (value is Date) {
             val dt = value
@@ -120,7 +131,7 @@ object PredecessorEvaluator {
         }
 
         throw InvalidOperatorArgument(
-            "The Predecessor operation is not implemented for type ${value.javaClassName}"
+            "The Predecessor operation is not implemented for type ${value.typeAsString}"
         )
     }
 
@@ -133,17 +144,18 @@ object PredecessorEvaluator {
      * @return the predecessor of the value
      */
     @JvmStatic
-    fun predecessor(value: Any?, quantity: Quantity): Any? {
-        if (value is BigDecimal) {
+    fun predecessor(value: Value?, quantity: Quantity): Value? {
+        if (value is Decimal) {
             if (quantity.value!!.scale() > 0) {
                 return checkMinDecimal(
-                    value.subtract(ONE.scaleByPowerOfTen(-quantity.value!!.scale()))
-                )
+                        value.value.subtract(ONE.scaleByPowerOfTen(-quantity.value!!.scale()))
+                    )
+                    .toCqlDecimal()
             }
-            return checkMinDecimal(value.subtract(ONE))
+            return checkMinDecimal(value.value.subtract(ONE)).toCqlDecimal()
         } else if (value is Quantity) {
             return Quantity()
-                .withValue(predecessor(value.value, quantity) as BigDecimal)
+                .withValue((predecessor(value.value?.toCqlDecimal(), quantity) as Decimal).value)
                 .withUnit(value.unit)
         }
 

@@ -2,7 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 singleton from(argument List<T>) T
@@ -15,14 +16,14 @@ If the source list is null, the result is null.
 */
 object SingletonFromEvaluator {
     @JvmStatic
-    fun singletonFrom(operand: Any?): Any? {
+    fun singletonFrom(operand: Value?): Value? {
         if (operand == null) {
             return null
         }
 
-        var result: Any? = null
+        var result: Value? = null
         var first = true
-        if (operand is Iterable<*>) {
+        if (operand is List) {
             for (element in operand) {
                 if (first) {
                     result = element
@@ -38,7 +39,7 @@ object SingletonFromEvaluator {
 
         throw InvalidOperatorArgument(
             "SingletonFrom(List<T>)",
-            "SingletonFrom(${operand.javaClassName})",
+            "SingletonFrom(${operand.typeAsString})",
         )
     }
 }

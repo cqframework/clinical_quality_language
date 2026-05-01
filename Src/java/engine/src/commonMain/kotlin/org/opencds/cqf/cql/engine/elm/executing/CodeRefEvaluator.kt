@@ -9,7 +9,7 @@ import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 
 object CodeRefEvaluator {
-    fun toCode(cd: CodeDef, cs: CodeSystem): Code? {
+    fun toCode(cd: CodeDef, cs: CodeSystem): Code {
         return Code()
             .withCode(cd.id)
             .withSystem(cs.id)
@@ -18,12 +18,12 @@ object CodeRefEvaluator {
     }
 
     @JvmStatic
-    fun toCode(cr: CodeRef, state: State?): Code? {
+    fun toCode(cr: CodeRef, state: State?): Code {
         val enteredLibrary = state!!.enterLibrary(cr.libraryName)
         try {
             val cd = Libraries.resolveCodeRef(cr.name, state.getCurrentLibrary()!!)
             val cs = CodeSystemRefEvaluator.toCodeSystem(cd.codeSystem!!, state)
-            return toCode(cd, cs!!)
+            return toCode(cd, cs)
         } finally {
             state.exitLibrary(enteredLibrary)
         }

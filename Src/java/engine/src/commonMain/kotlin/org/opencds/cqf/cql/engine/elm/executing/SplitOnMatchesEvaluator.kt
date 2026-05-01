@@ -2,7 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 
@@ -21,28 +25,29 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object SplitOnMatchesEvaluator {
     @JvmStatic
-    fun splitOnMatches(stringToSplit: Any?, separator: Any?): Any? {
+    fun splitOnMatches(stringToSplit: Value?, separator: Value?): List? {
         if (stringToSplit == null) {
             return null
         }
 
-        if (stringToSplit is String) {
-            val result: MutableList<Any?> = ArrayList<Any?>()
+        if (stringToSplit is String && separator is String?) {
+            val result = mutableListOf<String>()
             if (separator == null) {
                 result.add(stringToSplit)
             } else {
                 result.addAll(
-                    stringToSplit.split((separator as String).toRegex()).dropLastWhile {
-                        it.isEmpty()
-                    }
+                    stringToSplit
+                        .split(separator.value.toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .map { it.toCqlString() }
                 )
             }
-            return result
+            return result.toCqlList()
         }
 
         throw InvalidOperatorArgument(
             "SplitOnMatches(String, String)",
-            "SplitOnMatches(${stringToSplit.javaClassName}, ${separator!!.javaClassName})",
+            "SplitOnMatches(${stringToSplit.typeAsString}, ${separator!!.typeAsString})",
         )
     }
 }

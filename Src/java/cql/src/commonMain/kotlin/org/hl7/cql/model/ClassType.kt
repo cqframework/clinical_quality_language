@@ -1,6 +1,12 @@
 package org.hl7.cql.model
 
-@Suppress("TooManyFunctions", "ComplexCondition")
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@Suppress("TooManyFunctions", "ComplexCondition", "NON_EXPORTABLE_TYPE")
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 open class ClassType(
     final override val name: String,
     baseType: DataType? = null,
@@ -16,7 +22,7 @@ open class ClassType(
 ) : BaseDataType(baseType), NamedType {
 
     // For Java compatibility. Can be deleted once tests are updated.
-    constructor(name: String) : this(name, null, mutableListOf(), mutableListOf())
+    @JsExport.Ignore constructor(name: String) : this(name, null, mutableListOf(), mutableListOf())
 
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
@@ -51,34 +57,41 @@ open class ClassType(
 
     private val relationships: MutableList<Relationship> = ArrayList()
 
+    @JsExport.Ignore
     fun getRelationships(): List<Relationship> {
         return relationships
     }
 
+    @JsExport.Ignore
     fun addRelationship(relationship: Relationship) {
         relationships.add(relationship)
     }
 
     private val targetRelationships: MutableList<Relationship> = ArrayList()
 
+    @JsExport.Ignore
     fun getTargetRelationships(): List<Relationship> {
         return targetRelationships
     }
 
+    @JsExport.Ignore
     fun addTargetRelationship(relationship: Relationship) {
         targetRelationships.add(relationship)
     }
 
     private val searches: MutableList<SearchType> = ArrayList()
 
+    @JsExport.Ignore
     fun getSearches(): List<SearchType> {
         return searches
     }
 
+    @JsExport.Ignore
     fun addSearch(search: SearchType) {
         searches.add(search)
     }
 
+    @JsExport.Ignore
     fun findSearch(searchPath: String): SearchType? {
         return searches.firstOrNull { it.name == searchPath }
     }
@@ -88,6 +101,7 @@ open class ClassType(
      *
      * @param genericParameter
      */
+    @JsExport.Ignore
     fun addGenericParameter(genericParameter: TypeParameter) {
         genericParameters.add(genericParameter)
     }
@@ -97,6 +111,7 @@ open class ClassType(
      *
      * @param parameters
      */
+    @JsExport.Ignore
     fun addGenericParameter(parameters: Collection<TypeParameter>) {
         for (parameter in parameters) {
             internalAddParameter(parameter)
@@ -111,6 +126,7 @@ open class ClassType(
      * @return Generic parameter with the given name in the current class or in the base class. Null
      *   if none found.
      */
+    @JsExport.Ignore
     fun getGenericParameterByIdentifier(identifier: String): TypeParameter? {
         return getGenericParameterByIdentifier(identifier, false)
     }
@@ -124,6 +140,7 @@ open class ClassType(
      * @param inCurrentClassOnly
      * @return Class' generic parameter
      */
+    @JsExport.Ignore
     fun getGenericParameterByIdentifier(
         identifier: String,
         inCurrentClassOnly: Boolean,
@@ -230,7 +247,7 @@ open class ClassType(
 
     override fun toLabel(): String = label ?: name
 
-    val tupleType: TupleType by lazy { buildTupleType() }
+    @JsExport.Ignore val tupleType: TupleType by lazy { buildTupleType() }
 
     private fun addTupleElements(
         classType: ClassType,
@@ -273,6 +290,7 @@ open class ClassType(
     override val isGeneric: Boolean
         get() = genericParameters.isNotEmpty()
 
+    @JsExport.Ignore
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return if (callType is ClassType && callType.elements.size == elements.size) {
             sortedElements.zip(callType.sortedElements).all { (thisElement, thatElement) ->
@@ -281,6 +299,7 @@ open class ClassType(
         } else false
     }
 
+    @JsExport.Ignore
     override fun instantiate(context: InstantiationContext): DataType {
         if (!isGeneric) {
             return this

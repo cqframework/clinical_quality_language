@@ -40,14 +40,24 @@ import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMP
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_TUPLE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.NATIVE_STACK_TRACE_EXT_URL
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
+import org.opencds.cqf.cql.engine.runtime.dateTypeName
+import org.opencds.cqf.cql.engine.runtime.quantityTypeName
 
 internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
     override fun toFhirId(value: String?): IIdType? {
@@ -55,7 +65,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        return IdType(value)
+        return IdType(value.value)
     }
 
     override fun toFhirBoolean(value: Boolean?): BooleanType? {
@@ -63,31 +73,31 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        return BooleanType(value)
+        return BooleanType(value.value)
     }
 
-    override fun toFhirInteger(value: Int?): IPrimitiveType<Int>? {
+    override fun toFhirInteger(value: Integer?): IPrimitiveType<Int>? {
         if (value == null) {
             return null
         }
 
-        return IntegerType(value)
+        return IntegerType(value.value)
     }
 
-    override fun toFhirInteger64(value: Long?): IPrimitiveType<Long>? {
+    override fun toFhirInteger64(value: Long?): IPrimitiveType<kotlin.Long>? {
         if (value == null) {
             return null
         }
 
-        return Integer64Type(value)
+        return Integer64Type(value.value)
     }
 
-    override fun toFhirDecimal(value: BigDecimal?): IPrimitiveType<BigDecimal>? {
+    override fun toFhirDecimal(value: Decimal?): IPrimitiveType<BigDecimal>? {
         if (value == null) {
             return null
         }
 
-        return DecimalType(value)
+        return DecimalType(value.value)
     }
 
     override fun toFhirDate(
@@ -110,7 +120,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
         return result
     }
 
-    override fun toFhirTime(value: Time?): IPrimitiveType<String>? {
+    override fun toFhirTime(value: Time?): IPrimitiveType<kotlin.String>? {
         if (value == null) {
             return null
         }
@@ -118,12 +128,12 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
         return TimeType(value.toString())
     }
 
-    override fun toFhirString(value: String?): IPrimitiveType<String>? {
+    override fun toFhirString(value: String?): IPrimitiveType<kotlin.String>? {
         if (value == null) {
             return null
         }
 
-        return StringType(value)
+        return StringType(value.value)
     }
 
     override fun toFhirQuantity(value: Quantity?): ICompositeType? {
@@ -154,14 +164,6 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             .Ratio()
             .setNumerator(toFhirQuantity(value.numerator) as org.hl7.fhir.r5.model.Quantity?)
             .setDenominator(toFhirQuantity(value.denominator) as org.hl7.fhir.r5.model.Quantity?)
-    }
-
-    override fun toFhirAny(value: Any?): IBase? {
-        if (value == null) {
-            return null
-        }
-
-        throw NotImplementedException("Unable to convert System.Any types")
     }
 
     override fun toFhirCoding(value: Code?): IBaseCoding? {
@@ -199,7 +201,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
         }
 
         val period = Period()
-        if (getSimpleName(value.pointType!!.typeName) == "DateTime") {
+        if (value.pointType == dateTimeTypeName) {
             if (value.start != null) {
                 period.startElement = toFhirDateTime(value.start as DateTime?) as DateTimeType?
             }
@@ -209,7 +211,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             }
 
             return period
-        } else if (getSimpleName(value.pointType!!.getTypeName()) == "Date") {
+        } else if (value.pointType == dateTypeName) {
             // TODO: This will construct DateTimeType values in FHIR with the system timezone id,
             // not the
             // timezoneoffset of the evaluation request..... this is a bug waiting to happen
@@ -238,7 +240,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        require(getSimpleName(value.pointType!!.typeName) == "Quantity") {
+        require(value.pointType == quantityTypeName) {
             "FHIR Range can only be created from an Interval of Quantity type"
         }
 
@@ -251,8 +253,8 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
 
     private fun addElementToParameter(
         param: Parameters.ParametersParameterComponent,
-        key: String?,
-        value: Any?,
+        key: kotlin.String?,
+        value: Value?,
     ) {
         if (value == null) {
             // Null value, add a single empty value with an extension indicating the reason
@@ -265,12 +267,13 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             return
         }
 
-        val iterable: Iterable<*>? = asIterable(value)
-        if (iterable == null) {
+        if (value !is List) {
             // Single, non-null value
             addPartWithNameAndValue(param, key, toFhirType(value)!!)
             return
         }
+
+        val iterable = value
 
         if (!iterable.iterator().hasNext()) {
             // Empty list
@@ -496,27 +499,27 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
         return outcome
     }
 
-    override fun toCqlText(value: Any?): IBaseDatatype? {
+    override fun toCqlText(value: Value?): IBaseDatatype? {
         if (value == null) {
             return null
         }
 
-        val s = ToStringEvaluator.toString(value) as String?
+        val s = ToStringEvaluator.toString(value)?.value
         val text = StringType(s)
         text.addExtension(CQL_TEXT_EXT_URL, BooleanType(true))
         return text
     }
 
     companion object {
-        private fun emptyBooleanWithExtension(url: String?, value: DataType?): BooleanType {
-            val result = BooleanType(null as String?)
+        private fun emptyBooleanWithExtension(url: kotlin.String?, value: DataType?): BooleanType {
+            val result = BooleanType(null as kotlin.String?)
             result.addExtension().setUrl(url).setValue(value)
             return result
         }
 
         private fun addPartWithNameAndValue(
             param: Parameters.ParametersParameterComponent,
-            key: String?,
+            key: kotlin.String?,
             value: Any,
         ) {
             if (value is Parameters.ParametersParameterComponent) {
@@ -533,10 +536,6 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
                         )
                 }
             }
-        }
-
-        private fun asIterable(value: Any?): Iterable<*>? {
-            return value as? Iterable<*>
         }
     }
 }

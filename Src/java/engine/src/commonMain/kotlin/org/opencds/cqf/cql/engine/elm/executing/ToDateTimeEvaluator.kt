@@ -5,8 +5,9 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -39,7 +40,7 @@ If the argument is null, the result is null.
 */
 object ToDateTimeEvaluator {
     @JvmStatic
-    fun toDateTime(operand: Any?, state: State?): Any? {
+    fun toDateTime(operand: Value?, state: State?): Value? {
         if (operand == null) {
             return null
         }
@@ -50,7 +51,7 @@ object ToDateTimeEvaluator {
 
         if (operand is String) {
             try {
-                return DateTime(operand, state!!.evaluationDateTime!!.zoneOffset)
+                return DateTime(operand.value, state!!.evaluationDateTime!!.zoneOffset)
             } catch (dtpe: Exception) {
                 return null
             }
@@ -68,7 +69,7 @@ object ToDateTimeEvaluator {
 
         throw InvalidOperatorArgument(
             "ToDateTime(String) or ToDateTime(Date)",
-            "ToDateTime(${operand.javaClassName})",
+            "ToDateTime(${operand.typeAsString})",
         )
     }
 }

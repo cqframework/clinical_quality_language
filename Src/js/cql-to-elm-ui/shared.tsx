@@ -4,6 +4,10 @@ import * as cqlWasmJs from "cql-wasm-js";
 
 export type Nullable<T> = cqlJs.Nullable<T> | cqlWasmJs.Nullable<T>;
 
+export function isKtNull(ktValue: Nullable<unknown>) {
+  return ktValue === null || ktValue === undefined;
+}
+
 export type TElmContentType = "json" | "xml";
 
 export type TLibrarySource = "local" | "remote";
@@ -163,7 +167,7 @@ export type TCqlEngineOutput =
       type: "expressionResults";
       expressionResults: {
         expressionName: string;
-        expressionResult: string;
+        expressionResult: TJsCqlValue;
       }[];
     }
   | {
@@ -173,3 +177,43 @@ export type TCqlEngineOutput =
     };
 
 export const playgroundLibraryName = "Playground";
+
+export type TJsCqlValue =
+  | null
+  | {
+      type: "Boolean";
+      value: boolean;
+    }
+  | {
+      type: "Integer";
+      value: number;
+    }
+  | {
+      type: "Long";
+      value: bigint;
+    }
+  | { type: "Decimal"; value: string }
+  | {
+      type: "String";
+      value: string;
+    }
+  | { type: "Date"; value: string }
+  | { type: "DateTime"; value: string }
+  | { type: "Time"; value: string }
+  | {
+      type: "Structured";
+      structuredTypeName?: string;
+      elements: Map<string, TJsCqlValue>;
+    }
+  | {
+      type: "Interval";
+      pointTypeName: string;
+      low: TJsCqlValue;
+      high: TJsCqlValue;
+      lowClosed: boolean;
+      highClosed: boolean;
+    }
+  | {
+      type: "List";
+      value: TJsCqlValue[];
+    };

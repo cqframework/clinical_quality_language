@@ -7,32 +7,39 @@ import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Concept
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.ValueSet
-import org.opencds.cqf.cql.engine.util.javaClassName
-import org.opencds.cqf.cql.engine.util.javaClassPackageName
+import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 object RetrieveEvaluator {
     fun internalEvaluate(
         elm: Retrieve?,
         state: State?,
-        visitor: ElmLibraryVisitor<Any?, State?>,
-    ): Any {
+        visitor: ElmLibraryVisitor<Value?, State?>,
+    ): List? {
         val context = elm!!.context
 
         var isEnteredContext = false
-        var result: Iterable<Any?>?
+        var result: Iterable<Value?>?
 
         if (context != null) {
             /*
                This whole block is a bit a hack in the sense that the need to switch to the context (e.g. Practitioner) identifies itself in a non-domain specific way
             */
-            val contextValue: Any = visitor.visitExpression(context, state)!!
-            val name = contextValue.javaClassPackageName
-            val dataProvider = state!!.environment.resolveDataProvider(name)
-            val contextTypeName = contextValue::class.simpleName!!
-            val contextId = dataProvider!!.resolveId(contextValue)
+            val contextValue = visitor.visitExpression(context, state)!!
+            val dataProvider =
+                state!!
+                    .environment
+                    .resolveDataProviderByModelUri(
+                        getNamedTypeForCqlValue(contextValue)?.getNamespaceURI()
+                    )
+            val contextTypeName = getNamedTypeForCqlValue(contextValue)!!.getLocalPart()
+            val contextId = dataProvider.resolveId(contextValue)
 
-            state.setContextValue(contextTypeName, contextId!!)
+            state.setContextValue(contextTypeName, contextId)
             isEnteredContext = state.enterContext(contextTypeName)
         }
 
@@ -45,26 +52,35 @@ object RetrieveEvaluator {
             val dataType = state.environment.fixupQName(elm.dataType!!)
             val dataProvider = state.environment.resolveDataProvider(dataType)
             var codes: Iterable<Code>? = null
-            var valueSet: String? = null
+            var valueSet: kotlin.String? = null
             if (elm.codes != null) {
                 if (elm.codes is ValueSetRef) {
                     val vs = ValueSetRefEvaluator.toValueSet(state, elm.codes as ValueSetRef)
                     valueSet = vs.id
                 } else {
-                    val codesResult: Any = visitor.visitExpression(elm.codes!!, state)!!
+                    val codesResult = visitor.visitExpression(elm.codes!!, state)!!
 
-                    // Due to erased generics this is the best we can do here.
-                    @Suppress("UNCHECKED_CAST")
                     when (codesResult) {
                         is ValueSet -> valueSet = codesResult.id
-                        is String -> codes = mutableListOf(Code().withCode(codesResult as String?))
+                        is String -> codes = mutableListOf(Code().withCode(codesResult.value))
                         is Code -> codes = mutableListOf(codesResult)
                         is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
-                        is Iterable<*> -> codes = codesResult as Iterable<Code>
+                        is List ->
+                            codes =
+                                codesResult.map {
+                                    when (it) {
+                                        is String -> Code().withCode(it.value)
+                                        is Code -> it
+                                        else ->
+                                            throw IllegalArgumentException(
+                                                "Expected String or Code. Found '${it?.typeAsString}'."
+                                            )
+                                    }
+                                }
                         else ->
                             throw IllegalArgumentException(
                                 "The codes argument to Retrieve must be a ValueSet, Code, Concept, String," +
-                                    " or List of those types. Found '${codesResult.javaClassName}'."
+                                    " or List of those types. Found '${codesResult.typeAsString}'."
                             )
                     }
                 }
@@ -77,8 +93,7 @@ object RetrieveEvaluator {
             result =
                 dataProvider.retrieve(
                     state.getCurrentContext(),
-                    dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart())
-                        as String?,
+                    dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()),
                     state.currentContextValue,
                     dataType.getLocalPart(),
                     elm.templateId,
@@ -93,13 +108,8 @@ object RetrieveEvaluator {
 
             // TODO: We probably shouldn't eagerly load this, but we need to track
             // this throughout the engine and only add it to the list when it's actually used
-            val evaluatedResource = state.evaluatedResources
-            if (result is MutableList<*>) {
-                evaluatedResource!!.addAll(result)
-            } else {
-                for (o in result!!) {
-                    evaluatedResource!!.add(o)
-                }
+            if (result != null) {
+                state.evaluatedResources!!.addAll(result)
             }
         } finally {
             // Need to effectively reverse the context change we did at the beginning of this method
@@ -110,6 +120,6 @@ object RetrieveEvaluator {
             state.popActivationFrame()
         }
 
-        return result
+        return result?.toCqlList()
     }
 }

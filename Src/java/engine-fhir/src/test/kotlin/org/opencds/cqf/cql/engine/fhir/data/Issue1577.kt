@@ -11,8 +11,11 @@ import org.hl7.fhirpath.TranslatorHelper
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /**
  * Tests the implementation of [org.opencds.cqf.cql.engine.execution.Environment.is] and
@@ -33,12 +36,14 @@ class Issue1577 {
                     .trimIndent()
             )
 
+        val r4ModelResolver = CachedR4FhirModelResolver()
+
         val retrieveProvider =
             object : RetrieveProvider {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
@@ -48,38 +53,44 @@ class Issue1577 {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<*> =
+                ): Iterable<Value?> =
                     when (dataType) {
-                        "Patient" -> listOf(Patient().setId("pat1"))
+                        "Patient" -> listOf(r4ModelResolver.toCqlValue(Patient().setId("pat1")))
                         // Note: returning an Iterable implementation and not a list to test the
                         // handling of different Iterable types
                         "Condition" ->
-                            object : Iterable<Any?> {
-                                override fun iterator(): Iterator<*> {
-                                    return listOf(Condition().setId("cond1")).iterator()
+                            object : Iterable<Value?> {
+                                override fun iterator(): Iterator<Value?> {
+                                    return listOf(
+                                            r4ModelResolver.toCqlValue(Condition().setId("cond1"))
+                                        )
+                                        .iterator()
                                 }
                             }
                         "Observation" ->
-                            object : Iterable<Any?> {
-                                override fun iterator(): Iterator<*> {
-                                    return listOf(Observation().setId("obs1")).iterator()
+                            object : Iterable<Value?> {
+                                override fun iterator(): Iterator<Value?> {
+                                    return listOf(
+                                            r4ModelResolver.toCqlValue(Observation().setId("obs1"))
+                                        )
+                                        .iterator()
                                 }
                             }
-                        else -> listOf<Any?>()
+                        else -> listOf()
                     }
             }
         engine.state.environment.registerDataProvider(
             "http://hl7.org/fhir",
-            CompositeDataProvider(CachedR4FhirModelResolver(), retrieveProvider),
+            CompositeDataProvider(r4ModelResolver, retrieveProvider),
         )
         val evaluationResult = engine.evaluate { library("Issue1577") }.onlyResultOrThrow
 
         val expr1Result = evaluationResult["expr1"]!!.value
         assertIs<Boolean>(expr1Result)
-        assertTrue(expr1Result)
+        assertTrue(expr1Result.value)
 
         val expr2Result = evaluationResult["expr2"]!!.value
-        assertIs<Iterable<*>>(expr2Result)
-        assertEquals(2, expr2Result.toList().size)
+        assertIs<List>(expr2Result)
+        assertEquals(2, expr2Result.count())
     }
 }

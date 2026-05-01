@@ -4,21 +4,24 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.util.*
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import org.cqframework.cql.shared.QName
 import org.hl7.fhir.r4.model.HumanName
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Practitioner
 import org.hl7.fhir.r4.model.Reference
 import org.hl7.fhir.r4.model.StringType
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.slf4j.Logger
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.slf4j.LoggerFactory
 
 internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
@@ -36,63 +39,51 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
         val resultPatient = evaluate(cqlEngine, PATIENT, initialContext)
 
-        MatcherAssert.assertThat<Any?>(
-            resultPatient,
-            CoreMatchers.instanceOf<Any?>(Patient::class.java),
+        assertIs<ClassInstance>(resultPatient)
+        assertEquals(QName("http://hl7.org/fhir", "Patient"), resultPatient.type)
+        assertEquals(
+            _PATIENT_123.toCqlString(),
+            (resultPatient.elements["id"] as ClassInstance).elements["value"],
         )
-        val resultPatientCasted = resultPatient as Patient
-        MatcherAssert.assertThat<String?>(
-            resultPatientCasted.getId(),
-            CoreMatchers.`is`<String?>(_PATIENT_123),
-        )
+
         cqlEngine.state.clearEvaluatedResources()
 
         val resultPrimaryCareDoctor = evaluate(cqlEngine, PRIMARY_CARE_DOCTOR, initialContext)
+        assertIs<ClassInstance>(resultPrimaryCareDoctor)
+        assertEquals(QName("http://hl7.org/fhir", "Practitioner"), resultPrimaryCareDoctor.type)
+        assertEquals(
+            XYZ.toCqlString(),
+            (resultPrimaryCareDoctor.elements["id"] as ClassInstance).elements["value"],
+        )
 
-        MatcherAssert.assertThat<Any?>(
-            resultPrimaryCareDoctor,
-            CoreMatchers.instanceOf<Any?>(Practitioner::class.java),
-        )
-        val resultPractitioner = resultPrimaryCareDoctor as Practitioner
-        MatcherAssert.assertThat<Practitioner?>(
-            resultPractitioner,
-            CoreMatchers.instanceOf<Practitioner?>(Practitioner::class.java),
-        )
-        MatcherAssert.assertThat<String?>(
-            resultPractitioner.getId(),
-            CoreMatchers.`is`<String?>(XYZ),
-        )
         cqlEngine.state.clearEvaluatedResources()
 
         val resultAllPatientForGp = evaluate(cqlEngine, ALL_PATIENT_FOR_GP, initialContext)
         cqlEngine.state.clearEvaluatedResources()
 
-        MatcherAssert.assertThat<Any?>(
-            resultAllPatientForGp,
-            CoreMatchers.instanceOf<Any?>(MutableList::class.java),
-        )
+        assertIs<org.opencds.cqf.cql.engine.runtime.List>(resultAllPatientForGp)
+        assertTrue(resultAllPatientForGp.all { it is ClassInstance })
 
         val patientsForPractitioner =
-            (resultAllPatientForGp as MutableList<*>)
-                .filter { obj: Any? -> Patient::class.java.isInstance(obj) }
-                .map { obj: Any? -> Patient::class.java.cast(obj) }
+            resultAllPatientForGp.filterIsInstance<ClassInstance>().filter {
+                it.type == QName("http://hl7.org/fhir", "Patient")
+            }
 
-        MatcherAssert.assertThat<Int?>(patientsForPractitioner.size, CoreMatchers.`is`<Int?>(3))
-        MatcherAssert.assertThat(
-            patientsForPractitioner.map { obj: Patient? -> obj!!.getId() }.toSet(),
-            CoreMatchers.`is`(
-                setOf(PATIENT_123, PATIENT_456, PATIENT_789)
-                    .map { obj: Patient? -> obj!!.getId() }
-                    .toSet()
-            ),
+        assertEquals(3, patientsForPractitioner.size)
+
+        assertEquals(
+            setOf(PATIENT_123, PATIENT_456, PATIENT_789).map { it.getId().toCqlString() }.toSet(),
+            patientsForPractitioner
+                .map { (it.elements["id"] as ClassInstance).elements["value"] }
+                .toSet(),
         )
     }
 
     private fun evaluate(
         cqlEngine: CqlEngine,
         expression: String,
-        initialContext: Pair<String, Any?>?,
-    ): Any? {
+        initialContext: Pair<String, String?>?,
+    ): Value? {
         val evaluateResult =
             cqlEngine
                 .evaluate {
@@ -103,9 +94,83 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         return evaluateResult[expression]!!.value
     }
 
+    private val retrieveProvider =
+        object : RetrieveProvider {
+            override fun retrieve(
+                context: String?,
+                contextPath: String?,
+                contextValue: String?,
+                dataType: String,
+                templateId: String?,
+                codePath: String?,
+                codes: Iterable<Code>?,
+                valueSet: String?,
+                datePath: String?,
+                dateLowPath: String?,
+                dateHighPath: String?,
+                dateRange: Interval?,
+            ): Iterable<Value?>? {
+                val allPatients =
+                    setOf(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
+                val allPractitioners = setOf(PRACTITIONER_XYZ, PRACTITIONER_ZULU)
+
+                // a) All matching patients for the patient being searched by ID=123
+                if (
+                    PATIENT == dataType &&
+                        PATIENT == context &&
+                        ID == contextPath &&
+                        _PATIENT_123 == contextValue
+                ) {
+                    return allPatients
+                        .filter { _PATIENT_123 == it.getId() }
+                        .map { r4ModelResolver!!.toCqlValue(it) }
+                }
+
+                // b) All practitioners matching XYZ and patient 123
+                if (
+                    PRACTITIONER == dataType &&
+                        PATIENT == context &&
+                        ID == codePath &&
+                        codesEqual(codes, PRACTITIONER_SLASH + XYZ)
+                ) {
+                    val optPatient123 = allPatients.firstOrNull { _PATIENT_123 == it.getId() }
+
+                    if (optPatient123 != null) {
+                        val generalPractitionerIds =
+                            optPatient123
+                                .getGeneralPractitioner()
+                                .map { it.getReference() }
+                                .map {
+                                    it.split(PRACTITIONER_SLASH.toRegex())
+                                        .dropLastWhile { it.isEmpty() }
+                                        .elementAt(1)
+                                }
+
+                        return allPractitioners
+                            .filter { generalPractitionerIds.contains(it.getId()) }
+                            .map { r4ModelResolver!!.toCqlValue(it) }
+                    }
+                }
+
+                // c) All patients belonging to Patient 123'd generalPractitioner
+                val equals = "xyz" == contextValue.toString()
+                if (
+                    PATIENT == dataType &&
+                        PRACTITIONER == context &&
+                        GENERAL_PRACTITIONER == contextPath &&
+                        equals
+                ) {
+                    logger.info(">>> patients for practitioner xyz")
+                    return allPatients
+                        .filter { getMatchingPractitioners(it).contains(PRACTITIONER_XYZ.getId()) }
+                        .map { r4ModelResolver!!.toCqlValue(it) }
+                }
+                return null
+            }
+        }
+
     companion object {
-        private val logger: Logger =
-            LoggerFactory.getLogger(TestCqlEngineRelatedContextSupport::class.java)
+        private val logger = LoggerFactory.getLogger(TestCqlEngineRelatedContextSupport::class.java)
         private const val PATIENT = "Patient"
         private const val PRACTITIONER = "Practitioner"
         private val PRACTITIONER_SLASH: String = "$PRACTITIONER/"
@@ -119,102 +184,27 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         private const val _PATIENT_123 = "123"
         private const val ID = "id"
 
-        private val PRACTITIONER_XYZ: Practitioner = getPractitioner(XYZ, "Nick", "Riviera")
-        private val PRACTITIONER_ZULU: Practitioner = getPractitioner("zulu", "Leonard", "McCoy")
+        private val PRACTITIONER_XYZ = getPractitioner(XYZ, "Nick", "Riviera")
+        private val PRACTITIONER_ZULU = getPractitioner("zulu", "Leonard", "McCoy")
 
-        private val PATIENT_123: Patient =
+        private val PATIENT_123 =
             getPatient(_PATIENT_123, LocalDate.of(1980, Month.JANUARY, 19), PRACTITIONER_XYZ)
-        private val PATIENT_456: Patient =
+        private val PATIENT_456 =
             getPatient("456", LocalDate.of(1985, Month.APRIL, 19), PRACTITIONER_XYZ)
-        private val PATIENT_789: Patient =
+        private val PATIENT_789 =
             getPatient("789", LocalDate.of(1990, Month.JULY, 19), PRACTITIONER_XYZ)
 
-        private val PATIENT_ABC: Patient =
+        private val PATIENT_ABC =
             getPatient("abc", LocalDate.of(1970, Month.MARCH, 21), PRACTITIONER_ZULU)
-        private val PATIENT_DEF: Patient =
+        private val PATIENT_DEF =
             getPatient("def", LocalDate.of(1975, Month.AUGUST, 21), PRACTITIONER_ZULU)
-
-        private val retrieveProvider =
-            object : RetrieveProvider {
-                override fun retrieve(
-                    context: String?,
-                    contextPath: String?,
-                    contextValue: Any?,
-                    dataType: String,
-                    templateId: String?,
-                    codePath: String?,
-                    codes: Iterable<Code>?,
-                    valueSet: String?,
-                    datePath: String?,
-                    dateLowPath: String?,
-                    dateHighPath: String?,
-                    dateRange: Interval?,
-                ): Iterable<Any?>? {
-                    val allPatients =
-                        setOf(PATIENT_123, PATIENT_456, PATIENT_789, PATIENT_ABC, PATIENT_DEF)
-                    val allPractitioners = setOf(PRACTITIONER_XYZ, PRACTITIONER_ZULU)
-
-                    // a) All matching patients for the patient being searched by ID=123
-                    if (
-                        PATIENT == dataType &&
-                            PATIENT == context &&
-                            ID == contextPath &&
-                            _PATIENT_123 == contextValue
-                    ) {
-                        return allPatients.filter { patient -> _PATIENT_123 == patient.getId() }
-                    }
-
-                    // b) All practitioners matching XYZ and patient 123
-                    if (
-                        PRACTITIONER == dataType &&
-                            PATIENT == context &&
-                            ID == codePath &&
-                            codesEqual(codes, PRACTITIONER_SLASH + XYZ)
-                    ) {
-                        val optPatient123 =
-                            allPatients.firstOrNull { patient -> _PATIENT_123 == patient.getId() }
-
-                        if (optPatient123 != null) {
-                            val generalPractitionerIds =
-                                optPatient123
-                                    .getGeneralPractitioner()
-                                    .map { obj -> obj!!.getReference() }
-                                    .map { ref ->
-                                        ref!!
-                                            .split(PRACTITIONER_SLASH.toRegex())
-                                            .dropLastWhile { it.isEmpty() }
-                                            .toTypedArray()[1]
-                                    }
-
-                            return allPractitioners.filter { practitioner ->
-                                generalPractitionerIds.contains(practitioner.getId())
-                            }
-                        }
-                    }
-
-                    // c) All patients belonging to Patient 123'd generalPractitioner
-                    val equals = "xyz" == contextValue.toString()
-                    if (
-                        PATIENT == dataType &&
-                            PRACTITIONER == context &&
-                            GENERAL_PRACTITIONER == contextPath &&
-                            equals
-                    ) {
-                        logger.info(">>> patients for practitioner xyz")
-                        return allPatients.filter { patient ->
-                            getMatchingPractitioners(patient).contains(PRACTITIONER_XYZ.getId())
-                        }
-                    }
-                    return null
-                }
-            }
 
         // TODO: LD: Due to a type erasure and the CQL compiler historically being in separate
         // repositories, two different
         // code paths were merged, resulting in an insidious condition where type erasure has
         // resulted in the declared
         // variable's type being wrong in this instance:  It's actually an Iterable<String>
-        private fun codesEqual(codes: Iterable<*>?, equalTo: String): Boolean {
+        private fun codesEqual(codes: Iterable<Code>?, equalTo: String): Boolean {
             if (codes == null) {
                 return false
             }
@@ -227,20 +217,11 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
             val next = iterator.next()
 
-            // Ignore the javac warning here
-            if (!String::class.java.isInstance(next)) {
-                Assertions.fail<Any?>("Expected codes to contain Strings but does not: $codes")
-            }
-
-            val nextCode = next as String
-
-            return equalTo == nextCode
+            return equalTo == next.code
         }
 
         private fun getMatchingPractitioners(thePatient: Patient): List<String> {
-            return thePatient.getGeneralPractitioner().map { theInnerReference ->
-                getIdFromReference(theInnerReference!!)
-            }
+            return thePatient.getGeneralPractitioner().map { getIdFromReference(it) }
         }
 
         private fun getIdFromReference(theInnerReference: Reference): String {
@@ -248,7 +229,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 .getReference()
                 .split(PRACTITIONER_SLASH.toRegex())
                 .dropLastWhile { it.isEmpty() }
-                .toTypedArray()[1]
+                .elementAt(1)
         }
 
         private fun getPractitioner(
@@ -261,11 +242,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
             practitioner.setId(practitionerId)
 
             practitioner.setName(
-                listOf<HumanName?>(
-                    HumanName()
-                        .setFamily(lastName)
-                        .setGiven(listOf<StringType?>(StringType(firstName)))
-                )
+                listOf(HumanName().setFamily(lastName).setGiven(listOf(StringType(firstName))))
             )
 
             return practitioner
@@ -286,7 +263,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
             if (nullablePractitioner != null) {
                 patient.setGeneralPractitioner(
-                    listOf<Reference?>(
+                    listOf(
                         Reference().setReference(PRACTITIONER_SLASH + nullablePractitioner.getId())
                     )
                 )

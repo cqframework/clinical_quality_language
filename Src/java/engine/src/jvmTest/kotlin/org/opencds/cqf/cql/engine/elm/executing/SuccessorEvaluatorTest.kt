@@ -4,18 +4,22 @@ import java.math.BigDecimal
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 internal class SuccessorEvaluatorTest {
     @Test
     fun successor() {
         Assertions.assertEquals(
-            BigDecimal("21"),
-            SuccessorEvaluator.successor(BigDecimal("20"), Quantity().withValue(BigDecimal("100"))),
+            BigDecimal("21").toCqlDecimal(),
+            SuccessorEvaluator.successor(
+                BigDecimal("20").toCqlDecimal(),
+                Quantity().withValue(BigDecimal("100")),
+            ),
         )
         Assertions.assertEquals(
-            BigDecimal("20.01"),
+            BigDecimal("20.01").toCqlDecimal(),
             SuccessorEvaluator.successor(
-                BigDecimal("20"),
+                BigDecimal("20").toCqlDecimal(),
                 Quantity().withValue(BigDecimal("100.00")),
             ),
         )

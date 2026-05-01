@@ -3,8 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -52,7 +55,7 @@ If either or both arguments are null, the result is null.
 */
 object AfterEvaluator {
     @JvmStatic
-    fun after(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun after(left: Value?, right: Value?, precision: String?, state: State?): Boolean? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -71,7 +74,7 @@ object AfterEvaluator {
             }
 
             val result = left.compareToPrecision(right, Precision.fromString(precision))
-            return if (result == null) null else result > 0
+            return if (result == null) null else (result > 0).toCqlBoolean()
         }
 
         return GreaterEvaluator.greater(left, right, state)

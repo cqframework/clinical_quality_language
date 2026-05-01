@@ -1,19 +1,20 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 object ForEachEvaluator {
     @JvmStatic
-    fun forEach(source: Any?, element: Any?, state: State?): Any? {
+    fun forEach(source: Value?, element: Value?): List? {
         if (source == null || element == null) {
             return null
         }
 
-        val retVal: MutableList<Any?> = ArrayList<Any?>()
-        for (o in source as Iterable<*>) {
-            retVal.add(state!!.environment.resolvePath(o, element.toString()))
-        }
-        return retVal
+        return (source as List)
+            .map { PropertyEvaluator.resolvePath(it, (element as String).value) }
+            .toCqlList()
     }
 }
