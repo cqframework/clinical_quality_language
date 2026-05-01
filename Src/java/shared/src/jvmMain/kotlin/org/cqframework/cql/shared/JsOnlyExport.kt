@@ -1,3 +1,5 @@
 package org.cqframework.cql.shared
 
-actual annotation class JsOnlyExport
+import kotlin.annotation.AnnotationTarget.*
+
+@Target(CLASS, PROPERTY, FUNCTION, FILE) actual annotation class JsOnlyExport

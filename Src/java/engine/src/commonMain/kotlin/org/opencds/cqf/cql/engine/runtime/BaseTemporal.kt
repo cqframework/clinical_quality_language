@@ -1,20 +1,27 @@
 package org.opencds.cqf.cql.engine.runtime
 
-sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
-    var precision: Precision? = null
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
 
-    fun withPrecision(precision: Precision?): BaseTemporal {
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
+    @JsExport.Ignore var precision: Precision? = null
+
+    @JsExport.Ignore
+    open fun withPrecision(precision: Precision?): BaseTemporal {
         this.precision = precision
         return this
     }
 
     abstract fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int?
 
-    abstract fun compareToPrecision(other: BaseTemporal, p: Precision): Int?
+    @JsExport.Ignore abstract fun compareToPrecision(other: BaseTemporal, p: Precision): Int?
 
-    abstract fun isUncertain(p: Precision): kotlin.Boolean
+    @JsExport.Ignore abstract fun isUncertain(p: Precision): kotlin.Boolean
 
-    abstract fun getUncertaintyInterval(p: Precision): Interval?
+    @JsExport.Ignore abstract fun getUncertaintyInterval(p: Precision): Interval?
 
     /**
      * Returns a copy of this temporal value rounded to the specified precision if the value has a
@@ -24,6 +31,7 @@ sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
      * @param useCeiling whether to return the ceiling or floor value when rounding
      * @return the rounded copy
      */
+    @JsExport.Ignore
     abstract fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal?
 
     companion object {

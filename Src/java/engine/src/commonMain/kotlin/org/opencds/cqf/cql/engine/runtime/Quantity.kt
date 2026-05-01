@@ -1,8 +1,12 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
     override val type = quantityTypeName
 

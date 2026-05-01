@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Concept : StructuredValue(), NamedTypeValue {
     override val type = conceptTypeName
 
@@ -23,6 +28,7 @@ class Concept : StructuredValue(), NamedTypeValue {
             }
         }
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     fun withCodes(codes: Iterable<Code?>?): Concept {
         this.codes = codes?.toMutableList() ?: mutableListOf()
         return this

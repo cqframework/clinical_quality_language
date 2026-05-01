@@ -1,7 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.math.abs
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.ONE
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime
@@ -14,11 +18,14 @@ import org.opencds.cqf.cql.engine.util.offsetDateTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 import org.opencds.cqf.cql.engine.util.zoneOffsetOfHoursMinutes
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class DateTime : BaseTemporal {
     override val type = dateTimeTypeName
 
-    val zoneOffset: ZoneOffset
+    @JsExport.Ignore val zoneOffset: ZoneOffset
 
+    @JsExport.Ignore
     var dateTime: OffsetDateTime? = null
         set(dateTime) {
             if (dateTime!!.getYear() < 1) {
@@ -35,23 +42,27 @@ class DateTime : BaseTemporal {
             field = dateTime
         }
 
-    fun withPrecision(precision: Precision): DateTime {
+    @JsExport.Ignore
+    override fun withPrecision(precision: Precision?): DateTime {
         this.precision = precision
         return this
     }
 
+    @JsExport.Ignore
     constructor(dateTime: OffsetDateTime?) {
         this.dateTime = (dateTime)
         this.precision = Precision.MILLISECOND
         zoneOffset = toZoneOffset(dateTime)
     }
 
+    @JsExport.Ignore
     constructor(dateTime: OffsetDateTime, precision: Precision) {
         this.dateTime = (dateTime)
         this.precision = precision
         zoneOffset = toZoneOffset(dateTime)
     }
 
+    @JsExport.Ignore
     constructor(dateString: kotlin.String, offset: ZoneOffset?) {
         if (offset == null) {
             throw CqlException("Cannot pass a null offset")
@@ -104,6 +115,7 @@ class DateTime : BaseTemporal {
         this.dateTime = (offsetDateTimeParse(dateString))
     }
 
+    @JsName("fromDateElements")
     constructor(offset: BigDecimal?, vararg dateElements: Int) {
         if (offset == null) {
             throw CqlException("BigDecimal offset must be non-null")
@@ -144,6 +156,7 @@ class DateTime : BaseTemporal {
         this.dateTime = (offsetDateTimeParse(dateString.toString()))
     }
 
+    @JsExport.Ignore
     fun expandPartialMinFromPrecision(precision: Precision): DateTime {
         var odt = this.dateTime!!.plusYears(0)
         for (i in precision.toDateTimeIndex() + 1..6) {
@@ -156,11 +169,13 @@ class DateTime : BaseTemporal {
         return DateTime(odt, this.precision!!)
     }
 
+    @JsExport.Ignore
     fun expandPartialMin(precision: Precision?): DateTime {
         val odt = this.dateTime!!.plusYears(0)
         return DateTime(odt, if (precision == null) Precision.MILLISECOND else precision)
     }
 
+    @JsExport.Ignore
     fun expandPartialMax(precision: Precision?): DateTime {
         var odt = this.dateTime!!.plusYears(0)
         for (i in this.precision!!.toDateTimeIndex() + 1..6) {
@@ -181,6 +196,7 @@ class DateTime : BaseTemporal {
         return DateTime(odt, if (precision == null) Precision.MILLISECOND else precision)
     }
 
+    @JsExport.Ignore
     override fun isUncertain(p: Precision): kotlin.Boolean {
         var precision = p
         if (precision == Precision.WEEK) {
@@ -190,12 +206,14 @@ class DateTime : BaseTemporal {
         return this.precision!!.toDateTimeIndex() < precision.toDateTimeIndex()
     }
 
+    @JsExport.Ignore
     override fun getUncertaintyInterval(p: Precision): Interval {
         val start = expandPartialMin(p)
         val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
+    @JsExport.Ignore
     override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal {
         var precision = precision
         val originalPrecision = this.precision
@@ -238,10 +256,12 @@ class DateTime : BaseTemporal {
         }
     }
 
+    @JsExport.Ignore
     fun getNormalized(precision: Precision): OffsetDateTime {
         return getNormalized(precision, zoneOffset)
     }
 
+    @JsExport.Ignore
     fun getNormalized(precision: Precision, nullableZoneOffset: ZoneOffset?): OffsetDateTime {
         if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
             if (nullableZoneOffset != null) {
@@ -254,6 +274,7 @@ class DateTime : BaseTemporal {
         return dateTime!!
     }
 
+    @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
         var precision = p
         val leftMeetsPrecisionRequirements =
@@ -391,6 +412,7 @@ class DateTime : BaseTemporal {
     }
 
     // conversion functions
+    @JsExport.Ignore
     fun toJavaDate(): Date {
         return dateFrom(dateTime!!.toInstant())
     }

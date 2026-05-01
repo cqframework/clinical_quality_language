@@ -1,9 +1,14 @@
+@file:OptIn(ExperimentalJsExport::class)
+
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 
-sealed interface SimpleValue : NamedTypeValue
+@JsOnlyExport sealed interface SimpleValue : NamedTypeValue
 
+@JsOnlyExport
 data class Boolean(val value: kotlin.Boolean) : SimpleValue {
     override val type = booleanTypeName
 
@@ -15,6 +20,7 @@ data class Boolean(val value: kotlin.Boolean) : SimpleValue {
     }
 }
 
+@JsOnlyExport
 data class Integer(val value: Int) : SimpleValue {
     override val type = integerTypeName
 
@@ -26,18 +32,21 @@ data class Integer(val value: Int) : SimpleValue {
     }
 }
 
+@JsOnlyExport
 data class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
 
     override fun toString() = value.toString()
 }
 
+@JsOnlyExport
 data class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
 
     override fun toString() = value.toString()
 }
 
+@JsOnlyExport
 data class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
 
