@@ -20,6 +20,18 @@ Template:
 
 # Architecture Decision Record
 
+## ADR 004: Flatten repository structure around Kotlin Multiplatform
+- Status: Proposed
+- Date: 2026-04-22
+- Context: The repository layout dates from ~2014 when this directory served as a multi-language clearing house for CQL tooling. Since then `cql-execution` (CoffeeScript) and the C# implementation moved to their own repos, the SQL and BBEdit contributions were abandoned, and `Src/java/` quietly became the actual project — despite being a Kotlin Multiplatform build that targets JVM, JS, and WASM. Contributors cd into `Src/java/` for every command, and the Next.js playground consumes Kotlin/JS outputs through a fragile `file:../../java/build/...` npm dependency that sits outside the Gradle graph.
+- Decision: Promote `Src/java/` to the repository root. Move build inputs (`Src/grammar/` → `grammar/`, `Src/cql-lm/schema/` → `schemas/`) alongside. Fold the JS playground and example apps into the Gradle build as modules (`:js:playground`, `:js:npm-cql`, `:examples:js:*`) that consume Kotlin/JS outputs via project dependencies. Move dormant language implementations and 2014-era documents into `archive/`. Delete `Src/java-quickstart/` (12-file pedagogical project with no dependents and stale ANTLR 4.3 references). Compile every sample in `examples/cql/` as part of the build so grammar or type-system changes can't silently rot the sample set.
+- Consequences: Contributors no longer need `cd Src/java` for Gradle commands. The JS playground gains correct dependency wiring and is built by `./gradlew build`. Sample CQL cannot rot unnoticed. External links into `raw.githubusercontent.com/.../main/Src/java/...` (modelinfo, FHIRHelpers) break and require a one-time FYI to downstream repos. Rollout is a large diff even with git rename detection; planned as three PRs (archive/delete moves, root promotion + path fixes, JS Gradle modules) so the load-bearing change can land fast while Gradle-ification of the JS surface iterates.
+- Alternatives:
+  - Leave the structure as-is: Rejected because `Src/java/` actively misleads new contributors (the module set is not Java-only) and the `file:` npm deps remain an ongoing source of friction.
+  - Rename `Src/java/` to `Src/kmp/` without flattening: Rejected because it preserves an unnecessary `Src/` level and does not address the JS-outside-Gradle problem.
+  - Split into multiple repositories (engine, translator, playground): Rejected as overkill; modules are tightly coupled through the Kotlin/JS artifact outputs and share a release cycle.
+- References: [Repo Restructure Proposal](proposals/repo-restructure.md) — full before/after maps, tactical edits, and rollout plan.
+
 ## ADR 003: CQL AST Representation
 - Status: Proposed
 - Date: 2025-01-21
