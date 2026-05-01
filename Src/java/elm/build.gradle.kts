@@ -1,25 +1,14 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-plugins {
-    id("cql.xsd-kotlin-multiplatform-gen-conventions")
-}
+plugins { id("cql.xsd-kotlin-multiplatform-gen-conventions") }
 
 kotlin {
-    js {
-        outputModuleName = "elm"
-    }
+    js { outputModuleName = "elm" }
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        outputModuleName = "elm"
-    }
+    @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "elm" }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(project(":shared"))
-            }
-        }
+        commonMain { dependencies { api(project(":shared")) } }
         jvmTest {
             dependencies {
                 implementation(project(":cql-to-elm"))
