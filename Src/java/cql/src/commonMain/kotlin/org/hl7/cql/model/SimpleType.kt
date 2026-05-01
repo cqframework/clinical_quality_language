@@ -1,12 +1,18 @@
 package org.hl7.cql.model
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 data class SimpleType(
     override val name: String,
     val base: DataType? = null,
     override var target: String? = null,
 ) : BaseDataType(base), NamedType {
 
-    constructor(name: String) : this(name, null, null)
+    @JsExport.Ignore constructor(name: String) : this(name, null, null)
 
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
@@ -37,6 +43,7 @@ data class SimpleType(
 
     override val isGeneric: Boolean = false
 
+    @JsExport.Ignore
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return when {
             this.isSuperTypeOf(callType) -> true
@@ -51,7 +58,7 @@ data class SimpleType(
         }
     }
 
-    override fun instantiate(context: InstantiationContext): DataType = this
+    @JsExport.Ignore override fun instantiate(context: InstantiationContext): DataType = this
 
     @Suppress("ForbiddenComment")
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM

@@ -1,7 +1,10 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.toString
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater
 import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator.maxValue
@@ -13,8 +16,11 @@ import org.opencds.cqf.cql.engine.exception.InvalidInterval
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Interval
 @JvmOverloads
+@Suppress("NON_EXPORTABLE_TYPE")
 constructor(
     var low: Value?,
     val lowClosed: kotlin.Boolean,
@@ -128,6 +134,7 @@ constructor(
     }
 
     companion object {
+        @JsExport.Ignore
         fun getSize(start: Value?, end: Value?, state: State?): Value? {
             if (start == null || end == null) {
                 return null

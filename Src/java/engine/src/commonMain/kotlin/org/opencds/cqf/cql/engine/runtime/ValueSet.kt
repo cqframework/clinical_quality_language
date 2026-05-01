@@ -1,5 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsName
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class ValueSet : Vocabulary() {
     override val type = valueSetTypeName
 
@@ -30,6 +36,7 @@ class ValueSet : Vocabulary() {
     var codeSystems = mutableListOf<CodeSystem>()
         private set
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     fun setCodeSystems(codeSystems: Iterable<CodeSystem?>?) {
         this.codeSystems = mutableListOf()
         if (codeSystems != null) {
@@ -55,6 +62,7 @@ class ValueSet : Vocabulary() {
         return this
     }
 
+    @JsName("getCodeSystemById")
     fun getCodeSystem(id: kotlin.String?): CodeSystem? {
         if (id == null) {
             return null
@@ -69,6 +77,7 @@ class ValueSet : Vocabulary() {
         return null
     }
 
+    @JsName("getCodeSystemByIdAndVersion")
     fun getCodeSystem(id: kotlin.String?, version: kotlin.String?): CodeSystem? {
         if (id == null) {
             return null

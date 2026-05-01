@@ -1,6 +1,10 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidDate
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.util.Date
@@ -14,9 +18,12 @@ import org.opencds.cqf.cql.engine.util.offsetDateTimeOfInstant
 import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 class Date : BaseTemporal {
     override val type = dateTypeName
 
+    @JsExport.Ignore
     var date: LocalDate? = null
         set(date) {
             if (date!!.getYear() < 1) {
@@ -35,25 +42,30 @@ class Date : BaseTemporal {
             field = date
         }
 
+    @JsName("fromYear")
     constructor(year: Int) {
         this.date = (localDateOf(year, 1, 1))
         this.precision = Precision.YEAR
     }
 
+    @JsName("fromYearMonth")
     constructor(year: Int, month: Int) {
         this.date = (localDateOf(year, month, 1))
         this.precision = Precision.MONTH
     }
 
+    @JsName("fromYearMonthDay")
     constructor(year: Int, month: Int, day: Int) {
         this.date = (localDateOf(year, month, day))
     }
 
+    @JsExport.Ignore
     constructor(date: LocalDate, precision: Precision) {
         this.date = date
         this.precision = precision
     }
 
+    @JsName("fromDateString")
     constructor(dateString: kotlin.String) {
         var dateString = dateString
         precision =
@@ -65,10 +77,12 @@ class Date : BaseTemporal {
         this.date = (localDateParse(dateString))
     }
 
+    @JsExport.Ignore
     constructor(date: LocalDate) {
         this.date = (date)
     }
 
+    @JsExport.Ignore
     fun expandPartialMinFromPrecision(
         precision: Precision
     ): org.opencds.cqf.cql.engine.runtime.Date {
@@ -85,6 +99,7 @@ class Date : BaseTemporal {
             .withPrecision(precision) as org.opencds.cqf.cql.engine.runtime.Date
     }
 
+    @JsExport.Ignore
     private fun expandPartialMin(precision: Precision?): org.opencds.cqf.cql.engine.runtime.Date {
         val ld = this.date!!.plusYears(0)
         return org.opencds.cqf.cql.engine.runtime
@@ -92,6 +107,7 @@ class Date : BaseTemporal {
             .withPrecision(precision) as org.opencds.cqf.cql.engine.runtime.Date
     }
 
+    @JsExport.Ignore
     fun expandPartialMax(precision: Precision): org.opencds.cqf.cql.engine.runtime.Date {
         var ld = this.date!!.plusYears(0)
         for (i in this.precision!!.toDateIndex() + 1..2) {
@@ -132,6 +148,7 @@ class Date : BaseTemporal {
         }
     }
 
+    @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
         var precision = p
         val leftMeetsPrecisionRequirements =
@@ -163,6 +180,7 @@ class Date : BaseTemporal {
         return null
     }
 
+    @JsExport.Ignore
     override fun isUncertain(p: Precision): kotlin.Boolean {
         var precision = p
         if (precision == Precision.WEEK) {
@@ -172,12 +190,14 @@ class Date : BaseTemporal {
         return this.precision!!.toDateIndex() < precision.toDateIndex()
     }
 
+    @JsExport.Ignore
     override fun getUncertaintyInterval(p: Precision): Interval {
         val start = expandPartialMin(p)
         val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
         return Interval(start, true, end, true)
     }
 
+    @JsExport.Ignore
     override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal {
         var precision = precision
         val originalPrecision = this.precision
@@ -224,6 +244,7 @@ class Date : BaseTemporal {
     }
 
     @JvmOverloads
+    @JsExport.Ignore
     fun toJavaDate(c: State? = null): Date {
         var zonedDateTime: ZonedDateTime? = null
         zonedDateTime =
@@ -238,6 +259,7 @@ class Date : BaseTemporal {
     }
 
     companion object {
+        @JsExport.Ignore
         fun fromJavaDate(date: Date): DateTime {
             val calendar = calendarGetInstance()
             calendar.setTime(date)
