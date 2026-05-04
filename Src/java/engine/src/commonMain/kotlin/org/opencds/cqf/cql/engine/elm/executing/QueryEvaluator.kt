@@ -116,23 +116,27 @@ object QueryEvaluator {
         val sortClause = elm.sort
 
         if (sortClause != null) {
-            for (byItem in sortClause.by) {
-                when (byItem) {
-                    is ByExpression ->
-                        result.sortWith(
-                            CqlList(state, visitor, "\$this", byItem.expression!!).expressionSort
-                        )
+            val comparator =
+                sortClause.by
+                    .map { byItem ->
+                        val baseComparator =
+                            when (byItem) {
+                                is ByExpression ->
+                                    CqlList(state, visitor, "\$this", byItem.expression!!)
+                                        .expressionSort
+                                is ByColumn -> CqlList(state, byItem.path).columnSort
+                                else -> CqlList(state).valueSort
+                            }
 
-                    is ByColumn -> result.sortWith(CqlList(state, byItem.path).columnSort)
+                        val direction = byItem.direction
+                        val isDesc =
+                            direction == SortDirection.DESC || direction == SortDirection.DESCENDING
 
-                    else -> result.sortWith(CqlList(state).valueSort)
-                }
+                        if (isDesc) baseComparator.reversed() else baseComparator
+                    }
+                    .reduceOrNull { acc, comp -> acc.then(comp) }
 
-                val direction = byItem.direction!!.value()
-                if (direction == "desc" || direction == "descending") {
-                    result.reverse()
-                }
-            }
+            comparator?.let { result.sortWith(it) }
         }
     }
 
