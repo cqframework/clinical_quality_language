@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     kotlin("multiplatform")
     id("cql.maven-publishing-conventions")
+    id("org.jetbrains.kotlinx.kover")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
