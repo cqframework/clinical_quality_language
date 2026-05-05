@@ -25,3 +25,5 @@ kotlin {
         }
     }
 }
+
+dependencies { kover(project(":cql-to-elm")) }

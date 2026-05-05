@@ -22,3 +22,5 @@ kotlin {
         }
     }
 }
+
+dependencies { kover(project(":shared")) }
