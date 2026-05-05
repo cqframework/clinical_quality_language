@@ -47,7 +47,7 @@ object InValueSetEvaluator {
                     )
                 }
 
-                return codes.any { it.code == code }
+                return codes.any { EquivalentEvaluator.equivalent(code, it.code, state) == true }
             } else if (code is Code) {
                 if (provider!!.`in`(code, vsi) == true) {
                     return true
