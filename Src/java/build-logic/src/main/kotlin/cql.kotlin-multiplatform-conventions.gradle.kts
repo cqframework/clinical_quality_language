@@ -111,12 +111,4 @@ afterEvaluate {
 // config is needed.
 buildConfig { buildConfigField("IMPLEMENTATION_VERSION", project.version.toString()) }
 
-kover {
-    reports {
-        total {
-            xml {
-                onCheck = true
-            }
-        }
-    }
-}
+kover { reports { total { xml { onCheck = true } } } }
