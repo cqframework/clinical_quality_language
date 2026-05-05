@@ -192,21 +192,26 @@ class ElmDataRequirement : ElmExpressionRequirement {
         }
     }
 
+    /*
+    Applies the given condition requirement as a filter expression to the retrieve
+    Returns true if the entire condition requirement could be applied to the retrieve
+     */
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")
     private fun applyConditionRequirementTo(
         conditionRequirement: ElmConditionRequirement,
         retrieve: Retrieve,
         context: ElmRequirementsContext,
-    ) {
+    ): Boolean {
         if (retrieve.dataType == null) {
             // If the retrieve has no data type, it is neither useful nor possible to apply
             // requirements to it
-            return
+            return false
         }
 
         if (!conditionRequirement.isTargetable) {
             // If the comparand of the condition requirement is not targetable, requirements cannot
             // be applied
-            return
+            return false
         }
 
         // if the column is terminology-valued, express as a code filter
@@ -235,6 +240,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
                     codeFilter.value = conditionRequirement.comparand!!.expression
                     if (!hasCodeFilter(retrieve.codeFilter, codeFilter)) {
                         retrieve.codeFilter.add(codeFilter)
+                        return true
                     }
                 }
             } else if (context.typeResolver.isDateType(comparisonType)) {
@@ -345,10 +351,13 @@ class ElmDataRequirement : ElmExpressionRequirement {
                 if (dateFilter.value != null) {
                     if (!hasDateFilter(retrieve.dateFilter, dateFilter)) {
                         retrieve.dateFilter.add(dateFilter)
+                        return true
                     }
                 }
             } else {}
         }
+
+        return false
     }
 
     private fun getRetrieveType(context: ElmRequirementsContext?, retrieve: Retrieve): ClassType? {
@@ -453,9 +462,14 @@ class ElmDataRequirement : ElmExpressionRequirement {
         // apply to the retrieve
         for (conditionRequirement in getConjunctiveRequirement()!!.arguments) {
             if (conditionRequirement is ElmConditionRequirement) {
-                applyConditionRequirementTo(conditionRequirement, retrieve, context)
+                if (!applyConditionRequirementTo(conditionRequirement, retrieve, context)) {
+                    queryRequirements.selectivity!!.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+                }
             } else if (conditionRequirement is ElmJoinRequirement) {
                 applyJoinRequirementTo(conditionRequirement, retrieve, context, queryRequirements)
+                queryRequirements.selectivity!!.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+            } else {
+                queryRequirements.selectivity!!.coverage = ElmQuerySelectivity.Coverage.PARTIAL
             }
         }
     }

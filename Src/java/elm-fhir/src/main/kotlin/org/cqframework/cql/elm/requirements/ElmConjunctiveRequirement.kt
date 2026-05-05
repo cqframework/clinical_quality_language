@@ -7,6 +7,7 @@ class ElmConjunctiveRequirement(libraryIdentifier: VersionedIdentifier, expressi
     ElmExpressionRequirement(libraryIdentifier, expression) {
     @JvmField val arguments: MutableList<ElmExpressionRequirement?> = ArrayList()
 
+    @Suppress("ForbiddenComment")
     override fun combine(requirement: ElmRequirement?): ElmExpressionRequirement {
         when (requirement) {
             is ElmConjunctiveRequirement -> {
@@ -16,6 +17,12 @@ class ElmConjunctiveRequirement(libraryIdentifier: VersionedIdentifier, expressi
             }
 
             is ElmDisjunctiveRequirement -> {
+                // TODO: This should return the disjunctive requirement
+                // However, disjunctive requirements can't be distributed without a union rewrite
+                // if (arguments.size == 0) {
+                //    return requirement;
+                // }
+
                 // Conjunction of disjunctions, too complex for analysis (i.e. not in DNF)
                 return ElmExpressionRequirement(this.libraryIdentifier, this.expression)
             }

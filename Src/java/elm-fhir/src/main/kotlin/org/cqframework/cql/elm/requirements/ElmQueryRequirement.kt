@@ -3,6 +3,7 @@ package org.cqframework.cql.elm.requirements
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.elm.r1.AliasedQuerySource
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.LetClause
 import org.hl7.elm.r1.Property
 import org.hl7.elm.r1.Query
@@ -225,16 +226,20 @@ class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) 
         // unnecessary
     }
 
+    @Suppress("NestedBlockDepth", "ReturnCount")
     fun distributeExpressionRequirement(
         requirement: ElmExpressionRequirement?,
         context: ElmRequirementsContext,
     ): Boolean {
         when (requirement) {
             is ElmConjunctiveRequirement -> {
+                var all = true
                 for (expressionRequirement in requirement.arguments) {
-                    distributeExpressionRequirement(expressionRequirement, context)
+                    if (!distributeExpressionRequirement(expressionRequirement, context)) {
+                        all = false
+                    }
                 }
-                return true
+                return all
             }
 
             is ElmDisjunctiveRequirement -> {
@@ -256,15 +261,36 @@ class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) 
                 return distributeQueryRequirement(requirement, context)
             }
 
+            is ElmOperatorRequirement -> {
+                if (requirement.element is Exists) {
+                    for (r in requirement.getRequirements()) {
+                        if (r is ElmQueryRequirement) {
+                            return distributeQueryRequirement(r, context)
+                        }
+                    }
+                }
+
+                return false
+            }
+
             else -> return false
         }
     }
 
     fun analyzeDataRequirements(context: ElmRequirementsContext) {
-        // apply query requirements to retrieves
+        selectivity!!.form = ElmQuerySelectivity.Form.CONJUNCTIVE
 
+        // apply query requirements to retrieves
+        val clause = ElmQuerySelectivity.Clause()
+        selectivity!!.clause.add(clause)
         for (dataRequirement in dataRequirements) {
             dataRequirement.applyDataRequirements(context, this)
+            clause.terms.add(dataRequirement)
+        }
+
+        // If all the data requirements were distributed to retrieves, the selectivity is total
+        if (selectivity!!.coverage == null) {
+            selectivity!!.coverage = ElmQuerySelectivity.Coverage.TOTAL
         }
     }
 }

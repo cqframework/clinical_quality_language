@@ -19,6 +19,7 @@ import org.hl7.elm.r1.ContextDef
 import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
@@ -34,6 +35,7 @@ import org.hl7.elm.r1.LetClause
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.NaryExpression
+import org.hl7.elm.r1.Not
 import org.hl7.elm.r1.Now
 import org.hl7.elm.r1.Null
 import org.hl7.elm.r1.OperandRef
@@ -48,6 +50,7 @@ import org.hl7.elm.r1.TernaryExpression
 import org.hl7.elm.r1.Time
 import org.hl7.elm.r1.TimeOfDay
 import org.hl7.elm.r1.Today
+import org.hl7.elm.r1.UnaryExpression
 import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
@@ -487,6 +490,20 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                 return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
             }
         }
+    }
+
+    override fun visitUnaryExpression(
+        elm: UnaryExpression,
+        context: ElmRequirementsContext,
+    ): ElmRequirement? {
+        val requirements = super.visitUnaryExpression(elm, context)
+        // if (context.options != null && context.options!!.reportSelectivity) {
+        if (elm is Exists || elm is Not) {
+            return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
+                .combine(requirements)
+        }
+        // }
+        return requirements
     }
 
     override fun visitTernaryExpression(

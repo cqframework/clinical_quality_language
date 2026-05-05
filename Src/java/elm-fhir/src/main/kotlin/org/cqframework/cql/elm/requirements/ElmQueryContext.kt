@@ -120,8 +120,11 @@ class ElmQueryContext(
         queryRequirement.addChildRequirements(childRequirements)
 
         // distribute query requirements to each alias
+        queryRequirement.selectivity = ElmQuerySelectivity()
         if (context.options?.analyzeDataRequirements == true) {
-            queryRequirement.distributeExpressionRequirement(queryRequirements, context)
+            if (!queryRequirement.distributeExpressionRequirement(queryRequirements, context)) {
+                queryRequirement.selectivity!!.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+            }
         }
 
         return queryRequirement

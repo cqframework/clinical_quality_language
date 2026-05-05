@@ -90,6 +90,9 @@ class ElmRequirementsContext(
         reportExpressionDef(ed)
         this._reportedRequirements[ed] = expressionDefContext.reportedRequirements
         this._inferredRequirements[ed] = inferredRequirements
+        if (inferredRequirements is ElmExpressionRequirement) {
+            inferredRequirements.determineSelectivity()
+        }
     }
 
     val currentExpressionDefContext: ElmExpressionDefContext?
@@ -156,6 +159,33 @@ class ElmRequirementsContext(
 
     fun getInferredRequirements(ed: ExpressionDef): ElmRequirement? {
         return _inferredRequirements[ed]
+    }
+
+    private val _selectivity: MutableMap<ExpressionDef, MutableList<ElmQuerySelectivity>> =
+        mutableMapOf()
+
+    fun getSelectivity(): Map<ExpressionDef, List<ElmQuerySelectivity>> {
+        return _selectivity
+    }
+
+    @Suppress("ComplexCondition")
+    private fun reportSelectivity(selectivity: ElmQuerySelectivity?) {
+        if (
+            options != null &&
+                options!!.analyzeDataRequirements &&
+                options!!.reportSelectivity &&
+                selectivity != null &&
+                selectivity.isValid() &&
+                inExpressionDefContext()
+        ) {
+            var selectivities: MutableList<ElmQuerySelectivity>? =
+                _selectivity.get(currentExpressionDefContext!!.expressionDef)
+            if (selectivities == null) {
+                selectivities = mutableListOf()
+                _selectivity.put(currentExpressionDefContext!!.expressionDef, selectivities)
+            }
+            selectivities.add(selectivity)
+        }
     }
 
     private val libraryStack = Stack<VersionedIdentifier?>()
@@ -454,6 +484,7 @@ class ElmRequirementsContext(
     complicates the inferencing calculations, as they would always have to be based on a collection
     of requirements, rather than the current focus of either a DataRequirement or a QueryRequirement)
      */
+    @Suppress("CyclomaticComplexMethod")
     fun reportRequirements(requirement: ElmRequirement, inferredRequirements: ElmRequirement?) {
         when (requirement) {
             is ElmRequirements -> {
@@ -468,6 +499,10 @@ class ElmRequirementsContext(
             }
 
             is ElmQueryRequirement -> {
+                if (requirement.selectivity != null) {
+                    reportSelectivity(requirement.selectivity)
+                }
+
                 for (dataRequirement in requirement.getDataRequirements()) {
                     if (
                         inferredRequirements == null ||

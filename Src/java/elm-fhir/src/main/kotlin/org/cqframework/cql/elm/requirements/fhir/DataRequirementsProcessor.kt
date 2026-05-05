@@ -34,6 +34,7 @@ import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper
 import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper.evaluate
 import org.cqframework.cql.elm.requirements.ElmDataRequirement
 import org.cqframework.cql.elm.requirements.ElmPertinenceContext
+import org.cqframework.cql.elm.requirements.ElmQuerySelectivity
 import org.cqframework.cql.elm.requirements.ElmRequirement
 import org.cqframework.cql.elm.requirements.ElmRequirements
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext
@@ -416,7 +417,13 @@ class DataRequirementsProcessor {
         returnLibrary.setSubject(extractSubject(context))
         returnLibrary.getExtension().addAll(extractDirectReferenceCodes(context, requirements))
         returnLibrary.getRelatedArtifact().addAll(extractRelatedArtifacts(context, requirements))
-        returnLibrary.getDataRequirement().addAll(extractDataRequirements(context, requirements))
+        val retrieveMap: MutableMap<String?, Retrieve> = HashMap()
+        returnLibrary
+            .getDataRequirement()
+            .addAll(extractDataRequirements(context, requirements, retrieveMap))
+        returnLibrary
+            .getExtension()
+            .addAll(extractSelectivity(context, requirements, expressionDefs, retrieveMap))
         returnLibrary
             .getParameter()
             .addAll(extractParameters(context, requirements, libraryIdentifier, expressionDefs))
@@ -631,13 +638,108 @@ class DataRequirementsProcessor {
         return e
     }
 
+    private fun extractSelectivity(
+        context: ElmRequirementsContext,
+        requirements: ElmRequirements,
+        expressionDefs: Iterable<ExpressionDef?>,
+        retrieveMap: MutableMap<String?, Retrieve>,
+    ): MutableList<Extension> {
+        val result: MutableList<Extension> = ArrayList()
+
+        for (entry in context.getSelectivity()) {
+            for (selectivity in entry.value) {
+                result.add(toSelectivity(context, selectivity, entry.key, retrieveMap))
+            }
+        }
+
+        /*
+                for (ed in expressionDefs) {
+                    if (ed != null) {
+                        val requirement = context.getInferredRequirements(ed);
+                        if (requirement != null) {
+                            extractSelectivity(context, ed, requirement, result, retrieveMap);
+                        }
+                    }
+                }
+        */
+
+        return result
+    }
+
+    /*
+        private fun extractSelectivity(
+            context: ElmRequirementsContext,
+            expressionDef: ExpressionDef,
+            requirement: ElmRequirement,
+            result: MutableList<Extension>,
+            retrieveMap: MutableMap<String?, Retrieve>
+        ) {
+            if (requirement is ElmRequirements) {
+                for (r in requirement.getRequirements()) {
+                    extractSelectivity(context, expressionDef, r, result, retrieveMap);
+                }
+            }
+            else if (requirement is ElmExpressionRequirement) {
+                val selectivity = requirement.determineSelectivity()
+                if (selectivity != null) {
+                    result.add(toSelectivity(context, selectivity, expressionDef, retrieveMap))
+                }
+            }
+        }
+    */
+
+    private fun toSelectivity(
+        context: ElmRequirementsContext,
+        selectivity: ElmQuerySelectivity,
+        expressionDef: ExpressionDef,
+        retrieveMap: MutableMap<String?, Retrieve>,
+    ): Extension {
+        val e = Extension()
+        e.setUrl(specificationSupport.selectivityExtensionUrl)
+
+        // TODO: Need to determine overall total vs partial (a selectivity will be partial if it is
+        // a nested term)
+        e.addExtension("expressionIdentifier", StringType(expressionDef.name))
+        if (selectivity.coverage != null) {
+            e.addExtension("coverage", CodeType(selectivity.coverage!!.coverage))
+        }
+        if (selectivity.inclusivity != null) {
+            e.addExtension("inclusivity", CodeType(selectivity.inclusivity!!.inclusivity))
+        }
+        if (selectivity.form != null) {
+            e.addExtension("form", CodeType(selectivity.form!!.form))
+        }
+
+        for (clause in selectivity.clause) {
+            val ce = e.addExtension()
+            ce.setUrl("clause")
+            for (dataRequirement in clause.terms) {
+                ce.addExtension(
+                    Extension(
+                        "term",
+                        toDataRequirement(
+                            context,
+                            dataRequirement.libraryIdentifier,
+                            (dataRequirement.element as Retrieve?)!!,
+                            retrieveMap,
+                            dataRequirement.properties,
+                            dataRequirement.pertinenceContext,
+                        ),
+                    )
+                )
+            }
+        }
+
+        return e
+    }
+
     private fun extractDataRequirements(
         context: ElmRequirementsContext,
         requirements: ElmRequirements,
+        retrieveMap: MutableMap<String?, Retrieve>,
     ): MutableList<DataRequirement?> {
         val result: MutableList<DataRequirement?> = ArrayList()
 
-        val retrieveMap: MutableMap<String?, Retrieve> = HashMap()
         for (retrieve in requirements.retrieves) {
             if (retrieve.element.localId != null) {
                 retrieveMap[retrieve.element.localId] = (retrieve.element as Retrieve?)!!
@@ -955,43 +1057,8 @@ class DataRequirementsProcessor {
             cfc.setValueSet(
                 toReference(context.resolveValueSetRef(declaredLibraryIdentifier, value)!!)
             )
-        }
-        else if (value is ToList) {
-            resolveCodeFilterCodes(context, libraryIdentifier, cfc, value.operand)
-        }
-        else if (value is List) {
-            for (e in value.element) {
-                resolveCodeFilterCodes(context, libraryIdentifier, cfc, e)
-            }
-        }
-        else if (value is Literal) {
-            cfc.addCode().setCode(value.value)
-        }
-        else {
-            context.enterLibrary(libraryIdentifier)
-            try {
-                var code = toFhirValue(context, value);
-                if (code is CodeableConcept) {
-                    for (coding in code.getCoding()) {
-                        cfc.addCode(coding);
-                    }
-                }
-                else if (code is Coding) {
-                    cfc.addCode(code);
-                }
-                else if (code != null) {
-                    cfc.addCode().setCode(code.toString());
-                }
-            } catch (e: Exception) {
-                val c = Coding()
-                c.addExtension(
-                    "http://hl7.org/fhir/uv/crmi-analysisException",
-                    StringType("Error attempting to determine filter value: ${e.message}"),
-                )
-                cfc.addCode(c);
-            } finally {
-                context.exitLibrary()
-            }
+        } else {
+            resolveCodeFilterCodes(context, libraryIdentifier, cfc, value)
         }
 
         return cfc
@@ -1216,13 +1283,20 @@ class DataRequirementsProcessor {
         return dr
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "TooGenericExceptionCaught")
     private fun resolveCodeFilterCodes(
         context: ElmRequirementsContext,
         libraryIdentifier: VersionedIdentifier,
         cfc: DataRequirement.DataRequirementCodeFilterComponent,
         e: Expression?,
     ) {
-        if (e is CodeRef) {
+        if (e is ToList) {
+            resolveCodeFilterCodes(context, libraryIdentifier, cfc, e.operand)
+        } else if (e is List) {
+            for (el in e.element) {
+                resolveCodeFilterCodes(context, libraryIdentifier, cfc, el)
+            }
+        } else if (e is CodeRef) {
             val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)!!
             cfc.addCode(
                 toCoding(
@@ -1231,13 +1305,9 @@ class DataRequirementsProcessor {
                     context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, e)!!),
                 )
             )
-        }
-
-        if (e is Code) {
+        } else if (e is Code) {
             cfc.addCode(toCoding(context, libraryIdentifier, e))
-        }
-
-        if (e is ConceptRef) {
+        } else if (e is ConceptRef) {
             val declaredLibraryIdentifier = getDeclaredLibraryIdentifier(e, libraryIdentifier)!!
             val c =
                 toCodeableConcept(
@@ -1251,17 +1321,36 @@ class DataRequirementsProcessor {
             for (code in c.getCoding()) {
                 cfc.addCode(code)
             }
-        }
-
-        if (e is Concept) {
+        } else if (e is Concept) {
             val c = toCodeableConcept(context, libraryIdentifier, e)
             for (code in c.getCoding()) {
                 cfc.addCode(code)
             }
-        }
-
-        if (e is Literal) {
+        } else if (e is Literal) {
             cfc.addCode().setCode(e.value)
+        } else {
+            context.enterLibrary(libraryIdentifier)
+            try {
+                var code = toFhirValue(context, e)
+                if (code is CodeableConcept) {
+                    for (coding in code.getCoding()) {
+                        cfc.addCode(coding)
+                    }
+                } else if (code is Coding) {
+                    cfc.addCode(code)
+                } else if (code != null) {
+                    cfc.addCode().setCode(code.toString())
+                }
+            } catch (ex: Exception) {
+                val c = Coding()
+                c.addExtension(
+                    "http://hl7.org/fhir/uv/crmi-analysisException",
+                    StringType("Error attempting to determine filter value: ${ex.message}"),
+                )
+                cfc.addCode(c)
+            } finally {
+                context.exitLibrary()
+            }
         }
     }
 
