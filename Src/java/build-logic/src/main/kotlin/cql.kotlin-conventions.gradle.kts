@@ -15,18 +15,13 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-    }
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
 }
 
 detekt {
     buildUponDefaultConfig = true
 
-    source.setFrom(
-        "src/main/kotlin",
-        "src/test/kotlin",
-    )
+    source.setFrom("src/main/kotlin", "src/test/kotlin")
 
     config.setFrom("$rootDir/config/detekt/detekt.yml")
     baseline = file("$projectDir/config/detekt-baseline.xml")
@@ -34,9 +29,7 @@ detekt {
 
 kotlin {
     jvmToolchain(17)
-    compilerOptions {
-        freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
-    }
+    compilerOptions { freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled") }
 }
 
 dependencies {
@@ -73,27 +66,19 @@ tasks.register<Jar>("dokkaHtmlJar") {
     archiveClassifier.set("html-docs")
 }
 
-jacoco {
-    toolVersion = "0.8.11"
-}
+jacoco { toolVersion = "0.8.11" }
 
 tasks.withType<Test> {
-    configure<JacocoTaskExtension> {
-        excludes = listOf("org/hl7/fhir/**")
-    }
+    configure<JacocoTaskExtension> { excludes = listOf("org/hl7/fhir/**") }
 
     useJUnitPlatform()
-    testLogging {
-        events("skipped", "failed")
-    }
+    testLogging { events("skipped", "failed") }
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
 tasks.jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-    dependsOn(tasks.test)// tests are required to run before generating the report
+    reports { xml.required = true }
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }
 
 tasks.javadoc {
@@ -109,6 +94,4 @@ tasks.withType<JavaCompile> {
     options.isDeprecation = true
 }
 
-mavenPublishing {
-    configure(JavaLibrary(JavadocJar.Javadoc(), SourcesJar.Sources()))
-}
+mavenPublishing { configure(JavaLibrary(JavadocJar.Javadoc(), SourcesJar.Sources())) }

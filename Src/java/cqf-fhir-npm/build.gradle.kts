@@ -1,6 +1,4 @@
-plugins {
-    id("cql.fhir-conventions")
-}
+plugins { id("cql.fhir-conventions") }
 
 dependencies {
     implementation(project(":cql-to-elm"))

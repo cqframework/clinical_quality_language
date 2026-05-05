@@ -11,7 +11,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo
 open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     private var index: Map<String, DataType> = HashMap()
     private val classIndex: MutableMap<String, ClassType> = HashMap()
-    private val conversions: MutableList<Conversion> = ArrayList()
+    private val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
     private val contexts: MutableList<ModelContext> = ArrayList()
 
     private val nameIndex: MutableMap<String, DataType> = HashMap()
@@ -42,7 +42,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
         }
     }
 
-    fun getConversions(): List<Conversion> {
+    fun getConversions(): List<Conversion.OperatorConversion> {
         return conversions
     }
 

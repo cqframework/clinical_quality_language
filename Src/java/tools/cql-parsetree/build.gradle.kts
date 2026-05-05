@@ -3,10 +3,6 @@ plugins {
     id("application")
 }
 
-application {
-    mainClass = "org.cqframework.cql.tools.parsetree.Main"
-}
+application { mainClass = "org.cqframework.cql.tools.parsetree.Main" }
 
-dependencies {
-    implementation(project(":cql"))
-}
+dependencies { implementation(project(":cql")) }

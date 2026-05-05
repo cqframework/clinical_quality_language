@@ -3,12 +3,12 @@ plugins {
     id("application")
 }
 
-application {
-    mainClass = "org.cqframework.cql.cql2elm.cli.Main"
-}
+application { mainClass = "org.cqframework.cql.cql2elm.cli.Main" }
 
 dependencies {
-    implementation(platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${project.findProperty("hapi.version")}"))
+    implementation(
+        platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${project.findProperty("hapi.version")}")
+    )
 
     implementation("ca.uhn.hapi.fhir:hapi-fhir-base") {
         exclude(group = "org.eclipse.jetty")

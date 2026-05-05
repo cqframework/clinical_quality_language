@@ -1,7 +1,3 @@
-plugins {
-    id("cql.library-conventions")
-}
+plugins { id("cql.library-conventions") }
 
-dependencies {
-    api(project(":cql"))
-}
+dependencies { api(project(":cql")) }

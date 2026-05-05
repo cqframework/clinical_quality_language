@@ -6,9 +6,7 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("1.0.0")
-}
+plugins { id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0") }
 
 rootProject.name = "cql-all"
 
@@ -31,5 +29,5 @@ include(
     "tools:rewrite",
     "tools:cql-formatter",
     "tools:cql-parsetree",
-    "tools:xsd-to-modelinfo"
+    "tools:xsd-to-modelinfo",
 )

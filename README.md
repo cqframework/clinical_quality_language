@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) ![Dynamic JSON Badge](https://shields.foundry.hl7.org/badge/dynamic/json?url=https%3A%2F%2Fcql-tests-results.quality.hl7.org%2Flatest-cqf-java-results.json&query=testResultsSummary.passCount&suffix=%20passing&label=CQL%20Tests&color=green)
 
 # Clinical Quality Language
 

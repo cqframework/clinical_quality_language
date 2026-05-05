@@ -1,15 +1,22 @@
 package org.cqframework.cql.shared
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
+
 /** A minimal pure-Kotlin implementation of QName for non-Java environments. */
-class QNameJs
-constructor(
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
+@JsName("QName")
+class QNameJs(
     private val namespaceURI: String,
     private val localPart: String,
     private val prefix: String,
 ) {
+    @JsExport.Ignore
     constructor(namespaceURI: String, localPart: String) : this(namespaceURI, localPart, "")
 
-    constructor(localPart: String) : this("", localPart, "")
+    @JsExport.Ignore constructor(localPart: String) : this("", localPart, "")
 
     fun getPrefix(): String = prefix
 

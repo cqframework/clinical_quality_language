@@ -1,6 +1,4 @@
-plugins {
-    id("cql.library-conventions")
-}
+plugins { id("cql.library-conventions") }
 
 // bug fix for the hapi-bom
 configurations.all {
