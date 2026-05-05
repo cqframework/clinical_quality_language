@@ -110,3 +110,13 @@ afterEvaluate {
 // JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build
 // config is needed.
 buildConfig { buildConfigField("IMPLEMENTATION_VERSION", project.version.toString()) }
+
+kover {
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
+    }
+}
