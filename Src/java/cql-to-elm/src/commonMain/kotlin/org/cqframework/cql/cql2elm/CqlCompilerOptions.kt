@@ -278,7 +278,7 @@ class CqlCompilerOptions() {
     }
 
     /**
-     * git Return this instance of CqlTranslatorOptions with addition of newly assigned
+     * Return this instance of CqlTranslatorOptions with addition of newly assigned
      * reportSelectivity boolean
      *
      * @param reportSelectivity
