@@ -32,7 +32,7 @@ class ElmQuerySelectivity {
         // context of the query
         INDETERMINATE(
             "indeterminate"
-        ), // Indicates that whether the query selectivity represents inclusion or exclusion criteria
+        ), // Indicates that the query selectivity represents inclusion or exclusion criteria
         // cannot be determined
     }
 
