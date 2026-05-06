@@ -280,6 +280,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         val code = Code()
         code.code = TEST_CODE
+        code.display = TEST_DISPLAY
 
         val result = provider!!.`in`(code, info)
         Assertions.assertTrue(result)
@@ -309,6 +310,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         val code = Code()
         code.code = TEST_CODE
+        code.display = TEST_DISPLAY
 
         Assertions.assertThrows(TerminologyProviderException::class.java) {
             provider!!.`in`(code, info)
