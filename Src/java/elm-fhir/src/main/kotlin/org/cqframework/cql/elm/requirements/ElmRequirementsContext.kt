@@ -45,6 +45,7 @@ import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
 
+@Suppress("LargeClass", "ComplexCondition")
 class ElmRequirementsContext(
     libraryManager: LibraryManager,
     options: CqlCompilerOptions?,
@@ -599,6 +600,7 @@ class ElmRequirementsContext(
         return null
     }
 
+    @Suppress("CyclomaticComplexMethod", "LongMethod", "ReturnCount")
     fun reportProperty(property: Property): ElmPropertyRequirement? {
         // if scope is specified, it's a reference to an alias in a current query context
         // if source is an AliasRef, it's a reference to an alias in a current query context
@@ -625,6 +627,29 @@ class ElmRequirementsContext(
 
             aliasContext.reportProperty(propertyRequirement)
             return propertyRequirement
+        }
+
+        if (
+            property.source is ExpressionRef &&
+                this.inExpressionDefContext() &&
+                this.inQueryContext() &&
+                (property.source as ExpressionRef)
+                    .name
+                    .equals(this.currentExpressionDefContext!!.expressionDef.context)
+        ) {
+            val aliasName = (property.source as ExpressionRef).name
+            val aliasContext = this.currentQueryContext.resolveAlias(aliasName)
+            if (aliasContext != null) {
+                val propertyRequirement =
+                    ElmPropertyRequirement(
+                        this.currentLibraryIdentifier,
+                        property,
+                        aliasContext.querySource,
+                        true,
+                    )
+                aliasContext.reportProperty(propertyRequirement)
+                return propertyRequirement
+            }
         }
 
         if (property.source is QueryLetRef) {

@@ -3103,15 +3103,16 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(manager, compilerOptions, expressions)
 
         /*
-        // 11i: totally selective, conjunctive, subject
-        define TestCase11i:
-          Patient.gender = 'male'
+        // 11i0: totally selective, conjunctive, subject
+        define TestCase11i0:
+          [Patient] P
+            where P.gender = 'male'
 
         Expected selectivity:
         {
           url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
           extension: [
-            { url: "expressionIdentifier", valueString: "TestCase11i0" },
+            { url: "expressionIdentifier", valueString: "TestCase11i" },
             { url: "coverage", valueCode: "total" },
             { url: "form", valueCode: "conjunctive" },
             {
@@ -3177,8 +3178,92 @@ class DataRequirementsProcessorTest {
         // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
-    // @Test
-    // TODO: Support requires "implicit context query"
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase11i1() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase11.cql", compilerOptions)
+        val expressions = mutableSetOf("TestCase11i1")
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions)
+
+        /*
+        // 11i1: totally selective, conjunctive, subject
+        define TestCase11i1:
+          Patient P
+            where P.gender = 'male'
+
+        Expected selectivity:
+        {
+          url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+          extension: [
+            { url: "expressionIdentifier", valueString: "TestCase11i" },
+            { url: "coverage", valueCode: "total" },
+            { url: "form", valueCode: "conjunctive" },
+            {
+              url: "clause",
+              extension: [
+                { url: "term", valueDataRequirement { type: "Patient", codeFilter: [ { path: "gender", code: "male" } ] } }
+              ]
+            }
+          ]
+        }
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.PATIENT) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+
+        var expectedSelectivity: Extension? = null
+        for (selectivity in
+            moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity"
+            )) {
+            if (
+                selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
+                    "TestCase11i1"
+            ) {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "total") {
+                    continue
+                }
+                if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
+                    continue
+                }
+                for (clause in selectivity.getExtensionsByUrl("clause")) {
+                    for (term in clause.getExtensionsByUrl("term")) {
+                        if (term.valueDataRequirement?.type == FHIRTypes.PATIENT) {
+                            if (term.valueDataRequirement?.hasCodeFilter()!!) {
+                                val codeFilter = term.valueDataRequirement?.codeFilterFirstRep!!
+                                if (
+                                    codeFilter.hasPath() &&
+                                        codeFilter.path.equals("gender") &&
+                                        codeFilter.hasCode()
+                                ) {
+                                    val code = codeFilter.codeFirstRep!!
+                                    if (code.hasCode()) {
+                                        if (code.code.equals("male")) {
+                                            expectedSelectivity = selectivity
+                                            continue
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSelectivity != null)
+
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
     @Throws(IOException::class)
     fun dataRequirementsAnalysisCase11i() {
         val compilerOptions = this.compilerOptions
@@ -3357,8 +3442,7 @@ class DataRequirementsProcessorTest {
         // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
-    // @Test
-    // TODO: Requires "implicit context query"
+    @Test
     @Throws(IOException::class)
     fun dataRequirementsAnalysisCase11k() {
         val compilerOptions = this.compilerOptions
@@ -3431,7 +3515,7 @@ class DataRequirementsProcessorTest {
                                 ) {
                                     val period = dateFilter.valuePeriod
                                     if (period.hasStart()) {
-                                        if (period.start.toString().equals("2026-01-01")) {
+                                        if (period.start.equals(DateTimeType("2026-01-01").value)) {
                                             expectedSelectivity = selectivity
                                             continue
                                         }
@@ -3487,7 +3571,7 @@ class DataRequirementsProcessorTest {
             TimeZone.setDefault(null)
         }
         Assertions.assertNotNull(expectedModuleDefinitionLibrary)
-        // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary)
         actualModuleDefinitionLibrary.setDate(null)
         expectedModuleDefinitionLibrary!!.setDate(null)
 

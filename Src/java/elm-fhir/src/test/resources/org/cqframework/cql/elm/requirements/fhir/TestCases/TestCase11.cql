@@ -256,6 +256,29 @@ Expected selectivity:
 }
 */
 
+// 11i1: totally selective, conjunctive, subject
+define TestCase11i1:
+  Patient P
+    where P.gender = 'male'
+
+/*
+Expected selectivity:
+{
+  url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+  extension: [
+    { url: "expressionIdentifier", valueString: "TestCase11i" },
+    { url: "coverage", valueCode: "total" },
+    { url: "form", valueCode: "conjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "term", valueDataRequirement { type: "Patient", codeFilter: [ { path: "gender", code: "male" } ] } }
+      ]
+    }
+  ]
+}
+*/
+
 // TODO: Doesn't work because the expression reference isn't inside a query
 // Needs to perform data requirements analysis on the inferred data requirement
 // 11i: totally selective, conjunctive, subject

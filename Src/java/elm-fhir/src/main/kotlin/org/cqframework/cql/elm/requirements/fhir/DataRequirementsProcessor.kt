@@ -50,6 +50,7 @@ import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.cql_annotations.r1.Annotation
 import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.elm.r1.AccessModifier
+import org.hl7.elm.r1.AliasedQuerySource
 import org.hl7.elm.r1.Code
 import org.hl7.elm.r1.CodeDef
 import org.hl7.elm.r1.CodeFilterElement
@@ -67,6 +68,7 @@ import org.hl7.elm.r1.List
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.Property
+import org.hl7.elm.r1.Query
 import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.ToList
 import org.hl7.elm.r1.UsingDef
@@ -91,7 +93,14 @@ import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.utilities.validation.ValidationMessage
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory
 
-@Suppress("MaxLineLength", "ReturnCount", "ForbiddenComment", "NestedBlockDepth", "UnusedParameter")
+@Suppress(
+    "MaxLineLength",
+    "ReturnCount",
+    "ForbiddenComment",
+    "NestedBlockDepth",
+    "UnusedParameter",
+    "ComplexCondition",
+)
 class DataRequirementsProcessor {
     val validationMessages: MutableList<ValidationMessage?> = ArrayList<ValidationMessage?>()
 
@@ -181,6 +190,7 @@ class DataRequirementsProcessor {
             ElmRequirementsContext(libraryManager, options, visitor, parameters, evaluationDateTime)
 
         var expressionDefs: MutableList<ExpressionDef>?
+        var contextExpressionDefs: MutableMap<String, ExpressionDef>? = null
         if (expressions == null) {
             visitor.visitLibrary(translatedLibrary.library!!, context)
             expressionDefs =
@@ -201,11 +211,53 @@ class DataRequirementsProcessor {
                     visitor.visitUsingDef(usingDef, context)
                 }
 
+                // Pickup all context expression defs
+                if (options.reportSelectivity) {
+                    contextExpressionDefs = HashMap()
+                    for (expression in expressions) {
+                        val ed = translatedLibrary.resolveExpressionRef(expression)
+                        if (ed != null) {
+                            if (ed.context != null && !contextExpressionDefs.contains(ed.context)) {
+                                val contextExpressionDef =
+                                    translatedLibrary.resolveExpressionRef(ed.context!!)
+                                if (contextExpressionDef != null) {
+                                    expressionDefs.add(contextExpressionDef)
+                                    contextExpressionDefs[ed.context!!] = contextExpressionDef
+                                }
+                            }
+                        }
+                    }
+                }
+
                 for (expression in expressions) {
                     val ed = translatedLibrary.resolveExpressionRef(expression)
                     if (ed != null) {
                         expressionDefs.add(ed)
-                        visitor.visitElement(ed, context)
+                        if (
+                            ed.context != null &&
+                                contextExpressionDefs != null &&
+                                contextExpressionDefs.containsKey(ed.context!!) &&
+                                context.typeResolver.isBooleanType(ed.resultType)
+                        ) {
+                            val contextExpressionDef = contextExpressionDefs[ed.context!!]!!
+
+                            // Push an implicit query for the context
+                            val query = Query()
+                            query.source.add(
+                                AliasedQuerySource()
+                                    .withExpression(contextExpressionDef.expression)
+                                    .withAlias(ed.context)
+                            )
+                            query.where = ed.expression
+                            ed.expression = query
+                            try {
+                                visitor.visitElement(ed, context)
+                            } finally {
+                                ed.expression = query.where
+                            }
+                        } else {
+                            visitor.visitElement(ed, context)
+                        }
                     } else {
                         // If the expression is the name of any functions, include those in the
                         // gather

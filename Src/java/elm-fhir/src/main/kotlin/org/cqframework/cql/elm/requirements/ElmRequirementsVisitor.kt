@@ -731,6 +731,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return result
     }
 
+    @Suppress("ReturnCount")
     override fun visitProperty(elm: Property, context: ElmRequirementsContext): ElmRequirement? {
         val visitResult = super.visitProperty(elm, context)
 
@@ -752,6 +753,9 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         }
 
         val propertyRequirement = context.reportProperty(elm)
+        if (propertyRequirement != null) {
+            return propertyRequirement
+        }
         val result = aggregateResult(propertyRequirement, visitResult)
         return result
     }
