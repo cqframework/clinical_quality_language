@@ -331,7 +331,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>(null, null)))
 
         value = results["FlattenNullAndListNull"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>(null, null)))
+        MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Any?>(null)))
 
         value = results["FlattenList12And34"]!!.value
         MatcherAssert.assertThat(value, Matchers.`is`(mutableListOf<Int?>(1, 2, 3, 4)))
