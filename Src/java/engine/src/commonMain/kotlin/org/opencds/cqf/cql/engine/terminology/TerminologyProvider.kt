@@ -4,7 +4,9 @@ import org.opencds.cqf.cql.engine.runtime.Code
 
 interface TerminologyProvider {
     /**
-     * Checks if a given Code is a member of a given ValueSetInfo
+     * Checks if a given Code is a member of a given ValueSetInfo. If the system is not provided and
+     * the resolved value set contains codes from multiple code systems, throws an error because the
+     * operation is ambiguous.
      *
      * @param code the code to check
      * @param valueSet the valueSet to check
