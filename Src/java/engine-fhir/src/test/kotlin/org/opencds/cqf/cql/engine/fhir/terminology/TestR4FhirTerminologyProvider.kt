@@ -268,20 +268,53 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         val valueSet = ValueSet()
         valueSet.setId("Test")
+        valueSet.getExpansion().addContains().setSystem(TEST_SYSTEM).setCode(TEST_CODE)
+        valueSet.getExpansion().addContains().setSystem(TEST_SYSTEM).setCode("anotherCode")
 
         mockResolveSearchPath(info, valueSet)
+
+        val parameters = Parameters()
+        parameters.parameterFirstRep.setName("return").setResource(valueSet)
+
+        mockFhirRead($$"/ValueSet/Test/$expand", parameters)
 
         val code = Code()
         code.code = TEST_CODE
         code.display = TEST_DISPLAY
 
-        val parameters = Parameters()
-        parameters.parameterFirstRep.setName("result").setValue(BooleanType(true))
-
-        mockFhirRead($$"/ValueSet/Test/$validate-code?code=" + urlEncode(code.code!!), parameters)
-
         val result = provider!!.`in`(code, info)
         Assertions.assertTrue(result)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun inOperationThrowsExceptionNullSystem() {
+        val info = ValueSetInfo()
+        info.id = "urn:oid:Test"
+
+        val valueSet = ValueSet()
+        valueSet.setId("Test")
+        valueSet.getExpansion().addContains().setSystem(TEST_SYSTEM).setCode(TEST_CODE)
+        valueSet
+            .getExpansion()
+            .addContains()
+            .setSystem("http://another-code-system.org/")
+            .setCode("anotherCode")
+
+        mockResolveSearchPath(info, valueSet)
+
+        val parameters = Parameters()
+        parameters.parameterFirstRep.setName("return").setResource(valueSet)
+
+        mockFhirRead($$"/ValueSet/Test/$expand", parameters)
+
+        val code = Code()
+        code.code = TEST_CODE
+        code.display = TEST_DISPLAY
+
+        Assertions.assertThrows(TerminologyProviderException::class.java) {
+            provider!!.`in`(code, info)
+        }
     }
 
     @Test
