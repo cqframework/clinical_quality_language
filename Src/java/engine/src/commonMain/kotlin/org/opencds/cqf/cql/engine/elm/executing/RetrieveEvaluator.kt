@@ -60,7 +60,18 @@ object RetrieveEvaluator {
                         is String -> codes = mutableListOf(Code().withCode(codesResult as String?))
                         is Code -> codes = mutableListOf(codesResult)
                         is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
-                        is Iterable<*> -> codes = codesResult as Iterable<Code>
+                        is Iterable<*> ->
+                            codes =
+                                codesResult.filterNotNull().map {
+                                    when (it) {
+                                        is String -> Code().withCode(it)
+                                        is Code -> it
+                                        else ->
+                                            throw IllegalArgumentException(
+                                                "Expected String or Code. Found '${it::class.simpleName}'."
+                                            )
+                                    }
+                                }
                         else ->
                             throw IllegalArgumentException(
                                 "The codes argument to Retrieve must be a ValueSet, Code, Concept, String," +
