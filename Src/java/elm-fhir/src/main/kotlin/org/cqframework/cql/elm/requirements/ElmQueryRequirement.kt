@@ -219,6 +219,21 @@ class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) 
         return false
     }
 
+    private fun distributeOperatorRequirement(
+        requirement: ElmOperatorRequirement,
+        context: ElmRequirementsContext,
+    ): Boolean {
+        if (requirement.element is Exists) {
+            for (r in requirement.getRequirements()) {
+                if (r is ElmQueryRequirement) {
+                    return distributeQueryRequirement(r, context)
+                }
+            }
+        }
+
+        return false
+    }
+
     fun addChildRequirements(childRequirements: ElmRequirement?) {
         // TODO: Placeholder to support processing child requirements gathered during the query
         // context processing
@@ -262,15 +277,7 @@ class ElmQueryRequirement(libraryIdentifier: VersionedIdentifier, query: Query) 
             }
 
             is ElmOperatorRequirement -> {
-                if (requirement.element is Exists) {
-                    for (r in requirement.getRequirements()) {
-                        if (r is ElmQueryRequirement) {
-                            return distributeQueryRequirement(r, context)
-                        }
-                    }
-                }
-
-                return false
+                return distributeOperatorRequirement(requirement, context)
             }
 
             else -> return false

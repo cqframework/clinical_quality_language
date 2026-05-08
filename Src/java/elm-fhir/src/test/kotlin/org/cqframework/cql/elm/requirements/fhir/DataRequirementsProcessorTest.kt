@@ -19,6 +19,7 @@ import org.cqframework.cql.cql2elm.ModelManager
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider
 import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel
+import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfConstants
 import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.FunctionDef
@@ -1114,6 +1115,32 @@ class DataRequirementsProcessorTest {
                 parameters,
                 includeLogicDefinitions = false,
                 recursive = false,
+            )
+        assertTrue(
+            moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equals("module-definition", ignoreCase = true)
+        )
+        return moduleDefinitionLibrary
+    }
+
+    private fun getModuleDefinitionLibrary(
+        setup: Setup,
+        cqlTranslatorOptions: CqlCompilerOptions,
+        expressions: Set<String>,
+        parameters: MutableMap<String, Any?>?,
+    ): Library {
+        val dqReqTrans = DataRequirementsProcessor()
+        val moduleDefinitionLibrary =
+            dqReqTrans.gatherDataRequirements(
+                setup.manager,
+                setup.library,
+                cqlTranslatorOptions,
+                expressions,
+                parameters,
+                includeLogicDefinitions = false,
+                recursive = true,
             )
         assertTrue(
             moduleDefinitionLibrary
@@ -3357,7 +3384,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(manager, compilerOptions, expressions)
 
         /*
-        // 11k0: totally selective, conjunctive, inclusion
+        // 11k0: partially selective, conjunctive, inclusion
         define TestCase11k0:
           [Patient] P
             where exists ([Encounter] E where start of E.period >= @2026-01-01) // Today() - 1 year
@@ -3367,7 +3394,7 @@ class DataRequirementsProcessorTest {
           url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
           extension: [
             { url: "expressionIdentifier", valueString: "TestCase11k0" },
-            { url: "coverage", valueCode: "total" },
+            { url: "coverage", valueCode: "partial" },
             { url: "form", valueCode: "conjunctive" },
             { url: "inclusivity", valueCode: "inclusion" },
             {
@@ -3398,15 +3425,14 @@ class DataRequirementsProcessorTest {
                 selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
                     "TestCase11k0"
             ) {
-                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "total") {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
                     continue
                 }
                 if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
                     continue
                 }
-                if (
-                    selectivity.getExtensionByUrl("inclusivity").valueCodeType?.value != "inclusion"
-                ) {
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
                     continue
                 }
                 for (clause in selectivity.getExtensionsByUrl("clause")) {
@@ -3452,7 +3478,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(manager, compilerOptions, expressions)
 
         /*
-        // 11k: totally selective, conjunctive
+        // 11k: partially selective, conjunctive
         define TestCase11k:
           exists ([Encounter] E where start of E.period >= @2026-01-01) // Today() - 1 year
 
@@ -3461,7 +3487,7 @@ class DataRequirementsProcessorTest {
           url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
           extension: [
             { url: "expressionIdentifier", valueString: "TestCase11k" },
-            { url: "coverage", valueCode: "total" },
+            { url: "coverage", valueCode: "partial" },
             { url: "form", valueCode: "conjunctive" },
             { url: "inclusivity", valueCode: "inclusion" },
             {
@@ -3492,15 +3518,14 @@ class DataRequirementsProcessorTest {
                 selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
                     "TestCase11k"
             ) {
-                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "total") {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
                     continue
                 }
                 if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
                     continue
                 }
-                if (
-                    selectivity.getExtensionByUrl("inclusivity").valueCodeType?.value != "inclusion"
-                ) {
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
                     continue
                 }
                 for (clause in selectivity.getExtensionsByUrl("clause")) {
@@ -3516,6 +3541,401 @@ class DataRequirementsProcessorTest {
                                     val period = dateFilter.valuePeriod
                                     if (period.hasStart()) {
                                         if (period.start.equals(DateTimeType("2026-01-01").value)) {
+                                            expectedSelectivity = selectivity
+                                            continue
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSelectivity != null)
+
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase12_DR() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
+        val expressions = mutableSetOf("TestDR")
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions)
+
+        /*
+        // Ensure we are getting direct retrieves
+        define "TestDR":
+          Patient P
+            where exists ([ImagingStudy])
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.IMAGINGSTUDY) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase12_1a() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
+        val expressions = mutableSetOf("HasStudyWithModalityDirectRetrieve")
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions)
+
+        /*
+        define "HasStudyWithModalityDirectRetrieve":
+          exists [ImagingStudy: modality ~ ModalityCode]
+
+        Expected selectivity:
+        {
+          url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+          extension: [
+            { url: "expressionIdentifier", valueString: "HasStudyWithModalityDirectRetrieve" },
+            { url: "coverage", valueCode: "partial" },
+            { url: "form", valueCode: "conjunctive" },
+            { url: "inclusivity", valueCode: "inclusion" },
+            {
+              url: "clause",
+              extension: [
+                { url: "term", valueDataRequirement: { type: ImagingStudy, codeFilter: [ { path: "modality", code: "#CT" } ] } }
+              ]
+            }
+          ]
+        }
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.IMAGINGSTUDY) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+
+        var expectedSelectivity: Extension? = null
+        for (selectivity in
+            moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity"
+            )) {
+            if (
+                selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
+                    "HasStudyWithModalityDirectRetrieve"
+            ) {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
+                    continue
+                }
+                if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
+                    continue
+                }
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
+                    continue
+                }
+                for (clause in selectivity.getExtensionsByUrl("clause")) {
+                    for (term in clause.getExtensionsByUrl("term")) {
+                        if (term.valueDataRequirement?.type == FHIRTypes.IMAGINGSTUDY) {
+                            if (term.valueDataRequirement?.hasCodeFilter()!!) {
+                                val codeFilter = term.valueDataRequirement?.codeFilterFirstRep!!
+                                if (
+                                    codeFilter.hasPath() &&
+                                        codeFilter.path.equals("modality") &&
+                                        codeFilter.hasCode()
+                                ) {
+                                    val code = codeFilter.codeFirstRep!!
+                                    if (
+                                        code
+                                            .getExtensionByUrl(CqfConstants.CQF_EXPRESSION_EXT_URL)
+                                            .valueExpression
+                                            ?.expression == "ModalityCode"
+                                    ) {
+                                        expectedSelectivity = selectivity
+                                        continue
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSelectivity != null)
+
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase12_1aWithParameters() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
+        val expressions = mutableSetOf("HasStudyWithModalityDirectRetrieve")
+        val parameters = HashMap<String, Any?>()
+        parameters["ModalityCode"] = "CT"
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions, parameters)
+
+        /*
+        define "HasStudyWithModalityDirectRetrieve":
+          exists [ImagingStudy: modality ~ ModalityCode]
+
+        Expected selectivity:
+        {
+          url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+          extension: [
+            { url: "expressionIdentifier", valueString: "HasStudyWithModalityDirectRetrieve" },
+            { url: "coverage", valueCode: "partial" },
+            { url: "form", valueCode: "conjunctive" },
+            { url: "inclusivity", valueCode: "inclusion" },
+            {
+              url: "clause",
+              extension: [
+                { url: "term", valueDataRequirement: { type: ImagingStudy, codeFilter: [ { path: "modality", code: "#CT" } ] } }
+              ]
+            }
+          ]
+        }
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.IMAGINGSTUDY) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+
+        var expectedSelectivity: Extension? = null
+        for (selectivity in
+            moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity"
+            )) {
+            if (
+                selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
+                    "HasStudyWithModalityDirectRetrieve"
+            ) {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
+                    continue
+                }
+                if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
+                    continue
+                }
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
+                    continue
+                }
+                for (clause in selectivity.getExtensionsByUrl("clause")) {
+                    for (term in clause.getExtensionsByUrl("term")) {
+                        if (term.valueDataRequirement?.type == FHIRTypes.IMAGINGSTUDY) {
+                            if (term.valueDataRequirement?.hasCodeFilter()!!) {
+                                val codeFilter = term.valueDataRequirement?.codeFilterFirstRep!!
+                                if (
+                                    codeFilter.hasPath() &&
+                                        codeFilter.path.equals("modality") &&
+                                        codeFilter.hasCode()
+                                ) {
+                                    val code = codeFilter.codeFirstRep!!
+                                    if (code.hasCode()) {
+                                        if (code.code.equals("CT")) {
+                                            expectedSelectivity = selectivity
+                                            continue
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSelectivity != null)
+
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase12_1b() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
+        val expressions = mutableSetOf("HasStudyWithModalityDirect")
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions)
+
+        /*
+        define "StudiesWithModalityDirect":
+          [ImagingStudy: modality ~ ModalityCode]
+
+        define "HasStudyWithModalityDirect":
+          exists "StudiesWithModalityDirect"
+
+        Expected selectivity:
+        {
+          url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+          extension: [
+            { url: "expressionIdentifier", valueString: "HasStudyWithModalityDirect" },
+            { url: "coverage", valueCode: "partial" },
+            { url: "form", valueCode: "conjunctive" },
+            { url: "inclusivity", valueCode: "inclusion" },
+            {
+              url: "clause",
+              extension: [
+                { url: "term", valueDataRequirement: { type: ImagingStudy, codeFilter: [ { path: "modality", code: "#CT" } ] } }
+              ]
+            }
+          ]
+        }
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.IMAGINGSTUDY) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+
+        var expectedSelectivity: Extension? = null
+        for (selectivity in
+            moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity"
+            )) {
+            if (
+                selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
+                    "HasStudyWithModalityDirect"
+            ) {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
+                    continue
+                }
+                if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
+                    continue
+                }
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
+                    continue
+                }
+                for (clause in selectivity.getExtensionsByUrl("clause")) {
+                    for (term in clause.getExtensionsByUrl("term")) {
+                        if (term.valueDataRequirement?.type == FHIRTypes.IMAGINGSTUDY) {
+                            if (term.valueDataRequirement?.hasCodeFilter()!!) {
+                                val codeFilter = term.valueDataRequirement?.codeFilterFirstRep!!
+                                if (
+                                    codeFilter.hasPath() &&
+                                        codeFilter.path.equals("modality") &&
+                                        codeFilter.hasCode()
+                                ) {
+                                    val code = codeFilter.codeFirstRep!!
+                                    if (
+                                        code
+                                            .getExtensionByUrl(CqfConstants.CQF_EXPRESSION_EXT_URL)
+                                            .valueExpression
+                                            ?.expression == "ModalityCode"
+                                    ) {
+                                        expectedSelectivity = selectivity
+                                        continue
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedSelectivity != null)
+
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dataRequirementsAnalysisCase12_1bWithParameters() {
+        val compilerOptions = this.compilerOptions
+        val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
+        val expressions = mutableSetOf("HasStudyWithModalityDirect")
+        val parameters = HashMap<String, Any?>()
+        parameters["ModalityCode"] = "CT"
+        val moduleDefinitionLibrary =
+            getModuleDefinitionLibrary(manager, compilerOptions, expressions, parameters)
+
+        /*
+        define "StudiesWithModalityDirect":
+          [ImagingStudy: modality ~ ModalityCode]
+
+        define "HasStudyWithModalityDirect":
+          exists "StudiesWithModalityDirect"
+
+        Expected selectivity:
+        {
+          url: "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity",
+          extension: [
+            { url: "expressionIdentifier", valueString: "HasStudyWithModalityDirect" },
+            { url: "coverage", valueCode: "partial" },
+            { url: "form", valueCode: "conjunctive" },
+            { url: "inclusivity", valueCode: "inclusion" },
+            {
+              url: "clause",
+              extension: [
+                { url: "term", valueDataRequirement: { type: ImagingStudy, codeFilter: [ { path: "modality", code: "#CT" } ] } }
+              ]
+            }
+          ]
+        }
+        */
+
+        // Validate the data requirement is reported in the module definition library
+        var expectedDataRequirement: DataRequirement? = null
+        for (dr in moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == FHIRTypes.IMAGINGSTUDY) {
+                expectedDataRequirement = dr
+            }
+        }
+        assertTrue(expectedDataRequirement != null)
+
+        var expectedSelectivity: Extension? = null
+        for (selectivity in
+            moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/uv/cql/StructureDefinition/cql-selectivity"
+            )) {
+            if (
+                selectivity.getExtensionByUrl("expressionIdentifier").valueStringType?.value ==
+                    "HasStudyWithModalityDirect"
+            ) {
+                if (selectivity.getExtensionByUrl("coverage").valueCodeType?.value != "partial") {
+                    continue
+                }
+                if (selectivity.getExtensionByUrl("form").valueCodeType?.value != "conjunctive") {
+                    continue
+                }
+                val inclusivity = selectivity.getExtensionByUrl("inclusivity")
+                if (inclusivity == null || inclusivity.valueCodeType?.value != "inclusion") {
+                    continue
+                }
+                for (clause in selectivity.getExtensionsByUrl("clause")) {
+                    for (term in clause.getExtensionsByUrl("term")) {
+                        if (term.valueDataRequirement?.type == FHIRTypes.IMAGINGSTUDY) {
+                            if (term.valueDataRequirement?.hasCodeFilter()!!) {
+                                val codeFilter = term.valueDataRequirement?.codeFilterFirstRep!!
+                                if (
+                                    codeFilter.hasPath() &&
+                                        codeFilter.path.equals("modality") &&
+                                        codeFilter.hasCode()
+                                ) {
+                                    val code = codeFilter.codeFirstRep!!
+                                    if (code.hasCode()) {
+                                        if (code.code.equals("CT")) {
                                             expectedSelectivity = selectivity
                                             continue
                                         }
@@ -3589,12 +4009,11 @@ class DataRequirementsProcessorTest {
         val manager = setupDataRequirementsAnalysis("EXMLogic/EXMLogic.cql", compilerOptions)
         val moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions)
         Assertions.assertNotNull(moduleDefinitionLibrary)
+        outputModuleDefinitionLibrary(moduleDefinitionLibrary)
         assertEqualToExpectedModuleDefinitionLibrary(
             moduleDefinitionLibrary,
             "EXMLogic/Library-EXMLogic-data-requirements.json",
         )
-
-        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test

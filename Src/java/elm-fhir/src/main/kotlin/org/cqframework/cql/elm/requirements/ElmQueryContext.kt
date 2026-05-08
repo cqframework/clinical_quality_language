@@ -21,6 +21,10 @@ class ElmQueryContext(
         this.queryRequirement = ElmQueryRequirement(libraryIdentifier, query)
     }
 
+    fun inSourceDefinitionContext(): Boolean {
+        return definitionContext != null || letDefinitionContext != null
+    }
+
     fun enterLetDefinitionContext(letClause: LetClause) {
         require(letDefinitionContext == null) { "Let clause definition already in progress" }
         letDefinitionContext = ElmQueryLetContext(libraryIdentifier, letClause)

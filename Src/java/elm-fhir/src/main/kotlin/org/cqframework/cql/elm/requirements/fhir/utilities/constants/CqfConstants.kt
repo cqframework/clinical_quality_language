@@ -9,4 +9,6 @@ object CqfConstants {
         "http://hl7.org/fhir/StructureDefinition/cqf-relatedRequirement"
     const val PERTINENCE_EXT_URL: String = "http://hl7.org/fhir/StructureDefinition/cqf-pertinence"
     const val CQF_TOOLING_DEVICE_NAME: String = "cqf-tooling"
+    const val CQF_EXPRESSION_EXT_URL: String =
+        "http://hl7.org/fhir/StructureDefinition/cqf-expression"
 }

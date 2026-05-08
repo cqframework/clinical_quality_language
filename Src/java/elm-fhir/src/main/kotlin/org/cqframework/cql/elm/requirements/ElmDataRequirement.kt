@@ -3,6 +3,7 @@ package org.cqframework.cql.elm.requirements
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.requirements.ComparableElmRequirement.Companion.hasCodeFilter
 import org.cqframework.cql.elm.requirements.ComparableElmRequirement.Companion.hasDateFilter
+import org.cqframework.cql.elm.requirements.ElmQuerySelectivity.Form
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.SearchType
@@ -125,6 +126,17 @@ class ElmDataRequirement : ElmExpressionRequirement {
 
     fun reportProperty(propertyRequirement: ElmPropertyRequirement) {
         addProperty(propertyRequirement.property!!)
+    }
+
+    override fun determineSelectivity(): ElmQuerySelectivity? {
+        if (this.selectivity == null) {
+            this.selectivity = ElmQuerySelectivity()
+            this.selectivity!!.form = Form.CONJUNCTIVE
+            val clause = ElmQuerySelectivity.Clause()
+            this.selectivity!!.clause.add(clause)
+            clause.terms.add(this)
+        }
+        return this.selectivity
     }
 
     private var conjunctiveRequirement: ElmConjunctiveRequirement? = null
@@ -495,6 +507,7 @@ class ElmDataRequirement : ElmExpressionRequirement {
                     inferredRetrieve,
                     requirement.retrieve,
                 )
+            result.selectivity = requirement.selectivity
             if (requirement.hasProperties()) {
                 for (p in requirement.properties!!) {
                     result.addProperty(p)

@@ -125,6 +125,10 @@ object ElmAnalysisHelper {
                 val result = TimeType()
                 result.addExtension(toExpression(context, value))
                 return result
+            } else if (context.typeResolver.isStringType(valueResultType)) {
+                val result = StringType()
+                result.addExtension(toExpression(context, value))
+                return result
             } else {
                 throw IllegalArgumentException(
                     "toFhirValue not implemented for parameter of type ${valueResultType.toString()}"

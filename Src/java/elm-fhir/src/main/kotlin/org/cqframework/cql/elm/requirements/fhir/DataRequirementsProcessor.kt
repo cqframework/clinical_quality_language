@@ -1391,7 +1391,14 @@ class DataRequirementsProcessor {
                 } else if (code is Coding) {
                     cfc.addCode(code)
                 } else if (code != null) {
-                    cfc.addCode().setCode(code.toString())
+                    if (code.hasPrimitiveValue()) {
+                        cfc.addCode().setCode(code.toString())
+                    } else {
+                        val c = cfc.addCode()
+                        for (e in code.extension) {
+                            c.addExtension(e)
+                        }
+                    }
                 }
             } catch (ex: Exception) {
                 val c = Coding()

@@ -1,6 +1,5 @@
 {
   "resourceType": "Library",
-  "name": "EffectiveDataRequirements",
   "extension": [ {
     "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
     "valueCoding": {
@@ -9,6 +8,7 @@
       "display": "Billing"
     }
   } ],
+  "name": "EffectiveDataRequirements",
   "status": "active",
   "type": {
     "coding": [ {
@@ -172,6 +172,19 @@
           }
         } ]
       }
+    } ]
+  }, {
+    "type": "Condition",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Condition" ],
+    "mustSupport": [ "id" ],
+    "codeFilter": [ {
+      "path": "id",
+      "code": [ {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/uv/crmi-analysisException",
+          "valueString": "Error attempting to determine filter value: toFhirValue not implemented for FunctionRef"
+        } ]
+      } ]
     } ]
   }, {
     "type": "Coverage",

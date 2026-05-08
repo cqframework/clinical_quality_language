@@ -15,7 +15,12 @@ class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression:
 
     override fun combine(requirement: ElmRequirement?): ElmExpressionRequirement {
         if (requirement is ElmExpressionRequirement) {
+            requirement.determineSelectivity()
             if (requirement is ElmQueryRequirement) {
+                selectivity = requirement.selectivity
+                determineSelectivity()
+            }
+            if (requirement is ElmDataRequirement) {
                 selectivity = requirement.selectivity
                 determineSelectivity()
             }
@@ -38,7 +43,7 @@ class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression:
         if (element is Exists && selectivity != null) {
             if (selectivity!!.inclusivity == null) {
                 selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INCLUSION
-            } else {
+            } else if (selectivity!!.inclusivity != ElmQuerySelectivity.Inclusivity.INCLUSION) {
                 selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INDETERMINATE
             }
         } else if (element is Not && selectivity != null) {

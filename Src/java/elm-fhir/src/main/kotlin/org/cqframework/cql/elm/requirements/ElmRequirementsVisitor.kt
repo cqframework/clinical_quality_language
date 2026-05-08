@@ -171,13 +171,23 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             // in the referencing scope
             if (result is ElmDataRequirement) {
                 val inferredRequirement = inferFrom(result)
-                // Should be being reported as a data requirement...
-                // context.reportRetrieve(inferredRequirement.getRetrieve());
+                if (
+                    !context.options?.analyzeDataRequirements!! ||
+                        !context.inQueryContext() ||
+                        !context.currentQueryContext.inSourceDefinitionContext()
+                ) {
+                    context.reportRequirements(result, null)
+                }
                 result = inferredRequirement
             } else if (result is ElmQueryRequirement) {
                 val inferredRequirement = inferFrom(result)
-                // Should be being reported as a data requirement...
-                // context.reportRetrieve(inferredRequirement.getRetrieve());
+                if (
+                    !context.options?.analyzeDataRequirements!! ||
+                        !context.inQueryContext() ||
+                        !context.currentQueryContext.inSourceDefinitionContext()
+                ) {
+                    context.reportRequirements(result, null)
+                }
                 result = inferredRequirement
             }
             return result
@@ -237,11 +247,17 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         if (elmPertinenceContext != null) {
             result.pertinenceContext = elmPertinenceContext
         }
-        // If not analyzing requirements, or in a query context, report the data
+        // If not analyzing requirements, or in a query context or source definition context, report
+        // the data
         // requirement
         // If in a query context, the requirement will be reported as an inferred
         // requirement at the query boundary
-        if (!context.options?.analyzeDataRequirements!! || !context.inQueryContext()) {
+        if (
+            !context.options?.analyzeDataRequirements!! ||
+                !context.inQueryContext() ||
+                !context.currentQueryContext.inSourceDefinitionContext()
+        ) {
+            result.determineSelectivity()
             context.reportRequirements(result, null)
         }
         return result
@@ -497,12 +513,10 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement? {
         val requirements = super.visitUnaryExpression(elm, context)
-        // if (context.options != null && context.options!!.reportSelectivity) {
         if (elm is Exists || elm is Not) {
             return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
                 .combine(requirements)
         }
-        // }
         return requirements
     }
 

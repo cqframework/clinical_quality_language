@@ -84,15 +84,46 @@ class ElmRequirementsContext(
         expressionDefStack.push(expressionDefContext)
     }
 
+    @Suppress("NestedBlockDepth")
     fun exitExpressionDef(inferredRequirements: ElmRequirement?) {
+        if (inferredRequirements is ElmExpressionRequirement) {
+            if (inferredRequirements.selectivity == null) {
+                inferredRequirements.determineSelectivity()
+            }
+            // A query requirement will already have been reported
+            if (
+                !(inferredRequirements is ElmQueryRequirement) &&
+                    inferredRequirements.selectivity != null
+            ) {
+                reportSelectivity(inferredRequirements.selectivity)
+            }
+        }
+
         require(!expressionDefStack.empty()) { "Not in an expressionDef context" }
         val expressionDefContext = expressionDefStack.pop()
         val ed = expressionDefContext.expressionDef
         reportExpressionDef(ed)
         this._reportedRequirements[ed] = expressionDefContext.reportedRequirements
         this._inferredRequirements[ed] = inferredRequirements
-        if (inferredRequirements is ElmExpressionRequirement) {
-            inferredRequirements.determineSelectivity()
+
+        // If the expression has more than one selectivity, no selectivity can be TOTAL
+        // If there is only one selectivity and coverage has not otherwise been determined, it is
+        // TOTAL
+        val selectivities = this._selectivity[ed]
+        if (selectivities != null) {
+            for (selectivity in selectivities) {
+                if (selectivity.coverage == null) {
+                    if (selectivities.size == 1) {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.TOTAL
+                    } else {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+                    }
+                } else if (selectivity.coverage == ElmQuerySelectivity.Coverage.TOTAL) {
+                    if (selectivities.size > 1) {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+                    }
+                }
+            }
         }
     }
 
@@ -185,7 +216,9 @@ class ElmRequirementsContext(
                 selectivities = mutableListOf()
                 _selectivity.put(currentExpressionDefContext!!.expressionDef, selectivities)
             }
-            selectivities.add(selectivity)
+            if (!selectivities.contains(selectivity)) {
+                selectivities.add(selectivity)
+            }
         }
     }
 
@@ -512,6 +545,14 @@ class ElmRequirementsContext(
                         reportRequirement(dataRequirement)
                     }
                 }
+            }
+
+            is ElmDataRequirement -> {
+                if (requirement.selectivity != null) {
+                    reportSelectivity(requirement.selectivity)
+                }
+
+                reportRequirement(requirement)
             }
 
             is ElmOperatorRequirement -> {
