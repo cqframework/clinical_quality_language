@@ -67,13 +67,13 @@ object RetrieveEvaluator {
                         is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
                         is List ->
                             codes =
-                                codesResult.map {
+                                codesResult.filterNotNull().map {
                                     when (it) {
                                         is String -> Code().withCode(it.value)
                                         is Code -> it
                                         else ->
                                             throw IllegalArgumentException(
-                                                "Expected String or Code. Found '${it?.typeAsString}'."
+                                                "Expected String or Code. Found '${it.typeAsString}'."
                                             )
                                     }
                                 }
