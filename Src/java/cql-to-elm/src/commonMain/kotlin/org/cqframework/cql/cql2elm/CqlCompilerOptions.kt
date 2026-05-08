@@ -12,7 +12,7 @@ import org.cqframework.cql.shared.JsOnlyExport
 /** Translation options for CQL source files */
 @OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
-@Suppress("NON_EXPORTABLE_TYPE")
+@Suppress("NON_EXPORTABLE_TYPE", "TooManyFunctions")
 @Serializable
 class CqlCompilerOptions() {
     enum class Options {
@@ -40,6 +40,7 @@ class CqlCompilerOptions() {
     var signatureLevel: SignatureLevel = SignatureLevel.Overloads
     var analyzeDataRequirements: Boolean = false
     var collapseDataRequirements: Boolean = false
+    var reportSelectivity: Boolean = false
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and
@@ -273,6 +274,18 @@ class CqlCompilerOptions() {
      */
     fun withAnalyzeDataRequirements(analyzeDataRequirements: Boolean): CqlCompilerOptions {
         this.analyzeDataRequirements = analyzeDataRequirements
+        return this
+    }
+
+    /**
+     * Return this instance of CqlTranslatorOptions with addition of newly assigned
+     * reportSelectivity boolean
+     *
+     * @param reportSelectivity
+     * @return
+     */
+    fun withReportSelectivity(reportSelectivity: Boolean): CqlCompilerOptions {
+        this.reportSelectivity = reportSelectivity
         return this
     }
 

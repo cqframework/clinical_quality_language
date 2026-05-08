@@ -447,3 +447,204 @@ codeFilter : { path : gender,  code: 'female'}
 9p. Support include when the reference is through a related-context retrieve with an "or"
 */
 
+
+/*
+Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes.
+At an OR, the result is separate lists of condition lists.
+At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF)
+
+If the query is in CNF or DNF, and each clause is sargeable, the requirements are totally selective
+If the query is in CNF or DNF, but not every clause is sargeable, the requirements are partially selective
+Otherwise, the requirements are not selective
+
+11a: totally selective
+[Encounter] E
+  where E.status = 'active' // DR1
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    }
+  ]
+}
+
+
+11b: partially selective
+[Encounter] E
+  where E.status = 'active' // DR1
+    and E.period is not null // Not selective
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "partial" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    }
+  ]
+}
+
+
+11c: totally selective
+[Encounter] E
+  where E.status = 'active' // DR1
+    and E.period same day or after @2026-01-01 // DR1
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    }
+  ]
+}
+
+11d: totally selective, disjunctive
+[Encounter] E
+  where E.status = 'active' // DR1
+    or E.status = 'completed' // DR2
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR2" }
+      ]
+    }
+  ]
+}
+
+11e: totally selective, conjunctive
+[Encounter] E
+  where (
+      E.status = 'active' // DR1
+        or E.status = 'completed' // DR2
+    )
+    and E.period same day or after @2026-01-01 // DR3
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "conjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" },
+        { url: "dr", valueString: "DR2" }
+      ]
+    },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR3" }
+      ]
+    }
+  ]
+}
+
+
+11f: totally selective, disjunctive
+[Encounter] E
+  where E.status = 'active' // DR1
+    or (E.status = 'completed' and E.period same day or after @2026-01-01) // DR2
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR2" }
+      ]
+    }
+  ]
+}
+
+
+11g: not selective (not in DNF or CNF)
+[Encounter] E
+  where E.status = 'active'
+    or (
+      E.status = 'completed'
+        and (
+          E.period same day or after @2026-01-01
+            or E.authoredOn same day or after @2026-01-01
+        )
+    )
+
+11h: totally selective, disjunctive
+[Encounter] E
+  where E.status = 'active' // DR1
+    or (E.status = 'completed' and E.period same day or after @2026-01-01) // DR2
+    or (E.status = 'completed' and E.authoredOn same day or after @2026-01-01) // DR3
+
+{
+  url: "cqf-selectivity",
+  extension: [
+    { url: "code", valueCode: "total" },
+    { url: "form", valueCode: "disjunctive" },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR1" }
+      ]
+    },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR2" }
+      ]
+    },
+    {
+      url: "clause",
+      extension: [
+        { url: "dr", valueString: "DR3" }
+      ]
+    }
+  ]
+}
+*/
+
+/*
+12: Deals with the relationship between the data requirement type and the subject type
+i.e., is the data requirement type the subject type
+*/
+
+/*
+13: Deals with set operations among selective queries
+*/

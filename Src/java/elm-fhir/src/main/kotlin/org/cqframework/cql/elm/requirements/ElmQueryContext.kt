@@ -21,6 +21,10 @@ class ElmQueryContext(
         this.queryRequirement = ElmQueryRequirement(libraryIdentifier, query)
     }
 
+    fun inSourceDefinitionContext(): Boolean {
+        return definitionContext != null || letDefinitionContext != null
+    }
+
     fun enterLetDefinitionContext(letClause: LetClause) {
         require(letDefinitionContext == null) { "Let clause definition already in progress" }
         letDefinitionContext = ElmQueryLetContext(libraryIdentifier, letClause)
@@ -120,8 +124,11 @@ class ElmQueryContext(
         queryRequirement.addChildRequirements(childRequirements)
 
         // distribute query requirements to each alias
+        queryRequirement.selectivity = ElmQuerySelectivity()
         if (context.options?.analyzeDataRequirements == true) {
-            queryRequirement.distributeExpressionRequirement(queryRequirements, context)
+            if (!queryRequirement.distributeExpressionRequirement(queryRequirements, context)) {
+                queryRequirement.selectivity!!.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+            }
         }
 
         return queryRequirement

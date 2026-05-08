@@ -16,6 +16,10 @@ class ElmDisjunctiveRequirement(libraryIdentifier: VersionedIdentifier, expressi
             }
 
             is ElmConjunctiveRequirement -> {
+                if (arguments.size == 0) {
+                    return requirement
+                }
+
                 arguments.add(requirement as ElmExpressionRequirement)
             }
 
