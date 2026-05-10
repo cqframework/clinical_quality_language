@@ -5,6 +5,7 @@ import org.hl7.elm.r1.AggregateClause
 import org.hl7.elm.r1.ByColumn
 import org.hl7.elm.r1.ByExpression
 import org.hl7.elm.r1.Query
+import org.hl7.elm.r1.SortDirection
 import org.hl7.elm.r1.With
 import org.hl7.elm.r1.Without
 import org.opencds.cqf.cql.engine.exception.CqlException
@@ -127,48 +128,59 @@ object QueryEvaluator {
         val sortClause = elm.sort
 
         if (sortClause != null) {
-            for (byItem in sortClause.by) {
-                when (byItem) {
-                    is ByExpression ->
-                        result.sortWith { left, right ->
-                            val alias = "\$this"
+            val comparator =
+                sortClause.by
+                    .map { byItem ->
+                        val baseComparator =
+                            when (byItem) {
+                                is ByExpression ->
+                                    Comparator<Value?> { left, right ->
+                                        val alias = "\$this"
 
-                            var leftResult: Value? = null
-                            try {
-                                state!!.push(Variable(alias).withValue(left))
-                                leftResult = visitor.visitExpression(byItem.expression!!, state)
-                            } finally {
-                                state!!.pop()
+                                        var leftResult: Value? = null
+                                        try {
+                                            state!!.push(Variable(alias).withValue(left))
+                                            leftResult =
+                                                visitor.visitExpression(byItem.expression!!, state)
+                                        } finally {
+                                            state!!.pop()
+                                        }
+
+                                        var rightResult: Value? = null
+                                        try {
+                                            state.push(Variable(alias).withValue(right))
+                                            rightResult =
+                                                visitor.visitExpression(byItem.expression!!, state)
+                                        } finally {
+                                            state.pop()
+                                        }
+
+                                        SortHelper.compare(leftResult, rightResult, state)
+                                    }
+                                is ByColumn ->
+                                    Comparator<Value?> { left, right ->
+                                        val leftCol =
+                                            PropertyEvaluator.resolvePath(left, byItem.path!!)
+                                        val rightCol =
+                                            PropertyEvaluator.resolvePath(right, byItem.path!!)
+
+                                        SortHelper.compare(leftCol, rightCol, state)
+                                    }
+                                else ->
+                                    Comparator<Value?> { left, right ->
+                                        SortHelper.compare(left, right, state)
+                                    }
                             }
 
-                            var rightResult: Value? = null
-                            try {
-                                state.push(Variable(alias).withValue(right))
-                                rightResult = visitor.visitExpression(byItem.expression!!, state)
-                            } finally {
-                                state.pop()
-                            }
+                        val direction = byItem.direction
+                        val isDesc =
+                            direction == SortDirection.DESC || direction == SortDirection.DESCENDING
 
-                            SortHelper.compare(leftResult, rightResult, state)
-                        }
+                        if (isDesc) baseComparator.reversed() else baseComparator
+                    }
+                    .reduceOrNull { acc, comp -> acc.then(comp) }
 
-                    is ByColumn ->
-                        result.sortWith { left, right ->
-                            val leftCol = PropertyEvaluator.resolvePath(left, byItem.path!!)
-                            val rightCol = PropertyEvaluator.resolvePath(right, byItem.path!!)
-
-                            SortHelper.compare(leftCol, rightCol, state)
-                        }
-
-                    else ->
-                        result.sortWith { left, right -> SortHelper.compare(left, right, state) }
-                }
-
-                val direction = byItem.direction!!.value()
-                if (direction == "desc" || direction == "descending") {
-                    result.reverse()
-                }
-            }
+            comparator?.let { result.sortWith(it) }
         }
     }
 

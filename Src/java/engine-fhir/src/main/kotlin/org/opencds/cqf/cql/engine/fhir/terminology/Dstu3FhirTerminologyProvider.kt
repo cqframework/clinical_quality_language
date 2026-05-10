@@ -12,37 +12,42 @@ import org.hl7.fhir.dstu3.model.StringType
 import org.hl7.fhir.dstu3.model.UriType
 import org.hl7.fhir.dstu3.model.ValueSet
 import org.hl7.fhir.instance.model.api.IBaseBundle
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
 import org.opencds.cqf.cql.engine.exception.TerminologyProviderException
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
 
 class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : TerminologyProvider {
     override fun `in`(code: Code, valueSet: ValueSetInfo): Boolean {
+        if (code.system == null) {
+            // If the system is not provided and the resolved value set contains codes from multiple
+            // code systems, a run-time error is thrown because the operation is ambiguous
+            val codes = expand(valueSet)
+            if (codes.distinctBy { it.system }.size > 1) {
+                throw TerminologyProviderException(
+                    @Suppress("MaxLineLength")
+                    "Error performing membership check of Code: $code in ValueSet: ${valueSet.id}; the operation is ambiguous because the code system is not provided and the resolved value set contains codes from multiple code systems"
+                )
+            }
+            return codes.any {
+                EquivalentEvaluator.equivalent(code.code?.toCqlString(), it.code?.toCqlString()) ==
+                    org.opencds.cqf.cql.engine.runtime.Boolean.TRUE
+            }
+        }
         try {
             val id = resolveValueSetId(valueSet)
-            val respParam: Parameters
-            if (code.system != null) {
-                respParam =
-                    fhirClient
-                        .operation()
-                        .onInstance(IdType(VALUE_SET, id)) // .onType(ValueSet.class)
-                        .named("validate-code")
-                        .withParameter(Parameters::class.java, "code", StringType(code.code))
-                        .andParameter("system", StringType(code.system))
-                        .useHttpGet()
-                        .execute()
-            } else {
-                respParam =
-                    fhirClient
-                        .operation()
-                        .onInstance(IdType(VALUE_SET, id)) // .onType(ValueSet.class)
-                        .named("validate-code")
-                        .withParameter(Parameters::class.java, "code", StringType(code.code))
-                        .useHttpGet()
-                        .execute()
-            }
+            val respParam =
+                fhirClient
+                    .operation()
+                    .onInstance(IdType(VALUE_SET, id)) // .onType(ValueSet.class)
+                    .named("validate-code")
+                    .withParameter(Parameters::class.java, "code", StringType(code.code))
+                    .andParameter("system", StringType(code.system))
+                    .useHttpGet()
+                    .execute()
             return (respParam.getParameter()[0].getValue() as BooleanType).booleanValue()
         } catch (e: Exception) {
             throw TerminologyProviderException(

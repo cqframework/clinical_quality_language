@@ -2,6 +2,7 @@ package org.cqframework.cql.elm.requirements.fhir.utilities
 
 import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfConstants
 import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfmConstants
+import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqlConstants
 
 class SpecificationSupport
 @JvmOverloads
@@ -48,5 +49,10 @@ constructor(val specificationLevel: SpecificationLevel = SpecificationLevel.US_Q
                 SpecificationLevel.CRMI,
                 SpecificationLevel.CPG -> CqfConstants.PERTINENCE_EXT_URL
             }
+        }
+
+    val selectivityExtensionUrl: String
+        get() {
+            return CqlConstants.SELECTIVITY_EXT_URL
         }
 }

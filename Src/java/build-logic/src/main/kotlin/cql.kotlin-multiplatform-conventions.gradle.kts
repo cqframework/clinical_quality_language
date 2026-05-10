@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     kotlin("multiplatform")
     id("cql.maven-publishing-conventions")
+    id("org.jetbrains.kotlinx.kover")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
@@ -109,3 +110,5 @@ afterEvaluate {
 // JAR manifests aren't available in Kotlin/JS, so to access Package.implementationVersion, a build
 // config is needed.
 buildConfig { buildConfigField("IMPLEMENTATION_VERSION", project.version.toString()) }
+
+kover { reports { total { xml { onCheck = true } } } }

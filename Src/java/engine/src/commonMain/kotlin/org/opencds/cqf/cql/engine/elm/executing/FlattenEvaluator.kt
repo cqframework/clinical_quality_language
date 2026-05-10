@@ -21,9 +21,7 @@ object FlattenEvaluator {
         if (operand is List) {
             val resultList = mutableListOf<Value?>()
             for (element in operand) {
-                if (element == null) {
-                    resultList.add(null)
-                } else {
+                if (element != null) {
                     for (subElement in element as List) {
                         resultList.add(subElement)
                     }

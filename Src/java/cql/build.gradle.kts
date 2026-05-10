@@ -95,3 +95,5 @@ tasks.named("dokkaGeneratePublicationHtml") {
     dependsOn(generateKotlinGrammarSource)
     dependsOn(inlineModelInfoXmlsTask)
 }
+
+dependencies { kover(project(":shared")) }

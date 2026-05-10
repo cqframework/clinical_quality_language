@@ -19,6 +19,7 @@ import org.hl7.elm.r1.ContextDef
 import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.DateTime
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
@@ -34,6 +35,7 @@ import org.hl7.elm.r1.LetClause
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.Literal
 import org.hl7.elm.r1.NaryExpression
+import org.hl7.elm.r1.Not
 import org.hl7.elm.r1.Now
 import org.hl7.elm.r1.Null
 import org.hl7.elm.r1.OperandRef
@@ -48,6 +50,7 @@ import org.hl7.elm.r1.TernaryExpression
 import org.hl7.elm.r1.Time
 import org.hl7.elm.r1.TimeOfDay
 import org.hl7.elm.r1.Today
+import org.hl7.elm.r1.UnaryExpression
 import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
@@ -168,13 +171,23 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
             // in the referencing scope
             if (result is ElmDataRequirement) {
                 val inferredRequirement = inferFrom(result)
-                // Should be being reported as a data requirement...
-                // context.reportRetrieve(inferredRequirement.getRetrieve());
+                if (
+                    !context.options?.analyzeDataRequirements!! ||
+                        !context.inQueryContext() ||
+                        !context.currentQueryContext.inSourceDefinitionContext()
+                ) {
+                    context.reportRequirements(result, null)
+                }
                 result = inferredRequirement
             } else if (result is ElmQueryRequirement) {
                 val inferredRequirement = inferFrom(result)
-                // Should be being reported as a data requirement...
-                // context.reportRetrieve(inferredRequirement.getRetrieve());
+                if (
+                    !context.options?.analyzeDataRequirements!! ||
+                        !context.inQueryContext() ||
+                        !context.currentQueryContext.inSourceDefinitionContext()
+                ) {
+                    context.reportRequirements(result, null)
+                }
                 result = inferredRequirement
             }
             return result
@@ -234,11 +247,17 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         if (elmPertinenceContext != null) {
             result.pertinenceContext = elmPertinenceContext
         }
-        // If not analyzing requirements, or in a query context, report the data
+        // If not analyzing requirements, or in a query context or source definition context, report
+        // the data
         // requirement
         // If in a query context, the requirement will be reported as an inferred
         // requirement at the query boundary
-        if (!context.options?.analyzeDataRequirements!! || !context.inQueryContext()) {
+        if (
+            !context.options?.analyzeDataRequirements!! ||
+                !context.inQueryContext() ||
+                !context.currentQueryContext.inSourceDefinitionContext()
+        ) {
+            result.determineSelectivity()
             context.reportRequirements(result, null)
         }
         return result
@@ -489,6 +508,18 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         }
     }
 
+    override fun visitUnaryExpression(
+        elm: UnaryExpression,
+        context: ElmRequirementsContext,
+    ): ElmRequirement? {
+        val requirements = super.visitUnaryExpression(elm, context)
+        if (elm is Exists || elm is Not) {
+            return ElmOperatorRequirement(context.currentLibraryIdentifier, elm)
+                .combine(requirements)
+        }
+        return requirements
+    }
+
     override fun visitTernaryExpression(
         elm: TernaryExpression,
         context: ElmRequirementsContext,
@@ -714,6 +745,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return result
     }
 
+    @Suppress("ReturnCount")
     override fun visitProperty(elm: Property, context: ElmRequirementsContext): ElmRequirement? {
         val visitResult = super.visitProperty(elm, context)
 
@@ -735,6 +767,9 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         }
 
         val propertyRequirement = context.reportProperty(elm)
+        if (propertyRequirement != null) {
+            return propertyRequirement
+        }
         val result = aggregateResult(propertyRequirement, visitResult)
         return result
     }

@@ -20,7 +20,12 @@ object ElmEvaluationHelper {
         // NOTE: Consider caching for libraries in the future.
 
         val engine = getEngine(library, parameters, evaluationDateTime)
-        return engine.evaluationVisitor.visitExpression(value!!, engine.state)
+        engine.state.beginEvaluation()
+        try {
+            return engine.evaluationVisitor.visitExpression(value!!, engine.state)
+        } finally {
+            engine.state.endEvaluation()
+        }
     }
 
     private fun getEngine(
@@ -30,6 +35,9 @@ object ElmEvaluationHelper {
     ): CqlEngine {
         val environment = Environment(libraryManager)
         val engine = CqlEngine(environment)
+        if (library != null) {
+            engine.state.init(library)
+        }
         if (evaluationDateTime != null) {
             engine.state.setEvaluationDateTime(evaluationDateTime)
         }

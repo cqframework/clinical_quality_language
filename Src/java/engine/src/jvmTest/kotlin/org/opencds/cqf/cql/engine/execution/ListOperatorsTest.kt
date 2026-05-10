@@ -400,7 +400,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(listOf(null, null).toCqlList(), value)
 
         value = results["FlattenNullAndListNull"]!!.value
-        assertEquals(listOf(null, null).toCqlList(), value)
+        assertEquals(listOf(null).toCqlList(), value)
 
         value = results["FlattenList12And34"]!!.value
         assertEquals(

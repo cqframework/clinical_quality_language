@@ -36,3 +36,8 @@ kotlin {
         }
     }
 }
+
+dependencies {
+    kover(project(":cql"))
+    kover(project(":elm"))
+}

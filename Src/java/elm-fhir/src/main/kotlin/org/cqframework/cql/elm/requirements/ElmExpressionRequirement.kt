@@ -24,6 +24,12 @@ open class ElmExpressionRequirement(
         return this
     }
 
+    var selectivity: ElmQuerySelectivity? = null
+
+    open fun determineSelectivity(): ElmQuerySelectivity? {
+        return selectivity
+    }
+
     open val isLiteral: Boolean
         get() = this.element is Literal
 
