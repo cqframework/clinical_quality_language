@@ -7,6 +7,8 @@ import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.*
 import org.hl7.elm.r1.List
+import org.opencds.cqf.cql.engine.debug.BreakpointAction
+import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.elm.executing.*
 import org.opencds.cqf.cql.engine.elm.executing.AbsEvaluator.abs
@@ -190,9 +192,17 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
             detailedState.pushSubExpressionFrame(elm)
         }
 
+        val action =
+            context?.breakpointHandler?.onBeforeExpression(elm, context) ?: BreakpointAction.CONTINUE
+        if (action == BreakpointAction.PAUSE) {
+            context?.breakpointHandler?.waitForResume()
+        }
+
         try {
             val value = super.visitExpression(elm, context)
             context?.checkType(elm, value)
+
+            context?.breakpointHandler?.onAfterExpression(elm, context, value)
 
             if (detailedState != null) {
                 detailedState.storeSubExpressionResult(value)
