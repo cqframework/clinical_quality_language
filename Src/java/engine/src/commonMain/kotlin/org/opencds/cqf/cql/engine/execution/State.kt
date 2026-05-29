@@ -24,6 +24,7 @@ import org.hl7.elm.r1.QueryLetRef
 import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.Total
 import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
@@ -129,10 +130,12 @@ constructor(
      */
     var traceExpressionFilter: ((Expression) -> Boolean)? = null
 
+    var breakpointHandler: BreakpointHandler? = null
+
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
-    val parameters = mutableMapOf<kotlin.String, Value?>()
-    var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
+    val parameters = mutableMapOf<String, Any?>()
+    var contextValues = mutableMapOf<String, Any?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
         private set
