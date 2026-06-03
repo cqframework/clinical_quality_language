@@ -14,21 +14,6 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.yearsUntil
 
-private fun isLeapYear(year: Int): Boolean {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
-}
-
-private fun monthLengthInDays(year: Int, month: Int): Int {
-    return when (month) {
-        2 -> if (isLeapYear(year)) 29 else 28
-        4,
-        6,
-        9,
-        11 -> 30
-        else -> 31
-    }
-}
-
 data class DateJs(internal val instant: kotlin.time.Instant) {
     fun after(that: DateJs): Boolean {
         return this.instant > that.instant
