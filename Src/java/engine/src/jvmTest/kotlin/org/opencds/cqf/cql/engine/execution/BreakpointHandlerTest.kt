@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.debug.BreakpointAction
 import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.DebugMap
+import org.opencds.cqf.cql.engine.runtime.Integer
 
 internal class BreakpointHandlerTest : CqlTestBase() {
     companion object {
@@ -65,9 +66,9 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.state.breakpointHandler = handler
         val results = engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
-        Assertions.assertEquals(3, results["X"]!!.value)
-        Assertions.assertEquals(12, results["Y"]!!.value)
-        Assertions.assertEquals(6, results["Z"]!!.value)
+        Assertions.assertEquals(Integer(3), results["X"]!!.value)
+        Assertions.assertEquals(Integer(12), results["Y"]!!.value)
+        Assertions.assertEquals(Integer(6), results["Z"]!!.value)
     }
 
     @Test
@@ -89,8 +90,8 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.state.breakpointHandler = handler
         engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
-        Assertions.assertTrue(addResults.contains(3))
-        Assertions.assertTrue(multiplyResults.contains(12))
+        Assertions.assertTrue(addResults.contains(Integer(3)))
+        Assertions.assertTrue(multiplyResults.contains(Integer(12)))
     }
 
     @Test
@@ -135,8 +136,8 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         val results = future.get(5, TimeUnit.SECONDS)
 
         Assertions.assertNotNull(results)
-        Assertions.assertEquals(3, results["X"]!!.value)
-        Assertions.assertEquals(12, results["Y"]!!.value)
+        Assertions.assertEquals(Integer(3), results["X"]!!.value)
+        Assertions.assertEquals(Integer(12), results["Y"]!!.value)
     }
 
     @Test
@@ -165,8 +166,7 @@ internal class BreakpointHandlerTest : CqlTestBase() {
 
         Assertions.assertTrue(callCount.get() > NUMBER_OF_DEFINES)
 
-        val libraryDebug =
-            results.debugResult!!.libraryResults["BreakpointHandlerTest"]!!.results
+        val libraryDebug = results.debugResult!!.libraryResults["BreakpointHandlerTest"]!!.results
         Assertions.assertNotNull(libraryDebug)
         Assertions.assertTrue(libraryDebug.isNotEmpty())
     }
