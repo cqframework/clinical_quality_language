@@ -181,7 +181,6 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onAfterExpression(elm: Element, state: State, value: Any?) {}
             }
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableDetailedTracing)
