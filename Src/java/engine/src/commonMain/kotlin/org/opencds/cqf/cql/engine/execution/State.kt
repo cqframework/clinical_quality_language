@@ -134,8 +134,8 @@ constructor(
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
-    val parameters = mutableMapOf<String, Any?>()
-    var contextValues = mutableMapOf<String, Any?>()
+    val parameters = mutableMapOf<kotlin.String, Value?>()
+    var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
         private set
