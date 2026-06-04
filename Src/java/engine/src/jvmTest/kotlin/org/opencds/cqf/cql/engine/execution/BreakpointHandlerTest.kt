@@ -180,7 +180,6 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     callCount.incrementAndGet()
                     return BreakpointAction.CONTINUE
                 }
-
             }
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableDetailedTracing)
