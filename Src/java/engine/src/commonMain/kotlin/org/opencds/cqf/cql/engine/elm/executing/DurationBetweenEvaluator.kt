@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.util.isLastDayOfFeb
 import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
@@ -86,6 +87,29 @@ object DurationBetweenEvaluator {
             }
 
             if (left is DateTime && right is DateTime) {
+                // Special case: When calculating duration in years between dates, if both dates
+                // fall on the last day of February, the expected result is (see
+                // https://cql.hl7.org/15-h-timeintervalcalculations.html#scenario-4):
+                //
+                // Duration (years) = year (date 2) - year (date 1)
+                //
+                // Note that
+                //
+                // ChronoUnit.YEARS.between(LocalDate.of(2012, 2, 29), LocalDate.of(2014, 2, 28))
+                //
+                // returns 1 (but we expect 2), and
+                //
+                // LocalDate.of(2012, 2, 29).plusYears(2)
+                //
+                // returns 2014-02-28 (consistent with the CQL spec).
+                if (
+                    precision == Precision.YEAR &&
+                        left.dateTime!!.isLastDayOfFeb() &&
+                        right.dateTime!!.isLastDayOfFeb()
+                ) {
+                    return right.dateTime!!.getYear() - left.dateTime!!.getYear()
+                }
+
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return if (isWeeks)
                         (precision
@@ -112,6 +136,14 @@ object DurationBetweenEvaluator {
             }
 
             if (left is Date && right is Date) {
+                if (
+                    precision == Precision.YEAR &&
+                        left.date!!.isLastDayOfFeb() &&
+                        right.date!!.isLastDayOfFeb()
+                ) {
+                    return right.date!!.getYear() - left.date!!.getYear()
+                }
+
                 return if (isWeeks)
                     precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7
                 else precision.toChronoUnit().between(left.date!!, right.date!!).toInt()

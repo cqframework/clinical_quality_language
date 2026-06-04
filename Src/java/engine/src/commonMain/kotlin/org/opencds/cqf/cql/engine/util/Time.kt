@@ -215,3 +215,38 @@ expect class LocalTime : Temporal {
 }
 
 expect fun localTimeParse(s: String): LocalTime
+
+/** Returns true if the year has 366 days. */
+internal fun isLeapYear(year: Int): Boolean {
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+}
+
+/** Returns the number of days in the given month. */
+internal fun monthLengthInDays(year: Int, month: Int): Int {
+    return when (month) {
+        2 -> if (isLeapYear(year)) 29 else 28
+        4,
+        6,
+        9,
+        11 -> 30
+        else -> 31
+    }
+}
+
+/** Returns true if the date falls on the last day of February. */
+fun LocalDate.isLastDayOfFeb(): Boolean {
+    if (this.getMonthValue() == 2) {
+        val monthLength = monthLengthInDays(this.getYear(), this.getMonthValue())
+        return this.getDayOfMonth() == monthLength
+    }
+    return false
+}
+
+/** Returns true if the *local* date time falls on the last day of February. */
+fun OffsetDateTime.isLastDayOfFeb(): Boolean {
+    if (this.getMonthValue() == 2) {
+        val monthLength = monthLengthInDays(this.getYear(), this.getMonthValue())
+        return this.getDayOfMonth() == monthLength
+    }
+    return false
+}
