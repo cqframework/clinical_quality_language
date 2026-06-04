@@ -153,12 +153,18 @@ object EquivalentEvaluator {
         }
 
         if (left is Tuple && right is Tuple) {
-            return structuredValueElementsEquivalent(left.elements, right.elements, state)
+            return structuredValueElementsEquivalent(left.elements, right.elements) { l, r ->
+                equivalent(l, r, state)
+            }
         }
 
         if (left is ClassInstance && right is ClassInstance) {
             if (left.type == right.type) {
-                return structuredValueElementsEquivalent(left.elements, right.elements, state)
+                val dataProvider =
+                    state!!.environment.resolveDataProviderByModelUri(left.type.getNamespaceURI())
+                return dataProvider.objectEquivalent(left, right) { l, r ->
+                    equivalent(l, r, state)
+                }
             }
             return Boolean.FALSE
         }
@@ -284,10 +290,19 @@ object EquivalentEvaluator {
         return (!rightIterator.hasNext()).toCqlBoolean()
     }
 
+    /**
+     * Compares the elements of structured values for equivalence using the tuple equivalence
+     * semantics.
+     *
+     * @param left Elements of the left hand operand
+     * @param right Elements of the right hand operand
+     * @param equivalent Used to compare the elements of the structured values for equivalence
+     * @return CQL Boolean indicating whether the structured values are equivalent
+     */
     fun structuredValueElementsEquivalent(
         left: Map<kotlin.String, Value?>,
         right: Map<kotlin.String, Value?>,
-        state: State?,
+        equivalent: (l: Value?, r: Value?) -> Boolean,
     ): Boolean {
         if (left.size != right.size) {
             return Boolean.FALSE
@@ -295,7 +310,7 @@ object EquivalentEvaluator {
 
         for (key in right.keys) {
             if (left.containsKey(key)) {
-                val areKeyValsSame = equivalent(right[key], left[key], state)
+                val areKeyValsSame = equivalent(right[key], left[key])
                 if (!areKeyValsSame.value) {
                     return Boolean.FALSE
                 }

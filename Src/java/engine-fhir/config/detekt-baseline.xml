@@ -10,7 +10,7 @@
     <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toCqlType(value: Any?): Value?</ID>
     <ID>CyclomaticComplexMethod:BaseFhirTypeConverter.kt$BaseFhirTypeConverter$override fun toFhirType(value: Value?): IBase?</ID>
     <ID>CyclomaticComplexMethod:Dstu3FhirQueryGenerator.kt$Dstu3FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, String?>?, parameters: MutableMap&lt;String, Value?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
-    <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: Boolean = false, ): ClassInstance?</ID>
+    <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: kotlin.Boolean = false, ): ClassInstance?</ID>
     <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$open fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>CyclomaticComplexMethod:FhirModelResolverTest.kt$private fun validateCqlValueAgainstModel( fhirVersion: FhirVersionEnum, expectedFhirTypeName: String, cqlValue: Any?, )</ID>
     <ID>CyclomaticComplexMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
@@ -72,7 +72,7 @@
     <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest$@ParameterizedTest @MethodSource("multiLibEnsurePartialCacheAllowsUncachedLibsToBeCompiledParams") fun multiLibEnsurePartialCacheAllowsUncachedLibsToBeCompiled(expressionCaching: Boolean)</ID>
     <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun multiLibParams(): List&lt;Arguments></ID>
     <ID>LongMethod:EvaluatedResourcesMultiLibLinearDepsTest.kt$EvaluatedResourcesMultiLibLinearDepsTest.Companion$@JvmStatic private fun singleLibParams(): List&lt;Arguments></ID>
-    <ID>LongMethod:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: Boolean = false, ): ClassInstance?</ID>
+    <ID>LongMethod:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: kotlin.Boolean = false, ): ClassInstance?</ID>
     <ID>LongMethod:FhirModelResolver.kt$FhirModelResolver$protected fun toDateTime( value: BaseDateTimeType, calendarConstant: Int = this.getCalendarConstant(value), ): DateTime</ID>
     <ID>LongMethod:FhirModelResolverTest.kt$FhirModelResolverTest$@Test fun toCqlValueFhirPrimitiveWithValueAndExtension()</ID>
     <ID>LongMethod:FhirModelResolverTest.kt$fun validateCqlValueAgainstModelInner(cqlValue: Any?, modelType: DataType)</ID>
@@ -128,7 +128,7 @@
     <ID>NestedBlockDepth:EvaluatedResourceTestUtils.kt$EvaluatedResourceTestUtils$fun setupCql( classToUse: Class&lt;*>, librariesToPopulate: MutableList&lt;Library?>, libraryManagerToUse: LibraryManager, )</ID>
     <ID>NestedBlockDepth:FhirBundleCursor.kt$FhirBundleCursor.FhirBundleIterator$fun getTrustedEntries( entries: MutableList&lt;out IBaseResource>, templateId: String?, ): MutableList&lt;out IBaseResource></ID>
     <ID>NestedBlockDepth:FhirExecutionTestBase.kt$FhirExecutionTestBase$@BeforeEach @Throws(IOException::class, UcumException::class) fun beforeEachTestMethod()</ID>
-    <ID>NestedBlockDepth:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: Boolean = false, ): ClassInstance?</ID>
+    <ID>NestedBlockDepth:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: kotlin.Boolean = false, ): ClassInstance?</ID>
     <ID>NestedBlockDepth:FhirModelResolver.kt$FhirModelResolver$private fun resolveChildren( children: List&lt;BaseRuntimeChildDefinition>, childName: String, ): Class&lt;*>?</ID>
     <ID>NestedBlockDepth:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, String?>?, parameters: MutableMap&lt;String, Value?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
     <ID>NestedBlockDepth:RestFhirRetrieveProvider.kt$RestFhirRetrieveProvider$private fun executeQuery(dataType: String?, map: SearchParameterMap): IBaseResource?</ID>
@@ -155,9 +155,9 @@
     <ID>ReturnCount:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$override fun toCqlTemporal(value: IPrimitiveType&lt;Date>?): BaseTemporal?</ID>
     <ID>ReturnCount:Dstu3FhirTypeConverter.kt$Dstu3FhirTypeConverter$override fun toFhirPeriod(value: Interval?): ICompositeType?</ID>
     <ID>ReturnCount:Dstu3TypeConverterTests.kt$Dstu3TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
-    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: Boolean = false, ): ClassInstance?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$fun toCqlValue( target: Any?, expandPrimitivesAndEnumerationsWithNoValues: kotlin.Boolean = false, ): ClassInstance?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$open fun resolveType(typeName: String?): Class&lt;*>?</ID>
-    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun `is`(valueType: String, type: QName): Boolean?</ID>
+    <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun `is`(valueType: String, type: QName): kotlin.Boolean?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun getContextPath( contextType: kotlin.String?, targetType: kotlin.String?, ): kotlin.String?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$override fun resolveId(target: Value?): kotlin.String?</ID>
     <ID>ReturnCount:FhirModelResolver.kt$FhirModelResolver$protected fun innerGetContextPath( visitedElements: MutableSet&lt;String?>, child: BaseRuntimeChildDefinition, type: Class&lt;out IBase?>?, ): String?</ID>
