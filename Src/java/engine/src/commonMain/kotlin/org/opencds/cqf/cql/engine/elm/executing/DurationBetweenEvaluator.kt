@@ -5,11 +5,12 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
-import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.util.isLastDayOfFeb
 
 /*
 
@@ -92,42 +93,83 @@ object DurationBetweenEvaluator {
             }
 
             if (left is DateTime && right is DateTime) {
+                // Special case: When calculating duration in years between dates, if both dates
+                // fall on the last day of February, the expected result is (see
+                // https://cql.hl7.org/15-h-timeintervalcalculations.html#scenario-4):
+                //
+                // Duration (years) = year (date 2) - year (date 1)
+                //
+                // Note that
+                //
+                // ChronoUnit.YEARS.between(LocalDate.of(2012, 2, 29), LocalDate.of(2014, 2, 28))
+                //
+                // returns 1 (but we expect 2), and
+                //
+                // LocalDate.of(2012, 2, 29).plusYears(2)
+                //
+                // returns 2014-02-28 (consistent with the CQL spec).
+                if (
+                    precision == Precision.YEAR &&
+                        left.dateTime!!.isLastDayOfFeb() &&
+                        right.dateTime!!.isLastDayOfFeb()
+                ) {
+                    return (right.dateTime!!.getYear() - left.dateTime!!.getYear()).toCqlInteger()
+                }
+
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return if (isWeeks)
-                        Integer(
-                            precision
+                        (precision
                                 .toChronoUnit()
                                 .between(
                                     left.dateTime!!.toLocalDateTime(),
                                     right.dateTime!!.toLocalDateTime(),
                                 )
-                                .toInt() / 7
-                        )
+                                .toInt() / 7)
+                            .toCqlInteger()
                     else
-                        Integer(
-                            precision
-                                .toChronoUnit()
-                                .between(
-                                    left.dateTime!!.toLocalDateTime(),
-                                    right.dateTime!!.toLocalDateTime(),
-                                )
-                                .toInt()
-                        )
+                        precision
+                            .toChronoUnit()
+                            .between(
+                                left.dateTime!!.toLocalDateTime(),
+                                right.dateTime!!.toLocalDateTime(),
+                            )
+                            .toInt()
+                            .toCqlInteger()
                 } else {
-                    return Integer(
-                        precision.toChronoUnit().between(left.dateTime!!, right.dateTime!!).toInt()
-                    )
+                    return precision
+                        .toChronoUnit()
+                        .between(left.dateTime!!, right.dateTime!!)
+                        .toInt()
+                        .toCqlInteger()
                 }
             }
 
             if (left is Date && right is Date) {
+                if (
+                    precision == Precision.YEAR &&
+                        left.date!!.isLastDayOfFeb() &&
+                        right.date!!.isLastDayOfFeb()
+                ) {
+                    return (right.date!!.getYear() - left.date!!.getYear()).toCqlInteger()
+                }
+
                 return if (isWeeks)
-                    Integer(precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7)
-                else Integer(precision.toChronoUnit().between(left.date!!, right.date!!).toInt())
+                    (precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7)
+                        .toCqlInteger()
+                else
+                    precision
+                        .toChronoUnit()
+                        .between(left.date!!, right.date!!)
+                        .toInt()
+                        .toCqlInteger()
             }
 
             if (left is Time && right is Time) {
-                return Integer(precision.toChronoUnit().between(left.time, right.time).toInt())
+                return precision
+                    .toChronoUnit()
+                    .between(left.time, right.time)
+                    .toInt()
+                    .toCqlInteger()
             }
         }
 

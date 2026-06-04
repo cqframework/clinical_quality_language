@@ -19,7 +19,7 @@ object CountEvaluator {
     @JvmStatic
     fun count(source: Value?): Integer {
         if (source == null) {
-            return Integer(0)
+            return Integer.ZERO
         }
 
         var size = 0

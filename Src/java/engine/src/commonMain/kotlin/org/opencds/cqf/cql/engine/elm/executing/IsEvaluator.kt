@@ -16,6 +16,7 @@ import org.opencds.cqf.cql.engine.runtime.NamedTypeValue
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.anyTypeName
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 is<T>(argument Any) Boolean
@@ -30,7 +31,7 @@ object IsEvaluator {
     fun internalEvaluate(`is`: Is?, operand: Value?, state: State?): Value? {
         val type = `is`?.isTypeSpecifier ?: NamedTypeSpecifier().withName(`is`?.isType)
 
-        return `is`(operand, type, state)?.let { Boolean(it) }
+        return `is`(operand, type, state)?.let { it.toCqlBoolean() }
     }
 
     /**
