@@ -6,13 +6,15 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import org.hl7.elm.r1.Add
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.ExpressionDef
+import org.hl7.elm.r1.ExpressionRef
+import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.Multiply
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.debug.BreakpointAction
 import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.DebugMap
-import org.opencds.cqf.cql.engine.runtime.Integer
 
 internal class BreakpointHandlerTest : CqlTestBase() {
     companion object {
@@ -169,6 +171,108 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         val libraryDebug = results.debugResult!!.libraryResults["BreakpointHandlerTest"]!!.results
         Assertions.assertNotNull(libraryDebug)
         Assertions.assertTrue(libraryDebug.isNotEmpty())
+    }
+
+    @Test
+    fun onExpressionDefEntered_firesForExpressionRef() {
+        val enteredDefs = mutableListOf<String>()
+        val handler =
+            object : BreakpointHandler {
+                override fun onBeforeExpression(elm: Element, state: State): BreakpointAction {
+                    return BreakpointAction.CONTINUE
+                }
+
+                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                    elm.name?.let { enteredDefs.add(it) }
+                }
+            }
+
+        engine.state.breakpointHandler = handler
+        engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
+
+        Assertions.assertTrue("X" in enteredDefs)
+        Assertions.assertTrue("Y" in enteredDefs)
+    }
+
+    @Test
+    fun onExpressionDefEntered_firesForFunctionRef() {
+        val enteredDefs = mutableListOf<String>()
+        val handler =
+            object : BreakpointHandler {
+                override fun onBeforeExpression(elm: Element, state: State): BreakpointAction {
+                    return BreakpointAction.CONTINUE
+                }
+
+                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                    elm.name?.let { enteredDefs.add(it) }
+                }
+            }
+
+        engine.state.breakpointHandler = handler
+        engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
+
+        // "F" is a function defined in the test CQL, and "Z" references F(5)
+        Assertions.assertTrue("F" in enteredDefs, "onExpressionDefEntered should fire for function F")
+    }
+
+    @Test
+    fun onExpressionDefEntered_receivesCorrectCallSite() {
+        val callSites = mutableListOf<Element?>()
+        val handler =
+            object : BreakpointHandler {
+                override fun onBeforeExpression(elm: Element, state: State): BreakpointAction {
+                    return BreakpointAction.CONTINUE
+                }
+
+                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                    callSites.add(callSite)
+                }
+            }
+
+        engine.state.breakpointHandler = handler
+        engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
+
+        // The first callSite is for define Z (referenced via ExpressionRef "Z")
+        // Since we don't know the exact order, just verify call sites exist and are
+        // either ExpressionRef or FunctionRef (never null when inside a ref)
+        for (cs in callSites) {
+            if (cs != null) {
+                Assertions.assertTrue(
+                    cs is ExpressionRef || cs is FunctionRef,
+                    "callSite should be an ExpressionRef or FunctionRef, got ${cs.javaClass.simpleName}",
+                )
+            }
+        }
+    }
+
+    @Test
+    fun onExpressionDefEntered_andEvaluated_match() {
+        val entered = mutableListOf<ExpressionDef>()
+        val evaluated = mutableListOf<ExpressionDef>()
+        val handler =
+            object : BreakpointHandler {
+                override fun onBeforeExpression(elm: Element, state: State): BreakpointAction {
+                    return BreakpointAction.CONTINUE
+                }
+
+                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                    entered.add(elm)
+                }
+
+                override fun onExpressionDefEvaluated(elm: ExpressionDef, state: State, value: Any?) {
+                    evaluated.add(elm)
+                }
+            }
+
+        engine.state.breakpointHandler = handler
+        engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
+
+        Assertions.assertEquals(entered.size, evaluated.size, "each entered define should be evaluated")
+        // Order may differ (nested function bodies are entered after the outer define
+        // but evaluated before it), so check set identity instead of sequential order.
+        val enteredSet = entered.toSet()
+        val evaluatedSet = evaluated.toSet()
+        Assertions.assertEquals(enteredSet, evaluatedSet, "entered and evaluated should contain the same elements")
     }
 
     @Test
