@@ -44,8 +44,4 @@ class Code : StructuredValue(), NamedTypeValue {
         this.version = version
         return this
     }
-
-    override fun toString(): kotlin.String {
-        return "Code { code: ${this.code}, system: ${this.system}, version: ${this.version}, display: ${this.display} }"
-    }
 }

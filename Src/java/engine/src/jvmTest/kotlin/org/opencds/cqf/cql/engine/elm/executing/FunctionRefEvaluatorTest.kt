@@ -33,7 +33,7 @@ internal class FunctionRefEvaluatorTest {
                 )
             }
         Assertions.assertEquals(
-            "Could not resolve call to operator 'func({urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer, {urn:hl7-org:elm-types:r1}Integer)' in library 'lib'.",
+            "Could not resolve call to operator 'func(Integer, Integer, Integer)' in library 'lib'.",
             cqlException.message,
         )
     }

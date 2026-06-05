@@ -38,8 +38,4 @@ class Concept : StructuredValue(), NamedTypeValue {
         codes!!.add(code!!)
         return this
     }
-
-    override fun toString(): kotlin.String {
-        return toPrettyString("Concept")
-    }
 }

@@ -218,7 +218,7 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun toString(): kotlin.String {
+    override fun toStringInner(): kotlin.String {
         return when (precision) {
             Precision.HOUR -> time.getHour().toPaddedString(2)
             Precision.MINUTE ->
@@ -232,5 +232,9 @@ class Time : BaseTemporal {
                 time.getSecond().toPaddedString(2)
                 }.${time.get(precision!!.toChronoField()).toPaddedString(3)}"
         }
+    }
+
+    override fun toString(): kotlin.String {
+        return "@T${toStringInner()}"
     }
 }

@@ -34,18 +34,10 @@ class ValueSet : Vocabulary() {
     }
 
     var codeSystems = mutableListOf<CodeSystem>()
-        private set
 
     @Suppress("NON_EXPORTABLE_TYPE")
     fun setCodeSystems(codeSystems: Iterable<CodeSystem?>?) {
-        this.codeSystems = mutableListOf()
-        if (codeSystems != null) {
-            for (cs in codeSystems) {
-                if (cs != null) {
-                    addCodeSystem(cs)
-                }
-            }
-        }
+        this.codeSystems = codeSystems?.filterNotNull()?.toMutableList() ?: mutableListOf()
     }
 
     fun withCodeSystems(codeSystems: MutableList<CodeSystem?>?): ValueSet {

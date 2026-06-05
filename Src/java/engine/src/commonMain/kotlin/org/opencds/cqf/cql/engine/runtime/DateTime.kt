@@ -333,7 +333,7 @@ class DateTime : BaseTemporal {
         return result
     }
 
-    override fun toString(): kotlin.String {
+    override fun toStringInner(): kotlin.String {
         when (precision) {
             Precision.YEAR -> return dateTime!!.getYear().toPaddedString(4)
             Precision.MONTH ->
@@ -409,6 +409,10 @@ class DateTime : BaseTemporal {
                 }"
             }
         }
+    }
+
+    override fun toString(): kotlin.String {
+        return "@${toStringInner()}"
     }
 
     // conversion functions

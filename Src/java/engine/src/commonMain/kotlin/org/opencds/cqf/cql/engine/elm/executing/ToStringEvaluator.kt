@@ -30,7 +30,7 @@ The ToString operator converts the value of its argument to a String value.
 The operator uses the following string representations for each type:
 Boolean	true|false
 Integer	    (-)?#0
-Long	    (-)?#0L
+Long	    (-)?#0
 Decimal	    (-)?#0.0#
 Quantity    (-)?#0.0# '<unit>'
 Ratio       <quantity>:<quantity>
@@ -43,34 +43,19 @@ If the argument is null, the result is null.
 object ToStringEvaluator {
     @JvmStatic
     fun toString(operand: Value?): String? {
-        if (operand == null) {
-            return null
-        }
-
-        if (operand is String) {
-            return operand
-        }
-
-        if (operand is Integer) {
-            return operand.value.toString().toCqlString()
-        } else if (operand is Long) {
-            return operand.value.toString().toCqlString()
-        } else if (operand is Decimal) {
-            return operand.value.toString().toCqlString()
-        } else if (operand is Quantity) {
-            return operand.toString().toCqlString()
-        } else if (operand is Ratio) {
-            return operand.toString().toCqlString()
-        } else if (operand is Boolean) {
-            return operand.value.toString().toCqlString()
-        } else if (operand is Date) {
-            return operand.toString().toCqlString()
-        } else if (operand is DateTime) {
-            return operand.toString().toCqlString()
-        } else if (operand is Time) {
-            return operand.toString().toCqlString()
-        } else {
-            return operand.toString().toCqlString()
+        return when (operand) {
+            null -> null
+            is Boolean -> operand.value.toString().toCqlString()
+            is Integer -> operand.value.toString().toCqlString()
+            is Long -> operand.value.toString().toCqlString()
+            is Decimal -> operand.value.toPlainString().toCqlString()
+            is Quantity,
+            is Ratio -> operand.toString().toCqlString()
+            is Date,
+            is DateTime,
+            is Time -> operand.toStringInner().toCqlString()
+            is String -> operand
+            else -> operand.toString().toCqlString()
         }
     }
 }

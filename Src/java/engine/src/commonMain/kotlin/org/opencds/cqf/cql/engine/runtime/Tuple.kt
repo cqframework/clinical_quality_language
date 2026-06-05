@@ -16,8 +16,4 @@ class Tuple : StructuredValue() {
         this.elements.putAll(elements)
         return this
     }
-
-    override fun toString(): kotlin.String {
-        return toPrettyString("Tuple")
-    }
 }

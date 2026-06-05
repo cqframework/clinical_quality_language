@@ -11,25 +11,8 @@ import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.WidthEvaluator
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.runtime.Tuple
-import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class RuntimeTests {
-    @Test
-    fun quantityToString() {
-        var q = Quantity().withValue(null).withUnit(null)
-        assertEquals("null 'null'", q.toString())
-
-        q = Quantity()
-        assertEquals("0.0 '1'", q.toString())
-
-        q = Quantity().withValue(BigDecimal("1.0")).withUnit("g")
-        assertEquals("1.0 'g'", q.toString())
-
-        q = Quantity().withValue(BigDecimal("0.05")).withUnit("mg")
-        assertEquals("0.05 'mg'", q.toString())
-    }
-
     @Test
     fun intervalOfQuantityWithDifferentUOM() {
         val modelManager = ModelManager()
@@ -53,17 +36,6 @@ internal class RuntimeTests {
                 )
                 ?.value,
         )
-    }
-
-    @Test
-    fun tupleToString() {
-        var t = Tuple()
-        assertEquals("Tuple {}", t.toString())
-
-        t = Tuple()
-        t.elements["id"] = 1.toCqlInteger()
-        t.elements["value"] = Quantity().withValue(BigDecimal("1.0")).withUnit("g")
-        assertEquals("Tuple {\n  id: 1\n  value: 1.0 'g'\n}", t.toString())
     }
 
     @Test

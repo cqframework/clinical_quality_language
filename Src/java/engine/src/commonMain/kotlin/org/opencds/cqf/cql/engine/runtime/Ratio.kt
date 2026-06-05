@@ -26,6 +26,6 @@ class Ratio : StructuredValue(), NamedTypeValue {
     }
 
     override fun toString(): kotlin.String {
-        return "${this.numerator.toString()}:${this.denominator.toString()}"
+        return "${this.numerator}:${this.denominator}"
     }
 }

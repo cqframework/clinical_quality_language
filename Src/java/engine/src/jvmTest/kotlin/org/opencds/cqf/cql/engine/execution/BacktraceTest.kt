@@ -89,7 +89,7 @@ class BacktraceTest : CqlTestBase() {
         assertEquals(
             """
             BacktraceTest.E2
-              BacktraceTest.G(Y = 2, Z = hi)
+              BacktraceTest.G(Y = 2, Z = 'hi')
                 BacktraceTest.F(X = 3)
                   Message
 

@@ -28,6 +28,7 @@ import org.hl7.fhir.r4.model.StringType as R4StringType
 import org.hl7.fhir.r5.model.HumanName as R5HumanName
 import org.hl7.fhir.r5.model.Patient as R5Patient
 import org.hl7.fhir.r5.model.StringType as R5StringType
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelId
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelNamespaceUri
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
@@ -241,19 +242,23 @@ class FhirModelResolverTest {
 
             assertEquals(
                 ClassInstance(
-                    QName(fhirModelNamespaceUri, "string"),
+                    QName(fhirModelNamespaceUri, "string", fhirModelId),
                     mutableMapOf(
                         "id" to null,
                         "extension" to
                             listOf(
                                     ClassInstance(
-                                        QName(fhirModelNamespaceUri, "Extension"),
+                                        QName(fhirModelNamespaceUri, "Extension", fhirModelId),
                                         mutableMapOf(
                                             "id" to null,
                                             "extension" to null,
                                             "value" to
                                                 ClassInstance(
-                                                    QName(fhirModelNamespaceUri, "string"),
+                                                    QName(
+                                                        fhirModelNamespaceUri,
+                                                        "string",
+                                                        fhirModelId,
+                                                    ),
                                                     mutableMapOf(
                                                         "id" to null,
                                                         "extension" to null,
@@ -262,7 +267,11 @@ class FhirModelResolverTest {
                                                 ),
                                             "url" to
                                                 ClassInstance(
-                                                    QName(fhirModelNamespaceUri, "uri"),
+                                                    QName(
+                                                        fhirModelNamespaceUri,
+                                                        "uri",
+                                                        fhirModelId,
+                                                    ),
                                                     mutableMapOf(
                                                         "id" to null,
                                                         "extension" to null,
@@ -318,7 +327,7 @@ class FhirModelResolverTest {
 
             assertEquals(
                 ClassInstance(
-                    QName(fhirModelNamespaceUri, "string"),
+                    QName(fhirModelNamespaceUri, "string", fhirModelId),
                     mutableMapOf(
                         "id" to stringId.toCqlString(),
                         "extension" to null,
@@ -351,7 +360,7 @@ class FhirModelResolverTest {
 
             assertEquals(
                 ClassInstance(
-                    QName(fhirModelNamespaceUri, "NameUse"),
+                    QName(fhirModelNamespaceUri, "NameUse", fhirModelId),
                     mutableMapOf(
                         "id" to null,
                         "extension" to null,
@@ -399,7 +408,7 @@ class FhirModelResolverTest {
 
             assertEquals(
                 ClassInstance(
-                    QName(fhirModelNamespaceUri, "NameUse"),
+                    QName(fhirModelNamespaceUri, "NameUse", fhirModelId),
                     mutableMapOf(
                         "id" to elementId.toCqlString(),
                         "extension" to null,

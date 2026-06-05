@@ -11,8 +11,4 @@ sealed class Vocabulary : StructuredValue(), NamedTypeValue {
     var version: kotlin.String? = null
 
     var name: kotlin.String? = null
-
-    override fun toString(): kotlin.String {
-        return toPrettyString(type.getLocalPart())
-    }
 }
