@@ -11,6 +11,8 @@ interface BreakpointHandler {
 
     fun onExpressionDefEvaluated(elm: ExpressionDef, state: State, value: Any?) {}
 
+    fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {}
+
     fun waitForResume() {}
 
     fun release() {}

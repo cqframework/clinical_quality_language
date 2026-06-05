@@ -130,6 +130,14 @@ constructor(
 
     var breakpointHandler: BreakpointHandler? = null
 
+    /**
+     * Populated by EvaluationVisitor.visitExpressionRef or FunctionRefEvaluator.internalEvaluate
+     * before a define/function body is entered. Read by visitExpressionDef / evaluateFunctionDef to
+     * pass the calling ref to onExpressionDefEntered.
+     */
+    @Volatile
+    var currentCallSite: Element? = null
+
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
     val parameters = mutableMapOf<String, Any?>()
