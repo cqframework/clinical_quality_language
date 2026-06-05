@@ -241,12 +241,15 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Any?, State?>() {
     }
 
     override fun visitExpressionDef(elm: ExpressionDef, context: State?): Any? {
+        context?.breakpointHandler?.onExpressionDefEntered(elm, context?.currentCallSite, context)
+        context?.currentCallSite = null
         val value = internalEvaluate(elm, context, this)
         context?.breakpointHandler?.onExpressionDefEvaluated(elm, context, value)
         return value
     }
 
     override fun visitExpressionRef(elm: ExpressionRef, context: State?): Any? {
+        context?.currentCallSite = elm
         return ExpressionRefEvaluator.internalEvaluate(elm, context, this)
     }
 
