@@ -75,7 +75,7 @@
     <ID>FunctionNaming:AsEvaluator.kt$AsEvaluator$fun `as`( operand: Value?, type: TypeSpecifier, isStrict: kotlin.Boolean, state: State?, ): Value?</ID>
     <ID>FunctionNaming:InEvaluator.kt$InEvaluator$fun `in`(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean?</ID>
     <ID>FunctionNaming:IsEvaluator.kt$IsEvaluator$fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean?</ID>
-    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(valueType: String, type: QName): Boolean?</ID>
+    <ID>FunctionNaming:ModelResolver.kt$ModelResolver$fun `is`(valueType: String, type: QName): kotlin.Boolean?</ID>
     <ID>FunctionNaming:TerminologyProvider.kt$TerminologyProvider$fun `in`(code: Code, valueSet: ValueSetInfo): Boolean</ID>
     <ID>FunctionOnlyReturningConstant:NullEvaluator.kt$NullEvaluator$@JvmStatic fun internalEvaluate(state: State?): Value?</ID>
     <ID>FunctionParameterNaming:AsEvaluator.kt$AsEvaluator$`as`: As</ID>
@@ -366,7 +366,7 @@
     <ID>ReturnCount:AnyInValueSetEvaluator.kt$AnyInValueSetEvaluator$@JvmStatic fun internalEvaluate( codes: Value?, valueSetRef: ValueSetRef?, valueset: Value?, state: State?, ): Boolean?</ID>
     <ID>ReturnCount:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Value?): Boolean</ID>
     <ID>ReturnCount:BeforeEvaluator.kt$BeforeEvaluator$@JvmStatic fun before(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean?</ID>
-    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
+    <ID>ReturnCount:CachingModelResolverDecorator.kt$CachingModelResolverDecorator$override fun getContextPath( contextType: kotlin.String?, targetType: kotlin.String?, ): kotlin.String?</ID>
     <ID>ReturnCount:CeilingEvaluator.kt$CeilingEvaluator$@JvmStatic fun ceiling(operand: Value?): Integer?</ID>
     <ID>ReturnCount:CoalesceEvaluator.kt$CoalesceEvaluator$fun coalesce(operands: kotlin.collections.List&lt;Value?>): Value?</ID>
     <ID>ReturnCount:CollapseEvaluator.kt$CollapseEvaluator$private fun getIntervalWithPerApplied( interval: Interval, per: Quantity, state: State?, ): Interval</ID>

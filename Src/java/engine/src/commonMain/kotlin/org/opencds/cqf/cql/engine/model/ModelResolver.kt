@@ -3,6 +3,9 @@ package org.opencds.cqf.cql.engine.model
 import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Value
 
 /**
@@ -30,7 +33,7 @@ interface ModelResolver {
      * @return `true` when `valueType` is a subtype of (or the same type as) the specified `type`,
      *   otherwise `false`.
      */
-    fun `is`(valueType: String, type: QName): Boolean?
+    fun `is`(valueType: String, type: QName): kotlin.Boolean?
 
     /**
      * Create an instance of the model object that corresponds to the specified type.
@@ -39,6 +42,27 @@ interface ModelResolver {
      * @return new instance of the specified model type
      */
     fun createInstance(typeName: String?): Value?
+
+    /**
+     * Compare two instances of the same class type for equivalence. The default implementation
+     * compares the elements of the structured values using the tuple equivalence semantics.
+     *
+     * @param left Left hand side of the equivalence expression
+     * @param right Right hand side of the equivalence expression
+     * @param equivalent Used to compare the elements of the structured values for equivalence
+     * @return CQL Boolean indicating whether the instances are equivalent
+     */
+    fun objectEquivalent(
+        left: ClassInstance,
+        right: ClassInstance,
+        equivalent: (l: Value?, r: Value?) -> Boolean,
+    ): Boolean {
+        return EquivalentEvaluator.structuredValueElementsEquivalent(
+            left.elements,
+            right.elements,
+            equivalent,
+        )
+    }
 
     /**
      * Ensure that for a given object each implementation can introspect that object in its own way

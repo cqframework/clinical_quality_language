@@ -3,6 +3,8 @@ package org.opencds.cqf.cql.engine.data
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Value
@@ -18,12 +20,20 @@ open class CompositeDataProvider(
         return this.modelResolver!!.getContextPath(contextType, targetType)
     }
 
-    override fun `is`(valueType: kotlin.String, type: QName): Boolean? {
+    override fun `is`(valueType: kotlin.String, type: QName): kotlin.Boolean? {
         return this.modelResolver!!.`is`(valueType, type)
     }
 
     override fun createInstance(typeName: kotlin.String?): Value? {
         return this.modelResolver!!.createInstance(typeName)
+    }
+
+    override fun objectEquivalent(
+        left: ClassInstance,
+        right: ClassInstance,
+        equivalent: (l: Value?, r: Value?) -> Boolean,
+    ): Boolean {
+        return this.modelResolver!!.objectEquivalent(left, right, equivalent)
     }
 
     override fun resolveId(target: Value?): kotlin.String? {
