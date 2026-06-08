@@ -44,46 +44,8 @@ object RetrieveEvaluator {
 
             val dataType = state.environment.fixupQName(elm.dataType!!)
             val dataProvider = state.environment.resolveDataProvider(dataType)
-            var codes: Iterable<Code>? = null
-            var valueSet: String? = null
-            if (elm.codes != null) {
-                if (elm.codes is ValueSetRef) {
-                    val vs = ValueSetRefEvaluator.toValueSet(state, elm.codes as ValueSetRef)
-                    valueSet = vs.id
-                } else {
-                    val codesResult: Any = visitor.visitExpression(elm.codes!!, state)!!
-
-                    // Due to erased generics this is the best we can do here.
-                    @Suppress("UNCHECKED_CAST")
-                    when (codesResult) {
-                        is ValueSet -> valueSet = codesResult.id
-                        is String -> codes = mutableListOf(Code().withCode(codesResult as String?))
-                        is Code -> codes = mutableListOf(codesResult)
-                        is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
-                        is Iterable<*> ->
-                            codes =
-                                codesResult.filterNotNull().map {
-                                    when (it) {
-                                        is String -> Code().withCode(it)
-                                        is Code -> it
-                                        else ->
-                                            throw IllegalArgumentException(
-                                                "Expected String or Code. Found '${it::class.simpleName}'."
-                                            )
-                                    }
-                                }
-                        else ->
-                            throw IllegalArgumentException(
-                                "The codes argument to Retrieve must be a ValueSet, Code, Concept, String," +
-                                    " or List of those types. Found '${codesResult.javaClassName}'."
-                            )
-                    }
-                }
-            }
-            var dateRange: Interval? = null
-            if (elm.dateRange != null) {
-                dateRange = visitor.visitExpression(elm.dateRange!!, state) as Interval?
-            }
+            val (codes, valueSet) = resolveCodes(elm, state, visitor)
+            val dateRange = resolveDateRange(elm, state, visitor)
 
             result =
                 dataProvider.retrieve(
@@ -122,5 +84,60 @@ object RetrieveEvaluator {
         }
 
         return result
+    }
+
+    private fun resolveCodes(
+        elm: Retrieve,
+        state: State,
+        visitor: ElmLibraryVisitor<Any?, State?>,
+    ): Pair<Iterable<Code>?, String?> {
+        var codes: Iterable<Code>? = null
+        var valueSet: String? = null
+        if (elm.codes != null) {
+            if (elm.codes is ValueSetRef) {
+                val vs = ValueSetRefEvaluator.toValueSet(state, elm.codes as ValueSetRef)
+                valueSet = vs.id
+            } else {
+                val codesResult: Any = visitor.visitExpression(elm.codes!!, state)!!
+
+                // Due to erased generics this is the best we can do here.
+                @Suppress("UNCHECKED_CAST")
+                when (codesResult) {
+                    is ValueSet -> valueSet = codesResult.id
+                    is String -> codes = mutableListOf(Code().withCode(codesResult as String?))
+                    is Code -> codes = mutableListOf(codesResult)
+                    is Concept -> codes = codesResult.codes?.filterNotNull() ?: emptyList()
+                    is Iterable<*> ->
+                        codes =
+                            codesResult.filterNotNull().map {
+                                when (it) {
+                                    is String -> Code().withCode(it)
+                                    is Code -> it
+                                    else ->
+                                        throw IllegalArgumentException(
+                                            "Expected String or Code. Found '${it::class.simpleName}'."
+                                        )
+                                }
+                            }
+                    else ->
+                        throw IllegalArgumentException(
+                            "The codes argument to Retrieve must be a ValueSet, Code, Concept, String," +
+                                " or List of those types. Found '${codesResult.javaClassName}'."
+                        )
+                }
+            }
+        }
+        return Pair(codes, valueSet)
+    }
+
+    private fun resolveDateRange(
+        elm: Retrieve,
+        state: State,
+        visitor: ElmLibraryVisitor<Any?, State?>,
+    ): Interval? {
+        if (elm.dateRange != null) {
+            return visitor.visitExpression(elm.dateRange!!, state) as Interval?
+        }
+        return null
     }
 }
