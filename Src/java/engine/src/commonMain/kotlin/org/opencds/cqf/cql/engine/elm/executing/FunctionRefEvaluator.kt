@@ -47,7 +47,11 @@ object FunctionRefEvaluator {
                 .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
                 .evaluate(functionDef.name, arguments)
         } else {
-            state.breakpointHandler?.onExpressionDefEntered(functionDef, state.currentCallSite, state)
+            state.breakpointHandler?.onExpressionDefEntered(
+                functionDef,
+                state.currentCallSite,
+                state,
+            )
 
             // Establish activation frame with the function
             // definition being evaluated.

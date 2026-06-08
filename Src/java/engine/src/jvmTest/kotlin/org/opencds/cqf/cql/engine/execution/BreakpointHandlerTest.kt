@@ -182,7 +182,11 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                override fun onExpressionDefEntered(
+                    elm: ExpressionDef,
+                    callSite: Element?,
+                    state: State,
+                ) {
                     elm.name?.let { enteredDefs.add(it) }
                 }
             }
@@ -203,7 +207,11 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                override fun onExpressionDefEntered(
+                    elm: ExpressionDef,
+                    callSite: Element?,
+                    state: State,
+                ) {
                     elm.name?.let { enteredDefs.add(it) }
                 }
             }
@@ -212,7 +220,10 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
         // "F" is a function defined in the test CQL, and "Z" references F(5)
-        Assertions.assertTrue("F" in enteredDefs, "onExpressionDefEntered should fire for function F")
+        Assertions.assertTrue(
+            "F" in enteredDefs,
+            "onExpressionDefEntered should fire for function F",
+        )
     }
 
     @Test
@@ -224,7 +235,11 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                override fun onExpressionDefEntered(
+                    elm: ExpressionDef,
+                    callSite: Element?,
+                    state: State,
+                ) {
                     callSites.add(callSite)
                 }
             }
@@ -255,11 +270,19 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onExpressionDefEntered(elm: ExpressionDef, callSite: Element?, state: State) {
+                override fun onExpressionDefEntered(
+                    elm: ExpressionDef,
+                    callSite: Element?,
+                    state: State,
+                ) {
                     entered.add(elm)
                 }
 
-                override fun onExpressionDefEvaluated(elm: ExpressionDef, state: State, value: Any?) {
+                override fun onExpressionDefEvaluated(
+                    elm: ExpressionDef,
+                    state: State,
+                    value: Any?,
+                ) {
                     evaluated.add(elm)
                 }
             }
@@ -267,12 +290,20 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.state.breakpointHandler = handler
         engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
-        Assertions.assertEquals(entered.size, evaluated.size, "each entered define should be evaluated")
+        Assertions.assertEquals(
+            entered.size,
+            evaluated.size,
+            "each entered define should be evaluated",
+        )
         // Order may differ (nested function bodies are entered after the outer define
         // but evaluated before it), so check set identity instead of sequential order.
         val enteredSet = entered.toSet()
         val evaluatedSet = evaluated.toSet()
-        Assertions.assertEquals(enteredSet, evaluatedSet, "entered and evaluated should contain the same elements")
+        Assertions.assertEquals(
+            enteredSet,
+            evaluatedSet,
+            "entered and evaluated should contain the same elements",
+        )
     }
 
     @Test
@@ -284,7 +315,6 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     callCount.incrementAndGet()
                     return BreakpointAction.CONTINUE
                 }
-
             }
 
         engine.state.engineOptions.add(CqlEngine.Options.EnableDetailedTracing)
