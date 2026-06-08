@@ -136,8 +136,7 @@ constructor(
      * before a define/function body is entered. Read by visitExpressionDef / evaluateFunctionDef to
      * pass the calling ref to onExpressionDefEntered.
      */
-    @Volatile
-    var currentCallSite: Element? = null
+    @Volatile var currentCallSite: Element? = null
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
