@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.JsOnlyExport
-import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator.toString
 
 /** Represents a structured CQL value. */
 @OptIn(ExperimentalJsExport::class)
@@ -25,22 +24,6 @@ sealed class StructuredValue : Value {
         return elements[elementName]
     }
 
-    /** Returns a string representation of the elements of the structured value. */
-    protected fun toPrettyString(label: kotlin.String): kotlin.String {
-        if (elements.isEmpty()) {
-            return "$label {}"
-        }
-
-        return buildString {
-            appendLine("$label {")
-            for ((key, value) in elements) {
-                // append valueString and indent its every line
-                appendLine("$key: ${toString(value)}".prependIndent("  "))
-            }
-            append("}")
-        }
-    }
-
     override fun equals(other: Any?): kotlin.Boolean {
         if (this === other) return true
         if (other !is StructuredValue) return false
@@ -59,5 +42,15 @@ sealed class StructuredValue : Value {
         var result = if (this is NamedTypeValue) type.hashCode() else 0
         result = 31 * result + elements.hashCode()
         return result
+    }
+
+    override fun toString(): kotlin.String {
+        if (elements.isEmpty()) {
+            return "$typeAsString { : }"
+        }
+
+        return "$typeAsString {\n" +
+            elements.entries.joinToString(",\n") { "${it.key}: ${it.value}".prependIndent("  ") } +
+            "\n}"
     }
 }

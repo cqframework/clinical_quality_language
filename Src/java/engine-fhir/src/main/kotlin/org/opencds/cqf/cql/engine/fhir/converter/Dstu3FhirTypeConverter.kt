@@ -102,7 +102,7 @@ internal class Dstu3FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        return DateType(value.toString())
+        return DateType(value.toStringInner())
     }
 
     override fun toFhirDateTime(value: DateTime?): IPrimitiveType<Date>? {
@@ -120,7 +120,7 @@ internal class Dstu3FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        return TimeType(value.toString())
+        return TimeType(value.toStringInner())
     }
 
     override fun toFhirString(value: String?): IPrimitiveType<kotlin.String>? {

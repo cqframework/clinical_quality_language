@@ -3,6 +3,7 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.js.ExperimentalJsExport
+import org.cqframework.cql.cql2elm.StringEscapeUtils.escapeCql
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.JsOnlyExport
 
@@ -36,21 +37,21 @@ data class Integer(val value: Int) : SimpleValue {
 data class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
 
-    override fun toString() = value.toString()
+    override fun toString() = "${value}L"
 }
 
 @JsOnlyExport
 data class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
 
-    override fun toString() = value.toString()
+    override fun toString() = value.toPlainString()
 }
 
 @JsOnlyExport
 data class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
 
-    override fun toString() = value
+    override fun toString() = "'${escapeCql(value)}'"
 
     companion object {
         val EMPTY_STRING = String("")

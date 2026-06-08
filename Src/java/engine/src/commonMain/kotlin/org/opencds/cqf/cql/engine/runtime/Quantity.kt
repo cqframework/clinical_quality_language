@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.js.ExperimentalJsExport
 import kotlin.jvm.JvmStatic
+import org.cqframework.cql.cql2elm.StringEscapeUtils.escapeCql
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.JsOnlyExport
 
@@ -47,7 +48,7 @@ class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
     }
 
     override fun toString(): kotlin.String {
-        return "${this.value} '${this.unit}'"
+        return this.value?.toPlainString() + " " + this.unit?.let { "'${escapeCql(it)}'" }
     }
 
     companion object {

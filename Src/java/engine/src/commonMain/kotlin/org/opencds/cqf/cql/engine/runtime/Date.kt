@@ -229,18 +229,22 @@ class Date : BaseTemporal {
         return this.compare(other, true)!!
     }
 
-    override fun toString(): kotlin.String {
+    override fun toStringInner(): kotlin.String {
         return when (precision) {
             Precision.YEAR -> date!!.getYear().toPaddedString(4)
             Precision.MONTH ->
                 "${date!!.getYear().toPaddedString(4)}-${date!!.getMonthValue().toPaddedString(2)}"
             else ->
                 "${
-                date!!.getYear().toPaddedString(4)
-            }-${
-                date!!.getMonthValue().toPaddedString(2)
-            }-${date!!.getDayOfMonth().toPaddedString(2)}"
+                    date!!.getYear().toPaddedString(4)
+                }-${
+                    date!!.getMonthValue().toPaddedString(2)
+                }-${date!!.getDayOfMonth().toPaddedString(2)}"
         }
+    }
+
+    override fun toString(): kotlin.String {
+        return "@${toStringInner()}"
     }
 
     @JvmOverloads

@@ -36,7 +36,10 @@ interface ModelResolver {
     fun `is`(valueType: String, type: QName): kotlin.Boolean?
 
     /**
-     * Create an instance of the model object that corresponds to the specified type.
+     * Create an instance of the model object that corresponds to the specified type. If the result
+     * is a [ClassInstance], the model URI (e.g. "http://hl7.org/fhir") and identifier (model
+     * qualifier, e.g. "FHIR") must be included in the `namespaceURI` and `prefix` of the type
+     * [QName] respectively.
      *
      * @param typeName Model type to create
      * @return new instance of the specified model type

@@ -678,7 +678,7 @@ abstract class FhirModelResolver<
 
             elements["value"] = target.valueAsString?.toCqlString()
 
-            return ClassInstance(QName(fhirModelNamespaceUri, typeName), elements)
+            return ClassInstance(QName(fhirModelNamespaceUri, typeName, fhirModelId), elements)
         }
 
         if (target is IPrimitiveType<*>) {
@@ -696,7 +696,10 @@ abstract class FhirModelResolver<
 
             elements["value"] = toSimpleCqlType(target)
 
-            return ClassInstance(QName(fhirModelNamespaceUri, elementDefinition.name), elements)
+            return ClassInstance(
+                QName(fhirModelNamespaceUri, elementDefinition.name, fhirModelId),
+                elements,
+            )
         }
 
         val definition = resolveRuntimeDefinition(target)
@@ -715,10 +718,11 @@ abstract class FhirModelResolver<
                     }
         }
 
-        return ClassInstance(QName(fhirModelNamespaceUri, definition.name), elements)
+        return ClassInstance(QName(fhirModelNamespaceUri, definition.name, fhirModelId), elements)
     }
 
     companion object {
         const val fhirModelNamespaceUri = "http://hl7.org/fhir"
+        const val fhirModelId = "FHIR"
     }
 }

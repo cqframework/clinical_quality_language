@@ -12,6 +12,14 @@ data class List(val value: Iterable<Value?>) : Value, Iterable<Value?> by value 
     companion object {
         val EMPTY_LIST = List(emptyList())
     }
+
+    override fun toString(): kotlin.String {
+        if (value.count() == 0) {
+            return "{}"
+        }
+
+        return "{\n" + value.joinToString(",\n") { "$it".prependIndent("  ") } + "\n}"
+    }
 }
 
 fun Iterable<Value?>.toCqlList() = List(this)

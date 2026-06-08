@@ -44,15 +44,15 @@ object PrecisionEvaluator {
             val index = string.indexOf(".")
             return (if (index < 0) 0 else string.length - index - 1).toCqlInteger()
         } else if (argument is Date) {
-            return argument.toString().replace("-".toRegex(), "").length.toCqlInteger()
+            return argument.toStringInner().replace("-".toRegex(), "").length.toCqlInteger()
         } else if (argument is DateTime) {
             return argument
-                .toString()
+                .toStringInner()
                 .replace("(:?[+-][0-9]{2}:[0-9]{2}$|[T.:-]|)".toRegex(), "")
                 .length
                 .toCqlInteger()
         } else if (argument is Time) {
-            return argument.toString().replace("[T.:]".toRegex(), "").length.toCqlInteger()
+            return argument.toStringInner().replace("[T.:]".toRegex(), "").length.toCqlInteger()
         }
 
         throw InvalidOperatorArgument(

@@ -34,6 +34,9 @@ sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
     @JsExport.Ignore
     abstract fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal?
 
+    /** Returns the string representation of the temporal value without the leading `@` or `@T`. */
+    abstract fun toStringInner(): kotlin.String
+
     companion object {
         fun getHighestPrecision(vararg values: BaseTemporal?): kotlin.String {
             var max = -1
