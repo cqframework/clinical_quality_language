@@ -209,11 +209,6 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                 }
             }
 
-        // TODO: LD: Due to a type erasure and the CQL compiler historically being in separate
-        // repositories, two different
-        // code paths were merged, resulting in an insidious condition where type erasure has
-        // resulted in the declared
-        // variable's type being wrong in this instance:  It's actually an Iterable<String>
         private fun codesEqual(codes: Iterable<*>?, equalTo: String): Boolean {
             if (codes == null) {
                 return false
@@ -227,12 +222,15 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
 
             val next = iterator.next()
 
-            // Ignore the javac warning here
-            if (!String::class.java.isInstance(next)) {
-                Assertions.fail<Any?>("Expected codes to contain Strings but does not: $codes")
-            }
-
-            val nextCode = next as String
+            val nextCode =
+                when (next) {
+                    is String -> next
+                    is Code -> next.code
+                    else ->
+                        Assertions.fail<Any?>(
+                            "Expected codes to contain Strings or Codes but does not: $codes"
+                        )
+                }
 
             return equalTo == nextCode
         }
