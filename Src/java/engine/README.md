@@ -5,4 +5,5 @@ This module contains the CQL engine used to evaluate ELM libraries. It is a Kotl
 ## Contents
 
 - [Evaluation API](evaluation-api.md) - The API for evaluating CQL libraries and expressions.
-- [CQL Value Types](cql-value-types.md) - Kotlin classes and primitives used by the engine during evaluation.
+- [CQL Value Types](cql-value-types.md) - Kotlin classes used to represent CQL values during evaluation.
+- [v4 to v5 Migration](v4-to-v5-migration.md) - Upgrading from CQL engine v4 to v5.
