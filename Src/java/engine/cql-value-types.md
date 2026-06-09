@@ -1,6 +1,6 @@
 # CQL Value Types
 
-The engine supports a fixed set of CQL value types that are represented using the following Kotlin classes from the `org.opencds.cqf.cql.engine.runtime` package:
+CQL values are represented in the engine using the following classes in the `org.opencds.cqf.cql.engine.runtime` package:
 
 - Simple types
   - Boolean: `Boolean`
