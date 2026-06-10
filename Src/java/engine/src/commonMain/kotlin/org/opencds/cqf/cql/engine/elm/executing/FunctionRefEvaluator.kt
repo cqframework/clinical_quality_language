@@ -30,6 +30,8 @@ object FunctionRefEvaluator {
             arguments.add(visitor.visitExpression(operand, state))
         }
 
+        state?.currentCallSite = functionRef
+
         val enteredLibrary = state!!.enterLibrary(functionRef.libraryName)
         try {
             val functionDef = resolveOrCacheFunctionDef(state, functionRef, arguments)
@@ -51,6 +53,12 @@ object FunctionRefEvaluator {
                 .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
                 .evaluate(functionDef.name, arguments)
         } else {
+            state.breakpointHandler?.onExpressionDefEntered(
+                functionDef,
+                state.currentCallSite,
+                state,
+            )
+
             // Establish activation frame with the function
             // definition being evaluated.
             state.pushActivationFrame(functionDef, functionDef.context!!)
@@ -60,6 +68,7 @@ object FunctionRefEvaluator {
                 }
                 val result = visitor.visitExpression(functionDef.expression!!, state)
                 state.storeIntermediateResultForTracing(result)
+                state.breakpointHandler?.onExpressionDefEvaluated(functionDef, state, result)
                 return result
             } finally {
                 state.popActivationFrame()

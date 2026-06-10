@@ -5,6 +5,7 @@ import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.*
+import org.opencds.cqf.cql.engine.debug.BreakpointAction
 import org.opencds.cqf.cql.engine.debug.SourceLocator.Companion.fromNode
 import org.opencds.cqf.cql.engine.elm.executing.*
 import org.opencds.cqf.cql.engine.elm.executing.AbsEvaluator.abs
@@ -193,9 +194,18 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
             detailedState.pushSubExpressionFrame(elm)
         }
 
+        val action =
+            context?.breakpointHandler?.onBeforeExpression(elm, context)
+                ?: BreakpointAction.CONTINUE
+        if (action == BreakpointAction.PAUSE) {
+            context?.breakpointHandler?.waitForResume()
+        }
+
         try {
             val value = super.visitExpression(elm, context)
             context?.checkType(elm, value)
+
+            context?.breakpointHandler?.onAfterExpression(elm, context, value)
 
             if (detailedState != null) {
                 detailedState.storeSubExpressionResult(value)
@@ -234,10 +244,15 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     }
 
     override fun visitExpressionDef(elm: ExpressionDef, context: State?): Value? {
-        return internalEvaluate(elm, context, this)
+        context?.breakpointHandler?.onExpressionDefEntered(elm, context.currentCallSite, context)
+        context?.currentCallSite = null
+        val value = internalEvaluate(elm, context, this)
+        context?.breakpointHandler?.onExpressionDefEvaluated(elm, context, value)
+        return value
     }
 
     override fun visitExpressionRef(elm: ExpressionRef, context: State?): Value? {
+        context?.currentCallSite = elm
         return ExpressionRefEvaluator.internalEvaluate(elm, context, this)
     }
 
