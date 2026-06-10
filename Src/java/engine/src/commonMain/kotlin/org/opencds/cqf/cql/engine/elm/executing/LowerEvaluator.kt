@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 Lower(argument String) String
@@ -12,15 +14,15 @@ If the argument is null, the result is null.
 */
 object LowerEvaluator {
     @JvmStatic
-    fun lower(operand: Any?): Any? {
+    fun lower(operand: Value?): String? {
         if (operand == null) {
             return null
         }
 
         if (operand is String) {
-            return operand.lowercase()
+            return operand.value.lowercase().toCqlString()
         }
 
-        throw InvalidOperatorArgument("Lower(String)", "Lower(${operand.javaClassName})")
+        throw InvalidOperatorArgument("Lower(String)", "Lower(${operand.typeAsString})")
     }
 }

@@ -13,7 +13,7 @@ class Trace(val frames: List<TraceFrame>) {
         /** Creates a [Trace] from a list of activation frames. */
         fun fromActivationFrames(
             activationFrames: List<State.ActivationFrame>,
-            contextValues: Map<String, Any?>,
+            contextValues: Map<String, String?>,
             detailed: Boolean = false,
         ): Trace {
             return Trace(

@@ -9,7 +9,7 @@ import org.opencds.cqf.cql.engine.runtime.CodeSystem
 // References a code system by its previously defined name
 object CodeSystemRefEvaluator {
     @JvmStatic
-    fun toCodeSystem(csr: CodeSystemRef?, state: State?): CodeSystem? {
+    fun toCodeSystem(csr: CodeSystemRef?, state: State?): CodeSystem {
         val enteredLibrary = state!!.enterLibrary(csr!!.libraryName)
         try {
             val csd = Libraries.resolveCodeSystemRef(csr.name, state.getCurrentLibrary()!!)

@@ -1,5 +1,11 @@
 package org.hl7.cql.model
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 interface DataType {
     val baseType: DataType
 
@@ -18,9 +24,9 @@ interface DataType {
 
     val isGeneric: Boolean
 
-    fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean
+    @JsExport.Ignore fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean
 
-    fun instantiate(context: InstantiationContext): DataType
+    @JsExport.Ignore fun instantiate(context: InstantiationContext): DataType
 
     companion object {
         val ANY: SimpleType = SimpleType("System.Any")

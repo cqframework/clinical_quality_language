@@ -5,8 +5,14 @@ import kotlin.math.abs
 import kotlin.math.pow
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 ^(argument Integer, exponent Integer) Integer
@@ -18,36 +24,41 @@ If either argument is null, the result is null.
 */
 object PowerEvaluator {
     @JvmStatic
-    fun power(left: Any?, right: Any?): Any? {
+    fun power(left: Value?, right: Value?): Value? {
         if (left == null || right == null) {
             return null
         }
 
-        if (left is Int) {
-            if ((right as Int) < 0) {
-                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right)))
+        if (left is Integer && right is Integer) {
+            if (right.value < 0) {
+                return BigDecimal(1)
+                    .divide(BigDecimal(left.value).pow(abs(right.value)))
+                    .toCqlDecimal()
             }
-            return BigDecimal(left).pow(right).toInt()
+            return BigDecimal(left.value).pow(right.value).toInt().toCqlInteger()
         }
 
-        if (left is Long) {
-            if ((right as Long) < 0) {
-                return BigDecimal(1).divide(BigDecimal(left).pow(abs(right.toInt())))
+        if (left is Long && right is Long) {
+            if (right.value < 0) {
+                return BigDecimal(1)
+                    .divide(BigDecimal(left.value).pow(abs(right.value.toInt())))
+                    .toCqlDecimal()
             }
 
-            return BigDecimal(left).pow((right.toInt() as Int?)!!).toLong()
+            return BigDecimal(left.value).pow(right.value.toInt()).toLong().toCqlLong()
         }
 
-        if (left is BigDecimal) {
-            return Value.verifyPrecision(
-                BigDecimal((left.toDouble()).pow((right as BigDecimal).toDouble())),
-                null,
-            )
+        if (left is Decimal && right is Decimal) {
+            return DecimalHelper.verifyPrecision(
+                    BigDecimal((left.value.toDouble()).pow(right.value.toDouble())),
+                    null,
+                )
+                .toCqlDecimal()
         }
 
         throw InvalidOperatorArgument(
             "Power(Integer, Integer), Power(Long, Long) or Power(Decimal, Decimal)",
-            "Power(${left.javaClassName}, ${right.javaClassName})",
+            "Power(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

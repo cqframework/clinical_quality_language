@@ -4,8 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 overlaps _precision_ (left Interval<T>, right Interval<T>) Boolean
@@ -20,7 +21,7 @@ If either argument is null, the result is null.
 */
 object OverlapsEvaluator {
     @JvmStatic
-    fun overlaps(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun overlaps(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         if (left == null || right == null) {
             return null
         }
@@ -46,7 +47,7 @@ object OverlapsEvaluator {
 
         throw InvalidOperatorArgument(
             "Overlaps(Interval<T>, Interval<T>)",
-            "Overlaps(${left.javaClassName}, ${right.javaClassName})",
+            "Overlaps(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

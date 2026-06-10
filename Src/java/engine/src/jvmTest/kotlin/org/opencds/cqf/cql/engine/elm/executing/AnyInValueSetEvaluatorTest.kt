@@ -6,6 +6,7 @@ import kotlin.test.assertIs
 import org.hl7.elm.r1.ValueSetRef
 import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 
 class AnyInValueSetEvaluatorTest {
@@ -18,6 +19,6 @@ class AnyInValueSetEvaluatorTest {
 
         val actual = AnyInValueSetEvaluator.internalEvaluate(null, valueSetRef, valueSet, state)
         assertIs<Boolean>(actual)
-        assertFalse(actual)
+        assertFalse(actual.value)
     }
 }

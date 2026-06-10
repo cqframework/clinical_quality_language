@@ -1,10 +1,12 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryBuilder
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlFunctionTest : CqlTestBase() {
     @Test
@@ -15,33 +17,33 @@ internal class CqlFunctionTest : CqlTestBase() {
 
         val results = engine.evaluate { library("CqlFunctionTests") }.onlyResultOrThrow
         var value = results["FunctionTestStringArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("hello"))
+        assertEquals("hello".toCqlString(), value)
 
         value = results["FunctionTestNullStringArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FunctionTestMultipleArgs"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("hell0"))
+        assertEquals("hell0".toCqlString(), value)
 
         value = results["FunctionTestNullMultipleArgs"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FunctionTestOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("hell00.000"))
+        assertEquals("hell00.000".toCqlString(), value)
 
         value = results["FunctionTestNullOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FunctionTestTupleArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(3))
+        assertEquals(3.toCqlInteger(), value)
 
         value = results["FunctionTestNullTupleArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
 
         value = results["FunctionTestQuantityArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`("cm"))
+        assertEquals("cm".toCqlString(), value)
 
         value = results["FunctionTestNullQuantityArg"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(Matchers.nullValue()))
+        assertNull(value)
     }
 }

@@ -2,20 +2,22 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.CqlCompilerException.Companion.hasErrors
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Companion.defaultOptions
 import org.cqframework.cql.cql2elm.LibraryBuilder
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlMainSuiteTest : CqlTestBase() {
     @Test
     fun cql_main_test_suite_compiles() {
         val errors = ArrayList<CqlCompilerException>()
         this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions())
-        Assertions.assertFalse(
+        assertFalse(
             hasErrors(errors),
             String.format(
                 "Test library compiled with the following errors : %s",
@@ -40,9 +42,9 @@ internal class CqlMainSuiteTest : CqlTestBase() {
         for (entry in result.expressionResults.entries) {
             if (entry.key.startsWith("test")) {
                 if (entry.value.value != null) {
-                    Assertions.assertEquals(
-                        entry.value.value as String?,
-                        entry.key.replace("test_".toRegex(), "") + " TEST PASSED",
+                    assertEquals(
+                        entry.value.value,
+                        (entry.key.replace("test_".toRegex(), "") + " TEST PASSED").toCqlString(),
                     )
                 }
             }
@@ -66,9 +68,9 @@ internal class CqlMainSuiteTest : CqlTestBase() {
         for (entry in result.expressionResults.entries) {
             if (entry.key.startsWith("test")) {
                 if (entry.value.value != null) {
-                    Assertions.assertEquals(
-                        entry.value.value as String?,
-                        entry.key.replace("test_".toRegex(), "") + " TEST PASSED",
+                    assertEquals(
+                        entry.value.value,
+                        (entry.key.replace("test_".toRegex(), "") + " TEST PASSED").toCqlString(),
                     )
                 }
             }

@@ -1,15 +1,17 @@
 package org.opencds.cqf.cql.engine.execution
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.hl7.elm.r1.VersionedIdentifier
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class IncludedParameterTest : CqlTestBase() {
     @Test
     fun gets_global_param_value() {
         val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = mutableMapOf("Measurement Period" to 1)
+        val params = mutableMapOf("Measurement Period" to 1.toCqlInteger())
 
         val result =
             engine
@@ -19,15 +21,15 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a global should affect all expressions
-        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
-        Assertions.assertEquals(1, result["Local Parameter"]!!.value)
+        assertEquals(1.toCqlInteger(), result["Included Parameter"]!!.value)
+        assertEquals(1.toCqlInteger(), result["Local Parameter"]!!.value)
     }
 
     @Test
     fun local_param_value() {
         val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = mutableMapOf("IncludedParameterTest.Measurement Period" to 1)
+        val params = mutableMapOf("IncludedParameterTest.Measurement Period" to 1.toCqlInteger())
 
         val result =
             engine
@@ -37,15 +39,16 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result["Included Parameter"]!!.value)
-        Assertions.assertEquals(1, result["Local Parameter"]!!.value)
+        assertNull(result["Included Parameter"]!!.value)
+        assertEquals(1.toCqlInteger(), result["Local Parameter"]!!.value)
     }
 
     @Test
     fun include_param_value() {
         val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
-        val params = mutableMapOf("IncludedParameterTestCommon.Measurement Period" to 1)
+        val params =
+            mutableMapOf("IncludedParameterTestCommon.Measurement Period" to 1.toCqlInteger())
 
         val result: EvaluationResult =
             engine
@@ -55,8 +58,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
         // Parameter added as a local should only impact the local value
-        Assertions.assertNull(result["Local Parameter"]!!.value)
-        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
+        assertNull(result["Local Parameter"]!!.value)
+        assertEquals(1.toCqlInteger(), result["Included Parameter"]!!.value)
     }
 
     @Test
@@ -64,9 +67,9 @@ internal class IncludedParameterTest : CqlTestBase() {
         val expressions = mutableSetOf("Included Parameter", "Local Parameter")
 
         val params =
-            mutableMapOf<String, Any?>(
-                "Measurement Period" to 2,
-                "IncludedParameterTestCommon.Measurement Period" to 1,
+            mutableMapOf(
+                "Measurement Period" to 2.toCqlInteger(),
+                "IncludedParameterTestCommon.Measurement Period" to 1.toCqlInteger(),
             )
 
         val result =
@@ -78,8 +81,8 @@ internal class IncludedParameterTest : CqlTestBase() {
                 .onlyResultOrThrow
         // If a library-specific parameter is not specified, the global
         // value should be used
-        Assertions.assertEquals(2, result["Local Parameter"]!!.value)
-        Assertions.assertEquals(1, result["Included Parameter"]!!.value)
+        assertEquals(2.toCqlInteger(), result["Local Parameter"]!!.value)
+        assertEquals(1.toCqlInteger(), result["Included Parameter"]!!.value)
     }
 
     companion object {

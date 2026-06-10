@@ -2,16 +2,17 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import org.cqframework.cql.cql2elm.CqlIncludeException
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /**
  * Tests for [CqlEngine.resolveParameterDefault].
@@ -33,11 +34,11 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
         val result = engine.resolveParameterDefault(LIBRARY_ID, "Measurement Period")
 
         assertNotNull(result)
-        assertInstanceOf(Interval::class.java, result)
+        assertIs<Interval>(result)
 
-        val interval = result as Interval
-        assertInstanceOf(DateTime::class.java, interval.start)
-        assertInstanceOf(DateTime::class.java, interval.end)
+        val interval = result
+        assertIs<DateTime>(interval.start)
+        assertIs<DateTime>(interval.end)
 
         val start = interval.start as DateTime
         assertEquals(2020, start.dateTime!!.year)
@@ -67,7 +68,7 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
     fun resolves_integer_default() {
         val result = engine.resolveParameterDefault(LIBRARY_ID, "Integer Default")
 
-        assertEquals(42, result)
+        assertEquals(42.toCqlInteger(), result)
     }
 
     /** A parameter whose default is `Now()` should respect the provided evaluationDateTime. */
@@ -78,9 +79,9 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
         val result = engine.resolveParameterDefault(LIBRARY_ID, "Now Default", evalTime)
 
         assertNotNull(result)
-        assertInstanceOf(DateTime::class.java, result)
+        assertIs<DateTime>(result)
 
-        val dateTime = result as DateTime
+        val dateTime = result
         assertEquals(2023, dateTime.dateTime!!.year)
         assertEquals(6, dateTime.dateTime!!.monthValue)
         assertEquals(15, dateTime.dateTime!!.dayOfMonth)
@@ -89,7 +90,7 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
     /** Requesting a parameter name that does not exist in the library should throw. */
     @Test
     fun throws_for_nonexistent_parameter() {
-        assertThrows(CqlException::class.java) {
+        assertFailsWith<CqlException> {
             engine.resolveParameterDefault(LIBRARY_ID, "Nonexistent Parameter")
         }
     }
@@ -100,7 +101,7 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
      */
     @Test
     fun throws_for_nonexistent_library() {
-        assertThrows(CqlIncludeException::class.java) {
+        assertFailsWith<CqlIncludeException> {
             engine.resolveParameterDefault(toElmIdentifier("NonexistentLibrary"), "Some Parameter")
         }
     }
@@ -120,7 +121,7 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
                 .evaluate { library(LIBRARY_ID) { expressions("Simple Expression") } }
                 .onlyResultOrThrow
 
-        assertEquals(42, result["Simple Expression"]!!.value)
+        assertEquals(42.toCqlInteger(), result["Simple Expression"]!!.value)
     }
 
     /**
@@ -133,17 +134,17 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
             engine
                 .evaluate { library(LIBRARY_ID) { expressions("Simple Expression") } }
                 .onlyResultOrThrow
-        assertEquals(42, result1["Simple Expression"]!!.value)
+        assertEquals(42.toCqlInteger(), result1["Simple Expression"]!!.value)
 
         val defaultPeriod = engine.resolveParameterDefault(LIBRARY_ID, "Measurement Period")
         assertNotNull(defaultPeriod)
-        assertInstanceOf(Interval::class.java, defaultPeriod)
+        assertIs<Interval>(defaultPeriod)
 
         val result2 =
             engine
                 .evaluate { library(LIBRARY_ID) { expressions("Simple Expression") } }
                 .onlyResultOrThrow
-        assertEquals(42, result2["Simple Expression"]!!.value)
+        assertEquals(42.toCqlInteger(), result2["Simple Expression"]!!.value)
     }
 
     companion object {

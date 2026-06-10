@@ -2,10 +2,11 @@ package org.opencds.cqf.cql.engine.execution
 
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.test.assertEquals
 import org.hl7.elm.r1.VersionedIdentifier
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 internal class CqlTimeZoneTests : CqlTestBase() {
     @MethodSource("timezones")
@@ -38,7 +39,7 @@ internal class CqlTimeZoneTests : CqlTestBase() {
 
     private fun evaluateExpression(functionName: String, expectedResult: Boolean?) {
         val value = engine.expression(library, functionName)
-        Assertions.assertEquals(expectedResult, value, functionName)
+        assertEquals(expectedResult?.toCqlBoolean(), value, functionName)
     }
 
     companion object {

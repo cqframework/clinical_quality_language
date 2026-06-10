@@ -8,7 +8,7 @@ import org.opencds.cqf.cql.engine.execution.State
 fun <R> computeWithConvertedUnits(
     left: Quantity,
     right: Quantity,
-    computation: (String, BigDecimal, BigDecimal) -> R,
+    computation: (kotlin.String, BigDecimal, BigDecimal) -> R,
     state: State?,
 ): R? {
     val leftUnit = left.unit!!
@@ -48,7 +48,7 @@ fun compareQuantities(leftQuantity: Quantity, rightQuantity: Quantity, state: St
             ?: computeWithConvertedUnits(
                 leftQuantity,
                 rightQuantity,
-                { _: String, leftValue: BigDecimal, rightValue: BigDecimal ->
+                { _: kotlin.String, leftValue: BigDecimal, rightValue: BigDecimal ->
                     leftValue.compareTo(rightValue)
                 },
                 state,
@@ -59,8 +59,8 @@ fun compareQuantities(leftQuantity: Quantity, rightQuantity: Quantity, state: St
 private fun convertIfLessGranular(
     ucumService: UcumService,
     value: BigDecimal,
-    fromUnit: String,
-    toUnit: String,
+    fromUnit: kotlin.String,
+    toUnit: kotlin.String,
 ): BigDecimal? {
     try {
         val convertedDecimal = ucumService.convert(value, fromUnit, toUnit)

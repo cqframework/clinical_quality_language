@@ -3,9 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 // for Uncertainty
 /*
@@ -32,7 +33,7 @@ The CalculateAge operators are defined in terms of a date/time duration calculat
         potentially causing some comparisons to return null.
 */
 object CalculateAgeEvaluator {
-    fun calculateAge(operand: Any?, precision: String?, today: Any?): Any? {
+    fun calculateAge(operand: Value?, precision: kotlin.String?, today: BaseTemporal?): Value? {
         if (operand == null) {
             return null
         }
@@ -43,13 +44,13 @@ object CalculateAgeEvaluator {
 
         throw InvalidOperatorArgument(
             "CalculateAgeInYears(Date), CalculateAgeInYears(DateTime), CalculateAgeInMonths(Date), CalculateAgeInMonths(DateTime), CalculateAgeInWeeks(Date), CalculateAgeInWeeks(DateTime), CalculateAgeInDays(Date), CalculateAgeInDays(DateTime), CalculateAgeInHours(Date), CalculateAgeInHours(DateTime), CalculateAgeInMinutes(Date), CalculateAgeInMinutes(DateTime), CalculateAgeInSeconds(Date), CalculateAgeInSeconds(DateTime)",
-            "CalculateAgeIn${precision}s(${operand.javaClassName})",
+            "CalculateAgeIn${precision}s(${operand.typeAsString})",
         )
     }
 
     @JvmStatic
-    fun internalEvaluate(operand: Any?, precision: String, state: State?): Any? {
-        val today: Any? =
+    fun internalEvaluate(operand: Value?, precision: kotlin.String, state: State?): Value? {
+        val today =
             if (operand is Date) DateFromEvaluator.dateFrom(state!!.evaluationDateTime)
             else state!!.evaluationDateTime
 

@@ -1,14 +1,16 @@
 package org.opencds.cqf.cql.engine.fhir.data
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.hl7.fhir.r4.model.MedicationRequest
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Reference
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 // https://github.com/cqframework/clinical_quality_language/issues/1226
 internal class Issue1226 : FhirExecutionTestBase() {
@@ -19,7 +21,7 @@ internal class Issue1226 : FhirExecutionTestBase() {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
@@ -29,12 +31,17 @@ internal class Issue1226 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<Any?> {
+                ): Iterable<Value?> {
                     when (dataType) {
-                        "Patient" -> return mutableListOf(Patient().setId("123"))
+                        "Patient" ->
+                            return mutableListOf(
+                                r4ModelResolver!!.toCqlValue(Patient().setId("123"))
+                            )
                         "MedicationRequest" ->
                             return mutableListOf(
-                                MedicationRequest().setMedication(Reference("Medication/456"))
+                                r4ModelResolver!!.toCqlValue(
+                                    MedicationRequest().setMedication(Reference("Medication/456"))
+                                )
                             )
                     }
 
@@ -53,6 +60,6 @@ internal class Issue1226 : FhirExecutionTestBase() {
                 .onlyResultOrThrow["Most Recent Medication Request reference"]!!
                 .value
 
-        Assertions.assertEquals("Medication/456", result)
+        assertEquals("Medication/456".toCqlString(), result)
     }
 }

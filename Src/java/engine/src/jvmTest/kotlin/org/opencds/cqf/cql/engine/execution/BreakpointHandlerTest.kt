@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.debug.BreakpointAction
 import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.DebugMap
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class BreakpointHandlerTest : CqlTestBase() {
     companion object {
@@ -68,9 +70,9 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.state.breakpointHandler = handler
         val results = engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
-        Assertions.assertEquals(Integer(3), results["X"]!!.value)
-        Assertions.assertEquals(Integer(12), results["Y"]!!.value)
-        Assertions.assertEquals(Integer(6), results["Z"]!!.value)
+        Assertions.assertEquals(3.toCqlInteger(), results["X"]!!.value)
+        Assertions.assertEquals(12.toCqlInteger(), results["Y"]!!.value)
+        Assertions.assertEquals(6.toCqlInteger(), results["Z"]!!.value)
     }
 
     @Test
@@ -83,7 +85,7 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                     return BreakpointAction.CONTINUE
                 }
 
-                override fun onAfterExpression(elm: Element, state: State, value: Any?) {
+                override fun onAfterExpression(elm: Element, state: State, value: Value?) {
                     if (elm is Add) addResults.add(value)
                     if (elm is Multiply) multiplyResults.add(value)
                 }
@@ -92,8 +94,8 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         engine.state.breakpointHandler = handler
         engine.evaluate { library("BreakpointHandlerTest") }.onlyResultOrThrow
 
-        Assertions.assertTrue(addResults.contains(Integer(3)))
-        Assertions.assertTrue(multiplyResults.contains(Integer(12)))
+        Assertions.assertTrue(addResults.contains(3.toCqlInteger()))
+        Assertions.assertTrue(multiplyResults.contains(12.toCqlInteger()))
     }
 
     @Test
@@ -138,8 +140,8 @@ internal class BreakpointHandlerTest : CqlTestBase() {
         val results = future.get(5, TimeUnit.SECONDS)
 
         Assertions.assertNotNull(results)
-        Assertions.assertEquals(Integer(3), results["X"]!!.value)
-        Assertions.assertEquals(Integer(12), results["Y"]!!.value)
+        Assertions.assertEquals(3.toCqlInteger(), results["X"]!!.value)
+        Assertions.assertEquals(12.toCqlInteger(), results["Y"]!!.value)
     }
 
     @Test
@@ -281,7 +283,7 @@ internal class BreakpointHandlerTest : CqlTestBase() {
                 override fun onExpressionDefEvaluated(
                     elm: ExpressionDef,
                     state: State,
-                    value: Any?,
+                    value: Value?,
                 ) {
                     evaluated.add(elm)
                 }

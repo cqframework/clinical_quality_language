@@ -13,13 +13,11 @@ import org.hl7.fhir.dstu2.model.Enumerations
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
-import org.opencds.cqf.cql.engine.model.ModelResolver
 
 class TestDstu2ModelResolver {
     @Test
     fun resolverThrowsExceptionForUnknownType() {
-        val resolver: ModelResolver =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
+        val resolver = Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
         Assertions.assertThrows(UnknownType::class.java) {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
@@ -27,7 +25,7 @@ class TestDstu2ModelResolver {
 
     @Test
     fun resolveModelInfoTests() {
-        val resolver: ModelResolver = Dstu2FhirModelResolver()
+        val resolver = Dstu2FhirModelResolver()
         val mm = ModelManager()
         val m = mm.resolveModel(ModelIdentifier("FHIR", null, "1.0.2"))
 
@@ -51,8 +49,7 @@ class TestDstu2ModelResolver {
 
     @Test
     fun resolveTypeTests() {
-        val resolver: ModelResolver =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
+        val resolver = Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -84,8 +81,7 @@ class TestDstu2ModelResolver {
 
     @Test
     fun createInstanceTests() {
-        val resolver: ModelResolver =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
+        val resolver = Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
 
         for (type in Enumerations.DataType.entries) {
             // These are abstract types that should never be resolved directly.
@@ -96,7 +92,7 @@ class TestDstu2ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -110,7 +106,7 @@ class TestDstu2ModelResolver {
                 else -> {}
             }
 
-            val instance = resolver.createInstance(type.toCode())
+            val instance = resolver.createHapiInstance(type.toCode())
 
             Assertions.assertNotNull(instance)
         }
@@ -118,7 +114,7 @@ class TestDstu2ModelResolver {
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct
             // type to be created.
-            val instance = resolver.createInstance(enumType.getSimpleName()) as Enumeration<*>?
+            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
             Assertions.assertNotNull(instance)
 
             val enumFactory: Field?
@@ -139,48 +135,47 @@ class TestDstu2ModelResolver {
 
     @Test
     fun contextPathTests() {
-        val resolver: ModelResolver =
-            Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
+        val resolver = Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2))
 
-        var path = resolver.getContextPath("Patient", "Patient") as String?
+        var path = resolver.getContextPath("Patient", "Patient")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("id", path)
 
-        path = resolver.getContextPath(null, "Encounter") as String?
+        path = resolver.getContextPath(null, "Encounter")
         Assertions.assertNull(path)
 
         // TODO: Consider making this an exception on the resolver because
         // if this happens it means something went wrong in the context.
-        path = resolver.getContextPath("Patient", null) as String?
+        path = resolver.getContextPath("Patient", null)
         Assertions.assertNull(path)
 
-        path = resolver.getContextPath("Patient", "Condition") as String?
+        path = resolver.getContextPath("Patient", "Condition")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("patient", path)
 
-        path = resolver.getContextPath("Patient", "Appointment") as String?
+        path = resolver.getContextPath("Patient", "Appointment")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("participant.actor", path)
 
-        path = resolver.getContextPath("Patient", "Observation") as String?
+        path = resolver.getContextPath("Patient", "Observation")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("subject", path)
 
-        path = resolver.getContextPath("Patient", "Encounter") as String?
+        path = resolver.getContextPath("Patient", "Encounter")
         Assertions.assertNotNull(path)
         Assertions.assertEquals("patient", path)
 
-        path = resolver.getContextPath("Patient", "MedicationStatement") as String?
+        path = resolver.getContextPath("Patient", "MedicationStatement")
         Assertions.assertEquals("patient", path)
 
-        path = resolver.getContextPath("Patient", "QuestionnaireResponse") as String?
+        path = resolver.getContextPath("Patient", "QuestionnaireResponse")
         Assertions.assertEquals("subject", path)
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
-        path = resolver.getContextPath("Unfiltered", "MedicationStatement") as String?
+        path = resolver.getContextPath("Unfiltered", "MedicationStatement")
         Assertions.assertNull(path)
 
-        path = resolver.getContextPath("Unspecified", "MedicationStatement") as String?
+        path = resolver.getContextPath("Unspecified", "MedicationStatement")
         Assertions.assertNull(path)
     }
 

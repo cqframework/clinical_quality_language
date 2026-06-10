@@ -2,8 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Time
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -19,27 +21,27 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToTimeEvaluator {
     @JvmStatic
-    fun convertsToTime(argument: Any?): Boolean? {
+    fun convertsToTime(argument: Value?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Time) {
-            return true
+            return Boolean.TRUE
         }
 
         if (argument is String) {
             try {
-                Time(argument)
+                Time(argument.value)
             } catch (dtpe: Exception) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToTime(String)",
-            "ConvertsToTime(${argument.javaClassName})",
+            "ConvertsToTime(${argument.typeAsString})",
         )
     }
 }

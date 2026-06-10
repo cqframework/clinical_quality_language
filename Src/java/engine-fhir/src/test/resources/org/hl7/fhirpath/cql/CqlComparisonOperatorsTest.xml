@@ -798,6 +798,70 @@
 			<expression>@T10:00:00.000 ~ @T22:00:00.000</expression>
 			<output>false</output>
 		</test>
+		<test name="EquivFhirPatientSameNameId">
+			<expression>
+				FHIR.Patient {
+					id: FHIR.id { value: '123' },
+					name: {
+						FHIR.HumanName {
+							given: FHIR.string { value: 'John' }
+						}
+					}
+				} ~ FHIR.Patient {
+					id: FHIR.id { value: '123' },
+					name: {
+						FHIR.HumanName {
+							given: FHIR.string { value: 'John' }
+						}
+					}
+				}
+			</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFhirPatientSameNameDifferentId">
+			<expression>
+				FHIR.Patient {
+					id: FHIR.id { value: '123' },
+					name: {
+						FHIR.HumanName {
+							given: FHIR.string { value: 'John' }
+						}
+					}
+				} ~ FHIR.Patient {
+					id: FHIR.id { value: '456' },
+					name: {
+						FHIR.HumanName {
+							given: FHIR.string { value: 'John' }
+						}
+					}
+				}
+			</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFhirStringSameValueId">
+			<expression>
+				FHIR.string {
+					id: '123',
+					value: 'John'
+				} ~ FHIR.string {
+					id: '123',
+					value: 'John'
+				}
+			</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFhirStringSameValueDifferentId">
+			<expression>
+				FHIR.string {
+					id: '123',
+					value: 'John'
+				} ~ FHIR.string {
+					id: '456',
+					value: 'John'
+				}
+			</expression>
+			<output>true</output>
+		</test>
 	</group>
 	<group name="Not Equal">
 		<test name="SimpleNotEqTrueTrue">

@@ -4,8 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -30,31 +33,36 @@ Note that the order of elements does not matter for the purposes of determining 
 */
 object ProperIncludesEvaluator {
     @JvmStatic
-    fun properlyIncludes(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun properlyIncludes(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left == null && right == null) {
             return null
         }
 
         if (left == null) {
             return if (right is Interval) intervalProperlyIncludes(null, right, precision, state)
-            else listProperlyIncludes(null, right as Iterable<*>, state)
+            else listProperlyIncludes(null, right as List, state)
         }
 
         if (right == null) {
             return if (left is Interval) intervalProperlyIncludes(left, null, precision, state)
-            else listProperlyIncludes(left as Iterable<*>, null, state)
+            else listProperlyIncludes(left as List, null, state)
         }
 
         if (left is Interval && right is Interval) {
             return intervalProperlyIncludes(left, right, precision, state)
         }
-        if (left is Iterable<*> && right is Iterable<*>) {
+        if (left is List && right is List) {
             return listProperlyIncludes(left, right, state)
         }
 
         throw InvalidOperatorArgument(
             "ProperlyIncludes(Interval<T>, Interval<T>) or ProperlyIncludes(List<T>, List<T>)",
-            "ProperlyIncludes(${left.javaClassName}, ${right.javaClassName})",
+            "ProperlyIncludes(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 
@@ -86,7 +94,7 @@ object ProperIncludesEvaluator {
                 )
             return AndEvaluator.and(
                 IncludedInEvaluator.intervalIncludedIn(right, left, precision, state),
-                if (isSame == null) null else !isSame,
+                if (isSame == null) null else (!isSame.value).toCqlBoolean(),
             )
         }
         return AndEvaluator.and(
@@ -95,20 +103,24 @@ object ProperIncludesEvaluator {
         )
     }
 
-    fun listProperlyIncludes(left: Iterable<*>?, right: Iterable<*>?, state: State?): Boolean? {
+    fun listProperlyIncludes(
+        left: List?,
+        right: org.opencds.cqf.cql.engine.runtime.List?,
+        state: State?,
+    ): Boolean? {
         if (left == null) {
-            return false
+            return Boolean.FALSE
         }
 
         val leftCount = left.count()
 
         if (right == null) {
-            return leftCount > 0
+            return (leftCount > 0).toCqlBoolean()
         }
 
         return AndEvaluator.and(
             IncludedInEvaluator.listIncludedIn(right, left, state),
-            GreaterEvaluator.greater(leftCount, right.count(), state),
+            (leftCount > right.count()).toCqlBoolean(),
         )
     }
 }

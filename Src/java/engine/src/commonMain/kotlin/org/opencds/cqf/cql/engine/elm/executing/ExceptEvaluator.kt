@@ -5,8 +5,11 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.exception.UndefinedResult
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 except(left Interval<T>, right Interval<T>) Interval<T>
@@ -30,12 +33,12 @@ If either argument is null, the result is null.
 */
 object ExceptEvaluator {
     @JvmStatic
-    fun except(left: Any?, right: Any?, state: State?): Any? {
+    fun except(left: Value?, right: Value?, state: State?): Value? {
         if (left == null) {
             return null
         }
 
-        if (left !is Iterable<*> && right == null) {
+        if (left !is List && right == null) {
             return null
         }
 
@@ -74,29 +77,31 @@ object ExceptEvaluator {
             val isUndefined =
                 AnyTrueEvaluator.anyTrue(
                     listOf(
-                        leftEqualRight,
-                        rightProperlyIncludesLeft,
-                        AndEvaluator.and(
-                            leftProperlyIncludesRight,
+                            leftEqualRight,
+                            rightProperlyIncludesLeft,
                             AndEvaluator.and(
-                                NotEvaluator.not(rightStartsLeft),
-                                NotEvaluator.not(rightEndsLeft),
+                                leftProperlyIncludesRight,
+                                AndEvaluator.and(
+                                    NotEvaluator.not(rightStartsLeft),
+                                    NotEvaluator.not(rightEndsLeft),
+                                ),
                             ),
-                        ),
-                    )
+                        )
+                        .toCqlList()
                 )
 
-            if (isUndefined != null && isUndefined) {
+            if (isUndefined.value) {
                 return null
             }
 
-            if (GreaterEvaluator.greater(rightStart, leftEnd, state) == true) {
+            if (GreaterEvaluator.greater(rightStart, leftEnd, state)?.value == true) {
                 return left
             } else if (
                 AndEvaluator.and(
-                    LessEvaluator.less(leftStart, rightStart, state),
-                    GreaterEvaluator.greater(leftEnd, rightEnd, state),
-                ) == true
+                        LessEvaluator.less(leftStart, rightStart, state),
+                        GreaterEvaluator.greater(leftEnd, rightEnd, state),
+                    )
+                    ?.value == true
             ) {
                 return null
             }
@@ -104,34 +109,38 @@ object ExceptEvaluator {
             // left interval starts before right interval
             if (
                 AndEvaluator.and(
-                    LessEvaluator.less(leftStart, rightStart, state),
-                    LessOrEqualEvaluator.lessOrEqual(leftEnd, rightEnd, state),
-                ) == true
+                        LessEvaluator.less(leftStart, rightStart, state),
+                        LessOrEqualEvaluator.lessOrEqual(leftEnd, rightEnd, state),
+                    )
+                    ?.value == true
             ) {
                 val min =
                     if (
                         LessEvaluator.less(
-                            PredecessorEvaluator.predecessor(rightStart),
-                            leftEnd,
-                            state,
-                        ) == true
+                                PredecessorEvaluator.predecessor(rightStart),
+                                leftEnd,
+                                state,
+                            )
+                            ?.value == true
                     )
                         PredecessorEvaluator.predecessor(rightStart)
                     else leftEnd
                 return Interval(leftStart, true, min, true, state)
             } else if (
                 AndEvaluator.and(
-                    GreaterEvaluator.greater(leftEnd, rightEnd, state),
-                    GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
-                ) == true
+                        GreaterEvaluator.greater(leftEnd, rightEnd, state),
+                        GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
+                    )
+                    ?.value == true
             ) {
                 val max =
                     if (
                         GreaterEvaluator.greater(
-                            SuccessorEvaluator.successor(rightEnd),
-                            leftStart,
-                            state,
-                        ) == true
+                                SuccessorEvaluator.successor(rightEnd),
+                                leftStart,
+                                state,
+                            )
+                            ?.value == true
                     )
                         SuccessorEvaluator.successor(rightEnd)
                     else leftStart
@@ -142,24 +151,24 @@ object ExceptEvaluator {
                 @Suppress("MaxLineLength")
                 "The following interval values led to an undefined Except result: leftStart: $leftStart, leftEnd: $leftEnd, rightStart: $rightStart, rightEnd: $rightEnd"
             )
-        } else if (left is Iterable<*>) {
-            val rightArr = right as Iterable<*>?
+        } else if (left is List) {
+            val rightArr = right as List?
 
-            val result: MutableList<Any?> = ArrayList()
+            val result = mutableListOf<Value?>()
             var `in`: Boolean?
             for (leftItem in left) {
                 `in` = InEvaluator.`in`(leftItem, rightArr, null, state)
-                if (`in` != null && !`in`) {
+                if (`in` != null && !`in`.value) {
                     result.add(leftItem)
                 }
             }
 
-            return DistinctEvaluator.distinct(result, state)
+            return DistinctEvaluator.distinct(result.toCqlList(), state)
         }
 
         throw InvalidOperatorArgument(
             "Except(Interval<T>, Interval<T>) or Except(List<T>, List<T>)",
-            "Except(${left.javaClassName}, ${right!!.javaClassName})",
+            "Except(${left.typeAsString}, ${right!!.typeAsString})",
         )
     }
 }

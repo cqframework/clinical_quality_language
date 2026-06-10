@@ -1,8 +1,18 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Ratio
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 /*
 
@@ -20,7 +30,7 @@ The ToString operator converts the value of its argument to a String value.
 The operator uses the following string representations for each type:
 Boolean	true|false
 Integer	    (-)?#0
-Long	    (-)?#0L
+Long	    (-)?#0
 Decimal	    (-)?#0.0#
 Quantity    (-)?#0.0# '<unit>'
 Ratio       <quantity>:<quantity>
@@ -32,35 +42,20 @@ If the argument is null, the result is null.
 */
 object ToStringEvaluator {
     @JvmStatic
-    fun toString(operand: Any?): Any? {
-        if (operand == null) {
-            return null
-        }
-
-        if (operand is String) {
-            return operand
-        }
-
-        if (operand is Int) {
-            return operand.toString()
-        } else if (operand is Long) {
-            return operand.toString()
-        } else if (operand is BigDecimal) {
-            return operand.toString()
-        } else if (operand is Quantity) {
-            return operand.toString()
-        } else if (operand is Ratio) {
-            return operand.toString()
-        } else if (operand is Boolean) {
-            return operand.toString()
-        } else if (operand is Date) {
-            return operand.toString()
-        } else if (operand is DateTime) {
-            return operand.toString()
-        } else if (operand is Time) {
-            return operand.toString()
-        } else {
-            return operand.toString()
+    fun toString(operand: Value?): String? {
+        return when (operand) {
+            null -> null
+            is Boolean -> operand.value.toString().toCqlString()
+            is Integer -> operand.value.toString().toCqlString()
+            is Long -> operand.value.toString().toCqlString()
+            is Decimal -> operand.value.toPlainString().toCqlString()
+            is Quantity,
+            is Ratio -> operand.toString().toCqlString()
+            is Date,
+            is DateTime,
+            is Time -> operand.toStringInner().toCqlString()
+            is String -> operand
+            else -> operand.toString().toCqlString()
         }
     }
 }

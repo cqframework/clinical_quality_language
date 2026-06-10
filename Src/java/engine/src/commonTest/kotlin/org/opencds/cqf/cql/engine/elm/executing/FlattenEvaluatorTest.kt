@@ -2,6 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 class FlattenEvaluatorTest {
     /**
@@ -10,8 +12,22 @@ class FlattenEvaluatorTest {
      */
     @Test
     fun flattenTest() {
-        val list = listOf(listOf(1, 2, 3), null, listOf(4, 5))
-        val expected = listOf(1, 2, 3, 4, 5)
+        val list =
+            listOf(
+                    listOf(1.toCqlInteger(), 2.toCqlInteger(), 3.toCqlInteger()).toCqlList(),
+                    null,
+                    listOf(4.toCqlInteger(), 5.toCqlInteger()).toCqlList(),
+                )
+                .toCqlList()
+        val expected =
+            listOf(
+                    1.toCqlInteger(),
+                    2.toCqlInteger(),
+                    3.toCqlInteger(),
+                    4.toCqlInteger(),
+                    5.toCqlInteger(),
+                )
+                .toCqlList()
 
         assertEquals(expected, FlattenEvaluator.flatten(list))
     }

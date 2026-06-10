@@ -3,7 +3,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 
@@ -20,33 +24,26 @@ If the source is null, the result is null.
 
 */
 object GeometricMeanEvaluator {
-    fun geometricMean(source: Iterable<*>?, state: State?): BigDecimal? {
+    fun geometricMean(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
 
-        // remove nulls - operation is on non-null list elements ... TODO: generify and move this to
-        // a utility class
-        val cleanSource: MutableList<BigDecimal?> = ArrayList<BigDecimal?>()
-        for (element in source) {
-            if (element != null) {
-                if (element is BigDecimal) {
-                    cleanSource.add(element)
-                } else {
-                    throw InvalidOperatorArgument(
-                        "GeometricMean(List<Decimal>)",
-                        "GeometricMean(${element.javaClassName})",
-                    )
-                }
-            }
+        if (source is List && source.all { it is Decimal? }) {
+            val cleanSource = source.filterIsInstance<Decimal>().toCqlList()
+            return PowerEvaluator.power(
+                ProductEvaluator.product(cleanSource, state),
+                DivideEvaluator.divide(
+                    BigDecimal(1).toCqlDecimal(),
+                    ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)),
+                    state,
+                ),
+            )
         }
-        return PowerEvaluator.power(
-            ProductEvaluator.product(cleanSource, state),
-            DivideEvaluator.divide(
-                BigDecimal(1),
-                ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)),
-                state,
-            ),
-        ) as BigDecimal?
+
+        throw InvalidOperatorArgument(
+            "GeometricMean(List<Decimal>)",
+            "GeometricMean(${source.typeAsString})",
+        )
     }
 }

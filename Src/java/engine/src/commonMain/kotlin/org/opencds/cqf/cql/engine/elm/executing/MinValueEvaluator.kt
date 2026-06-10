@@ -5,7 +5,22 @@ import org.cqframework.cql.shared.QName
 import org.cqframework.cql.shared.ZERO
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.Constants
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
+import org.opencds.cqf.cql.engine.runtime.dateTypeName
+import org.opencds.cqf.cql.engine.runtime.decimalTypeName
+import org.opencds.cqf.cql.engine.runtime.integerTypeName
+import org.opencds.cqf.cql.engine.runtime.longTypeName
+import org.opencds.cqf.cql.engine.runtime.quantityTypeName
+import org.opencds.cqf.cql.engine.runtime.timeTypeName
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 minimum<T>() T
@@ -21,41 +36,30 @@ For any other type, attempting to invoke minimum results in an error.
 */
 object MinValueEvaluator {
     @JvmStatic
-    fun minValue(type: String?): Any? {
+    fun minValue(type: QName?): Value? {
         if (type == null) {
             return null
         }
 
-        if (type.endsWith("Integer")) {
-            return Value.MIN_INT
+        return when (type) {
+            integerTypeName -> Constants.MIN_INT.toCqlInteger()
+            longTypeName -> Constants.MIN_LONG.toCqlLong()
+            decimalTypeName -> Constants.MIN_DECIMAL.toCqlDecimal()
+            dateTypeName -> Date(1, 1, 1)
+            dateTimeTypeName -> DateTime(ZERO, 1, 1, 1, 0, 0, 0, 0)
+            timeTypeName -> Time(0, 0, 0, 0)
+            // NOTE: Quantity min is not standard
+            quantityTypeName -> Quantity().withValue(Constants.MIN_DECIMAL).withUnit("1")
+            else ->
+                throw InvalidOperatorArgument(
+                    "The Minimum operator is not implemented for type $type"
+                )
         }
-        if (type.endsWith("Long")) {
-            return Value.MIN_LONG
-        }
-        if (type.endsWith("Decimal")) {
-            return Value.MIN_DECIMAL
-        }
-        if (type.endsWith("Date")) {
-            return Date(1, 1, 1)
-        }
-        if (type.endsWith("DateTime")) {
-            return DateTime(ZERO, 1, 1, 1, 0, 0, 0, 0)
-        }
-        if (type.endsWith("Time")) {
-            return Time(0, 0, 0, 0)
-        }
-        // NOTE: Quantity min is not standard
-        if (type.endsWith("Quantity")) {
-            return Quantity().withValue(Value.MIN_DECIMAL).withUnit("1")
-        }
-
-        throw InvalidOperatorArgument("The Minimum operator is not implemented for type ${type}")
     }
 
     @JvmStatic
-    fun internalEvaluate(vtype: QName?, state: State?): Any? {
+    fun internalEvaluate(vtype: QName?, state: State?): Value? {
         val valueType = state!!.environment.fixupQName(vtype!!)
-        val type = valueType.getLocalPart()
-        return minValue(type)
+        return minValue(valueType)
     }
 }

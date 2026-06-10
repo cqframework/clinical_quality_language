@@ -9,6 +9,7 @@ import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
 // https://github.com/cqframework/clinical_quality_language/issues/1441
 // unions without aliases are not working
@@ -24,7 +25,7 @@ internal class Issue1441 : FhirExecutionTestBase() {
                 override fun retrieve(
                     context: String?,
                     contextPath: String?,
-                    contextValue: Any?,
+                    contextValue: String?,
                     dataType: String,
                     templateId: String?,
                     codePath: String?,
@@ -34,11 +35,11 @@ internal class Issue1441 : FhirExecutionTestBase() {
                     dateLowPath: String?,
                     dateHighPath: String?,
                     dateRange: Interval?,
-                ): Iterable<Any?>? {
+                ): Iterable<Value?>? {
                     return when (dataType) {
-                        "Patient" -> mutableListOf(patient)
-                        "Observation" -> mutableListOf(observation)
-                        "Procedure" -> mutableListOf(procedure)
+                        "Patient" -> mutableListOf(r4ModelResolver!!.toCqlValue(patient))
+                        "Observation" -> mutableListOf(r4ModelResolver!!.toCqlValue(observation))
+                        "Procedure" -> mutableListOf(r4ModelResolver!!.toCqlValue(procedure))
                         else -> mutableListOf()
                     }
                 }

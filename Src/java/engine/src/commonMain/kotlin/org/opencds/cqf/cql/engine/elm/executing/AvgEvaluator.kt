@@ -4,8 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Quantity
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 Avg(argument List<Decimal>) Decimal
@@ -18,13 +21,13 @@ Avg(argument List<Quantity>) Quantity
 */
 object AvgEvaluator {
     @JvmStatic
-    fun avg(source: Any?, state: State?): Any? {
+    fun avg(source: Value?, state: State?): Value? {
         if (source == null) {
             return null
         }
 
-        if (source is Iterable<*>) {
-            var avg: Any? = null
+        if (source is List) {
+            var avg: Value? = null
             var size = 1
 
             for (element in source) {
@@ -32,7 +35,7 @@ object AvgEvaluator {
                     continue
                 }
 
-                if (element is BigDecimal || element is Quantity) {
+                if (element is Decimal || element is Quantity) {
                     if (avg == null) {
                         avg = element
                     } else {
@@ -42,17 +45,17 @@ object AvgEvaluator {
                 } else {
                     throw InvalidOperatorArgument(
                         "Avg(List<Decimal>), Avg(List<Quantity>)",
-                        "Avg(List<${source.javaClassName}>)",
+                        "Avg(List<${source.typeAsString}>)",
                     )
                 }
             }
 
-            return DivideEvaluator.divide(avg, BigDecimal(size), state)
+            return DivideEvaluator.divide(avg, BigDecimal(size).toCqlDecimal(), state)
         }
 
         throw InvalidOperatorArgument(
             "Avg(List<Decimal>), Avg(List<Quantity>)",
-            "Avg(${source.javaClassName})",
+            "Avg(${source.typeAsString})",
         )
     }
 }

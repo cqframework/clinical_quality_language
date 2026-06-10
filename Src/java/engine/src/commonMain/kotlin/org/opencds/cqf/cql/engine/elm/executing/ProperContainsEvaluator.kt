@@ -4,8 +4,11 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
     There are two overloads of this operator:
@@ -27,11 +30,11 @@ import org.opencds.cqf.cql.engine.util.javaClassName
         If the second argument is null, the result is null.
 */
 object ProperContainsEvaluator {
-    fun properContains(left: Any?, right: Any?, state: State?): Boolean? {
+    fun properContains(left: Value?, right: Value?, state: State?): Boolean? {
         // If the first argument is null, the result is false.
 
         if (left == null) {
-            return false
+            return Boolean.FALSE
         }
 
         if (left is Interval) {
@@ -39,13 +42,13 @@ object ProperContainsEvaluator {
             val endProperContains = LessEvaluator.less(right, left.end, state)
 
             return if (startProperContains == null) null
-            else if (endProperContains == null) null else startProperContains && endProperContains
-        } else if (left is Iterable<*>) {
-            val leftList = left as MutableList<*>
+            else if (endProperContains == null) null
+            else (startProperContains.value && endProperContains.value).toCqlBoolean()
+        } else if (left is List) {
 
             // The result cannot be true if the list contains fewer than two elements
-            if (leftList.size < 2) {
-                return false
+            if (left.count() < 2) {
+                return Boolean.FALSE
             }
 
             if (right == null) {
@@ -56,7 +59,7 @@ object ProperContainsEvaluator {
                 var listContainsNullElements = false
                 var listContainsOtherElements = false
 
-                for (element in leftList) {
+                for (element in left) {
                     if (element == null) {
                         listContainsNullElements = true
                         continue
@@ -65,7 +68,7 @@ object ProperContainsEvaluator {
                     listContainsOtherElements = true
                 }
 
-                return listContainsNullElements && listContainsOtherElements
+                return (listContainsNullElements && listContainsOtherElements).toCqlBoolean()
             }
 
             // Return true if the given element is in the list, and it is not the only element in
@@ -75,13 +78,13 @@ object ProperContainsEvaluator {
             var listContainsOtherElements = false
             var listContainsElementsOfUnknownEquality = false
 
-            for (element in leftList) {
+            for (element in left) {
                 val equalResult = EqualEvaluator.equal(element, right, state)
                 if (equalResult == null) {
                     listContainsElementsOfUnknownEquality = true
                     continue
                 }
-                if (equalResult) {
+                if (equalResult.value) {
                     listContainsGivenElement = true
                     continue
                 }
@@ -91,7 +94,7 @@ object ProperContainsEvaluator {
             // The given element is in the list and there are other elements, using equality
             // semantics
             if (listContainsGivenElement && listContainsOtherElements) {
-                return true
+                return Boolean.TRUE
             }
 
             // The above is false, but there are elements of unknown equality
@@ -99,23 +102,29 @@ object ProperContainsEvaluator {
                 return null
             }
 
-            return false
+            return Boolean.FALSE
         }
 
         throw InvalidOperatorArgument(
             "ProperContains(List<T>, T) or ProperContains(Interval<T>, T)",
-            "ProperContains(${left.javaClassName}, ${right!!.javaClassName})",
+            "ProperContains(${left.typeAsString}, ${right!!.typeAsString})",
         )
     }
 
     @JvmStatic
-    fun properContains(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun properContains(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         if (left is Interval && right is BaseTemporal) {
             val startProperContains = AfterEvaluator.after(right, left.start, precision, state)
             val endProperContains = BeforeEvaluator.before(right, left.end, precision, state)
 
             return if (startProperContains == null) null
-            else if (endProperContains == null) null else startProperContains && endProperContains
+            else if (endProperContains == null) null
+            else (startProperContains.value && endProperContains.value).toCqlBoolean()
         }
 
         return properContains(left, right, state)

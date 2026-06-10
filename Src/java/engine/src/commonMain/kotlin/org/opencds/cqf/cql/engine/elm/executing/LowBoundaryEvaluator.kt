@@ -1,14 +1,16 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 
@@ -37,85 +39,89 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 @Suppress("MagicNumber")
 object LowBoundaryEvaluator {
     @JvmStatic
-    fun lowBoundary(input: Any?, precision: Any?): Any? {
-        var precision = precision
+    fun lowBoundary(input: Value?, precision: Value?): Value? {
+
         if (input == null) {
             return null
         }
 
-        if (input is BigDecimal) {
-            if (precision == null) {
-                precision = 8
-            }
+        if (precision is Integer?) {
+            var precision = precision?.value
 
-            if (precision as Int > 8) {
-                return null
-            }
+            if (input is Decimal) {
+                if (precision == null) {
+                    precision = 8
+                }
 
-            return input.setScale(precision, RoundingMode.DOWN)
-        } else if (input is Date) {
-            if (precision == null) {
-                precision = 8
-            }
+                if (precision > 8) {
+                    return null
+                }
 
-            if (precision as Int > 8) {
-                return null
-            }
+                return input.value.setScale(precision, RoundingMode.DOWN).toCqlDecimal()
+            } else if (input is Date) {
+                if (precision == null) {
+                    precision = 8
+                }
 
-            if (precision <= 4) {
-                return input.withPrecision(Precision.YEAR)
-            } else if (precision <= 6) {
-                return input.withPrecision(Precision.MONTH)
-            } else if (precision <= 8) {
-                return input.withPrecision(Precision.DAY)
-            }
-        } else if (input is DateTime) {
-            if (precision == null) {
-                precision = 17
-            }
+                if (precision > 8) {
+                    return null
+                }
 
-            if (precision as Int > 17) {
-                return null
-            }
+                if (precision <= 4) {
+                    return input.withPrecision(Precision.YEAR)
+                } else if (precision <= 6) {
+                    return input.withPrecision(Precision.MONTH)
+                } else if (precision <= 8) {
+                    return input.withPrecision(Precision.DAY)
+                }
+            } else if (input is DateTime) {
+                if (precision == null) {
+                    precision = 17
+                }
 
-            if (precision <= 4) {
-                return input.withPrecision(Precision.YEAR)
-            } else if (precision <= 6) {
-                return input.withPrecision(Precision.MONTH)
-            } else if (precision <= 8) {
-                return input.withPrecision(Precision.DAY)
-            } else if (precision <= 10) {
-                return input.withPrecision(Precision.HOUR)
-            } else if (precision <= 12) {
-                return input.withPrecision(Precision.MINUTE)
-            } else if (precision <= 14) {
-                return input.withPrecision(Precision.SECOND)
-            } else if (precision <= 17) {
-                return input.withPrecision(Precision.MILLISECOND)
-            }
-        } else if (input is Time) {
-            if (precision == null) {
-                precision = 9
-            }
+                if (precision > 17) {
+                    return null
+                }
 
-            if (precision as Int > 9) {
-                return null
-            }
+                if (precision <= 4) {
+                    return input.withPrecision(Precision.YEAR)
+                } else if (precision <= 6) {
+                    return input.withPrecision(Precision.MONTH)
+                } else if (precision <= 8) {
+                    return input.withPrecision(Precision.DAY)
+                } else if (precision <= 10) {
+                    return input.withPrecision(Precision.HOUR)
+                } else if (precision <= 12) {
+                    return input.withPrecision(Precision.MINUTE)
+                } else if (precision <= 14) {
+                    return input.withPrecision(Precision.SECOND)
+                } else if (precision <= 17) {
+                    return input.withPrecision(Precision.MILLISECOND)
+                }
+            } else if (input is Time) {
+                if (precision == null) {
+                    precision = 9
+                }
 
-            if (precision <= 2) {
-                return input.withPrecision(Precision.HOUR)
-            } else if (precision <= 4) {
-                return input.withPrecision(Precision.MINUTE)
-            } else if (precision <= 6) {
-                return input.withPrecision(Precision.SECOND)
-            } else if (precision <= 9) {
-                return input.withPrecision(Precision.MILLISECOND)
+                if (precision > 9) {
+                    return null
+                }
+
+                if (precision <= 2) {
+                    return input.withPrecision(Precision.HOUR)
+                } else if (precision <= 4) {
+                    return input.withPrecision(Precision.MINUTE)
+                } else if (precision <= 6) {
+                    return input.withPrecision(Precision.SECOND)
+                } else if (precision <= 9) {
+                    return input.withPrecision(Precision.MILLISECOND)
+                }
             }
         }
 
         throw InvalidOperatorArgument(
             "LowBoundary(Decimal, Integer) or LowBoundary(Date, Integer) or LowBoundary(DateTime, Integer) or LowBoundary(Time, Integer)",
-            "LowBoundary(${input.javaClassName}, ${precision!!.javaClassName})",
+            "LowBoundary(${input.typeAsString}, ${precision!!.typeAsString})",
         )
     }
 }

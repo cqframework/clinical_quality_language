@@ -15,6 +15,7 @@ import org.hl7.fhir.instance.model.api.IBaseBundle
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
 import org.opencds.cqf.cql.engine.exception.TerminologyProviderException
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
@@ -31,7 +32,10 @@ class Dstu3FhirTerminologyProvider(private val fhirClient: IGenericClient) : Ter
                     "Error performing membership check of Code: $code in ValueSet: ${valueSet.id}; the operation is ambiguous because the code system is not provided and the resolved value set contains codes from multiple code systems"
                 )
             }
-            return codes.any { EquivalentEvaluator.equivalent(code.code, it.code) == true }
+            return codes.any {
+                EquivalentEvaluator.equivalent(code.code?.toCqlString(), it.code?.toCqlString()) ==
+                    org.opencds.cqf.cql.engine.runtime.Boolean.TRUE
+            }
         }
         try {
             val id = resolveValueSetId(valueSet)

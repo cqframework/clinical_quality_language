@@ -24,7 +24,7 @@ object CodeEvaluator {
         c: String?,
         display: String?,
         state: State?,
-    ): Any? {
+    ): Code {
         val code = Code().withCode(c).withDisplay(display)
         if (codeSystemRef != null) {
             val enteredLibrary = state!!.enterLibrary(codeSystemRef.libraryName)

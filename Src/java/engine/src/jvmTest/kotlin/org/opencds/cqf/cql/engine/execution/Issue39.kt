@@ -1,14 +1,14 @@
 package org.opencds.cqf.cql.engine.execution
 
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.Boolean
 
 internal class Issue39 : CqlTestBase() {
     @Test
     fun interval() {
         val results = engine.evaluate { library("Issue39") }.onlyResultOrThrow
         val value = results["EquivalentIntervals"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(true))
+        assertEquals(Boolean.TRUE, value)
     }
 }

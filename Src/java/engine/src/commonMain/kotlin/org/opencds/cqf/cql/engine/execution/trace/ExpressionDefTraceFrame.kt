@@ -6,6 +6,7 @@ import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.execution.State.ActivationFrame
 import org.opencds.cqf.cql.engine.execution.Variable
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /** Represents an expression def or function def that was evaluated. */
 class ExpressionDefTraceFrame(
@@ -16,9 +17,9 @@ class ExpressionDefTraceFrame(
     /** Variables in scope when the element was evaluated. */
     variables: List<Variable>,
     /** Context name and value. */
-    context: Pair<String, Any?>,
+    context: Pair<String, String?>,
     /** Result of evaluating the expression or function. Only used if tracing is enabled. */
-    val result: Any?,
+    val result: Value?,
     /** Inner expression and function calls. */
     val subframes: List<TraceFrame>,
 ) : TraceFrame(library, expressionDef, variables, context) {
@@ -56,7 +57,7 @@ class ExpressionDefTraceFrame(
         /** Recursively converts activation frames to trace frames. */
         fun fromActivationFrames(
             activationFrames: List<ActivationFrame>,
-            contextValues: Map<String, Any?>,
+            contextValues: Map<String, String?>,
             detailed: Boolean = false,
         ): List<TraceFrame> {
             return activationFrames.flatMap { activationFrame ->

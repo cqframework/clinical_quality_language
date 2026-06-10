@@ -15,9 +15,11 @@ import org.opencds.cqf.cql.engine.elm.executing.SubtractEvaluator
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 class R4FhirQueryGenerator(
@@ -37,8 +39,8 @@ class R4FhirQueryGenerator(
     override fun generateFhirQueries(
         dataRequirement: ICompositeType?,
         evaluationDateTime: DateTime?,
-        contextValues: MutableMap<String, Any?>?,
-        parameters: MutableMap<String, Any?>?,
+        contextValues: MutableMap<String, String?>?,
+        parameters: MutableMap<String, Value?>?,
         capabilityStatement: IBaseConformance?,
     ): MutableList<String> {
         require(dataRequirement is DataRequirement) {
@@ -143,9 +145,9 @@ class R4FhirQueryGenerator(
                             dateHighPath = "valueDateTime"
                             dateRange =
                                 Interval(
-                                    dateFilterValue.getStart(),
+                                    Date.fromJavaDate(dateFilterValue.getStart()),
                                     true,
-                                    dateFilterValue.getEnd(),
+                                    Date.fromJavaDate(dateFilterValue.getEnd()),
                                     true,
                                 )
                         }
@@ -187,7 +189,7 @@ class R4FhirQueryGenerator(
         val maps =
             setupQueries(
                 contextType,
-                contextPath as String?,
+                contextPath,
                 contextValue,
                 dataRequirement.getType(),
                 templateId,
