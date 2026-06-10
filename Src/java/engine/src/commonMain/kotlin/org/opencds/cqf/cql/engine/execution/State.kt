@@ -6,6 +6,7 @@ import kotlin.IllegalStateException
 import kotlin.RuntimeException
 import kotlin.check
 import kotlin.checkNotNull
+import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmOverloads
 import kotlin.text.StringBuilder
 import kotlin.time.Clock
@@ -24,6 +25,7 @@ import org.hl7.elm.r1.QueryLetRef
 import org.hl7.elm.r1.Retrieve
 import org.hl7.elm.r1.Total
 import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.debug.BreakpointHandler
 import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
@@ -126,6 +128,15 @@ constructor(
      * `true` to filter (skip) an expression. When `null`, the [defaultTraceFilter] is used.
      */
     var traceExpressionFilter: ((Expression) -> Boolean)? = null
+
+    var breakpointHandler: BreakpointHandler? = null
+
+    /**
+     * Populated by EvaluationVisitor.visitExpressionRef or FunctionRefEvaluator.internalEvaluate
+     * before a define/function body is entered. Read by visitExpressionDef / evaluateFunctionDef to
+     * pass the calling ref to onExpressionDefEntered.
+     */
+    @Volatile var currentCallSite: Element? = null
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Any?>>()
 
