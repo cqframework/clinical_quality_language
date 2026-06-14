@@ -18,6 +18,7 @@ expression
         | expression ('<=' | '<' | '>' | '>=') expression           #inequalityExpression
         | expression ('=' | '~' | '!=' | '!~') expression           #equalityExpression
         | expression ('in' | 'contains') expression                 #membershipExpression
+        | expression 'not' ('in' | 'contains') expression           #negateMembershipExpression
         | expression 'and' expression                               #andExpression
         | expression ('or' | 'xor') expression                      #orExpression
         | expression 'implies' expression                           #impliesExpression
