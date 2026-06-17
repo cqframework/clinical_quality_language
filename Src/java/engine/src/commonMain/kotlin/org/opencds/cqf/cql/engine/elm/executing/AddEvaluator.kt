@@ -44,7 +44,7 @@ object AddEvaluator {
                 { commonUnit, leftValue, rightValue ->
                     Quantity().withUnit(commonUnit).withValue(leftValue.add(rightValue))
                 },
-                state!!,
+                state,
             )
         } else if (left is BaseTemporal && right is Quantity) {
             var valueToAddPrecision = Precision.fromString(right.unit!!)

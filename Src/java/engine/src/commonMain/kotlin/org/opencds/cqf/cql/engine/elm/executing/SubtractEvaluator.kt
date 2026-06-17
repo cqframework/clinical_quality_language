@@ -88,7 +88,7 @@ object SubtractEvaluator {
                 { commonUnit, leftValue, rightValue ->
                     Quantity().withUnit(commonUnit).withValue(leftValue.subtract(rightValue))
                 },
-                state!!,
+                state,
             )
         } else if (left is BaseTemporal && right is Quantity) {
             var valueToSubtractPrecision = Precision.fromString(right.unit!!)

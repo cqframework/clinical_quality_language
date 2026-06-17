@@ -160,8 +160,11 @@ object EquivalentEvaluator {
 
         if (left is ClassInstance && right is ClassInstance) {
             if (left.type == right.type) {
+                require(state != null) {
+                    "Equivalent(${left.typeAsString}, ${right.typeAsString}) requires state and state was null"
+                }
                 val dataProvider =
-                    state!!.environment.resolveDataProviderByModelUri(left.type.getNamespaceURI())
+                    state.environment.resolveDataProviderByModelUri(left.type.getNamespaceURI())
                 return dataProvider.objectEquivalent(left, right) { l, r ->
                     equivalent(l, r, state)
                 }
@@ -191,7 +194,7 @@ object EquivalentEvaluator {
                     { _, leftValue, rightValue ->
                         equivalent(leftValue.toCqlDecimal(), rightValue.toCqlDecimal()).value
                     },
-                    state!!,
+                    state,
                 )
             return fullResult?.toCqlBoolean() ?: Boolean.FALSE
         }
