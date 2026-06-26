@@ -13,6 +13,11 @@ import {
 } from "@/shared";
 import { getModelXml } from "@/cql/get-model-xml";
 import { getLibraryCql } from "@/cql/get-library-cql";
+import { toJsCqlValue } from "@/cql/cql-value";
+import {
+  createFhirDataProvider,
+  fhirModelNamespaceUri,
+} from "@/cql/fhir-data-provider";
 
 export function createStatefulEngine() {
   const ucumUtils = ucum.UcumLhcUtils.getInstance();
@@ -132,6 +137,11 @@ export function createStatefulEngine() {
         // @ts-expect-error TypeScript error
         const environment = new engineJs.Environment(libraryManager);
 
+        environment.registerDataProvider(
+          fhirModelNamespaceUri,
+          createFhirDataProvider(modelManager),
+        );
+
         const engine = new engineJs.CqlEngine(
           environment,
           kotlinStdlibJs.KtMutableSet.fromJsSet(
@@ -161,7 +171,7 @@ export function createStatefulEngine() {
             .entries(),
         ].map(([expressionName, expressionResult]) => ({
           expressionName,
-          expressionResult: prettyPrintValue(expressionResult.value),
+          expressionResult: toJsCqlValue(expressionResult.value),
         }));
 
         return {
@@ -191,9 +201,4 @@ export function createStatefulEngine() {
   return {
     runCql,
   };
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function prettyPrintValue(value: Nullable<any>): string {
-  return String(value);
 }

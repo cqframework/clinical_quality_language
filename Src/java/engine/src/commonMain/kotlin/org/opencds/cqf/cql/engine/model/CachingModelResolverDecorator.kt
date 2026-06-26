@@ -1,132 +1,60 @@
 package org.opencds.cqf.cql.engine.model
 
-import org.opencds.cqf.cql.engine.util.JavaClass
+import org.cqframework.cql.shared.QName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.createConcurrentHashMap
-import org.opencds.cqf.cql.engine.util.javaClass
 
 open class CachingModelResolverDecorator(val innerResolver: ModelResolver) : ModelResolver {
-    @Suppress("deprecation")
-    @Deprecated("use packageNames instead")
-    override var packageName: String?
-        get() = this.innerResolver.packageName
-        set(value) {
-            this.innerResolver.packageName = value
-        }
 
-    override fun resolvePath(target: Any?, path: String?): Any? {
-        return this.innerResolver.resolvePath(target, path)
-    }
-
-    override fun getContextPath(contextType: String?, targetType: String?): Any? {
+    override fun getContextPath(
+        contextType: kotlin.String?,
+        targetType: kotlin.String?,
+    ): kotlin.String? {
         if (contextType == null) {
             return null
         }
 
-        for (pn in this.packageNames) {
-            val packageContextResolutions =
-                perPackageContextResolutions.getOrPut(pn) { createConcurrentHashMap() }
+        val contextTypeResolutions =
+            contextResolutions.getOrPut(contextType) { createConcurrentHashMap() }
 
-            val contextTypeResolutions =
-                packageContextResolutions.getOrPut(contextType) { createConcurrentHashMap() }
+        val cached = contextTypeResolutions[targetType]
+        if (cached != null) {
+            return cached
+        }
 
-            val cached = contextTypeResolutions[targetType]
-            if (cached != null) {
-                return cached
-            }
-
-            val result = this.innerResolver.getContextPath(contextType, targetType)
-            if (result != null) {
-                contextTypeResolutions[targetType] = result
-                return result
-            }
+        val result = this.innerResolver.getContextPath(contextType, targetType)
+        if (result != null) {
+            contextTypeResolutions[targetType] = result
+            return result
         }
 
         return null
     }
 
-    override fun resolveType(typeName: String?): JavaClass<*>? {
-        if (typeName == null) {
-            return null
-        }
-
-        for (pn in this.packageNames) {
-            val packageTypeResolutions =
-                perPackageTypeResolutionsByTypeName.getOrPut(pn) { createConcurrentHashMap() }
-
-            val cached = packageTypeResolutions[typeName]
-            if (cached != null) {
-                return cached
-            }
-
-            val result = this.innerResolver.resolveType(typeName)
-            if (result != null) {
-                packageTypeResolutions[typeName] = result
-                return result
-            }
-        }
-
-        return null
-    }
-
-    override fun resolveType(value: Any?): JavaClass<*>? {
-        if (value == null) {
-            return null
-        }
-
-        val valueClass = value.javaClass
-        for (pn in this.packageNames) {
-            val packageTypeResolutions =
-                perPackageTypeResolutionsByClass.getOrPut(pn) { createConcurrentHashMap() }
-
-            val cached = packageTypeResolutions[valueClass]
-            if (cached != null) {
-                return cached
-            }
-
-            val result = this.innerResolver.resolveType(value)
-            if (result != null) {
-                packageTypeResolutions[valueClass] = result
-                return result
-            }
-        }
-
-        return null
-    }
-
-    override fun createInstance(typeName: String?): Any? {
+    override fun createInstance(typeName: kotlin.String?): Value? {
         return this.innerResolver.createInstance(typeName)
     }
 
-    override fun setValue(target: Any?, path: String?, value: Any?) {
-        this.innerResolver.setValue(target, path, value)
+    override fun objectEquivalent(
+        left: ClassInstance,
+        right: ClassInstance,
+        equivalent: (l: Value?, r: Value?) -> Boolean,
+    ): Boolean {
+        return this.innerResolver.objectEquivalent(left, right, equivalent)
     }
 
-    override fun objectEqual(left: Any?, right: Any?): Boolean? {
-        return this.innerResolver.objectEqual(left, right)
-    }
-
-    override fun objectEquivalent(left: Any?, right: Any?): Boolean? {
-        return this.innerResolver.objectEquivalent(left, right)
-    }
-
-    override fun resolveId(target: Any?): String? {
+    override fun resolveId(target: Value?): kotlin.String? {
         return innerResolver.resolveId(target)
     }
 
-    override fun `is`(value: Any?, type: JavaClass<*>?): Boolean? {
-        return this.innerResolver.`is`(value, type)
-    }
-
-    override fun `as`(value: Any?, type: JavaClass<*>?, isStrict: Boolean): Any? {
-        return this.innerResolver.`as`(value, type, isStrict)
+    override fun `is`(valueType: kotlin.String, type: QName): kotlin.Boolean? {
+        return this.innerResolver.`is`(valueType, type)
     }
 
     companion object {
-        private val perPackageContextResolutions =
-            createConcurrentHashMap<String?, MutableMap<String, MutableMap<String?, Any?>>>()
-        private val perPackageTypeResolutionsByTypeName =
-            createConcurrentHashMap<String?, MutableMap<String, JavaClass<*>?>>()
-        private val perPackageTypeResolutionsByClass =
-            createConcurrentHashMap<String?, MutableMap<JavaClass<*>, JavaClass<*>?>>()
+        private val contextResolutions =
+            createConcurrentHashMap<kotlin.String, MutableMap<kotlin.String?, kotlin.String?>>()
     }
 }

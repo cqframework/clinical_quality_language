@@ -374,7 +374,7 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
             engineWithNewLibraryManager,
             expressionCaching,
             r4ModelResolver,
-            EvaluatedResourceTestUtils.RETRIEVE_PROVIDER,
+            EvaluatedResourceTestUtils.getRetrieveProvider(r4ModelResolver!!),
         )
     }
 

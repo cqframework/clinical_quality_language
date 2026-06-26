@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.DateTime
 
 /*
 Now() DateTime
@@ -15,7 +16,7 @@ Now is defined in this way for two reasons:
 */
 object NowEvaluator {
     @JvmStatic
-    fun internalEvaluate(state: State?): Any? {
+    fun internalEvaluate(state: State?): DateTime? {
         return state!!.evaluationDateTime
     }
 }

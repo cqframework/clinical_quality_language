@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 PopulationVariance(argument List<Decimal>) Decimal
@@ -15,11 +16,11 @@ Return types: BigDecimal & Quantity
 object PopulationVarianceEvaluator {
     @JvmStatic
     fun popVariance(
-        source: Any?,
+        source: Value?,
         state: State?,
-        stripSquareFromUnit: Boolean = false,
+        stripSquareFromUnit: kotlin.Boolean = false,
         context: String = "PopulationVariance",
-    ): Any? {
+    ): Value? {
         val sumOfSquaredDifferences =
             VarianceEvaluator.sumOfSquaredDifferences(source, state, stripSquareFromUnit, context)
         return if (sumOfSquaredDifferences != null) AvgEvaluator.avg(sumOfSquaredDifferences, state)

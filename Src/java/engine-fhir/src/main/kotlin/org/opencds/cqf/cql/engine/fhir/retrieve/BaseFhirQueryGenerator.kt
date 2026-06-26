@@ -21,6 +21,7 @@ import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo
 
@@ -76,8 +77,8 @@ protected constructor(
     abstract fun generateFhirQueries(
         dataRequirement: ICompositeType?,
         evaluationDateTime: DateTime?,
-        contextValues: MutableMap<String, Any?>?,
-        parameters: MutableMap<String, Any?>?,
+        contextValues: MutableMap<String, String?>?,
+        parameters: MutableMap<String, Value?>?,
         capabilityStatement: IBaseConformance?,
     ): MutableList<String>
 
@@ -164,7 +165,7 @@ protected constructor(
         dataType: String?,
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
     ): Pair<String, IQueryParameterType>? {
         if (
             context != null && context == "Patient" && contextValue != null && contextPath != null
@@ -173,7 +174,7 @@ protected constructor(
                 context,
                 dataType,
                 contextPath,
-                contextValue as String,
+                contextValue,
             )
         }
 
@@ -279,14 +280,8 @@ protected constructor(
             }
 
             codeCount++
-            // We have a couple cases where types are erased and code
-            // is secretly a String, which the compiler can't detect
-            // We need to fix that in the corresponding places.
-            @Suppress("USELESS_IS_CHECK")
-            if (code is Code) {
+            if (code != null) {
                 codeParams!!.addOr(TokenParam(code.system, code.code))
-            } else if (code is String) {
-                codeParams!!.addOr(TokenParam(code))
             }
         }
 
@@ -300,7 +295,7 @@ protected constructor(
     protected fun setupQueries(
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
         dataType: String?,
         templateId: String?,
         codeFilters: MutableList<CodeFilter>?,
@@ -345,7 +340,7 @@ protected constructor(
     fun setupQueries(
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
         dataType: String?,
         templateId: String?,
         codePath: String?,

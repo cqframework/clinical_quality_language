@@ -1,9 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -19,35 +22,35 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ConvertsToDecimalEvaluator {
     @JvmStatic
-    fun convertsToDecimal(argument: Any?): Boolean? {
+    fun convertsToDecimal(argument: Value?): Boolean? {
         if (argument == null) {
             return null
         }
 
         if (argument is Boolean) {
-            return true
+            return Boolean.TRUE
         }
 
-        if (argument is Int) {
-            return true
+        if (argument is Integer) {
+            return Boolean.TRUE
         }
 
-        if (argument is BigDecimal) {
-            return true
+        if (argument is Decimal) {
+            return Boolean.TRUE
         }
 
         if (argument is String) {
             try {
-                argument.toDouble()
+                argument.value.toDouble()
             } catch (nfe: NumberFormatException) {
-                return false
+                return Boolean.FALSE
             }
-            return true
+            return Boolean.TRUE
         }
 
         throw InvalidOperatorArgument(
             "ConvertsToDecimal(String)",
-            "ConvertsToDecimal(${argument.javaClassName})",
+            "ConvertsToDecimal(${argument.typeAsString})",
         )
     }
 }

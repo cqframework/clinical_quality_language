@@ -5,8 +5,11 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -31,12 +34,12 @@ If either argument is null, the result is null.
 
 */
 object InEvaluator {
-    fun `in`(left: Any?, right: Any?, precision: String?, state: State?): Boolean? {
+    fun `in`(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean? {
         if (right == null) {
-            return false
+            return Boolean.FALSE
         }
 
-        if (right is Iterable<*>) {
+        if (right is List) {
             return listIn(left, right, state)
         } else if (right is Interval) {
             return intervalIn(left, right, precision, state)
@@ -44,14 +47,14 @@ object InEvaluator {
 
         throw InvalidOperatorArgument(
             "In(T, Interval<T>) or In(T, List<T>)",
-            "In(${left!!.javaClassName}, ${right.javaClassName})",
+            "In(${left!!.typeAsString}, ${right.typeAsString})",
         )
     }
 
     private fun intervalIn(
-        left: Any?,
+        left: Value?,
         right: Interval,
-        precision: String?,
+        precision: kotlin.String?,
         state: State?,
     ): Boolean? {
         val rightStart = right.start
@@ -60,27 +63,31 @@ object InEvaluator {
         if (left is BaseTemporal) {
             if (
                 AnyTrueEvaluator.anyTrue(
-                    listOf<Boolean?>(
-                        SameAsEvaluator.sameAs(left, right.start, precision, state),
-                        SameAsEvaluator.sameAs(left, right.end, precision, state),
+                        listOf(
+                                SameAsEvaluator.sameAs(left, right.start, precision, state),
+                                SameAsEvaluator.sameAs(left, right.end, precision, state),
+                            )
+                            .toCqlList()
                     )
-                ) == true
+                    .value == true
             ) {
-                return true
+                return Boolean.TRUE
             } else if (
                 AnyTrueEvaluator.anyTrue(
-                    listOf<Boolean?>(
-                        BeforeEvaluator.before(left, right.start, precision, state),
-                        AfterEvaluator.after(left, right.end, precision, state),
+                        listOf(
+                                BeforeEvaluator.before(left, right.start, precision, state),
+                                AfterEvaluator.after(left, right.end, precision, state),
+                            )
+                            .toCqlList()
                     )
-                ) == true
+                    .value == true
             ) {
-                return false
+                return Boolean.FALSE
             }
 
             val pointSameOrAfterStart: Boolean?
             if (rightStart == null && right.lowClosed) {
-                pointSameOrAfterStart = true
+                pointSameOrAfterStart = Boolean.TRUE
             } else {
                 pointSameOrAfterStart =
                     SameOrAfterEvaluator.sameOrAfter(left, rightStart, precision, state)
@@ -88,7 +95,7 @@ object InEvaluator {
 
             val pointSameOrBeforeEnd: Boolean?
             if (rightEnd == null && right.highClosed) {
-                pointSameOrBeforeEnd = true
+                pointSameOrBeforeEnd = Boolean.TRUE
             } else {
                 pointSameOrBeforeEnd =
                     SameOrBeforeEvaluator.sameOrBefore(left, rightEnd, precision, state)
@@ -97,34 +104,38 @@ object InEvaluator {
             return AndEvaluator.and(pointSameOrAfterStart, pointSameOrBeforeEnd)
         } else if (
             AnyTrueEvaluator.anyTrue(
-                listOf<Boolean?>(
-                    EqualEvaluator.equal(left, right.start, state),
-                    EqualEvaluator.equal(left, right.end, state),
+                    listOf(
+                            EqualEvaluator.equal(left, right.start, state),
+                            EqualEvaluator.equal(left, right.end, state),
+                        )
+                        .toCqlList()
                 )
-            ) == true
+                .value == true
         ) {
-            return true
+            return Boolean.TRUE
         } else if (
             AnyTrueEvaluator.anyTrue(
-                listOf<Boolean?>(
-                    LessEvaluator.less(left, right.start, state),
-                    GreaterEvaluator.greater(left, right.end, state),
+                    listOf(
+                            LessEvaluator.less(left, right.start, state),
+                            GreaterEvaluator.greater(left, right.end, state),
+                        )
+                        .toCqlList()
                 )
-            ) == true
+                .value == true
         ) {
-            return false
+            return Boolean.FALSE
         }
 
         val greaterOrEqual: Boolean?
         if (rightStart == null && right.lowClosed) {
-            greaterOrEqual = true
+            greaterOrEqual = Boolean.TRUE
         } else {
             greaterOrEqual = GreaterOrEqualEvaluator.greaterOrEqual(left, rightStart, state)
         }
 
         val lessOrEqual: Boolean?
         if (rightEnd == null && right.highClosed) {
-            lessOrEqual = true
+            lessOrEqual = Boolean.TRUE
         } else {
             lessOrEqual = LessOrEqualEvaluator.lessOrEqual(left, rightEnd, state)
         }
@@ -132,13 +143,13 @@ object InEvaluator {
         return AndEvaluator.and(greaterOrEqual, lessOrEqual)
     }
 
-    private fun listIn(left: Any?, right: Iterable<*>, state: State?): Boolean {
+    private fun listIn(left: Value?, right: List, state: State?): Boolean {
         var isEqual: Boolean?
         for (element in right) {
             // Nulls are considered equivalent in lists
             // Other elements use equality semantics
             if (element == null && left == null) {
-                return true
+                return Boolean.TRUE
             }
 
             if (state!!.engineOptions.contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
@@ -147,16 +158,21 @@ object InEvaluator {
                 isEqual = EqualEvaluator.equal(left, element, state)
             }
 
-            if (true == isEqual) {
-                return true
+            if (true == isEqual?.value) {
+                return Boolean.TRUE
             }
         }
 
-        return false
+        return Boolean.FALSE
     }
 
     @JvmStatic
-    fun internalEvaluate(left: Any?, right: Any?, precision: String?, state: State?): Any? {
+    fun internalEvaluate(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
         // null right operand case
         //        if (getOperand().get(1) instanceof AsEvaluator) {
         //            if (((AsEvaluator) getOperand().get(1)).getAsTypeSpecifier() instanceof

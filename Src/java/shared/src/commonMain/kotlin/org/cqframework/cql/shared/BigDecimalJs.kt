@@ -159,6 +159,7 @@ enum class RoundingModeJs {
     HALF_DOWN,
     DOWN;
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     fun toKtRoundingMode(): KtRoundingMode {
         return when (this) {
             CEILING -> KtRoundingMode.CEILING

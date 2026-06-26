@@ -1,10 +1,13 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 simple type DateTime
@@ -15,26 +18,50 @@ CQL supports date and time values in the range @0001-01-01T00:00:00.0 to @9999-1
 object DateTimeEvaluator {
     @JvmStatic
     fun internalEvaluate(
-        year: Int?,
-        month: Int?,
-        day: Int?,
-        hour: Int?,
-        minute: Int?,
-        second: Int?,
-        milliSecond: Int?,
-        timeZoneOffset: BigDecimal?,
-    ): Any? {
-        if (year == null) {
-            return null
+        year: Value?,
+        month: Value?,
+        day: Value?,
+        hour: Value?,
+        minute: Value?,
+        second: Value?,
+        milliSecond: Value?,
+        timeZoneOffset: Value?,
+    ): DateTime? {
+        if (
+            year is Integer? &&
+                month is Integer? &&
+                day is Integer? &&
+                hour is Integer? &&
+                minute is Integer? &&
+                second is Integer? &&
+                milliSecond is Integer? &&
+                timeZoneOffset is Decimal
+        ) {
+            if (year == null) {
+                return null
+            }
+
+            try {
+                return DateTime(
+                    timeZoneOffset.value,
+                    *TemporalHelper.cleanArray(
+                        year.value,
+                        month?.value,
+                        day?.value,
+                        hour?.value,
+                        minute?.value,
+                        second?.value,
+                        milliSecond?.value,
+                    ),
+                )
+            } catch (e: Exception) {
+                throw InvalidDateTime("Invalid date time components ${e.message}", e)
+            }
         }
 
-        try {
-            return DateTime(
-                timeZoneOffset!!,
-                *TemporalHelper.cleanArray(year, month, day, hour, minute, second, milliSecond),
-            )
-        } catch (e: Exception) {
-            throw InvalidDateTime("Invalid date time components ${e.message}", e)
-        }
+        throw InvalidOperatorArgument(
+            "DateTime(Integer, Integer, Integer, Integer, Integer, Integer, Integer, Decimal)",
+            "DateTime(${year?.typeAsString}, ${month?.typeAsString}, ${day?.typeAsString}, ${hour?.typeAsString}, ${minute?.typeAsString}, ${second?.typeAsString}, ${milliSecond?.typeAsString}, ${timeZoneOffset?.typeAsString})",
+        )
     }
 }

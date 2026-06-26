@@ -50,6 +50,62 @@
 			<expression>'5' is Integer</expression>
 			<output>false</output>
 		</test>
+		<test name="IsAny1">
+			<expression>null is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsAny2">
+			<expression>5 is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsAny3">
+			<expression>{} is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsAny4">
+			<expression>{ 'x', 'y' } is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsAny5">
+			<expression>Interval[1,2] is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsAny6">
+			<expression>Tuple { a: 'b' } is Any</expression>
+			<output>true</output>
+		</test>
+		<test name="IsIntervalTrue1">
+			<expression>Interval[1,2] is Interval&lt;Integer&gt;</expression>
+			<output>true</output>
+		</test>
+		<test name="IsIntervalTrue2">
+			<expression>Interval[1,2] is Interval&lt;Any&gt;</expression>
+			<output>true</output>
+		</test>
+		<test name="IsIntervalFalse">
+			<expression>Interval[1,2] is Interval&lt;Time&gt;</expression>
+			<output>false</output>
+		</test>
+		<test name="IsListTrue1">
+			<expression>{ 'a', 'b' } is List&lt;String&gt;</expression>
+			<output>true</output>
+		</test>
+		<test name="IsListTrue2">
+			<expression>{ 'a', 'b' } is List&lt;Any&gt;</expression>
+			<output>true</output>
+		</test>
+		<test name="IsListFalse">
+			<expression>{ 'a', 'b' } is List&lt;Integer&gt;</expression>
+			<output>false</output>
+		</test>
+		<test name="IsChoiceTrue">
+			<expression>5 is Choice&lt;Integer, String&gt;</expression>
+			<output>true</output>
+		</test>
+		<test name="IsChoiceFalse">
+			<expression>5 is Choice&lt;Time, Quantity&gt;</expression>
+			<output>false</output>
+		</test>
 	</group>
 	<group name="ToBoolean">
 		<test name="StringNoToBoolean">

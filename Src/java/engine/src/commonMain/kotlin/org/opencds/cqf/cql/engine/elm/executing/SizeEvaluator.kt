@@ -4,7 +4,7 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
     Size(argument Interval<T>) T
@@ -25,7 +25,7 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object SizeEvaluator {
     @JvmStatic
-    fun size(argument: Any?, state: State?): Any? {
+    fun size(argument: Value?, state: State?): Value? {
         if (argument == null) {
             return null
         }
@@ -38,6 +38,6 @@ object SizeEvaluator {
             )
         }
 
-        throw InvalidOperatorArgument("Size(Interval<T>)", "Size(${argument.javaClassName})")
+        throw InvalidOperatorArgument("Size(Interval<T>)", "Size(${argument.typeAsString})")
     }
 }

@@ -4,6 +4,7 @@ import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Profile
+import org.opencds.cqf.cql.engine.runtime.Value
 
 class DebugResult {
     val libraryResults: MutableMap<String?, DebugLibraryResultEntry?> = HashMap()
@@ -11,7 +12,12 @@ class DebugResult {
     var profile: Profile? = null
         private set
 
-    fun logDebugResult(node: Element, currentLibrary: Library, result: Any?, action: DebugAction?) {
+    fun logDebugResult(
+        node: Element,
+        currentLibrary: Library,
+        result: Value?,
+        action: DebugAction?,
+    ) {
         if (action == DebugAction.NONE) {
             return
         }

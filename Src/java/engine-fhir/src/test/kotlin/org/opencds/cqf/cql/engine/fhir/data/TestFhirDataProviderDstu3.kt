@@ -16,6 +16,7 @@ import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider
+import org.opencds.cqf.cql.engine.runtime.Boolean
 
 class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
     private val fhirContext: FhirContext = FhirContext.forCached(FhirVersionEnum.DSTU3)
@@ -148,7 +149,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 .evaluate { library(library!!.identifier!!) { expressions("testFhirObjectEqual") } }
                 .onlyResultOrThrow
         val value = results["testFhirObjectEqual"]!!.value
-        Assertions.assertTrue((value as Boolean?)!!)
+        Assertions.assertTrue((value as org.opencds.cqf.cql.engine.runtime.Boolean).value)
     }
 
     @Test
@@ -161,7 +162,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
                 }
                 .onlyResultOrThrow
         val value = results["testFhirObjectEquivalent"]!!.value
-        Assertions.assertTrue((value as Boolean?)!!)
+        Assertions.assertTrue((value as Boolean).value)
     }
 
     //    TODO - fix

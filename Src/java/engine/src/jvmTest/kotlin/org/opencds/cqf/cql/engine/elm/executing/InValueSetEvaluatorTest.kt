@@ -5,6 +5,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 
 class InValueSetEvaluatorTest {
@@ -16,6 +17,6 @@ class InValueSetEvaluatorTest {
 
         val actual = InValueSetEvaluator.inValueSet(null, valueSet, state)
         assertIs<Boolean>(actual)
-        assertFalse(actual)
+        assertFalse(actual.value)
     }
 }

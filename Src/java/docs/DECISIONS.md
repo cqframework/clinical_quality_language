@@ -20,6 +20,16 @@ Template:
 
 # Architecture Decision Record
 
+## ADR 005: CQL value representation in the KMP engine
+- Status: Proposed
+- Date: 2026-06-09
+- Context: Currently, CQL values are represented in the engine as a mix of Kotlin primitives and interfaces (`kotlin.Boolean`, `kotlin.Int`, `kotlin.collections.Iterable<Any?>`), CQL value classes (`org.opencds.cqf.cql.engine.runtime.Date`, `org.opencds.cqf.cql.engine.runtime.Quantity`), and external classes (HAPI FHIR classes, etc.). The common supertype for engine inputs and outputs is `kotlin.Any?` which affects the engine core and its API.
+- Decision: Create a common supertype (`org.opencds.cqf.cql.engine.runtime.Value`) and a sealed hierarchy of classes representing CQL values permitted in the engine. Within the sealed hierarchy, a new class (`org.opencds.cqf.cql.engine.runtime.ClassInstance`) should be used for CQL class instances (non-system structured types), instead of HAPI FHIR classes and other external classes.
+- Consequences: Users have a unified representation of CQL values as engine inputs and outputs, with better type safety and maintainability. The core of the engine is decoupled from external libraries which makes it easier to support multiple platforms and reduces the risk of compatibility issues.
+- Alternatives:
+  - Continue using the current mixed representation: Rejected due to the lack of consistency and type safety.
+- References: [CQL Value Types](../engine/cql-value-types.md) - lists all CQL types and their corresponding classes in the engine.
+
 ## ADR 004: Flatten repository structure around Kotlin Multiplatform
 - Status: Proposed
 - Date: 2026-04-22

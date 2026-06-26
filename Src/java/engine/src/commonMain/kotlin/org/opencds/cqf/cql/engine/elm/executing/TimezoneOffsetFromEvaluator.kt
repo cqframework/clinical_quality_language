@@ -3,8 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
 /*
 timezoneoffset from(argument DateTime) Decimal
@@ -14,18 +16,18 @@ NOTE: this is within the purview of DateTimeComponentFrom
 */
 object TimezoneOffsetFromEvaluator {
     @JvmStatic
-    fun timezoneOffsetFrom(operand: Any?): Any? {
+    fun timezoneOffsetFrom(operand: Value?): Decimal? {
         if (operand == null) {
             return null
         }
 
         if (operand is DateTime) {
-            return TemporalHelper.zoneToOffset(operand.dateTime!!.getOffset())
+            return TemporalHelper.zoneToOffset(operand.dateTime!!.getOffset()).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument(
             "TimezoneOffsetFrom(DateTime)",
-            "TimezoneOffsetFrom(${operand.javaClassName})",
+            "TimezoneOffsetFrom(${operand.typeAsString})",
         )
     }
 }

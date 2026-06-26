@@ -2,7 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
  * LastPositionOf(pattern String, argument String) Integer
@@ -15,18 +18,18 @@ import org.opencds.cqf.cql.engine.util.javaClassName
  */
 object LastPositionOfEvaluator {
     @JvmStatic
-    fun lastPositionOf(string: Any?, pattern: Any?): Any? {
+    fun lastPositionOf(string: Value?, pattern: Value?): Integer? {
         if (pattern == null || string == null) {
             return null
         }
 
         if (pattern is String) {
-            return (string as String).lastIndexOf(pattern)
+            return (string as String).value.lastIndexOf(pattern.value).toCqlInteger()
         }
 
         throw InvalidOperatorArgument(
             "LastPositionOf(String, String)",
-            "LastPositionOf(${pattern.javaClassName}, ${string.javaClassName})",
+            "LastPositionOf(${pattern.typeAsString}, ${string.typeAsString})",
         )
     }
 }

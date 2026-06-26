@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.elm.executing.AbsEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.AddEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlArithmeticFunctionsTest : CqlTestBase() {
     @Test
@@ -12,7 +14,7 @@ internal class CqlArithmeticFunctionsTest : CqlTestBase() {
         // error testing
 
         try {
-            AbsEvaluator.abs("This is an error")
+            AbsEvaluator.abs("This is an error".toCqlString())
             Assertions.fail<Any?>()
         } catch (e: CqlException) {
             // pass
@@ -28,7 +30,7 @@ internal class CqlArithmeticFunctionsTest : CqlTestBase() {
             // Passing null as the state argument to the subtract method is fine here since that
             // method only uses the state when it has to convert Quantities with different units
             // which cannot happen here.
-            AddEvaluator.add("This is an error", 404, null)
+            AddEvaluator.add("This is an error".toCqlString(), 404.toCqlInteger(), null)
             Assertions.fail<Any?>()
         } catch (e: CqlException) {
             // pass

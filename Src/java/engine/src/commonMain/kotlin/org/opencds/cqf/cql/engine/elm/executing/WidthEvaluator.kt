@@ -4,7 +4,7 @@ import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Interval
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 width of(argument Interval<T>) T
@@ -17,7 +17,7 @@ If the argument is null, the result is null.
 */
 object WidthEvaluator {
     @JvmStatic
-    fun width(operand: Any?, state: State?): Any? {
+    fun width(operand: Value?, state: State?): Value? {
         if (operand == null) {
             return null
         }
@@ -25,6 +25,6 @@ object WidthEvaluator {
             return Interval.getSize(operand.start, operand.end, state)
         }
 
-        throw InvalidOperatorArgument("Width(Interval<T>)", "Width(${operand.javaClassName})")
+        throw InvalidOperatorArgument("Width(Interval<T>)", "Width(${operand.typeAsString})")
     }
 }

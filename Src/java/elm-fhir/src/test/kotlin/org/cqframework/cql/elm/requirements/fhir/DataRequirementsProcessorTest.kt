@@ -47,6 +47,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -1103,7 +1105,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
@@ -1129,7 +1131,7 @@ class DataRequirementsProcessorTest {
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
         expressions: Set<String>,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
         val moduleDefinitionLibrary =
@@ -1154,7 +1156,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
     ): Library {
         val dqReqTrans = DataRequirementsProcessor()
@@ -1182,7 +1184,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
     ): Library {
@@ -1211,7 +1213,7 @@ class DataRequirementsProcessorTest {
     private fun getModuleDefinitionLibrary(
         setup: Setup,
         cqlTranslatorOptions: CqlCompilerOptions,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
         includeLogicDefinitions: Boolean,
         recursive: Boolean,
@@ -1754,7 +1756,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                mutableMapOf(Pair("ModalityCode", "CT")),
+                mutableMapOf(Pair("ModalityCode", "CT".toCqlString())),
                 evaluationDateTime,
             )
 
@@ -1822,7 +1824,7 @@ class DataRequirementsProcessorTest {
             getModuleDefinitionLibrary(
                 manager,
                 compilerOptions,
-                mutableMapOf(Pair("Manufacturer", "Canon Medical Systems")),
+                mutableMapOf(Pair("Manufacturer", "Canon Medical Systems".toCqlString())),
                 evaluationDateTime,
             )
 
@@ -3681,8 +3683,8 @@ class DataRequirementsProcessorTest {
         val compilerOptions = this.compilerOptions
         val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
         val expressions = mutableSetOf("HasStudyWithModalityDirectRetrieve")
-        val parameters = HashMap<String, Any?>()
-        parameters["ModalityCode"] = "CT"
+        val parameters = HashMap<String, Value?>()
+        parameters["ModalityCode"] = "CT".toCqlString()
         val moduleDefinitionLibrary =
             getModuleDefinitionLibrary(manager, compilerOptions, expressions, parameters)
 
@@ -3865,8 +3867,8 @@ class DataRequirementsProcessorTest {
         val compilerOptions = this.compilerOptions
         val manager = setupSelectivityAnalysis("TestCases/TestCase12.cql", compilerOptions)
         val expressions = mutableSetOf("HasStudyWithModalityDirect")
-        val parameters = HashMap<String, Any?>()
-        parameters["ModalityCode"] = "CT"
+        val parameters = HashMap<String, Value?>()
+        parameters["ModalityCode"] = "CT".toCqlString()
         val moduleDefinitionLibrary =
             getModuleDefinitionLibrary(manager, compilerOptions, expressions, parameters)
 

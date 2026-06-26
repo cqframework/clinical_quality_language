@@ -2,7 +2,8 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.runtime.Ratio
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 
@@ -25,7 +26,7 @@ import org.opencds.cqf.cql.engine.util.javaClassName
 */
 object ToRatioEvaluator {
     @JvmStatic
-    fun toRatio(operand: Any?): Any? {
+    fun toRatio(operand: Value?): Ratio? {
         if (operand == null) {
             return null
         }
@@ -35,18 +36,18 @@ object ToRatioEvaluator {
         }
 
         if (operand is String) {
-            val quantityStrings: Array<String?> =
+            val quantityStrings =
                 operand.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (quantityStrings.size == 2) {
                 return Ratio()
-                    .withNumerator(ToQuantityEvaluator.toQuantity(quantityStrings[0]!!)!!)
-                    .withDenominator(ToQuantityEvaluator.toQuantity(quantityStrings[1]!!)!!)
+                    .withNumerator(ToQuantityEvaluator.toQuantity(quantityStrings[0])!!)
+                    .withDenominator(ToQuantityEvaluator.toQuantity(quantityStrings[1])!!)
             }
             return null
         }
 
         throw IllegalArgumentException(
-            "Cannot cast a value of type ${operand.javaClassName} as Ratio - use String values."
+            "Cannot cast a value of type ${operand.typeAsString} as Ratio - use String values."
         )
     }
 }

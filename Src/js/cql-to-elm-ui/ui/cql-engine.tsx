@@ -3,6 +3,7 @@ import { TSetState, TState } from "@/state";
 import { Fragment, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/spinner";
 import { Label } from "@/ui/label";
+import { CqlValue } from "@/ui/cql-value";
 
 export function CqlEngineResult({
   state,
@@ -204,7 +205,7 @@ function CqlEngineResultInner({ state }: { state: TState }) {
               ({ expressionName, expressionResult }, resultIndex) => (
                 <div key={resultIndex}>
                   <b style={{ color: "rgb(149, 56, 0)" }}>{expressionName}</b> ={" "}
-                  {expressionResult}
+                  <CqlValue value={expressionResult} />
                 </div>
               ),
             )}

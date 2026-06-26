@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.IllegalStateException
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.ONE
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.elm.executing.LessOrEqualEvaluator.lessOrEqual
@@ -20,10 +19,10 @@ class IntervalHelper private constructor() {
          * @param intervals the list of intervals to search
          * @return the first non-null boundary found
          */
-        fun findNonNullBoundary(intervals: List<Interval?>): Any? {
+        fun findNonNullBoundary(intervals: kotlin.collections.List<Interval?>): Value? {
             return intervals
-                .filter { obj -> obj != null }
-                .flatMap { interval -> listOf(interval!!.start, interval.end) }
+                .filterNotNull()
+                .flatMap { interval -> listOf(interval.start, interval.end) }
                 .firstOrNull { obj -> obj != null }
         }
 
@@ -35,21 +34,21 @@ class IntervalHelper private constructor() {
          * @return a Quantity with a value of 1 and the scale and unit determined by the precision
          *   of the interval boundaries
          */
-        fun quantityFromCoarsestPrecisionOfBoundaries(intervals: List<Interval?>): Quantity {
-            val nonNullBoundary: Any? = findNonNullBoundary(intervals)
+        fun quantityFromCoarsestPrecisionOfBoundaries(
+            intervals: kotlin.collections.List<Interval?>
+        ): Quantity {
+            val nonNullBoundary = findNonNullBoundary(intervals)
 
             when (nonNullBoundary) {
-                is BigDecimal -> {
+                is Decimal -> {
                     val scale =
-                        Value.getCoarsestScale(
-                            intervals
-                                .filter { obj -> obj != null }
-                                .flatMap { interval ->
-                                    listOf(
-                                        interval!!.start as BigDecimal?,
-                                        interval.end as BigDecimal?,
-                                    )
-                                }
+                        DecimalHelper.getCoarsestScale(
+                            intervals.filterNotNull().flatMap { interval ->
+                                listOf(
+                                    (interval.start as Decimal?)?.value,
+                                    (interval.end as Decimal?)?.value,
+                                )
+                            }
                         )
                     return Quantity()
                         .withValue(ONE.setScale(scale, RoundingMode.UNNECESSARY))
@@ -58,17 +57,14 @@ class IntervalHelper private constructor() {
 
                 is Quantity -> {
                     val scale =
-                        Value.getCoarsestScale(
+                        DecimalHelper.getCoarsestScale(
                             intervals
-                                .filter { obj -> obj != null }
+                                .filterNotNull()
                                 .flatMap { interval ->
-                                    listOf(
-                                        (interval!!.start as Quantity?),
-                                        (interval.end as Quantity?),
-                                    )
+                                    listOf(interval.start as Quantity?, interval.end as Quantity?)
                                 }
-                                .filter { obj -> obj != null }
-                                .map { obj -> obj!!.value }
+                                .filterNotNull()
+                                .map { obj -> obj.value }
                         )
                     return Quantity()
                         .withValue(ONE.setScale(scale, RoundingMode.UNNECESSARY))
@@ -76,13 +72,13 @@ class IntervalHelper private constructor() {
                 }
 
                 is BaseTemporal -> {
-                    val precision: String =
+                    val precision =
                         BaseTemporal.getLowestPrecision(
                             *(intervals
-                                .filter { obj -> obj != null }
+                                .filterNotNull()
                                 .flatMap { interval ->
                                     listOf(
-                                        interval!!.start as BaseTemporal?,
+                                        interval.start as BaseTemporal?,
                                         interval.end as BaseTemporal?,
                                     )
                                 }
@@ -106,14 +102,14 @@ class IntervalHelper private constructor() {
          */
         fun isQuantityCompatibleWithBoundaries(
             quantity: Quantity,
-            intervals: List<Interval?>,
-        ): Boolean {
-            val nonNullBoundary: Any? = findNonNullBoundary(intervals)
+            intervals: kotlin.collections.List<Interval?>,
+        ): kotlin.Boolean {
+            val nonNullBoundary = findNonNullBoundary(intervals)
 
             when (nonNullBoundary) {
-                is Int,
+                is Integer,
                 is Long,
-                is BigDecimal -> {
+                is Decimal -> {
                     return Quantity.isDefaultUnit(quantity.unit)
                 }
 
@@ -157,13 +153,20 @@ class IntervalHelper private constructor() {
             val end = interval.end
 
             when (start) {
-                is BigDecimal if end is BigDecimal -> {
+                is Decimal if end is Decimal -> {
                     val quantityScale = quantity.value!!.scale()
-                    val truncatedStart = Value.roundToScale(start, quantityScale, true)
-                    val truncatedEnd = Value.roundToScale(end, quantityScale, false)
+                    val truncatedStart =
+                        DecimalHelper.roundToScale(start.value, quantityScale, true)
+                    val truncatedEnd = DecimalHelper.roundToScale(end.value, quantityScale, false)
 
                     if (truncatedStart <= truncatedEnd) {
-                        return Interval(truncatedStart, true, truncatedEnd, true, state)
+                        return Interval(
+                            truncatedStart.toCqlDecimal(),
+                            true,
+                            truncatedEnd.toCqlDecimal(),
+                            true,
+                            state,
+                        )
                     }
 
                     return null
@@ -173,11 +176,15 @@ class IntervalHelper private constructor() {
                     val quantityScale = quantity.value!!.scale()
                     val truncatedStart =
                         Quantity()
-                            .withValue(Value.roundToScale(start.value!!, quantityScale, true))
+                            .withValue(
+                                DecimalHelper.roundToScale(start.value!!, quantityScale, true)
+                            )
                             .withUnit(start.unit)
                     val truncatedEnd =
                         Quantity()
-                            .withValue(Value.roundToScale(end.value!!, quantityScale, false))
+                            .withValue(
+                                DecimalHelper.roundToScale(end.value!!, quantityScale, false)
+                            )
                             .withUnit(end.unit)
 
                     if (truncatedStart <= truncatedEnd) {
@@ -192,7 +199,7 @@ class IntervalHelper private constructor() {
                     val truncatedStart = start.roundToPrecision(precision, true)
                     val truncatedEnd = end.roundToPrecision(precision, false)
 
-                    if (true == lessOrEqual(truncatedStart, truncatedEnd, state)) {
+                    if (true == lessOrEqual(truncatedStart, truncatedEnd, state)?.value) {
                         return Interval(truncatedStart, true, truncatedEnd, true)
                     }
 

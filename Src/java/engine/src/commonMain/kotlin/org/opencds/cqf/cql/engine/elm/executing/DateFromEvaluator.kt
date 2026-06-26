@@ -5,7 +5,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Precision
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 date from(argument DateTime) Date
@@ -15,7 +15,7 @@ NOTE: this is within the purview of DateTimeComponentFrom
 */
 object DateFromEvaluator {
     @JvmStatic
-    fun dateFrom(operand: Any?): Date? {
+    fun dateFrom(operand: Value?): Date? {
         if (operand == null) {
             return null
         }
@@ -37,6 +37,6 @@ object DateFromEvaluator {
             }
         }
 
-        throw InvalidOperatorArgument("date from(DateTime)", "date from(${operand.javaClassName})")
+        throw InvalidOperatorArgument("date from(DateTime)", "date from(${operand.typeAsString})")
     }
 }

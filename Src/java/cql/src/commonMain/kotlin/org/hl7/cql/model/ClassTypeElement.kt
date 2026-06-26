@@ -1,5 +1,11 @@
 package org.hl7.cql.model
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import org.cqframework.cql.shared.JsOnlyExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsOnlyExport
 data class ClassTypeElement(
     val name: String,
     val type: DataType,
@@ -9,6 +15,7 @@ data class ClassTypeElement(
 ) {
 
     // For Java compatibility. Can be deleted once tests are updated.
+    @JsExport.Ignore
     constructor(name: String, type: DataType) : this(name, type, false, false, null)
 
     init {

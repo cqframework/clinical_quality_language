@@ -2,9 +2,15 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.runtime.*
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.util.isLastDayOfFeb
-import org.opencds.cqf.cql.engine.util.javaClassName
 
 /*
 
@@ -32,7 +38,7 @@ days between DateTime(2011, 5, 1) and DateTime(2012, 5, 6) = 365 + 5 = 370 days
 */
 object DurationBetweenEvaluator {
     @JvmStatic
-    fun duration(left: Any?, right: Any?, precision: Precision?): Any? {
+    fun duration(left: Value?, right: Value?, precision: Precision?): Value? {
         var precision = precision
         if (left == null || right == null) {
             return null
@@ -107,18 +113,19 @@ object DurationBetweenEvaluator {
                         left.dateTime!!.isLastDayOfFeb() &&
                         right.dateTime!!.isLastDayOfFeb()
                 ) {
-                    return right.dateTime!!.getYear() - left.dateTime!!.getYear()
+                    return (right.dateTime!!.getYear() - left.dateTime!!.getYear()).toCqlInteger()
                 }
 
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return if (isWeeks)
                         (precision
-                            .toChronoUnit()
-                            .between(
-                                left.dateTime!!.toLocalDateTime(),
-                                right.dateTime!!.toLocalDateTime(),
-                            )
-                            .toInt() / 7)
+                                .toChronoUnit()
+                                .between(
+                                    left.dateTime!!.toLocalDateTime(),
+                                    right.dateTime!!.toLocalDateTime(),
+                                )
+                                .toInt() / 7)
+                            .toCqlInteger()
                     else
                         precision
                             .toChronoUnit()
@@ -127,11 +134,13 @@ object DurationBetweenEvaluator {
                                 right.dateTime!!.toLocalDateTime(),
                             )
                             .toInt()
+                            .toCqlInteger()
                 } else {
                     return precision
                         .toChronoUnit()
                         .between(left.dateTime!!, right.dateTime!!)
                         .toInt()
+                        .toCqlInteger()
                 }
             }
 
@@ -141,22 +150,32 @@ object DurationBetweenEvaluator {
                         left.date!!.isLastDayOfFeb() &&
                         right.date!!.isLastDayOfFeb()
                 ) {
-                    return right.date!!.getYear() - left.date!!.getYear()
+                    return (right.date!!.getYear() - left.date!!.getYear()).toCqlInteger()
                 }
 
                 return if (isWeeks)
-                    precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7
-                else precision.toChronoUnit().between(left.date!!, right.date!!).toInt()
+                    (precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7)
+                        .toCqlInteger()
+                else
+                    precision
+                        .toChronoUnit()
+                        .between(left.date!!, right.date!!)
+                        .toInt()
+                        .toCqlInteger()
             }
 
             if (left is Time && right is Time) {
-                return precision.toChronoUnit().between(left.time, right.time).toInt()
+                return precision
+                    .toChronoUnit()
+                    .between(left.time, right.time)
+                    .toInt()
+                    .toCqlInteger()
             }
         }
 
         throw InvalidOperatorArgument(
             "DurationBetween(Date, Date), DurationBetween(DateTime, DateTime), DurationBetween(Time, Time)",
-            "DurationBetween(${left.javaClassName}, ${right.javaClassName})",
+            "DurationBetween(${left.typeAsString}, ${right.typeAsString})",
         )
     }
 }

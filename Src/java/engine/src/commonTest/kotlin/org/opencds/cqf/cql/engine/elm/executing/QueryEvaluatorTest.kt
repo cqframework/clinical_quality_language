@@ -10,6 +10,9 @@ import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.EvaluationVisitor
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Tuple
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 class QueryEvaluatorTest {
     /**
@@ -31,25 +34,56 @@ class QueryEvaluatorTest {
                 )
 
         val list =
-            mutableListOf<Any?>(
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 2)),
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 1)),
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 3)),
-                Tuple().withElements(mutableMapOf("field1" to 1, "field2" to 2)),
-                Tuple().withElements(mutableMapOf("field1" to 1, "field2" to 3)),
+            mutableListOf<Value?>(
+                Tuple()
+                    .withElements(
+                        mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 2.toCqlInteger())
+                    ),
+                Tuple()
+                    .withElements(
+                        mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 1.toCqlInteger())
+                    ),
+                Tuple()
+                    .withElements(
+                        mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 3.toCqlInteger())
+                    ),
+                Tuple()
+                    .withElements(
+                        mutableMapOf("field1" to 1.toCqlInteger(), "field2" to 2.toCqlInteger())
+                    ),
+                Tuple()
+                    .withElements(
+                        mutableMapOf("field1" to 1.toCqlInteger(), "field2" to 3.toCqlInteger())
+                    ),
             )
 
         QueryEvaluator.sortResult(query, list, State(Environment(null)), EvaluationVisitor())
 
         val expected =
-            listOf<Any?>(
-                Tuple().withElements(mutableMapOf("field1" to 1, "field2" to 3)),
-                Tuple().withElements(mutableMapOf("field1" to 1, "field2" to 2)),
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 3)),
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 2)),
-                Tuple().withElements(mutableMapOf("field1" to 2, "field2" to 1)),
-            )
+            listOf(
+                    Tuple()
+                        .withElements(
+                            mutableMapOf("field1" to 1.toCqlInteger(), "field2" to 3.toCqlInteger())
+                        ),
+                    Tuple()
+                        .withElements(
+                            mutableMapOf("field1" to 1.toCqlInteger(), "field2" to 2.toCqlInteger())
+                        ),
+                    Tuple()
+                        .withElements(
+                            mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 3.toCqlInteger())
+                        ),
+                    Tuple()
+                        .withElements(
+                            mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 2.toCqlInteger())
+                        ),
+                    Tuple()
+                        .withElements(
+                            mutableMapOf("field1" to 2.toCqlInteger(), "field2" to 1.toCqlInteger())
+                        ),
+                )
+                .toCqlList()
 
-        assertEquals(true, EqualEvaluator.equal(expected, list))
+        assertEquals(expected, list.toCqlList())
     }
 }

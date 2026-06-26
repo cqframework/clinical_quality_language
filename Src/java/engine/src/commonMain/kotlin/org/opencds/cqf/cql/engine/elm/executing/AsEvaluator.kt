@@ -2,8 +2,11 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.As
+import org.hl7.elm.r1.NamedTypeSpecifier
+import org.hl7.elm.r1.TypeSpecifier
+import org.opencds.cqf.cql.engine.exception.InvalidCast
 import org.opencds.cqf.cql.engine.execution.State
-import org.opencds.cqf.cql.engine.util.JavaClass
+import org.opencds.cqf.cql.engine.runtime.Value
 
 /*
 as<T>(argument Any) T
@@ -25,17 +28,31 @@ define RuntimeError:
     return cast P as Observation
 */
 object AsEvaluator {
-    private fun resolveType(`as`: As, state: State?): JavaClass<*>? {
-        if (`as`.asTypeSpecifier != null) {
-            return state!!.environment.resolveType(`as`.asTypeSpecifier)
-        }
-
-        return state!!.environment.resolveType(`as`.asType)
+    @JvmStatic
+    fun internalEvaluate(
+        operand: Value?,
+        `as`: As,
+        isStrict: kotlin.Boolean,
+        state: State?,
+    ): Value? {
+        val type = `as`.asTypeSpecifier ?: NamedTypeSpecifier().withName(`as`.asType)
+        return `as`(operand, type, isStrict, state)
     }
 
-    @JvmStatic
-    fun internalEvaluate(operand: Any?, `as`: As, isStrict: Boolean, state: State?): Any? {
-        val clazz = resolveType(`as`, state)
-        return state!!.environment.`as`(operand, clazz!!, isStrict)
+    fun `as`(
+        operand: Value?,
+        type: TypeSpecifier,
+        isStrict: kotlin.Boolean,
+        state: State?,
+    ): Value? {
+        if (IsEvaluator.`is`(operand, type, state) == true) {
+            return operand
+        }
+
+        if (isStrict) {
+            throw InvalidCast("Cannot cast $operand to $type.")
+        }
+
+        return null
     }
 }

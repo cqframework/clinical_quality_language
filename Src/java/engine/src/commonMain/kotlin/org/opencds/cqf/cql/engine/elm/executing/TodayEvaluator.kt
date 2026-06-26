@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.Date
 
 /*
 Today() Date
@@ -11,7 +12,7 @@ See the Now operator for more information on the rationale for defining the Toda
 */
 object TodayEvaluator {
     @JvmStatic
-    fun today(state: State?): Any? {
+    fun today(state: State?): Date? {
         return DateFromEvaluator.dateFrom(state!!.evaluationDateTime)
     }
 }

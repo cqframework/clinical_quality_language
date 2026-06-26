@@ -2,7 +2,9 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.util.javaClassName
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 and (left Boolean, right Boolean) Boolean
@@ -18,26 +20,30 @@ define IsNull = true and null
 */
 object AndEvaluator {
     @JvmStatic
-    fun and(left: Any?, right: Any?): Boolean? {
+    fun and(left: Value?, right: Value?): Boolean? {
         if (left == null && right == null) {
             return null
         }
 
         if (left == null && right is Boolean) {
-            return if (right) null else false
+            return if (right.value) null else Boolean.FALSE
         }
 
         if (right == null && left is Boolean) {
-            return if (left) null else false
+            return if (left.value) null else Boolean.FALSE
         }
 
         if (left is Boolean && right is Boolean) {
-            return left && right
+            return and(left, right)
         }
 
         throw InvalidOperatorArgument(
             "And(Boolean, Boolean)",
-            "And(${if (left == null) "Null" else left.javaClassName}, ${if (right == null) "Null" else right.javaClassName})",
+            "And(${if (left == null) "Null" else left.typeAsString}, ${if (right == null) "Null" else right.typeAsString})",
         )
+    }
+
+    fun and(left: Boolean, right: Boolean): Boolean {
+        return (left.value && right.value).toCqlBoolean()
     }
 }

@@ -1,30 +1,32 @@
 package org.opencds.cqf.cql.engine.execution
 
 import java.math.BigDecimal
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 internal class SignatureOutputTests : CqlTestBase() {
     @Test
     fun evaluate() {
         val results = engine.evaluate { library("SignatureOutputTests") }.onlyResultOrThrow
         var value = results["TestIntegerOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("1")))
+        assertEquals(BigDecimal("1").toCqlDecimal(), value)
 
         value = results["TestDecimalOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("1.0")))
+        assertEquals(BigDecimal("1.0").toCqlDecimal(), value)
 
         value = results["TestMultipleOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(5))
+        assertEquals(5.toCqlInteger(), value)
 
         value = results["TestIntegerMultipleOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(1))
+        assertEquals(Integer.ONE, value)
 
         value = results["TestDecimalMultipleOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(BigDecimal("2.0")))
+        assertEquals(BigDecimal("2.0").toCqlDecimal(), value)
 
         value = results["TestIntegerAndDecimalMultipleOverload"]!!.value
-        MatcherAssert.assertThat(value, Matchers.`is`(1))
+        assertEquals(Integer.ONE, value)
     }
 }
