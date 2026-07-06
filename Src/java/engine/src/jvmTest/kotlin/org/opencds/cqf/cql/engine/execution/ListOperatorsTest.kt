@@ -320,7 +320,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertNull(value)
 
         value = results["EqualEmptyListAndEmptyList"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.TRUE, value)
 
         value = results["Equal12And123"]!!.value
         assertEquals(Boolean.FALSE, value)
@@ -712,7 +712,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(Boolean.FALSE, value)
 
         value = results["NotEqualEmptyAndEmpty"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["NotEqualABCAndABC"]!!.value
         assertEquals(Boolean.FALSE, value)

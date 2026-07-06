@@ -263,10 +263,6 @@ object EqualEvaluator {
         val leftIterator = left.iterator()
         val rightIterator = right.iterator()
 
-        if (!leftIterator.hasNext() || !rightIterator.hasNext()) {
-            return null
-        }
-
         while (leftIterator.hasNext()) {
             val leftObject = leftIterator.next()
             if (rightIterator.hasNext()) {
