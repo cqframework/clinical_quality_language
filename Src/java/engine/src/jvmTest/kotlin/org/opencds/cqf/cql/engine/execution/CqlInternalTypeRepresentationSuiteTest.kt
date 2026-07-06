@@ -455,7 +455,7 @@ internal class CqlInternalTypeRepresentationSuiteTest : CqlTestBase() {
         value = results["List_EmptyList"]!!.value
         assertIs<List>(value)
         listComp = equal(value, List.EMPTY_LIST, engine.state)
-        assertTrue(listComp != null && listComp.value)
+        assertEquals(Boolean.TRUE, listComp)
     }
 
     companion object {
