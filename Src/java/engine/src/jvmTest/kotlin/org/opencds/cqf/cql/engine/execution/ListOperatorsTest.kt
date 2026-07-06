@@ -511,7 +511,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(Boolean.FALSE, value)
 
         value = results["IncludesNullLeft"]!!.value
-        assertEquals(Boolean.FALSE, value)
+        assertNull(value)
 
         // TODO: fix test - going to ContainsEvaluator
         //        value = results["IncludesNullRight"]!!.value;
