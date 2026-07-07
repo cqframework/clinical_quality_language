@@ -31,8 +31,7 @@ Changes to the tooling maintained within this repository are managed using as li
 # Contents
 
 * [Java Tools for CQL](Src/java/README.md)
-* [CQL-to-ELM Translator](Src/java/cql-to-elm/OVERVIEW.md)
-* [Java Quickstart](Src/java-quickstart/README.md)
+* [CQL-to-ELM Translator](Src/java/cql-to-elm/README.md)
 
 # Cloning This Repository
 
