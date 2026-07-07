@@ -20,6 +20,17 @@ It contains the following sub-projects:
 * **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
 
 
+# Supported platforms for KMP projects
+
+The `cql`, `elm`, `shared`, `cql-to-elm`, `engine` modules are Kotlin Multiplatform (KMP) projects and target the following platforms:
+
+| Platform | Support                |
+|----------|------------------------|
+| JVM      | ✅ Full support        |
+| JS       | 🚧 Experimental (beta) |
+| WASM/JS  | 🚧 Experimental (beta) |
+
+
 # Building the Project
 
 This project uses the [Gradle](http://www.gradle.org/) build system.  A gradle wrapper, which automatically downloads
