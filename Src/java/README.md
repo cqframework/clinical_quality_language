@@ -25,10 +25,10 @@ It contains the following sub-projects:
 The `cql`, `elm`, `shared`, `cql-to-elm`, `engine` modules are Kotlin Multiplatform (KMP) projects and target the following platforms:
 
 | Platform | Support                |
-|---|------------------------|
-| JVM | ✅ Full support         |
-| JS | 🚧 Experimental (beta) |
-| WASM/JS | 🚧 Experimental (beta)   |
+|----------|------------------------|
+| JVM      | ✅ Full support        |
+| JS       | 🚧 Experimental (beta) |
+| WASM/JS  | 🚧 Experimental (beta) |
 
 
 # Building the Project
