@@ -102,6 +102,6 @@ The CQL and FHIRPath grammars are in `Src/grammar/`. Changes to `.g4` files trig
 ## Other Source Directories
 
 - `Src/js/` — JavaScript/TypeScript CQL playground (Next.js)
-- `Src/coffeescript/`, `Src/dotnet/`, `Src/sql/` — Alternative language implementations (not actively built by CI)
+- `archive/coffeescript/`, `archive/dotnet/`, `archive/sql/` — Alternative language implementations (not actively built by CI)
 - `Examples/` — Sample CQL files and their ELM translations
 - `Src/cql-lm/` — CQL Logical Model schemas

@@ -8,7 +8,10 @@ import { KtMutableMap } from "cql-js/kotlin/kotlin-kotlin-stdlib.mjs";
 export const fhirModelNamespaceUri = "http://hl7.org/fhir";
 
 export function createFhirDataProvider(modelManager: ModelManager) {
-  const fhirDataProvider: Omit<DataProvider, "__doNotUseOrImplementIt"> = {
+  const fhirDataProvider: Omit<
+    DataProvider,
+    "__doNotUseOrImplementIt" | "objectEquivalent"
+  > = {
     createInstance(typeName) {
       // @ts-expect-error TypeScript error
       const model = modelManager.resolveModelByUri(fhirModelNamespaceUri);
