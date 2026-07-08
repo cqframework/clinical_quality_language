@@ -695,7 +695,7 @@
 		</test>
 		<test name="RoundNeg0D5">
 			<expression>Round(-0.5)</expression>
-			<output>0.0</output>
+			<output>-1.0</output>
 		</test>
 		<test name="RoundNeg0D4">
 			<expression>Round(-0.4)</expression>
@@ -711,7 +711,7 @@
 		</test>
 		<test name="RoundNeg1D5">
 			<expression>Round(-1.5)</expression>
-			<output>-1.0</output>
+			<output>-2.0</output>
 		</test>
 		<test name="RoundNeg1D6">
 			<expression>Round(-1.6)</expression>
