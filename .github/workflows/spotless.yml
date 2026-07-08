@@ -21,7 +21,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Run Spotless Check
-        working-directory: ./Src/java
         run: ./gradlew spotlessCheck
       - uses: mshick/add-pr-comment@v2
         if: always()
