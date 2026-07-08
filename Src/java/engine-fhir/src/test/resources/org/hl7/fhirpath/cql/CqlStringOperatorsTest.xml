@@ -8,7 +8,7 @@
 		</test>
 		<test name="CombineEmptyList">
 			<expression>Combine({})</expression>
-			<output>''</output>
+			<output>null</output>
 		</test>
 		<test name="CombineABC">
 			<expression>Combine({'a', 'b', 'c'})</expression>
