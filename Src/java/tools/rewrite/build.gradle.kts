@@ -1,10 +1,6 @@
-plugins {
-    kotlin("jvm")
-}
+plugins { kotlin("jvm") }
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
     implementation("org.openrewrite:rewrite-core:8.62.6")
@@ -15,6 +11,4 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks.test {
-    failOnNoDiscoveredTests = false
-}
+tasks.test { failOnNoDiscoveredTests = false }

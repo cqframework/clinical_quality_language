@@ -1,8 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    kotlin("jvm")
-}
+plugins { kotlin("jvm") }
 
 val xjc: Configuration by configurations.creating
 
@@ -27,27 +25,15 @@ dependencies {
 var buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/main/java"
 
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(tasks.withType<XjcTask>())
-}
+tasks.withType<KotlinCompile>().configureEach { dependsOn(tasks.withType<XjcTask>()) }
 
-tasks.withType<JavaCompile>().configureEach {
-    dependsOn(tasks.withType<XjcTask>())
-}
+tasks.withType<JavaCompile>().configureEach { dependsOn(tasks.withType<XjcTask>()) }
 
 tasks.withType<XjcTask>().configureEach {
     outputDir = destDir
     outputs.dir(outputDir)
 }
 
-tasks.withType<Delete>().configureEach {
-    delete(destDir)
-}
+tasks.withType<Delete>().configureEach { delete(destDir) }
 
-sourceSets {
-    main {
-        java {
-            srcDir(destDir)
-        }
-    }
-}
+sourceSets { main { java { srcDir(destDir) } } }

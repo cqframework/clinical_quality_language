@@ -1400,7 +1400,7 @@ class Cql2ElmVisitor(
         val first = parseExpression(ctx.expression())!!
         val second = parseExpression(ctx.expressionTerm(0))!!
         val third = parseExpression(ctx.expressionTerm(1))
-        val isProper = ctx.getChild(0)!!.text == "properly"
+        val isProper = ctx.getChild(1)!!.text == "properly"
         return if (first.resultType is IntervalType) {
             val result =
                 if (isProper) of.createProperIncludedIn()
@@ -3585,7 +3585,7 @@ class Cql2ElmVisitor(
             val alias = aqs.alias
             if (
                 (where is IncludedIn || where is In) &&
-                    attemptDateRangeOptimization(where as BinaryExpression, retrieve, alias!!)
+                    attemptDateRangeOptimization(where, retrieve, alias!!)
             ) {
                 where = null
             } else if (where is And && attemptDateRangeOptimization(where, retrieve, alias!!)) {
@@ -3725,7 +3725,7 @@ class Cql2ElmVisitor(
             val operand = and.operand[i]
             if (
                 (operand is IncludedIn || operand is In) &&
-                    attemptDateRangeOptimization(operand as BinaryExpression, retrieve, alias)
+                    attemptDateRangeOptimization(operand, retrieve, alias)
             ) {
                 // Replace optimized part in And with true -- to be optimized out later
                 and.operand[i] = libraryBuilder.createLiteral(true)
@@ -4337,7 +4337,7 @@ class Cql2ElmVisitor(
         }
         val fds = libraryBuilder.compiledLibrary.resolveFunctionRef(op.name, st)
         for (fd in fds) {
-            if (fd!!.operand.size == op.signature.size) {
+            if (fd.operand.size == op.signature.size) {
                 val signatureTypes = op.signature.operandTypes.iterator()
                 var signaturesMatch = true
                 for (i in fd.operand.indices) {

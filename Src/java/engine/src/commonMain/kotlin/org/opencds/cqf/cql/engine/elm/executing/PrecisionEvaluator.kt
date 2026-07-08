@@ -1,0 +1,63 @@
+package org.opencds.cqf.cql.engine.elm.executing
+
+import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.Date
+import org.opencds.cqf.cql.engine.runtime.DateTime
+import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.Integer
+import org.opencds.cqf.cql.engine.runtime.Time
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+
+/*
+
+    Precision(argument Decimal) Integer
+    Precision(argument Date) Integer
+    Precision(argument DateTime) Integer
+    Precision(argument Time) Integer
+
+    The Precision function returns the number of digits of precision in the input value.
+
+    The function can be used with Decimal, Date, DateTime, and Time values.
+
+    For Decimal values, the function returns the number of digits of precision after the decimal place in the input value.
+    Precision(1.58700) // 5
+
+    For Date and DateTime values, the function returns the number of digits of precision in the input value.
+    Precision(@2014) // 4
+    Precision(@2014-01-05T10:30:00.000) // 17
+    Precision(@T10:30) // 4
+    Precision(@T10:30:00.000) // 9
+    If the argument is null, the result is null.
+
+*/
+object PrecisionEvaluator {
+    @JvmStatic
+    fun precision(argument: Value?): Integer? {
+        if (argument == null) {
+            return null
+        }
+
+        if (argument is Decimal) {
+            val string = argument.value.toPlainString()
+            val index = string.indexOf(".")
+            return (if (index < 0) 0 else string.length - index - 1).toCqlInteger()
+        } else if (argument is Date) {
+            return argument.toStringInner().replace("-".toRegex(), "").length.toCqlInteger()
+        } else if (argument is DateTime) {
+            return argument
+                .toStringInner()
+                .replace("(:?[+-][0-9]{2}:[0-9]{2}$|[T.:-]|)".toRegex(), "")
+                .length
+                .toCqlInteger()
+        } else if (argument is Time) {
+            return argument.toStringInner().replace("[T.:]".toRegex(), "").length.toCqlInteger()
+        }
+
+        throw InvalidOperatorArgument(
+            "Precision(Decimal), Precision(Date), Precision(DateTime) or Precision(Time)",
+            "Precision(${argument.typeAsString})",
+        )
+    }
+}

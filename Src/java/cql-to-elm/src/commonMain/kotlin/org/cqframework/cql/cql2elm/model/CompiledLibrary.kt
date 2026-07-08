@@ -26,7 +26,7 @@ class CompiledLibrary {
     private val namespace: MutableMap<String, Element> = HashMap()
     val operatorMap: OperatorMap = OperatorMap()
     private val functionDefs: MutableMap<Operator, FunctionDef> = HashMap()
-    private val conversions: MutableList<Conversion> = ArrayList()
+    private val conversions: MutableList<Conversion.OperatorConversion> = ArrayList()
 
     private fun checkNamespace(identifier: String) {
         val existingResolvedIdentifierContext = resolve(identifier)
@@ -112,11 +112,7 @@ class CompiledLibrary {
         return operatorMap.containsOperator(operator)
     }
 
-    fun add(conversion: Conversion) {
-        require(!conversion.isCast) {
-            "Casting conversions cannot be registered as part of a library."
-        }
-
+    fun add(conversion: Conversion.OperatorConversion) {
         conversions.add(conversion)
     }
 
@@ -237,7 +233,7 @@ class CompiledLibrary {
         return resolution
     }
 
-    fun getConversions(): List<Conversion> {
+    fun getConversions(): List<Conversion.OperatorConversion> {
         return conversions
     }
 

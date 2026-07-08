@@ -1,4 +1,12 @@
 import React, { Fragment } from "react";
+import * as cqlJs from "cql-js";
+import * as cqlWasmJs from "cql-wasm-js";
+
+export type Nullable<T> = cqlJs.Nullable<T> | cqlWasmJs.Nullable<T>;
+
+export function isKtNull(ktValue: Nullable<unknown>) {
+  return ktValue === null || ktValue === undefined;
+}
 
 export type TElmContentType = "json" | "xml";
 
@@ -105,3 +113,107 @@ export type TOutput =
       elm: string;
     };
 
+export function unsupportedOperation(): never {
+  throw new Error("Unsupported operation");
+}
+
+export const engineOptions = [
+  {
+    value: "EnableExpressionCaching",
+    label: "Enable expression caching",
+  },
+  {
+    value: "EnableValidation",
+    label: "Enable validation",
+  },
+  {
+    value: "EnableHedisCompatibilityMode",
+    label: "Enable HEDIS compatibility mode",
+  },
+  {
+    value: "EnableProfiling",
+    label: "Enable profiling",
+  },
+  {
+    value: "EnableTracing",
+    label: "Enable tracing",
+  },
+  {
+    value: "EnableCoverageCollection",
+    label: "Enable coverage collection",
+  },
+  {
+    value: "EnableTypeChecking",
+    label: "Enable type checking",
+  },
+];
+
+export type TCqlEngineArgs = {
+  cql: string;
+  compilerOptions: string[];
+  signatureLevel: string;
+  librarySource: TLibrarySource;
+  baseUrl: string;
+  mountedDir: TMountedDir | null;
+  engineOptions: string[];
+};
+
+export type TCqlEngineOutput =
+  | {
+      type: "log";
+      log: string;
+    }
+  | {
+      type: "expressionResults";
+      expressionResults: {
+        expressionName: string;
+        expressionResult: TJsCqlValue;
+      }[];
+    }
+  | {
+      type: "evaluationException";
+      message: string;
+      stack: string;
+    };
+
+export const playgroundLibraryName = "Playground";
+
+export type TJsCqlValue =
+  | null
+  | {
+      type: "Boolean";
+      value: boolean;
+    }
+  | {
+      type: "Integer";
+      value: number;
+    }
+  | {
+      type: "Long";
+      value: bigint;
+    }
+  | { type: "Decimal"; value: string }
+  | {
+      type: "String";
+      value: string;
+    }
+  | { type: "Date"; value: string }
+  | { type: "DateTime"; value: string }
+  | { type: "Time"; value: string }
+  | {
+      type: "Structured";
+      structuredTypeName?: string;
+      elements: Map<string, TJsCqlValue>;
+    }
+  | {
+      type: "Interval";
+      pointTypeName: string;
+      low: TJsCqlValue;
+      high: TJsCqlValue;
+      lowClosed: boolean;
+      highClosed: boolean;
+    }
+  | {
+      type: "List";
+      value: TJsCqlValue[];
+    };

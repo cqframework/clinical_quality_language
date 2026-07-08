@@ -26,6 +26,7 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
 @Suppress("MaxLineLength")
@@ -33,8 +34,8 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
     var generator: Dstu3FhirQueryGenerator? = null
     var evaluationOffsetDateTime: OffsetDateTime? = null
     var evaluationDateTime: DateTime? = null
-    var contextValues: MutableMap<String, Any?>? = null
-    var parameters: MutableMap<String, Any?>? = null
+    var contextValues: MutableMap<String, String?>? = null
+    var parameters: MutableMap<String, Value?>? = null
 
     @BeforeEach
     @Throws(FhirVersionMisMatchException::class)
@@ -48,8 +49,8 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
         this.evaluationOffsetDateTime =
             OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 0, ZoneOffset.ofHours(-7))
         this.evaluationDateTime = DateTime(evaluationOffsetDateTime)
-        this.contextValues = HashMap<String, Any?>()
-        this.parameters = HashMap<String, Any?>()
+        this.contextValues = HashMap<String, String?>()
+        this.parameters = HashMap<String, Value?>()
     }
 
     private fun getTestValueSet(id: String?, numberOfCodesToInclude: Int): ValueSet {
@@ -405,7 +406,13 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val low = formatter.parse("2023-01-01")
         val high = formatter.parse("2023-02-06")
-        val interval = Interval(low, true, high, true)
+        val interval =
+            Interval(
+                org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(low),
+                true,
+                org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(high),
+                true,
+            )
 
         val rangeParam =
             this.generator!!.getDateRangeParam(
@@ -428,7 +435,13 @@ internal class TestDstu3FhirQueryGenerator : Dstu3FhirTest() {
 
         val low = formatter.parse("2023-01-01T12:01:02-0700")
         val high = formatter.parse("2023-02-06T12:01:02-0700")
-        val interval = Interval(low, true, high, true)
+        val interval =
+            Interval(
+                org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(low),
+                true,
+                org.opencds.cqf.cql.engine.runtime.Date.fromJavaDate(high),
+                true,
+            )
 
         val rangeParam =
             this.generator!!.getDateRangeParam(

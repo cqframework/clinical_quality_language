@@ -13,7 +13,12 @@ import javax.xml.parsers.SAXParserFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-data class Config(val project: String, val xsd: String, val outputDir: String)
+data class Config(
+    val project: String,
+    val xsd: String,
+    val outputDir: String,
+    val jsExport: Boolean,
+)
 
 // Entry points for schema parsing and code generation
 val configs =
@@ -22,11 +27,13 @@ val configs =
             project = "cql",
             xsd = "../../cql-lm/schema/model/modelinfo.xsd",
             outputDir = "../cql/build/generated/sources/cql/commonMain/kotlin",
+            jsExport = false,
         ),
         Config(
             project = "elm",
             xsd = "../../cql-lm/schema/elm/library.xsd",
             outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
+            jsExport = true,
         ),
     )
 
@@ -350,7 +357,7 @@ fun getOwnAttributes(complexType: XSComplexType): List<XSAttributeUse> {
 }
 
 // Creates a class for a complex type with nested classes for nested anonymous complex types
-fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
+fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.Builder {
     return TypeSpec.classBuilder(className)
         .apply {
             if (complexType.isAbstract) {
@@ -503,7 +510,10 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                             )
 
                         // Add a nested class for the anonymous complex type
-                        addType(buildClass(elementDecl.type.asComplexType(), nestedClassName))
+                        addType(
+                            getClassBuilder(elementDecl.type.asComplexType(), nestedClassName)
+                                .build()
+                        )
 
                         addElement(elementDecl, nestedClassName, className, particle.isRepeated)
                     } else {
@@ -608,7 +618,6 @@ fun buildClass(complexType: XSComplexType, className: ClassName): TypeSpec {
                 .build()
         )
         .addType(TypeSpec.companionObjectBuilder().build())
-        .build()
 }
 
 // Returns all subtypes of a complex type (including indirect subtypes)
@@ -790,9 +799,9 @@ fun FileSpec.Builder.addSerializers(
                 // Write the `xsi:type` attribute if required
                 addStatement(
                     """
-                        if (withXsiType) {
-                          attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
-                        }
+                    if (withXsiType) {
+                      attributes[%M(%T(%S, "type"), namespaces, defaultNamespaces)] = %M(%T(%S, %S), namespaces, defaultNamespaces)
+                    }
                     """
                         .trimIndent(),
                     qNameToXmlString,
@@ -841,14 +850,14 @@ fun FileSpec.Builder.addSerializers(
                                 beginControlFlow("this.%N?.let", "_${elementDecl.name}")
                                 addStatement(
                                     """
-                                        it.forEach {
-                                          children.add(it.%M(
-                                            %T(%S, %S),
-                                            false,
-                                            namespaces,
-                                            defaultNamespaces
-                                          ))
-                                        }
+                                    it.forEach {
+                                      children.add(it.%M(
+                                        %T(%S, %S),
+                                        false,
+                                        namespaces,
+                                        defaultNamespaces
+                                      ))
+                                    }
                                     """
                                         .trimIndent(),
                                     MemberName(
@@ -865,12 +874,12 @@ fun FileSpec.Builder.addSerializers(
                                 beginControlFlow("this.%N?.let", elementDecl.name)
                                 addStatement(
                                     """
-                                        children.add(it.%M(
-                                          %T(%S, %S),
-                                          false,
-                                          namespaces,
-                                          defaultNamespaces
-                                        ))
+                                    children.add(it.%M(
+                                      %T(%S, %S),
+                                      false,
+                                      namespaces,
+                                      defaultNamespaces
+                                    ))
                                     """
                                         .trimIndent(),
                                     MemberName(
@@ -969,13 +978,13 @@ fun FileSpec.Builder.addSerializers(
                                 if (particle.isRepeated) {
                                     addStatement(
                                         """
+                                        if (it is %T) {
+                                          it.forEach {
                                             if (it is %T) {
-                                              it.forEach {
-                                                if (it is %T) {
-                                                  instance.%N.add(%T.%M(it))
-                                                }
-                                              }
+                                              instance.%N.add(%T.%M(it))
                                             }
+                                          }
+                                        }
                                         """
                                             .trimIndent(),
                                         jsonArrayClassName,
@@ -991,9 +1000,9 @@ fun FileSpec.Builder.addSerializers(
                                 } else {
                                     addStatement(
                                         """
-                                            if (it is %T) {
-                                              instance.%N = %T.%M(it)
-                                            }
+                                        if (it is %T) {
+                                          instance.%N = %T.%M(it)
+                                        }
                                         """
                                             .trimIndent(),
                                         jsonObjectClassName,
@@ -1124,6 +1133,29 @@ fun FileSpec.Builder.addSerializers(
     return this
 }
 
+// Adds `@JsOnlyExport`
+fun TypeSpec.Builder.addJsExport(): TypeSpec.Builder {
+    addAnnotation(
+        AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+            .addMember("%T::class", ClassName("kotlin.js", "ExperimentalJsExport"))
+            .build()
+    )
+    addAnnotation(ClassName("org.cqframework.cql.shared", "JsOnlyExport"))
+
+    return this
+}
+
+// Adds `@file:Suppress("UNNECESSARY_SAFE_CALL")`
+fun FileSpec.Builder.addSuppressSafeCalls(): FileSpec.Builder {
+    addAnnotation(
+        AnnotationSpec.builder(ClassName("kotlin", "Suppress"))
+            .addMember("%S", "UNNECESSARY_SAFE_CALL")
+            .build()
+    )
+
+    return this
+}
+
 open class XsdKotlinGenTask : DefaultTask() {
 
     @TaskAction
@@ -1156,6 +1188,11 @@ open class XsdKotlinGenTask : DefaultTask() {
                     FileSpec.builder(typeName)
                         .addType(
                             TypeSpec.enumBuilder(typeName)
+                                .apply {
+                                    if (config.jsExport) {
+                                        addJsExport()
+                                    }
+                                }
                                 .primaryConstructor(
                                     FunSpec.constructorBuilder()
                                         .addParameter("value", String::class)
@@ -1181,12 +1218,12 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                 .returns(typeName)
                                                 .addCode(
                                                     """
-                                                        for (c in entries) {
-                                                          if (c.value == %N) {
-                                                            return c
-                                                          }
-                                                        }
-                                                        throw IllegalArgumentException(%N)
+                                                    for (c in entries) {
+                                                      if (c.value == %N) {
+                                                        return c
+                                                      }
+                                                    }
+                                                    throw IllegalArgumentException(%N)
                                                     """
                                                         .trimIndent(),
                                                     valueParameter,
@@ -1226,8 +1263,17 @@ open class XsdKotlinGenTask : DefaultTask() {
 
                     // Generate the class and XML and JSON parsers and serializers
                     FileSpec.builder(className)
-                        .addType(buildClass(complexType, className))
+                        .addType(
+                            getClassBuilder(complexType, className)
+                                .apply {
+                                    if (config.jsExport) {
+                                        addJsExport()
+                                    }
+                                }
+                                .build()
+                        )
                         .addSerializers(complexType, className)
+                        .addSuppressSafeCalls()
                         .build()
                         .writeTo(File(project.projectDir, config.outputDir))
                 }

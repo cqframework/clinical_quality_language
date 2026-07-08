@@ -1,0 +1,29 @@
+{
+  "library": {
+    "annotation" : [ {
+      "translatorOptions" : "EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion",
+      "translatorVersion" : "1.5",
+      "type" : "CqlToElmInfo"
+    }
+    ],
+    "identifier": {
+      "id" : "BaseLibraryElmWithoutVersion"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1"
+        }
+      ]
+    },
+    "valueSets" : {
+    },
+    "statements": {
+    }
+  }
+}

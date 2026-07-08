@@ -7,28 +7,37 @@ import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.Library
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.Environment
+import org.opencds.cqf.cql.engine.runtime.Value
 
 object ElmEvaluationHelper {
     @JvmStatic
     fun evaluate(
         library: Library?,
         value: Expression?,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
-    ): Any? {
+    ): Value? {
         // NOTE: Consider caching for libraries in the future.
 
         val engine = getEngine(library, parameters, evaluationDateTime)
-        return engine.evaluationVisitor.visitExpression(value!!, engine.state)
+        engine.state.beginEvaluation()
+        try {
+            return engine.evaluationVisitor.visitExpression(value!!, engine.state)
+        } finally {
+            engine.state.endEvaluation()
+        }
     }
 
     private fun getEngine(
         library: Library?,
-        parameters: MutableMap<String, Any?>?,
+        parameters: MutableMap<String, Value?>?,
         evaluationDateTime: ZonedDateTime?,
     ): CqlEngine {
         val environment = Environment(libraryManager)
         val engine = CqlEngine(environment)
+        if (library != null) {
+            engine.state.init(library)
+        }
         if (evaluationDateTime != null) {
             engine.state.setEvaluationDateTime(evaluationDateTime)
         }

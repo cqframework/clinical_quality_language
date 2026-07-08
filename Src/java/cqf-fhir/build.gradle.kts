@@ -1,3 +1,1 @@
-plugins {
-    id("cql.fhir-conventions")
-}
+plugins { id("cql.fhir-conventions") }

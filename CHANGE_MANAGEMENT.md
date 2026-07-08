@@ -80,13 +80,13 @@ For lazy consensus to be effective, it is necessary to allow sufficient time for
 Not all decisions can be made using the process of lazy consensus. Issues such as those affecting the strategic direction, project releases, or legal standing of the project must gain explicit approval in the form of a vote. Every member of the community is encouraged to express their opinions in all discussion and all votes. However, only project committers and/or PMC members (as defined above) have binding votes for the purposes of decision making.
 
 # Contributions
-The project uses a stable-trunk methodology, meaning that the master branch must be kept in a releasable state at all times. This is ensured through regression tests and continuous integration is used to check pull requests to the master branch.
+The project uses a stable-trunk methodology, meaning that the main branch must be kept in a releasable state at all times. This is ensured through regression tests and continuous integration is used to check pull requests to the main branch.
 
-Only trivial commits (such as documentation changes, typos, and packaging changes) can be made directly to the master branch. All other changes to the master branch must be made using a pull request, and must be reviewed prior to being applied.
+Only trivial commits (such as documentation changes, typos, and packaging changes) can be made directly to the main branch. All other changes to the main branch must be made using a pull request, and must be reviewed prior to being applied.
 
 Small changes must be reviewed by at least one committer that is not the author of the change. Large, significant, or breaking changes must have committer consensus before being applied.
 
-In general, when a new version of the CQL specification is created, a new branch of the repository is created to implement support for that version. Changes to this branch can be committed directly. Once the new version of the specification is published, the version branch is merged to the master branch.
+In general, when a new version of the CQL specification is created, a new branch of the repository is created to implement support for that version. Changes to this branch can be committed directly. Once the new version of the specification is published, the version branch is merged to the main branch.
 
 Note that changes must always align with the CQL specification. Any changes to the CQL specification itself are governed by HL7 and must be done through the HL7 process, either by submitting an STU comment, or balloting a new version of the specification.
 

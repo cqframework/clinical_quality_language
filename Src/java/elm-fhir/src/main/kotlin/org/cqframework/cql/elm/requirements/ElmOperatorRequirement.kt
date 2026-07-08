@@ -1,6 +1,8 @@
 package org.cqframework.cql.elm.requirements
 
+import org.hl7.elm.r1.Exists
 import org.hl7.elm.r1.Expression
+import org.hl7.elm.r1.Not
 import org.hl7.elm.r1.VersionedIdentifier
 
 class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression: Expression) :
@@ -13,6 +15,21 @@ class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression:
 
     override fun combine(requirement: ElmRequirement?): ElmExpressionRequirement {
         if (requirement is ElmExpressionRequirement) {
+            requirement.determineSelectivity()
+            if (requirement is ElmQueryRequirement) {
+                selectivity = requirement.selectivity
+                determineSelectivity()
+            }
+            if (requirement is ElmDataRequirement) {
+                selectivity = requirement.selectivity
+                determineSelectivity()
+            }
+            if (requirement is ElmOperatorRequirement) {
+                if (requirement.element is Exists) {
+                    selectivity = requirement.selectivity
+                    determineSelectivity()
+                }
+            }
             requirements.add(requirement)
         } else if (requirement is ElmRequirements) {
             for (r in requirement.getRequirements()) {
@@ -20,6 +37,25 @@ class ElmOperatorRequirement(libraryIdentifier: VersionedIdentifier, expression:
             }
         }
         return this
+    }
+
+    override fun determineSelectivity(): ElmQuerySelectivity? {
+        if (element is Exists && selectivity != null) {
+            if (selectivity!!.inclusivity == null) {
+                selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INCLUSION
+            } else if (selectivity!!.inclusivity != ElmQuerySelectivity.Inclusivity.INCLUSION) {
+                selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INDETERMINATE
+            }
+        } else if (element is Not && selectivity != null) {
+            if (selectivity!!.inclusivity == ElmQuerySelectivity.Inclusivity.INCLUSION) {
+                selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.EXCLUSION
+            } else {
+                selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INDETERMINATE
+            }
+        } else if (selectivity != null && selectivity!!.inclusivity != null) {
+            selectivity!!.inclusivity = ElmQuerySelectivity.Inclusivity.INDETERMINATE
+        }
+        return selectivity
     }
 
     override val isLiteral: Boolean

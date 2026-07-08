@@ -1,20 +1,16 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
-plugins {
-    id("cql.kotlin-multiplatform-conventions")
-}
+plugins { id("cql.kotlin-multiplatform-conventions") }
 
 val loadTestResourcesTask = tasks.register<LoadTestResourcesTask>("loadTestResources")
 
-kotlin {
-    js {
-        outputModuleName = "cql-to-elm"
-    }
+tasks.withType<AbstractKotlinCompile<*>>().configureEach { dependsOn(loadTestResourcesTask) }
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        outputModuleName = "cql-to-elm"
-    }
+kotlin {
+    js { outputModuleName = "cql-to-elm" }
+
+    @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "cql-to-elm" }
 
     sourceSets {
         commonMain {
@@ -25,11 +21,10 @@ kotlin {
         }
 
         // Add source sets with TestResource implementations
-        matching { it.name.endsWith("Test") }.configureEach {
-            kotlin.srcDir(loadTestResourcesTask.flatMap {
-                it.getSrcDirForSourceSet(name)
-            })
-        }
+        matching { it.name.endsWith("Test") }
+            .configureEach {
+                kotlin.srcDir(layout.buildDirectory.dir("generated/sources/testResources/$name"))
+            }
 
         jvmTest {
             dependencies {
@@ -40,4 +35,9 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    kover(project(":cql"))
+    kover(project(":elm"))
 }

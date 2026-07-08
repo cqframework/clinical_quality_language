@@ -457,7 +457,7 @@ class Builder(private val sourceId: String? = null) {
                     when (opText) {
                         "*" -> BinaryOperator.MULTIPLY
                         "/" -> BinaryOperator.DIVIDE
-                        "div" -> BinaryOperator.DIVIDE
+                        "div" -> BinaryOperator.TRUNCATED_DIVIDE
                         "mod" -> BinaryOperator.MODULO
                         else -> return unsupportedExpression("multiplicationExpressionTerm", ctx)
                     }

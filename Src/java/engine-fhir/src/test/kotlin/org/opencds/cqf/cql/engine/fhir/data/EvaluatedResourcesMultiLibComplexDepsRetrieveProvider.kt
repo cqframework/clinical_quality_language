@@ -9,17 +9,19 @@ import org.hl7.fhir.r4.model.IdType
 import org.hl7.fhir.r4.model.Period
 import org.hl7.fhir.r4.model.Reference
 import org.hl7.fhir.r4.model.ResourceType
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
 
-internal enum class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider : RetrieveProvider {
-    INSTANCE;
-
+class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(
+    val fhirModelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>
+) : RetrieveProvider {
     override fun retrieve(
         context: String?,
         contextPath: String?,
-        contextValue: Any?,
+        contextValue: String?,
         dataType: String,
         templateId: String?,
         codePath: String?,
@@ -29,12 +31,12 @@ internal enum class EvaluatedResourcesMultiLibComplexDepsRetrieveProvider : Retr
         dateLowPath: String?,
         dateHighPath: String?,
         dateRange: Interval?,
-    ): Iterable<Any?>? {
+    ): Iterable<Value?>? {
         return when (dataType) {
-            "Encounter" -> this.encounters
-            "Condition" -> this.conditions
-            "Patient" -> this.patients
-            "Procedure" -> this.procedures
+            "Encounter" -> this.encounters.map { fhirModelResolver.toCqlValue(it) }
+            "Condition" -> this.conditions?.map { fhirModelResolver.toCqlValue(it) }
+            "Patient" -> this.patients?.map { fhirModelResolver.toCqlValue(it) }
+            "Procedure" -> this.procedures.map { fhirModelResolver.toCqlValue(it) }
             else -> mutableListOf()
         }
     }

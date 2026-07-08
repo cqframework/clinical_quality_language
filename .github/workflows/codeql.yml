@@ -2,11 +2,11 @@ name: "CodeQL Advanced"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
       - "Src/java/**"
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
       - "Src/java/**"
   schedule:
@@ -23,6 +23,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Setup Java
       uses: actions/setup-java@v4

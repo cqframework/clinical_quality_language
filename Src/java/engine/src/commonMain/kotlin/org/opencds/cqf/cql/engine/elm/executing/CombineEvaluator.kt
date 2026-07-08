@@ -1,0 +1,59 @@
+package org.opencds.cqf.cql.engine.elm.executing
+
+import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.String
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlString
+
+/*
+Combine(source List<String>) String
+Combine(source List<String>, separator String) String
+
+The Combine operator combines a list of strings, optionally separating each string with the given separator.
+If either argument is null, or any element in the source list of strings is null, the result is null.
+*/
+object CombineEvaluator {
+    @JvmStatic
+    fun combine(source: Value?, separator: Value?): String? {
+        if (source == null || separator == null) {
+            return null
+        }
+
+        if (source is List && separator is String) {
+            val buffer = StringBuilder("")
+            val iterator = source.iterator()
+            var first = true
+
+            while (iterator.hasNext()) {
+                val item = iterator.next()
+
+                if (item == null) {
+                    return null
+                }
+
+                if (item is String) {
+                    if (!first) {
+                        buffer.append(separator)
+                    } else {
+                        first = false
+                    }
+                    buffer.append(item)
+                } else {
+                    throw InvalidOperatorArgument(
+                        "Combine(List<String>) or Combine(List<String>, String)",
+                        "Combine(List<${item.typeAsString}>${if (separator.value == "") "" else ", " + separator})",
+                    )
+                }
+            }
+            // Combine of an empty list is null (first is still true iff no elements were appended).
+            return if (first) null else buffer.toString().toCqlString()
+        }
+
+        throw InvalidOperatorArgument(
+            "Combine(List<String>) or Combine(List<String>, String)",
+            "Combine(${source.typeAsString}, ${separator.typeAsString})",
+        )
+    }
+}

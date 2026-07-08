@@ -9,6 +9,7 @@ enum class BinaryOperator {
     @SerialName("subtract") SUBTRACT,
     @SerialName("multiply") MULTIPLY,
     @SerialName("divide") DIVIDE,
+    @SerialName("truncatedDivide") TRUNCATED_DIVIDE,
     @SerialName("modulo") MODULO,
     @SerialName("power") POWER,
     @SerialName("concat") CONCAT,

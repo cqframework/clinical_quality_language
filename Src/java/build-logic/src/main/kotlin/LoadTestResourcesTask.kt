@@ -4,9 +4,7 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 
 /**
@@ -24,9 +22,8 @@ abstract class LoadTestResourcesTask : DefaultTask() {
         outputDir.set(File(project.projectDir, "build/generated/sources/testResources"))
     }
 
-    fun getSrcDirForSourceSet(sourceSetName: String): Provider<Directory> {
-        return outputDir.map { it.dir(sourceSetName) }
-    }
+    fun getSrcDirForSourceSet(sourceSetName: String): DirectoryProperty =
+        project.objects.directoryProperty().apply { set(outputDir.dir(sourceSetName)) }
 
     private fun getKotlinDirForSourceSet(sourceSetName: String): File {
         return outputDir.dir("$sourceSetName/kotlin").get().asFile

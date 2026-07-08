@@ -3,9 +3,7 @@ plugins {
     id("application")
 }
 
-application {
-    mainClass = "org.cqframework.cql.tools.xsd2modelinfo.Main"
-}
+application { mainClass = "org.cqframework.cql.tools.xsd2modelinfo.Main" }
 
 dependencies {
     api(project(":cql"))

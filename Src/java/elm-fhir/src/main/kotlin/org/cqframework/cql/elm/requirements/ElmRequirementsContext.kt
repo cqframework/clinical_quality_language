@@ -44,19 +44,21 @@ import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.ValueSetRef
 import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.runtime.Value
 
+@Suppress("LargeClass", "ComplexCondition")
 class ElmRequirementsContext(
     libraryManager: LibraryManager,
     options: CqlCompilerOptions?,
     visitor: ElmRequirementsVisitor,
-    parameters: MutableMap<String, Any?>?,
+    parameters: MutableMap<String, Value?>?,
     evaluationDateTime: ZonedDateTime?,
 ) {
     var options: CqlCompilerOptions?
 
     val libraryManager: LibraryManager
 
-    val parameters: MutableMap<String, Any?>?
+    val parameters: MutableMap<String, Value?>?
 
     val evaluationDateTime: ZonedDateTime?
 
@@ -83,13 +85,47 @@ class ElmRequirementsContext(
         expressionDefStack.push(expressionDefContext)
     }
 
+    @Suppress("NestedBlockDepth")
     fun exitExpressionDef(inferredRequirements: ElmRequirement?) {
+        if (inferredRequirements is ElmExpressionRequirement) {
+            if (inferredRequirements.selectivity == null) {
+                inferredRequirements.determineSelectivity()
+            }
+            // A query requirement will already have been reported
+            if (
+                !(inferredRequirements is ElmQueryRequirement) &&
+                    inferredRequirements.selectivity != null
+            ) {
+                reportSelectivity(inferredRequirements.selectivity)
+            }
+        }
+
         require(!expressionDefStack.empty()) { "Not in an expressionDef context" }
         val expressionDefContext = expressionDefStack.pop()
         val ed = expressionDefContext.expressionDef
         reportExpressionDef(ed)
         this._reportedRequirements[ed] = expressionDefContext.reportedRequirements
         this._inferredRequirements[ed] = inferredRequirements
+
+        // If the expression has more than one selectivity, no selectivity can be TOTAL
+        // If there is only one selectivity and coverage has not otherwise been determined, it is
+        // TOTAL
+        val selectivities = this._selectivity[ed]
+        if (selectivities != null) {
+            for (selectivity in selectivities) {
+                if (selectivity.coverage == null) {
+                    if (selectivities.size == 1) {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.TOTAL
+                    } else {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+                    }
+                } else if (selectivity.coverage == ElmQuerySelectivity.Coverage.TOTAL) {
+                    if (selectivities.size > 1) {
+                        selectivity.coverage = ElmQuerySelectivity.Coverage.PARTIAL
+                    }
+                }
+            }
+        }
     }
 
     val currentExpressionDefContext: ElmExpressionDefContext?
@@ -156,6 +192,35 @@ class ElmRequirementsContext(
 
     fun getInferredRequirements(ed: ExpressionDef): ElmRequirement? {
         return _inferredRequirements[ed]
+    }
+
+    private val _selectivity: MutableMap<ExpressionDef, MutableList<ElmQuerySelectivity>> =
+        mutableMapOf()
+
+    fun getSelectivity(): Map<ExpressionDef, List<ElmQuerySelectivity>> {
+        return _selectivity
+    }
+
+    @Suppress("ComplexCondition")
+    private fun reportSelectivity(selectivity: ElmQuerySelectivity?) {
+        if (
+            options != null &&
+                options!!.analyzeDataRequirements &&
+                options!!.reportSelectivity &&
+                selectivity != null &&
+                selectivity.isValid() &&
+                inExpressionDefContext()
+        ) {
+            var selectivities: MutableList<ElmQuerySelectivity>? =
+                _selectivity.get(currentExpressionDefContext!!.expressionDef)
+            if (selectivities == null) {
+                selectivities = mutableListOf()
+                _selectivity.put(currentExpressionDefContext!!.expressionDef, selectivities)
+            }
+            if (!selectivities.contains(selectivity)) {
+                selectivities.add(selectivity)
+            }
+        }
     }
 
     private val libraryStack = Stack<VersionedIdentifier?>()
@@ -454,6 +519,7 @@ class ElmRequirementsContext(
     complicates the inferencing calculations, as they would always have to be based on a collection
     of requirements, rather than the current focus of either a DataRequirement or a QueryRequirement)
      */
+    @Suppress("CyclomaticComplexMethod")
     fun reportRequirements(requirement: ElmRequirement, inferredRequirements: ElmRequirement?) {
         when (requirement) {
             is ElmRequirements -> {
@@ -468,6 +534,10 @@ class ElmRequirementsContext(
             }
 
             is ElmQueryRequirement -> {
+                if (requirement.selectivity != null) {
+                    reportSelectivity(requirement.selectivity)
+                }
+
                 for (dataRequirement in requirement.getDataRequirements()) {
                     if (
                         inferredRequirements == null ||
@@ -476,6 +546,14 @@ class ElmRequirementsContext(
                         reportRequirement(dataRequirement)
                     }
                 }
+            }
+
+            is ElmDataRequirement -> {
+                if (requirement.selectivity != null) {
+                    reportSelectivity(requirement.selectivity)
+                }
+
+                reportRequirement(requirement)
             }
 
             is ElmOperatorRequirement -> {
@@ -564,6 +642,7 @@ class ElmRequirementsContext(
         return null
     }
 
+    @Suppress("CyclomaticComplexMethod", "LongMethod", "ReturnCount")
     fun reportProperty(property: Property): ElmPropertyRequirement? {
         // if scope is specified, it's a reference to an alias in a current query context
         // if source is an AliasRef, it's a reference to an alias in a current query context
@@ -590,6 +669,29 @@ class ElmRequirementsContext(
 
             aliasContext.reportProperty(propertyRequirement)
             return propertyRequirement
+        }
+
+        if (
+            property.source is ExpressionRef &&
+                this.inExpressionDefContext() &&
+                this.inQueryContext() &&
+                (property.source as ExpressionRef)
+                    .name
+                    .equals(this.currentExpressionDefContext!!.expressionDef.context)
+        ) {
+            val aliasName = (property.source as ExpressionRef).name
+            val aliasContext = this.currentQueryContext.resolveAlias(aliasName)
+            if (aliasContext != null) {
+                val propertyRequirement =
+                    ElmPropertyRequirement(
+                        this.currentLibraryIdentifier,
+                        property,
+                        aliasContext.querySource,
+                        true,
+                    )
+                aliasContext.reportProperty(propertyRequirement)
+                return propertyRequirement
+            }
         }
 
         if (property.source is QueryLetRef) {

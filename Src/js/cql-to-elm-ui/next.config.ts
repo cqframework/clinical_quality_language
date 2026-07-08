@@ -5,14 +5,14 @@ const nextConfig: NextConfig = {
   output: "export",
   reactStrictMode: false,
   webpack: (config, { isServer }) => {
-    // Adjust config to make Next.js work with cql-to-elm-wasm-js
+    // Adjust config to make Next.js work with cql-wasm-js
     config.ignoreWarnings = [
       /Accessing import\.meta directly is unsupported \(only property access or destructuring is supported\)/,
       /The generated code contains 'async\/await' because this module is using "topLevelAwait"/,
     ];
 
     config.module.rules.push({
-      test: /wasm\/packages\/cql-to-elm\/kotlin\/cql-to-elm\.uninstantiated\.mjs$/,
+      test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
       loader: "string-replace-loader",
       options: {
         multiple: [
@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
             replace: `const module = await import(/* webpackIgnore: true */'node:module');
         require = module.default.createRequire(__filename);
         const fs = require('fs');
-        const wasmBuffer = fs.readFileSync('node_modules/cql-to-elm-wasm-js/kotlin/cql-to-elm.wasm');
+        const wasmBuffer = fs.readFileSync('node_modules/cql-wasm-js/kotlin/engine.wasm');
 `,
           },
           {
@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
     // Patch the `isNodeJs` function inside the ANTLR Kotlin runtime to make it work in a web worker
     config.module.rules.push(
       {
-        test: /js\/packages\/cql-to-elm\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
+        test: /js\/packages\/engine\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `function isNodeJs() {
@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
         },
       },
       {
-        test: /wasm\/packages\/cql-to-elm\/kotlin\/cql-to-elm\.uninstantiated\.mjs$/,
+        test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `        'com.strumenta.antlrkotlin.runtime.isNodeJs' : () => 
@@ -74,6 +74,20 @@ const nextConfig: NextConfig = {
         },
       },
     );
+
+    // Patch the `now` function inside KLogging
+    config.module.rules.push({
+      test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
+      loader: "string-replace-loader",
+      options: {
+        search: `    const js_code = {
+`,
+        replace: `    const js_code = {
+        'io.github.oshai.kotlinlogging.internal.now_$external_fun' : (_this) => _this.now(),
+        'io.github.oshai.kotlinlogging.internal.Companion_$external_object_getInstance' : Date,
+`,
+      },
+    });
 
     return config;
   },

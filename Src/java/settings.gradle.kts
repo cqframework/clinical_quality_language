@@ -1,14 +1,12 @@
 pluginManagement {
     includeBuild("build-logic")
     plugins {
-        kotlin("jvm") version "2.2.10"
+        kotlin("jvm") version "2.3.10"
         id("com.vanniktech.maven.publish") version "0.36.0"
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
-}
+plugins { id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0") }
 
 rootProject.name = "cql-all"
 
@@ -31,5 +29,5 @@ include(
     "tools:rewrite",
     "tools:cql-formatter",
     "tools:cql-parsetree",
-    "tools:xsd-to-modelinfo"
+    "tools:xsd-to-modelinfo",
 )

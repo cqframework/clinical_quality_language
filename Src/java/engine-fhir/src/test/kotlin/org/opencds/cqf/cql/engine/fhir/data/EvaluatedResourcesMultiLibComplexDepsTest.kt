@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.fhir.data.EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.Companion.allEncounters
-import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
 
 /**
  * See EvaluatedResourcesMultiLibComplexDepsTest.md for a mermaid diagram of the library
@@ -112,7 +111,7 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
             engineWithExistingLibraryManager,
             expressionCaching,
             r4ModelResolver,
-            RETRIEVE_PROVIDER_COMPLEX,
+            EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(r4ModelResolver!!),
         )
     }
 
@@ -122,14 +121,11 @@ internal class EvaluatedResourcesMultiLibComplexDepsTest : FhirExecutionMultiLib
             engineWithNewLibraryManager,
             expressionCaching,
             r4ModelResolver,
-            RETRIEVE_PROVIDER_COMPLEX,
+            EvaluatedResourcesMultiLibComplexDepsRetrieveProvider(r4ModelResolver!!),
         )
     }
 
     companion object {
-        private val RETRIEVE_PROVIDER_COMPLEX: RetrieveProvider =
-            EvaluatedResourcesMultiLibComplexDepsRetrieveProvider.INSTANCE
-
         private val LIB_1A: VersionedIdentifier =
             EvaluatedResourceTestUtils.forId("EvaluatedResourcesMultiLibComplexDepsTest_Level1A")
         private val LIB_1B: VersionedIdentifier =
