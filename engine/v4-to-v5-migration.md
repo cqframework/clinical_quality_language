@@ -51,5 +51,4 @@ const evaluationParams = evaluationParamsBuilder.build();
 const evaluationResults = engine.evaluate(evaluationParams);
 ```
 
-A more complete example, including how to set up a web app that uses the JS engine, can be found in
-Src/js/cql-to-elm-ui.
+A more complete example, including how to set up a web app that uses the JS engine, can be found in js/cql-to-elm-ui.
