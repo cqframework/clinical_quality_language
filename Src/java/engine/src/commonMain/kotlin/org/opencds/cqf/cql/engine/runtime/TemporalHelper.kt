@@ -81,13 +81,9 @@ object TemporalHelper {
     }
 
     fun weeksToDays(weeks: Int): Int {
-        var weeks = weeks
-        var years = 0
-        if (weeks >= 52) {
-            years = (weeks / 52)
-            weeks -= years * 52
-        }
-        return weeks * 7 + (years * 365)
+        // A week is a fixed 7-day duration, so N weeks is always N * 7 days. In particular
+        // 52 weeks is 364 days, not a calendar year (365/366 days).
+        return weeks * 7
     }
 
     fun truncateValueToTargetPrecision(

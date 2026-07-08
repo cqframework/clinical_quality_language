@@ -120,13 +120,10 @@ object IncludedInEvaluator {
     }
 
     fun listIncludedIn(left: List?, right: List?, state: State?): Boolean? {
-        if (right == null) {
-            return Boolean.FALSE
-        }
-
-        if (left == null) {
-            // For singleton values, include in is equivalent to in.
-            return InEvaluator.`in`(null, right, null, state)
+        // For the list-list overload, if either argument is null, the result is null.
+        // https://cql.hl7.org/09-b-cqlreference.html#included-in-1
+        if (left == null || right == null) {
+            return null
         }
 
         for (element in left) {
