@@ -47,7 +47,8 @@ object CombineEvaluator {
                     )
                 }
             }
-            return buffer.toString().toCqlString()
+            // Combine of an empty list is null (first is still true iff no elements were appended).
+            return if (first) null else buffer.toString().toCqlString()
         }
 
         throw InvalidOperatorArgument(

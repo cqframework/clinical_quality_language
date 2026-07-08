@@ -18,7 +18,7 @@ internal class CqlStringOperatorsTest : CqlTestBase() {
         assertNull(value)
 
         value = results["CombineEmptyList"]!!.value
-        assertEquals(String.EMPTY_STRING, value)
+        assertNull(value)
 
         value = results["CombineABC"]!!.value
         assertEquals("abc".toCqlString(), value)
