@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+    <identifier id="ChlamydiaScreeningCDS" version="1"/>
+    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+    <usings>
+        <def localIdentifier="QUICK" uri="http://org.hl7.fhir"/>
+    </usings>
+    <valueSets>
+        <def name="Diagnosis, Active: Chlamydia" id="2.16.840.1.113883.3.464.1003.112.12.1003"/>
+        <def name="Diagnosis, Active: Complications of Pregnancy, Childbirth and the Puerperium" id="2.16.840.1.113883.3.464.1003.111.12.1012"/>
+        <def name="Diagnosis, Active: Genital Herpes" id="2.16.840.1.113883.3.464.1003.110.12.1049"/>
+        <def name="Diagnosis, Active: Genococcal Infections and Venereal Diseases" id="2.16.840.1.113883.3.464.1003.112.12.1001"/>
+        <def name="Diagnosis, Active: HIV" id="2.16.840.1.113883.3.464.1003.120.12.1003"/>
+        <def name="Diagnosis, Active: Inflammatory Diseases of Female Reproductive Organs" id="2.16.840.1.113883.3.464.1003.112.12.1004"/>
+        <def name="Diagnosis, Active: Other Female Reproductive Conditions" id="2.16.840.1.113883.3.464.1003.111.12.1006"/>
+        <def name="Diagnosis, Active: Syphilis" id="2.16.840.1.113883.3.464.1003.112.12.1002"/>
+        <def name="Diagnostic Study, Order: Diagnostic Studies During Pregnancy" id="2.16.840.1.113883.3.464.1003.111.12.1008"/>
+        <def name="Diagnostic Study, Order: X-Ray Study (all inclusive)" id="2.16.840.1.113883.3.464.1003.198.12.1034"/>
+        <def name="Laboratory Test, Order: Lab Tests During Pregnancy" id="2.16.840.1.113883.3.464.1003.111.12.1007"/>
+        <def name="Laboratory Test, Order: Lab Tests for Sexually Transmitted Infections" id="2.16.840.1.113883.3.464.1003.110.12.1051"/>
+        <def name="Laboratory Test, Order: Pap Test" id="2.16.840.1.113883.3.464.1003.108.12.1017"/>
+        <def name="Laboratory Test, Order: Pregnancy Test" id="2.16.840.1.113883.3.464.1003.111.12.1011"/>
+        <def name="Laboratory Test, Result: Chlamydia Screening" id="2.16.840.1.113883.3.464.1003.110.12.1052"/>
+        <def name="Medication, Active: Contraceptive Medications" id="2.16.840.1.113883.3.464.1003.196.12.1080"/>
+        <def name="Medication, Order: Contraceptive Medications" id="2.16.840.1.113883.3.464.1003.196.12.1080"/>
+        <def name="Medication, Order: Isotretinoin" id="2.16.840.1.113883.3.464.1003.196.12.1143"/>
+        <def name="Patient Characteristic Birthdate: birth date" id="2.16.840.1.113883.3.560.100.4"/>
+        <def name="Patient Characteristic Sex: Female" id="2.16.840.1.113883.3.560.100.2"/>
+        <def name="Procedure, Performed: Delivery Live Births" id="2.16.840.1.113883.3.464.1003.111.12.1015"/>
+        <def name="Procedure, Performed: Procedures During Pregnancy" id="2.16.840.1.113883.3.464.1003.111.12.1009"/>
+        <def name="Procedure, Performed: Procedures Involving Contraceptive Devices" id="2.16.840.1.113883.3.464.1003.111.12.1010"/>
+        <def name="Patient Characteristic Sexual Activity: sexually active" id="TO BE DEFINED-1"/>
+        <def name="Medication, Reason: Contraceptive for Pregnancy Prevention" id="TO BE DEFINED-2"/>
+        <def name="Diagnosis, Active: Non-Birth Control Uses for Oral Contraceptive Pill" id="TO BE DIFINED-3"/>
+        <def name="Risk Evaluation, Document: Sexually Transmitted Infection" id="TO BE DEFINED-4"/>
+    </valueSets>
+    <statements>
+        <def name="Patient" context="Patient">
+            <expression xsi:type="SingletonFrom">
+                <operand dataType="quick:Patient" templateId="cqf-patient" xsi:type="Retrieve"/>
+            </expression>
+        </def>
+        <def name="IsFemale" context="Patient">
+            <expression xsi:type="InValueSet">
+                <code path="gender" xsi:type="Property">
+                    <source name="Patient" xsi:type="ExpressionRef"/>
+                </code>
+                <valueset name="Patient Characteristic Sex: Female"/>
+            </expression>
+        </def>
+        <def name="AtRiskByAgeGroup" context="Patient">
+            <expression xsi:type="And">
+                <operand xsi:type="GreaterOrEqual">
+                    <operand precision="Year" xsi:type="CalculateAge">
+                        <operand path="birthDate" xsi:type="Property">
+                            <source name="Patient" xsi:type="ExpressionRef"/>
+                        </operand>
+                    </operand>
+                    <operand valueType="xsd:int" value="16" xsi:type="Literal"/>
+                </operand>
+                <operand xsi:type="LessOrEqual">
+                    <operand precision="Year" xsi:type="CalculateAge">
+                        <operand path="birthDate" xsi:type="Property">
+                            <source name="Patient" xsi:type="ExpressionRef"/>
+                        </operand>
+                    </operand>
+                    <operand valueType="xsd:int" value="24" xsi:type="Literal"/>
+                </operand>
+            </expression>
+        </def>
+        <def name="DocumentedSexuallyActive" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                        <codes name="Patient Characteristic Sexual Activity: sexually active" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:Observation" templateId="cqf-observation" codeProperty="name" xsi:type="Retrieve">
+                        <codes name="Patient Characteristic Sexual Activity: sexually active" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasHadConditionOfSexualActivity" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Or">
+                    <operand xsi:type="Or">
+                        <operand xsi:type="Or">
+                            <operand xsi:type="Or">
+                                <operand xsi:type="Or">
+                                    <operand xsi:type="Or">
+                                        <operand xsi:type="Exists">
+                                            <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <codes name="Diagnosis, Active: Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
+                                            </operand>
+                                        </operand>
+                                        <operand xsi:type="Exists">
+                                            <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <codes name="Diagnosis, Active: Genital Herpes" xsi:type="ValueSetRef"/>
+                                            </operand>
+                                        </operand>
+                                    </operand>
+                                    <operand xsi:type="Exists">
+                                        <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                            <codes name="Diagnosis, Active: Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
+                                        </operand>
+                                    </operand>
+                                </operand>
+                                <operand xsi:type="Exists">
+                                    <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                        <codes name="Diagnosis, Active: Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                </operand>
+                            </operand>
+                            <operand xsi:type="Exists">
+                                <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <codes name="Diagnosis, Active: Chlamydia" xsi:type="ValueSetRef"/>
+                                </operand>
+                            </operand>
+                        </operand>
+                        <operand xsi:type="Exists">
+                            <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                <codes name="Diagnosis, Active: HIV" xsi:type="ValueSetRef"/>
+                            </operand>
+                        </operand>
+                    </operand>
+                    <operand xsi:type="Exists">
+                        <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                            <codes name="Diagnosis, Active: Syphilis" xsi:type="ValueSetRef"/>
+                        </operand>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                        <codes name="Diagnosis, Active: Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasHadPregnancyTestForSexualActivity" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="L">
+                            <expression dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                                <codes name="Laboratory Test, Order: Pregnancy Test" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <relationship alias="M" xsi:type="Without">
+                            <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                                <codes name="Medication, Order: Isotretinoin" xsi:type="ValueSetRef"/>
+                            </expression>
+                            <suchThat xsi:type="And">
+                                <operand precision="Day" xsi:type="SameOrAfter">
+                                    <operand xsi:type="DateFrom">
+                                        <operand path="orderedAtTime" scope="M" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="DateFrom">
+                                        <operand path="orderedAtTime" scope="L" xsi:type="Property"/>
+                                    </operand>
+                                </operand>
+                                <operand xsi:type="In">
+                                    <operand precision="Day" xsi:type="DurationBetween">
+                                        <operand xsi:type="DateFrom">
+                                            <operand path="orderedAtTime" scope="M" xsi:type="Property"/>
+                                        </operand>
+                                        <operand xsi:type="DateFrom">
+                                            <operand path="orderedAtTime" scope="L" xsi:type="Property"/>
+                                        </operand>
+                                    </operand>
+                                    <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                                        <low xsi:type="Negate">
+                                            <operand valueType="xsd:int" value="7" xsi:type="Literal"/>
+                                        </low>
+                                        <high valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                    </operand>
+                                </operand>
+                            </suchThat>
+                        </relationship>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="L">
+                            <expression dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                                <codes name="Laboratory Test, Order: Pregnancy Test" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <relationship alias="X" xsi:type="Without">
+                            <expression dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                                <codes name="Diagnostic Study, Order: X-Ray Study (all inclusive)" xsi:type="ValueSetRef"/>
+                            </expression>
+                            <suchThat xsi:type="And">
+                                <operand precision="Day" xsi:type="SameOrAfter">
+                                    <operand xsi:type="DateFrom">
+                                        <operand path="orderedAtTime" scope="X" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="DateFrom">
+                                        <operand path="orderedAtTime" scope="L" xsi:type="Property"/>
+                                    </operand>
+                                </operand>
+                                <operand xsi:type="In">
+                                    <operand precision="Day" xsi:type="DurationBetween">
+                                        <operand xsi:type="DateFrom">
+                                            <operand path="orderedAtTime" scope="X" xsi:type="Property"/>
+                                        </operand>
+                                        <operand xsi:type="DateFrom">
+                                            <operand path="orderedAtTime" scope="L" xsi:type="Property"/>
+                                        </operand>
+                                    </operand>
+                                    <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                                        <low xsi:type="Negate">
+                                            <operand valueType="xsd:int" value="7" xsi:type="Literal"/>
+                                        </low>
+                                        <high valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                    </operand>
+                                </operand>
+                            </suchThat>
+                        </relationship>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasHadOtherLabTestForSexualActivity" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Or">
+                    <operand xsi:type="Exists">
+                        <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                            <codes name="Laboratory Test, Order: Pap Test" xsi:type="ValueSetRef"/>
+                        </operand>
+                    </operand>
+                    <operand xsi:type="Exists">
+                        <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                            <codes name="Laboratory Test, Order: Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
+                        </operand>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <codes name="Laboratory Test, Order: Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasHadProcedureForSexualActivity" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Or">
+                    <operand xsi:type="Or">
+                        <operand xsi:type="Exists">
+                            <operand dataType="quick:Procedure" templateId="cqf-procedure" codeProperty="type" xsi:type="Retrieve">
+                                <codes name="Procedure, Performed: Delivery Live Births" xsi:type="ValueSetRef"/>
+                            </operand>
+                        </operand>
+                        <operand xsi:type="Exists">
+                            <operand dataType="quick:Procedure" templateId="cqf-procedure" codeProperty="type" xsi:type="Retrieve">
+                                <codes name="Procedure, Performed: Procedures During Pregnancy" xsi:type="ValueSetRef"/>
+                            </operand>
+                        </operand>
+                    </operand>
+                    <operand xsi:type="Exists">
+                        <operand dataType="quick:Procedure" templateId="cqf-procedure" codeProperty="type" xsi:type="Retrieve">
+                            <codes name="Procedure, Performed: Procedures Involving Contraceptive Devices" xsi:type="ValueSetRef"/>
+                        </operand>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:Procedure" templateId="cqf-procedure" codeProperty="type" xsi:type="Retrieve">
+                        <codes name="Diagnostic Study, Order: Diagnostic Studies During Pregnancy" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="ReceivedOCP" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                        <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand dataType="xsd:MedicationTreatment" templateId="MedicationTreatment" xsi:type="Retrieve">
+                        <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="ReceivedOCP_ForBirthControl" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="M">
+                            <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                                <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <where xsi:type="Exists">
+                            <operand xsi:type="Query">
+                                <source alias="I">
+                                    <expression path="indication" scope="M" xsi:type="Property"/>
+                                </source>
+                                <where xsi:type="InValueSet">
+                                    <code path="reason" scope="I" xsi:type="Property"/>
+                                    <valueset name="Medication, Reason: Contraceptive for Pregnancy Prevention"/>
+                                </where>
+                            </operand>
+                        </where>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="M">
+                            <expression dataType="xsd:MedicationTreatment" templateId="MedicationTreatment" xsi:type="Retrieve">
+                                <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <where xsi:type="Exists">
+                            <operand xsi:type="Query">
+                                <source alias="I">
+                                    <expression path="indication" scope="M" xsi:type="Property"/>
+                                </source>
+                                <where xsi:type="InValueSet">
+                                    <code path="reason" scope="I" xsi:type="Property"/>
+                                    <valueset name="Medication, Reason: Contraceptive for Pregnancy Prevention"/>
+                                </where>
+                            </operand>
+                        </where>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="ReceivedOCP_ForMenstrualRegulation" context="Patient">
+            <expression xsi:type="Exists">
+                <operand xsi:type="Query">
+                    <source alias="M">
+                        <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                            <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                        </expression>
+                    </source>
+                    <where xsi:type="Exists">
+                        <operand xsi:type="Query">
+                            <source alias="I">
+                                <expression path="indication" scope="M" xsi:type="Property"/>
+                            </source>
+                            <where xsi:type="InValueSet">
+                                <code path="reason" scope="I" xsi:type="Property"/>
+                                <valueset name="Diagnosis, Active: Non-Birth Control Uses for Oral Contraceptive Pill"/>
+                            </where>
+                        </operand>
+                    </where>
+                </operand>
+            </expression>
+        </def>
+        <def name="ReceivedOCP_NotForMenstrualRegulation" context="Patient">
+            <expression xsi:type="Exists">
+                <operand xsi:type="Query">
+                    <source alias="M">
+                        <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                            <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                        </expression>
+                    </source>
+                    <where xsi:type="Exists">
+                        <operand xsi:type="Query">
+                            <source alias="I">
+                                <expression path="indication" scope="M" xsi:type="Property"/>
+                            </source>
+                            <where xsi:type="And">
+                                <operand xsi:type="Not">
+                                    <operand xsi:type="IsNull">
+                                        <operand path="reason" scope="I" xsi:type="Property"/>
+                                    </operand>
+                                </operand>
+                                <operand xsi:type="InValueSet">
+                                    <code xsi:type="Not">
+                                        <operand path="reason" scope="I" xsi:type="Property"/>
+                                    </code>
+                                    <valueset name="Diagnosis, Active: Non-Birth Control Uses for Oral Contraceptive Pill"/>
+                                </operand>
+                            </where>
+                        </operand>
+                    </where>
+                </operand>
+            </expression>
+        </def>
+        <def name="ReceivedOCPwithMensturalCycleCondition" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="M">
+                            <expression dataType="xsd:MedicationTreatment" templateId="MedicationTreatment" xsi:type="Retrieve">
+                                <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <relationship alias="C" xsi:type="With">
+                            <expression dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                <codes name="Non-Birth Control Uses for Oral Contraceptive Pill" xsi:type="IdentifierRef"/>
+                            </expression>
+                            <suchThat xsi:type="In">
+                                <operand precision="Year" xsi:type="DurationBetween">
+                                    <operand xsi:type="Start">
+                                        <operand path="performanceTime" scope="M" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="Start">
+                                        <operand path="effectiveTime" scope="C" xsi:type="Property"/>
+                                    </operand>
+                                </operand>
+                                <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                                    <low xsi:type="Negate">
+                                        <operand valueType="xsd:int" value="1" xsi:type="Literal"/>
+                                    </low>
+                                    <high valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                </operand>
+                            </suchThat>
+                        </relationship>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="M">
+                            <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                                <codes name="Medication, Active: Contraceptive Medications" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <relationship alias="C" xsi:type="With">
+                            <expression dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                <codes name="Non-Birth Control Uses for Oral Contraceptive Pill" xsi:type="IdentifierRef"/>
+                            </expression>
+                            <suchThat xsi:type="In">
+                                <operand precision="Year" xsi:type="DurationBetween">
+                                    <operand xsi:type="Start">
+                                        <operand path="orderedAtTime" scope="M" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="Start">
+                                        <operand path="effectiveTime" scope="C" xsi:type="Property"/>
+                                    </operand>
+                                </operand>
+                                <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                                    <low xsi:type="Negate">
+                                        <operand valueType="xsd:int" value="1" xsi:type="Literal"/>
+                                    </low>
+                                    <high valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                </operand>
+                            </suchThat>
+                        </relationship>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasEvidenceOfSexualActivity" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Or">
+                    <operand xsi:type="Or">
+                        <operand xsi:type="Or">
+                            <operand xsi:type="Or">
+                                <operand xsi:type="Or">
+                                    <operand xsi:type="Or">
+                                        <operand name="DocumentedSexuallyActive" xsi:type="ExpressionRef"/>
+                                        <operand name="HasHadConditionOfSexualActivity" xsi:type="ExpressionRef"/>
+                                    </operand>
+                                    <operand name="HasHadPregnancyTestForSexualActivity" xsi:type="ExpressionRef"/>
+                                </operand>
+                                <operand name="HasHadOtherLabTestForSexualActivity" xsi:type="ExpressionRef"/>
+                            </operand>
+                            <operand name="HasHadProcedureForSexualActivity" xsi:type="ExpressionRef"/>
+                        </operand>
+                        <operand name="ReceivedOCP_ForBirthControl" xsi:type="ExpressionRef"/>
+                    </operand>
+                    <operand name="ReceivedOCP_NotForMenstrualRegulation" xsi:type="ExpressionRef"/>
+                </operand>
+                <operand xsi:type="And">
+                    <operand name="ReceivedOCP" xsi:type="ExpressionRef"/>
+                    <operand xsi:type="Not">
+                        <operand xsi:type="Or">
+                            <operand name="ReceivedOCP_ForMenstrualRegulation" xsi:type="ExpressionRef"/>
+                            <operand name="ReceivedOCPwithMenstrualCycleCondition" xsi:type="IdentifierRef"/>
+                        </operand>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasSTIriskFactor" context="Patient">
+            <expression xsi:type="Or">
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="C">
+                            <expression dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                <codes name="Risk Evaluation, Document: Sexually Transmitted Infection" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <where xsi:type="In">
+                            <operand precision="Year" xsi:type="DurationBetween">
+                                <operand xsi:type="Start">
+                                    <operand path="effectiveTime" scope="C" xsi:type="Property"/>
+                                </operand>
+                                <operand name="today" xsi:type="FunctionRef"/>
+                            </operand>
+                            <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                                <low valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                <high valueType="xsd:int" value="1" xsi:type="Literal"/>
+                            </operand>
+                        </where>
+                    </operand>
+                </operand>
+                <operand xsi:type="Exists">
+                    <operand xsi:type="Query">
+                        <source alias="O">
+                            <expression dataType="quick:Observation" templateId="cqf-observation" codeProperty="name" xsi:type="Retrieve">
+                                <codes name="Risk Evaluation, Document: Sexually Transmitted Infection" xsi:type="ValueSetRef"/>
+                            </expression>
+                        </source>
+                        <where xsi:type="In">
+                            <operand precision="Year" xsi:type="DurationBetween">
+                                <operand xsi:type="Start">
+                                    <operand path="observedAtTime" scope="O" xsi:type="Property"/>
+                                </operand>
+                                <operand name="today" xsi:type="FunctionRef"/>
+                            </operand>
+                            <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                                <low valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                <high valueType="xsd:int" value="1" xsi:type="Literal"/>
+                            </operand>
+                        </where>
+                    </operand>
+                </operand>
+            </expression>
+        </def>
+        <def name="HasChlamydiaTest" context="Patient">
+            <expression xsi:type="Exists">
+                <operand xsi:type="Query">
+                    <source alias="O">
+                        <expression dataType="quick:DiagnosticReport" templateId="cqf-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                            <codes name="Laboratory Test, Result: Chlamydia Screening" xsi:type="ValueSetRef"/>
+                        </expression>
+                    </source>
+                    <where xsi:type="And">
+                        <operand xsi:type="In">
+                            <operand precision="Year" xsi:type="DurationBetween">
+                                <operand xsi:type="Start">
+                                    <operand path="observedAtTime" scope="O" xsi:type="Property"/>
+                                </operand>
+                                <operand name="today" xsi:type="FunctionRef"/>
+                            </operand>
+                            <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                                <low valueType="xsd:int" value="0" xsi:type="Literal"/>
+                                <high valueType="xsd:int" value="1" xsi:type="Literal"/>
+                            </operand>
+                        </operand>
+                        <operand xsi:type="Not">
+                            <operand xsi:type="IsNull">
+                                <operand path="value" scope="O" xsi:type="Property"/>
+                            </operand>
+                        </operand>
+                    </where>
+                </operand>
+            </expression>
+        </def>
+        <def name="InAtRiskAgePopulation" context="Patient">
+            <expression xsi:type="And">
+                <operand xsi:type="And">
+                    <operand xsi:type="And">
+                        <operand name="IsFemale" xsi:type="ExpressionRef"/>
+                        <operand name="AtRiskByAgeGroup" xsi:type="ExpressionRef"/>
+                    </operand>
+                    <operand name="HasEvidenceOfSexualActivity" xsi:type="ExpressionRef"/>
+                </operand>
+                <operand xsi:type="Not">
+                    <operand name="HasChlamydiaTest" xsi:type="ExpressionRef"/>
+                </operand>
+            </expression>
+        </def>
+        <def name="InOtherAtRiskPopulation" context="Patient">
+            <expression xsi:type="And">
+                <operand name="HasSTIriskFactor" xsi:type="ExpressionRef"/>
+                <operand xsi:type="Not">
+                    <operand name="HasChlamydiaTest" xsi:type="ExpressionRef"/>
+                </operand>
+            </expression>
+        </def>
+        <def name="InAgeAndOtherAtRiskPopulation" context="Patient">
+            <expression xsi:type="And">
+                <operand xsi:type="And">
+                    <operand name="InAtRiskAgePopulation" xsi:type="ExpressionRef"/>
+                    <operand name="InOtherAtRiskPopulation" xsi:type="ExpressionRef"/>
+                </operand>
+                <operand xsi:type="Not">
+                    <operand name="HasChlamydiaTest" xsi:type="ExpressionRef"/>
+                </operand>
+            </expression>
+        </def>
+        <def name="AtRiskByAgeMessage" context="Patient">
+            <expression strict="false" xsi:type="As">
+                <operand xsi:type="Tuple">
+                    <element name="message">
+                        <value valueType="xsd:string" value="Patient is at risk for chlamydia infection by age group, no screening test available in past 1 year" xsi:type="Literal"/>
+                    </element>
+                </operand>
+                <asTypeSpecifier name="quick:CommunicationRequest" xsi:type="NamedTypeSpecifier"/>
+            </expression>
+        </def>
+        <def name="ChlamydiaScreeningTestProposal" context="Patient">
+            <expression strict="false" xsi:type="As">
+                <operand xsi:type="Tuple">
+                    <element name="procedureCode">
+                        <value name="Laboratory Test, Result: Chlamydia Screening" xsi:type="ValueSetRef"/>
+                    </element>
+                </operand>
+                <asTypeSpecifier name="quick:ProcedureRequest" xsi:type="NamedTypeSpecifier"/>
+            </expression>
+        </def>
+    </statements>
+</library>

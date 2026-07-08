@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <identifier id="CMS55" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low xsi:type="DateTime">
+               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high xsi:type="DateTime">
+               <year valueType="t:Integer" value="2015" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Inpatient" id="2.16.840.1.113883.3.666.5.307" accessLevel="Public"/>
+      <def name="Emergency Department Visit" id="2.16.840.1.113883.3.117.1.7.1.293" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InpatientEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Inpatient" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="And">
+               <operand xsi:type="LessOrEqual">
+                  <operand path="length" scope="E" xsi:type="Property"/>
+                  <operand value="120" unit="days" xsi:type="Quantity"/>
+               </operand>
+               <operand xsi:type="In">
+                  <operand xsi:type="End">
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="EDEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="ED">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship alias="E" xsi:type="With">
+               <expression name="InpatientEncounters" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand xsi:type="End">
+                     <operand path="period" scope="ED" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Subtract">
+                        <operand xsi:type="Start">
+                           <operand path="period" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand value="1" unit="hour" xsi:type="Quantity"/>
+                     </low>
+                     <high xsi:type="Start">
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="MeasureObservation" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="EDEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="And">
+               <operand xsi:type="Not">
+                  <operand xsi:type="IsNull">
+                     <operand xsi:type="Start">
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand xsi:type="Not">
+                  <operand xsi:type="IsNull">
+                     <operand xsi:type="End">
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+            <return>
+               <expression precision="Minute" xsi:type="DurationBetween">
+                  <operand xsi:type="Start">
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand xsi:type="End">
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def name="MeasureScore" context="Population" accessLevel="Public">
+         <expression xsi:type="Median">
+            <source xsi:type="Query">
+               <source alias="X">
+                  <expression name="MeasureObservation" xsi:type="ExpressionRef"/>
+               </source>
+               <return distinct="false">
+                  <expression xsi:type="ToDecimal">
+                     <operand name="X" xsi:type="AliasRef"/>
+                  </expression>
+               </return>
+            </source>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

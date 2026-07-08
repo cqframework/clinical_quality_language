@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS55" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_draft" version="5.0"/>
+   </usings>
+   <parameters>
+      <def name="Measurement Period" accessLevel="Public">
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Inpatient" id="2.16.840.1.113883.3.666.5.307" accessLevel="Public"/>
+      <def name="Emergency Department Visit" id="2.16.840.1.113883.3.117.1.7.1.293" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="Inpatient Encounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_draft" dataType="ns1:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Inpatient" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="And">
+               <operand xsi:type="LessOrEqual">
+                  <operand path="lengthOfStay" scope="E" xsi:type="Property"/>
+                  <operand value="120" unit="days" xsi:type="Quantity"/>
+               </operand>
+               <operand xsi:type="In">
+                  <operand xsi:type="End">
+                     <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="Emergency Department Encounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="ED">
+               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_draft" dataType="ns2:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship alias="E" xsi:type="With">
+               <expression name="Inpatient Encounters" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand xsi:type="End">
+                     <operand path="relevantPeriod" scope="ED" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Subtract">
+                        <operand xsi:type="Start">
+                           <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand value="1" unit="hour" xsi:type="Quantity"/>
+                     </low>
+                     <high xsi:type="Start">
+                        <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="Measure Observation" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="Emergency Department Encounters" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+               </operand>
+            </where>
+            <return>
+               <expression precision="Minute" xsi:type="DurationBetween">
+                  <operand xsi:type="Start">
+                     <operand path="locationPeriod" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand xsi:type="End">
+                     <operand path="locationPeriod" scope="E" xsi:type="Property"/>
+                  </operand>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def name="Measure Score" context="Population" accessLevel="Public">
+         <expression xsi:type="Median">
+            <source xsi:type="Query">
+               <source alias="X">
+                  <expression name="Measure Observation" xsi:type="ExpressionRef"/>
+               </source>
+               <return distinct="false">
+                  <expression xsi:type="ToDecimal">
+                     <operand name="X" xsi:type="AliasRef"/>
+                  </expression>
+               </return>
+            </source>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

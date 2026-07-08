@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:elm:r1 ../Src/cql-lm/schema/elm/library.xsd">
+	<identifier id="ExampleELMLibrary"/>
+	<schemaIdentifier id=""/>
+	<statements>
+		<def name="FullQuery" context="PATIENT">
+			<!-- 
+				[Encounter, Performance: "Inpatient"] E
+				  with [Condition: "Acute Pharyngitis"] P
+					where P.effectiveTime overlaps after E.performanceTime
+				  where duration in days of E.performanceTime >= 120
+				  return tuple { id: E.id, lengthOfStay: duration in days of E.performanceTime }
+				  sort by lengthOfStay desc
+			-->
+			<expression xsi:type="Sort" orderBy="lengthOfStay">
+				<source xsi:type="ForEach" scope="E">
+					<source xsi:type="Filter" scope="E">
+						<source xsi:type="Filter" scope="E">
+							<source xsi:type="ClinicalRequest" dataType="EncounterPerformanceOccurrence" cardinality="Multiple" codeProperty="encounterType" dateProperty="performanceTime" idProperty="id">
+								<codes xsi:type="ValueSetRef" name="Inpatient"/>
+							</source>
+							<condition xsi:type="IsNotEmpty">
+								<operand xsi:type="Filter" scope="P">
+									<source xsi:type="ClinicalRequest" dataType="ConditionObservationOccurrence" cardinality="Multiple" codeProperty="code">
+										<codes xsi:type="ValueSetRef" name="AcutePharyngitis"/>
+									</source>
+									<condition xsi:type="OverlapsAfter">
+										<operand xsi:type="Property" path="effectiveTime" scope="P"/>
+										<operand xsi:type="Property" path="performanceTime" scope="E"/>
+									</condition>
+								</operand>
+							</condition>
+						</source>
+						<condition xsi:type="GreaterOrEqual">
+							<operand xsi:type="DateDiff">
+								<startDate xsi:type="Begin">
+									<operand xsi:type="Property" path="performanceTime" scope="E"/>
+								</startDate>
+								<endDate xsi:type="End">
+									<operand xsi:type="Property" path="performanceTime" scope="E"/>
+								</endDate>
+								<granularity xsi:type="Literal" valueType="DateGranularity" value="day"/>
+							</operand>
+							<operand xsi:type="Literal" valueType="xs:int" value="120"></operand>
+						</condition>
+					</source>
+					<element xsi:type="ObjectExpression">
+						<property name="id">
+							<value xsi:type="Property" path="id" scope="E"/>
+						</property>
+						<property name="lengthOfStay">
+							<value xsi:type="DateDiff">
+								<startDate xsi:type="Begin">
+									<operand xsi:type="Property" path="performanceTime" scope="E"/>
+								</startDate>
+								<endDate xsi:type="End">
+									<operand xsi:type="Property" path="performanceTime" scope="E"/>
+								</endDate>
+								<granularity xsi:type="Literal" valueType="DateGranularity" value="day"/>
+							</value>
+						</property>
+					</element>
+				</source>
+			</expression>
+		</def>
+	</statements>
+</library>

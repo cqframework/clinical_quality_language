@@ -1,0 +1,287 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "ChlamydiaScreening_CDS_UsingCommon",
+         "version" : "2"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "includes" : {
+         "def" : [ {
+            "localIdentifier" : "Common",
+            "path" : "ChlamydiaScreening_Common",
+            "version" : "2"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "SNOMED",
+            "id" : "http://snomed.info/sct",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Reason for not performing Chlamydia Screening",
+            "id" : "TBD",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "In Demographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "precision" : "Year",
+                        "type" : "CalculateAge",
+                        "operand" : {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "16",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "Less",
+                     "operand" : [ {
+                        "precision" : "Year",
+                        "type" : "CalculateAge",
+                        "operand" : {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "24",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "InValueSet",
+                  "code" : {
+                     "path" : "gender",
+                     "type" : "Property",
+                     "source" : {
+                        "name" : "Patient",
+                        "type" : "ExpressionRef"
+                     }
+                  },
+                  "valueset" : {
+                     "name" : "Female Administrative Sex",
+                     "libraryName" : "Common"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Sexually Active",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Exists",
+                  "operand" : {
+                     "name" : "Conditions Indicating Sexual Activity",
+                     "libraryName" : "Common",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
+                  "type" : "Exists",
+                  "operand" : {
+                     "name" : "Laboratory Tests Indicating Sexual Activity",
+                     "libraryName" : "Common",
+                     "type" : "ExpressionRef"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "No Screening",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "Not",
+                     "operand" : {
+                        "type" : "Exists",
+                        "operand" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "S",
+                              "expression" : {
+                                 "name" : "Results Present For Chlamydia Screening",
+                                 "libraryName" : "Common",
+                                 "type" : "ExpressionRef"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "In",
+                              "operand" : [ {
+                                 "path" : "issued",
+                                 "scope" : "S",
+                                 "type" : "Property"
+                              }, {
+                                 "lowClosed" : true,
+                                 "highClosed" : true,
+                                 "type" : "Interval",
+                                 "low" : {
+                                    "type" : "Subtract",
+                                    "operand" : [ {
+                                       "type" : "Today"
+                                    }, {
+                                       "value" : 1,
+                                       "unit" : "years",
+                                       "type" : "Quantity"
+                                    } ]
+                                 },
+                                 "high" : {
+                                    "type" : "Today"
+                                 }
+                              } ]
+                           }
+                        }
+                     }
+                  }, {
+                     "type" : "Not",
+                     "operand" : {
+                        "type" : "Exists",
+                        "operand" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "P",
+                              "expression" : {
+                                 "dataType" : "{http://hl7.org/fhir}ProcedureRequest",
+                                 "templateId" : "procedurerequest-qicore-qicore-procedurerequest",
+                                 "codeProperty" : "type",
+                                 "type" : "Retrieve",
+                                 "codes" : {
+                                    "name" : "Chlamydia Screening",
+                                    "libraryName" : "Common",
+                                    "type" : "ValueSetRef"
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "precision" : "Day",
+                              "type" : "SameOrAfter",
+                              "operand" : [ {
+                                 "path" : "orderedOn",
+                                 "scope" : "P",
+                                 "type" : "Property"
+                              }, {
+                                 "type" : "Today"
+                              } ]
+                           }
+                        }
+                     }
+                  } ]
+               }, {
+                  "type" : "Not",
+                  "operand" : {
+                     "type" : "Exists",
+                     "operand" : {
+                        "dataType" : "{http://hl7.org/fhir}Observation",
+                        "templateId" : "observation-qicore-qicore-observation",
+                        "codeProperty" : "code",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Reason for not performing Chlamydia Screening",
+                           "type" : "ValueSetRef"
+                        }
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Need Screening",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "name" : "In Demographic",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "Sexually Active",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "name" : "No Screening",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ChlamydiaScreeningRequest",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Tuple",
+               "element" : [ {
+                  "name" : "type",
+                  "value" : {
+                     "code" : "442487003",
+                     "display" : "Screening for Chlamydia trachomatis (procedure)",
+                     "type" : "Code",
+                     "system" : {
+                        "name" : "SNOMED"
+                     }
+                  }
+               }, {
+                  "name" : "status",
+                  "value" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "proposed",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

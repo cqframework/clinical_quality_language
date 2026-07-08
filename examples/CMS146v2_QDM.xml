@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS146_QDM" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_1_draft" version="5.0.2"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011" accessLevel="Public"/>
+      <def name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012" accessLevel="Public"/>
+      <def name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061" accessLevel="Public"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public"/>
+      <def name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InDemographic" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDatetime" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="2" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="Less">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDatetime" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="18" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Pharyngitis" context="Patient" accessLevel="Public">
+         <expression xsi:type="Union">
+            <operand xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+               <codes name="Acute Pharyngitis" xsi:type="ValueSetRef"/>
+            </operand>
+            <operand xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+               <codes name="Acute Tonsillitis" xsi:type="ValueSetRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Antibiotics" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="M">
+               <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:PositiveMedicationOrder" templateId="PositiveMedicationOrder" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+         </expression>
+      </def>
+      <def name="isRelated" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <expression xsi:type="Or">
+            <operand xsi:type="Includes">
+               <operand path="prevalencePeriod" xsi:type="Property">
+                  <source name="P" xsi:type="OperandRef"/>
+               </operand>
+               <operand path="relevantPeriod" xsi:type="Property">
+                  <source name="E" xsi:type="OperandRef"/>
+               </operand>
+            </operand>
+            <operand xsi:type="In">
+               <operand xsi:type="Start">
+                  <operand path="prevalencePeriod" xsi:type="Property">
+                     <source name="P" xsi:type="OperandRef"/>
+                  </operand>
+               </operand>
+               <operand path="relevantPeriod" xsi:type="Property">
+                  <source name="E" xsi:type="OperandRef"/>
+               </operand>
+            </operand>
+         </expression>
+         <operand name="P">
+            <operandTypeSpecifier xmlns:ns4="urn:healthit-gov:qdm:v5_0_1_draft" name="ns4:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+         <operand name="E">
+            <operandTypeSpecifier xmlns:ns5="urn:healthit-gov:qdm:v5_0_1_draft" name="ns5:EncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def name="MeasurementPeriodEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="And">
+               <operand name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand xsi:type="IncludedIn">
+                  <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="PharyngitisEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="MeasurementPeriodEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="P" xsi:type="With">
+               <expression name="Pharyngitis" xsi:type="ExpressionRef"/>
+               <suchThat name="isRelated" xsi:type="FunctionRef">
+                  <operand name="P" xsi:type="AliasRef"/>
+                  <operand name="E" xsi:type="AliasRef"/>
+               </suchThat>
+            </relationship>
+            <relationship alias="A" xsi:type="With">
+               <expression name="Antibiotics" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand path="authorDatetime" scope="A" xsi:type="Property"/>
+                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                     <low xsi:type="Start">
+                        <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                     </low>
+                     <high xsi:type="Add">
+                        <operand xsi:type="Start">
+                           <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand value="3" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="PharyngitisWithPriorAntibiotics" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="P">
+               <expression name="Pharyngitis" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="A" xsi:type="With">
+               <expression name="Antibiotics" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand path="authorDatetime" scope="A" xsi:type="Property"/>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Subtract">
+                        <operand xsi:type="Start">
+                           <operand path="prevalencePeriod" scope="P" xsi:type="Property"/>
+                        </operand>
+                        <operand value="30" unit="days" xsi:type="Quantity"/>
+                     </low>
+                     <high xsi:type="Start">
+                        <operand path="prevalencePeriod" scope="P" xsi:type="Property"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="ExcludedEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="P" xsi:type="With">
+               <expression name="PharyngitisWithPriorAntibiotics" xsi:type="ExpressionRef"/>
+               <suchThat name="isRelated" xsi:type="FunctionRef">
+                  <operand name="P" xsi:type="AliasRef"/>
+                  <operand name="E" xsi:type="AliasRef"/>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="StrepTestEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="T" xsi:type="With">
+               <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:PositiveLaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat xsi:type="And">
+                  <operand xsi:type="Not">
+                     <operand xsi:type="IsNull">
+                        <operand path="result" scope="T" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="In">
+                     <operand xsi:type="Start">
+                        <operand path="relevantPeriod" scope="T" xsi:type="Property"/>
+                     </operand>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low xsi:type="Subtract">
+                           <operand xsi:type="Start">
+                              <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                           </operand>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high xsi:type="Add">
+                           <operand xsi:type="End">
+                              <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                           </operand>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="IPPCount" context="Patient" accessLevel="Public">
+         <expression xsi:type="Count">
+            <source name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def name="DenominatorCount" context="Patient" accessLevel="Public">
+         <expression name="IPPCount" xsi:type="ExpressionRef"/>
+      </def>
+      <def name="DenominatorExclusionsCount" context="Patient" accessLevel="Public">
+         <expression xsi:type="Count">
+            <source name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def name="NumeratorCount" context="Patient" accessLevel="Public">
+         <expression xsi:type="Count">
+            <source xsi:type="Except">
+               <operand name="StrepTestEncounters" xsi:type="ExpressionRef"/>
+               <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+            </source>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

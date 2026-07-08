@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="ChlamydiaScreening_CDS_UsingCommon" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <includes>
+      <def localIdentifier="Common" path="ChlamydiaScreening_Common" version="2"/>
+   </includes>
+   <codeSystems>
+      <def name="SNOMED" id="http://snomed.info/sct" accessLevel="Public"/>
+   </codeSystems>
+   <valueSets>
+      <def name="Reason for not performing Chlamydia Screening" id="TBD" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="In Demographic" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="And">
+               <operand xsi:type="GreaterOrEqual">
+                  <operand precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand valueType="t:Integer" value="16" xsi:type="Literal"/>
+               </operand>
+               <operand xsi:type="Less">
+                  <operand precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand valueType="t:Integer" value="24" xsi:type="Literal"/>
+               </operand>
+            </operand>
+            <operand xsi:type="InValueSet">
+               <code path="gender" xsi:type="Property">
+                  <source name="Patient" xsi:type="ExpressionRef"/>
+               </code>
+               <valueset name="Female Administrative Sex" libraryName="Common"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Sexually Active" context="Patient" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand xsi:type="Exists">
+               <operand name="Conditions Indicating Sexual Activity" libraryName="Common" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand xsi:type="Exists">
+               <operand name="Laboratory Tests Indicating Sexual Activity" libraryName="Common" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="No Screening" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="And">
+               <operand xsi:type="Not">
+                  <operand xsi:type="Exists">
+                     <operand xsi:type="Query">
+                        <source alias="S">
+                           <expression name="Results Present For Chlamydia Screening" libraryName="Common" xsi:type="ExpressionRef"/>
+                        </source>
+                        <where xsi:type="In">
+                           <operand path="issued" scope="S" xsi:type="Property"/>
+                           <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <low xsi:type="Subtract">
+                                 <operand xsi:type="Today"/>
+                                 <operand value="1" unit="years" xsi:type="Quantity"/>
+                              </low>
+                              <high xsi:type="Today"/>
+                           </operand>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand xsi:type="Not">
+                  <operand xsi:type="Exists">
+                     <operand xsi:type="Query">
+                        <source alias="P">
+                           <expression dataType="fhir:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
+                              <codes name="Chlamydia Screening" libraryName="Common" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where precision="Day" xsi:type="SameOrAfter">
+                           <operand path="orderedOn" scope="P" xsi:type="Property"/>
+                           <operand xsi:type="Today"/>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+            </operand>
+            <operand xsi:type="Not">
+               <operand xsi:type="Exists">
+                  <operand dataType="fhir:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
+                     <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def name="Need Screening" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="And">
+               <operand name="In Demographic" xsi:type="ExpressionRef"/>
+               <operand name="Sexually Active" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand name="No Screening" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
+         <expression xsi:type="Tuple">
+            <element name="type">
+               <value code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
+                  <system name="SNOMED"/>
+               </value>
+            </element>
+            <element name="status">
+               <value valueType="t:String" value="proposed" xsi:type="Literal"/>
+            </element>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

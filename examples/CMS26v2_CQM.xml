@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <identifier id="CMS26" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low xsi:type="DateTime">
+               <year valueType="t:Integer" value="2013" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high xsi:type="DateTime">
+               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Asthma" id="2.16.840.1.113883.3.117.1.7.1.271" accessLevel="Public"/>
+      <def name="Asthma Management Plan" id="2.16.840.1.113883.3.117.1.7.1.131" accessLevel="Public"/>
+      <def name="Home Discharge Disposition" id="TBD" accessLevel="Public"/>
+      <def name="Doctor" id="TBD" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="In Demographic" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="2" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="LessOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="17" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Asthma Encounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Asthma" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="And">
+               <operand xsi:type="And">
+                  <operand xsi:type="And">
+                     <operand xsi:type="Equal">
+                        <operand path="class" scope="E" xsi:type="Property"/>
+                        <operand valueType="t:String" value="inpatient" xsi:type="Literal"/>
+                     </operand>
+                     <operand xsi:type="LessOrEqual">
+                        <operand path="length" scope="E" xsi:type="Property"/>
+                        <operand value="120" unit="days" xsi:type="Quantity"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="InValueSet">
+                     <code path="dischargeDisposition" xsi:type="Property">
+                        <source path="hospitalization" scope="E" xsi:type="Property"/>
+                     </code>
+                     <valueset name="Home Discharge Disposition"/>
+                  </operand>
+               </operand>
+               <operand xsi:type="In">
+                  <operand xsi:type="End">
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="Asthma Encounters with Plan" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="Asthma Encounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="C" xsi:type="With">
+               <expression dataType="fhir:CommunicationRequest" templateId="communicationrequest-qicore-qicore-communicationrequest" xsi:type="Retrieve"/>
+               <suchThat xsi:type="And">
+                  <operand xsi:type="And">
+                     <operand xsi:type="And">
+                        <operand xsi:type="Equal">
+                           <operand path="id" xsi:type="Property">
+                              <source strict="false" xsi:type="As">
+                                 <operand path="encounter" scope="C" xsi:type="Property"/>
+                                 <asTypeSpecifier name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                              </source>
+                           </operand>
+                           <operand path="id" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand xsi:type="Exists">
+                           <operand xsi:type="Query">
+                              <source alias="R">
+                                 <expression path="reason" scope="C" xsi:type="Property"/>
+                              </source>
+                              <where xsi:type="InValueSet">
+                                 <code name="R" xsi:type="AliasRef"/>
+                                 <valueset name="Asthma Management Plan"/>
+                              </where>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Exists">
+                        <operand xsi:type="Query">
+                           <source alias="R">
+                              <expression path="practitionerRole" xsi:type="Property">
+                                 <source strict="false" xsi:type="As">
+                                    <operand path="sender" scope="C" xsi:type="Property"/>
+                                    <asTypeSpecifier name="fhir:Practitioner" xsi:type="NamedTypeSpecifier"/>
+                                 </source>
+                              </expression>
+                           </source>
+                           <where xsi:type="InValueSet">
+                              <code path="role" scope="R" xsi:type="Property"/>
+                              <valueset name="Doctor"/>
+                           </where>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Equal">
+                     <operand path="id" xsi:type="Property">
+                        <source strict="false" xsi:type="As">
+                           <operand xsi:type="First">
+                              <source path="recipient" scope="C" xsi:type="Property"/>
+                           </operand>
+                           <asTypeSpecifier name="fhir:Patient" xsi:type="NamedTypeSpecifier"/>
+                        </source>
+                     </operand>
+                     <operand path="id" xsi:type="Property">
+                        <source strict="false" xsi:type="As">
+                           <operand path="subject" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:Patient" xsi:type="NamedTypeSpecifier"/>
+                        </source>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="In Initial Patient Population" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand name="In Demographic" xsi:type="ExpressionRef"/>
+            <operand xsi:type="Exists">
+               <operand name="Asthma Encounters" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Denominator" context="Population" accessLevel="Public">
+         <expression name="Asthma Encounters" xsi:type="ExpressionRef"/>
+      </def>
+      <def name="Numerator" context="Population" accessLevel="Public">
+         <expression name="Asthma Encounters with Plan" xsi:type="ExpressionRef"/>
+      </def>
+   </statements>
+</library>
+
+

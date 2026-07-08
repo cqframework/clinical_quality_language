@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="ChlamydiaScreening_CDS" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:11" localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <codeSystems>
+      <def localId="2" locator="5:1-5:45" name="SNOMED" id="http://snomed.info/sct" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="3" locator="7:1-7:69" name="Female Administrative Sex" id="2.16.840.1.113883.3.560.100.2" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="4" locator="8:1-8:91" name="Other Female Reproductive Conditions" id="2.16.840.1.113883.3.464.1003.111.12.1006" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="5" locator="9:1-9:69" name="Genital Herpes" id="2.16.840.1.113883.3.464.1003.110.12.1049" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="10:1-10:98" name="Genococcal Infections and Venereal Diseases" id="2.16.840.1.113883.3.464.1003.112.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="11:1-11:106" name="Inflammatory Diseases of Female Reproductive Organs" id="2.16.840.1.113883.3.464.1003.112.12.1004" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="12:1-12:64" name="Chlamydia" id="2.16.840.1.113883.3.464.1003.112.12.1003" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="13:1-13:58" name="HIV" id="2.16.840.1.113883.3.464.1003.120.12.1003" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="14:1-14:63" name="Syphilis" id="2.16.840.1.113883.3.464.1003.112.12.1002" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="15:1-15:112" name="Complications of Pregnancy, Childbirth and the Puerperium" id="2.16.840.1.113883.3.464.1003.111.12.1012" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="16:1-16:69" name="Pregnancy Test" id="2.16.840.1.113883.3.464.1003.111.12.1011" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="13" locator="17:1-17:63" name="Pap Test" id="2.16.840.1.113883.3.464.1003.108.12.1017" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="14" locator="18:1-18:81" name="Lab Tests During Pregnancy" id="2.16.840.1.113883.3.464.1003.111.12.1007" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="15" locator="19:1-19:100" name="Lab Tests for Sexually Transmitted Infections" id="2.16.840.1.113883.3.464.1003.110.12.1051" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="16" locator="20:1-20:74" name="Chlamydia Screening" id="2.16.840.1.113883.3.464.1003.110.12.1052" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="17" locator="21:1-21:63" name="Reason for not performing Chlamydia Screening" id="TBD" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="30" locator="25:1-26:95" resultTypeName="t:Boolean" name="InDemographic" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;InDemographic&quot;:&#xd;
+	AgeInYears() >= 16 and AgeInYears() &lt; 24 and &quot;Patient&quot;.&quot;gender&quot; in &quot;Female Administrative Sex&quot;</a:s>
+         </annotation>
+         <expression localId="29" locator="26:2-26:95" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="24" locator="26:2-26:41" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="20" locator="26:2-26:19" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                  <operand localId="18" locator="26:2-26:13" resultTypeName="t:Integer" precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="19" locator="26:18-26:19" resultTypeName="t:Integer" valueType="t:Integer" value="16" xsi:type="Literal"/>
+               </operand>
+               <operand localId="23" locator="26:25-26:41" resultTypeName="t:Boolean" xsi:type="Less">
+                  <operand localId="21" locator="26:25-26:36" resultTypeName="t:Integer" precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="22" locator="26:40-26:41" resultTypeName="t:Integer" valueType="t:Integer" value="24" xsi:type="Literal"/>
+               </operand>
+            </operand>
+            <operand localId="28" locator="26:47-26:95" resultTypeName="t:Boolean" xsi:type="InValueSet">
+               <code localId="26" locator="26:47-26:64" resultTypeName="t:String" path="gender" xsi:type="Property">
+                  <source localId="25" locator="26:47-26:55" resultTypeName="fhir:Patient" name="Patient" xsi:type="ExpressionRef"/>
+               </code>
+               <valueset localId="27" locator="26:69-26:95" name="Female Administrative Sex">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </valueset>
+            </operand>
+         </expression>
+      </def>
+      <def localId="66" locator="28:1-40:81" resultTypeName="t:Boolean" name="SexuallyActive" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;SexuallyActive&quot;:&#xd;
+	exists ([&quot;Condition&quot;: &quot;Other Female Reproductive Conditions&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genital Herpes&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genococcal Infections and Venereal Diseases&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Chlamydia&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;HIV&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Syphilis&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pregnancy Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pap Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests During Pregnancy&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests for Sexually Transmitted Infections&quot;])</a:s>
+         </annotation>
+         <expression localId="65" locator="29:2-40:81" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="62" locator="29:2-39:62" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="59" locator="29:2-38:44" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="56" locator="29:2-37:50" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="53" locator="29:2-36:87" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="50" locator="29:2-35:38" resultTypeName="t:Boolean" xsi:type="Or">
+                           <operand localId="47" locator="29:2-34:33" resultTypeName="t:Boolean" xsi:type="Or">
+                              <operand localId="44" locator="29:2-33:39" resultTypeName="t:Boolean" xsi:type="Or">
+                                 <operand localId="41" locator="29:2-32:81" resultTypeName="t:Boolean" xsi:type="Or">
+                                    <operand localId="38" locator="29:2-31:73" resultTypeName="t:Boolean" xsi:type="Or">
+                                       <operand localId="35" locator="29:2-30:44" resultTypeName="t:Boolean" xsi:type="Or">
+                                          <operand localId="32" locator="29:2-29:63" resultTypeName="t:Boolean" xsi:type="Exists">
+                                             <operand localId="31" locator="29:9-29:63" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                                   <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                                </resultTypeSpecifier>
+                                                <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                          <operand localId="34" locator="30:5-30:44" resultTypeName="t:Boolean" xsi:type="Exists">
+                                             <operand localId="33" locator="30:12-30:44" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                                   <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                                </resultTypeSpecifier>
+                                                <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                       </operand>
+                                       <operand localId="37" locator="31:5-31:73" resultTypeName="t:Boolean" xsi:type="Exists">
+                                          <operand localId="36" locator="31:12-31:73" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                                <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                             </resultTypeSpecifier>
+                                             <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
+                                          </operand>
+                                       </operand>
+                                    </operand>
+                                    <operand localId="40" locator="32:5-32:81" resultTypeName="t:Boolean" xsi:type="Exists">
+                                       <operand localId="39" locator="32:12-32:81" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                          <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                             <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                          </resultTypeSpecifier>
+                                          <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="43" locator="33:5-33:39" resultTypeName="t:Boolean" xsi:type="Exists">
+                                    <operand localId="42" locator="33:12-33:39" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                       <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                          <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                       <codes name="Chlamydia" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                              <operand localId="46" locator="34:5-34:33" resultTypeName="t:Boolean" xsi:type="Exists">
+                                 <operand localId="45" locator="34:12-34:33" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                    <codes name="HIV" xsi:type="ValueSetRef"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand localId="49" locator="35:5-35:38" resultTypeName="t:Boolean" xsi:type="Exists">
+                              <operand localId="48" locator="35:12-35:38" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes name="Syphilis" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="52" locator="36:5-36:87" resultTypeName="t:Boolean" xsi:type="Exists">
+                           <operand localId="51" locator="36:12-36:87" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="55" locator="37:5-37:50" resultTypeName="t:Boolean" xsi:type="Exists">
+                        <operand localId="54" locator="37:12-37:50" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:DiagnosticOrder" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="58" locator="38:5-38:44" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="57" locator="38:12-38:44" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:DiagnosticOrder" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes name="Pap Test" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="61" locator="39:5-39:62" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="60" locator="39:12-39:62" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:DiagnosticOrder" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="64" locator="40:5-40:81" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="63" locator="40:12-40:81" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:DiagnosticOrder" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="98" locator="42:1-45:82" resultTypeName="t:Boolean" name="NoScreening" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;NoScreening&quot;:&#xd;
+  not exists ([&quot;DiagnosticReport&quot;: &quot;Chlamydia Screening&quot;] R where R.&quot;issued&quot; during Interval[Today() - 1 years, Today()] and R.&quot;result&quot; is not null)&#xd;
+  and not exists ([&quot;ProcedureRequest&quot;: &quot;Chlamydia Screening&quot;] P where P.&quot;orderedOn&quot; same day or after Today())&#xd;
+	and not exists ([&quot;Observation&quot;: &quot;Reason for not performing Chlamydia Screening&quot;])</a:s>
+         </annotation>
+         <expression localId="97" locator="43:3-45:82" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="93" locator="43:3-44:110" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="83" locator="43:3-43:148" resultTypeName="t:Boolean" xsi:type="Not">
+                  <operand localId="82" locator="43:7-43:148" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="81" locator="43:14-43:148" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:DiagnosticReport" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="68" locator="43:15-43:59" alias="R">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:DiagnosticReport" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="67" locator="43:15-43:57" dataType="fhir:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:DiagnosticReport" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="80" locator="43:61-43:147" resultTypeName="t:Boolean" xsi:type="And">
+                           <operand localId="76" locator="43:67-43:120" resultTypeName="t:Boolean" xsi:type="In">
+                              <operand localId="70" locator="43:67-43:76" resultTypeName="t:DateTime" path="issued" scope="R" xsi:type="Property"/>
+                              <operand localId="75" locator="43:85-43:120" lowClosed="true" highClosed="true" xsi:type="Interval">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <low localId="73" locator="43:94-43:110" resultTypeName="t:DateTime" xsi:type="Subtract">
+                                    <operand localId="71" locator="43:94-43:100" resultTypeName="t:DateTime" xsi:type="Today"/>
+                                    <operand localId="72" locator="43:104-43:110" resultTypeName="t:Quantity" value="1" unit="years" xsi:type="Quantity"/>
+                                 </low>
+                                 <high localId="74" locator="43:113-43:119" resultTypeName="t:DateTime" xsi:type="Today"/>
+                              </operand>
+                           </operand>
+                           <operand localId="79" locator="43:126-43:147" resultTypeName="t:Boolean" xsi:type="Not">
+                              <operand xsi:type="IsNull">
+                                 <operand localId="78" locator="43:126-43:135" path="result" scope="R" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Any" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="92" locator="44:7-44:110" resultTypeName="t:Boolean" xsi:type="Not">
+                  <operand localId="91" locator="44:11-44:110" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="90" locator="44:18-44:110" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:ProcedureRequest" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="85" locator="44:19-44:63" alias="P">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:ProcedureRequest" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="84" locator="44:19-44:61" dataType="fhir:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:ProcedureRequest" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="89" locator="44:65-44:109" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrAfter">
+                           <operand localId="87" locator="44:71-44:83" resultTypeName="t:DateTime" path="orderedOn" scope="P" xsi:type="Property"/>
+                           <operand localId="88" locator="44:103-44:109" resultTypeName="t:DateTime" xsi:type="Today"/>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="96" locator="45:6-45:82" resultTypeName="t:Boolean" xsi:type="Not">
+               <operand localId="95" locator="45:10-45:82" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="94" locator="45:17-45:82" dataType="fhir:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="104" locator="47:1-47:78" resultTypeName="t:Boolean" name="NeedScreening" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;NeedScreening&quot;: &quot;InDemographic&quot; and &quot;SexuallyActive&quot; and &quot;NoScreening&quot;</a:s>
+         </annotation>
+         <expression localId="103" locator="47:25-47:78" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="101" locator="47:25-47:60" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="99" locator="47:25-47:39" resultTypeName="t:Boolean" name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand localId="100" locator="47:45-47:60" resultTypeName="t:Boolean" name="SexuallyActive" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="102" locator="47:66-47:78" resultTypeName="t:Boolean" name="NoScreening" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="109" locator="51:1-55:1" name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;ChlamydiaScreeningRequest&quot;: Tuple {&#xd;
+  type: Code '442487003' from &quot;SNOMED&quot; display 'Screening for Chlamydia trachomatis (procedure)',&#xd;
+  status: 'proposed'&#xd;
+  // values for other elements of the request...&#xd;
+}</a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+            <element name="type">
+               <type name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </element>
+            <element name="status">
+               <type name="t:String" xsi:type="NamedTypeSpecifier"/>
+            </element>
+         </resultTypeSpecifier>
+         <expression localId="108" locator="51:37-55:1" xsi:type="Tuple">
+            <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+               <element name="type">
+                  <type name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="status">
+                  <type name="t:String" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </resultTypeSpecifier>
+            <element name="type">
+               <value localId="106" locator="52:9-52:96" resultTypeName="t:Code" code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
+                  <system localId="105" locator="52:31-52:38" name="SNOMED">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </system>
+               </value>
+            </element>
+            <element name="status">
+               <value localId="107" locator="53:11-53:20" resultTypeName="t:String" valueType="t:String" value="proposed" xsi:type="Literal"/>
+            </element>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

@@ -1,0 +1,470 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "CBP",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "FHIR",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
+            "parameterTypeSpecifier" : {
+               "type" : "IntervalTypeSpecifier",
+               "pointType" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "LOINC",
+            "id" : "http://loinc.org",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Systolic Blood Pressure",
+            "id" : "Systolic Blood Pressure",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Diastolic Blood Pressure",
+            "id" : "Diastolic Blood Pressure",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Lookback Interval One Year",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "Subtract",
+                  "operand" : [ {
+                     "type" : "Start",
+                     "operand" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }, {
+                     "value" : 1,
+                     "unit" : "years",
+                     "type" : "Quantity"
+                  } ]
+               },
+               "high" : {
+                  "type" : "End",
+                  "operand" : {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Lookback Interval Three Years",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "Subtract",
+                  "operand" : [ {
+                     "type" : "Start",
+                     "operand" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }, {
+                     "value" : 3,
+                     "unit" : "years",
+                     "type" : "Quantity"
+                  } ]
+               },
+               "high" : {
+                  "type" : "End",
+                  "operand" : {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "In Demographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Systolic blood pressure",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "code" : "8480-6",
+               "display" : "Systolic blood pressure",
+               "type" : "Code",
+               "system" : {
+                  "name" : "LOINC"
+               }
+            }
+         }, {
+            "name" : "Diastolic blood pressure",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "code" : "8462-4",
+               "display" : "Diastolic blood pressure",
+               "type" : "Code",
+               "system" : {
+                  "name" : "LOINC"
+               }
+            }
+         }, {
+            "name" : "BP: Systolic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "O",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Observation",
+                     "codeProperty" : "code",
+                     "dateProperty" : "effectiveDateTime.value",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Systolic blood pressure",
+                        "type" : "ExpressionRef"
+                     },
+                     "dateRange" : {
+                        "name" : "Lookback Interval One Year",
+                        "type" : "ExpressionRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "In",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "status",
+                        "scope" : "O",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "final",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "amended",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Diastolic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "O",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Observation",
+                     "codeProperty" : "code",
+                     "dateProperty" : "effectiveDateTime.value",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Diastolic blood pressure",
+                        "type" : "ExpressionRef"
+                     },
+                     "dateRange" : {
+                        "name" : "Lookback Interval One Year",
+                        "type" : "ExpressionRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "In",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "status",
+                        "scope" : "O",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "final",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "amended",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Systolic Less Than 140",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "name" : "BP: Systolic",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Less",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "valueQuantity",
+                           "scope" : "S",
+                           "type" : "Property"
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "140",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Systolic Greater Than/Equal To 140",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "name" : "BP: Systolic",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "valueQuantity",
+                           "scope" : "S",
+                           "type" : "Property"
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "140",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Diastolic Less Than 80",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "D",
+                  "expression" : {
+                     "name" : "BP: Diastolic",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Less",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "valueQuantity",
+                           "scope" : "D",
+                           "type" : "Property"
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "80",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Diastolic 80-89",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "D",
+                  "expression" : {
+                     "name" : "BP: Diastolic",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "value",
+                           "type" : "Property",
+                           "source" : {
+                              "path" : "valueQuantity",
+                              "scope" : "D",
+                              "type" : "Property"
+                           }
+                        }
+                     }, {
+                        "type" : "ToDecimal",
+                        "operand" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "80",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }, {
+                     "type" : "LessOrEqual",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "value",
+                           "type" : "Property",
+                           "source" : {
+                              "path" : "valueQuantity",
+                              "scope" : "D",
+                              "type" : "Property"
+                           }
+                        }
+                     }, {
+                        "type" : "ToDecimal",
+                        "operand" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "89",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "BP: Diastolic Greater Than/Equal To 90",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "D",
+                  "expression" : {
+                     "name" : "BP: Diastolic",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "valueQuantity",
+                           "scope" : "D",
+                           "type" : "Property"
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "90",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
+            }
+         } ]
+      }
+   }
+}
+

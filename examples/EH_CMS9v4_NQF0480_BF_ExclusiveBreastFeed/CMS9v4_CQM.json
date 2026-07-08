@@ -1,0 +1,1177 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "CMS9",
+         "version" : "4"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "FHIR",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "Measurement Period",
+            "accessLevel" : "Public",
+            "parameterTypeSpecifier" : {
+               "type" : "IntervalTypeSpecifier",
+               "pointType" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "Example Data Elements",
+            "id" : "http://example.org/dataelements",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Breastfeeding Intention Code System",
+            "id" : "http://example.org/codesystem-breastfeeding-intention",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Feeding Intention-Breast",
+            "id" : "2.16.840.1.113762.1.4.1045.29",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Feeding Intention-Not-To-Breast",
+            "id" : "TBD",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Galactosemia",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.35",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Single Live Birth",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.25",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Single Live Born Newborn Born in Hospital",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.26",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Encounter Inpatient",
+            "id" : "2.16.840.1.113883.3.666.5.307",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Estimated Gestational Age at Birth",
+            "id" : "2.16.840.1.113762.1.4.1045.47",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Parenteral Nutrition",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.38",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Breast Milk",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.30",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Dietary Intake Other than Breast Milk",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.27",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Neonatal Intensive Care Unit (NICU)",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.75",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Patient Expired",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.309",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Discharge To Acute Care Facility",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.87",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Ethnicity CDCREC",
+            "id" : "2.16.840.1.114222.4.11.837",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Payer SOP",
+            "id" : "2.16.840.1.114222.4.11.3591",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Race CDCREC",
+            "id" : "2.16.840.1.114222.4.11.836",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "ONC Administrative Sex AdministrativeGender",
+            "id" : "2.16.840.1.113762.1.4.1",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "ToInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "type" : "FunctionDef",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "path" : "value",
+                  "type" : "Property",
+                  "source" : {
+                     "path" : "start",
+                     "type" : "Property",
+                     "source" : {
+                        "name" : "period",
+                        "type" : "OperandRef"
+                     }
+                  }
+               },
+               "high" : {
+                  "path" : "value",
+                  "type" : "Property",
+                  "source" : {
+                     "path" : "end",
+                     "type" : "Property",
+                     "source" : {
+                        "name" : "period",
+                        "type" : "OperandRef"
+                     }
+                  }
+               }
+            },
+            "operand" : [ {
+               "name" : "period",
+               "operandTypeSpecifier" : {
+                  "name" : "{http://hl7.org/fhir}Period",
+                  "type" : "NamedTypeSpecifier"
+               }
+            } ]
+         }, {
+            "name" : "ToQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "type" : "FunctionDef",
+            "expression" : {
+               "classType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "value",
+                  "value" : {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "quantity",
+                           "type" : "OperandRef"
+                        }
+                     }
+                  }
+               }, {
+                  "name" : "unit",
+                  "value" : {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "unit",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "quantity",
+                           "type" : "OperandRef"
+                        }
+                     }
+                  }
+               } ]
+            },
+            "operand" : [ {
+               "name" : "quantity",
+               "operandTypeSpecifier" : {
+                  "name" : "{http://hl7.org/fhir}Quantity",
+                  "type" : "NamedTypeSpecifier"
+               }
+            } ]
+         }, {
+            "name" : "ToConcept",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "type" : "FunctionDef",
+            "expression" : {
+               "classType" : "{urn:hl7-org:elm-types:r1}Concept",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "codes",
+                  "value" : {
+                     "type" : "Query",
+                     "source" : [ {
+                        "alias" : "C",
+                        "expression" : {
+                           "path" : "coding",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "concept",
+                              "type" : "OperandRef"
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "return" : {
+                        "expression" : {
+                           "classType" : "{urn:hl7-org:elm-types:r1}Code",
+                           "type" : "Instance",
+                           "element" : [ {
+                              "name" : "code",
+                              "value" : {
+                                 "path" : "value",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "code",
+                                    "scope" : "C",
+                                    "type" : "Property"
+                                 }
+                              }
+                           }, {
+                              "name" : "system",
+                              "value" : {
+                                 "path" : "value",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "system",
+                                    "scope" : "C",
+                                    "type" : "Property"
+                                 }
+                              }
+                           }, {
+                              "name" : "version",
+                              "value" : {
+                                 "path" : "value",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "version",
+                                    "scope" : "C",
+                                    "type" : "Property"
+                                 }
+                              }
+                           }, {
+                              "name" : "display",
+                              "value" : {
+                                 "path" : "value",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "display",
+                                    "scope" : "C",
+                                    "type" : "Property"
+                                 }
+                              }
+                           } ]
+                        }
+                     }
+                  }
+               }, {
+                  "name" : "display",
+                  "value" : {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "text",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "concept",
+                           "type" : "OperandRef"
+                        }
+                     }
+                  }
+               } ]
+            },
+            "operand" : [ {
+               "name" : "concept",
+               "operandTypeSpecifier" : {
+                  "name" : "{http://hl7.org/fhir}CodeableConcept",
+                  "type" : "NamedTypeSpecifier"
+               }
+            } ]
+         }, {
+            "name" : "Inpatient Encounter",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Encounter",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "codeProperty" : "type",
+                     "dateProperty" : "period.end.value",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Encounter Inpatient",
+                        "type" : "ValueSetRef"
+                     },
+                     "dateRange" : {
+                        "name" : "Measurement Period",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "status",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "finished",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "LessOrEqual",
+                     "operand" : [ {
+                        "precision" : "Day",
+                        "type" : "DurationBetween",
+                        "operand" : [ {
+                           "type" : "Start",
+                           "operand" : {
+                              "name" : "ToInterval",
+                              "type" : "FunctionRef",
+                              "operand" : [ {
+                                 "path" : "period",
+                                 "scope" : "Encounter",
+                                 "type" : "Property"
+                              } ]
+                           }
+                        }, {
+                           "type" : "End",
+                           "operand" : {
+                              "name" : "ToInterval",
+                              "type" : "FunctionRef",
+                              "operand" : [ {
+                                 "path" : "period",
+                                 "scope" : "Encounter",
+                                 "type" : "Property"
+                              } ]
+                           }
+                        } ]
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "120",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Gestational Age at Birth <= 37 weeks",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Observation",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Observation",
+                     "codeProperty" : "code",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Estimated Gestational Age at Birth",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "status",
+                           "scope" : "Observation",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "final",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "amended",
+                           "type" : "Literal"
+                        } ]
+                     } ]
+                  }, {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "name" : "ToQuantity",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "valueQuantity",
+                           "scope" : "Observation",
+                           "type" : "Property"
+                        } ]
+                     }, {
+                        "value" : 37,
+                        "unit" : "weeks",
+                        "type" : "Quantity"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Single Live Birth Condition",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Condition",
+                  "expression" : {
+                     "type" : "Union",
+                     "operand" : [ {
+                        "dataType" : "{http://hl7.org/fhir}Condition",
+                        "codeProperty" : "code",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Single Live Birth",
+                           "type" : "ValueSetRef"
+                        }
+                     }, {
+                        "dataType" : "{http://hl7.org/fhir}Condition",
+                        "codeProperty" : "code",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Single Live Born Newborn Born in Hospital",
+                           "type" : "ValueSetRef"
+                        }
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "clinicalStatus",
+                           "scope" : "Condition",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "active",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "verificationStatus",
+                           "scope" : "Condition",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "confirmed",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Infant Birth Date",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "path" : "value",
+               "type" : "Property",
+               "source" : {
+                  "path" : "abatementDateTime",
+                  "type" : "Property",
+                  "source" : {
+                     "type" : "Last",
+                     "source" : {
+                        "name" : "Single Live Birth Condition",
+                        "type" : "ExpressionRef"
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "Parenteral Nutrition Procedure",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Procedure",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Procedure",
+                     "codeProperty" : "code",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Parenteral Nutrition",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "status",
+                        "scope" : "Procedure",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "completed",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Galactosemia Diagnosis",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Condition",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "codeProperty" : "code",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Galactosemia",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "clinicalStatus",
+                           "scope" : "Condition",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "active",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "verificationStatus",
+                           "scope" : "Condition",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "confirmed",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Live Birth Infants without Parenteral Nutrition",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Encounter",
+                  "expression" : {
+                     "name" : "Inpatient Encounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "GestationalAge",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Gestational Age at Birth <= 37 weeks",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "effectiveDateTime",
+                           "scope" : "GestationalAge",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               }, {
+                  "alias" : "Birth",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Single Live Birth Condition",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "onsetDateTime",
+                           "scope" : "Birth",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               }, {
+                  "alias" : "Galactosemia",
+                  "type" : "Without",
+                  "expression" : {
+                     "name" : "Galactosemia Diagnosis",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "onsetDateTime",
+                           "scope" : "Galactosemia",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               }, {
+                  "alias" : "Nutrition",
+                  "type" : "Without",
+                  "expression" : {
+                     "name" : "Parenteral Nutrition Procedure",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "performedDateTime",
+                           "scope" : "Nutrition",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Initial Population 1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Live Birth Infants without Parenteral Nutrition",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "Denominator 1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Denominator Exclusions 1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Encounter",
+                  "expression" : {
+                     "name" : "Inpatient Encounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "type" : "Not",
+                     "operand" : {
+                        "type" : "IsNull",
+                        "operand" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "Hospitalization",
+                              "expression" : {
+                                 "path" : "hospitalization",
+                                 "scope" : "Encounter",
+                                 "type" : "Property"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "InValueSet",
+                              "code" : {
+                                 "name" : "ToConcept",
+                                 "type" : "FunctionRef",
+                                 "operand" : [ {
+                                    "path" : "dischargeDisposition",
+                                    "scope" : "Hospitalization",
+                                    "type" : "Property"
+                                 } ]
+                              },
+                              "valueset" : {
+                                 "name" : "Patient Expired"
+                              }
+                           }
+                        }
+                     }
+                  }, {
+                     "type" : "Not",
+                     "operand" : {
+                        "type" : "IsNull",
+                        "operand" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "Hospitalization",
+                              "expression" : {
+                                 "path" : "hospitalization",
+                                 "scope" : "Encounter",
+                                 "type" : "Property"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "InValueSet",
+                              "code" : {
+                                 "name" : "ToConcept",
+                                 "type" : "FunctionRef",
+                                 "operand" : [ {
+                                    "path" : "dischargeDisposition",
+                                    "scope" : "Hospitalization",
+                                    "type" : "Property"
+                                 } ]
+                              },
+                              "valueset" : {
+                                 "name" : "Discharge To Acute Care Facility"
+                              }
+                           }
+                        }
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Breast Milk Feeding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Feeding",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}MedicationAdministration",
+                     "codeProperty" : "medicationCodeableConcept",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Breast Milk",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "status",
+                        "scope" : "Feeding",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "completed",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Other Than Breast Milk Feeding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "OtherFeeding",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}MedicationAdministration",
+                     "codeProperty" : "medicationCodeableConcept",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Dietary Intake Other than Breast Milk",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "path" : "value",
+                     "type" : "Property",
+                     "source" : {
+                        "path" : "status",
+                        "scope" : "OtherFeeding",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "completed",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "Numerator 1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Encounter",
+                  "expression" : {
+                     "name" : "Inpatient Encounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "Feeding",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Breast Milk Feeding",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "effectiveTimeDateTime",
+                           "scope" : "Feeding",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               }, {
+                  "alias" : "OtherFeeding",
+                  "type" : "Without",
+                  "expression" : {
+                     "name" : "Other Than Breast Milk Feeding",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "effectiveTimeDateTime",
+                           "scope" : "OtherFeeding",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Initial Population 2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Live Birth Infants without Parenteral Nutrition",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "Breastfeeding Intention Code",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "code" : "breastfeeding-intention",
+               "type" : "Code",
+               "system" : {
+                  "name" : "Example Data Elements"
+               }
+            }
+         }, {
+            "name" : "Positive Breastfeeding Intention Code",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "code" : "positive",
+               "display" : "Intention to breastfeed",
+               "type" : "Code",
+               "system" : {
+                  "name" : "Breastfeeding Intention Code System"
+               }
+            }
+         }, {
+            "name" : "Negative Breastfeeding Intention Code",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "code" : "negative",
+               "display" : "Intention not to breastfeed",
+               "type" : "Code",
+               "system" : {
+                  "name" : "Breastfeeding Intention Code System"
+               }
+            }
+         }, {
+            "name" : "Breastfeeding Intention Assessment",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Assessment",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}RiskAssessment",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Exists",
+                  "operand" : {
+                     "type" : "Query",
+                     "source" : [ {
+                        "alias" : "Extension",
+                        "expression" : {
+                           "path" : "extension",
+                           "scope" : "Assessment",
+                           "type" : "Property"
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "type" : "And",
+                        "operand" : [ {
+                           "type" : "Equal",
+                           "operand" : [ {
+                              "path" : "value",
+                              "type" : "Property",
+                              "source" : {
+                                 "path" : "url",
+                                 "scope" : "Extension",
+                                 "type" : "Property"
+                              }
+                           }, {
+                              "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                              "value" : "http://example.org/extensions/riskassessment-type",
+                              "type" : "Literal"
+                           } ]
+                        }, {
+                           "type" : "Equal",
+                           "operand" : [ {
+                              "name" : "ToConcept",
+                              "type" : "FunctionRef",
+                              "operand" : [ {
+                                 "strict" : false,
+                                 "type" : "As",
+                                 "operand" : {
+                                    "path" : "value",
+                                    "scope" : "Extension",
+                                    "type" : "Property"
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{http://hl7.org/fhir}CodeableConcept",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              } ]
+                           }, {
+                              "toType" : "{urn:hl7-org:elm-types:r1}Concept",
+                              "type" : "Convert",
+                              "operand" : {
+                                 "name" : "Breastfeeding Intention Code",
+                                 "type" : "ExpressionRef"
+                              },
+                              "toTypeSpecifier" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}Concept",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           } ]
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "Intention Not To Breastfeed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "Encounter",
+                  "expression" : {
+                     "name" : "Inpatient Encounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "Assessment",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Breastfeeding Intention Assessment",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "path" : "value",
+                        "type" : "Property",
+                        "source" : {
+                           "path" : "date",
+                           "scope" : "Assessment",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "ToInterval",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "path" : "period",
+                           "scope" : "Encounter",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Denominator Exclusions 2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "name" : "Denominator Exclusions 1",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Intention Not To Breastfeed",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "Numerator 2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Numerator 1",
+               "type" : "ExpressionRef"
+            }
+         } ]
+      }
+   }
+}
+

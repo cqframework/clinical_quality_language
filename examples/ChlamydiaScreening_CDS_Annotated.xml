@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="ChlamydiaScreening_CDS" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <codeSystems>
+      <def localId="2" name="SNOMED" id="http://snomed.info/sct" accessLevel="Public"/>
+   </codeSystems>
+   <valueSets>
+      <def localId="3" name="Female Administrative Sex" id="2.16.840.1.113883.3.560.100.2" accessLevel="Public"/>
+      <def localId="4" name="Other Female Reproductive Conditions" id="2.16.840.1.113883.3.464.1003.111.12.1006" accessLevel="Public"/>
+      <def localId="5" name="Genital Herpes" id="2.16.840.1.113883.3.464.1003.110.12.1049" accessLevel="Public"/>
+      <def localId="6" name="Genococcal Infections and Venereal Diseases" id="2.16.840.1.113883.3.464.1003.112.12.1001" accessLevel="Public"/>
+      <def localId="7" name="Inflammatory Diseases of Female Reproductive Organs" id="2.16.840.1.113883.3.464.1003.112.12.1004" accessLevel="Public"/>
+      <def localId="8" name="Chlamydia" id="2.16.840.1.113883.3.464.1003.112.12.1003" accessLevel="Public"/>
+      <def localId="9" name="HIV" id="2.16.840.1.113883.3.464.1003.120.12.1003" accessLevel="Public"/>
+      <def localId="10" name="Syphilis" id="2.16.840.1.113883.3.464.1003.112.12.1002" accessLevel="Public"/>
+      <def localId="11" name="Complications of Pregnancy, Childbirth and the Puerperium" id="2.16.840.1.113883.3.464.1003.111.12.1012" accessLevel="Public"/>
+      <def localId="12" name="Pregnancy Test" id="2.16.840.1.113883.3.464.1003.111.12.1011" accessLevel="Public"/>
+      <def localId="13" name="Pap Test" id="2.16.840.1.113883.3.464.1003.108.12.1017" accessLevel="Public"/>
+      <def localId="14" name="Lab Tests During Pregnancy" id="2.16.840.1.113883.3.464.1003.111.12.1007" accessLevel="Public"/>
+      <def localId="15" name="Lab Tests for Sexually Transmitted Infections" id="2.16.840.1.113883.3.464.1003.110.12.1051" accessLevel="Public"/>
+      <def localId="16" name="Chlamydia Screening" id="2.16.840.1.113883.3.464.1003.110.12.1052" accessLevel="Public"/>
+      <def localId="17" name="Reason for not performing Chlamydia Screening" id="TBD" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="30" name="InDemographic" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;InDemographic&quot;:&#xd;
+	AgeInYears() >= 16 and AgeInYears() &lt; 24 and &quot;Patient&quot;.&quot;gender&quot; in &quot;Female Administrative Sex&quot;</a:s>
+         </annotation>
+         <expression localId="29" xsi:type="And">
+            <operand localId="24" xsi:type="And">
+               <operand localId="20" xsi:type="GreaterOrEqual">
+                  <operand localId="18" precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="19" valueType="t:Integer" value="16" xsi:type="Literal"/>
+               </operand>
+               <operand localId="23" xsi:type="Less">
+                  <operand localId="21" precision="Year" xsi:type="CalculateAge">
+                     <operand path="birthDate" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="22" valueType="t:Integer" value="24" xsi:type="Literal"/>
+               </operand>
+            </operand>
+            <operand localId="28" xsi:type="InValueSet">
+               <code localId="26" path="gender" xsi:type="Property">
+                  <source localId="25" name="Patient" xsi:type="ExpressionRef"/>
+               </code>
+               <valueset localId="27" name="Female Administrative Sex"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="66" name="SexuallyActive" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;SexuallyActive&quot;:&#xd;
+	exists ([&quot;Condition&quot;: &quot;Other Female Reproductive Conditions&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genital Herpes&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genococcal Infections and Venereal Diseases&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Chlamydia&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;HIV&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Syphilis&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pregnancy Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pap Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests During Pregnancy&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests for Sexually Transmitted Infections&quot;])</a:s>
+         </annotation>
+         <expression localId="65" xsi:type="Or">
+            <operand localId="62" xsi:type="Or">
+               <operand localId="59" xsi:type="Or">
+                  <operand localId="56" xsi:type="Or">
+                     <operand localId="53" xsi:type="Or">
+                        <operand localId="50" xsi:type="Or">
+                           <operand localId="47" xsi:type="Or">
+                              <operand localId="44" xsi:type="Or">
+                                 <operand localId="41" xsi:type="Or">
+                                    <operand localId="38" xsi:type="Or">
+                                       <operand localId="35" xsi:type="Or">
+                                          <operand localId="32" xsi:type="Exists">
+                                             <operand localId="31" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                          <operand localId="34" xsi:type="Exists">
+                                             <operand localId="33" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                       </operand>
+                                       <operand localId="37" xsi:type="Exists">
+                                          <operand localId="36" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
+                                          </operand>
+                                       </operand>
+                                    </operand>
+                                    <operand localId="40" xsi:type="Exists">
+                                       <operand localId="39" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                          <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="43" xsi:type="Exists">
+                                    <operand localId="42" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                       <codes name="Chlamydia" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                              <operand localId="46" xsi:type="Exists">
+                                 <operand localId="45" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <codes name="HIV" xsi:type="ValueSetRef"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand localId="49" xsi:type="Exists">
+                              <operand localId="48" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                 <codes name="Syphilis" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="52" xsi:type="Exists">
+                           <operand localId="51" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                              <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="55" xsi:type="Exists">
+                        <operand localId="54" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                           <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="58" xsi:type="Exists">
+                     <operand localId="57" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <codes name="Pap Test" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="61" xsi:type="Exists">
+                  <operand localId="60" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                     <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="64" xsi:type="Exists">
+               <operand localId="63" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                  <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="98" name="NoScreening" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;NoScreening&quot;:&#xd;
+  not exists ([&quot;DiagnosticReport&quot;: &quot;Chlamydia Screening&quot;] R where R.&quot;issued&quot; during Interval[Today() - 1 years, Today()] and R.&quot;result&quot; is not null)&#xd;
+  and not exists ([&quot;ProcedureRequest&quot;: &quot;Chlamydia Screening&quot;] P where P.&quot;orderedOn&quot; same day or after Today())&#xd;
+	and not exists ([&quot;Observation&quot;: &quot;Reason for not performing Chlamydia Screening&quot;])</a:s>
+         </annotation>
+         <expression localId="97" xsi:type="And">
+            <operand localId="93" xsi:type="And">
+               <operand localId="83" xsi:type="Not">
+                  <operand localId="82" xsi:type="Exists">
+                     <operand localId="81" xsi:type="Query">
+                        <source localId="68" alias="R">
+                           <expression localId="67" dataType="fhir:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                              <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="80" xsi:type="And">
+                           <operand localId="76" xsi:type="In">
+                              <operand localId="70" path="issued" scope="R" xsi:type="Property"/>
+                              <operand localId="75" lowClosed="true" highClosed="true" xsi:type="Interval">
+                                 <low localId="73" xsi:type="Subtract">
+                                    <operand localId="71" xsi:type="Today"/>
+                                    <operand localId="72" value="1" unit="years" xsi:type="Quantity"/>
+                                 </low>
+                                 <high localId="74" xsi:type="Today"/>
+                              </operand>
+                           </operand>
+                           <operand localId="79" xsi:type="Not">
+                              <operand xsi:type="IsNull">
+                                 <operand localId="78" path="result" scope="R" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="92" xsi:type="Not">
+                  <operand localId="91" xsi:type="Exists">
+                     <operand localId="90" xsi:type="Query">
+                        <source localId="85" alias="P">
+                           <expression localId="84" dataType="fhir:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
+                              <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="89" precision="Day" xsi:type="SameOrAfter">
+                           <operand localId="87" path="orderedOn" scope="P" xsi:type="Property"/>
+                           <operand localId="88" xsi:type="Today"/>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="96" xsi:type="Not">
+               <operand localId="95" xsi:type="Exists">
+                  <operand localId="94" dataType="fhir:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
+                     <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="104" name="NeedScreening" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;NeedScreening&quot;: &quot;InDemographic&quot; and &quot;SexuallyActive&quot; and &quot;NoScreening&quot;</a:s>
+         </annotation>
+         <expression localId="103" xsi:type="And">
+            <operand localId="101" xsi:type="And">
+               <operand localId="99" name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand localId="100" name="SexuallyActive" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="102" name="NoScreening" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="109" name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;ChlamydiaScreeningRequest&quot;: Tuple {&#xd;
+  type: Code '442487003' from &quot;SNOMED&quot; display 'Screening for Chlamydia trachomatis (procedure)',&#xd;
+  status: 'proposed'&#xd;
+  // values for other elements of the request...&#xd;
+}</a:s>
+         </annotation>
+         <expression localId="108" xsi:type="Tuple">
+            <element name="type">
+               <value localId="106" code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
+                  <system localId="105" name="SNOMED"/>
+               </value>
+            </element>
+            <element name="status">
+               <value localId="107" valueType="t:String" value="proposed" xsi:type="Literal"/>
+            </element>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

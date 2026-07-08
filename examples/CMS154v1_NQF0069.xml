@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation message="List-valued expression was demoted to a singleton." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation startLine="117" startChar="39" endLine="117" endChar="90" message="Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation startLine="117" startChar="39" endLine="117" endChar="90" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <identifier id="CMS154" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low xsi:type="DateTime">
+               <year valueType="t:Integer" value="2013" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high xsi:type="DateTime">
+               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Competing Conditions for Respiratory Conditions" id="2.16.840.1.113883.3.464.1003.102.12.1017" accessLevel="Public"/>
+      <def name="Upper Respiratory Infection" id="2.16.840.1.113883.3.464.1003.102.12.1022" accessLevel="Public"/>
+      <def name="Emergency Department Visit" id="2.16.840.1.113883.3.464.1003.101.12.1010" accessLevel="Public"/>
+      <def name="Face-to-Face Interaction" id="2.16.840.1.113883.3.464.1003.101.12.1048" accessLevel="Public"/>
+      <def name="Hospital Observation Care - Initial" id="2.16.840.1.113883.3.464.1003.101.12.1002" accessLevel="Public"/>
+      <def name="Office Visit" id="2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public"/>
+      <def name="Preventive Care - Established Office Visit, 0 to 17" id="2.16.840.1.113883.3.464.1003.101.12.1024" accessLevel="Public"/>
+      <def name="Preventive Care- Initial Office Visit, 0 to 17" id="2.16.840.1.113883.3.464.1003.101.12.1022" accessLevel="Public"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InDemographic" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Month" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="3" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="LessOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="t:Integer" value="18" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="ValidEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Union">
+            <operand xsi:type="Union">
+               <operand xsi:type="Union">
+                  <operand xsi:type="Union">
+                     <operand xsi:type="Union">
+                        <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Office Visit" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                     <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                        <codes name="Preventive Care- Initial Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+                  <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                     <codes name="Preventive Care - Established Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+               <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Hospital Observation Care - Initial" xsi:type="ValueSetRef"/>
+               </operand>
+            </operand>
+            <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="EncountersDuringMeasurementPeriod" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="ValidEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="IncludedIn">
+               <operand path="period" scope="E" xsi:type="Property"/>
+               <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def name="URIDiagnosis" context="Patient" accessLevel="Public">
+         <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Upper Respiratory Infection" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def name="ValidDiagnosis" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="U">
+               <expression name="URIDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="Or">
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="E">
+                        <expression name="EncountersDuringMeasurementPeriod" xsi:type="ExpressionRef"/>
+                     </source>
+                     <where xsi:type="In">
+                        <operand path="onsetDateTime" scope="U" xsi:type="Property"/>
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </where>
+                  </operand>
+               </operand>
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="E">
+                        <expression name="ValidEncounters" xsi:type="ExpressionRef"/>
+                     </source>
+                     <where xsi:type="Includes">
+                        <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low path="onsetDateTime" scope="U" xsi:type="Property"/>
+                           <high path="abatementDate" scope="U" xsi:type="Property"/>
+                        </operand>
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </where>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="InitialPopulation" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="V">
+               <expression name="ValidDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where name="InDemographic" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def name="Denominator" context="Patient" accessLevel="Public">
+         <expression valueType="t:Boolean" value="true" xsi:type="Literal"/>
+      </def>
+      <def name="Numerator" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="V">
+               <expression name="ValidDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="M">
+                        <expression dataType="fhir:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                           <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
+                        </expression>
+                     </source>
+                     <where xsi:type="In">
+                        <operand path="dateWritten" scope="M" xsi:type="Property"/>
+                        <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                           <low path="onsetDateTime" scope="V" xsi:type="Property"/>
+                           <high xsi:type="Add">
+                              <operand path="onsetDateTime" scope="V" xsi:type="Property"/>
+                              <operand value="3" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </where>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="MeasureScore" context="Population" accessLevel="Public">
+         <expression xsi:type="Multiply">
+            <operand xsi:type="Divide">
+               <operand xsi:type="ToDecimal">
+                  <operand xsi:type="Count">
+                     <source name="Numerator" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand xsi:type="ToDecimal">
+                  <operand xsi:type="Count">
+                     <source name="Denominator" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand xsi:type="ToDecimal">
+               <operand valueType="t:Integer" value="100" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

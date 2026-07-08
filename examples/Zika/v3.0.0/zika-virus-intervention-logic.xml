@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="zika-virus-intervention-logic" version="1.0.0"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" localIdentifier="FHIR" uri="http://hl7.org/fhir" version="3.0.0"/>
+   </usings>
+   <includes>
+      <def localId="2" localIdentifier="FHIRHelpers" path="FHIRHelpers" version="3.0.0"/>
+   </includes>
+   <parameters>
+      <def localId="30" name="Current Encounter" accessLevel="Public">
+         <parameterTypeSpecifier localId="29" name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="3" name="Example Questionnaires" id="http://example.org/questionnaires" accessLevel="Public"/>
+   </codeSystems>
+   <valueSets>
+      <def localId="4" name="Pregnancy" id="urn:oid:X.Y.Z" accessLevel="Public"/>
+      <def localId="5" name="Zika Affected Areas" id="urn:oid:2.16.840.1.114222.4.11.7457" accessLevel="Public"/>
+      <def localId="6" name="Zika Virus Signs and Symptoms" id="2.16.840.1.114222.4.11.7459" accessLevel="Public"/>
+      <def localId="7" name="General Arbovirus Signs and Symptoms" id="2.16.840.1.114222.4.11.7460" accessLevel="Public"/>
+      <def localId="8" name="Zika Virus Tests" id="2.16.840.1.114222.4.11.7480" accessLevel="Public"/>
+      <def localId="9" name="Arbovirus Tests" id="2.16.840.1.114222.4.11.4120" accessLevel="Public"/>
+      <def localId="10" name="Chikungunya Tests" id="2.16.840.1.114222.4.11.7339" accessLevel="Public"/>
+      <def localId="11" name="Dengue Tests" id="2.16.840.1.114222.4.11.4141" accessLevel="Public"/>
+      <def localId="12" name="Zika Virus IgM ELISA Results" id="2.16.840.1.114222.4.11.7476" accessLevel="Public"/>
+      <def localId="13" name="Zika Virus Neutralizing Antibody Results" id="2.16.840.1.114222.4.11.7477" accessLevel="Public"/>
+      <def localId="14" name="Arbovirus Test Results" id="2.16.840.1.114222.4.11.4003" accessLevel="Public"/>
+      <def localId="15" name="Chikungunya Test Results" id="2.16.840.1.114222.4.11.7343" accessLevel="Public"/>
+      <def localId="16" name="Dengue Test Results" id="2.16.840.1.114222.4.11.4025" accessLevel="Public"/>
+   </valueSets>
+   <codes>
+      <def localId="18" name="CDE: Resident of or Frequent Traveler to Zika Area" id="CDE: Resident of or Frequent Traveler to Zika Area" accessLevel="Public">
+         <codeSystem localId="17" name="Example Questionnaires"/>
+      </def>
+      <def localId="20" name="CDE: Recent Travel to Zika Area" id="CDE: Recent Travel to Zika Area" accessLevel="Public">
+         <codeSystem localId="19" name="Example Questionnaires"/>
+      </def>
+      <def localId="22" name="CDE: Time Since Returned From Travel" id="CDE: Time Since Returned From Travel" accessLevel="Public">
+         <codeSystem localId="21" name="Example Questionnaires"/>
+      </def>
+      <def localId="24" name="CDE: Recent Sexual Encounter With Traveler to Zika Area" id="CDE: Recent Sexual Encounter With Traveler to Zika Area" accessLevel="Public">
+         <codeSystem localId="23" name="Example Questionnaires"/>
+      </def>
+      <def localId="26" name="CDE: Time Since Sexual Encounter" id="CDE: Time Since Sexual Encounter" accessLevel="Public">
+         <codeSystem localId="25" name="Example Questionnaires"/>
+      </def>
+      <def localId="28" name="CDE: Planned Travel to Zika Area" id="CDE: Planned Travel to Zika Area" accessLevel="Public">
+         <codeSystem localId="27" name="Example Questionnaires"/>
+      </def>
+   </codes>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="fhir:Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="50" name="Pregnancy Conditions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Pregnancy Conditions&quot;:&#xd;
+  [Condition: &quot;Pregnancy&quot;] C&#xd;
+    where C.clinicalStatus = 'active'&#xd;
+      and C.verificationStatus = 'confirmed'&#xd;
+      // this is pretty awkward formulation...&#xd;
+      and Today() between C.onset and C.abatement</a:s>
+         </annotation>
+         <expression localId="49" xsi:type="Query">
+            <source localId="32" alias="C">
+               <expression localId="31" dataType="fhir:Condition" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Pregnancy" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="48" xsi:type="And">
+               <operand localId="41" xsi:type="And">
+                  <operand localId="36" xsi:type="Equal">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="34" path="clinicalStatus" scope="C" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="35" valueType="t:String" value="active" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="40" xsi:type="Equal">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="38" path="verificationStatus" scope="C" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="39" valueType="t:String" value="confirmed" xsi:type="Literal"/>
+                  </operand>
+               </operand>
+               <operand localId="47" xsi:type="And">
+                  <operand xsi:type="GreaterOrEqual">
+                     <operand localId="42" xsi:type="Today"/>
+                     <operand name="ToDateTime" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:dateTime" xsi:type="As">
+                           <operand localId="44" path="onset" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="LessOrEqual">
+                     <operand localId="42" xsi:type="Today"/>
+                     <operand name="ToDateTime" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:dateTime" xsi:type="As">
+                           <operand localId="46" path="abatement" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="58" name="Is Patient Pregnant" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Is Patient Pregnant&quot;:&#xd;
+  Patient.gender = 'female'&#xd;
+    and exists (&quot;Pregnancy Conditions&quot;)</a:s>
+         </annotation>
+         <expression localId="57" xsi:type="And">
+            <operand localId="54" xsi:type="Equal">
+               <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                  <operand localId="52" path="gender" xsi:type="Property">
+                     <source localId="51" name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="53" valueType="t:String" value="female" xsi:type="Literal"/>
+            </operand>
+            <operand localId="56" xsi:type="Exists">
+               <operand localId="55" name="Pregnancy Conditions" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="61" name="Zika Exposure Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Zika Exposure Assessment&quot;:&#xd;
+  Code 'Zika Virus Exposure Assessment' from &quot;Example Questionnaires&quot;</a:s>
+         </annotation>
+         <expression localId="60" code="Zika Virus Exposure Assessment" xsi:type="Code">
+            <system localId="59" name="Example Questionnaires"/>
+         </expression>
+      </def>
+      <def localId="81" name="Zika Exposure Assessment Result" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Zika Exposure Assessment Result&quot;:&#xd;
+  First(&#xd;
+    [Observation: &quot;Zika Exposure Assessment&quot;] O&#xd;
+      where O.status = 'final'&#xd;
+        and O.&quot;context&quot;.reference = &quot;Current Encounter&quot;.id // TODO: fix&#xd;
+      sort by (O.effective) desc&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="80" xsi:type="First">
+            <source localId="79" xsi:type="Query">
+               <source localId="63" alias="O">
+                  <expression localId="62" dataType="fhir:Observation" codeProperty="code" xsi:type="Retrieve">
+                     <codes name="Zika Exposure Assessment" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="74" xsi:type="And">
+                  <operand localId="67" xsi:type="Equal">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="65" path="status" scope="O" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="66" valueType="t:String" value="final" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="73" xsi:type="Equal">
+                     <operand localId="70" path="reference" xsi:type="Property">
+                        <source localId="69" path="context" scope="O" xsi:type="Property"/>
+                     </operand>
+                     <operand asType="fhir:string" xsi:type="As">
+                        <operand localId="72" path="id" xsi:type="Property">
+                           <source localId="71" name="Current Encounter" xsi:type="ParameterRef"/>
+                        </operand>
+                        <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                     </operand>
+                  </operand>
+               </where>
+               <sort localId="78">
+                  <by localId="77" direction="desc" xsi:type="ByExpression">
+                     <expression localId="76" path="effective" scope="O" xsi:type="Property"/>
+                  </by>
+               </sort>
+            </source>
+         </expression>
+      </def>
+      <def localId="84" name="Has Zika Exposure Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Has Zika Exposure Assessment&quot;:&#xd;
+  &quot;Zika Exposure Assessment Result&quot; is not null</a:s>
+         </annotation>
+         <expression localId="83" xsi:type="Not">
+            <operand xsi:type="IsNull">
+               <operand localId="82" name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="104" name="Zika Symptoms" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Zika Symptoms&quot;:&#xd;
+  [Condition: &quot;Zika Virus Signs and Symptoms&quot;] C&#xd;
+    where C.clinicalStatus = 'active'&#xd;
+      and C.verificationStatus = 'confirmed'&#xd;
+      and C.&quot;context&quot;.reference = &quot;Current Encounter&quot;.id</a:s>
+         </annotation>
+         <expression localId="103" xsi:type="Query">
+            <source localId="86" alias="C">
+               <expression localId="85" dataType="fhir:Condition" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Zika Virus Signs and Symptoms" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="102" xsi:type="And">
+               <operand localId="95" xsi:type="And">
+                  <operand localId="90" xsi:type="Equal">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="88" path="clinicalStatus" scope="C" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="89" valueType="t:String" value="active" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="94" xsi:type="Equal">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="92" path="verificationStatus" scope="C" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="93" valueType="t:String" value="confirmed" xsi:type="Literal"/>
+                  </operand>
+               </operand>
+               <operand localId="101" xsi:type="Equal">
+                  <operand localId="98" path="reference" xsi:type="Property">
+                     <source localId="97" path="context" scope="C" xsi:type="Property"/>
+                  </operand>
+                  <operand asType="fhir:string" xsi:type="As">
+                     <operand localId="100" path="id" xsi:type="Property">
+                        <source localId="99" name="Current Encounter" xsi:type="ParameterRef"/>
+                     </operand>
+                     <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="107" name="Has Zika Symptoms" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Has Zika Symptoms&quot;:&#xd;
+  exists &quot;Zika Symptoms&quot;</a:s>
+         </annotation>
+         <expression localId="106" xsi:type="Exists">
+            <operand localId="105" name="Zika Symptoms" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="110" name="No Zika Symptoms" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;No Zika Symptoms&quot;:&#xd;
+  not &quot;Has Zika Symptoms&quot;</a:s>
+         </annotation>
+         <expression localId="109" xsi:type="Not">
+            <operand localId="108" name="Has Zika Symptoms" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="113" name="Yes" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Yes&quot;: { 'Yes' }</a:s>
+         </annotation>
+         <expression localId="112" xsi:type="List">
+            <element localId="111" valueType="t:String" value="Yes" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="130" name="Resident of or Frequent Traveler to Zika Area" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Resident of or Frequent Traveler to Zika Area&quot;:&#xd;
+  exists (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      // TODO: Need to streamline, this ought to have worked, not sure why it didn't (without the coding[0] access)&#xd;
+      where C.code.coding[0] = &quot;CDE: Resident of or Frequent Traveler to Zika Area&quot;&#xd;
+        and C.value in &quot;Yes&quot;&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="129" xsi:type="Exists">
+            <operand localId="128" xsi:type="Query">
+               <source localId="115" alias="C">
+                  <expression localId="114" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="127" xsi:type="And">
+                  <operand localId="122" xsi:type="Equal">
+                     <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="120" xsi:type="Indexer">
+                           <operand localId="118" path="coding" xsi:type="Property">
+                              <source localId="117" path="code" scope="C" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="119" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                        </operand>
+                     </operand>
+                     <operand localId="121" name="CDE: Resident of or Frequent Traveler to Zika Area" xsi:type="CodeRef"/>
+                  </operand>
+                  <operand localId="126" xsi:type="In">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:string" xsi:type="As">
+                           <operand localId="124" path="value" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                     <operand localId="125" name="Yes" xsi:type="ExpressionRef"/>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="147" name="Recent Travel to Zika Area" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Recent Travel to Zika Area&quot;:&#xd;
+  exists (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      where C.code.coding[0] = &quot;CDE: Recent Travel to Zika Area&quot;&#xd;
+        and C.value in &quot;Yes&quot;&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="146" xsi:type="Exists">
+            <operand localId="145" xsi:type="Query">
+               <source localId="132" alias="C">
+                  <expression localId="131" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="144" xsi:type="And">
+                  <operand localId="139" xsi:type="Equal">
+                     <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="137" xsi:type="Indexer">
+                           <operand localId="135" path="coding" xsi:type="Property">
+                              <source localId="134" path="code" scope="C" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="136" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                        </operand>
+                     </operand>
+                     <operand localId="138" name="CDE: Recent Travel to Zika Area" xsi:type="CodeRef"/>
+                  </operand>
+                  <operand localId="143" xsi:type="In">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:string" xsi:type="As">
+                           <operand localId="141" path="value" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                     <operand localId="142" name="Yes" xsi:type="ExpressionRef"/>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="162" name="Time Since Returned From Travel" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Time Since Returned From Travel&quot;:&#xd;
+  singleton from (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      where C.code.coding[0] = &quot;CDE: Time Since Returned From Travel&quot;&#xd;
+      return C.value&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="161" xsi:type="SingletonFrom">
+            <operand localId="160" xsi:type="Query">
+               <source localId="149" alias="C">
+                  <expression localId="148" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="156" xsi:type="Equal">
+                  <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="154" xsi:type="Indexer">
+                        <operand localId="152" path="coding" xsi:type="Property">
+                           <source localId="151" path="code" scope="C" xsi:type="Property"/>
+                        </operand>
+                        <operand localId="153" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     </operand>
+                  </operand>
+                  <operand localId="155" name="CDE: Time Since Returned From Travel" xsi:type="CodeRef"/>
+               </where>
+               <return localId="159">
+                  <expression localId="158" path="value" scope="C" xsi:type="Property"/>
+               </return>
+            </operand>
+         </expression>
+      </def>
+      <def localId="179" name="Recent Sexual Encounter With Traveler to Zika Area" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Recent Sexual Encounter With Traveler to Zika Area&quot;:&#xd;
+  exists (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      where C.code.coding[0] = &quot;CDE: Recent Sexual Encounter With Traveler to Zika Area&quot;&#xd;
+        and C.value in &quot;Yes&quot;&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="178" xsi:type="Exists">
+            <operand localId="177" xsi:type="Query">
+               <source localId="164" alias="C">
+                  <expression localId="163" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="176" xsi:type="And">
+                  <operand localId="171" xsi:type="Equal">
+                     <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="169" xsi:type="Indexer">
+                           <operand localId="167" path="coding" xsi:type="Property">
+                              <source localId="166" path="code" scope="C" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="168" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                        </operand>
+                     </operand>
+                     <operand localId="170" name="CDE: Recent Sexual Encounter With Traveler to Zika Area" xsi:type="CodeRef"/>
+                  </operand>
+                  <operand localId="175" xsi:type="In">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:string" xsi:type="As">
+                           <operand localId="173" path="value" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                     <operand localId="174" name="Yes" xsi:type="ExpressionRef"/>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="196" name="Time Since Sexual Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Time Since Sexual Encounter&quot;:&#xd;
+  singleton from (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      where C.code.coding[0] = &quot;CDE: Time Since Sexual Encounter&quot;&#xd;
+      return C.value as Quantity&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="195" xsi:type="SingletonFrom">
+            <operand localId="194" xsi:type="Query">
+               <source localId="181" alias="C">
+                  <expression localId="180" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="188" xsi:type="Equal">
+                  <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="186" xsi:type="Indexer">
+                        <operand localId="184" path="coding" xsi:type="Property">
+                           <source localId="183" path="code" scope="C" xsi:type="Property"/>
+                        </operand>
+                        <operand localId="185" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     </operand>
+                  </operand>
+                  <operand localId="187" name="CDE: Time Since Sexual Encounter" xsi:type="CodeRef"/>
+               </where>
+               <return localId="193">
+                  <expression localId="192" strict="false" xsi:type="As">
+                     <operand localId="190" path="value" scope="C" xsi:type="Property"/>
+                     <asTypeSpecifier localId="191" name="fhir:Quantity" xsi:type="NamedTypeSpecifier"/>
+                  </expression>
+               </return>
+            </operand>
+         </expression>
+      </def>
+      <def localId="200" name="Time Since Possible Exposure" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Time Since Possible Exposure&quot;:&#xd;
+  Coalesce(&quot;Time Since Returned From Travel&quot;, &quot;Time Since Sexual Encounter&quot;)</a:s>
+         </annotation>
+         <expression localId="199" xsi:type="Coalesce">
+            <operand asType="fhir:Quantity" xsi:type="As">
+               <operand localId="197" name="Time Since Returned From Travel" xsi:type="ExpressionRef"/>
+               <asTypeSpecifier name="fhir:Quantity" xsi:type="NamedTypeSpecifier"/>
+            </operand>
+            <operand localId="198" name="Time Since Sexual Encounter" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="217" name="Planned Travel to Zika Area" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Planned Travel to Zika Area&quot;:&#xd;
+  exists (&#xd;
+    &quot;Zika Exposure Assessment Result&quot;.component C&#xd;
+      where C.code.coding[0] = &quot;CDE: Planned Travel to Zika Area&quot;&#xd;
+        and C.value in &quot;Yes&quot;&#xd;
+  )</a:s>
+         </annotation>
+         <expression localId="216" xsi:type="Exists">
+            <operand localId="215" xsi:type="Query">
+               <source localId="202" alias="C">
+                  <expression localId="201" path="component" xsi:type="Property">
+                     <source name="Zika Exposure Assessment Result" xsi:type="ExpressionRef"/>
+                  </expression>
+               </source>
+               <where localId="214" xsi:type="And">
+                  <operand localId="209" xsi:type="Equal">
+                     <operand name="ToCode" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="207" xsi:type="Indexer">
+                           <operand localId="205" path="coding" xsi:type="Property">
+                              <source localId="204" path="code" scope="C" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="206" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                        </operand>
+                     </operand>
+                     <operand localId="208" name="CDE: Planned Travel to Zika Area" xsi:type="CodeRef"/>
+                  </operand>
+                  <operand localId="213" xsi:type="In">
+                     <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:string" xsi:type="As">
+                           <operand localId="211" path="value" scope="C" xsi:type="Property"/>
+                           <asTypeSpecifier name="fhir:string" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                     <operand localId="212" name="Yes" xsi:type="ExpressionRef"/>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="223" name="Has Possible Zika Exposure" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Has Possible Zika Exposure&quot;:&#xd;
+  &quot;Resident of or Frequent Traveler to Zika Area&quot;&#xd;
+    or &quot;Recent Travel to Zika Area&quot;&#xd;
+    or &quot;Recent Sexual Encounter With Traveler to Zika Area&quot;</a:s>
+         </annotation>
+         <expression localId="222" xsi:type="Or">
+            <operand localId="220" xsi:type="Or">
+               <operand localId="218" name="Resident of or Frequent Traveler to Zika Area" xsi:type="ExpressionRef"/>
+               <operand localId="219" name="Recent Travel to Zika Area" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="221" name="Recent Sexual Encounter With Traveler to Zika Area" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="235" name="Zika Symptom Onset" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Zika Symptom Onset&quot;:&#xd;
+  First(&#xd;
+    &quot;Zika Symptoms&quot; S&#xd;
+      // This is suboptimal, it would be better if the compiler could resolve this,&#xd;
+      // but it can't currently trace both the choice convergence and the implicit conversion&#xd;
+      sort by (S.onset as dateTime)&#xd;
+  ).onset</a:s>
+         </annotation>
+         <expression localId="234" path="onset" xsi:type="Property">
+            <source localId="233" xsi:type="First">
+               <source localId="232" xsi:type="Query">
+                  <source localId="225" alias="S">
+                     <expression localId="224" name="Zika Symptoms" xsi:type="ExpressionRef"/>
+                  </source>
+                  <sort localId="231">
+                     <by localId="230" direction="asc" xsi:type="ByExpression">
+                        <expression localId="229" strict="false" xsi:type="As">
+                           <operand localId="227" path="onset" scope="S" xsi:type="Property"/>
+                           <asTypeSpecifier localId="228" name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                        </expression>
+                     </by>
+                  </sort>
+               </source>
+            </source>
+         </expression>
+      </def>
+      <def localId="241" name="Time Since Symptom Onset" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Time Since Symptom Onset&quot;:&#xd;
+  System.Quantity { value: weeks between &quot;Zika Symptom Onset&quot; and Today(), unit: 'wk' }</a:s>
+         </annotation>
+         <expression localId="240" classType="t:Quantity" xsi:type="Instance">
+            <element name="value">
+               <value xsi:type="ToDecimal">
+                  <operand localId="238" precision="Week" xsi:type="DurationBetween">
+                     <operand name="ToDateTime" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand asType="fhir:dateTime" xsi:type="As">
+                           <operand localId="236" name="Zika Symptom Onset" xsi:type="ExpressionRef"/>
+                           <asTypeSpecifier name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                        </operand>
+                     </operand>
+                     <operand localId="237" xsi:type="Today"/>
+                  </operand>
+               </value>
+            </element>
+            <element name="unit">
+               <value localId="239" valueType="t:String" value="wk" xsi:type="Literal"/>
+            </element>
+         </expression>
+      </def>
+      <def localId="244" name="Should Administer Zika Exposure Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Should Administer Zika Exposure Assessment&quot;:&#xd;
+  not (&quot;Has Zika Exposure Assessment&quot;)</a:s>
+         </annotation>
+         <expression localId="243" xsi:type="Not">
+            <operand localId="242" name="Has Zika Exposure Assessment" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="258" name="Should Order Serum + Urine rRT-PCR Test" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Should Order Serum + Urine rRT-PCR Test&quot;:&#xd;
+  (&quot;Has Possible Zika Exposure&quot; and &quot;Has Zika Symptoms&quot; and &quot;Time Since Symptom Onset&quot; &lt; 2 weeks)&#xd;
+    or (&quot;No Zika Symptoms&quot; and &quot;Time Since Possible Exposure&quot; &lt; 2 weeks)</a:s>
+         </annotation>
+         <expression localId="257" xsi:type="Or">
+            <operand localId="251" xsi:type="And">
+               <operand localId="247" xsi:type="And">
+                  <operand localId="245" name="Has Possible Zika Exposure" xsi:type="ExpressionRef"/>
+                  <operand localId="246" name="Has Zika Symptoms" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="250" xsi:type="Less">
+                  <operand localId="248" name="Time Since Symptom Onset" xsi:type="ExpressionRef"/>
+                  <operand localId="249" value="2" unit="weeks" xsi:type="Quantity"/>
+               </operand>
+            </operand>
+            <operand localId="256" xsi:type="And">
+               <operand localId="252" name="No Zika Symptoms" xsi:type="ExpressionRef"/>
+               <operand localId="255" xsi:type="Less">
+                  <operand name="ToQuantity" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="253" name="Time Since Possible Exposure" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="254" value="2" unit="weeks" xsi:type="Quantity"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="280" name="Should Order Serum Zika Virus IgM + Dengue Virus IgM" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Should Order Serum Zika Virus IgM + Dengue Virus IgM&quot;:&#xd;
+  (&quot;Has Possible Zika Exposure&quot; and &quot;Has Zika Symptoms&quot; and &quot;Time Since Symptom Onset&quot; in Interval[2 weeks, 12 weeks))&#xd;
+    or (&quot;Resident of or Frequent Traveler to Zika Area&quot; and &quot;No Zika Symptoms&quot;)&#xd;
+    or (&quot;No Zika Symptoms&quot; and &quot;Time Since Possible Exposure&quot; in Interval[2 weeks, 12 weeks))</a:s>
+         </annotation>
+         <expression localId="279" xsi:type="Or">
+            <operand localId="271" xsi:type="Or">
+               <operand localId="267" xsi:type="And">
+                  <operand localId="261" xsi:type="And">
+                     <operand localId="259" name="Has Possible Zika Exposure" xsi:type="ExpressionRef"/>
+                     <operand localId="260" name="Has Zika Symptoms" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="266" xsi:type="In">
+                     <operand localId="262" name="Time Since Symptom Onset" xsi:type="ExpressionRef"/>
+                     <operand localId="265" lowClosed="true" highClosed="false" xsi:type="Interval">
+                        <low localId="263" value="2" unit="weeks" xsi:type="Quantity"/>
+                        <high localId="264" value="12" unit="weeks" xsi:type="Quantity"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="270" xsi:type="And">
+                  <operand localId="268" name="Resident of or Frequent Traveler to Zika Area" xsi:type="ExpressionRef"/>
+                  <operand localId="269" name="No Zika Symptoms" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="278" xsi:type="And">
+               <operand localId="272" name="No Zika Symptoms" xsi:type="ExpressionRef"/>
+               <operand localId="277" xsi:type="In">
+                  <operand name="ToQuantity" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="273" name="Time Since Possible Exposure" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="276" lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low localId="274" value="2" unit="weeks" xsi:type="Quantity"/>
+                     <high localId="275" value="12" unit="weeks" xsi:type="Quantity"/>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="294" name="Should Consider IgM Antibody Testing" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Should Consider IgM Antibody Testing&quot;:&#xd;
+  (&quot;Has Possible Zika Exposure&quot; and &quot;Has Zika Symptoms&quot; and &quot;Time Since Symptom Onset&quot; >= 12 weeks)&#xd;
+    or (&quot;No Zika Symptoms&quot; and &quot;Time Since Possible Exposure&quot; >= 12 weeks)</a:s>
+         </annotation>
+         <expression localId="293" xsi:type="Or">
+            <operand localId="287" xsi:type="And">
+               <operand localId="283" xsi:type="And">
+                  <operand localId="281" name="Has Possible Zika Exposure" xsi:type="ExpressionRef"/>
+                  <operand localId="282" name="Has Zika Symptoms" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="286" xsi:type="GreaterOrEqual">
+                  <operand localId="284" name="Time Since Symptom Onset" xsi:type="ExpressionRef"/>
+                  <operand localId="285" value="12" unit="weeks" xsi:type="Quantity"/>
+               </operand>
+            </operand>
+            <operand localId="292" xsi:type="And">
+               <operand localId="288" name="No Zika Symptoms" xsi:type="ExpressionRef"/>
+               <operand localId="291" xsi:type="GreaterOrEqual">
+                  <operand name="ToQuantity" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="289" name="Time Since Possible Exposure" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="290" value="12" unit="weeks" xsi:type="Quantity"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="296" name="Should Provide Mosquito Prevention and Contraception Advice" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s>define &quot;Should Provide Mosquito Prevention and Contraception Advice&quot;:&#xd;
+  &quot;Planned Travel to Zika Area&quot;</a:s>
+         </annotation>
+         <expression localId="295" name="Planned Travel to Zika Area" xsi:type="ExpressionRef"/>
+      </def>
+   </statements>
+</library>
+
+
