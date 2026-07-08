@@ -135,9 +135,9 @@ The following options are supported:
   same base name and location as the input file.  If only a directory is specified, the output
   file will have the same base name as the input file and be written to the requested directory.
 * `--format` or `-f`: Output as `XML` (default), `JSON`, or `COFFEE`.
-* _[more...](cql-to-elm/OVERVIEW.md)_
+* _[more...](cql-to-elm/README.md)_
 
-For a complete list of supported options as well as more information on the CQL-to-ELM translator, refer to the [Overview](cql-to-elm/OVERVIEW.md) for that project.
+For a complete list of supported options as well as more information on the CQL-to-ELM translator, refer to the [README](cql-to-elm/README.md) for that project.
 
 # Additional Developer Documentation
 
