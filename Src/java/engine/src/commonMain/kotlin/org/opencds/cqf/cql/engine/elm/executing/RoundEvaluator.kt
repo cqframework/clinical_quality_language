@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
-import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Decimal
@@ -23,17 +22,16 @@ If precision is not specified or null, 0 is assumed.
 object RoundEvaluator {
     @JvmStatic
     fun round(operand: Value?, precision: Value?): Decimal? {
-        var rm = RoundingMode.HALF_UP
+        // The CQL spec defines Round as a "traditional round" (nearest whole number, with ties
+        // rounding away from zero), which corresponds to HALF_UP for both positive and negative
+        // values: Round(0.5) = 1 and Round(-0.5) = -1.
+        val rm = RoundingMode.HALF_UP
 
         if (operand == null) {
             return null
         }
 
         if (operand is Decimal && precision is Integer?) {
-            if (operand.value.compareTo(BigDecimal(0)) < 0) {
-                rm = RoundingMode.HALF_DOWN
-            }
-
             if (precision == null || (precision.value == 0)) {
                 return operand.value.setScale(0, rm).toCqlDecimal()
             } else {
