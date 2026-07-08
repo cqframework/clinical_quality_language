@@ -4,11 +4,11 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "Src/java/**"
+      - "**"
   pull_request:
     branches: [ "main" ]
     paths:
-      - "Src/java/**"
+      - "**"
   schedule:
     - cron: '36 15 * * 1'
 
@@ -38,11 +38,8 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: java-kotlin
-        source-root: Src/java
     - name: Autobuild CodeQL
       uses: github/codeql-action/autobuild@v3
-      with:
-        working-directory: Src/java
         
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
