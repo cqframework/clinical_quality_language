@@ -23,7 +23,7 @@
 			<output>true</output>
 		</test>
 		<test name="DateTimeAddYearInWeeks">
-			<expression>DateTime(2018, 5, 23) + 52 weeks = DateTime(2019, 5, 23)</expression>
+			<expression>DateTime(2018, 5, 23) + 52 weeks = DateTime(2019, 5, 22)</expression>
 			<output>true</output>
 		</test>
 		<test name="DateTimeAdd5Days">
@@ -1196,7 +1196,7 @@
 			<output>true</output>
 		</test>
 		<test name="DateTimeSubtractYearInWeeks">
-			<expression>DateTime(2018, 5, 23) - 52 weeks = DateTime(2017, 5, 23)</expression>
+			<expression>DateTime(2018, 5, 23) - 52 weeks = DateTime(2017, 5, 24)</expression>
 			<output>true</output>
 		</test>
 		<test name="DateTimeSubtract5Days">
