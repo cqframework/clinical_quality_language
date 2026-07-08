@@ -6,8 +6,8 @@ A playground for the Kotlin/JS-based CQL compiler and engine.
 
 ## Local development
 
-Build the CQL engine and its dependencies locally by running the `:engine:build` task in the `../../java` project.
-This will output the JS and WASM/JS packages to `../../java/build/(js|wasm)/packages/engine`.
+Build the CQL engine and its dependencies locally by running the `:engine:build` task.
+This will output the JS and WASM/JS packages to `../../build/(js|wasm)/packages/engine`.
 
 Run:
 

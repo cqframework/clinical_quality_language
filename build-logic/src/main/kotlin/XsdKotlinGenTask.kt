@@ -25,13 +25,13 @@ val configs =
     listOf(
         Config(
             project = "cql",
-            xsd = "../../cql-lm/schema/model/modelinfo.xsd",
+            xsd = "../schemas/model/modelinfo.xsd",
             outputDir = "../cql/build/generated/sources/cql/commonMain/kotlin",
             jsExport = false,
         ),
         Config(
             project = "elm",
-            xsd = "../../cql-lm/schema/elm/library.xsd",
+            xsd = "../schemas/elm/library.xsd",
             outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
             jsExport = true,
         ),

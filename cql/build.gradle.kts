@@ -12,7 +12,7 @@ plugins {
 val generateKotlinGrammarSource =
     tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
         dependsOn("cleanGenerateKotlinGrammarSource")
-        source = fileTree("../../grammar") { include("**/*.g4") }
+        source = fileTree("../grammar") { include("**/*.g4") }
         packageName = "org.cqframework.cql.gen"
         arguments = listOf("-visitor")
         outputDirectory =

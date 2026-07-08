@@ -15,8 +15,8 @@
     "@lhncbc/ucum-lhc": "^7.1.2",
     "@uiw/codemirror-theme-github": "^4.25.2",
     "@uiw/react-codemirror": "^4.24.1",
-    "cql-js": "file:../../java/build/js/packages/engine",
-    "cql-wasm-js": "file:../../java/build/wasm/packages/engine",
+    "cql-js": "file:../../build/js/packages/engine",
+    "cql-wasm-js": "file:../../build/wasm/packages/engine",
     "next": "^15.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

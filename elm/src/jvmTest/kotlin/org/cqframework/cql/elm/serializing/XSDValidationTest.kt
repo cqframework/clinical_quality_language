@@ -56,8 +56,7 @@ internal class XSDValidationTest {
         private fun createValidator(): Validator {
             try {
                 val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                val schema =
-                    schemaFactory.newSchema(Path.of("../../cql-lm/schema/elm/library.xsd").toFile())
+                val schema = schemaFactory.newSchema(Path.of("../schemas/elm/library.xsd").toFile())
                 return schema.newValidator()
             } catch (e: SAXException) {
                 throw RuntimeException(e)
