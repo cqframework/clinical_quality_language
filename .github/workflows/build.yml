@@ -57,7 +57,7 @@ jobs:
         package-manager-cache: false
     - name: Install playground dependencies
       working-directory: ./js/cql-to-elm-ui
-      run: npm ci
+      run: npm ci --ignore-scripts
     - name: Build and export playground
       working-directory: ./js/cql-to-elm-ui
       run: npm run build
