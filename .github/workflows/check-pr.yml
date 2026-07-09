@@ -49,18 +49,3 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    - name: Compile engine-js for the CQL playground
-      run: ./gradlew engine:compileProductionLibraryKotlinJs engine:compileProductionLibraryKotlinWasmJs
-    - name: Install Node.js
-      uses: actions/setup-node@v5
-      with:
-        node-version: '24'
-        package-manager-cache: false
-    - name: Install playground dependencies
-      working-directory: ./js/cql-to-elm-ui
-      run: npm ci
-    - name: Build and export playground
-      working-directory: ./js/cql-to-elm-ui
-      run: npm run build
-    - name: Add .nojekyll
-      run: touch ./js/cql-to-elm-ui/out/.nojekyll
