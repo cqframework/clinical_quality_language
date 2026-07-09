@@ -33,7 +33,6 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Run Gradle Build
-      working-directory: ./Src/java
       run: ./gradlew check publish sonar
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ vars.OSSRH_USERNAME }}
@@ -50,7 +49,6 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     - name: Compile engine-js for the CQL playground
-      working-directory: ./Src/java
       run: ./gradlew engine:compileProductionLibraryKotlinJs engine:compileProductionLibraryKotlinWasmJs
     - name: Install Node.js
       uses: actions/setup-node@v5
@@ -58,16 +56,16 @@ jobs:
         node-version: '24'
         package-manager-cache: false
     - name: Install playground dependencies
-      working-directory: ./Src/js/cql-to-elm-ui
+      working-directory: ./js/cql-to-elm-ui
       run: npm ci -f
     - name: Build and export playground
-      working-directory: ./Src/js/cql-to-elm-ui
+      working-directory: ./js/cql-to-elm-ui
       run: npm run build
     - name: Add .nojekyll
-      run: touch ./Src/js/cql-to-elm-ui/out/.nojekyll
+      run: touch ./js/cql-to-elm-ui/out/.nojekyll
     - name: Deploy playground to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./Src/js/cql-to-elm-ui/out
+        publish_dir: ./js/cql-to-elm-ui/out
         destination_dir: playground

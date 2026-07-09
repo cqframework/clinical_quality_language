@@ -7,8 +7,6 @@ coverage:
       default:
         target: auto
         threshold: 1% # this covers slighty flaky tests
-        paths:
-          - "Src/java"
     patch:
       default:
         # basic
@@ -20,5 +18,3 @@ coverage:
           - main
         if_ci_failed: error #success, failure, error, ignore
         only_pulls: false
-        paths:
-          - "Src/java"
