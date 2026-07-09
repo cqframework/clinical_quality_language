@@ -43,7 +43,9 @@ object Main {
         try {
             val source = FileInputStream(modelInfoXML).asSource().buffered()
             val modelInfo: ModelInfo = parseModelInfoXml(source)
-            return { _: ModelIdentifier -> modelInfo } as ModelInfoProvider
+            return object : ModelInfoProvider {
+                override fun load(modelIdentifier: ModelIdentifier) = modelInfo
+            }
         } catch (e: IOException) {
             System.err.printf("Could not load model-info XML: %s%n", modelInfoXML)
             e.printStackTrace()
