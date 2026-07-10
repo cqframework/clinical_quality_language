@@ -1,11 +1,9 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.cql2elm.tracking.TrackBack
 import org.cqframework.cql.shared.JsOnlyExport
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 abstract class CqlCompilerException(

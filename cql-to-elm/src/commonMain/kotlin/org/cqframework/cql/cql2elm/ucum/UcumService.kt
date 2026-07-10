@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.ucum
 
-import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.JsOnlyExport
 
@@ -44,7 +43,6 @@ expect val defaultLazyUcumService: Lazy<UcumService>
  *   null, otherwise it should return an error message.
  * @return a lazy UCUM service
  */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 fun createUcumService(

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalJsExport::class, ExperimentalWasmJsInterop::class)
-
 package org.cqframework.cql.cql2elm.ucum
 
 import org.cqframework.cql.shared.BigDecimal

@@ -1,6 +1,5 @@
 package org.hl7.cql.parsetree
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
@@ -17,7 +16,6 @@ fun createParser(text: String): cqlParser {
 }
 
 /** Generates the parse tree for the given CQL. */
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 fun inspectCqlParseTree(text: String): String {
     val parser = createParser(text)

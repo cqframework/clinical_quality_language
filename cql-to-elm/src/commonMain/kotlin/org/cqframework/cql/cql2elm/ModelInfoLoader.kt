@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm
 
 import kotlin.collections.ArrayList
-import kotlin.js.ExperimentalJsExport
 import kotlin.jvm.JvmOverloads
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
@@ -12,7 +11,6 @@ import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class ModelInfoLoader : NamespaceAware, PathAware {

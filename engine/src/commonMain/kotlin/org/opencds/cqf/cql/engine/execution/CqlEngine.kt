@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.CompiledLibraryResult
@@ -31,7 +30,6 @@ import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a
  * potential maintenance issue.
  */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 class CqlEngine
 @JvmOverloads

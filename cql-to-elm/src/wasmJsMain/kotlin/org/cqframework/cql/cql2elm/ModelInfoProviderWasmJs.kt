@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalJsExport::class, ExperimentalWasmJsInterop::class)
-
 package org.cqframework.cql.cql2elm
 
 import kotlinx.io.Source
