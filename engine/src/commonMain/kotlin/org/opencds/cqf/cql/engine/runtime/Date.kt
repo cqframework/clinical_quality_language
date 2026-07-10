@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
@@ -18,7 +17,6 @@ import org.opencds.cqf.cql.engine.util.offsetDateTimeOfInstant
 import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 class Date : BaseTemporal {
     override val type = dateTypeName

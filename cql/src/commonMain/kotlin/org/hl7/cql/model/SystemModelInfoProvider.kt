@@ -1,11 +1,9 @@
 package org.hl7.cql.model
 
-import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm_modelinfo.r1.ModelInfo
 import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class SystemModelInfoProvider : ModelInfoProvider {

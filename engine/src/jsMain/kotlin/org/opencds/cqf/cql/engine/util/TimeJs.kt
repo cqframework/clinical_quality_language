@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.util
 // https://github.com/Kotlin/kotlinx-datetime#note-about-time-zones-in-js
 @JsModule("@js-joda/timezone") @JsNonModule external object JsJodaTimeZoneModule
 
-@OptIn(ExperimentalJsExport::class) @JsExport val jsJodaTz = JsJodaTimeZoneModule
+@JsExport val jsJodaTz = JsJodaTimeZoneModule
 
 actual typealias Date = DateJs
 

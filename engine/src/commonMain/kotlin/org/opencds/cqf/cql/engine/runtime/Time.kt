@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
@@ -9,7 +8,6 @@ import org.opencds.cqf.cql.engine.util.LocalTime
 import org.opencds.cqf.cql.engine.util.localTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 class Time : BaseTemporal {
     override val type = timeTypeName

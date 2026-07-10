@@ -1,8 +1,4 @@
-@file:OptIn(ExperimentalWasmJsInterop::class)
-
 package org.cqframework.cql.shared.serializing
-
-import kotlin.js.ExperimentalWasmJsInterop
 
 @JsModule("saxes")
 private external object Saxes {
