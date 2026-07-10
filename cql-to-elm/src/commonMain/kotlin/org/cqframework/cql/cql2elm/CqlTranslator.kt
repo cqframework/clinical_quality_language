@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalJsStatic::class)
-
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsStatic
 import kotlin.js.JsExport
 import kotlin.js.JsStatic
 import kotlin.jvm.JvmOverloads
