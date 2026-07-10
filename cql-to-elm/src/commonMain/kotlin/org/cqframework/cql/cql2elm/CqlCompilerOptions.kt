@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsStatic
 import kotlin.js.JsExport
 import kotlin.js.JsStatic
 import kotlin.jvm.JvmStatic
@@ -305,7 +304,6 @@ class CqlCompilerOptions() {
          *
          * @return
          */
-        @OptIn(ExperimentalJsStatic::class)
         @JvmStatic
         @JsStatic
         fun defaultOptions(): CqlCompilerOptions {

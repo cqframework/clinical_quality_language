@@ -43,6 +43,7 @@ kotlin {
         freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
 
         optIn.add("kotlin.js.ExperimentalJsExport")
+        optIn.add("kotlin.js.ExperimentalJsStatic")
     }
     jvmToolchain(17)
     jvm()
