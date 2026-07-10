@@ -1,10 +1,8 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 class ValueSet : Vocabulary() {
     override val type = valueSetTypeName

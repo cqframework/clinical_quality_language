@@ -1,9 +1,5 @@
-@file:OptIn(ExperimentalJsStatic::class)
-
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.ExperimentalJsStatic
 import kotlin.js.JsExport
 import kotlin.js.JsStatic
 import kotlin.jvm.JvmOverloads
@@ -28,7 +24,6 @@ import org.hl7.elm.r1.VersionedIdentifier
  * Wraps [CqlCompiler] and produces ELM outputs in different formats. Exposes compilation exceptions
  * and filtered views for errors, warnings, and messages.
  */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class CqlTranslator

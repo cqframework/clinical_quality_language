@@ -1,11 +1,9 @@
 package org.cqframework.cql.shared
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
 /** A minimal pure-Kotlin implementation of QName for non-Java environments. */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @JsName("QName")
 class QNameJs(

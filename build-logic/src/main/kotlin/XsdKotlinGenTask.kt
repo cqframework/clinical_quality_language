@@ -1135,11 +1135,6 @@ fun FileSpec.Builder.addSerializers(
 
 // Adds `@JsOnlyExport`
 fun TypeSpec.Builder.addJsExport(): TypeSpec.Builder {
-    addAnnotation(
-        AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
-            .addMember("%T::class", ClassName("kotlin.js", "ExperimentalJsExport"))
-            .build()
-    )
     addAnnotation(ClassName("org.cqframework.cql.shared", "JsOnlyExport"))
 
     return this
