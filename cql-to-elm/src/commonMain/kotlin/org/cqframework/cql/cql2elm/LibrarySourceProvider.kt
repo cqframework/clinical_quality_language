@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalJsExport::class)
-
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlinx.io.Source
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.elm.r1.VersionedIdentifier

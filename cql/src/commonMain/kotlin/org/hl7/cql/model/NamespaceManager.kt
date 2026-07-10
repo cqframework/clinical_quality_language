@@ -1,11 +1,9 @@
 package org.hl7.cql.model
 
 import kotlin.collections.HashMap
-import kotlin.js.ExperimentalJsExport
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.JsOnlyExport
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class NamespaceManager {

@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
@@ -20,7 +19,6 @@ import org.opencds.cqf.cql.engine.util.ZonedDateTime
  * @property debugMap Captures debug information during evaluation.
  * @property evaluationDateTime Represents the evaluation date and time.
  */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class EvaluationParams(

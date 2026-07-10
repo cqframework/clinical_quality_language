@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.LibraryManager
@@ -19,7 +18,6 @@ import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
  * The Environment class represents the current CQL execution environment. Meaning, things that are
  * set up outside of the CQL engine
  */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class Environment

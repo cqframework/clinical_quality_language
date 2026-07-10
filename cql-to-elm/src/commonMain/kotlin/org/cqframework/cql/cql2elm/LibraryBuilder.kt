@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalJsExport::class)
-
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass

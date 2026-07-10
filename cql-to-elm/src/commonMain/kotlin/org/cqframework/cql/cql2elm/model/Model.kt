@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.ModelManager
@@ -11,7 +10,6 @@ import org.hl7.cql.model.ModelContext
 import org.hl7.cql.model.NamedType
 import org.hl7.elm_modelinfo.r1.ModelInfo
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 open class Model
 @JsExport.Ignore

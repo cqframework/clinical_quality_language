@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
 import kotlin.toString
@@ -16,7 +15,6 @@ import org.opencds.cqf.cql.engine.exception.InvalidInterval
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 class Interval
 @JvmOverloads
