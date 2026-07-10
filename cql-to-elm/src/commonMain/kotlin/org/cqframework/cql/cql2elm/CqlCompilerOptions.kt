@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.ExperimentalJsStatic
 import kotlin.js.JsExport
 import kotlin.js.JsStatic
@@ -10,7 +9,6 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 import org.cqframework.cql.shared.JsOnlyExport
 
 /** Translation options for CQL source files */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE", "TooManyFunctions")
 @Serializable

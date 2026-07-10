@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.ExperimentalJsStatic
 import kotlin.js.JsStatic
 import kotlin.jvm.JvmStatic
@@ -12,7 +11,7 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.Serializable
 import org.cqframework.cql.shared.JsOnlyExport
 
-@OptIn(ExperimentalJsExport::class, ExperimentalJsStatic::class)
+@OptIn(ExperimentalJsStatic::class)
 @JsOnlyExport
 @Serializable
 @Suppress("NON_EXPORTABLE_TYPE")

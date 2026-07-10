@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.js.ExperimentalJsExport
 import kotlinx.io.IOException
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
@@ -17,7 +16,6 @@ import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
 // And further that <modelname> will never contain dashes, and that <version> will always be of the
 // form <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 @Suppress("NON_EXPORTABLE_TYPE")
 class DefaultModelInfoProvider(path: Path) : ModelInfoProvider, PathAware {

@@ -1,9 +1,7 @@
 package org.opencds.cqf.cql.engine.util
 
 // https://github.com/Kotlin/kotlinx-datetime#note-about-time-zones-in-wasmjs
-@OptIn(ExperimentalWasmJsInterop::class)
-@JsModule("@js-joda/timezone")
-external object JsJodaTimeZoneModule
+@JsModule("@js-joda/timezone") external object JsJodaTimeZoneModule
 
 private val jsJodaTz = JsJodaTimeZoneModule
 

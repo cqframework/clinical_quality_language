@@ -41,6 +41,8 @@ kotlin {
         // we'll need to refactor the code to use interfaces.
         freeCompilerArgs.add("-Xexpect-actual-classes")
         freeCompilerArgs.add("-Xwarning-level=DEPRECATION:disabled")
+
+        optIn.add("kotlin.js.ExperimentalJsExport")
     }
     jvmToolchain(17)
     jvm()
@@ -59,6 +61,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
+        compilerOptions { optIn.add("kotlin.js.ExperimentalWasmJsInterop") }
         browser { testTask { enabled = false } }
         nodejs { testTask { enabled = false } }
         binaries.library()
