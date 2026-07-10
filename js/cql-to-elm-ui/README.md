@@ -11,7 +11,7 @@ This will output the JS and WASM/JS packages to `../../build/(js|wasm)/packages/
 
 Run:
 
-    npm install -f
+    npm install
     npm run dev
 
 And open `http://localhost:3000/clinical_quality_language/playground` in your browser.
