@@ -220,12 +220,12 @@
 			<output>0.36787944</output>
 		</test>
 		<test name="Exp1000">
-			<expression invalid="true">Exp(1000)</expression>
-			<!-- EXPECT: Results in positive infinity -->
+			<expression>Exp(1000)</expression>
+			<output>null</output>
 		</test>
 		<test name="Exp1000D">
-			<expression invalid="true">Exp(1000.0)</expression>
-			<!-- EXPECT: Results in positive infinity -->
+			<expression>Exp(1000.0)</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="HighBoundary">
@@ -324,12 +324,12 @@
 			<output>null</output>
 		</test>
 		<test name="Ln0">
-			<expression invalid="true">Ln(0)</expression>
-			<!-- EXPECT: Results in negative infinity -->
+			<expression>Ln(0)</expression>
+			<output>null</output>
 		</test>
 		<test name="LnNeg0">
-			<expression invalid="true">Ln(-0)</expression>
-			<!-- EXPECT: Results in negative infinity -->
+			<expression>Ln(-0)</expression>
+			<output>null</output>
 		</test>
 		<test name="Ln1">
 			<expression>Ln(1)</expression>

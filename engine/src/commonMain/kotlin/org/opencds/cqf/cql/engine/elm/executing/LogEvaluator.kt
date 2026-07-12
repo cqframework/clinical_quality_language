@@ -32,8 +32,13 @@ object LogEvaluator {
                 return null
             }
 
-            return DecimalHelper.verifyPrecision(BigDecimal(ln(argument) / ln(base)), null)
-                .toCqlDecimal()
+            val result = ln(argument) / ln(base)
+            // If the result cannot be represented as a Decimal (e.g. Log of 0 or of a negative
+            // argument), the spec requires the result to be null.
+            if (result.isInfinite() || result.isNaN()) {
+                return null
+            }
+            return DecimalHelper.verifyPrecision(BigDecimal(result), null).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument(
