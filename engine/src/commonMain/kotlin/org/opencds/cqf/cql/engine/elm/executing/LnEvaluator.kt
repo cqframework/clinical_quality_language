@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.exception.UndefinedResult
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Value
@@ -24,19 +23,13 @@ object LnEvaluator {
         }
 
         if (operand is Decimal) {
-            val retVal: BigDecimal?
-            try {
-                retVal = BigDecimal(kotlin.math.ln(operand.value.toDouble()))
-            } catch (nfe: NumberFormatException) {
-                if (operand.value.compareTo(BigDecimal(0)) < 0) {
-                    return null
-                } else if (operand.value.compareTo(BigDecimal(0)) == 0) {
-                    throw UndefinedResult("Results in negative infinity")
-                } else {
-                    throw UndefinedResult(nfe.message)
-                }
+            val result = kotlin.math.ln(operand.value.toDouble())
+            // If the result cannot be represented as a Decimal (Ln(0) is negative infinity and Ln
+            // of a negative number is undefined), the spec requires the result to be null.
+            if (result.isInfinite() || result.isNaN()) {
+                return null
             }
-            return DecimalHelper.verifyPrecision(retVal, null).toCqlDecimal()
+            return DecimalHelper.verifyPrecision(BigDecimal(result), null).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument("Ln(Decimal)", "Ln(${operand.typeAsString})")
