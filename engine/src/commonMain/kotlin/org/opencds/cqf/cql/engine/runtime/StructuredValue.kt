@@ -1,10 +1,8 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import org.cqframework.cql.shared.JsOnlyExport
 
 /** Represents a structured CQL value. */
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 sealed class StructuredValue : Value {
     abstract val elements: MutableMap<kotlin.String, Value?>

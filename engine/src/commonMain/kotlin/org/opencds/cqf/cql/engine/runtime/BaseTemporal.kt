@@ -1,10 +1,8 @@
 package org.opencds.cqf.cql.engine.runtime
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import org.cqframework.cql.shared.JsOnlyExport
 
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
     @JsExport.Ignore var precision: Precision? = null

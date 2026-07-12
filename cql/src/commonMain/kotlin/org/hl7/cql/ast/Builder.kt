@@ -1,6 +1,5 @@
 package org.hl7.cql.ast
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlinx.serialization.json.Json
 import org.antlr.v4.kotlinruntime.BaseErrorListener
@@ -1719,7 +1718,6 @@ class Builder(private val sourceId: String? = null) {
 }
 
 /** Generates the AST for the given CQL in the JSON format. */
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 fun inspectCqlAst(text: String): String {
     val builder = Builder()
