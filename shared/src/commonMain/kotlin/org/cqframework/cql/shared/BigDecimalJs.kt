@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalJsExport::class)
-
 package org.cqframework.cql.shared
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal as KtBigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode as KtRoundingMode
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 

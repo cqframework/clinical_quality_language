@@ -1,11 +1,9 @@
 package org.hl7.cql.model
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import org.cqframework.cql.shared.JsOnlyExport
 
 @Suppress("TooManyFunctions", "ComplexCondition", "NON_EXPORTABLE_TYPE")
-@OptIn(ExperimentalJsExport::class)
 @JsOnlyExport
 open class ClassType(
     final override val name: String,
