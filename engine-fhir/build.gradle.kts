@@ -1,42 +1,42 @@
-plugins {
-    id("cql.library-conventions")
-    id("cql.xjc-conventions")
-    id("cql.fhir-conventions")
-}
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-dependencies {
-    api(project(":engine"))
-    api(project(":ucum"))
-    testImplementation("org.wiremock:wiremock:3.9.1")
-    testImplementation(project(":cql-to-elm"))
-    testImplementation(project(":quick"))
-    testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
+plugins {
+    id("cql.fhir-kotlin-multiplatform-conventions")
+    id("cql.xjc-kotlin-multiplatform-conventions")
 }
 
 val generateFhirPathTests =
     tasks.register<XjcTask>("generateFhirPathTests") {
-        schema = "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema"
-        extraArgs = listOf("-npa", "-p", "org.hl7.fhirpath.tests")
+        schema.set("${projectDir}/src/jvmTest/resources/org/hl7/fhirpath/testSchema")
+        extraArgs.set(listOf("-npa", "-p", "org.hl7.fhirpath.tests"))
     }
 
-tasks.named("sourcesJar") { dependsOn(generateFhirPathTests) }
+kotlin {
+    js { outputModuleName = "engine-fhir" }
 
-tasks.jacocoTestReport {
-    sourceDirectories.setFrom(
-        files(
-            "${projectDir}/../elm/src/commonMain/kotlin",
-            "${projectDir}/../cql-to-elm/src/commonMain/kotlin",
-            "${projectDir}/../engine/src/main/kotlin",
-            "${projectDir}/../engine-fhir/src/main/kotlin",
-        )
-    )
+    @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "engine-fhir" }
 
-    classDirectories.setFrom(
-        files(
-            "${projectDir}/../elm/build/classes/kotlin/jvm/main",
-            "${projectDir}/../cql-to-elm/build/classes/kotlin/jvm/main",
-            "${projectDir}/../engine/build/classes/kotlin/main",
-            "${projectDir}/../engine-fhir/build/classes/kotlin/main",
-        )
-    )
+    sourceSets {
+        jvmMain {
+            dependencies {
+                api(project(":engine"))
+                api(project(":ucum"))
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation("org.wiremock:wiremock:3.9.1")
+                implementation(project(":cql-to-elm"))
+                implementation(project(":quick"))
+                implementation("ca.uhn.hapi.fhir:hapi-fhir-client")
+            }
+        }
+    }
 }
+
+java {
+    sourceSets { named("jvmMain") { java { srcDir(generateFhirPathTests.map { it.outputDir }) } } }
+}
+
+dependencies { kover(project(":engine")) }

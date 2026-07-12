@@ -7,8 +7,8 @@ dependencies { implementation(project(":cql-to-elm")) }
 
 val generateQuick =
     tasks.register<XjcTask>("generateQuick") {
-        schema = "${projectDir}/schema/v1.4/quick.xsd"
-        binding = "${projectDir}/schema/v1.4/quick-binding.xjb"
+        schema.set("${projectDir}/schema/v1.4/quick.xsd")
+        binding.set("${projectDir}/schema/v1.4/quick-binding.xjb")
     }
 
-tasks.named("sourcesJar") { dependsOn(generateQuick) }
+sourceSets { main { java { srcDir(generateQuick.map { it.outputDir }) } } }
