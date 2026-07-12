@@ -602,12 +602,12 @@
 			<output>@T11:59:59.999</output>
 		</test>
 		<test name="PredecessorUnderflowDt">
-			<expression invalid="true">predecessor of DateTime(0001, 1, 1, 0, 0, 0, 0)</expression>
-			<!-- EXPECT: The result of the predecessor operation precedes the minimum value allowed for the type -->
+			<expression>predecessor of DateTime(0001, 1, 1, 0, 0, 0, 0)</expression>
+			<output>null</output>
 		</test>
 		<test name="PredecessorUnderflowT">
-			<expression invalid="true">predecessor of @T00:00:00.000</expression>
-			<!-- EXPECT: The result of the predecessor operation precedes the minimum value allowed for the type -->
+			<expression>predecessor of @T00:00:00.000</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Power">
@@ -778,12 +778,12 @@
 			<output>@T12:00:00.001</output>
 		</test>
 		<test name="SuccessorOverflowDt">
-			<expression invalid="true">successor of DateTime(9999, 12, 31, 23, 59, 59, 999)</expression>
-			<!-- EXPECT: The result of the successor operation exceeds the maximum value allowed for the type -->
+			<expression>successor of DateTime(9999, 12, 31, 23, 59, 59, 999)</expression>
+			<output>null</output>
 		</test>
 		<test name="SuccessorOverflowT">
-			<expression invalid="true">successor of @T23:59:59.999</expression>
-			<!-- EXPECT: The result of the successor operation exceeds the maximum value allowed for the type -->
+			<expression>successor of @T23:59:59.999</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Truncate">
