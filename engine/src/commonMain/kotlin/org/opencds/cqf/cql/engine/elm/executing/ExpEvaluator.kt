@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
-import org.opencds.cqf.cql.engine.exception.UndefinedResult
 import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
@@ -23,16 +22,13 @@ object ExpEvaluator {
         }
 
         if (operand is Decimal) {
-            try {
-                return BigDecimal(kotlin.math.exp(operand.value.toDouble())).toCqlDecimal()
-            } catch (nfe: NumberFormatException) {
-                if (operand.value.compareTo(BigDecimal(0)) > 0) {
-                    throw UndefinedResult("Results in positive infinity")
-                } else if (operand.value.compareTo(BigDecimal(0)) < 0) {
-                    throw UndefinedResult("Results in negative infinity")
-                } else {
-                    throw UndefinedResult(nfe.message)
-                }
+            val result = kotlin.math.exp(operand.value.toDouble())
+            // If the result cannot be represented as a Decimal (i.e. it overflows to infinity),
+            // the spec requires the result to be null.
+            return if (result.isInfinite() || result.isNaN()) {
+                null
+            } else {
+                BigDecimal(result).toCqlDecimal()
             }
         }
 

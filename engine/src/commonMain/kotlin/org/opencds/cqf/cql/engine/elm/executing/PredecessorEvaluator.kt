@@ -24,16 +24,22 @@ import org.opencds.cqf.cql.engine.runtime.toCqlLong
 predecessor of<T>(argument T) T
 
 The predecessor operator returns the predecessor of the argument.
-  For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type, a run-time error is thrown.
+  For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type,
+  or the result cannot otherwise be represented (i.e. would result in underflow), the result is null.
 The predecessor operator is defined for the Integer, Long, Decimal, DateTime, and Time types.
 For Integer, Long predecessor is equivalent to subtracting 1.
 For Decimal, predecessor is equivalent to subtracting the minimum precision value for the Decimal type, or 10^-08.
-For DateTime and Time values, predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value.
+For DateTime and Time values, predecessor is equivalent to subtracting a time-unit quantity for
+  the lowest specified precision of the value.
   For example, if the DateTime is fully specified, predecessor is equivalent to subtracting 1 millisecond;
     if the DateTime is specified to the second, predecessor is equivalent to subtracting one second, etc.
 If the argument is null, the result is null.
 */
 object PredecessorEvaluator {
+    // The minimum representable year for Date/DateTime values (see the bounds enforced by the
+    // Date and DateTime types).
+    private const val MIN_YEAR = 1
+
     /**
      * Checks if the given BigDecimal value is less than the minimum allowed value for Decimal type.
      *
@@ -83,51 +89,35 @@ object PredecessorEvaluator {
                 .withValue((predecessor(quantity.value?.toCqlDecimal()) as Decimal).value)
                 .withUnit(quantity.unit)
         } else if (value is Date) {
-            val dt = value
-            return Date(dt.date!!.minus(1, dt.precision!!.toChronoUnit()), dt.precision!!)
+            val prev = value.date!!.minus(1, value.precision!!.toChronoUnit())
+            // If decrementing underflows the representable year range, the result is null.
+            return if (prev.getYear() < MIN_YEAR) null else Date(prev, value.precision!!)
         } else if (value is DateTime) {
-            val dt = value
-            return DateTime(dt.dateTime!!.minus(1, dt.precision!!.toChronoUnit()), dt.precision!!)
+            val prev = value.dateTime!!.minus(1, value.precision!!.toChronoUnit())
+            // If decrementing underflows the representable year range, the result is null.
+            return if (prev.getYear() < MIN_YEAR) null else DateTime(prev, value.precision!!)
         } else if (value is Time) {
             val t = value
-            when (t.precision!!) {
-                Precision.HOUR ->
-                    if (t.time.getHour() == 0) {
-                        throw TypeUnderflow(
-                            "The result of the successor operation precedes the minimum value allowed for the Time type"
-                        )
-                    }
-                Precision.MINUTE ->
-                    if (t.time.getHour() == 0 && t.time.getMinute() == 0) {
-                        throw TypeUnderflow(
-                            "The result of the successor operation precedes the minimum value allowed for the Time type"
-                        )
-                    }
-                Precision.SECOND ->
-                    if (
+            // If the value is already the minimum for its precision, decrementing underflows the
+            // representable range and the result is null.
+            val underflow =
+                when (t.precision!!) {
+                    Precision.HOUR -> t.time.getHour() == 0
+                    Precision.MINUTE -> t.time.getHour() == 0 && t.time.getMinute() == 0
+                    Precision.SECOND ->
                         t.time.getHour() == 0 && t.time.getMinute() == 0 && t.time.getSecond() == 0
-                    ) {
-                        throw TypeUnderflow(
-                            "The result of the successor operation precedes the minimum value allowed for the Time type"
-                        )
-                    }
-                Precision.MILLISECOND ->
-                    if (
+                    Precision.MILLISECOND ->
                         t.time.getHour() == 0 &&
                             t.time.getMinute() == 0 &&
                             t.time.getSecond() == 0 &&
                             t.time.get(Precision.MILLISECOND.toChronoField()) == 0
-                    ) {
-                        throw TypeUnderflow(
-                            "The result of the successor operation precedes the minimum value allowed for the Time type"
-                        )
-                    }
-                Precision.DAY,
-                Precision.MONTH,
-                Precision.WEEK,
-                Precision.YEAR -> {}
-            }
-            return Time(t.time.minus(1, t.precision!!.toChronoUnit()), t.precision!!)
+                    Precision.DAY,
+                    Precision.MONTH,
+                    Precision.WEEK,
+                    Precision.YEAR -> false
+                }
+            return if (underflow) null
+            else Time(t.time.minus(1, t.precision!!.toChronoUnit()), t.precision!!)
         }
 
         throw InvalidOperatorArgument(
