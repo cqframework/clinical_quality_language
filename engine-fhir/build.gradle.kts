@@ -17,12 +17,9 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "engine-fhir" }
 
     sourceSets {
-        jvmMain {
-            dependencies {
-                api(project(":engine"))
-                api(project(":ucum"))
-            }
-        }
+        commonMain { dependencies { api(project(":engine")) } }
+
+        jvmMain { dependencies { api(project(":ucum")) } }
 
         jvmTest {
             dependencies {
