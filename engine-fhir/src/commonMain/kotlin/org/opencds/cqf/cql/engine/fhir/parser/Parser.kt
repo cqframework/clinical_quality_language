@@ -88,7 +88,7 @@ private fun jsonObjectToCqlClassInstance(
  * Extracts a property of a JSON object representing a FHIR Resource, non-primitive type (complex
  * datatype), or an objectified primitive type as a CQL [Value].
  */
-fun extractPropertyFromJsonObjectAsCqlValue(
+private fun extractPropertyFromJsonObjectAsCqlValue(
     jsonObject: JsonObject,
     propertyKey: kotlin.String,
     dataType: DataType,
