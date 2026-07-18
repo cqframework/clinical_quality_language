@@ -1,21 +1,18 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-
 plugins {
+    id("cql.xjc-conventions")
     id("cql.fhir-kotlin-multiplatform-conventions")
-    id("cql.xjc-kotlin-multiplatform-conventions")
 }
 
 val generateFhirPathTests =
     tasks.register<XjcTask>("generateFhirPathTests") {
+        outputDir.set(
+            project.layout.buildDirectory.dir("generated/sources/engine-fhir/jvmTest/java")
+        )
         schema.set("${projectDir}/src/jvmTest/resources/org/hl7/fhirpath/testSchema")
         extraArgs.set(listOf("-npa", "-p", "org.hl7.fhirpath.tests"))
     }
 
 kotlin {
-    js { outputModuleName = "engine-fhir" }
-
-    @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "engine-fhir" }
-
     sourceSets {
         commonMain { dependencies { api(project(":engine")) } }
 
@@ -27,13 +24,15 @@ kotlin {
                 implementation(project(":cql-to-elm"))
                 implementation(project(":quick"))
                 implementation("ca.uhn.hapi.fhir:hapi-fhir-client")
+
+                xjcRuntimeDeps.forEach { implementation(it) }
             }
         }
     }
 }
 
 java {
-    sourceSets { named("jvmMain") { java { srcDir(generateFhirPathTests.map { it.outputDir }) } } }
+    sourceSets { named("jvmTest") { java { srcDir(generateFhirPathTests.map { it.outputDir }) } } }
 }
 
 dependencies { kover(project(":engine")) }
