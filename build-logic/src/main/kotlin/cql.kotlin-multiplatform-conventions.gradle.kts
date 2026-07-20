@@ -33,6 +33,12 @@ detekt {
     config.setFrom("$rootDir/config/detekt/detekt.yml")
 }
 
+// Used to skip JS/WASM build and publishing if the project doesn't have any common/JS/WASM sources
+val enableJsTargets =
+    listOf("common", "js", "wasmJs").any {
+        layout.projectDirectory.dir("src/${it}Main").asFile.exists()
+    }
+
 kotlin {
     compilerOptions {
         // Expect/Actual classes are currently in Beta
@@ -48,25 +54,27 @@ kotlin {
     jvmToolchain(17)
     jvm()
 
-    js {
-        compilerOptions {
-            // Enable support for BigInt
-            freeCompilerArgs.add("-Xes-long-as-bigint")
+    if (enableJsTargets) {
+        js {
+            compilerOptions {
+                // Enable support for BigInt
+                freeCompilerArgs.add("-Xes-long-as-bigint")
+            }
+            useEsModules()
+            browser { testTask { enabled = false } }
+            nodejs { testTask { useMocha { timeout = "30s" } } }
+            binaries.library()
+            generateTypeScriptDefinitions()
         }
-        useEsModules()
-        browser { testTask { enabled = false } }
-        nodejs { testTask { useMocha { timeout = "30s" } } }
-        binaries.library()
-        generateTypeScriptDefinitions()
-    }
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        compilerOptions { optIn.add("kotlin.js.ExperimentalWasmJsInterop") }
-        browser { testTask { enabled = false } }
-        nodejs { testTask { enabled = false } }
-        binaries.library()
-        generateTypeScriptDefinitions()
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            compilerOptions { optIn.add("kotlin.js.ExperimentalWasmJsInterop") }
+            browser { testTask { enabled = false } }
+            nodejs { testTask { enabled = false } }
+            binaries.library()
+            generateTypeScriptDefinitions()
+        }
     }
 
     sourceSets {
