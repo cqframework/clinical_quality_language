@@ -1,20 +1,25 @@
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.process.ExecOperations
 
-open class XjcTask @Inject constructor(private val execOperations: ExecOperations) : DefaultTask() {
-    @Input lateinit var schema: String
+abstract class XjcTask @Inject constructor(private val execOperations: ExecOperations) :
+    DefaultTask() {
+    @get:Input abstract val schema: Property<String>
 
-    @Input var extraArgs: List<String> = emptyList()
+    @get:Input abstract val extraArgs: ListProperty<String>
 
-    @Input var binding: String = ""
+    @get:Input @get:Optional abstract val binding: Property<String>
 
-    @OutputDirectory lateinit var outputDir: String
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
 
     @TaskAction
     fun generate() {
         var bindingArgs: List<String> = emptyList()
+        val binding = binding.getOrElse("")
         if (binding.isNotBlank()) {
             bindingArgs = listOf("-b", binding)
         }
@@ -30,7 +35,11 @@ open class XjcTask @Inject constructor(private val execOperations: ExecOperation
                 "-Xsetters",
                 "-Xsetters-mode=direct",
             )
-        val options = listOf("-d", outputDir, schema) + bindingArgs + defaultArgs + extraArgs
+        val options =
+            listOf("-d", outputDir.get().asFile.absolutePath, schema.get()) +
+                bindingArgs +
+                defaultArgs +
+                extraArgs.get()
 
         execOperations.javaexec {
             mainClass.set("com.sun.tools.xjc.XJCFacade")
