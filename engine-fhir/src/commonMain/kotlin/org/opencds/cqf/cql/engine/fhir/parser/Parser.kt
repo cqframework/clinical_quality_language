@@ -37,6 +37,10 @@ import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
 /** Parses a JSON [Source] representing a FHIR resource into a CQL [Value]. */
 fun fhirResourceJsonToCqlValue(source: Source, model: Model): ClassInstance {
+    require(model.modelInfo.name == fhirModelId && model.modelInfo.url == fhirModelNamespaceUri) {
+        "Expected FHIR model for parsing FHIR resource, but got model ${model.modelInfo.name} with URL ${model.modelInfo.url}"
+    }
+
     val jsonElement = Json.parseToJsonElement(source.readString())
     require(jsonElement is JsonObject) {
         "Expected JSON object for FHIR resource, but got $jsonElement"

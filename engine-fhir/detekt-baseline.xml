@@ -108,6 +108,7 @@
     <ID>MaxLineLength:FhirModelResolver.kt$FhirModelResolver$"Unable to convert an instance of ${target.javaClass.name} to a CQL value. Expected an instance of IBase."</ID>
     <ID>MaxLineLength:FhirModelResolver.kt$FhirModelResolver$/* * type-to-class and contextPath resolutions are potentially expensive and can be cached * for improved performance. * * See &lt;a href="https://github.com/DBCG/cql-evaluator/blob/master/evaluator.engine/src/main/java/org/opencds/cqf/cql/evaluator/engine/model/CachingModelResolverDecorator.java"/> * for a decorator that adds caching logic for ModelResolvers. */</ID>
     <ID>MaxLineLength:FhirModelResolverTest.kt$FhirModelResolverTest$*</ID>
+    <ID>MaxLineLength:Parser.kt$"Expected FHIR model for parsing FHIR resource, but got model ${model.modelInfo.name} with URL ${model.modelInfo.url}"</ID>
     <ID>MaxLineLength:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$"Cannot process data requirements with subjects not specified using a code from http://hl7.org/fhir/resource-types"</ID>
     <ID>MaxLineLength:R4FhirTerminologyProvider.kt$R4FhirTerminologyProvider$"Could not expand value set ${valueSet.id}; version and code system bindings are not supported at this time."</ID>
     <ID>MaxLineLength:TestFhirDataProviderDstu2.kt$TestFhirDataProviderDstu2$// FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.dstu2.composite");</ID>
