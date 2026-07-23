@@ -14,7 +14,8 @@ import {
   StructuredValue,
   getNamedTypeForCqlValue,
 } from "cql-js/kotlin/engine.mjs";
-import { Nullable, isKtNull, TJsCqlValue } from "@/shared";
+import { QName } from "cql-js/kotlin/shared.mjs";
+import { Nullable, isKtNull, TJsCqlValue, TJsQName } from "@/shared";
 
 export function toJsCqlValue(ktCqlValue: Nullable<Value>): TJsCqlValue {
   if (isKtNull(ktCqlValue)) {
@@ -78,9 +79,10 @@ export function toJsCqlValue(ktCqlValue: Nullable<Value>): TJsCqlValue {
   }
 
   if (ktCqlValue instanceof StructuredValue) {
+    const typeQName = getNamedTypeForCqlValue(ktCqlValue);
     return {
       type: "Structured",
-      structuredTypeName: getNamedTypeForCqlValue(ktCqlValue)?.toString(),
+      structuredTypeQName: typeQName ? qNameToJsQName(typeQName) : null,
       elements: new Map(
         [...ktCqlValue.elements.asJsReadonlyMapView().entries()].map(
           ([k, v]) => [k, toJsCqlValue(v)],
@@ -93,7 +95,7 @@ export function toJsCqlValue(ktCqlValue: Nullable<Value>): TJsCqlValue {
     return {
       type: "Interval",
       // @ts-expect-error TypeScript error
-      pointTypeName: ktCqlValue.pointType.toString(),
+      pointTypeQName: qNameToJsQName(ktCqlValue.pointType),
       // @ts-expect-error TypeScript error
       low: toJsCqlValue(ktCqlValue.low),
       // @ts-expect-error TypeScript error
@@ -115,4 +117,12 @@ export function toJsCqlValue(ktCqlValue: Nullable<Value>): TJsCqlValue {
   }
 
   throw new Error(`Unsupported Kotlin CQL value type: ${ktCqlValue}`);
+}
+
+function qNameToJsQName(qName: QName): TJsQName {
+  return {
+    namespaceUri: qName.getNamespaceURI(),
+    localPart: qName.getLocalPart(),
+    prefix: qName.getPrefix(),
+  };
 }

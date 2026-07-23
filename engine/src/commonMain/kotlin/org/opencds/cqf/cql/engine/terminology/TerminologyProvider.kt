@@ -1,7 +1,9 @@
 package org.opencds.cqf.cql.engine.terminology
 
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.runtime.Code
 
+@JsOnlyExport
 interface TerminologyProvider {
     /**
      * Checks if a given Code is a member of a given ValueSetInfo. If the system is not provided and
@@ -20,7 +22,7 @@ interface TerminologyProvider {
      * @param valueSet the ValueSetInfo to expand
      * @return the set of Codes
      */
-    fun expand(valueSet: ValueSetInfo): Iterable<Code>
+    @Suppress("NON_EXPORTABLE_TYPE") fun expand(valueSet: ValueSetInfo): Iterable<Code>
 
     /**
      * Looks up the display value for a given Code from a given CodeSystemInfo

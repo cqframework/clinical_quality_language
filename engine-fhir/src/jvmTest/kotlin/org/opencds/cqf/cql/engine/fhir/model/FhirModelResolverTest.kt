@@ -59,12 +59,6 @@ private val resolvers =
         FhirVersionEnum.R5 to CachedR5FhirModelResolver(),
     )
 
-/** Collects all elements of a class type, including inherited elements. */
-private fun ClassType.getAllElements(): Map<String, DataType> {
-    return (if (baseType is ClassType) (baseType as ClassType).getAllElements() else emptyMap()) +
-        elements.associate { it.name to it.type }
-}
-
 /** Validates that a CQL value conforms to the model used by the CQL compiler. */
 private fun validateCqlValueAgainstModel(
     fhirVersion: FhirVersionEnum,
@@ -127,12 +121,15 @@ private fun validateCqlValueAgainstModel(
                                 .resolveModelByUri(cqlValue.type.namespaceURI)
                                 .resolveTypeName(cqlValue.type.localPart) as ClassType
                         assertTrue(cqlValueType.isSubTypeOf(modelType))
-                        val expectedElements = cqlValueType.getAllElements()
-                        assertEquals(expectedElements.keys, cqlValue.elements.keys)
-                        for ((elementName, elementType) in expectedElements) {
+                        val expectedElements = cqlValueType.allElements
+                        assertEquals(
+                            expectedElements.map { it.name }.toSet(),
+                            cqlValue.elements.keys,
+                        )
+                        for (expectedElement in expectedElements) {
                             validateCqlValueAgainstModelInner(
-                                cqlValue.elements[elementName],
-                                elementType,
+                                cqlValue.elements[expectedElement.name],
+                                expectedElement.type,
                             )
                         }
                     }

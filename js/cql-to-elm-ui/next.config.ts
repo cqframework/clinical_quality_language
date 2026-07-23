@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     ];
 
     config.module.rules.push({
-      test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
+      test: /wasm\/packages\/engine-fhir\/kotlin\/engine-fhir\.uninstantiated\.mjs$/,
       loader: "string-replace-loader",
       options: {
         multiple: [
@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
             replace: `const module = await import(/* webpackIgnore: true */'node:module');
         require = module.default.createRequire(__filename);
         const fs = require('fs');
-        const wasmBuffer = fs.readFileSync('node_modules/cql-wasm-js/kotlin/engine.wasm');
+        const wasmBuffer = fs.readFileSync('node_modules/cql-wasm-js/kotlin/engine-fhir.wasm');
 `,
           },
           {
@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
     // Patch the `isNodeJs` function inside the ANTLR Kotlin runtime to make it work in a web worker
     config.module.rules.push(
       {
-        test: /js\/packages\/engine\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
+        test: /js\/packages\/engine-fhir\/kotlin\/antlr-kotlin-antlr-kotlin-runtime\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `function isNodeJs() {
@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
         },
       },
       {
-        test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
+        test: /wasm\/packages\/engine-fhir\/kotlin\/engine-fhir\.uninstantiated\.mjs$/,
         loader: "string-replace-loader",
         options: {
           search: `        'com.strumenta.antlrkotlin.runtime.isNodeJs' : () => 
@@ -77,7 +77,7 @@ const nextConfig: NextConfig = {
 
     // Patch the `now` function inside KLogging
     config.module.rules.push({
-      test: /wasm\/packages\/engine\/kotlin\/engine\.uninstantiated\.mjs$/,
+      test: /wasm\/packages\/engine-fhir\/kotlin\/engine-fhir\.uninstantiated\.mjs$/,
       loader: "string-replace-loader",
       options: {
         search: `    const js_code = {

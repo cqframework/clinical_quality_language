@@ -19,6 +19,7 @@
     <ID>CyclomaticComplexMethod:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, String?>?, parameters: MutableMap&lt;String, Value?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
     <ID>CyclomaticComplexMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>CyclomaticComplexMethod:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
+    <ID>CyclomaticComplexMethod:SimpleFhirModelResolver.kt$SimpleFhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
     <ID>CyclomaticComplexMethod:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
     <ID>CyclomaticComplexMethod:TestR4ModelResolver.kt$TestR4ModelResolver$@Test @Throws(Exception::class) fun modelInfo401Tests()</ID>
     <ID>ForbiddenComment:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
@@ -81,6 +82,7 @@
     <ID>LongMethod:Parser.kt$private fun extractPropertyFromJsonObjectAsCqlValue( jsonObject: JsonObject, propertyKey: kotlin.String, dataType: DataType, model: Model, ): Value?</ID>
     <ID>LongMethod:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, String?>?, parameters: MutableMap&lt;String, Value?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
     <ID>LongMethod:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
+    <ID>LongMethod:SimpleFhirModelResolver.kt$SimpleFhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
     <ID>LongMethod:TestFHIR2Helpers.kt$TestFHIR2Helpers$fun test()</ID>
     <ID>LongMethod:TestFHIR3Helpers.kt$TestFHIR3Helpers$fun test()</ID>
     <ID>LongMethod:TestFHIRHelpers.kt$TestFHIRHelpers$@Test fun testFhirHelpers()</ID>
@@ -184,6 +186,14 @@
     <ID>ReturnCount:R5TypeConverterTests.kt$R5TypeConverterTests$private fun compareObjects(left: Any?, right: Any?): Boolean</ID>
     <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun createSearchParameter( context: String?, dataType: String?, path: String?, value: String?, ): Pair&lt;String, IQueryParameterType>?</ID>
     <ID>ReturnCount:SearchParameterResolver.kt$SearchParameterResolver$fun getSearchParameterDefinition( dataType: String?, path: String?, paramType: RestSearchParameterTypeEnum?, ): RuntimeSearchParam?</ID>
+    <ID>ReturnCount:SimpleFhirModelResolver.kt$SimpleFhirModelResolver$override fun `is`(valueType: String, type: QName): Boolean?</ID>
+    <ID>ReturnCount:SimpleFhirModelResolver.kt$SimpleFhirModelResolver$override fun getContextPath(contextType: String?, targetType: String?): String?</ID>
+    <ID>ReturnCount:SimpleFhirModelResolver.kt$SimpleFhirModelResolver$override fun resolveId(target: Value?): String?</ID>
+    <ID>ReturnCount:SimpleFhirRetrieveProvider.kt$private fun codeMatches( actualCode: Code, codes: Iterable&lt;Code>?, valueSet: kotlin.String?, terminologyProvider: TerminologyProvider, ): kotlin.Boolean</ID>
+    <ID>ReturnCount:SimpleFhirRetrieveProvider.kt$private fun contextMatches( resource: ClassInstance, context: kotlin.String?, contextPath: kotlin.String?, contextValue: kotlin.String?, ): kotlin.Boolean</ID>
+    <ID>ReturnCount:SimpleFhirRetrieveProvider.kt$private fun resourceHasProfile(resource: ClassInstance, templateId: kotlin.String): kotlin.Boolean</ID>
+    <ID>ReturnCount:SimpleFhirTerminologyProvider.kt$SimpleFhirTerminologyProvider$override fun lookup(code: Code, codeSystem: CodeSystemInfo): Code?</ID>
+    <ID>ReturnCount:SimpleFhirTerminologyProvider.kt$private fun getCodesFromValueSetResource(valueSet: ClassInstance): kotlin.collections.List&lt;Code></ID>
     <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.&lt;no name provided>$override fun retrieve( context: String?, contextPath: String?, contextValue: String?, dataType: String, templateId: String?, codePath: String?, codes: Iterable&lt;Code>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, ): Iterable&lt;Value?>?</ID>
     <ID>ReturnCount:TestCqlEngineRelatedContextSupport.kt$TestCqlEngineRelatedContextSupport.Companion$private fun codesEqual(codes: Iterable&lt;Code>?, equalTo: String): Boolean</ID>
     <ID>ReturnCount:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>

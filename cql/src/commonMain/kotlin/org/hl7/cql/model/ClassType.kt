@@ -159,43 +159,20 @@ open class ClassType(
     val sortedElements: List<ClassTypeElement>
         get() = elements.sortedWith(compareBy { it.name })
 
-    private var baseElementMap: HashMap<String, ClassTypeElement>? = null
+    private val baseElementsMap: Map<String, ClassTypeElement>
         get() {
-            if (field == null) {
-                field = HashMap()
-                if (baseType is ClassType) {
-                    (baseType as ClassType).gatherElements(field!!)
-                }
-            }
-
-            return field
+            return if (baseType is ClassType) (baseType as ClassType).allElementsMap else emptyMap()
         }
 
-    private fun gatherElements(elementMap: HashMap<String, ClassTypeElement>) {
-        if (baseType is ClassType) {
-            (baseType as ClassType).gatherElements(elementMap)
-        }
-
-        for (element in elements) {
-            elementMap[element.name] = element
-        }
-    }
+    private val allElementsMap: Map<String, ClassTypeElement>
+        // Add this class's elements, overwriting baseClass definitions where applicable
+        get() = baseElementsMap + elements.associateBy { it.name }
 
     val allElements: List<ClassTypeElement>
-        get() {
-            // Get the baseClass elements into a map by name
-            val elementMap = baseElementMap?.toMutableMap() ?: mutableMapOf()
-
-            // Add this class's elements, overwriting baseClass definitions where applicable
-            for (el in elements) {
-                elementMap[el.name] = el
-            }
-
-            return elementMap.values.toList()
-        }
+        get() = allElementsMap.values.toList()
 
     private fun internalAddElement(element: ClassTypeElement) {
-        val existingElement = baseElementMap!![element.name]
+        val existingElement = baseElementsMap[element.name]
         if (
             existingElement != null &&
                 (existingElement.type !is TypeParameter) &&
