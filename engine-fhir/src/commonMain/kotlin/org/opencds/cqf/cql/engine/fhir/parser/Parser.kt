@@ -13,6 +13,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
@@ -36,6 +37,8 @@ import org.opencds.cqf.cql.engine.util.offsetDateTimeParse
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
 /** Parses a JSON [Source] representing a FHIR resource into a CQL [Value]. */
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 fun fhirResourceJsonToCqlValue(source: Source, model: Model): ClassInstance {
     require(model.modelInfo.name == fhirModelId && model.modelInfo.url == fhirModelNamespaceUri) {
         "Expected FHIR model for parsing FHIR resource, but got model ${model.modelInfo.name} with URL ${model.modelInfo.url}"
@@ -79,10 +82,10 @@ private fun jsonObjectToCqlClassInstance(
 
     return ClassInstance(
         QName(fhirModelNamespaceUri, dataType.name.removePrefix(FHIR_PREFIX), fhirModelId),
-        dataType
-            .getAllElements()
-            .mapValues { (elementName, elementType) ->
-                extractPropertyFromJsonObjectAsCqlValue(jsonObject, elementName, elementType, model)
+        dataType.allElements
+            .associate {
+                it.name to
+                    extractPropertyFromJsonObjectAsCqlValue(jsonObject, it.name, it.type, model)
             }
             .toMutableMap(),
     )
@@ -247,12 +250,6 @@ private fun isFhirPrimitiveType(dataType: ClassType): kotlin.Boolean {
     }
 
     return false
-}
-
-/** Collects all elements of a class type, including inherited elements. */
-private fun ClassType.getAllElements(): Map<kotlin.String, DataType> {
-    return (if (baseType is ClassType) (baseType as ClassType).getAllElements() else emptyMap()) +
-        elements.associate { it.name to it.type }
 }
 
 private const val FHIR_PREFIX = "FHIR."

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  playgroundLibraryName,
   TCqlEngineOutput,
   TElmContentType,
   TLibrarySource,
@@ -8,26 +7,30 @@ import {
   TOutput,
 } from "@/shared";
 import { TCqlToAstOutput } from "@/cql/cql-to-ast";
+import exampleFhirBundle from "@/example-fhir-bundle.json";
 
 export const initialState = {
   common: {
-    selectedTab: "cql-to-elm",
-    cql: `library ${playgroundLibraryName}
+    selectedTab: "cql-engine",
+    cql: `library Playground
 
 using FHIR version '4.0.1'
 
 include FHIRHelpers version '4.0.1'
 
-valueset "Encounter Inpatient": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307'
+valueset "Vital Sign": 'http://example.org/fhir/ValueSet/vital-sign'
 
-parameter "Measurement Period" Interval<DateTime>
+codesystem "LOINC": 'http://loinc.org'
+code "Blood pressure panel": '85354-9' from "LOINC"
 
 context Patient
 
-define "Inpatient Encounter":
-  [Encounter: "Encounter Inpatient"] EncounterInpatient
-    where EncounterInpatient.status = 'finished'
-      and EncounterInpatient.period ends during day of "Measurement Period"
+define "Vital Signs":
+  [Observation: category in "Vital Sign"]
+
+define "Vital Sign Category In Value Set": (singleton from "Vital Signs").category in "Vital Sign"
+
+// define "Blood Pressure Observations": [Observation: "Blood pressure panel"]
 `,
     cursorPos: 0,
     cqlToAstOutput: null as null | TCqlToAstOutput, // used to highlight the current statement in the CQL editor
@@ -67,12 +70,15 @@ define "Inpatient Encounter":
     },
     "cql-engine": {
       engineOptions: ["EnableExpressionCaching"],
+      data: JSON.stringify(exampleFhirBundle, null, 2),
       result: null as
         | null
         | (TCqlEngineOutput & {
             type: "expressionResults" | "evaluationException";
           }),
       isBusy: true,
+      showNullsInClassInstances: false,
+      showTypeHints: true,
     },
   },
 };

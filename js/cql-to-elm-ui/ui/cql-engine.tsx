@@ -4,6 +4,37 @@ import { Fragment, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/spinner";
 import { Label } from "@/ui/label";
 import { CqlValue } from "@/ui/cql-value";
+import { Editor } from "@/ui/editor/editor";
+import { json } from "@codemirror/lang-json";
+
+export function CqlEngineDataEditor({
+  state,
+  setState,
+}: {
+  state: TState;
+  setState: TSetState;
+}) {
+  return (
+    <Editor
+      value={state.tabs["cql-engine"].data}
+      onChange={(nextData) => {
+        setState((prevState) => ({
+          ...prevState,
+          tabs: {
+            ...prevState.tabs,
+            "cql-engine": {
+              ...prevState.tabs["cql-engine"],
+              data: nextData,
+            },
+          },
+        }));
+      }}
+      editable={true}
+      lineNumbers={true}
+      extensions={[json()]}
+    />
+  );
+}
 
 export function CqlEngineResult({
   state,
@@ -125,6 +156,7 @@ export function CqlEngineResult({
         baseUrl: state.common.baseUrl,
         mountedDir: state.common.mountedDir,
         engineOptions: state.tabs["cql-engine"].engineOptions,
+        data: state.tabs["cql-engine"].data,
       };
 
       const worker = await workerPromiseRef.current!;
@@ -146,6 +178,7 @@ export function CqlEngineResult({
     state.common.baseUrl,
     state.common.mountedDir,
     state.tabs["cql-engine"].engineOptions,
+    state.tabs["cql-engine"].data,
   ]);
 
   return (
@@ -205,7 +238,13 @@ function CqlEngineResultInner({ state }: { state: TState }) {
               ({ expressionName, expressionResult }, resultIndex) => (
                 <div key={resultIndex}>
                   <b style={{ color: "rgb(149, 56, 0)" }}>{expressionName}</b> ={" "}
-                  <CqlValue value={expressionResult} />
+                  <CqlValue
+                    value={expressionResult}
+                    showNullsInClassInstances={
+                      state.tabs["cql-engine"].showNullsInClassInstances
+                    }
+                    showTypeHints={state.tabs["cql-engine"].showTypeHints}
+                  />
                 </div>
               ),
             )}
@@ -301,6 +340,63 @@ export function CqlEngineSettings({
               <div>{engineOption.label}</div>
             </label>
           ))}
+        </div>
+      </div>
+      <div>
+        <Label>Evaluation results</Label>
+
+        <div
+          style={{
+            display: "grid",
+            gap: 3,
+          }}
+        >
+          <label style={{ display: "flex", gap: 5 }}>
+            <input
+              type={"checkbox"}
+              style={{
+                margin: 0,
+              }}
+              checked={state.tabs["cql-engine"].showNullsInClassInstances}
+              onChange={(event) => {
+                const nextChecked = event.target.checked;
+                setState((prevState) => ({
+                  ...prevState,
+                  tabs: {
+                    ...prevState.tabs,
+                    "cql-engine": {
+                      ...prevState.tabs["cql-engine"],
+                      showNullsInClassInstances: nextChecked,
+                    },
+                  },
+                }));
+              }}
+            />
+            <div>Show null elements in class instances</div>
+          </label>
+          <label style={{ display: "flex", gap: 5 }}>
+            <input
+              type={"checkbox"}
+              style={{
+                margin: 0,
+              }}
+              checked={state.tabs["cql-engine"].showTypeHints}
+              onChange={(event) => {
+                const nextChecked = event.target.checked;
+                setState((prevState) => ({
+                  ...prevState,
+                  tabs: {
+                    ...prevState.tabs,
+                    "cql-engine": {
+                      ...prevState.tabs["cql-engine"],
+                      showTypeHints: nextChecked,
+                    },
+                  },
+                }));
+              }}
+            />
+            <div>CQL type hints</div>
+          </label>
         </div>
       </div>
     </Fragment>
