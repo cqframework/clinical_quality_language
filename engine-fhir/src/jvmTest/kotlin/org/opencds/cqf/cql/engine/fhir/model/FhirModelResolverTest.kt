@@ -28,8 +28,8 @@ import org.hl7.fhir.r4.model.StringType as R4StringType
 import org.hl7.fhir.r5.model.HumanName as R5HumanName
 import org.hl7.fhir.r5.model.Patient as R5Patient
 import org.hl7.fhir.r5.model.StringType as R5StringType
-import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelId
-import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver.Companion.fhirModelNamespaceUri
+import org.opencds.cqf.cql.engine.fhir.fhirModelId
+import org.opencds.cqf.cql.engine.fhir.fhirModelNamespaceUri
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code

@@ -26,6 +26,8 @@ import org.hl7.fhir.instance.model.api.IPrimitiveType
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
+import org.opencds.cqf.cql.engine.fhir.fhirModelId
+import org.opencds.cqf.cql.engine.fhir.fhirModelNamespaceUri
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
@@ -719,10 +721,5 @@ abstract class FhirModelResolver<
         }
 
         return ClassInstance(QName(fhirModelNamespaceUri, definition.name, fhirModelId), elements)
-    }
-
-    companion object {
-        const val fhirModelNamespaceUri = "http://hl7.org/fhir"
-        const val fhirModelId = "FHIR"
     }
 }

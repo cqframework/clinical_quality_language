@@ -29,6 +29,7 @@ import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.EvaluationResult
 import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.fhir.fhirModelNamespaceUri
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
@@ -99,8 +100,7 @@ abstract class TestFhirPath {
         var actualResult = actualResult
 
         if (
-            actualResult is ClassInstance &&
-                actualResult.type.namespaceURI == FhirModelResolver.fhirModelNamespaceUri
+            actualResult is ClassInstance && actualResult.type.namespaceURI == fhirModelNamespaceUri
         ) {
             val actualResultClass = resolver.resolveType(actualResult.type.localPart)!!
             if (
