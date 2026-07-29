@@ -37,7 +37,12 @@ object ConvertQuantityEvaluator {
                 return null
             }
             try {
-                val result = ucumService.convert(argument.value!!, argument.unit!!, unit.value)
+                // FHIRHelpers.ToQuantity (and CQL calendar-duration literals) produce calendar
+                // keyword units such as "day", which UCUM cannot parse. Normalize both operands to
+                // their UCUM codes before converting.
+                val sourceUnit = Quantity.toUcumUnit(argument.unit!!)
+                val targetUnit = Quantity.toUcumUnit(unit.value)
+                val result = ucumService.convert(argument.value!!, sourceUnit, targetUnit)
                 return Quantity().withValue(result).withUnit(unit.value)
             } catch (e: Exception) {
                 return null
