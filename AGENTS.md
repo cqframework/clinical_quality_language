@@ -80,6 +80,8 @@ The project is a multi-module Gradle build. Shared build conventions live in `bu
 - **tools:cql-parsetree** — Debug tool for CQL parse trees
 - **tools:rewrite** — OpenRewrite recipes for automated refactoring
 - **tools:xsd-to-modelinfo** — Generates model info from XSD
+- **npm-cql:** — An NPM package for the JS build of the KMP project
+* **playground:** — A browser-based playground for CQL
 
 ### Key Data Flow
 
@@ -89,7 +91,7 @@ The project is a multi-module Gradle build. Shared build conventions live in `bu
 
 ### Language & Framework
 
-The codebase is **Kotlin/JVM** with some Java. Tests use **JUnit 5** with Hamcrest matchers. The `cql` and `elm` modules include Kotlin Multiplatform support (JS/WASM targets for the CQL playground at `js/cql-to-elm-ui`).
+The codebase is **Kotlin/JVM** with some Java. Tests use **JUnit 5** with Hamcrest matchers. The `shared`, `cql`, `elm`, `cql-to-elm`, `engine` modules include Kotlin Multiplatform support.
 
 ### ANTLR Grammar
 
@@ -97,7 +99,6 @@ The CQL and FHIRPath grammars are in `grammar/`. Changes to `.g4` files trigger 
 
 ## Other Source Directories
 
-- `js/` — JavaScript/TypeScript CQL playground (Next.js)
 - `archive/coffeescript/`, `archive/dotnet/`, `archive/sql/` — Alternative language implementations (not actively built by CI)
-- `Examples/` — Sample CQL files and their ELM translations
+- `examples/` — Sample CQL files and their ELM translations
 - `schemas/` — CQL Logical Model schemas
