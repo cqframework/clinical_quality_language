@@ -80,8 +80,8 @@ The project is a multi-module Gradle build. Shared build conventions live in `bu
 - **tools:cql-parsetree** — Debug tool for CQL parse trees
 - **tools:rewrite** — OpenRewrite recipes for automated refactoring
 - **tools:xsd-to-modelinfo** — Generates model info from XSD
-- **npm-cql:** — An NPM package for the JS build of the KMP project
-* **playground:** — A browser-based playground for CQL
+- **npm-cql** — An NPM package for the JS build of the KMP project
+- **playground** — A browser-based playground for CQL
 
 ### Key Data Flow
 
