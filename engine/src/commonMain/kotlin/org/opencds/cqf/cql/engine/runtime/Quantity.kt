@@ -57,6 +57,34 @@ class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
             return unit == null || unit == "" || unit == DEFAULT_UNIT
         }
 
+        /**
+         * Normalizes a CQL calendar-duration keyword (e.g. "day"/"days") to its UCUM code (e.g.
+         * "d") so the value can be handed to the UCUM service. Units that are not calendar keywords
+         * are returned unchanged.
+         */
+        @JvmStatic
+        fun toUcumUnit(unit: kotlin.String): kotlin.String {
+            return when (unit) {
+                "year",
+                "years" -> "a"
+                "month",
+                "months" -> "mo"
+                "week",
+                "weeks" -> "wk"
+                "day",
+                "days" -> "d"
+                "hour",
+                "hours" -> "h"
+                "minute",
+                "minutes" -> "min"
+                "second",
+                "seconds" -> "s"
+                "millisecond",
+                "milliseconds" -> "ms"
+                else -> unit
+            }
+        }
+
         fun unitsEqual(leftUnit: kotlin.String?, rightUnit: kotlin.String?): kotlin.Boolean {
             if (isDefaultUnit(leftUnit) && isDefaultUnit(rightUnit)) {
                 return true
