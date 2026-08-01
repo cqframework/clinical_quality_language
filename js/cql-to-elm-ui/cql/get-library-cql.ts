@@ -1,9 +1,4 @@
-import {
-  Nullable,
-  playgroundLibraryName,
-  TLibrarySource,
-  TMountedDir,
-} from "@/shared";
+import { Nullable, TLibrarySource, TMountedDir } from "@/shared";
 import { fetchSync, readFile } from "@/cql/utils";
 
 const fetchedLibraries: {
@@ -25,13 +20,6 @@ export function getLibraryCql(
   log: (message: string) => void,
   rerun: () => void,
 ) {
-  if (id === playgroundLibraryName) {
-    log(
-      `INFO Requested library with id=${id}, system=${system}, version=${version}. Returned editor content.`,
-    );
-    return playgroundCql;
-  }
-
   const fetchedLibrary = fetchedLibraries.find(
     (_) => _.id === id && _.system === system && _.version === version,
   );

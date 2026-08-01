@@ -1,7 +1,9 @@
 package org.opencds.cqf.cql.engine.terminology
 
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
 
+@JsOnlyExport
 class CodeSystemInfo {
     var id: String? = null
 

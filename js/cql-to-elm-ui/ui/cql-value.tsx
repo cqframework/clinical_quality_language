@@ -1,20 +1,24 @@
 import React, { Fragment } from "react";
-import { TJsCqlValue } from "@/shared";
+import { TJsCqlValue, TJsQName } from "@/shared";
 import {
   quantityTypeName,
   ratioTypeName,
-  codeTypeName,
-  codeSystemTypeName,
-  conceptTypeName,
-  valueSetTypeName,
   systemModelNamespaceUri,
-} from "cql-js";
+} from "cql-js/kotlin/engine.mjs";
 
-export function CqlValue({ value }: { value: TJsCqlValue }) {
-  const typeHint = getTypeHint(value);
+export function CqlValue({
+  value,
+  showNullsInClassInstances,
+  showTypeHints,
+}: {
+  value: TJsCqlValue;
+  showNullsInClassInstances: boolean;
+  showTypeHints: boolean;
+}) {
+  const typeHint = showTypeHints && getTypeHint(value);
   return (
     <Fragment>
-      {formatCqlValue(value)}
+      {formatCqlValue(value, showNullsInClassInstances, showTypeHints)}
       {typeHint && (
         <span
           style={{
@@ -33,7 +37,11 @@ export function CqlValue({ value }: { value: TJsCqlValue }) {
   );
 }
 
-function formatCqlValue(value: TJsCqlValue) {
+function formatCqlValue(
+  value: TJsCqlValue,
+  showNullsInClassInstances: boolean,
+  showTypeHints: boolean,
+) {
   if (value === null) {
     return "null";
   }
@@ -57,58 +65,100 @@ function formatCqlValue(value: TJsCqlValue) {
       return <span style={{ color: "#005cc5" }}>{value.value}</span>;
     case "Date":
     case "DateTime":
-      return <span style={{ color: "#116329" }}>@{value.value}</span>;
+      return <span style={{ color: "#116329" }}>{value.value}</span>;
     case "Time":
-      return <span style={{ color: "#116329" }}>@T{value.value}</span>;
+      return <span style={{ color: "#116329" }}>{value.value}</span>;
     case "Structured":
-      switch (value.structuredTypeName) {
-        case quantityTypeName.get().toString():
-          return (
-            <Fragment>
-              {formatCqlValue(value.elements.get("value")!)}{" "}
-              {formatCqlValue(value.elements.get("unit")!)}
-            </Fragment>
-          );
-        case ratioTypeName.get().toString():
-          return (
-            <Fragment>
-              {formatCqlValue(value.elements.get("numerator")!)} :{" "}
-              {formatCqlValue(value.elements.get("denominator")!)}
-            </Fragment>
-          );
-        default:
-          return (
-            <Fragment>
-              {value.structuredTypeName ? (
-                formatTypeQName(value.structuredTypeName)
-              ) : (
-                <span style={{ color: "#005cc5" }}>Tuple</span>
-              )}
-              {" {"}
-              {value.elements.size ? (
-                <div style={{ padding: "0 0 0 2ch" }}>
-                  {[...value.elements.entries()].map(
-                    ([elementName, elementValue], elementIndex, elements) => (
-                      <div key={elementIndex}>
-                        {elementName}: <CqlValue value={elementValue} />
-                        {elementIndex < elements.length - 1 ? "," : ""}
-                      </div>
-                    ),
-                  )}
-                </div>
-              ) : (
-                " : "
-              )}
-              {"}"}
-            </Fragment>
-          );
+      if (
+        value.structuredTypeQName?.namespaceUri ===
+          systemModelNamespaceUri.get() &&
+        value.structuredTypeQName?.localPart ===
+          quantityTypeName.get().getLocalPart()
+      ) {
+        return (
+          <Fragment>
+            {formatCqlValue(
+              value.elements.get("value")!,
+              showNullsInClassInstances,
+              showTypeHints,
+            )}{" "}
+            {formatCqlValue(
+              value.elements.get("unit")!,
+              showNullsInClassInstances,
+              showTypeHints,
+            )}
+          </Fragment>
+        );
       }
+      if (
+        value.structuredTypeQName?.namespaceUri ===
+          systemModelNamespaceUri.get() &&
+        value.structuredTypeQName?.localPart ===
+          ratioTypeName.get().getLocalPart()
+      ) {
+        return (
+          <Fragment>
+            {formatCqlValue(
+              value.elements.get("numerator")!,
+              showNullsInClassInstances,
+              showTypeHints,
+            )}
+            :
+            {formatCqlValue(
+              value.elements.get("denominator")!,
+              showNullsInClassInstances,
+              showTypeHints,
+            )}
+          </Fragment>
+        );
+      }
+      const elementsEntriesFiltered =
+        value.structuredTypeQName && !showNullsInClassInstances
+          ? [...value.elements.entries()].filter(
+              ([_, elementValue]) => elementValue !== null,
+            )
+          : [...value.elements.entries()];
+      return (
+        <Fragment>
+          <span style={{ color: "#005cc5" }}>
+            {value.structuredTypeQName
+              ? formatTypeQName(value.structuredTypeQName)
+              : "Tuple"}
+          </span>
+          {" {"}
+          {elementsEntriesFiltered.length ? (
+            <div style={{ padding: "0 0 0 2ch" }}>
+              {elementsEntriesFiltered.map(
+                ([elementName, elementValue], elementIndex, elements) => (
+                  <div key={elementIndex}>
+                    {elementName}:{" "}
+                    <CqlValue
+                      value={elementValue}
+                      showNullsInClassInstances={showNullsInClassInstances}
+                      showTypeHints={showTypeHints}
+                    />
+                    {elementIndex < elements.length - 1 ? "," : ""}
+                  </div>
+                ),
+              )}
+            </div>
+          ) : (
+            " : "
+          )}
+          {"}"}
+        </Fragment>
+      );
     case "Interval":
       return (
         <Fragment>
           <span style={{ color: "#005cc5" }}>Interval</span>
           {value.lowClosed ? "[" : "("}
-          {formatCqlValue(value.low)}, {formatCqlValue(value.high)}
+          {formatCqlValue(
+            value.low,
+            showNullsInClassInstances,
+            showTypeHints,
+          )},{" "}
+          {formatCqlValue(value.high, showNullsInClassInstances, showTypeHints)}
           {value.highClosed ? "]" : ")"}
         </Fragment>
       );
@@ -120,7 +170,11 @@ function formatCqlValue(value: TJsCqlValue) {
             <div style={{ padding: "0 0 0 2ch" }}>
               {value.value.map((item, itemIndex) => (
                 <div key={itemIndex}>
-                  <CqlValue value={item} />
+                  <CqlValue
+                    value={item}
+                    showNullsInClassInstances={showNullsInClassInstances}
+                    showTypeHints={showTypeHints}
+                  />
                   {itemIndex < value.value.length - 1 ? "," : ""}
                 </div>
               ))}
@@ -148,24 +202,33 @@ function getTypeHint(value: TJsCqlValue) {
     case "Time":
       return value.type;
     case "Interval":
-      return `Interval<${formatTypeQName(value.pointTypeName)}>`;
+      return `Interval<${formatTypeQName(value.pointTypeQName)}>`;
     case "Structured":
-      switch (value.structuredTypeName) {
-        case quantityTypeName.get().toString():
-          return "Quantity";
-        case ratioTypeName.get().toString():
-          return "Ratio";
-        default:
-          return "";
+      if (
+        value.structuredTypeQName?.namespaceUri ===
+          systemModelNamespaceUri.get() &&
+        value.structuredTypeQName?.localPart ===
+          quantityTypeName.get().getLocalPart()
+      ) {
+        return "Quantity";
       }
+      if (
+        value.structuredTypeQName?.namespaceUri ===
+          systemModelNamespaceUri.get() &&
+        value.structuredTypeQName?.localPart ===
+          ratioTypeName.get().getLocalPart()
+      ) {
+        return "Ratio";
+      }
+      return "";
     case "List":
       return "";
   }
 }
 
-function formatTypeQName(typeQName: string) {
-  if (typeQName.startsWith(`{${systemModelNamespaceUri.get()}}`)) {
-    return typeQName.slice(`{${systemModelNamespaceUri.get()}}`.length);
+function formatTypeQName(typeQName: TJsQName) {
+  if (typeQName.namespaceUri === systemModelNamespaceUri.get()) {
+    return typeQName.localPart;
   }
-  return typeQName;
+  return `${typeQName.prefix}.${typeQName.localPart}`;
 }

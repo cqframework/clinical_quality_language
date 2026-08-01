@@ -156,6 +156,7 @@ export type TCqlEngineArgs = {
   baseUrl: string;
   mountedDir: TMountedDir | null;
   engineOptions: string[];
+  data: string;
 };
 
 export type TCqlEngineOutput =
@@ -176,7 +177,11 @@ export type TCqlEngineOutput =
       stack: string;
     };
 
-export const playgroundLibraryName = "Playground";
+export type TJsQName = {
+  namespaceUri: string;
+  localPart: string;
+  prefix: string;
+};
 
 export type TJsCqlValue =
   | null
@@ -202,11 +207,12 @@ export type TJsCqlValue =
   | { type: "Time"; value: string }
   | {
       type: "Structured";
-      structuredTypeName?: string;
+      structuredTypeQName: TJsQName | null;
       elements: Map<string, TJsCqlValue>;
     }
   | {
       type: "Interval";
+      pointTypeQName: TJsQName;
       pointTypeName: string;
       low: TJsCqlValue;
       high: TJsCqlValue;

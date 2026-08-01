@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.data
 
+import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
@@ -9,6 +10,7 @@ import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Value
 
+@JsOnlyExport
 open class CompositeDataProvider(
     protected var modelResolver: ModelResolver?,
     protected var retrieveProvider: RetrieveProvider?,
@@ -40,6 +42,7 @@ open class CompositeDataProvider(
         return this.modelResolver!!.resolveId(target)
     }
 
+    @Suppress("NON_EXPORTABLE_TYPE")
     override fun retrieve(
         context: kotlin.String?,
         contextPath: kotlin.String?,

@@ -2,11 +2,11 @@
 import * as ucum from "@lhncbc/ucum-lhc";
 import * as cqlToElmJs from "cql-js/kotlin/cql-to-elm.mjs";
 import * as engineJs from "cql-js/kotlin/engine.mjs";
+import * as engineFhirJs from "cql-js/kotlin/engine-fhir.mjs";
 import * as kotlinStdlibJs from "cql-js/kotlin/kotlin-kotlin-stdlib.mjs";
 import {
   compilerOptions,
   Nullable,
-  playgroundLibraryName,
   TCqlEngineArgs,
   TCqlEngineOutput,
   unsupportedOperation,
@@ -14,10 +14,6 @@ import {
 import { getModelXml } from "@/cql/get-model-xml";
 import { getLibraryCql } from "@/cql/get-library-cql";
 import { toJsCqlValue } from "@/cql/cql-value";
-import {
-  createFhirDataProvider,
-  fhirModelNamespaceUri,
-} from "@/cql/fhir-data-provider";
 
 export function createStatefulEngine() {
   const ucumUtils = ucum.UcumLhcUtils.getInstance();
@@ -134,12 +130,55 @@ export function createStatefulEngine() {
 
     const output = ((): TCqlEngineOutput => {
       try {
-        // @ts-expect-error TypeScript error
-        const environment = new engineJs.Environment(libraryManager);
+        const cqlTranslator = cqlToElmJs.CqlTranslator.fromText(
+          args.cql,
+          libraryManager,
+        );
+        const libraryElm = cqlTranslator.toELM();
+        const libraryName = libraryElm.identifier.id;
 
-        environment.registerDataProvider(
-          fhirModelNamespaceUri,
-          createFhirDataProvider(modelManager),
+        if (!libraryName) {
+          throw new Error("Library must have a name.");
+        }
+
+        // sort statements in the compiled library
+        libraryElm.statements?.def
+          .asJsArrayView()
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        libraryManager.compiledLibraries
+          .asJsMapView()
+          .set(libraryElm.identifier, cqlTranslator.translatedLibrary);
+
+        // @ts-expect-error TypeScript error
+        const fhirModel = modelManager.resolveModelByUri(
+          engineFhirJs.fhirModelNamespaceUri.get(),
+        );
+
+        const bundle = engineFhirJs.fhirResourceJsonToCqlValue(
+          cqlToElmJs.stringAsSource(args.data),
+          fhirModel,
+        );
+
+        const terminologyProvider =
+          new engineFhirJs.SimpleFhirTerminologyProvider(bundle);
+
+        const fhirDataProvider = new engineJs.CompositeDataProvider(
+          new engineFhirJs.SimpleFhirModelResolver(fhirModel),
+          new engineFhirJs.SimpleFhirRetrieveProvider(
+            bundle,
+            terminologyProvider,
+          ),
+        );
+
+        const environment = new engineJs.Environment(
+          libraryManager,
+          kotlinStdlibJs.KtMutableMap.fromJsMap(
+            new Map([
+              [engineFhirJs.fhirModelNamespaceUri.get(), fhirDataProvider],
+            ]),
+          ),
+          terminologyProvider,
         );
 
         const engine = new engineJs.CqlEngine(
@@ -157,10 +196,7 @@ export function createStatefulEngine() {
         const libraryParamsBuilder =
           new engineJs.EvaluationParams.LibraryParams.Builder();
         const libraryParams = libraryParamsBuilder.build();
-        evaluationParamsBuilder.libraryByName(
-          playgroundLibraryName,
-          libraryParams,
-        );
+        evaluationParamsBuilder.libraryByName(libraryName, libraryParams);
         const evaluationParams = evaluationParamsBuilder.build();
 
         const evaluationResults = engine.evaluate(evaluationParams);

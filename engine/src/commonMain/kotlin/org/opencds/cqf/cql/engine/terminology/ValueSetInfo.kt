@@ -1,7 +1,9 @@
 package org.opencds.cqf.cql.engine.terminology
 
+import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.runtime.ValueSet
 
+@JsOnlyExport
 class ValueSetInfo {
     var id: String? = null
 

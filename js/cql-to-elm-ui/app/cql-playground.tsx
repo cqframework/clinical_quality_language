@@ -18,31 +18,39 @@ import { CqlToAstResult, CqlToAstSettings } from "@/ui/cql-to-ast";
 import { CqlToElmResult, CqlToElmSettings } from "@/ui/cql-to-elm";
 import { Caption } from "@/ui/caption";
 import { CqlEditor } from "@/ui/cql-editor";
-import { CqlEngineResult, CqlEngineSettings } from "@/ui/cql-engine";
+import {
+  CqlEngineDataEditor,
+  CqlEngineResult,
+  CqlEngineSettings,
+} from "@/ui/cql-engine";
 import { compilerOptions, signatureLevels, TLibrarySource } from "@/shared";
 
 const tabs = [
   {
     key: "cql-to-parse-tree",
     label: "Parse tree",
+    extraEditor: null,
     result: CqlToParseTreeResult,
     settings: CqlToParseTreeSettings,
   },
   {
     key: "cql-to-ast",
     label: "AST",
+    extraEditor: null,
     result: CqlToAstResult,
     settings: CqlToAstSettings,
   },
   {
     key: "cql-to-elm",
     label: "ELM",
+    extraEditor: null,
     result: CqlToElmResult,
     settings: CqlToElmSettings,
   },
   {
     key: "cql-engine",
     label: "Expression results",
+    extraEditor: CqlEngineDataEditor,
     result: CqlEngineResult,
     settings: CqlEngineSettings,
   },
@@ -172,8 +180,10 @@ export function CqlPlayground() {
               gridArea: "editors",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              gridTemplateRows: "1fr",
-              gridTemplateAreas: '"left-editor right-editor"',
+              gridTemplateRows: "1fr 1fr",
+              gridTemplateAreas: selectedTab.extraEditor
+                ? '"left-editor right-editor" "extra-editor right-editor"'
+                : '"left-editor right-editor" "left-editor right-editor"',
               minHeight: 0,
             }}
           >
@@ -186,6 +196,19 @@ export function CqlPlayground() {
             >
               <CqlEditor state={state} setState={setState} />
             </div>
+
+            {selectedTab.extraEditor && (
+              <div
+                style={{
+                  gridArea: "extra-editor",
+                  display: "grid",
+                  minHeight: 0,
+                  borderTop: "var(--border)",
+                }}
+              >
+                <selectedTab.extraEditor state={state} setState={setState} />
+              </div>
+            )}
 
             <div
               style={{

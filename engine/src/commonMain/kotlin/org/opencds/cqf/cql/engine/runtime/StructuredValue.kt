@@ -13,11 +13,6 @@ sealed class StructuredValue : Value {
     }
 
     /** Returns the value of the element of the structured value. */
-    operator fun get(elementName: kotlin.String): Value? {
-        return elements[elementName]
-    }
-
-    /** Returns the value of the element of the structured value. */
     fun getElement(elementName: kotlin.String): Value? {
         return elements[elementName]
     }

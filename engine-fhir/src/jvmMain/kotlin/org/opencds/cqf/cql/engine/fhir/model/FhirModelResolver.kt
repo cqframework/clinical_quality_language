@@ -23,14 +23,11 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.fhir.fhirModelId
 import org.opencds.cqf.cql.engine.fhir.fhirModelNamespaceUri
-import org.opencds.cqf.cql.engine.model.ModelResolver
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
-import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
@@ -68,7 +65,7 @@ abstract class FhirModelResolver<
 >( // getters & setters
     // Data members
     var fhirContext: FhirContext
-) : ModelResolver {
+) : BaseFhirModelResolver() {
     protected abstract fun initialize()
 
     abstract fun castToSimpleQuantity(base: BaseType): SimpleQuantityType
@@ -201,31 +198,6 @@ abstract class FhirModelResolver<
         val typeClass = resolveType(type.localPart) ?: return null
 
         return typeClass.isAssignableFrom(valueTypeClass)
-    }
-
-    override fun objectEquivalent(
-        left: ClassInstance,
-        right: ClassInstance,
-        equivalent: (l: Value?, r: Value?) -> Boolean,
-    ): Boolean {
-        // "id" elements are excluded from equivalence checking for instances of FHIR.Resource and
-        // FHIR.Element (see https://hl7.org/fhir/fhirpath.html#changes)
-        if (
-            `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Resource")) == true ||
-                `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Element")) == true
-        ) {
-            return EquivalentEvaluator.structuredValueElementsEquivalent(
-                left.elements.filterKeys { it != "id" },
-                right.elements.filterKeys { it != "id" },
-                equivalent,
-            )
-        }
-
-        return EquivalentEvaluator.structuredValueElementsEquivalent(
-            left.elements,
-            right.elements,
-            equivalent,
-        )
     }
 
     override fun createInstance(typeName: String?): Value {
