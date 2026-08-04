@@ -33,7 +33,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Run Gradle Build
-      run: ./gradlew check publish sonar
+      run: ./gradlew check publish sonar :playground:build
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ vars.OSSRH_USERNAME }}
         ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_TOKEN }}
