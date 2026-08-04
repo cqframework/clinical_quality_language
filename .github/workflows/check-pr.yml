@@ -37,7 +37,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew check sonar -x spotlessCheck
+      run: ./gradlew check sonar :playground:build -x spotlessCheck
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v5
       if: (success() || failure()) && matrix.os == 'ubuntu-latest'
