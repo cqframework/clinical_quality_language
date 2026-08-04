@@ -1,5 +1,6 @@
 // @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
+// @ts-expect-error
 import * as cqlToElmJs from "cql-js/kotlin/cql-to-elm.mjs";
 import * as cqlWasmJs from "cql-wasm-js";
 import {
@@ -37,6 +38,7 @@ export function createStatefulCompiler(sync: boolean) {
   );
 
   const modelManagerJs = new cqlToElmJs.ModelManager();
+  // @ts-expect-error TypeScript error
   const modelManagerWasmJs = cqlWasmJs.createModelManager();
 
   const libraryManagerJs = new cqlToElmJs.LibraryManager(
@@ -45,6 +47,7 @@ export function createStatefulCompiler(sync: boolean) {
     null,
     ucumServiceJs,
   );
+  // @ts-expect-error TypeScript error
   const libraryManagerWasmJs = cqlWasmJs.createLibraryManager(
     modelManagerWasmJs,
     ucumServiceWasmJs,
@@ -156,25 +159,25 @@ export function createStatefulCompiler(sync: boolean) {
       },
     );
 
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.clearModelInfoProviders();
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.registerModelInfoProvider(
       modelInfoProviderJs,
     );
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.clearProviders();
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.registerProvider(
       librarySourceProviderJs,
     );
 
+    // @ts-expect-error TypeScript error
     cqlWasmJs.modelManagerClearModelInfoProviders(modelManagerWasmJs);
+    // @ts-expect-error TypeScript error
     cqlWasmJs.modelManagerRegisterModelInfoProvider(
       modelManagerWasmJs,
       modelInfoProviderWasmJs,
     );
+    // @ts-expect-error TypeScript error
     cqlWasmJs.libraryManagerClearLibrarySourceProviders(libraryManagerWasmJs);
+    // @ts-expect-error TypeScript error
     cqlWasmJs.libraryManagerRegisterLibrarySourceProvider(
       libraryManagerWasmJs,
       librarySourceProviderWasmJs,
@@ -183,18 +186,18 @@ export function createStatefulCompiler(sync: boolean) {
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
         libraryManagerJs.cqlCompilerOptions.options.asJsSetView().add(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
+        // @ts-expect-error TypeScript error
         cqlWasmJs.libraryManagerAddCompilerOption(
           libraryManagerWasmJs,
           compilerOption.value,
         );
       } else {
         libraryManagerJs.cqlCompilerOptions.options.asJsSetView().delete(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
+        // @ts-expect-error TypeScript error
         cqlWasmJs.libraryManagerRemoveCompilerOption(
           libraryManagerWasmJs,
           compilerOption.value,
@@ -203,8 +206,8 @@ export function createStatefulCompiler(sync: boolean) {
     }
 
     libraryManagerJs.cqlCompilerOptions.signatureLevel =
-      // @ts-expect-error TypeScript error
       cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
+    // @ts-expect-error TypeScript error
     cqlWasmJs.libraryManagerSetSignatureLevel(
       libraryManagerWasmJs,
       args.signatureLevel,
@@ -213,6 +216,7 @@ export function createStatefulCompiler(sync: boolean) {
     const output = ((): TOutput => {
       if (args.useWasm) {
         try {
+          // @ts-expect-error TypeScript error
           const cqlTranslator = cqlWasmJs.cqlTranslatorFromText(
             args.cql,
             libraryManagerWasmJs,
@@ -221,11 +225,13 @@ export function createStatefulCompiler(sync: boolean) {
             ? {
                 type: "elm",
                 contentType: "json",
+                // @ts-expect-error TypeScript error
                 elm: cqlWasmJs.cqlTranslatorToJson(cqlTranslator),
               }
             : {
                 type: "elm",
                 contentType: "xml",
+                // @ts-expect-error TypeScript error
                 elm: cqlWasmJs.cqlTranslatorToXml(cqlTranslator),
               };
           // eslint-disable-next-line @typescript-eslint/no-unused-vars

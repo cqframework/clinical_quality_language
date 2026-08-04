@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { inspectCqlAst } from "cql-js/kotlin/cql.mjs";
 
 export function cqlToAst(cql: string) {
