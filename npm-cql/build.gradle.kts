@@ -6,7 +6,10 @@ val preparedPackageDir = layout.buildDirectory.dir("npm-package")
 /** Assembles the `@cqframework/cql` NPM package. */
 val preparePackage by
     tasks.registering(Sync::class) {
-        dependsOn(":engine:jsNodeProductionLibraryDistribution")
+        dependsOn(
+            ":engine:jsBrowserProductionLibraryDistribution",
+            ":engine:jsNodeProductionLibraryDistribution",
+        )
 
         from(engineJsDistDir) { exclude("package.json") }
         from(layout.projectDirectory) {
