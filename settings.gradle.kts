@@ -30,4 +30,6 @@ include(
     "tools:cql-formatter",
     "tools:cql-parsetree",
     "tools:xsd-to-modelinfo",
+    "npm-cql",
+    "playground",
 )

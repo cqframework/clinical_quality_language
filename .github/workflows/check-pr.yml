@@ -49,3 +49,6 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    - name: Build playground and npm package
+      if: matrix.os == 'ubuntu-latest'
+      run: ./gradlew :playground:build :npm-cql:build
