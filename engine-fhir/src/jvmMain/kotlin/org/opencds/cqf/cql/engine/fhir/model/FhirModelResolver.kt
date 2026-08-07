@@ -384,7 +384,7 @@ abstract class FhirModelResolver<
     }
 
     // Creators
-    internal fun createHapiInstance(typeName: String): Any {
+    fun createHapiInstance(typeName: String): Any {
         return createHapiInstance(this.resolveType(typeName)!!)
     }
 
