@@ -31,7 +31,76 @@ interface UcumService {
         left: Pair<BigDecimal, String>,
         right: Pair<BigDecimal, String>,
     ): Pair<BigDecimal, String>
+
+    /**
+     * Returns true if [unit] is a UCUM "arbitrary" unit, or a unit expression involving one, such
+     * as `[IU]` (international unit) or `[IU]/mL`. Arbitrary units are defined by their measurement
+     * procedure (assay); UCUM declares them non-commensurable with any other unit, so operations on
+     * them are constrained (see the CQL specification's "Arbitrary Units" guidance).
+     *
+     * The underlying `org.fhir:ucum` library does not surface the `isArbitrary` flag from
+     * ucum-essence.xml, so detection uses the fixed set of arbitrary unit atoms defined by UCUM,
+     * matched case-sensitively. Prefixes (`k[IU]`), exponents, and position within the expression
+     * are handled, while annotations (`mg{[IU]}`) and non-arbitrary bracketed units (`[in_i]`) are
+     * not matched. Platform implementations backed by a service that exposes the flag may override
+     * this.
+     */
+    fun isArbitrary(unit: String): Boolean {
+        val withoutAnnotations = unit.replace(ucumAnnotationRegex, "")
+        return ucumUnitAtomRegex.findAll(withoutAnnotations).any { it.value in arbitraryUnitAtoms }
+    }
 }
+
+private val ucumAnnotationRegex = Regex("\\{[^}]*\\}")
+private val ucumUnitAtomRegex = Regex("\\[[^\\]]*\\]")
+
+/**
+ * The UCUM arbitrary unit atoms (units flagged `isArbitrary="yes"` in ucum-essence.xml). Matched
+ * case-sensitively, since UCUM (and the CQL spec) treat e.g. `[IU]` and `[iU]` as distinct units.
+ */
+private val arbitraryUnitAtoms: Set<String> =
+    setOf(
+        "[hp_X]",
+        "[hp_C]",
+        "[hp_M]",
+        "[hp_Q]",
+        "[kp_X]",
+        "[kp_C]",
+        "[kp_M]",
+        "[kp_Q]",
+        "[iU]",
+        "[IU]",
+        "[arb'U]",
+        "[USP'U]",
+        "[GPL'U]",
+        "[MPL'U]",
+        "[APL'U]",
+        "[beth'U]",
+        "[anti'Xa'U]",
+        "[todd'U]",
+        "[dye'U]",
+        "[smgy'U]",
+        "[bdsk'U]",
+        "[ka'U]",
+        "[knk'U]",
+        "[mclg'U]",
+        "[tb'U]",
+        "[CCID_50]",
+        "[TCID_50]",
+        "[EID_50]",
+        "[PFU]",
+        "[FFU]",
+        "[CFU]",
+        "[BAU]",
+        "[AU]",
+        "[Amb'a'1'U]",
+        "[PNU]",
+        "[Lf]",
+        "[D'ag'U]",
+        "[FEU]",
+        "[ELU]",
+        "[EU]",
+    )
 
 expect val defaultLazyUcumService: Lazy<UcumService>
 
