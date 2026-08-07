@@ -1,5 +1,6 @@
 // @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
+// @ts-expect-error
 import * as cqlToElmJs from "cql-js/kotlin/cql-to-elm.mjs";
 import * as cqlWasmJs from "cql-wasm-js";
 import {
@@ -158,15 +159,11 @@ export function createStatefulCompiler(sync: boolean) {
       },
     );
 
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.clearModelInfoProviders();
-    // @ts-expect-error TypeScript error
     modelManagerJs.modelInfoLoader.registerModelInfoProvider(
       modelInfoProviderJs,
     );
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.clearProviders();
-    // @ts-expect-error TypeScript error
     libraryManagerJs.librarySourceLoader.registerProvider(
       librarySourceProviderJs,
     );
@@ -189,7 +186,6 @@ export function createStatefulCompiler(sync: boolean) {
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
         libraryManagerJs.cqlCompilerOptions.options.asJsSetView().add(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
         // @ts-expect-error TypeScript error
@@ -199,7 +195,6 @@ export function createStatefulCompiler(sync: boolean) {
         );
       } else {
         libraryManagerJs.cqlCompilerOptions.options.asJsSetView().delete(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
         // @ts-expect-error TypeScript error
@@ -211,7 +206,6 @@ export function createStatefulCompiler(sync: boolean) {
     }
 
     libraryManagerJs.cqlCompilerOptions.signatureLevel =
-      // @ts-expect-error TypeScript error
       cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
     // @ts-expect-error TypeScript error
     cqlWasmJs.libraryManagerSetSignatureLevel(
