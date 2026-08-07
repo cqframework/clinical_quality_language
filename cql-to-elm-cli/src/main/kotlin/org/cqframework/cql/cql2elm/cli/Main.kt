@@ -69,8 +69,9 @@ object Main {
         format: CqlTranslator.Format,
         modelProvider: ModelInfoProvider?,
         igContext: IGContext?,
+        writeOnError: Boolean,
         options: CqlCompilerOptions,
-    ) {
+    ): Boolean {
         System.err.println(
             "================================================================================"
         )
@@ -129,9 +130,10 @@ object Main {
         val translator: CqlTranslator = fromFile(namespaceInfo, inPath.toString(), libraryManager)
         libraryManager.librarySourceLoader.clearProviders()
 
-        if (!translator.errors.isEmpty()) {
+        if (!translator.errors.isEmpty() && !writeOnError) {
             System.err.println("Translation failed due to errors:")
             outputExceptions(translator.exceptions)
+            return false
         } else if (!options.verifyOnly) {
             if (translator.exceptions.isEmpty()) {
                 System.err.println("Translation completed successfully.")
@@ -157,6 +159,7 @@ object Main {
         }
 
         System.err.println()
+        return translator.errors.isEmpty()
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "MemberNameEqualsClassName", "MaxLineLength")
@@ -246,6 +249,11 @@ object Main {
                 .describedAs(
                     "Compatibility level for the translator, valid values are 1.3, 1.4, and 1.5"
                 )
+        val writeOnError: OptionSpec<*> =
+            parser.accepts(
+                "write-on-error",
+                "Force output files to be written, even if translation errors occur",
+            )
 
         @Suppress("SpreadOperator") val options = parser.parse(*args)
 
@@ -292,6 +300,8 @@ object Main {
             inOutMap[source] = destination
         }
 
+        var allSuccessful = true
+
         for (inOut in inOutMap.entries) {
             val `in`: Path = inOut.key!!
             var out: Path = inOut.value!!
@@ -330,36 +340,44 @@ object Main {
                 modelProvider = getModelInfoProvider(modelFile)
             }
 
-            writeELM(
-                `in`,
-                out,
-                outputFormat,
-                modelProvider,
-                igContext,
-                CqlCompilerOptions(
-                    options.has(optimization),
-                    options.has(debug) || options.has(annotations),
-                    options.has(debug) || options.has(locators),
-                    options.has(debug) || options.has(resultTypes),
-                    options.has(verify),
-                    options.has(detailedErrors), // Didn't include in debug, maybe should...
-                    if (options.has(errorLevel))
-                        options.valueOf(errorLevel) as CqlCompilerException.ErrorSeverity?
-                    else CqlCompilerException.ErrorSeverity.Info,
-                    options.has(strict) || options.has(disableListTraversal),
-                    options.has(strict) || options.has(disableListDemotion),
-                    options.has(strict) || options.has(disableListPromotion),
-                    options.has(enableIntervalDemotion),
-                    options.has(enableIntervalPromotion),
-                    options.has(strict) || options.has(disableMethodInvocation),
-                    options.has(requireFromKeyword),
-                    options.has(validateUnits),
-                    options.has(disableDefaultModelInfoLoad),
-                    signatureLevel,
-                    if (options.has(compatibilityLevel)) options.valueOf(compatibilityLevel)!!
-                    else "1.5",
-                ),
-            )
+            val success =
+                writeELM(
+                    `in`,
+                    out,
+                    outputFormat,
+                    modelProvider,
+                    igContext,
+                    options.has(writeOnError),
+                    CqlCompilerOptions(
+                        options.has(optimization),
+                        options.has(debug) || options.has(annotations),
+                        options.has(debug) || options.has(locators),
+                        options.has(debug) || options.has(resultTypes),
+                        options.has(verify),
+                        options.has(detailedErrors), // Didn't include in debug, maybe should...
+                        if (options.has(errorLevel))
+                            options.valueOf(errorLevel) as CqlCompilerException.ErrorSeverity?
+                        else CqlCompilerException.ErrorSeverity.Info,
+                        options.has(strict) || options.has(disableListTraversal),
+                        options.has(strict) || options.has(disableListDemotion),
+                        options.has(strict) || options.has(disableListPromotion),
+                        options.has(enableIntervalDemotion),
+                        options.has(enableIntervalPromotion),
+                        options.has(strict) || options.has(disableMethodInvocation),
+                        options.has(requireFromKeyword),
+                        options.has(validateUnits),
+                        options.has(disableDefaultModelInfoLoad),
+                        signatureLevel,
+                        if (options.has(compatibilityLevel)) options.valueOf(compatibilityLevel)!!
+                        else "1.5",
+                    ),
+                )
+
+            allSuccessful = allSuccessful && success
+        }
+
+        if (!allSuccessful) {
+            exitProcess(1)
         }
     }
 }
