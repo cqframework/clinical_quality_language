@@ -384,8 +384,17 @@ abstract class FhirModelResolver<
     }
 
     // Creators
+
+    /**
+     * Creates an instance of the Java class that corresponds to the given model type.
+     *
+     * @param typeName E.g. "Patient"
+     * @return An instance of the HAPI FHIR class like `org.hl7.fhir.r4.model.Patient`.
+     */
     fun createHapiInstance(typeName: String): Any {
-        return createHapiInstance(this.resolveType(typeName)!!)
+        val clazz =
+            this.resolveType(typeName) ?: throw UnknownType("Could not resolve type $typeName")
+        return createHapiInstance(clazz)
     }
 
     protected fun createHapiInstance(clazz: Class<*>): Any {
