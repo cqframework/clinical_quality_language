@@ -1,8 +1,12 @@
+// @ts-expect-error
 import { QName } from "cql-js/kotlin/shared.mjs";
+// @ts-expect-error
 import { DataType, ClassType } from "cql-js/kotlin/cql.mjs";
+// @ts-expect-error
 import { ModelManager } from "cql-js/kotlin/cql-to-elm.mjs";
 import { DataProvider, ClassInstance } from "cql-js/kotlin/engine.mjs";
 import { unsupportedOperation } from "@/shared";
+// @ts-expect-error
 import { KtMutableMap } from "cql-js/kotlin/kotlin-kotlin-stdlib.mjs";
 
 export const fhirModelNamespaceUri = "http://hl7.org/fhir";
@@ -13,7 +17,6 @@ export function createFhirDataProvider(modelManager: ModelManager) {
     "__doNotUseOrImplementIt" | "objectEquivalent"
   > = {
     createInstance(typeName) {
-      // @ts-expect-error TypeScript error
       const model = modelManager.resolveModelByUri(fhirModelNamespaceUri);
 
       const dataType = model.resolveTypeName(typeName!);
@@ -21,7 +24,6 @@ export function createFhirDataProvider(modelManager: ModelManager) {
       if (dataType) {
         if (dataType instanceof ClassType) {
           return new ClassInstance(
-            // @ts-expect-error TypeScript error
             new QName(
               fhirModelNamespaceUri,
               dataType.name.slice("FHIR.".length),
@@ -47,7 +49,6 @@ export function createFhirDataProvider(modelManager: ModelManager) {
     },
     is(valueType, type) {
       if (type.getNamespaceURI() === fhirModelNamespaceUri) {
-        // @ts-expect-error TypeScript error
         const model = modelManager.resolveModelByUri(fhirModelNamespaceUri);
 
         const valueDataType = model.resolveTypeName(valueType) as ClassType;
@@ -56,7 +57,6 @@ export function createFhirDataProvider(modelManager: ModelManager) {
           type.getLocalPart(),
         ) as ClassType;
 
-        // @ts-expect-error TypeScript error
         return valueDataType.isSubTypeOf(targetDataType);
       }
 
@@ -91,13 +91,10 @@ export function createFhirDataProvider(modelManager: ModelManager) {
   return fhirDataProvider as DataProvider;
 }
 
-// @ts-expect-error TypeScript error
 function getAllElements(classType: ClassType): Map<string, DataType> {
   return new Map([
-    // @ts-expect-error TypeScript error
     ...(classType.baseType instanceof ClassType
-      ? // @ts-expect-error TypeScript error
-        getAllElements(classType.baseType)
+      ? getAllElements(classType.baseType)
       : []),
     ...classType.elements
       .asJsReadonlyArrayView()

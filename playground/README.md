@@ -6,15 +6,14 @@ A playground for the Kotlin/JS-based CQL compiler and engine.
 
 ## Local development
 
-Build the CQL engine and its dependencies locally by running the `:engine:build` task.
-This will output the JS and WASM/JS packages to `../../build/(js|wasm)/packages/engine`.
+The `:playground:npmInstall` Gradle task builds and installs the dependencies,  including
+the CQL compiler and engine.
 
-Run:
+To start the dev server, run
 
-    npm install
-    npm run dev
+    ./gradlew :playground:npmRunDev
 
-And open `http://localhost:3000/clinical_quality_language/playground` in your browser.
+and open `http://localhost:3000/clinical_quality_language/playground`.
 
 ## Deployment
 
