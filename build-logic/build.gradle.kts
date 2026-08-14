@@ -22,6 +22,7 @@ dependencies {
     implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.26.0")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.4.0")
     implementation("org.jetbrains.kotlinx:kover-gradle-plugin:0.9.8")
+    implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
 }
 
 kotlin { jvmToolchain(17) }

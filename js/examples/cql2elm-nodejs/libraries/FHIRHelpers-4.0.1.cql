@@ -1,1 +1,0 @@
-../../../../java/quick/src/main/resources/org/hl7/fhir/FHIRHelpers-4.0.1.cql

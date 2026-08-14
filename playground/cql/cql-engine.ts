@@ -1,7 +1,9 @@
 // @ts-expect-error No type definitions available for @lhncbc/ucum-lhc
 import * as ucum from "@lhncbc/ucum-lhc";
+// @ts-expect-error
 import * as cqlToElmJs from "cql-js/kotlin/cql-to-elm.mjs";
 import * as engineJs from "cql-js/kotlin/engine.mjs";
+// @ts-expect-error
 import * as kotlinStdlibJs from "cql-js/kotlin/kotlin-kotlin-stdlib.mjs";
 import {
   compilerOptions,
@@ -102,13 +104,9 @@ export function createStatefulEngine() {
       },
     );
 
-    // @ts-expect-error TypeScript error
     modelManager.modelInfoLoader.clearModelInfoProviders();
-    // @ts-expect-error TypeScript error
     modelManager.modelInfoLoader.registerModelInfoProvider(modelInfoProvider);
-    // @ts-expect-error TypeScript error
     libraryManager.librarySourceLoader.clearProviders();
-    // @ts-expect-error TypeScript error
     libraryManager.librarySourceLoader.registerProvider(librarySourceProvider);
 
     // Ideally, only the playground library is evicted from the cache.
@@ -117,24 +115,20 @@ export function createStatefulEngine() {
     for (const compilerOption of compilerOptions) {
       if (args.compilerOptions.includes(compilerOption.value)) {
         libraryManager.cqlCompilerOptions.options.asJsSetView().add(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
       } else {
         libraryManager.cqlCompilerOptions.options.asJsSetView().delete(
-          // @ts-expect-error TypeScript error
           cqlToElmJs.CqlCompilerOptions.Options.valueOf(compilerOption.value),
         );
       }
     }
 
     libraryManager.cqlCompilerOptions.signatureLevel =
-      // @ts-expect-error TypeScript error
       cqlToElmJs.LibraryBuilder.SignatureLevel.valueOf(args.signatureLevel);
 
     const output = ((): TCqlEngineOutput => {
       try {
-        // @ts-expect-error TypeScript error
         const environment = new engineJs.Environment(libraryManager);
 
         environment.registerDataProvider(

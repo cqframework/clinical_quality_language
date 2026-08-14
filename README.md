@@ -48,6 +48,8 @@ It contains the following sub-projects:
 * **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
 * **tools:rewrite:** contains [OpenRewrite](https://openrewrite.org/) recipes for automated refactoring.
 * **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
+* **npm-cql:** an NPM package for the JS build of the KMP project
+* **playground:** a browser-based playground for CQL
 
 # Cloning This Repository
 
