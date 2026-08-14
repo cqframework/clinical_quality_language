@@ -23,6 +23,7 @@ dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.4.0")
     implementation("org.jetbrains.kotlinx:kover-gradle-plugin:0.9.8")
     implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
+    implementation("com.strumenta.antlr-kotlin:com.strumenta.antlr-kotlin.gradle.plugin:1.0.13")
 }
 
 kotlin { jvmToolchain(17) }
