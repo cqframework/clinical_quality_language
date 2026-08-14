@@ -55,6 +55,28 @@ import org.junit.jupiter.api.Test
 internal class BaseTest {
     @Test
     @Throws(IOException::class)
+    fun ofTypeNarrowsResultTypeForDownstreamOperators() {
+        // #1785: ofType(T) must narrow the query's static result type to T so that operators which
+        // consume the static type (Exists, Count) can resolve their overloads. Before the fix this
+        // produced two ambiguity errors (one each for .exists() and .count()).
+        val translator = TestUtils.runSemanticTest("fhir/r401/TestOfTypeChoiceNarrowing.cql", 0)
+
+        // The emitted ELM must carry the narrowed static type: the ofType(dateTime) query's result
+        // type is FHIR.dateTime, not the source's choice<...>.
+        val def =
+            translator.toELM()!!.statements!!.def.first {
+                it.name == "ObservationEffectiveDateTime"
+            }
+        val resultType = (def.expression as Query).resultType.toString()
+        assertThat(
+            "Expected ofType result type narrowed to dateTime (not choice<...>), got: $resultType",
+            resultType.contains("dateTime") && !resultType.contains("choice"),
+            `is`(true),
+        )
+    }
+
+    @Test
+    @Throws(IOException::class)
     fun choiceWithAlternativeConversion() {
         val def = TestUtils.visitFile("fhir/r401/TestChoiceTypes.cql")
         val query = def!!.expression as Query?
