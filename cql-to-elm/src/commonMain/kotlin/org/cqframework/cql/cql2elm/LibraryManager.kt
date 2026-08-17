@@ -88,8 +88,16 @@ constructor(
         libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException>,
     ): CompiledLibrary {
-        val compiledLibraryResult =
-            this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE)
+        return this.resolveLibrary(libraryIdentifier, errors, CacheMode.READ_WRITE)
+    }
+
+    @JsExport.Ignore
+    fun resolveLibrary(
+        libraryIdentifier: VersionedIdentifier,
+        errors: MutableList<CqlCompilerException>,
+        cacheMode: CacheMode,
+    ): CompiledLibrary {
+        val compiledLibraryResult = this.resolveLibraryInner(libraryIdentifier, cacheMode)
         errors.addAll(compiledLibraryResult.errors)
         return compiledLibraryResult.compiledLibrary
     }
