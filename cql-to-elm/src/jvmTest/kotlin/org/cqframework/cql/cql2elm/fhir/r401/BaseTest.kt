@@ -63,14 +63,23 @@ internal class BaseTest {
 
         // The emitted ELM must carry the narrowed static type: the ofType(dateTime) query's result
         // type is FHIR.dateTime, not the source's choice<...>.
-        val def =
-            translator.toELM()!!.statements!!.def.first {
-                it.name == "ObservationEffectiveDateTime"
-            }
-        val resultType = (def.expression as Query).resultType.toString()
+        val defs = translator.toELM()!!.statements!!.def.associateBy { it.name }
+
+        // Singular source narrows to FHIR.dateTime (not the source's choice<...>).
+        val singularType = (defs["ObservationEffectiveDateTime"]!!.expression as Query).resultType
         assertThat(
-            "Expected ofType result type narrowed to dateTime (not choice<...>), got: $resultType",
-            resultType.contains("dateTime") && !resultType.contains("choice"),
+            "Expected singular ofType result narrowed to dateTime, got: $singularType",
+            singularType.toString().let { it.contains("dateTime") && !it.contains("choice") },
+            `is`(true),
+        )
+        assertThat(singularType, Matchers.not(Matchers.instanceOf(ListType::class.java)))
+
+        // List-valued source narrows to list<FHIR.dateTime>.
+        val listType = (defs["ObservationEffectiveDateTimeList"]!!.expression as Query).resultType
+        assertThat(listType, Matchers.instanceOf(ListType::class.java))
+        assertThat(
+            "Expected list ofType result narrowed to list<dateTime>, got: $listType",
+            listType.toString().let { it.contains("dateTime") && !it.contains("choice") },
             `is`(true),
         )
     }
