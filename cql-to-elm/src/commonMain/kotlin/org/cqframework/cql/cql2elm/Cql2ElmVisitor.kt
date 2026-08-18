@@ -1061,10 +1061,21 @@ class Cql2ElmVisitor(
 
     override fun visitQuantity(ctx: QuantityContext): Expression {
         return if (ctx.unit() != null) {
-            libraryBuilder.createQuantity(
-                parseDecimal(ctx.NUMBER().text),
-                (parseString(ctx.unit()))!!,
-            )
+            val unit = (parseString(ctx.unit()))!!
+            val quantity = libraryBuilder.createQuantity(parseDecimal(ctx.NUMBER().text), unit)
+            if (libraryBuilder.isArbitraryUnit(unit)) {
+                // WARNING:
+                libraryBuilder.recordParsingException(
+                    CqlSemanticException(
+                        "The quantity unit '$unit' is a UCUM arbitrary unit, whose meaning depends " +
+                            "on the measurement procedure and is not comparable across contexts. " +
+                            "Ensure that any comparison involving this unit is appropriate.",
+                        getTrackBack(ctx),
+                        CqlCompilerException.ErrorSeverity.Warning,
+                    )
+                )
+            }
+            quantity
         } else {
             libraryBuilder.createNumberLiteral(ctx.NUMBER().text)
         }
