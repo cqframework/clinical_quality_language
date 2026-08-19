@@ -15,7 +15,7 @@ Within the sealed CQL value class hierarchy, non-system structured types (e.g. i
 etc.) are represented using the `org.opencds.cqf.cql.engine.runtime.ClassInstance` class. Informally, a class instance
 is a structured value (a Tuple) with a `QName` type tag like `{http://hl7.org/fhir}Patient`.
 
-See [CQL Value Types](cql-value-types.md) for the full list of CQL types and their corresponding classes.
+See [CQL Value Types](../../engine/cql-value-types.md) for the full list of CQL types and their corresponding classes.
 
 ### Changes to `ModelResolver` and `DataProvider`
 
