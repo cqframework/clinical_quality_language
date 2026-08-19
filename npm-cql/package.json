@@ -14,23 +14,27 @@
   "type": "module",
   "exports": {
     "./cql": {
-      "types": "./engine.d.mts",
+      "types": "./cql.exports.d.mts",
       "default": "./cql.mjs"
     },
     "./cql-to-elm": {
-      "types": "./engine.d.mts",
+      "types": "./cql-to-elm.exports.d.mts",
       "default": "./cql-to-elm.mjs"
     },
     "./elm": {
-      "types": "./engine.d.mts",
+      "types": "./elm.exports.d.mts",
       "default": "./elm.mjs"
     },
     "./engine": {
-      "types": "./engine.d.mts",
+      "types": "./engine.exports.d.mts",
       "default": "./engine.mjs"
     },
+    "./kotlin-kotlin-stdlib": {
+      "types": "./kotlin-kotlin-stdlib.exports.d.mts",
+      "default": "./kotlin-kotlin-stdlib.mjs"
+    },
     "./shared": {
-      "types": "./engine.d.mts",
+      "types": "./shared.exports.d.mts",
       "default": "./shared.mjs"
     }
   },
