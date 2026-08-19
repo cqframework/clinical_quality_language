@@ -1,44 +1,38 @@
-import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 buildscript { dependencies { classpath("org.slf4j:slf4j-simple:1.7.36") } }
 
-plugins {
-    id("cql.xsd-kotlin-multiplatform-gen-conventions")
-    id("com.strumenta.antlr-kotlin") version "1.0.9"
-}
+plugins { id("cql.kotlin-multiplatform-conventions") }
+
+val generatedSourcesDir = project.layout.buildDirectory.dir("generated/sources")
+
+val generateModelInfoKotlinSource by
+    tasks.registering(XsdKotlinGenTask::class) {
+        description = "Generates Kotlin sources for ModelInfo classes."
+        inputXsd.set(rootProject.layout.projectDirectory.file("schemas/model/modelinfo.xsd"))
+        outputDir.set(generatedSourcesDir.map { it.dir("cql") })
+        jsExport.set(false)
+    }
 
 val generateKotlinGrammarSource =
-    tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
-        dependsOn("cleanGenerateKotlinGrammarSource")
-        source = fileTree("../grammar") { include("**/*.g4") }
-        packageName = "org.cqframework.cql.gen"
-        arguments = listOf("-visitor")
-        outputDirectory =
-            file(
-                "build/generated/sources/antlr/commonMain/kotlin/${packageName!!.replace(".", "/")}"
-            )
-        outputs.dirs(outputDirectory)
-    }
+    registerAntlrKotlinGrammarGeneration(
+        taskName = "generateKotlinGrammarSource",
+        grammarDir = rootProject.layout.projectDirectory.dir("grammar").asFileTree,
+        packageName = "org.cqframework.cql.gen",
+        outputDir = generatedSourcesDir.map { it.dir("antlr") }.get().asFile,
+    )
 
-val inlineModelInfoXmlsTask =
-    tasks.register<FilesToStringsTask>("inlineModelInfoXmls") {
-        inputFiles =
-            mapOf(
-                file("src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml") to
-                    "systemModelInfoXml"
+val inlineSystemModelInfo by
+    tasks.registering(FileToString::class) {
+        inputFile.set(
+            project.layout.projectDirectory.file(
+                "src/commonMain/resources/org/hl7/elm/r1/system-modelinfo.xml"
             )
-        outputDir = file("build/generated/sources/inlineModelInfoXmls/commonMain/kotlin")
-        packageName = "org.hl7.cql.model"
-        fileName = "ModelInfoXmls.kt"
+        )
+        outputDir.set(generatedSourcesDir.map { it.dir("inlineSystemModelInfo") })
+        packageName.set("org.hl7.cql.model")
+        variableName.set("systemModelInfoXml")
     }
-
-// Wire ANTLR generation into the shared suppressGeneratedWarnings task
-tasks.named("suppressGeneratedWarnings") {
-    dependsOn(generateKotlinGrammarSource)
-    mustRunAfter(generateKotlinGrammarSource)
-}
 
 kotlin {
     js { outputModuleName = "cql" }
@@ -48,15 +42,16 @@ kotlin {
     sourceSets {
         commonMain {
             kotlin {
+                srcDir(generateModelInfoKotlinSource)
                 srcDir(generateKotlinGrammarSource)
-                srcDir(inlineModelInfoXmlsTask)
+                srcDir(inlineSystemModelInfo)
             }
             dependencies {
                 api(project(":shared"))
-                api("com.strumenta:antlr-kotlin-runtime:1.0.3")
+                api("com.strumenta:antlr-kotlin-runtime:1.0.12")
             }
         }
-        jvmMain { dependencies { api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.3") } }
+        jvmMain { dependencies { api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.12") } }
         jvmTest {
             dependencies {
                 implementation(project(":quick"))
@@ -64,36 +59,6 @@ kotlin {
             }
         }
     }
-}
-
-tasks.named("jvmSourcesJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("jsSourcesJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("wasmJsSourcesJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("sourcesJar") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.withType<AbstractKotlinCompile<*>> {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
-}
-
-tasks.named("dokkaGeneratePublicationHtml") {
-    dependsOn(generateKotlinGrammarSource)
-    dependsOn(inlineModelInfoXmlsTask)
 }
 
 dependencies { kover(project(":shared")) }
