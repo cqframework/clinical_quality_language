@@ -2344,6 +2344,15 @@ class LibraryBuilder(
         require(message == null) { message!! }
     }
 
+    /**
+     * Returns true if [unit] is a UCUM arbitrary unit (or an expression involving one), such as
+     * `[IU]`. Arbitrary units are defined by their measurement procedure and are not commensurable
+     * with any other unit; see the CQL specification's "Arbitrary Units" guidance.
+     */
+    fun isArbitraryUnit(unit: String): Boolean {
+        return libraryManager.ucumService.isArbitrary(unit)
+    }
+
     fun createQuantity(value: BigDecimal?, unit: String): Quantity {
         validateUnit(unit)
         val result = objectFactory.createQuantity().withValue(value).withUnit(unit)

@@ -7,35 +7,16 @@ import com.sun.xml.xsom.XSElementDecl
 import com.sun.xml.xsom.XSParticle
 import com.sun.xml.xsom.XSType
 import com.sun.xml.xsom.parser.XSOMParser
-import java.io.File
 import javax.xml.XMLConstants
 import javax.xml.parsers.SAXParserFactory
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-
-data class Config(
-    val project: String,
-    val xsd: String,
-    val outputDir: String,
-    val jsExport: Boolean,
-)
-
-// Entry points for schema parsing and code generation
-val configs =
-    listOf(
-        Config(
-            project = "cql",
-            xsd = "../schemas/model/modelinfo.xsd",
-            outputDir = "../cql/build/generated/sources/cql/commonMain/kotlin",
-            jsExport = false,
-        ),
-        Config(
-            project = "elm",
-            xsd = "../schemas/elm/library.xsd",
-            outputDir = "../elm/build/generated/sources/elm/commonMain/kotlin",
-            jsExport = true,
-        ),
-    )
 
 val namespaceToPackageName =
     mapOf(
@@ -1151,68 +1132,76 @@ fun FileSpec.Builder.addSuppressSafeCalls(): FileSpec.Builder {
     return this
 }
 
-open class XsdKotlinGenTask : DefaultTask() {
+abstract class XsdKotlinGenTask : DefaultTask() {
+
+    /** Input .xsd file. */
+    @get:InputFile abstract val inputXsd: RegularFileProperty
+
+    /** Output directory for the source files. */
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @get:Input abstract val jsExport: Property<Boolean>
 
     @TaskAction
     fun generate() {
 
-        for (config in configs) {
+        val outputDirFile = outputDir.get().asFile
 
-            val saxParserFactory = SAXParserFactory.newInstance()
-            val xsomParser = XSOMParser(saxParserFactory)
+        val saxParserFactory = SAXParserFactory.newInstance()
+        val xsomParser = XSOMParser(saxParserFactory)
 
-            val file = File(project.projectDir, config.xsd)
-            if (!file.exists()) {
-                error("XSD file not found: ${file.absolutePath}")
-            }
+        val file = inputXsd.asFile.get()
+        if (!file.exists()) {
+            error("XSD file not found: ${file.absolutePath}")
+        }
 
-            xsomParser.parse(file)
+        xsomParser.parse(file)
 
-            xsomParser.result.schemas.forEach { schema ->
+        xsomParser.result.schemas.forEach { schema ->
 
-                // Generate classes for simple types (enums like `AccessModifier`)
-                schema.simpleTypes.values.forEach simpleTypesLoop@{ simpleType ->
-                    if (simpleType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI) {
-                        return@simpleTypesLoop
-                    }
+            // Generate classes for simple types (enums like `AccessModifier`)
+            schema.simpleTypes.values.forEach simpleTypesLoop@{ simpleType ->
+                if (simpleType.targetNamespace == XMLConstants.W3C_XML_SCHEMA_NS_URI) {
+                    return@simpleTypesLoop
+                }
 
-                    val typeName = getTypeName(simpleType)
+                val typeName = getTypeName(simpleType)
 
-                    val valueParameter = ParameterSpec.builder("value", String::class).build()
+                val valueParameter = ParameterSpec.builder("value", String::class).build()
 
-                    FileSpec.builder(typeName)
-                        .addType(
-                            TypeSpec.enumBuilder(typeName)
-                                .apply {
-                                    if (config.jsExport) {
-                                        addJsExport()
-                                    }
+                FileSpec.builder(typeName)
+                    .addType(
+                        TypeSpec.enumBuilder(typeName)
+                            .apply {
+                                if (jsExport.get()) {
+                                    addJsExport()
                                 }
-                                .primaryConstructor(
-                                    FunSpec.constructorBuilder()
-                                        .addParameter("value", String::class)
-                                        .build()
-                                )
-                                .addProperty(
-                                    PropertySpec.builder("value", String::class)
-                                        .initializer("value")
-                                        .addModifiers(KModifier.PRIVATE)
-                                        .build()
-                                )
-                                .addFunction(
-                                    FunSpec.builder("value")
-                                        .returns(String::class)
-                                        .addStatement("return this.value")
-                                        .build()
-                                )
-                                .addType(
-                                    TypeSpec.companionObjectBuilder()
-                                        .addFunction(
-                                            FunSpec.builder("fromValue")
-                                                .addParameter(valueParameter)
-                                                .returns(typeName)
-                                                .addCode(
-                                                    """
+                            }
+                            .primaryConstructor(
+                                FunSpec.constructorBuilder()
+                                    .addParameter("value", String::class)
+                                    .build()
+                            )
+                            .addProperty(
+                                PropertySpec.builder("value", String::class)
+                                    .initializer("value")
+                                    .addModifiers(KModifier.PRIVATE)
+                                    .build()
+                            )
+                            .addFunction(
+                                FunSpec.builder("value")
+                                    .returns(String::class)
+                                    .addStatement("return this.value")
+                                    .build()
+                            )
+                            .addType(
+                                TypeSpec.companionObjectBuilder()
+                                    .addFunction(
+                                        FunSpec.builder("fromValue")
+                                            .addParameter(valueParameter)
+                                            .returns(typeName)
+                                            .addCode(
+                                                """
                                                     for (c in entries) {
                                                       if (c.value == %N) {
                                                         return c
@@ -1220,131 +1209,126 @@ open class XsdKotlinGenTask : DefaultTask() {
                                                     }
                                                     throw IllegalArgumentException(%N)
                                                     """
-                                                        .trimIndent(),
-                                                    valueParameter,
-                                                    valueParameter,
-                                                )
-                                                .build()
-                                        )
-                                        .build()
-                                )
-                                .apply {
-                                    simpleType.asRestriction().declaredFacets.forEach { facet ->
-                                        addEnumConstant(
-                                            facet.value.value.uppercase(),
-                                            TypeSpec.anonymousClassBuilder()
-                                                .addSuperclassConstructorParameter(
-                                                    "%S",
-                                                    facet.value.value,
-                                                )
-                                                .build(),
-                                        )
-                                    }
+                                                    .trimIndent(),
+                                                valueParameter,
+                                                valueParameter,
+                                            )
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .apply {
+                                simpleType.asRestriction().declaredFacets.forEach { facet ->
+                                    addEnumConstant(
+                                        facet.value.value.uppercase(),
+                                        TypeSpec.anonymousClassBuilder()
+                                            .addSuperclassConstructorParameter(
+                                                "%S",
+                                                facet.value.value,
+                                            )
+                                            .build(),
+                                    )
                                 }
-                                .build()
-                        )
-                        .build()
-                        .writeTo(File(project.projectDir, config.outputDir))
+                            }
+                            .build()
+                    )
+                    .build()
+                    .writeTo(outputDirFile)
+            }
+
+            // Generate classes and parsers/serializers for complex types
+            schema.complexTypes.values.forEach complexTypesLoop@{ complexType ->
+                // Skip XML's anyType
+                if (typeIsAnyType(complexType)) {
+                    return@complexTypesLoop
                 }
 
-                // Generate classes and parsers/serializers for complex types
-                schema.complexTypes.values.forEach complexTypesLoop@{ complexType ->
-                    // Skip XML's anyType
-                    if (typeIsAnyType(complexType)) {
-                        return@complexTypesLoop
-                    }
+                val className = getTypeName(complexType)
 
-                    val className = getTypeName(complexType)
-
-                    // Generate the class and XML and JSON parsers and serializers
-                    FileSpec.builder(className)
-                        .addType(
-                            getClassBuilder(complexType, className)
-                                .apply {
-                                    if (config.jsExport) {
-                                        addJsExport()
-                                    }
+                // Generate the class and XML and JSON parsers and serializers
+                FileSpec.builder(className)
+                    .addType(
+                        getClassBuilder(complexType, className)
+                            .apply {
+                                if (jsExport.get()) {
+                                    addJsExport()
                                 }
-                                .build()
-                        )
-                        .addSerializers(complexType, className)
-                        .addSuppressSafeCalls()
-                        .build()
-                        .writeTo(File(project.projectDir, config.outputDir))
-                }
+                            }
+                            .build()
+                    )
+                    .addSerializers(complexType, className)
+                    .addSuppressSafeCalls()
+                    .build()
+                    .writeTo(outputDirFile)
+            }
 
-                // Generate ObjectFactory.kt for each namespace
-                schema.complexTypes.values
-                    .map { it.targetNamespace }
-                    .distinct()
-                    .forEach { namespace ->
-                        if (namespaceToPackageName.containsKey(namespace)) {
-                            val objectFactoryClassName =
-                                ClassName(getPackageName(namespace), "ObjectFactory")
+            // Generate ObjectFactory.kt for each namespace
+            schema.complexTypes.values
+                .map { it.targetNamespace }
+                .distinct()
+                .forEach { namespace ->
+                    if (namespaceToPackageName.containsKey(namespace)) {
+                        val objectFactoryClassName =
+                            ClassName(getPackageName(namespace), "ObjectFactory")
 
-                            FileSpec.builder(objectFactoryClassName)
-                                .addType(
-                                    TypeSpec.classBuilder(objectFactoryClassName)
-                                        .addModifiers(KModifier.OPEN)
-                                        .apply {
-                                            // Object factories have `create` methods for each
-                                            // non-abstract complex type
-                                            schema.complexTypes.values.forEach { complexType ->
-                                                if (
-                                                    complexType.targetNamespace == namespace &&
-                                                        !complexType.isAbstract
-                                                ) {
-                                                    val className = getTypeName(complexType)
-                                                    addFunction(
-                                                        FunSpec.builder("create${complexType.name}")
-                                                            .addModifiers(KModifier.OPEN)
-                                                            .returns(className)
-                                                            .addStatement("return %T()", className)
-                                                            .build()
-                                                    )
+                        FileSpec.builder(objectFactoryClassName)
+                            .addType(
+                                TypeSpec.classBuilder(objectFactoryClassName)
+                                    .addModifiers(KModifier.OPEN)
+                                    .apply {
+                                        // Object factories have `create` methods for each
+                                        // non-abstract complex type
+                                        schema.complexTypes.values.forEach { complexType ->
+                                            if (
+                                                complexType.targetNamespace == namespace &&
+                                                    !complexType.isAbstract
+                                            ) {
+                                                val className = getTypeName(complexType)
+                                                addFunction(
+                                                    FunSpec.builder("create${complexType.name}")
+                                                        .addModifiers(KModifier.OPEN)
+                                                        .returns(className)
+                                                        .addStatement("return %T()", className)
+                                                        .build()
+                                                )
 
-                                                    // Add `create` methods for nested anonymous
-                                                    // complex types
-                                                    getOwnElements(complexType).forEach { particle
-                                                        ->
-                                                        val elementDecl =
-                                                            particle.term.asElementDecl()
-                                                        if (elementDecl != null) {
-                                                            if (elementDecl.type.name == null) {
-                                                                val nestedClassName =
-                                                                    className.nestedClass(
-                                                                        elementDecl.name
-                                                                            .replaceFirstChar {
-                                                                                it.uppercase()
-                                                                            }
-                                                                    )
-                                                                addFunction(
-                                                                    FunSpec.builder(
-                                                                            "create${complexType.name}${elementDecl.name.replaceFirstChar { it.uppercase() }}"
-                                                                        )
-                                                                        .addModifiers(
-                                                                            KModifier.OPEN
-                                                                        )
-                                                                        .returns(nestedClassName)
-                                                                        .addStatement(
-                                                                            "return %T()",
-                                                                            nestedClassName,
-                                                                        )
-                                                                        .build()
+                                                // Add `create` methods for nested anonymous
+                                                // complex types
+                                                getOwnElements(complexType).forEach { particle ->
+                                                    val elementDecl = particle.term.asElementDecl()
+                                                    if (elementDecl != null) {
+                                                        if (elementDecl.type.name == null) {
+                                                            val nestedClassName =
+                                                                className.nestedClass(
+                                                                    elementDecl.name
+                                                                        .replaceFirstChar {
+                                                                            it.uppercase()
+                                                                        }
                                                                 )
-                                                            }
+                                                            addFunction(
+                                                                FunSpec.builder(
+                                                                        "create${complexType.name}${elementDecl.name.replaceFirstChar { it.uppercase() }}"
+                                                                    )
+                                                                    .addModifiers(KModifier.OPEN)
+                                                                    .returns(nestedClassName)
+                                                                    .addStatement(
+                                                                        "return %T()",
+                                                                        nestedClassName,
+                                                                    )
+                                                                    .build()
+                                                            )
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                        .build()
-                                )
-                                .build()
-                                .writeTo(File(project.projectDir, config.outputDir))
-                        }
+                                    }
+                                    .build()
+                            )
+                            .build()
+                            .writeTo(outputDirFile)
                     }
-            }
+                }
         }
     }
 }

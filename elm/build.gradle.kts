@@ -1,6 +1,14 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-plugins { id("cql.xsd-kotlin-multiplatform-gen-conventions") }
+plugins { id("cql.kotlin-multiplatform-conventions") }
+
+val generateElmKotlinSource by
+    tasks.registering(XsdKotlinGenTask::class) {
+        description = "Generates Kotlin sources for ELM classes."
+        inputXsd.set(rootProject.layout.projectDirectory.file("schemas/elm/library.xsd"))
+        outputDir.set(project.layout.buildDirectory.dir("generated/sources/elm"))
+        jsExport.set(true)
+    }
 
 kotlin {
     js { outputModuleName = "elm" }
@@ -8,7 +16,11 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "elm" }
 
     sourceSets {
-        commonMain { dependencies { api(project(":shared")) } }
+        commonMain {
+            kotlin { srcDir(generateElmKotlinSource) }
+
+            dependencies { api(project(":shared")) }
+        }
         jvmTest {
             dependencies {
                 implementation(project(":cql-to-elm"))
