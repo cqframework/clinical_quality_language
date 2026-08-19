@@ -84,12 +84,13 @@ constructor(
     }
 
     @JsExport.Ignore
+    @JvmOverloads
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException>,
+        cacheMode: CacheMode = CacheMode.READ_WRITE,
     ): CompiledLibrary {
-        val compiledLibraryResult =
-            this.resolveLibraryInner(libraryIdentifier, CacheMode.READ_WRITE)
+        val compiledLibraryResult = this.resolveLibraryInner(libraryIdentifier, cacheMode)
         errors.addAll(compiledLibraryResult.errors)
         return compiledLibraryResult.compiledLibrary
     }

@@ -263,6 +263,29 @@ internal class LibraryManagerTests {
     }
 
     @Test
+    fun cacheModeNoneReportsDiagnosticsFromFreshCompilation() {
+        val cache = HashMap<VersionedIdentifier, CompiledLibrary>()
+        val manager = LibraryManager(ModelManager(), libraryCache = cache)
+        manager.librarySourceLoader.registerProvider(
+            TestLibrarySourceProvider("LibraryManagerTests")
+        )
+
+        val cachedLibrary = CompiledLibrary()
+        cachedLibrary.identifier = INVALID_IDENT
+        cachedLibrary.library = Library().withIdentifier(INVALID_IDENT)
+        cache[INVALID_IDENT] = cachedLibrary
+        val errors = mutableListOf<CqlCompilerException>()
+
+        val resolvedLibrary =
+            manager.resolveLibrary(INVALID_IDENT, errors, LibraryManager.CacheMode.NONE)
+
+        Assertions.assertNotSame(cachedLibrary, resolvedLibrary)
+        Assertions.assertSame(cachedLibrary, cache[INVALID_IDENT])
+        MatcherAssert.assertThat(errors.size, Matchers.equalTo(1))
+        MatcherAssert.assertThat(errors[0].message, Matchers.equalTo("Syntax error at define"))
+    }
+
+    @Test
     fun testResolveLibraryFromCacheMultiLib() {
         val libraryIdentifier = VersionedIdentifier().withId("Test").withVersion("1.0")
         val cachedLibrary = CompiledLibrary()
