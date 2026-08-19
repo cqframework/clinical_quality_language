@@ -11,7 +11,7 @@ The `cql-to-elm-jvm` package is required to use the translator:
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>cql-to-elm-jvm</artifactId>
-      <version>4.0.0</version>
+      <version>{version}</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -19,12 +19,12 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>4.0.0</version>
+      <version>{version}</version>
     </dependency>
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>4.0.0</version>
+      <version>{version}</version>
     </dependency>
 
 To perform UCUM unit validation during translation using [`ucum-java`](https://github.com/FHIR/Ucum-java), the `ucum` package must also be included:
@@ -32,7 +32,7 @@ To perform UCUM unit validation during translation using [`ucum-java`](https://g
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>ucum</artifact>
-      <version>4.0.0</version>
+      <version>{version}</version>
     </dependency>
 
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
@@ -40,7 +40,7 @@ To use the DataRequirementsProcessor, a component that performs data requirement
     <dependency>
       <groupId>org.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
-      <version>4.0.0</version>
+      <version>{version}</version>
     </dependency>
 
 Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
@@ -51,13 +51,13 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 ## Current Status
 
-The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.3)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the [Issues](https://github.com/cqframework/clinical_quality_language/issues) tracker in the Github repository.
+The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.3)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the [Issues](https://github.com/cqframework/clinical_quality_language/issues) tracker in the GitHub repository.
 
-The current release of the translator is version [4.0.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v4.0.0), which includes full support for library and model information sharing through NPM packages, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring and derived model info, as well as a new DataRequirementsProcessor to support data requirements inference and analysis.
+The [current release](https://github.com/cqframework/clinical_quality_language/releases/latest) includes full support for library and model information sharing through NPM packages, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring and derived model info, as well as a new DataRequirementsProcessor to support data requirements inference and analysis.
 
 ## Roadmap
 
-There is a significant backlog of issues currently being worked, in addition to long term plans, including support for CQL R2, as well as Kotlin Multi-platform capability. The roadmap is managed and maintained here: [Roadmap](https://github.com/cqframework/clinical_quality_language/wiki/Roadmap)
+There is a significant backlog of issues currently being worked, in addition to long term plans, including support for CQL R2. The roadmap is managed and maintained here: [Roadmap](https://github.com/cqframework/clinical_quality_language/wiki/Roadmap)
 
 ## Usage
 
@@ -125,3 +125,7 @@ CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations
 ```
 
 `toString()` has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.
+
+## Migration from v3 to v4
+
+For information on migrating from CQL translator v3 to v4, see the [migration guide](../docs/migration-guides/v3-to-v4-migration.md).
