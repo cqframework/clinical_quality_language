@@ -349,6 +349,7 @@ constructor(
                 require(
                     model.modelInfo.name == it.localIdentifier && model.modelInfo.url == it.uri
                 ) {
+                    @Suppress("MaxLineLength")
                     "Library ${library.identifier?.id} uses ${it.localIdentifier} model with URI ${it.uri} but resolved model has name ${model.modelInfo.name} and URI ${model.modelInfo.url}"
                 }
 

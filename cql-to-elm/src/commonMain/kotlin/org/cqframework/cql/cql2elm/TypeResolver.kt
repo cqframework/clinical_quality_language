@@ -17,7 +17,10 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TupleTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 
+@Suppress("TooManyFunctions")
 class TypeResolver(val libraryManager: LibraryManager) {
+
+    @Suppress("ReturnCount")
     fun getTypeUri(type: DataType?): String? {
         if (type is ListType) {
             return getTypeUri(type.elementType)
@@ -35,6 +38,7 @@ class TypeResolver(val libraryManager: LibraryManager) {
         return null
     }
 
+    @Suppress("ReturnCount")
     fun dataTypeToProfileQName(type: DataType?): QName? {
         if (type is ClassType) {
             if (type.identifier != null) {
