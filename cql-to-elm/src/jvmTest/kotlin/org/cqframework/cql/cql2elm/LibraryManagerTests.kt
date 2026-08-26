@@ -354,8 +354,8 @@ internal class LibraryManagerTests {
     @Test
     fun compiledLibraryWithoutResultTypesIsRejected() {
         // Result types must be present for every expression, regardless of the `translatorOptions`
-        // value in the annotation. When a compiled library is not compatible (missing result types,
-        // etc.), library resolution will continue to load the library from the CQL source if it is
+        // annotation value. When a compiled library is not compatible (missing result types, etc.),
+        // library resolution will continue to load the library from the CQL source if it is
         // present.
         val cqlIncludeException =
             Assertions.assertThrows(CqlIncludeException::class.java) {
