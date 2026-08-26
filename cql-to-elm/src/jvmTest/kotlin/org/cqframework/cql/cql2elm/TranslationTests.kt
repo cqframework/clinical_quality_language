@@ -5,11 +5,15 @@ import java.io.IOException
 import java.util.Scanner
 import java.util.concurrent.CompletableFuture
 import java.util.stream.Collectors
+import javax.xml.namespace.QName
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.`is`
-import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.SimpleType
 import org.hl7.cql_annotations.r1.CqlToElmInfo
@@ -23,11 +27,6 @@ import org.hl7.elm.r1.Null
 import org.hl7.elm.r1.ProperContains
 import org.hl7.elm.r1.Property
 import org.hl7.elm.r1.Query
-import org.hl7.elm.r1.TypeSpecifier
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
 
 @Suppress("ForbiddenComment", "MaxLineLength")
 internal class TranslationTests {
@@ -35,7 +34,7 @@ internal class TranslationTests {
     // JSON, I want it to
     // verify the actual XML.
     @Test
-    @Disabled
+    @Ignore
     @Throws(IOException::class)
     fun patientPropertyAccess() {
         val expectedXmlFile =
@@ -49,11 +48,11 @@ internal class TranslationTests {
         val modelManager = ModelManager()
         val actualXml =
             CqlTranslator.fromFile(propertyTestFile.path, LibraryManager(modelManager)).toXml()
-        assertThat(actualXml, `is`(expectedXml))
+        assertEquals(expectedXml, actualXml)
     }
 
     @Test
-    @Disabled
+    @Ignore
     @Throws(IOException::class)
     fun forPrintElm() {
         val propertyTestFile =
@@ -87,7 +86,7 @@ internal class TranslationTests {
     }
 
     @Test
-    @Disabled
+    @Ignore
     @Throws(IOException::class)
     fun cms146v2XML() {
         val expectedXml = ""
@@ -95,7 +94,7 @@ internal class TranslationTests {
             File(Cql2ElmVisitorTest::class.java.getResource("CMS146v2_Test_CQM.cql")!!.file)
         val modelManager = ModelManager()
         val actualXml = CqlTranslator.fromFile(cqlFile.path, LibraryManager(modelManager)).toXml()
-        assertThat(actualXml, `is`(expectedXml))
+        assertEquals(expectedXml, actualXml)
     }
 
     @Test
@@ -107,11 +106,11 @@ internal class TranslationTests {
         val e = translator.errors[0]
         val tb = e.locator
 
-        Assertions.assertEquals(6, tb!!.startLine)
-        Assertions.assertEquals(6, tb.endLine)
+        assertEquals(6, tb!!.startLine)
+        assertEquals(6, tb.endLine)
 
-        Assertions.assertEquals(5, tb.startChar)
-        Assertions.assertEquals(10, tb.endChar)
+        assertEquals(5, tb.startChar)
+        assertEquals(10, tb.endChar)
     }
 
     @Test
@@ -124,8 +123,8 @@ internal class TranslationTests {
             )
         assertEquals(0, translator.errors.size)
         val defs = translator.translatedLibrary!!.library!!.statements!!.def
-        Assertions.assertNotNull(defs[1].annotation)
-        Assertions.assertTrue(defs[1].annotation.isNotEmpty())
+        assertNotNull(defs[1].annotation)
+        assertTrue(defs[1].annotation.isNotEmpty())
     }
 
     @Test
@@ -147,11 +146,11 @@ internal class TranslationTests {
             )
         assertEquals(0, translator.errors.size)
         val library = translator.translatedLibrary!!.library
-        Assertions.assertNotNull(library!!.annotation)
-        assertThat(library.annotation.size, Matchers.greaterThan(0))
-        assertThat(library.annotation[0], Matchers.instanceOf(CqlToElmInfo::class.java))
-        val info: CqlToElmInfo = library.annotation[0] as CqlToElmInfo
-        assertThat(info.translatorOptions, `is`<String?>("EnableAnnotations"))
+        assertNotNull(library!!.annotation)
+        assertTrue(library.annotation.isNotEmpty())
+        assertIs<CqlToElmInfo>(library.annotation[0])
+        val info = library.annotation[0] as CqlToElmInfo
+        assertEquals("EnableAnnotations", info.translatorOptions)
     }
 
     @Test
@@ -162,52 +161,40 @@ internal class TranslationTests {
         // Gets the "TooManyCasts" define
         var exp: Expression? =
             translator.translatedLibrary!!.library!!.statements!!.def[2].expression
-        assertThat<Expression?>(exp, `is`<Expression?>(Matchers.instanceOf(Query::class.java)))
+        assertIs<Query>(exp)
 
-        var query = exp as Query
+        var query = exp
         var returnClause = query.`return`
-        Assertions.assertNotNull(returnClause)
-        Assertions.assertNotNull(returnClause!!.expression)
-        assertThat<Expression?>(
-            returnClause.expression,
-            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java)),
-        )
+        assertNotNull(returnClause)
+        assertNotNull(returnClause.expression)
+        assertIs<FunctionRef>(returnClause.expression)
 
         var functionRef = returnClause.expression as FunctionRef?
         assertEquals(1, functionRef!!.operand.size)
 
         // For a widening cast, no As is required, it should be a direct property access.
         var operand: Expression? = functionRef.operand[0]
-        assertThat<Expression?>(
-            operand,
-            `is`<Expression?>(Matchers.instanceOf(Property::class.java)),
-        )
+        assertIs<Property>(operand)
 
         // Gets the "NeedsACast" define
         exp = translator.translatedLibrary!!.library!!.statements!!.def[4].expression
-        assertThat<Expression?>(exp, `is`<Expression?>(Matchers.instanceOf(Query::class.java)))
+        assertIs<Query>(exp)
 
-        query = exp as Query
+        query = exp
         returnClause = query.`return`
-        Assertions.assertNotNull(returnClause)
-        Assertions.assertNotNull(returnClause!!.expression)
-        assertThat<Expression?>(
-            returnClause.expression,
-            `is`<Expression?>(Matchers.instanceOf(FunctionRef::class.java)),
-        )
+        assertNotNull(returnClause)
+        assertNotNull(returnClause.expression)
+        assertIs<FunctionRef>(returnClause.expression)
 
         functionRef = returnClause.expression as FunctionRef?
         assertEquals(1, functionRef!!.operand.size)
 
         // For narrowing choice casts, an As is expected
         operand = functionRef.operand[0]
-        assertThat(operand, `is`(Matchers.instanceOf(As::class.java)))
+        assertIs<As>(operand)
 
-        val asDef = operand as As
-        assertThat<TypeSpecifier?>(
-            asDef.asTypeSpecifier,
-            `is`<TypeSpecifier?>(Matchers.instanceOf(ChoiceTypeSpecifier::class.java)),
-        )
+        val asDef = operand
+        assertIs<ChoiceTypeSpecifier>(asDef.asTypeSpecifier)
     }
 
     // test for https://github.com/cqframework/clinical_quality_language/issues/1293
@@ -223,9 +210,9 @@ internal class TranslationTests {
             )
         assertEquals(0, translator.errors.size)
         val library = translator.translatedLibrary!!.library
-        assertThat(library!!.statements!!.def.size, `is`(2))
+        assertEquals(2, library!!.statements!!.def.size)
         val def = library.statements!!.def[0]
-        assertThat(def.context, `is`("Unfiltered"))
+        assertEquals("Unfiltered", def.context)
     }
 
     @Test
@@ -306,7 +293,7 @@ internal class TranslationTests {
     }
 
     @Test
-    @Disabled(
+    @Ignore(
         "Could not resolve call to operator Equal with signature (tuple{Foo:System.Any},tuple{Bar:System.Any}"
     )
     @Throws(IOException::class)
@@ -317,7 +304,7 @@ internal class TranslationTests {
 
     @Suppress("MaxLineLength")
     @Test
-    @Disabled(
+    @Ignore(
         "Could not resolve call to operator Equal with signature (tuple{a:System.String,b:System.Any},tuple{a:System.String,c:System.Any})"
     )
     @Throws(IOException::class)
@@ -327,7 +314,7 @@ internal class TranslationTests {
     }
 
     @Test
-    @Disabled(
+    @Ignore(
         "Could not resolve call to operator Collapse with signature (System.Any,System.Quantity)"
     )
     @Throws(IOException::class)
@@ -350,11 +337,11 @@ internal class TranslationTests {
             TestUtils.createTranslator(
                 "TestForwardDeclarationSameTypeDifferentNamespaceNormalTypes.cql"
             )
-        assertThat("Errors: " + translator.errors, translator.errors.size, Matchers.equalTo(0))
+        assertEquals(0, translator.errors.size, "Errors: " + translator.errors)
 
         val compileLibrary = translator.translatedLibrary!!.library
         val statements = compileLibrary!!.statements!!.def
-        assertThat(statements.size, Matchers.equalTo(3))
+        assertEquals(3, statements.size)
     }
 
     @Test
@@ -364,11 +351,11 @@ internal class TranslationTests {
             TestUtils.createTranslator(
                 "TestForwardDeclarationSameTypeDifferentNamespaceGenericTypes.cql"
             )
-        assertThat("Errors: " + translator.errors, translator.errors.size, Matchers.equalTo(0))
+        assertEquals(0, translator.errors.size, "Errors: " + translator.errors)
 
         val compileLibrary = translator.translatedLibrary!!.library
         val statements = compileLibrary!!.statements!!.def
-        assertThat(statements.size, Matchers.equalTo(3))
+        assertEquals(3, statements.size)
     }
 
     // This test creates a bunch of translators on the common pool to suss out any race conditions.
@@ -402,112 +389,82 @@ internal class TranslationTests {
         val compiledLibrary = translator.translatedLibrary!!.library
         val statements = compiledLibrary!!.statements!!.def
 
-        assertThat(statements.size, Matchers.equalTo(5))
+        assertEquals(5, statements.size)
 
         var test = statements[0]
-        assertThat<Expression?>(
-            test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java),
-        )
+        assertIs<ProperContains>(test.expression)
         var properContains = test.expression as ProperContains?
-        assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
+        assertIs<Interval>(properContains!!.operand[0])
         var interval = properContains.operand[0] as Interval
 
         var intervalResultType = interval.resultType
-        assertThat<DataType?>(
-            intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java),
-        )
+        assertIs<IntervalType>(intervalResultType)
         var intervalType = intervalResultType as IntervalType?
-        assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
+        assertIs<SimpleType>(intervalType!!.pointType)
         var pointType: SimpleType = intervalType.pointType as SimpleType
-        assertThat(pointType.name, Matchers.equalTo("System.Integer"))
-        assertThat(properContains.operand[1], Matchers.instanceOf(As::class.java))
+        assertEquals("System.Integer", pointType.name)
+        assertIs<As>(properContains.operand[1])
         var asDef = properContains.operand[1] as As
-        assertThat(asDef.asType.toString(), Matchers.equalTo("{urn:hl7-org:elm-types:r1}Integer"))
-        assertThat<Expression?>(asDef.operand, Matchers.instanceOf<Expression?>(Null::class.java))
+        assertEquals("{urn:hl7-org:elm-types:r1}Integer", asDef.asType.toString())
+        assertIs<Null>(asDef.operand)
 
         test = statements[1]
-        assertThat<Expression?>(
-            test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java),
-        )
-        properContains = test.expression as ProperContains?
-        assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
+        assertIs<ProperContains>(test.expression)
+        properContains = test.expression as ProperContains
+        assertIs<Interval>(properContains.operand[0])
         interval = properContains.operand[0] as Interval
 
         intervalResultType = interval.resultType
-        assertThat<DataType?>(
-            intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java),
-        )
-        intervalType = intervalResultType as IntervalType?
-        assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
+        assertIs<IntervalType>(intervalResultType)
+        intervalType = intervalResultType
+        assertIs<SimpleType>(intervalType.pointType)
         pointType = intervalType.pointType as SimpleType
-        assertThat(pointType.name, Matchers.equalTo("System.Integer"))
-        assertThat(properContains.operand[1], Matchers.instanceOf(As::class.java))
+        assertEquals("System.Integer", pointType.name)
+        assertIs<As>(properContains.operand[1])
         asDef = properContains.operand[1] as As
-        assertThat(asDef.asType.toString(), Matchers.equalTo("{urn:hl7-org:elm-types:r1}Integer"))
-        assertThat<Expression?>(asDef.operand, Matchers.instanceOf<Expression?>(Null::class.java))
+        assertEquals("{urn:hl7-org:elm-types:r1}Integer", asDef.asType.toString())
+        assertIs<Null>(asDef.operand)
 
         test = statements[2]
-        assertThat<Expression?>(
-            test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java),
-        )
-        properContains = test.expression as ProperContains?
-        assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
+        assertIs<ProperContains>(test.expression)
+        properContains = test.expression as ProperContains
+        assertIs<Interval>(properContains.operand[0])
         interval = properContains.operand[0] as Interval
 
         intervalResultType = interval.resultType
-        assertThat<DataType?>(
-            intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java),
-        )
-        intervalType = intervalResultType as IntervalType?
-        assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
+        assertIs<IntervalType>(intervalResultType)
+        intervalType = intervalResultType
+        assertIs<SimpleType>(intervalType.pointType)
         pointType = intervalType.pointType as SimpleType
-        assertThat(pointType.name, Matchers.equalTo("System.Any"))
-        assertThat(properContains.operand[1], Matchers.instanceOf(Null::class.java))
+        assertEquals("System.Any", pointType.name)
+        assertIs<Null>(properContains.operand[1])
 
         test = statements[3]
-        assertThat<Expression?>(
-            test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java),
-        )
-        properContains = test.expression as ProperContains?
-        assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
+        assertIs<ProperContains>(test.expression)
+        properContains = test.expression as ProperContains
+        assertIs<Interval>(properContains.operand[0])
         interval = properContains.operand[0] as Interval
         intervalResultType = interval.resultType
-        assertThat<DataType?>(
-            intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java),
-        )
-        intervalType = intervalResultType as IntervalType?
-        assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
+        assertIs<IntervalType>(intervalResultType)
+        intervalType = intervalResultType
+        assertIs<SimpleType>(intervalType.pointType)
         pointType = intervalType.pointType as SimpleType
-        assertThat(pointType.name, Matchers.equalTo("System.Any"))
-        assertThat(properContains.operand[1], Matchers.instanceOf(Null::class.java))
+        assertEquals("System.Any", pointType.name)
+        assertIs<Null>(properContains.operand[1])
 
         test = statements[4]
-        assertThat<Expression?>(
-            test.expression,
-            Matchers.instanceOf<Expression?>(ProperContains::class.java),
-        )
-        properContains = test.expression as ProperContains?
-        assertThat(properContains!!.operand[0], Matchers.instanceOf(Interval::class.java))
+        assertIs<ProperContains>(test.expression)
+        properContains = test.expression as ProperContains
+        assertIs<Interval>(properContains.operand[0])
         interval = properContains.operand[0] as Interval
 
         intervalResultType = interval.resultType
-        assertThat<DataType?>(
-            intervalResultType,
-            Matchers.instanceOf<DataType?>(IntervalType::class.java),
-        )
-        intervalType = intervalResultType as IntervalType?
-        assertThat(intervalType!!.pointType, Matchers.instanceOf(SimpleType::class.java))
+        assertIs<IntervalType>(intervalResultType)
+        intervalType = intervalResultType
+        assertIs<SimpleType>(intervalType.pointType)
         pointType = intervalType.pointType as SimpleType
-        assertThat(pointType.name, Matchers.equalTo("System.Integer"))
-        assertThat(properContains.operand[1], Matchers.instanceOf(As::class.java))
+        assertEquals("System.Integer", pointType.name)
+        assertIs<As>(properContains.operand[1])
     }
 
     @Test
@@ -521,11 +478,11 @@ internal class TranslationTests {
                 .map { obj: CqlCompilerException? -> obj!!.message }
                 .collect(Collectors.toList())
 
-        assertThat(warningMessages.toString(), translator.warnings.size, `is`(13))
+        assertEquals(13, translator.warnings.size, warningMessages.toString())
 
         val distinct = warningMessages.distinct()
 
-        assertThat(warningMessages.toString(), distinct.size, `is`(11))
+        assertEquals(11, distinct.size, warningMessages.toString())
 
         val hidingDefinition =
             "An alias identifier Definition is hiding another identifier of the same name."
@@ -546,9 +503,8 @@ internal class TranslationTests {
         val hidingLetFhir = "A let identifier FHIR is hiding another identifier of the same name."
         val hidingAliasLet = "A let identifier Alias is hiding another identifier of the same name."
 
-        assertThat(
-            distinct,
-            Matchers.containsInAnyOrder(
+        for (message in
+            listOf(
                 hidingDefinition,
                 hidingVarLet,
                 hidingContextValueSet,
@@ -560,8 +516,9 @@ internal class TranslationTests {
                 hidingContextFhir,
                 hidingLetFhir,
                 hidingAliasLet,
-            ),
-        )
+            )) {
+            assertContains(distinct, message)
+        }
     }
 
     @Test
@@ -575,9 +532,9 @@ internal class TranslationTests {
                 .stream()
                 .map { obj: CqlCompilerException? -> obj!!.message }
                 .collect(Collectors.toList())
-        assertThat(
+        assertContains(
             errorMessages,
-            Matchers.contains("Specified data type DomainResource does not support retrieval."),
+            "Specified data type DomainResource does not support retrieval.",
         )
     }
 
@@ -603,25 +560,37 @@ internal class TranslationTests {
         val compiledLibrary = translator.translatedLibrary!!.library
         val statements = compiledLibrary!!.statements!!.def
 
-        assertThat(statements.size, `is`(2))
+        assertEquals(2, statements.size)
         val encounterPeriod = statements[1]
-        assertThat(encounterPeriod.name, `is`("EncounterPeriod"))
-        assertThat<Expression?>(
-            encounterPeriod.expression,
-            Matchers.instanceOf<Expression?>(Query::class.java),
-        )
+        assertEquals("EncounterPeriod", encounterPeriod.name)
+        assertIs<Query>(encounterPeriod.expression)
         val query = encounterPeriod.expression as Query?
-        assertThat<Expression?>(
-            query!!.`return`!!.expression,
-            Matchers.instanceOf<Expression?>(FunctionRef::class.java),
-        )
+        assertIs<FunctionRef>(query!!.`return`!!.expression)
         val functionRef = query.`return`!!.expression as FunctionRef?
-        assertThat(functionRef!!.libraryName, `is`("FHIRHelpers"))
-        assertThat(functionRef.name, `is`("ToInterval"))
-        assertThat<Any?>(functionRef.signature, Matchers.notNullValue())
-        assertThat(functionRef.signature.size, `is`(1))
-        assertThat(functionRef.signature[0], Matchers.instanceOf(NamedTypeSpecifier::class.java))
+        assertEquals("FHIRHelpers", functionRef!!.libraryName)
+        assertEquals("ToInterval", functionRef.name)
+        assertNotNull(functionRef.signature)
+        assertEquals(1, functionRef.signature.size)
+        assertIs<NamedTypeSpecifier>(functionRef.signature[0])
         val namedTypeSpecifier = functionRef.signature[0] as NamedTypeSpecifier
-        assertThat(namedTypeSpecifier.name!!.localPart, `is`("Period"))
+        assertEquals("Period", namedTypeSpecifier.name!!.localPart)
+    }
+
+    @Test
+    fun contextHasResultType() {
+        val translator =
+            TestUtils.createTranslatorFromText(
+                """
+                library Lib1
+                using FHIR version '4.0.1'
+                context Patient
+            """
+                    .trimIndent(),
+                CqlCompilerOptions.Options.EnableResultTypes,
+            )
+        val library = translator.toELM()
+        assertNotNull(library)
+        val modelContextRetrieve = library.statements!!.def[0]
+        assertEquals(QName("http://hl7.org/fhir", "Patient"), modelContextRetrieve.resultTypeName)
     }
 }

@@ -1,8 +1,11 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.test.assertEquals
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
+import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hl7.cql.model.SystemModelInfoProvider
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.AfterAll
@@ -341,6 +344,45 @@ internal class LibraryManagerTests {
         }
     }
 
+    @Test
+    fun compiledLibraryWithResultTypesResolvesSuccessfully() {
+        val libraryWithResultTypes =
+            libraryManager!!.resolveLibrary(VersionedIdentifier().withId("LibraryWithResultTypes"))
+        assertEquals("LibraryWithResultTypes", libraryWithResultTypes.library!!.identifier!!.id)
+    }
+
+    @Test
+    fun compiledLibraryWithoutResultTypesIsRejected() {
+        // Result types must be present for every expression, regardless of the `translatorOptions`
+        // value in the annotation. When a compiled library is not compatible (missing result types,
+        // etc.), library resolution will continue to load the library from the CQL source if it is
+        // present.
+        val cqlIncludeException =
+            Assertions.assertThrows(CqlIncludeException::class.java) {
+                libraryManager!!.resolveLibrary(
+                    VersionedIdentifier().withId("LibraryWithoutResultTypes")
+                )
+            }
+        assertEquals(
+            "Could not load source for library LibraryWithoutResultTypes, version null, namespace uri null.",
+            cqlIncludeException.message,
+        )
+    }
+
+    @Test
+    fun compiledLibraryWithIncompatibleTranslatorVersionIsRejected() {
+        val cqlIncludeException =
+            Assertions.assertThrows(CqlIncludeException::class.java) {
+                libraryManager!!.resolveLibrary(
+                    VersionedIdentifier().withId("LibraryWithIncompatibleTranslatorVersion")
+                )
+            }
+        assertEquals(
+            "Could not load source for library LibraryWithIncompatibleTranslatorVersion, version null, namespace uri null.",
+            cqlIncludeException.message,
+        )
+    }
+
     companion object {
         private val BASE_LIBRARY_ELM_IDENT = VersionedIdentifier().withId("BaseLibraryElm")
         private val BASE_LIBRARY_ELM_OTHER_IDENT =
@@ -355,27 +397,27 @@ internal class LibraryManagerTests {
         @JvmStatic
         @BeforeAll
         fun setup() {
-            val modelManager = ModelManager()
+            val modelManager =
+                ModelManager().apply {
+                    modelInfoLoader.registerModelInfoProvider(SystemModelInfoProvider())
+                    modelInfoLoader.registerModelInfoProvider(FhirModelInfoProvider())
+                }
 
-            libraryManager = LibraryManager(modelManager)
+            val compilerOptions = CqlCompilerOptions(CqlCompilerOptions.Options.EnableResultTypes)
+
+            libraryManager = LibraryManager(modelManager, compilerOptions)
             libraryManager!!
                 .librarySourceLoader
                 .registerProvider(TestLibrarySourceProvider("LibraryManagerTests"))
 
             // Used if we want to load a library with a mismatch in the version and want to test the
-            // subsequent version
-            // validation
-            libraryManagerVersionAgnostic = LibraryManager(modelManager)
+            // subsequent version validation
+            libraryManagerVersionAgnostic = LibraryManager(modelManager, compilerOptions)
             libraryManagerVersionAgnostic!!
                 .librarySourceLoader
                 .registerProvider(TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"))
 
-            libraryManagerOwnCache =
-                LibraryManager(
-                    modelManager,
-                    CqlCompilerOptions.Companion.defaultOptions(),
-                    HashMap(),
-                )
+            libraryManagerOwnCache = LibraryManager(modelManager, compilerOptions, HashMap())
             libraryManagerOwnCache!!
                 .librarySourceLoader
                 .registerProvider(TestLibrarySourceVersionAgnosticProvider("LibraryManagerTests"))

@@ -1,8 +1,8 @@
 {
   "library": {
     "annotation" : [ {
-      "translatorOptions" : "EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion",
-      "translatorVersion" : "1.5",
+      "translatorOptions" : "EnableResultTypes",
+      "translatorVersion" : "{translatorVersion}",
       "type" : "CqlToElmInfo"
     }
     ],

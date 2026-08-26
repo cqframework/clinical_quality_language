@@ -10,6 +10,7 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.cql2elm.ucum.defaultLazyUcumService
+import org.cqframework.cql.cql2elm.utils.getTranslatorVersion
 import org.cqframework.cql.cql2elm.utils.logger
 import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
@@ -51,6 +52,8 @@ constructor(
         }
 
     val ucumService by lazyUcumService
+
+    val typeResolver = TypeResolver(this)
 
     /**
      * A "well-known" library name is one that is allowed to resolve without a namespace in a
@@ -332,7 +335,25 @@ constructor(
             val compiledLibrary = CompiledLibrary()
             compiledLibrary.library = library
             compiledLibrary.identifier = library.identifier
-            library.usings?.def?.forEach { compiledLibrary.add(it) }
+            library.usings?.def?.forEach {
+                requireNotNull(it.localIdentifier) {
+                    "Missing model identifier in a using element in library ${library.identifier?.id}."
+                }
+
+                // To enable type resolution, the models referenced in ELM expressions need to be
+                // loaded.
+                val model = modelManager.resolveModel(it.localIdentifier!!, it.version)
+
+                // Extra compatibility check to make sure the model name and URI in the compiled
+                // library match those in the resolved model.
+                require(
+                    model.modelInfo.name == it.localIdentifier && model.modelInfo.url == it.uri
+                ) {
+                    "Library ${library.identifier?.id} uses ${it.localIdentifier} model with URI ${it.uri} but resolved model has name ${model.modelInfo.name} and URI ${model.modelInfo.url}"
+                }
+
+                compiledLibrary.add(it)
+            }
 
             library.includes?.def?.forEach { compiledLibrary.add(it) }
 
@@ -347,8 +368,16 @@ constructor(
             library.parameters?.def?.forEach { compiledLibrary.add(it) }
 
             library.statements?.def?.forEach {
-                requireNotNull(it.resultType) {
+                // Result types must be present for every expression
+                require(it.resultTypeName != null || it.resultTypeSpecifier != null) {
                     "Expression ${it.name} in library ${library.identifier?.id} does not have a result type."
+                }
+
+                // Resolve the result type for the expression
+                if (it.resultTypeName != null) {
+                    it.resultType = typeResolver.resolveTypeName(it.resultTypeName!!)
+                } else if (it.resultTypeSpecifier != null) {
+                    it.resultType = typeResolver.resolveTypeSpecifier(it.resultTypeSpecifier!!)
                 }
 
                 compiledLibrary.add(it)
@@ -417,14 +446,13 @@ constructor(
         return false
     }
 
+    /**
+     * Compares the version of the currently running translator with the version used to compile the
+     * resolved compiled library.
+     */
     private fun isVersionCompatible(library: Library): Boolean {
-        if (this.cqlCompilerOptions.compatibilityLevel.isNotEmpty()) {
-            val version = CompilerOptions.getCompilerVersion(library)
-            if (version != null) {
-                return version == this.cqlCompilerOptions.compatibilityLevel
-            }
-        }
-        return false
+        val version = CompilerOptions.getCompilerVersion(library) ?: return false
+        return version == getTranslatorVersion()
     }
 
     internal class FunctionSig(private val name: String, private val numArguments: Int) {
