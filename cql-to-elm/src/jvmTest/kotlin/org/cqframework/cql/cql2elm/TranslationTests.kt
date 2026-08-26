@@ -4,7 +4,6 @@ import java.io.File
 import java.io.IOException
 import java.util.Scanner
 import java.util.concurrent.CompletableFuture
-import java.util.stream.Collectors
 import javax.xml.namespace.QName
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -19,7 +18,6 @@ import org.hl7.cql.model.SimpleType
 import org.hl7.cql_annotations.r1.CqlToElmInfo
 import org.hl7.elm.r1.As
 import org.hl7.elm.r1.ChoiceTypeSpecifier
-import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.Interval
 import org.hl7.elm.r1.NamedTypeSpecifier
@@ -159,8 +157,7 @@ internal class TranslationTests {
         val translator = TestUtils.createTranslator("TestNoImplicitCast.cql")
         assertEquals(0, translator.errors.size)
         // Gets the "TooManyCasts" define
-        var exp: Expression? =
-            translator.translatedLibrary!!.library!!.statements!!.def[2].expression
+        var exp = translator.translatedLibrary!!.library!!.statements!!.def[2].expression
         assertIs<Query>(exp)
 
         var query = exp
@@ -173,7 +170,7 @@ internal class TranslationTests {
         assertEquals(1, functionRef!!.operand.size)
 
         // For a widening cast, no As is required, it should be a direct property access.
-        var operand: Expression? = functionRef.operand[0]
+        var operand = functionRef.operand[0]
         assertIs<Property>(operand)
 
         // Gets the "NeedsACast" define
@@ -401,7 +398,7 @@ internal class TranslationTests {
         assertIs<IntervalType>(intervalResultType)
         var intervalType = intervalResultType as IntervalType?
         assertIs<SimpleType>(intervalType!!.pointType)
-        var pointType: SimpleType = intervalType.pointType as SimpleType
+        var pointType = intervalType.pointType as SimpleType
         assertEquals("System.Integer", pointType.name)
         assertIs<As>(properContains.operand[1])
         var asDef = properContains.operand[1] as As
@@ -472,11 +469,7 @@ internal class TranslationTests {
     fun hidingVariousUseCases() {
         val translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0)
         val warnings = translator.warnings
-        val warningMessages =
-            warnings
-                .stream()
-                .map { obj: CqlCompilerException? -> obj!!.message }
-                .collect(Collectors.toList())
+        val warningMessages = warnings.map { it.message }
 
         assertEquals(13, translator.warnings.size, warningMessages.toString())
 
@@ -527,11 +520,7 @@ internal class TranslationTests {
         // See:  https://github.com/cqframework/clinical_quality_language/issues/1392
         val translator = TestUtils.runSemanticTest("abstractClassNotRetrievable.cql", 1)
         val errors = translator.errors
-        val errorMessages =
-            errors
-                .stream()
-                .map { obj: CqlCompilerException? -> obj!!.message }
-                .collect(Collectors.toList())
+        val errorMessages = errors.map { it.message }
         assertContains(
             errorMessages,
             "Specified data type DomainResource does not support retrieval.",

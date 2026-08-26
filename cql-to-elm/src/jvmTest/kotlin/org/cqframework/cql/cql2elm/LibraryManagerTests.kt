@@ -1,106 +1,104 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.hl7.cql.model.SystemModelInfoProvider
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.VersionedIdentifier
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 
 @Suppress("MaxLineLength")
 internal class LibraryManagerTests {
     @Test
     fun invalidCql() {
-        val lib: Library? = libraryManagerOwnCache!!.resolveLibrary(INVALID_IDENT).library
+        val lib = libraryManagerOwnCache!!.resolveLibrary(INVALID_IDENT).library
 
-        Assertions.assertNotNull(lib)
-
-        MatcherAssert.assertThat(
-            libraryManagerOwnCache!!.compiledLibraries.values,
-            Matchers.empty(),
-        )
+        assertNotNull(lib)
+        assertTrue(libraryManagerOwnCache!!.compiledLibraries.values.isEmpty())
     }
 
     @Test
     fun resolveLibrariesErrors() {
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManagerOwnCache!!.resolveLibraries(mutableListOf())
         }
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManagerOwnCache!!.resolveLibraries(listOf(VersionedIdentifier()))
         }
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManagerOwnCache!!.resolveLibraries(listOf(VersionedIdentifier().withId(null)))
         }
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManagerOwnCache!!.resolveLibraries(listOf(VersionedIdentifier().withId("")))
         }
     }
 
     @Test
     fun basicElmTest() {
-        val lib: Library? = libraryManager!!.resolveLibrary(BASE_LIBRARY_ELM_IDENT).library
+        val lib = libraryManager!!.resolveLibrary(BASE_LIBRARY_ELM_IDENT).library
 
-        Assertions.assertNotNull(lib)
-        Assertions.assertNotNull(lib!!.statements!!.def)
+        assertNotNull(lib)
+        assertNotNull(lib.statements!!.def)
     }
 
     @Test
     fun basicElmTestMultiLib() {
-        val results: CompiledLibraryMultiResults =
-            libraryManager!!.resolveLibraries(listOf(BASE_LIBRARY_ELM_IDENT))
+        val results = libraryManager!!.resolveLibraries(listOf(BASE_LIBRARY_ELM_IDENT))
 
-        Assertions.assertNotNull(results)
+        assertNotNull(results)
 
         val compiledLibraries = results.allCompiledLibraries()
-        Assertions.assertNotNull(compiledLibraries)
-        MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
-        Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
+        assertNotNull(compiledLibraries)
+        assertEquals(1, compiledLibraries.size)
+        assertTrue(results.allErrors().isEmpty())
+        assertFalse(results.hasErrors())
+        assertEquals(1, results.allResultsWithoutErrorSeverity().size)
+        assertTrue(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT).isEmpty())
 
         val compiledLibraryFirst = compiledLibraries[0]
         val compiledLibraryOnlyResult = results.onlyResult
-        MatcherAssert.assertThat(
+        assertEquals(
+            compiledLibraryFirst.identifier,
             compiledLibraryOnlyResult.compiledLibrary.identifier,
-            Matchers.equalTo(compiledLibraryFirst.identifier),
         )
 
         val library = compiledLibraryOnlyResult.compiledLibrary.library
 
-        Assertions.assertNotNull(library)
-        Assertions.assertNotNull(library!!.statements!!.def)
+        assertNotNull(library)
+        assertNotNull(library.statements!!.def)
     }
 
     @Test
     fun basicElmTestMultiLibTwoGoodLibs() {
-        val results: CompiledLibraryMultiResults =
+        val results =
             libraryManager!!.resolveLibraries(
                 listOf(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_OTHER_IDENT)
             )
 
-        Assertions.assertNotNull(results)
+        assertNotNull(results)
 
         val compiledLibraries = results.allCompiledLibraries()
-        Assertions.assertNotNull(compiledLibraries)
-        MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(2))
-        MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
-        Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(2))
-        MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
+        assertNotNull(compiledLibraries)
+        assertEquals(2, compiledLibraries.size)
+        assertTrue(results.allErrors().isEmpty())
+        assertFalse(results.hasErrors())
+        assertEquals(2, results.allResultsWithoutErrorSeverity().size)
+        assertTrue(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT).isEmpty())
 
         for (compiledLibrary in compiledLibraries) {
             val library = compiledLibrary.library
 
-            Assertions.assertNotNull(library)
-            Assertions.assertNotNull(library!!.statements!!.def)
+            assertNotNull(library)
+            assertNotNull(library.statements!!.def)
         }
     }
 
@@ -109,11 +107,11 @@ internal class LibraryManagerTests {
         val versionedIdentifier = listOf(BASE_LIBRARY_ELM_IDENT, BASE_LIBRARY_ELM_MISMATCH_ID_IDENT)
 
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManager!!.resolveLibraries(versionedIdentifier)
             }
 
-        Assertions.assertEquals(
+        assertEquals(
             "Could not load source for library BaseLibraryElmMismatchId, version 1.0.1, namespace uri null.", //                "Library BaseLibraryElmMismatchId was included with version null, but id:
             // BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
             cqlIncludeException.message,
@@ -123,31 +121,27 @@ internal class LibraryManagerTests {
     @Test
     fun basicElmTestMultiLibOneGoodOneInvalidLibs() {
         val versionedIdentifier = listOf(BASE_LIBRARY_ELM_IDENT, INVALID_IDENT)
-        val results: CompiledLibraryMultiResults =
-            libraryManager!!.resolveLibraries(versionedIdentifier)
-        Assertions.assertNotNull(results)
+        val results = libraryManager!!.resolveLibraries(versionedIdentifier)
+        assertNotNull(results)
 
         val compiledLibraries = results.allCompiledLibraries()
-        Assertions.assertNotNull(compiledLibraries)
-        MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(2))
-        MatcherAssert.assertThat(results.allErrors(), Matchers.not(Matchers.empty()))
-        Assertions.assertTrue(results.hasErrors())
-        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
+        assertNotNull(compiledLibraries)
+        assertEquals(2, compiledLibraries.size)
+        assertTrue(results.allErrors().isNotEmpty())
+        assertTrue(results.hasErrors())
+        assertEquals(1, results.allResultsWithoutErrorSeverity().size)
+        assertTrue(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT).isEmpty())
 
         val library = results.getCompiledLibraryFor(BASE_LIBRARY_ELM_IDENT)
 
-        Assertions.assertNotNull(library)
-        Assertions.assertNotNull(library!!.library!!.statements!!.def)
+        assertNotNull(library)
+        assertNotNull(library.library!!.statements!!.def)
 
         val invalidIdentErrors = results.getErrorsFor(INVALID_IDENT)
-        MatcherAssert.assertThat(invalidIdentErrors.size, Matchers.equalTo(1))
+        assertEquals(1, invalidIdentErrors.size)
         val cqlCompilerException = invalidIdentErrors[0]
 
-        MatcherAssert.assertThat(
-            cqlCompilerException.message,
-            Matchers.equalTo("Syntax error at define"),
-        )
+        assertEquals("Syntax error at define", cqlCompilerException.message)
     }
 
     @Test
@@ -155,11 +149,11 @@ internal class LibraryManagerTests {
         val versionIdentifier = VersionedIdentifier().withId("BaseLibraryElmMismatchId")
 
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManager!!.resolveLibrary(versionIdentifier)
             }
 
-        Assertions.assertEquals(
+        assertEquals(
             "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
             cqlIncludeException.message,
         )
@@ -170,11 +164,11 @@ internal class LibraryManagerTests {
         val versionedIdentifiers = listOf(BASE_LIBRARY_ELM_MISMATCH_ID_IDENT)
 
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManager!!.resolveLibraries(versionedIdentifiers)
             }
 
-        Assertions.assertEquals(
+        assertEquals(
             "Library BaseLibraryElmMismatchId was included with version null, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
             cqlIncludeException.message,
         )
@@ -182,15 +176,14 @@ internal class LibraryManagerTests {
 
     @Test
     fun basicElmTestVersionMismatch() {
-        val versionIdentifier: VersionedIdentifier =
-            BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1")
+        val versionIdentifier = BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1")
 
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManagerVersionAgnostic!!.resolveLibrary(versionIdentifier)
             }
 
-        Assertions.assertEquals(
+        assertEquals(
             "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
             cqlIncludeException.message,
         )
@@ -198,16 +191,15 @@ internal class LibraryManagerTests {
 
     @Test
     fun basicElmTestVersionMismatchMultiLib() {
-        val versionIdentifier: VersionedIdentifier =
-            BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1")
+        val versionIdentifier = BASE_LIBRARY_ELM_MISMATCH_ID_IDENT.withVersion("1.0.1")
         val versionIdentifiers = listOf(versionIdentifier)
 
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManagerVersionAgnostic!!.resolveLibraries(versionIdentifiers)
             }
 
-        Assertions.assertEquals(
+        assertEquals(
             "Library BaseLibraryElmMismatchId was included with version 1.0.1, but id: BaseLibraryElmIdMismatch and version 1.0.0 of the library was found.",
             cqlIncludeException.message,
         )
@@ -217,7 +209,7 @@ internal class LibraryManagerTests {
     fun basicElmTestSkipVersionCheck() {
         // Skip version check when requesting a library without a version but the library has a
         // version
-        Assertions.assertNotNull(
+        assertNotNull(
             libraryManagerVersionAgnostic!!.resolveLibrary(
                 VersionedIdentifier().apply {
                     id = "BaseLibraryElm" // has version 1.0.0
@@ -227,7 +219,7 @@ internal class LibraryManagerTests {
 
         // Skip version check when requesting a library with a version but the library does not have
         // a version
-        Assertions.assertNotNull(
+        assertNotNull(
             libraryManagerVersionAgnostic!!.resolveLibrary(
                 VersionedIdentifier().apply {
                     id = "BaseLibraryElmWithoutVersion" // does not have a version
@@ -240,7 +232,7 @@ internal class LibraryManagerTests {
     @Test
     fun testResolveLibraryIdentifierIdNull() {
         val versionedIdentifier = VersionedIdentifier().withId(null)
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManager!!.resolveLibrary(versionedIdentifier)
         }
     }
@@ -248,7 +240,7 @@ internal class LibraryManagerTests {
     @Test
     fun testResolveLibraryIdentifierIdEmpty() {
         val versionedIdentifier = VersionedIdentifier().withId("")
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        assertFailsWith<IllegalArgumentException> {
             libraryManager!!.resolveLibrary(versionedIdentifier)
         }
     }
@@ -261,13 +253,13 @@ internal class LibraryManagerTests {
         cachedLibrary.library = Library().withIdentifier(libraryIdentifier)
         libraryManager!!.compiledLibraries[libraryIdentifier] = cachedLibrary
 
-        val resolvedLibrary: CompiledLibrary = libraryManager!!.resolveLibrary(libraryIdentifier)
-        Assertions.assertSame(cachedLibrary, resolvedLibrary)
+        val resolvedLibrary = libraryManager!!.resolveLibrary(libraryIdentifier)
+        assertSame(cachedLibrary, resolvedLibrary)
     }
 
     @Test
     fun cacheModeNoneReportsDiagnosticsFromFreshCompilation() {
-        val cache = HashMap<VersionedIdentifier, CompiledLibrary>()
+        val cache = mutableMapOf<VersionedIdentifier, CompiledLibrary>()
         val manager = LibraryManager(ModelManager(), libraryCache = cache)
         manager.librarySourceLoader.registerProvider(
             TestLibrarySourceProvider("LibraryManagerTests")
@@ -282,10 +274,10 @@ internal class LibraryManagerTests {
         val resolvedLibrary =
             manager.resolveLibrary(INVALID_IDENT, errors, LibraryManager.CacheMode.NONE)
 
-        Assertions.assertNotSame(cachedLibrary, resolvedLibrary)
-        Assertions.assertSame(cachedLibrary, cache[INVALID_IDENT])
-        MatcherAssert.assertThat(errors.size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(errors[0].message, Matchers.equalTo("Syntax error at define"))
+        assertNotSame(cachedLibrary, resolvedLibrary)
+        assertSame(cachedLibrary, cache[INVALID_IDENT])
+        assertEquals(1, errors.size)
+        assertEquals("Syntax error at define", errors[0].message)
     }
 
     @Test
@@ -296,21 +288,20 @@ internal class LibraryManagerTests {
         cachedLibrary.library = Library().withIdentifier(libraryIdentifier)
         libraryManager!!.compiledLibraries[libraryIdentifier] = cachedLibrary
 
-        val results: CompiledLibraryMultiResults =
-            libraryManager!!.resolveLibraries(listOf(libraryIdentifier))
+        val results = libraryManager!!.resolveLibraries(listOf(libraryIdentifier))
 
         val compiledLibraries = results.allCompiledLibraries()
-        Assertions.assertNotNull(compiledLibraries)
-        MatcherAssert.assertThat(compiledLibraries.size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(results.allErrors(), Matchers.empty())
-        Assertions.assertFalse(results.hasErrors())
-        MatcherAssert.assertThat(results.allResultsWithoutErrorSeverity().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT), Matchers.empty())
+        assertNotNull(compiledLibraries)
+        assertEquals(1, compiledLibraries.size)
+        assertTrue(results.allErrors().isEmpty())
+        assertFalse(results.hasErrors())
+        assertEquals(1, results.allResultsWithoutErrorSeverity().size)
+        assertTrue(results.getErrorsFor(BASE_LIBRARY_ELM_IDENT).isEmpty())
 
         val resolvedLibrary = results.onlyResult.compiledLibrary
 
-        Assertions.assertNotNull(resolvedLibrary)
-        Assertions.assertSame(cachedLibrary, resolvedLibrary)
+        assertNotNull(resolvedLibrary)
+        assertSame(cachedLibrary, resolvedLibrary)
     }
 
     @Test
@@ -318,17 +309,16 @@ internal class LibraryManagerTests {
         // Some optimizations depend on the Library statements being sorted in lexicographic order
         // by name
         // This test validates that they are ordered
-        val lib: Library? =
+        val lib =
             libraryManager!!.resolveLibrary(VersionedIdentifier().withId("OutOfOrder")).library
 
-        Assertions.assertNotNull(lib)
-        Assertions.assertNotNull(lib!!.statements!!.def)
+        assertNotNull(lib)
+        assertNotNull(lib.statements!!.def)
 
         val defs = lib.statements!!.def
-        MatcherAssert.assertThat(
+        assertTrue(
+            defs.size > 3,
             "The list should be larger than 3 elements to validate it actually sorted",
-            defs.size,
-            Matchers.greaterThan(3),
         )
 
         for (i in 0..<defs.size - 1) {
@@ -337,10 +327,7 @@ internal class LibraryManagerTests {
 
             // Ensure that the left element is always less than or equal to the right element
             // In other words, they are ordered.
-            MatcherAssert.assertThat(
-                left.name!!.compareTo(right.name!!),
-                Matchers.lessThanOrEqualTo(0),
-            )
+            assertTrue(left.name!! <= right.name!!)
         }
     }
 
@@ -358,7 +345,7 @@ internal class LibraryManagerTests {
         // library resolution will continue to load the library from the CQL source if it is
         // present.
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManager!!.resolveLibrary(
                     VersionedIdentifier().withId("LibraryWithoutResultTypes")
                 )
@@ -372,7 +359,7 @@ internal class LibraryManagerTests {
     @Test
     fun compiledLibraryWithIncompatibleTranslatorVersionIsRejected() {
         val cqlIncludeException =
-            Assertions.assertThrows(CqlIncludeException::class.java) {
+            assertFailsWith<CqlIncludeException> {
                 libraryManager!!.resolveLibrary(
                     VersionedIdentifier().withId("LibraryWithIncompatibleTranslatorVersion")
                 )
