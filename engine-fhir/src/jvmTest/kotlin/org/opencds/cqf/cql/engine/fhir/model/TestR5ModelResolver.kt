@@ -5,9 +5,12 @@ import ca.uhn.fhir.context.FhirVersionEnum
 import java.math.BigDecimal
 import java.text.ParseException
 import java.util.*
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import org.apache.commons.lang3.time.DateUtils
 import org.cqframework.cql.shared.QName
@@ -18,8 +21,6 @@ import org.hl7.fhir.r5.model.Enumerations.FHIRTypes
 import org.hl7.fhir.r5.model.Patient
 import org.hl7.fhir.r5.model.Quantity
 import org.hl7.fhir.r5.model.VisionPrescription
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.toCqlString
@@ -29,7 +30,7 @@ internal class TestR5ModelResolver {
     fun resolverThrowsExceptionForUnknownType() {
         val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
 
-        Assertions.assertThrows(UnknownType::class.java) {
+        assertFailsWith<UnknownType> {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
     }
@@ -150,17 +151,17 @@ internal class TestR5ModelResolver {
 
             val instance = resolver.createHapiInstance(type.toCode())
 
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
         }
 
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct type to
             // be created.
             val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
 
-            Assertions.assertEquals(
-                instance!!.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
+            assertEquals(
+                instance.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
                 enumType.getSimpleName(),
             )
         }
@@ -168,10 +169,10 @@ internal class TestR5ModelResolver {
         // These are some inner classes that don't appear in the enums above
         // This list is not exhaustive. It's meant as a spot check for the resolution code.
         var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
 
         instance = resolver.createHapiInstance("FHIRDeviceStatus")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
     }
 
     @Test
@@ -179,54 +180,49 @@ internal class TestR5ModelResolver {
         val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
 
         var path = resolver.getContextPath("Patient", "Patient")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("id", path)
+        assertEquals("id", path)
 
         path = resolver.getContextPath(null, "Encounter")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         // TODO: Consider making this an exception on the resolver because
         // if this happens it means something went wrong in the context.
         path = resolver.getContextPath("Patient", null)
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Patient", "Condition")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Appointment")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Account")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Encounter")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "ValueSet")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Patient", "MedicationStatement")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Task")
-        Assertions.assertEquals("for", path)
+        assertEquals("for", path)
 
         path = resolver.getContextPath("Patient", "Coverage")
-        Assertions.assertEquals("beneficiary", path)
+        assertEquals("beneficiary", path)
 
         path = resolver.getContextPath("Patient", "QuestionnaireResponse")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = resolver.getContextPath("Unfiltered", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Unspecified", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
     }
 
     @Test

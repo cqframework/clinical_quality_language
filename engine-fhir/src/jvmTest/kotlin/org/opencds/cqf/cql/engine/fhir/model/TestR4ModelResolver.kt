@@ -6,9 +6,12 @@ import java.math.BigDecimal
 import java.text.ParseException
 import java.util.*
 import javax.xml.namespace.QName
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import org.apache.commons.lang3.time.DateUtils
 import org.cqframework.cql.cql2elm.ModelManager
@@ -25,8 +28,6 @@ import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Procedure
 import org.hl7.fhir.r4.model.Quantity
 import org.hl7.fhir.r4.model.VisionPrescription
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Date
@@ -36,7 +37,7 @@ internal class TestR4ModelResolver {
     @Test
     fun resolverThrowsExceptionForUnknownType() {
         val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
-        Assertions.assertThrows(UnknownType::class.java) {
+        assertFailsWith<UnknownType> {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
     }
@@ -78,37 +79,100 @@ internal class TestR4ModelResolver {
         val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         // This tests resolution of inner classes. They aren't registered directly.
-        resolver.resolveType("TestScriptRequestMethodCode")
-        resolver.resolveType("FHIRDeviceStatus")
+        assertEquals(
+            org.hl7.fhir.r4.model.TestScript.TestScriptRequestMethodCode::class.java,
+            resolver.resolveType("TestScriptRequestMethodCode"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.Device.FHIRDeviceStatus::class.java,
+            resolver.resolveType("FHIRDeviceStatus"),
+        )
 
         // This tests the special case handling of "Codes".
-        resolver.resolveType("ImmunizationStatusCodes")
+        assertEquals(
+            org.hl7.fhir.r4.model.Immunization.ImmunizationStatus::class.java,
+            resolver.resolveType("ImmunizationStatusCodes"),
+        )
 
         // These have different capitalization conventions
-        resolver.resolveType("status")
-        resolver.resolveType("orientationType")
-        resolver.resolveType("strandType")
-        resolver.resolveType("sequenceType")
+        assertEquals(
+            org.hl7.fhir.r4.model.VerificationResult.Status::class.java,
+            resolver.resolveType("status"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MolecularSequence.OrientationType::class.java,
+            resolver.resolveType("orientationType"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MolecularSequence.StrandType::class.java,
+            resolver.resolveType("strandType"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MolecularSequence.SequenceType::class.java,
+            resolver.resolveType("sequenceType"),
+        )
 
         // These are oddballs requiring manual mapping. They may represent errors in the ModelInfo.
-        resolver.resolveType("ConfidentialityClassification")
-        resolver.resolveType("ContractResourceStatusCodes")
-        resolver.resolveType("EventStatus")
-        resolver.resolveType("FinancialResourceStatusCodes")
-        resolver.resolveType("SampledDataDataType")
-        resolver.resolveType("ClaimProcessingCodes")
-        resolver.resolveType("ContractResourcePublicationStatusCodes")
+        assertEquals(
+            org.hl7.fhir.r4.model.Composition.DocumentConfidentiality::class.java,
+            resolver.resolveType("ConfidentialityClassification"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.Contract.ContractStatus::class.java,
+            resolver.resolveType("ContractResourceStatusCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.Procedure.ProcedureStatus::class.java,
+            resolver.resolveType("EventStatus"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.ClaimResponse.ClaimResponseStatus::class.java,
+            resolver.resolveType("FinancialResourceStatusCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.StringType::class.java,
+            resolver.resolveType("SampledDataDataType"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.ClaimResponse.RemittanceOutcome::class.java,
+            resolver.resolveType("ClaimProcessingCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.Contract.ContractPublicationStatus::class.java,
+            resolver.resolveType("ContractResourcePublicationStatusCodes"),
+        )
 
         // These are known glitches in the ModelInfo
-        resolver.resolveType("vConfidentialityClassification")
+        assertEquals(
+            org.hl7.fhir.r4.model.Composition.DocumentConfidentiality::class.java,
+            resolver.resolveType("vConfidentialityClassification"),
+        )
 
         // This is a mapping for a value set that doesn't have a first-class enumeration
-        resolver.resolveType("CurrencyCode")
-        resolver.resolveType("MedicationAdministrationStatus")
-        resolver.resolveType("MedicationDispenseStatus")
-        resolver.resolveType("MedicationKnowledgeStatus")
-        resolver.resolveType("Messageheader_Response_Request")
-        resolver.resolveType("MimeType")
+        assertEquals(
+            org.hl7.fhir.r4.model.CodeType::class.java,
+            resolver.resolveType("CurrencyCode"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MessageDefinition.MessageheaderResponseRequest::class.java,
+            resolver.resolveType("Messageheader_Response_Request"),
+        )
+        assertEquals(org.hl7.fhir.r4.model.CodeType::class.java, resolver.resolveType("MimeType"))
+
+        // These were previously incorrectly mapped to CodeType
+        assertEquals(
+            org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationStatus::class
+                .java,
+            resolver.resolveType("MedicationAdministrationStatus"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MedicationDispense.MedicationDispenseStatus::class.java,
+            resolver.resolveType("MedicationDispenseStatus"),
+        )
+        assertEquals(
+            org.hl7.fhir.r4.model.MedicationKnowledge.MedicationKnowledgeStatus::class.java,
+            resolver.resolveType("MedicationKnowledgeStatus"),
+        )
     }
 
     @Test
@@ -197,7 +261,7 @@ internal class TestR4ModelResolver {
 
             val instance = resolver.createHapiInstance(type.toCode())
 
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
         }
 
         for (type in Enumerations.ResourceType.entries) {
@@ -211,17 +275,17 @@ internal class TestR4ModelResolver {
 
             val instance = resolver.createHapiInstance(type.toCode())
 
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
         }
 
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct type to
             // be created.
             val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
 
-            Assertions.assertEquals(
-                instance!!.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
+            assertEquals(
+                instance.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
                 enumType.getSimpleName(),
             )
         }
@@ -229,10 +293,10 @@ internal class TestR4ModelResolver {
         // These are some inner classes that don't appear in the enums above
         // This list is not exhaustive. It's meant as a spot check for the resolution code.
         var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
 
         instance = resolver.createHapiInstance("FHIRDeviceStatus")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
     }
 
     @Test
@@ -240,54 +304,49 @@ internal class TestR4ModelResolver {
         val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
         var path = resolver.getContextPath("Patient", "Patient")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("id", path)
+        assertEquals("id", path)
 
         path = resolver.getContextPath(null, "Encounter")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         // TODO: Consider making this an exception on the resolver because
         // if this happens it means something went wrong in the context.
         path = resolver.getContextPath("Patient", null)
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Patient", "Condition")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Appointment")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("participant.actor", path)
+        assertEquals("participant.actor", path)
 
         path = resolver.getContextPath("Patient", "Account")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Encounter")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "ValueSet")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Patient", "MedicationStatement")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Task")
-        Assertions.assertEquals("for", path)
+        assertEquals("for", path)
 
         path = resolver.getContextPath("Patient", "Coverage")
-        Assertions.assertEquals("beneficiary", path)
+        assertEquals("beneficiary", path)
 
         path = resolver.getContextPath("Patient", "QuestionnaireResponse")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = resolver.getContextPath("Unfiltered", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Unspecified", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
     }
 
     @Test
@@ -365,7 +424,7 @@ internal class TestR4ModelResolver {
         val patient = Patient()
         patient.setId(expectedId)
 
-        Assertions.assertEquals(resolver.resolveId(resolver.toCqlValue(patient)), expectedId)
+        assertEquals(expectedId, resolver.resolveId(resolver.toCqlValue(patient)))
     }
 
     @Test
@@ -405,23 +464,21 @@ internal class TestR4ModelResolver {
         val procedure = Procedure()
         procedure.setId(expectedId)
 
-        Assertions.assertEquals(resolver.resolveId(resolver.toCqlValue(procedure)), expectedId)
+        assertEquals(expectedId, resolver.resolveId(resolver.toCqlValue(procedure)))
     }
 
     @Test
     fun resolveIdStringReturnsNull() {
         val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
-        Assertions.assertNull(resolver.resolveId(Date(2000)))
+        assertNull(resolver.resolveId(Date(2000)))
     }
 
     @Test
     fun resolveIdStringTypeReturnsNull() {
         val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
-        Assertions.assertNull(
-            resolver.resolveId(org.opencds.cqf.cql.engine.runtime.String.EMPTY_STRING)
-        )
+        assertNull(resolver.resolveId(org.opencds.cqf.cql.engine.runtime.String.EMPTY_STRING))
     }
 
     companion object {
