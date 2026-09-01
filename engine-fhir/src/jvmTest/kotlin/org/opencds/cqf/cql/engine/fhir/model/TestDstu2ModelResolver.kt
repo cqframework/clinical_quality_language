@@ -78,7 +78,7 @@ class TestDstu2ModelResolver {
         }
 
         for (enumType in enums) {
-            resolver.resolveType(enumType.getSimpleName())
+            resolver.resolveType(enumType.simpleName)
         }
     }
 
@@ -117,18 +117,18 @@ class TestDstu2ModelResolver {
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct
             // type to be created.
-            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
+            val instance = resolver.createHapiInstance(enumType.simpleName) as Enumeration<*>?
             assertNotNull(instance)
 
             val enumFactory: Field?
             try {
                 enumFactory = instance.javaClass.getDeclaredField("myEnumFactory")
-                enumFactory.setAccessible(true)
+                enumFactory.isAccessible = true
                 val factory = enumFactory.get(instance) as EnumFactory<*>
 
                 assertEquals(
-                    factory.javaClass.getSimpleName().replace("EnumFactory", ""),
-                    enumType.getSimpleName(),
+                    factory.javaClass.simpleName.replace("EnumFactory", ""),
+                    enumType.simpleName,
                 )
             } catch (e: Exception) {
                 throw AssertionError("error getting factory type. " + e.message)

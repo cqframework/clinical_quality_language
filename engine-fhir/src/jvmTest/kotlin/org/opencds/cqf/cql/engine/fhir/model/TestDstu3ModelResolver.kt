@@ -60,7 +60,7 @@ internal class TestDstu3ModelResolver {
         }
 
         for (enumType in enums) {
-            resolver.resolveType(enumType.getSimpleName())
+            resolver.resolveType(enumType.simpleName)
         }
     }
 
@@ -182,12 +182,12 @@ internal class TestDstu3ModelResolver {
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct
             // type to be created.
-            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
+            val instance = resolver.createHapiInstance(enumType.simpleName) as Enumeration<*>?
             assertNotNull(instance)
 
             assertEquals(
-                instance.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
-                enumType.getSimpleName(),
+                instance.getEnumFactory().javaClass.simpleName.replace("EnumFactory", ""),
+                enumType.simpleName,
             )
         }
 
