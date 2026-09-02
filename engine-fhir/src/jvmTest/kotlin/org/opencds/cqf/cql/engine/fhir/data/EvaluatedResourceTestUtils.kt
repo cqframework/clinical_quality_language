@@ -235,7 +235,7 @@ internal object EvaluatedResourceTestUtils {
         for (expressionName in expressionResults.keys) {
             val expressionResult: ExpressionResult = expressionResults[expressionName]!!
 
-            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources!!
+            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources.values
             val expectedEvaluatedResourcesForName = expectedEvaluatedResources[expressionName]!!
 
             assertResourcesEqual(expectedEvaluatedResourcesForName, actualEvaluatedResourcesForName)
@@ -253,7 +253,7 @@ internal object EvaluatedResourceTestUtils {
         expectedEvaluatedResources: Collection<IBaseResource>,
     ) {
         val expressionResult = evaluationResult[expressionName]
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources.values
         val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
@@ -270,7 +270,7 @@ internal object EvaluatedResourceTestUtils {
         MatcherAssert.assertThat(evaluationResults, CoreMatchers.`is`(Matchers.notNullValue()))
         val evaluationResult = evaluationResults!!.getResultFor(libraryIdentifier)
         val expressionResult = evaluationResult!![expressionName]
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources.values
         val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
@@ -288,7 +288,7 @@ internal object EvaluatedResourceTestUtils {
             CoreMatchers.`is`(Matchers.notNullValue()),
         )
         val expressionResult = evaluationResult!![expressionName]
-        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources.values
         val actualValue = expressionResult.value
 
         assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
