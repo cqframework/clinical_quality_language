@@ -140,10 +140,8 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
             "ContractResourcePublicationStatusCodes" ->
                 typeName = $$"Contract$ContractPublicationStatus"
             "CurrencyCode" -> typeName = "CodeType"
-            "MedicationAdministrationStatus" -> typeName = "CodeType"
-            "MedicationDispenseStatus" -> typeName = "CodeType"
-            "MedicationKnowledgeStatus" -> typeName = "CodeType"
-            "Messageheader_Response_Request" -> typeName = "CodeType"
+            "Messageheader_Response_Request" ->
+                typeName = $$"MessageDefinition$MessageheaderResponseRequest"
             "MimeType" -> typeName = "CodeType"
             else -> {}
         }

@@ -140,7 +140,11 @@ constructor(
      */
     @Volatile var currentCallSite: Element? = null
 
-    private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
+    /**
+     * In each entry of the stack, the resources are keyed by their string IDs. Previously, the
+     * evaluated resources were stored in a set, which caused poor performance.
+     */
+    private val evaluatedResourceStack = ArrayDeque<MutableMap<kotlin.String, Value>>()
 
     val parameters = mutableMapOf<kotlin.String, Value?>()
     var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
@@ -502,13 +506,10 @@ constructor(
             return null
         }
 
-    val evaluatedResources: MutableSet<Value?>?
+    val evaluatedResources: Map<kotlin.String, Value>
         get() {
-            check(!evaluatedResourceStack.isEmpty()) {
-                "Attempted to get the evaluatedResource stack when it's empty"
-            }
-
             return this.evaluatedResourceStack.firstOrNull()
+                ?: error("Attempted to get the evaluatedResource stack when it's empty")
         }
 
     fun clearEvaluatedResources() {
@@ -517,7 +518,7 @@ constructor(
     }
 
     fun pushEvaluatedResourceStack() {
-        evaluatedResourceStack.addFirst(HashSet<Value?>())
+        evaluatedResourceStack.addFirst(mutableMapOf())
     }
 
     /**
@@ -537,6 +538,32 @@ constructor(
         carryOverEvaluatedResourcesUpCallStack()
     }
 
+    /**
+     * Adds the resource to the top of the evaluated resource stack, keyed by its string ID. The
+     * resource is only stored if it is not null and has a non-null ID.
+     */
+    fun saveEvaluatedResource(resource: Value?) {
+        if (resource != null) {
+            val dataProvider = environment.resolveDataProvider(resource)
+            val id = dataProvider?.resolveId(resource)
+            if (id != null) {
+                this.evaluatedResourceStack.first()[id] = resource
+            }
+        }
+    }
+
+    /** Adds the resources to the top of the evaluated resource stack, keyed by their string IDs. */
+    fun saveEvaluatedResources(resources: Iterable<Value?>) {
+        for (resource in resources) {
+            saveEvaluatedResource(resource)
+        }
+    }
+
+    /** Adds the resources keyed by their string IDs to the top of the evaluated resource stack. */
+    fun saveEvaluatedResources(resources: Map<kotlin.String, Value>) {
+        this.evaluatedResourceStack.first().putAll(resources)
+    }
+
     private fun carryOverEvaluatedResourcesUpCallStack() {
         val previousStackEvaluatedResources = evaluatedResourceStack.removeFirst()
         val currentStackEvaluatedResources = evaluatedResourceStack.firstOrNull()
@@ -544,7 +571,7 @@ constructor(
         checkNotNull(currentStackEvaluatedResources) {
             "Attempted to carry over evaluated resources when the current stack is empty"
         }
-        currentStackEvaluatedResources.addAll(previousStackEvaluatedResources)
+        currentStackEvaluatedResources.putAll(previousStackEvaluatedResources)
     }
 
     fun resolveAlias(name: String?): Value? {
