@@ -5,8 +5,13 @@ repositories {
     gradlePluginPortal()
 }
 
+fun Provider<PluginDependency>.asDep() = map {
+    "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}"
+}
+
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10")
+    implementation(libs.plugins.kotlin.jvm.asDep())
+    implementation(libs.plugins.kotlin.multiplatform.asDep())
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:2.1.0")
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:5.0.0")
