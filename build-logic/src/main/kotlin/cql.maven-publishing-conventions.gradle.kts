@@ -18,7 +18,7 @@ A few things:
  */
 mavenPublishing {
     publishToMavenCentral(true)
-    if (!version.toString().endsWith("SNAPSHOT")) {
+    if (!version.toString().endsWith("SNAPSHOT") && System.getenv("SKIP_SIGNING") == null) {
         signAllPublications()
     }
     coordinates(project.group.toString(), project.name, project.version.toString())

@@ -14,7 +14,6 @@ import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 
 object MessageEvaluator {
@@ -88,12 +87,7 @@ object MessageEvaluator {
                 is Tuple,
                 is List ->
                     state!!.environment.resolveDataProviderByModelUriOrNull(systemModelNamespaceUri)
-                else ->
-                    state!!
-                        .environment
-                        .resolveDataProviderByModelUriOrNull(
-                            getNamedTypeForCqlValue(source)?.getNamespaceURI()
-                        )
+                else -> state!!.environment.resolveDataProvider(source)
             }
 
         return dataProvider?.phiObfuscationSupplier()?.invoke()?.obfuscate(source) ?: ""
