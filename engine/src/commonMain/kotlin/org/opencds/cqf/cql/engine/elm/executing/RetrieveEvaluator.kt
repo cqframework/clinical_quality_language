@@ -30,9 +30,14 @@ object RetrieveEvaluator {
                This whole block is a bit a hack in the sense that the need to switch to the context (e.g. Practitioner) identifies itself in a non-domain specific way
             */
             val contextValue = visitor.visitExpression(context, state)!!
-            val dataProvider = state!!.environment.resolveDataProvider(contextValue)
+            val dataProvider =
+                state!!
+                    .environment
+                    .resolveDataProviderByModelUri(
+                        getNamedTypeForCqlValue(contextValue)?.getNamespaceURI()
+                    )
             val contextTypeName = getNamedTypeForCqlValue(contextValue)!!.getLocalPart()
-            val contextId = dataProvider?.resolveId(contextValue)
+            val contextId = dataProvider.resolveId(contextValue)
 
             state.setContextValue(contextTypeName, contextId)
             isEnteredContext = state.enterContext(contextTypeName)
@@ -104,7 +109,7 @@ object RetrieveEvaluator {
             // TODO: We probably shouldn't eagerly load this, but we need to track
             // this throughout the engine and only add it to the list when it's actually used
             if (result != null) {
-                state.saveEvaluatedResources(result)
+                state.evaluatedResources!!.addAll(result)
             }
         } finally {
             // Need to effectively reverse the context change we did at the beginning of this method

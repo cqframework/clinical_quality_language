@@ -10,7 +10,7 @@ class EvaluationResultTest {
     fun getterAndSetterTest() {
         val evaluationResult = EvaluationResult()
         val expressionRef = EvaluationExpressionRef("expr1")
-        val expressionResult = ExpressionResult(5.toCqlInteger(), emptyMap())
+        val expressionResult = ExpressionResult(5.toCqlInteger(), null)
 
         // Test setting and getting by reference
         evaluationResult[expressionRef] = expressionResult

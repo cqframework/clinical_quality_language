@@ -24,7 +24,7 @@ object ExpressionDefEvaluator {
 
             if (isExpressionCachingEnabled && isExpressionCached) {
                 val er = state.cache.getCachedExpression(libraryId, expressionDef.name)
-                state.saveEvaluatedResources(er!!.evaluatedResources)
+                state.evaluatedResources!!.addAll(er!!.evaluatedResources!!)
 
                 // TODO(jmoringe): make public interface
                 val frame = state.topActivationFrame

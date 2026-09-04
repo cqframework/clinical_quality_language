@@ -11,7 +11,6 @@ import org.opencds.cqf.cql.engine.data.ExternalFunctionProvider
 import org.opencds.cqf.cql.engine.data.SystemDataProvider
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.runtime.getNamedTypeForCqlValue
 import org.opencds.cqf.cql.engine.runtime.systemModelNamespaceUri
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider
 
@@ -78,14 +77,6 @@ constructor(
         dataProviders[modelUri] = dataProvider
     }
 
-    /** Returns the data provider for the type of the given CQL [Value]. */
-    fun resolveDataProvider(value: Value?): DataProvider? {
-        return resolveDataProviderByModelUriOrNull(
-            getNamedTypeForCqlValue(value)?.getNamespaceURI()
-        )
-    }
-
-    /** Returns the data provider for the given [QName] type. */
     @JsName("resolveDataProviderByQName")
     fun resolveDataProvider(dataType: QName): DataProvider {
         var dataType = dataType
@@ -93,15 +84,11 @@ constructor(
         return resolveDataProviderByModelUri(dataType.getNamespaceURI())
     }
 
-    /** Returns the data provider registered for the given model URI. */
     fun resolveDataProviderByModelUri(modelUri: String?): DataProvider {
         return resolveDataProviderByModelUriOrNull(modelUri)
             ?: throw CqlException("Could not resolve data provider for model '${modelUri}'.")
     }
 
-    /**
-     * Returns the data provider registered for the given model URI, or null if none is registered.
-     */
     fun resolveDataProviderByModelUriOrNull(modelUri: String?): DataProvider? {
         return dataProviders[modelUri]
     }
