@@ -1,4 +1,4 @@
-plugins { id("com.vanniktech.maven.publish") }
+plugins { alias(libs.plugins.vanniktech.publish) }
 
 /*
 A few things:

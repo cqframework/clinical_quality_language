@@ -18,7 +18,7 @@
 //
 // Canonical source: home/shared/gradle/conventions/cqf.spotless-conventions.gradle.kts.
 
-plugins { id("com.diffplug.spotless") }
+plugins { alias(libs.plugins.spotless) }
 
 spotless {
     java {

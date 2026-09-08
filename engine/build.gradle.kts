@@ -11,16 +11,16 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":cql-to-elm"))
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+                implementation(libs.kotlinx.datetime)
             }
         }
-        jvmMain { dependencies { api("org.apache.commons:commons-text:1.10.0") } }
+        jvmMain { dependencies { api(libs.apache.commons.text) } }
         jsMain { dependencies { implementation(npm("@js-joda/timezone", "2.23.0")) } }
         wasmJsMain { dependencies { implementation(npm("@js-joda/timezone", "2.23.0")) } }
         jvmTest {
             dependencies {
                 implementation(project(":ucum"))
-                implementation("org.mockito:mockito-core:5.4.0")
+                implementation(libs.mockito.core)
             }
         }
     }

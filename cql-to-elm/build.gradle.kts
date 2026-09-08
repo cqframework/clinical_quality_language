@@ -31,7 +31,7 @@ kotlin {
                 implementation(project(":quick"))
                 implementation(project(":qdm"))
                 implementation(project(":ucum"))
-                implementation("com.tngtech.archunit:archunit:1.2.1")
+                implementation(libs.archunit)
             }
         }
     }

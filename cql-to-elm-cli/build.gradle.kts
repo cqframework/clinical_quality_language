@@ -6,11 +6,9 @@ plugins {
 application { mainClass = "org.cqframework.cql.cql2elm.cli.Main" }
 
 dependencies {
-    implementation(
-        platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${project.findProperty("hapi.version")}")
-    )
+    implementation(platform(libs.hapi.fhir.bom))
 
-    implementation("ca.uhn.hapi.fhir:hapi-fhir-base") {
+    implementation(libs.hapi.fhir.base) {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "xpp3")
         exclude(group = "org.junit")
@@ -22,9 +20,9 @@ dependencies {
     implementation(project(":quick"))
     implementation(project(":qdm"))
     implementation(project(":ucum"))
-    implementation("net.sf.jopt-simple:jopt-simple:4.7")
-    implementation("org.slf4j:slf4j-simple:2.0.13")
-    implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
-    implementation("org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2")
-    implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r5")
+    implementation(libs.jopt.simple)
+    implementation(libs.slf4j.simple)
+    implementation(libs.jaxb.runtime)
+    implementation(libs.moxy)
+    implementation(libs.hapi.fhir.structures.r5)
 }

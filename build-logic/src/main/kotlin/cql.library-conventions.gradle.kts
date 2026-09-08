@@ -1,5 +1,5 @@
 plugins {
-    id("ru.vyarus.animalsniffer")
+    alias(libs.plugins.animalsniffer)
     id("cql.kotlin-conventions")
 }
 

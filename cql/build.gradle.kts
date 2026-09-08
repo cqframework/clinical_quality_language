@@ -48,10 +48,10 @@ kotlin {
             }
             dependencies {
                 api(project(":shared"))
-                api("com.strumenta:antlr-kotlin-runtime:1.0.12")
+                api(libs.antlr.kotlin.runtime)
             }
         }
-        jvmMain { dependencies { api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.12") } }
+        jvmMain { dependencies { api(libs.antlr.kotlin.runtime.jvm) } }
         jvmTest {
             dependencies {
                 implementation(project(":quick"))

@@ -7,7 +7,7 @@ application { mainClass = "org.cqframework.cql.tools.xsd2modelinfo.Main" }
 
 dependencies {
     api(project(":cql"))
-    implementation("net.sf.jopt-simple:jopt-simple:4.7")
-    implementation("org.apache.ws.xmlschema:xmlschema-core:2.2.5")
-    implementation("org.apache.ws.xmlschema:xmlschema-walker:2.2.5")
+    implementation(libs.jopt.simple)
+    implementation(libs.apache.xmlschema.core)
+    implementation(libs.apache.xmlschema.walker)
 }
