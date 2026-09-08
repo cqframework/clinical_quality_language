@@ -260,13 +260,15 @@ abstract class FhirModelResolver<
      * resolution path ever re-enters this method.
      */
     open fun resolveType(typeName: String?): Class<*>? {
-        val key = typeName ?: return resolveTypeUncached(null)
-        resolvedTypes[key]?.let {
-            return it.orElse(null)
+        if (typeName == null) {
+            return resolveTypeUncached(null)
         }
-        val resolved = resolveTypeUncached(key)
-        resolvedTypes[key] = Optional.ofNullable(resolved)
-        return resolved
+        // A present entry is authoritative even when it holds null: a name that resolved to nothing
+        // must not be recomputed, or negative results would never actually be cached.
+        val cached = resolvedTypes[typeName]
+        return if (cached != null) cached.orElse(null)
+        else
+            resolveTypeUncached(typeName).also { resolvedTypes[typeName] = Optional.ofNullable(it) }
     }
 
     private fun resolveTypeUncached(typeName: String?): Class<*>? {
