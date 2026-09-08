@@ -1,14 +1,7 @@
-package org.cqframework.cql.elm.requirements
+package org.cqframework.cql.cql2elm
 
-import javax.xml.namespace.QName
-import kotlin.Boolean
-import kotlin.IllegalArgumentException
-import kotlin.require
-import kotlin.requireNotNull
-import kotlin.text.lastIndexOf
-import kotlin.text.substring
-import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.shared.QName
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
@@ -24,7 +17,10 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TupleTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 
+@Suppress("TooManyFunctions")
 class TypeResolver(val libraryManager: LibraryManager) {
+
+    @Suppress("ReturnCount")
     fun getTypeUri(type: DataType?): String? {
         if (type is ListType) {
             return getTypeUri(type.elementType)
@@ -36,12 +32,13 @@ class TypeResolver(val libraryManager: LibraryManager) {
         }
 
         if (type is NamedType) {
-            return dataTypeToQName(type).localPart
+            return dataTypeToQName(type).getLocalPart()
         }
 
         return null
     }
 
+    @Suppress("ReturnCount")
     fun dataTypeToProfileQName(type: DataType?): QName? {
         if (type is ClassType) {
             if (type.identifier != null) {
@@ -75,7 +72,7 @@ class TypeResolver(val libraryManager: LibraryManager) {
         if (type is NamedType) {
             val namedType = type as NamedType
             val modelInfo = libraryManager.modelManager.resolveModel(namedType.namespace).modelInfo
-            return QName(modelInfo.url, namedType.simpleName)
+            return QName(modelInfo.url!!, namedType.simpleName)
         }
 
         // ERROR:
@@ -85,13 +82,11 @@ class TypeResolver(val libraryManager: LibraryManager) {
     fun resolveTypeName(typeName: QName): DataType {
 
         // NOTE: This resolution path is ignoring prefix, namespace is required
-        require(!(typeName.namespaceURI == null || typeName.namespaceURI == "")) {
-            "namespaceURI is required"
-        }
+        require(typeName.getNamespaceURI().isNotEmpty()) { "namespaceURI is required" }
 
-        val model = libraryManager.modelManager.resolveModelByUri(typeName.namespaceURI)
-        val result = model.resolveTypeName(typeName.localPart)
-        requireNotNull(result) { "Could not resolve type ${typeName.toString()}" }
+        val model = libraryManager.modelManager.resolveModelByUri(typeName.getNamespaceURI())
+        val result = model.resolveTypeName(typeName.getLocalPart())
+        requireNotNull(result) { "Could not resolve type $typeName" }
         return result
     }
 
@@ -125,7 +120,7 @@ class TypeResolver(val libraryManager: LibraryManager) {
 
             else -> {
                 throw IllegalArgumentException(
-                    "Unknown type specifier category: ${typeSpecifier.javaClass.simpleName}"
+                    "Unknown type specifier category: ${typeSpecifier::class.simpleName}"
                 )
             }
         }

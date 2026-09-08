@@ -6,6 +6,7 @@ import javax.xml.namespace.QName
 import org.cqframework.cql.cql2elm.CqlCompilerOptions
 import org.cqframework.cql.cql2elm.LibraryManager
 import org.cqframework.cql.cql2elm.TypeBuilder
+import org.cqframework.cql.cql2elm.TypeResolver
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.LibraryRef
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
