@@ -15,7 +15,6 @@
     <ID>CyclomaticComplexMethod:FhirModelResolver.kt$FhirModelResolver$open fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>CyclomaticComplexMethod:FhirModelResolverTest.kt$private fun validateCqlValueAgainstModel( fhirVersion: FhirVersionEnum, expectedFhirTypeName: String, cqlValue: Any?, )</ID>
     <ID>CyclomaticComplexMethod:Parser.kt$private fun extractPropertyFromJsonObjectAsCqlValue( jsonObject: JsonObject, propertyKey: kotlin.String, dataType: DataType, model: Model, ): Value?</ID>
-    <ID>CyclomaticComplexMethod:R4FhirModelResolver.kt$R4FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>CyclomaticComplexMethod:R4FhirQueryGenerator.kt$R4FhirQueryGenerator$override fun generateFhirQueries( dataRequirement: ICompositeType?, evaluationDateTime: DateTime?, contextValues: MutableMap&lt;String, String?>?, parameters: MutableMap&lt;String, Value?>?, capabilityStatement: IBaseConformance?, ): MutableList&lt;String></ID>
     <ID>CyclomaticComplexMethod:R5FhirModelResolver.kt$R5FhirModelResolver$override fun resolveType(typeName: String?): Class&lt;*>?</ID>
     <ID>CyclomaticComplexMethod:SearchParameterMap.kt$SearchParameterMap$fun toNormalizedQueryString(theCtx: FhirContext): String</ID>
@@ -86,6 +85,7 @@
     <ID>LongMethod:TestFHIRHelpers.kt$TestFHIRHelpers$@Test fun testFhirHelpers()</ID>
     <ID>LongMethod:TestFhirDataProviderDstu3.kt$TestFhirDataProviderDstu3$fun testContained()</ID>
     <ID>LongMethod:TestFhirPath.kt$TestFhirPath$protected fun runTest( test: Test, basePathInput: String?, fhirContext: FhirContext, provider: CompositeDataProvider?, resolver: FhirModelResolver&lt;*, *, *, *, *, *, *, *>, )</ID>
+    <ID>LongMethod:TestR4ModelResolver.kt$TestR4ModelResolver$@Test fun modelInfoSpecialCaseTests()</ID>
     <ID>LongParameterList:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$( context: String?, contextPath: String?, contextValue: String?, dataType: String?, templateId: String?, codeFilters: MutableList&lt;CodeFilter>?, dateFilters: MutableList&lt;DateFilter>?, )</ID>
     <ID>LongParameterList:BaseFhirQueryGenerator.kt$BaseFhirQueryGenerator$( context: String?, contextPath: String?, contextValue: String?, dataType: String?, templateId: String?, codePath: String?, codes: Iterable&lt;Code?>?, valueSet: String?, datePath: String?, dateLowPath: String?, dateHighPath: String?, dateRange: Interval?, )</ID>
     <ID>LongParameterList:FhirQueryGeneratorFactory.kt$FhirQueryGeneratorFactory$( modelResolver: ModelResolver, searchParameterResolver: SearchParameterResolver, terminologyProvider: TerminologyProvider?, shouldExpandValueSets: Boolean?, maxCodesPerQuery: Int?, pageSize: Int?, queryBatchThreshold: Int?, )</ID>

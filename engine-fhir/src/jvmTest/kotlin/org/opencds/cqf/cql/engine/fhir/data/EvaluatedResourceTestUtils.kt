@@ -238,7 +238,10 @@ internal object EvaluatedResourceTestUtils {
             val actualEvaluatedResourcesForName = expressionResult.evaluatedResources!!
             val expectedEvaluatedResourcesForName = expectedEvaluatedResources[expressionName]!!
 
-            assertResourcesEqual(expectedEvaluatedResourcesForName, actualEvaluatedResourcesForName)
+            assertEvaluatedResourcesEqual(
+                expectedEvaluatedResourcesForName,
+                actualEvaluatedResourcesForName,
+            )
 
             val actualValue = expressionResult.value
             val expectedValue = expectedValues[expressionName]!!
@@ -256,7 +259,7 @@ internal object EvaluatedResourceTestUtils {
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 
-        assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedEvaluatedResources, actualValue)
     }
 
@@ -273,7 +276,7 @@ internal object EvaluatedResourceTestUtils {
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 
-        assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedValue, actualValue)
     }
 
@@ -291,7 +294,7 @@ internal object EvaluatedResourceTestUtils {
         val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
         val actualValue = expressionResult.value
 
-        assertResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
         assertValuesEqual(expectedValue, actualValue)
     }
 
@@ -320,6 +323,28 @@ internal object EvaluatedResourceTestUtils {
                         .value
             }
             .sortedBy { it.second }
+    }
+
+    /**
+     * Evaluated resources are compared as the set of (type, id) pairs they cover, not element by
+     * element.
+     *
+     * The engine no longer deduplicates them. It collects what each retrieve returned, with
+     * identity semantics, and the FHIR retrieve path builds a fresh value per retrieve -- so a
+     * record reached by several expressions appears once per retrieve rather than once per record.
+     * What the engine promises is which records an expression touched, so that is what these
+     * assertions check. Collapsing them by resource identity belongs to the caller, which knows its
+     * model; clinical-reasoning does so by resource type and logical id.
+     */
+    private fun assertEvaluatedResourcesEqual(
+        expectedResources: Collection<*>,
+        actualResources: Iterable<*>,
+    ) {
+        assertEquals(
+            extractResourceTypesAndIdsInOrder(expectedResources).toSet(),
+            extractCqlFhirClassInstanceTypesAndIdsInOrder(actualResources).toSet(),
+            showMismatchError(expectedResources, actualResources),
+        )
     }
 
     private fun assertValuesEqual(expectedValue: Collection<IBaseResource>, actualValue: Value?) {
@@ -358,10 +383,20 @@ internal object EvaluatedResourceTestUtils {
     }
 
     private fun showResources(resources: Iterable<*>): String {
-        return resources
-            .filterIsInstance<IBaseResource>()
-            .map { obj -> obj.idElement }
-            .joinToString(", ") { obj -> obj.valueAsString }
+        // Both sides are rendered here: expectations are HAPI resources, actuals are the
+        // ClassInstances the engine produced. Filtering to one kind left the other blank.
+        return resources.joinToString(", ") { resource ->
+            when (resource) {
+                is IBaseResource -> resource.idElement.valueAsString
+                is ClassInstance ->
+                    extractCqlFhirClassInstanceTypesAndIdsInOrder(listOf(resource)).joinToString(
+                        ","
+                    ) { (type, id) ->
+                        "$type/$id"
+                    }
+                else -> resource.toString()
+            }
+        }
     }
 
     private fun assertResourcesEqual(

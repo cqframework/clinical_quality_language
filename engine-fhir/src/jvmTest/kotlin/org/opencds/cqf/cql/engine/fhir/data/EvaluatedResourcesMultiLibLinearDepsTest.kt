@@ -465,11 +465,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
                     UNION_EXPRESSION,
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     true,
                 ),
@@ -492,11 +492,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
                     UNION_EXPRESSION,
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     false,
                 ),
@@ -633,11 +633,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
                     UNION_EXPRESSION,
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     true,
                 ),
@@ -660,11 +660,11 @@ internal class EvaluatedResourcesMultiLibLinearDepsTest : FhirExecutionMultiLibT
                     UNION_EXPRESSION,
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     listOf(
                         EvaluatedResourceTestUtils.CONDITION,
-                        EvaluatedResourceTestUtils.ENCOUNTER,
+                        EvaluatedResourceTestUtils.PROCEDURE,
                     ),
                     false,
                 ),

@@ -38,6 +38,7 @@ import org.opencds.cqf.cql.engine.execution.trace.Trace
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.util.IdentitySet
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
@@ -517,7 +518,18 @@ constructor(
     }
 
     fun pushEvaluatedResourceStack() {
-        evaluatedResourceStack.addFirst(HashSet<Value?>())
+        // Identity semantics, deliberately. Deduplicating here would require the engine to know
+        // what makes two model values "the same record", and neither ELM nor the ModelInfo
+        // defines that -- any key the engine picked (FHIR's Resource.id, say) would be a
+        // model-specific rule compiled into model-agnostic code. The previous HashSet decided
+        // membership with Value.equals, a deep comparison of the whole element tree on every
+        // insert, which is what made retrieve-heavy evaluation expensive.
+        //
+        // The retrieve path builds a fresh value per retrieve, so identity collapses only
+        // literal re-adds of the same object; a record retrieved by several expressions appears
+        // once per retrieve. Callers know their model and deduplicate on the right key --
+        // clinical-reasoning does so by resource type and id when it builds a MeasureReport.
+        evaluatedResourceStack.addFirst(IdentitySet<Value?>())
     }
 
     /**

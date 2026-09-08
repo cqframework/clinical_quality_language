@@ -3,8 +3,12 @@ package org.opencds.cqf.cql.engine.fhir.model
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.FhirVersionEnum
 import java.math.BigDecimal
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ModelIdentifier
@@ -15,8 +19,6 @@ import org.hl7.fhir.dstu3.model.Enumeration
 import org.hl7.fhir.dstu3.model.Enumerations
 import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Quantity
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 
@@ -24,7 +26,7 @@ internal class TestDstu3ModelResolver {
     @Test
     fun resolverThrowsExceptionForUnknownType() {
         val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
-        Assertions.assertThrows(UnknownType::class.java) {
+        assertFailsWith<UnknownType> {
             resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
         }
     }
@@ -58,7 +60,7 @@ internal class TestDstu3ModelResolver {
         }
 
         for (enumType in enums) {
-            resolver.resolveType(enumType.getSimpleName())
+            resolver.resolveType(enumType.simpleName)
         }
     }
 
@@ -95,21 +97,54 @@ internal class TestDstu3ModelResolver {
         val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         // This tests resolution of inner classes. They aren't registered directly.
-        resolver.resolveType("TestScriptRequestMethodCode")
-        resolver.resolveType("FHIRDeviceStatus")
+        assertEquals(
+            org.hl7.fhir.dstu3.model.TestScript.TestScriptRequestMethodCode::class.java,
+            resolver.resolveType("TestScriptRequestMethodCode"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Device.FHIRDeviceStatus::class.java,
+            resolver.resolveType("FHIRDeviceStatus"),
+        )
 
         // This tests the special case handling of "Codes".
-        resolver.resolveType("ImmunizationStatusCodes")
-        resolver.resolveType("ConditionClinicalStatusCodes")
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus::class.java,
+            resolver.resolveType("ImmunizationStatusCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus::class.java,
+            resolver.resolveType("ConditionClinicalStatusCodes"),
+        )
 
         // These are oddballs requiring manual mapping.
-        resolver.resolveType("ConfidentialityClassification")
-        resolver.resolveType("ContractResourceStatusCodes")
-        resolver.resolveType("EventStatus")
-        resolver.resolveType("qualityType")
-        resolver.resolveType("FinancialResourceStatusCodes")
-        resolver.resolveType("repositoryType")
-        resolver.resolveType("SampledDataDataType")
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Composition.DocumentConfidentiality::class.java,
+            resolver.resolveType("ConfidentialityClassification"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Contract.ContractStatus::class.java,
+            resolver.resolveType("ContractResourceStatusCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Procedure.ProcedureStatus::class.java,
+            resolver.resolveType("EventStatus"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Sequence.QualityType::class.java,
+            resolver.resolveType("qualityType"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.ClaimResponse.ClaimResponseStatus::class.java,
+            resolver.resolveType("FinancialResourceStatusCodes"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.Sequence.RepositoryType::class.java,
+            resolver.resolveType("repositoryType"),
+        )
+        assertEquals(
+            org.hl7.fhir.dstu3.model.StringType::class.java,
+            resolver.resolveType("SampledDataDataType"),
+        )
     }
 
     @Test
@@ -127,7 +162,7 @@ internal class TestDstu3ModelResolver {
 
             val instance = resolver.createHapiInstance(type.toCode())
 
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
         }
 
         for (type in Enumerations.ResourceType.entries) {
@@ -141,18 +176,18 @@ internal class TestDstu3ModelResolver {
 
             val instance = resolver.createHapiInstance(type.toCode())
 
-            Assertions.assertNotNull(instance)
+            assertNotNull(instance)
         }
 
         for (enumType in enums) {
             // For the enums we actually expect an Enumeration with a factory of the correct
             // type to be created.
-            val instance = resolver.createHapiInstance(enumType.getSimpleName()) as Enumeration<*>?
-            Assertions.assertNotNull(instance)
+            val instance = resolver.createHapiInstance(enumType.simpleName) as Enumeration<*>?
+            assertNotNull(instance)
 
-            Assertions.assertEquals(
-                instance!!.getEnumFactory().javaClass.getSimpleName().replace("EnumFactory", ""),
-                enumType.getSimpleName(),
+            assertEquals(
+                instance.getEnumFactory().javaClass.simpleName.replace("EnumFactory", ""),
+                enumType.simpleName,
             )
         }
 
@@ -160,10 +195,10 @@ internal class TestDstu3ModelResolver {
         // This list is not exhaustive. It's meant as a spot check for the resolution
         // code.
         var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
 
         instance = resolver.createHapiInstance("FHIRDeviceStatus")
-        Assertions.assertNotNull(instance)
+        assertNotNull(instance)
     }
 
     @Test
@@ -171,51 +206,48 @@ internal class TestDstu3ModelResolver {
         val resolver = Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3))
 
         var path = resolver.getContextPath("Patient", "Patient")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("id", path)
+        assertEquals("id", path)
 
         path = resolver.getContextPath(null, "Encounter")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         // TODO: Consider making this an exception on the resolver because
         // if this happens it means something went wrong in the context.
         path = resolver.getContextPath("Patient", null)
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Patient", "Condition")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertNotNull(path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Appointment")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("participant.actor", path)
+        assertNotNull(path)
+        assertEquals("participant.actor", path)
 
         path = resolver.getContextPath("Patient", "Account")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Encounter")
-        Assertions.assertNotNull(path)
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "MedicationStatement")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         path = resolver.getContextPath("Patient", "Task")
-        Assertions.assertEquals("for", path)
+        assertEquals("for", path)
 
         path = resolver.getContextPath("Patient", "Coverage")
-        Assertions.assertEquals("beneficiary", path)
+        assertEquals("beneficiary", path)
 
         path = resolver.getContextPath("Patient", "QuestionnaireResponse")
-        Assertions.assertEquals("subject", path)
+        assertEquals("subject", path)
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = resolver.getContextPath("Unfiltered", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
 
         path = resolver.getContextPath("Unspecified", "MedicationStatement")
-        Assertions.assertNull(path)
+        assertNull(path)
     }
 
     @Test
