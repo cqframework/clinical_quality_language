@@ -1,0 +1,44 @@
+{
+  "library": {
+    "annotation": [
+      {
+        "type": "CqlToElmInfo",
+        "translatorVersion": "{translatorVersion}",
+        "translatorOptions": "EnableResultTypes",
+        "signatureLevel": "Overloads"
+      }
+    ],
+    "identifier": {
+      "id": "LibraryWithoutResultTypes"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1",
+          "annotation": []
+        }
+      ]
+    },
+    "statements": {
+      "def": [
+        {
+          "name": "expr1",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Literal",
+            "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+            "value": "5",
+            "annotation": []
+          }
+        }
+      ]
+    }
+  }
+}

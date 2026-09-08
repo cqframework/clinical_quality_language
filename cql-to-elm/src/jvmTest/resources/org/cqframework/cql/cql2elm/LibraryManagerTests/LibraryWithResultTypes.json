@@ -1,0 +1,187 @@
+{
+  "library": {
+    "annotation": [
+      {
+        "type": "CqlToElmInfo",
+        "translatorVersion": "{translatorVersion}",
+        "translatorOptions": "EnableResultTypes",
+        "signatureLevel": "Overloads"
+      }
+    ],
+    "identifier": {
+      "id": "LibraryWithResultTypes"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1",
+          "annotation": []
+        },
+        {
+          "localIdentifier": "FHIR",
+          "uri": "http://hl7.org/fhir",
+          "version": "4.0.1",
+          "annotation": []
+        }
+      ]
+    },
+    "contexts": {
+      "def": [
+        {
+          "name": "Patient",
+          "annotation": []
+        },
+        {
+          "name": "Practitioner",
+          "annotation": []
+        }
+      ]
+    },
+    "statements": {
+      "def": [
+        {
+          "resultTypeName": "{http://hl7.org/fhir}Patient",
+          "name": "Patient",
+          "context": "Patient",
+          "annotation": [],
+          "expression": {
+            "type": "SingletonFrom",
+            "annotation": [],
+            "signature": [],
+            "operand": {
+              "type": "Retrieve",
+              "dataType": "{http://hl7.org/fhir}Patient",
+              "templateId": "http://hl7.org/fhir/StructureDefinition/Patient",
+              "annotation": [],
+              "include": [],
+              "codeFilter": [],
+              "dateFilter": [],
+              "otherFilter": []
+            }
+          }
+        },
+        {
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+          "name": "expr1",
+          "context": "Patient",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Literal",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+            "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+            "value": "5",
+            "annotation": []
+          }
+        },
+        {
+          "name": "expr2",
+          "context": "Patient",
+          "accessLevel": "Public",
+          "annotation": [],
+          "resultTypeSpecifier": {
+            "type": "ListTypeSpecifier",
+            "annotation": [],
+            "elementType": {
+              "type": "NamedTypeSpecifier",
+              "name": "{urn:hl7-org:elm-types:r1}String",
+              "annotation": []
+            }
+          },
+          "expression": {
+            "type": "List",
+            "annotation": [],
+            "resultTypeSpecifier": {
+              "type": "ListTypeSpecifier",
+              "annotation": [],
+              "elementType": {
+                "type": "NamedTypeSpecifier",
+                "name": "{urn:hl7-org:elm-types:r1}String",
+                "annotation": []
+              }
+            },
+            "element": [
+              {
+                "type": "Literal",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                "valueType": "{urn:hl7-org:elm-types:r1}String",
+                "value": "a",
+                "annotation": []
+              }
+            ]
+          }
+        },
+        {
+          "resultTypeName": "{http://hl7.org/fhir}Practitioner",
+          "name": "Practitioner",
+          "context": "Practitioner",
+          "annotation": [],
+          "expression": {
+            "type": "SingletonFrom",
+            "annotation": [],
+            "signature": [],
+            "operand": {
+              "type": "Retrieve",
+              "dataType": "{http://hl7.org/fhir}Practitioner",
+              "templateId": "http://hl7.org/fhir/StructureDefinition/Practitioner",
+              "annotation": [],
+              "include": [],
+              "codeFilter": [],
+              "dateFilter": [],
+              "otherFilter": []
+            }
+          }
+        },
+        {
+          "name": "expr3",
+          "context": "Practitioner",
+          "accessLevel": "Public",
+          "annotation": [],
+          "resultTypeSpecifier": {
+            "type": "IntervalTypeSpecifier",
+            "annotation": [],
+            "pointType": {
+              "type": "NamedTypeSpecifier",
+              "name": "{urn:hl7-org:elm-types:r1}Integer",
+              "annotation": []
+            }
+          },
+          "expression": {
+            "type": "Interval",
+            "lowClosed": true,
+            "highClosed": true,
+            "annotation": [],
+            "resultTypeSpecifier": {
+              "type": "IntervalTypeSpecifier",
+              "annotation": [],
+              "pointType": {
+                "type": "NamedTypeSpecifier",
+                "name": "{urn:hl7-org:elm-types:r1}Integer",
+                "annotation": []
+              }
+            },
+            "low": {
+              "type": "Literal",
+              "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+              "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+              "value": "1",
+              "annotation": []
+            },
+            "high": {
+              "type": "Literal",
+              "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+              "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+              "value": "2",
+              "annotation": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}
