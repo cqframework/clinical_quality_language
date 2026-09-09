@@ -9,6 +9,8 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum
 import java.lang.reflect.InvocationTargetException
 import java.util.Calendar
 import java.util.GregorianCalendar
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 import javax.xml.namespace.QName
 import kotlin.IllegalArgumentException
 import org.hl7.fhir.instance.model.api.IAnyResource
@@ -69,6 +71,9 @@ abstract class FhirModelResolver<
     // Data members
     var fhirContext: FhirContext
 ) : ModelResolver {
+    /** Memo for [resolveType]; see the note there. Concurrent because a resolver is shared. */
+    private val resolvedTypes = ConcurrentHashMap<String, Optional<Class<*>>>()
+
     protected abstract fun initialize()
 
     abstract fun castToSimpleQuantity(base: BaseType): SimpleQuantityType
@@ -242,7 +247,31 @@ abstract class FhirModelResolver<
      * @return The Java class that corresponds to the given model type, e.g.
      *   `org.hl7.fhir.r4.model.Patient`.
      */
+    /**
+     * Resolution is deterministic for a given type name, and a miss is expensive: the lookups below
+     * fall through to a `Class.forName` per configured package -- twice -- each throwing and
+     * discarding a `ClassNotFoundException`, and then to a scan of every registered resource. The
+     * set of type names a model produces is small and closed, so the answers are cached.
+     *
+     * Negative results are cached too. They cost the most to compute and recur just as often.
+     *
+     * Read-then-write rather than `computeIfAbsent`: the result does not depend on what else is in
+     * the map, so a racing duplicate computation is harmless, and this cannot deadlock if a
+     * resolution path ever re-enters this method.
+     */
     open fun resolveType(typeName: String?): Class<*>? {
+        if (typeName == null) {
+            return resolveTypeUncached(null)
+        }
+        // A present entry is authoritative even when it holds null: a name that resolved to nothing
+        // must not be recomputed, or negative results would never actually be cached.
+        val cached = resolvedTypes[typeName]
+        return if (cached != null) cached.orElse(null)
+        else
+            resolveTypeUncached(typeName).also { resolvedTypes[typeName] = Optional.ofNullable(it) }
+    }
+
+    private fun resolveTypeUncached(typeName: String?): Class<*>? {
         // For Dstu2
         var typeName = typeName
         if (typeName!!.startsWith("FHIR.")) {

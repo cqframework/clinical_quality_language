@@ -75,8 +75,6 @@
     <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$private fun inferConditionRequirement( elm: Expression, context: ElmRequirementsContext, left: ElmRequirement?, right: ElmRequirement?, ): ElmRequirement</ID>
     <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun aggregateResult( aggregate: ElmRequirement?, nextResult: ElmRequirement?, ): ElmRequirement?</ID>
     <ID>ReturnCount:ElmRequirementsVisitor.kt$ElmRequirementsVisitor$public override fun visitFields( elm: BinaryExpression, context: ElmRequirementsContext, ): ElmRequirement?</ID>
-    <ID>ReturnCount:TypeResolver.kt$TypeResolver$fun dataTypeToProfileQName(type: DataType?): QName?</ID>
-    <ID>ReturnCount:TypeResolver.kt$TypeResolver$fun getTypeUri(type: DataType?): String?</ID>
     <ID>SwallowedException:DataRequirementsProcessor.kt$DataRequirementsProcessor$fhirException: FHIRException</ID>
     <ID>SwallowedException:ElmRequirementsContext.kt$ElmRequirementsContext$e: Exception</ID>
     <ID>ThrowsCount:ElmAnalysisHelper.kt$ElmAnalysisHelper$@Suppress("UseRequire") @JvmStatic fun toFhirValue(context: ElmRequirementsContext, value: Expression?): DataType?</ID>
@@ -89,7 +87,6 @@
     <ID>TooManyFunctions:ElmQueryRequirement.kt$ElmQueryRequirement : ElmExpressionRequirement</ID>
     <ID>TooManyFunctions:ElmRequirementsContext.kt$ElmRequirementsContext</ID>
     <ID>TooManyFunctions:ElmRequirementsVisitor.kt$ElmRequirementsVisitor : BaseElmLibraryVisitor</ID>
-    <ID>TooManyFunctions:TypeResolver.kt$TypeResolver</ID>
     <ID>UnusedParameter:ElmDataRequirement.kt$ElmDataRequirement$context: ElmRequirementsContext?</ID>
     <ID>UnusedParameter:ElmQueryRequirement.kt$ElmQueryRequirement$childRequirements: ElmRequirement?</ID>
   </CurrentIssues>
