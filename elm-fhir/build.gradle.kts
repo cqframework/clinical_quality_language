@@ -9,5 +9,5 @@ dependencies {
     api(project(":engine-fhir"))
 
     testImplementation(project(":quick"))
-    testImplementation("org.reflections:reflections:0.10.2")
+    testImplementation(libs.reflections)
 }

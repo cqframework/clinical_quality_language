@@ -1,6 +1,6 @@
 plugins {
     id("base")
-    id("com.github.node-gradle.node")
+    alias(libs.plugins.node.gradle)
 }
 
 node {

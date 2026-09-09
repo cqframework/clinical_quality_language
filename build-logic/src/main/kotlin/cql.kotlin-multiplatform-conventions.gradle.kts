@@ -1,13 +1,13 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     id("cql.maven-publishing-conventions")
-    id("org.jetbrains.kotlinx.kover")
-    id("io.gitlab.arturbosch.detekt")
-    id("org.jetbrains.dokka")
-    id("com.github.gmazzo.buildconfig")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kover)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.buildconfig)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 repositories {
@@ -80,23 +80,23 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-io:1.9.0")
-                implementation("io.github.oshai:kotlin-logging:8.0.01")
+                api(libs.kotlinx.io.core)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.serialization.json.io)
+                implementation(libs.kotlin.logging)
             }
         }
 
-        jvmMain { dependencies { api("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.0") } }
+        jvmMain { dependencies { api(libs.kotlinx.io.core.jvm) } }
 
-        commonTest { dependencies { implementation(kotlin("test")) } }
+        commonTest { dependencies { implementation(libs.kotlin.test) } }
 
         jvmTest {
             dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation("org.junit.jupiter:junit-jupiter")
-                implementation("org.slf4j:slf4j-simple:2.0.13")
-                implementation("org.hamcrest:hamcrest-all:1.3")
+                implementation(libs.kotlin.test.junit5)
+                implementation(libs.junit.jupiter)
+                implementation(libs.slf4j.simple)
+                implementation(libs.hamcrest.all)
             }
         }
     }

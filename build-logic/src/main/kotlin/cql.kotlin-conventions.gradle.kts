@@ -3,13 +3,13 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
     id("cql.maven-publishing-conventions")
-    id("jacoco")
-    id("org.jetbrains.dokka")
-    id("io.gitlab.arturbosch.detekt")
-    id("org.openrewrite.rewrite")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.jacoco)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.openrewrite)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 repositories {
@@ -33,20 +33,20 @@ kotlin {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.13")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-    testImplementation("org.hamcrest:hamcrest-all:1.3")
-    testImplementation("uk.co.datumedge:hamcrest-json:0.2")
-    testImplementation(platform("org.junit:junit-bom:5.10.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.slf4j:slf4j-simple:2.0.13")
-    testImplementation(kotlin("test"))
+    implementation(libs.slf4j.api)
+    implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.hamcrest.all)
+    testImplementation(libs.hamcrest.json)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.slf4j.simple)
+    testImplementation(libs.kotlin.test)
 
     // These are JAXB dependencies excluded because the libraries need to work
     // on Android. But for test purposes we use them pretty much everywhere.
-    testRuntimeOnly("org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2")
-    testRuntimeOnly("org.eclipse.parsson:parsson:1.1.5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly(libs.moxy)
+    testRuntimeOnly(libs.parsson)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     rewrite(project(":tools:rewrite"))
 }

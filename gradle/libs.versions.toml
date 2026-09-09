@@ -1,0 +1,156 @@
+[versions]
+hapi = "8.10.0"
+xpp3 = "1.1.6"
+
+ucum-java = "1.0.8"
+
+kotlin = "2.3.10"
+kotlinx-serialization = "1.9.0"
+kotlinx-io = "0.8.0"
+kotlinx-datetime = "0.7.1"
+kotlinx-browser = "0.3"
+
+kotlin-bignum = "0.3.10"
+kotlin-logging = "8.0.01"
+
+slf4j = "2.0.13"
+
+antlr-kotlin = "1.0.12"
+kotlinpoet = "2.2.0"
+xsom = "4.0.6"
+
+buildconfig = "6.0.7"
+node-gradle = "7.1.0"
+openrewrite-plugin = "7.26.0"
+openrewrite = "8.62.6"
+
+gson = "2.9.1"
+parsson = "1.1.5"
+apache-commons-compress = "1.24.0"
+apache-commons-text = "1.10.0"
+apache-xmlschema = "2.2.5"
+jopt-simple = "4.7"
+
+jaxb-xjc = "3.0.2"
+jaxb-runtime = "4.0.5"
+moxy = "4.0.2"
+jakarta-xml-bind = "4.0.1"
+jaxb2-commons = "3.0.0"
+ant = "1.10.14"
+
+junit = "5.10.2"
+hamcrest-all = "1.3"
+hamcrest-json = "0.2"
+archunit = "1.2.1"
+wiremock = "3.9.1"
+mockito = "5.4.0"
+reflections = "0.10.2"
+xmlunit = "2.10.0"
+jsonassert = "1.5.1"
+easy-random = "5.0.0"
+
+kover = "0.9.8"
+dokka = "2.1.0"
+
+spotless = "8.4.0"
+detekt = "1.23.8"
+sonarqube = "7.2.2.6593"
+errorprone-gradle = "5.0.0"
+animalsniffer = "2.0.1"
+
+vanniktech-publish = "0.36.0"
+
+task-tree = "4.0.1"
+
+[libraries]
+hapi-fhir-bom = { module = "ca.uhn.hapi.fhir:hapi-fhir-bom", version.ref = "hapi" }
+hapi-fhir-base = { module = "ca.uhn.hapi.fhir:hapi-fhir-base" }
+hapi-fhir-client = { module = "ca.uhn.hapi.fhir:hapi-fhir-client" }
+hapi-fhir-converter = { module = "ca.uhn.hapi.fhir:hapi-fhir-converter"  }
+hapi-fhir-structures-hl7org-dstu2 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-hl7org-dstu2" }
+hapi-fhir-structures-dstu2 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2" }
+hapi-fhir-structures-dstu3 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3" }
+hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4" }
+hapi-fhir-structures-r5 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r5"  }
+xpp3 = { module = "org.ogce:xpp3", version.ref = "xpp3" }
+
+ucum-java = { module = "org.fhir:ucum", version.ref = "ucum-java" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json-io = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-io", version.ref = "kotlinx-serialization" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+kotlinx-io-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-io-core-jvm", version.ref = "kotlinx-io" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
+
+kotlin-bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "kotlin-bignum" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+antlr-kotlin-gradle-plugin = { module = "com.strumenta:antlr-kotlin-gradle-plugin", version.ref = "antlr-kotlin" }
+antlr-kotlin-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr-kotlin" }
+antlr-kotlin-runtime-jvm = { module = "com.strumenta:antlr-kotlin-runtime-jvm", version.ref = "antlr-kotlin" }
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+xsom = { module = "org.glassfish.jaxb:xsom", version.ref = "xsom" }
+
+openrewrite-core = { module = "org.openrewrite:rewrite-core", version.ref = "openrewrite" }
+openrewrite-kotlin = { module = "org.openrewrite:rewrite-kotlin", version.ref = "openrewrite" }
+openrewrite-java = { module = "org.openrewrite:rewrite-java", version.ref = "openrewrite" }
+openrewrite-test = { module = "org.openrewrite:rewrite-test", version.ref = "openrewrite" }
+
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+parsson = { module = "org.eclipse.parsson:parsson", version.ref = "parsson" }
+apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
+apache-commons-text = { module = "org.apache.commons:commons-text", version.ref = "apache-commons-text" }
+apache-xmlschema-core = { module = "org.apache.ws.xmlschema:xmlschema-core", version.ref = "apache-xmlschema" }
+apache-xmlschema-walker = { module = "org.apache.ws.xmlschema:xmlschema-walker", version.ref = "apache-xmlschema" }
+jopt-simple = { module = "net.sf.jopt-simple:jopt-simple", version.ref = "jopt-simple" }
+
+jaxb-xjc = { module = "org.glassfish.jaxb:jaxb-xjc", version.ref = "jaxb-xjc" }
+jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime", version.ref = "jaxb-runtime" }
+moxy = { module = "org.eclipse.persistence:org.eclipse.persistence.moxy", version.ref = "moxy" }
+jakarta-xml-bind-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-xml-bind" }
+jaxb2-commons-basics-ant = { module = "codes.rafael.jaxb2_commons:jaxb2-basics-ant", version.ref = "jaxb2-commons" }
+jaxb2-commons-basics = { module = "codes.rafael.jaxb2_commons:jaxb2-basics", version.ref = "jaxb2-commons" }
+jaxb2-commons-fluent-api = { module = "codes.rafael.jaxb2_commons:jaxb2-fluent-api", version.ref = "jaxb2-commons" }
+ant = { module = "org.apache.ant:ant", version.ref = "ant" }
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+hamcrest-all = { module = "org.hamcrest:hamcrest-all", version.ref = "hamcrest-all" }
+hamcrest-json = { module = "uk.co.datumedge:hamcrest-json", version.ref = "hamcrest-json" }
+archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
+wiremock = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+xmlunit-assertj = { module = "org.xmlunit:xmlunit-assertj", version.ref = "xmlunit" }
+jsonassert = { module = "org.skyscreamer:jsonassert", version.ref = "jsonassert" }
+easy-random-core = { module = "org.jeasy:easy-random-core", version.ref = "easy-random" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
+openrewrite = { id = "org.openrewrite.rewrite", version.ref = "openrewrite-plugin" }
+
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+jacoco = { id = "jacoco" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+errorprone = { id = "net.ltgt.errorprone", version.ref = "errorprone-gradle" }
+animalsniffer = { id = "ru.vyarus.animalsniffer", version.ref = "animalsniffer" }
+
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }
+
+task-tree = { id = "com.dorongold.task-tree", version.ref = "task-tree" }

@@ -8,11 +8,11 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class) wasmJs { outputModuleName = "shared" }
 
     sourceSets {
-        commonMain { dependencies { implementation("com.ionspin.kotlin:bignum:0.3.10") } }
+        commonMain { dependencies { implementation(libs.kotlin.bignum) } }
         jsMain { dependencies { implementation(npm("saxes", "6.0.0")) } }
         wasmJsMain {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-browser:0.3")
+                implementation(libs.kotlinx.browser)
                 implementation(npm("saxes", "6.0.0"))
             }
         }
