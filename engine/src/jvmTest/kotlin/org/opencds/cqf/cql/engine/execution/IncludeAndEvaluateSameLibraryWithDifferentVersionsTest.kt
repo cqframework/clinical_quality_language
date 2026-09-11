@@ -95,7 +95,7 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
 
     /**
      * Expression x is defined in LibD version 1.0.0 and version 2.0.0 and evaluates to 1 and 2,
-     * respectively. The test ensures that the engine can evaluate LibA which directly imports both
+     * respectively. The test ensures that the engine can evaluate LibE which directly imports both
      * version of LibD.
      */
     @Test
@@ -106,9 +106,9 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
             object : LibrarySourceProvider {
                 override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
                     return when (libraryIdentifier) {
-                        VersionedIdentifier().apply { id = "LibA" } ->
+                        VersionedIdentifier().apply { id = "LibE" } ->
                             """
-                            library LibA
+                            library LibE
                             
                             include LibD version '1.0.0' called LibDVersion1
                             include LibD version '2.0.0' called LibDVersion2
@@ -147,10 +147,10 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
         )
         val environment = Environment(libraryManager)
         val engine = CqlEngine(environment)
-        val resultsForLibA = engine.evaluate { library("LibA") }.onlyResultOrThrow
+        val resultsForLibE = engine.evaluate { library("LibE") }.onlyResultOrThrow
 
-        assertEquals(1.toCqlInteger(), resultsForLibA["xFromLibDVersion1"]?.value)
-        assertEquals(2.toCqlInteger(), resultsForLibA["xFromLibDVersion2"]?.value)
+        assertEquals(1.toCqlInteger(), resultsForLibE["xFromLibDVersion1"]?.value)
+        assertEquals(2.toCqlInteger(), resultsForLibE["xFromLibDVersion2"]?.value)
     }
 
     /**
