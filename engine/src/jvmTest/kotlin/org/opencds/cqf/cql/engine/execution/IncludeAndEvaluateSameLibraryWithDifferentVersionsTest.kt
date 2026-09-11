@@ -155,7 +155,7 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
 
     /**
      * Expression x is defined in LibD version 1.0.0 and version 2.0.0 and evaluates to 1 and 2,
-     * respectively. The test ensures that the engine can evaluate both versions of the LibD within
+     * respectively. The test ensures that the engine can evaluate both versions of LibD within
      * consecutive [CqlEngine.evaluate] calls.
      */
     @Test
@@ -224,8 +224,8 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
 
     /**
      * Expression x is defined in LibD version 1.0.0 and version 2.0.0 and evaluates to 1 and 2,
-     * respectively. The test ensures that the engine can evaluate both libraries within the same
-     * [CqlEngine.evaluate] call.
+     * respectively. The test ensures that the engine can evaluate both versions of `LibD` within
+     * the same [CqlEngine.evaluate] call.
      */
     @Test
     fun evaluateSameLibraryWithDifferentVersionsSimultaneouslyTest() {
