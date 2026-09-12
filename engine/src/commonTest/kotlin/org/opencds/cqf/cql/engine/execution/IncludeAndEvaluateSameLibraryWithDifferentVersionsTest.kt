@@ -27,6 +27,7 @@ internal class IncludeAndEvaluateSameLibraryWithDifferentVersionsTest {
      */
     val librarySourceProvider =
         object : LibrarySourceProvider {
+            @Suppress("LongMethod")
             override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
                 return when (libraryIdentifier) {
                     VersionedIdentifier().apply { id = "LibA" } ->
