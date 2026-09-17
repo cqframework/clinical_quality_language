@@ -80,6 +80,9 @@ define SplitABNull : Split('a,b', null)
 define SplitABDash : Split('a,b', '-')
 define SplitABSpace : Split('a b', ' ')
 define SplitABComma : Split('a,b', ',')
+define SplitEmptyStringComma : Split('', ',')
+define SplitABCEmptySeparator : Split('ABC', '')
+define SplitEmptyStringEmptySeparator : Split('', '')
 
 //SplitOnMatches
 define SplitMatchesNullNull : SplitOnMatches(null, null)
