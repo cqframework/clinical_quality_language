@@ -249,6 +249,18 @@
 			<expression>Split('a,b', ',')</expression>
 			<output>{'a','b'}</output>
 		</test>
+		<test name="SplitEmptyStringComma">
+			<expression>Split('', ',')</expression>
+			<output>{ '' }</output>
+		</test>
+		<test name="SplitABCEmptySeparator">
+			<expression>Split('ABC', '')</expression>
+			<output>{ 'A', 'B', 'C' }</output>
+		</test>
+		<test name="SplitEmptyStringEmptySeparator">
+			<expression>Split('', '')</expression>
+			<output>{ '' }</output>
+		</test>
 	</group>
 	<group name="StartsWith">
 		<test name="StartsWithNull">

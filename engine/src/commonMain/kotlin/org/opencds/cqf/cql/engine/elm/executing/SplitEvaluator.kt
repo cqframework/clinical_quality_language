@@ -26,8 +26,12 @@ object SplitEvaluator {
         }
 
         if (stringToSplit is String && separator is String?) {
-            if (separator == null) {
+            if (separator == null || stringToSplit.value.isEmpty()) {
                 return mutableListOf(stringToSplit).toCqlList()
+            }
+            if (separator.value.isEmpty()) {
+                // An empty separator splits the string into its individual characters
+                return ToCharsEvaluator.toChars(stringToSplit)
             }
             return stringUtilsSplit(stringToSplit.value, separator.value)
                 .map { it.toCqlString() }
