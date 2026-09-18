@@ -234,7 +234,7 @@ class OperatorEntry(val name: String) {
             }
 
             if (!added) {
-                for (n in signatures.values) {
+                for (n in signatures.values.toList()) {
                     if (node.signature.isSuperTypeOf(n.signature)) {
                         signatures.remove(n.signature)
                         node.subSignatures.add(n)
