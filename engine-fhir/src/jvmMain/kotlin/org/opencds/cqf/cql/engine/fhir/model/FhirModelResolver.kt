@@ -12,7 +12,6 @@ import java.util.GregorianCalendar
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import javax.xml.namespace.QName
-import kotlin.IllegalArgumentException
 import org.hl7.fhir.instance.model.api.IAnyResource
 import org.hl7.fhir.instance.model.api.IBase
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement
@@ -290,8 +289,7 @@ abstract class FhirModelResolver<
 
         try {
             if (typeName.contains(".")) {
-                val path =
-                    typeName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val path = typeName.split(".")
                 val resourceDefinition =
                     if (this.fhirContext.resourceTypes.contains(path[0]))
                         this.fhirContext.getResourceDefinition(path[0])

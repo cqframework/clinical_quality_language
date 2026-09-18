@@ -365,8 +365,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
         if (valueSet != null) {
             mockFhirRead("/ValueSet/" + valueSet.getId(), valueSet)
         } else {
-            val parts =
-                info.id!!.split("[:/]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val parts = info.id!!.split("[:/]".toRegex())
             val expectedId = parts[parts.size - 1]
             mockNotFound("/ValueSet/$expectedId")
         }

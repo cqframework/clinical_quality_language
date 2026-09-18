@@ -1,6 +1,5 @@
 package org.cqframework.cql.elm.requirements
 
-import kotlin.IllegalArgumentException
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.elm.r1.CodeFilterElement
 import org.hl7.elm.r1.DateFilterElement

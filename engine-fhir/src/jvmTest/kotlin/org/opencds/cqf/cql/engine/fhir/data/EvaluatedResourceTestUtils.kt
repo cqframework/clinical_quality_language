@@ -120,12 +120,8 @@ internal object EvaluatedResourceTestUtils {
                             librariesToPopulate.add(library)
                         }
                     } catch (exception: Exception) {
-                        val cqlFileName: String? =
-                            resourcePath
-                                .split("/".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray()[7]
-                        val error: String =
+                        val cqlFileName = resourcePath.split("/")[7]
+                        val error =
                             "Could not retrieve CQL files on %s due to :%s"
                                 .format(cqlFileName, exception.message)
                         throw RuntimeException(error, exception)

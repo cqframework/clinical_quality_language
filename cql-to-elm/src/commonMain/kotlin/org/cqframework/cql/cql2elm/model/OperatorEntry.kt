@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 
@@ -236,7 +234,7 @@ class OperatorEntry(val name: String) {
             }
 
             if (!added) {
-                for (n in signatures.values.toTypedArray<SignatureNode>()) {
+                for (n in signatures.values.toList()) {
                     if (node.signature.isSuperTypeOf(n.signature)) {
                         signatures.remove(n.signature)
                         node.subSignatures.add(n)

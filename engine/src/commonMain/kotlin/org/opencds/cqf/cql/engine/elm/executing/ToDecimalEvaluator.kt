@@ -54,7 +54,7 @@ object ToDecimalEvaluator {
         if (operand is String) {
             try {
                 if (operand.contains(".")) {
-                    val decimalSplit = operand.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                    val decimalSplit = operand.split(".")
                     if (
                         (decimalSplit[0].contains("-") || decimalSplit[0].contains("+")) &&
                             decimalSplit[0].length == 1

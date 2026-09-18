@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.preprocessor
 
-import kotlin.collections.ArrayList
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval

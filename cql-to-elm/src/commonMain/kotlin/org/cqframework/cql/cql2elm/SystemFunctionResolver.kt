@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Invocation
 import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.model.invocation.DateInvocation.Companion.setDateFieldsFromOperands

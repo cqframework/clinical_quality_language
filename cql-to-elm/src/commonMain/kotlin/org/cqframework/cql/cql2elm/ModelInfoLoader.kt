@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.collections.ArrayList
 import kotlin.jvm.JvmOverloads
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem

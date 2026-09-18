@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
@@ -115,12 +113,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 "Model context ${c.name} must be a class type."
             }
             val modelContext =
-                ModelContext(
-                    c.name!!,
-                    contextType,
-                    c.keyElement!!.split(";".toRegex()).dropLastWhile { it.isEmpty() },
-                    c.birthDateElement,
-                )
+                ModelContext(c.name!!, contextType, c.keyElement!!.split(";"), c.birthDateElement)
 
             contexts.add(modelContext)
         }
@@ -667,10 +660,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     private fun resolveRelationship(relationshipInfo: RelationshipInfo): Relationship {
         val modelContext = resolveContext(relationshipInfo.context!!)
         val relationship =
-            Relationship(
-                modelContext,
-                relationshipInfo.relatedKeyElement!!.split(";").dropLastWhile { it.isEmpty() },
-            )
+            Relationship(modelContext, relationshipInfo.relatedKeyElement!!.split(";"))
         return relationship
     }
 

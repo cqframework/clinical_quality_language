@@ -34,7 +34,7 @@ data class Version(private val version: String) : Comparable<Version?> {
         private set
 
     private fun initVersion() {
-        val parts = versionPartPattern.split(version).dropLastWhile { it.isEmpty() }
+        val parts = versionPartPattern.split(version)
         for (i in 0 until max(parts.size, 4)) {
             var part = if (i < parts.size) parts[i] else ""
             if (part.startsWith("v")) {

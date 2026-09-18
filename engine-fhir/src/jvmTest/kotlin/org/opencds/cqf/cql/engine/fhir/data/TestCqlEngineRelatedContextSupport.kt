@@ -140,11 +140,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
                             optPatient123
                                 .getGeneralPractitioner()
                                 .map { it.getReference() }
-                                .map {
-                                    it.split(PRACTITIONER_SLASH.toRegex())
-                                        .dropLastWhile { it.isEmpty() }
-                                        .elementAt(1)
-                                }
+                                .map { it.split(PRACTITIONER_SLASH.toRegex())[1] }
 
                         return allPractitioners
                             .filter { generalPractitionerIds.contains(it.getId()) }
@@ -225,11 +221,7 @@ internal class TestCqlEngineRelatedContextSupport : FhirExecutionTestBase() {
         }
 
         private fun getIdFromReference(theInnerReference: Reference): String {
-            return theInnerReference
-                .getReference()
-                .split(PRACTITIONER_SLASH.toRegex())
-                .dropLastWhile { it.isEmpty() }
-                .elementAt(1)
+            return theInnerReference.getReference().split(PRACTITIONER_SLASH.toRegex())[1]
         }
 
         private fun getPractitioner(

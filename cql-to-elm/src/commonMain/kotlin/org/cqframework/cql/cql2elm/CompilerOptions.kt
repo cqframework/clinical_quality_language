@@ -50,8 +50,7 @@ object CompilerOptions {
             return null
         }
         val optionSet = mutableSetOf<CqlCompilerOptions.Options>()
-        val options =
-            compilerOptions.trim { it <= ' ' }.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+        val options = compilerOptions.trim { it <= ' ' }.split(",")
         for (option in options) {
             optionSet.add(CqlCompilerOptions.Options.valueOf(option))
         }
