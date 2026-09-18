@@ -95,7 +95,7 @@ open class Dstu3FhirTest {
         }
 
     fun makeBundle(resources: MutableList<out Resource>): Bundle {
-        return makeBundle(*resources.toTypedArray<Resource>())
+        return makeBundle(*resources.toTypedArray())
     }
 
     fun makeBundle(vararg resources: Resource): Bundle {

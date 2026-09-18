@@ -159,7 +159,7 @@ class RestFhirRetrieveProvider(
             codings.add(coding)
         }
 
-        return codings.toTypedArray<IBaseCoding>()
+        return codings.toTypedArray()
     }
 
     companion object {

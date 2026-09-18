@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.execution
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlin.collections.containsKey
-import kotlin.collections.get
 import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.Expression

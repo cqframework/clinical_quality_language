@@ -1,6 +1,5 @@
 package org.hl7.cql.model
 
-import kotlin.collections.HashMap
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.JsOnlyExport
 

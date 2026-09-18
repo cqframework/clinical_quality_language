@@ -35,8 +35,7 @@ class GenericClassSignatureParser(
                     genericSignature.indexOf('<') + 1,
                     genericSignature.lastIndexOf('>'),
                 )
-            params =
-                escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            params = escapeNestedCommas(parameters).split(",")
         }
         var baseTypeName = baseType
         var baseTypeParameters: List<String>? = null
@@ -44,10 +43,7 @@ class GenericClassSignatureParser(
             baseTypeName = baseType!!.substring(0, baseType!!.indexOf('<'))
             val baseTypeParameterString =
                 baseType!!.substring(baseType!!.indexOf('<') + 1, baseType!!.lastIndexOf('>'))
-            baseTypeParameters =
-                escapeNestedCommas(baseTypeParameterString).split(",".toRegex()).dropLastWhile {
-                    it.isEmpty()
-                }
+            baseTypeParameters = escapeNestedCommas(baseTypeParameterString).split(",")
         }
         val baseDataType = resolveTypeName(baseTypeName)
         val genericClassType = ClassType(genericTypeName, baseDataType)
@@ -90,7 +86,7 @@ class GenericClassSignatureParser(
      * @return Type parameter for this parameter for this string declaration.
      */
     private fun handleParameterDeclaration(parameterString: String): TypeParameter {
-        val paramComponents = parameterString.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
+        val paramComponents = parameterString.split("\\s+".toRegex())
         return if (paramComponents.size == 1) {
             TypeParameter(parameterString.trim(), TypeParameter.TypeParameterConstraint.NONE)
         } else if (paramComponents.size == 3) {
@@ -150,10 +146,7 @@ class GenericClassSignatureParser(
                         boundGenericSignature.indexOf('<') + 1,
                         boundGenericSignature.lastIndexOf('>'),
                     )
-                val params =
-                    escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile {
-                        it.isEmpty()
-                    }
+                val params = escapeNestedCommas(parameters).split(",")
                 for ((index, param) in params.withIndex()) {
                     var boundParam: DataType?
                     val unescaped = unescapeNestedCommas(param)
@@ -280,7 +273,7 @@ class GenericClassSignatureParser(
      * @return
      */
     private fun unescapeNestedCommas(escapedSignature: String): String {
-        return escapedSignature.replace("\\|".toRegex(), ",")
+        return escapedSignature.replace("|", ",")
     }
 
     /**
@@ -295,7 +288,7 @@ class GenericClassSignatureParser(
     }
 
     private fun escapeNestedAngleBrackets(genericSignature: String): String {
-        return genericSignature.replace("<".toRegex(), "[").replace(">".toRegex(), "]")
+        return genericSignature.replace("<", "[").replace(">", "]")
     }
 
     companion object {

@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.js.JsExport
 import kotlin.jvm.JvmOverloads
-import kotlin.toString
 import org.cqframework.cql.shared.JsOnlyExport
 import org.cqframework.cql.shared.QName
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator.greater

@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.reflect.KClass
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.NamespaceManager

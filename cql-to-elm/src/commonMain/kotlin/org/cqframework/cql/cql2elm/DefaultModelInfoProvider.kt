@@ -60,11 +60,7 @@ class DefaultModelInfoProvider(path: Path) : ModelInfoProvider, PathAware {
                         if (indexOfExtension >= 0) {
                             fileName = fileName.substring(0, indexOfExtension)
                         }
-                        val fileNameComponents =
-                            fileName
-                                .split("-".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray()
+                        val fileNameComponents = fileName.split("-")
                         @Suppress("MagicNumber")
                         if (fileNameComponents.size == 3) {
                             val version = Version(fileNameComponents[2])
