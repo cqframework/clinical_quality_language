@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:modelInfo name="TargetCollision" url="http://cqframework.org/targetcollision" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!--
+        Minimal repro model for issue #1435: two sibling ClassInfo types, "WidgetNotDone" declaring
+        target="Widget", mirroring USQualityCore's negation-profile pattern (e.g.
+        ProcedureNotDone target="Procedure"). Neither type declares a baseType relationship to the
+        other; the collision under test comes purely from the shared `target` attribute, not
+        from any legitimate subtype relationship.
+    -->
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="TargetCollision.Widget" retrievable="true" identifier="widget" primaryCodePath="code">
+        <ns4:element name="code" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="TargetCollision.WidgetNotDone" target="Widget" retrievable="true" identifier="widgetnotdone" primaryCodePath="code">
+        <ns4:element name="code" type="System.String"/>
+    </ns4:typeInfo>
+</ns4:modelInfo>

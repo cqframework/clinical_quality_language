@@ -1475,7 +1475,7 @@ class LibraryBuilder(
                     resolution.operatorHasOverloads
         ) {
             invocation.signature =
-                dataTypesToTypeSpecifiers(resolution.operator.signature.operandTypes)
+                dataTypesToIdentityTypeSpecifiers(resolution.operator.signature.operandTypes)
         } else if (resolution.operatorHasOverloads && resolution.operator.libraryName != "System") {
             // NOTE: Because system functions only deal with CQL system-defined types, and there is
             // one and only one runtime representation of each system-defined type, there is no
@@ -2394,14 +2394,28 @@ class LibraryBuilder(
         return typeBuilder.dataTypeToQName(type)
     }
 
+    fun dataTypeToIdentityQName(type: DataType?): QName {
+        return typeBuilder.dataTypeToIdentityQName(type)
+    }
+
     private fun dataTypesToTypeSpecifiers(
         types: kotlin.collections.List<DataType>
     ): kotlin.collections.List<TypeSpecifier> {
         return typeBuilder.dataTypesToTypeSpecifiers(types)
     }
 
+    private fun dataTypesToIdentityTypeSpecifiers(
+        types: kotlin.collections.List<DataType>
+    ): kotlin.collections.List<TypeSpecifier> {
+        return typeBuilder.dataTypesToIdentityTypeSpecifiers(types)
+    }
+
     fun dataTypeToTypeSpecifier(type: DataType?): TypeSpecifier {
         return typeBuilder.dataTypeToTypeSpecifier(type)
+    }
+
+    fun dataTypeToIdentityTypeSpecifier(type: DataType?): TypeSpecifier {
+        return typeBuilder.dataTypeToIdentityTypeSpecifier(type)
     }
 
     fun resolvePath(sourceType: DataType?, path: String): DataType? {

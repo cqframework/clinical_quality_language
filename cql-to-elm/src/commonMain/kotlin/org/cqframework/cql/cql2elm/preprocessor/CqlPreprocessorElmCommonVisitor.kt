@@ -196,10 +196,24 @@ abstract class CqlPreprocessorElmCommonVisitor(
 
         for (opdef in ctx.operandDefinition()) {
             val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())!!
+            // The parsed specifier substitutes a NamedType's model-info `target` for its own name,
+            // which is correct for representation consumers (Retrieve, As/Is, result-type
+            // annotations) but wrong for overload-dispatch identity: two overloads declared over
+            // sibling types that share a `target` would look identical to the runtime dispatcher.
+            // Rebuild the operand specifier from the resolved result type with the identity
+            // (non-substituted) QName. Rebuilt fresh so the shared named-type-specifier cache is
+            // never mutated; for specifiers with no resolved result type (e.g. a type-parameter
+            // operand) keep the parsed form as-is.
+            val operandSpecifier =
+                if (typeSpecifier.resultType != null) {
+                    libraryBuilder.dataTypeToIdentityTypeSpecifier(typeSpecifier.resultType)
+                } else {
+                    typeSpecifier
+                }
             functionDef.operand.add(
                 of.createOperandDef()
                     .withName(parseString(opdef.referentialIdentifier()))
-                    .withOperandTypeSpecifier(typeSpecifier)
+                    .withOperandTypeSpecifier(operandSpecifier)
                     .withResultType(typeSpecifier.resultType)
             )
         }
