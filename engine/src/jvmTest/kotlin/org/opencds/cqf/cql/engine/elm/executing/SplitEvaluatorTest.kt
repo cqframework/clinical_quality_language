@@ -15,8 +15,22 @@ class SplitEvaluatorTest {
             SplitEvaluator.split("test".toCqlString(), null),
         )
         assertEquals(
-            mutableListOf("test".toCqlString()).toCqlList(),
+            mutableListOf(
+                    "t".toCqlString(),
+                    "e".toCqlString(),
+                    "s".toCqlString(),
+                    "t".toCqlString(),
+                )
+                .toCqlList(),
             SplitEvaluator.split("test".toCqlString(), String.EMPTY_STRING),
+        )
+        assertEquals(
+            mutableListOf(String.EMPTY_STRING).toCqlList(),
+            SplitEvaluator.split(String.EMPTY_STRING, ",".toCqlString()),
+        )
+        assertEquals(
+            mutableListOf(String.EMPTY_STRING).toCqlList(),
+            SplitEvaluator.split(String.EMPTY_STRING, String.EMPTY_STRING),
         )
         assertEquals(
             mutableListOf("es".toCqlString()).toCqlList(),
