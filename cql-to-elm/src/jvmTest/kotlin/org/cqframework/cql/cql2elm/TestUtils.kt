@@ -372,8 +372,7 @@ object TestUtils {
         testFileName: String,
         options: CqlCompilerOptions,
     ): CqlTranslator {
-        val segments: Array<String?> =
-            testFileName.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val segments = testFileName.split("/")
         var path: String? = null
         if (segments.size > 1) {
             for (i in 0..<segments.size - 1) {

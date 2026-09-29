@@ -2,7 +2,6 @@ package org.cqframework.fhir.npm
 
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import kotlin.plus
 import kotlinx.io.Source
 import kotlinx.io.asSource
 import kotlinx.io.buffered

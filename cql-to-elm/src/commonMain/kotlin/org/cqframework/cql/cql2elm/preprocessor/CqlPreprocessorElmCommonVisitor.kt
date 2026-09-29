@@ -390,11 +390,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
 
     private fun parseTags(header: String): kotlin.collections.List<Tag> {
         val header =
-            header
-                .trim { it <= ' ' }
-                .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
-                .dropLastWhile { it.isEmpty() }
-                .joinToString("\n")
+            header.trim { it <= ' ' }.split("\n[ \t]*\\*[ \t\\*]*".toRegex()).joinToString("\n")
         val tags = ArrayList<Tag>()
         var startFrom = 0
         while (startFrom < header.length) {
@@ -423,8 +419,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val result = ArrayList<String>()
         if (header != null) {
             val normalized = header.replace("\r\n", "\n")
-            val lines =
-                normalized.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val lines = normalized.split("\n")
             var inMultiline = false
             for (line in lines) {
                 if (!inMultiline) {

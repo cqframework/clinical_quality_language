@@ -93,21 +93,16 @@ class Location(val startLine: Int, val startChar: Int, val endLine: Int, val end
             var startChar = 0
             var endLine = 0
             var endChar = 0
-            val locations: Array<String?> =
-                locator.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val locations = locator.split("-")
             for (i in locations.indices) {
-                val ranges: Array<String?> =
-                    locations[i]!!
-                        .split(":".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()
+                val ranges = locations[i].split(":")
                 require(ranges.size == 2) { "Invalid locator format: $locator" }
                 if (i == 0) {
-                    startLine = ranges[0]!!.toInt()
-                    startChar = ranges[1]!!.toInt()
+                    startLine = ranges[0].toInt()
+                    startChar = ranges[1].toInt()
                 } else {
-                    endLine = ranges[0]!!.toInt()
-                    endChar = ranges[1]!!.toInt()
+                    endLine = ranges[0].toInt()
+                    endChar = ranges[1].toInt()
                 }
             }
 

@@ -66,11 +66,7 @@ class Date : BaseTemporal {
     @JsName("fromDateString")
     constructor(dateString: kotlin.String) {
         var dateString = dateString
-        precision =
-            Precision.fromDateIndex(
-                dateString.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size -
-                    1
-            )
+        precision = Precision.fromDateIndex(dateString.split("-").size - 1)
         dateString = TemporalHelper.autoCompleteDateString(dateString, precision!!)
         this.date = (localDateParse(dateString))
     }

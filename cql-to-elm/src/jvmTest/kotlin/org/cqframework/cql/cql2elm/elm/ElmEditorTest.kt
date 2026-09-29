@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.elm
 
-import kotlin.collections.listOf
 import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library

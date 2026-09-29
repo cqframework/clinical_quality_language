@@ -44,7 +44,7 @@ object PrecisionEvaluator {
             val index = string.indexOf(".")
             return (if (index < 0) 0 else string.length - index - 1).toCqlInteger()
         } else if (argument is Date) {
-            return argument.toStringInner().replace("-".toRegex(), "").length.toCqlInteger()
+            return argument.toStringInner().replace("-", "").length.toCqlInteger()
         } else if (argument is DateTime) {
             return argument
                 .toStringInner()

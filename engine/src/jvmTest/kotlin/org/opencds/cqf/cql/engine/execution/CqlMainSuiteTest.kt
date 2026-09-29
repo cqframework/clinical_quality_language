@@ -44,7 +44,7 @@ internal class CqlMainSuiteTest : CqlTestBase() {
                 if (entry.value.value != null) {
                     assertEquals(
                         entry.value.value,
-                        (entry.key.replace("test_".toRegex(), "") + " TEST PASSED").toCqlString(),
+                        (entry.key.replace("test_", "") + " TEST PASSED").toCqlString(),
                     )
                 }
             }
@@ -70,7 +70,7 @@ internal class CqlMainSuiteTest : CqlTestBase() {
                 if (entry.value.value != null) {
                     assertEquals(
                         entry.value.value,
-                        (entry.key.replace("test_".toRegex(), "") + " TEST PASSED").toCqlString(),
+                        (entry.key.replace("test_", "") + " TEST PASSED").toCqlString(),
                     )
                 }
             }

@@ -10,11 +10,6 @@ import ca.uhn.fhir.rest.param.ReferenceParam
 import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.param.TokenParam
 import ca.uhn.fhir.rest.param.UriParam
-import kotlin.text.isEmpty
-import kotlin.text.split
-import kotlin.text.startsWith
-import kotlin.text.toRegex
-import kotlin.text.trim
 import org.apache.commons.lang3.tuple.Pair
 
 class SearchParameterResolver(val fhirContext: FhirContext) {
@@ -123,8 +118,8 @@ class SearchParameterResolver(val fhirContext: FhirContext) {
             path = path.substring(1, path.length - 1)
         }
 
-        val normalizedParts: MutableSet<String?> = HashSet()
-        val orParts = path.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val normalizedParts = mutableSetOf<String>()
+        val orParts = path.split("|")
         for (part in orParts) {
             path = part.trim { it <= ' ' }
 
@@ -132,9 +127,8 @@ class SearchParameterResolver(val fhirContext: FhirContext) {
             path = path.substring(path.indexOf(".") + 1, path.length)
 
             // Split into components
-            val pathSplit =
-                path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val newPathParts: MutableList<String> = ArrayList()
+            val pathSplit = path.split(".")
+            val newPathParts = mutableListOf<String>()
 
             for (p in pathSplit) {
                 // Skip the "as(X)" part.
@@ -148,7 +142,7 @@ class SearchParameterResolver(val fhirContext: FhirContext) {
                 }
 
                 // Filter out spaces and everything after "medication as Reference"
-                val ps = p.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val ps = p.split(" ")
                 if (ps.isNotEmpty()) {
                     newPathParts.add(ps[0])
                 }

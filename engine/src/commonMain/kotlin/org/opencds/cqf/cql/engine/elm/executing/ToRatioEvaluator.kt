@@ -36,8 +36,7 @@ object ToRatioEvaluator {
         }
 
         if (operand is String) {
-            val quantityStrings =
-                operand.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val quantityStrings = operand.split(":")
             if (quantityStrings.size == 2) {
                 return Ratio()
                     .withNumerator(ToQuantityEvaluator.toQuantity(quantityStrings[0])!!)

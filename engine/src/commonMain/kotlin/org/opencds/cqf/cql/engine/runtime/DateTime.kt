@@ -76,24 +76,12 @@ class DateTime : BaseTemporal {
         }
         var size = 0
         if (dateString.contains("T")) {
-            val datetimeSplit =
-                dateString.split("T".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            size +=
-                datetimeSplit[0]
-                    .split("-".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-                    .size
+            val datetimeSplit = dateString.split("T")
+            size += datetimeSplit[0].split("-").size
             val tzSplit =
-                if (dateString.contains("Z"))
-                    dateString.split("Z".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                else
-                    datetimeSplit[1]
-                        .split("[+-]".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()
-            size +=
-                tzSplit[0].split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size
+                if (dateString.contains("Z")) dateString.split("Z")
+                else datetimeSplit[1].split("[+-]".toRegex())
+            size += tzSplit[0].split(":").size
             if (tzSplit[0].contains(".")) {
                 ++size
             }
@@ -103,8 +91,7 @@ class DateTime : BaseTemporal {
                 dateString += offset.getId()
             }
         } else {
-            size +=
-                dateString.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size
+            size += dateString.split("-").size
             precision = Precision.fromDateTimeIndex(size - 1)
             dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision!!)
             dateString += offset.getId()

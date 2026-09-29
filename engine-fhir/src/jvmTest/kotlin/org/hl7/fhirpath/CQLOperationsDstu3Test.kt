@@ -49,7 +49,7 @@ class CQLOperationsDstu3Test : TestFhirPath() {
                     }
                 }
             }
-            return testsToRun.toTypedArray<Array<Any>>()
+            return testsToRun.toTypedArray()
         }
 
         var SKIP: MutableSet<String> =
@@ -154,7 +154,7 @@ class CQLOperationsDstu3Test : TestFhirPath() {
             )
 
         fun getTestName(file: String, group: Group, test: Test): String {
-            return (file.replace(".xml".toRegex(), "") +
+            return (file.replace(".xml", "") +
                 "/" +
                 group.getName() +
                 (if (test.getName() != null) "/" + test.getName() else "") +
