@@ -198,6 +198,22 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
             value = results["StringIsInteger"]!!.value
             assertFalse((value as Boolean).value)
 
+            value = results["IntervalIsInterval"]!!.value
+            assertTrue((value as Boolean).value)
+
+            // A null boundary does not change the interval's type
+            value = results["IntervalNullHighIsInterval"]!!.value
+            assertTrue((value as Boolean).value)
+
+            value = results["IntervalNullLowIsInterval"]!!.value
+            assertTrue((value as Boolean).value)
+
+            value = results["DateTimeIntervalNullHighIsInterval"]!!.value
+            assertTrue((value as Boolean).value)
+
+            value = results["IntervalNullHighIsIntervalOfOtherType"]!!.value
+            assertFalse((value as Boolean).value)
+
             value = results["StringNoToBoolean"]!!.value
             assertFalse((value as Boolean).value)
 
