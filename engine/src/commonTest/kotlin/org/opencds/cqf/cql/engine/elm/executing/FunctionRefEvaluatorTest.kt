@@ -1,6 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import javax.xml.namespace.QName
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import org.cqframework.cql.shared.QName
 import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.Library
@@ -8,14 +13,12 @@ import org.hl7.elm.r1.ListTypeSpecifier
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.VersionedIdentifier
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.execution.Environment
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
-internal class FunctionRefEvaluatorTest {
+class FunctionRefEvaluatorTest {
     @Test
     fun pickFunctionDef() {
         val env = Environment(null)
@@ -23,7 +26,7 @@ internal class FunctionRefEvaluatorTest {
         state.init(Library().withIdentifier(VersionedIdentifier().withId("lib")))
 
         val cqlException =
-            Assertions.assertThrows(CqlException::class.java) {
+            assertFailsWith<CqlException> {
                 FunctionRefEvaluator.pickFunctionDef(
                     state,
                     "func",
@@ -32,7 +35,7 @@ internal class FunctionRefEvaluatorTest {
                     listOf(),
                 )
             }
-        Assertions.assertEquals(
+        assertEquals(
             "Could not resolve call to operator 'func(Integer, Integer, Integer)' in library 'lib'.",
             cqlException.message,
         )
@@ -43,7 +46,7 @@ internal class FunctionRefEvaluatorTest {
         val functionDefWithOneOperand = FunctionDef().withOperand(listOf(OperandDef()))
         val signatureWithTwoOperands = listOf(NamedTypeSpecifier(), NamedTypeSpecifier())
 
-        Assertions.assertFalse(
+        assertFalse(
             FunctionRefEvaluator.functionDefOperandsSignatureEqual(
                 functionDefWithOneOperand,
                 signatureWithTwoOperands,
@@ -60,18 +63,16 @@ internal class FunctionRefEvaluatorTest {
         val listOperandDef = OperandDef().withOperandTypeSpecifier(listTypeSpecifier)
         val integerOperandDef = OperandDef().withOperandType(integerTypeName)
 
-        Assertions.assertTrue(
+        assertTrue(
             FunctionRefEvaluator.operandDefTypeSpecifierEqual(listOperandDef, listTypeSpecifier)
         )
-        Assertions.assertTrue(
+        assertTrue(
             FunctionRefEvaluator.operandDefTypeSpecifierEqual(
                 integerOperandDef,
                 integerNamedTypeSpecifier,
             )
         )
-        Assertions.assertFalse(
-            FunctionRefEvaluator.operandDefTypeSpecifierEqual(integerOperandDef, null)
-        )
+        assertFalse(FunctionRefEvaluator.operandDefTypeSpecifierEqual(integerOperandDef, null))
     }
 
     @Test
@@ -88,7 +89,7 @@ internal class FunctionRefEvaluatorTest {
 
         val sigChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
 
-        Assertions.assertTrue(
+        assertTrue(
             FunctionRefEvaluator.functionDefOperandsSignatureEqual(functionDef, listOf(sigChoice))
         )
     }
