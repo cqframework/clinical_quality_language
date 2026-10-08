@@ -1,22 +1,22 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
-import java.math.BigDecimal
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.cqframework.cql.shared.BigDecimal
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 
-internal class SuccessorEvaluatorTest {
+class SuccessorEvaluatorTest {
     @Test
     fun successor() {
-        Assertions.assertEquals(
+        assertEquals(
             BigDecimal("21").toCqlDecimal(),
             SuccessorEvaluator.successor(
                 BigDecimal("20").toCqlDecimal(),
                 Quantity().withValue(BigDecimal("100")),
             ),
         )
-        Assertions.assertEquals(
+        assertEquals(
             BigDecimal("20.01").toCqlDecimal(),
             SuccessorEvaluator.successor(
                 BigDecimal("20").toCqlDecimal(),
@@ -29,7 +29,7 @@ internal class SuccessorEvaluatorTest {
                 Quantity().withValue(BigDecimal("20")).withUnit("g"),
                 Quantity().withValue(BigDecimal("100.00")).withUnit("g"),
             ) as Quantity
-        Assertions.assertEquals(BigDecimal("20.01"), actualQuantity.value)
-        Assertions.assertEquals("g", actualQuantity.unit)
+        assertEquals(BigDecimal("20.01"), actualQuantity.value)
+        assertEquals("g", actualQuantity.unit)
     }
 }
