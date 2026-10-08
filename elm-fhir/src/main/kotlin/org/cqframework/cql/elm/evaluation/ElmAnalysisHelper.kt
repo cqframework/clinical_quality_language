@@ -1,13 +1,7 @@
 package org.cqframework.cql.elm.evaluation
 
 import java.math.BigDecimal
-import kotlin.IllegalArgumentException
-import kotlin.Int
 import kotlin.math.abs
-import kotlin.text.StringBuilder
-import kotlin.text.equals
-import kotlin.text.format
-import kotlin.toString
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext
 import org.hl7.cql.model.IntervalType

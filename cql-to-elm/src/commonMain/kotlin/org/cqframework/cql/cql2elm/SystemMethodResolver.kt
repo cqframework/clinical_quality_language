@@ -365,7 +365,7 @@ class SystemMethodResolver(
                 val dataTypes: MutableSet<DataType> = HashSet()
                 gatherChildTypes(target.resultType!!, true, dataTypes)
                 if (dataTypes.size == 1) {
-                    descendents.resultType = ListType(dataTypes.toTypedArray()[0])
+                    descendents.resultType = ListType(dataTypes.first())
                 } else {
                     descendents.resultType = ListType(ChoiceType(dataTypes))
                 }
@@ -378,7 +378,7 @@ class SystemMethodResolver(
                 val dataTypes: MutableSet<DataType> = HashSet()
                 gatherChildTypes(target.resultType!!, true, dataTypes)
                 if (dataTypes.size == 1) {
-                    descendants.resultType = ListType(dataTypes.toTypedArray()[0])
+                    descendants.resultType = ListType(dataTypes.first())
                 } else {
                     descendants.resultType = ListType(ChoiceType(dataTypes))
                 }

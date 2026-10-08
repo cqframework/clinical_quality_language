@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.IOException
-import kotlin.collections.set
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.hl7.elm.r1.ExpressionDef

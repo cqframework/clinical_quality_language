@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution
 
-import kotlin.text.StringBuilder
 import kotlinx.io.Sink
 import kotlinx.io.buffered
 import kotlinx.io.files.Path

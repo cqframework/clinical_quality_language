@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.IOException
 import java.math.BigDecimal
-import kotlin.collections.set
 import org.cqframework.cql.cql2elm.matchers.HasTypeAndResult
 import org.cqframework.cql.cql2elm.matchers.LiteralFor.Companion.literalFor
 import org.hamcrest.MatcherAssert.assertThat

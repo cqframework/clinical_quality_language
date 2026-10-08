@@ -2408,8 +2408,7 @@ class LibraryBuilder(
         // TODO: This is using a naive implementation for now... needs full path support (but not
         // full FluentPath support...)
         var sourceType: DataType? = sourceType
-        val identifiers: Array<String> =
-            path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val identifiers = path.split(".")
         for (i in identifiers.indices) {
             val resolution: PropertyResolution? = resolveProperty(sourceType, identifiers[i])
             sourceType = resolution!!.type
@@ -2872,8 +2871,7 @@ class LibraryBuilder(
         // Any other target map results in an exception
 
         if (targetMap.contains(";")) {
-            val typeCases =
-                targetMap.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val typeCases = targetMap.split(";")
             val c: Case = objectFactory.createCase()
             for (typeCase in typeCases) {
                 if (typeCase.isNotEmpty()) {
@@ -2912,11 +2910,7 @@ class LibraryBuilder(
         } else if (targetMap.contains("(")) {
             val invocationStart = targetMap.indexOf("(")
             val qualifiedFunctionName = targetMap.substring(0, invocationStart)
-            val nameParts =
-                qualifiedFunctionName
-                    .split("\\.".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
+            val nameParts = qualifiedFunctionName.split(".")
             var libraryName: String? = null
             var functionName = qualifiedFunctionName
             if (nameParts.size == 2) {
@@ -3014,8 +3008,7 @@ class LibraryBuilder(
             var result: Expression? = null
 
             // Apply sourcePaths to get to the indexer
-            val indexerPaths =
-                indexerPath.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val indexerPaths = indexerPath.split(".")
             for (path in indexerPaths) {
                 if (path == "%parent") {
                     require(source is Property) {
@@ -3039,19 +3032,13 @@ class LibraryBuilder(
             val querySource: AliasedQuerySource =
                 objectFactory.createAliasedQuerySource().withExpression(result).withAlias(FP_THIS)
             var criteria: Expression? = null
-            for (indexerItem in
-                indexer.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                val indexerItems =
-                    indexerItem.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            for (indexerItem in indexer.split(",")) {
+                val indexerItems = indexerItem.split("=")
                 require(indexerItems.size == 2) {
                     "Invalid indexer item $indexerItem in targetMap $targetMap"
                 }
                 var left: Expression? = null
-                for (path in
-                    indexerItems[0]
-                        .split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()) {
+                for (path in indexerItems[0].split(".")) {
                     left =
                         if (left == null) {
                             objectFactory.createProperty().withScope(FP_THIS).withPath(path)

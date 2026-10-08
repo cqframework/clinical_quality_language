@@ -373,7 +373,7 @@ internal class TranslationTests {
             )
         }
 
-        val cfs = futures.toTypedArray<CompletableFuture<*>?>()
+        val cfs = futures.toTypedArray()
 
         CompletableFuture.allOf(*cfs).join()
     }

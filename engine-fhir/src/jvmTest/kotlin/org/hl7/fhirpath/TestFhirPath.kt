@@ -8,11 +8,6 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.util.*
 import java.util.function.Function
-import kotlin.Exception
-import kotlin.IllegalArgumentException
-import kotlin.RuntimeException
-import kotlin.String
-import kotlin.plus
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.IPrimitiveType

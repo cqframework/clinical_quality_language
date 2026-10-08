@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory

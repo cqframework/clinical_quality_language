@@ -46,7 +46,7 @@ class Time : BaseTemporal {
             size = -1
         }
         dateString = dateString.replace("T", "")
-        size += dateString.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size
+        size += dateString.split(":").size
         if (dateString.contains(".")) {
             ++size
         }
