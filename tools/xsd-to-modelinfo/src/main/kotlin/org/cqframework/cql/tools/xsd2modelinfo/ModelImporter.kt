@@ -147,8 +147,14 @@ private constructor(
     }
 
     private fun toTypeName(typeSpecifier: NamedTypeSpecifier): String? {
+        // CQL ModelInfo convention is `Namespace.LocalName` (dot),
+        // matching every vendored fhir-modelinfo-*.xml in the
+        // repo (`FHIR.CodeableConcept`, `System.Any`). The
+        // previous `Namespace, LocalName` form was the QName
+        // default toString(), NOT the CQL convention — downstream
+        // ModelInfo parsers key on the dot form.
         if (typeSpecifier.modelName != null) {
-            return "${typeSpecifier.modelName}, ${typeSpecifier.name}"
+            return "${typeSpecifier.modelName}.${typeSpecifier.name}"
         }
         return typeSpecifier.name
     }

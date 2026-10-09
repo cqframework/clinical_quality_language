@@ -19,8 +19,11 @@ import org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.Companion.lo
 import org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ElementRedeclarationPolicy
 import org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.SimpleTypeRestrictionPolicy
 import org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.VersionPolicy
+import org.cqframework.cql.shared.QName
+import org.cqframework.cql.shared.serializing.toXmlString
 import org.hl7.elm_modelinfo.r1.ModelInfo
 import org.hl7.elm_modelinfo.r1.serializing.parseModelInfoXml
+import org.hl7.elm_modelinfo.r1.toXmlElement
 
 /** Generates a ModelInfo.xml for the input xsd. */
 object Main {
@@ -117,9 +120,16 @@ object Main {
 
         val os: OutputStream = FileOutputStream(outputfile, false)
         try {
-            @Suppress("UnusedPrivateProperty") val writer = OutputStreamWriter(os, "UTF-8")
-            // TODO: implement ModelInfo writer
-            // marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
+            val writer = OutputStreamWriter(os, "UTF-8")
+            val ns = mutableMapOf<String, String>()
+            val root = modelInfo.toXmlElement(
+                QName("urn:hl7-org:elm-modelinfo:r1", "modelInfo"),
+                false,
+                ns,
+                emptyMap(),
+            )
+            writer.write(toXmlString(root, ns))
+            writer.flush()
         } finally {
             os.close()
         }
