@@ -103,12 +103,14 @@ object IsEvaluator {
             }
             is IntervalTypeSpecifier -> {
                 if (value is Interval) {
-                    val lowResult = `is`(value.low, type.pointType!!, state)
+                    // A null boundary carries no type information, so it must not fail the
+                    // test: the boundary that is present decides. An Interval always has one.
+                    val lowResult = value.low?.let { `is`(it, type.pointType!!, state) }
                     if (lowResult == false) {
                         return false
                     }
 
-                    val highResult = `is`(value.high, type.pointType!!, state)
+                    val highResult = value.high?.let { `is`(it, type.pointType!!, state) }
                     if (highResult == false) {
                         return false
                     }

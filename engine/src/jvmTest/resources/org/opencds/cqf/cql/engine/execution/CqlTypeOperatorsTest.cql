@@ -70,6 +70,11 @@ define ConvertsToTimeNull: ConvertsToTime(null)
 //Is
 define IntegerIsInteger: 5 is Integer
 define StringIsInteger: '5' is Integer
+define IntervalIsInterval: Interval[1, 5] is Interval<Integer>
+define IntervalNullHighIsInterval: Interval[1, null] is Interval<Integer>
+define IntervalNullLowIsInterval: Interval[null, 5] is Interval<Integer>
+define DateTimeIntervalNullHighIsInterval: Interval[@2025-08-05T08:00:00.000, null] is Interval<DateTime>
+define IntervalNullHighIsIntervalOfOtherType: Interval[1, null] is Interval<DateTime>
 
 //ToBoolean
 define StringNoToBoolean: ToBoolean('NO')

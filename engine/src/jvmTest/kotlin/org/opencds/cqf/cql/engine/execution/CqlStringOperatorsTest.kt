@@ -185,6 +185,18 @@ internal class CqlStringOperatorsTest : CqlTestBase() {
         value = results["SplitABComma"]!!.value
         assertEquals(listOf("a".toCqlString(), "b".toCqlString()).toCqlList(), value)
 
+        value = results["SplitEmptyStringComma"]!!.value
+        assertEquals(listOf("".toCqlString()).toCqlList(), value)
+
+        value = results["SplitABCEmptySeparator"]!!.value
+        assertEquals(
+            listOf("A".toCqlString(), "B".toCqlString(), "C".toCqlString()).toCqlList(),
+            value,
+        )
+
+        value = results["SplitEmptyStringEmptySeparator"]!!.value
+        assertEquals(listOf("".toCqlString()).toCqlList(), value)
+
         value = results["SplitMatchesNullNull"]!!.value
         assertNull(value)
 
