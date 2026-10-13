@@ -103,23 +103,10 @@ object IsEvaluator {
             }
             is IntervalTypeSpecifier -> {
                 if (value is Interval) {
-                    // A null boundary carries no type information, so it must not fail the
-                    // test: the boundary that is present decides. An Interval always has one.
-                    val lowResult = value.low?.let { `is`(it, type.pointType!!, state) }
-                    if (lowResult == false) {
-                        return false
-                    }
-
-                    val highResult = value.high?.let { `is`(it, type.pointType!!, state) }
-                    if (highResult == false) {
-                        return false
-                    }
-
-                    if (lowResult == true || highResult == true) {
-                        return true
-                    }
-
-                    return null
+                    // The Interval constructor guarantees at least one boundary is present and
+                    // that both have the same type when both are, so the present boundary decides.
+                    // A null boundary carries no type information and must not fail the test.
+                    return `is`(value.low ?: value.high, type.pointType!!, state)
                 }
 
                 // Must be an interval to be of an interval type
