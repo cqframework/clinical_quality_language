@@ -4,9 +4,14 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.runtime.Constants.MAX_DECIMAL
+import org.opencds.cqf.cql.engine.runtime.Constants.MAX_INT
 import org.opencds.cqf.cql.engine.runtime.Constants.MIN_DECIMAL
+import org.opencds.cqf.cql.engine.runtime.Constants.MIN_INT
 
 object DecimalHelper {
+    private val MAX_INTEGER = BigDecimal(MAX_INT)
+    private val MIN_INTEGER = BigDecimal(MIN_INT)
+
     fun verifyPrecision(value: BigDecimal, targetScale: Int?): BigDecimal {
         // NOTE: The CQL specification does not mandate a maximum precision, it specifies a minimum
         // precision, implementations are free to provide more precise values. However, for
@@ -39,6 +44,19 @@ object DecimalHelper {
         } else {
             return verifyPrecision(ret, targetScale)
         }
+    }
+
+    /**
+     * Converts a decimal value with no fractional part to an Integer.
+     *
+     * @param value the value to convert
+     * @return the Integer, or null if the value is outside the range of Integer values
+     */
+    fun toIntegerOrNull(value: BigDecimal): Integer? {
+        if (value.compareTo(MAX_INTEGER) > 0 || value.compareTo(MIN_INTEGER) < 0) {
+            return null
+        }
+        return value.toInt().toCqlInteger()
     }
 
     /**
