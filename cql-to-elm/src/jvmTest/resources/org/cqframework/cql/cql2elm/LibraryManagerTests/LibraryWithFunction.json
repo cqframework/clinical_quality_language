@@ -1,0 +1,107 @@
+{
+  "library": {
+    "annotation": [
+      {
+        "type": "CqlToElmInfo",
+        "translatorVersion": "{translatorVersion}",
+        "translatorOptions": "EnableResultTypes",
+        "signatureLevel": "Overloads"
+      }
+    ],
+    "identifier": {
+      "id": "LibraryWithFunction"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1",
+          "annotation": []
+        }
+      ]
+    },
+    "statements": {
+      "def": [
+        {
+          "type": "FunctionDef",
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+          "name": "Double",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Multiply",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+            "annotation": [],
+            "signature": [
+              {
+                "type": "NamedTypeSpecifier",
+                "name": "{urn:hl7-org:elm-types:r1}Integer",
+                "annotation": []
+              },
+              {
+                "type": "NamedTypeSpecifier",
+                "name": "{urn:hl7-org:elm-types:r1}Integer",
+                "annotation": []
+              }
+            ],
+            "operand": [
+              {
+                "type": "OperandRef",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                "name": "x",
+                "annotation": []
+              },
+              {
+                "type": "Literal",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "2",
+                "annotation": []
+              }
+            ]
+          },
+          "operand": [
+            {
+              "name": "x",
+              "annotation": [],
+              "operandTypeSpecifier": {
+                "type": "NamedTypeSpecifier",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                "name": "{urn:hl7-org:elm-types:r1}Integer",
+                "annotation": []
+              }
+            }
+          ]
+        },
+        {
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+          "name": "Four",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "FunctionRef",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+            "name": "Double",
+            "annotation": [],
+            "signature": [],
+            "operand": [
+              {
+                "type": "Literal",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "2",
+                "annotation": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
