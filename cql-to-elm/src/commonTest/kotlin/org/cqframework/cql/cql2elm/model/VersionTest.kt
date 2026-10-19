@@ -45,6 +45,9 @@ class VersionTest {
         assertFalse(version.compatibleWith(versionThat))
         assertFalse(versionThat.compatibleWith(version))
         assertTrue(versionThat.compatibleWith(versionThatSame))
+
+        assertTrue(Version("1.4.8").compatibleWith(Version("1.3.0")))
+        assertFalse(Version("1.6.8").compatibleWith(Version("1.7.0")))
     }
 
     @Test

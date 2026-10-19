@@ -97,8 +97,8 @@ data class Version(private val version: String) : Comparable<Version?> {
         return when {
             that == null -> false
             this.isComparable && that.isComparable ->
-                that.majorVersion!! == this.majorVersion!! &&
-                    that.minorVersion!! >= this.minorVersion!!
+                this.majorVersion!! == that.majorVersion!! &&
+                    this.minorVersion!! >= that.minorVersion!!
             else -> matchStrictly(that)
         }
     }
