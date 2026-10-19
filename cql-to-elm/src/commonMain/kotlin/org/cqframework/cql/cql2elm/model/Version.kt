@@ -17,10 +17,6 @@ import kotlin.math.max
  */
 @Suppress("MagicNumber")
 data class Version(private val version: String) : Comparable<Version?> {
-    init {
-        initVersion()
-    }
-
     var majorVersion: Int? = null
         private set
 
@@ -32,6 +28,10 @@ data class Version(private val version: String) : Comparable<Version?> {
 
     var buildVersion: String? = null
         private set
+
+    init {
+        initVersion()
+    }
 
     private fun initVersion() {
         val parts = versionPartPattern.split(version)
@@ -96,7 +96,9 @@ data class Version(private val version: String) : Comparable<Version?> {
     fun compatibleWith(that: Version?): Boolean {
         return when {
             that == null -> false
-            this.isComparable && that.isComparable -> compareTo(that, 2) >= 0
+            this.isComparable && that.isComparable ->
+                this.majorVersion!! == that.majorVersion!! &&
+                    this.minorVersion!! >= that.minorVersion!!
             else -> matchStrictly(that)
         }
     }
