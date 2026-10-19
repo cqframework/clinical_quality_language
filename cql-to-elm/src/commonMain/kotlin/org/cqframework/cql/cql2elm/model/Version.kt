@@ -96,7 +96,9 @@ data class Version(private val version: String) : Comparable<Version?> {
     fun compatibleWith(that: Version?): Boolean {
         return when {
             that == null -> false
-            this.isComparable && that.isComparable -> compareTo(that, 2) >= 0
+            this.isComparable && that.isComparable ->
+                that.majorVersion!! == this.majorVersion!! &&
+                    that.minorVersion!! >= this.minorVersion!!
             else -> matchStrictly(that)
         }
     }
