@@ -27,7 +27,7 @@ internal class ConvertQuantityEvaluatorTest : CqlTestBase() {
         val result = convert("30", "day", "d")
 
         assertNotNull(result)
-        assertEquals("d", result!!.unit)
+        assertEquals("d", result.unit)
         assertEquals(0, result.value!!.compareTo(BigDecimal("30")))
     }
 
@@ -38,7 +38,7 @@ internal class ConvertQuantityEvaluatorTest : CqlTestBase() {
         val result = convert("1", "week", "d")
 
         assertNotNull(result)
-        assertEquals("d", result!!.unit)
+        assertEquals("d", result.unit)
         assertEquals(0, result.value!!.compareTo(BigDecimal("7")))
     }
 
@@ -49,7 +49,7 @@ internal class ConvertQuantityEvaluatorTest : CqlTestBase() {
         val result = convert("30", "day", "days")
 
         assertNotNull(result)
-        assertEquals("days", result!!.unit)
+        assertEquals("days", result.unit)
         assertEquals(0, result.value!!.compareTo(BigDecimal("30")))
     }
 
@@ -59,7 +59,7 @@ internal class ConvertQuantityEvaluatorTest : CqlTestBase() {
         val result = convert("2", "day", "hour")
 
         assertNotNull(result)
-        assertEquals("hour", result!!.unit)
+        assertEquals("hour", result.unit)
         assertEquals(0, result.value!!.compareTo(BigDecimal("48")))
     }
 
@@ -69,7 +69,7 @@ internal class ConvertQuantityEvaluatorTest : CqlTestBase() {
         val result = convert("5", "mg", "g")
 
         assertNotNull(result)
-        assertEquals("g", result!!.unit)
+        assertEquals("g", result.unit)
         assertEquals(0, result.value!!.compareTo(BigDecimal("0.005")))
     }
 
