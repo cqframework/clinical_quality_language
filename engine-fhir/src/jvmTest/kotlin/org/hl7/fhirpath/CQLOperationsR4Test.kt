@@ -74,7 +74,6 @@ class CQLOperationsR4Test : TestFhirPath() {
                 "cql/CqlAggregateTest/AggregateTests/RolledOutIntervals",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",
                 "cql/CqlArithmeticFunctionsTest/Ln/Ln1000",
-                "cql/CqlArithmeticFunctionsTest/MinValue/LongMinValue",
                 "cql/CqlDateTimeOperatorsTest/Duration/DateTimeDurationBetweenYear",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainAdd",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainInterval",
