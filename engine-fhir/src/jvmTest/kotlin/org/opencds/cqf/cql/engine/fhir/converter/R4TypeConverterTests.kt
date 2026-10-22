@@ -1111,6 +1111,27 @@ internal class R4TypeConverterTests {
         }
     }
 
+    @Test
+    fun longToFhirString() {
+        for (value in listOf(5L, -1L, Long.MIN_VALUE, Long.MAX_VALUE)) {
+            val actual = typeConverter.toFhirType(value.toCqlLong())
+            val stringType = Assertions.assertInstanceOf(StringType::class.java, actual)
+            Assertions.assertEquals(value.toString(), stringType.value)
+            val cqlType = stringType.getExtensionByUrl(FhirTypeConverter.CQL_TYPE_EXT_URL)
+            Assertions.assertNotNull(cqlType)
+            Assertions.assertEquals("System.Long", (cqlType.value as StringType).value)
+        }
+    }
+
+    @Test
+    fun longInTupleToFhirString() {
+        val tuple = Tuple()
+        tuple.elements["X"] = 5L.toCqlLong()
+        val actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
+        val x: Parameters.ParametersParameterComponent = getPartsByName(actual, "X")[0]
+        Assertions.assertEquals("5", (x.getValue() as StringType).value)
+    }
+
     companion object {
         private val typeConverter = R4FhirTypeConverter()
 
