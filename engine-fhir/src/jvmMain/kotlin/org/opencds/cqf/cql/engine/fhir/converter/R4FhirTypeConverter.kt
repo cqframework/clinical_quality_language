@@ -33,6 +33,7 @@ import org.hl7.fhir.r4.model.TimeType
 import org.hl7.fhir.r4.model.Type
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TYPE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_UNKNOWN_CODE
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_LIST_EXT_URL
@@ -85,6 +86,14 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
 
     override fun toFhirInteger64(value: Long?): IPrimitiveType<kotlin.Long> {
         throw IllegalArgumentException("FHIR R4 does not support Long/Integer64 values")
+    }
+
+    // R4 has no integer64, so Using CQL with FHIR maps System.Long to FHIR.string, without the L
+    // suffix of the CQL literal. cqf-cqlType keeps the result from reading as a System.String.
+    override fun toFhirLong(value: Long): IBase? {
+        val result = StringType(value.value.toString())
+        result.addExtension(CQL_TYPE_EXT_URL, StringType("System.Long"))
+        return result
     }
 
     override fun toFhirDecimal(value: Decimal?): IPrimitiveType<BigDecimal>? {
