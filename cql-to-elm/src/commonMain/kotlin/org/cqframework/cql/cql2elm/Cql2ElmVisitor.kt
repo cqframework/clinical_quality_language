@@ -24,6 +24,7 @@ import org.cqframework.cql.cql2elm.utils.IdentityHashMap
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.isLeapYear
 import org.cqframework.cql.cql2elm.utils.logger
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.*
@@ -3860,6 +3861,7 @@ class Cql2ElmVisitor(
         return try {
             val expression = visit(ctx.expression()) as Expression
             verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
+            warnIfSuchThatIgnoresSource(ctx, expression, aqs.alias!!)
             val result: RelationshipClause = of.createWith()
             result.withExpression(aqs.expression).withAlias(aqs.alias).withSuchThat(expression)
             result.resultType = aqs.resultType
@@ -3875,12 +3877,41 @@ class Cql2ElmVisitor(
         return try {
             val expression = visit(ctx.expression()) as Expression
             verifyType(expression.resultType, libraryBuilder.resolveTypeName("System", "Boolean"))
+            warnIfSuchThatIgnoresSource(ctx, expression, aqs.alias!!)
             val result: RelationshipClause = of.createWithout()
             result.withExpression(aqs.expression).withAlias(aqs.alias).withSuchThat(expression)
             result.resultType = aqs.resultType
             result
         } finally {
             libraryBuilder.peekQueryContext().removeQuerySource(aqs)
+        }
+    }
+
+    /**
+     * A such that clause that never references the included source is valid, but usually means
+     * something is missing, so warn about it.
+     */
+    private fun warnIfSuchThatIgnoresSource(
+        ctx: ParserRuleContext,
+        suchThat: Expression,
+        alias: String,
+    ) {
+        val referencesAlias =
+            FunctionalElmVisitor.from<String, Boolean>(
+                { elm, a ->
+                    (elm is AliasRef && elm.name == a) || (elm is Property && elm.scope == a)
+                },
+                { x, y -> x || y },
+            )
+        if (!referencesAlias.visitExpression(suchThat, alias)) {
+            libraryBuilder.recordParsingException(
+                CqlSemanticException(
+                    "The such that clause does not reference the included source $alias. " +
+                        "Consider whether this is intended.",
+                    getTrackBack(ctx),
+                    CqlCompilerException.ErrorSeverity.Warning,
+                )
+            )
         }
     }
 
