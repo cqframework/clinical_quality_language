@@ -35,6 +35,7 @@ object MessageEvaluator {
         }
 
         if (condition != null && condition.value) {
+            state!!.hasUnmemoizableEffect = true
             val messageBuilder = StringBuilder()
             if (code != null) {
                 messageBuilder.append(code).append(": ")

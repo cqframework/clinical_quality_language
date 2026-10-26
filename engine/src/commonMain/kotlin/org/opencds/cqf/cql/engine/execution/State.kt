@@ -143,6 +143,50 @@ constructor(
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
     val parameters = mutableMapOf<kotlin.String, Value?>()
+
+    /**
+     * The parameter values set by the caller, as opposed to defaults computed into [parameters].
+     */
+    private val inputParameters = mutableMapOf<kotlin.String, Value?>()
+
+    private var evaluationInputsSnapshot: EvaluationInputs? = null
+
+    private var isEvaluationInputsSnapshotStale = true
+
+    /** The current parameter values and evaluation date/time, for function result keys. */
+    val evaluationInputs: EvaluationInputs
+        get() {
+            if (isEvaluationInputsSnapshotStale) {
+                refreshEvaluationInputs()
+            }
+            return evaluationInputsSnapshot!!
+        }
+
+    private fun refreshEvaluationInputs() {
+        val inputs = EvaluationInputs(inputParameters.toMap(), evaluationDateTime)
+        if (inputs != evaluationInputsSnapshot) {
+            // Cached expression results and computed parameter defaults (which may use Now())
+            // were evaluated with other inputs
+            clearCacheExpressions()
+            parameters.keys.retainAll(inputParameters.keys)
+            evaluationInputsSnapshot = inputs
+        }
+        isEvaluationInputsSnapshotStale = false
+    }
+
+    /**
+     * Set when evaluation has an effect, such as logging a message, that would not be repeated if
+     * the enclosing function call were memoized.
+     */
+    var hasUnmemoizableEffect: kotlin.Boolean = false
+
+    val isFunctionMemoizationEnabled: kotlin.Boolean
+        get() =
+            engineOptions.contains(Options.EnableFunctionMemoization) &&
+                breakpointHandler == null &&
+                !isTracingEnabled &&
+                !engineOptions.contains(Options.EnableCoverageCollection)
+
     var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
@@ -216,6 +260,8 @@ constructor(
                 if (libraryName != null) "${getCurrentLibrary()!!.identifier!!.id}.${name}"
                 else name
             parameters[fullName] = value
+            inputParameters[fullName] = value
+            isEvaluationInputsSnapshotStale = true
         } finally {
             exitLibrary(enteredLibrary)
         }
@@ -290,6 +336,7 @@ constructor(
     fun setEvaluationDateTime(evaluationZonedDateTime: ZonedDateTime) {
         this.evaluationZonedDateTime = evaluationZonedDateTime
         this.evaluationDateTime = DateTime(evaluationZonedDateTime.toOffsetDateTime())
+        isEvaluationInputsSnapshotStale = true
     }
 
     fun init(library: Library?) {
@@ -342,6 +389,7 @@ constructor(
         // "root" activation frame. This method simply resets the
         // start time of the root activation frame.
         check(this.stack.isEmpty())
+        refreshEvaluationInputs()
         pushActivationFrame(null)
     }
 
