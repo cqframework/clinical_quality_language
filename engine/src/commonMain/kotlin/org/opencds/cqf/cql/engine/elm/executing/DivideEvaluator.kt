@@ -11,6 +11,9 @@ import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
+import org.opencds.cqf.cql.engine.util.UnitOperation
+import org.opencds.cqf.cql.engine.util.convertToMostGranularCommeasurableUnit
+import org.opencds.cqf.cql.engine.util.combineUnits
 
 /*
 /(left Decimal, right Decimal) Decimal
@@ -69,15 +72,26 @@ object DivideEvaluator {
                     divideHelper(leftValue.toCqlDecimal(), rightValue.toCqlDecimal(), state)
                 resultUnit = leftUnit
             } else {
-                val ucumService = state?.environment?.libraryManager?.ucumService!!
                 try {
-                    val result =
-                        ucumService.divideBy(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
-                    val unverifiedResultValue = result.first
+                    val convertedUnits =
+                        convertToMostGranularCommeasurableUnit(
+                            leftValue,
+                            leftUnit,
+                            rightValue,
+                            rightUnit,
+                            state!!)
                     resultValue =
-                        DecimalHelper.verifyPrecision(unverifiedResultValue, null).toCqlDecimal()
-                    val rawResultUnit = result.second
-                    resultUnit = rawResultUnit.ifEmpty { "1" }
+                        divideHelper(
+                            convertedUnits.first.first.toCqlDecimal(),
+                            convertedUnits.second.first.toCqlDecimal(),
+                            state,
+                        )
+                    val rawResultUnit = combineUnits(
+                        convertedUnits.first.second,
+                        convertedUnits.second.second,
+                        UnitOperation.DIVIDE,
+                        state)
+                    resultUnit = rawResultUnit!!.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }

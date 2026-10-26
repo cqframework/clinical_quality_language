@@ -14,6 +14,9 @@ import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.util.UnitOperation
+import org.opencds.cqf.cql.engine.util.convertToMostGranularCommeasurableUnit
+import org.opencds.cqf.cql.engine.util.combineUnits
 
 /*
 *(left Integer, right Integer) Integer
@@ -64,12 +67,20 @@ object MultiplyEvaluator {
                 resultUnit = leftUnit
             } else {
                 try {
-                    val ucumService = state?.environment?.libraryManager?.ucumService!!
-                    val result =
-                        ucumService.multiply(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
-                    unverifiedResultValue = result.first
-                    val rawResultUnit = result.second
-                    resultUnit = rawResultUnit.ifEmpty { "1" }
+                    val convertedUnits =
+                        convertToMostGranularCommeasurableUnit(
+                            leftValue,
+                            leftUnit,
+                            rightValue,
+                            rightUnit,
+                            state!!)
+                    unverifiedResultValue = convertedUnits.first.first.multiply(convertedUnits.second.first)
+                    val rawResultUnit = combineUnits(
+                        convertedUnits.first.second,
+                        convertedUnits.second.second,
+                        UnitOperation.MULTIPLY,
+                        state)
+                    resultUnit = rawResultUnit!!.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }
