@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Minimal model info reproducing the shape from issues #1435 / #1855: two class types that share a
+  base resource, where the second declares a `target` naming the first. Both serialize their ELM
+  operand QNames to {http://example.com/profilecollision}Procedure, so overloads declared on the two
+  types collapse to the same runtime signature.
+-->
+<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           targetQualifier="profilecollision" name="ProfileCollision" version="1.0.0" url="http://example.com/profilecollision">
+    <typeInfo xsi:type="ClassInfo" name="ProfileCollision.Procedure" baseType="System.Any"
+              retrievable="true" label="Procedure" identifier="procedure" primaryCodePath="status">
+        <element name="status" type="System.String"/>
+    </typeInfo>
+    <!-- target="Procedure" erases this profile to the base Procedure type for the engine. -->
+    <typeInfo xsi:type="ClassInfo" name="ProfileCollision.ProcedureNotDone" baseType="ProfileCollision.Procedure"
+              retrievable="true" target="Procedure" label="ProcedureNotDone" identifier="procedurenotdone"
+              primaryCodePath="status"/>
+    <!-- An unrelated type used to verify non-colliding overloads are left untouched. -->
+    <typeInfo xsi:type="ClassInfo" name="ProfileCollision.Observation" baseType="System.Any"
+              retrievable="true" label="Observation" identifier="observation" primaryCodePath="status">
+        <element name="status" type="System.String"/>
+    </typeInfo>
+</modelInfo>
