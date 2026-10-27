@@ -29,6 +29,7 @@ import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
 import org.opencds.cqf.cql.engine.debug.SourceLocator
+import org.opencds.cqf.cql.engine.elm.executing.HoistedExpression
 import org.opencds.cqf.cql.engine.elm.executing.PropertyEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
@@ -39,6 +40,7 @@ import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.IdentitySet
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
+import org.opencds.cqf.cql.engine.util.createIdentityHashMap
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
 /** State represents the internal state of the CqlEngine. */
@@ -185,6 +187,32 @@ constructor(
      * the enclosing function call were memoized.
      */
     var hasUnmemoizableEffect: kotlin.Boolean = false
+
+    /** Expressions whose values the current query evaluation computes ahead, by reference. */
+    internal var hoistedExpressions: MutableMap<Expression, HoistedExpression>? = null
+        private set
+
+    internal fun hoist(hoisted: HoistedExpression) {
+        val hoistedExpressions = this.hoistedExpressions ?: createIdentityHashMap()
+        this.hoistedExpressions = hoistedExpressions
+        hoistedExpressions[hoisted.expression] = hoisted
+    }
+
+    internal fun unhoist(hoisted: HoistedExpression) {
+        val hoistedExpressions = this.hoistedExpressions ?: return
+        hoistedExpressions.remove(hoisted.expression)
+        // Keeps the check in EvaluationVisitor.visitExpression to a null test outside queries
+        if (hoistedExpressions.isEmpty()) {
+            this.hoistedExpressions = null
+        }
+    }
+
+    val isQueryOptimizationEnabled: kotlin.Boolean
+        get() =
+            engineOptions.contains(Options.EnableQueryOptimization) &&
+                breakpointHandler == null &&
+                !isTracingEnabled &&
+                !engineOptions.contains(Options.EnableCoverageCollection)
 
     val isFunctionMemoizationEnabled: kotlin.Boolean
         get() =

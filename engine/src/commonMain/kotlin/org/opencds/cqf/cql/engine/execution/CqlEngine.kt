@@ -85,12 +85,23 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
          * active, nor to external functions or functions whose evaluation produced a message.
          */
         EnableFunctionMemoization,
+
+        /**
+         * Avoid re-evaluating the parts of a query's `with`/`without` and multi-source `where`
+         * clauses that do not change between the rows of the join. Not applied while tracing,
+         * coverage collection or debugging is active.
+         */
+        EnableQueryOptimization,
     }
 
     @JsExport.Ignore val state: State
     private val engineOptions: MutableSet<Options> =
         engineOptions
-            ?: mutableSetOf(Options.EnableExpressionCaching, Options.EnableFunctionMemoization)
+            ?: mutableSetOf(
+                Options.EnableExpressionCaching,
+                Options.EnableFunctionMemoization,
+                Options.EnableQueryOptimization,
+            )
 
     /** @return the internal engine visitor */
     @JsExport.Ignore
