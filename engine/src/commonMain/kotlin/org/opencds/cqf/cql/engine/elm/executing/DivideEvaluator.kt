@@ -12,8 +12,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.util.UnitOperation
-import org.opencds.cqf.cql.engine.util.convertToMostGranularCommeasurableUnit
-import org.opencds.cqf.cql.engine.util.combineUnits
+import org.opencds.cqf.cql.engine.util.UnitUtils
 
 /*
 /(left Decimal, right Decimal) Decimal
@@ -74,23 +73,26 @@ object DivideEvaluator {
             } else {
                 try {
                     val convertedUnits =
-                        convertToMostGranularCommeasurableUnit(
+                        UnitUtils.convertToMostGranularCommeasurableUnit(
                             leftValue,
                             leftUnit,
                             rightValue,
                             rightUnit,
-                            state!!)
+                            state!!,
+                        )
                     resultValue =
                         divideHelper(
                             convertedUnits.first.first.toCqlDecimal(),
                             convertedUnits.second.first.toCqlDecimal(),
                             state,
                         )
-                    val rawResultUnit = combineUnits(
-                        convertedUnits.first.second,
-                        convertedUnits.second.second,
-                        UnitOperation.DIVIDE,
-                        state)
+                    val rawResultUnit =
+                        UnitUtils.combineUnits(
+                            convertedUnits.first.second,
+                            convertedUnits.second.second,
+                            UnitOperation.DIVIDE,
+                            state,
+                        )
                     resultUnit = rawResultUnit!!.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
