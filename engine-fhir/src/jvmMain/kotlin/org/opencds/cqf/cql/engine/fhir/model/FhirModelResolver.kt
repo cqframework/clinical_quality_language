@@ -752,7 +752,7 @@ abstract class FhirModelResolver<
 
     /**
      * Whether backbone elements are named by the path that defines them (e.g. Patient.Contact), as
-     * in the model info for this FHIR version. Otherwise they're named by their HAPI class (e.g.
+     * in the model info for FHIR R4 and R5. Otherwise they're named by their HAPI class (e.g.
      * ContactComponent). The DSTU2/DSTU3 model infos use other naming schemes.
      */
     protected open val namesBackboneElementsByPath: kotlin.Boolean
