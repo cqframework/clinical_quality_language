@@ -142,6 +142,12 @@ constructor(
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
+    /**
+     * Initially populated with values from [EvaluationParams.parameters], then with library
+     * defaults during evaluation.
+     *
+     * @see org.opencds.cqf.cql.engine.elm.executing.ParameterRefEvaluator
+     */
     val parameters = mutableMapOf<kotlin.String, Value?>()
 
     /**
