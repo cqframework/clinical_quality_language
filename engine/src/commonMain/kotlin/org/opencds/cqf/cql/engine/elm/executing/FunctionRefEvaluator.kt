@@ -71,9 +71,11 @@ object FunctionRefEvaluator {
         return if (cached != null) {
             state.evaluatedResources!!.addAll(cached.evaluatedResources!!)
             // Record the call as a cache hit in the profile
-            state.pushActivationFrame(functionDef, functionDef.context!!)
-            state.topActivationFrame.isCached = true
-            state.popActivationFrame()
+            if (state.debugResult?.profile != null) {
+                state.pushActivationFrame(functionDef, functionDef.context!!)
+                state.topActivationFrame.isCached = true
+                state.popActivationFrame()
+            }
             cached.value
         } else {
             evaluateAndMemoize(key, functionDef, state, visitor, arguments)
