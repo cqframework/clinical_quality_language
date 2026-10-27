@@ -147,7 +147,9 @@ internal class FunctionOverloadReconciler(private val libraryBuilder: LibraryBui
                     element
                         .filterKeys { it !in STRIPPED_KEYS }
                         .mapValues { canonicalize(it.value) }
-                        .toSortedMap()
+                        .toList()
+                        .sortedBy { (key, _) -> key }
+                        .toMap()
                 )
             is JsonArray -> JsonArray(element.map { canonicalize(it) })
             else -> element
