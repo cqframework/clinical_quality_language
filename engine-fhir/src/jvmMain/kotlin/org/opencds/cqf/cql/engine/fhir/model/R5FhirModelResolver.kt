@@ -37,6 +37,9 @@ open class R5FhirModelResolver(fhirContext: FhirContext) :
         }
     }
 
+    override val namesBackboneElementsByPath: Boolean
+        get() = true
+
     override fun initialize() {
         // The context loads Resources on demand which can cause resolution to fail in
         // certain cases

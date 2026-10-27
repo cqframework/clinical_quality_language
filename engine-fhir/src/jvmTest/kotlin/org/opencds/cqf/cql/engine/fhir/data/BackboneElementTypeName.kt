@@ -22,12 +22,10 @@ import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /**
- * Backbone elements should be converted with their model info type names (e.g. Patient.Contact),
- * but are currently converted with the simple HAPI class name (e.g. ContactComponent).
- *
- * Those names aren't unique: Claim and ExplanationOfBenefit (among others) both have an
- * ItemComponent, so their items get the same type and resolving it back to a class picks whichever
- * match the FHIR context finds first. Type tests on those elements then give wrong answers.
+ * Backbone elements are converted with their model info type names (e.g. Patient.Contact), not the
+ * simple HAPI class names (e.g. ContactComponent). Those aren't unique: Claim and
+ * ExplanationOfBenefit (among others) both have an ItemComponent, which made type tests on those
+ * elements depend on which class the FHIR context happened to find first.
  */
 internal class BackboneElementTypeName : FhirExecutionTestBase() {
     private fun evaluate(): EvaluationResult {
