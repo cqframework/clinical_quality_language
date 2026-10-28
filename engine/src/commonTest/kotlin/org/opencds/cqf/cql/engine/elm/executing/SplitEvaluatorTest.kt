@@ -45,4 +45,20 @@ class SplitEvaluatorTest {
             SplitEvaluator.split("test".toCqlString(), "abc".toCqlString()),
         )
     }
+
+    /**
+     * [#1870](https://github.com/cqframework/clinical_quality_language/issues/1870): Split with a
+     * separator works on JS and Wasm, not just on the JVM
+     */
+    @Test
+    fun testSplitWithSeparator() {
+        assertEquals(
+            mutableListOf("Patient".toCqlString(), "123".toCqlString()).toCqlList(),
+            SplitEvaluator.split("Patient/123".toCqlString(), "/".toCqlString()),
+        )
+        assertEquals(
+            mutableListOf("a".toCqlString(), "b".toCqlString()).toCqlList(),
+            SplitEvaluator.split(",a,,b,".toCqlString(), ",".toCqlString()),
+        )
+    }
 }

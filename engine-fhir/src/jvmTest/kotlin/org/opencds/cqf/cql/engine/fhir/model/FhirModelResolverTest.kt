@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.model
 
+import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition
 import ca.uhn.fhir.context.FhirVersionEnum
+import ca.uhn.fhir.model.api.annotation.Block
 import javax.xml.namespace.QName
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -584,8 +586,8 @@ class FhirModelResolverTest {
     }
 
     /**
-     * Not validated against the model: backbone elements are currently converted with the HAPI
-     * class name (e.g. ContactComponent) rather than the model info name (e.g. Patient.Contact).
+     * DSTU3 backbone elements keep the HAPI class name (e.g. ContactComponent), which isn't in the
+     * DSTU3 model info, so only R4/R5 values are validated against the model.
      */
     @Test
     fun toCqlValueFhirBackboneElementWithExtensionAndModifierExtension() {
@@ -612,6 +614,10 @@ class FhirModelResolverTest {
             )) {
             val cqlValue = resolvers[fhirVersion]!!.toCqlValue(contact)
 
+            if (fhirVersion != FhirVersionEnum.DSTU3) {
+                validateCqlValueAgainstModel(fhirVersion, "Patient.Contact", cqlValue)
+            }
+
             assertIs<ClassInstance>(cqlValue)
             assertEquals(listOf(extensionUrl), extensionUrls(cqlValue.elements["extension"]))
             assertEquals(
@@ -628,6 +634,52 @@ class FhirModelResolverTest {
             val url = it.elements["url"]
             assertIs<ClassInstance>(url)
             (url.elements["value"] as org.opencds.cqf.cql.engine.runtime.String).value
+        }
+    }
+
+    /**
+     * Every HAPI backbone element class converts to a type defined in the model info (e.g.
+     * Patient.Contact rather than ContactComponent), and is an instance of that type.
+     */
+    @Test
+    fun toCqlValueFhirBackboneElementsHaveModelInfoTypeNames() {
+        for ((fhirVersion, modelVersion) in listOf(FhirVersionEnum.R4 to "4.0.1")) {
+            val resolver = resolvers[fhirVersion]!!
+            val fhirContext = resolver.fhirContext
+            val fhirModel = ModelManager().resolveModel(ModelIdentifier("FHIR", null, modelVersion))
+
+            val definingClasses =
+                fhirContext.resourceTypes.map {
+                    fhirContext.getResourceDefinition(it).implementingClass
+                } +
+                    fhirContext.elementDefinitions
+                        .filterIsInstance<BaseRuntimeElementCompositeDefinition<*>>()
+                        .map { it.implementingClass }
+            val backboneClasses =
+                definingClasses
+                    .flatMap { it.declaredClasses.toList() }
+                    .filter { it.isAnnotationPresent(Block::class.java) }
+                    .distinct()
+            assertTrue(backboneClasses.size > 100, "Found ${backboneClasses.size} backbone classes")
+
+            val unknownTypes =
+                backboneClasses.mapNotNull { backboneClass ->
+                    val cqlValue =
+                        resolver.toCqlValue(backboneClass.getDeclaredConstructor().newInstance())
+                    assertIs<ClassInstance>(cqlValue)
+                    val typeName = cqlValue.type.localPart
+                    if (fhirModel.resolveTypeName(typeName) == null) {
+                        "${backboneClass.name} -> $typeName"
+                    } else {
+                        assertEquals(
+                            true,
+                            resolver.`is`(typeName, QName(fhirModelNamespaceUri, typeName)),
+                            "${backboneClass.name} is not a $typeName",
+                        )
+                        null
+                    }
+                }
+            assertEquals(emptyList(), unknownTypes, "$fhirVersion backbone types not in model info")
         }
     }
 }
