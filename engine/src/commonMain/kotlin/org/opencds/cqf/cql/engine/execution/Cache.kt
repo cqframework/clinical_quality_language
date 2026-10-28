@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.util.createIdentityHashMap
 import org.opencds.cqf.cql.engine.util.createLinkedHashMap
 
 /**
@@ -16,7 +17,12 @@ class Cache {
     var isExpressionCachingEnabled: Boolean = false
         private set
 
-    val functionCache = mutableMapOf<FunctionRef?, FunctionDef?>()
+    // Keyed by reference: FunctionRef equality is structural over the whole call expression,
+    // which is costly to hash on every call and conflates identical calls in different libraries
+    val functionCache = createIdentityHashMap<FunctionRef?, FunctionDef?>()
+
+    val functionResults =
+        createLinkedHashMap<FunctionResultKey, ExpressionResult>(16, 0.75f, true, 10_000)
 
     val expressions =
         createLinkedHashMap<VersionedIdentifier?, MutableMap<String?, ExpressionResult?>?>(
