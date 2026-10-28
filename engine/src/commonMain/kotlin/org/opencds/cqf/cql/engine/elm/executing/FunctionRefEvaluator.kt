@@ -7,6 +7,8 @@ import org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.typeSpecifiersEqual
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.*
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.execution.ExpressionResult
+import org.opencds.cqf.cql.engine.execution.FunctionResultKey
 import org.opencds.cqf.cql.engine.execution.Libraries
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.execution.Variable
@@ -36,9 +38,70 @@ object FunctionRefEvaluator {
         try {
             val functionDef = resolveOrCacheFunctionDef(state, functionRef, arguments)
 
+            if (state.isFunctionMemoizationEnabled) {
+                return evaluateMemoized(functionDef, state, visitor, arguments)
+            }
             return evaluateFunctionDef(functionDef, state, visitor, arguments)
         } finally {
             state.exitLibrary(enteredLibrary)
+        }
+    }
+
+    private fun evaluateMemoized(
+        functionDef: FunctionDef,
+        state: State,
+        visitor: ElmLibraryVisitor<Value?, State?>,
+        arguments: kotlin.collections.List<Value?>,
+    ): Value? {
+        // External functions may have effects or depend on state the key does not capture
+        if (true == functionDef.isExternal()) {
+            state.hasUnmemoizableEffect = true
+            return evaluateFunctionDef(functionDef, state, visitor, arguments)
+        }
+
+        val key =
+            FunctionResultKey(
+                functionDef,
+                state.getCurrentContext(),
+                state.currentContextValue,
+                state.evaluationInputs,
+                arguments,
+            )
+        val cached = state.cache.functionResults[key]
+        return if (cached != null) {
+            state.evaluatedResources!!.addAll(cached.evaluatedResources!!)
+            // Record the call as a cache hit in the profile
+            if (state.debugResult?.profile != null) {
+                state.pushActivationFrame(functionDef, functionDef.context!!)
+                state.topActivationFrame.isCached = true
+                state.popActivationFrame()
+            }
+            cached.value
+        } else {
+            evaluateAndMemoize(key, functionDef, state, visitor, arguments)
+        }
+    }
+
+    private fun evaluateAndMemoize(
+        key: FunctionResultKey,
+        functionDef: FunctionDef,
+        state: State,
+        visitor: ElmLibraryVisitor<Value?, State?>,
+        arguments: kotlin.collections.List<Value?>,
+    ): Value? {
+        val outerHasUnmemoizableEffect = state.hasUnmemoizableEffect
+        state.hasUnmemoizableEffect = false
+        state.pushEvaluatedResourceStack()
+        try {
+            val value = evaluateFunctionDef(functionDef, state, visitor, arguments)
+            if (!state.hasUnmemoizableEffect) {
+                state.cache.functionResults[key] = ExpressionResult(value, state.evaluatedResources)
+            }
+            return value
+        } finally {
+            state.popEvaluatedResourceStack()
+            // An effect inside this call also prevents memoizing the calls enclosing it
+            state.hasUnmemoizableEffect = state.hasUnmemoizableEffect || outerHasUnmemoizableEffect
         }
     }
 
@@ -46,12 +109,12 @@ object FunctionRefEvaluator {
         functionDef: FunctionDef,
         state: State,
         visitor: ElmLibraryVisitor<Value?, State?>,
-        arguments: MutableList<Value?>,
+        arguments: kotlin.collections.List<Value?>,
     ): Value? {
         if (true == functionDef.isExternal()) {
             return state.environment
                 .getExternalFunctionProvider(state.getCurrentLibrary()!!.identifier)
-                .evaluate(functionDef.name, arguments)
+                .evaluate(functionDef.name, arguments.toMutableList())
         } else {
             state.breakpointHandler?.onExpressionDefEntered(
                 functionDef,

@@ -19,12 +19,15 @@ import org.hl7.cql.model.SimpleType
 import org.hl7.cql.model.TupleType
 import org.hl7.fhir.dstu2.model.HumanName as Dstu2HumanName
 import org.hl7.fhir.dstu2.model.StringType as Dstu2StringType
+import org.hl7.fhir.dstu3.model.CodeType as Dstu3CodeType
 import org.hl7.fhir.dstu3.model.HumanName as Dstu3HumanName
 import org.hl7.fhir.dstu3.model.Patient as Dstu3Patient
 import org.hl7.fhir.dstu3.model.StringType as Dstu3StringType
+import org.hl7.fhir.r4.model.CodeType as R4CodeType
 import org.hl7.fhir.r4.model.HumanName as R4HumanName
 import org.hl7.fhir.r4.model.Patient as R4Patient
 import org.hl7.fhir.r4.model.StringType as R4StringType
+import org.hl7.fhir.r5.model.CodeType as R5CodeType
 import org.hl7.fhir.r5.model.HumanName as R5HumanName
 import org.hl7.fhir.r5.model.Patient as R5Patient
 import org.hl7.fhir.r5.model.StringType as R5StringType
@@ -340,6 +343,45 @@ class FhirModelResolverTest {
     }
 
     /**
+     * Any primitive may carry extensions without a value, e.g. a data-absent-reason. See the note
+     * on [toCqlValueFhirPrimitiveWithValueAndExtension] for why DSTU2 is not covered.
+     */
+    @Test
+    fun toCqlValueFhirPrimitiveWithExtensionAndWithoutValue() {
+        val extensionUrl = "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
+        val reason = "unknown"
+
+        for ((fhirVersion, fhirString) in
+            listOf(
+                FhirVersionEnum.DSTU3 to
+                    Dstu3StringType().apply { addExtension(extensionUrl, Dstu3CodeType(reason)) },
+                FhirVersionEnum.R4 to
+                    R4StringType().apply { addExtension(extensionUrl, R4CodeType(reason)) },
+                FhirVersionEnum.R5 to
+                    R5StringType().apply { addExtension(extensionUrl, R5CodeType(reason)) },
+            )) {
+            val cqlValue = resolvers[fhirVersion]!!.toCqlValue(fhirString)
+
+            validateCqlValueAgainstModel(fhirVersion, "string", cqlValue)
+
+            assertIs<ClassInstance>(cqlValue)
+            assertEquals(QName(fhirModelNamespaceUri, "string", fhirModelId), cqlValue.type)
+            assertNull(cqlValue.elements["value"])
+            assertEquals(listOf(extensionUrl), extensionUrls(cqlValue.elements["extension"]))
+
+            val extension = (cqlValue.elements["extension"] as Iterable<*>).single()
+            assertIs<ClassInstance>(extension)
+            assertEquals(
+                ClassInstance(
+                    QName(fhirModelNamespaceUri, "code", fhirModelId),
+                    mutableMapOf("extension" to null, "id" to null, "value" to reason.toCqlString()),
+                ),
+                extension.elements["value"],
+            )
+        }
+    }
+
+    /**
      * TODO: Add DSTU2 test. At the moment, it throws
      *
      *   Could not resolve type NameUseEnumFactory. Primary package(s) for this resolver are
@@ -369,6 +411,37 @@ class FhirModelResolverTest {
                 ),
                 cqlValue,
             )
+        }
+    }
+
+    @Test
+    fun toCqlValueFhirEnumWithValueAndExtension() {
+        val extensionUrl = "http://example.org"
+        val extensionValue = "example extension value"
+
+        for ((fhirVersion, useElement) in
+            listOf(
+                FhirVersionEnum.DSTU3 to
+                    Dstu3HumanName().setUse(Dstu3HumanName.NameUse.OFFICIAL).useElement.apply {
+                        addExtension(extensionUrl, Dstu3StringType(extensionValue))
+                    },
+                FhirVersionEnum.R4 to
+                    R4HumanName().setUse(R4HumanName.NameUse.OFFICIAL).useElement.apply {
+                        addExtension(extensionUrl, R4StringType(extensionValue))
+                    },
+                FhirVersionEnum.R5 to
+                    R5HumanName().setUse(R5HumanName.NameUse.OFFICIAL).useElement.apply {
+                        addExtension(extensionUrl, R5StringType(extensionValue))
+                    },
+            )) {
+            val cqlValue = resolvers[fhirVersion]!!.toCqlValue(useElement)
+
+            validateCqlValueAgainstModel(fhirVersion, "NameUse", cqlValue)
+
+            assertIs<ClassInstance>(cqlValue)
+            assertEquals(QName(fhirModelNamespaceUri, "NameUse", fhirModelId), cqlValue.type)
+            assertEquals("official".toCqlString(), cqlValue.elements["value"])
+            assertEquals(listOf(extensionUrl), extensionUrls(cqlValue.elements["extension"]))
         }
     }
 
@@ -468,6 +541,93 @@ class FhirModelResolverTest {
             val modifierExtension = modifierExtensions.elementAt(0)
             assertIs<ClassInstance>(modifierExtension)
             assertEquals(QName(fhirModelNamespaceUri, "Extension"), modifierExtension.type)
+        }
+    }
+
+    /**
+     * Extensions and modifier extensions are kept separate, on resources and on backbone elements.
+     */
+    @Test
+    fun toCqlValueFhirResourceWithExtensionAndModifierExtension() {
+        val extensionUrl = "http://example.org/extension"
+        val modifierExtensionUrl = "http://example.org/modifierExtension"
+
+        for ((fhirVersion, patient) in
+            listOf(
+                FhirVersionEnum.DSTU3 to
+                    Dstu3Patient().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+                FhirVersionEnum.R4 to
+                    R4Patient().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+                FhirVersionEnum.R5 to
+                    R5Patient().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+            )) {
+            val cqlValue = resolvers[fhirVersion]!!.toCqlValue(patient)
+
+            validateCqlValueAgainstModel(fhirVersion, "Patient", cqlValue)
+
+            assertIs<ClassInstance>(cqlValue)
+            assertEquals(listOf(extensionUrl), extensionUrls(cqlValue.elements["extension"]))
+            assertEquals(
+                listOf(modifierExtensionUrl),
+                extensionUrls(cqlValue.elements["modifierExtension"]),
+            )
+        }
+    }
+
+    /**
+     * Not validated against the model: backbone elements are currently converted with the HAPI
+     * class name (e.g. ContactComponent) rather than the model info name (e.g. Patient.Contact).
+     */
+    @Test
+    fun toCqlValueFhirBackboneElementWithExtensionAndModifierExtension() {
+        val extensionUrl = "http://example.org/extension"
+        val modifierExtensionUrl = "http://example.org/modifierExtension"
+
+        for ((fhirVersion, contact) in
+            listOf(
+                FhirVersionEnum.DSTU3 to
+                    Dstu3Patient().addContact().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+                FhirVersionEnum.R4 to
+                    R4Patient().addContact().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+                FhirVersionEnum.R5 to
+                    R5Patient().addContact().apply {
+                        addExtension().url = extensionUrl
+                        addModifierExtension().url = modifierExtensionUrl
+                    },
+            )) {
+            val cqlValue = resolvers[fhirVersion]!!.toCqlValue(contact)
+
+            assertIs<ClassInstance>(cqlValue)
+            assertEquals(listOf(extensionUrl), extensionUrls(cqlValue.elements["extension"]))
+            assertEquals(
+                listOf(modifierExtensionUrl),
+                extensionUrls(cqlValue.elements["modifierExtension"]),
+            )
+        }
+    }
+
+    private fun extensionUrls(extensions: Any?): kotlin.collections.List<kotlin.String?> {
+        assertIs<Iterable<*>>(extensions)
+        return extensions.map {
+            assertIs<ClassInstance>(it)
+            val url = it.elements["url"]
+            assertIs<ClassInstance>(url)
+            (url.elements["value"] as org.opencds.cqf.cql.engine.runtime.String).value
         }
     }
 }
