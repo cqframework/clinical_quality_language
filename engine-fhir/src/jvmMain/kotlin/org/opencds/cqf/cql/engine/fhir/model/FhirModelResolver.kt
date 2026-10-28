@@ -19,7 +19,6 @@ import org.hl7.fhir.instance.model.api.IBaseElement
 import org.hl7.fhir.instance.model.api.IBaseEnumFactory
 import org.hl7.fhir.instance.model.api.IBaseEnumeration
 import org.hl7.fhir.instance.model.api.IBaseHasExtensions
-import org.hl7.fhir.instance.model.api.IBaseHasModifierExtensions
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
@@ -677,28 +676,11 @@ abstract class FhirModelResolver<
             )
         }
 
-        val elements = mutableMapOf<kotlin.String, Value?>()
-
-        if (target is IBaseHasExtensions) {
-            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
-        }
-
-        if (target is IBaseHasModifierExtensions) {
-            val modifierExtensionsAsCqlValues = target.modifierExtension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (modifierExtensionsAsCqlValues.isEmpty()) null
-                else modifierExtensionsAsCqlValues.toCqlList()
-        }
-
-        if (target is IBaseElement) {
-            elements["id"] = target.id?.toCqlString()
-        }
-
         if (this.enumChecker(target)) {
             @Suppress("UNCHECKED_CAST")
             target as EnumerationType
+
+            val elements = primitiveElements(target)
 
             // If the instance is a primitive (including or even especially an enumeration), and it
             // has no value, return null
@@ -720,6 +702,8 @@ abstract class FhirModelResolver<
         }
 
         if (target is IPrimitiveType<*>) {
+            val elements = primitiveElements(target)
+
             // If the instance is a primitive (including or even especially an enumeration), and it
             // has no value, return null
             if (
@@ -740,7 +724,10 @@ abstract class FhirModelResolver<
             )
         }
 
+        // Composite definitions include id, extension and modifierExtension (where applicable) as
+        // children, so they're converted here along with the rest of the children.
         val definition = resolveRuntimeDefinition(target)
+        val elements = mutableMapOf<kotlin.String, Value?>()
 
         for (child in definition.children) {
             elements[child.elementName] =
@@ -757,5 +744,25 @@ abstract class FhirModelResolver<
         }
 
         return ClassInstance(QName(fhirModelNamespaceUri, definition.name, fhirModelId), elements)
+    }
+
+    /**
+     * The id and extension elements of a FHIR primitive. Like all FHIR types, primitives may have
+     * an id and extensions, with or without a value.
+     */
+    private fun primitiveElements(target: IBase): MutableMap<kotlin.String, Value?> {
+        val elements = mutableMapOf<kotlin.String, Value?>()
+
+        if (target is IBaseHasExtensions) {
+            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
+            elements["extension"] =
+                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
+        }
+
+        if (target is IBaseElement) {
+            elements["id"] = target.id?.toCqlString()
+        }
+
+        return elements
     }
 }
