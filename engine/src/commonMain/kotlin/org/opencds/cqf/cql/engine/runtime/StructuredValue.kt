@@ -8,18 +8,18 @@ sealed class StructuredValue : Value {
     abstract val elements: MutableMap<kotlin.String, Value?>
 
     /** Returns true if the structured value has an element with the given name, false otherwise. */
-    fun has(elementName: kotlin.String): kotlin.Boolean {
+    open fun has(elementName: kotlin.String): kotlin.Boolean {
         return elements.containsKey(elementName)
     }
 
     /** Returns the value of the element of the structured value. */
-    operator fun get(elementName: kotlin.String): Value? {
+    open operator fun get(elementName: kotlin.String): Value? {
         return elements[elementName]
     }
 
     /** Returns the value of the element of the structured value. */
     fun getElement(elementName: kotlin.String): Value? {
-        return elements[elementName]
+        return get(elementName)
     }
 
     override fun equals(other: Any?): kotlin.Boolean {
