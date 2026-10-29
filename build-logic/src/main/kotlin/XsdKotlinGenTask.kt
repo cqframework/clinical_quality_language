@@ -3,10 +3,12 @@ import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.sun.xml.xsom.XSAttributeUse
 import com.sun.xml.xsom.XSComplexType
+import com.sun.xml.xsom.XSComponent
 import com.sun.xml.xsom.XSElementDecl
 import com.sun.xml.xsom.XSParticle
 import com.sun.xml.xsom.XSType
 import com.sun.xml.xsom.parser.XSOMParser
+import com.sun.xml.xsom.util.DomAnnotationParserFactory
 import javax.xml.XMLConstants
 import javax.xml.parsers.SAXParserFactory
 import org.gradle.api.DefaultTask
@@ -17,6 +19,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.w3c.dom.Element
 
 val namespaceToPackageName =
     mapOf(
@@ -184,6 +187,14 @@ fun getJsonPrimitiveSerializerCode(type: XSType): CodeBlock {
     }
 }
 
+// Adds the content of `xs:documentation` as Kdoc
+fun <T : Documentable.Builder<T>> Documentable.Builder<T>.addDocumentation(component: XSComponent) {
+    val annotation = component.annotation?.annotation
+    if (annotation is Element) {
+        addKdoc("%L\n", annotation.textContent)
+    }
+}
+
 // Adds a class property and `with` method for an element
 fun TypeSpec.Builder.addElement(
     elementDecl: XSElementDecl,
@@ -206,6 +217,7 @@ fun TypeSpec.Builder.addElement(
         val valueParameter = ParameterSpec.builder("value", listType).build()
         addProperty(
             PropertySpec.builder(elementDecl.name, listType)
+                .apply { addDocumentation(elementDecl) }
                 .mutable()
                 .getter(
                     FunSpec.getterBuilder()
@@ -233,6 +245,7 @@ fun TypeSpec.Builder.addElement(
     } else {
         addProperty(
             PropertySpec.builder(elementDecl.name, typeName.copy(nullable = true))
+                .apply { addDocumentation(elementDecl) }
                 .mutable()
                 .initializer("null")
                 .build()
@@ -340,6 +353,7 @@ fun getOwnAttributes(complexType: XSComplexType): List<XSAttributeUse> {
 // Creates a class for a complex type with nested classes for nested anonymous complex types
 fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.Builder {
     return TypeSpec.classBuilder(className)
+        .apply { addDocumentation(complexType) }
         .apply {
             if (complexType.isAbstract) {
                 addModifiers(KModifier.ABSTRACT)
@@ -399,6 +413,7 @@ fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.
                 if (attribute.defaultValue == null) {
                     addProperty(
                         PropertySpec.builder(attribute.decl.name, typeName.copy(nullable = true))
+                            .apply { addDocumentation(attribute.decl) }
                             .mutable()
                             .initializer("null")
                             .build()
@@ -436,6 +451,7 @@ fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.
                         ParameterSpec.builder("value", typeName.copy(nullable = true)).build()
                     addProperty(
                         PropertySpec.builder(attribute.decl.name, typeName.copy(nullable = true))
+                            .apply { addDocumentation(attribute.decl) }
                             .mutable()
                             .getter(
                                 FunSpec.getterBuilder()
@@ -1149,6 +1165,7 @@ abstract class XsdKotlinGenTask : DefaultTask() {
 
         val saxParserFactory = SAXParserFactory.newInstance()
         val xsomParser = XSOMParser(saxParserFactory)
+        xsomParser.setAnnotationParser(DomAnnotationParserFactory())
 
         val file = inputXsd.asFile.get()
         if (!file.exists()) {
@@ -1172,6 +1189,7 @@ abstract class XsdKotlinGenTask : DefaultTask() {
                 FileSpec.builder(typeName)
                     .addType(
                         TypeSpec.enumBuilder(typeName)
+                            .apply { addDocumentation(simpleType) }
                             .apply {
                                 if (jsExport.get()) {
                                     addJsExport()

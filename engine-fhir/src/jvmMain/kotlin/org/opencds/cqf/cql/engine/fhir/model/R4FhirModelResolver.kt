@@ -36,6 +36,9 @@ open class R4FhirModelResolver(fhirContext: FhirContext) :
         }
     }
 
+    override val namesBackboneElementsByPath: Boolean
+        get() = true
+
     override fun initialize() {
         // HAPI has some bugs where it's missing annotations on certain types. This patches that.
         this.fhirContext.registerCustomType(AnnotatedUuidType::class.java)
