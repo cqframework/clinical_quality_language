@@ -201,24 +201,24 @@ object QueryEvaluator {
                 }
                 val variable = Variable(source.alias!!)
                 variables.add(variable)
-                state!!.push(variable)
+                state.push(variable)
                 pushCount++
             }
 
             for (let in elm.let) {
                 val letVariable = Variable(let.identifier!!)
                 letVariables.add(letVariable)
-                state!!.push(letVariable)
+                state.push(letVariable)
                 pushCount++
             }
 
             relationshipRuntimes =
-                plan?.relationships?.map { it?.let { RelationshipRuntime(it, state!!) } }
+                plan?.relationships?.map { it?.let { RelationshipRuntime(it, state) } }
 
             val crossProduct = plan?.crossProduct
             if (crossProduct != null) {
                 CrossProductRuntime(crossProduct, querySources.map { it.data.toList() }, variables)
-                    .evaluate(state!!, visitor) { addRow(elm, state, visitor, variables, result) }
+                    .evaluate(state, visitor) { addRow(elm, state, visitor, variables, result) }
             }
 
             // The cross product plan has already produced the rows
@@ -245,9 +245,9 @@ object QueryEvaluator {
                 addRow(elm, state, visitor, variables, result)
             }
         } finally {
-            relationshipRuntimes?.forEach { it?.close(state!!) }
+            relationshipRuntimes?.forEach { it?.close(state) }
             while (pushCount > 0) {
-                state!!.pop()
+                state.pop()
                 pushCount--
             }
         }
@@ -255,7 +255,7 @@ object QueryEvaluator {
         if (
             elm.`return` != null &&
                 elm.`return`!!.isDistinct() == true &&
-                !state!!.engineOptions.contains(CqlEngine.Options.EnableHedisCompatibilityMode)
+                !state.engineOptions.contains(CqlEngine.Options.EnableHedisCompatibilityMode)
         ) {
             result = DistinctEvaluator.distinct(result.toCqlList(), state)!!.toMutableList()
         }
