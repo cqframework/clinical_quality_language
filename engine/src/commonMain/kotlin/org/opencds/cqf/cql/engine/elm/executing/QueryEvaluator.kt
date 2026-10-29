@@ -5,6 +5,7 @@ import org.hl7.elm.r1.AggregateClause
 import org.hl7.elm.r1.ByColumn
 import org.hl7.elm.r1.ByExpression
 import org.hl7.elm.r1.Query
+import org.hl7.elm.r1.RelationshipClause
 import org.hl7.elm.r1.SortDirection
 import org.hl7.elm.r1.With
 import org.hl7.elm.r1.Without
@@ -46,30 +47,13 @@ object QueryEvaluator {
         elm: Query,
         state: State?,
         visitor: ElmLibraryVisitor<Value?, State?>,
+        runtimes: kotlin.collections.List<RelationshipRuntime?>?,
     ): kotlin.Boolean {
-        // TODO: This is the most naive possible implementation here, but it should
-        // perform okay with 1) caching and 2) small data sets
         var shouldInclude = true
-        for (relationship in elm.relationship) {
-            var hasSatisfyingData = false
-            val relatedSourceData =
-                ensureIterable(visitor.visitExpression(relationship.expression!!, state))
-            for (relatedElement in relatedSourceData) {
-                state!!.push(Variable(relationship.alias!!).withValue(relatedElement))
-                try {
-                    val satisfiesRelatedCondition =
-                        visitor.visitExpression(relationship.suchThat!!, state)
-                    if (
-                        (relationship is With || relationship is Without) &&
-                            true == (satisfiesRelatedCondition as? Boolean)?.value
-                    ) {
-                        hasSatisfyingData = true
-                        break // Once we have detected satisfying data, no need to continue testing
-                    }
-                } finally {
-                    state.pop()
-                }
-            }
+        for ((i, relationship) in elm.relationship.withIndex()) {
+            val hasSatisfyingData =
+                runtimes?.get(i)?.hasSatisfyingData(state!!, visitor)
+                    ?: hasSatisfyingData(relationship, state, visitor)
 
             if (
                 (relationship is With && !hasSatisfyingData) ||
@@ -110,7 +94,7 @@ object QueryEvaluator {
         )
     }
 
-    private fun constructTuple(variables: MutableList<Variable>): Tuple {
+    private fun constructTuple(variables: kotlin.collections.List<Variable>): Tuple {
         val elementMap = mutableMapOf<kotlin.String, Value?>()
         for (v in variables) {
             elementMap[v.name!!] = v.value
@@ -193,6 +177,13 @@ object QueryEvaluator {
             throw CqlException("aggregate and return are mutually exclusive")
         }
 
+        val plan =
+            if (state!!.isQueryOptimizationEnabled) {
+                state.cache.queryPlans.getOrPut(elm) { QueryPlan(elm, state) }
+            } else null
+        var relationshipRuntimes: kotlin.collections.List<RelationshipRuntime?>? = null
+
+        val querySources = mutableListOf<QuerySource>()
         val sources = mutableListOf<Iterator<Value?>>()
         val variables = mutableListOf<Variable>()
         val letVariables = mutableListOf<Variable?>()
@@ -203,24 +194,37 @@ object QueryEvaluator {
             for (source in elm.source) {
                 val obj = visitor.visitExpression(source.expression!!, state)
                 val querySource = QuerySource(source.alias, obj)
+                querySources.add(querySource)
                 sources.add(querySource.data.iterator())
                 if (querySource.isList) {
                     sourceIsList = true
                 }
                 val variable = Variable(source.alias!!)
                 variables.add(variable)
-                state!!.push(variable)
+                state.push(variable)
                 pushCount++
             }
 
             for (let in elm.let) {
                 val letVariable = Variable(let.identifier!!)
                 letVariables.add(letVariable)
-                state!!.push(letVariable)
+                state.push(letVariable)
                 pushCount++
             }
 
-            val iterator = QueryIterator(state, sources)
+            relationshipRuntimes =
+                plan?.relationships?.map { it?.let { RelationshipRuntime(it, state) } }
+
+            val crossProduct = plan?.crossProduct
+            if (crossProduct != null) {
+                CrossProductRuntime(crossProduct, querySources.map { it.data.toList() }, variables)
+                    .evaluate(state, visitor) { addRow(elm, state, visitor, variables, result) }
+            }
+
+            // The cross product plan has already produced the rows
+            val iterator =
+                if (crossProduct == null) QueryIterator(state, sources)
+                else emptyList<MutableList<Value?>>().iterator()
 
             while (iterator.hasNext()) {
                 val elements = iterator.next() // as MutableList<CqlType?>
@@ -230,7 +234,7 @@ object QueryEvaluator {
 
                 evaluateLets(elm, state, letVariables, visitor)
 
-                if (!evaluateRelationships(elm, state, visitor)) {
+                if (!evaluateRelationships(elm, state, visitor, relationshipRuntimes)) {
                     continue
                 }
 
@@ -238,18 +242,12 @@ object QueryEvaluator {
                     continue
                 }
 
-                // There's a "return" clause in the CQL
-                if (elm.`return` != null) {
-                    result.add(visitor.visitExpression(elm.`return`!!.expression!!, state))
-                } else if (elm.aggregate != null || variables.size > 1) {
-                    result.add(constructTuple(variables))
-                } else {
-                    result.add(elements[0])
-                }
+                addRow(elm, state, visitor, variables, result)
             }
         } finally {
+            relationshipRuntimes?.forEach { it?.close(state) }
             while (pushCount > 0) {
-                state!!.pop()
+                state.pop()
                 pushCount--
             }
         }
@@ -257,7 +255,7 @@ object QueryEvaluator {
         if (
             elm.`return` != null &&
                 elm.`return`!!.isDistinct() == true &&
-                !state!!.engineOptions.contains(CqlEngine.Options.EnableHedisCompatibilityMode)
+                !state.engineOptions.contains(CqlEngine.Options.EnableHedisCompatibilityMode)
         ) {
             result = DistinctEvaluator.distinct(result.toCqlList(), state)!!.toMutableList()
         }
@@ -275,6 +273,23 @@ object QueryEvaluator {
         return if (elm.aggregate != null || !sourceIsList) result[0] else result.toCqlList()
     }
 
+    private fun addRow(
+        elm: Query,
+        state: State?,
+        visitor: ElmLibraryVisitor<Value?, State?>,
+        variables: kotlin.collections.List<Variable>,
+        result: MutableList<Value?>,
+    ) {
+        // There's a "return" clause in the CQL
+        if (elm.`return` != null) {
+            result.add(visitor.visitExpression(elm.`return`!!.expression!!, state))
+        } else if (elm.aggregate != null || variables.size > 1) {
+            result.add(constructTuple(variables))
+        } else {
+            result.add(variables[0].value)
+        }
+    }
+
     private fun assignVariables(variables: MutableList<Variable>, elements: MutableList<Value?>) {
         for (i in variables.indices) {
             variables[i].value = elements[i]
@@ -284,5 +299,24 @@ object QueryEvaluator {
     internal class QuerySource(val alias: kotlin.String?, data: Value?) {
         val isList = data is List
         val data = ensureIterable(data)
+    }
+}
+
+/** The naive nested loop, re-evaluating the related source and condition for every row. */
+private fun hasSatisfyingData(
+    relationship: RelationshipClause,
+    state: State?,
+    visitor: ElmLibraryVisitor<Value?, State?>,
+): kotlin.Boolean {
+    val relatedSourceData =
+        QueryEvaluator.ensureIterable(visitor.visitExpression(relationship.expression!!, state))
+    // Once we have detected satisfying data, no need to continue testing
+    return relatedSourceData.any { relatedElement ->
+        state!!.push(Variable(relationship.alias!!).withValue(relatedElement))
+        try {
+            true == (visitor.visitExpression(relationship.suchThat!!, state) as? Boolean)?.value
+        } finally {
+            state.pop()
+        }
     }
 }
