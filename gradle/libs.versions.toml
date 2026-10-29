@@ -43,6 +43,7 @@ hamcrest-all = "1.3"
 hamcrest-json = "0.2"
 archunit = "1.2.1"
 wiremock = "3.9.1"
+jol = "0.17"
 mockito = "5.4.0"
 reflections = "0.10.2"
 xmlunit = "2.10.0"
@@ -126,6 +127,7 @@ hamcrest-all = { module = "org.hamcrest:hamcrest-all", version.ref = "hamcrest-a
 hamcrest-json = { module = "uk.co.datumedge:hamcrest-json", version.ref = "hamcrest-json" }
 archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
 wiremock = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
+jol-core = { module = "org.openjdk.jol:jol-core", version.ref = "jol" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 xmlunit-assertj = { module = "org.xmlunit:xmlunit-assertj", version.ref = "xmlunit" }

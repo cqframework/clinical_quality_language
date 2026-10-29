@@ -27,6 +27,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(libs.wiremock)
+                implementation(libs.jol.core)
                 implementation(project(":cql-to-elm"))
                 implementation(project(":quick"))
                 implementation(libs.hapi.fhir.client)
@@ -47,3 +48,30 @@ java {
 }
 
 dependencies { kover(project(":engine")) }
+
+// The memory benchmark is too heavy for the regular test run; it gets its own task.
+val memoryBenchmarkTag = "memory-benchmark"
+
+val jvmTest = tasks.named<Test>("jvmTest") { useJUnitPlatform { excludeTags(memoryBenchmarkTag) } }
+
+tasks.register<Test>("memoryBenchmark") {
+    description = "Measures memory used to evaluate CQL over a single patient with a large chart."
+    group = "verification"
+    testClassesDirs = jvmTest.get().testClassesDirs
+    classpath = jvmTest.get().classpath
+    useJUnitPlatform { includeTags(memoryBenchmarkTag) }
+    maxHeapSize = "4g"
+    // A small young generation makes GCs frequent enough to observe the peak heap use
+    jvmArgs("-XX:+UseG1GC", "-Xmn64m")
+    listOf("sizes", "expressionCaching", "heapDumpDir", "attribute").forEach { name ->
+        providers.gradleProperty("memoryBenchmark.$name").orNull?.let {
+            systemProperty("memoryBenchmark.$name", it)
+        }
+    }
+    systemProperty(
+        "memoryBenchmark.reportDir",
+        layout.buildDirectory.dir("reports/memory-benchmark").get().asFile.absolutePath,
+    )
+    outputs.upToDateWhen { false }
+    testLogging { showStandardStreams = true }
+}

@@ -133,7 +133,7 @@ object EqualEvaluator {
 
         if (left is ClassInstance && right is ClassInstance) {
             if (left.type == right.type) {
-                return structuredValueElementsEqual(left.elements, right.elements, state)
+                return classInstanceElementsEqual(left.elements, right.elements, state)
             }
             return Boolean.FALSE
         }
@@ -317,6 +317,31 @@ object EqualEvaluator {
             }
         }
 
+        return Boolean.TRUE
+    }
+
+    /**
+     * Compares the elements of class instances for equality. Unlike tuples, an element missing from
+     * one side is treated as a null-valued element.
+     */
+    fun classInstanceElementsEqual(
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
+        state: State?,
+    ): Boolean? {
+        for (key in right.keys + left.keys) {
+            val rightValue = right[key]
+            val leftValue = left[key]
+            if (rightValue == null && leftValue == null) {
+                continue
+            }
+            val equal = equal(rightValue, leftValue, state)
+            if (equal == null) {
+                return null
+            } else if (!equal.value) {
+                return Boolean.FALSE
+            }
+        }
         return Boolean.TRUE
     }
 }

@@ -323,4 +323,21 @@ object EquivalentEvaluator {
         }
         return Boolean.TRUE
     }
+
+    /**
+     * Compares the elements of class instances for equivalence. Unlike tuples, an element missing
+     * from one side is treated as a null-valued element.
+     */
+    fun classInstanceElementsEquivalent(
+        left: Map<kotlin.String, Value?>,
+        right: Map<kotlin.String, Value?>,
+        equivalent: (l: Value?, r: Value?) -> Boolean,
+    ): Boolean {
+        for (key in right.keys + left.keys) {
+            if (!equivalent(right[key], left[key]).value) {
+                return Boolean.FALSE
+            }
+        }
+        return Boolean.TRUE
+    }
 }

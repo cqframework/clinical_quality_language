@@ -133,7 +133,12 @@ private fun validateCqlValueAgainstModel(
                                 .resolveTypeName(cqlValue.type.localPart) as ClassType
                         assertTrue(cqlValueType.isSubTypeOf(modelType))
                         val expectedElements = cqlValueType.getAllElements()
-                        assertEquals(expectedElements.keys, cqlValue.elements.keys)
+                        // Elements without a value are omitted from class instances
+                        assertTrue(
+                            expectedElements.keys.containsAll(cqlValue.elements.keys),
+                            "Unexpected elements: ${cqlValue.elements.keys - expectedElements.keys}",
+                        )
+                        assertTrue(cqlValue.elements.values.none { it == null })
                         for ((elementName, elementType) in expectedElements) {
                             validateCqlValueAgainstModelInner(
                                 cqlValue.elements[elementName],

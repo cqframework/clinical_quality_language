@@ -218,14 +218,14 @@ abstract class FhirModelResolver<
             `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Resource")) == true ||
                 `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Element")) == true
         ) {
-            return EquivalentEvaluator.structuredValueElementsEquivalent(
+            return EquivalentEvaluator.classInstanceElementsEquivalent(
                 left.elements.filterKeys { it != "id" },
                 right.elements.filterKeys { it != "id" },
                 equivalent,
             )
         }
 
-        return EquivalentEvaluator.structuredValueElementsEquivalent(
+        return EquivalentEvaluator.classInstanceElementsEquivalent(
             left.elements,
             right.elements,
             equivalent,
@@ -688,7 +688,7 @@ abstract class FhirModelResolver<
             if (
                 !expandPrimitivesAndEnumerationsWithNoValues &&
                     !target.hasValue() &&
-                    elements.all { it.value == null }
+                    elements.isEmpty()
             ) {
                 return null
             }
@@ -697,9 +697,9 @@ abstract class FhirModelResolver<
             val factoryName = this.enumFactoryTypeGetter(target).simpleName
             val typeName = factoryName.substringBefore("EnumFactory")
 
-            elements["value"] = target.valueAsString?.toCqlString()
+            elements.putIfNotNull("value", target.valueAsString?.toCqlString())
 
-            return ClassInstance(QName(fhirModelNamespaceUri, typeName, fhirModelId), elements)
+            return ClassInstance(fhirQName(typeName), elements)
         }
 
         if (target is IPrimitiveType<*>) {
@@ -710,45 +710,64 @@ abstract class FhirModelResolver<
             if (
                 !expandPrimitivesAndEnumerationsWithNoValues &&
                     !target.hasValue() &&
-                    elements.all { it.value == null }
+                    elements.isEmpty()
             ) {
                 return null
             }
 
             val elementDefinition = this.fhirContext.getElementDefinition(target.javaClass)
 
-            elements["value"] = toSimpleCqlType(target)
+            elements.putIfNotNull("value", toSimpleCqlType(target))
 
-            return ClassInstance(
-                QName(fhirModelNamespaceUri, elementDefinition.name, fhirModelId),
-                elements,
-            )
+            return ClassInstance(fhirQName(elementDefinition.name), elements)
         }
 
         // Composite definitions include id, extension and modifierExtension (where applicable) as
-        // children, so they're converted here along with the rest of the children.
+        // children, so they're converted here along with the rest of the children. Children
+        // without a value are omitted from the elements map; an absent element reads as null.
         val definition = resolveRuntimeDefinition(target)
-        val elements = mutableMapOf<kotlin.String, Value?>()
-
-        for (child in definition.children) {
-            elements[child.elementName] =
-                child.accessor
-                    .getValues(target)
-                    .map { toCqlValue(it) }
-                    .let {
-                        if (child.max == 1) {
-                            it.firstOrNull()
-                        } else {
-                            if (it.isEmpty()) null else it.toCqlList()
-                        }
-                    }
+        val children = definition.children
+        val values = arrayOfNulls<Value>(children.size)
+        var count = 0
+        for ((i, child) in children.withIndex()) {
+            val childValues = child.accessor.getValues(target)
+            val value =
+                if (child.max == 1) {
+                    childValues.firstOrNull()?.let { toCqlValue(it) }
+                } else {
+                    if (childValues.isEmpty()) null
+                    else childValues.map { toCqlValue(it) }.toCqlList()
+                }
+            if (value != null) {
+                values[i] = value
+                count++
+            }
         }
 
-        return ClassInstance(
-            QName(fhirModelNamespaceUri, typeName(definition), fhirModelId),
-            elements,
-        )
+        val elements = sizedElementsMap(count)
+        for ((i, value) in values.withIndex()) {
+            if (value != null) {
+                elements[children[i].elementName] = value
+            }
+        }
+
+        return ClassInstance(fhirQName(typeName(definition)), elements)
     }
+
+    private fun MutableMap<kotlin.String, Value?>.putIfNotNull(key: kotlin.String, value: Value?) {
+        if (value != null) {
+            this[key] = value
+        }
+    }
+
+    @Suppress("MagicNumber")
+    private fun sizedElementsMap(size: Int): MutableMap<kotlin.String, Value?> =
+        LinkedHashMap(if (size == 0) 1 else (size / 0.75f).toInt() + 1)
+
+    private val qNames = ConcurrentHashMap<kotlin.String, QName>()
+
+    private fun fhirQName(typeName: kotlin.String): QName =
+        qNames.computeIfAbsent(typeName) { QName(fhirModelNamespaceUri, it, fhirModelId) }
 
     /**
      * Whether backbone elements are named by the path that defines them (e.g. Patient.Contact), as
@@ -805,22 +824,20 @@ abstract class FhirModelResolver<
     }
 
     /**
-     * The id and extension elements of a FHIR primitive. Like all FHIR types, primitives may have
-     * an id and extensions, with or without a value.
+     * The id and extension elements of a FHIR primitive, omitting those without a value. Like all
+     * FHIR types, primitives may have an id and extensions, with or without a value.
      */
     private fun primitiveElements(target: IBase): MutableMap<kotlin.String, Value?> {
-        val elements = mutableMapOf<kotlin.String, Value?>()
-
-        if (target is IBaseHasExtensions) {
-            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
+        val elements = sizedElementsMap(PRIMITIVE_ELEMENT_COUNT)
+        if (target is IBaseHasExtensions && target.extension.isNotEmpty()) {
+            elements["extension"] = target.extension.map { toCqlValue(it) }.toCqlList()
         }
-
         if (target is IBaseElement) {
-            elements["id"] = target.id?.toCqlString()
+            elements.putIfNotNull("id", target.id?.toCqlString())
         }
-
         return elements
     }
 }
+
+/** The elements a FHIR primitive can have: id, extension and value. */
+private const val PRIMITIVE_ELEMENT_COUNT = 3
