@@ -9,6 +9,7 @@ import org.hl7.elm.r1.Case
 import org.hl7.elm.r1.Coalesce
 import org.hl7.elm.r1.Current
 import org.hl7.elm.r1.Element
+import org.hl7.elm.r1.Equal
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
@@ -96,6 +97,12 @@ internal class RelationshipPlan(val relationship: RelationshipClause, outerNames
     /** Subexpressions of [pairConjuncts] that depend only on the related element. */
     val relatedSubexpressions = mutableListOf<Expression>()
 
+    /**
+     * A pair conjunct `row side = related side`, used to look up the related elements a row can
+     * satisfy. Requires an invariant source, which is indexed once for all rows.
+     */
+    val equiJoin: EquiJoin?
+
     init {
         val alias = relationship.alias!!
         val names = outerNames + alias
@@ -117,6 +124,12 @@ internal class RelationshipPlan(val relationship: RelationshipClause, outerNames
                 true
             }
         }
+        equiJoin =
+            if (isSourceInvariant) {
+                pairConjuncts.firstNotNullOfOrNull { conjunct ->
+                    EquiJoin.of(conjunct, names) { it == setOf(alias) }
+                }
+            } else null
     }
 }
 
@@ -139,6 +152,12 @@ internal class CrossProductPlan(query: Query) {
     /** Per source, subexpressions of multi-source conjuncts that depend on that source alone. */
     val singleSourceSubexpressions = aliases.map { mutableListOf<Expression>() }
 
+    /**
+     * Per source, a multi-source conjunct `earlier sources side = this source side`, used to look
+     * up the elements of the source a combination of earlier elements can satisfy.
+     */
+    val equiJoins: List<EquiJoin?>
+
     init {
         val names = aliases.toSet()
         for (conjunct in conjunctsOf(query.where!!)) {
@@ -156,6 +175,41 @@ internal class CrossProductPlan(query: Query) {
                         true
                     }
                 }
+            }
+        }
+        equiJoins =
+            aliases.indices.map { level ->
+                multiSourceConjuncts[level].firstNotNullOfOrNull { conjunct ->
+                    EquiJoin.of(conjunct, names) { it == setOf(aliases[level]) }
+                }
+            }
+    }
+}
+
+/**
+ * An equality conjunct `outer = inner` where [inner] depends only on the elements of the source
+ * being joined and [outer] only on the current row (or earlier sources).
+ */
+internal class EquiJoin(val outer: Expression, val inner: Expression) {
+    companion object {
+        /** Splits [conjunct] if it is an equality whose sides depend on [isInner] and the rest. */
+        fun of(
+            conjunct: Expression,
+            names: Set<String>,
+            isInner: (Set<String>) -> kotlin.Boolean,
+        ): EquiJoin? {
+            if (conjunct !is Equal) return null
+            val (left, right) = conjunct.operand
+            val leftDependencies = dependenciesOf(left, names)
+            val rightDependencies = dependenciesOf(right, names)
+            fun isOuter(dependencies: Set<String>, other: Set<String>) =
+                dependencies.isNotEmpty() && dependencies.none { it in other }
+            return when {
+                isInner(rightDependencies) && isOuter(leftDependencies, rightDependencies) ->
+                    EquiJoin(left, right)
+                isInner(leftDependencies) && isOuter(rightDependencies, leftDependencies) ->
+                    EquiJoin(right, left)
+                else -> null
             }
         }
     }

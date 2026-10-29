@@ -42,3 +42,19 @@ define "Cross product":
   from [Encounter] E, "Conditions" C
     where C.prevalence() overlaps E.hospitalization()
     return all E
+
+// Conditions reference every other encounter
+define "With, equality":
+  [Encounter] E
+    with "Conditions" C
+      such that C.encounter.reference = 'Encounter/' + E.id
+
+define "Without, equality":
+  [Encounter] E
+    without "Conditions" C
+      such that C.encounter.reference = 'Encounter/' + E.id
+
+define "Cross product, equality":
+  from [Encounter] E, "Conditions" C
+    where C.encounter.reference = 'Encounter/' + E.id
+    return all E

@@ -62,6 +62,17 @@ class QueryOptimizationTest : CqlTestBase() {
                 "Distinct return",
                 "Sorted",
                 "Non-list source",
+                "Equi strings",
+                "Equi decimal scale",
+                "Equi decimal without",
+                "Equi codes",
+                "Equi codes by display",
+                "Equi unhashable",
+                "Equi nested key",
+                "Equi cross product",
+                "Equi cross product checked",
+                "Equi cross product duplicates",
+                "Equi three sources",
             ]
     )
     fun optimizedResultEqualsNaiveResult(expression: String) {
@@ -82,6 +93,32 @@ class QueryOptimizationTest : CqlTestBase() {
         val optimized = newEngine(optimize = true)
         optimized.evaluate("With")
         assertEquals(10L, optimized.bodyEvaluations("Double"))
+    }
+
+    @Test
+    fun equiJoinChecksOnlyMatchingElements() {
+        // Key(Y) = Double(X) first holds at Y = 2X: the naive loop checks 2 + 4 + ... + 20 pairs
+        val naive = newEngine(optimize = false)
+        naive.evaluate("Equi nested key")
+        assertEquals(110L, naive.bodyEvaluations("Check"))
+        assertEquals(110L, naive.bodyEvaluations("Key"))
+
+        // The index finds the one matching Y per X, keying the Ys only as far as the last match
+        val optimized = newEngine(optimize = true)
+        optimized.evaluate("Equi nested key")
+        assertEquals(10L, optimized.bodyEvaluations("Check"))
+        assertEquals(20L, optimized.bodyEvaluations("Key"))
+    }
+
+    @Test
+    fun crossProductEquiJoinVisitsOnlyMatchingCombinations() {
+        val naive = newEngine(optimize = false)
+        naive.evaluate("Equi cross product checked")
+        assertEquals(200L, naive.bodyEvaluations("Check"))
+
+        val optimized = newEngine(optimize = true)
+        optimized.evaluate("Equi cross product checked")
+        assertEquals(10L, optimized.bodyEvaluations("Check"))
     }
 
     @Test

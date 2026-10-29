@@ -1,5 +1,11 @@
 library QueryOptimizationTest
 
+codesystem "S": 'http://example.org/s'
+
+define function Key(X Integer): X
+
+define function Check(X Integer, Y Integer): true
+
 define function Double(X Integer): X * 2
 
 define function Noisy(X Integer): Message(X, true, 'Noisy', 'Message', 'noisy')
@@ -17,8 +23,19 @@ define Items:
     Tuple { id: 1, tags: { 'a', 'b' } },
     Tuple { id: 2, tags: { 'b' } },
     Tuple { id: 3, tags: List<String> { } },
-    Tuple { id: 4, tags: null as List<String> }
+    Tuple { id: 4, tags: null as List<String> },
+    Tuple { id: 5, tags: { 'b' } }
   }
+
+define Names: { 'a', 'b', 'c', 'b' }
+
+define Decimals: { 1.0, 2.50, 3.0, null }
+
+define OtherDecimals: { 1.00, 2.5, 4.0 }
+
+define Codes: { Code '1' from "S" display 'one', Code '1' from "S" display 'uno', Code '2' from "S" }
+
+define Remainders: { 0, 1, 1, 2, null, 0 }
 
 define "With": Xs X with Ys Y such that Double(X) = Y
 
@@ -71,3 +88,26 @@ define "Distinct return": from Xs A, Ys B where A < 3 and B < 3 return A + B
 define "Sorted": from Xs A, Ys B where A = B * 2 return all A sort desc
 
 define "Non-list source": from (5) A, Ys B where A = B return all B
+
+define "Equi strings": Names A with Names B such that A = B and A != 'c'
+
+define "Equi decimal scale": Decimals D with OtherDecimals E such that D = E
+
+define "Equi decimal without": Decimals D without OtherDecimals E such that E = D
+
+define "Equi codes": Codes C with Codes D such that C = D
+
+define "Equi codes by display": Codes C with Codes D such that C = D and C.display != D.display
+
+define "Equi unhashable": Items I with Items J such that I.tags = J.tags and I.id != J.id
+
+// Check(X, Y) is evaluated for every pair visited, so it counts the pairs
+define "Equi nested key": Xs X with Ys Y such that Check(X, Y) and Key(Y) = Double(X)
+
+define "Equi cross product checked": from Xs A, Ys B where Check(A, B) and B = Double(A) return all Tuple { a: A, b: B }
+
+define "Equi cross product": from Xs A, Ys B where B = Double(A) return all Tuple { a: A, b: B }
+
+define "Equi cross product duplicates": from Ys B, Remainders R where R = B mod 3 return all Tuple { b: B, r: R }
+
+define "Equi three sources": from Xs A, Ys B, Xs C where B = A + 1 and C = B - 1 return all Tuple { a: A, b: B, c: C }

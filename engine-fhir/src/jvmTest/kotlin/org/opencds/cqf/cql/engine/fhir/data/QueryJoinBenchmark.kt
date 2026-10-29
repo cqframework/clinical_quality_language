@@ -9,6 +9,7 @@ import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.DateTimeType
 import org.hl7.fhir.r4.model.Encounter
 import org.hl7.fhir.r4.model.Period
+import org.hl7.fhir.r4.model.Reference
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
@@ -54,6 +55,7 @@ internal class QueryJoinBenchmark : FhirExecutionTestBase() {
                     )
                     .setOnset(DateTimeType("2019-01-01T00:00:00Z").plusDays(i))
                     .setAbatement(DateTimeType("2019-01-02T00:00:00Z").plusDays(i))
+                    .setEncounter(Reference("Encounter/E${2 * i}"))
                     .setId("C$i")
             )
         }
@@ -128,6 +130,9 @@ internal class QueryJoinBenchmark : FhirExecutionTestBase() {
                 "Without, retrieve source",
                 "With, row and related conjuncts",
                 "Cross product",
+                "With, equality",
+                "Without, equality",
+                "Cross product, equality",
             ]
     )
     fun allModesAgree(expression: String) {
@@ -140,13 +145,15 @@ internal class QueryJoinBenchmark : FhirExecutionTestBase() {
         runs.values.flatten().forEach { assertEquals(expected, it.value) }
 
         logger.info(
-            "{} ({} x {}): {}",
+            "{} ({} x {}, {} results): {}",
             expression,
             COUNT,
             COUNT,
+            (expected as? org.opencds.cqf.cql.engine.runtime.List)?.count(),
             runs.entries.joinToString { (mode, modeRuns) ->
                 val median = modeRuns.map { it.time }.sorted()[modeRuns.size / 2]
-                "$mode ${median.inWholeMilliseconds} ms, ${modeRuns.first().retrieves} retrieves"
+                val milliseconds = "%.1f".format(median.inWholeMicroseconds / 1000.0)
+                "$mode $milliseconds ms, ${modeRuns.first().retrieves} retrieves"
             },
         )
     }
