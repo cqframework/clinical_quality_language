@@ -111,7 +111,7 @@ internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
         }
 
         val result = DateTimeType(value.toDateString())
-        result.precision = toFhirPrecision(value.precision!!)
+        result.precision = toFhirPrecision(value.precision)
         return result
     }
 

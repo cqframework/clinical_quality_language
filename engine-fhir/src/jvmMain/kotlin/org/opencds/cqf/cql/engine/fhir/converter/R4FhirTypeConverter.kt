@@ -119,8 +119,8 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val result = DateTimeType(value.dateTime!!.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-        result.precision = toFhirPrecision(value.precision!!)
+        val result = DateTimeType(value.dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        result.precision = toFhirPrecision(value.precision)
         return result
     }
 

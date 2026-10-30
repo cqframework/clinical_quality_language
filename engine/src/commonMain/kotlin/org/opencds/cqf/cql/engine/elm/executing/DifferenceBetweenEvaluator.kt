@@ -67,38 +67,38 @@ object DifferenceBetweenEvaluator {
             if (isLeftUncertain) {
                 val leftUncertainInterval = left.getUncertaintyInterval(precision)!!
                 return Interval(
-                        difference(
-                            leftUncertainInterval.end,
-                            right,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                        difference(
-                            leftUncertainInterval.start,
-                            right,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                    )
-                    .setUncertain(true)
+                    difference(
+                        leftUncertainInterval.end,
+                        right,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    difference(
+                        leftUncertainInterval.start,
+                        right,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    true,
+                )
             }
             if (isRightUncertain) {
                 val rightUncertainInterval = right.getUncertaintyInterval(precision)!!
                 return Interval(
-                        difference(
-                            left,
-                            rightUncertainInterval.start,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                        difference(
-                            left,
-                            rightUncertainInterval.end,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                    )
-                    .setUncertain(true)
+                    difference(
+                        left,
+                        rightUncertainInterval.start,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    difference(
+                        left,
+                        rightUncertainInterval.end,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    true,
+                )
             }
 
             if (left is DateTime && right is DateTime) {
@@ -109,11 +109,11 @@ object DifferenceBetweenEvaluator {
                                 .between(
                                     left
                                         .expandPartialMinFromPrecision(precision)
-                                        .dateTime!!
+                                        .dateTime
                                         .toLocalDate(),
                                     right
                                         .expandPartialMinFromPrecision(precision)
-                                        .dateTime!!
+                                        .dateTime
                                         .toLocalDate(),
                                 )
                                 .toInt() / 7)
@@ -124,11 +124,11 @@ object DifferenceBetweenEvaluator {
                             .between(
                                 left
                                     .expandPartialMinFromPrecision(precision)
-                                    .dateTime!!
+                                    .dateTime
                                     .toLocalDate(),
                                 right
                                     .expandPartialMinFromPrecision(precision)
-                                    .dateTime!!
+                                    .dateTime
                                     .toLocalDate(),
                             )
                             .toInt()
@@ -137,8 +137,8 @@ object DifferenceBetweenEvaluator {
                     return precision
                         .toChronoUnit()
                         .between(
-                            left.expandPartialMinFromPrecision(precision).dateTime!!,
-                            right.expandPartialMinFromPrecision(precision).dateTime!!,
+                            left.expandPartialMinFromPrecision(precision).dateTime,
+                            right.expandPartialMinFromPrecision(precision).dateTime,
                         )
                         .toInt()
                         .toCqlInteger()
@@ -150,8 +150,8 @@ object DifferenceBetweenEvaluator {
                     (precision
                             .toChronoUnit()
                             .between(
-                                left.expandPartialMinFromPrecision(precision).date!!,
-                                right.expandPartialMinFromPrecision(precision).date!!,
+                                left.expandPartialMinFromPrecision(precision).date,
+                                right.expandPartialMinFromPrecision(precision).date,
                             )
                             .toInt() / 7)
                         .toCqlInteger()
@@ -159,8 +159,8 @@ object DifferenceBetweenEvaluator {
                     precision
                         .toChronoUnit()
                         .between(
-                            left.expandPartialMinFromPrecision(precision).date!!,
-                            right.expandPartialMinFromPrecision(precision).date!!,
+                            left.expandPartialMinFromPrecision(precision).date,
+                            right.expandPartialMinFromPrecision(precision).date,
                         )
                         .toInt()
                         .toCqlInteger()

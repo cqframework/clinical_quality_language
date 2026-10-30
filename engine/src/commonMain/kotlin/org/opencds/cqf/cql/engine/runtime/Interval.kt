@@ -19,20 +19,17 @@ class Interval
 @JvmOverloads
 @Suppress("NON_EXPORTABLE_TYPE")
 constructor(
-    var low: Value?,
+    val low: Value?,
     val lowClosed: kotlin.Boolean,
-    var high: Value?,
+    val high: Value?,
     val highClosed: kotlin.Boolean,
-    state: State? = null,
+    val isUncertain: kotlin.Boolean = false,
 ) : Value {
     override val typeAsString: kotlin.String
         get() = "Interval<${this.pointType}>"
 
     /** Inferred from the runtime values of the low and/or high boundaries. */
-    var pointType: QName
-
-    var isUncertain: kotlin.Boolean = false
-        private set
+    val pointType: QName
 
     init {
         if (low == null && high == null) {
@@ -60,7 +57,22 @@ constructor(
                     "Low and high boundary values of an interval must be of the same type."
                 )
             }
+        }
 
+        // Use the type of the non-null boundary
+        pointType = if (low == null) highNamedType else lowNamedType
+    }
+
+    @JsExport.Ignore
+    constructor(
+        low: Value?,
+        lowClosed: kotlin.Boolean,
+        high: Value?,
+        highClosed: kotlin.Boolean,
+        isUncertain: kotlin.Boolean = false,
+        state: State? = null,
+    ) : this(low, lowClosed, high, highClosed, isUncertain) {
+        if (low != null && high != null) {
             val isStartGreater = greater(this.start, this.end, state)
             if (isStartGreater == null || isStartGreater.value) {
                 throw InvalidInterval(
@@ -68,14 +80,14 @@ constructor(
                 )
             }
         }
-
-        // Use the type of the non-null boundary
-        pointType = if (low == null) highNamedType else lowNamedType
     }
 
-    fun setUncertain(uncertain: kotlin.Boolean): Interval {
-        this.isUncertain = uncertain
-        return this
+    fun withLow(low: Value?): Interval {
+        return Interval(low, lowClosed, high, highClosed, isUncertain)
+    }
+
+    fun withHigh(high: Value?): Interval {
+        return Interval(low, lowClosed, high, highClosed, isUncertain)
     }
 
     val start: Value?
@@ -95,8 +107,7 @@ constructor(
             } else if (low != null) {
                 low
             } else if (high is Quantity) {
-                val highQuantity = high as Quantity
-                Quantity().withValue(Constants.MIN_DECIMAL).withUnit(highQuantity.unit)
+                Quantity().withValue(Constants.MIN_DECIMAL).withUnit(high.unit)
             } else {
                 minValue(pointType)
             }
@@ -119,12 +130,26 @@ constructor(
             } else if (high != null) {
                 high
             } else if (low is Quantity) {
-                val lowQuantity = low as Quantity
-                Quantity().withValue(Constants.MAX_DECIMAL).withUnit(lowQuantity.unit)
+                Quantity().withValue(Constants.MAX_DECIMAL).withUnit(low.unit)
             } else {
                 maxValue(pointType)
             }
         }
+
+    private val hash: Int by lazy {
+        listOf(low, lowClosed, high, highClosed, isUncertain).hashCode()
+    }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other ||
+            (other is Interval &&
+                low == other.low &&
+                lowClosed == other.lowClosed &&
+                high == other.high &&
+                highClosed == other.highClosed &&
+                isUncertain == other.isUncertain)
 
     override fun toString(): kotlin.String {
         return "Interval${if (this.lowClosed) "[" else "("}${if (this.low == null) "null" else this.low.toString()}, ${if (this.high == null) "null" else this.high.toString()}${if (this.highClosed) "]" else ")"}"

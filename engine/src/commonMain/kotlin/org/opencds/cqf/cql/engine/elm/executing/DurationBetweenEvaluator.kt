@@ -58,38 +58,38 @@ object DurationBetweenEvaluator {
             if (isLeftUncertain) {
                 val leftUncertainInterval = left.getUncertaintyInterval(precision)!!
                 return Interval(
-                        duration(
-                            leftUncertainInterval.end,
-                            right,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                        duration(
-                            leftUncertainInterval.start,
-                            right,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                    )
-                    .setUncertain(true)
+                    duration(
+                        leftUncertainInterval.end,
+                        right,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    duration(
+                        leftUncertainInterval.start,
+                        right,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    true,
+                )
             }
             if (isRightUncertain) {
                 val rightUncertainInterval = right.getUncertaintyInterval(precision)!!
                 return Interval(
-                        duration(
-                            left,
-                            rightUncertainInterval.start,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                        duration(
-                            left,
-                            rightUncertainInterval.end,
-                            if (isWeeks) Precision.WEEK else precision,
-                        ),
-                        true,
-                    )
-                    .setUncertain(true)
+                    duration(
+                        left,
+                        rightUncertainInterval.start,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    duration(
+                        left,
+                        rightUncertainInterval.end,
+                        if (isWeeks) Precision.WEEK else precision,
+                    ),
+                    true,
+                    true,
+                )
             }
 
             if (left is DateTime && right is DateTime) {
@@ -110,10 +110,10 @@ object DurationBetweenEvaluator {
                 // returns 2014-02-28 (consistent with the CQL spec).
                 if (
                     precision == Precision.YEAR &&
-                        left.dateTime!!.isLastDayOfFeb() &&
-                        right.dateTime!!.isLastDayOfFeb()
+                        left.dateTime.isLastDayOfFeb() &&
+                        right.dateTime.isLastDayOfFeb()
                 ) {
-                    return (right.dateTime!!.getYear() - left.dateTime!!.getYear()).toCqlInteger()
+                    return (right.dateTime.getYear() - left.dateTime.getYear()).toCqlInteger()
                 }
 
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
@@ -121,8 +121,8 @@ object DurationBetweenEvaluator {
                         (precision
                                 .toChronoUnit()
                                 .between(
-                                    left.dateTime!!.toLocalDateTime(),
-                                    right.dateTime!!.toLocalDateTime(),
+                                    left.dateTime.toLocalDateTime(),
+                                    right.dateTime.toLocalDateTime(),
                                 )
                                 .toInt() / 7)
                             .toCqlInteger()
@@ -130,15 +130,15 @@ object DurationBetweenEvaluator {
                         precision
                             .toChronoUnit()
                             .between(
-                                left.dateTime!!.toLocalDateTime(),
-                                right.dateTime!!.toLocalDateTime(),
+                                left.dateTime.toLocalDateTime(),
+                                right.dateTime.toLocalDateTime(),
                             )
                             .toInt()
                             .toCqlInteger()
                 } else {
                     return precision
                         .toChronoUnit()
-                        .between(left.dateTime!!, right.dateTime!!)
+                        .between(left.dateTime, right.dateTime)
                         .toInt()
                         .toCqlInteger()
                 }
@@ -147,21 +147,16 @@ object DurationBetweenEvaluator {
             if (left is Date && right is Date) {
                 if (
                     precision == Precision.YEAR &&
-                        left.date!!.isLastDayOfFeb() &&
-                        right.date!!.isLastDayOfFeb()
+                        left.date.isLastDayOfFeb() &&
+                        right.date.isLastDayOfFeb()
                 ) {
-                    return (right.date!!.getYear() - left.date!!.getYear()).toCqlInteger()
+                    return (right.date.getYear() - left.date.getYear()).toCqlInteger()
                 }
 
                 return if (isWeeks)
-                    (precision.toChronoUnit().between(left.date!!, right.date!!).toInt() / 7)
+                    (precision.toChronoUnit().between(left.date, right.date).toInt() / 7)
                         .toCqlInteger()
-                else
-                    precision
-                        .toChronoUnit()
-                        .between(left.date!!, right.date!!)
-                        .toInt()
-                        .toCqlInteger()
+                else precision.toChronoUnit().between(left.date, right.date).toInt().toCqlInteger()
             }
 
             if (left is Time && right is Time) {

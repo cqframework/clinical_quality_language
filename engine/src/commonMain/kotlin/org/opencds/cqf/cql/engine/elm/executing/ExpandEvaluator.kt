@@ -99,7 +99,7 @@ object ExpandEvaluator {
                         true,
                         PredecessorEvaluator.predecessor(nextStart, per),
                         true,
-                        state,
+                        state = state,
                     )
                 )
                 start = nextStart

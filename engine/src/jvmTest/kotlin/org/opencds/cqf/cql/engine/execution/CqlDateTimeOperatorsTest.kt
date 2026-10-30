@@ -76,9 +76,9 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     fun now() {
         val evaluationDateTime = DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 5, 4, 999)
         val value =
-            engine.expression(library, "Issue34A", evaluationDateTime.dateTime!!.toZonedDateTime())
+            engine.expression(library, "Issue34A", evaluationDateTime.dateTime.toZonedDateTime())
         assertTrue(EquivalentEvaluator.equivalent(value, evaluationDateTime).value == true)
-        assertEquals((value as DateTime).dateTime!!.offset, evaluationDateTime.dateTime!!.offset)
+        assertEquals((value as DateTime).dateTime.offset, evaluationDateTime.dateTime.offset)
     }
 
     /** [org.opencds.cqf.cql.engine.elm.execution.TimeOfDayEvaluator.evaluate] */

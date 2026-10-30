@@ -68,8 +68,7 @@ class Dstu3FhirQueryGenerator(
                     codes = ArrayList()
                     val codeFilterValueCode = codeFilterComponent.getValueCode()
                     for (codeType in codeFilterValueCode) {
-                        val code = Code()
-                        code.code = codeType.asStringValue()
+                        val code = Code(code = codeType.asStringValue())
                         codes.add(code)
                     }
                 }
@@ -79,9 +78,7 @@ class Dstu3FhirQueryGenerator(
                     val codeFilterValueCodings = codeFilterComponent.getValueCoding()
                     for (coding in codeFilterValueCodings) {
                         if (coding.hasCode()) {
-                            val code = Code()
-                            code.system = coding.getSystem()
-                            code.code = coding.getCode()
+                            val code = Code(system = coding.getSystem(), code = coding.getCode())
                             codes.add(code)
                         }
                     }
@@ -93,9 +90,8 @@ class Dstu3FhirQueryGenerator(
                         val codeFilterValueCodeableConceptCodings = codeableConcept.getCoding()
                         for (coding in codeFilterValueCodeableConceptCodings) {
                             if (coding.hasCode()) {
-                                val code = Code()
-                                code.system = coding.getSystem()
-                                code.code = coding.getCode()
+                                val code =
+                                    Code(system = coding.getSystem(), code = coding.getCode())
                                 codes!!.add(code)
                             }
                         }
