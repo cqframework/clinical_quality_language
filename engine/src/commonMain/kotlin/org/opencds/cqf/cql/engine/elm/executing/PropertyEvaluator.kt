@@ -62,11 +62,8 @@ object PropertyEvaluator {
 
     /** Resolves a property on a target object. */
     private fun resolveProperty(target: Value?, property: kotlin.String): Value? {
-        if (target == null) {
-            return null
-        }
-
         return when (target) {
+            null -> null
             is Quantity -> {
                 when (property) {
                     "value" -> target.value?.toCqlDecimal()
@@ -110,7 +107,7 @@ object PropertyEvaluator {
                     "id" -> target.id?.toCqlString()
                     "version" -> target.version?.toCqlString()
                     "name" -> target.name?.toCqlString()
-                    "codesystems" -> target.codeSystems.toCqlList()
+                    "codesystems" -> target.codeSystems?.toCqlList()
                     else -> null
                 }
             }

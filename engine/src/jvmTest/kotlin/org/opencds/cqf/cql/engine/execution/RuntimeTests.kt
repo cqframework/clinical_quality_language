@@ -24,7 +24,7 @@ internal class RuntimeTests {
         // interval is 0.
         val s = Quantity().withValue(BigDecimal(10)).withUnit("mg/mL")
         val e = Quantity().withValue(BigDecimal(10)).withUnit("kg/m3")
-        val interval = Interval(s, true, e, true, state)
+        val interval = Interval(s, true, e, true, state = state)
         assertEquals(s, interval.start)
         assertEquals(e, interval.end)
         assertEquals(
