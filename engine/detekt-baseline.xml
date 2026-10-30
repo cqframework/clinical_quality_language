@@ -29,7 +29,7 @@
     <ID>CyclomaticComplexMethod:GreaterEvaluator.kt$GreaterEvaluator$@JvmStatic fun greater(left: Value?, right: Value?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:GreaterOrEqualEvaluator.kt$GreaterOrEqualEvaluator$@JvmStatic fun greaterOrEqual(left: Value?, right: Value?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Value?, precision: Value?): Value?</ID>
-    <ID>CyclomaticComplexMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>CyclomaticComplexMethod:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>CyclomaticComplexMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>CyclomaticComplexMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean?</ID>
     <ID>CyclomaticComplexMethod:LessEvaluator.kt$LessEvaluator$@JvmStatic fun less(left: Value?, right: Value?, state: State?): Boolean?</ID>
@@ -66,7 +66,6 @@
     <ID>ForbiddenComment:ListOperatorsTest.kt$ListOperatorsTest$// TODO: fix test - going to InEvaluator</ID>
     <ID>ForbiddenComment:NodeMatcher.kt$NodeMatcher$// TODO: should we ensure that there are no extra children in the node?</ID>
     <ID>ForbiddenComment:ProfilingTest.kt$ProfilingTest$// TODO: engine options to CqlTestBase.getEngine instead?</ID>
-    <ID>ForbiddenComment:QueryEvaluator.kt$QueryEvaluator$// TODO: This is the most naive possible implementation here, but it should</ID>
     <ID>ForbiddenComment:RetrieveEvaluator.kt$RetrieveEvaluator$// TODO: We probably shouldn't eagerly load this, but we need to track</ID>
     <ID>ForbiddenComment:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$// TODO: Support adding more functions to an existing provider object.</ID>
     <ID>ForbiddenComment:TerminologyAwareRetrieveProvider.kt$TerminologyAwareRetrieveProvider$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
@@ -116,7 +115,7 @@
     <ID>LongMethod:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Value?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>LongMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Value?, precision: Value?): Value?</ID>
     <ID>LongMethod:InEvaluator.kt$InEvaluator$private fun intervalIn( left: Value?, right: Interval, precision: kotlin.String?, state: State?, ): Boolean?</ID>
-    <ID>LongMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>LongMethod:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>LongMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>LongMethod:IntervalOperatorsTest.kt$IntervalOperatorsTest$@Test fun all_interval_operators()</ID>
     <ID>LongMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean?</ID>
@@ -133,7 +132,6 @@
     <ID>LongMethod:SameAsEvaluator.kt$SameAsEvaluator$@JvmStatic fun sameAs(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean?</ID>
     <ID>LongMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Value?): Value?</ID>
     <ID>LongMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: kotlin.Long, precision: Precision, targetPrecision: Precision?, ): kotlin.Long</ID>
-    <ID>LongMethod:ToCvlTest.kt$ToCvlTest$@Test fun systemStructuredValueToCvlTest()</ID>
     <ID>LongParameterList:DateTimeEvaluator.kt$DateTimeEvaluator$( year: Value?, month: Value?, day: Value?, hour: Value?, minute: Value?, second: Value?, milliSecond: Value?, timeZoneOffset: Value?, )</ID>
     <ID>LongParameterList:MessageEvaluator.kt$MessageEvaluator$( state: State?, sourceLocator: SourceLocator?, source: Value?, condition: Boolean?, code: String?, severity: String?, message: String?, )</ID>
     <ID>LongParameterList:Profile.kt$Profile.Node$( sink: Sink, i: Int, x: Double, depth: Int, scaleX: Double, scaleY: Double, )</ID>
@@ -153,6 +151,7 @@
     <ID>MagicNumber:DateTime.kt$DateTime$6</ID>
     <ID>MagicNumber:DateTime.kt$DateTime$60</ID>
     <ID>MagicNumber:DateTime.kt$DateTime$9999</ID>
+    <ID>MagicNumber:DateTime.kt$DateTime.Companion$60</ID>
     <ID>MagicNumber:DecimalHelper.kt$DecimalHelper$8</ID>
     <ID>MagicNumber:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$7</ID>
     <ID>MagicNumber:DivideEvaluator.kt$DivideEvaluator$8</ID>
@@ -312,10 +311,6 @@
     <ID>MaxLineLength:ToRatioEvaluator.kt$ToRatioEvaluator$/* ToRatio(argument String) Ratio The ToRatio operator converts the value of its argument to a Ratio value. The operator accepts strings using the following format: &lt;quantity>:&lt;quantity> where &lt;quantity> is the format used to by the ToQuantity operator. If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is null. If the argument is null, the result is null. The following examples illustrate the behavior of the ToRatio operator: define IsValid: ToRatio('1.0 \'mg\':2.0 \'mg\'') define IsNull: ToRatio('1.0 \'mg\';2.0 \'mg\'') */</ID>
     <ID>MaxLineLength:TodayEvaluator.kt$TodayEvaluator$/* Today() Date The Today operator returns the date (with no time component) of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the Today operator in this way. */</ID>
     <ID>MaxLineLength:TruncatedDivideEvaluator.kt$TruncatedDivideEvaluator$"TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal), TruncatedDivide(Quantity, Quantity)"</ID>
-    <ID>MemberNameEqualsClassName:Code.kt$Code$var code: kotlin.String? = null</ID>
-    <ID>MemberNameEqualsClassName:Date.kt$Date$@JsExport.Ignore var date: LocalDate? = null set(date) { if (date!!.getYear() &lt; 1) { throw InvalidDate( "The year: ${date.getYear()} falls below the accepted bounds of 0001-9999." ) } if (date.getYear() > 9999) { throw InvalidDate( "The year: ${date.getYear()} falls above the accepted bounds of 0001-9999." ) } if (this.precision == null) { this.precision = Precision.DAY } field = date }</ID>
-    <ID>MemberNameEqualsClassName:DateTime.kt$DateTime$@JsExport.Ignore var dateTime: OffsetDateTime? = null set(dateTime) { if (dateTime!!.getYear() &lt; 1) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls below the accepted bounds of 0001-9999." ) } if (dateTime.getYear() > 9999) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls above the accepted bounds of 0001-9999." ) } field = dateTime }</ID>
-    <ID>MemberNameEqualsClassName:Time.kt$Time$@JsExport.Ignore var time: LocalTime private set</ID>
     <ID>NestedBlockDepth:AllTrueEvaluator.kt$AllTrueEvaluator$@JvmStatic fun allTrue(src: Value?): Boolean</ID>
     <ID>NestedBlockDepth:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Value?): Boolean</ID>
     <ID>NestedBlockDepth:AvgEvaluator.kt$AvgEvaluator$@JvmStatic fun avg(source: Value?, state: State?): Value?</ID>
@@ -334,7 +329,6 @@
     <ID>NestedBlockDepth:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Value?, state: State?): Value?</ID>
     <ID>NestedBlockDepth:NodeMatcher.kt$NodeMatcher$override fun matchesSafely(node: Profile.Node): Boolean</ID>
     <ID>NestedBlockDepth:ProperContainsEvaluator.kt$ProperContainsEvaluator$fun properContains(left: Value?, right: Value?, state: State?): Boolean?</ID>
-    <ID>NestedBlockDepth:QueryEvaluator.kt$QueryEvaluator$private fun evaluateRelationships( elm: Query, state: State?, visitor: ElmLibraryVisitor&lt;Value?, State?>, ): kotlin.Boolean</ID>
     <ID>NestedBlockDepth:RetrieveEvaluator.kt$RetrieveEvaluator$fun internalEvaluate( elm: Retrieve?, state: State?, visitor: ElmLibraryVisitor&lt;Value?, State?>, ): List?</ID>
     <ID>NestedBlockDepth:State.kt$State$fun resolveIdentifierRef(name: String): Value?</ID>
     <ID>NestedBlockDepth:ToDecimalEvaluator.kt$ToDecimalEvaluator$@JvmStatic fun toDecimal(operand: Value?): Value?</ID>
@@ -479,17 +473,15 @@
     <ID>ReturnCount:TimeFromEvaluator.kt$TimeFromEvaluator$@JvmStatic fun timeFrom(operand: Value?): Time?</ID>
     <ID>ReturnCount:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>ReturnCount:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Value?): Boolean?</ID>
-    <ID>ReturnCount:ToConceptEvaluator.kt$ToConceptEvaluator$@JvmStatic fun toConcept(operand: Value?): Concept?</ID>
     <ID>ReturnCount:ToDateEvaluator.kt$ToDateEvaluator$@JvmStatic fun toDate(operand: Value?): BaseTemporal?</ID>
     <ID>ReturnCount:ToDateTimeEvaluator.kt$ToDateTimeEvaluator$@JvmStatic fun toDateTime(operand: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:ToDecimalEvaluator.kt$ToDecimalEvaluator$@JvmStatic fun toDecimal(operand: Value?): Value?</ID>
     <ID>ReturnCount:ToIntegerEvaluator.kt$ToIntegerEvaluator$@JvmStatic fun toInteger(operand: Value?): Integer?</ID>
     <ID>ReturnCount:ToLongEvaluator.kt$ToLongEvaluator$@JvmStatic fun toLong(operand: Value?): Long?</ID>
     <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$@JvmStatic fun toQuantity(operand: Value?, state: State?): Quantity?</ID>
-    <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$private fun setValue(quantity: Quantity, str: kotlin.String): Quantity?</ID>
+    <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$private fun withValue(quantity: Quantity, str: kotlin.String): Quantity?</ID>
     <ID>ReturnCount:ToRatioEvaluator.kt$ToRatioEvaluator$@JvmStatic fun toRatio(operand: Value?): Ratio?</ID>
     <ID>ReturnCount:ToTimeEvaluator.kt$ToTimeEvaluator$@JvmStatic fun toTime(operand: Value?): Time?</ID>
-    <ID>ReturnCount:TruncateEvaluator.kt$TruncateEvaluator$@JvmStatic fun truncate(operand: Value?): Integer?</ID>
     <ID>ReturnCount:TruncatedDivideEvaluator.kt$TruncatedDivideEvaluator$@JvmStatic fun div(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$@JvmStatic fun unionInterval(left: Interval?, right: Interval?, state: State?): Interval?</ID>
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$fun unionIterable(left: List?, right: List?, state: State?): List?</ID>
@@ -508,7 +500,6 @@
     <ID>SwallowedException:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToQuantityEvaluator.kt$ConvertsToQuantityEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToTimeEvaluator.kt$ConvertsToTimeEvaluator$dtpe: Exception</ID>
-    <ID>SwallowedException:CqlAggregateFunctionsTest.kt$CqlAggregateFunctionsTest$e: InvalidOperatorArgument</ID>
     <ID>SwallowedException:CqlArithmeticFunctionsTest.kt$CqlArithmeticFunctionsTest$e: CqlException</ID>
     <ID>SwallowedException:DebugResult.kt$DebugResult$e: Exception</ID>
     <ID>SwallowedException:DivideEvaluator.kt$DivideEvaluator$e: ArithmeticException</ID>
@@ -519,7 +510,7 @@
     <ID>SwallowedException:ToDateEvaluator.kt$ToDateEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ToDateTimeEvaluator.kt$ToDateTimeEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ToTimeEvaluator.kt$ToTimeEvaluator$dtpe: Exception</ID>
-    <ID>ThrowsCount:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>ThrowsCount:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>ThrowsCount:LiteralEvaluator.kt$LiteralEvaluator$@JvmStatic fun internalEvaluate(valueT: QName?, value: kotlin.String?, state: State?): Value?</ID>
     <ID>ThrowsCount:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Value?): Value?</ID>
     <ID>ThrowsCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Value?): Value?</ID>

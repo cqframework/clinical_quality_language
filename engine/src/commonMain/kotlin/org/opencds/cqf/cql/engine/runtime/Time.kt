@@ -9,82 +9,85 @@ import org.opencds.cqf.cql.engine.util.localTimeParse
 import org.opencds.cqf.cql.engine.util.toPaddedString
 
 @JsOnlyExport
-class Time : BaseTemporal {
+@Suppress("NON_EXPORTABLE_TYPE")
+class Time(val time: LocalTime, override val precision: Precision) : BaseTemporal {
     override val type = timeTypeName
 
     @JsExport.Ignore
-    var time: LocalTime
-        private set
-
-    @JsExport.Ignore
     fun withTime(time: LocalTime): Time {
-        this.time = time
-        return this
+        return Time(time, this.precision)
     }
 
     @JsExport.Ignore
-    override fun withPrecision(precision: Precision?): Time {
-        this.precision = precision
-        return this
+    override fun withPrecision(precision: Precision): Time {
+        return Time(time, precision)
     }
 
-    @JsExport.Ignore
-    constructor(time: LocalTime, precision: Precision) {
-        this.time = time
-        this.precision = precision
-    }
+    private class TimeArgs(val time: LocalTime, val precision: Precision)
 
-    @JsName("fromDateString")
-    constructor(dateString: kotlin.String) {
-        var dateString = dateString
-        var size = 0
-        if (
-            dateString.matches("^T[0-2]\\d$".toRegex()) ||
-                dateString.matches("^[0-2]\\d$".toRegex())
-        ) {
-            dateString += ":00"
-            size = -1
+    private constructor(timeArgs: TimeArgs) : this(timeArgs.time, timeArgs.precision)
+
+    @JsName("fromTimeString")
+    constructor(
+        timeString: kotlin.String
+    ) : this(
+        kotlin.run {
+            var timeString = timeString
+            var size = 0
+            if (
+                timeString.matches("^T[0-2]\\d$".toRegex()) ||
+                    timeString.matches("^[0-2]\\d$".toRegex())
+            ) {
+                timeString += ":00"
+                size = -1
+            }
+            timeString = timeString.replace("T", "")
+            size += timeString.split(":").size
+            if (timeString.contains(".")) {
+                ++size
+            }
+            val precision = Precision.fromTimeIndex(size - 1)
+            timeString = TemporalHelper.autoCompleteTimeString(timeString, precision)
+            val time = localTimeParse(timeString)
+            TimeArgs(time, precision)
         }
-        dateString = dateString.replace("T", "")
-        size += dateString.split(":").size
-        if (dateString.contains(".")) {
-            ++size
-        }
-        precision = Precision.fromTimeIndex(size - 1)
-        dateString = TemporalHelper.autoCompleteTimeString(dateString, precision!!)
-        time = localTimeParse(dateString)
-    }
+    )
 
     @JsName("fromTimeElements")
-    constructor(vararg timeElements: Int) {
-        if (timeElements.isEmpty()) {
-            throw InvalidTime("Time must include an hour")
-        }
-
-        var timeString = StringBuilder()
-        val stringElements = TemporalHelper.normalizeTimeElements(*timeElements)
-
-        for (i in stringElements.indices) {
-            if (i == 0) {
-                timeString.append(stringElements[i])
-                continue
-            } else if (i < 3) {
-                timeString.append(":")
-            } else if (i == 3) {
-                timeString.append(".")
+    constructor(
+        vararg timeElements: Int
+    ) : this(
+        kotlin.run {
+            if (timeElements.isEmpty()) {
+                throw InvalidTime("Time must include an hour")
             }
-            timeString.append(stringElements[i])
+
+            var timeString = StringBuilder()
+            val stringElements = TemporalHelper.normalizeTimeElements(*timeElements)
+
+            for (i in stringElements.indices) {
+                if (i == 0) {
+                    timeString.append(stringElements[i])
+                    continue
+                } else if (i < 3) {
+                    timeString.append(":")
+                } else if (i == 3) {
+                    timeString.append(".")
+                }
+                timeString.append(stringElements[i])
+            }
+
+            val precision = Precision.fromTimeIndex(stringElements.size - 1)
+            timeString =
+                StringBuilder()
+                    .append(
+                        TemporalHelper.autoCompleteDateTimeString(timeString.toString(), precision)
+                    )
+
+            val time = localTimeParse(timeString.toString())
+            TimeArgs(time, precision)
         }
-
-        precision = Precision.fromTimeIndex(stringElements.size - 1)
-        timeString =
-            StringBuilder()
-                .append(
-                    TemporalHelper.autoCompleteDateTimeString(timeString.toString(), precision!!)
-                )
-
-        time = localTimeParse(timeString.toString())
-    }
+    )
 
     @JsExport.Ignore
     fun expandPartialMinFromPrecision(precision: Precision): Time {
@@ -96,7 +99,7 @@ class Time : BaseTemporal {
                     ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum(),
                 )
         }
-        return Time(ot, this.precision!!)
+        return Time(ot, this.precision)
     }
 
     @JsExport.Ignore
@@ -108,7 +111,7 @@ class Time : BaseTemporal {
     @JsExport.Ignore
     fun expandPartialMax(precision: Precision?): Time {
         var ot = this.time.plusHours(0)
-        for (i in this.precision!!.toTimeIndex() + 1..3) {
+        for (i in this.precision.toTimeIndex() + 1..3) {
             ot =
                 if (i <= precision!!.toTimeIndex()) {
                     ot.with(
@@ -127,7 +130,7 @@ class Time : BaseTemporal {
 
     @JsExport.Ignore
     override fun isUncertain(p: Precision): kotlin.Boolean {
-        return this.precision!!.toTimeIndex() < p.toTimeIndex()
+        return this.precision.toTimeIndex() < p.toTimeIndex()
     }
 
     @JsExport.Ignore
@@ -140,7 +143,7 @@ class Time : BaseTemporal {
     @JsExport.Ignore
     override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal? {
         val originalPrecision = this.precision
-        val originalLocalTime = this.time.truncatedTo(originalPrecision!!.toChronoUnit())
+        val originalLocalTime = this.time.truncatedTo(originalPrecision.toChronoUnit())
         when (precision) {
             Precision.HOUR,
             Precision.MINUTE,
@@ -167,32 +170,30 @@ class Time : BaseTemporal {
             val result =
                 this.compareToPrecision(
                     other,
-                    Precision.getHighestTimePrecision(this.precision!!, other.precision!!),
+                    Precision.getHighestTimePrecision(this.precision, other.precision),
                 )
             if (result == null && forSort) {
-                return if (this.precision!!.toTimeIndex() > other.precision!!.toTimeIndex()) 1
-                else -1
+                return if (this.precision.toTimeIndex() > other.precision.toTimeIndex()) 1 else -1
             }
             return result
         } else {
-            return compareToPrecision(other, this.precision!!)
+            return compareToPrecision(other, this.precision)
         }
     }
 
     @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
         var precision = p
-        val leftMeetsPrecisionRequirements =
-            this.precision!!.toTimeIndex() >= precision.toTimeIndex()
+        val leftMeetsPrecisionRequirements = this.precision.toTimeIndex() >= precision.toTimeIndex()
         val rightMeetsPrecisionRequirements =
-            other.precision!!.toTimeIndex() >= precision.toTimeIndex()
+            other.precision.toTimeIndex() >= precision.toTimeIndex()
 
         // adjust dates to evaluation offset
         val leftTime = this.time
         val rightTime = (other as Time).time
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
-            precision = Precision.getLowestTimePrecision(this.precision!!, other.precision!!)
+            precision = Precision.getLowestTimePrecision(this.precision, other.precision)
         }
 
         for (i in 0..<precision.toTimeIndex() + 1) {
@@ -216,6 +217,13 @@ class Time : BaseTemporal {
         return this.compare(other, true)!!
     }
 
+    private val hash: Int by lazy { listOf(time, precision).hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Time && time == other.time && precision == other.precision)
+
     override fun toStringInner(): kotlin.String {
         return when (precision) {
             Precision.HOUR -> time.getHour().toPaddedString(2)
@@ -228,7 +236,7 @@ class Time : BaseTemporal {
             else ->
                 "${time.getHour().toPaddedString(2)}:${time.getMinute().toPaddedString(2)}:${
                 time.getSecond().toPaddedString(2)
-                }.${time.get(precision!!.toChronoField()).toPaddedString(3)}"
+                }.${time.get(precision.toChronoField()).toPaddedString(3)}"
         }
     }
 

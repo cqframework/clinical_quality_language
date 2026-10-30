@@ -86,22 +86,22 @@ object PredecessorEvaluator {
             }
             val quantity = value
             return Quantity()
-                .withValue((predecessor(quantity.value?.toCqlDecimal()) as Decimal).value)
+                .withValue((predecessor(quantity.value.toCqlDecimal()) as Decimal).value)
                 .withUnit(quantity.unit)
         } else if (value is Date) {
-            val prev = value.date!!.minus(1, value.precision!!.toChronoUnit())
+            val prev = value.date.minus(1, value.precision.toChronoUnit())
             // If decrementing underflows the representable year range, the result is null.
-            return if (prev.getYear() < MIN_YEAR) null else Date(prev, value.precision!!)
+            return if (prev.getYear() < MIN_YEAR) null else Date(prev, value.precision)
         } else if (value is DateTime) {
-            val prev = value.dateTime!!.minus(1, value.precision!!.toChronoUnit())
+            val prev = value.dateTime.minus(1, value.precision.toChronoUnit())
             // If decrementing underflows the representable year range, the result is null.
-            return if (prev.getYear() < MIN_YEAR) null else DateTime(prev, value.precision!!)
+            return if (prev.getYear() < MIN_YEAR) null else DateTime(prev, value.precision)
         } else if (value is Time) {
             val t = value
             // If the value is already the minimum for its precision, decrementing underflows the
             // representable range and the result is null.
             val underflow =
-                when (t.precision!!) {
+                when (t.precision) {
                     Precision.HOUR -> t.time.getHour() == 0
                     Precision.MINUTE -> t.time.getHour() == 0 && t.time.getMinute() == 0
                     Precision.SECOND ->
@@ -117,7 +117,7 @@ object PredecessorEvaluator {
                     Precision.YEAR -> false
                 }
             return if (underflow) null
-            else Time(t.time.minus(1, t.precision!!.toChronoUnit()), t.precision!!)
+            else Time(t.time.minus(1, t.precision.toChronoUnit()), t.precision)
         }
 
         throw InvalidOperatorArgument(
@@ -138,7 +138,7 @@ object PredecessorEvaluator {
         if (value is Decimal) {
             if (quantity.value!!.scale() > 0) {
                 return checkMinDecimal(
-                        value.value.subtract(ONE.scaleByPowerOfTen(-quantity.value!!.scale()))
+                        value.value.subtract(ONE.scaleByPowerOfTen(-quantity.value.scale()))
                     )
                     .toCqlDecimal()
             }

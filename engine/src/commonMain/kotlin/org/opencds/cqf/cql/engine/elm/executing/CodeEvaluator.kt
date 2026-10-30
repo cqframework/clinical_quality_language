@@ -25,14 +25,13 @@ object CodeEvaluator {
         display: String?,
         state: State?,
     ): Code {
-        val code = Code().withCode(c).withDisplay(display)
+        var code = Code(code = c, display = display)
         if (codeSystemRef != null) {
             val enteredLibrary = state!!.enterLibrary(codeSystemRef.libraryName)
             try {
                 val codeSystemDef =
                     Libraries.resolveCodeSystemRef(codeSystemRef.name, state.getCurrentLibrary()!!)
-                code.system = codeSystemDef.id
-                code.version = codeSystemDef.version
+                code = code.withSystem(codeSystemDef.id).withVersion(codeSystemDef.version)
             } finally {
                 state.exitLibrary(enteredLibrary)
             }

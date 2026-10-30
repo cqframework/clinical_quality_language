@@ -115,7 +115,7 @@ object SubtractEvaluator {
 
             if (left is DateTime) {
                 return DateTime(
-                    left.dateTime!!.minus(
+                    left.dateTime.minus(
                         convertedValueToSubtract,
                         valueToSubtractPrecision.toChronoUnit(),
                     ),
@@ -123,7 +123,7 @@ object SubtractEvaluator {
                 )
             } else if (left is Date) {
                 return Date(
-                        left.date!!.minus(
+                        left.date.minus(
                             convertedValueToSubtract,
                             valueToSubtractPrecision.toChronoUnit(),
                         )

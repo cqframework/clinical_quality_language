@@ -51,7 +51,7 @@ object IntervalEvaluator {
             lowClosed ?: true,
             high,
             highClosed ?: true,
-            state,
+            state = state,
         )
     }
 }
