@@ -102,7 +102,7 @@ object MultiplyEvaluator {
                 true,
                 multiply(left.end, right.end, state),
                 true,
-                state,
+                state = state,
             )
         }
 

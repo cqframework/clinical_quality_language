@@ -109,7 +109,7 @@ object DivideEvaluator {
                 true,
                 divide(left.end, right.end, state),
                 true,
-                state,
+                state = state,
             )
         }
 

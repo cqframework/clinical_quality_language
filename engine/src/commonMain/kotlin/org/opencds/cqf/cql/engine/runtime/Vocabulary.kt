@@ -3,10 +3,10 @@ package org.opencds.cqf.cql.engine.runtime
 import org.cqframework.cql.shared.JsOnlyExport
 
 @JsOnlyExport
-sealed class Vocabulary : StructuredValue(), NamedTypeValue {
-    var id: kotlin.String? = null
+sealed interface Vocabulary : StructuredValue, NamedTypeValue {
+    val id: kotlin.String?
 
-    var version: kotlin.String? = null
+    val version: kotlin.String?
 
-    var name: kotlin.String? = null
+    val name: kotlin.String?
 }

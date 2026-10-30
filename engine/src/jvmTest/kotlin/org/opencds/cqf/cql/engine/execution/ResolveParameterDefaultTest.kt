@@ -41,18 +41,18 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
         assertIs<DateTime>(interval.end)
 
         val start = interval.start as DateTime
-        assertEquals(2020, start.dateTime!!.year)
-        assertEquals(1, start.dateTime!!.monthValue)
-        assertEquals(1, start.dateTime!!.dayOfMonth)
-        assertEquals(0, start.dateTime!!.hour)
-        assertEquals(0, start.dateTime!!.minute)
+        assertEquals(2020, start.dateTime.year)
+        assertEquals(1, start.dateTime.monthValue)
+        assertEquals(1, start.dateTime.dayOfMonth)
+        assertEquals(0, start.dateTime.hour)
+        assertEquals(0, start.dateTime.minute)
 
         val end = interval.end as DateTime
-        assertEquals(2020, end.dateTime!!.year)
-        assertEquals(12, end.dateTime!!.monthValue)
-        assertEquals(31, end.dateTime!!.dayOfMonth)
-        assertEquals(23, end.dateTime!!.hour)
-        assertEquals(59, end.dateTime!!.minute)
+        assertEquals(2020, end.dateTime.year)
+        assertEquals(12, end.dateTime.monthValue)
+        assertEquals(31, end.dateTime.dayOfMonth)
+        assertEquals(23, end.dateTime.hour)
+        assertEquals(59, end.dateTime.minute)
     }
 
     /** Parameter declared without a default expression should return null. */
@@ -82,9 +82,9 @@ internal class ResolveParameterDefaultTest : CqlTestBase() {
         assertIs<DateTime>(result)
 
         val dateTime = result
-        assertEquals(2023, dateTime.dateTime!!.year)
-        assertEquals(6, dateTime.dateTime!!.monthValue)
-        assertEquals(15, dateTime.dateTime!!.dayOfMonth)
+        assertEquals(2023, dateTime.dateTime.year)
+        assertEquals(6, dateTime.dateTime.monthValue)
+        assertEquals(15, dateTime.dateTime.dayOfMonth)
     }
 
     /** Requesting a parameter name that does not exist in the library should throw. */

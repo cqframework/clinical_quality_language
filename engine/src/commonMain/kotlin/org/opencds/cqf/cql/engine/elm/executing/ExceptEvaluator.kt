@@ -125,7 +125,7 @@ object ExceptEvaluator {
                     )
                         PredecessorEvaluator.predecessor(rightStart)
                     else leftEnd
-                return Interval(leftStart, true, min, true, state)
+                return Interval(leftStart, true, min, true, state = state)
             } else if (
                 AndEvaluator.and(
                         GreaterEvaluator.greater(leftEnd, rightEnd, state),
@@ -144,7 +144,7 @@ object ExceptEvaluator {
                     )
                         SuccessorEvaluator.successor(rightEnd)
                     else leftStart
-                return Interval(max, true, leftEnd, true, state)
+                return Interval(max, true, leftEnd, true, state = state)
             }
 
             throw UndefinedResult(
