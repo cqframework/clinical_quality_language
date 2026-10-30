@@ -14,6 +14,8 @@ import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlLong
+import org.opencds.cqf.cql.engine.util.UnitOperation
+import org.opencds.cqf.cql.engine.util.UnitUtils
 
 /*
 *(left Integer, right Integer) Integer
@@ -31,7 +33,7 @@ For multiplication operations involving quantities, the resulting quantity will 
 In this example, the first result will have a unit of 'cm2', and the second result will have a unit of 'cm3'.
 If either argument is null, the result is null.
 */
-@Suppress("CyclomaticComplexMethod", "ReturnCount")
+@Suppress("CyclomaticComplexMethod", "ReturnCount", "LongMethod")
 object MultiplyEvaluator {
     @JvmStatic
     fun multiply(left: Value?, right: Value?, state: State?): Value? {
@@ -64,12 +66,24 @@ object MultiplyEvaluator {
                 resultUnit = leftUnit
             } else {
                 try {
-                    val ucumService = state?.environment?.libraryManager?.ucumService!!
-                    val result =
-                        ucumService.multiply(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
-                    unverifiedResultValue = result.first
-                    val rawResultUnit = result.second
-                    resultUnit = rawResultUnit.ifEmpty { "1" }
+                    val convertedUnits =
+                        UnitUtils.convertToMostGranularCommeasurableUnit(
+                            leftValue,
+                            leftUnit,
+                            rightValue,
+                            rightUnit,
+                            state!!,
+                        )
+                    unverifiedResultValue =
+                        convertedUnits.first.first.multiply(convertedUnits.second.first)
+                    val rawResultUnit =
+                        UnitUtils.combineUnits(
+                            convertedUnits.first.second,
+                            convertedUnits.second.second,
+                            UnitOperation.MULTIPLY,
+                            state,
+                        )
+                    resultUnit = rawResultUnit!!.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }
