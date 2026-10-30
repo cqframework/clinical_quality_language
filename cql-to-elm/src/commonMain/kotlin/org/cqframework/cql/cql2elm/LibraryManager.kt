@@ -13,6 +13,7 @@ import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.cqframework.cql.shared.JsOnlyExport
 import org.hl7.cql.model.NamespaceManager
+import org.hl7.cql_annotations.r1.CqlToElmInfo
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.FunctionRef
 import org.hl7.elm.r1.Library
@@ -378,6 +379,24 @@ constructor(
                     it.resultType = typeResolver.resolveTypeSpecifier(it.resultTypeSpecifier!!)
                 }
 
+                // Resolve the operand types, from which the function's signature is built
+                if (it is FunctionDef) {
+                    for (operand in it.operand) {
+                        val typeSpecifier =
+                            operand.operandTypeSpecifier ?: operand.resultTypeSpecifier
+                        if (operand.resultTypeName != null) {
+                            operand.resultType =
+                                typeResolver.resolveTypeName(operand.resultTypeName!!)
+                        } else if (typeSpecifier != null) {
+                            operand.resultType = typeResolver.resolveTypeSpecifier(typeSpecifier)
+                        }
+                        require(operand.resultType != null) {
+                            "Operand ${operand.name} of function ${it.name} in library " +
+                                "${library.identifier?.id} does not have a type."
+                        }
+                    }
+                }
+
                 compiledLibrary.add(it)
             }
 
@@ -404,7 +423,22 @@ constructor(
     }
 
     private fun isSignatureCompatible(library: Library): Boolean {
-        return !hasOverloadedFunctions(library) || hasSignature(library)
+        return !hasOverloadedFunctions(library) ||
+            hasOverloadsSignatureLevel(library) ||
+            hasSignature(library)
+    }
+
+    /**
+     * Returns true if the library was compiled with a signature level that includes signatures in
+     * every invocation of an overloaded function (Overloads or All).
+     */
+    private fun hasOverloadsSignatureLevel(library: Library): Boolean {
+        val signatureLevel =
+            library.annotation.filterIsInstance<CqlToElmInfo>().firstNotNullOfOrNull {
+                it.signatureLevel
+            }
+        return signatureLevel == LibraryBuilder.SignatureLevel.Overloads.name ||
+            signatureLevel == LibraryBuilder.SignatureLevel.All.name
     }
 
     @Suppress("ReturnCount")
