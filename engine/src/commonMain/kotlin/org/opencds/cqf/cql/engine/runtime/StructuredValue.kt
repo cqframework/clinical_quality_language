@@ -4,8 +4,8 @@ import org.cqframework.cql.shared.JsOnlyExport
 
 /** Represents a structured CQL value. */
 @JsOnlyExport
-sealed class StructuredValue : Value {
-    abstract val elements: MutableMap<kotlin.String, Value?>
+sealed interface StructuredValue : Value {
+    val elements: Map<kotlin.String, Value?>
 
     /** Returns true if the structured value has an element with the given name, false otherwise. */
     fun has(elementName: kotlin.String): kotlin.Boolean {
@@ -22,27 +22,7 @@ sealed class StructuredValue : Value {
         return elements[elementName]
     }
 
-    override fun equals(other: Any?): kotlin.Boolean {
-        if (this === other) return true
-        if (other !is StructuredValue) return false
-
-        if (this is NamedTypeValue) {
-            if (other !is NamedTypeValue) return false
-            if (type != other.type) return false
-        }
-
-        if (elements != other.elements) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = if (this is NamedTypeValue) type.hashCode() else 0
-        result = 31 * result + elements.hashCode()
-        return result
-    }
-
-    override fun toString(): kotlin.String {
+    fun toStructuredValueString(): kotlin.String {
         if (elements.isEmpty()) {
             return "$typeAsString { : }"
         }

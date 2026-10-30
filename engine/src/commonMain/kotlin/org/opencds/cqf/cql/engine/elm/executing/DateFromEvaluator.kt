@@ -21,19 +21,18 @@ object DateFromEvaluator {
         }
 
         if (operand is DateTime) {
-            if (operand.precision!!.toDateTimeIndex() < 1) {
-                return Date(operand.dateTime!!.getYear(), 1, 1).withPrecision(Precision.YEAR)
-                    as Date
-            } else if (operand.precision!!.toDateTimeIndex() < 2) {
-                return Date(operand.dateTime!!.getYear(), operand.dateTime!!.getMonthValue(), 1)
-                    .withPrecision(Precision.MONTH) as Date
+            if (operand.precision.toDateTimeIndex() < 1) {
+                return Date(operand.dateTime.getYear(), 1, 1).withPrecision(Precision.YEAR)
+            } else if (operand.precision.toDateTimeIndex() < 2) {
+                return Date(operand.dateTime.getYear(), operand.dateTime.getMonthValue(), 1)
+                    .withPrecision(Precision.MONTH)
             } else {
                 return Date(
-                        operand.dateTime!!.getYear(),
-                        operand.dateTime!!.getMonthValue(),
-                        operand.dateTime!!.getDayOfMonth(),
+                        operand.dateTime.getYear(),
+                        operand.dateTime.getMonthValue(),
+                        operand.dateTime.getDayOfMonth(),
                     )
-                    .withPrecision(Precision.DAY) as Date
+                    .withPrecision(Precision.DAY)
             }
         }
 

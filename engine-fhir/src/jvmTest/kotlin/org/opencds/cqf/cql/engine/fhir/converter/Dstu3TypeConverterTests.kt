@@ -307,17 +307,19 @@ internal class Dstu3TypeConverterTests {
 
         val expected = Ratio().setNumerator(expectedNumerator).setDenominator(expectedDenominator)
 
-        val testData = org.opencds.cqf.cql.engine.runtime.Ratio()
-        testData.numerator =
-            org.opencds.cqf.cql.engine.runtime
-                .Quantity()
-                .withValue(BigDecimal.valueOf(1.0))
-                .withUnit("ml")
-        testData.denominator =
-            org.opencds.cqf.cql.engine.runtime
-                .Quantity()
-                .withValue(BigDecimal.valueOf(2.0))
-                .withUnit("ml")
+        val testData =
+            org.opencds.cqf.cql.engine.runtime.Ratio(
+                numerator =
+                    org.opencds.cqf.cql.engine.runtime
+                        .Quantity()
+                        .withValue(BigDecimal.valueOf(1.0))
+                        .withUnit("ml"),
+                denominator =
+                    org.opencds.cqf.cql.engine.runtime
+                        .Quantity()
+                        .withValue(BigDecimal.valueOf(2.0))
+                        .withUnit("ml"),
+            )
 
         val actual = typeConverter.toFhirRatio(testData) as Ratio?
 
@@ -610,8 +612,7 @@ internal class Dstu3TypeConverterTests {
         var actual = typeConverter.toFhirTuple(null) as Parameters.ParametersParameterComponent?
         Assertions.assertNull(actual)
 
-        val tuple = Tuple()
-        actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
+        actual = typeConverter.toFhirTuple(Tuple()) as Parameters.ParametersParameterComponent
         Assertions.assertNotNull(actual)
         Assertions.assertEquals(
             FhirTypeConverter.EMPTY_TUPLE_EXT_URL,
@@ -623,11 +624,16 @@ internal class Dstu3TypeConverterTests {
             ints.add(i.toCqlInteger())
         }
 
-        tuple.elements["V"] = ints.toCqlList()
-        tuple.elements["W"] = null
-        tuple.elements["X"] = 5.toCqlInteger()
-        //        tuple.elements["Y"] = Encounter().setId("123")
-        tuple.elements["Z"] = List.EMPTY_LIST
+        val tuple =
+            Tuple(
+                mapOf(
+                    "V" to ints.toCqlList(),
+                    "W" to null,
+                    "X" to 5.toCqlInteger(),
+                    // "Y" to Encounter().setId("123"),
+                    "Z" to List.EMPTY_LIST,
+                )
+            )
 
         actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
         val first = actual
@@ -658,23 +664,20 @@ internal class Dstu3TypeConverterTests {
 
     @Test
     fun complexTupleToFhirTuple() {
-        val innerTuple = Tuple()
-        innerTuple.elements["X"] = 1.toCqlInteger()
-        innerTuple.elements["Y"] = 2.toCqlInteger()
-        innerTuple.elements["Z"] = null
-        val outerTuple = Tuple()
-        outerTuple.elements["A"] = innerTuple
-        val tupleList = ArrayList<Tuple?>()
-        for (i in 0..2) {
-            val elementTuple = Tuple()
-            elementTuple.elements["P"] = i.toCqlInteger()
-            elementTuple.elements["Q"] = (i + 1).toCqlInteger()
-            tupleList.add(elementTuple)
-        }
-        outerTuple.elements["B"] = tupleList.toCqlList()
+        val tuple =
+            Tuple(
+                mapOf(
+                    "A" to Tuple(mapOf("X" to Integer.ONE, "Y" to 2.toCqlInteger(), "Z" to null)),
+                    "B" to
+                        (0..2)
+                            .map { i ->
+                                Tuple(mapOf("P" to i.toCqlInteger(), "Q" to (i + 1).toCqlInteger()))
+                            }
+                            .toCqlList(),
+                )
+            )
 
-        val actual =
-            typeConverter.toFhirTuple(outerTuple) as Parameters.ParametersParameterComponent
+        val actual = typeConverter.toFhirTuple(tuple) as Parameters.ParametersParameterComponent
         Assertions.assertEquals(4, actual.getPart().size)
 
         val a: MutableList<Parameters.ParametersParameterComponent> = getPartsByName(actual, "A")
@@ -909,17 +912,19 @@ internal class Dstu3TypeConverterTests {
 
     @Test
     fun ratioToCqlType() {
-        val expected = org.opencds.cqf.cql.engine.runtime.Ratio()
-        expected.numerator =
-            org.opencds.cqf.cql.engine.runtime
-                .Quantity()
-                .withValue(BigDecimal.valueOf(1.0))
-                .withUnit("ml")
-        expected.denominator =
-            org.opencds.cqf.cql.engine.runtime
-                .Quantity()
-                .withValue(BigDecimal.valueOf(2.0))
-                .withUnit("ml")
+        val expected =
+            org.opencds.cqf.cql.engine.runtime.Ratio(
+                numerator =
+                    org.opencds.cqf.cql.engine.runtime
+                        .Quantity()
+                        .withValue(BigDecimal.valueOf(1.0))
+                        .withUnit("ml"),
+                denominator =
+                    org.opencds.cqf.cql.engine.runtime
+                        .Quantity()
+                        .withValue(BigDecimal.valueOf(2.0))
+                        .withUnit("ml"),
+            )
 
         val testNumerator =
             Quantity()

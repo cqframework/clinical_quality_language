@@ -47,9 +47,9 @@ object ToDateEvaluator {
         }
 
         if (operand is DateTime) {
-            return Date(operand.dateTime!!.toLocalDate())
+            return Date(operand.dateTime.toLocalDate())
                 .withPrecision(
-                    if (operand.precision!!.toDateTimeIndex() > 2) Precision.DAY
+                    if (operand.precision.toDateTimeIndex() > 2) Precision.DAY
                     else operand.precision
                 )
         }

@@ -60,23 +60,23 @@ object DateTimeComponentFromEvaluator {
         if (operand is Date) {
             val date = operand
 
-            if (p.toDateIndex() > date.precision!!.toDateIndex()) {
+            if (p.toDateIndex() > date.precision.toDateIndex()) {
                 return null
             }
 
-            return date.date!!.get(p.toChronoField()).toCqlInteger()
+            return date.date.get(p.toChronoField()).toCqlInteger()
         } else if (operand is DateTime) {
             val dateTime = operand
 
-            if (p.toDateTimeIndex() > dateTime.precision!!.toDateTimeIndex()) {
+            if (p.toDateTimeIndex() > dateTime.precision.toDateTimeIndex()) {
                 return null
             }
 
-            return dateTime.dateTime!!.get(p.toChronoField()).toCqlInteger()
+            return dateTime.dateTime.get(p.toChronoField()).toCqlInteger()
         } else if (operand is Time) {
             val time = operand
 
-            if (p.toTimeIndex() > time.precision!!.toTimeIndex()) {
+            if (p.toTimeIndex() > time.precision.toTimeIndex()) {
                 return null
             }
 
