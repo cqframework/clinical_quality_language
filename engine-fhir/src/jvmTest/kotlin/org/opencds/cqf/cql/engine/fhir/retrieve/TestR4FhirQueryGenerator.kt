@@ -47,14 +47,14 @@ internal class TestR4FhirQueryGenerator : R4FhirTest() {
             R4FhirQueryGenerator(searchParameterResolver, terminologyProvider, modelResolver)
         this.evaluationOffsetDateTime =
             OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 0, ZoneOffset.ofHours(-7))
-        this.evaluationDateTime = DateTime(evaluationOffsetDateTime)
+        this.evaluationDateTime = DateTime(evaluationOffsetDateTime!!)
         this.contextValues = HashMap<String, String?>()
         this.parameters = HashMap<String, Value?>()
     }
 
     @Test
     fun test() {
-        val evaluationDateTime = DateTime(evaluationOffsetDateTime)
+        val evaluationDateTime = DateTime(evaluationOffsetDateTime!!)
         val evaluationDateTimeAsLocal =
             OffsetDateTime.ofInstant(
                 evaluationOffsetDateTime!!.toInstant(),

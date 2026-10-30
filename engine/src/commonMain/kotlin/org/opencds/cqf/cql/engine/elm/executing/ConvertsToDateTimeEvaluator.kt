@@ -48,9 +48,9 @@ object ConvertsToDateTimeEvaluator {
             try {
                 DateTime(
                     TemporalHelper.zoneToOffset(offset!!),
-                    argument.date!!.getYear(),
-                    argument.date!!.getMonthValue(),
-                    argument.date!!.getDayOfMonth(),
+                    argument.date.getYear(),
+                    argument.date.getMonthValue(),
+                    argument.date.getDayOfMonth(),
                     0,
                     0,
                     0,

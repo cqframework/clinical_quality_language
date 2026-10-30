@@ -67,15 +67,15 @@ object MeetsEvaluator {
             if (left is DateTime && right is DateTime) {
                 val dt =
                     DateTime(
-                        left.dateTime!!.plus(1, Precision.fromString(precision).toChronoUnit()),
-                        (left as BaseTemporal).precision!!,
+                        left.dateTime.plus(1, Precision.fromString(precision).toChronoUnit()),
+                        (left as BaseTemporal).precision,
                     )
                 return SameAsEvaluator.sameAs(dt, right, precision, state)
             } else if (left is Time) {
                 val t =
                     Time(
                         left.time.plus(1, Precision.fromString(precision).toChronoUnit()),
-                        (left as BaseTemporal).precision!!,
+                        (left as BaseTemporal).precision,
                     )
                 return SameAsEvaluator.sameAs(t, right, precision, state)
             }
