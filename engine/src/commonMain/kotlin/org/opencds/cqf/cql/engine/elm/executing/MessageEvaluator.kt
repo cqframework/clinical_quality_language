@@ -35,6 +35,7 @@ object MessageEvaluator {
         }
 
         if (condition != null && condition.value) {
+            state!!.hasUnmemoizableEffect = true
             val messageBuilder = StringBuilder()
             if (code != null) {
                 messageBuilder.append(code).append(": ")
@@ -42,12 +43,12 @@ object MessageEvaluator {
             when (severity.lowercase()) {
                 "message" -> {
                     val finalMessage = messageBuilder.append(message).toString()
-                    state!!.logDebugMessage(sourceLocator, finalMessage)
+                    state.logDebugMessage(sourceLocator, finalMessage)
                     logger.info { finalMessage }
                 }
                 "warning" -> {
                     val finalMessage = messageBuilder.append(message).toString()
-                    state!!.logDebugWarning(sourceLocator, finalMessage)
+                    state.logDebugWarning(sourceLocator, finalMessage)
                     logger.warn { finalMessage }
                 }
                 "trace" -> {
@@ -57,7 +58,7 @@ object MessageEvaluator {
                             .appendLine()
                             .append(stripPHI(state, source))
                             .toString()
-                    state!!.logDebugTrace(sourceLocator, finalMessage)
+                    state.logDebugTrace(sourceLocator, finalMessage)
                     logger.debug { finalMessage }
                 }
                 "error" -> {

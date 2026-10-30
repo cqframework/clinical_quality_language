@@ -98,7 +98,7 @@ open class Dstu3FhirModelResolver(fhirContext: FhirContext) :
     }
 
     override fun setCalendarConstant(target: BaseDateTimeType, value: BaseTemporal) {
-        target.precision = toTemporalPrecisionEnum(value.precision!!)
+        target.precision = toTemporalPrecisionEnum(value.precision)
     }
 
     override fun timeToString(time: TimeType): String {

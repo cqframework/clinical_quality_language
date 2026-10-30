@@ -85,22 +85,22 @@ object SuccessorEvaluator {
             }
             val quantity = value
             return Quantity()
-                .withValue((successor(quantity.value?.toCqlDecimal()) as Decimal).value)
+                .withValue((successor(quantity.value.toCqlDecimal()) as Decimal).value)
                 .withUnit(quantity.unit)
         } else if (value is Date) {
-            val next = value.date!!.plus(1, value.precision!!.toChronoUnit())
+            val next = value.date.plus(1, value.precision.toChronoUnit())
             // If incrementing overflows the representable year range, the result is null.
-            return if (next.getYear() > MAX_YEAR) null else Date(next, value.precision!!)
+            return if (next.getYear() > MAX_YEAR) null else Date(next, value.precision)
         } else if (value is DateTime) {
-            val next = value.dateTime!!.plus(1, value.precision!!.toChronoUnit())
+            val next = value.dateTime.plus(1, value.precision.toChronoUnit())
             // If incrementing overflows the representable year range, the result is null.
-            return if (next.getYear() > MAX_YEAR) null else DateTime(next, value.precision!!)
+            return if (next.getYear() > MAX_YEAR) null else DateTime(next, value.precision)
         } else if (value is Time) {
             val t = value
             // If the value is already the maximum for its precision, incrementing overflows the
             // representable range and the result is null.
             val overflow =
-                when (t.precision!!) {
+                when (t.precision) {
                     Precision.HOUR -> t.time.getHour() == 23
                     Precision.MINUTE -> t.time.getHour() == 23 && t.time.getMinute() == 59
                     Precision.SECOND ->
@@ -118,7 +118,7 @@ object SuccessorEvaluator {
                     Precision.YEAR -> false
                 }
             return if (overflow) null
-            else Time(t.time.plus(1, t.precision!!.toChronoUnit()), t.precision!!)
+            else Time(t.time.plus(1, t.precision.toChronoUnit()), t.precision)
         }
 
         throw InvalidOperatorArgument(
@@ -139,7 +139,7 @@ object SuccessorEvaluator {
         if (value is Decimal) {
             if (quantity!!.value!!.scale() > 0) {
                 return checkMaxDecimal(
-                        value.value.add(ONE.scaleByPowerOfTen(-quantity.value!!.scale()))
+                        value.value.add(ONE.scaleByPowerOfTen(-quantity.value.scale()))
                     )
                     .toCqlDecimal()
             }

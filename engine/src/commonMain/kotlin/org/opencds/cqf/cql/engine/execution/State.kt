@@ -10,6 +10,7 @@ import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmOverloads
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 import org.hl7.elm.r1.AliasRef
 import org.hl7.elm.r1.Current
 import org.hl7.elm.r1.Element
@@ -29,6 +30,7 @@ import org.opencds.cqf.cql.engine.debug.DebugAction
 import org.opencds.cqf.cql.engine.debug.DebugMap
 import org.opencds.cqf.cql.engine.debug.DebugResult
 import org.opencds.cqf.cql.engine.debug.SourceLocator
+import org.opencds.cqf.cql.engine.elm.executing.HoistedExpression
 import org.opencds.cqf.cql.engine.elm.executing.PropertyEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
 import org.opencds.cqf.cql.engine.exception.Severity
@@ -39,6 +41,7 @@ import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.util.IdentitySet
 import org.opencds.cqf.cql.engine.util.ZonedDateTime
+import org.opencds.cqf.cql.engine.util.createIdentityHashMap
 import org.opencds.cqf.cql.engine.util.zonedDateTimeNow
 
 /** State represents the internal state of the CqlEngine. */
@@ -142,7 +145,83 @@ constructor(
 
     private val evaluatedResourceStack = ArrayDeque<MutableSet<Value?>>()
 
+    /**
+     * Initially populated with values from [EvaluationParams.parameters], then with library
+     * defaults during evaluation.
+     *
+     * @see org.opencds.cqf.cql.engine.elm.executing.ParameterRefEvaluator
+     */
     val parameters = mutableMapOf<kotlin.String, Value?>()
+
+    /**
+     * The parameter values set by the caller, as opposed to defaults computed into [parameters].
+     */
+    private val inputParameters = mutableMapOf<kotlin.String, Value?>()
+
+    private var evaluationInputsSnapshot: EvaluationInputs? = null
+
+    private var isEvaluationInputsSnapshotStale = true
+
+    /** The current parameter values and evaluation date/time, for function result keys. */
+    val evaluationInputs: EvaluationInputs
+        get() {
+            if (isEvaluationInputsSnapshotStale) {
+                refreshEvaluationInputs()
+            }
+            return evaluationInputsSnapshot!!
+        }
+
+    private fun refreshEvaluationInputs() {
+        val inputs = EvaluationInputs(inputParameters.toMap(), evaluationDateTime)
+        if (inputs != evaluationInputsSnapshot) {
+            // Cached expression results and computed parameter defaults (which may use Now())
+            // were evaluated with other inputs
+            clearCacheExpressions()
+            parameters.keys.retainAll(inputParameters.keys)
+            evaluationInputsSnapshot = inputs
+        }
+        isEvaluationInputsSnapshotStale = false
+    }
+
+    /**
+     * Set when evaluation has an effect, such as logging a message, that would not be repeated if
+     * the enclosing function call were memoized.
+     */
+    var hasUnmemoizableEffect: kotlin.Boolean = false
+
+    /** Expressions whose values the current query evaluation computes ahead, by reference. */
+    internal var hoistedExpressions: MutableMap<Expression, HoistedExpression>? = null
+        private set
+
+    internal fun hoist(hoisted: HoistedExpression) {
+        val hoistedExpressions = this.hoistedExpressions ?: createIdentityHashMap()
+        this.hoistedExpressions = hoistedExpressions
+        hoistedExpressions[hoisted.expression] = hoisted
+    }
+
+    internal fun unhoist(hoisted: HoistedExpression) {
+        val hoistedExpressions = this.hoistedExpressions ?: return
+        hoistedExpressions.remove(hoisted.expression)
+        // Keeps the check in EvaluationVisitor.visitExpression to a null test outside queries
+        if (hoistedExpressions.isEmpty()) {
+            this.hoistedExpressions = null
+        }
+    }
+
+    val isQueryOptimizationEnabled: kotlin.Boolean
+        get() =
+            engineOptions.contains(Options.EnableQueryOptimization) &&
+                breakpointHandler == null &&
+                !isTracingEnabled &&
+                !engineOptions.contains(Options.EnableCoverageCollection)
+
+    val isFunctionMemoizationEnabled: kotlin.Boolean
+        get() =
+            engineOptions.contains(Options.EnableFunctionMemoization) &&
+                breakpointHandler == null &&
+                !isTracingEnabled &&
+                !engineOptions.contains(Options.EnableCoverageCollection)
+
     var contextValues = mutableMapOf<kotlin.String, kotlin.String?>()
 
     var evaluationZonedDateTime: ZonedDateTime? = null
@@ -174,14 +253,13 @@ constructor(
         return traceExpressionFilter?.invoke(elm) ?: defaultTraceFilter(elm)
     }
 
-    @OptIn(ExperimentalTime::class)
     fun pushSubExpressionFrame(expression: Expression) {
         val frame =
             ActivationFrame(
                 expression,
                 this.getCurrentLibrary()?.identifier,
                 this.currentContext.firstOrNull(),
-                Clock.System.now().toEpochMilliseconds(),
+                frameTimeMillis(),
             )
         currentTraceParent.innerActivationFrames.add(frame)
         subExpressionStack.addFirst(frame)
@@ -191,10 +269,9 @@ constructor(
         subExpressionStack.first().result = result
     }
 
-    @OptIn(ExperimentalTime::class)
     fun popSubExpressionFrame() {
         val frame = subExpressionStack.removeFirst()
-        frame.endTime = Clock.System.now().toEpochMilliseconds()
+        frame.endTime = frameTimeMillis()
     }
 
     fun getCurrentLibrary(): Library? {
@@ -216,6 +293,8 @@ constructor(
                 if (libraryName != null) "${getCurrentLibrary()!!.identifier!!.id}.${name}"
                 else name
             parameters[fullName] = value
+            inputParameters[fullName] = value
+            isEvaluationInputsSnapshotStale = true
         } finally {
             exitLibrary(enteredLibrary)
         }
@@ -290,6 +369,7 @@ constructor(
     fun setEvaluationDateTime(evaluationZonedDateTime: ZonedDateTime) {
         this.evaluationZonedDateTime = evaluationZonedDateTime
         this.evaluationDateTime = DateTime(evaluationZonedDateTime.toOffsetDateTime())
+        isEvaluationInputsSnapshotStale = true
     }
 
     fun init(library: Library?) {
@@ -342,6 +422,7 @@ constructor(
         // "root" activation frame. This method simply resets the
         // start time of the root activation frame.
         check(this.stack.isEmpty())
+        refreshEvaluationInputs()
         pushActivationFrame(null)
     }
 
@@ -385,12 +466,11 @@ constructor(
         return result
     }
 
-    @OptIn(ExperimentalTime::class)
     @JvmOverloads
     fun pushActivationFrame(
         element: Element?,
         contextName: String?,
-        startTime: Long = Clock.System.now().toEpochMilliseconds(),
+        startTime: Long = frameTimeMillis(),
     ) {
         val newActivationFrame =
             ActivationFrame(element, this.getCurrentLibrary()?.identifier, contextName, startTime)
@@ -414,7 +494,6 @@ constructor(
         pushActivationFrame(element, contextName)
     }
 
-    @OptIn(ExperimentalTime::class)
     fun popActivationFrame() {
         val topActivationFrame = this.stack.firstOrNull()
 
@@ -422,18 +501,22 @@ constructor(
             throw RuntimeException("Stack underflow")
         }
         check(topActivationFrame.endTime == 0L)
-        // If a profile is being built (controlled via an engine
-        // option), register the invocation chain that terminates at
-        // topActivationFrame.
-        if (this.debugResult != null) {
-            val profile = this.debugResult!!.profile
-            if (profile != null) {
-                topActivationFrame.endTime = Clock.System.now().toEpochMilliseconds()
-                profile.leave(topActivationFrame)
+        try {
+            // If a profile is being built (controlled via an engine
+            // option), register the invocation chain that terminates at
+            // topActivationFrame.
+            if (this.debugResult != null) {
+                val profile = this.debugResult!!.profile
+                if (profile != null) {
+                    topActivationFrame.endTime = frameTimeMillis()
+                    profile.leave(topActivationFrame)
+                }
             }
+        } finally {
+            // Leave the frame even if profiling fails, so that the
+            // enclosing frames can still be popped
+            this.stack.removeFirst()
         }
-
-        this.stack.removeFirst()
     }
 
     /** Stores the intermediate result in the activation frame. */
@@ -637,6 +720,17 @@ constructor(
     }
 
     companion object {
+        @OptIn(ExperimentalTime::class)
+        private val frameClockOrigin = Clock.System.now().toEpochMilliseconds()
+        private val frameClockMark = TimeSource.Monotonic.markNow()
+
+        /**
+         * The current time in epoch milliseconds, for timing activation frames. It advances with a
+         * monotonic clock, so frame durations are never negative when the system clock steps back.
+         */
+        internal fun frameTimeMillis(): Long =
+            frameClockOrigin + frameClockMark.elapsedNow().inWholeMilliseconds
+
         /**
          * Default filter for sub-expression tracing. Skips trivial terminal nodes whose values are
          * self-evident from context.
