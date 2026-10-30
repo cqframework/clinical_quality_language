@@ -22,78 +22,76 @@ object InstanceEvaluator {
         state: State?,
         visitor: ElmLibraryVisitor<Value?, State?>,
     ): Value? {
-        val `object` = state!!.environment.createInstance(instance!!.classType!!)
+        var `object` = state!!.environment.createInstance(instance!!.classType!!)
         for (element in instance.element) {
             val value = visitor.visitExpression(element.value!!, state)
-            setValue(`object`, element.name!!, value)
+            `object` = withValue(`object`, element.name!!, value)
         }
 
         return `object`
     }
 
-    fun setValue(target: Value?, path: kotlin.String, value: Value?) {
-        if (target == null) {
-            return
-        }
-
-        when (target) {
+    fun withValue(target: Value?, path: kotlin.String, value: Value?): Value? {
+        return when (target) {
+            null -> null
             is Quantity -> {
                 when (path) {
-                    "value" -> target.value = (value as Decimal?)?.value
-                    "unit" -> target.unit = (value as String?)?.value
+                    "value" -> target.withValue((value as Decimal?)?.value)
+                    "unit" -> target.withUnit((value as String?)?.value)
                     else -> throw IllegalArgumentException("Could not set $path on Quantity.")
                 }
             }
             is Ratio -> {
                 when (path) {
-                    "numerator" -> target.numerator = value as Quantity?
-                    "denominator" -> target.denominator = value as Quantity?
+                    "numerator" -> target.withNumerator(value as Quantity?)
+                    "denominator" -> target.withDenominator(value as Quantity?)
                     else -> throw IllegalArgumentException("Could not set $path on Ratio.")
                 }
             }
             is Code -> {
                 when (path) {
-                    "code" -> target.code = (value as String?)?.value
-                    "display" -> target.display = (value as String?)?.value
-                    "system" -> target.system = (value as String?)?.value
-                    "version" -> target.version = (value as String?)?.value
+                    "code" -> target.withCode((value as String?)?.value)
+                    "display" -> target.withDisplay((value as String?)?.value)
+                    "system" -> target.withSystem((value as String?)?.value)
+                    "version" -> target.withVersion((value as String?)?.value)
                     else -> throw IllegalArgumentException("Could not set $path on Code.")
                 }
             }
             is Concept -> {
                 when (path) {
-                    "display" -> target.display = (value as String?)?.value
-                    "codes" ->
-                        target.codes = (value as List?)?.value?.map { it as Code? }?.toMutableList()
+                    "display" -> target.withDisplay((value as String?)?.value)
+                    "codes" -> target.withCodes((value as List?)?.value?.map { it as Code? })
                     else -> throw IllegalArgumentException("Could not set $path on Concept.")
                 }
             }
             is CodeSystem -> {
                 when (path) {
-                    "id" -> target.id = (value as String?)?.value
-                    "version" -> target.version = (value as String?)?.value
-                    "name" -> target.name = (value as String?)?.value
+                    "id" -> target.withId((value as String?)?.value)
+                    "version" -> target.withVersion((value as String?)?.value)
+                    "name" -> target.withName((value as String?)?.value)
                     else -> throw IllegalArgumentException("Could not set $path on CodeSystem.")
                 }
             }
             is ValueSet -> {
                 when (path) {
-                    "id" -> target.id = (value as String?)?.value
-                    "version" -> target.version = (value as String?)?.value
-                    "name" -> target.name = (value as String?)?.value
+                    "id" -> target.withId((value as String?)?.value)
+                    "version" -> target.withVersion((value as String?)?.value)
+                    "name" -> target.withName((value as String?)?.value)
                     "codesystems" ->
-                        target.setCodeSystems((value as List?)?.value?.map { it as CodeSystem? })
+                        target.withCodeSystems(
+                            (value as List?)?.value?.filterIsInstance<CodeSystem>()
+                        )
                     else -> throw IllegalArgumentException("Could not set $path on ValueSet.")
                 }
             }
             is Interval -> {
                 when (path) {
-                    "low" -> target.low = value
-                    "high" -> target.high = value
+                    "low" -> target.withLow(value)
+                    "high" -> target.withHigh(value)
                     else -> throw IllegalArgumentException("Could not set $path on $target.")
                 }
             }
-            is ClassInstance -> target.elements[path] = value
+            is ClassInstance -> ClassInstance(target.type, target.elements + (path to value))
             else -> throw IllegalArgumentException("Could not set $path on $target.")
         }
     }

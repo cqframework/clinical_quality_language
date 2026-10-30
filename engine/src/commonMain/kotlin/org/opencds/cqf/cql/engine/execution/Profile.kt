@@ -248,10 +248,14 @@ class Profile
      */
     fun leave(frame: ActivationFrame) {
         val topNode = this.stack.first()
-        check(topNode.expression === frame.element)
-        check(topNode.context == frame.contextName)
-        topNode.addInvocation(frame.startTime, frame.endTime, frame.isCached)
-        this.stack.removeFirst()
+        try {
+            check(topNode.expression === frame.element)
+            check(topNode.context == frame.contextName)
+            topNode.addInvocation(frame.startTime, frame.endTime, frame.isCached)
+        } finally {
+            // Stay in step with the engine stack, which leaves the frame even if this fails
+            this.stack.removeFirst()
+        }
     }
 
     /**

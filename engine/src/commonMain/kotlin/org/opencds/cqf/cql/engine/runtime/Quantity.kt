@@ -6,29 +6,24 @@ import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.JsOnlyExport
 
 @JsOnlyExport
-class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
+class Quantity(
+    val value: BigDecimal? = BigDecimal("0.0"),
+    val unit: kotlin.String? = DEFAULT_UNIT,
+) : StructuredValue, NamedTypeValue, Comparable<Quantity> {
     override val type = quantityTypeName
 
-    override val elements: MutableMap<kotlin.String, Value?>
-        get() = mutableMapOf("value" to value?.toCqlDecimal(), "unit" to unit?.toCqlString())
-
-    var value: BigDecimal? = BigDecimal("0.0")
+    override val elements = mapOf("value" to value?.toCqlDecimal(), "unit" to unit?.toCqlString())
 
     fun withValue(value: BigDecimal?): Quantity {
-        this.value = value
-        return this
+        return Quantity(value, unit)
     }
 
-    var unit: kotlin.String? = DEFAULT_UNIT
-
     fun withUnit(unit: kotlin.String?): Quantity {
-        this.unit = unit
-        return this
+        return Quantity(value, unit)
     }
 
     fun withDefaultUnit(): Quantity {
-        this.unit = DEFAULT_UNIT
-        return this
+        return Quantity(value, DEFAULT_UNIT)
     }
 
     override fun compareTo(other: Quantity): Int {
@@ -44,6 +39,13 @@ class Quantity : StructuredValue(), NamedTypeValue, Comparable<Quantity> {
         }
         return null
     }
+
+    private val hash: Int by lazy { listOf(value, unit).hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Quantity && value == other.value && unit == other.unit)
 
     override fun toString(): kotlin.String {
         return this.value?.toPlainString() + " " + this.unit?.let { "'${escapeCql(it)}'" }

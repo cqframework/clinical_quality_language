@@ -32,30 +32,13 @@ class ToCvlTest {
 
     @Test
     fun systemStructuredValueToCvlTest() {
-        assertEquals(
-            "5.0 'g'",
-            Quantity()
-                .apply {
-                    value = BigDecimal("5.0")
-                    unit = "g"
-                }
-                .toString(),
-        )
+        assertEquals("5.0 'g'", Quantity(value = BigDecimal("5.0"), unit = "g").toString())
         assertEquals(
             "1.0 'mg':2.0 'mg'",
-            Ratio()
-                .apply {
-                    numerator =
-                        Quantity().apply {
-                            value = BigDecimal("1.0")
-                            unit = "mg"
-                        }
-                    denominator =
-                        Quantity().apply {
-                            value = BigDecimal("2.0")
-                            unit = "mg"
-                        }
-                }
+            Ratio(
+                    numerator = Quantity(value = BigDecimal("1.0"), unit = "mg"),
+                    denominator = Quantity(value = BigDecimal("2.0"), unit = "mg"),
+                )
                 .toString(),
         )
         assertEquals(
@@ -74,20 +57,19 @@ class ToCvlTest {
             }
         """
                 .trimIndent(),
-            ValueSet()
-                .apply {
-                    id = "exampleVsId"
-                    version = "1.0.0"
-                    name = "exampleVsName"
+            ValueSet(
+                    id = "exampleVsId",
+                    version = "1.0.0",
+                    name = "exampleVsName",
                     codeSystems =
                         mutableListOf(
-                            CodeSystem().apply {
-                                id = "exampleCsId"
-                                version = "2.0.0"
-                                name = "exampleCsName"
-                            }
-                        )
-                }
+                            CodeSystem(
+                                id = "exampleCsId",
+                                version = "2.0.0",
+                                name = "exampleCsName",
+                            )
+                        ),
+                )
                 .toString(),
         )
     }
@@ -171,16 +153,7 @@ class ToCvlTest {
         )
         assertEquals(
             "Interval[5.0 'g', null)",
-            Interval(
-                    Quantity().apply {
-                        value = BigDecimal("5.0")
-                        unit = "g"
-                    },
-                    true,
-                    null,
-                    false,
-                )
-                .toString(),
+            Interval(Quantity(value = BigDecimal("5.0"), unit = "g"), true, null, false).toString(),
         )
     }
 }

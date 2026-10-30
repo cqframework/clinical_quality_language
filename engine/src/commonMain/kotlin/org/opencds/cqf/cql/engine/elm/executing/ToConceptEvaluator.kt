@@ -17,22 +17,15 @@ If the argument is null, the result is null.
 object ToConceptEvaluator {
     @JvmStatic
     fun toConcept(operand: Value?): Concept? {
-        if (operand == null) {
-            return null
+        return when (operand) {
+            null -> null
+            is List -> Concept(codes = operand.map { code -> code as Code? })
+            is Code -> Concept(codes = listOf(operand))
+            else ->
+                throw InvalidOperatorArgument(
+                    "ToConcept(Code)",
+                    "ToConcept(${operand.typeAsString})",
+                )
         }
-
-        val result = Concept()
-
-        if (operand is List) {
-            for (code in operand) {
-                result.withCode(code as Code?)
-            }
-            return result
-        } else if (operand is Code) {
-            result.withCode(operand)
-            return result
-        }
-
-        throw InvalidOperatorArgument("ToConcept(Code)", "ToConcept(${operand.typeAsString})")
     }
 }
