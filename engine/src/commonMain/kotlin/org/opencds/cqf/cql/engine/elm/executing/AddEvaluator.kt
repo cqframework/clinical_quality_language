@@ -77,13 +77,11 @@ object AddEvaluator {
 
             if (left is DateTime) {
                 return DateTime(
-                    left.dateTime!!.plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
+                    left.dateTime.plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
                     precision,
                 )
             } else if (left is Date) {
-                return Date(
-                        left.date!!.plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit())
-                    )
+                return Date(left.date.plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()))
                     .withPrecision(precision)
             } else {
                 return Time(

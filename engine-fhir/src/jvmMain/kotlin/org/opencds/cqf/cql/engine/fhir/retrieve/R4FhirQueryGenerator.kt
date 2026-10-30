@@ -71,9 +71,7 @@ class R4FhirQueryGenerator(
                     val codeFilterValueCodings = codeFilterComponent.getCode()
                     for (coding in codeFilterValueCodings) {
                         if (coding.hasCode()) {
-                            val code = Code()
-                            code.system = coding.getSystem()
-                            code.code = coding.getCode()
+                            val code = Code(system = coding.getSystem(), code = coding.getCode())
                             codes.add(code)
                         }
                     }
