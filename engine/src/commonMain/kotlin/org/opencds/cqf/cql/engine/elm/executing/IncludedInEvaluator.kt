@@ -1,0 +1,164 @@
+package org.opencds.cqf.cql.engine.elm.executing
+
+import kotlin.jvm.JvmStatic
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
+import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.BaseTemporal
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.List
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlList
+
+/*
+*** NOTES FOR INTERVAL ***
+included in _precision_ (left Interval<T>, right Interval<T>) Boolean
+
+The included in operator for intervals returns true if the first interval is completely included in the second.
+    More precisely, if the starting point of the first interval is greater than or equal to the starting point
+    of the second interval, and the ending point of the first interval is less than or equal to the ending point
+    of the second interval.
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If either argument is null, the result is null.
+Note that during is a synonym for included in and may be used to invoke the same operation whenever included in may appear.
+
+*** NOTES FOR LIST ***
+included in(left List<T>, right list<T>) Boolean
+included in(left T, right list<T>) Boolean
+
+The included in operator for lists returns true if every element of the first list is in the second list using equality semantics.
+For the singleton overload, this operator returns true if the singleton is included in (i.e. in) the list.
+If either argument is null, the result is null.
+Note that the order of elements does not matter for the purposes of determining inclusion.
+*/
+object IncludedInEvaluator {
+    fun includedIn(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
+        if (left is Interval && right is Interval) {
+            return intervalIncludedIn(left, right, precision, state)
+        }
+        if (left is List && right is List) {
+            return listIncludedIn(left, right, state)
+        }
+
+        throw InvalidOperatorArgument(
+            "IncludedIn(Interval<T>, Interval<T>), IncludedIn(List<T>, List<T>) or IncludedIn(T, List<T>)",
+            "IncludedIn(${left!!.typeAsString}, ${right!!.typeAsString})",
+        )
+    }
+
+    fun intervalIncludedIn(
+        left: Interval?,
+        right: Interval?,
+        precision: String?,
+        state: State?,
+    ): Boolean? {
+        if (left == null || right == null) {
+            return null
+        }
+
+        val leftStart = left.start
+        val leftEnd = left.end
+        val rightStart = right.start
+        val rightEnd = right.end
+
+        val boundaryCheck =
+            AndEvaluator.and(
+                InEvaluator.`in`(leftStart, right, precision, state),
+                InEvaluator.`in`(leftEnd, right, precision, state),
+            )
+
+        if (boundaryCheck != null && boundaryCheck.value) {
+            return Boolean.TRUE
+        }
+
+        if (
+            leftStart is BaseTemporal ||
+                leftEnd is BaseTemporal ||
+                rightStart is BaseTemporal ||
+                rightEnd is BaseTemporal
+        ) {
+            if (
+                AnyTrueEvaluator.anyTrue(
+                        listOf(
+                                BeforeEvaluator.before(leftStart, rightStart, precision, state),
+                                AfterEvaluator.after(leftEnd, rightEnd, precision, state),
+                            )
+                            .toCqlList()
+                    )
+                    .value == true
+            ) {
+                return Boolean.FALSE
+            }
+            return AndEvaluator.and(
+                SameOrAfterEvaluator.sameOrAfter(leftStart, rightStart, precision, state),
+                SameOrBeforeEvaluator.sameOrBefore(leftEnd, rightEnd, precision, state),
+            )
+        }
+
+        if (
+            AnyTrueEvaluator.anyTrue(
+                    listOf(
+                            LessEvaluator.less(leftStart, rightStart, state),
+                            GreaterEvaluator.greater(leftEnd, rightEnd, state),
+                        )
+                        .toCqlList()
+                )
+                .value == true
+        ) {
+            return Boolean.FALSE
+        }
+        return AndEvaluator.and(
+            GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
+            LessOrEqualEvaluator.lessOrEqual(leftEnd, rightEnd, state),
+        )
+    }
+
+    fun listIncludedIn(left: List?, right: List?, state: State?): Boolean? {
+        // For the list-list overload, if either argument is null, the result is null.
+        // https://cql.hl7.org/09-b-cqlreference.html#included-in-1
+        if (left == null || right == null) {
+            return null
+        }
+
+        for (element in left) {
+            val `in` = InEvaluator.`in`(element, right, null, state)
+
+            if (`in` == null) continue
+
+            if (!`in`.value) {
+                return Boolean.FALSE
+            }
+        }
+        return Boolean.TRUE
+    }
+
+    @JvmStatic
+    fun internalEvaluate(
+        left: Value?,
+        right: Value?,
+        precision: kotlin.String?,
+        state: State?,
+    ): Boolean? {
+        if (left == null && right == null) {
+            return null
+        }
+
+        if (left == null) {
+            return if (right is Interval) intervalIncludedIn(null, right, precision, state)
+            else listIncludedIn(null, right as List, state)
+        }
+
+        if (right == null) {
+            return if (left is Interval) intervalIncludedIn(left, null, precision, state)
+            else listIncludedIn(left as List, null, state)
+        }
+
+        return includedIn(left, right, precision, state)
+    }
+}

@@ -1,0 +1,96 @@
+package org.opencds.cqf.cql.engine.elm.executing
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import org.cqframework.cql.shared.QName
+import org.hl7.elm.r1.ChoiceTypeSpecifier
+import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.ListTypeSpecifier
+import org.hl7.elm.r1.NamedTypeSpecifier
+import org.hl7.elm.r1.OperandDef
+import org.hl7.elm.r1.VersionedIdentifier
+import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.execution.Environment
+import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+
+class FunctionRefEvaluatorTest {
+    @Test
+    fun pickFunctionDef() {
+        val env = Environment(null)
+        val state = State(env)
+        state.init(Library().withIdentifier(VersionedIdentifier().withId("lib")))
+
+        val cqlException =
+            assertFailsWith<CqlException> {
+                FunctionRefEvaluator.pickFunctionDef(
+                    state,
+                    "func",
+                    listOf(1, 2, 3).map { it.toCqlInteger() },
+                    listOf(),
+                    listOf(),
+                )
+            }
+        assertEquals(
+            "Could not resolve call to operator 'func(Integer, Integer, Integer)' in library 'lib'.",
+            cqlException.message,
+        )
+    }
+
+    @Test
+    fun functionDefOperandsSignatureEqual() {
+        val functionDefWithOneOperand = FunctionDef().withOperand(listOf(OperandDef()))
+        val signatureWithTwoOperands = listOf(NamedTypeSpecifier(), NamedTypeSpecifier())
+
+        assertFalse(
+            FunctionRefEvaluator.functionDefOperandsSignatureEqual(
+                functionDefWithOneOperand,
+                signatureWithTwoOperands,
+            )
+        )
+    }
+
+    @Test
+    fun operandDefTypeSpecifierEqual() {
+        val integerTypeName = QName("urn:hl7-org:elm-types:r1", "Integer")
+        val integerNamedTypeSpecifier = NamedTypeSpecifier().withName(integerTypeName)
+        val listTypeSpecifier = ListTypeSpecifier().withElementType(integerNamedTypeSpecifier)
+
+        val listOperandDef = OperandDef().withOperandTypeSpecifier(listTypeSpecifier)
+        val integerOperandDef = OperandDef().withOperandType(integerTypeName)
+
+        assertTrue(
+            FunctionRefEvaluator.operandDefTypeSpecifierEqual(listOperandDef, listTypeSpecifier)
+        )
+        assertTrue(
+            FunctionRefEvaluator.operandDefTypeSpecifierEqual(
+                integerOperandDef,
+                integerNamedTypeSpecifier,
+            )
+        )
+        assertFalse(FunctionRefEvaluator.operandDefTypeSpecifierEqual(integerOperandDef, null))
+    }
+
+    @Test
+    fun choiceTypeSpecifierSignatureMatchesSameOrder() {
+        val fhirNs = "http://hl7.org/fhir"
+        val ageType = NamedTypeSpecifier().withName(QName(fhirNs, "Age"))
+        val dateTimeType = NamedTypeSpecifier().withName(QName(fhirNs, "dateTime"))
+        val periodType = NamedTypeSpecifier().withName(QName(fhirNs, "Period"))
+
+        // Both in the same (sorted) order — should match
+        val defChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
+        val functionDef =
+            FunctionDef().withOperand(listOf(OperandDef().withOperandTypeSpecifier(defChoice)))
+
+        val sigChoice = ChoiceTypeSpecifier().withChoice(listOf(ageType, dateTimeType, periodType))
+
+        assertTrue(
+            FunctionRefEvaluator.functionDefOperandsSignatureEqual(functionDef, listOf(sigChoice))
+        )
+    }
+}

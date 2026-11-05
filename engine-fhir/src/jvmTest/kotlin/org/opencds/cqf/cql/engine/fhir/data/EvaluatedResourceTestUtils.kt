@@ -1,0 +1,436 @@
+package org.opencds.cqf.cql.engine.fhir.data
+
+import java.io.IOException
+import java.net.URISyntaxException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlinx.io.asSource
+import kotlinx.io.buffered
+import org.cqframework.cql.cql2elm.CqlCompiler
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity
+import org.cqframework.cql.cql2elm.LibraryManager
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
+import org.hl7.elm.r1.Library
+import org.hl7.elm.r1.VersionedIdentifier
+import org.hl7.fhir.instance.model.api.IBaseResource
+import org.hl7.fhir.r4.model.Condition
+import org.hl7.fhir.r4.model.Encounter
+import org.hl7.fhir.r4.model.IdType
+import org.hl7.fhir.r4.model.Patient
+import org.hl7.fhir.r4.model.Period
+import org.hl7.fhir.r4.model.Procedure
+import org.hl7.fhir.r4.model.ResourceType
+import org.opencds.cqf.cql.engine.data.CompositeDataProvider
+import org.opencds.cqf.cql.engine.execution.CqlEngine
+import org.opencds.cqf.cql.engine.execution.EvaluationResult
+import org.opencds.cqf.cql.engine.execution.EvaluationResults
+import org.opencds.cqf.cql.engine.execution.ExpressionResult
+import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver
+import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver
+import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.Code
+import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Value
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+internal object EvaluatedResourceTestUtils {
+    private val log: Logger = LoggerFactory.getLogger(EvaluatedResourceTestUtils::class.java)
+
+    val ENCOUNTER: Encounter =
+        Encounter().setId(IdType(ResourceType.Encounter.name, "Encounter1")) as Encounter
+
+    val CONDITION: Condition =
+        Condition().setId(IdType(ResourceType.Condition.name, "Condition1")) as Condition
+
+    val PATIENT: Patient = Patient().setId(IdType(ResourceType.Patient.name, "Patient1")) as Patient
+
+    val PROCEDURE: Procedure =
+        Procedure().setId(IdType(ResourceType.Procedure.name, "Procedure1")) as Procedure
+
+    fun getRetrieveProvider(
+        fhirModelResolver: FhirModelResolver<*, *, *, *, *, *, *, *>
+    ): RetrieveProvider =
+        object : RetrieveProvider {
+            override fun retrieve(
+                context: String?,
+                contextPath: String?,
+                contextValue: String?,
+                dataType: String,
+                templateId: String?,
+                codePath: String?,
+                codes: Iterable<Code>?,
+                valueSet: String?,
+                datePath: String?,
+                dateLowPath: String?,
+                dateHighPath: String?,
+                dateRange: Interval?,
+            ): Iterable<Value?>? {
+                return when (dataType) {
+                    "Encounter" -> mutableListOf(fhirModelResolver.toCqlValue(ENCOUNTER))
+                    "Condition" -> mutableListOf(fhirModelResolver.toCqlValue(CONDITION))
+                    "Patient" -> mutableListOf(fhirModelResolver.toCqlValue(PATIENT))
+                    "Procedure" -> mutableListOf(fhirModelResolver.toCqlValue(PROCEDURE))
+                    else -> mutableListOf()
+                }
+            }
+        }
+
+    fun setupCql(
+        classToUse: Class<*>,
+        librariesToPopulate: MutableList<Library?>,
+        libraryManagerToUse: LibraryManager,
+    ) {
+        if (librariesToPopulate.isEmpty()) {
+            try {
+                val resourcePaths = getResources(classToUse)
+
+                for (resourcePath in resourcePaths) {
+                    try {
+                        classToUse.getClassLoader().getResourceAsStream(resourcePath).use {
+                            inputStream ->
+                            val compiler = CqlCompiler(libraryManager = libraryManagerToUse)
+                            log.info("compiling CQL file: {}", resourcePath)
+
+                            val library = compiler.run(inputStream!!.asSource().buffered())
+
+                            val errors =
+                                compiler.exceptions.filter { it.severity == ErrorSeverity.Error }
+                            if (errors.isNotEmpty()) {
+                                System.err.println("Translation failed due to errors:")
+                                val messages = mutableListOf<String>()
+                                for (error in compiler.exceptions) {
+                                    val tb = error.locator
+                                    val lines =
+                                        if (tb == null) "[n/a]"
+                                        else
+                                            "[${tb.startLine}:${tb.startChar}, ${tb.endLine}:${tb.endChar}]"
+                                    System.err.printf("%s %s%n", lines, error.message)
+                                    messages.add(lines + error.message)
+                                }
+                                throw IllegalArgumentException(messages.toString())
+                            }
+                            librariesToPopulate.add(library)
+                        }
+                    } catch (exception: Exception) {
+                        val cqlFileName = resourcePath.split("/")[7]
+                        val error =
+                            "Could not retrieve CQL files on %s due to :%s"
+                                .format(cqlFileName, exception.message)
+                        throw RuntimeException(error, exception)
+                    }
+                }
+            } catch (exception: IOException) {
+                val error: String =
+                    "Could not retrieve CQL files due to :%s".format(exception.message)
+                throw RuntimeException(error, exception)
+            } catch (exception: URISyntaxException) {
+                val error: String =
+                    "Could not retrieve CQL files due to :%s".format(exception.message)
+                throw RuntimeException(error, exception)
+            }
+        }
+    }
+
+    @Throws(IOException::class, URISyntaxException::class)
+    private fun getResources(classToUse: Class<*>): MutableList<String> {
+        val foundResources = ArrayList<String>()
+        val pattern = classToUse.getSimpleName() + "*.cql"
+
+        val classLoader = classToUse.getClassLoader()
+        val packagePath = classToUse.getPackage().name.replace('.', '/')
+
+        val urlsWithinPackage = classLoader.getResources(packagePath)
+
+        while (urlsWithinPackage.hasMoreElements()) {
+            val subPathUrl = urlsWithinPackage.nextElement()
+
+            // Resource is on the file system.
+            val dirPath = Paths.get(subPathUrl.toURI())
+
+            findResourcesInDirectory(dirPath, packagePath, pattern, foundResources)
+        }
+
+        return foundResources
+    }
+
+    @Throws(IOException::class)
+    private fun findResourcesInDirectory(
+        directory: Path,
+        packagePath: String,
+        pattern: String?,
+        foundResources: MutableList<String>,
+    ) {
+        if (!Files.isDirectory(directory)) {
+            return
+        }
+
+        // Use a PathMatcher for the glob pattern
+        val pathMatcher = directory.fileSystem.getPathMatcher("glob:$pattern")
+
+        Files.list(directory).use { stream ->
+            stream
+                .filter { path: Path -> !Files.isDirectory(path) }
+                .filter { path: Path? ->
+                    pathMatcher.matches(path!!.fileName)
+                } // In the complex deps case, we want to load the "top" level libraries first, so
+                // Level5 is the
+                // furthest upstream
+                .sorted(Comparator.reverseOrder())
+                .forEach { path: Path? ->
+                    val resourceName = path!!.fileName.toString()
+                    // Construct the full resource path for the classloader
+                    val fullResourcePath =
+                        if (packagePath.isEmpty()) resourceName else "$packagePath/$resourceName"
+                    foundResources.add(fullResourcePath)
+                }
+        }
+    }
+
+    fun getCqlEngineForFhir(
+        cqlEngine: CqlEngine,
+        expressionCaching: Boolean,
+        r4ModelResolver: R4FhirModelResolver?,
+        retrieveProvider: RetrieveProvider?,
+    ): CqlEngine {
+        cqlEngine.state.environment.registerDataProvider(
+            "http://hl7.org/fhir",
+            CompositeDataProvider(r4ModelResolver, retrieveProvider),
+        )
+        cqlEngine.cache.setExpressionCaching(expressionCaching)
+        return cqlEngine
+    }
+
+    fun assertEntireEvaluationResult(
+        evaluationResults: EvaluationResults?,
+        libraryIdentifier: VersionedIdentifier?,
+        expectedEvaluatedResources: Map<String, Collection<IBaseResource>>,
+        expectedValues: Map<String, Collection<IBaseResource>>,
+    ) {
+        assertNotNull(evaluationResults)
+        val evaluationResult = evaluationResults.getResultFor(libraryIdentifier)
+
+        if (evaluationResult == null) {
+            MatcherAssert.assertThat(
+                "If the actual evaluationResults are null, we should be expecting an empty collection.",
+                expectedValues.values,
+                Matchers.empty(),
+            )
+            return
+        }
+
+        val expressionResults = evaluationResult.expressionResults
+
+        for (expressionName in expressionResults.keys) {
+            val expressionResult: ExpressionResult = expressionResults[expressionName]!!
+
+            val actualEvaluatedResourcesForName = expressionResult.evaluatedResources!!
+            val expectedEvaluatedResourcesForName = expectedEvaluatedResources[expressionName]!!
+
+            assertEvaluatedResourcesEqual(
+                expectedEvaluatedResourcesForName,
+                actualEvaluatedResourcesForName,
+            )
+
+            val actualValue = expressionResult.value
+            val expectedValue = expectedValues[expressionName]!!
+
+            assertValuesEqual(expectedValue, actualValue)
+        }
+    }
+
+    fun assertEvaluationResult(
+        evaluationResult: EvaluationResult,
+        expressionName: String,
+        expectedEvaluatedResources: Collection<IBaseResource>,
+    ) {
+        val expressionResult = evaluationResult[expressionName]
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
+
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertValuesEqual(expectedEvaluatedResources, actualValue)
+    }
+
+    fun assertEvaluationResult(
+        evaluationResults: EvaluationResults?,
+        libraryIdentifier: VersionedIdentifier?,
+        expressionName: String,
+        expectedEvaluatedResources: Collection<IBaseResource>,
+        expectedValue: Collection<IBaseResource>,
+    ) {
+        MatcherAssert.assertThat(evaluationResults, CoreMatchers.`is`(Matchers.notNullValue()))
+        val evaluationResult = evaluationResults!!.getResultFor(libraryIdentifier)
+        val expressionResult = evaluationResult!![expressionName]
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
+
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertValuesEqual(expectedValue, actualValue)
+    }
+
+    fun assertEvaluationResult(
+        evaluationResult: EvaluationResult?,
+        expressionName: String,
+        expectedEvaluatedResources: Collection<IBaseResource>,
+        expectedValue: Collection<IBaseResource>,
+    ) {
+        MatcherAssert.assertThat<EvaluationResult?>(
+            evaluationResult,
+            CoreMatchers.`is`(Matchers.notNullValue()),
+        )
+        val expressionResult = evaluationResult!![expressionName]
+        val actualEvaluatedResources = expressionResult!!.evaluatedResources!!
+        val actualValue = expressionResult.value
+
+        assertEvaluatedResourcesEqual(expectedEvaluatedResources, actualEvaluatedResources)
+        assertValuesEqual(expectedValue, actualValue)
+    }
+
+    fun forId(id: String?): VersionedIdentifier {
+        return VersionedIdentifier().withId(id)
+    }
+
+    private fun extractResourceTypesAndIdsInOrder(
+        resourceCandidates: Collection<*>
+    ): List<Pair<String, String>> {
+        return resourceCandidates
+            .filterIsInstance<IBaseResource>()
+            .map { it.fhirType() to it.idElement.idPart }
+            .sortedBy { it.second }
+    }
+
+    private fun extractCqlFhirClassInstanceTypesAndIdsInOrder(
+        candidates: Iterable<*>
+    ): Iterable<Pair<String, String>> {
+        return candidates
+            .filterIsInstance<ClassInstance>()
+            .map {
+                it.type.localPart to
+                    ((it.elements["id"] as ClassInstance).elements["value"]
+                            as org.opencds.cqf.cql.engine.runtime.String)
+                        .value
+            }
+            .sortedBy { it.second }
+    }
+
+    /**
+     * Evaluated resources are compared as the set of (type, id) pairs they cover, not element by
+     * element.
+     *
+     * The engine no longer deduplicates them. It collects what each retrieve returned, with
+     * identity semantics, and the FHIR retrieve path builds a fresh value per retrieve -- so a
+     * record reached by several expressions appears once per retrieve rather than once per record.
+     * What the engine promises is which records an expression touched, so that is what these
+     * assertions check. Collapsing them by resource identity belongs to the caller, which knows its
+     * model; clinical-reasoning does so by resource type and logical id.
+     */
+    private fun assertEvaluatedResourcesEqual(
+        expectedResources: Collection<*>,
+        actualResources: Iterable<*>,
+    ) {
+        assertEquals(
+            extractResourceTypesAndIdsInOrder(expectedResources).toSet(),
+            extractCqlFhirClassInstanceTypesAndIdsInOrder(actualResources).toSet(),
+            showMismatchError(expectedResources, actualResources),
+        )
+    }
+
+    private fun assertValuesEqual(expectedValue: Collection<IBaseResource>, actualValue: Value?) {
+        assertIs<org.opencds.cqf.cql.engine.runtime.List>(actualValue)
+
+        assertResourcesEqual(expectedValue, actualValue)
+    }
+
+    private fun assertResourcesEqual(
+        expectedResources: Collection<*>,
+        actualResources: Iterable<*>,
+    ) {
+        assertEquals(
+            expectedResources.size,
+            actualResources.count(),
+            showMismatchError(expectedResources, actualResources),
+        )
+
+        val expectedResourcesList = extractResourceTypesAndIdsInOrder(expectedResources)
+        val actualResourcesList = extractCqlFhirClassInstanceTypesAndIdsInOrder(actualResources)
+
+        for (index in expectedResourcesList.indices) {
+            val expectedResource = expectedResourcesList[0]
+            val actualResource = actualResourcesList.elementAt(0)
+
+            assertResourcesEqual(expectedResource, actualResource)
+        }
+    }
+
+    private fun showMismatchError(
+        expectedResources: Collection<*>,
+        actualResources: Iterable<*>,
+    ): String {
+        return "Expected: %s, actual: %s"
+            .format(showResources(expectedResources), showResources(actualResources))
+    }
+
+    private fun showResources(resources: Iterable<*>): String {
+        // Both sides are rendered here: expectations are HAPI resources, actuals are the
+        // ClassInstances the engine produced. Filtering to one kind left the other blank.
+        return resources.joinToString(", ") { resource ->
+            when (resource) {
+                is IBaseResource -> resource.idElement.valueAsString
+                is ClassInstance ->
+                    extractCqlFhirClassInstanceTypesAndIdsInOrder(listOf(resource)).joinToString(
+                        ","
+                    ) { (type, id) ->
+                        "$type/$id"
+                    }
+                else -> resource.toString()
+            }
+        }
+    }
+
+    private fun assertResourcesEqual(
+        expectedResourceTypeAndId: Pair<String, String>,
+        actualResourceTypeAndId: Pair<String, String>,
+    ) {
+        assertEquals(expectedResourceTypeAndId, actualResourceTypeAndId)
+    }
+
+    private class TestRetrieveProvider : RetrieveProvider {
+        override fun retrieve(
+            context: String?,
+            contextPath: String?,
+            contextValue: String?,
+            dataType: String,
+            templateId: String?,
+            codePath: String?,
+            codes: Iterable<Code>?,
+            valueSet: String?,
+            datePath: String?,
+            dateLowPath: String?,
+            dateHighPath: String?,
+            dateRange: Interval?,
+        ): Iterable<Value?>? {
+            return null
+        }
+
+        companion object {
+            val ENCOUNTER =
+                Encounter()
+                    .setPeriod(Period().setStart(null).setEnd(null))
+                    .setId(IdType(ResourceType.Encounter.name, "Encounter1"))
+
+            val CONDITION = Condition().setId(IdType(ResourceType.Condition.name, "Condition1"))
+
+            val PATIENT = Patient().setId(IdType(ResourceType.Patient.name, "Patient1"))
+
+            val PROCEDURE = Procedure().setId(IdType(ResourceType.Procedure.name, "Procedure1"))
+        }
+    }
+}

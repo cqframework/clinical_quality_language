@@ -1,0 +1,268 @@
+package org.opencds.cqf.cql.engine.runtime
+
+import kotlin.js.JsExport
+import kotlin.js.JsName
+import kotlin.jvm.JvmOverloads
+import org.cqframework.cql.shared.JsOnlyExport
+import org.opencds.cqf.cql.engine.exception.InvalidDate
+import org.opencds.cqf.cql.engine.execution.State
+import org.opencds.cqf.cql.engine.util.Date
+import org.opencds.cqf.cql.engine.util.LocalDate
+import org.opencds.cqf.cql.engine.util.ZonedDateTime
+import org.opencds.cqf.cql.engine.util.calendarGetInstance
+import org.opencds.cqf.cql.engine.util.dateFrom
+import org.opencds.cqf.cql.engine.util.localDateOf
+import org.opencds.cqf.cql.engine.util.localDateParse
+import org.opencds.cqf.cql.engine.util.offsetDateTimeOfInstant
+import org.opencds.cqf.cql.engine.util.timeZoneGetDefault
+import org.opencds.cqf.cql.engine.util.toPaddedString
+
+@JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
+class Date
+@JvmOverloads
+constructor(val date: LocalDate, override val precision: Precision = Precision.DAY) : BaseTemporal {
+    override val type = dateTypeName
+
+    init {
+        if (date.getYear() < 1) {
+            throw InvalidDate(
+                "The year: ${date.getYear()} falls below the accepted bounds of 0001-9999."
+            )
+        }
+        if (date.getYear() > 9999) {
+            throw InvalidDate(
+                "The year: ${date.getYear()} falls above the accepted bounds of 0001-9999."
+            )
+        }
+    }
+
+    override fun withPrecision(precision: Precision): org.opencds.cqf.cql.engine.runtime.Date {
+        return Date(date, precision)
+    }
+
+    @JsName("fromYear") constructor(year: Int) : this(localDateOf(year, 1, 1), Precision.YEAR)
+
+    @JsName("fromYearMonth")
+    constructor(year: Int, month: Int) : this(localDateOf(year, month, 1), Precision.MONTH)
+
+    @JsName("fromYearMonthDay")
+    constructor(year: Int, month: Int, day: Int) : this(localDateOf(year, month, day))
+
+    private class DateArgs(val date: LocalDate, val precision: Precision)
+
+    private constructor(dateArgs: DateArgs) : this(dateArgs.date, dateArgs.precision)
+
+    @JsName("fromDateString")
+    constructor(
+        dateString: kotlin.String
+    ) : this(
+        kotlin.run {
+            var dateString = dateString
+            val precision = Precision.fromDateIndex(dateString.split("-").size - 1)
+            dateString = TemporalHelper.autoCompleteDateString(dateString, precision)
+            val date = localDateParse(dateString)
+            DateArgs(date, precision)
+        }
+    )
+
+    @JsExport.Ignore
+    fun expandPartialMinFromPrecision(
+        precision: Precision
+    ): org.opencds.cqf.cql.engine.runtime.Date {
+        var ld = this.date.plusYears(0)
+        for (i in precision.toDateIndex() + 1..2) {
+            ld =
+                ld.with(
+                    Precision.fromDateIndex(i).toChronoField(),
+                    ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum(),
+                )
+        }
+        return org.opencds.cqf.cql.engine.runtime
+            .Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth())
+            .withPrecision(precision)
+    }
+
+    @JsExport.Ignore
+    private fun expandPartialMin(precision: Precision): org.opencds.cqf.cql.engine.runtime.Date {
+        val ld = this.date.plusYears(0)
+        return org.opencds.cqf.cql.engine.runtime
+            .Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth())
+            .withPrecision(precision)
+    }
+
+    @JsExport.Ignore
+    fun expandPartialMax(precision: Precision): org.opencds.cqf.cql.engine.runtime.Date {
+        var ld = this.date.plusYears(0)
+        for (i in this.precision.toDateIndex() + 1..2) {
+            ld =
+                if (i <= precision.toDateIndex()) {
+                    ld.with(
+                        Precision.fromDateIndex(i).toChronoField(),
+                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMaximum(),
+                    )
+                } else {
+                    ld.with(
+                        Precision.fromDateIndex(i).toChronoField(),
+                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum(),
+                    )
+                }
+        }
+        return org.opencds.cqf.cql.engine.runtime
+            .Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth())
+            .withPrecision(precision)
+    }
+
+    override fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int? {
+        val differentPrecisions = this.precision != other.precision
+
+        if (differentPrecisions) {
+            val result =
+                this.compareToPrecision(
+                    other,
+                    Precision.getHighestDatePrecision(this.precision, other.precision),
+                )
+            if (result == null && forSort) {
+                return if (this.precision.toDateIndex() > other.precision.toDateIndex()) 1 else -1
+            }
+            return result
+        } else {
+            return compareToPrecision(other, this.precision)
+        }
+    }
+
+    @JsExport.Ignore
+    override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        var precision = p
+        val leftMeetsPrecisionRequirements = this.precision.toDateIndex() >= precision.toDateIndex()
+        val rightMeetsPrecisionRequirements =
+            other.precision.toDateIndex() >= precision.toDateIndex()
+
+        if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
+            precision = Precision.getLowestDatePrecision(this.precision, other.precision)
+        }
+
+        for (i in 0..<precision.toDateIndex() + 1) {
+            val leftComp = this.date.get(Precision.getDateChronoFieldFromIndex(i))
+            val rightComp =
+                (other as org.opencds.cqf.cql.engine.runtime.Date)
+                    .date
+                    .get(Precision.getDateChronoFieldFromIndex(i))
+            if (leftComp > rightComp) {
+                return 1
+            } else if (leftComp < rightComp) {
+                return -1
+            }
+        }
+
+        if (leftMeetsPrecisionRequirements && rightMeetsPrecisionRequirements) {
+            return 0
+        }
+
+        return null
+    }
+
+    @JsExport.Ignore
+    override fun isUncertain(p: Precision): kotlin.Boolean {
+        var precision = p
+        if (precision == Precision.WEEK) {
+            precision = Precision.DAY
+        }
+
+        return this.precision.toDateIndex() < precision.toDateIndex()
+    }
+
+    @JsExport.Ignore
+    override fun getUncertaintyInterval(p: Precision): Interval {
+        val start = expandPartialMin(p)
+        val end = expandPartialMax(p).expandPartialMinFromPrecision(p)
+        return Interval(start, true, end, true)
+    }
+
+    @JsExport.Ignore
+    override fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal {
+        var precision = precision
+        val originalPrecision = this.precision
+        val originalLocalDate = TemporalHelper.truncateToPrecision(this.date, originalPrecision)
+        precision =
+            precision.weekAsDay() // Precision.WEEK is treated as Precision.DAY for the purposes of
+        // rounding
+        when (precision) {
+            Precision.YEAR,
+            Precision.MONTH,
+            Precision.DAY ->
+                if (precision.toDateIndex() < originalPrecision.toDateIndex()) {
+                    val floorLocalDate =
+                        TemporalHelper.truncateToPrecision(originalLocalDate, precision)
+                    if (useCeiling && floorLocalDate != originalLocalDate) {
+                        val ceilingLocalDate = floorLocalDate.plus(1, precision.toChronoUnit())
+                        return Date(ceilingLocalDate, precision)
+                    } else {
+                        return Date(floorLocalDate, precision)
+                    }
+                } else {
+                    return Date(originalLocalDate, originalPrecision)
+                }
+            else -> return Date(originalLocalDate, originalPrecision)
+        }
+    }
+
+    override fun compareTo(other: BaseTemporal): Int {
+        return this.compare(other, true)!!
+    }
+
+    private val hash: Int by lazy { listOf(date, precision).hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other ||
+            (other is org.opencds.cqf.cql.engine.runtime.Date &&
+                date == other.date &&
+                precision == other.precision)
+
+    override fun toStringInner(): kotlin.String {
+        return when (precision) {
+            Precision.YEAR -> date.getYear().toPaddedString(4)
+            Precision.MONTH ->
+                "${date.getYear().toPaddedString(4)}-${date.getMonthValue().toPaddedString(2)}"
+            else ->
+                "${
+                    date.getYear().toPaddedString(4)
+                }-${
+                    date.getMonthValue().toPaddedString(2)
+                }-${date.getDayOfMonth().toPaddedString(2)}"
+        }
+    }
+
+    override fun toString(): kotlin.String {
+        return "@${toStringInner()}"
+    }
+
+    @JvmOverloads
+    @JsExport.Ignore
+    fun toJavaDate(c: State? = null): Date {
+        var zonedDateTime: ZonedDateTime? = null
+        zonedDateTime =
+            if (c != null) {
+                date.atStartOfDay(c.evaluationZonedDateTime!!.getZone())
+            } else {
+                date.atStartOfDay(timeZoneGetDefault().toZoneId())
+            }
+        val instant = zonedDateTime.toInstant()
+        val date = dateFrom(instant)
+        return date
+    }
+
+    companion object {
+        @JsExport.Ignore
+        fun fromJavaDate(date: Date): DateTime {
+            val calendar = calendarGetInstance()
+            calendar.setTime(date)
+            return DateTime(
+                offsetDateTimeOfInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()),
+                Precision.MILLISECOND,
+            )
+        }
+    }
+}

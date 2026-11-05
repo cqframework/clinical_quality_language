@@ -1,0 +1,338 @@
+package org.opencds.cqf.cql.engine.fhir.model
+
+import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.context.FhirVersionEnum
+import java.math.BigDecimal
+import java.text.ParseException
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import org.apache.commons.lang3.time.DateUtils
+import org.cqframework.cql.shared.QName
+import org.hl7.fhir.r5.model.DateTimeType
+import org.hl7.fhir.r5.model.Enumeration
+import org.hl7.fhir.r5.model.Enumerations
+import org.hl7.fhir.r5.model.Enumerations.FHIRTypes
+import org.hl7.fhir.r5.model.Patient
+import org.hl7.fhir.r5.model.Quantity
+import org.hl7.fhir.r5.model.VisionPrescription
+import org.opencds.cqf.cql.engine.fhir.exception.UnknownType
+import org.opencds.cqf.cql.engine.runtime.ClassInstance
+import org.opencds.cqf.cql.engine.runtime.toCqlString
+
+internal class TestR5ModelResolver {
+    @Test
+    fun resolverThrowsExceptionForUnknownType() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        assertFailsWith<UnknownType> {
+            resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp")
+        }
+    }
+
+    @Test
+    fun resolveTypeTests() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        for (type in FHIRTypes.entries) {
+            // These are abstract types that should never be resolved directly.
+            when (type) {
+                FHIRTypes.DOMAINRESOURCE,
+                FHIRTypes.RESOURCE,
+                FHIRTypes.NULL,
+                FHIRTypes.BASE -> continue
+                else -> {}
+            }
+
+            resolver.resolveType(type.toCode())
+        }
+
+        for (enumType in enums) {
+            resolver.resolveType(enumType.simpleName)
+        }
+    }
+
+    // TODO: Replace with R5 special cases once that's available
+    // @Test
+    // public void modelInfoSpecialCaseTests() {
+    //     ModelResolver resolver = new
+    // R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5));
+    //     // This tests resolution of inner classes. They aren't registered directly.
+    //     resolver.resolveType("TestScriptRequestMethodCode");
+    //     resolver.resolveType("FHIRDeviceStatus");
+    //     // This tests the special case handling of "Codes".
+    //     resolver.resolveType("ImmunizationStatusCodes");
+    //     // These have different capitalization conventions
+    //     resolver.resolveType("status");
+    //     resolver.resolveType("orientationType");
+    //     resolver.resolveType("strandType");
+    //     resolver.resolveType("sequenceType");
+    //     // These are oddballs requiring manual mapping. They may represent errors in the
+    // ModelInfo.
+    //     resolver.resolveType("ConfidentialityClassification");
+    //     resolver.resolveType("ContractResourceStatusCodes");
+    //     resolver.resolveType("EventStatus");
+    //     resolver.resolveType("FinancialResourceStatusCodes");
+    //     resolver.resolveType("SampledDataDataType");
+    //     resolver.resolveType("ClaimProcessingCodes");
+    //     resolver.resolveType("ContractResourcePublicationStatusCodes");
+    //     // These are known glitches in the ModelInfo
+    //     resolver.resolveType("vConfidentialityClassification");
+    //     // This is a mapping for a value set that doesn't have a first-class enumeration
+    //     resolver.resolveType("CurrencyCode");
+    //     resolver.resolveType("MedicationAdministrationStatus");
+    //     resolver.resolveType("MedicationDispenseStatus");
+    //     resolver.resolveType("MedicationKnowledgeStatus");
+    //     resolver.resolveType("Messageheader_Response_Request");
+    //     resolver.resolveType("MimeType");
+    // }
+    // TODO: Replace with 5.0.0 model info once that's available
+    // @Test
+    // public void modelInfo401Tests() throws Exception {
+    //     ModelResolver resolver = new
+    // R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5));
+    //     ModelManager mm = new ModelManager();
+    //     Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("4.0.1"));
+    //     List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
+    //     for (TypeInfo ti : typeInfos) {
+    //         ClassInfo ci = (ClassInfo)ti;
+    //         if (ci != null) {
+    //             switch (ci.getName()) {
+    //                 // TODO: HAPI Doesn't have a ResourceContainer type
+    //                 case "ResourceContainer": continue;
+    //                 // Bugs in 4.0.1 model info
+    //                 case "DataElement constraint on ElementDefinition data type": continue;
+    //                 case "question": continue;
+    //                 case "allowedUnits": continue;
+    //             }
+    //             // Also bugs in the 4.0.1 model info
+    //             if (ci.getBaseType() == null) {
+    //                 continue;
+    //             }
+    //             switch (ci.getBaseType()) {
+    //                 // Abstract classes
+    //                 case "FHIR.Element": continue;
+    //             }
+    //             // TODO: The cause of failure for this is unknown.
+    //             // Need to figure out if it's a gap in HAPI,
+    //             // or if a manual mapping is required, or what.
+    //             switch(ci.getName()) {
+    //                 case "ItemInstance" : continue;
+    //             }
+    //             resolver.resolveType(ci.getName());
+    //         }
+    //     }
+    // }
+    @Test
+    fun createInstanceTests() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        for (type in FHIRTypes.entries) {
+            // These are abstract types that should never be resolved directly.
+            when (type) {
+                FHIRTypes.DOMAINRESOURCE,
+                FHIRTypes.RESOURCE,
+                FHIRTypes.NULL,
+                FHIRTypes.BASE,
+                FHIRTypes.ELEMENT,
+                FHIRTypes.BACKBONEELEMENT,
+                FHIRTypes.DATATYPE,
+                FHIRTypes.BACKBONETYPE,
+                FHIRTypes.PRIMITIVETYPE,
+                FHIRTypes.CANONICALRESOURCE,
+                FHIRTypes.METADATARESOURCE -> continue
+                else -> {}
+            }
+
+            val instance = resolver.createHapiInstance(type.toCode())
+
+            assertNotNull(instance)
+        }
+
+        for (enumType in enums) {
+            // For the enums we actually expect an Enumeration with a factory of the correct type to
+            // be created.
+            val instance = resolver.createHapiInstance(enumType.simpleName) as Enumeration<*>?
+            assertNotNull(instance)
+
+            assertEquals(
+                instance.getEnumFactory().javaClass.simpleName.replace("EnumFactory", ""),
+                enumType.simpleName,
+            )
+        }
+
+        // These are some inner classes that don't appear in the enums above
+        // This list is not exhaustive. It's meant as a spot check for the resolution code.
+        var instance = resolver.createHapiInstance("TestScriptRequestMethodCode")
+        assertNotNull(instance)
+
+        instance = resolver.createHapiInstance("FHIRDeviceStatus")
+        assertNotNull(instance)
+    }
+
+    @Test
+    fun contextPathTests() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        var path = resolver.getContextPath("Patient", "Patient")
+        assertEquals("id", path)
+
+        path = resolver.getContextPath(null, "Encounter")
+        assertNull(path)
+
+        // TODO: Consider making this an exception on the resolver because
+        // if this happens it means something went wrong in the context.
+        path = resolver.getContextPath("Patient", null)
+        assertNull(path)
+
+        path = resolver.getContextPath("Patient", "Condition")
+        assertEquals("subject", path)
+
+        path = resolver.getContextPath("Patient", "Appointment")
+        assertEquals("subject", path)
+
+        path = resolver.getContextPath("Patient", "Account")
+        assertEquals("subject", path)
+
+        path = resolver.getContextPath("Patient", "Encounter")
+        assertEquals("subject", path)
+
+        path = resolver.getContextPath("Patient", "ValueSet")
+        assertNull(path)
+
+        path = resolver.getContextPath("Patient", "MedicationStatement")
+        assertEquals("subject", path)
+
+        path = resolver.getContextPath("Patient", "Task")
+        assertEquals("for", path)
+
+        path = resolver.getContextPath("Patient", "Coverage")
+        assertEquals("beneficiary", path)
+
+        path = resolver.getContextPath("Patient", "QuestionnaireResponse")
+        assertEquals("subject", path)
+
+        // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
+        path = resolver.getContextPath("Unfiltered", "MedicationStatement")
+        assertNull(path)
+
+        path = resolver.getContextPath("Unspecified", "MedicationStatement")
+        assertNull(path)
+    }
+
+    @Test
+    fun resolveMissingPropertyReturnsNull() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val p = Patient()
+
+        val patientAsCqlValue = resolver.toCqlValue(p)
+        assertIs<ClassInstance>(patientAsCqlValue)
+        assertFalse(patientAsCqlValue.elements.containsKey("not-a-path"))
+    }
+
+    @Test
+    fun resolveIdPropertyReturnsString() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val p = Patient()
+        p.setId("5")
+
+        val patientAsCqlValue = resolver.toCqlValue(p)
+        assertIs<ClassInstance>(patientAsCqlValue)
+
+        val id = patientAsCqlValue.elements["id"]
+        assertIs<ClassInstance>(id)
+        assertEquals(QName("http://hl7.org/fhir", "id"), id.type)
+
+        assertEquals("5".toCqlString(), id.elements["value"])
+    }
+
+    @Test
+    fun resolveDateTimeProviderReturnsDate() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val vp = VisionPrescription()
+        val time = GregorianCalendar(1999, 3, 31).getTime()
+        vp.setDateWritten(time)
+
+        val value = resolver.toCqlValue(vp)
+        assertIs<ClassInstance>(value)
+        val dateWritten = value.elements["dateWritten"]
+        assertIs<ClassInstance>(dateWritten)
+        assertEquals(QName("http://hl7.org/fhir", "dateTime"), dateWritten.type)
+    }
+
+    @Test
+    fun resolveNullEnumerationReturnsNull() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val q = Quantity()
+        q.setValue(BigDecimal("10.0"))
+        q.setUnit("1")
+        val sq = resolver.castToSimpleQuantity(q)
+
+        val value = resolver.toCqlValue(sq)
+        assertIs<ClassInstance>(value)
+        assertNull(value.elements["comparator"])
+    }
+
+    @Test
+    fun resolveNullPrimitiveReturnsNull() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val dt = DateTimeType()
+
+        val value = resolver.toCqlValue(dt)
+        assertNull(value)
+    }
+
+    @Test
+    @Throws(ParseException::class)
+    fun resolveBirthDateExtensionPatient() {
+        val resolver = R5FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R5))
+
+        val patient = Patient()
+        val birthDate = DateUtils.parseDate("1974-12-25", "yyyy-dd-MM")
+        patient.setBirthDate(birthDate)
+        patient.birthDateElement.addExtension(
+            "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+            DateTimeType("1974-12-25T14:35:45-05:00"),
+        )
+
+        val patientAsCqlValue = resolver.toCqlValue(patient)
+        assertIs<ClassInstance>(patientAsCqlValue)
+
+        var result = patientAsCqlValue.elements["birthDate"]
+        assertIs<ClassInstance>(result)
+        assertEquals(QName("http://hl7.org/fhir", "date"), result.type)
+
+        result = result.elements["extension"]
+        assertIs<Iterable<*>>(result)
+        assertEquals(1, result.count())
+
+        val extension = result.first()
+        assertIs<ClassInstance>(extension)
+        assertEquals(QName("http://hl7.org/fhir", "Extension"), extension.type)
+    }
+
+    companion object {
+        // Couldn't find a way to automatically get the full list of enums.
+        private val enums: MutableList<Class<*>> =
+            object : ArrayList<Class<*>>() {
+                init {
+                    // TODO: Add the remainder of the FHIR R5 enums.
+                    add(Enumerations.AdministrativeGender::class.java)
+                    add(Enumerations.BindingStrength::class.java)
+                    add(Enumerations.FHIRVersion::class.java)
+                    add(Enumerations.PublicationStatus::class.java)
+                    add(Enumerations.SearchParamType::class.java)
+                }
+            }
+    }
+}

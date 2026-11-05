@@ -18,6 +18,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        fetch-tags: true
     - uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
@@ -34,7 +37,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      working-directory: ./Src/java
       run: ./gradlew check sonar -x spotlessCheck
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v5
@@ -47,3 +49,6 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    - name: Build playground and npm package
+      if: matrix.os == 'ubuntu-latest'
+      run: ./gradlew :playground:build :npm-cql:build
