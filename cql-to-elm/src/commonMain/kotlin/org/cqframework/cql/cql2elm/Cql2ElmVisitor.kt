@@ -95,6 +95,10 @@ class Cql2ElmVisitor(
             }
         }
 
+        // All statements (and so all function bodies) are now compiled; reconcile any same-named
+        // function overloads that collapse to the same runtime signature (see #1855).
+        FunctionOverloadReconciler(libraryBuilder).reconcile()
+
         // Return last result (consistent with super implementation and helps w/ testing)
         return lastResult
     }
