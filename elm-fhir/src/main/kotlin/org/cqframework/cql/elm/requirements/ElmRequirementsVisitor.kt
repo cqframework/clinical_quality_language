@@ -200,7 +200,22 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         context: ElmRequirementsContext,
     ): ElmRequirement {
         context.reportFunctionRef(elm)
-        val result = super.visitFunctionRef(elm, context)
+        // If the function can be inlined for requirements inference, analyze its body with the
+        // operands bound to the call-site arguments. This lets a terminology/date filter expressed
+        // inside a (fluent) helper that takes the value set/interval as a parameter be attributed
+        // to the retrieve it constrains. Falls back to the default handling otherwise.
+        val inlinableFunctionDef = context.resolveInlinableFunctionDef(elm)
+        val result =
+            if (inlinableFunctionDef != null) {
+                context.beginInlining(inlinableFunctionDef, elm)
+                try {
+                    visitElement(inlinableFunctionDef.expression!!, context)
+                } finally {
+                    context.endInlining(inlinableFunctionDef)
+                }
+            } else {
+                super.visitFunctionRef(elm, context)
+            }
 
         // If the result is a data requirement and the function is cardinality-reducing,
         // Return as an operator requirement, rather than returning the result
@@ -537,6 +552,19 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
     }
 
     override fun visitOperandRef(elm: OperandRef, context: ElmRequirementsContext): ElmRequirement {
+        // When inlining a function, resolve a reference to one of its operands to the requirement
+        // of the argument bound at the call site (e.g. the concrete value set passed in).
+        val bound = context.resolveOperandBinding(elm.name)
+        if (bound != null && context.beginOperandResolution(bound)) {
+            try {
+                val boundRequirement = visitElement(bound, context)
+                if (boundRequirement != null) {
+                    return boundRequirement
+                }
+            } finally {
+                context.endOperandResolution(bound)
+            }
+        }
         return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 

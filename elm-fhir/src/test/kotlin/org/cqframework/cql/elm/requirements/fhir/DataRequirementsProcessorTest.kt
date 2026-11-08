@@ -122,6 +122,55 @@ class DataRequirementsProcessorTest {
         }
     }
 
+    @Test
+    fun fluentFunctionValueSetParameterCodeFilter() {
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "FluentFunctionDataRequirements/FluentFunctionDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val dqReqTrans = DataRequirementsProcessor()
+        val moduleDefinitionLibrary =
+            dqReqTrans.gatherDataRequirements(
+                setup.manager,
+                setup.library,
+                cqlTranslatorOptions,
+                null,
+                false,
+            )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        // The terminology filter is expressed inside a fluent function that takes the value set
+        // as a parameter; the requirements processor must trace the value set bound at the call
+        // site into the function body and surface it as a codeFilter on the Observation retrieve.
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the fluent function",
+        )
+    }
+
     private fun getDependency(moduleDefinitionLibrary: Library, url: String?): RelatedArtifact? {
         for (r in moduleDefinitionLibrary.getRelatedArtifact()) {
             if (
@@ -221,7 +270,7 @@ class DataRequirementsProcessorTest {
             assertEquals(FHIRTypes.INTEGER, pd.getType())
 
             // dataRequirement Observation {
-            //   ms: { code, category, value, status, status.value, effective },
+            //   ms: { code, category, value, status, status.value, effective, effective.value },
             //   codeFilter {
             //     { category in
             // http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
@@ -231,7 +280,7 @@ class DataRequirementsProcessorTest {
             Assertions.assertEquals(1, moduleDefinitionLibrary.getDataRequirement().size)
             val dr = moduleDefinitionLibrary.getDataRequirement()[0]
             assertEquals(FHIRTypes.OBSERVATION, dr.getType())
-            Assertions.assertEquals(6, dr.getMustSupport().size)
+            Assertions.assertEquals(7, dr.getMustSupport().size)
             Assertions.assertEquals(
                 1,
                 dr.getMustSupport()
@@ -272,6 +321,13 @@ class DataRequirementsProcessorTest {
                 dr.getMustSupport()
                     .stream()
                     .filter { x: StringType? -> x!!.value == "effective" }
+                    .count(),
+            )
+            Assertions.assertEquals(
+                1,
+                dr.getMustSupport()
+                    .stream()
+                    .filter { x: StringType? -> x!!.value == "effective.value" }
                     .count(),
             )
             Assertions.assertEquals(2, dr.getCodeFilter().size)
@@ -489,7 +545,7 @@ class DataRequirementsProcessorTest {
             assertEquals("1", pd.getMax())
 
             // dataRequirement Observation {
-            //   ms: { code, category, value, status, status.value, effective },
+            //   ms: { code, category, value, status, status.value, effective, effective.value },
             //   codeFilter {
             //     { category in
             // http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
@@ -506,7 +562,7 @@ class DataRequirementsProcessorTest {
             }
             Assertions.assertNotNull(dr)
             assertEquals(FHIRTypes.OBSERVATION, dr!!.getType())
-            Assertions.assertEquals(6, dr.getMustSupport().size)
+            Assertions.assertEquals(7, dr.getMustSupport().size)
             Assertions.assertEquals(
                 1,
                 dr.getMustSupport()
@@ -547,6 +603,13 @@ class DataRequirementsProcessorTest {
                 dr.getMustSupport()
                     .stream()
                     .filter { x: StringType? -> x!!.value == "effective" }
+                    .count(),
+            )
+            Assertions.assertEquals(
+                1,
+                dr.getMustSupport()
+                    .stream()
+                    .filter { x: StringType? -> x!!.value == "effective.value" }
                     .count(),
             )
             Assertions.assertEquals(2, dr.getCodeFilter().size)
