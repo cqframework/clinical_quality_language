@@ -31,11 +31,11 @@ object NegateEvaluator {
         }
 
         if (source is Integer) {
-            return (-source.value).toCqlInteger()
+            return CheckedArithmetic.negate(source.value)?.toCqlInteger()
         }
 
         if (source is Long) {
-            return (-source.value).toCqlLong()
+            return CheckedArithmetic.negate(source.value)?.toCqlLong()
         }
 
         if (source is Decimal) {

@@ -24,7 +24,9 @@ object LastPositionOfEvaluator {
         }
 
         if (pattern is String) {
-            return (string as String).value.lastIndexOf(pattern.value).toCqlInteger()
+            val argument = (string as String).value
+            // Search from the end of the string, so an empty pattern is found at its length
+            return argument.lastIndexOf(pattern.value, argument.length).toCqlInteger()
         }
 
         throw InvalidOperatorArgument(
