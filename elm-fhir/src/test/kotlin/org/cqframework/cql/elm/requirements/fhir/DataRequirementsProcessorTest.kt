@@ -171,6 +171,132 @@ class DataRequirementsProcessorTest {
         )
     }
 
+    // @Test
+    // TODO: Support cross-library value-set-parameter tracing (fluent helper defined in a shared
+    // library). RED TDD target: the Observation retrieve is emitted UNFILTERED today; re-enable
+    // (@Test) when the cross-library summary/provenance analysis lands. The same-library case
+    // already passes via fluentFunctionValueSetParameterCodeFilter.
+    fun crossLibraryFluentFunctionValueSetParameterCodeFilter() {
+        // TDD target for CROSS-LIBRARY value-set-parameter tracing. Identical in intent to
+        // fluentFunctionValueSetParameterCodeFilter, except the fluent helper is defined in a
+        // separate included library (Helpers) while the value set is bound in the caller. The
+        // requirements processor must resolve the helper body in the Helpers library context
+        // while resolving the value-set argument in the caller's context, then surface the
+        // codeFilter on the Observation retrieve. RED until the cross-library summary/provenance
+        // analysis lands; the same-library case already passes.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryFluentFunctionDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the " +
+                "cross-library fluent function",
+        )
+    }
+
+    @Test
+    fun mixedFilteredUnfilteredRetrieveCollapse() {
+        // Characterization of the "union poisoning" soundness rule: when the same resource type
+        // is retrieved both filtered (two different value sets) and unfiltered in one library,
+        // what does collapse() emit? For a scan filter to be sound, the unfiltered use must
+        // survive so the union over all Observation data requirements fetches broadly.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "MixedFilteredUnfilteredDataRequirements/MixedFilteredUnfilteredDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        // Characterization dump: one line per Observation data requirement with its codeFilters.
+        println("=== Observation data requirements: ${observationRequirements.size} ===")
+        observationRequirements.forEachIndexed { i, dr ->
+            val filters =
+                dr.getCodeFilter().joinToString(", ") { cf ->
+                    "{path=${cf.getPath()}, valueSet=${cf.getValueSet()}}"
+                }
+            println("  [$i] codeFilters=[${filters.ifEmpty { "<none>" }}]")
+        }
+
+        val valueSetsSeen =
+            observationRequirements
+                .flatMap { it.getCodeFilter() }
+                .mapNotNull { it.getValueSet() }
+                .toSet()
+        val hasUnfilteredObservation = observationRequirements.any { it.getCodeFilter().isEmpty() }
+
+        // Soundness expectation under union semantics:
+        //  - both distinct filters are surfaced somewhere, AND
+        //  - an UNFILTERED Observation requirement survives (the union-dominating entry).
+        Assertions.assertTrue(
+            valueSetsSeen.contains("http://example.org/fhir/ValueSet/observation-codes-a"),
+            "Expected the Observation Codes A filter to be surfaced",
+        )
+        Assertions.assertTrue(
+            valueSetsSeen.contains("http://example.org/fhir/ValueSet/observation-codes-b"),
+            "Expected the Observation Codes B filter to be surfaced",
+        )
+        Assertions.assertTrue(
+            hasUnfilteredObservation,
+            "Expected an UNFILTERED Observation data requirement to survive alongside the " +
+                "filtered ones (union poisoning): without it, a scan that applies the surfaced " +
+                "codeFilters would drop the unfiltered [Observation] use's data.",
+        )
+    }
+
     private fun getDependency(moduleDefinitionLibrary: Library, url: String?): RelatedArtifact? {
         for (r in moduleDefinitionLibrary.getRelatedArtifact()) {
             if (
