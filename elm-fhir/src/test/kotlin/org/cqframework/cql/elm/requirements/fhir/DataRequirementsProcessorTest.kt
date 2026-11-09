@@ -226,6 +226,102 @@ class DataRequirementsProcessorTest {
     }
 
     @Test
+    fun crossLibraryGateNegativeHelperLeavesRetrieveUnfiltered() {
+        // "Fail -> unfiltered" soundness: a cross-library helper that performs no terminology
+        // membership is gate-negative, so it must NOT be inlined. The analysis must still emit the
+        // routed [Observation] retrieve (unfiltered) rather than dropping it — dropping it would
+        // make a scan miss data for that use.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryGateNegative.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        Assertions.assertTrue(
+            observationRequirements.isNotEmpty(),
+            "Expected the Observation retrieve to still be emitted even though the cross-library " +
+                "helper was not inlined (fail -> unfiltered, never dropped)",
+        )
+        Assertions.assertTrue(
+            observationRequirements.all { it.getCodeFilter().isEmpty() },
+            "Expected no codeFilter: the gate-negative cross-library helper must not be traced",
+        )
+    }
+
+    @Test
+    fun crossLibraryMixedFilteredUnfilteredRetrieveCollapse() {
+        // Union-poisoning guard at cross-library scope: when a type is retrieved both filtered
+        // through a cross-library fluent helper AND unfiltered, the unfiltered retrieve must
+        // survive so the union over all Observation data requirements still fetches broadly.
+        // Guards against cross-library tracing dropping the unfiltered use (a scan data-drop).
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryMixedFilteredUnfiltered.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        val tracedValueSet = "http://example.org/fhir/ValueSet/test-observation-codes"
+        val hasTracedFilter =
+            observationRequirements.any { dr ->
+                dr.getCodeFilter().any {
+                    it.getPath() == "code" && it.getValueSet() == tracedValueSet
+                }
+            }
+        val hasUnfilteredObservation = observationRequirements.any { it.getCodeFilter().isEmpty() }
+
+        Assertions.assertTrue(
+            hasTracedFilter,
+            "Expected the cross-library codeFilter to be traced onto an Observation requirement",
+        )
+        Assertions.assertTrue(
+            hasUnfilteredObservation,
+            "Expected an UNFILTERED Observation data requirement to survive alongside the " +
+                "cross-library-filtered one (union poisoning): cross-library tracing must add the " +
+                "filtered requirement without dropping the unfiltered [Observation] use.",
+        )
+    }
+
+    @Test
     fun mixedFilteredUnfilteredRetrieveCollapse() {
         // Characterization of the "union poisoning" soundness rule: when the same resource type
         // is retrieved both filtered (two different value sets) and unfiltered in one library,
