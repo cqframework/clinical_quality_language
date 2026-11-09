@@ -171,6 +171,26 @@ data class CastExpression(
 ) : UnaryExpression
 
 @Serializable
+enum class BooleanTestKind {
+    @SerialName("null") NULL,
+    @SerialName("true") TRUE,
+    @SerialName("false") FALSE,
+}
+
+/**
+ * `x is [not] null`, `x is [not] true`, `x is [not] false`. Distinct from equality (`x = null`),
+ * which propagates null rather than testing for it.
+ */
+@Serializable
+@SerialName("booleanTest")
+data class BooleanTestExpression(
+    override val operand: Expression,
+    val kind: BooleanTestKind,
+    val negated: Boolean = false,
+    override val locator: Locator = Locator.UNKNOWN,
+) : UnaryExpression
+
+@Serializable
 @SerialName("unknown")
 data class UnsupportedExpression(
     val description: String,
