@@ -171,11 +171,7 @@ class DataRequirementsProcessorTest {
         )
     }
 
-    // @Test
-    // TODO: Support cross-library value-set-parameter tracing (fluent helper defined in a shared
-    // library). RED TDD target: the Observation retrieve is emitted UNFILTERED today; re-enable
-    // (@Test) when the cross-library summary/provenance analysis lands. The same-library case
-    // already passes via fluentFunctionValueSetParameterCodeFilter.
+    @Test
     fun crossLibraryFluentFunctionValueSetParameterCodeFilter() {
         // TDD target for CROSS-LIBRARY value-set-parameter tracing. Identical in intent to
         // fluentFunctionValueSetParameterCodeFilter, except the fluent helper is defined in a

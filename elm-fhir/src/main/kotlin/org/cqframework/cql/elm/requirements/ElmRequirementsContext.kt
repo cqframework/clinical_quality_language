@@ -11,11 +11,14 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.LibraryRef
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.IdObjectFactory
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.AliasRef
+import org.hl7.elm.r1.AnyInCodeSystem
+import org.hl7.elm.r1.AnyInValueSet
 import org.hl7.elm.r1.Code
 import org.hl7.elm.r1.CodeDef
 import org.hl7.elm.r1.CodeRef
@@ -31,6 +34,8 @@ import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.FunctionRef
+import org.hl7.elm.r1.InCodeSystem
+import org.hl7.elm.r1.InValueSet
 import org.hl7.elm.r1.IncludeDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.NamedTypeSpecifier
@@ -504,9 +509,45 @@ class ElmRequirementsContext(
     // can only be attributed to a retrieve if the argument bound at the call site is propagated
     // into the function body. We do this by inlining the body of a resolvable, same-library
     // function at the call site, with a binding frame mapping each operand name to its argument.
-    private val operandBindingStack = ArrayList<Map<String, Expression>>()
+    // One frame per active inlining. Besides the operand->argument bindings, each frame records the
+    // library that was active at the call site (where the ARGUMENTS live) so that a bound argument
+    // can be resolved in its own library even while the function BODY is being visited in the
+    // (possibly different) library that defines the function.
+    private class OperandFrame(
+        val bindings: Map<String, Expression>,
+        val callerLibrary: VersionedIdentifier,
+    )
+
+    // The argument an operand binding ultimately resolves to, together with the library in which
+    // that argument must be resolved (its call site's library).
+    class ResolvedBinding(val expression: Expression, val callerLibrary: VersionedIdentifier)
+
+    private val operandBindingStack = ArrayList<OperandFrame>()
     private val inliningFunctionDefs =
         Collections.newSetFromMap(IdentityHashMap<FunctionDef, Boolean>())
+
+    // Memoizes whether a function body contains a terminology membership test (the value-set/
+    // code-system filter pattern). Cross-library inlining is restricted to these helpers so that
+    // value-neutral helpers (date/interval constructors, conversions, etc.) are left on the default
+    // path and cannot perturb existing date/code filter inference.
+    private val terminologyFilterHelperCache = IdentityHashMap<FunctionDef, Boolean>()
+
+    private fun isTerminologyFilterHelper(functionDef: FunctionDef): Boolean {
+        val body = functionDef.expression ?: return false
+        return terminologyFilterHelperCache.getOrPut(functionDef) {
+            val scanner =
+                FunctionalElmVisitor.from<Any?, Boolean>(
+                    { elm, _ ->
+                        elm is InValueSet ||
+                            elm is AnyInValueSet ||
+                            elm is InCodeSystem ||
+                            elm is AnyInCodeSystem
+                    },
+                    { a, b -> a || b },
+                )
+            scanner.visitElement(body, null)
+        }
+    }
 
     /**
      * Resolves the [FunctionDef] that a [FunctionRef] invokes, when it is safe to inline for
@@ -516,11 +557,6 @@ class ElmRequirementsContext(
      */
     @Suppress("CyclomaticComplexMethod", "ReturnCount")
     fun resolveInlinableFunctionDef(functionRef: FunctionRef): FunctionDef? {
-        // Cross-library inlining requires switching the active library context for the body vs. the
-        // arguments; not yet supported, so only inline same-library functions for now.
-        if (functionRef.libraryName != null) {
-            return null
-        }
         // Bound the inlining depth so deeply nested (or pathological) call chains cannot overflow
         // the stack; beyond the cap we fall back to the default handling (a safe superset).
         if (operandBindingStack.size >= MAX_INLINE_DEPTH) {
@@ -546,20 +582,33 @@ class ElmRequirementsContext(
                 }
             }
         }
-        val targetLibrary = prepareLibraryVisit(this.currentLibraryIdentifier, null)
+        // Resolve the function in the library it is invoked against: the current library for a
+        // local call, or the included library named by the FunctionRef for a cross-library call.
+        val targetLibrary =
+            prepareLibraryVisit(this.currentLibraryIdentifier, functionRef.libraryName)
         try {
             val fds = targetLibrary.resolveFunctionRef(functionRef.name!!, signature)
             val fd = fds.singleOrNull() ?: return null
             if (fd.expression == null) return null
             if (fd.operand.size != functionRef.operand.size) return null
             if (inliningFunctionDefs.contains(fd)) return null
+            // Cross-library inlining is restricted to terminology filter helpers (see
+            // isTerminologyFilterHelper); other included-library helpers are left opaque to keep
+            // the analysis additive and avoid disturbing existing filter inference.
+            if (functionRef.libraryName != null && !isTerminologyFilterHelper(fd)) return null
             return fd
         } finally {
-            unprepareLibraryVisit(null)
+            unprepareLibraryVisit(functionRef.libraryName)
         }
     }
 
     fun beginInlining(functionDef: FunctionDef, functionRef: FunctionRef) {
+        // The arguments live in the current (call-site) library; capture it before switching.
+        val callerLibrary = currentLibraryIdentifier
+        // Enter the function's defining library for the body visit. For a local call this is a
+        // no-op (libraryName is null); for a cross-library call it switches to the included library
+        // so the body's own references resolve correctly.
+        prepareLibraryVisit(callerLibrary, functionRef.libraryName)
         val bindings = HashMap<String, Expression>()
         for (i in functionDef.operand.indices) {
             val name = functionDef.operand[i].name
@@ -569,12 +618,13 @@ class ElmRequirementsContext(
             }
         }
         inliningFunctionDefs.add(functionDef)
-        operandBindingStack.add(bindings)
+        operandBindingStack.add(OperandFrame(bindings, callerLibrary))
     }
 
-    fun endInlining(functionDef: FunctionDef) {
+    fun endInlining(functionDef: FunctionDef, functionRef: FunctionRef) {
         operandBindingStack.removeAt(operandBindingStack.size - 1)
         inliningFunctionDefs.remove(functionDef)
+        unprepareLibraryVisit(functionRef.libraryName)
     }
 
     /**
@@ -585,18 +635,19 @@ class ElmRequirementsContext(
      * binding.
      */
     @Suppress("ReturnCount")
-    fun resolveOperandBinding(name: String?): Expression? {
+    fun resolveOperandBinding(name: String?): ResolvedBinding? {
         if (name == null || operandBindingStack.isEmpty()) return null
         var frameIndex = operandBindingStack.size - 1
         var currentName: String = name
         repeat(operandBindingStack.size) {
-            val bound = operandBindingStack[frameIndex][currentName] ?: return null
+            val frame = operandBindingStack[frameIndex]
+            val bound = frame.bindings[currentName] ?: return null
             if (bound is OperandRef) {
                 currentName = bound.name ?: return null
                 frameIndex -= 1
                 if (frameIndex < 0) return null
             } else {
-                return bound
+                return ResolvedBinding(bound, frame.callerLibrary)
             }
         }
         return null
@@ -776,17 +827,25 @@ class ElmRequirementsContext(
         // against the correct query scope (e.g. observation.code -> O.code) rather than being
         // treated as an unbound property on the operand's type.
         if (property.source is OperandRef) {
-            val bound = resolveOperandBinding((property.source as OperandRef).name)
-            if (bound != null) {
+            val resolved = resolveOperandBinding((property.source as OperandRef).name)
+            if (resolved != null) {
                 val rewritten = Property()
-                rewritten.source = bound
+                rewritten.source = resolved.expression
                 rewritten.scope = null
                 rewritten.path = property.path
                 rewritten.localId = property.localId
                 rewritten.resultType = property.resultType
                 rewritten.resultTypeName = property.resultTypeName
                 rewritten.resultTypeSpecifier = property.resultTypeSpecifier
-                return reportProperty(rewritten)
+                // The argument lives in its call site's library; resolve the rewritten property
+                // there so its alias/query scope and attribution are correct even when the function
+                // body is being visited in a different (included) library.
+                enterLibrary(resolved.callerLibrary)
+                try {
+                    return reportProperty(rewritten)
+                } finally {
+                    exitLibrary()
+                }
             }
         }
 

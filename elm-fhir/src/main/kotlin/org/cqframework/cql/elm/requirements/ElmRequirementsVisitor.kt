@@ -211,7 +211,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
                 try {
                     visitElement(inlinableFunctionDef.expression!!, context)
                 } finally {
-                    context.endInlining(inlinableFunctionDef)
+                    context.endInlining(inlinableFunctionDef, elm)
                 }
             } else {
                 super.visitFunctionRef(elm, context)
@@ -551,18 +551,26 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return ElmOperatorRequirement(context.currentLibraryIdentifier, elm).combine(requirements)
     }
 
+    @Suppress("NestedBlockDepth")
     override fun visitOperandRef(elm: OperandRef, context: ElmRequirementsContext): ElmRequirement {
         // When inlining a function, resolve a reference to one of its operands to the requirement
         // of the argument bound at the call site (e.g. the concrete value set passed in).
-        val bound = context.resolveOperandBinding(elm.name)
-        if (bound != null && context.beginOperandResolution(bound)) {
+        val resolved = context.resolveOperandBinding(elm.name)
+        if (resolved != null && context.beginOperandResolution(resolved.expression)) {
             try {
-                val boundRequirement = visitElement(bound, context)
-                if (boundRequirement != null) {
-                    return boundRequirement
+                // Resolve the argument in its call site's library (it may differ from the library
+                // whose function body we are currently visiting).
+                context.enterLibrary(resolved.callerLibrary)
+                try {
+                    val boundRequirement = visitElement(resolved.expression, context)
+                    if (boundRequirement != null) {
+                        return boundRequirement
+                    }
+                } finally {
+                    context.exitLibrary()
                 }
             } finally {
-                context.endOperandResolution(bound)
+                context.endOperandResolution(resolved.expression)
             }
         }
         return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
