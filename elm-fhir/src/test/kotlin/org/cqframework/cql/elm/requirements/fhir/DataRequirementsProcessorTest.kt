@@ -226,11 +226,106 @@ class DataRequirementsProcessorTest {
     }
 
     @Test
+    fun nestedExistsMembershipNotYetLiftedToCodeFilter() {
+        // Characterization of a CORE inference boundary (same-library, no helper): a direct
+        // membership on a scalar coded property is lifted into a codeFilter, but a membership
+        // buried in a nested exists over a property path is NOT. Helpers that filter list-valued
+        // coded elements (e.g. Encounter.type) commonly take that nested-exists form, so surfacing
+        // their codeFilters needs this boundary moved -- independent of (and larger than) the
+        // cross-library tracing work. If a future change lifts the nested form, this test flips and
+        // should be updated.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "NestedExistsMembershipProbe/NestedExistsMembershipProbe.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        val codeFilters =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.ENCOUNTER,
+                )
+                .flatMap { it.getCodeFilter() }
+        val valueSets = codeFilters.mapNotNull { it.getValueSet() }.toSet()
+
+        // Direct scalar membership is lifted.
+        Assertions.assertTrue(
+            valueSets.contains("http://example.org/fhir/ValueSet/direct-vs"),
+            "Expected direct membership (enc.class in VS) to produce a codeFilter",
+        )
+        // Nested-exists membership is NOT lifted (current limitation).
+        Assertions.assertFalse(
+            valueSets.contains("http://example.org/fhir/ValueSet/nested-vs"),
+            "Nested-exists membership is not yet lifted into a codeFilter; if this now passes, the " +
+                "core inference boundary moved and crossLibraryNestedMembershipEncounterCodeFilter " +
+                "should be re-enabled",
+        )
+    }
+
+    // @Test
+    // TODO: Requires lifting a nested-exists membership over a property path into a codeFilter (a
+    // CORE query-inference enhancement, independent of cross-library tracing; see
+    // nestedExistsMembershipNotYetLiftedToCodeFilter). RED TDD target reproducing the shape used
+    // for
+    // list-valued coded filters: cross-library delegation (typedAs -> anyConceptIn) + a nested
+    // exists over Encounter.type.coding. Cross-library tracing already surfaces
+    // mustSupport=[type, coding]; only the codeFilter awaits the nested-exists inference. Re-enable
+    // when that lands.
+    fun crossLibraryNestedMembershipEncounterCodeFilter() {
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryNestedMembership/CrossLibraryNestedMembership.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val encounterRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.ENCOUNTER,
+                )
+                .toList()
+        val tracedValueSet = "http://example.org/fhir/ValueSet/qualifying-encounter-types"
+        val hasTracedFilter =
+            encounterRequirements.any { dr ->
+                dr.getCodeFilter().any { it.getValueSet() == tracedValueSet }
+            }
+        Assertions.assertTrue(
+            hasTracedFilter,
+            "Expected the value set to be traced onto the Encounter requirement as a codeFilter " +
+                "through the cross-library delegation + nested-exists shape",
+        )
+    }
+
+    @Test
     fun crossLibraryComposedFluentFunctionCodeFilter() {
         // Composition: the value set is traced through a DELEGATION chain of cross-library helpers
-        // ("obs code in" -> "code in"), mirroring the real HEDIS shape (Has any code -> Has). The
-        // directly-invoked helper does no membership itself; the codeFilter can only be surfaced
-        // by following the chain to the terminal membership.
+        // ("obs code in" -> "code in"), the shape real content uses when one helper forwards to
+        // another. The directly-invoked helper does no membership itself; the codeFilter can only
+        // be surfaced by following the chain to the terminal membership.
         val cqlTranslatorOptions = CqlCompilerOptions()
         cqlTranslatorOptions.collapseDataRequirements = true
         cqlTranslatorOptions.analyzeDataRequirements = true

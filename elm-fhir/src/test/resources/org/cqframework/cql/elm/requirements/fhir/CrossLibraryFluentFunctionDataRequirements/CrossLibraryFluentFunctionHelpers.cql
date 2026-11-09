@@ -4,9 +4,9 @@ using FHIR version '4.0.1'
 
 include FHIRHelpers version '4.0.1' called FHIRHelpers
 
-// The value-set-parameter fluent helper lives in a SEPARATE (shared) library, mirroring the
-// HEDIS pattern where helpers like Encounters."Has any code" are defined away from the caller.
-// The body reads observation.code and tests membership in the value set bound at the call site.
+// The value-set-parameter fluent helper lives in a SEPARATE (shared) library, the common pattern
+// where terminology helpers are defined away from the caller that invokes them. The body reads
+// observation.code and tests membership in the value set bound at the call site.
 define fluent function "has code in"(observation Observation, codes System.ValueSet):
   observation.code in codes
 
@@ -17,8 +17,9 @@ define fluent function "has effective"(observation Observation):
   observation.effective is not null
 
 // Delegation chain (composition): "obs code in" forwards to the terminal membership helper
-// "code in", mirroring the real HEDIS pattern where "Has any code" delegates to "Has". Both links
-// carry a System.ValueSet operand, so each is independently eligible for cross-library inlining.
+// "code in" -- the shape real content uses when one terminology helper delegates to another. Both
+// links carry a System.ValueSet operand, so each is independently eligible for cross-library
+// inlining.
 define fluent function "code in"(code FHIR.CodeableConcept, codes System.ValueSet):
   code in codes
 
