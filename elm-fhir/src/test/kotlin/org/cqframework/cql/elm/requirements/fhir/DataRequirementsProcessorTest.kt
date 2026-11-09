@@ -226,6 +226,57 @@ class DataRequirementsProcessorTest {
     }
 
     @Test
+    fun crossLibraryComposedFluentFunctionCodeFilter() {
+        // Composition: the value set is traced through a DELEGATION chain of cross-library helpers
+        // ("obs code in" -> "code in"), mirroring the real HEDIS shape (Has any code -> Has). The
+        // directly-invoked helper does no membership itself; the codeFilter can only be surfaced
+        // by following the chain to the terminal membership.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryComposition.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the " +
+                "cross-library delegation chain",
+        )
+    }
+
+    @Test
     fun crossLibraryGateNegativeHelperLeavesRetrieveUnfiltered() {
         // "Fail -> unfiltered" soundness: a cross-library helper that performs no terminology
         // membership is gate-negative, so it must NOT be inlined. The analysis must still emit the

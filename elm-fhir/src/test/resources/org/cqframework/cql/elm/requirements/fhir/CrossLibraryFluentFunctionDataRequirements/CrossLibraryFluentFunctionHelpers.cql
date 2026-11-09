@@ -15,3 +15,12 @@ define fluent function "has code in"(observation Observation, codes System.Value
 // that a non-traced cross-library call still leaves the retrieve emitted (unfiltered), not dropped.
 define fluent function "has effective"(observation Observation):
   observation.effective is not null
+
+// Delegation chain (composition): "obs code in" forwards to the terminal membership helper
+// "code in", mirroring the real HEDIS pattern where "Has any code" delegates to "Has". Both links
+// carry a System.ValueSet operand, so each is independently eligible for cross-library inlining.
+define fluent function "code in"(code FHIR.CodeableConcept, codes System.ValueSet):
+  code in codes
+
+define fluent function "obs code in"(observation Observation, codes System.ValueSet):
+  observation.code."code in"(codes)

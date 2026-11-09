@@ -11,14 +11,12 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.model.LibraryRef
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.IdObjectFactory
-import org.cqframework.cql.elm.visiting.FunctionalElmVisitor
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
+import org.hl7.cql.model.ListType
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.AliasRef
-import org.hl7.elm.r1.AnyInCodeSystem
-import org.hl7.elm.r1.AnyInValueSet
 import org.hl7.elm.r1.Code
 import org.hl7.elm.r1.CodeDef
 import org.hl7.elm.r1.CodeRef
@@ -34,12 +32,11 @@ import org.hl7.elm.r1.ExpressionDef
 import org.hl7.elm.r1.ExpressionRef
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.FunctionRef
-import org.hl7.elm.r1.InCodeSystem
-import org.hl7.elm.r1.InValueSet
 import org.hl7.elm.r1.IncludeDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.Null
+import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.OperandRef
 import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.ParameterRef
@@ -526,26 +523,46 @@ class ElmRequirementsContext(
     private val inliningFunctionDefs =
         Collections.newSetFromMap(IdentityHashMap<FunctionDef, Boolean>())
 
-    // Memoizes whether a function body contains a terminology membership test (the value-set/
-    // code-system filter pattern). Cross-library inlining is restricted to these helpers so that
-    // value-neutral helpers (date/interval constructors, conversions, etc.) are left on the default
-    // path and cannot perturb existing date/code filter inference.
+    // Memoizes whether a function is a terminology filter helper (see isTerminologyFilterHelper).
     private val terminologyFilterHelperCache = IdentityHashMap<FunctionDef, Boolean>()
 
+    // The System terminology types whose presence as a function operand marks a terminology filter
+    // helper. String is intentionally NOT included (too broad: many value-neutral helpers take
+    // strings), even though TypeResolver.isTerminologyType treats it as terminology.
+    private val terminologyOperandTypes: List<DataType> by lazy {
+        listOf(
+            typeResolver.resolveTypeName("System", "ValueSet"),
+            typeResolver.resolveTypeName("System", "Code"),
+            typeResolver.resolveTypeName("System", "Concept"),
+            typeResolver.resolveTypeName("System", "CodeSystem"),
+        )
+    }
+
+    private fun isTerminologyOperandType(dataType: DataType?): Boolean {
+        if (dataType == null) return false
+        val elementType = if (dataType is ListType) dataType.elementType else dataType
+        return terminologyOperandTypes.any { elementType.isSubTypeOf(it) }
+    }
+
+    private fun operandDataType(operand: OperandDef): DataType? {
+        return when {
+            operand.operandTypeSpecifier != null ->
+                typeResolver.resolveTypeSpecifier(operand.operandTypeSpecifier!!)
+            operand.operandType != null -> typeResolver.resolveTypeName(operand.operandType!!)
+            else -> operand.resultType
+        }
+    }
+
+    // A function is eligible for cross-library inlining when it takes a terminology-typed operand
+    // (value set / code / concept / code system). This captures value-set-parameter filter helpers,
+    // INCLUDING every link of a delegation chain -- each link carries the terminology operand it
+    // forwards, so composition is handled by the existing lazy inlining without having to follow
+    // function references here. Value-neutral helpers (date/interval constructors, conversions,
+    // plain-string helpers) are excluded and stay on the default path, so they cannot perturb
+    // existing date/code filter inference.
     private fun isTerminologyFilterHelper(functionDef: FunctionDef): Boolean {
-        val body = functionDef.expression ?: return false
         return terminologyFilterHelperCache.getOrPut(functionDef) {
-            val scanner =
-                FunctionalElmVisitor.from<Any?, Boolean>(
-                    { elm, _ ->
-                        elm is InValueSet ||
-                            elm is AnyInValueSet ||
-                            elm is InCodeSystem ||
-                            elm is AnyInCodeSystem
-                    },
-                    { a, b -> a || b },
-                )
-            scanner.visitElement(body, null)
+            functionDef.operand.any { isTerminologyOperandType(operandDataType(it)) }
         }
     }
 
@@ -639,15 +656,21 @@ class ElmRequirementsContext(
         if (name == null || operandBindingStack.isEmpty()) return null
         var frameIndex = operandBindingStack.size - 1
         var currentName: String = name
-        repeat(operandBindingStack.size) {
+        // Walk frames top-down. A name not present in a frame belongs to an enclosing scope -- this
+        // happens when visiting a bound argument that references an operand of an OUTER inlined
+        // function (the delegation/composition case) -- so we keep looking in lower frames. A
+        // binding that is itself an OperandRef is a pass-through to the next frame down. The first
+        // non-OperandRef binding found is the resolved argument, carrying its frame's call library.
+        while (frameIndex >= 0) {
             val frame = operandBindingStack[frameIndex]
-            val bound = frame.bindings[currentName] ?: return null
-            if (bound is OperandRef) {
-                currentName = bound.name ?: return null
-                frameIndex -= 1
-                if (frameIndex < 0) return null
-            } else {
-                return ResolvedBinding(bound, frame.callerLibrary)
+            val bound = frame.bindings[currentName]
+            when {
+                bound == null -> frameIndex -= 1
+                bound is OperandRef -> {
+                    currentName = bound.name ?: return null
+                    frameIndex -= 1
+                }
+                else -> return ResolvedBinding(bound, frame.callerLibrary)
             }
         }
         return null
