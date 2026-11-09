@@ -185,7 +185,7 @@ enum class BooleanTestKind {
 @SerialName("booleanTest")
 data class BooleanTestExpression(
     override val operand: Expression,
-    val kind: BooleanTestKind,
+    val booleanTestKind: BooleanTestKind,
     val negated: Boolean = false,
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression

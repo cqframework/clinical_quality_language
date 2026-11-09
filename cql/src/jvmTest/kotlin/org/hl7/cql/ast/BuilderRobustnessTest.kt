@@ -114,9 +114,10 @@ class BuilderRobustnessTest {
     }
 
     @Suppress("TooGenericExceptionCaught")
+    /** Parses [text] and serializes the result, as tooling does through [inspectCqlAst]. */
     private fun failureOf(text: String): String? =
         try {
-            Builder().parseLibrary(text)
+            inspectCqlAst(text)
             null
         } catch (e: Exception) {
             val site = e.stackTrace.firstOrNull { it.className.startsWith("org.hl7.cql.ast") }

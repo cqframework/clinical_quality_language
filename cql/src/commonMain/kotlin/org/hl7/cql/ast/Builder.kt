@@ -386,7 +386,7 @@ class Builder(private val sourceId: String? = null) {
             }
         return BooleanTestExpression(
             operand = left,
-            kind = kind,
+            booleanTestKind = kind,
             negated = "not" in keywords,
             locator = ctx.toLocator(),
         )
