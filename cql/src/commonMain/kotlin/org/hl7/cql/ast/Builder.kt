@@ -3,11 +3,15 @@ package org.hl7.cql.ast
 import kotlin.js.JsExport
 import kotlinx.serialization.json.Json
 import org.antlr.v4.kotlinruntime.BaseErrorListener
+import org.antlr.v4.kotlinruntime.CharStreams
+import org.antlr.v4.kotlinruntime.CommonTokenStream
+import org.antlr.v4.kotlinruntime.ListTokenSource
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.RecognitionException
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
+import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.StringEscapeUtils
@@ -20,14 +24,132 @@ class Builder(private val sourceId: String? = null) {
 
     fun parseLibrary(text: String): LibraryResult {
         problems.clear()
-        val parser = createParser(text)
+        val lexerProblems = ProblemCollector()
+        val lexer = cqlLexer(CharStreams.fromString(text))
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(lexerProblems)
+        val whole = parseLibrary(CommonTokenStream(lexer).apply { fill() }.tokens.toList())
+        val library =
+            if (lexerProblems.problems.isEmpty() && whole.problems.isEmpty()) {
+                buildLibrary(whole.context)
+            } else {
+                buildLibraryByDeclaration(text, whole.context)
+            }
+        return LibraryResult(library, problems.toList())
+    }
+
+    private class ParsedLibrary(val context: cqlParser.LibraryContext, val problems: List<Problem>)
+
+    private fun parseLibrary(tokens: List<Token>): ParsedLibrary {
+        val parser = cqlParser(CommonTokenStream(ListTokenSource(tokens)))
         val listener = ProblemCollector()
         parser.removeErrorListeners()
         parser.addErrorListener(listener)
-        val libraryContext = parser.library()
-        problems.addAll(listener.problems)
-        val library = buildLibrary(libraryContext)
-        return LibraryResult(library, problems.toList())
+        return ParsedLibrary(parser.library(), listener.problems)
+    }
+
+    /**
+     * Rebuilds a library that has syntax errors by lexing it for recovery and parsing each
+     * top-level declaration on its own (see [StatementBoundaries]), so that an error in one cannot
+     * consume the ones after it. The whole-library parse is used only for its extent.
+     */
+    private fun buildLibraryByDeclaration(text: String, whole: cqlParser.LibraryContext): Library {
+        val lexed = StatementBoundaries.lex(text)
+        val lexerProblems =
+            lexed.errors.map {
+                Problem(
+                    message = it.message,
+                    locator = Locator(sourceId, it.startIndex, it.stopIndex, it.line, it.column),
+                )
+            }
+        problems += lexerProblems
+        val runs = StatementBoundaries.split(lexed.tokens)
+        val parts =
+            runs
+                .flatMapIndexed { index, run ->
+                    // A run owns the text up to the next run, including any the lexer discarded,
+                    // so it sees the lexer errors there.
+                    val start = run.first().startIndex
+                    val end = runs.getOrNull(index + 1)?.first()?.startIndex ?: text.length
+                    parseDeclaration(
+                        run,
+                        lexerProblems.filter { it.locator.startIndex in start until end },
+                    )
+                }
+                .map { parsed ->
+                    problems += parsed.problems
+                    buildLibrary(parsed.context)
+                }
+        reportOutOfOrderDeclarations(parts)
+        val header = parts.firstOrNull { it.name != null }
+        return Library(
+            name = header?.name,
+            version = header?.version,
+            definitions = parts.flatMap { it.definitions },
+            statements = parts.flatMap { it.statements },
+            locator = whole.toLocator(),
+        )
+    }
+
+    /**
+     * Parses the tokens of one declaration. If they have errors, including [lexerProblems] within
+     * them, but a part ending at a line break before the first error parses cleanly, that part is
+     * the declaration and the rest is parsed on its own. A damaged declaration keyword (`defi`,
+     * `de"fine`) leaves no boundary to split at, so this keeps its remains from breaking the
+     * declaration before it.
+     */
+    private fun parseDeclaration(
+        run: List<Token>,
+        lexerProblems: List<Problem>,
+    ): List<ParsedLibrary> {
+        val parsed = parseLibrary(run)
+        val errors = parsed.problems + lexerProblems
+        if (errors.isEmpty()) return listOf(parsed)
+        // An error at the end of the run is reported at the generated EOF, which has no position.
+        val firstError =
+            errors.map { it.locator.startIndex }.filter { it >= 0 }.minOrNull() ?: Int.MAX_VALUE
+        StatementBoundaries.lineStarts(run)
+            .filter { run[it].startIndex <= firstError }
+            .takeLast(MAX_PREFIX_ATTEMPTS)
+            .asReversed()
+            .forEach { end ->
+                val prefix = parseLibrary(run.subList(0, end))
+                if (prefix.problems.isEmpty() && prefix.context.declaresAnything()) {
+                    return listOf(prefix, parseLibrary(run.subList(end, run.size)))
+                }
+            }
+        return listOf(parsed)
+    }
+
+    private fun cqlParser.LibraryContext.declaresAnything(): Boolean =
+        libraryDefinition() != null || definition().isNotEmpty() || statement().isNotEmpty()
+
+    /**
+     * Parsing declarations separately loses the grammar's ordering rule (`library`, then `using`,
+     * `include`, terminology and parameters, then `context` and `define`), so it is checked here.
+     */
+    private fun reportOutOfOrderDeclarations(parts: List<Library>) {
+        val nonEmpty =
+            parts.filter {
+                it.name != null || it.definitions.isNotEmpty() || it.statements.isNotEmpty()
+            }
+        nonEmpty
+            .drop(1)
+            .filter { it.name != null }
+            .forEach { problems += Problem("The library declaration must come first", it.locator) }
+        val firstStatement =
+            nonEmpty.flatMap { it.statements }.minOfOrNull { it.locator.startIndex } ?: return
+        nonEmpty
+            .flatMap { it.definitions }
+            .filter { it.locator.startIndex > firstStatement }
+            .forEach {
+                problems +=
+                    Problem(
+                        "using, include, terminology and parameter definitions must come " +
+                            "before context and define statements",
+                        it.locator,
+                    )
+            }
     }
 
     fun parseExpression(text: String): ExpressionResult {
@@ -1896,6 +2018,9 @@ class Builder(private val sourceId: String? = null) {
         }
     }
 }
+
+/** How many line breaks [Builder] tries when looking for the clean part of a declaration. */
+private const val MAX_PREFIX_ATTEMPTS = 8
 
 /** Signals that the Builder reached a part of the parse tree the parser could not complete. */
 private class IncompleteSyntax : RuntimeException()
