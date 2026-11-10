@@ -23,6 +23,7 @@ div(left Quantity, right Quantity) Quantity
 The div operator performs truncated division of its arguments.
 When invoked with mixed Integer and Decimal arguments, the Integer argument will be implicitly converted to Decimal.
 If either argument is null, the result is null.
+If the result cannot be represented, or the right argument is 0, the result is null.
 */
 object TruncatedDivideEvaluator {
     @JvmStatic
@@ -32,13 +33,15 @@ object TruncatedDivideEvaluator {
         }
 
         if (left is Integer && right is Integer) {
-            if (right.value == 0) {
+            // Dividing the minimum Integer by -1 overflows.
+            if (right.value == 0 || (left.value == Int.MIN_VALUE && right.value == -1)) {
                 return null
             }
 
             return (left.value / right.value).toCqlInteger()
         } else if (left is Long && right is Long) {
-            if (right.value == 0L) {
+            // Dividing the minimum Long by -1 overflows.
+            if (right.value == 0L || (left.value == kotlin.Long.MIN_VALUE && right.value == -1L)) {
                 return null
             }
 
