@@ -60,7 +60,17 @@ object DateTimeComponentFromEvaluator {
         if (operand is Date) {
             val date = operand
 
-            if (p.toDateIndex() > date.precision.toDateIndex()) {
+            // Compare against the DateTime index on both sides so that
+            // an intra-day precision request (HOUR / MINUTE / SECOND /
+            // MILLISECOND) against a Date operand returns null per spec
+            // rather than falling through to LocalDate.get(HourOfDay) and
+            // raising UnsupportedTemporalTypeException.  Date.precision
+            // is bounded above by DAY (DateTimeIndex 2), so YEAR / MONTH
+            // / DAY requests against a sufficiently-precise Date still
+            // return the component; a request for HOUR against a DAY-
+            // precision Date is correctly classified as "more precise
+            // than the operand carries" and returns null.
+            if (p.toDateTimeIndex() > date.precision.toDateTimeIndex()) {
                 return null
             }
 
