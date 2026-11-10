@@ -11,17 +11,25 @@ import org.antlr.v4.kotlinruntime.Token
 import org.cqframework.cql.gen.cqlLexer
 
 /**
- * Finds the top-level declarations of a library that has syntax errors (the library header,
- * `using`, `include`, terminology and parameter definitions, `context` and `define` statements), so
- * that each can be parsed on its own and an error in one cannot consume the others.
+ * Lexes a library and splits it into its top-level declarations (the library header, `using`,
+ * `include`, terminology and parameter definitions, `context` and `define` statements), so that the
+ * [Builder] can parse each on its own and a syntax error in one cannot consume the others.
  *
- * The grammar alone cannot find these boundaries during error recovery: `define`, `using`,
+ * The grammar alone cannot find these boundaries once there is an error: `define`, `using`,
  * `context` and the other declaration keywords are also valid identifiers, so after an incomplete
- * expression such as `1 +` the parser reads the next line's `define` as the missing operand. A
- * declaration therefore starts at a declaration keyword (or an access modifier before one) that is
- * the first token on its line and is followed by something that can begin a name. That excludes
- * uses of the keywords as identifiers, such as the tuple element `code: X`, the property access
- * `concept.display` and the choice type `Choice<code, ...>` split across lines.
+ * expression such as `1 +` the parser reads the next line's `define` as the missing operand, and an
+ * unterminated quote can run to any later quote. Two rules find them instead:
+ * 1. A declaration starts at a declaration keyword, or an access modifier before one, that is the
+ *    first token on its line and is followed by something that can begin a name. That excludes the
+ *    keywords used as identifiers, such as the tuple element `code: X`, the property access
+ *    `concept.display` and the choice type `Choice<code, ...>` split across lines.
+ * 2. A string or quoted identifier does not run across a line that starts a declaration (see
+ *    [lex]).
+ *
+ * For a library without errors these give the same declarations as the grammar, except in two cases
+ * the grammar allows but CQL is not written in: a string or quoted identifier containing a line
+ * that starts like a declaration is reported as unterminated, and a declaration that is not the
+ * first token on its line is parsed together with the one before it.
  */
 internal object StatementBoundaries {
 
@@ -68,12 +76,12 @@ internal object StatementBoundaries {
     class Lexed(val tokens: List<Token>, val errors: List<LexerError>)
 
     /**
-     * Lexes [text] for recovery. An unterminated string or quoted identifier either pairs with the
-     * next quote character, which can be any number of declarations later, or fails to match at the
-     * end of the text, and the lexer discards everything it scanned. A literal or a failed match
-     * that runs across a line starting a declaration is therefore treated as unterminated: lexing
-     * stops there and starts again at that line. Block comments are not cut, since commented-out
-     * declarations are common.
+     * Lexes [text]. An unterminated string or quoted identifier either pairs with the next quote
+     * character, which can be any number of declarations later, or fails to match at the end of the
+     * text, and the lexer discards everything it scanned. A literal or a failed match that runs
+     * across a line starting a declaration is therefore treated as unterminated: lexing stops there
+     * and starts again at that line. Block comments are not cut, since commented-out declarations
+     * are common.
      */
     fun lex(text: String): Lexed {
         val tokens = mutableListOf<Token>()

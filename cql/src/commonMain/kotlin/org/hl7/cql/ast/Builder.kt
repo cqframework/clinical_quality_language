@@ -3,7 +3,6 @@ package org.hl7.cql.ast
 import kotlin.js.JsExport
 import kotlinx.serialization.json.Json
 import org.antlr.v4.kotlinruntime.BaseErrorListener
-import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.antlr.v4.kotlinruntime.ListTokenSource
 import org.antlr.v4.kotlinruntime.ParserRuleContext
@@ -11,7 +10,6 @@ import org.antlr.v4.kotlinruntime.RecognitionException
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
-import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.StringEscapeUtils
@@ -22,38 +20,13 @@ class Builder(private val sourceId: String? = null) {
 
     private val problems = mutableListOf<Problem>()
 
+    /**
+     * Parses a library one top-level declaration at a time (see [StatementBoundaries]), so that a
+     * syntax error in one cannot consume the others. For a library without errors the result is the
+     * same as parsing it whole.
+     */
     fun parseLibrary(text: String): LibraryResult {
         problems.clear()
-        val lexerProblems = ProblemCollector()
-        val lexer = cqlLexer(CharStreams.fromString(text))
-        lexer.removeErrorListeners()
-        lexer.addErrorListener(lexerProblems)
-        val whole = parseLibrary(CommonTokenStream(lexer).apply { fill() }.tokens.toList())
-        val library =
-            if (lexerProblems.problems.isEmpty() && whole.problems.isEmpty()) {
-                buildLibrary(whole.context)
-            } else {
-                buildLibraryByDeclaration(text, whole.context)
-            }
-        return LibraryResult(library, problems.toList())
-    }
-
-    private class ParsedLibrary(val context: cqlParser.LibraryContext, val problems: List<Problem>)
-
-    private fun parseLibrary(tokens: List<Token>): ParsedLibrary {
-        val parser = cqlParser(CommonTokenStream(ListTokenSource(tokens)))
-        val listener = ProblemCollector()
-        parser.removeErrorListeners()
-        parser.addErrorListener(listener)
-        return ParsedLibrary(parser.library(), listener.problems)
-    }
-
-    /**
-     * Rebuilds a library that has syntax errors by lexing it for recovery and parsing each
-     * top-level declaration on its own (see [StatementBoundaries]), so that an error in one cannot
-     * consume the ones after it. The whole-library parse is used only for its extent.
-     */
-    private fun buildLibraryByDeclaration(text: String, whole: cqlParser.LibraryContext): Library {
         val lexed = StatementBoundaries.lex(text)
         val lexerProblems =
             lexed.errors.map {
@@ -82,13 +55,41 @@ class Builder(private val sourceId: String? = null) {
                 }
         reportOutOfOrderDeclarations(parts)
         val header = parts.firstOrNull { it.name != null }
-        return Library(
-            name = header?.name,
-            version = header?.version,
-            definitions = parts.flatMap { it.definitions },
-            statements = parts.flatMap { it.statements },
-            locator = whole.toLocator(),
+        val library =
+            Library(
+                name = header?.name,
+                version = header?.version,
+                definitions = parts.flatMap { it.definitions },
+                statements = parts.flatMap { it.statements },
+                locator = libraryLocator(lexed.tokens),
+            )
+        return LibraryResult(library, problems.toList())
+    }
+
+    /**
+     * The extent the grammar's `library` rule gives: from the first token on the default channel
+     * (EOF for an empty library) to the last token of any channel before EOF.
+     */
+    private fun libraryLocator(tokens: List<Token>): Locator {
+        val first = tokens.first { it.channel == Token.DEFAULT_CHANNEL }
+        val last = tokens.lastOrNull { it.type != Token.EOF }
+        return Locator(
+            sourceId = sourceId,
+            startIndex = first.startIndex,
+            stopIndex = last?.stopIndex ?: -1,
+            line = first.line,
+            column = first.charPositionInLine,
         )
+    }
+
+    private class ParsedLibrary(val context: cqlParser.LibraryContext, val problems: List<Problem>)
+
+    private fun parseLibrary(tokens: List<Token>): ParsedLibrary {
+        val parser = cqlParser(CommonTokenStream(ListTokenSource(tokens)))
+        val listener = ProblemCollector()
+        parser.removeErrorListeners()
+        parser.addErrorListener(listener)
+        return ParsedLibrary(parser.library(), listener.problems)
     }
 
     /**
@@ -105,7 +106,7 @@ class Builder(private val sourceId: String? = null) {
         val parsed = parseLibrary(run)
         val errors = parsed.problems + lexerProblems
         if (errors.isEmpty()) return listOf(parsed)
-        // An error at the end of the run is reported at the generated EOF, which has no position.
+        // A problem without a position is taken to be at the end, so the prefixes are still tried.
         val firstError =
             errors.map { it.locator.startIndex }.filter { it >= 0 }.minOrNull() ?: Int.MAX_VALUE
         StatementBoundaries.lineStarts(run)
