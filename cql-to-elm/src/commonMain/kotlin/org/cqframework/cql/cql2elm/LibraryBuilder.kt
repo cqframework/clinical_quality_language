@@ -2294,8 +2294,12 @@ class LibraryBuilder(
         return result
     }
 
-    private fun validateUnit(unit: String) {
-        when (unit) {
+    /**
+     * Returns true if [unit] is one of the CQL calendar duration keywords (`year`, `weeks`, ...).
+     * These are not UCUM units, so they don't need the UCUM service.
+     */
+    private fun isCalendarDurationUnit(unit: String): Boolean {
+        return when (unit) {
             "year",
             "years",
             "month",
@@ -2311,8 +2315,14 @@ class LibraryBuilder(
             "second",
             "seconds",
             "millisecond",
-            "milliseconds" -> {}
-            else -> validateUcumUnit(unit)
+            "milliseconds" -> true
+            else -> false
+        }
+    }
+
+    private fun validateUnit(unit: String) {
+        if (!isCalendarDurationUnit(unit)) {
+            validateUcumUnit(unit)
         }
     }
 
@@ -2350,6 +2360,11 @@ class LibraryBuilder(
      * with any other unit; see the CQL specification's "Arbitrary Units" guidance.
      */
     fun isArbitraryUnit(unit: String): Boolean {
+        // A calendar duration is never an arbitrary unit. Checking it here means a library whose
+        // quantities are all calendar durations compiles without a UCUM service (#1869).
+        if (isCalendarDurationUnit(unit)) {
+            return false
+        }
         return libraryManager.ucumService.isArbitrary(unit)
     }
 
