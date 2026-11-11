@@ -43,8 +43,10 @@ object ChildrenEvaluator {
     }
 
     private fun addConcept(list: MutableList<Value?>, concept: Concept) {
-        for (code in concept.codes!!) {
-            addCode(list, code)
+        if (concept.codes != null) {
+            for (code in concept.codes) {
+                addCode(list, code)
+            }
         }
 
         list.add(concept.display?.toCqlString())
