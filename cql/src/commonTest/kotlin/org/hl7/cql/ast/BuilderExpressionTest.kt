@@ -1,6 +1,9 @@
 package org.hl7.cql.ast
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import org.cqframework.cql.shared.BigDecimal
 
 class BuilderExpressionTest {
 
@@ -372,13 +375,82 @@ class BuilderExpressionTest {
 
     @Test
     fun parsesQuantityAndRatioLiterals() {
-        assertExpression("5 'mg'") { quantity("5", "'mg'") }
+        assertExpression("5 'mg'") { quantity("5", "mg") }
+        assertExpression("3 days") { quantity("3", "days") }
         assertExpression("5 'mg':10 'mL'") {
-            ratio(
-                numerator = quantityLiteral("5", "'mg'"),
-                denominator = quantityLiteral("10", "'mL'"),
-            )
+            ratio(numerator = quantityLiteral("5", "mg"), denominator = quantityLiteral("10", "mL"))
         }
+        assertExpression("5 'mg/dL'") { quantity("5", "mg/dL") }
+    }
+
+    @Test
+    fun parsesBooleanTestExpressions() {
+        assertExpression("1 is null") { booleanTest({ int(1) }, BooleanTestKind.NULL) }
+        assertExpression("1 is not null") {
+            booleanTest({ int(1) }, BooleanTestKind.NULL, negated = true)
+        }
+        assertExpression("true is true") { booleanTest({ boolean(true) }, BooleanTestKind.TRUE) }
+        assertExpression("true is not false") {
+            booleanTest({ boolean(true) }, BooleanTestKind.FALSE, negated = true)
+        }
+    }
+
+    @Test
+    fun parsesNumericLiterals() {
+        assertExpression("10L") { long(10L) }
+        assertExpression("-10L") { long(-10L) }
+        assertExpression("-9223372036854775808L") { long(Long.MIN_VALUE) }
+        assertExpression("2147483647") { int(Int.MAX_VALUE) }
+        assertExpression("-2147483648") { int(Int.MIN_VALUE) }
+        assertExpression("-1.5") { LiteralExpression(DecimalLiteral(BigDecimal("-1.5"))) }
+        assertExpression("+1") { unary(UnaryOperator.POSITIVE) { int(1) } }
+        assertExpression("-(1)") { unary(UnaryOperator.NEGATE) { int(1) } }
+        assertExpression("-x") { unary(UnaryOperator.NEGATE) { identifier("x") } }
+    }
+
+    @Test
+    fun reportsOutOfRangeNumericLiterals() {
+        for (text in listOf("2147483648", "-2147483649", "9223372036854775808L")) {
+            val result = builder.parseExpression(text)
+            assertTrue(result.expression is UnsupportedExpression, text)
+            assertEquals(1, result.problems.size, text)
+            assertTrue(result.problems.single().message.contains("out of range"), text)
+        }
+    }
+
+    @Test
+    fun processesStringEscapes() {
+        assertExpression("""'it\'s'""") { string("it's") }
+        assertExpression("""'a\tb\nc'""") { string("a\tb\nc") }
+        assertExpression("""'\u0041\\'""") { string("A\\") }
+        assertExpression("""Code '1\'2' from "SNOMED"""") { code("1'2", system = "SNOMED") }
+    }
+
+    @Test
+    fun parsesSortDirections() {
+        fun sortOf(text: String): SortClause {
+            val result = builder.parseExpression("[Observation] O $text")
+            assertTrue(result.problems.isEmpty(), result.problems.joinToString { it.message })
+            return (result.expression as QueryExpression).sort!!
+        }
+
+        assertEquals(SortDirection.DESC, sortOf("sort desc").direction)
+        assertEquals(SortDirection.ASCENDING, sortOf("sort ascending").direction)
+        assertTrue(sortOf("sort desc").items.isEmpty())
+
+        val items = sortOf("sort by id, status asc, value descending").items
+        assertEquals(
+            listOf(null, SortDirection.ASC, SortDirection.DESCENDING),
+            items.map { it.direction },
+        )
+        assertEquals(null, sortOf("sort by id").direction)
+    }
+
+    @Test
+    fun processesIdentifierEscapes() {
+        assertExpression(""""a\"b"""") { identifier("a\"b") }
+        assertExpression("""`a\`b`""") { identifier("a`b") }
+        assertExpression("\"\"") { identifier("") }
     }
 
     @Test
@@ -399,9 +471,6 @@ class BuilderExpressionTest {
     fun parsesTypeExpressions() {
         assertExpression("1 is Integer") {
             typeIs(operand = { int(1) }, type = namedType("Integer"))
-        }
-        assertExpression("1 is not null") {
-            binary(BinaryOperator.EQUALS, left = { int(1) }, right = { nullValue() })
         }
         assertExpression("1 as Integer") {
             typeAs(operand = { int(1) }, type = namedType("Integer"))
