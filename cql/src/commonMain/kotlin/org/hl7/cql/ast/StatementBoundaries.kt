@@ -132,11 +132,13 @@ internal object StatementBoundaries {
 
     /**
      * Moves a token lexed from a part of the text that starts a line to its position in the whole
-     * text. Its text is fixed first, since a token reads it from the part by position.
+     * text. Its text is read first and stored on the token, since until then a token reads its text
+     * from the part by position, which the move would change.
      */
     private fun Token.moveBy(offset: Int, lines: Int): Token =
         (this as CommonToken).apply {
-            text = text
+            val lexedText = text
+            text = lexedText
             startIndex += offset
             stopIndex += offset
             line += lines
