@@ -140,6 +140,44 @@
 			</output>
 		</test>
 	</group>
+	<group name="ToDate">
+		<test name="ToDate1">
+			<expression>ToDate('2014-01-01')</expression>
+			<output>@2014-01-01</output>
+		</test>
+		<test name="ToDateMonth">
+			<expression>ToDate('2014-01')</expression>
+			<output>@2014-01</output>
+		</test>
+		<test name="ToDateIgnoresTime">
+			<expression>ToDate('2014-01-01T12:05:05.955')</expression>
+			<output>@2014-01-01</output>
+		</test>
+		<test name="ToDateIgnoresTimeSeconds">
+			<expression>ToDate('2014-01-01T12:30:00')</expression>
+			<output>@2014-01-01</output>
+		</test>
+		<test name="ToDateIgnoresTimeAndOffset">
+			<expression>ToDate('2014-01-01T23:30:00-05:00')</expression>
+			<output>@2014-01-01</output>
+		</test>
+		<test name="ToDateMalformedTime">
+			<expression>ToDate('2014-01-01T25:00:00') is null</expression>
+			<output>true</output>
+		</test>
+		<test name="ToDateMalformed">
+			<expression>ToDate('2014-13-01') is null</expression>
+			<output>true</output>
+		</test>
+		<test name="ConvertsToDateIgnoresTime">
+			<expression>ConvertsToDate('2014-01-01T12:30:00')</expression>
+			<output>true</output>
+		</test>
+		<test name="ConvertsToDateMalformedTime">
+			<expression>ConvertsToDate('2014-01-01T25:00:00')</expression>
+			<output>false</output>
+		</test>
+	</group>
 	<group name="ToDateTime">
 		<test name="ToDateTime1">
 			<expression>ToDateTime('2014-01-01')</expression>
