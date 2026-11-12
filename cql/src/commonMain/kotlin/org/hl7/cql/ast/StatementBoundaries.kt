@@ -3,6 +3,7 @@ package org.hl7.cql.ast
 import org.antlr.v4.kotlinruntime.BaseErrorListener
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonToken
+import org.antlr.v4.kotlinruntime.CommonTokenFactory
 import org.antlr.v4.kotlinruntime.Lexer
 import org.antlr.v4.kotlinruntime.LexerNoViableAltException
 import org.antlr.v4.kotlinruntime.RecognitionException
@@ -108,6 +109,8 @@ internal object StatementBoundaries {
         errors: MutableList<LexerError>,
     ): Int? {
         val lexer = cqlLexer(CharStreams.fromString(text.substring(start)))
+        // Tokens keep their own text, which otherwise they read from the part by position
+        lexer.tokenFactory = CommonTokenFactory(copyText = true)
         val recorder = ErrorRecorder(start, line - 1)
         lexer.removeErrorListeners()
         lexer.addErrorListener(recorder)
@@ -132,13 +135,10 @@ internal object StatementBoundaries {
 
     /**
      * Moves a token lexed from a part of the text that starts a line to its position in the whole
-     * text. Its text is read first and stored on the token, since until then a token reads its text
-     * from the part by position, which the move would change.
+     * text.
      */
     private fun Token.moveBy(offset: Int, lines: Int): Token =
         (this as CommonToken).apply {
-            val lexedText = text
-            text = lexedText
             startIndex += offset
             stopIndex += offset
             line += lines
