@@ -106,6 +106,7 @@ open class Transformer {
             is PropertyAccessExpression -> visitPropertyAccessExpression(expression)
             is IndexExpression -> visitIndexExpression(expression)
             is IfExpression -> visitIfExpression(expression)
+            is ParenthesizedExpression -> visitParenthesizedExpression(expression)
             is CaseExpression -> visitCaseExpression(expression)
             is QueryExpression -> visitQueryExpression(expression)
             is RetrieveExpression -> visitRetrieveExpression(expression)
@@ -193,6 +194,9 @@ open class Transformer {
             index = visitExpression(expression.index),
         )
 
+    open fun visitParenthesizedExpression(expression: ParenthesizedExpression): Expression =
+        expression.copy(expression = visitExpression(expression.expression))
+
     open fun visitIfExpression(expression: IfExpression): Expression =
         expression.copy(
             condition = visitExpression(expression.condition),
@@ -230,8 +234,17 @@ open class Transformer {
             terminology = expression.terminology?.let { visitTerminologyRestriction(it) },
             comparator = expression.comparator,
             context = expression.context,
-            codePath = expression.codePath,
+            codePath = expression.codePath?.let { visitSimplePath(it) },
         )
+
+    open fun visitSimplePath(path: SimplePath): SimplePath =
+        path.copy(segments = path.segments.map { visitPathSegment(it) })
+
+    open fun visitPathSegment(segment: PathSegment): PathSegment =
+        when (segment) {
+            is PropertySegment -> segment
+            is IndexSegment -> segment.copy(index = visitExpression(segment.index))
+        }
 
     open fun visitListTransformExpression(expression: ListTransformExpression): Expression =
         expression.copy(operand = visitExpression(expression.operand))
@@ -456,7 +469,6 @@ open class Transformer {
             is OverlapsIntervalPhrase -> visitOverlapsIntervalPhrase(phrase)
             is StartsIntervalPhrase -> visitStartsIntervalPhrase(phrase)
             is EndsIntervalPhrase -> visitEndsIntervalPhrase(phrase)
-            is UnsupportedIntervalPhrase -> visitUnsupportedIntervalPhrase(phrase)
         }
 
     open fun visitConcurrentIntervalPhrase(
@@ -490,10 +502,6 @@ open class Transformer {
         phrase
 
     open fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase): IntervalOperatorPhrase = phrase
-
-    open fun visitUnsupportedIntervalPhrase(
-        phrase: UnsupportedIntervalPhrase
-    ): IntervalOperatorPhrase = phrase
 
     open fun visitQuantityOffset(offset: QuantityOffset): QuantityOffset =
         offset.copy(quantity = visitQuantityLiteral(offset.quantity) as QuantityLiteral)

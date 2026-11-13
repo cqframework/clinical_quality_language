@@ -172,7 +172,6 @@ enum class TemporalRelationshipDirection {
 data class TemporalRelationshipPhrase(
     val direction: TemporalRelationshipDirection,
     val inclusive: Boolean,
-    val leadingQualifier: ExclusiveRelativeQualifier? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 
@@ -276,12 +275,5 @@ data class StartsIntervalPhrase(
 @SerialName("ends")
 data class EndsIntervalPhrase(
     val precision: String? = null,
-    override val locator: Locator = Locator.UNKNOWN,
-) : IntervalOperatorPhrase
-
-@Serializable
-@SerialName("unsupportedInterval")
-data class UnsupportedIntervalPhrase(
-    val text: String,
     override val locator: Locator = Locator.UNKNOWN,
 ) : IntervalOperatorPhrase

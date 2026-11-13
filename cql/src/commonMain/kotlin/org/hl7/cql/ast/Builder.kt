@@ -55,15 +55,72 @@ class Builder(private val sourceId: String? = null) {
                 }
         reportOutOfOrderDeclarations(parts)
         val header = parts.firstOrNull { it.name != null }
+        val definitions = parts.flatMap { it.definitions }
+        val statements = parts.flatMap { it.statements }
+        val declarations: List<Declaration> = listOfNotNull(header) + definitions + statements
+        val attached = attachComments(text, lexed.tokens, declarations)
+        val headerMetadata = if (header != null) attached.first() else null
+        val firstDefinition = if (header != null) 1 else 0
+        val firstStatement = firstDefinition + definitions.size
         val library =
             Library(
                 name = header?.name,
                 version = header?.version,
-                definitions = parts.flatMap { it.definitions },
-                statements = parts.flatMap { it.statements },
+                definitions =
+                    definitions.mapIndexed { i, definition ->
+                        definition.withComments(attached[firstDefinition + i])
+                    },
+                statements =
+                    statements.mapIndexed { i, statement ->
+                        statement.withComments(attached[firstStatement + i])
+                    },
+                comments =
+                    if (declarations.isEmpty()) CommentAttacher.comments(lexed.tokens, sourceId)
+                    else headerMetadata?.comments.orEmpty(),
+                tags = headerMetadata?.tags.orEmpty(),
                 locator = libraryLocator(lexed.tokens),
             )
         return LibraryResult(library, problems.toList())
+    }
+
+    /** The comments and tags of each of [declarations], in the order given. */
+    private fun attachComments(
+        text: String,
+        tokens: List<Token>,
+        declarations: List<Declaration>,
+    ): List<CommentAttacher.Attached> {
+        val order = declarations.indices.sortedBy { declarations[it].locator.startIndex }
+        val inOrder =
+            CommentAttacher.attach(text, tokens, order.map { declarations[it].locator }, sourceId)
+        val attached = arrayOfNulls<CommentAttacher.Attached>(declarations.size)
+        order.forEachIndexed { k, i -> attached[i] = inOrder[k] }
+        return attached.map { it!! }
+    }
+
+    private fun Definition.withComments(attached: CommentAttacher.Attached): Definition {
+        val comments = attached.comments
+        val tags = attached.tags
+        return when (this) {
+            is UsingDefinition -> copy(comments = comments, tags = tags)
+            is IncludeDefinition -> copy(comments = comments, tags = tags)
+            is CodeSystemDefinition -> copy(comments = comments, tags = tags)
+            is ValueSetDefinition -> copy(comments = comments, tags = tags)
+            is CodeDefinition -> copy(comments = comments, tags = tags)
+            is ConceptDefinition -> copy(comments = comments, tags = tags)
+            is ParameterDefinition -> copy(comments = comments, tags = tags)
+            is UnsupportedDefinition -> copy(comments = comments, tags = tags)
+        }
+    }
+
+    private fun Statement.withComments(attached: CommentAttacher.Attached): Statement {
+        val comments = attached.comments
+        val tags = attached.tags
+        return when (this) {
+            is ContextDefinition -> copy(comments = comments, tags = tags)
+            is ExpressionDefinition -> copy(comments = comments, tags = tags)
+            is FunctionDefinition -> copy(comments = comments, tags = tags)
+            is UnsupportedStatement -> copy(comments = comments, tags = tags)
+        }
     }
 
     /**
@@ -193,7 +250,8 @@ class Builder(private val sourceId: String? = null) {
             version = libraryVersion,
             definitions = definitions,
             statements = statements,
-            locator = ctx.toLocator(),
+            // For a header, the extent of the `library` declaration, to place its comments
+            locator = (libraryDefinition ?: ctx).toLocator(),
         )
     }
 
@@ -213,7 +271,7 @@ class Builder(private val sourceId: String? = null) {
                     buildValueSetDefinition(ctx.valuesetDefinition()!!)
                 ctx.codeDefinition() != null -> buildCodeDefinition(ctx.codeDefinition()!!)
                 ctx.conceptDefinition() != null -> buildConceptDefinition(ctx.conceptDefinition()!!)
-                else -> unsupportedDefinition("definition", ctx)
+                else -> unexpected(ctx)
             }
         }
 
@@ -316,15 +374,7 @@ class Builder(private val sourceId: String? = null) {
 
                 ctx.functionDefinition() != null ->
                     buildFunctionDefinition(ctx.functionDefinition()!!)
-                else ->
-                    UnsupportedStatement(grammarRule = "statement", locator = ctx.toLocator())
-                        .also {
-                            problems +=
-                                Problem(
-                                    message = "Unsupported statement: ${ctx.text}",
-                                    locator = ctx.toLocator(),
-                                )
-                        }
+                else -> unexpected(ctx)
             }
         }
 
@@ -426,13 +476,7 @@ class Builder(private val sourceId: String? = null) {
                 ChoiceTypeSpecifier(choices = choices, locator = choice.toLocator())
             }
 
-            else -> {
-                problems += Problem("Unsupported type specifier: ${ctx.text}", ctx.toLocator())
-                NamedTypeSpecifier(
-                    name = QualifiedIdentifier(listOf("Any")),
-                    locator = ctx.toLocator(),
-                )
-            }
+            else -> unexpected(ctx)
         }
     }
 
@@ -490,7 +534,7 @@ class Builder(private val sourceId: String? = null) {
                         locator = ctx.toLocator(),
                     )
 
-                else -> unsupportedExpression("expression", ctx)
+                else -> unexpected(ctx)
             }
         }
 
@@ -505,7 +549,7 @@ class Builder(private val sourceId: String? = null) {
                 "null" -> BooleanTestKind.NULL
                 "true" -> BooleanTestKind.TRUE
                 "false" -> BooleanTestKind.FALSE
-                else -> return unsupportedExpression("booleanExpression", ctx)
+                else -> unexpected(ctx)
             }
         return BooleanTestExpression(
             operand = left,
@@ -527,7 +571,7 @@ class Builder(private val sourceId: String? = null) {
                 "!=" -> BinaryOperator.NOT_EQUALS
                 "~" -> BinaryOperator.EQUIVALENT
                 "!~" -> BinaryOperator.NOT_EQUIVALENT
-                else -> BinaryOperator.EQUALS
+                else -> unexpected(ctx)
             }
         return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
     }
@@ -541,19 +585,18 @@ class Builder(private val sourceId: String? = null) {
                 "<=" -> BinaryOperator.LTE
                 ">" -> BinaryOperator.GT
                 ">=" -> BinaryOperator.GTE
-                else -> BinaryOperator.LT
+                else -> unexpected(ctx)
             }
         return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
     }
 
     private fun buildOrExpression(ctx: cqlParser.OrExpressionContext): Expression {
         ctx.requireComplete()
-        val operatorToken =
-            ctx.children?.map { it.text.lowercase() }?.firstOrNull { it == "or" || it == "xor" }
         val operator =
-            when (operatorToken) {
+            when (ctx.getChild(1)?.text?.lowercase()) {
+                "or" -> BinaryOperator.OR
                 "xor" -> BinaryOperator.XOR
-                else -> BinaryOperator.OR
+                else -> unexpected(ctx)
             }
         return buildBinaryExpression(operator, ctx.expression(0), ctx.expression(1), ctx)
     }
@@ -564,10 +607,8 @@ class Builder(private val sourceId: String? = null) {
         rightCtx: cqlParser.ExpressionContext?,
         parent: ParserRuleContext,
     ): Expression {
-        val left =
-            leftCtx?.let { buildExpression(it) } ?: unsupportedExpression("expression", parent)
-        val right =
-            rightCtx?.let { buildExpression(it) } ?: unsupportedExpression("expression", parent)
+        val left = buildExpression(leftCtx ?: unexpected(parent))
+        val right = buildExpression(rightCtx ?: unexpected(parent))
         return OperatorBinaryExpression(
             operator = operator,
             left = left,
@@ -610,7 +651,7 @@ class Builder(private val sourceId: String? = null) {
                             "+" -> BinaryOperator.ADD
                             "-" -> BinaryOperator.SUBTRACT
                             "&" -> BinaryOperator.CONCAT
-                            else -> return unsupportedExpression("additionExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     OperatorBinaryExpression(
                         operator = operator,
@@ -628,8 +669,7 @@ class Builder(private val sourceId: String? = null) {
                             "/" -> BinaryOperator.DIVIDE
                             "div" -> BinaryOperator.TRUNCATED_DIVIDE
                             "mod" -> BinaryOperator.MODULO
-                            else ->
-                                return unsupportedExpression("multiplicationExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     OperatorBinaryExpression(
                         operator = operator,
@@ -701,7 +741,7 @@ class Builder(private val sourceId: String? = null) {
                         when (ctx.getChild(0)?.text?.lowercase()) {
                             "minimum" -> TypeExtentKind.MINIMUM
                             "maximum" -> TypeExtentKind.MAXIMUM
-                            else -> return unsupportedExpression("typeExtentExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     val typeContext = ctx.namedTypeSpecifier()
                     val namedType =
@@ -733,7 +773,7 @@ class Builder(private val sourceId: String? = null) {
                         when (ctx.getChild(0)?.text?.lowercase()) {
                             "start" -> TimeBoundaryKind.START
                             "end" -> TimeBoundaryKind.END
-                            else -> return unsupportedExpression("timeBoundaryExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     TimeBoundaryExpression(
                         timeBoundaryKind = timeBoundaryKind,
@@ -768,7 +808,7 @@ class Builder(private val sourceId: String? = null) {
                         when (keyword) {
                             "distinct" -> ListTransformKind.DISTINCT
                             "flatten" -> ListTransformKind.FLATTEN
-                            else -> return unsupportedExpression("aggregateExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     ListTransformExpression(
                         listTransformKind = listTransformKind,
@@ -783,7 +823,7 @@ class Builder(private val sourceId: String? = null) {
                         when (keyword) {
                             "expand" -> ExpandCollapseKind.EXPAND
                             "collapse" -> ExpandCollapseKind.COLLAPSE
-                            else -> return unsupportedExpression("setAggregateExpressionTerm", ctx)
+                            else -> unexpected(ctx)
                         }
                     val precision = ctx.dateTimePrecision()?.text
                     val perExpression =
@@ -797,7 +837,7 @@ class Builder(private val sourceId: String? = null) {
                     )
                 }
 
-                else -> unsupportedExpression("expressionTerm", ctx)
+                else -> unexpected(ctx)
             }
         }
 
@@ -827,7 +867,7 @@ class Builder(private val sourceId: String? = null) {
                 )
             }
 
-            else -> unsupportedExpression("qualifiedInvocation", ctx)
+            else -> unexpected(ctx)
         }
     }
 
@@ -836,7 +876,11 @@ class Builder(private val sourceId: String? = null) {
         return when (ctx) {
             is cqlParser.LiteralTermContext -> buildLiteral(ctx.literal())
             is cqlParser.InvocationTermContext -> buildInvocation(ctx.invocation())
-            is cqlParser.ParenthesizedTermContext -> buildExpression(ctx.expression())
+            is cqlParser.ParenthesizedTermContext ->
+                ParenthesizedExpression(
+                    expression = buildExpression(ctx.expression()),
+                    locator = ctx.toLocator(),
+                )
             is cqlParser.ListSelectorTermContext ->
                 LiteralExpression(buildListLiteral(ctx.listSelector()), ctx.toLocator())
 
@@ -858,7 +902,7 @@ class Builder(private val sourceId: String? = null) {
             is cqlParser.ExternalConstantTermContext ->
                 buildExternalConstant(ctx.externalConstant())
 
-            else -> unsupportedExpression("term", ctx)
+            else -> unexpected(ctx)
         }
     }
 
@@ -883,24 +927,15 @@ class Builder(private val sourceId: String? = null) {
                 )
 
             is cqlParser.ThisInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$this")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
             is cqlParser.IndexInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$index")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
             is cqlParser.TotalInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$total")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
-            else -> unsupportedExpression("invocation", ctx)
+            else -> unexpected(ctx)
         }
     }
 
@@ -957,7 +992,7 @@ class Builder(private val sourceId: String? = null) {
                     locator = ctx.toLocator(),
                 )
 
-            else -> unsupportedExpression("literal", ctx)
+            else -> unexpected(ctx)
         }
     }
 
@@ -971,7 +1006,7 @@ class Builder(private val sourceId: String? = null) {
                 identifier != null -> identifier.toIdentifier().value
                 keyword != null -> keyword.text
                 stringToken != null -> stringToken.text.unquote()
-                else -> ctx.text.removePrefix("%")
+                else -> unexpected(ctx)
             }
         return ExternalConstantExpression(name = name, locator = ctx.toLocator())
     }
@@ -983,11 +1018,33 @@ class Builder(private val sourceId: String? = null) {
         when (text.lowercase()) {
             "public" -> AccessModifier.PUBLIC
             "private" -> AccessModifier.PRIVATE
-            else -> AccessModifier.PUBLIC
+            else -> unexpected(this)
         }
 
-    private fun cqlParser.IdentifierContext.toIdentifier(): Identifier =
-        Identifier(this.text.removeTickEscapes())
+    private fun cqlParser.IdentifierContext.toIdentifier(): Identifier = toIdentifierAsWritten()
+
+    /**
+     * The identifier this rule's text spells: a plain name, keyword or function name as is, or a
+     * quoted or delimited name without its quotes and with its escapes resolved.
+     */
+    private fun ParserRuleContext.toIdentifierAsWritten(): Identifier {
+        val written = text
+        val style =
+            when {
+                written.length < 2 -> IdentifierStyle.PLAIN
+                written.startsWith('"') && written.endsWith('"') -> IdentifierStyle.QUOTED
+                written.startsWith('`') && written.endsWith('`') -> IdentifierStyle.DELIMITED
+                else -> IdentifierStyle.PLAIN
+            }
+        val value =
+            if (style == IdentifierStyle.PLAIN) written
+            else StringEscapeUtils.unescapeCql(written.substring(1, written.length - 1))
+        return Identifier(value = value, style = style, locator = toLocator())
+    }
+
+    /** `$this`, `$index` or `$total`. */
+    private fun ParserRuleContext.toSpecialIdentifier(): QualifiedIdentifier =
+        QualifiedIdentifier(parts = listOf(toIdentifierAsWritten()), locator = toLocator())
 
     private fun cqlParser.QuantityContext.toQuantityLiteral(): QuantityLiteral =
         requireComplete().run {
@@ -1011,10 +1068,8 @@ class Builder(private val sourceId: String? = null) {
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(qualifier().map { it.text.removeTickEscapes() })
-                        add(identifier().text.removeTickEscapes())
-                    }
+                    qualifier().map { it.toIdentifierAsWritten() } + identifier().toIdentifier(),
+                locator = toLocator(),
             )
         }
 
@@ -1032,39 +1087,28 @@ class Builder(private val sourceId: String? = null) {
             "time" -> DateTimeComponent.TIME
             "timezone" -> DateTimeComponent.TIMEZONE
             "timezoneoffset" -> DateTimeComponent.TIMEZONE_OFFSET
-            else -> {
-                problems += Problem("Unsupported dateTimeComponent: ${text}", toLocator())
-                DateTimeComponent.DATE
-            }
+            else -> unexpected(this)
         }
 
     private fun cqlParser.NamedTypeSpecifierContext.toQualifiedIdentifier(): QualifiedIdentifier =
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(qualifier().map { it.text.removeTickEscapes() })
-                        add(referentialOrTypeNameIdentifier().text.removeTickEscapes())
-                    }
+                    qualifier().map { it.toIdentifierAsWritten() } +
+                        referentialOrTypeNameIdentifier().toIdentifierAsWritten(),
+                locator = toLocator(),
             )
         }
 
     private fun cqlParser.ReferentialIdentifierContext.toIdentifier(): Identifier =
-        when {
-            identifier() != null -> identifier()!!.toIdentifier()
-            keywordIdentifier() != null -> Identifier(keywordIdentifier()!!.text)
-            else -> Identifier(text.removeTickEscapes())
-        }
+        toIdentifierAsWritten()
 
     private fun cqlParser.ReferentialIdentifierContext.toQualifiedIdentifier():
-        QualifiedIdentifier = QualifiedIdentifier(listOf(toIdentifier().value))
+        QualifiedIdentifier =
+        QualifiedIdentifier(parts = listOf(toIdentifier()), locator = toLocator())
 
     private fun cqlParser.IdentifierOrFunctionIdentifierContext.toIdentifier(): Identifier =
-        when {
-            identifier() != null -> identifier()!!.toIdentifier()
-            functionIdentifier() != null -> Identifier(functionIdentifier()!!.text)
-            else -> Identifier(text.removeTickEscapes())
-        }
+        toIdentifierAsWritten()
 
     private fun buildInfixSetExpression(ctx: cqlParser.InFixSetExpressionContext): Expression {
         ctx.requireComplete()
@@ -1074,7 +1118,7 @@ class Builder(private val sourceId: String? = null) {
                 "union" -> BinaryOperator.UNION
                 "intersect" -> BinaryOperator.INTERSECT
                 "except" -> BinaryOperator.EXCEPT
-                else -> return unsupportedExpression("inFixSetExpression", ctx)
+                else -> unexpected(ctx)
             }
         return OperatorBinaryExpression(
             operator = operator,
@@ -1089,18 +1133,16 @@ class Builder(private val sourceId: String? = null) {
         val operatorToken =
             ctx.children
                 ?.map { it.text.lowercase() }
-                ?.firstOrNull { it == "in" || it == "contains" }
-                ?: return unsupportedExpression("membershipExpression", ctx)
+                ?.firstOrNull { it == "in" || it == "contains" } ?: unexpected(ctx)
         val operator =
             when (operatorToken) {
                 "in" -> MembershipOperator.IN
                 "contains" -> MembershipOperator.CONTAINS
-                else -> MembershipOperator.IN
+                else -> unexpected(ctx)
             }
-        val precision = ctx.dateTimePrecisionSpecifier()?.text?.trim()
         return MembershipExpression(
             operator = operator,
-            precision = precision?.ifBlank { null },
+            precision = ctx.dateTimePrecisionSpecifier()?.toPrecision(),
             left = buildExpression(ctx.expression(0)!!),
             right = buildExpression(ctx.expression(1)!!),
             locator = ctx.toLocator(),
@@ -1171,7 +1213,7 @@ class Builder(private val sourceId: String? = null) {
                     locator = ctx.toLocator(),
                 )
 
-            else -> unsupportedExpression("typeExpression", ctx)
+            else -> unexpected(ctx)
         }
     }
 
@@ -1299,14 +1341,17 @@ class Builder(private val sourceId: String? = null) {
                 name = ctx.namedTypeSpecifier().toQualifiedIdentifier(),
                 locator = ctx.namedTypeSpecifier().toLocator(),
             )
-        val codePath = ctx.codePath()?.requireComplete()?.simplePath()?.toQualifiedIdentifier()
+        val codePath =
+            ctx.codePath()?.requireComplete()?.simplePath()?.let {
+                SimplePath(segments = it.toSegments(), locator = it.toLocator())
+            }
         val comparator =
             ctx.codeComparator()?.text?.lowercase()?.let {
                 when (it) {
                     "in" -> TerminologyComparator.IN
                     "=" -> TerminologyComparator.EQUALS
                     "~" -> TerminologyComparator.EQUIVALENT
-                    else -> null
+                    else -> unexpected(ctx)
                 }
             }
         val terminologyRestriction = ctx.terminology()?.let { buildTerminologyRestriction(it) }
@@ -1373,14 +1418,7 @@ class Builder(private val sourceId: String? = null) {
                 locator = ctx.toLocator(),
             )
         }
-        return ExpressionQuerySource(
-            expression =
-                LiteralExpression(
-                    literal = NullLiteral(ctx.toLocator()),
-                    locator = ctx.toLocator(),
-                ),
-            locator = ctx.toLocator(),
-        )
+        unexpected(ctx)
     }
 
     private fun buildLetClauseItem(ctx: cqlParser.LetClauseItemContext): LetClauseItem {
@@ -1415,33 +1453,9 @@ class Builder(private val sourceId: String? = null) {
                 )
             }
 
-            else -> unsupportedQueryInclusion(ctx)
+            else -> unexpected(ctx)
         }
     }
-
-    private fun unsupportedQueryInclusion(ctx: ParserRuleContext): QueryInclusionClause =
-        WithoutClause(
-            source =
-                AliasedQuerySource(
-                    source =
-                        ExpressionQuerySource(
-                            expression =
-                                LiteralExpression(
-                                    literal = NullLiteral(ctx.toLocator()),
-                                    locator = ctx.toLocator(),
-                                ),
-                            locator = ctx.toLocator(),
-                        ),
-                    alias = Identifier("it"),
-                    locator = ctx.toLocator(),
-                ),
-            condition =
-                LiteralExpression(
-                    literal = BooleanLiteral(true, ctx.toLocator()),
-                    locator = ctx.toLocator(),
-                ),
-            locator = ctx.toLocator(),
-        )
 
     private fun buildAggregateClauseNode(ctx: cqlParser.AggregateClauseContext): AggregateClause {
         ctx.requireComplete()
@@ -1465,7 +1479,7 @@ class Builder(private val sourceId: String? = null) {
                 LiteralExpression(literal = it.toQuantityLiteral(), locator = it.toLocator())
             }
             ?: ctx.expression()?.let { buildExpression(it) }
-            ?: LiteralExpression(literal = NullLiteral(ctx.toLocator()), locator = ctx.toLocator())
+            ?: unexpected(ctx)
     }
 
     private fun buildReturnClause(ctx: cqlParser.ReturnClauseContext): ReturnClause {
@@ -1529,11 +1543,7 @@ class Builder(private val sourceId: String? = null) {
             is cqlParser.OverlapsIntervalOperatorPhraseContext -> buildOverlapsIntervalPhrase(ctx)
             is cqlParser.StartsIntervalOperatorPhraseContext -> buildStartsIntervalPhrase(ctx)
             is cqlParser.EndsIntervalOperatorPhraseContext -> buildEndsIntervalPhrase(ctx)
-            else -> {
-                problems +=
-                    Problem("Unsupported interval operator phrase: ${ctx.text}", ctx.toLocator())
-                UnsupportedIntervalPhrase(ctx.text, ctx.toLocator())
-            }
+            else -> unexpected(ctx)
         }
     }
 
@@ -1548,7 +1558,7 @@ class Builder(private val sourceId: String? = null) {
                 when (it) {
                     "or before" -> ConcurrentQualifier.OR_BEFORE
                     "or after" -> ConcurrentQualifier.OR_AFTER
-                    else -> ConcurrentQualifier.AS
+                    else -> unexpected(ctx)
                 }
             } ?: ConcurrentQualifier.AS
         val rightBoundary = ctx.findTrailingBoundary()
@@ -1641,8 +1651,7 @@ class Builder(private val sourceId: String? = null) {
     ): IntervalOperatorPhrase {
         ctx.requireComplete()
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
-        val direction =
-            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
+        val direction = tokens.firstNotNullOfOrNull { directions[it] }
         val precision = ctx.dateTimePrecisionSpecifier()?.toPrecision()
         return MeetsIntervalPhrase(
             direction = direction,
@@ -1656,8 +1665,7 @@ class Builder(private val sourceId: String? = null) {
     ): IntervalOperatorPhrase {
         ctx.requireComplete()
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
-        val direction =
-            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
+        val direction = tokens.firstNotNullOfOrNull { directions[it] }
         val precision = ctx.dateTimePrecisionSpecifier()?.toPrecision()
         return OverlapsIntervalPhrase(
             direction = direction,
@@ -1688,14 +1696,13 @@ class Builder(private val sourceId: String? = null) {
 
     private fun buildQuantityOffset(ctx: cqlParser.QuantityOffsetContext): QuantityOffset {
         ctx.requireComplete()
-        val quantity =
-            ctx.quantity()?.toQuantityLiteral() ?: QuantityLiteral(ctx.text, null, ctx.toLocator())
+        val quantity = ctx.quantity()?.toQuantityLiteral() ?: unexpected(ctx)
         val offsetQualifier =
             ctx.offsetRelativeQualifier()?.text?.lowercase()?.let {
                 when (it) {
                     "or more" -> OffsetRelativeQualifier.OR_MORE
                     "or less" -> OffsetRelativeQualifier.OR_LESS
-                    else -> null
+                    else -> unexpected(ctx)
                 }
             }
         val exclusiveQualifier =
@@ -1703,7 +1710,7 @@ class Builder(private val sourceId: String? = null) {
                 when (it) {
                     "less than" -> ExclusiveRelativeQualifier.LESS_THAN
                     "more than" -> ExclusiveRelativeQualifier.MORE_THAN
-                    else -> null
+                    else -> unexpected(ctx)
                 }
             }
         return QuantityOffset(
@@ -1719,55 +1726,21 @@ class Builder(private val sourceId: String? = null) {
     ): TemporalRelationshipPhrase {
         ctx.requireComplete()
         val tokens = ctx.children?.map { it.text.lowercase() }.orEmpty()
-        val direction =
-            tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
-                ?: TemporalRelationshipDirection.BEFORE
+        val direction = tokens.firstNotNullOfOrNull { directions[it] } ?: unexpected(ctx)
         val inclusive = tokens.any { it == "on or" || it == "or on" }
-        val qualifier =
-            tokens
-                .firstOrNull { it == "more than" || it == "less than" }
-                ?.let {
-                    when (it) {
-                        "more than" -> ExclusiveRelativeQualifier.MORE_THAN
-                        "less than" -> ExclusiveRelativeQualifier.LESS_THAN
-                        else -> null
-                    }
-                }
         return TemporalRelationshipPhrase(
             direction = direction,
             inclusive = inclusive,
-            leadingQualifier = qualifier,
             locator = ctx.toLocator(),
         )
     }
 
-    private fun ParserRuleContext.findLeadingBoundary(): IntervalBoundarySelector? {
-        val tokens = children?.map { it.text.lowercase() }.orEmpty()
-        val keyword = tokens.firstOrNull { it == "starts" || it == "ends" || it == "occurs" }
-        return keyword?.toIntervalBoundarySelector()
-    }
+    private fun ParserRuleContext.findLeadingBoundary(): IntervalBoundarySelector? =
+        children.orEmpty().firstNotNullOfOrNull { leadingBoundaries[it.text.lowercase()] }
 
-    private fun ParserRuleContext.findTrailingBoundary(): IntervalBoundarySelector? {
-        val tokens = children?.map { it.text.lowercase() }.orEmpty()
-        val keyword = tokens.asReversed().firstOrNull { it == "start" || it == "end" }
-        return keyword?.toIntervalBoundarySelector()
-    }
-
-    private fun String.toIntervalBoundarySelector(): IntervalBoundarySelector? =
-        when (this.lowercase()) {
-            "starts",
-            "start" -> IntervalBoundarySelector.START
-            "ends",
-            "end" -> IntervalBoundarySelector.END
-            "occurs" -> IntervalBoundarySelector.OCCURS
-            else -> null
-        }
-
-    private fun String.toTemporalDirection(): TemporalRelationshipDirection? =
-        when (this.lowercase()) {
-            "before" -> TemporalRelationshipDirection.BEFORE
-            "after" -> TemporalRelationshipDirection.AFTER
-            else -> null
+    private fun ParserRuleContext.findTrailingBoundary(): IntervalBoundarySelector? =
+        children.orEmpty().asReversed().firstNotNullOfOrNull {
+            trailingBoundaries[it.text.lowercase()]
         }
 
     /**
@@ -1819,8 +1792,7 @@ class Builder(private val sourceId: String? = null) {
 
             is cqlParser.SimpleNumberLiteralContext -> numberLiteral(ctx.NUMBER().text, ctx)
 
-            else ->
-                LiteralExpression(literal = NullLiteral(ctx.toLocator()), locator = ctx.toLocator())
+            else -> unexpected(ctx)
         }
     }
 
@@ -1847,14 +1819,7 @@ class Builder(private val sourceId: String? = null) {
             )
         }
 
-        return TerminologyRestriction(
-            terminology =
-                LiteralExpression(
-                    literal = NullLiteral(ctx.toLocator()),
-                    locator = ctx.toLocator(),
-                ),
-            locator = ctx.toLocator(),
-        )
+        unexpected(ctx)
     }
 
     private fun cqlParser.QualifiedIdentifierExpressionContext.toQualifiedIdentifier():
@@ -1862,38 +1827,39 @@ class Builder(private val sourceId: String? = null) {
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(
-                            qualifierExpression().map {
-                                it.referentialIdentifier().toIdentifier().value
-                            }
-                        )
-                        add(referentialIdentifier().toIdentifier().value)
-                    }
+                    qualifierExpression().map { it.referentialIdentifier().toIdentifier() } +
+                        referentialIdentifier().toIdentifier(),
+                locator = toLocator(),
             )
         }
 
-    private fun cqlParser.SimplePathContext.toQualifiedIdentifier(): QualifiedIdentifier {
+    private fun cqlParser.SimplePathContext.toSegments(): List<PathSegment> {
         requireComplete()
         return when (this) {
             is cqlParser.SimplePathReferentialIdentifierContext ->
-                QualifiedIdentifier(listOf(referentialIdentifier().toIdentifier().value))
-
-            is cqlParser.SimplePathQualifiedIdentifierContext -> {
-                val base = simplePath().toQualifiedIdentifier().parts.toMutableList()
-                base += referentialIdentifier().toIdentifier().value
-                QualifiedIdentifier(base)
-            }
-
+                listOf(property(referentialIdentifier()))
+            is cqlParser.SimplePathQualifiedIdentifierContext ->
+                simplePath().toSegments() + property(referentialIdentifier())
             is cqlParser.SimplePathIndexerContext -> {
-                val base = simplePath().toQualifiedIdentifier().parts.toMutableList()
-                base += simpleLiteral().text.unquote()
-                QualifiedIdentifier(base)
+                // The brackets are this rule's own tokens; the index is a rule of its own
+                val brackets = children.orEmpty().filterIsInstance<TerminalNode>()
+                simplePath().toSegments() +
+                    IndexSegment(
+                        index = buildSimpleLiteralExpression(simpleLiteral()),
+                        locator =
+                            brackets
+                                .first()
+                                .symbol
+                                .toLocator()
+                                .copy(stopIndex = brackets.last().symbol.stopIndex),
+                    )
             }
-
-            else -> QualifiedIdentifier(listOf(text))
+            else -> unexpected(this)
         }
     }
+
+    private fun property(identifier: cqlParser.ReferentialIdentifierContext): PropertySegment =
+        identifier.toIdentifier().let { PropertySegment(name = it, locator = it.locator) }
 
     private fun cqlParser.CodesystemIdentifierContext.toTerminologyReference():
         TerminologyReference =
@@ -1923,27 +1889,11 @@ class Builder(private val sourceId: String? = null) {
             column = this.charPositionInLine,
         )
 
-    /** Strips the delimiters from a `'string'` or `"identifier"` and processes its escapes. */
+    /** Strips the quotes from a `'string'` and processes its escapes; a number is kept. */
     private fun String.unquote(): String =
-        when {
-            length >= 2 && startsWith("'") && endsWith("'") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            length >= 2 && startsWith("\"") && endsWith("\"") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            else -> this
-        }
-
-    /**
-     * Strips the delimiters from a `` `identifier` `` or `"identifier"` and processes its escapes.
-     */
-    private fun String.removeTickEscapes(): String =
-        when {
-            length >= 2 && startsWith("`") && endsWith("`") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            length >= 2 && startsWith("\"") && endsWith("\"") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            else -> this
-        }
+        if (length >= 2 && startsWith("'") && endsWith("'"))
+            StringEscapeUtils.unescapeCql(substring(1, length - 1))
+        else this
 
     /**
      * When the parser cannot complete a rule it records the error on that rule's context
@@ -1970,6 +1920,14 @@ class Builder(private val sourceId: String? = null) {
             build()
         } catch (@Suppress("SwallowedException") _: IncompleteSyntax) {
             fallback(ctx)
+        } catch (@Suppress("SwallowedException") e: UnhandledGrammar) {
+            problems +=
+                Problem(
+                    message = "Internal error: the Builder does not handle ${e.rule}",
+                    locator = e.locator,
+                    internal = true,
+                )
+            fallback(ctx)
         }
 
     // The parser has already reported the syntax error, so these add no Problem of their own.
@@ -1983,15 +1941,12 @@ class Builder(private val sourceId: String? = null) {
     private fun incompleteStatement(ctx: ParserRuleContext): Statement =
         UnsupportedStatement(grammarRule = "statement", locator = ctx.toLocator())
 
-    private fun unsupportedExpression(rule: String, ctx: ParserRuleContext): Expression {
-        problems += Problem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
-        return UnsupportedExpression(description = ctx.text, locator = ctx.toLocator())
-    }
-
-    private fun unsupportedDefinition(rule: String, ctx: ParserRuleContext): Definition {
-        problems += Problem("Unsupported $rule: ${ctx.text}", ctx.toLocator())
-        return UnsupportedDefinition(grammarRule = rule, locator = ctx.toLocator())
-    }
+    /**
+     * Signals a part of the parse tree the Builder has no case for, which only a change to the
+     * grammar can produce. [recover] reports it as an internal error.
+     */
+    private fun unexpected(ctx: ParserRuleContext): Nothing =
+        throw UnhandledGrammar(ctx::class.simpleName ?: "rule", ctx.toLocator())
 
     private inner class ProblemCollector : BaseErrorListener() {
         val problems = mutableListOf<Problem>()
@@ -2025,6 +1980,27 @@ private const val MAX_PREFIX_ATTEMPTS = 8
 
 /** Signals that the Builder reached a part of the parse tree the parser could not complete. */
 private class IncompleteSyntax : RuntimeException()
+
+/** Signals a part of the parse tree the Builder has no case for (see `Builder.unexpected`). */
+private class UnhandledGrammar(val rule: String, val locator: Locator) : RuntimeException()
+
+/** The interval boundaries a phrase starts with, as in `starts before`. */
+private val leadingBoundaries =
+    mapOf(
+        "starts" to IntervalBoundarySelector.START,
+        "ends" to IntervalBoundarySelector.END,
+        "occurs" to IntervalBoundarySelector.OCCURS,
+    )
+
+/** The interval boundaries a phrase ends with, as in `before start`. */
+private val trailingBoundaries =
+    mapOf("start" to IntervalBoundarySelector.START, "end" to IntervalBoundarySelector.END)
+
+private val directions =
+    mapOf(
+        "before" to TemporalRelationshipDirection.BEFORE,
+        "after" to TemporalRelationshipDirection.AFTER,
+    )
 
 /** Generates the AST for the given CQL in the JSON format. */
 @JsExport
