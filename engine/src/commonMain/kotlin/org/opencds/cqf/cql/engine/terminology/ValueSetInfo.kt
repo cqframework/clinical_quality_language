@@ -33,9 +33,11 @@ class ValueSetInfo {
 
     companion object {
         fun fromValueSet(vs: ValueSet): ValueSetInfo {
-            val vsi = ValueSetInfo().withId(vs.id).withVersion(vs.version)
-            for (cs in vs.codeSystems!!) {
-                vsi.withCodeSystem(CodeSystemInfo.fromCodeSystem(cs))
+            var vsi = ValueSetInfo().withId(vs.id).withVersion(vs.version)
+            if (vs.codeSystems != null) {
+                for (cs in vs.codeSystems) {
+                    vsi = vsi.withCodeSystem(CodeSystemInfo.fromCodeSystem(cs))
+                }
             }
             return vsi
         }

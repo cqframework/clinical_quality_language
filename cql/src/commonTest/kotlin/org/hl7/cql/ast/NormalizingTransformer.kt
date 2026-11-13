@@ -264,6 +264,7 @@ private fun Expression.withUnknownLocator(): Expression =
         is ExpandCollapseExpression -> copy(locator = Locator.UNKNOWN)
         is IntervalRelationExpression -> copy(locator = Locator.UNKNOWN)
         is IsExpression -> copy(locator = Locator.UNKNOWN)
+        is BooleanTestExpression -> copy(locator = Locator.UNKNOWN)
         is AsExpression -> copy(locator = Locator.UNKNOWN)
         is CastExpression -> copy(locator = Locator.UNKNOWN)
         is ExternalConstantExpression -> copy(locator = Locator.UNKNOWN)

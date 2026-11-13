@@ -209,6 +209,12 @@ class ExpressionBuilder {
     fun typeIs(operand: ExpressionSpec, type: TypeSpecifier, negated: Boolean = false): Expression =
         IsExpression(expression(operand), type, negated)
 
+    fun booleanTest(
+        operand: ExpressionSpec,
+        kind: BooleanTestKind,
+        negated: Boolean = false,
+    ): Expression = BooleanTestExpression(expression(operand), kind, negated)
+
     fun typeAs(operand: ExpressionSpec, type: TypeSpecifier): Expression =
         AsExpression(expression(operand), type)
 
