@@ -55,15 +55,72 @@ class Builder(private val sourceId: String? = null) {
                 }
         reportOutOfOrderDeclarations(parts)
         val header = parts.firstOrNull { it.name != null }
+        val definitions = parts.flatMap { it.definitions }
+        val statements = parts.flatMap { it.statements }
+        val declarations: List<Declaration> = listOfNotNull(header) + definitions + statements
+        val attached = attachComments(text, lexed.tokens, declarations)
+        val headerMetadata = if (header != null) attached.first() else null
+        val firstDefinition = if (header != null) 1 else 0
+        val firstStatement = firstDefinition + definitions.size
         val library =
             Library(
                 name = header?.name,
                 version = header?.version,
-                definitions = parts.flatMap { it.definitions },
-                statements = parts.flatMap { it.statements },
+                definitions =
+                    definitions.mapIndexed { i, definition ->
+                        definition.withComments(attached[firstDefinition + i])
+                    },
+                statements =
+                    statements.mapIndexed { i, statement ->
+                        statement.withComments(attached[firstStatement + i])
+                    },
+                comments =
+                    if (declarations.isEmpty()) CommentAttacher.comments(lexed.tokens, sourceId)
+                    else headerMetadata?.comments.orEmpty(),
+                tags = headerMetadata?.tags.orEmpty(),
                 locator = libraryLocator(lexed.tokens),
             )
         return LibraryResult(library, problems.toList())
+    }
+
+    /** The comments and tags of each of [declarations], in the order given. */
+    private fun attachComments(
+        text: String,
+        tokens: List<Token>,
+        declarations: List<Declaration>,
+    ): List<CommentAttacher.Attached> {
+        val order = declarations.indices.sortedBy { declarations[it].locator.startIndex }
+        val inOrder =
+            CommentAttacher.attach(text, tokens, order.map { declarations[it].locator }, sourceId)
+        val attached = arrayOfNulls<CommentAttacher.Attached>(declarations.size)
+        order.forEachIndexed { k, i -> attached[i] = inOrder[k] }
+        return attached.map { it!! }
+    }
+
+    private fun Definition.withComments(attached: CommentAttacher.Attached): Definition {
+        val comments = attached.comments
+        val tags = attached.tags
+        return when (this) {
+            is UsingDefinition -> copy(comments = comments, tags = tags)
+            is IncludeDefinition -> copy(comments = comments, tags = tags)
+            is CodeSystemDefinition -> copy(comments = comments, tags = tags)
+            is ValueSetDefinition -> copy(comments = comments, tags = tags)
+            is CodeDefinition -> copy(comments = comments, tags = tags)
+            is ConceptDefinition -> copy(comments = comments, tags = tags)
+            is ParameterDefinition -> copy(comments = comments, tags = tags)
+            is UnsupportedDefinition -> copy(comments = comments, tags = tags)
+        }
+    }
+
+    private fun Statement.withComments(attached: CommentAttacher.Attached): Statement {
+        val comments = attached.comments
+        val tags = attached.tags
+        return when (this) {
+            is ContextDefinition -> copy(comments = comments, tags = tags)
+            is ExpressionDefinition -> copy(comments = comments, tags = tags)
+            is FunctionDefinition -> copy(comments = comments, tags = tags)
+            is UnsupportedStatement -> copy(comments = comments, tags = tags)
+        }
     }
 
     /**
@@ -193,7 +250,8 @@ class Builder(private val sourceId: String? = null) {
             version = libraryVersion,
             definitions = definitions,
             statements = statements,
-            locator = ctx.toLocator(),
+            // For a header, the extent of the `library` declaration, to place its comments
+            locator = (libraryDefinition ?: ctx).toLocator(),
         )
     }
 
