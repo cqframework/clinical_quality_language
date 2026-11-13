@@ -29,8 +29,13 @@ object AbsEvaluator {
         }
 
         return when (operand) {
-            is Integer -> kotlin.math.abs(operand.value).toCqlInteger()
-            is Long -> kotlin.math.abs(operand.value).toCqlLong()
+            // abs(minimum) cannot be represented
+            is Integer ->
+                (if (operand.value < 0) CheckedArithmetic.negate(operand.value) else operand.value)
+                    ?.toCqlInteger()
+            is Long ->
+                (if (operand.value < 0) CheckedArithmetic.negate(operand.value) else operand.value)
+                    ?.toCqlLong()
             is Decimal -> operand.value.abs().toCqlDecimal()
             is Quantity -> Quantity().withValue((operand.value)!!.abs()).withUnit(operand.unit)
             else ->

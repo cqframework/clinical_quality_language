@@ -76,9 +76,9 @@ object SubtractEvaluator {
 
         // -(Integer, Integer)
         if (left is Integer && right is Integer) {
-            return (left.value - right.value).toCqlInteger()
+            return CheckedArithmetic.subtract(left.value, right.value)?.toCqlInteger()
         } else if (left is Long && right is Long) {
-            return (left.value - right.value).toCqlLong()
+            return CheckedArithmetic.subtract(left.value, right.value)?.toCqlLong()
         } else if (left is Decimal && right is Decimal) {
             return left.value.subtract(right.value).toCqlDecimal()
         } else if (left is Quantity && right is Quantity) {
