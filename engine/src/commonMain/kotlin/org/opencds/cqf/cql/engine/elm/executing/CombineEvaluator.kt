@@ -12,14 +12,19 @@ Combine(source List<String>) String
 Combine(source List<String>, separator String) String
 
 The Combine operator combines a list of strings, optionally separating each string with the given separator.
-If either argument is null, or any element in the source list of strings is null, the result is null.
+If the source argument is null, or the source list is empty, the result is null.
+If the separator argument is null, it is ignored.
+For consistency with aggregate operator behavior, null elements in the input list are ignored.
 */
 object CombineEvaluator {
     @JvmStatic
     fun combine(source: Value?, separator: Value?): String? {
-        if (source == null || separator == null) {
+        if (source == null) {
             return null
         }
+
+        // A null separator is ignored, the same as no separator.
+        val separator = separator ?: String.EMPTY_STRING
 
         if (source is List && separator is String) {
             val buffer = StringBuilder("")
@@ -29,17 +34,18 @@ object CombineEvaluator {
             while (iterator.hasNext()) {
                 val item = iterator.next()
 
+                // Null elements are ignored.
                 if (item == null) {
-                    return null
+                    continue
                 }
 
                 if (item is String) {
                     if (!first) {
-                        buffer.append(separator)
+                        buffer.append(separator.value)
                     } else {
                         first = false
                     }
-                    buffer.append(item)
+                    buffer.append(item.value)
                 } else {
                     throw InvalidOperatorArgument(
                         "Combine(List<String>) or Combine(List<String>, String)",
@@ -47,7 +53,8 @@ object CombineEvaluator {
                     )
                 }
             }
-            // Combine of an empty list is null (first is still true iff no elements were appended).
+            // Combine of an empty list, or of a list whose elements are all null, is null (first is
+            // still true iff no elements were appended).
             return if (first) null else buffer.toString().toCqlString()
         }
 
