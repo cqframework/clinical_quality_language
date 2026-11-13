@@ -7,6 +7,7 @@ import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation.Companion
 import org.cqframework.cql.cql2elm.model.invocation.TimeInvocation.Companion.setTimeFieldsFromOperands
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.createExpression
+import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.*
 
 @Suppress("LargeClass", "TooManyFunctions")
@@ -249,7 +250,12 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 "ExpandValueSet" -> {
                     return resolveUnary(functionRef)
                 }
-                "Coalesce",
+                "Coalesce" -> {
+                    return resolveNary(
+                        functionRef,
+                        castAnyOperandsToCommonType(functionRef.operand),
+                    )
+                }
                 "Intersect",
                 "Union",
                 "Except" -> {
@@ -652,12 +658,35 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         return invocation
     }
 
-    private fun resolveNary(functionRef: FunctionRef): NaryExpressionInvocation {
+    private fun resolveNary(
+        functionRef: FunctionRef,
+        operands: kotlin.collections.List<Expression> = functionRef.operand,
+    ): NaryExpressionInvocation {
         val operator = createExpression<NaryExpression>(functionRef)
-        operator.operand.addAll(functionRef.operand)
+        operator.operand.addAll(operands)
         val invocation = NaryExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
+    }
+
+    /**
+     * Casts the operands of type Any to the common type of the other operands. Otherwise, an
+     * operand of type Any in the first position, such as an aggregate accumulator without a
+     * starting value, makes the type parameter of Coalesce resolve to Any.
+     */
+    private fun castAnyOperandsToCommonType(
+        operands: kotlin.collections.List<Expression>
+    ): kotlin.collections.List<Expression> {
+        val commonType =
+            operands.fold<Expression, DataType?>(DataType.ANY) { type, operand ->
+                builder.findCompatibleType(type, operand.resultType)
+            }
+        if (commonType == null || commonType == DataType.ANY) {
+            return operands
+        }
+        return operands.map {
+            if (it.resultType == DataType.ANY) builder.convertExpression(it, commonType) else it
+        }
     }
 
     private fun resolveAggregate(functionRef: FunctionRef): AggregateExpressionInvocation<*> {
