@@ -172,7 +172,6 @@ enum class TemporalRelationshipDirection {
 data class TemporalRelationshipPhrase(
     val direction: TemporalRelationshipDirection,
     val inclusive: Boolean,
-    val leadingQualifier: ExclusiveRelativeQualifier? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 

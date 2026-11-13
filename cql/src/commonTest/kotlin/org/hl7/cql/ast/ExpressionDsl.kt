@@ -314,12 +314,11 @@ class IntervalPhraseBuilder {
         precision: String? = null,
         inclusive: Boolean = false,
         offset: QuantityOffset? = null,
-        leadingQualifier: ExclusiveRelativeQualifier? = null,
     ): IntervalOperatorPhrase =
         BeforeOrAfterIntervalPhrase(
             leftBoundary = leftBoundary,
             offset = offset,
-            relationship = TemporalRelationshipPhrase(direction, inclusive, leadingQualifier),
+            relationship = TemporalRelationshipPhrase(direction, inclusive),
             precision = precision,
             rightBoundary = rightBoundary,
         )

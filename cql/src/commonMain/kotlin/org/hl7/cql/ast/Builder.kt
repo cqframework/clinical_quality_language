@@ -1787,20 +1787,9 @@ class Builder(private val sourceId: String? = null) {
             tokens.firstOrNull { it == "before" || it == "after" }?.toTemporalDirection()
                 ?: TemporalRelationshipDirection.BEFORE
         val inclusive = tokens.any { it == "on or" || it == "or on" }
-        val qualifier =
-            tokens
-                .firstOrNull { it == "more than" || it == "less than" }
-                ?.let {
-                    when (it) {
-                        "more than" -> ExclusiveRelativeQualifier.MORE_THAN
-                        "less than" -> ExclusiveRelativeQualifier.LESS_THAN
-                        else -> null
-                    }
-                }
         return TemporalRelationshipPhrase(
             direction = direction,
             inclusive = inclusive,
-            leadingQualifier = qualifier,
             locator = ctx.toLocator(),
         )
     }
@@ -1993,15 +1982,11 @@ class Builder(private val sourceId: String? = null) {
             column = this.charPositionInLine,
         )
 
-    /** Strips the delimiters from a `'string'` or `"identifier"` and processes its escapes. */
+    /** Strips the quotes from a `'string'` and processes its escapes; a number is kept. */
     private fun String.unquote(): String =
-        when {
-            length >= 2 && startsWith("'") && endsWith("'") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            length >= 2 && startsWith("\"") && endsWith("\"") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            else -> this
-        }
+        if (length >= 2 && startsWith("'") && endsWith("'"))
+            StringEscapeUtils.unescapeCql(substring(1, length - 1))
+        else this
 
     /**
      * When the parser cannot complete a rule it records the error on that rule's context

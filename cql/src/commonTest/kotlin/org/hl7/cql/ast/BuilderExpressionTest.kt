@@ -538,6 +538,86 @@ class BuilderExpressionTest {
     }
 
     @Test
+    fun parsesEveryDateTimeComponent() {
+        val components =
+            listOf(
+                "year" to DateTimeComponent.YEAR,
+                "month" to DateTimeComponent.MONTH,
+                "week" to DateTimeComponent.WEEK,
+                "day" to DateTimeComponent.DAY,
+                "hour" to DateTimeComponent.HOUR,
+                "minute" to DateTimeComponent.MINUTE,
+                "second" to DateTimeComponent.SECOND,
+                "millisecond" to DateTimeComponent.MILLISECOND,
+                "date" to DateTimeComponent.DATE,
+                "time" to DateTimeComponent.TIME,
+                "timezone" to DateTimeComponent.TIMEZONE,
+                "timezoneoffset" to DateTimeComponent.TIMEZONE_OFFSET,
+            )
+        assertEquals(DateTimeComponent.entries.toSet(), components.map { it.second }.toSet())
+        for ((keyword, component) in components) {
+            assertExpression("$keyword from X") { dateTimeComponent(component) { identifier("X") } }
+        }
+    }
+
+    @Test
+    fun parsesQuantityOffsets() {
+        assertExpression("A occurs 3 days or less before B") {
+            intervalRelation(
+                left = { identifier("A") },
+                right = { identifier("B") },
+                phrase = {
+                    beforeOrAfter(
+                        direction = TemporalRelationshipDirection.BEFORE,
+                        leftBoundary = IntervalBoundarySelector.OCCURS,
+                        offset =
+                            QuantityOffset(
+                                quantityLiteral("3", "days"),
+                                offsetQualifier = OffsetRelativeQualifier.OR_LESS,
+                            ),
+                    )
+                },
+            )
+        }
+        assertExpression("A starts more than 1 year after start B") {
+            intervalRelation(
+                left = { identifier("A") },
+                right = { identifier("B") },
+                phrase = {
+                    beforeOrAfter(
+                        direction = TemporalRelationshipDirection.AFTER,
+                        leftBoundary = IntervalBoundarySelector.START,
+                        rightBoundary = IntervalBoundarySelector.START,
+                        offset =
+                            QuantityOffset(
+                                quantityLiteral("1", "year"),
+                                exclusiveQualifier = ExclusiveRelativeQualifier.MORE_THAN,
+                            ),
+                    )
+                },
+            )
+        }
+    }
+
+    @Test
+    fun parsesSpecialIdentifiers() {
+        for (name in listOf("\$this", "\$index", "\$total")) {
+            assertExpression(name) { identifier(name) }
+        }
+    }
+
+    @Test
+    fun parsesAQuantityAsTheStartOfAnAggregate() {
+        val query =
+            Builder().parseExpression("({ 1 }) X aggregate R starting 1 'mg': R").expression
+                as QueryExpression
+        assertEquals(
+            LiteralExpression(QuantityLiteral("1", "mg")),
+            query.aggregate!!.starting!!.withoutSourceDetails(),
+        )
+    }
+
+    @Test
     fun parsesDateTimeComponentExtraction() {
         assertExpression("year from @2020-01-01T00:00:00") {
             dateTimeComponent(DateTimeComponent.YEAR) { dateTime("@2020-01-01T00:00:00") }

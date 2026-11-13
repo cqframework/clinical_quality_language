@@ -187,6 +187,26 @@ class BuilderCommentTest {
     }
 
     @Test
+    fun readsTheEdgesOfATag() {
+        // A tag at the very end, with nothing after its colon
+        assertEquals(listOf(Tag("a")), TagParser.parse("// @a:"))
+        // A quoted value with no closing quote runs to the end
+        assertEquals(listOf(Tag("p", "\"abc def")), TagParser.parse("// @p: \"abc def"))
+        // Text before a date is the value, and the date is not a tag
+        assertEquals(listOf(Tag("a", "x")), TagParser.parse("// @a: x @2020-01-01"))
+        // A date value ends at the next space
+        assertEquals(
+            listOf(Tag("a", "@2020-01-01"), Tag("b", "c")),
+            TagParser.parse("// @a: @2020-01-01 @b: c"),
+        )
+        // or at the end of its line
+        assertEquals(
+            listOf(Tag("a", "@2020-01-01"), Tag("b", "c")),
+            TagParser.parse("// @a: @2020-01-01\n// @b: c"),
+        )
+    }
+
+    @Test
     fun readsTagsFromEveryCommentBetweenDeclarations() {
         // As the translator does, a comment ending the previous declaration's line is included
         val define = parse("define A: 1 // @first\n// @second: 2\ndefine B: 2").statements.last()

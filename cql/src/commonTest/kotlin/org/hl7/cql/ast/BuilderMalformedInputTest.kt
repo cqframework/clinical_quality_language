@@ -42,6 +42,8 @@ class BuilderMalformedInputTest {
             "define \"A\": FHIR.Patient { a",
             "define \"A\": X properly between 1",
             "define \"A\": difference in days between X",
+            // No part of it before the error parses cleanly either
+            "define \"A\": (1 +\n2",
         )
     }
 
@@ -53,6 +55,14 @@ class BuilderMalformedInputTest {
             "define \"A\": [Encounter] E let",
             "define \"A\": [Encounter] E aggregate",
             "define \"A\": [Encounter] E aggregate R starting",
+        )
+    }
+
+    @Test
+    fun reportsInputAfterAnExpression() {
+        assertEquals(
+            listOf("Unexpected input after expression: '2'"),
+            Builder().parseExpression("1 2").problems.map { it.message },
         )
     }
 
