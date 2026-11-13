@@ -36,7 +36,10 @@ object SplitOnMatchesEvaluator {
                 result.add(stringToSplit)
             } else {
                 result.addAll(
-                    stringToSplit.split(separator.value.toRegex()).map { it.toCqlString() }
+                    // Split the Kotlin string, not the CQL String: Regex.split returns
+                    // listOf(input.toString()) when nothing matches, and the CQL String's
+                    // toString() is CQL text with quotes.
+                    stringToSplit.value.split(separator.value.toRegex()).map { it.toCqlString() }
                 )
             }
             return result.toCqlList()
