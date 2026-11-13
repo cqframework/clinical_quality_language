@@ -106,6 +106,7 @@ open class Transformer {
             is PropertyAccessExpression -> visitPropertyAccessExpression(expression)
             is IndexExpression -> visitIndexExpression(expression)
             is IfExpression -> visitIfExpression(expression)
+            is ParenthesizedExpression -> visitParenthesizedExpression(expression)
             is CaseExpression -> visitCaseExpression(expression)
             is QueryExpression -> visitQueryExpression(expression)
             is RetrieveExpression -> visitRetrieveExpression(expression)
@@ -192,6 +193,9 @@ open class Transformer {
             target = visitExpression(expression.target),
             index = visitExpression(expression.index),
         )
+
+    open fun visitParenthesizedExpression(expression: ParenthesizedExpression): Expression =
+        expression.copy(expression = visitExpression(expression.expression))
 
     open fun visitIfExpression(expression: IfExpression): Expression =
         expression.copy(

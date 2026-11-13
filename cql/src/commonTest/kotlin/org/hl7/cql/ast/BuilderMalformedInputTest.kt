@@ -67,10 +67,7 @@ class BuilderMalformedInputTest {
         assertTrue(result.problems.isEmpty(), result.problems.joinToString { it.message })
         val include = result.library.definitions.single() as IncludeDefinition
         assertEquals(VersionSpecifier(""), include.version)
-        assertEquals(
-            Identifier(""),
-            (result.library.statements.single() as ExpressionDefinition).name,
-        )
+        assertEquals("", (result.library.statements.single() as ExpressionDefinition).name.value)
     }
 
     @Test

@@ -300,10 +300,7 @@ class BuilderExpressionTest {
                 inclusions = emptyList(),
                 where = null,
                 aggregate = null,
-                result =
-                    ReturnClause(
-                        expression = IdentifierExpression(QualifiedIdentifier(listOf("O")))
-                    ),
+                result = ReturnClause(expression = IdentifierExpression(qualified("O"))),
                 sort = null,
             )
         }
@@ -338,14 +335,14 @@ class BuilderExpressionTest {
                     identifier = Identifier("Value"),
                     expression =
                         PropertyAccessExpression(
-                            target = IdentifierExpression(QualifiedIdentifier(listOf("O"))),
+                            target = IdentifierExpression(qualified("O")),
                             property = Identifier("value"),
                         ),
                 )
             val whereExpression =
                 OperatorBinaryExpression(
                     operator = BinaryOperator.NOT_EQUALS,
-                    left = IdentifierExpression(QualifiedIdentifier(listOf("Value"))),
+                    left = IdentifierExpression(qualified("Value")),
                     right = LiteralExpression(NullLiteral()),
                 )
             val aggregateClause =
@@ -356,7 +353,7 @@ class BuilderExpressionTest {
                     expression =
                         OperatorBinaryExpression(
                             operator = BinaryOperator.ADD,
-                            left = IdentifierExpression(QualifiedIdentifier(listOf("Count"))),
+                            left = IdentifierExpression(qualified("Count")),
                             right = LiteralExpression(IntLiteral(1)),
                         ),
                 )
@@ -404,7 +401,7 @@ class BuilderExpressionTest {
         assertExpression("-2147483648") { int(Int.MIN_VALUE) }
         assertExpression("-1.5") { LiteralExpression(DecimalLiteral(BigDecimal("-1.5"))) }
         assertExpression("+1") { unary(UnaryOperator.POSITIVE) { int(1) } }
-        assertExpression("-(1)") { unary(UnaryOperator.NEGATE) { int(1) } }
+        assertExpression("-(1)") { unary(UnaryOperator.NEGATE) { parenthesized { int(1) } } }
         assertExpression("-x") { unary(UnaryOperator.NEGATE) { identifier("x") } }
     }
 
@@ -526,7 +523,7 @@ class BuilderExpressionTest {
         }
         assertExpression("(1 + 2)[1]") {
             index(
-                target = { binary(BinaryOperator.ADD, { int(1) }, { int(2) }) },
+                target = { parenthesized { binary(BinaryOperator.ADD, { int(1) }, { int(2) }) } },
                 index = { int(1) },
             )
         }

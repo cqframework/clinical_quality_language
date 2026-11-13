@@ -429,7 +429,7 @@ class Builder(private val sourceId: String? = null) {
             else -> {
                 problems += Problem("Unsupported type specifier: ${ctx.text}", ctx.toLocator())
                 NamedTypeSpecifier(
-                    name = QualifiedIdentifier(listOf("Any")),
+                    name = QualifiedIdentifier(listOf(Identifier("Any"))),
                     locator = ctx.toLocator(),
                 )
             }
@@ -836,7 +836,11 @@ class Builder(private val sourceId: String? = null) {
         return when (ctx) {
             is cqlParser.LiteralTermContext -> buildLiteral(ctx.literal())
             is cqlParser.InvocationTermContext -> buildInvocation(ctx.invocation())
-            is cqlParser.ParenthesizedTermContext -> buildExpression(ctx.expression())
+            is cqlParser.ParenthesizedTermContext ->
+                ParenthesizedExpression(
+                    expression = buildExpression(ctx.expression()),
+                    locator = ctx.toLocator(),
+                )
             is cqlParser.ListSelectorTermContext ->
                 LiteralExpression(buildListLiteral(ctx.listSelector()), ctx.toLocator())
 
@@ -883,22 +887,13 @@ class Builder(private val sourceId: String? = null) {
                 )
 
             is cqlParser.ThisInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$this")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
             is cqlParser.IndexInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$index")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
             is cqlParser.TotalInvocationContext ->
-                IdentifierExpression(
-                    name = QualifiedIdentifier(listOf("\$total")),
-                    locator = ctx.toLocator(),
-                )
+                IdentifierExpression(name = ctx.toSpecialIdentifier(), locator = ctx.toLocator())
 
             else -> unsupportedExpression("invocation", ctx)
         }
@@ -986,8 +981,30 @@ class Builder(private val sourceId: String? = null) {
             else -> AccessModifier.PUBLIC
         }
 
-    private fun cqlParser.IdentifierContext.toIdentifier(): Identifier =
-        Identifier(this.text.removeTickEscapes())
+    private fun cqlParser.IdentifierContext.toIdentifier(): Identifier = toIdentifierAsWritten()
+
+    /**
+     * The identifier this rule's text spells: a plain name, keyword or function name as is, or a
+     * quoted or delimited name without its quotes and with its escapes resolved.
+     */
+    private fun ParserRuleContext.toIdentifierAsWritten(): Identifier {
+        val written = text
+        val style =
+            when {
+                written.length < 2 -> IdentifierStyle.PLAIN
+                written.startsWith('"') && written.endsWith('"') -> IdentifierStyle.QUOTED
+                written.startsWith('`') && written.endsWith('`') -> IdentifierStyle.DELIMITED
+                else -> IdentifierStyle.PLAIN
+            }
+        val value =
+            if (style == IdentifierStyle.PLAIN) written
+            else StringEscapeUtils.unescapeCql(written.substring(1, written.length - 1))
+        return Identifier(value = value, style = style, locator = toLocator())
+    }
+
+    /** `$this`, `$index` or `$total`. */
+    private fun ParserRuleContext.toSpecialIdentifier(): QualifiedIdentifier =
+        QualifiedIdentifier(parts = listOf(toIdentifierAsWritten()), locator = toLocator())
 
     private fun cqlParser.QuantityContext.toQuantityLiteral(): QuantityLiteral =
         requireComplete().run {
@@ -1011,10 +1028,8 @@ class Builder(private val sourceId: String? = null) {
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(qualifier().map { it.text.removeTickEscapes() })
-                        add(identifier().text.removeTickEscapes())
-                    }
+                    qualifier().map { it.toIdentifierAsWritten() } + identifier().toIdentifier(),
+                locator = toLocator(),
             )
         }
 
@@ -1042,29 +1057,21 @@ class Builder(private val sourceId: String? = null) {
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(qualifier().map { it.text.removeTickEscapes() })
-                        add(referentialOrTypeNameIdentifier().text.removeTickEscapes())
-                    }
+                    qualifier().map { it.toIdentifierAsWritten() } +
+                        referentialOrTypeNameIdentifier().toIdentifierAsWritten(),
+                locator = toLocator(),
             )
         }
 
     private fun cqlParser.ReferentialIdentifierContext.toIdentifier(): Identifier =
-        when {
-            identifier() != null -> identifier()!!.toIdentifier()
-            keywordIdentifier() != null -> Identifier(keywordIdentifier()!!.text)
-            else -> Identifier(text.removeTickEscapes())
-        }
+        toIdentifierAsWritten()
 
     private fun cqlParser.ReferentialIdentifierContext.toQualifiedIdentifier():
-        QualifiedIdentifier = QualifiedIdentifier(listOf(toIdentifier().value))
+        QualifiedIdentifier =
+        QualifiedIdentifier(parts = listOf(toIdentifier()), locator = toLocator())
 
     private fun cqlParser.IdentifierOrFunctionIdentifierContext.toIdentifier(): Identifier =
-        when {
-            identifier() != null -> identifier()!!.toIdentifier()
-            functionIdentifier() != null -> Identifier(functionIdentifier()!!.text)
-            else -> Identifier(text.removeTickEscapes())
-        }
+        toIdentifierAsWritten()
 
     private fun buildInfixSetExpression(ctx: cqlParser.InFixSetExpressionContext): Expression {
         ctx.requireComplete()
@@ -1862,14 +1869,9 @@ class Builder(private val sourceId: String? = null) {
         requireComplete().run {
             QualifiedIdentifier(
                 parts =
-                    buildList {
-                        addAll(
-                            qualifierExpression().map {
-                                it.referentialIdentifier().toIdentifier().value
-                            }
-                        )
-                        add(referentialIdentifier().toIdentifier().value)
-                    }
+                    qualifierExpression().map { it.referentialIdentifier().toIdentifier() } +
+                        referentialIdentifier().toIdentifier(),
+                locator = toLocator(),
             )
         }
 
@@ -1877,21 +1879,32 @@ class Builder(private val sourceId: String? = null) {
         requireComplete()
         return when (this) {
             is cqlParser.SimplePathReferentialIdentifierContext ->
-                QualifiedIdentifier(listOf(referentialIdentifier().toIdentifier().value))
+                QualifiedIdentifier(
+                    parts = listOf(referentialIdentifier().toIdentifier()),
+                    locator = toLocator(),
+                )
 
-            is cqlParser.SimplePathQualifiedIdentifierContext -> {
-                val base = simplePath().toQualifiedIdentifier().parts.toMutableList()
-                base += referentialIdentifier().toIdentifier().value
-                QualifiedIdentifier(base)
-            }
+            is cqlParser.SimplePathQualifiedIdentifierContext ->
+                QualifiedIdentifier(
+                    parts =
+                        simplePath().toQualifiedIdentifier().parts +
+                            referentialIdentifier().toIdentifier(),
+                    locator = toLocator(),
+                )
 
-            is cqlParser.SimplePathIndexerContext -> {
-                val base = simplePath().toQualifiedIdentifier().parts.toMutableList()
-                base += simpleLiteral().text.unquote()
-                QualifiedIdentifier(base)
-            }
+            is cqlParser.SimplePathIndexerContext ->
+                QualifiedIdentifier(
+                    parts =
+                        simplePath().toQualifiedIdentifier().parts +
+                            Identifier(
+                                value = simpleLiteral().text.unquote(),
+                                locator = simpleLiteral().toLocator(),
+                            ),
+                    locator = toLocator(),
+                )
 
-            else -> QualifiedIdentifier(listOf(text))
+            else ->
+                QualifiedIdentifier(parts = listOf(toIdentifierAsWritten()), locator = toLocator())
         }
     }
 
@@ -1927,18 +1940,6 @@ class Builder(private val sourceId: String? = null) {
     private fun String.unquote(): String =
         when {
             length >= 2 && startsWith("'") && endsWith("'") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            length >= 2 && startsWith("\"") && endsWith("\"") ->
-                StringEscapeUtils.unescapeCql(substring(1, length - 1))
-            else -> this
-        }
-
-    /**
-     * Strips the delimiters from a `` `identifier` `` or `"identifier"` and processes its escapes.
-     */
-    private fun String.removeTickEscapes(): String =
-        when {
-            length >= 2 && startsWith("`") && endsWith("`") ->
                 StringEscapeUtils.unescapeCql(substring(1, length - 1))
             length >= 2 && startsWith("\"") && endsWith("\"") ->
                 StringEscapeUtils.unescapeCql(substring(1, length - 1))
