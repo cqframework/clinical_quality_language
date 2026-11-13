@@ -15,7 +15,7 @@ object ReplaceMatchesEvaluator {
 
         if (argument is String && pattern is String && substitution is String) {
 
-            return argument.replace(pattern.value.toRegex(), substitution.value).toCqlString()
+            return argument.value.replace(pattern.value.toRegex(), substitution.value).toCqlString()
         }
 
         throw InvalidOperatorArgument(
