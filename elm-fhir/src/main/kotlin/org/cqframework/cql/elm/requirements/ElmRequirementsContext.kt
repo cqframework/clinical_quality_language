@@ -13,6 +13,7 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
+import org.hl7.cql.model.ListType
 import org.hl7.cql.model.NamespaceManager.Companion.getNamePart
 import org.hl7.cql.model.NamespaceManager.Companion.getUriPart
 import org.hl7.elm.r1.AliasRef
@@ -35,6 +36,8 @@ import org.hl7.elm.r1.IncludeDef
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.Null
+import org.hl7.elm.r1.OperandDef
+import org.hl7.elm.r1.OperandRef
 import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.ParameterRef
 import org.hl7.elm.r1.Property
@@ -497,6 +500,224 @@ class ElmRequirementsContext(
         }
     }
 
+    // --- Fluent/function inlining: bind a function's operands to the call-site arguments ---
+    // When a terminology/date filter is expressed inside a (fluent) function that takes the value
+    // set or interval as a parameter (the pattern used pervasively in HEDIS content), the filter
+    // can only be attributed to a retrieve if the argument bound at the call site is propagated
+    // into the function body. We do this by inlining the body of a resolvable, same-library
+    // function at the call site, with a binding frame mapping each operand name to its argument.
+    // One frame per active inlining. Besides the operand->argument bindings, each frame records the
+    // library that was active at the call site (where the ARGUMENTS live) so that a bound argument
+    // can be resolved in its own library even while the function BODY is being visited in the
+    // (possibly different) library that defines the function.
+    private class OperandFrame(
+        val bindings: Map<String, Expression>,
+        val callerLibrary: VersionedIdentifier,
+    ) {
+        // Operand names of THIS frame's function that were actually consumed (referenced or
+        // forwarded) while visiting its body. Used after inlining to recover requirements from the
+        // arguments of operands the body ignored, which the body visit alone would drop.
+        val referencedOperands: MutableSet<String> = HashSet()
+    }
+
+    // The argument an operand binding ultimately resolves to, together with the library in which
+    // that argument must be resolved (its call site's library).
+    class ResolvedBinding(val expression: Expression, val callerLibrary: VersionedIdentifier)
+
+    private val operandBindingStack = ArrayList<OperandFrame>()
+    private val inliningFunctionDefs =
+        Collections.newSetFromMap(IdentityHashMap<FunctionDef, Boolean>())
+
+    // Memoizes whether a function is a terminology filter helper (see isTerminologyFilterHelper).
+    private val terminologyFilterHelperCache = IdentityHashMap<FunctionDef, Boolean>()
+
+    // The System terminology types whose presence as a function operand marks a terminology filter
+    // helper. String is intentionally NOT included (too broad: many value-neutral helpers take
+    // strings), even though TypeResolver.isTerminologyType treats it as terminology.
+    private val terminologyOperandTypes: List<DataType> by lazy {
+        listOf(
+            typeResolver.resolveTypeName("System", "ValueSet"),
+            typeResolver.resolveTypeName("System", "Code"),
+            typeResolver.resolveTypeName("System", "Concept"),
+            typeResolver.resolveTypeName("System", "CodeSystem"),
+        )
+    }
+
+    private fun isTerminologyOperandType(dataType: DataType?): Boolean {
+        if (dataType == null) return false
+        val elementType = if (dataType is ListType) dataType.elementType else dataType
+        return terminologyOperandTypes.any { elementType.isSubTypeOf(it) }
+    }
+
+    private fun operandDataType(operand: OperandDef): DataType? {
+        return when {
+            operand.operandTypeSpecifier != null ->
+                typeResolver.resolveTypeSpecifier(operand.operandTypeSpecifier!!)
+            operand.operandType != null -> typeResolver.resolveTypeName(operand.operandType!!)
+            else -> operand.resultType
+        }
+    }
+
+    // A function is eligible for cross-library inlining when it takes a terminology-typed operand
+    // (value set / code / concept / code system). This captures value-set-parameter filter helpers,
+    // INCLUDING every link of a delegation chain -- each link carries the terminology operand it
+    // forwards, so composition is handled by the existing lazy inlining without having to follow
+    // function references here. Value-neutral helpers (date/interval constructors, conversions,
+    // plain-string helpers) are excluded and stay on the default path, so they cannot perturb
+    // existing date/code filter inference.
+    private fun isTerminologyFilterHelper(functionDef: FunctionDef): Boolean {
+        return terminologyFilterHelperCache.getOrPut(functionDef) {
+            functionDef.operand.any { isTerminologyOperandType(operandDataType(it)) }
+        }
+    }
+
+    /**
+     * Resolves the [FunctionDef] that a [FunctionRef] invokes, when it is safe to inline for
+     * requirements inference: a single same-library match with a body and a matching operand count
+     * that is not already being inlined (recursion guard). Returns null to fall back to the default
+     * (opaque) handling, which keeps the result a safe superset.
+     */
+    @Suppress("CyclomaticComplexMethod", "ReturnCount")
+    fun resolveInlinableFunctionDef(functionRef: FunctionRef): FunctionDef? {
+        // Bound the inlining depth so deeply nested (or pathological) call chains cannot overflow
+        // the stack; beyond the cap we fall back to the default handling (a safe superset).
+        if (operandBindingStack.size >= MAX_INLINE_DEPTH) {
+            return null
+        }
+        var signature: MutableList<DataType>? = ArrayList()
+        for (ts in functionRef.signature) {
+            signature!!.add(typeResolver.resolveTypeSpecifier(ts))
+        }
+        if (signature!!.size != functionRef.operand.size) {
+            signature = ArrayList()
+            for (e in functionRef.operand) {
+                when {
+                    e.resultType != null -> signature!!.add(e.resultType!!)
+                    e.resultTypeName != null ->
+                        signature!!.add(typeResolver.resolveTypeName(e.resultTypeName!!))
+                    e.resultTypeSpecifier != null ->
+                        signature!!.add(typeResolver.resolveTypeSpecifier(e.resultTypeSpecifier!!))
+                    else -> {
+                        signature = null
+                        break
+                    }
+                }
+            }
+        }
+        // Resolve the function in the library it is invoked against: the current library for a
+        // local call, or the included library named by the FunctionRef for a cross-library call.
+        val targetLibrary =
+            prepareLibraryVisit(this.currentLibraryIdentifier, functionRef.libraryName)
+        try {
+            val fds = targetLibrary.resolveFunctionRef(functionRef.name!!, signature)
+            val fd = fds.singleOrNull() ?: return null
+            if (fd.expression == null) return null
+            if (fd.operand.size != functionRef.operand.size) return null
+            if (inliningFunctionDefs.contains(fd)) return null
+            // Cross-library inlining is restricted to terminology filter helpers (see
+            // isTerminologyFilterHelper); other included-library helpers are left opaque to keep
+            // the analysis additive and avoid disturbing existing filter inference.
+            if (functionRef.libraryName != null && !isTerminologyFilterHelper(fd)) return null
+            return fd
+        } finally {
+            unprepareLibraryVisit(functionRef.libraryName)
+        }
+    }
+
+    fun beginInlining(functionDef: FunctionDef, functionRef: FunctionRef) {
+        // The arguments live in the current (call-site) library; capture it before switching.
+        val callerLibrary = currentLibraryIdentifier
+        // Enter the function's defining library for the body visit. For a local call this is a
+        // no-op (libraryName is null); for a cross-library call it switches to the included library
+        // so the body's own references resolve correctly.
+        prepareLibraryVisit(callerLibrary, functionRef.libraryName)
+        val bindings = HashMap<String, Expression>()
+        for (i in functionDef.operand.indices) {
+            val name = functionDef.operand[i].name
+            val arg = functionRef.operand[i]
+            if (name != null) {
+                bindings[name] = arg
+            }
+        }
+        inliningFunctionDefs.add(functionDef)
+        operandBindingStack.add(OperandFrame(bindings, callerLibrary))
+    }
+
+    fun endInlining(functionDef: FunctionDef, functionRef: FunctionRef) {
+        operandBindingStack.removeAt(operandBindingStack.size - 1)
+        inliningFunctionDefs.remove(functionDef)
+        unprepareLibraryVisit(functionRef.libraryName)
+    }
+
+    /**
+     * Returns the call-site argument bound to the given function operand, if currently inlining.
+     * Resolution is lexical: when a binding is itself a reference to an operand of the enclosing
+     * function (nested inlining), it is resolved in the next frame down. The walk is bounded by the
+     * stack depth and never returns an [OperandRef], so callers cannot loop on a self-referential
+     * binding.
+     */
+    @Suppress("ReturnCount")
+    fun resolveOperandBinding(name: String?): ResolvedBinding? {
+        if (name == null || operandBindingStack.isEmpty()) return null
+        var frameIndex = operandBindingStack.size - 1
+        var currentName: String = name
+        // Walk frames top-down. A name not present in a frame belongs to an enclosing scope -- this
+        // happens when visiting a bound argument that references an operand of an OUTER inlined
+        // function (the delegation/composition case) -- so we keep looking in lower frames. A
+        // binding that is itself an OperandRef is a pass-through to the next frame down. The first
+        // non-OperandRef binding found is the resolved argument, carrying its frame's call library.
+        while (frameIndex >= 0) {
+            val frame = operandBindingStack[frameIndex]
+            val bound = frame.bindings[currentName]
+            when {
+                bound == null -> frameIndex -= 1
+                bound is OperandRef -> {
+                    // This operand forwards an outer operand; record it as referenced so its
+                    // argument is not re-visited as an ignored one.
+                    frame.referencedOperands.add(currentName)
+                    currentName = bound.name ?: return null
+                    frameIndex -= 1
+                }
+                else -> {
+                    frame.referencedOperands.add(currentName)
+                    return ResolvedBinding(bound, frame.callerLibrary)
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * Snapshot of the operand names the innermost active inlining has referenced so far. Read by
+     * the visitor after visiting a function body (while that frame is still active) so it can
+     * recover requirements from the arguments of operands the body ignored.
+     */
+    fun currentInliningReferencedOperands(): Set<String> {
+        if (operandBindingStack.isEmpty()) return emptySet()
+        return HashSet(operandBindingStack[operandBindingStack.size - 1].referencedOperands)
+    }
+
+    // Bound argument expressions currently being visited through operand resolution. A binding
+    // that (directly or transitively) resolves back to an expression already in progress would
+    // loop, so we guard against it. This covers the fallback (non-inlined) path, where an operand
+    // passed as an argument to another function can resolve back to itself without growing the
+    // inlining depth. On a cycle we fall back to the default (opaque) handling (a safe superset).
+    private val operandResolutionStack =
+        Collections.newSetFromMap(IdentityHashMap<Expression, Boolean>())
+
+    /**
+     * Marks [expression] as being resolved through an operand binding. Returns false if it is
+     * already being resolved (a cycle); the caller then falls back to opaque handling rather than
+     * recursing. Each successful call must be paired with [endOperandResolution].
+     */
+    fun beginOperandResolution(expression: Expression): Boolean {
+        return operandResolutionStack.add(expression)
+    }
+
+    fun endOperandResolution(expression: Expression) {
+        operandResolutionStack.remove(expression)
+    }
+
     fun reportRetrieve(retrieve: Retrieve) {
         // Report the retrieve as an overall data requirement
         reportRequirement(retrieve)
@@ -645,6 +866,33 @@ class ElmRequirementsContext(
 
     @Suppress("CyclomaticComplexMethod", "LongMethod", "ReturnCount")
     fun reportProperty(property: Property): ElmPropertyRequirement? {
+        // If the property is accessed off a bound function operand (i.e. we are inlining a
+        // function/fluent call), rewrite its source to the call-site argument so it resolves
+        // against the correct query scope (e.g. observation.code -> O.code) rather than being
+        // treated as an unbound property on the operand's type.
+        if (property.source is OperandRef) {
+            val resolved = resolveOperandBinding((property.source as OperandRef).name)
+            if (resolved != null) {
+                val rewritten = Property()
+                rewritten.source = resolved.expression
+                rewritten.scope = null
+                rewritten.path = property.path
+                rewritten.localId = property.localId
+                rewritten.resultType = property.resultType
+                rewritten.resultTypeName = property.resultTypeName
+                rewritten.resultTypeSpecifier = property.resultTypeSpecifier
+                // The argument lives in its call site's library; resolve the rewritten property
+                // there so its alias/query scope and attribution are correct even when the function
+                // body is being visited in a different (included) library.
+                enterLibrary(resolved.callerLibrary)
+                try {
+                    return reportProperty(rewritten)
+                } finally {
+                    exitLibrary()
+                }
+            }
+        }
+
         // if scope is specified, it's a reference to an alias in a current query context
         // if source is an AliasRef, it's a reference to an alias in a current query context
         // if source is a LetRef, it's a reference to a let in a current query context
@@ -877,5 +1125,11 @@ class ElmRequirementsContext(
         //    this.recordParsingException(error);
         // }
         return referencedLibrary
+    }
+
+    private companion object {
+        // Bound the inlining depth so deeply nested (or pathological) call chains cannot overflow
+        // the stack; beyond the cap we fall back to the default handling (a safe superset).
+        private const val MAX_INLINE_DEPTH = 32
     }
 }
