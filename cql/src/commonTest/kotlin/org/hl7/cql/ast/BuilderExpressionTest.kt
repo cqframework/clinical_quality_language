@@ -88,6 +88,14 @@ class BuilderExpressionTest {
                 right = { string("a") },
             )
         }
+        assertExpression("X in day of Y") {
+            membership(
+                MembershipOperator.IN,
+                left = { identifier("X") },
+                right = { identifier("Y") },
+                precision = "day",
+            )
+        }
     }
 
     @Test

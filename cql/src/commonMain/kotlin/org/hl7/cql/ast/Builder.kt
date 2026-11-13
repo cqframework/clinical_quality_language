@@ -1162,10 +1162,9 @@ class Builder(private val sourceId: String? = null) {
                 "contains" -> MembershipOperator.CONTAINS
                 else -> MembershipOperator.IN
             }
-        val precision = ctx.dateTimePrecisionSpecifier()?.text?.trim()
         return MembershipExpression(
             operator = operator,
-            precision = precision?.ifBlank { null },
+            precision = ctx.dateTimePrecisionSpecifier()?.toPrecision(),
             left = buildExpression(ctx.expression(0)!!),
             right = buildExpression(ctx.expression(1)!!),
             locator = ctx.toLocator(),
