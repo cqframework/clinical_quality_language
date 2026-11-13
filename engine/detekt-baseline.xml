@@ -495,7 +495,6 @@
     <ID>SwallowedException:ContainsEvaluator.kt$ContainsEvaluator$e: InvalidOperatorArgument</ID>
     <ID>SwallowedException:ConvertEvaluator.kt$ConvertEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertQuantityEvaluator.kt$ConvertQuantityEvaluator$e: Exception</ID>
-    <ID>SwallowedException:ConvertsToDateEvaluator.kt$ConvertsToDateEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToQuantityEvaluator.kt$ConvertsToQuantityEvaluator$e: Exception</ID>
@@ -517,7 +516,6 @@
     <ID>ThrowsCount:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>TooGenericExceptionCaught:ConvertEvaluator.kt$ConvertEvaluator$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertQuantityEvaluator.kt$ConvertQuantityEvaluator$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:ConvertsToDateEvaluator.kt$ConvertsToDateEvaluator$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$dtpe: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ConvertsToQuantityEvaluator.kt$ConvertsToQuantityEvaluator$e: Exception</ID>
