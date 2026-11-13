@@ -1175,8 +1175,6 @@ private class Writer {
                 is StartsIntervalPhrase ->
                     listOfNotNull("starts", phrase.precision?.let { "$it of" })
                 is EndsIntervalPhrase -> listOfNotNull("ends", phrase.precision?.let { "$it of" })
-                is UnsupportedIntervalPhrase ->
-                    throw IllegalArgumentException("Cannot print unsupported phrase ${phrase.text}")
             }
         write(words.joinToString(" "))
     }

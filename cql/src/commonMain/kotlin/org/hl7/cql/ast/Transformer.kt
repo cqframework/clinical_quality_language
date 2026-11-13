@@ -460,7 +460,6 @@ open class Transformer {
             is OverlapsIntervalPhrase -> visitOverlapsIntervalPhrase(phrase)
             is StartsIntervalPhrase -> visitStartsIntervalPhrase(phrase)
             is EndsIntervalPhrase -> visitEndsIntervalPhrase(phrase)
-            is UnsupportedIntervalPhrase -> visitUnsupportedIntervalPhrase(phrase)
         }
 
     open fun visitConcurrentIntervalPhrase(
@@ -494,10 +493,6 @@ open class Transformer {
         phrase
 
     open fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase): IntervalOperatorPhrase = phrase
-
-    open fun visitUnsupportedIntervalPhrase(
-        phrase: UnsupportedIntervalPhrase
-    ): IntervalOperatorPhrase = phrase
 
     open fun visitQuantityOffset(offset: QuantityOffset): QuantityOffset =
         offset.copy(quantity = visitQuantityLiteral(offset.quantity) as QuantityLiteral)

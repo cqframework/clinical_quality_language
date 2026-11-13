@@ -96,8 +96,6 @@ class PrinterTest {
             val library = Builder().parseLibrary(text).library
             assertFailsWith<IllegalArgumentException>(text) { Printer.print(library) }
         }
-        val phrase = IntervalRelationExpression(int(1), UnsupportedIntervalPhrase("x"), int(2))
-        assertFailsWith<IllegalArgumentException> { Printer.print(phrase) }
     }
 
     @Test

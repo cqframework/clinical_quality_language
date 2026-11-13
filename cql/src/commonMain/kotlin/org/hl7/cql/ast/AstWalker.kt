@@ -389,7 +389,6 @@ open class AstWalker {
             is OverlapsIntervalPhrase -> visitOverlapsIntervalPhrase(phrase)
             is StartsIntervalPhrase -> visitStartsIntervalPhrase(phrase)
             is EndsIntervalPhrase -> visitEndsIntervalPhrase(phrase)
-            is UnsupportedIntervalPhrase -> visitUnsupportedIntervalPhrase(phrase)
         }
     }
 
@@ -415,8 +414,6 @@ open class AstWalker {
     open fun visitStartsIntervalPhrase(phrase: StartsIntervalPhrase) {}
 
     open fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase) {}
-
-    open fun visitUnsupportedIntervalPhrase(phrase: UnsupportedIntervalPhrase) {}
 
     open fun visitQuantityOffset(offset: QuantityOffset) {
         visitQuantityLiteral(offset.quantity)

@@ -192,6 +192,7 @@ class BuilderRecoveryTest {
         assertTrue(expected.problems.isEmpty(), expected.problems.joinToString { it.message })
         val actual = Builder().parseLibrary(damaged.trimIndent())
         assertTrue(actual.problems.isNotEmpty(), "Expected problems for the damaged library")
+        assertTrue(actual.problems.none { it.internal }, "Internal errors: ${actual.problems}")
         val kept =
             expected.library.declarations().filterIndexed { index, declaration ->
                 if (name == null) index != 0 else declaration.nameOrNull() != name

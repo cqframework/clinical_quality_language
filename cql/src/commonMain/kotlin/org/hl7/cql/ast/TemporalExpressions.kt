@@ -277,10 +277,3 @@ data class EndsIntervalPhrase(
     val precision: String? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : IntervalOperatorPhrase
-
-@Serializable
-@SerialName("unsupportedInterval")
-data class UnsupportedIntervalPhrase(
-    val text: String,
-    override val locator: Locator = Locator.UNKNOWN,
-) : IntervalOperatorPhrase

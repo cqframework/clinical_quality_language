@@ -79,22 +79,7 @@ class TraversalTest {
 
     @Test
     fun traversesTheNodesLeftBySyntaxErrors() {
-        val damaged =
-            listOf("using", "define A", "define A: 2147483648").map { library(it) } +
-                Library(
-                    statements =
-                        listOf(
-                            ExpressionDefinition(
-                                name = Identifier("A"),
-                                expression =
-                                    IntervalRelationExpression(
-                                        LiteralExpression(IntLiteral(1)),
-                                        UnsupportedIntervalPhrase("x"),
-                                        LiteralExpression(IntLiteral(2)),
-                                    ),
-                            )
-                        )
-                )
+        val damaged = listOf("using", "define A", "define A: 2147483648").map { library(it) }
         for (library in damaged) {
             object : AstWalker() {}.visitLibrary(library)
             assertEquals(library, library.transform(object : Transformer() {}))

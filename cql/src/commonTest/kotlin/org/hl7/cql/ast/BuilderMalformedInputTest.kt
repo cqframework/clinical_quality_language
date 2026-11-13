@@ -7,7 +7,8 @@ import kotlin.test.fail
 
 /**
  * The Builder must never throw, whatever the input: malformed source produces [Problem]s and error
- * nodes instead. Each input here once made it throw.
+ * nodes instead. Each input here once made it throw. None of the problems may be
+ * [internal][Problem.internal], which would mean the Builder met a parse tree it has no case for.
  */
 class BuilderMalformedInputTest {
 
@@ -95,7 +96,12 @@ class BuilderMalformedInputTest {
                 try {
                     val result = Builder().parseLibrary(input)
                     inspectCqlAst(input)
-                    "`$input` reported no problems".takeIf { result.problems.isEmpty() }
+                    when {
+                        result.problems.isEmpty() -> "`$input` reported no problems"
+                        result.problems.any { it.internal } ->
+                            "`$input` reported internal errors: ${result.problems}"
+                        else -> null
+                    }
                 } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                     "`$input` threw $e"
                 }
