@@ -10,6 +10,7 @@ import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Long
+import org.opencds.cqf.cql.engine.runtime.OverflowHelper
 import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
@@ -17,8 +18,6 @@ import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.computeWithConvertedUnits
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
-import org.opencds.cqf.cql.engine.runtime.toCqlInteger
-import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 
@@ -76,9 +75,9 @@ object SubtractEvaluator {
 
         // -(Integer, Integer)
         if (left is Integer && right is Integer) {
-            return (left.value - right.value).toCqlInteger()
+            return OverflowHelper.subtract(left.value, right.value)
         } else if (left is Long && right is Long) {
-            return (left.value - right.value).toCqlLong()
+            return OverflowHelper.subtract(left.value, right.value)
         } else if (left is Decimal && right is Decimal) {
             return left.value.subtract(right.value).toCqlDecimal()
         } else if (left is Quantity && right is Quantity) {
