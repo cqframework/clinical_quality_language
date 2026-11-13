@@ -33,7 +33,7 @@ fun createUcumServiceReference(
             },
             { left, right ->
                 val result =
-                    multiply(
+                    divideBy(
                         left.first.toString(),
                         left.second,
                         right.first.toString(),
