@@ -513,7 +513,12 @@ class ElmRequirementsContext(
     private class OperandFrame(
         val bindings: Map<String, Expression>,
         val callerLibrary: VersionedIdentifier,
-    )
+    ) {
+        // Operand names of THIS frame's function that were actually consumed (referenced or
+        // forwarded) while visiting its body. Used after inlining to recover requirements from the
+        // arguments of operands the body ignored, which the body visit alone would drop.
+        val referencedOperands: MutableSet<String> = HashSet()
+    }
 
     // The argument an operand binding ultimately resolves to, together with the library in which
     // that argument must be resolved (its call site's library).
@@ -667,13 +672,29 @@ class ElmRequirementsContext(
             when {
                 bound == null -> frameIndex -= 1
                 bound is OperandRef -> {
+                    // This operand forwards an outer operand; record it as referenced so its
+                    // argument is not re-visited as an ignored one.
+                    frame.referencedOperands.add(currentName)
                     currentName = bound.name ?: return null
                     frameIndex -= 1
                 }
-                else -> return ResolvedBinding(bound, frame.callerLibrary)
+                else -> {
+                    frame.referencedOperands.add(currentName)
+                    return ResolvedBinding(bound, frame.callerLibrary)
+                }
             }
         }
         return null
+    }
+
+    /**
+     * Snapshot of the operand names the innermost active inlining has referenced so far. Read by
+     * the visitor after visiting a function body (while that frame is still active) so it can
+     * recover requirements from the arguments of operands the body ignored.
+     */
+    fun currentInliningReferencedOperands(): Set<String> {
+        if (operandBindingStack.isEmpty()) return emptySet()
+        return HashSet(operandBindingStack[operandBindingStack.size - 1].referencedOperands)
     }
 
     // Bound argument expressions currently being visited through operand resolution. A binding

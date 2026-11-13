@@ -195,6 +195,42 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
+    /**
+     * Visits an inlinable function body with its operands bound to the call-site arguments, then
+     * recovers requirements from any argument whose operand the body never referenced.
+     *
+     * The default [visitFunctionRef] visits every argument, so each argument's requirements are
+     * always collected. The inline path visits only the body, so an argument bound to an operand
+     * the body ignores (e.g. a retrieve passed to an unused parameter) would otherwise be dropped
+     * -- an unsound under-approximation. Referenced operands are deliberately NOT re-visited here:
+     * their requirements already flowed through operand binding during the body visit, and
+     * re-visiting a filtering operand's argument as a bare (unfiltered) retrieve would poison the
+     * union of data requirements for that type.
+     */
+    private fun inlineFunctionBody(
+        functionDef: FunctionDef,
+        functionRef: FunctionRef,
+        context: ElmRequirementsContext,
+    ): ElmRequirement? {
+        context.beginInlining(functionDef, functionRef)
+        val bodyResult: ElmRequirement?
+        val referencedOperands: Set<String>
+        try {
+            bodyResult = visitElement(functionDef.expression!!, context)
+            referencedOperands = context.currentInliningReferencedOperands()
+        } finally {
+            context.endInlining(functionDef, functionRef)
+        }
+        // endInlining has restored the caller library context, so the arguments resolve correctly.
+        for (i in functionDef.operand.indices) {
+            val name = functionDef.operand[i].name
+            if (name == null || name !in referencedOperands) {
+                visitElement(functionRef.operand[i], context)
+            }
+        }
+        return bodyResult
+    }
+
     override fun visitFunctionRef(
         elm: FunctionRef,
         context: ElmRequirementsContext,
@@ -207,12 +243,7 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         val inlinableFunctionDef = context.resolveInlinableFunctionDef(elm)
         val result =
             if (inlinableFunctionDef != null) {
-                context.beginInlining(inlinableFunctionDef, elm)
-                try {
-                    visitElement(inlinableFunctionDef.expression!!, context)
-                } finally {
-                    context.endInlining(inlinableFunctionDef, elm)
-                }
+                inlineFunctionBody(inlinableFunctionDef, elm, context)
             } else {
                 super.visitFunctionRef(elm, context)
             }

@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
@@ -123,6 +124,46 @@ class DataRequirementsProcessorTest {
     }
 
     @Test
+    fun functionInliningPreservesIgnoredArgumentRequirements() {
+        // Soundness guard for function-body inlining: a resolvable function is inlined to trace
+        // filters through its body, but inlining must never DROP a data requirement that the
+        // default traversal would have reported. Here "firstOf" ignores its second operand, whose
+        // argument is a [Condition] retrieve. The retrieve is still evaluated at runtime, so its
+        // data requirement must survive even though the inlined body never references that operand.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "FunctionUnreferencedOperandDataRequirements/" +
+                    "FunctionUnreferencedOperandDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val conditionRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.CONDITION,
+                )
+                .toList()
+        Assertions.assertTrue(
+            conditionRequirements.isNotEmpty(),
+            "Expected the [Condition] retrieve in the ignored argument to still be reported as a " +
+                "data requirement; inlining must not drop requirements the default traversal keeps",
+        )
+    }
+
+    @Test
     fun fluentFunctionValueSetParameterCodeFilter() {
         val cqlTranslatorOptions = CqlCompilerOptions()
         cqlTranslatorOptions.collapseDataRequirements = true
@@ -178,8 +219,8 @@ class DataRequirementsProcessorTest {
         // separate included library (Helpers) while the value set is bound in the caller. The
         // requirements processor must resolve the helper body in the Helpers library context
         // while resolving the value-set argument in the caller's context, then surface the
-        // codeFilter on the Observation retrieve. RED until the cross-library summary/provenance
-        // analysis lands; the same-library case already passes.
+        // codeFilter on the Observation retrieve. Green regression guard for the cross-library
+        // tracing implemented on this branch (it began as the RED TDD target that drove it).
         val cqlTranslatorOptions = CqlCompilerOptions()
         cqlTranslatorOptions.collapseDataRequirements = true
         cqlTranslatorOptions.analyzeDataRequirements = true
@@ -273,15 +314,16 @@ class DataRequirementsProcessorTest {
         )
     }
 
-    // @Test
-    // TODO: Requires lifting a nested-exists membership over a property path into a codeFilter (a
-    // CORE query-inference enhancement, independent of cross-library tracing; see
-    // nestedExistsMembershipNotYetLiftedToCodeFilter). RED TDD target reproducing the shape used
-    // for
-    // list-valued coded filters: cross-library delegation (typedAs -> anyConceptIn) + a nested
-    // exists over Encounter.type.coding. Cross-library tracing already surfaces
-    // mustSupport=[type, coding]; only the codeFilter awaits the nested-exists inference. Re-enable
-    // when that lands.
+    @Test
+    @Disabled(
+        "RED TDD target: requires lifting a nested-exists membership over a property path into a " +
+            "codeFilter (a CORE query-inference enhancement, independent of cross-library tracing; " +
+            "see nestedExistsMembershipNotYetLiftedToCodeFilter). Reproduces the list-valued coded " +
+            "filter shape: cross-library delegation (typedAs -> anyConceptIn) + a nested exists " +
+            "over Encounter.type.coding. Cross-library tracing already surfaces " +
+            "mustSupport=[type, coding]; only the codeFilter awaits the nested-exists inference. " +
+            "Re-enable when that lands."
+    )
     fun crossLibraryNestedMembershipEncounterCodeFilter() {
         val cqlTranslatorOptions = CqlCompilerOptions()
         cqlTranslatorOptions.collapseDataRequirements = true
