@@ -86,6 +86,26 @@ class TraversalTest {
         }
     }
 
+    @Test
+    fun noOtherNodeSharesTheKindOfAnExpression() {
+        // Expressions are found in the JSON by kind, so no other node may use one.
+        val others =
+            listOf(
+                    Literal.serializer(),
+                    TypeSpecifier.serializer(),
+                    Definition.serializer(),
+                    Statement.serializer(),
+                    QuerySource.serializer(),
+                    QueryInclusionClause.serializer(),
+                    IntervalOperatorPhrase.serializer(),
+                    PathSegment.serializer(),
+                    FunctionBody.serializer(),
+                )
+                .flatMap { it.descriptor.getElementDescriptor(1).elementNames }
+        // A retrieve is both an expression and a query source
+        assertEquals(setOf("retrieve"), expressionKinds.intersect(others.toSet()))
+    }
+
     private fun library(text: String): Library = Builder().parseLibrary(text).library
 
     private fun Library.toJson(): JsonElement = Json.encodeToJsonElement(Library.serializer(), this)

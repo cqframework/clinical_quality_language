@@ -231,6 +231,8 @@ object CqlSamples {
             "[Encounter: Lib.\"Visits\"]",
             "[Patient -> Encounter: type in \"Visits\"]",
             "[Encounter: reason.coding in \"Visits\"]",
+            "[Encounter: reason.coding[0] in \"Visits\"]",
+            "[Encounter: reason['a'].code ~ \"Visit\"]",
             "[Observation] O return O",
             "from [Observation] O return O",
             "from A a, B b return a",

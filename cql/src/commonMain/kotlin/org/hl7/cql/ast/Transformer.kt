@@ -234,8 +234,17 @@ open class Transformer {
             terminology = expression.terminology?.let { visitTerminologyRestriction(it) },
             comparator = expression.comparator,
             context = expression.context,
-            codePath = expression.codePath,
+            codePath = expression.codePath?.let { visitSimplePath(it) },
         )
+
+    open fun visitSimplePath(path: SimplePath): SimplePath =
+        path.copy(segments = path.segments.map { visitPathSegment(it) })
+
+    open fun visitPathSegment(segment: PathSegment): PathSegment =
+        when (segment) {
+            is PropertySegment -> segment
+            is IndexSegment -> segment.copy(index = visitExpression(segment.index))
+        }
 
     open fun visitListTransformExpression(expression: ListTransformExpression): Expression =
         expression.copy(operand = visitExpression(expression.operand))

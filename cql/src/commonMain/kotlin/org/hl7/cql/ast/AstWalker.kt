@@ -323,7 +323,19 @@ open class AstWalker {
     }
 
     open fun visitRetrieveExpression(expression: RetrieveExpression) {
+        expression.codePath?.let { visitSimplePath(it) }
         expression.terminology?.let { visitTerminologyRestriction(it) }
+    }
+
+    open fun visitSimplePath(path: SimplePath) {
+        path.segments.forEach { visitPathSegment(it) }
+    }
+
+    open fun visitPathSegment(segment: PathSegment) {
+        when (segment) {
+            is PropertySegment -> {}
+            is IndexSegment -> visitExpression(segment.index)
+        }
     }
 
     open fun visitTerminologyRestriction(restriction: TerminologyRestriction) {

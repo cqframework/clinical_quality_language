@@ -1341,7 +1341,10 @@ class Builder(private val sourceId: String? = null) {
                 name = ctx.namedTypeSpecifier().toQualifiedIdentifier(),
                 locator = ctx.namedTypeSpecifier().toLocator(),
             )
-        val codePath = ctx.codePath()?.requireComplete()?.simplePath()?.toQualifiedIdentifier()
+        val codePath =
+            ctx.codePath()?.requireComplete()?.simplePath()?.let {
+                SimplePath(segments = it.toSegments(), locator = it.toLocator())
+            }
         val comparator =
             ctx.codeComparator()?.text?.lowercase()?.let {
                 when (it) {
@@ -1830,37 +1833,33 @@ class Builder(private val sourceId: String? = null) {
             )
         }
 
-    private fun cqlParser.SimplePathContext.toQualifiedIdentifier(): QualifiedIdentifier {
+    private fun cqlParser.SimplePathContext.toSegments(): List<PathSegment> {
         requireComplete()
         return when (this) {
             is cqlParser.SimplePathReferentialIdentifierContext ->
-                QualifiedIdentifier(
-                    parts = listOf(referentialIdentifier().toIdentifier()),
-                    locator = toLocator(),
-                )
-
+                listOf(property(referentialIdentifier()))
             is cqlParser.SimplePathQualifiedIdentifierContext ->
-                QualifiedIdentifier(
-                    parts =
-                        simplePath().toQualifiedIdentifier().parts +
-                            referentialIdentifier().toIdentifier(),
-                    locator = toLocator(),
-                )
-
-            is cqlParser.SimplePathIndexerContext ->
-                QualifiedIdentifier(
-                    parts =
-                        simplePath().toQualifiedIdentifier().parts +
-                            Identifier(
-                                value = simpleLiteral().text.unquote(),
-                                locator = simpleLiteral().toLocator(),
-                            ),
-                    locator = toLocator(),
-                )
-
+                simplePath().toSegments() + property(referentialIdentifier())
+            is cqlParser.SimplePathIndexerContext -> {
+                // The brackets are this rule's own tokens; the index is a rule of its own
+                val brackets = children.orEmpty().filterIsInstance<TerminalNode>()
+                simplePath().toSegments() +
+                    IndexSegment(
+                        index = buildSimpleLiteralExpression(simpleLiteral()),
+                        locator =
+                            brackets
+                                .first()
+                                .symbol
+                                .toLocator()
+                                .copy(stopIndex = brackets.last().symbol.stopIndex),
+                    )
+            }
             else -> unexpected(this)
         }
     }
+
+    private fun property(identifier: cqlParser.ReferentialIdentifierContext): PropertySegment =
+        identifier.toIdentifier().let { PropertySegment(name = it, locator = it.locator) }
 
     private fun cqlParser.CodesystemIdentifierContext.toTerminologyReference():
         TerminologyReference =

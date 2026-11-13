@@ -971,7 +971,7 @@ private class Writer {
         retrieve.terminology?.let { restriction ->
             write(": ")
             retrieve.codePath?.let { path ->
-                qualifiedIdentifier(path)
+                simplePath(path)
                 write(
                     when (retrieve.comparator) {
                         TerminologyComparator.EQUALS -> " = "
@@ -1052,6 +1052,22 @@ private class Writer {
             }
             query.sort?.let { sort -> add(QueryClause.SORT to { _: Follow -> sort(sort) }) }
         }
+
+    private fun simplePath(path: SimplePath) {
+        path.segments.forEachIndexed { index, segment ->
+            when (segment) {
+                is PropertySegment -> {
+                    if (index > 0) write(".")
+                    identifier(segment.name)
+                }
+                is IndexSegment -> {
+                    write("[")
+                    expression(segment.index, LOWEST, Follow.NOTHING)
+                    close("]", segment.locator)
+                }
+            }
+        }
+    }
 
     private fun aliasedSource(source: AliasedQuerySource) {
         flush(source.locator)

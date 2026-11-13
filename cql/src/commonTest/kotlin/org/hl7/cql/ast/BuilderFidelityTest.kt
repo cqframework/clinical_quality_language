@@ -52,7 +52,7 @@ class BuilderFidelityTest {
             concept Labs: { "Glucose" }
             parameter "Measurement Period" Interval<DateTime>
             context Patient
-            define Encounters: [Encounter: type in `Visits`] E
+            define Encounters: [Encounter: type[0].coding in `Visits`] E
               with [Condition] C such that C.subject = E.subject
               where E.status = 'finished'
               return Tuple { id: E.id, code: E.type }

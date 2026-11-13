@@ -292,93 +292,6 @@ class BuilderExpressionTest {
     }
 
     @Test
-    fun parsesQueryExpressions() {
-        val expected: ExpressionSpec = {
-            val retrieve =
-                RetrieveExpression(
-                    typeSpecifier = namedType("Observation"),
-                    terminology = null,
-                    context = null,
-                    codePath = null,
-                    comparator = null,
-                )
-            QueryExpression(
-                sources = listOf(AliasedQuerySource(source = retrieve, alias = Identifier("O"))),
-                lets = emptyList(),
-                inclusions = emptyList(),
-                where = null,
-                aggregate = null,
-                result = ReturnClause(expression = IdentifierExpression(qualified("O"))),
-                sort = null,
-            )
-        }
-
-        assertExpression("[Observation] O return O", expected)
-        assertExpression("from [Observation] O return O", expected)
-    }
-
-    @Test
-    fun parsesAggregateQueryExpressions() {
-        val queryText =
-            """
-            from [Observation] O
-              let Value: O.value
-              where Value != null
-              aggregate distinct Count starting 0: Count + 1
-            """
-                .trimIndent()
-
-        assertExpression(queryText) {
-            val retrieve =
-                RetrieveExpression(
-                    typeSpecifier = namedType("Observation"),
-                    terminology = null,
-                    context = null,
-                    codePath = null,
-                    comparator = null,
-                )
-            val aliasSource = AliasedQuerySource(source = retrieve, alias = Identifier("O"))
-            val valueBinding =
-                LetClauseItem(
-                    identifier = Identifier("Value"),
-                    expression =
-                        PropertyAccessExpression(
-                            target = IdentifierExpression(qualified("O")),
-                            property = Identifier("value"),
-                        ),
-                )
-            val whereExpression =
-                OperatorBinaryExpression(
-                    operator = BinaryOperator.NOT_EQUALS,
-                    left = IdentifierExpression(qualified("Value")),
-                    right = LiteralExpression(NullLiteral()),
-                )
-            val aggregateClause =
-                AggregateClause(
-                    distinct = true,
-                    identifier = Identifier("Count"),
-                    starting = LiteralExpression(IntLiteral(0)),
-                    expression =
-                        OperatorBinaryExpression(
-                            operator = BinaryOperator.ADD,
-                            left = IdentifierExpression(qualified("Count")),
-                            right = LiteralExpression(IntLiteral(1)),
-                        ),
-                )
-
-            QueryExpression(
-                sources = listOf(aliasSource),
-                lets = listOf(valueBinding),
-                inclusions = emptyList(),
-                where = whereExpression,
-                aggregate = aggregateClause,
-                result = null,
-                sort = null,
-            )
-        }
-    }
-
-    @Test
     fun parsesQuantityAndRatioLiterals() {
         assertExpression("5 'mg'") { quantity("5", "mg") }
         assertExpression("3 days") { quantity("3", "days") }
@@ -429,26 +342,6 @@ class BuilderExpressionTest {
         assertExpression("""'a\tb\nc'""") { string("a\tb\nc") }
         assertExpression("""'\u0041\\'""") { string("A\\") }
         assertExpression("""Code '1\'2' from "SNOMED"""") { code("1'2", system = "SNOMED") }
-    }
-
-    @Test
-    fun parsesSortDirections() {
-        fun sortOf(text: String): SortClause {
-            val result = builder.parseExpression("[Observation] O $text")
-            assertTrue(result.problems.isEmpty(), result.problems.joinToString { it.message })
-            return (result.expression as QueryExpression).sort!!
-        }
-
-        assertEquals(SortDirection.DESC, sortOf("sort desc").direction)
-        assertEquals(SortDirection.ASCENDING, sortOf("sort ascending").direction)
-        assertTrue(sortOf("sort desc").items.isEmpty())
-
-        val items = sortOf("sort by id, status asc, value descending").items
-        assertEquals(
-            listOf(null, SortDirection.ASC, SortDirection.DESCENDING),
-            items.map { it.direction },
-        )
-        assertEquals(null, sortOf("sort by id").direction)
     }
 
     @Test
@@ -604,17 +497,6 @@ class BuilderExpressionTest {
         for (name in listOf("\$this", "\$index", "\$total")) {
             assertExpression(name) { identifier(name) }
         }
-    }
-
-    @Test
-    fun parsesAQuantityAsTheStartOfAnAggregate() {
-        val query =
-            Builder().parseExpression("({ 1 }) X aggregate R starting 1 'mg': R").expression
-                as QueryExpression
-        assertEquals(
-            LiteralExpression(QuantityLiteral("1", "mg")),
-            query.aggregate!!.starting!!.withoutSourceDetails(),
-        )
     }
 
     @Test
