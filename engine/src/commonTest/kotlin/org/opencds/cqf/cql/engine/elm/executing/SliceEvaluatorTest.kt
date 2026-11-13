@@ -2,9 +2,12 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 class SliceEvaluatorTest {
     private fun listOf(vararg values: Int) = values.map { it.toCqlInteger() }.toCqlList()
@@ -37,5 +40,16 @@ class SliceEvaluatorTest {
         // Take(X, -1) is Slice(X, 0, -1)
         assertEquals(listOf(), slice(0, -1))
         assertEquals(listOf(), slice(null, -1))
+    }
+
+    @Test
+    fun invalidSource() {
+        // The error message is built without failing on a null start or end index.
+        assertFailsWith<InvalidOperatorArgument> {
+            SliceEvaluator.slice("abc".toCqlString(), null, null)
+        }
+        assertFailsWith<InvalidOperatorArgument> {
+            SliceEvaluator.slice("abc".toCqlString(), 1.toCqlInteger(), 2.toCqlInteger())
+        }
     }
 }
