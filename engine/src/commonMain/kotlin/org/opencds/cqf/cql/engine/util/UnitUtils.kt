@@ -133,6 +133,22 @@ object UnitUtils {
         return checkUnit(result)
     }
 
+    private fun divisionBase(left: String, right: String): String {
+        if (left == right) return "1"
+        if (right == "1") return left
+
+        val denominator = if (isComplexUnit(right)) "($right)" else right
+
+        return if (left == "1") "/$denominator" else "$left/$denominator"
+    }
+
+    private fun multiplicationBase(left: String, right: String): String {
+        if (left == "1") return right
+        if (right == "1") return left
+
+        return "$left.$right"
+    }
+
     private fun combineUnitsInternal(
         left: String,
         right: String,
@@ -150,18 +166,10 @@ object UnitUtils {
         }
 
         if (isDivision) {
-            if (left == right) return "1"
-            if (right == "1") return left
-
-            val denominator = if (isComplexUnit(right)) "($right)" else right
-
-            return if (left == "1") "/$denominator" else "$left/$denominator"
+            return divisionBase(left, right)
         }
 
-        if (left == "1") return right
-        if (right == "1") return left
-
-        return "$left.$right"
+        return multiplicationBase(left, right)
     }
 
     fun convertToMostGranularCommeasurableUnit(
@@ -182,12 +190,10 @@ object UnitUtils {
         val baseUnit1 = getBaseUnitAndPower(normalizedUnit1).first
         val baseUnit2 = getBaseUnitAndPower(normalizedUnit2).first
 
-        val conversion2 = convertToBaseUnit(val2, normalizedUnit2, baseUnit1, state)
-
-        if (conversion2 == null) {
-            // The units were not convertible; return the quantities as-is
-            return Pair(val1, normalizedUnit1) to Pair(val2, normalizedUnit2)
-        }
+        val conversion2 =
+            convertToBaseUnit(val2, normalizedUnit2, baseUnit1, state)
+                ?: // The units were not convertible; return the quantities as-is
+                return Pair(val1, normalizedUnit1) to Pair(val2, normalizedUnit2)
 
         val newVal2 = conversion2.first
         val newUnit2 = conversion2.second
@@ -198,12 +204,10 @@ object UnitUtils {
         }
 
         // Otherwise, try converting the first quantity instead
-        val conversion1 = convertToBaseUnit(val1, normalizedUnit1, baseUnit2, state)
-
-        if (conversion1 == null) {
-            // Fallback: retain the successful second-quantity conversion
-            return Pair(val1, normalizedUnit1) to Pair(newVal2, newUnit2)
-        }
+        val conversion1 =
+            convertToBaseUnit(val1, normalizedUnit1, baseUnit2, state)
+                ?: // Fallback: retain the successful second-quantity conversion
+                return Pair(val1, normalizedUnit1) to Pair(newVal2, newUnit2)
 
         val newVal1 = conversion1.first
         val newUnit1 = conversion1.second
