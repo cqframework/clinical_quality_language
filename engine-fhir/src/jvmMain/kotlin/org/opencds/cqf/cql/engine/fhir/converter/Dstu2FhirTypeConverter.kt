@@ -31,7 +31,6 @@ import org.hl7.fhir.instance.model.api.IBaseOperationOutcome
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
-import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_UNKNOWN_CODE
@@ -506,7 +505,7 @@ internal class Dstu2FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val s = ToStringEvaluator.toString(value)?.value
+        val s = toCqlTextString(value)
         val text = StringType(s)
         text.addExtension(CQL_TEXT_EXT_URL, BooleanType(true))
         return text

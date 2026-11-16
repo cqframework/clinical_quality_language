@@ -32,7 +32,6 @@ import org.hl7.fhir.r5.model.Range
 import org.hl7.fhir.r5.model.Resource
 import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.r5.model.TimeType
-import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_UNKNOWN_CODE
@@ -504,7 +503,7 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val s = ToStringEvaluator.toString(value)?.value
+        val s = toCqlTextString(value)
         val text = StringType(s)
         text.addExtension(CQL_TEXT_EXT_URL, BooleanType(true))
         return text

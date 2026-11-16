@@ -584,6 +584,26 @@ internal class R5TypeConverterTests {
     }
 
     @Test
+    fun hourPrecisionDateTimeToFhirCqlText() {
+        val offset = ZoneOffset.ofHours(-6)
+        val low = DateTime("2003-10-29T20:00:00", offset).withPrecision(Precision.HOUR)
+        val high = DateTime("2003-10-29T22:50:00", offset).withPrecision(Precision.MINUTE)
+        for ((value, expected) in
+            listOf(
+                low to "@2003-10-29T20-06:00",
+                Interval(low, true, high, true) to
+                    "Interval[@2003-10-29T20-06:00, @2003-10-29T22:50-06:00]",
+            )) {
+            val stringType =
+                Assertions.assertInstanceOf(StringType::class.java, typeConverter.toFhirType(value))
+            Assertions.assertEquals(expected, stringType!!.value)
+            Assertions.assertTrue(
+                stringType.getExtension().any { it.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL }
+            )
+        }
+    }
+
+    @Test
     fun exceptionToFhirOperationOutcome() {
         val exception = IllegalArgumentException("Test exception")
         exception.fillInStackTrace()

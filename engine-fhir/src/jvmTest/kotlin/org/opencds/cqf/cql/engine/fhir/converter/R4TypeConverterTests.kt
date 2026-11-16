@@ -574,6 +574,60 @@ internal class R4TypeConverterTests {
         Assertions.assertTrue(extension.isPresent)
     }
 
+    private fun assertCqlText(expected: String, result: IBase?) {
+        val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
+        Assertions.assertEquals(expected, stringType!!.value)
+        Assertions.assertTrue(
+            stringType.getExtension().any { it.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL }
+        )
+    }
+
+    @Test
+    fun hourAndMinutePrecisionDateTimesToFhirCqlText() {
+        val offset = ZoneOffset.ofHours(-6)
+        val hour = DateTime("2003-10-29T20:50:33", offset).withPrecision(Precision.HOUR)
+        assertCqlText("@2003-10-29T20-06:00", typeConverter.toFhirType(hour))
+
+        val minute = DateTime("2003-10-29T20:50:33", offset).withPrecision(Precision.MINUTE)
+        assertCqlText("@2003-10-29T20:50-06:00", typeConverter.toFhirType(minute))
+
+        val utc = DateTime("2015-02-04T14:30:00", ZoneOffset.UTC).withPrecision(Precision.MINUTE)
+        assertCqlText("@2015-02-04T14:30Z", typeConverter.toFhirType(utc))
+
+        // Second precision is still a FHIR dateTime
+        val second = DateTime("2003-10-29T20:50:33", offset).withPrecision(Precision.SECOND)
+        val dateTimeType =
+            Assertions.assertInstanceOf(DateTimeType::class.java, typeConverter.toFhirType(second))
+        Assertions.assertEquals("2003-10-29T20:50:33-06:00", dateTimeType!!.valueAsString)
+    }
+
+    @Test
+    fun hourPrecisionDateTimeIntervalToFhirCqlText() {
+        val offset = ZoneOffset.ofHours(-6)
+        val low = DateTime("2003-10-29T20:00:00", offset).withPrecision(Precision.HOUR)
+        val high = DateTime("2003-10-29T22:00:00", offset).withPrecision(Precision.HOUR)
+        assertCqlText(
+            "Interval[@2003-10-29T20-06:00, @2003-10-29T22-06:00]",
+            typeConverter.toFhirInterval(Interval(low, true, high, true)),
+        )
+        assertCqlText(
+            "Interval(@2003-10-29T20-06:00, null]",
+            typeConverter.toFhirInterval(Interval(low, false, null, true)),
+        )
+
+        // Second precision is still a FHIR Period
+        val period =
+            typeConverter.toFhirInterval(
+                Interval(
+                    DateTime("2003-10-29T20:00:00", offset).withPrecision(Precision.SECOND),
+                    true,
+                    DateTime("2003-10-29T22:00:00", offset).withPrecision(Precision.SECOND),
+                    true,
+                )
+            )
+        Assertions.assertInstanceOf(Period::class.java, period)
+    }
+
     @Test
     fun exceptionToFhirOperationOutcome() {
         val exception = IllegalArgumentException("Test exception")
