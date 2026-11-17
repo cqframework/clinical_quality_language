@@ -585,6 +585,7 @@ constructor(
             return null
         }
 
+    @Deprecated("Automatic tracking of evaluated resources is deprecated.")
     val evaluatedResources: MutableSet<Value?>?
         get() {
             check(!evaluatedResourceStack.isEmpty()) {
