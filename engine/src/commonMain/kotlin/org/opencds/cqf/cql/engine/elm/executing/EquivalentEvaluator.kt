@@ -228,11 +228,14 @@ object EquivalentEvaluator {
     }
 
     fun valueSetsEquivalent(left: ValueSet, right: ValueSet): Boolean {
+        val leftCodeSystems = left.codeSystems ?: emptyList()
+        val rightCodeSystems = right.codeSystems ?: emptyList()
+
         val equivalent =
-            vocabulariesEquivalent(left, right).value == true &&
-                left.codeSystems!!.size == right.codeSystems!!.size
+            vocabulariesEquivalent(left, right).value &&
+                leftCodeSystems.size == rightCodeSystems.size
         if (equivalent) {
-            for (cs in left.codeSystems) {
+            for (cs in leftCodeSystems) {
                 val otherC = right.getCodeSystem(cs.id)
                 if (otherC == null) {
                     return Boolean.FALSE

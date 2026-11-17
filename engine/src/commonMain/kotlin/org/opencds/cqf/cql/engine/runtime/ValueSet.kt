@@ -49,13 +49,7 @@ constructor(
             return null
         }
 
-        for (cs in codeSystems!!) {
-            if (id == cs.id) {
-                return cs
-            }
-        }
-
-        return null
+        return codeSystems?.firstOrNull { it.id == id }
     }
 
     @JsName("getCodeSystemByIdAndVersion")
@@ -64,17 +58,11 @@ constructor(
             return null
         }
 
-        for (cs in codeSystems!!) {
-            if (
-                id == cs.id &&
-                    ((version == null && cs.version == null) ||
-                        (version != null && version == cs.version))
-            ) {
-                return cs
-            }
+        return codeSystems?.firstOrNull {
+            it.id == id &&
+                ((version == null && it.version == null) ||
+                    (version != null && it.version == version))
         }
-
-        return null
     }
 
     private val hash: Int by lazy { listOf(id, version, name, codeSystems).hashCode() }

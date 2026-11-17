@@ -108,6 +108,7 @@ open class AstWalker {
             is ExpandCollapseExpression -> visitExpandCollapseExpression(expression)
             is IntervalRelationExpression -> visitIntervalRelationExpression(expression)
             is IsExpression -> visitIsExpression(expression)
+            is BooleanTestExpression -> visitBooleanTestExpression(expression)
             is AsExpression -> visitAsExpression(expression)
             is CastExpression -> visitCastExpression(expression)
             is LiteralExpression -> visitLiteralExpression(expression)
@@ -280,6 +281,10 @@ open class AstWalker {
     }
 
     open fun visitIsExpression(expression: IsExpression) {
+        visitExpression(expression.operand)
+    }
+
+    open fun visitBooleanTestExpression(expression: BooleanTestExpression) {
         visitExpression(expression.operand)
     }
 
