@@ -595,6 +595,10 @@ constructor(
             return this.evaluatedResourceStack.firstOrNull()
         }
 
+    /** Whether retrieved resources are recorded in [evaluatedResources]. */
+    val isEvaluatedResourcesCollectionEnabled: Boolean
+        get() = !engineOptions.contains(Options.DisableEvaluatedResourcesCollection)
+
     fun clearEvaluatedResources() {
         this.evaluatedResourceStack.clear()
         this.pushEvaluatedResourceStack()
