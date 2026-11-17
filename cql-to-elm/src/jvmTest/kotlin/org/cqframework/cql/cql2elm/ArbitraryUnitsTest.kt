@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm
 
+import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -55,5 +56,32 @@ internal class ArbitraryUnitsTest {
         val arbitraryWarnings =
             translator.warnings.map { it.message!! }.filter { it.contains("arbitrary") }
         assertThat(arbitraryWarnings.toString(), arbitraryWarnings, Matchers.empty())
+    }
+
+    @Test
+    fun calendarDurationQuantityCompilesWithoutUcumService() {
+        // #1869: a calendar duration such as `4 weeks` is not a UCUM unit, so compiling it must
+        // not need a UCUM service (none is available by default on JS and Wasm).
+        val noUcumService = lazy<UcumService> { error("No UCUM service available") }
+        val libraryManager =
+            LibraryManager(ModelManager(), CqlCompilerOptions(), null, noUcumService)
+        val translator =
+            CqlTranslator.fromText(
+                """
+                library Test version '1.0.0'
+                define FourWeeks: 4 weeks
+                define OneYear: 1 year
+                define TwoMilliseconds: 2 milliseconds
+                """
+                    .trimIndent(),
+                libraryManager,
+            )
+
+        assertThat(
+            translator.errors.map { it.message }.toString(),
+            translator.errors,
+            Matchers.empty(),
+        )
+        assertThat(noUcumService.isInitialized(), Matchers.`is`(false))
     }
 }

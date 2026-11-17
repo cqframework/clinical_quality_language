@@ -1005,7 +1005,7 @@ class DataRequirementsProcessor {
                 "System.String" -> return "string"
                 "System.Quantity" -> return "Quantity"
                 "System.Ratio" -> return "Ratio"
-                "System.Any" -> return "Any"
+                "System.Any" -> return "Base"
                 "System.Code" -> return "Coding"
                 "System.Concept" -> return "CodeableConcept"
             }
@@ -1026,7 +1026,7 @@ class DataRequirementsProcessor {
         }
 
         isValid.set(false)
-        return "Any"
+        return "Resource"
     }
 
     /**

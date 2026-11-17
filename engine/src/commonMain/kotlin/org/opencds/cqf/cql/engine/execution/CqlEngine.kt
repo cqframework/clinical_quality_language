@@ -92,6 +92,12 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
          * coverage collection or debugging is active.
          */
         EnableQueryOptimization,
+
+        /**
+         * Do not collect the resources retrieved during evaluation. When set,
+         * [ExpressionResult.evaluatedResources] is always empty.
+         */
+        DisableEvaluatedResourcesCollection,
     }
 
     @JsExport.Ignore val state: State
