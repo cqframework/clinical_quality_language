@@ -3,8 +3,6 @@ package org.opencds.cqf.cql.engine.elm.executing
 import kotlin.jvm.JvmStatic
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Boolean
-import org.opencds.cqf.cql.engine.runtime.Constants.MAX_LONG
-import org.opencds.cqf.cql.engine.runtime.Constants.MIN_LONG
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.String
@@ -23,6 +21,15 @@ If the input string is not formatted correctly, or cannot be interpreted as a va
 If the argument is null, the result is null.
 */
 object ToLongEvaluator {
+    /** The format ToLong accepts: an optional polarity indicator followed by digits. */
+    private val LONG_FORMAT = Regex("[+-]?[0-9]+")
+
+    /**
+     * Parses [value] as a Long, or returns null if it is not formatted correctly or out of range.
+     */
+    internal fun parse(value: kotlin.String): kotlin.Long? =
+        if (LONG_FORMAT.matches(value)) value.toLongOrNull() else null
+
     @JvmStatic
     fun toLong(operand: Value?): Long? {
         if (operand == null) {
@@ -38,19 +45,7 @@ object ToLongEvaluator {
         }
 
         if (operand is String) {
-            try {
-                return operand.value.toLong().toCqlLong()
-            } catch (nfe: NumberFormatException) {
-                try {
-                    val ret = operand.value.toDouble()
-                    if (ret > MAX_LONG || ret < MIN_LONG) {
-                        return null
-                    }
-                    return ret.toLong().toCqlLong()
-                } catch (e: NumberFormatException) {
-                    return null
-                }
-            }
+            return parse(operand.value)?.toCqlLong()
         }
 
         throw InvalidOperatorArgument("ToLong(String)", "ToLong(${operand.typeAsString})")

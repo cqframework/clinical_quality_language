@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -33,12 +34,7 @@ object ConvertsToLongEvaluator {
         }
 
         if (argument is String) {
-            try {
-                argument.value.toLong()
-            } catch (nfe: NumberFormatException) {
-                return Boolean.FALSE
-            }
-            return Boolean.TRUE
+            return (ToLongEvaluator.parse(argument.value) != null).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(

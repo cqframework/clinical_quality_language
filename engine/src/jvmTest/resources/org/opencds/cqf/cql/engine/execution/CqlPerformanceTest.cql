@@ -337,6 +337,7 @@ define Product_Integer: Product({5, 4, 5})
 define Product_Zero: Product({0, 5, 10})
 define Product_Quantity: Product({1.0 'g', 2.0 'g', 3.0 'g', 4.0 'g'})
 define Product_Quantity_Zero: Product({1.0 'g', 2.0 'g', 0 'g'})
+// Like the other aggregates, Product ignores null elements
 define Product_Null: Product({5, 4, null})
 define Product_Nulls: Product({null as Integer, null, null})
 define Product_Null_List: Product(null as List<Decimal>)
@@ -347,7 +348,7 @@ define test_Product_Integer: TestMessage(Product_Integer = 100, 'Product_Integer
 define test_Product_Zero: TestMessage(Product_Zero = 0, 'Product_Zero', toString(0), toString(Product_Zero))
 define test_Product_Quantity: TestMessage(Product_Quantity = 24.0'g', 'Product_Quantity', toString(24.0'g'), toString(Product_Quantity))
 define test_Product_Quantity_Zero: TestMessage(Product_Quantity_Zero = 0'g', 'Product_Quantity_Zero', toString(0'g'), toString(Product_Quantity_Zero))
-define test_Product_Null: TestMessage(Product_Null is null, 'Product_Null', 'null', toString(Product_Null))
+define test_Product_Null: TestMessage(Product_Null = 20, 'Product_Null', toString(20), toString(Product_Null))
 define test_Product_Nulls: TestMessage(Product_Nulls is null, 'Product_Nulls', 'null', toString(Product_Nulls))
 define test_Product_Null_List: TestMessage(Product_Null_List is null, 'Product_Null_List', 'null', toString(Product_Null_List))
 define test_Product_Null_Quantity: TestMessage(Product_Null_Quantity is null, 'Product_Null_Quantity', 'null', toString(Product_Null_Quantity))
@@ -1030,7 +1031,8 @@ define FromString_decimalValid: convert '10.2' to Decimal
 define FromString_decimalInvalid: convert 'abc' to Decimal
 define FromString_integerValid: convert '10' to Integer
 define FromString_integerInvalid: convert 'abc' to Integer
-define FromString_integerDropDecimal: convert '10.2' to Integer
+// ToInteger accepts only (+|-)?#0, so a decimal string is not an Integer
+define FromString_integerDecimalInvalid: convert '10.2' to Integer
 define FromString_quantityStr: convert '10 \'A\'' to Quantity
 define FromString_posQuantityStr: convert '+10 \'A\'' to Quantity
 define FromString_negQuantityStr: convert '-10 \'A\'' to Quantity
@@ -1050,7 +1052,7 @@ define test_FromString_decimalValid: TestMessage(FromString_decimalValid = 10.2,
 define test_FromString_decimalInvalid: TestMessage(FromString_decimalInvalid is null, 'FromString_decimalInvalid', 'null', toString(FromString_decimalInvalid))
 define test_FromString_integerValid: TestMessage(FromString_integerValid = 10, 'FromString_integerValid', toString(10), toString(FromString_integerValid))
 define test_FromString_integerInvalid: TestMessage(FromString_integerInvalid is null, 'FromString_integerInvalid', 'null', toString(FromString_integerInvalid))
-define test_FromString_integerDropDecimal: TestMessage(FromString_integerDropDecimal = 10, 'FromString_integerDropDecimal', toString(10), toString(FromString_integerDropDecimal))
+define test_FromString_integerDecimalInvalid: TestMessage(FromString_integerDecimalInvalid is null, 'FromString_integerDecimalInvalid', 'null', toString(FromString_integerDecimalInvalid))
 define test_FromString_quantityStr: TestMessage(FromString_quantityStr = 10 'A', 'FromString_quantityStr', toString(10 'A'), toString(FromString_quantityStr))
 define test_FromString_posQuantityStr: TestMessage(FromString_posQuantityStr = 10 'A', 'FromString_posQuantityStr', toString(10 'A'), toString(FromString_posQuantityStr))
 define test_FromString_negQuantityStr: TestMessage(FromString_negQuantityStr = -10 'A', 'FromString_negQuantityStr', toString(-10 'A'), toString(FromString_negQuantityStr))
