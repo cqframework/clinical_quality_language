@@ -40,9 +40,11 @@ object InCodeSystemEvaluator {
             } else if (code is Code) {
                 return (provider!!.lookup(code, csi) != null).toCqlBoolean()
             } else if (code is Concept) {
-                for (codes in code.codes!!) {
-                    if (provider!!.lookup(codes!!, csi) != null) {
-                        return Boolean.TRUE
+                if (code.codes != null) {
+                    for (codes in code.codes) {
+                        if (provider!!.lookup(codes!!, csi) != null) {
+                            return Boolean.TRUE
+                        }
                     }
                 }
                 return Boolean.FALSE
