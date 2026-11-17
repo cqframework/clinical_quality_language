@@ -16,11 +16,13 @@ import org.hamcrest.Matchers
 import org.hl7.fhir.dstu2.model.Attachment
 import org.hl7.fhir.dstu2.model.Base
 import org.hl7.fhir.dstu2.model.BooleanType
+import org.hl7.fhir.dstu2.model.CodeType
 import org.hl7.fhir.dstu2.model.CodeableConcept
 import org.hl7.fhir.dstu2.model.Coding
 import org.hl7.fhir.dstu2.model.DateTimeType
 import org.hl7.fhir.dstu2.model.DateType
 import org.hl7.fhir.dstu2.model.DecimalType
+import org.hl7.fhir.dstu2.model.Element
 import org.hl7.fhir.dstu2.model.Extension
 import org.hl7.fhir.dstu2.model.IdType
 import org.hl7.fhir.dstu2.model.InstantType
@@ -270,6 +272,79 @@ internal class Dstu2TypeConverterTests {
                 DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND)
             )
         Assertions.assertEquals(expectedDate.valueAsString, actualDate!!.valueAsString)
+    }
+
+    @Test
+    fun hourAndMinutePrecisionDateTimesToFhirDateTimeWithTimePrecision() {
+        // The DSTU2 dateTime is written in the system time zone, so use its offset
+        val offset = ZonedDateTime.of(2003, 10, 29, 20, 0, 0, 0, ZoneId.systemDefault()).offset
+
+        var actual = typeConverter.toFhirDateTime(DateTime("2003-10-29T20", offset)) as DateTimeType
+        Assertions.assertEquals("2003-10-29T20:00:00${offset.id}", actual.valueAsString)
+        assertTimePrecision("h", actual)
+
+        actual = typeConverter.toFhirDateTime(DateTime("2003-10-29T20:50", offset)) as DateTimeType
+        Assertions.assertEquals("2003-10-29T20:50:00${offset.id}", actual.valueAsString)
+        assertTimePrecision("min", actual)
+
+        // The components below the precision are zero-filled even when the value has them
+        actual =
+            typeConverter.toFhirDateTime(
+                DateTime("2003-10-29T20:50:33.123", offset).withPrecision(Precision.HOUR)
+            ) as DateTimeType
+        Assertions.assertEquals("2003-10-29T20:00:00${offset.id}", actual.valueAsString)
+        assertTimePrecision("h", actual)
+
+        // A second-precision DateTime is already a valid FHIR dateTime
+        actual =
+            typeConverter.toFhirDateTime(DateTime("2003-10-29T20:50:33", offset)) as DateTimeType
+        Assertions.assertEquals("2003-10-29T20:50:33${offset.id}", actual.valueAsString)
+        assertTimePrecision(null, actual)
+    }
+
+    @Test
+    fun hourAndMinutePrecisionTimesToFhirTimeWithTimePrecision() {
+        var actual = typeConverter.toFhirTime(Time("10")) as TimeType
+        Assertions.assertEquals("10:00:00", actual.valueAsString)
+        assertTimePrecision("h", actual)
+
+        actual = typeConverter.toFhirTime(Time("10:30")) as TimeType
+        Assertions.assertEquals("10:30:00", actual.valueAsString)
+        assertTimePrecision("min", actual)
+
+        actual = typeConverter.toFhirTime(Time("10:30:15")) as TimeType
+        Assertions.assertEquals("10:30:15", actual.valueAsString)
+        assertTimePrecision(null, actual)
+    }
+
+    @Test
+    fun hourAndMinutePrecisionIntervalToFhirPeriodWithTimePrecision() {
+        // The DSTU2 dateTime is written in the system time zone, so use its offset
+        val offset = ZonedDateTime.of(2003, 10, 29, 20, 0, 0, 0, ZoneId.systemDefault()).offset
+        val actual =
+            typeConverter.toFhirPeriod(
+                Interval(
+                    DateTime("2003-10-29T20", offset),
+                    true,
+                    DateTime("2003-10-29T22:15", offset),
+                    true,
+                )
+            ) as Period
+        Assertions.assertEquals(
+            "2003-10-29T20:00:00${offset.id}",
+            actual.startElement.valueAsString,
+        )
+        assertTimePrecision("h", actual.startElement)
+        Assertions.assertEquals("2003-10-29T22:15:00${offset.id}", actual.endElement.valueAsString)
+        assertTimePrecision("min", actual.endElement)
+    }
+
+    private fun assertTimePrecision(expected: String?, actual: Element) {
+        val codes =
+            actual.extension
+                .filter { it.url == FhirTypeConverter.TIME_PRECISION_EXT_URL }
+                .map { (it.value as CodeType).value }
+        Assertions.assertEquals(listOfNotNull(expected), codes)
     }
 
     @Test
@@ -576,26 +651,6 @@ internal class Dstu2TypeConverterTests {
                 .filter { e: Extension? -> e!!.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL }
                 .findFirst()
         Assertions.assertTrue(extension.isPresent)
-    }
-
-    @Test
-    fun hourPrecisionDateTimeToFhirCqlText() {
-        val offset = ZoneOffset.ofHours(-6)
-        val low = DateTime("2003-10-29T20:00:00", offset).withPrecision(Precision.HOUR)
-        val high = DateTime("2003-10-29T22:50:00", offset).withPrecision(Precision.MINUTE)
-        for ((value, expected) in
-            listOf(
-                low to "@2003-10-29T20-06:00",
-                Interval(low, true, high, true) to
-                    "Interval[@2003-10-29T20-06:00, @2003-10-29T22:50-06:00]",
-            )) {
-            val stringType =
-                Assertions.assertInstanceOf(StringType::class.java, typeConverter.toFhirType(value))
-            Assertions.assertEquals(expected, stringType!!.value)
-            Assertions.assertTrue(
-                stringType.getExtension().any { it.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL }
-            )
-        }
     }
 
     @Test

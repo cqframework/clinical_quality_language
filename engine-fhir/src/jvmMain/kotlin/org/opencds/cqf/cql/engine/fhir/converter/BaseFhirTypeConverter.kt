@@ -11,7 +11,6 @@ import org.hl7.fhir.instance.model.api.IBaseCoding
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
-import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
@@ -87,9 +86,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             is Long -> return toFhirLong(value)
             is Decimal -> return toFhirDecimal(value)
             is Date -> return toFhirDate(value)
-            is DateTime ->
-                return if (hasNoFhirDateTimePrecision(value)) toCqlText(value)
-                else toFhirDateTime(value)
+            is DateTime -> return toFhirDateTime(value)
             is Time -> return toFhirTime(value)
             is String -> return toFhirString(value)
             is Quantity -> return toFhirQuantity(value)
@@ -208,11 +205,8 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         }
 
         return when (value.pointType) {
-            dateTypeName -> toFhirPeriod(value)
-            dateTimeTypeName ->
-                if (hasNoFhirDateTimePrecision(value.low) || hasNoFhirDateTimePrecision(value.high))
-                    toCqlText(value)
-                else toFhirPeriod(value)
+            dateTypeName,
+            dateTimeTypeName -> toFhirPeriod(value)
             quantityTypeName -> toFhirRange(value)
             else -> toCqlText(value)
         }
@@ -458,48 +452,45 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
     }
 
     /**
-     * Returns the CQL text that [toCqlText] puts in the cqf-cqlText string. For DateTimes at hour
-     * or minute precision (and Intervals of them) this is the DateTime literal including its
-     * timezone offset, because the CQL ToString of such a DateTime has no offset; for everything
-     * else it is the result of the CQL ToString operator.
+     * The code of the time-precision extension for a DateTime or Time at hour or minute precision,
+     * or null for any other precision.
+     *
+     * FHIR dateTime and time values need minutes and seconds once they have an hour, so Using CQL
+     * with FHIR (conformance requirement 4.3, FHIR Type Mapping) maps these values to FHIR values
+     * zero-filled to seconds, with the time-precision extension giving their actual precision.
      */
-    protected fun toCqlTextString(value: Value): kotlin.String? {
-        return when {
-            value is DateTime && hasNoFhirDateTimePrecision(value) -> toCqlDateTimeLiteral(value)
-            value is Interval &&
-                (hasNoFhirDateTimePrecision(value.low) ||
-                    hasNoFhirDateTimePrecision(value.high)) -> {
-                val low = value.low?.let { toCqlDateTimeLiteral(it as DateTime) } ?: "null"
-                val high = value.high?.let { toCqlDateTimeLiteral(it as DateTime) } ?: "null"
-                "Interval${if (value.lowClosed) "[" else "("}$low, $high${if (value.highClosed) "]" else ")"}"
-            }
-            else -> ToStringEvaluator.toString(value)?.value
+    protected fun toTimePrecisionCode(precision: Precision): kotlin.String? {
+        return when (precision) {
+            Precision.HOUR -> "h"
+            Precision.MINUTE -> "min"
+            else -> null
         }
     }
 
-    private fun toCqlDateTimeLiteral(value: DateTime): kotlin.String {
-        val text = "@${value.toStringInner()}"
-        // Below millisecond precision, the CQL ToString of a DateTime has no offset
-        return if (value.precision == Precision.MILLISECOND) text
-        else "$text${value.zoneOffset.getId()}"
+    /** The DateTime with the components below its precision set to their minimum (zero). */
+    protected fun zeroFilled(value: DateTime): DateTime {
+        return value.expandPartialMinFromPrecision(value.precision)
     }
 
     /**
-     * FHIR dateTime has no hour or minute precision: once a time is present it needs seconds
-     * (https://hl7.org/fhir/R4/datatypes.html#dateTime), so these DateTimes are returned as CQL
-     * text instead of being truncated to a date.
+     * The FHIR time string for a Time: at hour or minute precision, zero-filled to seconds (see
+     * [toTimePrecisionCode]).
      */
-    protected fun hasNoFhirDateTimePrecision(value: Value?): kotlin.Boolean {
-        return value is DateTime &&
-            (value.precision == Precision.HOUR || value.precision == Precision.MINUTE)
+    protected fun toFhirTimeString(value: Time): kotlin.String {
+        if (toTimePrecisionCode(value.precision) == null) {
+            return value.toStringInner()
+        }
+        return Time(value.expandPartialMinFromPrecision(value.precision).time, Precision.SECOND)
+            .toStringInner()
     }
 
     protected fun toFhirPrecision(precision: Precision): TemporalPrecisionEnum {
         val name =
             when (precision) {
-                Precision.WEEK,
+                Precision.WEEK -> TemporalPrecisionEnum.DAY.name
+                // Zero-filled to seconds, see toTimePrecisionCode
                 Precision.HOUR,
-                Precision.MINUTE -> TemporalPrecisionEnum.DAY.name
+                Precision.MINUTE -> TemporalPrecisionEnum.SECOND.name
                 Precision.MILLISECOND -> TemporalPrecisionEnum.MILLI.name
                 else -> precision.name
             }

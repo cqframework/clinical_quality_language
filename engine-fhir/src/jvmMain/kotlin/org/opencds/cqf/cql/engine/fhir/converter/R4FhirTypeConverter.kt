@@ -31,6 +31,7 @@ import org.hl7.fhir.r4.model.Resource
 import org.hl7.fhir.r4.model.StringType
 import org.hl7.fhir.r4.model.TimeType
 import org.hl7.fhir.r4.model.Type
+import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TYPE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
@@ -38,6 +39,7 @@ import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DAT
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_LIST_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_TUPLE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.NATIVE_STACK_TRACE_EXT_URL
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.TIME_PRECISION_EXT_URL
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
@@ -118,8 +120,12 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val result = DateTimeType(value.dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        val result =
+            DateTimeType(zeroFilled(value).dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
         result.precision = toFhirPrecision(value.precision)
+        toTimePrecisionCode(value.precision)?.let {
+            result.addExtension(TIME_PRECISION_EXT_URL, CodeType(it))
+        }
         return result
     }
 
@@ -128,7 +134,11 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        return TimeType(value.toStringInner())
+        val result = TimeType(toFhirTimeString(value))
+        toTimePrecisionCode(value.precision)?.let {
+            result.addExtension(TIME_PRECISION_EXT_URL, CodeType(it))
+        }
+        return result
     }
 
     override fun toFhirString(value: String?): IPrimitiveType<kotlin.String>? {
@@ -507,7 +517,7 @@ internal class R4FhirTypeConverter : BaseFhirTypeConverter() {
             return null
         }
 
-        val s = toCqlTextString(value)
+        val s = ToStringEvaluator.toString(value)?.value
         val text = StringType(s)
         text.addExtension(CQL_TEXT_EXT_URL, BooleanType(true))
         return text
