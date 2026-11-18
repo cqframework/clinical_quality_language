@@ -14,21 +14,25 @@ import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 *** NOTES FOR INTERVAL ***
 properly includes _precision_ (left Interval<T>, right Interval<T>) Boolean
 
-The properly includes operator for intervals returns true if the first interval completely includes the second
-    and the first interval is strictly larger than the second. More precisely, if the starting point of the first interval
-    is less than or equal to the starting point of the second interval, and the ending point of the first interval is
-    greater than or equal to the ending point of the second interval, and they are not the same interval.
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+The properly includes operator for intervals returns true if the first interval completely
+    includes the second and the first interval is strictly larger than the second. More precisely,
+    if the starting point of the first interval is less than or equal to the starting point of the
+    second interval, and the ending point of the first interval is greater than or equal to the
+    ending point of the second interval, and they are not the same interval.
+This operator uses the semantics described in the Start and End operators to determine interval
+    boundaries.
+If precision is specified and the point type is a date/time type, comparisons used in the operation
+    are performed at the specified precision.
 If either argument is null, the result is null.
 
 *** NOTES FOR LIST ***
 properly includes(left List<T>, right List<T>) Boolean
 
-The properly includes operator for lists returns true if the first list contains every element of the second list, a
-    nd the first list is strictly larger than the second list.
-This operator uses the notion of equivalence to determine whether or not two elements are the same.
-If the left argument is null, the result is false, else if the right argument is null, the result is true if the left argument is not empty.
+The properly includes operator for lists returns true if the first list contains every element of
+    the second list, and the first list is strictly larger than the second list.
+This operator uses equality semantics to determine whether or not two elements are the same, with
+    the exception that null elements are considered equal.
+For the list-list overload, if either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 object ProperIncludesEvaluator {
@@ -108,19 +112,14 @@ object ProperIncludesEvaluator {
         right: org.opencds.cqf.cql.engine.runtime.List?,
         state: State?,
     ): Boolean? {
-        if (left == null) {
-            return Boolean.FALSE
-        }
-
-        val leftCount = left.count()
-
-        if (right == null) {
-            return (leftCount > 0).toCqlBoolean()
+        // "For the list-list overload, if either argument is null, the result is null."
+        if (left == null || right == null) {
+            return null
         }
 
         return AndEvaluator.and(
             IncludedInEvaluator.listIncludedIn(right, left, state),
-            (leftCount > right.count()).toCqlBoolean(),
+            (left.count() > right.count()).toCqlBoolean(),
         )
     }
 }

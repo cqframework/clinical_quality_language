@@ -769,7 +769,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(Boolean.FALSE, value)
 
         value = results["ProperlyIncludesNullLeft"]!!.value
-        assertEquals(Boolean.FALSE, value)
+        assertNull(value)
 
         value = results["ProperlyIncludes1And111"]!!.value
         assertEquals(Boolean.FALSE, value)
@@ -784,7 +784,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(Boolean.TRUE, value)
 
         value = results["ProperContainsTimeNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ProperInNullRightFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
@@ -796,7 +796,7 @@ internal class ListOperatorsTest : CqlTestBase() {
         assertEquals(Boolean.TRUE, value)
 
         value = results["ProperInTimeNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ProperIncludedInEmptyAndEmpty"]!!.value
         assertEquals(Boolean.FALSE, value)
