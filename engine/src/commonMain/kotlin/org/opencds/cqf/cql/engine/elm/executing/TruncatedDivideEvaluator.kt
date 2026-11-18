@@ -2,14 +2,17 @@ package org.opencds.cqf.cql.engine.elm.executing
 
 import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.BigDecimal
+import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.computeInMoreGranularUnit
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlLong
@@ -62,9 +65,7 @@ object TruncatedDivideEvaluator {
             ) {
                 return null
             }
-            return Quantity()
-                .withUnit(left.unit)
-                .withValue(left.value!!.divideAndRemainder(right.value!!)[0])
+            return divideQuantities(left, right, state)
         } else if (left is Interval && right is Interval) {
             val leftInterval = left
             val rightInterval = right
@@ -81,5 +82,54 @@ object TruncatedDivideEvaluator {
             "TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal),  TruncatedDivide(Quantity, Quantity)",
             "TruncatedDivide(${left.typeAsString}, ${right.typeAsString})",
         )
+    }
+
+    /**
+     * "For division operations involving quantities, the resulting quantity will have an
+     * appropriate unit." Div counts how many times the right quantity fits into the left, so it is
+     * unitless after converting both to a common unit, the same way as for division (FHIR-59659):
+     * `250 'cm' div 1 'm'` is `2 '1'`. Dividing by a unitless quantity keeps the left unit, as in
+     * Divide. Quantities with no common unit are divided as in Divide, and the value is truncated.
+     * "If the result of the operation cannot be represented … the result is null."
+     */
+    private fun divideQuantities(left: Quantity, right: Quantity, state: State?): Quantity? {
+        val quotient =
+            if (Quantity.isDefaultUnit(right.unit)) {
+                Quantity()
+                    .withUnit(left.unit)
+                    .withValue(left.value!!.divideAndRemainder(right.value!!)[0])
+            } else {
+                computeInMoreGranularUnit(
+                    left,
+                    right,
+                    { _, leftValue, rightValue ->
+                        Quantity()
+                            .withUnit("1")
+                            .withValue(leftValue.divideAndRemainder(rightValue)[0])
+                    },
+                    state,
+                ) ?: divideWithoutCommonUnit(left, right, state)
+            }
+        // The quotient is a whole number, so give it no decimal places (as in "4.14 div 2.06 //
+        // 2"),
+        // whatever scale unit conversion left on it. DOWN truncates toward zero.
+        return quotient
+            ?.takeIf { DecimalHelper.validateDecimal(it.value!!, null) != null }
+            ?.let {
+                Quantity().withUnit(it.unit).withValue(it.value!!.setScale(0, RoundingMode.DOWN))
+            }
+    }
+
+    /**
+     * Divides as in Divide; [divideQuantities] truncates the value. Divide throws when UCUM can't
+     * combine the units, and "attempting to operate on quantities with invalid or special units
+     * will result in null".
+     */
+    private fun divideWithoutCommonUnit(left: Quantity, right: Quantity, state: State?): Quantity? {
+        return try {
+            DivideEvaluator.divide(left, right, state) as Quantity?
+        } catch (ignored: Exception) {
+            null
+        }
     }
 }
