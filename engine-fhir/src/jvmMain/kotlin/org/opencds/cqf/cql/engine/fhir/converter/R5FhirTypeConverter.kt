@@ -34,11 +34,13 @@ import org.hl7.fhir.r5.model.StringType
 import org.hl7.fhir.r5.model.TimeType
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TYPE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_UNKNOWN_CODE
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_LIST_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_TUPLE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.NATIVE_STACK_TRACE_EXT_URL
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.QUANTITY_PRECISION_EXT_URL
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Code
@@ -236,19 +238,45 @@ internal class R5FhirTypeConverter : BaseFhirTypeConverter() {
     }
 
     override fun toFhirRange(value: Interval?): ICompositeType? {
-        if (value == null) {
-            return null
+        return when {
+            value == null -> null
+            value.pointType == quantityTypeName -> toFhirQuantityRange(value)
+            else -> toFhirNumericRange(value)
         }
+    }
 
-        require(value.pointType == quantityTypeName) {
-            "FHIR Range can only be created from an Interval of Quantity type"
-        }
-
+    private fun toFhirQuantityRange(value: Interval): Range {
         val range = Range()
         range.setLow(toFhirQuantity(value.start as Quantity?) as org.hl7.fhir.r5.model.Quantity?)
         range.setHigh(toFhirQuantity(value.end as Quantity?) as org.hl7.fhir.r5.model.Quantity?)
 
         return range
+    }
+
+    // An Interval of Integer, Long or Decimal is a Range of unitless quantities, with cqf-cqlType
+    // giving the interval type, and quantity-precision on each Decimal bound.
+    private fun toFhirNumericRange(value: Interval): Range {
+        val (low, high) = toRangeBounds(value)
+        val range = Range()
+        range.addExtension(CQL_TYPE_EXT_URL, StringType(toRangeCqlType(value)))
+        if (low != null) {
+            range.setLow(toFhirRangeQuantity(low))
+        }
+        if (high != null) {
+            range.setHigh(toFhirRangeQuantity(high))
+        }
+        return range
+    }
+
+    private fun toFhirRangeQuantity(bound: RangeBound): org.hl7.fhir.r5.model.Quantity {
+        val quantity = org.hl7.fhir.r5.model.Quantity().setValue(bound.value)
+        if (bound.precision != null) {
+            quantity.valueElement.addExtension(
+                QUANTITY_PRECISION_EXT_URL,
+                IntegerType(bound.precision),
+            )
+        }
+        return quantity
     }
 
     private fun addElementToParameter(
