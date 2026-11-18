@@ -1222,7 +1222,7 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     override fun visitModulo(elm: Modulo, context: State?): Value? {
         val left = visitExpression(elm.operand[0], context)
         val right = visitExpression(elm.operand[1], context)
-        return modulo(left, right)
+        return modulo(left, right, context)
     }
 
     override fun visitMultiply(elm: Multiply, context: State?): Value? {
