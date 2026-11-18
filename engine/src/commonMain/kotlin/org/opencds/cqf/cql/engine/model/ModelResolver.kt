@@ -58,7 +58,7 @@ interface ModelResolver {
         right: ClassInstance,
         equivalent: (l: Value?, r: Value?) -> Boolean,
     ): Boolean {
-        return EquivalentEvaluator.classInstanceElementsEquivalent(
+        return EquivalentEvaluator.structuredValueElementsEquivalent(
             left.elements,
             right.elements,
             equivalent,

@@ -126,7 +126,8 @@ internal class R4ConversionFootprintTest {
     // Full FHIR equivalence needs engine state; element-wise Kotlin equality is enough to exercise
     // the absent-is-null handling.
     private fun elementsEquivalent(left: ClassInstance, right: ClassInstance) =
-        EquivalentEvaluator.classInstanceElementsEquivalent(left.elements, right.elements) { l, r ->
+        EquivalentEvaluator.structuredValueElementsEquivalent(left.elements, right.elements) { l, r
+                ->
                 (l == r).toCqlBoolean()
             }
             .value

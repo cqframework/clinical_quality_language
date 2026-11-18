@@ -219,14 +219,14 @@ abstract class FhirModelResolver<
             `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Resource")) == true ||
                 `is`(left.type.localPart, QName(fhirModelNamespaceUri, "Element")) == true
         ) {
-            return EquivalentEvaluator.classInstanceElementsEquivalent(
+            return EquivalentEvaluator.structuredValueElementsEquivalent(
                 left.elements.filterKeys { it != "id" },
                 right.elements.filterKeys { it != "id" },
                 equivalent,
             )
         }
 
-        return EquivalentEvaluator.classInstanceElementsEquivalent(
+        return EquivalentEvaluator.structuredValueElementsEquivalent(
             left.elements,
             right.elements,
             equivalent,
