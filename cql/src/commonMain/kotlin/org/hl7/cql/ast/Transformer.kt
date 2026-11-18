@@ -113,6 +113,7 @@ open class Transformer {
             is ExpandCollapseExpression -> visitExpandCollapseExpression(expression)
             is IntervalRelationExpression -> visitIntervalRelationExpression(expression)
             is IsExpression -> visitIsExpression(expression)
+            is BooleanTestExpression -> visitBooleanTestExpression(expression)
             is AsExpression -> visitAsExpression(expression)
             is CastExpression -> visitCastExpression(expression)
             is DateTimeComponentExpression -> visitDateTimeComponentExpression(expression)
@@ -253,6 +254,9 @@ open class Transformer {
             operand = visitExpression(expression.operand),
             type = visitTypeSpecifier(expression.type),
         )
+
+    open fun visitBooleanTestExpression(expression: BooleanTestExpression): Expression =
+        expression.copy(operand = visitExpression(expression.operand))
 
     open fun visitAsExpression(expression: AsExpression): Expression =
         expression.copy(

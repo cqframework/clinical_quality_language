@@ -11,8 +11,15 @@ import {
   Interval,
   List,
   iterableToList,
-  StructuredValue,
   getNamedTypeForCqlValue,
+  Tuple,
+  Quantity,
+  Ratio,
+  Code,
+  Concept,
+  CodeSystem,
+  ValueSet,
+  ClassInstance,
 } from "cql-js/kotlin/engine.mjs";
 import { Nullable, isKtNull, TJsCqlValue } from "@/shared";
 
@@ -77,11 +84,21 @@ export function toJsCqlValue(ktCqlValue: Nullable<Value>): TJsCqlValue {
     };
   }
 
-  if (ktCqlValue instanceof StructuredValue) {
+  if (
+    ktCqlValue instanceof Tuple ||
+    ktCqlValue instanceof Quantity ||
+    ktCqlValue instanceof Ratio ||
+    ktCqlValue instanceof Code ||
+    ktCqlValue instanceof Concept ||
+    ktCqlValue instanceof CodeSystem ||
+    ktCqlValue instanceof ValueSet ||
+    ktCqlValue instanceof ClassInstance
+  ) {
     return {
       type: "Structured",
       structuredTypeName: getNamedTypeForCqlValue(ktCqlValue)?.toString(),
       elements: new Map(
+        // @ts-expect-error TypeScript error
         [...ktCqlValue.elements.asJsReadonlyMapView().entries()].map(
           ([k, v]) => [k, toJsCqlValue(v)],
         ),

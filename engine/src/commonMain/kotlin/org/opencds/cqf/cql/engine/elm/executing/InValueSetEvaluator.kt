@@ -49,9 +49,11 @@ object InValueSetEvaluator {
                 }
                 return Boolean.FALSE
             } else if (code is Concept) {
-                for (codes in code.codes!!) {
-                    if (codes == null) return null
-                    if (provider!!.`in`(codes, vsi) == true) return Boolean.TRUE
+                if (code.codes != null) {
+                    for (codes in code.codes) {
+                        if (codes == null) return null
+                        if (provider!!.`in`(codes, vsi)) return Boolean.TRUE
+                    }
                 }
                 return Boolean.FALSE
             }

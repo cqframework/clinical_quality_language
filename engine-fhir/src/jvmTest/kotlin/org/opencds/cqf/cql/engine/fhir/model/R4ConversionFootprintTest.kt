@@ -91,11 +91,11 @@ internal class R4ConversionFootprintTest {
     @Test
     fun sparseAndDenseInstancesCompareEqual() {
         val sparse = resolver.toCqlValue(Coding("http://loinc.org", "8480-6", null))!!
-        // The pre-sparse layout: every child present, unset ones null
+        // The map form: every child present, unset ones null
         val dense =
             ClassInstance(
                 sparse.type,
-                mutableMapOf(
+                mapOf(
                     "id" to null,
                     "extension" to null,
                     "system" to resolver.toCqlValue(UriType("http://loinc.org")),
@@ -106,17 +106,21 @@ internal class R4ConversionFootprintTest {
                 ),
             )
 
-        assertEquals(setOf("system", "code"), sparse.elements.keys)
+        assertEquals(dense.elements.keys, sparse.elements.keys)
         assertEquals(true, EqualEvaluator.equal(sparse, dense)?.value)
         assertEquals(true, EqualEvaluator.equal(dense, sparse)?.value)
         assertTrue(elementsEquivalent(sparse, dense))
         assertEquals(dense, sparse)
         assertEquals(dense.hashCode(), sparse.hashCode())
 
-        dense.elements["display"] = resolver.toCqlValue(StringType("Systolic"))
-        assertNull(EqualEvaluator.equal(sparse, dense))
-        assertFalse(elementsEquivalent(sparse, dense))
-        assertNotEquals<Any>(dense, sparse)
+        val withDisplay =
+            ClassInstance(
+                sparse.type,
+                dense.elements + ("display" to resolver.toCqlValue(StringType("Systolic"))),
+            )
+        assertNull(EqualEvaluator.equal(sparse, withDisplay))
+        assertFalse(elementsEquivalent(sparse, withDisplay))
+        assertNotEquals<Any>(withDisplay, sparse)
     }
 
     // Full FHIR equivalence needs engine state; element-wise Kotlin equality is enough to exercise

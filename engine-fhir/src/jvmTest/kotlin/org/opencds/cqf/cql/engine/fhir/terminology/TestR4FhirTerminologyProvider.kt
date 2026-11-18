@@ -209,10 +209,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockResolveSearchPath(info, valueSet)
 
-        val code = Code()
-        code.system = TEST_SYSTEM
-        code.code = TEST_CODE
-        code.display = TEST_DISPLAY
+        val code = Code(system = TEST_SYSTEM, code = TEST_CODE, display = TEST_DISPLAY)
 
         val parameters = Parameters()
         parameters.parameterFirstRep.setName("result").setValue(BooleanType(true))
@@ -240,10 +237,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockResolveSearchPath(info, valueSet)
 
-        val code = Code()
-        code.system = TEST_SYSTEM
-        code.code = TEST_CODE
-        code.display = TEST_DISPLAY
+        val code = Code(system = TEST_SYSTEM, code = TEST_CODE, display = TEST_DISPLAY)
 
         val parameters = Parameters()
         parameters.parameterFirstRep.setName("result").setValue(BooleanType(false))
@@ -278,9 +272,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockFhirRead($$"/ValueSet/Test/$expand", parameters)
 
-        val code = Code()
-        code.code = TEST_CODE
-        code.display = TEST_DISPLAY
+        val code = Code(code = TEST_CODE, display = TEST_DISPLAY)
 
         val result = provider!!.`in`(code, info)
         Assertions.assertTrue(result)
@@ -308,9 +300,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
 
         mockFhirRead($$"/ValueSet/Test/$expand", parameters)
 
-        val code = Code()
-        code.code = TEST_CODE
-        code.display = TEST_DISPLAY
+        val code = Code(code = TEST_CODE, display = TEST_DISPLAY)
 
         Assertions.assertThrows(TerminologyProviderException::class.java) {
             provider!!.`in`(code, info)
@@ -324,10 +314,7 @@ internal class TestR4FhirTerminologyProvider : R4FhirTest() {
         info.id = TEST_SYSTEM
         info.version = TEST_SYSTEM_VERSION
 
-        val code = Code()
-        code.code = TEST_CODE
-        code.system = TEST_SYSTEM
-        code.display = TEST_DISPLAY
+        val code = Code(code = TEST_CODE, system = TEST_SYSTEM, display = TEST_DISPLAY)
 
         val parameters = Parameters()
         parameters.addParameter().setName("name").setValue(StringType(code.code))

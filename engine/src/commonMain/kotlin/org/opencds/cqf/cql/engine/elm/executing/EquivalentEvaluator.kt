@@ -228,11 +228,14 @@ object EquivalentEvaluator {
     }
 
     fun valueSetsEquivalent(left: ValueSet, right: ValueSet): Boolean {
+        val leftCodeSystems = left.codeSystems ?: emptyList()
+        val rightCodeSystems = right.codeSystems ?: emptyList()
+
         val equivalent =
-            vocabulariesEquivalent(left, right).value == true &&
-                left.codeSystems.size == right.codeSystems.size
+            vocabulariesEquivalent(left, right).value &&
+                leftCodeSystems.size == rightCodeSystems.size
         if (equivalent) {
-            for (cs in left.codeSystems) {
+            for (cs in leftCodeSystems) {
                 val otherC = right.getCodeSystem(cs.id)
                 if (otherC == null) {
                     return Boolean.FALSE
@@ -252,7 +255,7 @@ object EquivalentEvaluator {
         }
 
         for (code in left.codes) {
-            for (otherCode in right.codes!!) {
+            for (otherCode in right.codes) {
                 if (equivalent(code, otherCode).value) {
                     return Boolean.TRUE
                 }
@@ -270,7 +273,11 @@ object EquivalentEvaluator {
     }
 
     fun intervalIntegerEquivalent(interval: Interval, integer: Integer, state: State?): Boolean {
-        return intervalsEquivalent(interval, Interval(integer, true, integer, true, state), state)
+        return intervalsEquivalent(
+            interval,
+            Interval(integer, true, integer, true, state = state),
+            state,
+        )
     }
 
     fun listEquivalent(left: List, right: List, state: State?): Boolean {

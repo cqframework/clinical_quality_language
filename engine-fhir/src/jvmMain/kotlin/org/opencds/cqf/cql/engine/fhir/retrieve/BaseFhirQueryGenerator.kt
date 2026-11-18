@@ -118,7 +118,7 @@ protected constructor(
                 low =
                     DateParam(
                         ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
-                        Date.from((dateRange.low as DateTime).dateTime!!.toInstant()),
+                        Date.from((dateRange.low as DateTime).dateTime.toInstant()),
                     )
             }
         }
@@ -134,7 +134,7 @@ protected constructor(
                 high =
                     DateParam(
                         ParamPrefixEnum.LESSTHAN_OR_EQUALS,
-                        Date.from((dateRange.high as DateTime).dateTime!!.toInstant()),
+                        Date.from((dateRange.high as DateTime).dateTime.toInstant()),
                     )
             }
         }

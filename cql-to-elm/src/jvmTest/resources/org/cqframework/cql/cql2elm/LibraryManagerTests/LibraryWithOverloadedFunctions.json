@@ -1,0 +1,160 @@
+{
+  "library": {
+    "annotation": [
+      {
+        "type": "CqlToElmInfo",
+        "translatorVersion": "{translatorVersion}",
+        "translatorOptions": "EnableResultTypes",
+        "signatureLevel": "Overloads"
+      }
+    ],
+    "identifier": {
+      "id": "LibraryWithOverloadedFunctions"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1",
+          "annotation": []
+        }
+      ]
+    },
+    "statements": {
+      "def": [
+        {
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+          "name": "Both",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Concatenate",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+            "annotation": [],
+            "signature": [],
+            "operand": [
+              {
+                "type": "Concatenate",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                "annotation": [],
+                "signature": [],
+                "operand": [
+                  {
+                    "type": "FunctionRef",
+                    "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                    "name": "Describe",
+                    "annotation": [],
+                    "signature": [
+                      {
+                        "type": "NamedTypeSpecifier",
+                        "name": "{urn:hl7-org:elm-types:r1}Integer",
+                        "annotation": []
+                      }
+                    ],
+                    "operand": [
+                      {
+                        "type": "Literal",
+                        "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                        "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                        "value": "1",
+                        "annotation": []
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Literal",
+                    "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                    "valueType": "{urn:hl7-org:elm-types:r1}String",
+                    "value": " ",
+                    "annotation": []
+                  }
+                ]
+              },
+              {
+                "type": "FunctionRef",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                "name": "Describe",
+                "annotation": [],
+                "signature": [
+                  {
+                    "type": "NamedTypeSpecifier",
+                    "name": "{urn:hl7-org:elm-types:r1}String",
+                    "annotation": []
+                  }
+                ],
+                "operand": [
+                  {
+                    "type": "Literal",
+                    "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                    "valueType": "{urn:hl7-org:elm-types:r1}String",
+                    "value": "a",
+                    "annotation": []
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "FunctionDef",
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+          "name": "Describe",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Literal",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+            "valueType": "{urn:hl7-org:elm-types:r1}String",
+            "value": "Integer",
+            "annotation": []
+          },
+          "operand": [
+            {
+              "name": "x",
+              "annotation": [],
+              "operandTypeSpecifier": {
+                "type": "NamedTypeSpecifier",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}Integer",
+                "name": "{urn:hl7-org:elm-types:r1}Integer",
+                "annotation": []
+              }
+            }
+          ]
+        },
+        {
+          "type": "FunctionDef",
+          "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+          "name": "Describe",
+          "context": "Unfiltered",
+          "accessLevel": "Public",
+          "annotation": [],
+          "expression": {
+            "type": "Literal",
+            "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+            "valueType": "{urn:hl7-org:elm-types:r1}String",
+            "value": "String",
+            "annotation": []
+          },
+          "operand": [
+            {
+              "name": "x",
+              "annotation": [],
+              "operandTypeSpecifier": {
+                "type": "NamedTypeSpecifier",
+                "resultTypeName": "{urn:hl7-org:elm-types:r1}String",
+                "name": "{urn:hl7-org:elm-types:r1}String",
+                "annotation": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

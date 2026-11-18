@@ -23,29 +23,29 @@ object TimeFromEvaluator {
 
         if (operand is DateTime) {
             val hour: Int
-            if (operand.precision!!.toDateTimeIndex() > 2) {
-                hour = operand.dateTime!!.getHour()
+            if (operand.precision.toDateTimeIndex() > 2) {
+                hour = operand.dateTime.getHour()
             } else {
                 return null
             }
 
             val minute: Int
-            if (operand.precision!!.toDateTimeIndex() > 3) {
-                minute = operand.dateTime!!.getMinute()
+            if (operand.precision.toDateTimeIndex() > 3) {
+                minute = operand.dateTime.getMinute()
             } else {
                 return Time(hour)
             }
 
             val second: Int
-            if (operand.precision!!.toDateTimeIndex() > 4) {
-                second = operand.dateTime!!.getSecond()
+            if (operand.precision.toDateTimeIndex() > 4) {
+                second = operand.dateTime.getSecond()
             } else {
                 return Time(hour, minute)
             }
 
             val millisecond: Int
-            if (operand.precision!!.toDateTimeIndex() > 5) {
-                millisecond = operand.dateTime!!.get(Precision.MILLISECOND.toChronoField())
+            if (operand.precision.toDateTimeIndex() > 5) {
+                millisecond = operand.dateTime.get(Precision.MILLISECOND.toChronoField())
             } else {
                 return Time(hour, minute, second)
             }

@@ -60,9 +60,9 @@ object ToDateTimeEvaluator {
         if (operand is Date) {
             return DateTime(
                     TemporalHelper.zoneToOffset(state!!.evaluationZonedDateTime!!.getOffset()),
-                    operand.date!!.getYear(),
-                    operand.date!!.getMonthValue(),
-                    operand.date!!.getDayOfMonth(),
+                    operand.date.getYear(),
+                    operand.date.getMonthValue(),
+                    operand.date.getDayOfMonth(),
                 )
                 .withPrecision(operand.precision)
         }

@@ -165,7 +165,7 @@ class IntervalHelper private constructor() {
                             true,
                             truncatedEnd.toCqlDecimal(),
                             true,
-                            state,
+                            state = state,
                         )
                     }
 
@@ -188,7 +188,7 @@ class IntervalHelper private constructor() {
                             .withUnit(end.unit)
 
                     if (truncatedStart <= truncatedEnd) {
-                        return Interval(truncatedStart, true, truncatedEnd, true, state)
+                        return Interval(truncatedStart, true, truncatedEnd, true, state = state)
                     }
 
                     return null

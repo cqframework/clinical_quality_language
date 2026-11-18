@@ -1,55 +1,46 @@
 package org.opencds.cqf.cql.engine.runtime
 
 import kotlin.js.JsName
+import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.shared.JsOnlyExport
 
 @JsOnlyExport
-class ValueSet : Vocabulary() {
+class ValueSet
+@JvmOverloads
+constructor(
+    override val id: kotlin.String? = null,
+    override val version: kotlin.String? = null,
+    override val name: kotlin.String? = null,
+    val codeSystems: kotlin.collections.List<CodeSystem>? = null,
+) : Vocabulary {
     override val type = valueSetTypeName
 
-    override val elements: MutableMap<kotlin.String, Value?>
-        get() =
-            mutableMapOf(
-                "id" to id?.toCqlString(),
-                "version" to version?.toCqlString(),
-                "name" to name?.toCqlString(),
-                "codesystems" to codeSystems.toCqlList(),
-            )
+    override val elements =
+        mapOf(
+            "id" to id?.toCqlString(),
+            "version" to version?.toCqlString(),
+            "name" to name?.toCqlString(),
+            "codesystems" to codeSystems?.toCqlList(), // "codesystems" and not "codeSystems"
+        )
 
     fun withId(id: kotlin.String?): ValueSet {
-        this.id = id
-        return this
+        return ValueSet(id, version, name, codeSystems)
     }
 
     fun withVersion(version: kotlin.String?): ValueSet {
-        this.version = version
-        return this
+        return ValueSet(id, version, name, codeSystems)
     }
 
     fun withName(name: kotlin.String?): ValueSet {
-        this.name = name
-        return this
+        return ValueSet(id, version, name, codeSystems)
     }
 
-    var codeSystems = mutableListOf<CodeSystem>()
-
-    @Suppress("NON_EXPORTABLE_TYPE")
-    fun setCodeSystems(codeSystems: Iterable<CodeSystem?>?) {
-        this.codeSystems = codeSystems?.filterNotNull()?.toMutableList() ?: mutableListOf()
-    }
-
-    fun withCodeSystems(codeSystems: MutableList<CodeSystem?>?): ValueSet {
-        setCodeSystems(codeSystems)
-        return this
-    }
-
-    fun addCodeSystem(codeSystem: CodeSystem) {
-        codeSystems.add(codeSystem)
+    fun withCodeSystems(codeSystems: kotlin.collections.List<CodeSystem>?): ValueSet {
+        return ValueSet(id, version, name, codeSystems)
     }
 
     fun withCodeSystem(codeSystem: CodeSystem): ValueSet {
-        addCodeSystem(codeSystem)
-        return this
+        return ValueSet(id, version, name, (codeSystems ?: listOf()) + codeSystem)
     }
 
     @JsName("getCodeSystemById")
@@ -58,13 +49,7 @@ class ValueSet : Vocabulary() {
             return null
         }
 
-        for (cs in codeSystems) {
-            if (id == cs.id) {
-                return cs
-            }
-        }
-
-        return null
+        return codeSystems?.firstOrNull { it.id == id }
     }
 
     @JsName("getCodeSystemByIdAndVersion")
@@ -73,16 +58,33 @@ class ValueSet : Vocabulary() {
             return null
         }
 
-        for (cs in codeSystems) {
-            if (
-                id == cs.id &&
-                    ((version == null && cs.version == null) ||
-                        (version != null && version == cs.version))
-            ) {
-                return cs
-            }
+        return codeSystems?.firstOrNull {
+            it.id == id &&
+                ((version == null && it.version == null) ||
+                    (version != null && it.version == version))
         }
-
-        return null
     }
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(id, version, name, codeSystems).hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other ||
+            (other is ValueSet &&
+                id == other.id &&
+                version == other.version &&
+                name == other.name &&
+                codeSystems == other.codeSystems)
+
+    override fun toString(): kotlin.String = toStructuredValueString()
 }

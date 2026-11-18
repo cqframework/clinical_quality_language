@@ -93,7 +93,7 @@ object IntersectEvaluator {
                     else if (leftEndLtRightEnd.value) leftEnd else rightEnd
             }
 
-            return Interval(max, max != null, min, min != null, state)
+            return Interval(max, max != null, min, min != null, state = state)
         } else if (left is List && right is List) {
 
             val result = mutableListOf<Value?>()

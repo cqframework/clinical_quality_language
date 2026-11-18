@@ -7,8 +7,24 @@ import org.cqframework.cql.shared.JsOnlyExport
 @JsOnlyExport sealed interface SimpleValue : NamedTypeValue
 
 @JsOnlyExport
-data class Boolean(val value: kotlin.Boolean) : SimpleValue {
+class Boolean(val value: kotlin.Boolean) : SimpleValue {
     override val type = booleanTypeName
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Boolean && value == other.value)
 
     override fun toString() = value.toString()
 
@@ -19,8 +35,24 @@ data class Boolean(val value: kotlin.Boolean) : SimpleValue {
 }
 
 @JsOnlyExport
-data class Integer(val value: Int) : SimpleValue {
+class Integer(val value: Int) : SimpleValue {
     override val type = integerTypeName
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Integer && value == other.value)
 
     override fun toString() = value.toString()
 
@@ -31,22 +63,70 @@ data class Integer(val value: Int) : SimpleValue {
 }
 
 @JsOnlyExport
-data class Long(val value: kotlin.Long) : SimpleValue {
+class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Long && value == other.value)
 
     override fun toString() = "${value}L"
 }
 
 @JsOnlyExport
-data class Decimal(val value: BigDecimal) : SimpleValue {
+class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Decimal && value == other.value)
 
     override fun toString() = value.toPlainString()
 }
 
 @JsOnlyExport
-data class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
+class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is String && value == other.value)
 
     override fun toString() = "'${escapeCql(value)}'"
 

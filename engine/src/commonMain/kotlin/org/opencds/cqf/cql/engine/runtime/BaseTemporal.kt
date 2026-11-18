@@ -4,22 +4,19 @@ import kotlin.js.JsExport
 import org.cqframework.cql.shared.JsOnlyExport
 
 @JsOnlyExport
-sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
-    @JsExport.Ignore var precision: Precision? = null
+@Suppress("NON_EXPORTABLE_TYPE")
+sealed interface BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
+    val precision: Precision
 
-    @JsExport.Ignore
-    open fun withPrecision(precision: Precision?): BaseTemporal {
-        this.precision = precision
-        return this
-    }
+    fun withPrecision(precision: Precision): BaseTemporal
 
-    abstract fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int?
+    fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int?
 
-    @JsExport.Ignore abstract fun compareToPrecision(other: BaseTemporal, p: Precision): Int?
+    @JsExport.Ignore fun compareToPrecision(other: BaseTemporal, p: Precision): Int?
 
-    @JsExport.Ignore abstract fun isUncertain(p: Precision): kotlin.Boolean
+    @JsExport.Ignore fun isUncertain(p: Precision): kotlin.Boolean
 
-    @JsExport.Ignore abstract fun getUncertaintyInterval(p: Precision): Interval?
+    @JsExport.Ignore fun getUncertaintyInterval(p: Precision): Interval?
 
     /**
      * Returns a copy of this temporal value rounded to the specified precision if the value has a
@@ -30,10 +27,10 @@ sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
      * @return the rounded copy
      */
     @JsExport.Ignore
-    abstract fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal?
+    fun roundToPrecision(precision: Precision, useCeiling: kotlin.Boolean): BaseTemporal?
 
     /** Returns the string representation of the temporal value without the leading `@` or `@T`. */
-    abstract fun toStringInner(): kotlin.String
+    fun toStringInner(): kotlin.String
 
     companion object {
         fun getHighestPrecision(vararg values: BaseTemporal?): kotlin.String {
@@ -42,19 +39,19 @@ sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
             var isDate = false
             for (baseTemporal in values) {
                 if (baseTemporal is DateTime) {
-                    if (baseTemporal.precision!!.toDateTimeIndex() > max) {
-                        max = baseTemporal.precision!!.toDateTimeIndex()
+                    if (baseTemporal.precision.toDateTimeIndex() > max) {
+                        max = baseTemporal.precision.toDateTimeIndex()
                     }
                 } else if (baseTemporal is Date) {
                     isDateTime = false
                     isDate = true
-                    if (baseTemporal.precision!!.toTimeIndex() > max) {
-                        max = baseTemporal.precision!!.toDateIndex()
+                    if (baseTemporal.precision.toTimeIndex() > max) {
+                        max = baseTemporal.precision.toDateIndex()
                     }
                 } else if (baseTemporal is Time) {
                     isDateTime = false
-                    if (baseTemporal.precision!!.toTimeIndex() > max) {
-                        max = baseTemporal.precision!!.toTimeIndex()
+                    if (baseTemporal.precision.toTimeIndex() > max) {
+                        max = baseTemporal.precision.toTimeIndex()
                     }
                 }
             }
@@ -74,19 +71,19 @@ sealed class BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
             var isDate = false
             for (baseTemporal in values) {
                 if (baseTemporal is DateTime) {
-                    if (baseTemporal.precision!!.toDateTimeIndex() < min) {
-                        min = baseTemporal.precision!!.toDateTimeIndex()
+                    if (baseTemporal.precision.toDateTimeIndex() < min) {
+                        min = baseTemporal.precision.toDateTimeIndex()
                     }
                 } else if (baseTemporal is Date) {
                     isDateTime = false
                     isDate = true
-                    if (baseTemporal.precision!!.toDateIndex() < min) {
-                        min = baseTemporal.precision!!.toDateIndex()
+                    if (baseTemporal.precision.toDateIndex() < min) {
+                        min = baseTemporal.precision.toDateIndex()
                     }
                 } else if (baseTemporal is Time) {
                     isDateTime = false
-                    if (baseTemporal.precision!!.toTimeIndex() < min) {
-                        min = baseTemporal.precision!!.toTimeIndex()
+                    if (baseTemporal.precision.toTimeIndex() < min) {
+                        min = baseTemporal.precision.toTimeIndex()
                     }
                 }
             }

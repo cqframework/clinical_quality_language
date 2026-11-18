@@ -7,6 +7,7 @@ import org.cqframework.cql.shared.JsOnlyExport
  * of the type that uses it, so each instance only stores its element values.
  */
 @JsOnlyExport
+@Suppress("NON_EXPORTABLE_TYPE")
 class ClassLayout(elementNames: Iterable<kotlin.String>) {
     private val names: Array<kotlin.String> = elementNames.toList().toTypedArray()
     private val indexes: Map<kotlin.String, Int> =

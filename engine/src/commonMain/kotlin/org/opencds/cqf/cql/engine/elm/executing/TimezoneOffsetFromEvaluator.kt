@@ -22,7 +22,7 @@ object TimezoneOffsetFromEvaluator {
         }
 
         if (operand is DateTime) {
-            return TemporalHelper.zoneToOffset(operand.dateTime!!.getOffset()).toCqlDecimal()
+            return TemporalHelper.zoneToOffset(operand.dateTime.getOffset()).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument(

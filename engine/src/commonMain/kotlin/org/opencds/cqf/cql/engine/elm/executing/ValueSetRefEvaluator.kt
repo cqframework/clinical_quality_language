@@ -15,12 +15,12 @@ object ValueSetRefEvaluator {
         val enteredLibrary = state!!.enterLibrary(vsr!!.libraryName)
         try {
             val vsd = Libraries.resolveValueSetRef(vsr.name, state.getCurrentLibrary()!!)
-            val vs = ValueSet().withId(vsd.id).withVersion(vsd.version)
-            for (csr in vsd.codeSystem) {
-                val cs = CodeSystemRefEvaluator.toCodeSystem(csr, state)
-                vs.addCodeSystem(cs)
-            }
-            return vs
+            return ValueSet(
+                id = vsd.id,
+                version = vsd.version,
+                codeSystems =
+                    vsd.codeSystem.map { csr -> CodeSystemRefEvaluator.toCodeSystem(csr, state) },
+            )
         } finally {
             state.exitLibrary(enteredLibrary)
         }

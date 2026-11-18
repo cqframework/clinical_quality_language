@@ -1,27 +1,41 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.shared.JsOnlyExport
 
 @JsOnlyExport
-class Ratio : StructuredValue(), NamedTypeValue {
+class Ratio
+@JvmOverloads
+constructor(val numerator: Quantity? = null, val denominator: Quantity? = null) :
+    StructuredValue, NamedTypeValue {
     override val type = ratioTypeName
 
-    override val elements: MutableMap<kotlin.String, Value?>
-        get() = mutableMapOf("numerator" to numerator, "denominator" to denominator)
-
-    var numerator: Quantity? = null
-
-    var denominator: Quantity? = null
+    override val elements = mapOf("numerator" to numerator, "denominator" to denominator)
 
     fun withNumerator(numerator: Quantity?): Ratio {
-        this.numerator = numerator
-        return this
+        return Ratio(numerator, denominator)
     }
 
     fun withDenominator(denominator: Quantity?): Ratio {
-        this.denominator = denominator
-        return this
+        return Ratio(numerator, denominator)
     }
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(numerator, denominator).hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other ||
+            (other is Ratio && numerator == other.numerator && denominator == other.denominator)
 
     override fun toString(): kotlin.String {
         return "${this.numerator}:${this.denominator}"

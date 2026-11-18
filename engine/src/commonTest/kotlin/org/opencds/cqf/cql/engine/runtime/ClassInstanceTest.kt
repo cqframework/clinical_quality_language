@@ -25,62 +25,33 @@ internal class ClassInstanceTest {
         )
 
     @Test
-    fun elementsOmitNullSlotsInLayoutOrder() {
+    fun elementsHaveAKeyPerSlotInLayoutOrder() {
         val instance = layoutInstance("http://loinc.org", null, "Systolic")
 
-        assertEquals(listOf("system", "display"), instance.elements.keys.toList())
-        assertEquals(2, instance.elements.size)
+        assertEquals(listOf("system", "code", "display"), instance.elements.keys.toList())
+        assertEquals(3, instance.elements.size)
+        assertTrue(instance.elements.containsKey("code"))
+        assertNull(instance.elements["code"])
         assertEquals("Systolic".toCqlString(), instance["display"])
         assertNull(instance["code"])
         assertNull(instance["unknown"])
         assertTrue(instance.has("system"))
-        assertFalse(instance.has("code"))
+        assertTrue(instance.has("code"))
         assertFalse(instance.has("unknown"))
-    }
-
-    @Test
-    fun mutatingElementsWritesSlots() {
-        val instance = layoutInstance("http://loinc.org", null, null)
-
-        instance.elements["code"] = "8480-6".toCqlString()
-        assertEquals("8480-6".toCqlString(), instance["code"])
-
-        assertEquals("http://loinc.org".toCqlString(), instance.elements.remove("system"))
-        assertFalse(instance.has("system"))
-
-        instance.elements["code"] = null
-        assertTrue(instance.elements.isEmpty())
-    }
-
-    @Test
-    fun elementsTheLayoutDoesNotNameAreKept() {
-        val instance = layoutInstance(null, "8480-6", null)
-
-        instance.elements["userSelected"] = Boolean.TRUE
-
-        assertEquals(Boolean.TRUE, instance["userSelected"])
-        assertTrue(instance.has("userSelected"))
-        assertEquals(listOf("code", "userSelected"), instance.elements.keys.toList())
-        assertEquals(mapInstance("code" to "8480-6", "userSelected" to Boolean.TRUE), instance)
-    }
-
-    @Test
-    fun iteratorRemovesSlots() {
-        val instance = layoutInstance("http://loinc.org", "8480-6", "Systolic")
-
-        val entries = instance.elements.entries.iterator()
-        entries.next()
-        entries.remove()
-        entries.next().setValue("1234-5".toCqlString())
-
-        assertEquals(listOf("code", "display"), instance.elements.keys.toList())
-        assertEquals("1234-5".toCqlString(), instance["code"])
     }
 
     @Test
     fun layoutAndMapInstancesCompareEqual() {
         val layoutBacked = layoutInstance("http://loinc.org", "8480-6", null)
-        val mapBacked = mapInstance("system" to "http://loinc.org", "code" to "8480-6")
+        val mapBacked =
+            ClassInstance(
+                type,
+                mapOf(
+                    "system" to "http://loinc.org".toCqlString(),
+                    "code" to "8480-6".toCqlString(),
+                    "display" to null,
+                ),
+            )
 
         assertEquals(mapBacked, layoutBacked)
         assertEquals(layoutBacked, mapBacked)
@@ -89,6 +60,11 @@ internal class ClassInstanceTest {
 
         assertNotEquals(layoutInstance("http://loinc.org", "8480-6", "Systolic"), layoutBacked)
         assertNotEquals(mapInstance("system" to "http://loinc.org"), layoutBacked)
+        // A key that maps to null is not the same as no key
+        assertNotEquals(
+            mapInstance("system" to "http://loinc.org", "code" to "8480-6"),
+            layoutBacked,
+        )
     }
 
     @Test
@@ -104,6 +80,6 @@ internal class ClassInstanceTest {
                 .associate { (key, value) ->
                     key to if (value is kotlin.String) value.toCqlString() else value as Value
                 }
-                .toMutableMap(),
+                .toMap(),
         )
 }

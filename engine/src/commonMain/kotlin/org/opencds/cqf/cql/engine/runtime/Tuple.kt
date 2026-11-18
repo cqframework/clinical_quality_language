@@ -1,17 +1,34 @@
 package org.opencds.cqf.cql.engine.runtime
 
+import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.shared.JsOnlyExport
 
 /** Represents a CQL Tuple value. */
 @JsOnlyExport
-class Tuple : StructuredValue() {
+class Tuple
+@JvmOverloads
+constructor(override val elements: Map<kotlin.String, Value?> = emptyMap()) : StructuredValue {
     override val typeAsString = "Tuple"
 
-    override val elements: MutableMap<kotlin.String, Value?> = mutableMapOf()
-
-    fun withElements(elements: MutableMap<kotlin.String, Value?>): Tuple {
-        this.elements.clear()
-        this.elements.putAll(elements)
-        return this
+    fun withElements(elements: Map<kotlin.String, Value?>): Tuple {
+        return Tuple(elements)
     }
+
+    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
+    // a lambda until first use.
+    private var hash = 0
+
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = elements.hashCode()
+            hash = result
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Tuple && elements == other.elements)
+
+    override fun toString(): kotlin.String = toStructuredValueString()
 }
