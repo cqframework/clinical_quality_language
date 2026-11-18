@@ -11,8 +11,6 @@ class List(val value: Iterable<Value?>) : Value, Iterable<Value?> by value {
         val EMPTY_LIST = List(emptyList())
     }
 
-    // Computed on first use; 0 means not yet computed (a computed 0 is just recomputed). Not a
-    // lazy delegate, which would retain a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {

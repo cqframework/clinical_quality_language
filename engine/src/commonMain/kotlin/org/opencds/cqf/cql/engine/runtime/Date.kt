@@ -211,8 +211,6 @@ constructor(val date: LocalDate, override val precision: Precision = Precision.D
         return this.compare(other, true)!!
     }
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {

@@ -217,8 +217,6 @@ class Time(val time: LocalTime, override val precision: Precision) : BaseTempora
         return this.compare(other, true)!!
     }
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {

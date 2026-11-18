@@ -29,7 +29,6 @@ class ClassInstance(override val type: QName, override val elements: Map<kotlin.
         slots: Array<Value?>,
     ) : this(type, SlotElements(layout, slots))
 
-    // Computed on first use; 0 means not yet computed (a computed 0 is just recomputed)
     private var hash = 0
 
     override fun hashCode(): Int {

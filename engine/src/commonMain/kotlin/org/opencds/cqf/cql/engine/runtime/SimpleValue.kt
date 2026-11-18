@@ -10,8 +10,6 @@ import org.cqframework.cql.shared.JsOnlyExport
 class Boolean(val value: kotlin.Boolean) : SimpleValue {
     override val type = booleanTypeName
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {
@@ -38,8 +36,6 @@ class Boolean(val value: kotlin.Boolean) : SimpleValue {
 class Integer(val value: Int) : SimpleValue {
     override val type = integerTypeName
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {
@@ -66,8 +62,6 @@ class Integer(val value: Int) : SimpleValue {
 class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {
@@ -89,8 +83,6 @@ class Long(val value: kotlin.Long) : SimpleValue {
 class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {
@@ -112,8 +104,6 @@ class Decimal(val value: BigDecimal) : SimpleValue {
 class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
 
-    // Computed on first use; 0 means not yet computed. Not a lazy delegate, which would retain
-    // a lambda until first use.
     private var hash = 0
 
     override fun hashCode(): Int {
