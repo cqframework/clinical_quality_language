@@ -11,9 +11,7 @@ import org.cqframework.cql.shared.JsOnlyExport
 class ClassLayout(elementNames: Iterable<kotlin.String>) {
     private val names: Array<kotlin.String> = elementNames.toList().toTypedArray()
     private val indexes: Map<kotlin.String, Int> =
-        HashMap<kotlin.String, Int>(names.size * 2).also { map ->
-            names.forEachIndexed { i, name -> map[name] = i }
-        }
+        names.withIndex().associate { (i, name) -> name to i }
 
     init {
         require(indexes.size == names.size) {
