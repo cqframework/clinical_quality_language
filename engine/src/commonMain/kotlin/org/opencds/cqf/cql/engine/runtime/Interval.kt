@@ -61,6 +61,15 @@ constructor(
 
         // Use the type of the non-null boundary
         pointType = if (low == null) highNamedType else lowNamedType
+
+        // Make sure the start is not after the end. Without a state, Quantities in different units
+        // can't be compared (no UCUM service), so leave those to the constructor that takes one.
+        if (low != null && high != null) {
+            val isStartGreater = greater(this.start, this.end, null)
+            if (isStartGreater != null || low !is Quantity) {
+                checkStartNotGreater(isStartGreater)
+            }
+        }
     }
 
     @JsExport.Ignore
@@ -72,13 +81,17 @@ constructor(
         isUncertain: kotlin.Boolean = false,
         state: State? = null,
     ) : this(low, lowClosed, high, highClosed, isUncertain) {
-        if (low != null && high != null) {
-            val isStartGreater = greater(this.start, this.end, state)
-            if (isStartGreater == null || isStartGreater.value) {
-                throw InvalidInterval(
-                    "Invalid Interval - the ending boundary ($high) must be greater than or equal to the starting boundary ($low)."
-                )
-            }
+        // The primary constructor has already checked every other point type without a state.
+        if (low is Quantity && high != null) {
+            checkStartNotGreater(greater(this.start, this.end, state))
+        }
+    }
+
+    private fun checkStartNotGreater(isStartGreater: Boolean?) {
+        if (isStartGreater == null || isStartGreater.value) {
+            throw InvalidInterval(
+                "Invalid Interval - the ending boundary ($high) must be greater than or equal to the starting boundary ($low)."
+            )
         }
     }
 

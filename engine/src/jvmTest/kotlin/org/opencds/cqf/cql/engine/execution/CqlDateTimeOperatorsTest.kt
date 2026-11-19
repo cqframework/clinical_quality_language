@@ -64,6 +64,17 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
         assertEquals(289.toCqlInteger(), value.start)
         assertEquals(1936.toCqlInteger(), value.end)
 
+        // Interval[17, 44] div Interval[5, 16] pairs the boundaries into Interval[3, 2], and
+        // Interval[17, 44] - Interval[59, 89] into Interval[-42, -45]; neither is a valid interval.
+        for (name in
+            listOf(
+                "DateTimeDurationBetweenUncertainDiv",
+                "DateTimeDurationBetweenUncertainSubtractInverted",
+            )) {
+            val e = assertFailsWith<CqlException> { engine.expression(library, name) }
+            assertTrue(e.message!!.contains("Invalid Interval"), "$name: ${e.message}")
+        }
+
         value = engine.expression(library, "DurationInDaysA")
         assertEquals(Integer.ONE, value)
 

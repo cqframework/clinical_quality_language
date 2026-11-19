@@ -9,6 +9,8 @@ define DateTimeDurationBetweenUncertainInterval2: months between DateTime(2005) 
 define DateTimeDurationBetweenUncertainAdd: DateTimeDurationBetweenUncertainInterval + DateTimeDurationBetweenUncertainInterval
 define DateTimeDurationBetweenUncertainSubtract: DateTimeDurationBetweenUncertainInterval - DateTimeDurationBetweenUncertainInterval2
 define DateTimeDurationBetweenUncertainMultiply: DateTimeDurationBetweenUncertainInterval * DateTimeDurationBetweenUncertainInterval
+define DateTimeDurationBetweenUncertainDiv: DateTimeDurationBetweenUncertainInterval div DateTimeDurationBetweenUncertainInterval2
+define DateTimeDurationBetweenUncertainSubtractInverted: DateTimeDurationBetweenUncertainInterval - (days between DateTime(2014, 1, 1) and DateTime(2014, 3))
 
 define DurationInDaysA: days between @2017-03-12T00:00:00-07:00 and @2017-03-13T00:00:00-06:00 // Should be 1
 define DurationInDaysAA: days between DateTime(2017, 3, 12, 0, 0, 0, 0, -7.0) and DateTime(2017, 3, 13, 0, 0, 0, 0, -6.0) // Should be 1
