@@ -585,6 +585,7 @@ constructor(
             return null
         }
 
+    @Deprecated("Automatic tracking of evaluated resources is deprecated.")
     val evaluatedResources: MutableSet<Value?>?
         get() {
             check(!evaluatedResourceStack.isEmpty()) {
@@ -593,6 +594,10 @@ constructor(
 
             return this.evaluatedResourceStack.firstOrNull()
         }
+
+    /** Whether retrieved resources are recorded in [evaluatedResources]. */
+    val isEvaluatedResourcesCollectionEnabled: Boolean
+        get() = !engineOptions.contains(Options.DisableEvaluatedResourcesCollection)
 
     fun clearEvaluatedResources() {
         this.evaluatedResourceStack.clear()
