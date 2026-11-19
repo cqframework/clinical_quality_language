@@ -8,12 +8,14 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("kind")
-sealed interface Statement : AstNode
+sealed interface Statement : Declaration
 
 @Serializable
 @SerialName("unsupported")
 data class UnsupportedStatement(
     val grammarRule: String,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Statement
 
@@ -22,6 +24,8 @@ data class UnsupportedStatement(
 data class ContextDefinition(
     val model: Identifier? = null,
     val context: Identifier,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Statement
 
@@ -31,6 +35,8 @@ data class ExpressionDefinition(
     val access: AccessModifier? = null,
     val name: Identifier,
     val expression: Expression,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Statement
 
@@ -43,5 +49,7 @@ data class FunctionDefinition(
     val operands: List<OperandDefinition> = emptyList(),
     val returnType: TypeSpecifier? = null,
     val body: FunctionBody,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Statement

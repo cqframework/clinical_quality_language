@@ -100,13 +100,15 @@ class ExpressionBuilder {
             )
         )
 
-    fun identifier(vararg parts: String): Expression =
-        IdentifierExpression(QualifiedIdentifier(parts.toList()))
+    fun identifier(vararg parts: String): Expression = IdentifierExpression(qualified(*parts))
 
     fun externalConstant(name: String): Expression = ExternalConstantExpression(name)
 
     fun index(target: ExpressionSpec, index: ExpressionSpec): Expression =
         IndexExpression(expression(target), expression(index))
+
+    fun parenthesized(expression: ExpressionSpec): Expression =
+        ParenthesizedExpression(expression(expression))
 
     fun unary(operator: UnaryOperator, operand: ExpressionSpec): Expression =
         OperatorUnaryExpression(operator, expression(operand))
@@ -221,8 +223,7 @@ class ExpressionBuilder {
     fun cast(operand: ExpressionSpec, type: TypeSpecifier): Expression =
         CastExpression(expression(operand), type)
 
-    fun namedType(vararg parts: String): NamedTypeSpecifier =
-        NamedTypeSpecifier(QualifiedIdentifier(parts.toList()))
+    fun namedType(vararg parts: String): NamedTypeSpecifier = NamedTypeSpecifier(qualified(*parts))
 
     fun listType(elementType: TypeSpecifier): ListTypeSpecifier = ListTypeSpecifier(elementType)
 
@@ -313,12 +314,11 @@ class IntervalPhraseBuilder {
         precision: String? = null,
         inclusive: Boolean = false,
         offset: QuantityOffset? = null,
-        leadingQualifier: ExclusiveRelativeQualifier? = null,
     ): IntervalOperatorPhrase =
         BeforeOrAfterIntervalPhrase(
             leftBoundary = leftBoundary,
             offset = offset,
-            relationship = TemporalRelationshipPhrase(direction, inclusive, leadingQualifier),
+            relationship = TemporalRelationshipPhrase(direction, inclusive),
             precision = precision,
             rightBoundary = rightBoundary,
         )
@@ -356,7 +356,11 @@ fun ExpressionResult.assertMatches(expected: ExpressionSpec) {
         problems.isEmpty(),
         "Expected no problems but found: ${problems.joinToString { it.message }}",
     )
-    val expectedExpression = buildExpressionSpec(expected).transform(NormalizingTransformer)
-    val actualExpression = expression.transform(NormalizingTransformer)
-    assertEquals(expectedExpression, actualExpression)
+    assertEquals(
+        buildExpressionSpec(expected).withoutSourceDetails(),
+        expression.withoutSourceDetails(),
+    )
 }
+
+fun qualified(vararg parts: String): QualifiedIdentifier =
+    QualifiedIdentifier(parts.map { Identifier(it) })

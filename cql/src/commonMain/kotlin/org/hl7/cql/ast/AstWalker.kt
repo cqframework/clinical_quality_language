@@ -101,6 +101,7 @@ open class AstWalker {
             is PropertyAccessExpression -> visitPropertyAccessExpression(expression)
             is IndexExpression -> visitIndexExpression(expression)
             is IfExpression -> visitIfExpression(expression)
+            is ParenthesizedExpression -> visitParenthesizedExpression(expression)
             is CaseExpression -> visitCaseExpression(expression)
             is QueryExpression -> visitQueryExpression(expression)
             is RetrieveExpression -> visitRetrieveExpression(expression)
@@ -200,6 +201,10 @@ open class AstWalker {
     open fun visitIndexExpression(expression: IndexExpression) {
         visitExpression(expression.target)
         visitExpression(expression.index)
+    }
+
+    open fun visitParenthesizedExpression(expression: ParenthesizedExpression) {
+        visitExpression(expression.expression)
     }
 
     open fun visitIfExpression(expression: IfExpression) {
@@ -318,7 +323,19 @@ open class AstWalker {
     }
 
     open fun visitRetrieveExpression(expression: RetrieveExpression) {
+        expression.codePath?.let { visitSimplePath(it) }
         expression.terminology?.let { visitTerminologyRestriction(it) }
+    }
+
+    open fun visitSimplePath(path: SimplePath) {
+        path.segments.forEach { visitPathSegment(it) }
+    }
+
+    open fun visitPathSegment(segment: PathSegment) {
+        when (segment) {
+            is PropertySegment -> {}
+            is IndexSegment -> visitExpression(segment.index)
+        }
     }
 
     open fun visitTerminologyRestriction(restriction: TerminologyRestriction) {
@@ -384,7 +401,6 @@ open class AstWalker {
             is OverlapsIntervalPhrase -> visitOverlapsIntervalPhrase(phrase)
             is StartsIntervalPhrase -> visitStartsIntervalPhrase(phrase)
             is EndsIntervalPhrase -> visitEndsIntervalPhrase(phrase)
-            is UnsupportedIntervalPhrase -> visitUnsupportedIntervalPhrase(phrase)
         }
     }
 
@@ -410,8 +426,6 @@ open class AstWalker {
     open fun visitStartsIntervalPhrase(phrase: StartsIntervalPhrase) {}
 
     open fun visitEndsIntervalPhrase(phrase: EndsIntervalPhrase) {}
-
-    open fun visitUnsupportedIntervalPhrase(phrase: UnsupportedIntervalPhrase) {}
 
     open fun visitQuantityOffset(offset: QuantityOffset) {
         visitQuantityLiteral(offset.quantity)

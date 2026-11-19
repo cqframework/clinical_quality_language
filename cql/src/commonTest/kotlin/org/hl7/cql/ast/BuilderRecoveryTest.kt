@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -193,6 +192,7 @@ class BuilderRecoveryTest {
         assertTrue(expected.problems.isEmpty(), expected.problems.joinToString { it.message })
         val actual = Builder().parseLibrary(damaged.trimIndent())
         assertTrue(actual.problems.isNotEmpty(), "Expected problems for the damaged library")
+        assertTrue(actual.problems.none { it.internal }, "Internal errors: ${actual.problems}")
         val kept =
             expected.library.declarations().filterIndexed { index, declaration ->
                 if (name == null) index != 0 else declaration.nameOrNull() != name
@@ -221,18 +221,10 @@ class BuilderRecoveryTest {
         (definitions.map { it to Json.encodeToJsonElement(Definition.serializer(), it) } +
                 statements.map { it to Json.encodeToJsonElement(Statement.serializer(), it) })
             .sortedBy { it.first.locator.startIndex }
-            .map { it.second.withoutLocators() }
-
-    private fun JsonElement.withoutLocators(): JsonElement =
-        when (this) {
-            is JsonObject ->
-                JsonObject(filterKeys { it != "locator" }.mapValues { it.value.withoutLocators() })
-            is JsonArray -> JsonArray(map { it.withoutLocators() })
-            else -> this
-        }
+            .map { it.second.withoutSourceDetails() }
 
     private fun JsonElement.nameOrNull(): String? =
-        ((this as JsonObject)["name"] as? JsonPrimitive)?.content
+        (((this as JsonObject)["name"] as? JsonObject)?.get("value") as? JsonPrimitive)?.content
 
     companion object {
         private const val DEFINES = 500

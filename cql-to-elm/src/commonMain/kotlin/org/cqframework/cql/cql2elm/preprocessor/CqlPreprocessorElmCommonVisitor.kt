@@ -16,11 +16,10 @@ import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.cql2elm.utils.Stack
 import org.cqframework.cql.cql2elm.utils.isDigit
-import org.cqframework.cql.cql2elm.utils.isLetter
-import org.cqframework.cql.cql2elm.utils.isLetterOrDigit
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.gen.cqlBaseVisitor
 import org.cqframework.cql.gen.cqlParser.*
+import org.hl7.cql.ast.TagParser
 import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.Annotation
 import org.hl7.cql_annotations.r1.Narrative
@@ -373,12 +372,10 @@ abstract class CqlPreprocessorElmCommonVisitor(
         }
     }
 
-    private fun getTags(header: String?): kotlin.collections.List<Tag> {
-        return when {
-            header != null -> parseTags(parseComments(header))
-            else -> emptyList()
+    private fun getTags(header: String?): kotlin.collections.List<Tag> =
+        TagParser.parse(header.orEmpty()).map {
+            af.createTag().withName(it.name).withValue(it.value)
         }
-    }
 
     private fun getTags(tree: ParseTree): kotlin.collections.List<Tag> {
         val bi = libraryInfo.resolveDefinition(tree)
@@ -386,69 +383,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
             bi != null -> getTags(bi.header)
             else -> emptyList()
         }
-    }
-
-    private fun parseTags(header: String): kotlin.collections.List<Tag> {
-        val header =
-            header.trim { it <= ' ' }.split("\n[ \t]*\\*[ \t\\*]*".toRegex()).joinToString("\n")
-        val tags = ArrayList<Tag>()
-        var startFrom = 0
-        while (startFrom < header.length) {
-            val tagNamePair = lookForTagName(header, startFrom)
-            if (tagNamePair != null) {
-                if (tagNamePair.left.isNotEmpty() && isValidIdentifier(tagNamePair.left)) {
-                    var t = af.createTag().withName(tagNamePair.left)
-                    startFrom = tagNamePair.right
-                    val tagValuePair = lookForTagValue(header, startFrom)
-                    if (tagValuePair != null && tagValuePair.left.isNotEmpty()) {
-                        t = t.withValue(tagValuePair.left)
-                        startFrom = tagValuePair.right
-                    }
-                    tags.add(t)
-                } else {
-                    startFrom = tagNamePair.right
-                }
-            } else { // no name tag found, no need to traverse more
-                break
-            }
-        }
-        return tags
-    }
-
-    private fun parseComments(header: String?): String {
-        val result = ArrayList<String>()
-        if (header != null) {
-            val normalized = header.replace("\r\n", "\n")
-            val lines = normalized.split("\n")
-            var inMultiline = false
-            for (line in lines) {
-                if (!inMultiline) {
-                    var start = line.indexOf("/*")
-                    if (start >= 0) {
-                        if (line.endsWith("*/")) {
-                            result.add(line.substring(start + 2, line.length - 2))
-                        } else {
-                            result.add(line.substring(start + 2))
-                        }
-                        inMultiline = true
-                    } else start = line.indexOf("//")
-                    if (start >= 0 && !inMultiline) {
-                        result.add(line.substring(start + 2))
-                    }
-                } else {
-                    val end = line.indexOf("*/")
-                    if (end >= 0) {
-                        inMultiline = false
-                        if (end > 0) {
-                            result.add(line.substring(0, end))
-                        }
-                    } else {
-                        result.add(line)
-                    }
-                }
-            }
-        }
-        return result.joinToString("\n")
     }
 
     fun enableAnnotations() {
@@ -574,37 +508,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
         }
     }
 
-    private fun lookForTagName(header: String, startFrom: Int): Pair<String, Int>? {
-        if (startFrom >= header.length) {
-            return null
-        }
-        val start = header.indexOf("@", startFrom)
-        if (start < 0) {
-            return null
-        }
-        val nextTagStart = header.indexOf("@", start + 1)
-        val nextColon = header.indexOf(":", start + 1)
-        if (nextTagStart < 0) { // no next tag , no next colon
-            if (nextColon < 0) {
-                return Pair.of(
-                    header.substring(start + 1, header.length).trim { it <= ' ' },
-                    header.length,
-                )
-            }
-        } else {
-            if (
-                nextColon < 0 || nextColon > nextTagStart
-            ) { // (has next tag and no colon) or (has next tag and next colon belongs to
-                // next tag)
-                return Pair.of(
-                    header.substring(start + 1, nextTagStart).trim { it <= ' ' },
-                    nextTagStart,
-                )
-            }
-        }
-        return Pair.of(header.substring(start + 1, nextColon).trim { it <= ' ' }, nextColon + 1)
-    }
-
     private fun getAnnotation(element: Element): Annotation? {
         for (o in element.annotation) {
             if (o is Annotation) {
@@ -705,58 +608,8 @@ abstract class CqlPreprocessorElmCommonVisitor(
         // for @1980-12-01, it will potentially check to be treated as value date
         // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval"
         // [@2019,@2020]
-        fun lookForTagValue(header: String, startFrom: Int): Pair<String, Int>? {
-            if (startFrom >= header.length) {
-                return null
-            }
-            val nextTag = header.indexOf('@', startFrom)
-            val nextStartDoubleQuote = header.indexOf("\"", startFrom)
-            if (
-                (nextTag < 0 || nextTag > nextStartDoubleQuote) &&
-                    nextStartDoubleQuote > 0 &&
-                    header.length > nextStartDoubleQuote + 1
-            ) {
-                val nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1)
-                return if (nextEndDoubleQuote > 0) {
-                    val parameterEnd = header.indexOf("\n", nextStartDoubleQuote + 1)
-                    if (parameterEnd < 0) {
-                        Pair.of(header.substring(nextStartDoubleQuote), header.length)
-                    } else {
-                        Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd)
-                    }
-                } else { // branch where the 2nd double quote is missing
-                    Pair.of(header.substring(nextStartDoubleQuote), header.length)
-                }
-            }
-            if (
-                nextTag == startFrom && !isStartingWithDigit(header, nextTag + 1)
-            ) { // starts with `@` and not potential date value
-                return Pair.of("", startFrom)
-            } else if (nextTag > 0) { // has some text before tag
-                val interimText = header.substring(startFrom, nextTag).trim { it <= ' ' }
-                return if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
-                    if (
-                        interimText.isNotEmpty() && interimText != ":"
-                    ) { // interim text has value, regards interim text
-                        Pair.of(interimText, nextTag)
-                    } else {
-                        val nextSpace = header.indexOf(' ', nextTag)
-                        val nextLine = header.indexOf("\n", nextTag)
-                        val mul = nextSpace * nextLine
-                        var nextDelimiterIndex = header.length
-                        if (mul < 0) {
-                            nextDelimiterIndex = nextLine.coerceAtLeast(nextSpace)
-                        } else if (mul > 1) {
-                            nextDelimiterIndex = nextLine.coerceAtMost(nextSpace)
-                        }
-                        Pair.of(header.substring(nextTag, nextDelimiterIndex), nextDelimiterIndex)
-                    }
-                } else { // next `@` is not date
-                    Pair.of(interimText, nextTag)
-                }
-            }
-            return Pair.of(header.substring(startFrom).trim { it <= ' ' }, header.length)
-        }
+        fun lookForTagValue(header: String, startFrom: Int): Pair<String, Int>? =
+            TagParser.lookForTagValue(header, startFrom)?.let { Pair.of(it.first, it.second) }
 
         fun wrapNarrative(narrative: Narrative): Any {
             @Suppress("ForbiddenComment")
@@ -786,23 +639,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
             return narrative
         }
 
-        fun isValidIdentifier(tagName: String): Boolean {
-            for (i in tagName.indices) {
-                if (tagName[i] == '_') {
-                    continue
-                }
-                if (i == 0) {
-                    if (!isLetter(tagName[i])) {
-                        return false
-                    }
-                } else {
-                    if (!isLetterOrDigit(tagName[i])) {
-                        return false
-                    }
-                }
-            }
-            return true
-        }
+        fun isValidIdentifier(tagName: String): Boolean = TagParser.isValidIdentifier(tagName)
 
         fun getTypeIdentifier(
             qualifiers: kotlin.collections.List<String>,

@@ -16,6 +16,7 @@ import org.hl7.cql.ast.Literal
 import org.hl7.cql.ast.LiteralExpression
 import org.hl7.cql.ast.LongLiteral
 import org.hl7.cql.ast.NullLiteral
+import org.hl7.cql.ast.ParenthesizedExpression
 import org.hl7.cql.ast.Statement
 import org.hl7.cql.ast.StringLiteral
 import org.hl7.cql.ast.UnsupportedStatement
@@ -48,7 +49,7 @@ class ElmEmitter {
                 VersionedIdentifier().apply {
                     id = it.simpleName
                     if (it.parts.size > 1) {
-                        system = it.parts.dropLast(1).joinToString(".")
+                        system = it.names.dropLast(1).joinToString(".")
                     }
                 }
         }
@@ -155,6 +156,7 @@ class ElmEmitter {
     private fun emitExpression(expression: Expression): ElmExpression {
         return when (expression) {
             is LiteralExpression -> emitLiteral(expression.literal)
+            is ParenthesizedExpression -> emitExpression(expression.expression)
             is IdentifierExpression ->
                 throw UnsupportedNodeException("Identifier expressions are not yet supported.")
             else ->

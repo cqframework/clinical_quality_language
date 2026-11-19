@@ -7,7 +7,8 @@ import kotlin.test.fail
 
 /**
  * The Builder must never throw, whatever the input: malformed source produces [Problem]s and error
- * nodes instead. Each input here once made it throw.
+ * nodes instead. Each input here once made it throw. None of the problems may be
+ * [internal][Problem.internal], which would mean the Builder met a parse tree it has no case for.
  */
 class BuilderMalformedInputTest {
 
@@ -42,6 +43,8 @@ class BuilderMalformedInputTest {
             "define \"A\": FHIR.Patient { a",
             "define \"A\": X properly between 1",
             "define \"A\": difference in days between X",
+            // No part of it before the error parses cleanly either
+            "define \"A\": (1 +\n2",
         )
     }
 
@@ -57,6 +60,14 @@ class BuilderMalformedInputTest {
     }
 
     @Test
+    fun reportsInputAfterAnExpression() {
+        assertEquals(
+            listOf("Unexpected input after expression: '2'"),
+            Builder().parseExpression("1 2").problems.map { it.message },
+        )
+    }
+
+    @Test
     fun reportsAMalformedVersion() {
         assertReportedWithoutThrowing("include L version ''1' called M")
     }
@@ -67,10 +78,7 @@ class BuilderMalformedInputTest {
         assertTrue(result.problems.isEmpty(), result.problems.joinToString { it.message })
         val include = result.library.definitions.single() as IncludeDefinition
         assertEquals(VersionSpecifier(""), include.version)
-        assertEquals(
-            Identifier(""),
-            (result.library.statements.single() as ExpressionDefinition).name,
-        )
+        assertEquals("", (result.library.statements.single() as ExpressionDefinition).name.value)
     }
 
     @Test
@@ -88,7 +96,12 @@ class BuilderMalformedInputTest {
                 try {
                     val result = Builder().parseLibrary(input)
                     inspectCqlAst(input)
-                    "`$input` reported no problems".takeIf { result.problems.isEmpty() }
+                    when {
+                        result.problems.isEmpty() -> "`$input` reported no problems"
+                        result.problems.any { it.internal } ->
+                            "`$input` reported internal errors: ${result.problems}"
+                        else -> null
+                    }
                 } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                     "`$input` threw $e"
                 }

@@ -14,7 +14,71 @@ export function AstTree({ ast }: { ast: unknown }) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function AstNode({ node }: { node: any }) {
+type TNode = any;
+
+/** An identifier, `{ value, style?, locator }`: the only object with a string `value` and no `kind`. */
+function isIdentifier(node: TNode): boolean {
+  return (
+    typeof node === "object" &&
+    node !== null &&
+    !Array.isArray(node) &&
+    !("kind" in node) &&
+    typeof node.value === "string" &&
+    Object.keys(node).every((key) =>
+      ["value", "style", "locator"].includes(key),
+    )
+  );
+}
+
+/** A qualified identifier, `{ parts, locator }`, such as `FHIR.Patient`. */
+function isQualifiedIdentifier(node: TNode): boolean {
+  return (
+    typeof node === "object" &&
+    node !== null &&
+    Array.isArray(node.parts) &&
+    node.parts.every(isIdentifier) &&
+    Object.keys(node).every((key) => ["parts", "locator"].includes(key))
+  );
+}
+
+/** The identifier as written in the source, with its quotes. */
+function writtenIdentifier(identifier: TNode): string {
+  switch (identifier.style) {
+    case "quoted":
+      return `"${identifier.value}"`;
+    case "delimited":
+      return `\`${identifier.value}\``;
+    default:
+      return identifier.value;
+  }
+}
+
+function Locator({ locator }: { locator: TNode }) {
+  return (
+    <span
+      style={{
+        color: "#777",
+        padding: "0 4px",
+        fontSize: "80%",
+      }}
+    >
+      {locator.line}:{locator.column} ({locator.startIndex}-{locator.stopIndex})
+    </span>
+  );
+}
+
+function AstNode({ node }: { node: TNode }) {
+  if (isIdentifier(node) || isQualifiedIdentifier(node)) {
+    const parts = isIdentifier(node) ? [node] : node.parts;
+    return (
+      <Fragment>
+        <span style={{ color: "#24292e" }}>
+          {parts.map(writtenIdentifier).join(".")}
+        </span>
+        {node.locator && <Locator locator={node.locator} />}
+      </Fragment>
+    );
+  }
   if (typeof node === "string") {
     return (
       <span style={{ color: "#24292e" }}>
@@ -68,9 +132,7 @@ function AstNode({ node }: { node: any }) {
     const dataKeys = Object.keys(node).filter(
       (key) => !["kind", "locator"].includes(key),
     );
-    const inlineFields =
-      dataKeys.length === 0 ||
-      (dataKeys.length === 1 && dataKeys[0] === "parts");
+    const inlineFields = dataKeys.length === 0;
     const inner = dataKeys.map((key) => {
       const Wrapper = inlineFields ? Fragment : "div";
       return (
@@ -97,16 +159,7 @@ function AstNode({ node }: { node: any }) {
         {node.locator && (
           <Fragment>
             {" "}
-            <span
-              style={{
-                color: "#777",
-                padding: "0 4px",
-                fontSize: "80%",
-              }}
-            >
-              {node.locator.line}:{node.locator.column} (
-              {node.locator.startIndex}-{node.locator.stopIndex})
-            </span>
+            <Locator locator={node.locator} />
           </Fragment>
         )}
         {inlineFields ? (

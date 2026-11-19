@@ -34,6 +34,11 @@ data class Problem(
     val message: String,
     override val locator: Locator = Locator.UNKNOWN,
     val severity: ProblemSeverity = ProblemSeverity.ERROR,
+    /**
+     * Whether the problem is a fault in the Builder rather than in the source: a part of the parse
+     * tree it has no case for, which only a change to the grammar can produce.
+     */
+    val internal: Boolean = false,
 ) : AstNode
 
 @Serializable data class LibraryResult(val library: Library, val problems: List<Problem>)
