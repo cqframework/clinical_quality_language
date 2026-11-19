@@ -121,7 +121,7 @@ object PropertyEvaluator {
                 }
             }
             is Tuple -> target.getElement(property)
-            is ClassInstance -> target[property]
+            is ClassInstance -> target.elements[property]
             else -> throw IllegalArgumentException("Could not resolve path '$property' on $target.")
         }
     }
