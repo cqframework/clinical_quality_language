@@ -108,6 +108,22 @@
 			<expression>LastPositionOf('hi', 'Say hi to Ohio!')</expression>
 			<output>11</output>
 		</test>
+		<test name="LastPositionOfEmptyIsStringLength">
+			<expression>LastPositionOf('', 'ABCDE')</expression>
+			<output>5</output>
+		</test>
+		<test name="LastPositionOfEmptyIsStringLength15">
+			<expression>LastPositionOf('', 'Say hi to Ohio!')</expression>
+			<output>15</output>
+		</test>
+		<test name="LastPositionOfEmptyInEmpty">
+			<expression>LastPositionOf('', '')</expression>
+			<output>0</output>
+		</test>
+		<test name="LastPositionOfAtEnd">
+			<expression>LastPositionOf('E', 'ABCDE')</expression>
+			<output>4</output>
+		</test>
 	</group>
 	<group name="Length">
 		<test name="LengthNullString">
