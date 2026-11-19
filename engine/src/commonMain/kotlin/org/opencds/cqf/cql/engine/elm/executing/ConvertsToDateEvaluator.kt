@@ -32,13 +32,9 @@ object ConvertsToDateEvaluator {
             return Boolean.TRUE
         }
 
+        // Supports the same string conversions as ToDate, including datetime-formatted strings.
         if (argument is String) {
-            try {
-                Date(argument.value)
-            } catch (e: Exception) {
-                return Boolean.FALSE
-            }
-            return Boolean.TRUE
+            return if (ToDateEvaluator.toDate(argument) != null) Boolean.TRUE else Boolean.FALSE
         }
 
         throw InvalidOperatorArgument(
