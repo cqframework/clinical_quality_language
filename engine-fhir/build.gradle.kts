@@ -48,3 +48,6 @@ java {
 }
 
 dependencies { kover(project(":engine")) }
+
+// The large chart memory benchmark builds charts of thousands of resources
+tasks.named<Test>("jvmTest") { maxHeapSize = "2g" }
