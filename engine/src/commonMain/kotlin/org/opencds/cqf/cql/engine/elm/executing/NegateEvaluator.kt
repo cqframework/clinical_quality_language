@@ -23,6 +23,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlLong
 The negate (-) operator returns the negative of its argument.
 When negating quantities, the unit is unchanged.
 If the argument is null, the result is null.
+If the result cannot be represented (e.g. -(minimum Integer)), the result is null.
 */
 object NegateEvaluator {
     fun negate(source: Value?): Value? {
@@ -30,12 +31,13 @@ object NegateEvaluator {
             return null
         }
 
+        // The negation of the minimum Integer or Long can't be represented, so the result is null.
         if (source is Integer) {
-            return (-source.value).toCqlInteger()
+            return if (source.value == Int.MIN_VALUE) null else (-source.value).toCqlInteger()
         }
 
         if (source is Long) {
-            return (-source.value).toCqlLong()
+            return if (source.value == kotlin.Long.MIN_VALUE) null else (-source.value).toCqlLong()
         }
 
         if (source is Decimal) {

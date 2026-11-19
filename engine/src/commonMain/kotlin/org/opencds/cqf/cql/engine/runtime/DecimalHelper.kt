@@ -5,12 +5,16 @@ import org.cqframework.cql.shared.BigDecimal
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.runtime.Constants.MAX_DECIMAL
 import org.opencds.cqf.cql.engine.runtime.Constants.MAX_INT
+import org.opencds.cqf.cql.engine.runtime.Constants.MAX_LONG
 import org.opencds.cqf.cql.engine.runtime.Constants.MIN_DECIMAL
 import org.opencds.cqf.cql.engine.runtime.Constants.MIN_INT
+import org.opencds.cqf.cql.engine.runtime.Constants.MIN_LONG
 
 object DecimalHelper {
     private val MAX_INTEGER = BigDecimal(MAX_INT)
     private val MIN_INTEGER = BigDecimal(MIN_INT)
+    private val MAX_LONG_DECIMAL = BigDecimal(MAX_LONG)
+    private val MIN_LONG_DECIMAL = BigDecimal(MIN_LONG)
 
     fun verifyPrecision(value: BigDecimal, targetScale: Int?): BigDecimal {
         // NOTE: The CQL specification does not mandate a maximum precision, it specifies a minimum
@@ -57,6 +61,19 @@ object DecimalHelper {
             return null
         }
         return value.toInt().toCqlInteger()
+    }
+
+    /**
+     * Converts a decimal value with no fractional part to a Long.
+     *
+     * @param value the value to convert
+     * @return the Long, or null if the value is outside the range of Long values
+     */
+    fun toLongOrNull(value: BigDecimal): Long? {
+        if (value.compareTo(MAX_LONG_DECIMAL) > 0 || value.compareTo(MIN_LONG_DECIMAL) < 0) {
+            return null
+        }
+        return value.toLong().toCqlLong()
     }
 
     /**

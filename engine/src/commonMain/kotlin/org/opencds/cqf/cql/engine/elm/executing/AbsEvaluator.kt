@@ -20,6 +20,7 @@ Abs(argument Quantity) Quantity
 The Abs operator returns the absolute value of its argument.
 When taking the absolute value of a quantity, the unit is unchanged.
 If the argument is null, the result is null.
+If the result cannot be represented (e.g. Abs(minimum Integer)), the result is null.
 */
 object AbsEvaluator {
     @JvmStatic
@@ -29,8 +30,14 @@ object AbsEvaluator {
         }
 
         return when (operand) {
-            is Integer -> kotlin.math.abs(operand.value).toCqlInteger()
-            is Long -> kotlin.math.abs(operand.value).toCqlLong()
+            // The absolute value of the minimum Integer or Long can't be represented, so the
+            // result is null.
+            is Integer ->
+                if (operand.value == Int.MIN_VALUE) null
+                else kotlin.math.abs(operand.value).toCqlInteger()
+            is Long ->
+                if (operand.value == kotlin.Long.MIN_VALUE) null
+                else kotlin.math.abs(operand.value).toCqlLong()
             is Decimal -> operand.value.abs().toCqlDecimal()
             is Quantity -> Quantity().withValue((operand.value)!!.abs()).withUnit(operand.unit)
             else ->

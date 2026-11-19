@@ -11,8 +11,6 @@ import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Long
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
-import org.opencds.cqf.cql.engine.runtime.toCqlInteger
-import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 /*
 ^(argument Integer, exponent Integer) Integer
@@ -21,6 +19,7 @@ import org.opencds.cqf.cql.engine.runtime.toCqlLong
 The power (^) operator raises the first argument to the power given by the second argument.
 When invoked with mixed Integer and Decimal arguments, the Integer argument will be implicitly converted to Decimal.
 If either argument is null, the result is null.
+If the result cannot be represented, the result is null.
 */
 object PowerEvaluator {
     @JvmStatic
@@ -35,7 +34,7 @@ object PowerEvaluator {
                     .divide(BigDecimal(left.value).pow(abs(right.value)))
                     .toCqlDecimal()
             }
-            return BigDecimal(left.value).pow(right.value).toInt().toCqlInteger()
+            return DecimalHelper.toIntegerOrNull(BigDecimal(left.value).pow(right.value))
         }
 
         if (left is Long && right is Long) {
@@ -45,7 +44,7 @@ object PowerEvaluator {
                     .toCqlDecimal()
             }
 
-            return BigDecimal(left.value).pow(right.value.toInt()).toLong().toCqlLong()
+            return DecimalHelper.toLongOrNull(BigDecimal(left.value).pow(right.value.toInt()))
         }
 
         if (left is Decimal && right is Decimal) {
