@@ -17,7 +17,6 @@ import org.hl7.fhir.r4.model.Condition
 import org.hl7.fhir.r4.model.Observation
 import org.hl7.fhir.r4.model.Patient
 import org.hl7.fhir.r4.model.Resource
-import org.junit.jupiter.api.Tag
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider
 import org.opencds.cqf.cql.engine.execution.CqlEngine
 import org.opencds.cqf.cql.engine.execution.EvaluationResults
@@ -29,13 +28,11 @@ import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.openjdk.jol.info.GraphLayout
 
-const val MEMORY_BENCHMARK = "memory-benchmark"
-
 /**
  * Measures the memory used to evaluate measure-style CQL over a single patient with a large chart.
  *
- * Run with `./gradlew :engine-fhir:memoryBenchmark`. Optional Gradle properties:
- * - `memoryBenchmark.sizes`: comma separated chart sizes (default `1000,5000,20000`)
+ * Runs with the other tests. Optional system properties:
+ * - `memoryBenchmark.sizes`: comma separated chart sizes (default `1000,5000`)
  * - `memoryBenchmark.expressionCaching`: `on`, `off` or `both` (default `both`)
  * - `memoryBenchmark.attribute`: break the retained results down by expression (slow; use small
  *   sizes)
@@ -49,7 +46,6 @@ const val MEMORY_BENCHMARK = "memory-benchmark"
  * - retained: heap still used after a full GC, with the engine and results reachable, and with only
  *   the results reachable
  */
-@Tag(MEMORY_BENCHMARK)
 internal class LargeChartMemoryBenchmark : FhirExecutionTestBase() {
     @Suppress("LongParameterList")
     private class Measurement(
@@ -71,7 +67,7 @@ internal class LargeChartMemoryBenchmark : FhirExecutionTestBase() {
     @Test
     fun largeChart() {
         val sizes =
-            System.getProperty("memoryBenchmark.sizes", "1000,5000,20000").split(",").map {
+            System.getProperty("memoryBenchmark.sizes", "1000,5000").split(",").map {
                 it.trim().toInt()
             }
         val cachingModes =

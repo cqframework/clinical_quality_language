@@ -16,10 +16,8 @@ import org.hl7.fhir.r4.model.Coding
 import org.hl7.fhir.r4.model.Resource
 import org.hl7.fhir.r4.model.StringType
 import org.hl7.fhir.r4.model.UriType
-import org.junit.jupiter.api.Tag
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
-import org.opencds.cqf.cql.engine.fhir.data.MEMORY_BENCHMARK
 import org.opencds.cqf.cql.engine.fhir.data.SyntheticChart
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.List as CqlList
@@ -36,7 +34,6 @@ internal class R4ConversionFootprintTest {
     private val resolver = R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4))
 
     @Test
-    @Tag(MEMORY_BENCHMARK)
     fun singleResourceFootprint() {
         val generator = SyntheticChart(Random(42))
         val samples =
@@ -165,7 +162,6 @@ internal class R4ConversionFootprintTest {
     }
 
     @Test
-    @Tag(MEMORY_BENCHMARK)
     fun chartFootprint() {
         val generator = SyntheticChart(Random(42))
         for (size in listOf(1_000, 5_000)) {
