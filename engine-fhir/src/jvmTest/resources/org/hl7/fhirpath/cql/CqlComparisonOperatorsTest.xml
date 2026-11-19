@@ -192,6 +192,27 @@
 			<expression>@T10:00:00.000 = @T22:00:00.000</expression>
 			<output>false</output>
 		</test>
+		<test name="TupleEqJohn1John2WithNullName">
+			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 2, Name : null }</expression>
+			<output>false</output>
+		</test>
+		<test name="TupleEqDifferentNamesWithOneNullId">
+			<!-- Name is known unequal (John != James); false dominates the null Id comparison per three-valued conjunction -->
+			<expression>Tuple { Id : null, Name : 'John' } = Tuple { Id : 1, Name : 'James' }</expression>
+			<output>false</output>
+		</test>
+		<test name="TupleEqJohn1John1WithBothNamesNull">
+			<expression>Tuple { Id : 1, Name : null } = Tuple { Id : 1, Name : null }</expression>
+			<output>true</output>
+		</test>
+		<test name="TupleEqJohnJohnWithBothIdsNull">
+			<expression>Tuple { Id : null, Name : 'John' } = Tuple { Id : null, Name : 'John' }</expression>
+			<output>true</output>
+		</test>
+		<test name="TupleEqJohn1John1WithNullName">
+			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : null }</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="Greater">
 		<test name="GreaterZZ">
@@ -963,6 +984,27 @@
 		<test name="TimeNotEq10A10P">
 			<expression>@T10:00:00.000 != @T22:00:00.000</expression>
 			<output>true</output>
+		</test>
+		<test name="TupleNotEqJohn1John2WithNullName">
+			<expression>Tuple{ Id : 1, Name : 'John' } != Tuple{ Id : 2, Name : null }</expression>
+			<output>true</output>
+		</test>
+		<test name="TupleNotEqDifferingNamesWithOneNullId">
+			<!-- Equal is false (Name known unequal); not(false) = true -->
+			<expression>Tuple{ Id : null, Name : 'John' } != Tuple{ Id : 1, Name : 'Joe' }</expression>
+			<output>true</output>
+		</test>
+		<test name="TupleNotEqJohn1John1WithBothNamesNull">
+			<expression>Tuple{ Id : 1, Name : null } != Tuple{ Id : 1, Name : null }</expression>
+			<output>false</output>
+		</test>
+		<test name="TupleNotEqMatchingNamesWithNullIDs">
+			<expression>Tuple{ Id : null, Name : 'John' } != Tuple{ Id : null, Name : 'John' }</expression>
+			<output>false</output>
+		</test>
+		<test name="TupleNotEqJohn1John1WithNullName">
+			<expression>Tuple{ Id : 1, Name : 'John' } != Tuple{ Id : 1, Name : null }</expression>
+			<output>null</output>
 		</test>
 	</group>
 </tests>
