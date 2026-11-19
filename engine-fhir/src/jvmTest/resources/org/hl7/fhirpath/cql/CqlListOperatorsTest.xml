@@ -905,6 +905,22 @@
 			<expression>not exists (Skip({1,2,3,4,5}, 5))</expression>
 			<output>true</output>
 		</test>
+		<test name="SkipNullNumber">
+			<expression>Skip({1,2,3}, null as Integer)</expression>
+			<output>{1, 2, 3}</output>
+		</test>
+		<test name="SkipNegative">
+			<expression>not exists (Skip({1,2,3}, -1))</expression>
+			<output>true</output>
+		</test>
+		<test name="SkipNegativeBeyondCount">
+			<expression>not exists (Skip({1,2,3}, -5))</expression>
+			<output>true</output>
+		</test>
+		<test name="SkipNullNumberCount">
+			<expression>Count(Skip({1,2,3}, null as Integer))</expression>
+			<output>3</output>
+		</test>
 	</group>
 	<group name="Tail">
 		<test name="TailNull">
@@ -952,6 +968,10 @@
 		<test name="TakeAll">
 			<expression>Take({1,2,3,4}, 4)</expression>
 			<output>{1, 2, 3, 4}</output>
+		</test>
+		<test name="TakeNegative">
+			<expression>not exists (Take({1,2,3}, -1))</expression>
+			<output>true</output>
 		</test>
 	</group>
 	<group name="Union">
