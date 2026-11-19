@@ -56,4 +56,11 @@ internal class TupleEqualityTest : CqlTestBase() {
         // null and false is false, whichever element comes first.
         assertBothOrders(Boolean.FALSE, tuple("x" to 1, "y" to 1), tuple("x" to null, "y" to 2))
     }
+
+    @Test
+    fun differentElementNamesAreNotEqual() {
+        // Tuples of different types aren't equal, even when an element is null.
+        assertBothOrders(Boolean.FALSE, tuple("x" to 1, "y" to 1), tuple("x" to 1, "z" to 1))
+        assertBothOrders(Boolean.FALSE, tuple("x" to null, "y" to 1), tuple("x" to 1, "z" to 1))
+    }
 }
