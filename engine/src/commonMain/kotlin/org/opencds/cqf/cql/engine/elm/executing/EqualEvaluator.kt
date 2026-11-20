@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator.or
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CalendarDurationHelper
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
@@ -145,6 +146,16 @@ object EqualEvaluator {
         // Try the "simple" rule (equality of alternate spellings for "week" or "month")
         if (unitsEqual(left.unit, right.unit)) {
             return equal(left.value?.toCqlDecimal(), right.value?.toCqlDecimal())
+        }
+
+        // Calendar duration keywords (1 week = 7 days); the UCUM service doesn't know them.
+        if (
+            CalendarDurationHelper.isCalendarKeyword(left.unit) ||
+                CalendarDurationHelper.isCalendarKeyword(right.unit)
+        ) {
+            val values =
+                CalendarDurationHelper.inCommonUnit(left, right, equivalence = false) ?: return null
+            return equal(values.first.toCqlDecimal(), values.second.toCqlDecimal())
         }
 
         // The simple rule indicated that the units are not comparable, try to convert the value of
