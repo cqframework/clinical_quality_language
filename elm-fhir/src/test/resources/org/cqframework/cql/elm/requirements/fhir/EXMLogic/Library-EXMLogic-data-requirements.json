@@ -181,7 +181,7 @@
       "path": "id",
       "code": [ {
         "extension": [ {
-          "url": "http://hl7.org/fhir/uv/crmi-analysisException",
+          "url": "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-analysisException",
           "valueString": "Error attempting to determine filter value: toFhirValue not implemented for FunctionRef"
         } ]
       } ]
