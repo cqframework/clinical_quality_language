@@ -965,4 +965,164 @@
 			<output>true</output>
 		</test>
 	</group>
+	<group name="Unit Comparison">
+		<test name="TestQuantityMillisecondEqualMs">
+			<expression>1 millisecond = 1 'ms'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMillisecondEqualMilliseconds">
+			<expression>1 millisecond = 1 milliseconds</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMillisecondsEqualMs">
+			<expression>1 milliseconds = 1 'ms'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantitySecondEqualS">
+			<expression>1 second = 1 's'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantitySecondEqualSeconds">
+			<expression>1 second = 1 seconds</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantitySecondsEqualS">
+			<expression>1 seconds = 1 's'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMinuteEqualMin">
+			<expression>1 minute = 1 'min'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMinuteEqualMinutes">
+			<expression>1 minute = 1 minutes</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMinutesEqualMin">
+			<expression>1 minutes = 1 'min'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityHourEqualH">
+			<expression>1 hour = 1 'h'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityHourEqualHours">
+			<expression>1 hour = 1 hours</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityHoursEqualH">
+			<expression>1 hours = 1 'h'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityDayEqualD">
+			<expression>1 day = 1 'd'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityDayEqualDays">
+			<expression>1 day = 1 days</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityDaysEqualD">
+			<expression>1 days = 1 'd'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityWeekEqualWk">
+			<expression>1 week = 1 'wk'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityWeekEqualWeeks">
+			<expression>1 week = 1 weeks</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityWeeksEqualWk">
+			<expression>1 weeks = 1 'wk'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMonthEqualMo">
+			<expression>1 month = 1 'mo'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityMonthNotEqualMo">
+			<expression>1 month != 1 'mo'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityMonthEquivalentMo">
+			<expression>1 month ~ 1 'mo'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMonthEqualMonths">
+			<expression>1 month = 1 months</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityMonthsNotEqualMo">
+			<expression>1 months != 1 'mo'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityMonthsEquivalentMo">
+			<expression>1 months ~ 1 'mo'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityYearEqualA">
+			<expression>1 year = 1 'a'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityYearNotEqualA">
+			<expression>1 year != 1 'a'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityYearEquivalentA">
+			<expression>1 year ~ 1 'a'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityYearsEqualYear">
+			<expression>1 years = 1 year</expression>
+			<output>true</output>
+		</test>
+		<test name="TestQuantityYearsNotEqualA">
+			<expression>1 years != 1 'a'</expression>
+			<output>null</output>
+			<!-- null (on the grounds that definite time and calendar units are not comparable) -->
+		</test>
+		<test name="TestQuantityYearsEquivalentA">
+			<expression>1 years ~ 1 'a'</expression>
+			<output>true</output>
+		</test>
+		<test name="TestYearEquivalentMonths">
+			<expression>1 year ~ 12 months</expression>
+			<output>true</output>
+		</test>
+		<test name="TestYearEquivalentDays">
+			<expression>1 year ~ 365 days</expression>
+			<output>true</output>
+		</test>
+		<test name="TestMonthEquivalentDays">
+			<expression>1 month ~ 30 days</expression>
+			<output>true</output>
+		</test>
+		<test name="TestWeekEqualDays">
+			<expression>1 week = 7 days</expression>
+			<output>true</output>
+		</test>
+		<test name="TestDayEqualHours">
+			<expression>1 day = 24 hours</expression>
+			<output>true</output>
+		</test>
+		<test name="TestHourEqualMinutes">
+			<expression>1 hour = 60 minutes</expression>
+			<output>true</output>
+		</test>
+		<test name="TestMinuteEqualSeconds">
+			<expression>1 minute = 60 seconds</expression>
+			<output>true</output>
+		</test>
+		<test name="TestSecondEqualMilliseconds">
+			<expression>1 second = 1000 milliseconds</expression>
+			<output>true</output>
+		</test>
+	</group>
 </tests>
