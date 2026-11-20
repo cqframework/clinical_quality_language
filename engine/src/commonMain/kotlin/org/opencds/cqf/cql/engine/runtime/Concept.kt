@@ -26,9 +26,16 @@ constructor(val display: kotlin.String? = null, val codes: kotlin.collections.Li
         return Concept(display, (codes ?: listOf()) + code)
     }
 
-    private val hash: Int by lazy { listOf(display, codes).hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(display, codes).hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Concept && display == other.display && codes == other.codes)

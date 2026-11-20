@@ -10,9 +10,16 @@ import org.cqframework.cql.shared.JsOnlyExport
 class Boolean(val value: kotlin.Boolean) : SimpleValue {
     override val type = booleanTypeName
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Boolean && value == other.value)
@@ -29,9 +36,16 @@ class Boolean(val value: kotlin.Boolean) : SimpleValue {
 class Integer(val value: Int) : SimpleValue {
     override val type = integerTypeName
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Integer && value == other.value)
@@ -48,9 +62,16 @@ class Integer(val value: Int) : SimpleValue {
 class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Long && value == other.value)
@@ -62,9 +83,16 @@ class Long(val value: kotlin.Long) : SimpleValue {
 class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Decimal && value == other.value)
@@ -76,9 +104,16 @@ class Decimal(val value: BigDecimal) : SimpleValue {
 class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is String && value == other.value)
