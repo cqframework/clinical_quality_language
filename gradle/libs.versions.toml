@@ -1,6 +1,7 @@
 [versions]
-hapi = "8.10.0"
+hapi = "9.0.0"
 xpp3 = "1.1.6"
+jackson2 = "2.21.8"
 
 ucum-java = "1.0.8"
 
@@ -74,6 +75,8 @@ hapi-fhir-structures-dstu3 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-d
 hapi-fhir-structures-r4 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r4" }
 hapi-fhir-structures-r5 = { module = "ca.uhn.hapi.fhir:hapi-fhir-structures-r5"  }
 xpp3 = { module = "org.ogce:xpp3", version.ref = "xpp3" }
+# HAPI 9 moved to Jackson 3 (tools.jackson), but FHIR core utilities still use Jackson 2 core
+jackson2-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson2" }
 
 ucum-java = { module = "org.fhir:ucum", version.ref = "ucum-java" }
 
