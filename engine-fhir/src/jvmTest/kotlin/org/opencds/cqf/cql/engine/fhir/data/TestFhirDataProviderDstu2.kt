@@ -46,7 +46,7 @@ class TestFhirDataProviderDstu2 : FhirExecutionTestBase() {
         for (result in results) {
             val e = result as Encounter
             if (e.getPatient().idElement.idPart != "2822") {
-                Assertions.fail<Any?>("Invalid patient id in Resource")
+                Assertions.fail<Any>("Invalid patient id in Resource")
             }
         }
 

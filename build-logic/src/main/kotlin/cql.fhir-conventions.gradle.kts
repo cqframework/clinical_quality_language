@@ -12,6 +12,10 @@ dependencies {
         exclude(group = "org.junit")
     }
 
+    // org.hl7.fhir.utilities still uses Jackson 2 core, which HAPI 9 no longer brings in
+    // transitively
+    runtimeOnly(libs.jackson2.core)
+
     implementation(libs.hapi.fhir.converter)
     implementation(libs.hapi.fhir.structures.hl7org.dstu2)
     implementation(libs.hapi.fhir.structures.dstu2)
