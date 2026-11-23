@@ -35,11 +35,11 @@ object CombineEvaluator {
 
                 if (item is String) {
                     if (!first) {
-                        buffer.append(separator)
+                        buffer.append(separator.value)
                     } else {
                         first = false
                     }
-                    buffer.append(item)
+                    buffer.append(item.value)
                 } else {
                     throw InvalidOperatorArgument(
                         "Combine(List<String>) or Combine(List<String>, String)",
