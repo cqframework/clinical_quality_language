@@ -548,7 +548,9 @@ fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.
                 .apply {
                     addParameter("other", Any::class.asClassName().copy(nullable = true))
 
-                    beginControlFlow("if (other is %T)", className)
+                    addStatement("if (this === other) return true")
+                    addStatement("if (other == null || this::class != other::class) return false")
+                    addStatement("other as %T", className)
 
                     // Check the equality of inherited attributes and elements
                     if (typeHasParent(complexType)) {
@@ -577,8 +579,6 @@ fun getClassBuilder(complexType: XSComplexType, className: ClassName): TypeSpec.
                     }
 
                     addStatement("return true")
-                    endControlFlow()
-                    addStatement("return false")
                 }
                 .build()
         )
