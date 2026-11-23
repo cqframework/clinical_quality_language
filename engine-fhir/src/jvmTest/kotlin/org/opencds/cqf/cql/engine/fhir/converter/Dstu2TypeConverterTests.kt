@@ -600,7 +600,7 @@ internal class Dstu2TypeConverterTests {
         val result: IBase? = typeConverter.toFhirInterval(interval)
         Assertions.assertNotNull(result)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
-        Assertions.assertEquals("Interval[5, 6]", stringType!!.value)
+        Assertions.assertEquals("Interval[5, 6]", stringType.value)
         val extension =
             stringType
                 .getExtension()
@@ -617,7 +617,7 @@ internal class Dstu2TypeConverterTests {
         val result: IBaseOperationOutcome? = typeConverter.toFhirOperationOutcome(exception)
         Assertions.assertNotNull(result)
         val outcome = Assertions.assertInstanceOf(OperationOutcome::class.java, result)
-        Assertions.assertEquals(1, outcome!!.getIssue().size)
+        Assertions.assertEquals(1, outcome.getIssue().size)
         val issue = outcome.getIssue()[0]
         Assertions.assertEquals(OperationOutcome.IssueType.EXCEPTION, issue.getCode())
         Assertions.assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity())
