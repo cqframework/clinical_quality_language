@@ -57,28 +57,26 @@ object ToQuantityEvaluator {
         val index = str.indexOf(' ')
 
         var number = str
-        var quantity: Quantity? = Quantity()
+        var quantity = Quantity()
 
         if (index > 0) {
             number = str.substring(0, index)
-            quantity!!.unit = str.substring(index + 1).replace("[\' ]".toRegex(), "")
+            quantity = quantity.withUnit(str.substring(index + 1).replace("[\' ]".toRegex(), ""))
         }
-        quantity = ToQuantityEvaluator.setValue(quantity!!, number)
-
-        return quantity
+        return ToQuantityEvaluator.withValue(quantity, number)
     }
 
-    private fun setValue(quantity: Quantity, str: kotlin.String): Quantity? {
+    private fun withValue(quantity: Quantity, str: kotlin.String): Quantity? {
+
         try {
             val number = BigDecimal(str)
             if (DecimalHelper.validateDecimal(number, null) == null) {
                 return null
             }
-            quantity.value = number
+            return quantity.withValue(number)
         } catch (nfe: NumberFormatException) {
             return null
         }
-        return quantity
     }
 
     @JvmStatic

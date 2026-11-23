@@ -12,6 +12,7 @@ import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Quantity
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.runtime.toCqlLong
 
 internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
     @Test
@@ -84,6 +85,12 @@ internal class CqlValueLiteralsAndSelectorsTest : CqlTestBase() {
             (-1 * (2.0.pow(30.0)).toInt() - 1 * (2.0.pow(30.0)).toInt()).toCqlInteger(),
             value,
         )
+
+        value = results["LongNeg2Pow63ToZero1"]!!.value
+        assertEquals((-9223372036854775807L).toCqlLong(), value)
+
+        value = results["LongNeg2Pow63LongMinValue"]!!.value
+        assertEquals(Long.MIN_VALUE.toCqlLong(), value)
 
         value = results["QuantityZero"]!!.value
         assertIs<Quantity>(value)

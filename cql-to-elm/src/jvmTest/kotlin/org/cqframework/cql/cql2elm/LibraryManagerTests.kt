@@ -370,6 +370,39 @@ internal class LibraryManagerTests {
         )
     }
 
+    @Test
+    fun compiledLibraryWithFunctionResolvesSuccessfully() {
+        val libraryWithFunction =
+            libraryManager!!.resolveLibrary(VersionedIdentifier().withId("LibraryWithFunction"))
+        assertEquals("LibraryWithFunction", libraryWithFunction.library!!.identifier!!.id)
+    }
+
+    @Test
+    fun compiledLibraryWithOverloadedFunctionsResolvesSuccessfully() {
+        val libraryWithOverloadedFunctions =
+            libraryManager!!.resolveLibrary(
+                VersionedIdentifier().withId("LibraryWithOverloadedFunctions")
+            )
+        assertEquals(
+            "LibraryWithOverloadedFunctions",
+            libraryWithOverloadedFunctions.library!!.identifier!!.id,
+        )
+    }
+
+    @Test
+    fun functionsOfCompiledLibrariesCanBeCalled() {
+        // The included libraries have no CQL source, so they are loaded from their ELM
+        val errors = mutableListOf<CqlCompilerException>()
+        libraryManager!!.resolveLibrary(
+            VersionedIdentifier().withId("CallsCompiledLibraryFunctions"),
+            errors,
+        )
+        assertFalse(
+            CqlCompilerException.hasErrors(errors),
+            errors.joinToString { it.message ?: "" },
+        )
+    }
+
     companion object {
         private val BASE_LIBRARY_ELM_IDENT = VersionedIdentifier().withId("BaseLibraryElm")
         private val BASE_LIBRARY_ELM_OTHER_IDENT =

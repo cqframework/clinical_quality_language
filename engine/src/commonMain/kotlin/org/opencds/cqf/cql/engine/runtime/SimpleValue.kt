@@ -7,8 +7,15 @@ import org.cqframework.cql.shared.JsOnlyExport
 @JsOnlyExport sealed interface SimpleValue : NamedTypeValue
 
 @JsOnlyExport
-data class Boolean(val value: kotlin.Boolean) : SimpleValue {
+class Boolean(val value: kotlin.Boolean) : SimpleValue {
     override val type = booleanTypeName
+
+    private val hash: Int by lazy { value.hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Boolean && value == other.value)
 
     override fun toString() = value.toString()
 
@@ -19,8 +26,15 @@ data class Boolean(val value: kotlin.Boolean) : SimpleValue {
 }
 
 @JsOnlyExport
-data class Integer(val value: Int) : SimpleValue {
+class Integer(val value: Int) : SimpleValue {
     override val type = integerTypeName
+
+    private val hash: Int by lazy { value.hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Integer && value == other.value)
 
     override fun toString() = value.toString()
 
@@ -31,22 +45,43 @@ data class Integer(val value: Int) : SimpleValue {
 }
 
 @JsOnlyExport
-data class Long(val value: kotlin.Long) : SimpleValue {
+class Long(val value: kotlin.Long) : SimpleValue {
     override val type = longTypeName
+
+    private val hash: Int by lazy { value.hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Long && value == other.value)
 
     override fun toString() = "${value}L"
 }
 
 @JsOnlyExport
-data class Decimal(val value: BigDecimal) : SimpleValue {
+class Decimal(val value: BigDecimal) : SimpleValue {
     override val type = decimalTypeName
+
+    private val hash: Int by lazy { value.hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is Decimal && value == other.value)
 
     override fun toString() = value.toPlainString()
 }
 
 @JsOnlyExport
-data class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
+class String(val value: kotlin.String) : SimpleValue, CharSequence by value {
     override val type = stringTypeName
+
+    private val hash: Int by lazy { value.hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other || (other is String && value == other.value)
 
     override fun toString() = "'${escapeCql(value)}'"
 

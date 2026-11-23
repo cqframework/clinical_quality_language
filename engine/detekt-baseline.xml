@@ -20,7 +20,6 @@
     <ID>ComplexCondition:ToBooleanEvaluator.kt$ToBooleanEvaluator$compare == "false" || compare == "f" || compare == "no" || compare == "n" || compare == "0"</ID>
     <ID>ComplexCondition:ToBooleanEvaluator.kt$ToBooleanEvaluator$compare == "true" || compare == "t" || compare == "yes" || compare == "y" || compare == "1"</ID>
     <ID>ComplexCondition:UnionEvaluator.kt$UnionEvaluator$leftStart == null || leftEnd == null || rightStart == null || rightEnd == null</ID>
-    <ID>ComplexCondition:ValueSet.kt$ValueSet$id == cs.id &amp;&amp; ((version == null &amp;&amp; cs.version == null) || (version != null &amp;&amp; version == cs.version))</ID>
     <ID>CyclomaticComplexMethod:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$@JvmStatic fun difference(left: Value?, right: Value?, precision: Precision): Value?</ID>
     <ID>CyclomaticComplexMethod:DurationBetweenEvaluator.kt$DurationBetweenEvaluator$@JvmStatic fun duration(left: Value?, right: Value?, precision: Precision?): Value?</ID>
     <ID>CyclomaticComplexMethod:EquivalentEvaluator.kt$EquivalentEvaluator$@JvmStatic @JvmOverloads fun equivalent(left: Value?, right: Value?, state: State? = null): Boolean</ID>
@@ -29,7 +28,7 @@
     <ID>CyclomaticComplexMethod:GreaterEvaluator.kt$GreaterEvaluator$@JvmStatic fun greater(left: Value?, right: Value?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:GreaterOrEqualEvaluator.kt$GreaterOrEqualEvaluator$@JvmStatic fun greaterOrEqual(left: Value?, right: Value?, state: State?): Boolean?</ID>
     <ID>CyclomaticComplexMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Value?, precision: Value?): Value?</ID>
-    <ID>CyclomaticComplexMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>CyclomaticComplexMethod:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>CyclomaticComplexMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>CyclomaticComplexMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean?</ID>
     <ID>CyclomaticComplexMethod:LessEvaluator.kt$LessEvaluator$@JvmStatic fun less(left: Value?, right: Value?, state: State?): Boolean?</ID>
@@ -66,7 +65,6 @@
     <ID>ForbiddenComment:ListOperatorsTest.kt$ListOperatorsTest$// TODO: fix test - going to InEvaluator</ID>
     <ID>ForbiddenComment:NodeMatcher.kt$NodeMatcher$// TODO: should we ensure that there are no extra children in the node?</ID>
     <ID>ForbiddenComment:ProfilingTest.kt$ProfilingTest$// TODO: engine options to CqlTestBase.getEngine instead?</ID>
-    <ID>ForbiddenComment:QueryEvaluator.kt$QueryEvaluator$// TODO: This is the most naive possible implementation here, but it should</ID>
     <ID>ForbiddenComment:RetrieveEvaluator.kt$RetrieveEvaluator$// TODO: We probably shouldn't eagerly load this, but we need to track</ID>
     <ID>ForbiddenComment:SystemExternalFunctionProvider.kt$SystemExternalFunctionProvider$// TODO: Support adding more functions to an existing provider object.</ID>
     <ID>ForbiddenComment:TerminologyAwareRetrieveProvider.kt$TerminologyAwareRetrieveProvider$// TODO: Think about how to best handle the decision to expand value sets... Should it be part</ID>
@@ -116,7 +114,7 @@
     <ID>LongMethod:FunctionRefEvaluator.kt$FunctionRefEvaluator$fun isCompatible(value: Value?, type: TypeSpecifier, state: State?): Boolean?</ID>
     <ID>LongMethod:HighBoundaryEvaluator.kt$HighBoundaryEvaluator$@JvmStatic fun highBoundary(input: Value?, precision: Value?): Value?</ID>
     <ID>LongMethod:InEvaluator.kt$InEvaluator$private fun intervalIn( left: Value?, right: Interval, precision: kotlin.String?, state: State?, ): Boolean?</ID>
-    <ID>LongMethod:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>LongMethod:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>LongMethod:IntersectEvaluator.kt$IntersectEvaluator$@JvmStatic fun intersect(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>LongMethod:IntervalOperatorsTest.kt$IntervalOperatorsTest$@Test fun all_interval_operators()</ID>
     <ID>LongMethod:IsEvaluator.kt$IsEvaluator$fun `is`(value: Value?, type: TypeSpecifier, state: State?): kotlin.Boolean?</ID>
@@ -133,7 +131,6 @@
     <ID>LongMethod:SameAsEvaluator.kt$SameAsEvaluator$@JvmStatic fun sameAs(left: Value?, right: Value?, precision: kotlin.String?, state: State?): Boolean?</ID>
     <ID>LongMethod:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Value?): Value?</ID>
     <ID>LongMethod:TemporalHelper.kt$TemporalHelper$fun truncateValueToTargetPrecision( value: kotlin.Long, precision: Precision, targetPrecision: Precision?, ): kotlin.Long</ID>
-    <ID>LongMethod:ToCvlTest.kt$ToCvlTest$@Test fun systemStructuredValueToCvlTest()</ID>
     <ID>LongParameterList:DateTimeEvaluator.kt$DateTimeEvaluator$( year: Value?, month: Value?, day: Value?, hour: Value?, minute: Value?, second: Value?, milliSecond: Value?, timeZoneOffset: Value?, )</ID>
     <ID>LongParameterList:MessageEvaluator.kt$MessageEvaluator$( state: State?, sourceLocator: SourceLocator?, source: Value?, condition: Boolean?, code: String?, severity: String?, message: String?, )</ID>
     <ID>LongParameterList:Profile.kt$Profile.Node$( sink: Sink, i: Int, x: Double, depth: Int, scaleX: Double, scaleY: Double, )</ID>
@@ -153,6 +150,7 @@
     <ID>MagicNumber:DateTime.kt$DateTime$6</ID>
     <ID>MagicNumber:DateTime.kt$DateTime$60</ID>
     <ID>MagicNumber:DateTime.kt$DateTime$9999</ID>
+    <ID>MagicNumber:DateTime.kt$DateTime.Companion$60</ID>
     <ID>MagicNumber:DecimalHelper.kt$DecimalHelper$8</ID>
     <ID>MagicNumber:DifferenceBetweenEvaluator.kt$DifferenceBetweenEvaluator$7</ID>
     <ID>MagicNumber:DivideEvaluator.kt$DivideEvaluator$8</ID>
@@ -240,6 +238,7 @@
     <ID>MaxLineLength:EqualEvaluator.kt$EqualEvaluator$/* *** NOTES FOR CLINICAL OPERATORS *** =(left Code, right Code) Boolean =(left Concept, right Concept) Boolean The equal (=) operator for Codes and Concepts uses tuple equality semantics. This means that the operator will return true if and only if the values for each element by name are equal. If either argument is null, or contains any null components, the result is null. *** NOTES FOR INTERVAL *** =(left Interval&lt;T>, right Interval&lt;T>) Boolean The equal (=) operator for intervals returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the intervals as determined by the Start and End operators. If either argument is null, the result is null. *** NOTES FOR LIST *** =(left List&lt;T>, right List&lt;T>) Boolean The equal (=) operator for lists returns true if and only if the lists have the same element type, and have the same elements by value, in the same order. If either argument is null, or contains null elements, the result is null. */</ID>
     <ID>MaxLineLength:EquivalentEvaluator.kt$EquivalentEvaluator$/* https://cql.hl7.org/09-b-cqlreference.html#equivalent *** NOTES FOR CLINICAL OPERATORS *** ~(left Code, right Code) Boolean The ~ operator for Code values returns true if the code, system, and version elements are equivalent. The display element is ignored for the purposes of determining Code equivalence. For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept. The display element is ignored for the purposes of determining Concept equivalence. Note that this operator will always return true or false, even if either or both of its arguments are null, or contain null components. Note carefully that this notion of equivalence is not the same as the notion of equivalence used in terminology: "these codes represent the same concept." CQL specifically avoids defining terminological equivalence. The notion of equivalence defined here is used to provide consistent and intuitive semantics when dealing with missing information in membership contexts. *** NOTES FOR INTERVAL *** ~(left Interval&lt;T>, right Interval&lt;T>) Boolean The ~ operator for intervals returns true if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent. *** NOTES FOR LIST *** ~(left List&lt;T>, right List&lt;T>) Boolean The ~ operator for lists returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equivalent. *** NOTES FOR DECIMAL *** For decimals, equivalent means the values are the same with the comparison done on values rounded to the precision of the least precise operand; trailing zeroes after the decimal are ignored in determining precision for equivalent comparison. */</ID>
     <ID>MaxLineLength:ExceptEvaluator.kt$ExceptEvaluator$/* except(left Interval&lt;T>, right Interval&lt;T>) Interval&lt;T> The except operator for intervals returns the set difference of two intervals. More precisely, this operator returns the portion of the first interval that does not overlap with the second. Note that to avoid returning an improper interval, if the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null. except(left List&lt;T>, right List&lt;T>) List&lt;T> The except operator returns the set difference of two lists. More precisely, the operator returns a list with the elements that appear in the first operand that do not appear in the second operand. This operator uses equality semantics to determine whether two elements are the same for the purposes of computing the difference. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results. If either argument is null, the result is null. */</ID>
+    <ID>MaxLineLength:ExpressionResult.kt$ExpressionResult$"Automatic tracking of evaluated resources per expression is deprecated. To report the evidence behind a result, consider using supporting evidence expressions instead."</ID>
     <ID>MaxLineLength:FirstEvaluator.kt$FirstEvaluator$/* First(argument List&lt;T>) T The First operator returns the first element in a list. The operator is equivalent to invoking the indexer with an index of 0. If the argument is null, the result is null. */</ID>
     <ID>MaxLineLength:FunctionRefEvaluator.kt$FunctionRefEvaluator$"Ambiguous call to operator '${name}(${types})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."</ID>
     <ID>MaxLineLength:FunctionRefEvaluator.kt$FunctionRefEvaluator$"Could not resolve call to operator '${name}(${types})' in library '${state!!.getCurrentLibrary()!!.identifier!!.id}'."</ID>
@@ -312,10 +311,6 @@
     <ID>MaxLineLength:ToRatioEvaluator.kt$ToRatioEvaluator$/* ToRatio(argument String) Ratio The ToRatio operator converts the value of its argument to a Ratio value. The operator accepts strings using the following format: &lt;quantity>:&lt;quantity> where &lt;quantity> is the format used to by the ToQuantity operator. If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is null. If the argument is null, the result is null. The following examples illustrate the behavior of the ToRatio operator: define IsValid: ToRatio('1.0 \'mg\':2.0 \'mg\'') define IsNull: ToRatio('1.0 \'mg\';2.0 \'mg\'') */</ID>
     <ID>MaxLineLength:TodayEvaluator.kt$TodayEvaluator$/* Today() Date The Today operator returns the date (with no time component) of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the Today operator in this way. */</ID>
     <ID>MaxLineLength:TruncatedDivideEvaluator.kt$TruncatedDivideEvaluator$"TruncatedDivide(Integer, Integer), TruncatedDivide(Decimal, Decimal), TruncatedDivide(Quantity, Quantity)"</ID>
-    <ID>MemberNameEqualsClassName:Code.kt$Code$var code: kotlin.String? = null</ID>
-    <ID>MemberNameEqualsClassName:Date.kt$Date$@JsExport.Ignore var date: LocalDate? = null set(date) { if (date!!.getYear() &lt; 1) { throw InvalidDate( "The year: ${date.getYear()} falls below the accepted bounds of 0001-9999." ) } if (date.getYear() > 9999) { throw InvalidDate( "The year: ${date.getYear()} falls above the accepted bounds of 0001-9999." ) } if (this.precision == null) { this.precision = Precision.DAY } field = date }</ID>
-    <ID>MemberNameEqualsClassName:DateTime.kt$DateTime$@JsExport.Ignore var dateTime: OffsetDateTime? = null set(dateTime) { if (dateTime!!.getYear() &lt; 1) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls below the accepted bounds of 0001-9999." ) } if (dateTime.getYear() > 9999) { throw InvalidDateTime( "The year: ${dateTime.getYear()} falls above the accepted bounds of 0001-9999." ) } field = dateTime }</ID>
-    <ID>MemberNameEqualsClassName:Time.kt$Time$@JsExport.Ignore var time: LocalTime private set</ID>
     <ID>NestedBlockDepth:AllTrueEvaluator.kt$AllTrueEvaluator$@JvmStatic fun allTrue(src: Value?): Boolean</ID>
     <ID>NestedBlockDepth:AnyTrueEvaluator.kt$AnyTrueEvaluator$@JvmStatic fun anyTrue(src: Value?): Boolean</ID>
     <ID>NestedBlockDepth:AvgEvaluator.kt$AvgEvaluator$@JvmStatic fun avg(source: Value?, state: State?): Value?</ID>
@@ -334,7 +329,6 @@
     <ID>NestedBlockDepth:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Value?, state: State?): Value?</ID>
     <ID>NestedBlockDepth:NodeMatcher.kt$NodeMatcher$override fun matchesSafely(node: Profile.Node): Boolean</ID>
     <ID>NestedBlockDepth:ProperContainsEvaluator.kt$ProperContainsEvaluator$fun properContains(left: Value?, right: Value?, state: State?): Boolean?</ID>
-    <ID>NestedBlockDepth:QueryEvaluator.kt$QueryEvaluator$private fun evaluateRelationships( elm: Query, state: State?, visitor: ElmLibraryVisitor&lt;Value?, State?>, ): kotlin.Boolean</ID>
     <ID>NestedBlockDepth:RetrieveEvaluator.kt$RetrieveEvaluator$fun internalEvaluate( elm: Retrieve?, state: State?, visitor: ElmLibraryVisitor&lt;Value?, State?>, ): List?</ID>
     <ID>NestedBlockDepth:State.kt$State$fun resolveIdentifierRef(name: String): Value?</ID>
     <ID>NestedBlockDepth:ToDecimalEvaluator.kt$ToDecimalEvaluator$@JvmStatic fun toDecimal(operand: Value?): Value?</ID>
@@ -479,22 +473,18 @@
     <ID>ReturnCount:TimeFromEvaluator.kt$TimeFromEvaluator$@JvmStatic fun timeFrom(operand: Value?): Time?</ID>
     <ID>ReturnCount:TimeJs.kt$ChronoUnitJs$fun between(start: TemporalJs, end: TemporalJs): Long</ID>
     <ID>ReturnCount:ToBooleanEvaluator.kt$ToBooleanEvaluator$@JvmStatic fun toBoolean(operand: Value?): Boolean?</ID>
-    <ID>ReturnCount:ToConceptEvaluator.kt$ToConceptEvaluator$@JvmStatic fun toConcept(operand: Value?): Concept?</ID>
     <ID>ReturnCount:ToDateEvaluator.kt$ToDateEvaluator$@JvmStatic fun toDate(operand: Value?): BaseTemporal?</ID>
     <ID>ReturnCount:ToDateTimeEvaluator.kt$ToDateTimeEvaluator$@JvmStatic fun toDateTime(operand: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:ToDecimalEvaluator.kt$ToDecimalEvaluator$@JvmStatic fun toDecimal(operand: Value?): Value?</ID>
     <ID>ReturnCount:ToIntegerEvaluator.kt$ToIntegerEvaluator$@JvmStatic fun toInteger(operand: Value?): Integer?</ID>
     <ID>ReturnCount:ToLongEvaluator.kt$ToLongEvaluator$@JvmStatic fun toLong(operand: Value?): Long?</ID>
     <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$@JvmStatic fun toQuantity(operand: Value?, state: State?): Quantity?</ID>
-    <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$private fun setValue(quantity: Quantity, str: kotlin.String): Quantity?</ID>
+    <ID>ReturnCount:ToQuantityEvaluator.kt$ToQuantityEvaluator$private fun withValue(quantity: Quantity, str: kotlin.String): Quantity?</ID>
     <ID>ReturnCount:ToRatioEvaluator.kt$ToRatioEvaluator$@JvmStatic fun toRatio(operand: Value?): Ratio?</ID>
     <ID>ReturnCount:ToTimeEvaluator.kt$ToTimeEvaluator$@JvmStatic fun toTime(operand: Value?): Time?</ID>
-    <ID>ReturnCount:TruncateEvaluator.kt$TruncateEvaluator$@JvmStatic fun truncate(operand: Value?): Integer?</ID>
     <ID>ReturnCount:TruncatedDivideEvaluator.kt$TruncatedDivideEvaluator$@JvmStatic fun div(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$@JvmStatic fun unionInterval(left: Interval?, right: Interval?, state: State?): Interval?</ID>
     <ID>ReturnCount:UnionEvaluator.kt$UnionEvaluator$fun unionIterable(left: List?, right: List?, state: State?): List?</ID>
-    <ID>ReturnCount:ValueSet.kt$ValueSet$@JsName("getCodeSystemById") fun getCodeSystem(id: kotlin.String?): CodeSystem?</ID>
-    <ID>ReturnCount:ValueSet.kt$ValueSet$@JsName("getCodeSystemByIdAndVersion") fun getCodeSystem(id: kotlin.String?, version: kotlin.String?): CodeSystem?</ID>
     <ID>SpreadOperator:DateTime.kt$DateTime$(*dateElements)</ID>
     <ID>SpreadOperator:DateTimeEvaluator.kt$DateTimeEvaluator$( timeZoneOffset.value, *TemporalHelper.cleanArray( year.value, month?.value, day?.value, hour?.value, minute?.value, second?.value, milliSecond?.value, ), )</ID>
     <ID>SpreadOperator:IntervalHelper.kt$IntervalHelper.Companion$( *(intervals .filterNotNull() .flatMap { interval -> listOf( interval.start as BaseTemporal?, interval.end as BaseTemporal?, ) } .toTypedArray()) )</ID>
@@ -508,7 +498,6 @@
     <ID>SwallowedException:ConvertsToDateTimeEvaluator.kt$ConvertsToDateTimeEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToQuantityEvaluator.kt$ConvertsToQuantityEvaluator$e: Exception</ID>
     <ID>SwallowedException:ConvertsToTimeEvaluator.kt$ConvertsToTimeEvaluator$dtpe: Exception</ID>
-    <ID>SwallowedException:CqlAggregateFunctionsTest.kt$CqlAggregateFunctionsTest$e: InvalidOperatorArgument</ID>
     <ID>SwallowedException:CqlArithmeticFunctionsTest.kt$CqlArithmeticFunctionsTest$e: CqlException</ID>
     <ID>SwallowedException:DebugResult.kt$DebugResult$e: Exception</ID>
     <ID>SwallowedException:DivideEvaluator.kt$DivideEvaluator$e: ArithmeticException</ID>
@@ -519,7 +508,7 @@
     <ID>SwallowedException:ToDateEvaluator.kt$ToDateEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ToDateTimeEvaluator.kt$ToDateTimeEvaluator$dtpe: Exception</ID>
     <ID>SwallowedException:ToTimeEvaluator.kt$ToTimeEvaluator$dtpe: Exception</ID>
-    <ID>ThrowsCount:InstanceEvaluator.kt$InstanceEvaluator$fun setValue(target: Value?, path: kotlin.String, value: Value?)</ID>
+    <ID>ThrowsCount:InstanceEvaluator.kt$InstanceEvaluator$fun withValue(target: Value?, path: kotlin.String, value: Value?): Value?</ID>
     <ID>ThrowsCount:LiteralEvaluator.kt$LiteralEvaluator$@JvmStatic fun internalEvaluate(valueT: QName?, value: kotlin.String?, state: State?): Value?</ID>
     <ID>ThrowsCount:PredecessorEvaluator.kt$PredecessorEvaluator$@JvmStatic fun predecessor(value: Value?): Value?</ID>
     <ID>ThrowsCount:SuccessorEvaluator.kt$SuccessorEvaluator$@JvmStatic fun successor(value: Value?): Value?</ID>

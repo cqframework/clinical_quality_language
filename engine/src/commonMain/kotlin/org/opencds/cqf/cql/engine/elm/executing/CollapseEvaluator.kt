@@ -54,7 +54,7 @@ object CollapseEvaluator {
                 true,
                 AddEvaluator.add(interval.end, per.value!!.toInt().toCqlInteger(), state),
                 true,
-                state,
+                state = state,
             )
         } else if (interval.pointType == decimalTypeName) {
             return Interval(
@@ -62,7 +62,7 @@ object CollapseEvaluator {
                 true,
                 AddEvaluator.add(interval.end, per.value?.toCqlDecimal(), state),
                 true,
-                state,
+                state = state,
             )
         } else {
             return Interval(
@@ -70,7 +70,7 @@ object CollapseEvaluator {
                 true,
                 AddEvaluator.add(interval.end, per, state),
                 true,
-                state,
+                state = state,
             )
         }
     }
@@ -116,7 +116,7 @@ object CollapseEvaluator {
             if (isTemporal) {
                 if (
                     effectivePer.value!!.compareTo(ONE) == 0 ||
-                        effectivePer.value!!.compareTo(ZERO) == 0
+                        effectivePer.value.compareTo(ZERO) == 0
                 ) {
                     // Temporal DataTypes already receive the precision adjustments at the
                     // OverlapsEvaluator and
@@ -159,7 +159,7 @@ object CollapseEvaluator {
                         if (isNextEndGreater != null && isNextEndGreater) (intervals[i + 1]).end
                         else applyPer.end,
                         true,
-                        state,
+                        state = state,
                     )
                 intervals.removeAt(i + 1)
                 i -= 1

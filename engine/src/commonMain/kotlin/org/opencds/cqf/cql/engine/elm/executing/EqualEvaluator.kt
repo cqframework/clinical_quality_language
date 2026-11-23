@@ -204,11 +204,14 @@ object EqualEvaluator {
     }
 
     fun valueSetsEqual(left: ValueSet, right: ValueSet): Boolean {
+        val leftCodeSystems = left.codeSystems ?: emptyList()
+        val rightCodeSystems = right.codeSystems ?: emptyList()
+
         val equal =
             vocabulariesEqual(left, right)?.value == true &&
-                left.codeSystems.size == right.codeSystems.size
+                leftCodeSystems.size == rightCodeSystems.size
         if (equal) {
-            for (cs in left.codeSystems) {
+            for (cs in leftCodeSystems) {
                 val otherC = right.getCodeSystem(cs.id, cs.version)
                 if (otherC == null) {
                     return Boolean.FALSE
@@ -256,7 +259,11 @@ object EqualEvaluator {
     }
 
     fun intervalIntegerEqual(interval: Interval, integer: Integer, state: State?): Boolean? {
-        return intervalsEqual(interval, Interval(integer, true, integer, true, state), state)
+        return intervalsEqual(
+            interval,
+            Interval(integer, true, integer, true, state = state),
+            state,
+        )
     }
 
     fun listsEqual(left: List, right: List, state: State?): Boolean? {

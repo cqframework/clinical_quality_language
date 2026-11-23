@@ -23,9 +23,9 @@ class SystemModelInfoProvider : ModelInfoProvider {
     }
 
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
-        return if (modelIdentifier.isSystemModelIdentifier()) {
-            return parseModelInfoXml(getSystemModelInfoXml())
-        } else null
+        return if (modelIdentifier.isSystemModelIdentifier())
+            parseModelInfoXml(getSystemModelInfoXml())
+        else null
     }
 }
 

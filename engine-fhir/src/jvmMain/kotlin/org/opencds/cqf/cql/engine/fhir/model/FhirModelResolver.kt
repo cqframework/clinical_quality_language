@@ -5,6 +5,7 @@ import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.context.RuntimeChildResourceBlockDefinition
 import ca.uhn.fhir.context.RuntimeChildResourceDefinition
+import ca.uhn.fhir.context.RuntimeCompositeDatatypeDefinition
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum
 import java.lang.reflect.InvocationTargetException
 import java.util.Calendar
@@ -19,7 +20,6 @@ import org.hl7.fhir.instance.model.api.IBaseElement
 import org.hl7.fhir.instance.model.api.IBaseEnumFactory
 import org.hl7.fhir.instance.model.api.IBaseEnumeration
 import org.hl7.fhir.instance.model.api.IBaseHasExtensions
-import org.hl7.fhir.instance.model.api.IBaseHasModifierExtensions
 import org.hl7.fhir.instance.model.api.IBaseResource
 import org.hl7.fhir.instance.model.api.ICompositeType
 import org.hl7.fhir.instance.model.api.IIdType
@@ -677,28 +677,11 @@ abstract class FhirModelResolver<
             )
         }
 
-        val elements = mutableMapOf<kotlin.String, Value?>()
-
-        if (target is IBaseHasExtensions) {
-            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
-        }
-
-        if (target is IBaseHasModifierExtensions) {
-            val modifierExtensionsAsCqlValues = target.modifierExtension.map { toCqlValue(it) }
-            elements["extension"] =
-                if (modifierExtensionsAsCqlValues.isEmpty()) null
-                else modifierExtensionsAsCqlValues.toCqlList()
-        }
-
-        if (target is IBaseElement) {
-            elements["id"] = target.id?.toCqlString()
-        }
-
         if (this.enumChecker(target)) {
             @Suppress("UNCHECKED_CAST")
             target as EnumerationType
+
+            val elements = primitiveElements(target)
 
             // If the instance is a primitive (including or even especially an enumeration), and it
             // has no value, return null
@@ -720,6 +703,8 @@ abstract class FhirModelResolver<
         }
 
         if (target is IPrimitiveType<*>) {
+            val elements = primitiveElements(target)
+
             // If the instance is a primitive (including or even especially an enumeration), and it
             // has no value, return null
             if (
@@ -740,7 +725,10 @@ abstract class FhirModelResolver<
             )
         }
 
+        // Composite definitions include id, extension and modifierExtension (where applicable) as
+        // children, so they're converted here along with the rest of the children.
         val definition = resolveRuntimeDefinition(target)
+        val elements = mutableMapOf<kotlin.String, Value?>()
 
         for (child in definition.children) {
             elements[child.elementName] =
@@ -756,6 +744,83 @@ abstract class FhirModelResolver<
                     }
         }
 
-        return ClassInstance(QName(fhirModelNamespaceUri, definition.name, fhirModelId), elements)
+        return ClassInstance(
+            QName(fhirModelNamespaceUri, typeName(definition), fhirModelId),
+            elements,
+        )
+    }
+
+    /**
+     * Whether backbone elements are named by the path that defines them (e.g. Patient.Contact), as
+     * in the model info for FHIR R4 and R5. Otherwise they're named by their HAPI class (e.g.
+     * ContactComponent). The DSTU2/DSTU3 model infos use other naming schemes.
+     */
+    protected open val namesBackboneElementsByPath: kotlin.Boolean
+        get() = false
+
+    /**
+     * The model info name of a composite type. HAPI's simple class names for backbone elements
+     * aren't unique across resources (e.g. Claim and ExplanationOfBenefit both have an
+     * ItemComponent), so where the model info names them by path, so do we.
+     */
+    private fun typeName(definition: BaseRuntimeElementCompositeDefinition<*>): String =
+        // Backbone elements are nested classes; resources and datatypes are not
+        if (namesBackboneElementsByPath && definition.implementingClass.enclosingClass != null) {
+            backboneElementTypeNames[definition.implementingClass] ?: definition.name
+        } else {
+            definition.name
+        }
+
+    private val backboneElementTypeNames: Map<Class<*>, String> by lazy {
+        val names = HashMap<Class<*>, String>()
+
+        fun collect(definition: BaseRuntimeElementCompositeDefinition<*>, typeName: String) {
+            for (child in
+                definition.children.filterIsInstance<RuntimeChildResourceBlockDefinition>()) {
+                val childDefinition =
+                    child.getChildByName(child.elementName)
+                        as BaseRuntimeElementCompositeDefinition<*>
+                val childClass = childDefinition.implementingClass
+                // Backbone elements are nested classes of the type that defines them. One reused
+                // elsewhere (e.g. Questionnaire.item.item reuses Questionnaire.Item) keeps the name
+                // of the path that defines it.
+                if (childClass.enclosingClass != null && !names.containsKey(childClass)) {
+                    val name = "$typeName.${child.elementName.replaceFirstChar { it.uppercase() }}"
+                    names[childClass] = name
+                    collect(childDefinition, name)
+                }
+            }
+        }
+
+        for (resourceType in fhirContext.resourceTypes) {
+            collect(fhirContext.getResourceDefinition(resourceType), resourceType)
+        }
+        for (elementDefinition in fhirContext.elementDefinitions) {
+            if (elementDefinition is RuntimeCompositeDatatypeDefinition) {
+                collect(elementDefinition, elementDefinition.name)
+            }
+        }
+
+        names
+    }
+
+    /**
+     * The id and extension elements of a FHIR primitive. Like all FHIR types, primitives may have
+     * an id and extensions, with or without a value.
+     */
+    private fun primitiveElements(target: IBase): MutableMap<kotlin.String, Value?> {
+        val elements = mutableMapOf<kotlin.String, Value?>()
+
+        if (target is IBaseHasExtensions) {
+            val extensionsAsCqlValues = target.extension.map { toCqlValue(it) }
+            elements["extension"] =
+                if (extensionsAsCqlValues.isEmpty()) null else extensionsAsCqlValues.toCqlList()
+        }
+
+        if (target is IBaseElement) {
+            elements["id"] = target.id?.toCqlString()
+        }
+
+        return elements
     }
 }

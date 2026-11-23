@@ -43,27 +43,27 @@ object ChildrenEvaluator {
     }
 
     private fun addConcept(list: MutableList<Value?>, concept: Concept) {
-        for (code in concept.codes!!) {
-            addCode(list, code)
+        if (concept.codes != null) {
+            for (code in concept.codes) {
+                addCode(list, code)
+            }
         }
 
         list.add(concept.display?.toCqlString())
     }
 
     private fun addDateTime(list: MutableList<Value?>, dateTime: DateTime) {
-        for (i in 0..<dateTime.precision!!.toDateTimeIndex() + 1) {
+        for (i in 0..<dateTime.precision.toDateTimeIndex() + 1) {
             list.add(
-                dateTime.dateTime!!
-                    .get(Precision.fromDateTimeIndex(i).toChronoField())
-                    .toCqlInteger()
+                dateTime.dateTime.get(Precision.fromDateTimeIndex(i).toChronoField()).toCqlInteger()
             )
         }
 
-        list.add(TemporalHelper.zoneToOffset(dateTime.dateTime!!.getOffset()).toCqlDecimal())
+        list.add(TemporalHelper.zoneToOffset(dateTime.dateTime.getOffset()).toCqlDecimal())
     }
 
     private fun addTime(list: MutableList<Value?>, time: Time) {
-        for (i in 0..<time.precision!!.toTimeIndex() + 1) {
+        for (i in 0..<time.precision.toTimeIndex() + 1) {
             list.add(time.time.get(Precision.fromTimeIndex(i).toChronoField()).toCqlInteger())
         }
     }

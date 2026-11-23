@@ -178,6 +178,11 @@ import org.opencds.cqf.cql.engine.runtime.toCqlList
 
 class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     override fun visitExpression(elm: Expression, context: State?): Value? {
+        val hoisted = context?.hoistedExpressions?.get(elm)
+        if (hoisted != null && !hoisted.isEvaluating) {
+            return hoisted.value(this, context)
+        }
+
         context?.markElementAsVisitedForCoverageReport(elm)
 
         // Capture the non-null state for detailed tracing to allow smart-cast

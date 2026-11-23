@@ -94,6 +94,38 @@
 			<expression>Ceiling(1)</expression>
 			<output>1</output>
 		</test>
+		<test name="CeilingMaxInteger">
+			<expression>Ceiling(2147483647)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="CeilingMaxIntegerAsDecimal">
+			<expression>Ceiling(2147483647.0)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="CeilingMaxIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Ceiling(2147483647.2)</expression>
+			<output>null</output>
+		</test>
+		<test name="CeilingDecimalGreaterThanMaxInteger">
+			<expression>Ceiling(2147483648.2)</expression>
+			<output>null</output>
+		</test>
+		<test name="CeilingMinInteger">
+			<expression>Ceiling(-2147483648)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="CeilingMinIntegerAsDecimal">
+			<expression>Ceiling(-2147483648.0)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="CeilingMinIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Ceiling(-2147483648.2)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="CeilingDecimalLessThanMinInteger">
+			<expression>Ceiling(-2147483649.2)</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="Divide">
 		<test name="DivideNull">
@@ -192,6 +224,38 @@
 		<test name="Floor2I">
 			<expression>Floor(2)</expression>
 			<output>2</output>
+		</test>
+		<test name="FloorMaxInteger">
+			<expression>Floor(2147483647)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="FloorMaxIntegerAsDecimal">
+			<expression>Floor(2147483647.0)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="FloorMaxIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Floor(2147483647.2)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="FloorDecimalGreaterThanMaxInteger">
+			<expression>Floor(2147483648.2)</expression>
+			<output>null</output>
+		</test>
+		<test name="FloorMinInteger">
+			<expression>Floor(-2147483648)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="FloorMinIntegerAsDecimal">
+			<expression>Floor(-2147483648.0)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="FloorMinIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Floor(-2147483648.2)</expression>
+			<output>null</output>
+		</test>
+		<test name="FloorDecimalLessThanMinInteger">
+			<expression>Floor(-2147483649.2)</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Exp">
@@ -834,6 +898,30 @@
 		<test name="TruncateNeg1D9">
 			<expression>Truncate(-1.9)</expression>
 			<output>-1</output>
+		</test>
+		<test name="TruncateMaxIntegerAsDecimal">
+			<expression>Truncate(2147483647.0)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="TruncateMaxIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Truncate(2147483647.2)</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="TruncateDecimalGreaterThanMaxInteger">
+			<expression>Truncate(2147483648.2)</expression>
+			<output>null</output>
+		</test>
+		<test name="TruncateMinIntegerAsDecimal">
+			<expression>Truncate(-2147483648.0)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="TruncateMinIntegerAsDecimalWhereDecimalIsNonZero">
+			<expression>Truncate(-2147483648.2)</expression>
+			<output>-2147483648</output>
+		</test>
+		<test name="TruncateDecimalLessThanMinInteger">
+			<expression>Truncate(-2147483649.2)</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Truncated Divide">

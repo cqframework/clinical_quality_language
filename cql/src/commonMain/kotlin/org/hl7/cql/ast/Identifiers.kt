@@ -7,10 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JvmInline
 value class Identifier(val value: String) {
-    init {
-        require(value.isNotBlank()) { "Identifier must not be blank." }
-    }
-
     override fun toString(): String = value
 }
 
@@ -29,10 +25,6 @@ data class QualifiedIdentifier(val parts: List<String>) {
 @Serializable
 @JvmInline
 value class VersionSpecifier(val value: String) {
-    init {
-        require(value.isNotEmpty()) { "VersionSpecifier must not be empty." }
-    }
-
     override fun toString(): String = value
 }
 

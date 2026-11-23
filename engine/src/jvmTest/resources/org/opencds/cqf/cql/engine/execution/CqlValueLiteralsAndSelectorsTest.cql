@@ -32,6 +32,10 @@ define IntegerNeg2Pow31IntegerMinValue  : -2147483648
 //define IntegerPos2Pow31ToInf1  : +2147483649
 //define IntegerNeg2Pow31ToInf1  : -2147483649
 
+//long
+define LongNeg2Pow63ToZero1  : -9223372036854775807L
+define LongNeg2Pow63LongMinValue  : -9223372036854775808L
+
 //decimal
 define DecimalZero  : 0.0
 define DecimalPosZero  : +0.0

@@ -51,13 +51,15 @@ object ProductEvaluator {
                     require(element.unit == result.unit) {
                         "Found different units during Quantity product evaluation: ${element.unit} and ${result.unit}"
                     }
-                    result.value =
-                        (MultiplyEvaluator.multiply(
-                                result.value?.toCqlDecimal(),
-                                element.value?.toCqlDecimal(),
-                                state,
-                            ) as Decimal)
-                            .value
+                    result =
+                        result.withValue(
+                            (MultiplyEvaluator.multiply(
+                                    result.value?.toCqlDecimal(),
+                                    element.value?.toCqlDecimal(),
+                                    state,
+                                ) as Decimal)
+                                .value
+                        )
                 } else {
                     throw InvalidOperatorArgument(
                         "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",

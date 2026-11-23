@@ -8,7 +8,15 @@ import org.cqframework.cql.shared.QName
  * outside the System model), e.g. a FHIR.Patient.
  */
 @JsOnlyExport
-class ClassInstance(
-    override val type: QName,
-    override val elements: MutableMap<kotlin.String, Value?>,
-) : StructuredValue(), NamedTypeValue
+class ClassInstance(override val type: QName, override val elements: Map<kotlin.String, Value?>) :
+    StructuredValue, NamedTypeValue {
+    private val hash: Int by lazy { listOf(type, elements).hashCode() }
+
+    override fun hashCode(): Int = hash
+
+    override fun equals(other: Any?): kotlin.Boolean =
+        this === other ||
+            (other is ClassInstance && type == other.type && elements == other.elements)
+
+    override fun toString(): kotlin.String = toStructuredValueString()
+}

@@ -67,7 +67,7 @@ object NegateEvaluator {
             return Int.MIN_VALUE.toCqlInteger()
         }
 
-        if (operand is Literal && operand.value.equals("9223372036854775807")) {
+        if (operand is Literal && operand.value.equals("9223372036854775808")) {
             return kotlin.Long.MIN_VALUE.toCqlLong()
         }
 

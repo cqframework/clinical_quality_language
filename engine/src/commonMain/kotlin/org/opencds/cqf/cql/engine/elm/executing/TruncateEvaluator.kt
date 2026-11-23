@@ -4,9 +4,9 @@ import kotlin.jvm.JvmStatic
 import org.cqframework.cql.shared.RoundingMode
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument
 import org.opencds.cqf.cql.engine.runtime.Decimal
+import org.opencds.cqf.cql.engine.runtime.DecimalHelper
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Value
-import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 
 /*
 Truncate(argument Decimal) Integer
@@ -23,12 +23,7 @@ object TruncateEvaluator {
         }
 
         if (operand is Decimal) {
-            val `val` = operand.value.toDouble()
-            if (`val` < 0) {
-                return operand.value.setScale(0, RoundingMode.CEILING).toInt().toCqlInteger()
-            } else {
-                return operand.value.setScale(0, RoundingMode.FLOOR).toInt().toCqlInteger()
-            }
+            return DecimalHelper.toIntegerOrNull(operand.value.setScale(0, RoundingMode.DOWN))
         }
 
         throw InvalidOperatorArgument("Truncate(Decimal)", "Truncate(${operand.typeAsString})")

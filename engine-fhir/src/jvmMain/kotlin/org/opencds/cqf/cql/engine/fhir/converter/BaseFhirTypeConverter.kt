@@ -83,7 +83,7 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         when (value) {
             is Boolean -> return toFhirBoolean(value)
             is Integer -> return toFhirInteger(value)
-            is Long -> return toFhirInteger64(value)
+            is Long -> return toFhirLong(value)
             is Decimal -> return toFhirDecimal(value)
             is Date -> return toFhirDate(value)
             is DateTime -> return toFhirDateTime(value)
@@ -97,6 +97,17 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
             is Tuple -> return toFhirTuple(value)
             else -> return toCqlText(value)
         }
+    }
+
+    /**
+     * Converts a Long to the FHIR type that System.Long maps to in this FHIR version. Defaults to
+     * integer64; versions without integer64 override this.
+     *
+     * @param value the value to convert
+     * @return the FHIR representation of the Long
+     */
+    protected open fun toFhirLong(value: Long): IBase? {
+        return toFhirInteger64(value)
     }
 
     /**

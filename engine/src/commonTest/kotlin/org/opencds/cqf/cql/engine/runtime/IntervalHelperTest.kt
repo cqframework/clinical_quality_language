@@ -32,7 +32,7 @@ class IntervalHelperTest {
             )
         var quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
-        assertEquals(2, quantity.value!!.scale())
+        assertEquals(2, quantity.value.scale())
         assertTrue(Quantity.isDefaultUnit(quantity.unit))
 
         intervals =
@@ -41,19 +41,19 @@ class IntervalHelperTest {
             )
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
-        assertEquals(3, quantity.value!!.scale())
+        assertEquals(3, quantity.value.scale())
         assertEquals("g", quantity.unit)
 
         intervals = listOf(Interval(Date("2025-07-15"), true, Date("2025-12"), true))
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
-        assertEquals(0, quantity.value!!.scale())
+        assertEquals(0, quantity.value.scale())
         assertEquals("month", quantity.unit)
 
         intervals = listOf(Interval(10.toCqlInteger(), true, null, true))
         quantity = IntervalHelper.quantityFromCoarsestPrecisionOfBoundaries(intervals)
         assertEquals(1, quantity.value!!.toInt())
-        assertEquals(0, quantity.value!!.scale())
+        assertEquals(0, quantity.value.scale())
         assertTrue(Quantity.isDefaultUnit(quantity.unit))
     }
 

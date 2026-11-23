@@ -71,7 +71,7 @@ object UnionEvaluator {
             if (GreaterEvaluator.greater(leftEnd, rightEnd, state)?.value == true) leftEnd
             else rightEnd
 
-        return Interval(min, true, max, true, state)
+        return Interval(min, true, max, true, state = state)
     }
 
     fun unionIterable(left: List?, right: List?, state: State?): List? {
