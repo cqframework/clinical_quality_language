@@ -195,12 +195,58 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 
+    /**
+     * Visits an inlinable function body with its operands bound to the call-site arguments, then
+     * recovers requirements from any argument whose operand the body never referenced.
+     *
+     * The default [visitFunctionRef] visits every argument, so each argument's requirements are
+     * always collected. The inline path visits only the body, so an argument bound to an operand
+     * the body ignores (e.g. a retrieve passed to an unused parameter) would otherwise be dropped
+     * -- an unsound under-approximation. Referenced operands are deliberately NOT re-visited here:
+     * their requirements already flowed through operand binding during the body visit, and
+     * re-visiting a filtering operand's argument as a bare (unfiltered) retrieve would poison the
+     * union of data requirements for that type.
+     */
+    private fun inlineFunctionBody(
+        functionDef: FunctionDef,
+        functionRef: FunctionRef,
+        context: ElmRequirementsContext,
+    ): ElmRequirement? {
+        context.beginInlining(functionDef, functionRef)
+        val bodyResult: ElmRequirement?
+        val referencedOperands: Set<String>
+        try {
+            bodyResult = visitElement(functionDef.expression!!, context)
+            referencedOperands = context.currentInliningReferencedOperands()
+        } finally {
+            context.endInlining(functionDef, functionRef)
+        }
+        // endInlining has restored the caller library context, so the arguments resolve correctly.
+        for (i in functionDef.operand.indices) {
+            val name = functionDef.operand[i].name
+            if (name == null || name !in referencedOperands) {
+                visitElement(functionRef.operand[i], context)
+            }
+        }
+        return bodyResult
+    }
+
     override fun visitFunctionRef(
         elm: FunctionRef,
         context: ElmRequirementsContext,
     ): ElmRequirement {
         context.reportFunctionRef(elm)
-        val result = super.visitFunctionRef(elm, context)
+        // If the function can be inlined for requirements inference, analyze its body with the
+        // operands bound to the call-site arguments. This lets a terminology/date filter expressed
+        // inside a (fluent) helper that takes the value set/interval as a parameter be attributed
+        // to the retrieve it constrains. Falls back to the default handling otherwise.
+        val inlinableFunctionDef = context.resolveInlinableFunctionDef(elm)
+        val result =
+            if (inlinableFunctionDef != null) {
+                inlineFunctionBody(inlinableFunctionDef, elm, context)
+            } else {
+                super.visitFunctionRef(elm, context)
+            }
 
         // If the result is a data requirement and the function is cardinality-reducing,
         // Return as an operator requirement, rather than returning the result
@@ -536,7 +582,28 @@ class ElmRequirementsVisitor : BaseElmLibraryVisitor<ElmRequirement?, ElmRequire
         return ElmOperatorRequirement(context.currentLibraryIdentifier, elm).combine(requirements)
     }
 
+    @Suppress("NestedBlockDepth")
     override fun visitOperandRef(elm: OperandRef, context: ElmRequirementsContext): ElmRequirement {
+        // When inlining a function, resolve a reference to one of its operands to the requirement
+        // of the argument bound at the call site (e.g. the concrete value set passed in).
+        val resolved = context.resolveOperandBinding(elm.name)
+        if (resolved != null && context.beginOperandResolution(resolved.expression)) {
+            try {
+                // Resolve the argument in its call site's library (it may differ from the library
+                // whose function body we are currently visiting).
+                context.enterLibrary(resolved.callerLibrary)
+                try {
+                    val boundRequirement = visitElement(resolved.expression, context)
+                    if (boundRequirement != null) {
+                        return boundRequirement
+                    }
+                } finally {
+                    context.exitLibrary()
+                }
+            } finally {
+                context.endOperandResolution(resolved.expression)
+            }
+        }
         return ElmExpressionRequirement(context.currentLibraryIdentifier, elm)
     }
 

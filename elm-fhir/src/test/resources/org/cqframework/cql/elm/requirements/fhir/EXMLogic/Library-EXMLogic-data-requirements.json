@@ -160,7 +160,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],
-    "mustSupport": [ "period", "use", "rank", "rank.value", "condition", "condition.reference" ],
+    "mustSupport": [ "period", "use", "rank", "rank.value", "condition", "condition.reference", "diagnosis" ],
     "dateFilter": [ {
       "path": "period",
       "valuePeriod": {
@@ -181,7 +181,7 @@
       "path": "id",
       "code": [ {
         "extension": [ {
-          "url": "http://hl7.org/fhir/uv/crmi-analysisException",
+          "url": "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-analysisException",
           "valueString": "Error attempting to determine filter value: toFhirValue not implemented for FunctionRef"
         } ]
       } ]
