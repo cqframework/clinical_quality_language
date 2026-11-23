@@ -573,7 +573,7 @@ internal class R5TypeConverterTests {
         val result: IBase? = typeConverter.toFhirInterval(interval)
         Assertions.assertNotNull(result)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
-        Assertions.assertEquals("Interval[5, 6]", stringType!!.value)
+        Assertions.assertEquals("Interval[5, 6]", stringType.value)
         val extension =
             stringType
                 .getExtension()
