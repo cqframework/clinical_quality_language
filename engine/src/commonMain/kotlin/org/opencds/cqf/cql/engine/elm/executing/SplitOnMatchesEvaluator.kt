@@ -36,7 +36,7 @@ object SplitOnMatchesEvaluator {
                 result.add(stringToSplit)
             } else {
                 result.addAll(
-                    stringToSplit.split(separator.value.toRegex()).map { it.toCqlString() }
+                    stringToSplit.value.split(separator.value.toRegex()).map { it.toCqlString() }
                 )
             }
             return result.toCqlList()
