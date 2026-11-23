@@ -1005,7 +1005,7 @@ class DataRequirementsProcessor {
                 "System.String" -> return "string"
                 "System.Quantity" -> return "Quantity"
                 "System.Ratio" -> return "Ratio"
-                "System.Any" -> return "Base"
+                "System.Any" -> return "Resource"
                 "System.Code" -> return "Coding"
                 "System.Concept" -> return "CodeableConcept"
             }
@@ -1152,7 +1152,7 @@ class DataRequirementsProcessor {
         } catch (e: Exception) {
             val p = Period()
             p.addExtension(
-                "http://hl7.org/fhir/uv/crmi-analysisException",
+                "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-analysisException",
                 StringType("Error attempting to determine filter value: ${e.message}"),
             )
             dfc.setValue(p)
@@ -1382,7 +1382,7 @@ class DataRequirementsProcessor {
             } catch (ex: Exception) {
                 val c = Coding()
                 c.addExtension(
-                    "http://hl7.org/fhir/uv/crmi-analysisException",
+                    "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-analysisException",
                     StringType("Error attempting to determine filter value: ${ex.message}"),
                 )
                 cfc.addCode(c)
