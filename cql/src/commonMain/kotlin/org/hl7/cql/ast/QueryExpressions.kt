@@ -109,18 +109,23 @@ data class ReturnClause(
 @Serializable
 data class SortClause(
     val items: List<SortByItem>,
+    /** Direction of a bare `sort asc`/`sort desc` clause, which has no [items]. */
+    val direction: SortDirection? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 
 @Serializable
 data class SortByItem(
     val expression: Expression,
-    val direction: SortDirection = SortDirection.ASCENDING,
+    /** `null` when no direction is written. */
+    val direction: SortDirection? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : AstNode
 
 @Serializable
 enum class SortDirection {
-    @SerialName("asc") ASCENDING,
-    @SerialName("desc") DESCENDING,
+    @SerialName("asc") ASC,
+    @SerialName("ascending") ASCENDING,
+    @SerialName("desc") DESC,
+    @SerialName("descending") DESCENDING,
 }

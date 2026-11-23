@@ -108,7 +108,7 @@ object RetrieveEvaluator {
 
             // TODO: We probably shouldn't eagerly load this, but we need to track
             // this throughout the engine and only add it to the list when it's actually used
-            if (result != null) {
+            if (result != null && state.isEvaluatedResourcesCollectionEnabled) {
                 state.evaluatedResources!!.addAll(result)
             }
         } finally {
