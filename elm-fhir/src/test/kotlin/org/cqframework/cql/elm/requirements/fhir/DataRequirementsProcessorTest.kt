@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlString
@@ -120,6 +121,460 @@ class DataRequirementsProcessorTest {
         } catch (ioException: IOException) {
             ioException.printStackTrace()
         }
+    }
+
+    @Test
+    fun functionInliningPreservesIgnoredArgumentRequirements() {
+        // Soundness guard for function-body inlining: a resolvable function is inlined to trace
+        // filters through its body, but inlining must never DROP a data requirement that the
+        // default traversal would have reported. Here "firstOf" ignores its second operand, whose
+        // argument is a [Condition] retrieve. The retrieve is still evaluated at runtime, so its
+        // data requirement must survive even though the inlined body never references that operand.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "FunctionUnreferencedOperandDataRequirements/" +
+                    "FunctionUnreferencedOperandDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val conditionRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.CONDITION,
+                )
+                .toList()
+        Assertions.assertTrue(
+            conditionRequirements.isNotEmpty(),
+            "Expected the [Condition] retrieve in the ignored argument to still be reported as a " +
+                "data requirement; inlining must not drop requirements the default traversal keeps",
+        )
+    }
+
+    @Test
+    fun fluentFunctionValueSetParameterCodeFilter() {
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "FluentFunctionDataRequirements/FluentFunctionDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val dqReqTrans = DataRequirementsProcessor()
+        val moduleDefinitionLibrary =
+            dqReqTrans.gatherDataRequirements(
+                setup.manager,
+                setup.library,
+                cqlTranslatorOptions,
+                null,
+                false,
+            )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        // The terminology filter is expressed inside a fluent function that takes the value set
+        // as a parameter; the requirements processor must trace the value set bound at the call
+        // site into the function body and surface it as a codeFilter on the Observation retrieve.
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the fluent function",
+        )
+    }
+
+    @Test
+    fun crossLibraryFluentFunctionValueSetParameterCodeFilter() {
+        // TDD target for CROSS-LIBRARY value-set-parameter tracing. Identical in intent to
+        // fluentFunctionValueSetParameterCodeFilter, except the fluent helper is defined in a
+        // separate included library (Helpers) while the value set is bound in the caller. The
+        // requirements processor must resolve the helper body in the Helpers library context
+        // while resolving the value-set argument in the caller's context, then surface the
+        // codeFilter on the Observation retrieve. Green regression guard for the cross-library
+        // tracing implemented on this branch (it began as the RED TDD target that drove it).
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryFluentFunctionDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the " +
+                "cross-library fluent function",
+        )
+    }
+
+    @Test
+    fun nestedExistsMembershipNotYetLiftedToCodeFilter() {
+        // Characterization of a CORE inference boundary (same-library, no helper): a direct
+        // membership on a scalar coded property is lifted into a codeFilter, but a membership
+        // buried in a nested exists over a property path is NOT. Helpers that filter list-valued
+        // coded elements (e.g. Encounter.type) commonly take that nested-exists form, so surfacing
+        // their codeFilters needs this boundary moved -- independent of (and larger than) the
+        // cross-library tracing work. If a future change lifts the nested form, this test flips and
+        // should be updated.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "NestedExistsMembershipProbe/NestedExistsMembershipProbe.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        val codeFilters =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.ENCOUNTER,
+                )
+                .flatMap { it.getCodeFilter() }
+        val valueSets = codeFilters.mapNotNull { it.getValueSet() }.toSet()
+
+        // Direct scalar membership is lifted.
+        Assertions.assertTrue(
+            valueSets.contains("http://example.org/fhir/ValueSet/direct-vs"),
+            "Expected direct membership (enc.class in VS) to produce a codeFilter",
+        )
+        // Nested-exists membership is NOT lifted (current limitation).
+        Assertions.assertFalse(
+            valueSets.contains("http://example.org/fhir/ValueSet/nested-vs"),
+            "Nested-exists membership is not yet lifted into a codeFilter; if this now passes, the " +
+                "core inference boundary moved and crossLibraryNestedMembershipEncounterCodeFilter " +
+                "should be re-enabled",
+        )
+    }
+
+    @Test
+    @Disabled(
+        "RED TDD target: requires lifting a nested-exists membership over a property path into a " +
+            "codeFilter (a CORE query-inference enhancement, independent of cross-library tracing; " +
+            "see nestedExistsMembershipNotYetLiftedToCodeFilter). Reproduces the list-valued coded " +
+            "filter shape: cross-library delegation (typedAs -> anyConceptIn) + a nested exists " +
+            "over Encounter.type.coding. Cross-library tracing already surfaces " +
+            "mustSupport=[type, coding]; only the codeFilter awaits the nested-exists inference. " +
+            "Re-enable when that lands."
+    )
+    fun crossLibraryNestedMembershipEncounterCodeFilter() {
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryNestedMembership/CrossLibraryNestedMembership.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val encounterRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.ENCOUNTER,
+                )
+                .toList()
+        val tracedValueSet = "http://example.org/fhir/ValueSet/qualifying-encounter-types"
+        val hasTracedFilter =
+            encounterRequirements.any { dr ->
+                dr.getCodeFilter().any { it.getValueSet() == tracedValueSet }
+            }
+        Assertions.assertTrue(
+            hasTracedFilter,
+            "Expected the value set to be traced onto the Encounter requirement as a codeFilter " +
+                "through the cross-library delegation + nested-exists shape",
+        )
+    }
+
+    @Test
+    fun crossLibraryComposedFluentFunctionCodeFilter() {
+        // Composition: the value set is traced through a DELEGATION chain of cross-library helpers
+        // ("obs code in" -> "code in"), the shape real content uses when one helper forwards to
+        // another. The directly-invoked helper does no membership itself; the codeFilter can only
+        // be surfaced by following the chain to the terminal membership.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryComposition.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        var dr: DataRequirement? = null
+        for (r in moduleDefinitionLibrary.getDataRequirement()) {
+            if (r.getType() == FHIRTypes.OBSERVATION) {
+                dr = r
+                break
+            }
+        }
+        Assertions.assertNotNull(dr, "Expected an Observation data requirement")
+
+        var cf: DataRequirement.DataRequirementCodeFilterComponent? = null
+        for (drcf in dr!!.getCodeFilter()) {
+            if (
+                drcf.getPath() == "code" &&
+                    drcf.getValueSet() == "http://example.org/fhir/ValueSet/test-observation-codes"
+            ) {
+                cf = drcf
+                break
+            }
+        }
+        Assertions.assertNotNull(
+            cf,
+            "Expected codeFilter { code in Test Observation Codes } traced through the " +
+                "cross-library delegation chain",
+        )
+    }
+
+    @Test
+    fun crossLibraryGateNegativeHelperLeavesRetrieveUnfiltered() {
+        // "Fail -> unfiltered" soundness: a cross-library helper that performs no terminology
+        // membership is gate-negative, so it must NOT be inlined. The analysis must still emit the
+        // routed [Observation] retrieve (unfiltered) rather than dropping it — dropping it would
+        // make a scan miss data for that use.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryGateNegative.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        Assertions.assertTrue(
+            observationRequirements.isNotEmpty(),
+            "Expected the Observation retrieve to still be emitted even though the cross-library " +
+                "helper was not inlined (fail -> unfiltered, never dropped)",
+        )
+        Assertions.assertTrue(
+            observationRequirements.all { it.getCodeFilter().isEmpty() },
+            "Expected no codeFilter: the gate-negative cross-library helper must not be traced",
+        )
+    }
+
+    @Test
+    fun crossLibraryMixedFilteredUnfilteredRetrieveCollapse() {
+        // Union-poisoning guard at cross-library scope: when a type is retrieved both filtered
+        // through a cross-library fluent helper AND unfiltered, the unfiltered retrieve must
+        // survive so the union over all Observation data requirements still fetches broadly.
+        // Guards against cross-library tracing dropping the unfiltered use (a scan data-drop).
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "CrossLibraryFluentFunctionDataRequirements/CrossLibraryMixedFilteredUnfiltered.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        val tracedValueSet = "http://example.org/fhir/ValueSet/test-observation-codes"
+        val hasTracedFilter =
+            observationRequirements.any { dr ->
+                dr.getCodeFilter().any {
+                    it.getPath() == "code" && it.getValueSet() == tracedValueSet
+                }
+            }
+        val hasUnfilteredObservation = observationRequirements.any { it.getCodeFilter().isEmpty() }
+
+        Assertions.assertTrue(
+            hasTracedFilter,
+            "Expected the cross-library codeFilter to be traced onto an Observation requirement",
+        )
+        Assertions.assertTrue(
+            hasUnfilteredObservation,
+            "Expected an UNFILTERED Observation data requirement to survive alongside the " +
+                "cross-library-filtered one (union poisoning): cross-library tracing must add the " +
+                "filtered requirement without dropping the unfiltered [Observation] use.",
+        )
+    }
+
+    @Test
+    fun mixedFilteredUnfilteredRetrieveCollapse() {
+        // Characterization of the "union poisoning" soundness rule: when the same resource type
+        // is retrieved both filtered (two different value sets) and unfiltered in one library,
+        // what does collapse() emit? For a scan filter to be sound, the unfiltered use must
+        // survive so the union over all Observation data requirements fetches broadly.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "MixedFilteredUnfilteredDataRequirements/MixedFilteredUnfilteredDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        val observationRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.OBSERVATION,
+                )
+                .toList()
+
+        // Characterization dump: one line per Observation data requirement with its codeFilters.
+        println("=== Observation data requirements: ${observationRequirements.size} ===")
+        observationRequirements.forEachIndexed { i, dr ->
+            val filters =
+                dr.getCodeFilter().joinToString(", ") { cf ->
+                    "{path=${cf.getPath()}, valueSet=${cf.getValueSet()}}"
+                }
+            println("  [$i] codeFilters=[${filters.ifEmpty { "<none>" }}]")
+        }
+
+        val valueSetsSeen =
+            observationRequirements
+                .flatMap { it.getCodeFilter() }
+                .mapNotNull { it.getValueSet() }
+                .toSet()
+        val hasUnfilteredObservation = observationRequirements.any { it.getCodeFilter().isEmpty() }
+
+        // Soundness expectation under union semantics:
+        //  - both distinct filters are surfaced somewhere, AND
+        //  - an UNFILTERED Observation requirement survives (the union-dominating entry).
+        Assertions.assertTrue(
+            valueSetsSeen.contains("http://example.org/fhir/ValueSet/observation-codes-a"),
+            "Expected the Observation Codes A filter to be surfaced",
+        )
+        Assertions.assertTrue(
+            valueSetsSeen.contains("http://example.org/fhir/ValueSet/observation-codes-b"),
+            "Expected the Observation Codes B filter to be surfaced",
+        )
+        Assertions.assertTrue(
+            hasUnfilteredObservation,
+            "Expected an UNFILTERED Observation data requirement to survive alongside the " +
+                "filtered ones (union poisoning): without it, a scan that applies the surfaced " +
+                "codeFilters would drop the unfiltered [Observation] use's data.",
+        )
     }
 
     private fun getDependency(moduleDefinitionLibrary: Library, url: String?): RelatedArtifact? {
@@ -221,7 +676,7 @@ class DataRequirementsProcessorTest {
             assertEquals(FHIRTypes.INTEGER, pd.getType())
 
             // dataRequirement Observation {
-            //   ms: { code, category, value, status, status.value, effective },
+            //   ms: { code, category, value, status, status.value, effective, effective.value },
             //   codeFilter {
             //     { category in
             // http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
@@ -231,7 +686,7 @@ class DataRequirementsProcessorTest {
             Assertions.assertEquals(1, moduleDefinitionLibrary.getDataRequirement().size)
             val dr = moduleDefinitionLibrary.getDataRequirement()[0]
             assertEquals(FHIRTypes.OBSERVATION, dr.getType())
-            Assertions.assertEquals(6, dr.getMustSupport().size)
+            Assertions.assertEquals(7, dr.getMustSupport().size)
             Assertions.assertEquals(
                 1,
                 dr.getMustSupport()
@@ -272,6 +727,13 @@ class DataRequirementsProcessorTest {
                 dr.getMustSupport()
                     .stream()
                     .filter { x: StringType? -> x!!.value == "effective" }
+                    .count(),
+            )
+            Assertions.assertEquals(
+                1,
+                dr.getMustSupport()
+                    .stream()
+                    .filter { x: StringType? -> x!!.value == "effective.value" }
                     .count(),
             )
             Assertions.assertEquals(2, dr.getCodeFilter().size)
@@ -489,7 +951,7 @@ class DataRequirementsProcessorTest {
             assertEquals("1", pd.getMax())
 
             // dataRequirement Observation {
-            //   ms: { code, category, value, status, status.value, effective },
+            //   ms: { code, category, value, status, status.value, effective, effective.value },
             //   codeFilter {
             //     { category in
             // http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
@@ -506,7 +968,7 @@ class DataRequirementsProcessorTest {
             }
             Assertions.assertNotNull(dr)
             assertEquals(FHIRTypes.OBSERVATION, dr!!.getType())
-            Assertions.assertEquals(6, dr.getMustSupport().size)
+            Assertions.assertEquals(7, dr.getMustSupport().size)
             Assertions.assertEquals(
                 1,
                 dr.getMustSupport()
@@ -547,6 +1009,13 @@ class DataRequirementsProcessorTest {
                 dr.getMustSupport()
                     .stream()
                     .filter { x: StringType? -> x!!.value == "effective" }
+                    .count(),
+            )
+            Assertions.assertEquals(
+                1,
+                dr.getMustSupport()
+                    .stream()
+                    .filter { x: StringType? -> x!!.value == "effective.value" }
                     .count(),
             )
             Assertions.assertEquals(2, dr.getCodeFilter().size)
