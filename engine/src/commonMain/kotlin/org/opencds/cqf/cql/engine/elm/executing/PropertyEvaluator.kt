@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing
 
+import kotlin.concurrent.Volatile
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor
 import org.hl7.elm.r1.Property
 import org.opencds.cqf.cql.engine.execution.State
@@ -20,6 +21,42 @@ import org.opencds.cqf.cql.engine.runtime.toCqlList
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 object PropertyEvaluator {
+    /**
+     * Memoizes parsed paths. Parsing is a pure function of the path string (a split on fixed
+     * delimiters), so caching by that string is correct unconditionally: a given string always
+     * yields the same qualifiers/indexers, whatever its origin.
+     *
+     * Most paths are compile-time constants on an ELM [org.hl7.elm.r1.Property] or sort node, drawn
+     * from a small closed set, so re-splitting them on every property read — a hot evaluation path
+     * — is pure waste that this removes. The exception is [ForEachEvaluator], whose path is the
+     * runtime result of evaluating `ForEach.element` and so need not be a literal; such a path can
+     * be data-dependent and therefore unbounded in the number of distinct values. That affects only
+     * hit rate and memory, never correctness: growth is capped at [MAX_CACHED_PATHS] so unbounded
+     * runtime strings cannot leak, and past the cap the parse still runs and returns the correct
+     * result — it is simply not stored.
+     *
+     * The cache is copy-on-write behind a volatile reference: a published map is never mutated,
+     * only replaced, which keeps reads lock-free and multiplatform-safe; a benign race during
+     * warmup can at worst recompute and re-publish an identical value.
+     */
+    @Volatile
+    private var parsedPathCache: Map<kotlin.String, kotlin.collections.List<kotlin.String>> =
+        emptyMap()
+
+    private const val MAX_CACHED_PATHS = 10_000
+
+    private fun parsePath(path: kotlin.String): kotlin.collections.List<kotlin.String> {
+        val cache = parsedPathCache
+        cache[path]?.let {
+            return it
+        }
+        val parsed = path.split('.', '[', ']').map { it.trim() }.filter { it.isNotEmpty() }
+        if (cache.size < MAX_CACHED_PATHS) {
+            parsedPathCache = cache + (path to parsed)
+        }
+        return parsed
+    }
+
     fun internalEvaluate(
         elm: Property?,
         state: State?,
@@ -46,8 +83,7 @@ object PropertyEvaluator {
      */
     fun resolvePath(target: Value?, path: kotlin.String): Value? {
         var target = target
-        val qualifiersAndIndexers =
-            path.split('.', '[', ']').map { it.trim() }.filter { it.isNotEmpty() }
+        val qualifiersAndIndexers = parsePath(path)
         for (qualifierOrIndexer in qualifiersAndIndexers) {
             val indexer = qualifierOrIndexer.toIntOrNull()
             target =

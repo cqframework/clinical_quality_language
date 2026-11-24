@@ -13,6 +13,7 @@ import java.util.GregorianCalendar
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import javax.xml.namespace.QName
+import kotlin.jvm.JvmOverloads
 import org.hl7.fhir.instance.model.api.IAnyResource
 import org.hl7.fhir.instance.model.api.IBase
 import org.hl7.fhir.instance.model.api.IBaseBackboneElement
@@ -656,16 +657,30 @@ abstract class FhirModelResolver<
     }
 
     /**
+     * Shared converter for the children of a lazily-converted composite: recurses with lazy
+     * conversion so the whole subtree stays lazy. Hoisted to a single instance to avoid allocating
+     * a closure per converted node.
+     */
+    private val lazyChildConverter: (Any?) -> Value? = { toCqlValue(it, lazyComposites = true) }
+
+    /**
      * Recursively converts a HAPI FHIR construct to a CQL-native equivalent.
      *
      * @param target The HAPI FHIR object to convert
      * @param expandPrimitivesAndEnumerationsWithNoValues Whether to convert a HAPI FHIR
      *   primitive/enumeration with no value to a structured type instance with a null `value`
      *   child, or to null.
+     * @param lazyComposites When true, a composite is backed by a memoizing [LazyFhirElementMap]
+     *   that converts each child only when it is read, instead of eagerly converting every declared
+     *   child. Opt-in: safe only for value-stable sources (e.g. a bundle-backed
+     *   `InMemoryFhirRepository`); see [LazyFhirElementMap] for the invariants and stability
+     *   contract. Primitives/enumerations are leaves and are always converted eagerly.
      */
+    @JvmOverloads
     fun toCqlValue(
         target: Any?,
         expandPrimitivesAndEnumerationsWithNoValues: kotlin.Boolean = false,
+        lazyComposites: kotlin.Boolean = false,
     ): ClassInstance? {
         if (target == null) {
             return null
@@ -725,29 +740,50 @@ abstract class FhirModelResolver<
             )
         }
 
-        // Composite definitions include id, extension and modifierExtension (where applicable) as
-        // children, so they're converted here along with the rest of the children.
-        val definition = resolveRuntimeDefinition(target)
-        val elements = mutableMapOf<kotlin.String, Value?>()
+        return compositeToCqlValue(target, lazyComposites)
+    }
 
-        for (child in definition.children) {
-            elements[child.elementName] =
-                child.accessor
-                    .getValues(target)
-                    .map { toCqlValue(it) }
-                    .let {
-                        if (child.max == 1) {
-                            it.firstOrNull()
-                        } else {
-                            if (it.isEmpty()) null else it.toCqlList()
-                        }
-                    }
+    /**
+     * Converts a FHIR composite (resource, datatype or backbone element) to a [ClassInstance].
+     * Composite definitions include id, extension and modifierExtension (where applicable) as
+     * children, so they are converted here along with the rest. When [lazyComposites] is true the
+     * instance is backed by a memoizing [LazyFhirElementMap] that converts each child only when it
+     * is read; otherwise every declared child is converted eagerly.
+     */
+    private fun compositeToCqlValue(target: IBase, lazyComposites: kotlin.Boolean): ClassInstance {
+        val definition = resolveRuntimeDefinition(target)
+        val typeQName = QName(fhirModelNamespaceUri, typeName(definition), fhirModelId)
+
+        if (lazyComposites) {
+            return ClassInstance(
+                typeQName,
+                LazyFhirElementMap(
+                    target,
+                    definition.children.associateBy { it.elementName },
+                    lazyChildConverter,
+                ),
+            )
         }
 
-        return ClassInstance(
-            QName(fhirModelNamespaceUri, typeName(definition), fhirModelId),
-            elements,
-        )
+        val elements = mutableMapOf<kotlin.String, Value?>()
+        for (child in definition.children) {
+            elements[child.elementName] = eagerChildValue(target, child)
+        }
+        return ClassInstance(typeQName, elements)
+    }
+
+    /**
+     * Eagerly converts one child of a composite, collapsing by the child's declared cardinality.
+     */
+    private fun eagerChildValue(target: IBase, child: BaseRuntimeChildDefinition): Value? {
+        val values = child.accessor.getValues(target).map { toCqlValue(it) }
+        return if (child.max == 1) {
+            values.firstOrNull()
+        } else if (values.isEmpty()) {
+            null
+        } else {
+            values.toCqlList()
+        }
     }
 
     /**

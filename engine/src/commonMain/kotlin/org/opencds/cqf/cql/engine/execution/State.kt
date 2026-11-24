@@ -120,6 +120,23 @@ constructor(
 
     private val currentLibrary = ArrayDeque<Library?>()
 
+    /**
+     * Caches cross-library resolution within this evaluation: calling library + local alias ->
+     * resolved [Library]. The include graph and the library manager are fixed for the duration of
+     * an evaluation, so this short-circuits the repeated resolveLibraryRef +
+     * toVersionedIdentifier + resolveLibrary lookups that [enterLibrary] would otherwise perform on
+     * every cross-library call. [State] is per-evaluation and not shared across threads, so a plain
+     * map is safe here. Keyed on the calling library because the same alias can resolve to
+     * different targets from different libraries.
+     *
+     * The outer map MUST be identity-keyed ([createIdentityHashMap]): a [Library] is an ELM node
+     * with a deep, structural `hashCode`/`equals`, so keying it in an ordinary hash map would hash
+     * the whole library graph on every lookup — measurably slower than the resolution this
+     * replaces.
+     */
+    private val resolvedLibraryCache: MutableMap<Library, MutableMap<kotlin.String, Library?>> =
+        createIdentityHashMap()
+
     val stack = ArrayDeque<ActivationFrame>()
 
     /**
@@ -302,13 +319,19 @@ constructor(
 
     fun enterLibrary(libraryName: String?): Boolean {
         if (libraryName != null) {
-            val includeDef = Libraries.resolveLibraryRef(libraryName, getCurrentLibrary()!!)
-            val identifier = Libraries.toVersionedIdentifier(includeDef)
+            val callingLibrary = getCurrentLibrary()!!
+            val library =
+                resolvedLibraryCache
+                    .getOrPut(callingLibrary) { HashMap() }
+                    .getOrPut(libraryName) {
+                        val includeDef = Libraries.resolveLibraryRef(libraryName, callingLibrary)
+                        val identifier = Libraries.toVersionedIdentifier(includeDef)
 
-            // We probably want to just load all relevant libraries into
-            // memory before we start evaluation. This will further separate
-            // environment from state.
-            val library = this.environment.resolveLibrary(identifier)
+                        // We probably want to just load all relevant libraries into
+                        // memory before we start evaluation. This will further separate
+                        // environment from state.
+                        this.environment.resolveLibrary(identifier)
+                    }
 
             currentLibrary.addFirst(library)
 
@@ -585,6 +608,7 @@ constructor(
             return null
         }
 
+    @Deprecated("Automatic tracking of evaluated resources is deprecated.")
     val evaluatedResources: MutableSet<Value?>?
         get() {
             check(!evaluatedResourceStack.isEmpty()) {
@@ -593,6 +617,10 @@ constructor(
 
             return this.evaluatedResourceStack.firstOrNull()
         }
+
+    /** Whether retrieved resources are recorded in [evaluatedResources]. */
+    val isEvaluatedResourcesCollectionEnabled: Boolean
+        get() = !engineOptions.contains(Options.DisableEvaluatedResourcesCollection)
 
     fun clearEvaluatedResources() {
         this.evaluatedResourceStack.clear()

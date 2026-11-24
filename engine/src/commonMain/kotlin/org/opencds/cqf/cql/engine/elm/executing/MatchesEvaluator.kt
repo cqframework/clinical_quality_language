@@ -16,7 +16,7 @@ object MatchesEvaluator {
 
         if (argument is String && pattern is String) {
 
-            return argument.matches(pattern.value.toRegex()).toCqlBoolean()
+            return argument.value.matches(pattern.value.toRegex()).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
