@@ -175,8 +175,6 @@ import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlList
-import org.hl7.elm.r1.Subsumes
-import org.hl7.elm.r1.SubsumedBy
 
 class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     override fun visitExpression(elm: Expression, context: State?): Value? {
@@ -1410,18 +1408,14 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     /**
      * Null-propagation for the Subsumes clinical operator.
      *
-     * Per CQL §Subsumes: 'If either or both arguments are null,
-     * the result is null.'  The default visitSubsumes provided by
-     * BaseElmClinicalVisitor delegates to visitFields which (for
-     * a BinaryExpression) walks both operands and returns the
-     * last visited sub-result — which, for Subsumes(null, X),
-     * bubbles up the non-null right operand instead of null.
+     * Per CQL §Subsumes: 'If either or both arguments are null, the result is null.' The default
+     * visitSubsumes provided by BaseElmClinicalVisitor delegates to visitFields which (for a
+     * BinaryExpression) walks both operands and returns the last visited sub-result — which, for
+     * Subsumes(null, X), bubbles up the non-null right operand instead of null.
      *
-     * This override makes null-propagation explicit.  For non-
-     * null operands we fall back to equivalence as the spec's
-     * base case ('returns true if the given codes are
-     * equivalent'), which is what the engine already yields for
-     * non-null inputs via the aggregation path when no
+     * This override makes null-propagation explicit. For non-null operands we fall back to
+     * equivalence as the spec's base case ('returns true if the given codes are equivalent'), which
+     * is what the engine already yields for non-null inputs via the aggregation path when no
      * subsumption hierarchy is available.
      */
     override fun visitSubsumes(elm: Subsumes, context: State?): Value? {
@@ -1434,9 +1428,8 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     }
 
     /**
-     * Null-propagation for the SubsumedBy clinical operator.
-     * See the visitSubsumes commentary; SubsumedBy inherits the
-     * same null contract from CQL §SubsumedBy.
+     * Null-propagation for the SubsumedBy clinical operator. See the visitSubsumes commentary;
+     * SubsumedBy inherits the same null contract from CQL §SubsumedBy.
      */
     override fun visitSubsumedBy(elm: SubsumedBy, context: State?): Value? {
         val left = visitExpression(elm.operand[0], context)
@@ -1446,7 +1439,6 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
         }
         return EquivalentEvaluator.equivalent(left, right, context)
     }
-
 
     override fun defaultResult(elm: Element, context: State?): Value? {
         return null
