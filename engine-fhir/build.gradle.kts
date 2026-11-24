@@ -27,6 +27,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(libs.wiremock)
+                implementation(libs.jol.core)
                 implementation(project(":cql-to-elm"))
                 implementation(project(":quick"))
                 implementation(libs.hapi.fhir.client)
@@ -47,3 +48,6 @@ java {
 }
 
 dependencies { kover(project(":engine")) }
+
+// The large chart memory benchmark builds charts of thousands of resources
+tasks.named<Test>("jvmTest") { maxHeapSize = "2g" }

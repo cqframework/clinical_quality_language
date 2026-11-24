@@ -38,9 +38,16 @@ constructor(
         return Code(code, display, system, version)
     }
 
-    private val hash: Int by lazy { listOf(code, display, system, version).hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(code, display, system, version).hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other ||

@@ -11,9 +11,16 @@ class List(val value: Iterable<Value?>) : Value, Iterable<Value?> by value {
         val EMPTY_LIST = List(emptyList())
     }
 
-    private val hash: Int by lazy { value.hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = value.hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is List && value == other.value)

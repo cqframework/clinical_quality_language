@@ -20,9 +20,16 @@ constructor(val numerator: Quantity? = null, val denominator: Quantity? = null) 
         return Ratio(numerator, denominator)
     }
 
-    private val hash: Int by lazy { listOf(numerator, denominator).hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(numerator, denominator).hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other ||

@@ -217,9 +217,16 @@ class Time(val time: LocalTime, override val precision: Precision) : BaseTempora
         return this.compare(other, true)!!
     }
 
-    private val hash: Int by lazy { listOf(time, precision).hashCode() }
+    private var hash = 0
 
-    override fun hashCode(): Int = hash
+    override fun hashCode(): Int {
+        var result = hash
+        if (result == 0) {
+            result = listOf(time, precision).hashCode()
+            hash = result
+        }
+        return result
+    }
 
     override fun equals(other: Any?): kotlin.Boolean =
         this === other || (other is Time && time == other.time && precision == other.precision)
