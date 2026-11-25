@@ -779,7 +779,7 @@ class DataRequirementsProcessor {
 
         for (retrieve in requirements.retrieves) {
             if ((retrieve.element as Retrieve).dataType != null) {
-                result.add(
+                val dataRequirement =
                     toDataRequirement(
                         context,
                         retrieve.libraryIdentifier,
@@ -788,7 +788,16 @@ class DataRequirementsProcessor {
                         if (retrieve is ElmDataRequirement) retrieve.properties else null,
                         if (retrieve is ElmDataRequirement) retrieve.pertinenceContext else null,
                     )
-                )
+                // A function body containing a retrieve is inlined once per call site (see
+                // ElmRequirementsVisitor.inlineFunctionBody), and retrieves are otherwise reported
+                // per occurrence as distinct element instances, so the same data requirement can be
+                // produced many times over. Collapse structurally-identical requirements (exact
+                // deep equality) so each distinct requirement is emitted once. Requirements that
+                // differ in any element -- e.g. different code or date filters traced from
+                // different call sites -- are not equal and are preserved.
+                if (result.none { it != null && it.equalsDeep(dataRequirement) }) {
+                    result.add(dataRequirement)
+                }
             }
         }
 
