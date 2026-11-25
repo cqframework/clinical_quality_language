@@ -656,7 +656,7 @@ internal class Dstu2TypeConverterTests {
         val interval = Interval(Time("10:30:00"), true, Time("11:30:00"), true)
         val result: IBase? = typeConverter.toFhirInterval(interval)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
-        Assertions.assertEquals("Interval[@T10:30:00, @T11:30:00]", stringType!!.value)
+        Assertions.assertEquals("Interval[@T10:30:00, @T11:30:00]", stringType.value)
         Assertions.assertTrue(
             stringType.getExtension().any { e: Extension? ->
                 e!!.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL
@@ -702,7 +702,7 @@ internal class Dstu2TypeConverterTests {
         val result: IBaseOperationOutcome? = typeConverter.toFhirOperationOutcome(exception)
         Assertions.assertNotNull(result)
         val outcome = Assertions.assertInstanceOf(OperationOutcome::class.java, result)
-        Assertions.assertEquals(1, outcome!!.getIssue().size)
+        Assertions.assertEquals(1, outcome.getIssue().size)
         val issue = outcome.getIssue()[0]
         Assertions.assertEquals(OperationOutcome.IssueType.EXCEPTION, issue.getCode())
         Assertions.assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity())

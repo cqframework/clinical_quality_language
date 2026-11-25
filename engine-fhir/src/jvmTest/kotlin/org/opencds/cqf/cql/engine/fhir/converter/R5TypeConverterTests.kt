@@ -661,7 +661,7 @@ internal class R5TypeConverterTests {
         val interval = Interval(Time("10:30:00"), true, Time("11:30:00"), true)
         val result: IBase? = typeConverter.toFhirInterval(interval)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
-        Assertions.assertEquals("Interval[@T10:30:00, @T11:30:00]", stringType!!.value)
+        Assertions.assertEquals("Interval[@T10:30:00, @T11:30:00]", stringType.value)
         Assertions.assertTrue(
             stringType.getExtension().any { e: Extension? ->
                 e!!.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL
