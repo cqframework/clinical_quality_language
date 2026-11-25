@@ -119,24 +119,59 @@ object QueryEvaluator {
                             when (byItem) {
                                 is ByExpression ->
                                     Comparator<Value?> { left, right ->
-                                        val alias = "\$this"
+                                        // Phase-7 C-11 (restored 2026-11-10):
+                                        // push BOTH the implicit "$this"
+                                        // alias and the query's declared
+                                        // source alias(es) so sort-by
+                                        // expressions that reference the
+                                        // query alias (e.g. `l.value`)
+                                        // resolve via State.resolveAlias
+                                        // instead of raising
+                                        // "Could not resolve alias
+                                        // reference l in the current
+                                        // context".
+                                        val thisAlias = "\$this"
 
                                         var leftResult: Value? = null
+                                        var leftPushCount = 0
                                         try {
-                                            state!!.push(Variable(alias).withValue(left))
+                                            state!!.push(Variable(thisAlias).withValue(left))
+                                            leftPushCount++
+                                            for (src in elm.source) {
+                                                val sourceAlias = src.alias
+                                                if (sourceAlias != null && sourceAlias != thisAlias) {
+                                                    state.push(Variable(sourceAlias).withValue(left))
+                                                    leftPushCount++
+                                                }
+                                            }
                                             leftResult =
                                                 visitor.visitExpression(byItem.expression!!, state)
                                         } finally {
-                                            state!!.pop()
+                                            while (leftPushCount > 0) {
+                                                state!!.pop()
+                                                leftPushCount--
+                                            }
                                         }
 
                                         var rightResult: Value? = null
+                                        var rightPushCount = 0
                                         try {
-                                            state.push(Variable(alias).withValue(right))
+                                            state!!.push(Variable(thisAlias).withValue(right))
+                                            rightPushCount++
+                                            for (src in elm.source) {
+                                                val sourceAlias = src.alias
+                                                if (sourceAlias != null && sourceAlias != thisAlias) {
+                                                    state.push(Variable(sourceAlias).withValue(right))
+                                                    rightPushCount++
+                                                }
+                                            }
                                             rightResult =
                                                 visitor.visitExpression(byItem.expression!!, state)
                                         } finally {
-                                            state.pop()
+                                            while (rightPushCount > 0) {
+                                                state!!.pop()
+                                                rightPushCount--
+                                            }
                                         }
 
                                         SortHelper.compare(leftResult, rightResult, state)
