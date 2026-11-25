@@ -783,8 +783,10 @@ internal class ListOperatorsTest : CqlTestBase() {
         value = results["ProperContainsTimeTrue"]!!.value
         assertEquals(Boolean.TRUE, value)
 
+        // #1962: seconds and milliseconds are a single precision, so a value given to seconds
+        // compares as one with 0 milliseconds
         value = results["ProperContainsTimeNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ProperInNullRightFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
@@ -795,8 +797,10 @@ internal class ListOperatorsTest : CqlTestBase() {
         value = results["ProperInTimeTrue"]!!.value
         assertEquals(Boolean.TRUE, value)
 
+        // #1962: seconds and milliseconds are a single precision, so a value given to seconds
+        // compares as one with 0 milliseconds
         value = results["ProperInTimeNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["ProperIncludedInEmptyAndEmpty"]!!.value
         assertEquals(Boolean.FALSE, value)

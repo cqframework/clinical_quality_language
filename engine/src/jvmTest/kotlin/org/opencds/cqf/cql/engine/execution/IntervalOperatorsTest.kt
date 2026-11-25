@@ -759,8 +759,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         value = results["TimeIncludedInFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
 
+        // #1962: seconds and milliseconds are a single precision, so a value given to seconds
+        // compares as one with 0 milliseconds
         value = results["DateTimeIncludedInNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.TRUE, value)
 
         value = results["DateTimeIncludedInPrecisionTrue"]!!.value
         assertEquals(Boolean.TRUE, value)
@@ -1221,8 +1223,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         value = results["TimeProperContainsFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
 
+        // #1962: seconds and milliseconds are a single precision, so a value given to seconds
+        // compares as one with 0 milliseconds
         value = results["TimeProperContainsNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["TimeProperContainsPrecisionTrue"]!!.value
         assertEquals(Boolean.TRUE, value)
@@ -1239,8 +1243,10 @@ internal class IntervalOperatorsTest : CqlTestBase() {
         value = results["TimeProperInFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
 
+        // #1962: seconds and milliseconds are a single precision, so a value given to seconds
+        // compares as one with 0 milliseconds
         value = results["TimeProperInNull"]!!.value
-        assertNull(value)
+        assertEquals(Boolean.FALSE, value)
 
         value = results["TimeProperInPrecisionTrue"]!!.value
         assertEquals(Boolean.TRUE, value)
