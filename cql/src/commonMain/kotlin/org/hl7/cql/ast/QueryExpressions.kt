@@ -36,10 +36,34 @@ data class RetrieveExpression(
     val typeSpecifier: NamedTypeSpecifier,
     val terminology: TerminologyRestriction? = null,
     val context: QualifiedIdentifier? = null,
-    val codePath: QualifiedIdentifier? = null,
+    val codePath: SimplePath? = null,
     val comparator: TerminologyComparator? = null,
     override val locator: Locator = Locator.UNKNOWN,
 ) : QuerySource, Expression
+
+/** A path into a value, such as `code` or `reason.coding[0]`. */
+@Serializable
+data class SimplePath(
+    val segments: List<PathSegment>,
+    override val locator: Locator = Locator.UNKNOWN,
+) : AstNode
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("kind")
+sealed interface PathSegment : AstNode
+
+/** `.name`, or the name a path starts with. */
+@Serializable
+@SerialName("propertySegment")
+data class PropertySegment(val name: Identifier, override val locator: Locator = Locator.UNKNOWN) :
+    PathSegment
+
+/** `[index]`, where the index is a string or a number. */
+@Serializable
+@SerialName("indexSegment")
+data class IndexSegment(val index: Expression, override val locator: Locator = Locator.UNKNOWN) :
+    PathSegment
 
 @Serializable
 data class TerminologyRestriction(

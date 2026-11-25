@@ -11,18 +11,24 @@ data class Library(
     val version: VersionSpecifier? = null,
     val definitions: List<Definition> = emptyList(),
     val statements: List<Statement> = emptyList(),
+    /** The comments of the library header, or of the whole library if it declares nothing. */
+    override val comments: List<Comment> = emptyList(),
+    /** The tags before the library header. */
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
-) : AstNode
+) : Declaration
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("kind")
-sealed interface Definition : AstNode
+sealed interface Definition : Declaration
 
 @Serializable
 @SerialName("unsupported")
 data class UnsupportedDefinition(
     val grammarRule: String,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -32,6 +38,8 @@ data class UsingDefinition(
     val modelIdentifier: QualifiedIdentifier,
     val version: VersionSpecifier? = null,
     val alias: Identifier? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -41,6 +49,8 @@ data class IncludeDefinition(
     val libraryIdentifier: QualifiedIdentifier,
     val version: VersionSpecifier? = null,
     val alias: Identifier? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -58,6 +68,8 @@ data class CodeSystemDefinition(
     val name: Identifier,
     val id: String,
     val version: VersionSpecifier? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -69,6 +81,8 @@ data class ValueSetDefinition(
     val id: String,
     val version: VersionSpecifier? = null,
     val codesystems: List<TerminologyReference> = emptyList(),
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -80,6 +94,8 @@ data class CodeDefinition(
     val id: String,
     val system: TerminologyReference,
     val display: String? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -90,6 +106,8 @@ data class ConceptDefinition(
     val name: Identifier,
     val codes: List<TerminologyReference>,
     val display: String? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 
@@ -100,6 +118,8 @@ data class ParameterDefinition(
     val name: Identifier,
     val type: TypeSpecifier? = null,
     val default: Expression? = null,
+    override val comments: List<Comment> = emptyList(),
+    override val tags: List<Tag> = emptyList(),
     override val locator: Locator = Locator.UNKNOWN,
 ) : Definition
 

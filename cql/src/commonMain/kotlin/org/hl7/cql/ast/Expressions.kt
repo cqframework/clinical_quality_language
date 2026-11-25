@@ -190,6 +190,17 @@ data class BooleanTestExpression(
     override val locator: Locator = Locator.UNKNOWN,
 ) : UnaryExpression
 
+/**
+ * `(expression)`. Kept as written, including parentheses the precedence does not need, so the
+ * source can be printed back as it was.
+ */
+@Serializable
+@SerialName("parenthesized")
+data class ParenthesizedExpression(
+    val expression: Expression,
+    override val locator: Locator = Locator.UNKNOWN,
+) : Expression
+
 @Serializable
 @SerialName("unknown")
 data class UnsupportedExpression(
