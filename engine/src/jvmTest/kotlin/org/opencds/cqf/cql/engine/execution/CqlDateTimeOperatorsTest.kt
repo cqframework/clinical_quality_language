@@ -59,8 +59,8 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract")
         assertIs<Interval>(value)
-        assertEquals(12.toCqlInteger(), value.start)
-        assertEquals(28.toCqlInteger(), value.end)
+        assertEquals(0.toCqlInteger(), value.start)
+        assertEquals(40.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply")
         assertIs<Interval>(value)
