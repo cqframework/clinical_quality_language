@@ -170,11 +170,16 @@ import org.opencds.cqf.cql.engine.runtime.Boolean
 import org.opencds.cqf.cql.engine.runtime.Interval
 import org.opencds.cqf.cql.engine.runtime.List
 import org.opencds.cqf.cql.engine.runtime.Precision
+import org.opencds.cqf.cql.engine.runtime.SortHelper
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
 import org.opencds.cqf.cql.engine.runtime.toCqlList
+import org.hl7.elm.r1.ByColumn
+import org.hl7.elm.r1.ByExpression
+import org.hl7.elm.r1.Sort
+import org.hl7.elm.r1.SortDirection
 
 class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     override fun visitExpression(elm: Expression, context: State?): Value? {
@@ -1403,6 +1408,93 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
 
     override fun visitQuery(elm: Query, context: State?): Value? {
         return QueryEvaluator.internalEvaluate(elm, context, this)
+    }
+
+    /**
+     * Phase-7 C-9 (restored 2026-11-10): standalone Sort operator.
+     *
+     * The default visitSort provided by BaseElmVisitor walks the
+     * source and each SortByItem for side effects, but returns the
+     * last visited sub-result — which, when `by` is empty, is the
+     * unsorted source list.  That violates CQL §17.1 which says
+     * ascending sorts place nulls first and otherwise order by the
+     * natural comparator of the element type.
+     *
+     * This override implements the operator semantics: evaluate
+     * the source, then sort either by the provided SortByItems
+     * (ByExpression / ByColumn / bare direction) or, if `by` is
+     * empty, by the natural SortHelper comparator with nulls
+     * first.  Null source propagates to null.
+     */
+    override fun visitSort(elm: Sort, context: State?): Value? {
+        val sourceResult = visitExpression(elm.source!!, context)
+        if (sourceResult == null) {
+            return null
+        }
+        if (sourceResult !is List) {
+            return sourceResult
+        }
+
+        val items = sourceResult.toMutableList()
+        val byItems = elm.by
+
+        val comparator: Comparator<Value?>? =
+            if (byItems.isNullOrEmpty()) {
+                Comparator<Value?> { left, right -> SortHelper.compare(left, right, context) }
+            } else {
+                byItems
+                    .map { byItem ->
+                        val baseComparator =
+                            when (byItem) {
+                                is ByExpression ->
+                                    Comparator<Value?> { left, right ->
+                                        val alias = "\$this"
+                                        var leftResult: Value? = null
+                                        try {
+                                            context!!.push(Variable(alias).withValue(left))
+                                            leftResult =
+                                                visitExpression(byItem.expression!!, context)
+                                        } finally {
+                                            context!!.pop()
+                                        }
+
+                                        var rightResult: Value? = null
+                                        try {
+                                            context.push(Variable(alias).withValue(right))
+                                            rightResult =
+                                                visitExpression(byItem.expression!!, context)
+                                        } finally {
+                                            context.pop()
+                                        }
+
+                                        SortHelper.compare(leftResult, rightResult, context)
+                                    }
+                                is ByColumn ->
+                                    Comparator<Value?> { left, right ->
+                                        val leftCol =
+                                            PropertyEvaluator.resolvePath(left, byItem.path!!)
+                                        val rightCol =
+                                            PropertyEvaluator.resolvePath(right, byItem.path!!)
+                                        SortHelper.compare(leftCol, rightCol, context)
+                                    }
+                                else ->
+                                    Comparator<Value?> { left, right ->
+                                        SortHelper.compare(left, right, context)
+                                    }
+                            }
+
+                        val direction = byItem.direction
+                        val isDesc =
+                            direction == SortDirection.DESC ||
+                                direction == SortDirection.DESCENDING
+
+                        if (isDesc) baseComparator.reversed() else baseComparator
+                    }
+                    .reduceOrNull { acc, comp -> acc.then(comp) }
+            }
+
+        comparator?.let { items.sortWith(it) }
+        return items.toCqlList()
     }
 
     override fun defaultResult(elm: Element, context: State?): Value? {
