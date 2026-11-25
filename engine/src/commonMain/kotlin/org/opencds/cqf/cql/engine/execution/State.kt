@@ -48,6 +48,7 @@ constructor(
     val environment: Environment,
     val engineOptions: MutableSet<CqlEngine.Options> = HashSet<CqlEngine.Options>(),
 ) {
+
     class ActivationFrame(
         /**
          * The expression that is being evaluated in this activation frame. Either null for the
@@ -113,7 +114,9 @@ constructor(
 
     val cache: Cache = Cache()
 
-    private val currentContext = ArrayDeque<String>()
+    private class ContextEntry(val name: String, val value: String?)
+
+    private val contextEntries = ArrayDeque<ContextEntry>()
 
     private val currentLibrary = ArrayDeque<Library?>()
 
@@ -180,7 +183,7 @@ constructor(
             ActivationFrame(
                 expression,
                 this.getCurrentLibrary()?.identifier,
-                this.currentContext.firstOrNull(),
+                this.getCurrentContext(),
                 Clock.System.now().toEpochMilliseconds(),
             )
         currentTraceParent.innerActivationFrames.add(frame)
@@ -409,7 +412,7 @@ constructor(
     }
 
     fun pushActivationFrame(element: Element?) {
-        val contextName = this.currentContext.firstOrNull()
+        val contextName = this.getCurrentContext()
 
         pushActivationFrame(element, contextName)
     }
@@ -453,6 +456,7 @@ constructor(
             return topActivationFrame
         }
 
+    @Deprecated("use enter/exit context instead")
     fun setContextValue(context: String, contextValue: String?) {
         val containsKey = contextValues.containsKey(context)
         val valueFromContextValues = contextValues[context]
@@ -468,9 +472,10 @@ constructor(
         cache.expressions.clear()
     }
 
-    fun enterContext(context: String?): Boolean {
+    fun enterContext(context: String?, value: String?): Boolean {
         if (context != null) {
-            currentContext.addFirst(context)
+            setContextValue(context, value)
+            contextEntries.addFirst(ContextEntry(context, value))
 
             return true
         }
@@ -480,27 +485,17 @@ constructor(
 
     fun exitContext(isEnteredContext: Boolean) {
         if (isEnteredContext) {
-            currentContext.removeFirst()
+            contextEntries.removeFirst()
         }
     }
 
-    fun getCurrentContext(): String? {
-        if (currentContext.isEmpty()) {
-            return null
-        }
-
-        return currentContext.firstOrNull()
-    }
+    fun getCurrentContext(): String? = contextEntries.firstOrNull()?.name
 
     val currentContextValue: String?
-        get() {
-            val context = getCurrentContext()
-            if (context != null && this.contextValues.containsKey(context)) {
-                return this.contextValues[context]
-            }
+        get() = contextEntries.firstOrNull()?.value
 
-            return null
-        }
+    fun inheritedContextValue(context: String): String? =
+        contextEntries.firstOrNull { it.name == context }?.value ?: contextValues[context]
 
     val evaluatedResources: MutableSet<Value?>?
         get() {

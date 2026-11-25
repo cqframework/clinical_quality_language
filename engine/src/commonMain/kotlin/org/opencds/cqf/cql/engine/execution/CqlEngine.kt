@@ -137,15 +137,6 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         // here we initialize all libraries without emptying the cache for each library
         this.state.init(loadAndValidateLibrariesResult.allLibraries)
 
-        // We must do this only once per library evaluation otherwise, we may clear the cache
-        // prematurely
-        if (evaluationParams.contextParameter != null) {
-            state.setContextValue(
-                evaluationParams.contextParameter.first,
-                evaluationParams.contextParameter.second,
-            )
-        }
-
         loadAndValidateLibrariesResult.allLibraries.forEach { library ->
             state.setParameters(library, evaluationParams.parameters)
         }
@@ -160,25 +151,35 @@ constructor(val environment: Environment, engineOptions: MutableSet<Options>? = 
         val resultBuilder: EvaluationResults.Builder =
             EvaluationResults.builder(loadAndValidateLibrariesResult)
 
-        for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
-            val library = loadAndValidateLibrariesResult.retrieveLibrary(libraryIdentifier)
-            val expressions =
-                evaluationParams.expressions[libraryIdentifier] ?: this.getExpressions(library!!)
+        val rootContextEntered =
+            evaluationParams.contextParameter?.let { (name, value) ->
+                state.enterContext(name, value)
+            } ?: false
 
-            val joinedExpressions = expressions.joinToString(", ", transform = { it.name })
-            log.debug {
-                "Evaluating library: ${libraryIdentifier.id} with expressions/functions: [$joinedExpressions]"
-            }
-            try {
-                val evaluationResult = this.evaluateExpressions(expressions)
-                resultBuilder.addResult(libraryIdentifier, evaluationResult)
-            } catch (exception: RuntimeException) {
-                log.error {
-                    "Exception for Library: ${libraryIdentifier.id}, Message: ${exception.message}"
+        try {
+            for (libraryIdentifier in reversedOrderLibraryIdentifiers) {
+                val library = loadAndValidateLibrariesResult.retrieveLibrary(libraryIdentifier)
+                val expressions =
+                    evaluationParams.expressions[libraryIdentifier]
+                        ?: this.getExpressions(library!!)
+
+                val joinedExpressions = expressions.joinToString(", ", transform = { it.name })
+                log.debug {
+                    "Evaluating library: ${libraryIdentifier.id} with expressions/functions: [$joinedExpressions]"
                 }
+                try {
+                    val evaluationResult = this.evaluateExpressions(expressions)
+                    resultBuilder.addResult(libraryIdentifier, evaluationResult)
+                } catch (exception: RuntimeException) {
+                    log.error {
+                        "Exception for Library: ${libraryIdentifier.id}, Message: ${exception.message}"
+                    }
 
-                resultBuilder.addException(libraryIdentifier, exception)
+                    resultBuilder.addException(libraryIdentifier, exception)
+                }
             }
+        } finally {
+            state.exitContext(rootContextEntered)
         }
 
         return resultBuilder.build()

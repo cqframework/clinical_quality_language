@@ -13,8 +13,9 @@ object ExpressionDefEvaluator {
         visitor: ElmLibraryVisitor<Value?, State?>,
     ): Value? {
         var isEnteredContext = false
-        if (expressionDef!!.context != null) {
-            isEnteredContext = state!!.enterContext(expressionDef.context)
+        val context = expressionDef!!.context
+        if (context != null) {
+            isEnteredContext = state!!.enterContext(context, state.inheritedContextValue(context))
         }
         try {
             state!!.pushEvaluatedResourceStack()

@@ -310,8 +310,7 @@ class TestFhirDataProviderDstu3 : FhirExecutionTestBase() {
         // dstu3Provider.setTerminologyProvider(new
         // FhirTerminologyProvider().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3", false));
         engine.state.environment.registerDataProvider("http://hl7.org/fhir", dstu3Provider)
-        engine.state.enterContext("Patient")
-        engine.state.setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a")
+        engine.state.enterContext("Patient", "81ee6581-02b9-44de-b026-7401bf36643a")
 
         val results =
             engine

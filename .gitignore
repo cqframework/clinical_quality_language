@@ -34,3 +34,5 @@ gen
 
 # mise-vm specific files
 mise.toml
+
+.vscode/
