@@ -34,13 +34,12 @@ object ProductEvaluator {
         }
 
         if (source is List) {
-            var result: Value? = null
-            for (element in source) {
-                if (element == null) return null
-                if (result == null) {
-                    result = element
-                    continue
-                }
+            // The product of the non-null elements
+            val elements = source.filterNotNull()
+            var result: Value? = elements.firstOrNull()
+            for (element in elements.drop(1)) {
+                // An overflowed product is null
+                if (result == null) return null
                 if (
                     (element is Integer && result is Integer) ||
                         (element is Long && result is Long) ||
