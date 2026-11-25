@@ -467,6 +467,10 @@
 			<expression>Interval[@T05:59:59.999, @T10:59:59.999] ends Interval[@T01:59:59.999, @T11:59:59.999]</expression>
 			<output>false</output>
 		</test>
+		<test name="TestMaxIntervalEndsFalse">
+			<expression>Interval[1, 10] ends Interval[null, null]</expression>
+			<output>false</output>
+		</test>
 	</group>
 	<group name="Equal">
 		<test name="TestEqualNull">
@@ -565,9 +569,27 @@
 		</test>
 	</group>
 	<group name="In">
-		<test name="TestInNullBoundaries">
+		<test name="TestIntegerInMaxIntervalTrue">
 			<expression>5 in Interval[null, null]</expression>
-			<output>false</output>
+			<output>true</output>
+		</test>
+		<test name="TestDateInMaxIntervalTrue">
+			<expression>@2020-01-01 in Interval[null as Date, null as Date]</expression>
+			<output>true</output>
+		</test>
+		<test name="TestDecimalInMaxIntervalTrue">
+			<expression>1.5 in Interval[null as Decimal, null as Decimal]</expression>
+			<output>true</output>
+		</test>
+		<test name="TestUntypedMaxIntervalIsNull">
+			<!-- Without a point type there is no interval to build -->
+			<expression>Interval[null, null] is null</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOpenNullIntervalIsNull">
+			<!-- Open null boundaries are unknown, not the minimum and maximum -->
+			<expression>(Interval(null as Integer, null as Integer)) is null</expression>
+			<output>true</output>
 		</test>
 		<test name="IntegerIntervalInTrue">
 			<expression>5 in Interval[1, 10]</expression>
@@ -1405,7 +1427,7 @@
 	<group name="ProperlyIncludes">
 		<test name="NullBoundariesProperlyIncludesIntegerInterval">
 			<expression>Interval[null as Integer, null as Integer] properly includes Interval[1, 10]</expression>
-			<output>null</output>
+			<output>true</output>
 		</test>
 		<test name="IntegerIntervalProperlyIncludesTrue">
 			<expression>Interval[1, 10] properly includes Interval[4, 10]</expression>
@@ -1449,9 +1471,9 @@
 		</test>
 	</group>
 	<group name="ProperlyIncludedIn">
-		<test name="IntegerIntervalProperlyIncludedInNullBoundaries">
+		<test name="IntegerIntervalProperlyIncludedInMaxIntervalTrue">
 			<expression>Interval[1, 10] properly included in Interval[null, null]</expression>
-			<output>null</output>
+			<output>true</output>
 		</test>
 		<test name="IntegerIntervalProperlyIncludedInTrue">
 			<expression>Interval[4, 10] properly included in Interval[1, 10]</expression>
