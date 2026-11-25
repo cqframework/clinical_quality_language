@@ -113,6 +113,46 @@ internal class StringLibrarySourceProviderTest {
         Assertions.assertNull(result)
     }
 
+    @Test
+    @Throws(IOException::class)
+    fun regex_special_characters_in_id_and_version_are_escaped() {
+        val specialLibrary =
+            "library \"Test+Lib (1) [a]\" version '1.0.0+build.1'\n define \"Value\": 2 + 2"
+        val provider = StringLibrarySourceProvider(listOf(specialLibrary))
+
+        val result =
+            provider.getLibrarySource(
+                VersionedIdentifier().withId("Test+Lib (1) [a]").withVersion("1.0.0+build.1")
+            )
+
+        Assertions.assertNotNull(result)
+        Assertions.assertEquals(specialLibrary, result?.readString())
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun dots_in_id_and_version_match_literally() {
+        val wrongId = "library TestXLib version '1.0.0'\n define \"Value\": 2 + 2"
+        val wrongVersion = "library Test.Lib version '1X0Y0'\n define \"Value\": 2 + 2"
+        val exactMatch = "library Test.Lib version '1.0.0'\n define \"Value\": 2 + 2"
+
+        val nonMatchingProvider = StringLibrarySourceProvider(listOf(wrongId, wrongVersion))
+        Assertions.assertNull(
+            nonMatchingProvider.getLibrarySource(
+                VersionedIdentifier().withId("Test.Lib").withVersion("1.0.0")
+            )
+        )
+
+        val matchingProvider =
+            StringLibrarySourceProvider(listOf(wrongId, wrongVersion, exactMatch))
+        val result =
+            matchingProvider.getLibrarySource(
+                VersionedIdentifier().withId("Test.Lib").withVersion("1.0.0")
+            )
+        Assertions.assertNotNull(result)
+        Assertions.assertEquals(exactMatch, result?.readString())
+    }
+
     companion object {
         // CQL allows for Library identifiers to be quoted or unquoted, so we test both scenarios
         private const val QUOTED = "library \"Test\"\n define \"Value\": 2 + 2"
