@@ -10,8 +10,8 @@ import org.hl7.elm.r1.VersionedIdentifier
  */
 class StringLibrarySourceProvider(private val libraries: List<String>) : LibrarySourceProvider {
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
-        val id: String = libraryIdentifier.id!!
-        val version: String? = libraryIdentifier.version
+        val id: String = Regex.escape(libraryIdentifier.id!!)
+        val version: String? = libraryIdentifier.version?.let { Regex.escape(it) }
         val maybeQuotedIdPattern = "(\"$id\"|$id)"
         var matchText = "(?s).*library\\s+\"?$maybeQuotedIdPattern"
         matchText +=
@@ -20,9 +20,10 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
             } else {
                 "\\s+(?s).*"
             }
+        val matchRegex = matchText.toRegex()
         val matches: ArrayList<String> = ArrayList()
         for (library: String in libraries) {
-            if (library.matches(matchText.toRegex())) {
+            if (library.matches(matchRegex)) {
                 matches.add(library)
             }
         }
