@@ -164,6 +164,60 @@ class DataRequirementsProcessorTest {
     }
 
     @Test
+    fun functionInliningDoesNotDuplicateRequirementsAcrossCallSites() {
+        // Regression guard for the inlining duplication: a function body containing a retrieve is
+        // inlined once per call site, so a function invoked from N call sites would otherwise
+        // report its body's data requirement N times. Each distinct requirement must be emitted
+        // exactly once.
+        val cqlTranslatorOptions = CqlCompilerOptions()
+        cqlTranslatorOptions.collapseDataRequirements = true
+        cqlTranslatorOptions.analyzeDataRequirements = true
+        val setup: Setup =
+            setup(
+                "FunctionRetrieveInvokedMultipleTimesDataRequirements/" +
+                    "FunctionRetrieveInvokedMultipleTimesDataRequirements.cql",
+                cqlTranslatorOptions,
+            )
+        val moduleDefinitionLibrary =
+            DataRequirementsProcessor()
+                .gatherDataRequirements(
+                    setup.manager,
+                    setup.library,
+                    cqlTranslatorOptions,
+                    null,
+                    false,
+                )
+        Assertions.assertNotNull(moduleDefinitionLibrary)
+
+        // The body's [Encounter] retrieve is invoked from three call sites; it must appear once.
+        val encounterRequirements =
+            getDataRequirementsForType(
+                    moduleDefinitionLibrary.getDataRequirement(),
+                    FHIRTypes.ENCOUNTER,
+                )
+                .toList()
+        Assertions.assertEquals(
+            1,
+            encounterRequirements.size,
+            "Expected the inlined function body's [Encounter] requirement to be emitted once, not " +
+                "once per call site",
+        )
+
+        // More generally, no two emitted requirements may be structurally identical.
+        val emitted = moduleDefinitionLibrary.getDataRequirement()
+        for (i in emitted.indices) {
+            for (j in i + 1 until emitted.size) {
+                Assertions.assertFalse(
+                    emitted[i].equalsDeep(emitted[j]),
+                    "Duplicate data requirement emitted at indices $i and $j (type " +
+                        "${emitted[i].getType()}); structurally-identical requirements must be " +
+                        "collapsed to a single entry",
+                )
+            }
+        }
+    }
+
+    @Test
     fun fluentFunctionValueSetParameterCodeFilter() {
         val cqlTranslatorOptions = CqlCompilerOptions()
         cqlTranslatorOptions.collapseDataRequirements = true

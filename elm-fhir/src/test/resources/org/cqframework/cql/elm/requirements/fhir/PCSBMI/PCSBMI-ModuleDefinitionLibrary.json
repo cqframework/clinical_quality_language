@@ -656,31 +656,7 @@
     "mustSupport": [ "code", "authoredOn", "authoredOn.value", "status", "status.value", "extension" ],
     "codeFilter": [ {
       "path": "code",
-      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1527"
-    } ]
-  }, {
-    "type": "ServiceRequest",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" ],
-    "mustSupport": [ "code", "authoredOn", "authoredOn.value", "status", "status.value", "extension" ],
-    "codeFilter": [ {
-      "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1525"
-    } ]
-  }, {
-    "type": "ServiceRequest",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" ],
-    "mustSupport": [ "code", "authoredOn", "authoredOn.value", "status", "status.value", "extension" ],
-    "codeFilter": [ {
-      "path": "code",
-      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1525"
-    } ]
-  }, {
-    "type": "ServiceRequest",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" ],
-    "mustSupport": [ "code", "authoredOn", "authoredOn.value", "status", "status.value", "extension" ],
-    "codeFilter": [ {
-      "path": "code",
-      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.600.1.1528"
     } ]
   }, {
     "type": "ServiceRequest",
@@ -697,22 +673,6 @@
     "codeFilter": [ {
       "path": "medication",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1561"
-    } ]
-  }, {
-    "type": "MedicationRequest",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotrequested" ],
-    "mustSupport": [ "medication", "authoredOn", "authoredOn.value", "status", "status.value", "reasonCode" ],
-    "codeFilter": [ {
-      "path": "medication",
-      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1561"
-    } ]
-  }, {
-    "type": "MedicationRequest",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotrequested" ],
-    "mustSupport": [ "medication", "authoredOn", "authoredOn.value", "status", "status.value", "reasonCode" ],
-    "codeFilter": [ {
-      "path": "medication",
-      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1562"
     } ]
   }, {
     "type": "MedicationRequest",
