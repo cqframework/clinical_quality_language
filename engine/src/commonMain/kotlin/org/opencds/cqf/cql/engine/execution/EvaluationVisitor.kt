@@ -20,6 +20,7 @@ import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator.avg
 import org.opencds.cqf.cql.engine.elm.executing.BeforeEvaluator.before
 import org.opencds.cqf.cql.engine.elm.executing.CalculateAgeAtEvaluator.calculateAgeAt
 import org.opencds.cqf.cql.engine.elm.executing.CalculateAgeEvaluator.internalEvaluate
+import org.opencds.cqf.cql.engine.elm.executing.CanConvertQuantityEvaluator.canConvertQuantity
 import org.opencds.cqf.cql.engine.elm.executing.CeilingEvaluator.ceiling
 import org.opencds.cqf.cql.engine.elm.executing.ChildrenEvaluator.children
 import org.opencds.cqf.cql.engine.elm.executing.CoalesceEvaluator.coalesce
@@ -818,6 +819,16 @@ class EvaluationVisitor : BaseElmLibraryVisitor<Value?, State?>() {
     override fun visitConvert(elm: Convert, context: State?): Value? {
         val operand = visitExpression(elm.operand!!, context)
         return internalEvaluate(operand, elm.toType, elm.toTypeSpecifier, context)
+    }
+
+    override fun visitCanConvertQuantity(elm: CanConvertQuantity, context: State?): Value? {
+        val argument = visitExpression(elm.operand[0], context)
+        val unit = visitExpression(elm.operand[1], context)
+        return canConvertQuantity(
+            argument,
+            unit,
+            context!!.environment.libraryManager!!.ucumService,
+        )
     }
 
     override fun visitConvertQuantity(elm: ConvertQuantity, context: State?): Value? {

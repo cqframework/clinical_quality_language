@@ -6,6 +6,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
@@ -74,6 +75,16 @@ internal class CqlTypesOperatorsTest : CqlTestBase() {
                 equivalent(value, Quantity().withValue(BigDecimal("0.005")).withUnit("g")).value ==
                     true
             )
+
+            // #1961: CanConvertQuantity returns a Boolean, not its unit argument
+            value = results["CanConvertQuantityTrue"]!!.value
+            assertEquals(Boolean.TRUE, value)
+
+            value = results["CanConvertQuantityFalse"]!!.value
+            assertEquals(Boolean.FALSE, value)
+
+            value = results["CanConvertQuantityNull"]!!.value
+            assertNull(value)
 
             value = results["ConvertsToBooleanTrue"]!!.value
             assertTrue((value as Boolean).value)

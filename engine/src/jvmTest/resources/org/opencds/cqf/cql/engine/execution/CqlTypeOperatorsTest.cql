@@ -9,6 +9,11 @@ define AsDateTime: DateTime(2014, 01, 01) as DateTime
 define ConvertQuantity: ConvertQuantity(5 'mg', 'g')
 define ConvertSyntax: convert 5 'mg' to 'g'
 
+//CanConvertQuantity
+define CanConvertQuantityTrue: CanConvertQuantity(5 'mg', 'g')
+define CanConvertQuantityFalse: CanConvertQuantity(5 'mg', 'cm')
+define CanConvertQuantityNull: CanConvertQuantity(null as Quantity, 'g')
+
 //Convert
 define IntegerToDecimal: convert 5 to Decimal
 define IntegerToString: convert 5 to String
