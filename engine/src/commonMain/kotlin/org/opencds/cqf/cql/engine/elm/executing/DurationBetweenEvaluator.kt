@@ -10,6 +10,8 @@ import org.opencds.cqf.cql.engine.runtime.Precision
 import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
+import org.opencds.cqf.cql.engine.util.ChronoUnit
+import org.opencds.cqf.cql.engine.util.Temporal
 import org.opencds.cqf.cql.engine.util.isLastDayOfFeb
 
 /*
@@ -50,46 +52,19 @@ object DurationBetweenEvaluator {
                 isWeeks = true
                 precision = Precision.DAY
             }
-            val isLeftUncertain = left.isUncertain(precision!!)
-            val isRightUncertain = right.isUncertain(precision)
-            if (isLeftUncertain && isRightUncertain) {
-                return null
-            }
-            if (isLeftUncertain) {
-                val leftUncertainInterval = left.getUncertaintyInterval(precision)!!
-                return Interval(
-                    duration(
-                        leftUncertainInterval.end,
-                        right,
-                        if (isWeeks) Precision.WEEK else precision,
-                    ),
-                    true,
-                    duration(
-                        leftUncertainInterval.start,
-                        right,
-                        if (isWeeks) Precision.WEEK else precision,
-                    ),
-                    true,
-                    true,
-                )
-            }
-            if (isRightUncertain) {
-                val rightUncertainInterval = right.getUncertaintyInterval(precision)!!
-                return Interval(
-                    duration(
-                        left,
-                        rightUncertainInterval.start,
-                        if (isWeeks) Precision.WEEK else precision,
-                    ),
-                    true,
-                    duration(
-                        left,
-                        rightUncertainInterval.end,
-                        if (isWeeks) Precision.WEEK else precision,
-                    ),
-                    true,
-                    true,
-                )
+            val leftRange = possibleRange(left, precision!!)
+            val rightRange = possibleRange(right, precision)
+            if (leftRange != null || rightRange != null) {
+                // The shortest possible duration runs from the latest possible left value to the
+                // earliest possible right value, and the longest from the earliest left to the
+                // latest right. When they're the same, the duration is known.
+                val durationPrecision = if (isWeeks) Precision.WEEK else precision
+                val shortest =
+                    duration(leftRange?.end ?: left, rightRange?.start ?: right, durationPrecision)
+                val longest =
+                    duration(leftRange?.start ?: left, rightRange?.end ?: right, durationPrecision)
+                return if (shortest == longest) shortest
+                else Interval(shortest, true, longest, true, true)
             }
 
             if (left is DateTime && right is DateTime) {
@@ -114,6 +89,17 @@ object DurationBetweenEvaluator {
                         right.dateTime.isLastDayOfFeb()
                 ) {
                     return (right.dateTime.getYear() - left.dateTime.getYear()).toCqlInteger()
+                }
+
+                if (precision == Precision.MONTH) {
+                    val end = right.dateTime.toLocalDateTime()
+                    return wholeMonths(
+                            ChronoUnit.MONTHS.between(left.dateTime.toLocalDateTime(), end),
+                            { left.dateTime.plus(it, ChronoUnit.MONTHS).toLocalDateTime() },
+                            end,
+                            ChronoUnit.MILLIS,
+                        )
+                        .toCqlInteger()
                 }
 
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
@@ -153,6 +139,16 @@ object DurationBetweenEvaluator {
                     return (right.date.getYear() - left.date.getYear()).toCqlInteger()
                 }
 
+                if (precision == Precision.MONTH) {
+                    return wholeMonths(
+                            ChronoUnit.MONTHS.between(left.date, right.date),
+                            { left.date.plus(it, ChronoUnit.MONTHS) },
+                            right.date,
+                            ChronoUnit.DAYS,
+                        )
+                        .toCqlInteger()
+                }
+
                 return if (isWeeks)
                     (precision.toChronoUnit().between(left.date, right.date).toInt() / 7)
                         .toCqlInteger()
@@ -172,5 +168,56 @@ object DurationBetweenEvaluator {
             "DurationBetween(Date, Date), DurationBetween(DateTime, DateTime), DurationBetween(Time, Time)",
             "DurationBetween(${left.typeAsString}, ${right.typeAsString})",
         )
+    }
+
+    /**
+     * Whole calendar months from a start to [end], given [between], the count from
+     * `ChronoUnit.MONTHS`, and [plusMonths], which adds months to the start.
+     *
+     * A month that would end on a day the ending month doesn't have ends on that month's last day
+     * (Appendix H, Calculating Duration in Months), which is how [plusMonths] adds months.
+     * `ChronoUnit.MONTHS.between` on the JVM doesn't clamp that way: from 2005-12-31T23:59:59.999
+     * to 2006-05-01T00:00:00.000 it counts 3 months, though 2005-12-31T23:59:59.999 plus 4 months
+     * is 2006-04-30T23:59:59.999. [compareUnit] is the finest unit of the values, used to compare
+     * them.
+     */
+    private fun wholeMonths(
+        between: kotlin.Long,
+        plusMonths: (kotlin.Long) -> Temporal,
+        end: Temporal,
+        compareUnit: ChronoUnit,
+    ): Int {
+        var months = between
+        if (months >= 0 && compareUnit.between(plusMonths(months + 1), end) >= 0) {
+            months++
+        } else if (months <= 0 && compareUnit.between(end, plusMonths(months - 1)) >= 0) {
+            months--
+        }
+        return months.toInt()
+    }
+
+    /**
+     * The range of values [value] could stand for, or null if it is precise enough to give a single
+     * duration at [precision].
+     *
+     * A Date is uncertain only when it is less precise than the duration. A DateTime or Time is
+     * also uncertain when it is less precise than seconds, at any duration precision: its range
+     * runs through milliseconds, so `DateTime(2014, 1, 15)` covers all of January 15. Seconds and
+     * milliseconds count as a single precision, so a value specified to seconds is not widened
+     * unless the duration is in milliseconds.
+     */
+    private fun possibleRange(value: BaseTemporal, precision: Precision): Interval? {
+        val belowSeconds =
+            when (value) {
+                is DateTime ->
+                    value.precision.toDateTimeIndex() < Precision.SECOND.toDateTimeIndex()
+                is Time -> value.precision.toTimeIndex() < Precision.SECOND.toTimeIndex()
+                else -> false
+            }
+        return when {
+            belowSeconds -> value.getUncertaintyInterval(Precision.MILLISECOND)
+            value.isUncertain(precision) -> value.getUncertaintyInterval(precision)
+            else -> null
+        }
     }
 }
