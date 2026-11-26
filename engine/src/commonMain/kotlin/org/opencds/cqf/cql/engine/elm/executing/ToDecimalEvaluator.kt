@@ -28,6 +28,20 @@ If the argument is null, the result is null.
 
 */
 object ToDecimalEvaluator {
+    /**
+     * The format ToDecimal accepts: an optional polarity indicator, digits and an optional
+     * fraction.
+     */
+    private val DECIMAL_FORMAT = Regex("[+-]?[0-9]+(\\.[0-9]+)?")
+
+    /**
+     * Parses [value] as a Decimal, or returns null if it is not formatted correctly or out of
+     * range.
+     */
+    internal fun parse(value: kotlin.String): BigDecimal? =
+        if (DECIMAL_FORMAT.matches(value)) DecimalHelper.validateDecimal(BigDecimal(value), null)
+        else null
+
     @JvmStatic
     fun toDecimal(operand: Value?): Value? {
         if (operand == null) {
@@ -52,23 +66,7 @@ object ToDecimalEvaluator {
         }
 
         if (operand is String) {
-            try {
-                if (operand.contains(".")) {
-                    val decimalSplit = operand.split(".")
-                    if (
-                        (decimalSplit[0].contains("-") || decimalSplit[0].contains("+")) &&
-                            decimalSplit[0].length == 1
-                    ) {
-                        return null
-                    } else if (decimalSplit[0].length == 0) {
-                        return null
-                    }
-                }
-                return DecimalHelper.validateDecimal(BigDecimal(operand.value), null)
-                    ?.toCqlDecimal()
-            } catch (nfe: NumberFormatException) {
-                return null
-            }
+            return parse(operand.value)?.toCqlDecimal()
         }
 
         throw InvalidOperatorArgument("ToDecimal(String)", "ToDecimal(${operand.typeAsString})")
