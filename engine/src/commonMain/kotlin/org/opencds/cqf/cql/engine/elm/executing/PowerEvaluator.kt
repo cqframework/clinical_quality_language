@@ -31,34 +31,43 @@ object PowerEvaluator {
 
         if (left is Integer && right is Integer) {
             if (right.value < 0) {
-                return BigDecimal(1)
-                    .divide(BigDecimal(left.value).pow(abs(right.value)))
-                    .toCqlDecimal()
+                return reciprocalPower(left.value.toLong(), abs(right.value))
             }
             return BigDecimal(left.value).pow(right.value).toInt().toCqlInteger()
         }
 
         if (left is Long && right is Long) {
             if (right.value < 0) {
-                return BigDecimal(1)
-                    .divide(BigDecimal(left.value).pow(abs(right.value.toInt())))
-                    .toCqlDecimal()
+                return reciprocalPower(left.value, abs(right.value.toInt()))
             }
 
             return BigDecimal(left.value).pow(right.value.toInt()).toLong().toCqlLong()
         }
 
         if (left is Decimal && right is Decimal) {
-            return DecimalHelper.verifyPrecision(
-                    BigDecimal((left.value.toDouble()).pow(right.value.toDouble())),
-                    null,
-                )
-                .toCqlDecimal()
+            val result = left.value.toDouble().pow(right.value.toDouble())
+            // If the result cannot be represented as a Decimal (0.0 ^ -1.0 is infinite and
+            // -1.0 ^ 0.5 is undefined), the spec requires the result to be null, as for Exp and Ln.
+            if (result.isInfinite() || result.isNaN()) {
+                return null
+            }
+            return DecimalHelper.verifyPrecision(BigDecimal(result), null).toCqlDecimal()
         }
 
         throw InvalidOperatorArgument(
             "Power(Integer, Integer), Power(Long, Long) or Power(Decimal, Decimal)",
             "Power(${left.typeAsString}, ${right.typeAsString})",
         )
+    }
+
+    /**
+     * Returns 1 / base^exponent, or null when base is 0, since that division by zero cannot be
+     * represented.
+     */
+    private fun reciprocalPower(base: kotlin.Long, exponent: Int): Decimal? {
+        if (base == 0L) {
+            return null
+        }
+        return BigDecimal(1).divide(BigDecimal(base).pow(exponent)).toCqlDecimal()
     }
 }
