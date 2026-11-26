@@ -303,8 +303,8 @@ define test_Variance_v: TestMessage(Variance_v = 2.5, 'Variance_v', toString(2.5
 // The unit of the variance is the unit of the sequence elements squared. In this case, UCUM uses m^6 instead of L^2.
 // The unit changes (ml -> L -> m^3 -> m^6) repeatedly scale the value by 1/1000 so that the result is 0 within
 // the restricted precision of this reference implementation.
-define test_Variance_v_q: TestMessage(Variance_v_q = 0 'm6', 'Variance_v_q', toString(0 'm6'), toString(Variance_v_q))
-define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 0 'm6', 'Variance_q_diff_units', toString(0 'm6'), toString(Variance_q_diff_units))
+define test_Variance_v_q: TestMessage(Variance_v_q = 2.5 'ml2', 'Variance_v_q', toString(2.5 'ml2'), toString(Variance_v_q))
+define test_Variance_q_diff_units: TestMessage(Variance_q_diff_units = 0.00000250 'l2', 'Variance_q_diff_units', toString(0.00000250 'l2'), toString(Variance_q_diff_units))
 define test_Variance_q2: TestMessage(Variance_q2 = 2.5 'm2', 'Variance_q2', toString(10 'm2'), toString(Variance_q2))
 
 // PopulationVariance
@@ -316,8 +316,8 @@ define test_PopulationVariance_v: TestMessage(PopulationVariance_v = 2.0, 'Popul
 // The unit of the variance is the unit of the sequence elements squared. In this case, UCUM uses m^6 instead of L^2.
 // The unit changes (ml -> L -> m^3 -> m^6) repeatedly scale the value by 1/1000 so that the result is 0 within
 // the restricted precision of this reference implementation.
-define test_PopulationVariance_v_q: TestMessage(PopulationVariance_v_q = 0 'm6', 'PopulationVariance_v_q', toString(0 'm6'), toString(PopulationVariance_v_q))
-define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 0 'm6', 'PopulationVariance_q_diff_units', toString(0 'm6'), toString(PopulationVariance_q_diff_units))
+define test_PopulationVariance_v_q: TestMessage(PopulationVariance_v_q = 2.00 'ml2', 'PopulationVariance_v_q', toString(2.00 'ml2'), toString(PopulationVariance_v_q))
+define test_PopulationVariance_q_diff_units: TestMessage(PopulationVariance_q_diff_units = 0.00000200 'l2', 'PopulationVariance_q_diff_units', toString(0.00000200 'l2'), toString(PopulationVariance_q_diff_units))
 
 // StdDev
 define Std: StdDev({1,2,3,4,5})
@@ -641,7 +641,7 @@ define test_Quantity_mul_d_q: TestMessage(Quantity_mul_d_q = 20 days, 'Quantity_
 define test_Quantity_neg: TestMessage(Quantity_neg = -10 days, 'Quantity_neg', toString(-10 days), toString(Quantity_neg))
 define test_Quantity_abs: TestMessage(Quantity_abs = 10 days, 'Quantity_abs', toString(10 days), toString(Quantity_abs))
 define test_Quantity_mul_q_q: TestMessage(Quantity_mul_q_q = 20 'm2', 'Quantity_mul_q_q', toString(20 'm2'), toString(Quantity_mul_q_q))
-define test_Quantity_mul_q_q_diff: TestMessage(Quantity_mul_q_q_diff = 0.00023148 'm.s-1', 'Quantity_mul_q_q_diff', toString(0.00023148 'm.s-1'), toString(Quantity_mul_q_q_diff))
+define test_Quantity_mul_q_q_diff: TestMessage(Quantity_mul_q_q_diff = 20 'm\/d', 'Quantity_mul_q_q_diff', toString(20 'm\/d'), toString(Quantity_mul_q_q_diff))
 define test_Quantity_MultiplyUcum: TestMessage(Quantity_MultiplyUcum = 125000 'm2', 'Quantity_MultiplyUcum', toString(125000 'm2'), toString(Quantity_MultiplyUcum))
 define test_Quantity_DivideUcum: TestMessage(Quantity_DivideUcum = 4 'm', 'Quantity_DivideUcum', toString(4 'm'), toString(Quantity_DivideUcum))
 define test_Quantity_AddUcum: TestMessage(Quantity_AddUcum = 5005 'm', 'Quantity_AddUcum', toString(5005 'm'), toString(Quantity_AddUcum))
