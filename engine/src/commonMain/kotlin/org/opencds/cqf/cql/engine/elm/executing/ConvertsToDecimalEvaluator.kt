@@ -7,6 +7,7 @@ import org.opencds.cqf.cql.engine.runtime.Decimal
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.String
 import org.opencds.cqf.cql.engine.runtime.Value
+import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 
 /*
 
@@ -40,12 +41,7 @@ object ConvertsToDecimalEvaluator {
         }
 
         if (argument is String) {
-            try {
-                argument.value.toDouble()
-            } catch (nfe: NumberFormatException) {
-                return Boolean.FALSE
-            }
-            return Boolean.TRUE
+            return (ToDecimalEvaluator.parse(argument.value) != null).toCqlBoolean()
         }
 
         throw InvalidOperatorArgument(
