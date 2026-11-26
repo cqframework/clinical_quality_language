@@ -102,14 +102,13 @@ object EquivalentEvaluator {
         if (left is Decimal && right is Decimal) {
             val leftDecimal = DecimalHelper.verifyPrecision(left.value, 0)
             val rightDecimal = DecimalHelper.verifyPrecision(right.value, 0)
-            val minScale = min(leftDecimal.scale(), rightDecimal.scale())
-            if (minScale >= 0) {
-                return (leftDecimal
-                        .setScale(minScale, RoundingMode.HALF_UP)
-                        .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP)) == 0)
-                    .toCqlBoolean()
-            }
-            return (leftDecimal.compareTo(rightDecimal) == 0).toCqlBoolean()
+            // Stripping trailing zeroes turns 10.0 into 1E+1 (scale -1). Only zeroes after the
+            // decimal point count, so the precision is never below 0 decimal places.
+            val minScale = min(leftDecimal.scale(), rightDecimal.scale()).coerceAtLeast(0)
+            return (leftDecimal
+                    .setScale(minScale, RoundingMode.HALF_UP)
+                    .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP)) == 0)
+                .toCqlBoolean()
         }
 
         if (left is String && right is String) {
