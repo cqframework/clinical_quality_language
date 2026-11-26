@@ -71,7 +71,7 @@ kotlin {
         wasmJs {
             compilerOptions { optIn.add("kotlin.js.ExperimentalWasmJsInterop") }
             browser { testTask { enabled = false } }
-            nodejs { testTask { enabled = false } }
+            nodejs()
             binaries.library()
             generateTypeScriptDefinitions()
         }
