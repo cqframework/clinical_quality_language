@@ -15,12 +15,12 @@ import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
         List, T: The type of T must be the same as the element type of the list.
         Interval, T : The type of T must be the same as the point type of the interval.
 
-    For the List, T overload, this operator returns true if the given element is in the list,
-        and it is not the only element in the list, using equality semantics, with the exception
-        that null elements are considered equal.
+    For the List, T overload, this operator returns true if the list contains (i.e. includes)
+        the element, and it is not the only element in the list, using equality semantics, with
+        the exception that null elements are considered equal. The list has more elements than
+        just the one searched for (list semantics), and otherwise the result is false
+        (FHIR-57746).
         If the first argument is null, the result is false.
-        If the second argument is null, the result is true if the list contains any null elements
-        and at least one other element, and false otherwise.
     For the Interval, T overload, this operator returns true if the given point is greater than
         the starting point of the interval, and less than the ending point of the interval, as
         determined by the Start and End operators.
@@ -45,64 +45,16 @@ object ProperContainsEvaluator {
             else if (endProperContains == null) null
             else (startProperContains.value && endProperContains.value).toCqlBoolean()
         } else if (left is List) {
-
-            // The result cannot be true if the list contains fewer than two elements
+            // "returns true if the list contains (i.e. includes) the element, and it is not the
+            // only element in the list". Following FHIR-57746 (cqframework/cql-tests#118), this
+            // has list, not set, semantics: the list has more elements than just the one searched
+            // for, so { 'a', 'a' } properly includes 'a'. And membership is true only when the
+            // element is known to be in the list, otherwise false, as for the contains operator.
             if (left.count() < 2) {
                 return Boolean.FALSE
             }
 
-            if (right == null) {
-                // The result is true if the list contains any null elements and at least one other
-                // element,
-                // and false otherwise
-
-                var listContainsNullElements = false
-                var listContainsOtherElements = false
-
-                for (element in left) {
-                    if (element == null) {
-                        listContainsNullElements = true
-                        continue
-                    }
-
-                    listContainsOtherElements = true
-                }
-
-                return (listContainsNullElements && listContainsOtherElements).toCqlBoolean()
-            }
-
-            // Return true if the given element is in the list, and it is not the only element in
-            // the list,
-            // using equality semantics
-            var listContainsGivenElement = false
-            var listContainsOtherElements = false
-            var listContainsElementsOfUnknownEquality = false
-
-            for (element in left) {
-                val equalResult = EqualEvaluator.equal(element, right, state)
-                if (equalResult == null) {
-                    listContainsElementsOfUnknownEquality = true
-                    continue
-                }
-                if (equalResult.value) {
-                    listContainsGivenElement = true
-                    continue
-                }
-                listContainsOtherElements = true
-            }
-
-            // The given element is in the list and there are other elements, using equality
-            // semantics
-            if (listContainsGivenElement && listContainsOtherElements) {
-                return Boolean.TRUE
-            }
-
-            // The above is false, but there are elements of unknown equality
-            if (listContainsElementsOfUnknownEquality) {
-                return null
-            }
-
-            return Boolean.FALSE
+            return InEvaluator.`in`(right, left, null, state)
         }
 
         throw InvalidOperatorArgument(
