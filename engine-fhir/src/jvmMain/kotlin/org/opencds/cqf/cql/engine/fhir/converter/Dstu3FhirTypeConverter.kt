@@ -33,6 +33,7 @@ import org.hl7.fhir.instance.model.api.IIdType
 import org.hl7.fhir.instance.model.api.IPrimitiveType
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TEXT_EXT_URL
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.CQL_TYPE_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_EXT_URL
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.DATA_ABSENT_REASON_UNKNOWN_CODE
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter.Companion.EMPTY_LIST_EXT_URL
@@ -207,19 +208,24 @@ internal class Dstu3FhirTypeConverter : BaseFhirTypeConverter() {
 
             return period
         } else if (value.pointType == dateTypeName) {
-            // TODO: This will construct DateTimeType values in FHIR with the system timezone id,
-            // not the
-            // timezoneoffset of the evaluation request..... this is a bug waiting to happen
+            // A FHIR dateTime can hold a date alone, so keep the Date's own precision rather than
+            // building a DateTime at midnight in the server's time zone, and say that the Period
+            // is an Interval<System.Date>, since its boundaries could also be read as DateTimes.
+            period.addExtension(CQL_TYPE_EXT_URL, StringType("Interval<System.Date>"))
             if (value.start != null) {
-                period.setStart(
-                    toFhirDate(value.start as org.opencds.cqf.cql.engine.runtime.Date?)!!.getValue()
-                )
+                period.startElement =
+                    DateTimeType(
+                        toFhirDate(value.start as org.opencds.cqf.cql.engine.runtime.Date?)!!
+                            .valueAsString
+                    )
             }
 
             if (value.end != null) {
-                period.setEnd(
-                    toFhirDate(value.end as org.opencds.cqf.cql.engine.runtime.Date?)!!.getValue()
-                )
+                period.endElement =
+                    DateTimeType(
+                        toFhirDate(value.end as org.opencds.cqf.cql.engine.runtime.Date?)!!
+                            .valueAsString
+                    )
             }
 
             return period

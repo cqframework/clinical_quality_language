@@ -387,6 +387,10 @@ internal class Dstu3TypeConverterTests {
             Period()
                 .setStartElement(DateTimeType(startTimeAsyyyyMMdd))
                 .setEndElement(DateTimeType(endTimeAsyyyyMMdd))
+        expected
+            .addExtension()
+            .setUrl(FhirTypeConverter.CQL_TYPE_EXT_URL)
+            .setValue(StringType("Interval<System.Date>"))
         val actual =
             typeConverter.toFhirPeriod(
                 Interval(
@@ -397,6 +401,30 @@ internal class Dstu3TypeConverterTests {
                 )
             ) as Period?
         Assertions.assertTrue(expected.equalsDeep(actual))
+        Assertions.assertEquals(startTimeAsyyyyMMdd, actual!!.startElement.valueAsString)
+        Assertions.assertEquals(endTimeAsyyyyMMdd, actual.endElement.valueAsString)
+    }
+
+    @Test
+    fun dateIntervalToFhirPeriodKeepsDatePrecision() {
+        // Interval<System.Date> is a FHIR Period (Using CQL with FHIR). The boundaries keep the
+        // Date's precision, with no time or offset, and cqf-cqlType says the point type is Date.
+        for ((start, end) in
+            listOf("2018-01-01" to "2018-01-04", "2018-01" to "2018-03", "2018" to "2020")) {
+            val actual =
+                typeConverter.toFhirPeriod(
+                    Interval(
+                        org.opencds.cqf.cql.engine.runtime.Date(start),
+                        true,
+                        org.opencds.cqf.cql.engine.runtime.Date(end),
+                        true,
+                    )
+                ) as Period
+            Assertions.assertEquals(start, actual.startElement.valueAsString)
+            Assertions.assertEquals(end, actual.endElement.valueAsString)
+            val cqlType = actual.extension.single { it.url == FhirTypeConverter.CQL_TYPE_EXT_URL }
+            Assertions.assertEquals("Interval<System.Date>", (cqlType.value as StringType).value)
+        }
     }
 
     @ParameterizedTest
@@ -518,6 +546,10 @@ internal class Dstu3TypeConverterTests {
             Period()
                 .setStartElement(DateTimeType("2019-02-03"))
                 .setEndElement(DateTimeType("2019-02-05"))
+        expectedPeriod
+            .addExtension()
+            .setUrl(FhirTypeConverter.CQL_TYPE_EXT_URL)
+            .setValue(StringType("Interval<System.Date>"))
         val actualPeriod =
             typeConverter.toFhirInterval(
                 Interval(
