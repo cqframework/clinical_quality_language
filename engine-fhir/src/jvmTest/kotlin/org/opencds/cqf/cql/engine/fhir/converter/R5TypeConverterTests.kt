@@ -507,7 +507,13 @@ internal class R5TypeConverterTests {
 
     @Test
     fun invalidIntervalToFhirRange() {
-        val interval = Interval(5.toCqlInteger(), true, 6.toCqlInteger(), true)
+        val interval =
+            Interval(
+                org.opencds.cqf.cql.engine.runtime.Date("2019-02-03"),
+                true,
+                org.opencds.cqf.cql.engine.runtime.Date("2019-02-05"),
+                true,
+            )
         Assertions.assertThrows(IllegalArgumentException::class.java) {
             typeConverter.toFhirRange(interval)
         }
@@ -568,19 +574,126 @@ internal class R5TypeConverterTests {
     }
 
     @Test
-    fun integerIntervalToFhirString() {
-        val interval = Interval(5.toCqlInteger(), true, 6.toCqlInteger(), true)
+    fun integerIntervalToFhirRange() {
+        val actual =
+            typeConverter.toFhirInterval(Interval(5.toCqlInteger(), true, 6.toCqlInteger(), true))
+                as Range?
+        Assertions.assertTrue(
+            numericRange("Interval<System.Integer>", rangeQuantity("5"), rangeQuantity("6"))
+                .equalsDeep(actual)
+        )
+
+        // A Range has no open boundaries, so an open boundary moves in by one
+        val open =
+            typeConverter.toFhirRange(Interval(1.toCqlInteger(), false, 5.toCqlInteger(), false))
+                as Range?
+        Assertions.assertTrue(
+            numericRange("Interval<System.Integer>", rangeQuantity("2"), rangeQuantity("4"))
+                .equalsDeep(open)
+        )
+
+        // A null boundary gives no bound
+        val unbounded =
+            typeConverter.toFhirRange(Interval(1.toCqlInteger(), true, null, false)) as Range?
+        Assertions.assertTrue(
+            numericRange("Interval<System.Integer>", rangeQuantity("1"), null).equalsDeep(unbounded)
+        )
+    }
+
+    @Test
+    fun longIntervalToFhirRange() {
+        val actual =
+            typeConverter.toFhirInterval(
+                Interval(3000000000L.toCqlLong(), true, 4000000000L.toCqlLong(), false)
+            ) as Range?
+        Assertions.assertTrue(
+            numericRange(
+                    "Interval<System.Long>",
+                    rangeQuantity("3000000000"),
+                    rangeQuantity("3999999999"),
+                )
+                .equalsDeep(actual)
+        )
+    }
+
+    @Test
+    fun decimalIntervalToFhirRange() {
+        val actual =
+            typeConverter.toFhirInterval(
+                Interval(
+                    BigDecimal("5.5").toCqlDecimal(),
+                    true,
+                    BigDecimal("10.5").toCqlDecimal(),
+                    true,
+                )
+            ) as Range?
+        Assertions.assertTrue(
+            numericRange(
+                    "Interval<System.Decimal>",
+                    rangeQuantity("5.5", 1),
+                    rangeQuantity("10.5", 1),
+                )
+                .equalsDeep(actual)
+        )
+
+        // An open boundary moves in by one step at the value's precision
+        val open =
+            typeConverter.toFhirRange(
+                Interval(
+                    BigDecimal("1.0").toCqlDecimal(),
+                    true,
+                    BigDecimal("1.4").toCqlDecimal(),
+                    false,
+                )
+            ) as Range?
+        Assertions.assertTrue(
+            numericRange(
+                    "Interval<System.Decimal>",
+                    rangeQuantity("1.0", 1),
+                    rangeQuantity("1.3", 1),
+                )
+                .equalsDeep(open)
+        )
+    }
+
+    @Test
+    fun timeIntervalToFhirString() {
+        val interval = Interval(Time("10:30:00"), true, Time("11:30:00"), true)
         val result: IBase? = typeConverter.toFhirInterval(interval)
-        Assertions.assertNotNull(result)
         val stringType = Assertions.assertInstanceOf(StringType::class.java, result)
-        Assertions.assertEquals("Interval[5, 6]", stringType.value)
-        val extension =
-            stringType
-                .getExtension()
-                .stream()
-                .filter { e: Extension? -> e!!.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL }
-                .findFirst()
-        Assertions.assertTrue(extension.isPresent)
+        Assertions.assertEquals("Interval[@T10:30:00, @T11:30:00]", stringType.value)
+        Assertions.assertTrue(
+            stringType.getExtension().any { e: Extension? ->
+                e!!.getUrl() == FhirTypeConverter.CQL_TEXT_EXT_URL
+            }
+        )
+    }
+
+    private fun numericRange(cqlType: kotlin.String, low: Quantity?, high: Quantity?): Range {
+        val range = Range()
+        range
+            .addExtension()
+            .setUrl(FhirTypeConverter.CQL_TYPE_EXT_URL)
+            .setValue(StringType(cqlType))
+        if (low != null) {
+            range.setLow(low)
+        }
+        if (high != null) {
+            range.setHigh(high)
+        }
+        return range
+    }
+
+    private fun rangeQuantity(value: kotlin.String, precision: Int? = null): Quantity {
+        val quantity = Quantity()
+        quantity.setValue(BigDecimal(value))
+        if (precision != null) {
+            quantity.valueElement
+                .addExtension()
+                .setUrl(FhirTypeConverter.QUANTITY_PRECISION_EXT_URL)
+                .setValue(IntegerType(precision))
+        }
+        return quantity
     }
 
     @Test

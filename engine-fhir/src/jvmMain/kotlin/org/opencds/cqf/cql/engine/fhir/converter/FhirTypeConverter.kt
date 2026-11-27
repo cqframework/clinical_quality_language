@@ -231,7 +231,7 @@ interface FhirTypeConverter {
     /**
      * Converts a CQL Interval to a FHIR Range
      *
-     * @param value a Quantity Interval
+     * @param value a Quantity, Integer, Long or Decimal Interval
      * @return a FHIR Range
      */
     fun toFhirRange(value: Interval?): ICompositeType?
@@ -239,7 +239,7 @@ interface FhirTypeConverter {
     /**
      * Converts a CQL Interval to FHIR Range or Period
      *
-     * @param value a Quantity, Date, or DateTime interval
+     * @param value a Quantity, Integer, Long, Decimal, Date, or DateTime interval
      * @return A FHIR Range or Period
      */
     fun toFhirInterval(value: Interval?): IBase?
@@ -432,6 +432,8 @@ interface FhirTypeConverter {
             "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
         const val DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown"
         const val CQL_TYPE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType"
+        const val QUANTITY_PRECISION_EXT_URL =
+            "http://hl7.org/fhir/StructureDefinition/quantity-precision"
 
         // Stacktrace of an exception that occurred during CQL evaluation, as the native platform
         // represents it (e.g. Java)

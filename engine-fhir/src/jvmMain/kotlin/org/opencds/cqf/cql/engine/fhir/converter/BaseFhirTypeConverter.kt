@@ -32,6 +32,9 @@ import org.opencds.cqf.cql.engine.runtime.Tuple
 import org.opencds.cqf.cql.engine.runtime.Value
 import org.opencds.cqf.cql.engine.runtime.dateTimeTypeName
 import org.opencds.cqf.cql.engine.runtime.dateTypeName
+import org.opencds.cqf.cql.engine.runtime.decimalTypeName
+import org.opencds.cqf.cql.engine.runtime.integerTypeName
+import org.opencds.cqf.cql.engine.runtime.longTypeName
 import org.opencds.cqf.cql.engine.runtime.quantityTypeName
 import org.opencds.cqf.cql.engine.runtime.toCqlBoolean
 import org.opencds.cqf.cql.engine.runtime.toCqlDecimal
@@ -207,9 +210,65 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         return when (value.pointType) {
             dateTypeName,
             dateTimeTypeName -> toFhirPeriod(value)
-            quantityTypeName -> toFhirRange(value)
+            quantityTypeName,
+            integerTypeName,
+            longTypeName,
+            decimalTypeName -> toFhirRange(value)
             else -> toCqlText(value)
         }
+    }
+
+    /** A closed bound of a FHIR Range built from an Interval of Integer, Long or Decimal. */
+    protected class RangeBound(
+        val value: BigDecimal,
+        /** Decimal places of a Decimal point, for the quantity-precision extension. */
+        val precision: Int?,
+    )
+
+    /**
+     * Returns the closed low and high bounds of an Interval of Integer, Long or Decimal, for a FHIR
+     * Range. Using CQL with FHIR (3.0.0-ballot, Conformance Requirement 4.3) maps these intervals
+     * to FHIR.Range. A Range has no open boundaries, so an open boundary is moved in by one step at
+     * the point's precision: 1 for Integer and Long, and the last decimal place for Decimal, so
+     * Interval[1.0, 1.4) gives 1.0 to 1.3, each with a precision of 1. A null boundary gives no
+     * bound.
+     */
+    protected fun toRangeBounds(value: Interval): Pair<RangeBound?, RangeBound?> {
+        return Pair(
+            toRangeBound(value.low, value.lowClosed, true),
+            toRangeBound(value.high, value.highClosed, false),
+        )
+    }
+
+    private fun toRangeBound(
+        point: Value?,
+        closed: kotlin.Boolean,
+        isLow: kotlin.Boolean,
+    ): RangeBound? {
+        if (point == null) {
+            return null
+        }
+
+        val (number, precision) =
+            when (point) {
+                is Integer -> Pair(BigDecimal(point.value), null)
+                is Long -> Pair(BigDecimal(point.value), null)
+                is Decimal -> Pair(point.value, maxOf(point.value.scale(), 0))
+                else ->
+                    throw IllegalArgumentException(
+                        "FHIR Range can only be created from an Interval of Integer, Long, Decimal or Quantity type"
+                    )
+            }
+
+        val step = if (closed) BigDecimal.ZERO else BigDecimal.ONE.movePointLeft(precision ?: 0)
+        return RangeBound(if (isLow) number.add(step) else number.subtract(step), precision)
+    }
+
+    /**
+     * The cqf-cqlType of an Interval of Integer, Long or Decimal, e.g. Interval<System.Integer>.
+     */
+    protected fun toRangeCqlType(value: Interval): kotlin.String {
+        return "Interval<System.${value.pointType.getLocalPart()}>"
     }
 
     override fun isCqlType(value: Any): kotlin.Boolean {
