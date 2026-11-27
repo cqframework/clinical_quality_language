@@ -3537,7 +3537,7 @@ define Ends_DateTimeIntervalEndsFalse: Interval[DateTime(2012, 1, 5), DateTime(2
 define Ends_DateTimeIntervalEndsDayOfTrue: Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] ends day of Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)]
 define Ends_DateTimeIntervalEndsStartsFalse: Interval[DateTime(2012, 1, 5), DateTime(2012, 2, 16)] ends day of Interval[DateTime(2012, 2, 1), DateTime(2012, 2, 16)]
 
-define test_Ends_TestEndsNull: TestMessage(Ends_TestEndsNull is null, 'Ends_TestEndsNull', 'null', toString(Ends_TestEndsNull))
+define test_Ends_TestEndsNull: TestMessage(Ends_TestEndsNull = false, 'Ends_TestEndsNull', toString(false), toString(Ends_TestEndsNull))
 define test_Ends_IntegerIntervalEndsTrue: TestMessage(Ends_IntegerIntervalEndsTrue, 'Ends_IntegerIntervalEndsTrue', toString(true), toString(Ends_IntegerIntervalEndsTrue))
 define test_Ends_IntegerIntervalEndsFalse: TestMessage(not Ends_IntegerIntervalEndsFalse, 'Ends_IntegerIntervalEndsFalse', toString(false), toString(Ends_IntegerIntervalEndsFalse))
 define test_Ends_IntegerIntervalEndsStartsFalse: TestMessage(not Ends_IntegerIntervalEndsStartsFalse, 'Ends_IntegerIntervalEndsStartsFalse', toString(false), toString(Ends_IntegerIntervalEndsStartsFalse))
