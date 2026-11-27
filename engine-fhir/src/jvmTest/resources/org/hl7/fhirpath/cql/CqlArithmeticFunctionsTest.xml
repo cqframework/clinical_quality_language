@@ -30,6 +30,14 @@
 			<expression>Abs(-1L)</expression>
 			<output>1L</output>
 		</test>
+		<test name="AbsMinIntegerOverflow">
+			<expression>Abs(minimum Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="AbsMinLongOverflow">
+			<expression>Abs(minimum Long)</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="Add">
 		<test name="AddNull">
@@ -63,6 +71,14 @@
 		<test name="Add1L1L">
 			<expression>1L + 1L</expression>
 			<output>2L</output>
+		</test>
+		<test name="AddIntegerOverflow">
+			<expression>(maximum Integer) + 1</expression>
+			<output>null</output>
+		</test>
+		<test name="AddLongOverflow">
+			<expression>(maximum Long) + 1L</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Ceiling">
@@ -551,6 +567,14 @@
 			<output>2.0'cm2'</output>
 			<!-- TODO: make the units multiply -->
 		</test>
+		<test name="MultiplyIntegerOverflow">
+			<expression>(maximum Integer) * 2</expression>
+			<output>null</output>
+		</test>
+		<test name="MultiplyLongOverflow">
+			<expression>(maximum Long) * 2L</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="Negate">
 		<test name="NegateNull">
@@ -604,6 +628,14 @@
 		<test name="Negate1CM">
 			<expression>-(1'cm')</expression>
 			<output>-1.0'cm'</output>
+		</test>
+		<test name="NegateMinIntegerOverflow">
+			<expression>-(minimum Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="NegateMinLongOverflow">
+			<expression>-(minimum Long)</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Precision">
@@ -806,6 +838,14 @@
 		<test name="Subtract2And11D">
 			<expression>2 - 1.1</expression>
 			<output>0.9</output>
+		</test>
+		<test name="SubtractIntegerOverflow">
+			<expression>(minimum Integer) - 1</expression>
+			<output>null</output>
+		</test>
+		<test name="SubtractLongOverflow">
+			<expression>(minimum Long) - 1L</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Successor">
