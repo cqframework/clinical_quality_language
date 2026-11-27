@@ -308,22 +308,27 @@ object EqualEvaluator {
             return Boolean.FALSE
         }
 
+        // "For tuple types, this means that equality returns true if and only if the tuples are of
+        // the same type, and the values for all elements that have values, by name, are equal,
+        // defined as a conjunction of equality comparisons." As in a conjunction, a false element
+        // makes the result false wherever it is, and an unknown one only makes it null when no
+        // element is false: { x: 1, y: 1 } = { x: null, y: 2 } is false.
+        var hasUnknownElement = false
         for (key in right.keys) {
-            if (left.containsKey(key)) {
-                if (right[key] == null && left[key] == null) {
-                    continue
-                }
-                val equal = equal(right[key], left[key], state)
-                if (equal == null) {
-                    return null
-                } else if (!equal.value) {
-                    return Boolean.FALSE
-                }
-            } else {
+            if (!left.containsKey(key)) {
+                return Boolean.FALSE
+            }
+            if (right[key] == null && left[key] == null) {
+                continue
+            }
+            val equal = equal(right[key], left[key], state)
+            if (equal == null) {
+                hasUnknownElement = true
+            } else if (!equal.value) {
                 return Boolean.FALSE
             }
         }
 
-        return Boolean.TRUE
+        return if (hasUnknownElement) null else Boolean.TRUE
     }
 }
