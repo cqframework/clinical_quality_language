@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import org.cqframework.cql.shared.JsOnlyExport
+import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.exception.InvalidTime
 import org.opencds.cqf.cql.engine.util.LocalTime
 import org.opencds.cqf.cql.engine.util.localTimeParse
@@ -183,6 +184,14 @@ class Time(val time: LocalTime, override val precision: Precision) : BaseTempora
 
     @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        // After, Before, Same As, Same Or After and Same Or Before: "For Time values, precision
+        // must be one of …" (and for After, "or an error is thrown")
+        if (p !in COMPARABLE_PRECISIONS) {
+            throw InvalidPrecision(
+                "Time values can't be compared at ${p.name.lowercase()} precision; precision " +
+                    "must be one of: hour, minute, second, or millisecond"
+            )
+        }
         var precision = p
         val leftMeetsPrecisionRequirements = this.precision.toTimeIndex() >= precision.toTimeIndex()
         val rightMeetsPrecisionRequirements =
@@ -244,3 +253,7 @@ class Time(val time: LocalTime, override val precision: Precision) : BaseTempora
         return "@T${toStringInner()}"
     }
 }
+
+/** The precisions Time values can be compared at. */
+private val COMPARABLE_PRECISIONS =
+    setOf(Precision.HOUR, Precision.MINUTE, Precision.SECOND, Precision.MILLISECOND)

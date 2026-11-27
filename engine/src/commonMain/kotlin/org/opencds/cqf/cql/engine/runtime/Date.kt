@@ -5,6 +5,7 @@ import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.shared.JsOnlyExport
 import org.opencds.cqf.cql.engine.exception.InvalidDate
+import org.opencds.cqf.cql.engine.exception.InvalidPrecision
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.util.Date
 import org.opencds.cqf.cql.engine.util.LocalDate
@@ -133,6 +134,14 @@ constructor(val date: LocalDate, override val precision: Precision = Precision.D
 
     @JsExport.Ignore
     override fun compareToPrecision(other: BaseTemporal, p: Precision): Int? {
+        // After, Before, Same As, Same Or After and Same Or Before: "For Date values, precision
+        // must be one of …" (and for After, "or an error is thrown")
+        if (p !in COMPARABLE_PRECISIONS) {
+            throw InvalidPrecision(
+                "Date values can't be compared at ${p.name.lowercase()} precision; precision " +
+                    "must be one of: year, month, or day"
+            )
+        }
         var precision = p
         val leftMeetsPrecisionRequirements = this.precision.toDateIndex() >= precision.toDateIndex()
         val rightMeetsPrecisionRequirements =
@@ -266,3 +275,7 @@ constructor(val date: LocalDate, override val precision: Precision = Precision.D
         }
     }
 }
+
+/** The precisions Date values can be compared at. */
+private val COMPARABLE_PRECISIONS =
+    setOf(Precision.YEAR, Precision.MONTH, Precision.WEEK, Precision.DAY)
