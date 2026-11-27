@@ -8,6 +8,7 @@ import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator.multiply
 import org.opencds.cqf.cql.engine.execution.State
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal
 import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.CalendarDurationHelper
 import org.opencds.cqf.cql.engine.runtime.ClassInstance
 import org.opencds.cqf.cql.engine.runtime.Code
 import org.opencds.cqf.cql.engine.runtime.CodeSystem
@@ -183,6 +184,15 @@ object EquivalentEvaluator {
             else false
         if (simpleResult) {
             return Boolean.TRUE
+        } else if (
+            CalendarDurationHelper.isCalendarKeyword(left.unit) ||
+                CalendarDurationHelper.isCalendarKeyword(right.unit)
+        ) {
+            // Calendar duration keywords (1 year ~ 365 days); the UCUM service doesn't know them.
+            val values =
+                CalendarDurationHelper.inCommonUnit(left, right, equivalence = true)
+                    ?: return Boolean.FALSE
+            return equivalent(values.first.toCqlDecimal(), values.second.toCqlDecimal())
         } else {
             // The simple rule indicated that the units are not comparable, try to convert the value
             // of right Quantity to the unit of left Quantity and check for equivalence again if the
