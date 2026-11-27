@@ -430,7 +430,7 @@
     <ID>ReturnCount:MeetsEvaluator.kt$MeetsEvaluator$fun meetsOperation( left: Value?, right: Value?, precision: kotlin.String?, state: State?, ): Boolean?</ID>
     <ID>ReturnCount:MinEvaluator.kt$MinEvaluator$@JvmStatic fun min(source: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:ModeEvaluator.kt$ModeEvaluator$@JvmStatic fun mode(source: Value?, state: State?): Value?</ID>
-    <ID>ReturnCount:ModuloEvaluator.kt$ModuloEvaluator$@JvmStatic fun modulo(left: Value?, right: Value?): Value?</ID>
+    <ID>ReturnCount:ModuloEvaluator.kt$ModuloEvaluator$@JvmStatic fun modulo(left: Value?, right: Value?, state: State?): Value?</ID>
     <ID>ReturnCount:NamedTypeValue.kt$fun getNamedTypeForCqlValue(value: Value?): QName?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun internalEvaluate( operand: Expression, state: State?, visitor: ElmLibraryVisitor&lt;Value?, State?>, ): Value?</ID>
     <ID>ReturnCount:NegateEvaluator.kt$NegateEvaluator$fun negate(source: Value?): Value?</ID>
