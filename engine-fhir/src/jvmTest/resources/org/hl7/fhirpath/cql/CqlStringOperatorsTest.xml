@@ -18,6 +18,22 @@
 			<expression>Combine({'a', 'b', 'c'}, '-')</expression>
 			<output>'a-b-c'</output>
 		</test>
+		<test name="CombineWithNulls">
+			<expression>Combine({'a', 'b', 'c', null})</expression>
+			<output>'abc'</output>
+		</test>
+		<test name="CombineWithNullsSepDash">
+			<expression>Combine({'a', null, 'c'}, '-')</expression>
+			<output>'a-c'</output>
+		</test>
+		<test name="CombineNullSeparator">
+			<expression>Combine({'a', 'b', 'c'}, null)</expression>
+			<output>'abc'</output>
+		</test>
+		<test name="CombineAllNulls">
+			<expression>Combine({null as String, null as String})</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="Concatenate">
 		<test name="ConcatenateNullNull">
