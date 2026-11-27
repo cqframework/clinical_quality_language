@@ -440,5 +440,9 @@ interface FhirTypeConverter {
 
         // The CQL representation of a FHIR structure.
         const val CQL_TEXT_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlText"
+
+        // The actual precision of a dateTime, time or instant value that is less precise than
+        // its value shows (for example a CQL DateTime at hour precision, zero-filled to seconds).
+        const val TIME_PRECISION_EXT_URL = "http://hl7.org/fhir/StructureDefinition/time-precision"
     }
 }

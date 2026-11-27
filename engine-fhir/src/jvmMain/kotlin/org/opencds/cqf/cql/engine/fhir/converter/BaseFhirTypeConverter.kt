@@ -451,12 +451,46 @@ internal abstract class BaseFhirTypeConverter : FhirTypeConverter {
         }
     }
 
+    /**
+     * The code of the time-precision extension for a DateTime or Time at hour or minute precision,
+     * or null for any other precision.
+     *
+     * FHIR dateTime and time values need minutes and seconds once they have an hour, so Using CQL
+     * with FHIR (conformance requirement 4.3, FHIR Type Mapping) maps these values to FHIR values
+     * zero-filled to seconds, with the time-precision extension giving their actual precision.
+     */
+    protected fun toTimePrecisionCode(precision: Precision): kotlin.String? {
+        return when (precision) {
+            Precision.HOUR -> "h"
+            Precision.MINUTE -> "min"
+            else -> null
+        }
+    }
+
+    /** The DateTime with the components below its precision set to their minimum (zero). */
+    protected fun zeroFilled(value: DateTime): DateTime {
+        return value.expandPartialMinFromPrecision(value.precision)
+    }
+
+    /**
+     * The FHIR time string for a Time: at hour or minute precision, zero-filled to seconds (see
+     * [toTimePrecisionCode]).
+     */
+    protected fun toFhirTimeString(value: Time): kotlin.String {
+        if (toTimePrecisionCode(value.precision) == null) {
+            return value.toStringInner()
+        }
+        return Time(value.expandPartialMinFromPrecision(value.precision).time, Precision.SECOND)
+            .toStringInner()
+    }
+
     protected fun toFhirPrecision(precision: Precision): TemporalPrecisionEnum {
         val name =
             when (precision) {
-                Precision.WEEK,
+                Precision.WEEK -> TemporalPrecisionEnum.DAY.name
+                // Zero-filled to seconds, see toTimePrecisionCode
                 Precision.HOUR,
-                Precision.MINUTE -> TemporalPrecisionEnum.DAY.name
+                Precision.MINUTE -> TemporalPrecisionEnum.SECOND.name
                 Precision.MILLISECOND -> TemporalPrecisionEnum.MILLI.name
                 else -> precision.name
             }
