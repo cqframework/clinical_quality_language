@@ -9,16 +9,62 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import org.hl7.elm.r1.VersionedIdentifier
 import org.opencds.cqf.cql.engine.elm.executing.AfterEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.BeforeEvaluator
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.SameAsEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.SameOrAfterEvaluator
+import org.opencds.cqf.cql.engine.elm.executing.SameOrBeforeEvaluator
 import org.opencds.cqf.cql.engine.exception.CqlException
+import org.opencds.cqf.cql.engine.exception.InvalidPrecision
+import org.opencds.cqf.cql.engine.runtime.Boolean
+import org.opencds.cqf.cql.engine.runtime.Date
 import org.opencds.cqf.cql.engine.runtime.DateTime
 import org.opencds.cqf.cql.engine.runtime.Integer
 import org.opencds.cqf.cql.engine.runtime.Interval
+import org.opencds.cqf.cql.engine.runtime.Time
 import org.opencds.cqf.cql.engine.runtime.toCqlInteger
 import org.opencds.cqf.cql.engine.runtime.toCqlString
 
 internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     /** [org.opencds.cqf.cql.engine.elm.execution.AfterEvaluator.evaluate] */
+    /**
+     * [#1965](https://github.com/cqframework/clinical_quality_language/issues/1965): a Date can't
+     * be compared at a time precision, and a Time can't be compared at a date precision
+     */
+    @Test
+    fun comparisonPrecisionMustBeOneTheTypeHas() {
+        val date1 = Date(2014, 1, 1)
+        val date2 = Date(2013, 1, 1)
+        val time1 = Time(10, 0)
+        val time2 = Time(9, 0)
+        val dates = Interval(date2, true, date1, true)
+        assertFailsWith<InvalidPrecision> {
+            AfterEvaluator.after(date1, date2, "hour", engine.state)
+        }
+        assertFailsWith<InvalidPrecision> {
+            AfterEvaluator.after(time1, time2, "day", engine.state)
+        }
+        assertFailsWith<InvalidPrecision> {
+            BeforeEvaluator.before(date2, date1, "minute", engine.state)
+        }
+        assertFailsWith<InvalidPrecision> {
+            SameAsEvaluator.sameAs(time1, time1, "month", engine.state)
+        }
+        assertFailsWith<InvalidPrecision> {
+            SameOrAfterEvaluator.sameOrAfter(date1, date2, "second", engine.state)
+        }
+        assertFailsWith<InvalidPrecision> {
+            SameOrBeforeEvaluator.sameOrBefore(time2, time1, "year", engine.state)
+        }
+        // Interval overloads compare their boundaries the same way
+        assertFailsWith<InvalidPrecision> {
+            SameAsEvaluator.sameAs(dates, dates, "hour", engine.state)
+        }
+        // Precisions the type has still work
+        assertEquals(Boolean.TRUE, AfterEvaluator.after(date1, date2, "year", engine.state))
+        assertEquals(Boolean.TRUE, AfterEvaluator.after(time1, time2, "hour", engine.state))
+    }
+
     @Test
     fun after() {
         assertFailsWith<CqlException> {

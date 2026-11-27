@@ -245,6 +245,14 @@
 			<output>true</output>
 		</test>
 		<!-- TODO: do uncertainty tests for Time once the Time(x,x,x,x,x) format has been implemented -->
+		<test name="DateAfterHourPrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@2014-01-01 after hour of @2013-01-01</expression>
+		</test>
+		<test name="TimeAfterDayPrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@T10:00 after day of @T09:00</expression>
+		</test>
 	</group>
 	<group name="Before">
 		<test name="DateTimeBeforeYearTrue">
@@ -348,6 +356,10 @@
 			<output>false</output>
 		</test>
 		<!-- TODO: do uncertainty tests for Time once the Time(x,x,x,x,x) format has been implemented -->
+		<test name="DateBeforeMinutePrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@2014-01-01 before minute of @2015-01-01</expression>
+		</test>
 	</group>
 	<group name="DateTime">
 		<test name="DateTimeYear">
@@ -873,6 +885,10 @@
 			<expression>@T23:25:25.555 same millisecond as @T23:25:25.554</expression>
 			<output>false</output>
 		</test>
+		<test name="TimeSameMonthPrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@T10:00 same month as @T10:00</expression>
+		</test>
 	</group>
 	<group name="SameOrAfter">
 		<test name="DateTimeSameOrAfterYearTrue1">
@@ -1027,6 +1043,10 @@
 			<expression>@2017-12-21T02:00:00.0 same or after @2017-12-20T11:00:00.0</expression>
 			<output>true</output>
 		</test>
+		<test name="DateSameOrAfterSecondPrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@2014-01-01 same second or after @2013-01-01</expression>
+		</test>
 	</group>
 	<group name="SameOrBefore">
 		<test name="DateTimeSameOrBeforeYearTrue1">
@@ -1172,6 +1192,10 @@
 		<test name="TimeSameOrBeforeMillisFalse">
 			<expression>@T23:55:25.966 same millisecond or before @T23:55:25.900</expression>
 			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeYearPrecisionError">
+			<!-- Precision must be one the type has (#1965) -->
+			<expression invalid="true">@T10:00 same year or before @T11:00</expression>
 		</test>
 	</group>
 	<group name="Subtract">
