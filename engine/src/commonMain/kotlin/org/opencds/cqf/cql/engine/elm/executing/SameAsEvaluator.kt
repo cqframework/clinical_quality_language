@@ -127,10 +127,12 @@ object SameAsEvaluator {
                     ?.toCqlBoolean()
             }
         } else if (left is BaseTemporal && right is BaseTemporal) {
-            if (precision == null) {
-                precision = BaseTemporal.getHighestPrecision(left, right)
-            }
-            val result = left.compareToPrecision(right, Precision.fromString(precision))
+            // Without a precision, compare as Greater/Less do: from years to the finest precision
+            // of
+            // either value, with seconds and milliseconds as a single precision
+            val result =
+                if (precision == null) left.compare(right, false)
+                else left.compareToPrecision(right, Precision.fromString(precision))
             return (if (result == null) null else result == 0)?.toCqlBoolean()
         }
 

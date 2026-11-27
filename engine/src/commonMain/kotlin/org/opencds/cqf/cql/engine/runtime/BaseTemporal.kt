@@ -98,3 +98,8 @@ sealed interface BaseTemporal : SimpleValue, Comparable<BaseTemporal> {
         }
     }
 }
+
+/**
+ * Seconds and milliseconds are a single precision when comparing Date, DateTime and Time values.
+ */
+internal val SECONDS_OR_MILLISECONDS = setOf(Precision.SECOND, Precision.MILLISECOND)

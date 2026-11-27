@@ -725,9 +725,11 @@
 			<expression>Interval[@T04:59:59.999, @T09:59:59.999] included in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
 			<output>false</output>
 		</test>
-		<test name="DateTimeIncludedInNull">
+		<test name="DateTimeIncludedInNoMillisecondsTrue">
+			<!-- Seconds and milliseconds are combined as a single precision, so the value given to seconds
+			compares as one with 0 milliseconds. See https://cql.hl7.org/09-b-cqlreference.html#datetime and #1962 -->
 			<expression>Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]</expression>
-			<output>null</output>
+			<output>true</output>
 		</test>
 		<test name="DateTimeIncludedInPrecisionTrue">
 			<expression>Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in day of Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]</expression>
@@ -1359,9 +1361,11 @@
 			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes @T12:00:00.000</expression>
 			<output>false</output>
 		</test>
-		<test name="TimeProperContainsNull">
+		<test name="TimeProperContainsNoMillisecondsFalse">
+			<!-- Seconds and milliseconds are combined as a single precision, so the value given to seconds
+			compares as one with 0 milliseconds. See https://cql.hl7.org/09-b-cqlreference.html#time and #1962 -->
 			<expression>Interval[@T12:00:00.001, @T21:59:59.999] properly includes @T12:00:00</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 		<test name="TimeProperContainsPrecisionTrue">
 			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes second of @T12:00:01</expression>
@@ -1385,9 +1389,11 @@
 			<expression>@T12:00:00.000 properly included in  Interval[@T12:00:00.000, @T21:59:59.999]</expression>
 			<output>false</output>
 		</test>
-		<test name="TimeProperInNull">
+		<test name="TimeProperInNoMillisecondsFalse">
+			<!-- Seconds and milliseconds are combined as a single precision, so the value given to seconds
+			compares as one with 0 milliseconds. See https://cql.hl7.org/09-b-cqlreference.html#time and #1962 -->
 			<expression>@T12:00:00 properly included in Interval[@T12:00:00.001, @T21:59:59.999]</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 		<test name="TimeProperInPrecisionTrue">
 			<expression>@T12:00:01 properly included in second of Interval[@T12:00:00.000, @T21:59:59.999]</expression>

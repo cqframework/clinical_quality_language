@@ -234,6 +234,17 @@ constructor(
     }
 
     override fun compare(other: BaseTemporal, forSort: kotlin.Boolean): Int? {
+        // Seconds and milliseconds are combined as a single precision using a decimal (Equal,
+        // Equivalent, Greater, Less), so a value given to seconds compares as one with 0
+        // milliseconds instead of having no value at millisecond precision.
+        if (other is DateTime && mixesSecondsAndMilliseconds(other)) {
+            return DateTime(this.dateTime, Precision.MILLISECOND)
+                .compareToPrecision(
+                    DateTime(other.dateTime, Precision.MILLISECOND),
+                    Precision.MILLISECOND,
+                )
+        }
+
         val differentPrecisions = this.precision != other.precision
 
         if (differentPrecisions) {
@@ -306,6 +317,12 @@ constructor(
     override fun compareTo(other: BaseTemporal): Int {
         return this.compare(other, true)!!
     }
+
+    /** One value is given to seconds and the other to milliseconds. */
+    private fun mixesSecondsAndMilliseconds(other: DateTime) =
+        this.precision != other.precision &&
+            this.precision in SECONDS_OR_MILLISECONDS &&
+            other.precision in SECONDS_OR_MILLISECONDS
 
     private val hash: Int by lazy { listOf(dateTime, precision).hashCode() }
 

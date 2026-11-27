@@ -753,7 +753,7 @@
 		</test>
 		<test name="ProperContainsTimeNull">
 			<expression>{ @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 	</group>
 	<group name="ProperIn">
@@ -771,7 +771,7 @@
 		</test>
 		<test name="ProperInTimeNull">
 			<expression>@T15:59:59 properly included in { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 }</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 	</group>
 	<group name="ProperlyIncludes">

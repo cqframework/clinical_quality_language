@@ -192,6 +192,21 @@
 			<expression>@T10:00:00.000 = @T22:00:00.000</expression>
 			<output>false</output>
 		</test>
+		<test name="DateTimeWithMillisecondsEqualIsTrue">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.0 = @2024-11-15T12:30:00</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeWithMillisecondsEqualIsFalse">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.5 = @2024-11-15T12:30:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeWithMillisecondsEqualIsTrue">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@T12:30:00.000 = @T12:30:00</expression>
+			<output>true</output>
+		</test>
 	</group>
 	<group name="Greater">
 		<test name="GreaterZZ">
@@ -297,6 +312,16 @@
 		<test name="UncertaintyGreaterFalse">
 			<expression>DateTime(2013) &gt; DateTime(2014, 2, 15)</expression>
 			<output>false</output>
+		</test>
+		<test name="DateTimeWithMillisecondsGreaterIsFalse">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.0 > @2024-11-15T12:30:00</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeWithMillisecondsGreaterIsTrue">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.5 > @2024-11-15T12:30:00</expression>
+			<output>true</output>
 		</test>
 	</group>
 	<group name="Greater Or Equal">
@@ -520,6 +545,11 @@
 		</test>
 		<test name="UncertaintyLessFalse">
 			<expression>DateTime(2015) &lt; DateTime(2014, 2, 15)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeWithMillisecondsLessIsFalse">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.5 &lt; @2024-11-15T12:30:00</expression>
 			<output>false</output>
 		</test>
 	</group>
@@ -860,6 +890,11 @@
 					value: 'John'
 				}
 			</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeWithMillisecondsEquivalentIsTrue">
+			<!-- Seconds and milliseconds are combined as a single precision (#1962) -->
+			<expression>@2024-11-15T12:30:00.0 ~ @2024-11-15T12:30:00</expression>
 			<output>true</output>
 		</test>
 	</group>
