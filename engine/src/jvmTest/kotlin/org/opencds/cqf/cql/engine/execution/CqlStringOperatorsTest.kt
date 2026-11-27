@@ -89,6 +89,12 @@ internal class CqlStringOperatorsTest : CqlTestBase() {
         value = results["MatchesWordsAndSpacesFalse"]!!.value
         assertEquals(Boolean.FALSE, value)
 
+        value = results["MatchesPartialTrue"]!!.value
+        assertEquals(Boolean.TRUE, value)
+
+        value = results["MatchesPartialAnchoredFalse"]!!.value
+        assertEquals(Boolean.FALSE, value)
+
         value = results["MatchesNotWords"]!!.value
         assertEquals(Boolean.TRUE, value)
 

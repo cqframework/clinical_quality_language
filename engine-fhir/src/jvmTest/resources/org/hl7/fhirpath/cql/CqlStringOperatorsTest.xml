@@ -172,7 +172,15 @@
 			<output>true</output>
 		</test>
 		<test name="MatchesWordsAndSpacesFalse">
-			<expression>Matches('Not all who wander are lost - circa 2017', '[\\w]+')</expression>
+			<expression>Matches('Not all who wander are lost - circa 2017', '^[\\w\\s]+$')</expression>
+			<output>false</output>
+		</test>
+		<test name="MatchesPartialTrue">
+			<expression>Matches('abc', 'b')</expression>
+			<output>true</output>
+		</test>
+		<test name="MatchesPartialAnchoredFalse">
+			<expression>Matches('abc', '^b$')</expression>
 			<output>false</output>
 		</test>
 		<test name="MatchesNotWords">
