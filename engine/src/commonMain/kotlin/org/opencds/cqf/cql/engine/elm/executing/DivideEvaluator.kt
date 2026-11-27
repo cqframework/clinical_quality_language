@@ -27,6 +27,9 @@ If either argument is null, the result is null.
 */
 @Suppress("CyclomaticComplexMethod")
 object DivideEvaluator {
+    /** 1 with enough digits that UCUM's significant-figure arithmetic keeps the exact factor. */
+    private val PRECISE_ONE = BigDecimal("1.00000000000000000000")
+
     private fun divideHelper(left: Decimal, right: Decimal?, state: State?): Decimal? {
         if (EqualEvaluator.equal(right, BigDecimal("0.0").toCqlDecimal(), state)?.value == true) {
             return null
@@ -71,13 +74,22 @@ object DivideEvaluator {
             } else {
                 val ucumService = state?.environment?.libraryManager?.ucumService!!
                 try {
-                    val result =
-                        ucumService.divideBy(Pair(leftValue, leftUnit), Pair(rightValue, rightUnit))
-                    val unverifiedResultValue = result.first
+                    // UCUM gives the result unit and the conversion factor between the units, but
+                    // rounds its result to the operands' significant figures (-5.5 / 2.0 gives
+                    // -2.8). So take only the factor from UCUM, at high precision, and divide the
+                    // values as Decimals: -5.5 'mg' / 2.0 'mg' is -2.75 '1'.
+                    val units =
+                        ucumService.divideBy(
+                            Pair(PRECISE_ONE, leftUnit),
+                            Pair(PRECISE_ONE, rightUnit),
+                        )
                     resultValue =
-                        DecimalHelper.verifyPrecision(unverifiedResultValue, null).toCqlDecimal()
-                    val rawResultUnit = result.second
-                    resultUnit = rawResultUnit.ifEmpty { "1" }
+                        divideHelper(
+                            leftValue.multiply(units.first).toCqlDecimal(),
+                            rightValue.toCqlDecimal(),
+                            state,
+                        )
+                    resultUnit = units.second.ifEmpty { "1" }
                 } catch (e: Exception) {
                     @Suppress("TooGenericExceptionThrown") throw RuntimeException(e)
                 }

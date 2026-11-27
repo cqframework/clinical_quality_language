@@ -191,6 +191,26 @@
 			<output>null</output>
 		</test>
                 <!-- TODO -->
+		<test name="QuantityDivide">
+			<!-- Quantity division keeps the precision of Decimal division (#1963) -->
+			<expression>-5.5 'mg' / 2.0 'mg'</expression>
+			<output>-2.75 '1'</output>
+		</test>
+		<test name="Divide1MGBy3MG">
+			<!-- Quantity division keeps the precision of Decimal division (#1963) -->
+			<expression>1.0 'mg' / 3.0 'mg'</expression>
+			<output>0.33333333 '1'</output>
+		</test>
+		<test name="Divide1GBy500MG">
+			<!-- Quantity division keeps the precision of Decimal division (#1963) -->
+			<expression>1.0 'g' / 500 'mg'</expression>
+			<output>2.0 '1'</output>
+		</test>
+		<test name="Divide10MGBy4ML">
+			<!-- Quantity division keeps the precision of Decimal division (#1963) -->
+			<expression>10.0 'mg' / 4.0 'mL'</expression>
+			<output>2.5 'mg/mL'</output>
+		</test>
 	</group>
 	<group name="Floor">
 		<test name="FloorNull">
