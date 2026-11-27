@@ -262,6 +262,28 @@
 			<output>{ '' }</output>
 		</test>
 	</group>
+	<group name="SplitOnMatches">
+		<test name="SplitOnMatchesNull">
+			<expression>SplitOnMatches(null, ',')</expression>
+			<output>null</output>
+		</test>
+		<test name="SplitOnMatchesNotFound">
+			<expression>SplitOnMatches('ABC', ',')</expression>
+			<output>{'ABC'}</output>
+		</test>
+		<test name="SplitOnMatchesNotFoundLength">
+			<expression>Length(SplitOnMatches('ABC', ',')[0])</expression>
+			<output>3</output>
+		</test>
+		<test name="SplitOnMatchesFound">
+			<expression>SplitOnMatches('A,B', ',')</expression>
+			<output>{'A', 'B'}</output>
+		</test>
+		<test name="SplitOnMatchesPattern">
+			<expression>SplitOnMatches('A1B22C', '[0-9]+')</expression>
+			<output>{'A', 'B', 'C'}</output>
+		</test>
+	</group>
 	<group name="StartsWith">
 		<test name="StartsWithNull">
 			<expression>StartsWith(null, null)</expression>
