@@ -161,7 +161,7 @@ internal class CqlTypesTest : CqlTestBase() {
         )
 
         value = results["DateTimeUncertain"]!!.value
-        assertEquals(19.toCqlInteger(), (value as Interval).start, "DateTimeUncertain")
+        assertEquals(18.toCqlInteger(), (value as Interval).start, "DateTimeUncertain")
         assertEquals(49.toCqlInteger(), value.end, "DateTimeUncertain")
 
         value = results["DateTimeMin"]!!.value

@@ -34,34 +34,37 @@ internal class CqlDateTimeOperatorsTest : CqlTestBase() {
     /** [org.opencds.cqf.cql.engine.elm.execution.DurationBetweenEvaluator.evaluate] */
     @Test
     fun duration() {
+        // DateTime(2005) and DateTime(2010) are both uncertain through milliseconds (#1938)
         var value = engine.expression(library, "DateTimeDurationBetweenYear")
-        assertEquals(5.toCqlInteger(), value)
+        assertIs<Interval>(value)
+        assertEquals(4.toCqlInteger(), value.start)
+        assertEquals(5.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval")
         assertIs<Interval>(value)
-        assertEquals(17.toCqlInteger(), value.start)
+        assertEquals(16.toCqlInteger(), value.start)
         assertEquals(44.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainInterval2")
         assertIs<Interval>(value)
-        assertEquals(5.toCqlInteger(), value.start)
+        assertEquals(4.toCqlInteger(), value.start)
         assertEquals(16.toCqlInteger(), value.end)
 
         //        assertThat(((Uncertainty)result).getUncertaintyInterval(), is(new Interval(5,
         // true, 17, true)));
         value = engine.expression(library, "DateTimeDurationBetweenUncertainAdd")
         assertIs<Interval>(value)
-        assertEquals(34.toCqlInteger(), value.start)
+        assertEquals(32.toCqlInteger(), value.start)
         assertEquals(88.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract")
         assertIs<Interval>(value)
-        assertEquals(12.toCqlInteger(), value.start)
-        assertEquals(28.toCqlInteger(), value.end)
+        assertEquals(0.toCqlInteger(), value.start)
+        assertEquals(40.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply")
         assertIs<Interval>(value)
-        assertEquals(289.toCqlInteger(), value.start)
+        assertEquals(256.toCqlInteger(), value.start)
         assertEquals(1936.toCqlInteger(), value.end)
 
         value = engine.expression(library, "DurationInDaysA")

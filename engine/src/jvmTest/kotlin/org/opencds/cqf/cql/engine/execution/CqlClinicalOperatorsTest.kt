@@ -21,38 +21,61 @@ internal class CqlClinicalOperatorsTest : CqlTestBase() {
                 }
                 .onlyResultOrThrow
 
+        // DateTime(2010, 1, 1) is any time on that day, so at 2016-01-01T00:00 the age is uncertain
+        // (#1938)
         var value = results["CalculateAgeYears"]!!.value
-        assertEquals(6.toCqlInteger(), value)
+        assertEquals(
+            Interval(5.toCqlInteger(), true, 6.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeMonths"]!!.value
-        assertEquals(72.toCqlInteger(), value)
+        assertEquals(
+            Interval(71.toCqlInteger(), true, 72.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeDays"]!!.value
-        assertEquals(2191.toCqlInteger(), value)
+        assertEquals(
+            Interval(2190.toCqlInteger(), true, 2191.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeHours"]!!.value
-        assertEquals(52583.toCqlInteger(), value)
+        assertEquals(
+            Interval(52582.toCqlInteger(), true, 52583.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeMinutes"]!!.value
-        assertEquals(3155040.toCqlInteger(), value)
+        assertEquals(
+            Interval(3155039.toCqlInteger(), true, 3155040.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeSeconds"]!!.value
         assertEquals(189302400.toCqlInteger(), value)
 
         value = results["CalculateAgeUncertain"]!!.value
         assertEquals(
-            Interval(61.toCqlInteger(), true, 72.toCqlInteger(), true).toString(),
+            Interval(60.toCqlInteger(), true, 72.toCqlInteger(), true).toString(),
             value.toString(),
         )
 
         value = results["CalculateAgeAtYears"]!!.value
-        assertEquals(17.toCqlInteger(), value)
+        assertEquals(
+            Interval(16.toCqlInteger(), true, 17.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         value = results["CalculateAgeAtMonths"]!!.value
         assertEquals(197.toCqlInteger(), value)
 
         value = results["CalculateAgeAtDays"]!!.value
-        assertEquals(6038.toCqlInteger(), value)
+        assertEquals(
+            Interval(6037.toCqlInteger(), true, 6038.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         // BTR -> 2020-10-09
         // Was 144912, but that doesn't account for time zones.
@@ -63,12 +86,19 @@ internal class CqlClinicalOperatorsTest : CqlTestBase() {
         // timezone behavior is different
         // So, changing this test to be a more reasonable test of hours calculation
         value = results["CalculateAgeAtHours"]!!.value
-        assertEquals(27.toCqlInteger(), value)
+        assertEquals(
+            Interval(26.toCqlInteger(), true, 27.toCqlInteger(), true).toString(),
+            value.toString(),
+        )
 
         // BTR -> 2020-10-09
         // Was 8694720, same as SQL Server, but again, edge case, changing
         value = results["CalculateAgeAtMinutes"]!!.value
-        assertEquals((27 * 60 + 10).toCqlInteger(), value)
+        assertEquals(
+            Interval((27 * 60 + 9).toCqlInteger(), true, (27 * 60 + 10).toCqlInteger(), true)
+                .toString(),
+            value.toString(),
+        )
 
         // BTR -> 2020-10-09
         // Was 521683200, same as SQL Server, but again, edge case, changing
@@ -76,7 +106,7 @@ internal class CqlClinicalOperatorsTest : CqlTestBase() {
         assertEquals(((27 * 60 + 10) * 60 + 15).toCqlInteger(), value)
 
         value = results["CalculateAgeAtUncertain"]!!.value
-        assertEquals(187.toCqlInteger(), (value as Interval).start)
+        assertEquals(186.toCqlInteger(), (value as Interval).start)
         assertEquals(198.toCqlInteger(), value.end)
 
         value = results["Issue70A"]!!.value

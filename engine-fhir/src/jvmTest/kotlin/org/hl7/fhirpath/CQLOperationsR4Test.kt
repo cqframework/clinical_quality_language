@@ -82,6 +82,7 @@ class CQLOperationsR4Test : TestFhirPath() {
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DateTimeDurationBetweenUncertainSubtract",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysA",
                 "cql/CqlDateTimeOperatorsTest/Uncertainty tests/DurationInDaysAA",
+                "cql/CqlDateTimeOperatorsTest/Uncertainty tests/TimeDurationBetweenHourDiffPrecision2",
                 "cql/CqlIntervalOperatorsTest/Intersect/TestIntersectNull",
                 "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1",
                 "cql/CqlIntervalOperatorsTest/Expand/ExpandPer0D1IntervalOverload",

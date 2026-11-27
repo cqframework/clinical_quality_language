@@ -138,12 +138,12 @@ object SubtractEvaluator {
                 )
             }
         } else if (left is Interval && right is Interval) {
-            val leftInterval = left
-            val rightInterval = right
+            // Uncertainties: a value in [a, b] minus a value in [c, d] is anywhere in [a - d, b -
+            // c]
             return Interval(
-                subtract(leftInterval.start, rightInterval.start, state),
+                subtract(left.start, right.end, state),
                 true,
-                subtract(leftInterval.end, rightInterval.end, state),
+                subtract(left.end, right.start, state),
                 true,
             )
         }
